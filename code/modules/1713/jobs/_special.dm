@@ -50,6 +50,7 @@
 /datum/job/var/is_yakuza = FALSE
 /datum/job/var/is_yama = FALSE
 /datum/job/var/is_ichi = FALSE
+/datum/job/var/is_football = FALSE
 
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE

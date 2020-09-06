@@ -35,14 +35,49 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	if (!istype(mob,/mob/living/human))
 		return
-
-	var/obj/item/I = mob.get_active_hand()
-	if (!I)
+	var/mob/living/human/H = mob
+	if (map && map.ID == MAP_FOOTBALL)
+		if (H.football) //if we have the ball, pass it in the direction we face
+			var/turf/target = get_turf(get_step(H,H.dir))
+			var/throw_dir = H.dir
+			for(var/i = 1; i < 3; i++)
+				var/turf/new_turf = get_step(target, throw_dir)
+				target = new_turf
+				if(new_turf && new_turf.density)
+					break
+			H.do_attack_animation(get_step(H,H.dir))
+			H.visible_message("[H] passes \the [H.football.name].")
+			H.football.owner = null
+			H.football.throw_at(target, 3, H.football.throw_speed-1, H)
+			H.football = null
+			return
+		else if (!H.football) //if we dont have the ball, try to apply pressure and take the ball without tackling
+			for (var/mob/living/human/HM in get_step(H.loc, dir))
+				if (HM.civilization != H.civilization && H.stats["stamina"][1] >= 7) //no pressure on same team
+					H.stats["stamina"][1] = max(H.stats["stamina"][1] - 7, 0)
+					H.do_attack_animation(get_step(H,dir))
+					var/obj/item/football/opponent_has_ball = null
+					if (HM.football)
+						opponent_has_ball = HM.football
+					if (prob(35) && opponent_has_ball)
+						H.visible_message("<span color='red'>[H] takes the ball from [HM]!</span>")
+						playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
+						opponent_has_ball.owner = H
+						H.football = opponent_has_ball
+						HM.football = null
+						opponent_has_ball.forceMove(H.loc)
+					else
+						H.visible_message("<span color='yellow'>[H] pressures [HM]!</span>")
+						playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+					return
+	else
+		var/obj/item/I = mob.get_active_hand()
+		if (!I)
+			return
+		if (!I.secondary_action)
+			return
+		I.secondary_attack_self(mob)
 		return
-	if (!I.secondary_action)
-		return
-	I.secondary_attack_self(mob)
-	return
 
 //secondary Activate-Held-Object, when an object has more than a action possible (i.e. vehicle controls)
 /client/verb/try_to_buckle()
