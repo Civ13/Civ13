@@ -680,8 +680,27 @@ bullet_act
 		if (istype(O, /obj/item/football))
 			var/obj/item/football/FB = O
 			if (!src.football)
-				src.football = FB
-				FB.owner = src
+				if (findtext(src.original_job_title,"goalkeeper"))
+					visible_message("<font color='yellow'>[src] blocks the ball!</font>")
+					var/newdir = dir
+					switch(dir)
+						if (NORTH)
+							newdir = pick(EAST,WEST)
+						if (SOUTH)
+							newdir = pick(EAST,WEST)
+						if (EAST)
+							newdir = pick(NORTH,SOUTH)
+						if (WEST)
+							newdir = pick(NORTH,SOUTH)
+					if (FB.owner)
+						FB.owner.football = null
+						FB.owner = null
+					FB.throw_at(loc, pick(3,4), FB.throw_speed, src)
+					src.do_attack_animation(get_step(src,src.dir))
+				else
+					src.football = FB
+					FB.owner = src
+					FB.update_movement()
 		if (in_throw_mode && !get_active_hand() && speed <= THROWFORCE_SPEED_DIVISOR && prob(round(75/O.w_class)))	//empty active hand and we're in throw mode
 			if (canmove && !restrained())
 				if (isturf(O.loc))
