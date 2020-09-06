@@ -259,6 +259,17 @@
 				visible_message("[src] kicks \the [H.football.name].")
 				H.football = null
 				return
+			else if (!H.football && findtext(H.original_job_title, "goalkeeper"))
+				var/area/A = get_area(H.loc)
+				if ((istype(A, /area/caribbean/football/blue/goalkeeper) && findtext(H.original_job_title, "Chad")) || (istype(A, /area/caribbean/football/red/goalkeeper) && findtext(H.original_job_title, "Unga")))
+					for(var/obj/item/football/FB in range(1,H))
+						if (FB.owner)
+							FB.owner.football = null
+							FB.owner = null
+						H.put_in_active_hand(FB)
+						FB.pickup(H)
+						visible_message("<span color='yellow'>[H] picks up the ball!</span>")
+						return
 			else if (!H.football && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
 				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
 				src.do_attack_animation(get_step(src,dir))

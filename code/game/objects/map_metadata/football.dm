@@ -104,7 +104,7 @@
 			FB.owner.football = null
 			FB.owner = null
 		FB.loc = spawnpoint
-	spawn(300)
+	spawn(200)
 		stopped = FALSE
 
 ///////////////////////////////////////////////////
