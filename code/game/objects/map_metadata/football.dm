@@ -128,6 +128,31 @@
 	..()
 	return TRUE
 
+/datum/job/civilian/football_red/goalkeeper
+	title = "Unga Bunga United Goalkeeper"
+	en_meaning = ""
+	rank_abbreviation = ""
+	spawn_location = "JoinLateCivA"
+	min_positions = 1
+	max_positions = 1
+	is_football = TRUE
+
+/datum/job/civilian/football_red/goalkeeper/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Unga Bunga United"
+	var/obj/item/clothing/under/football/red/goalkeeper/FR = new /obj/item/clothing/under/football/red/goalkeeper(H)
+	H.equip_to_slot_or_del(FR, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/red(H), slot_gloves)
+	if (map && map.ID == MAP_FOOTBALL)
+		var/obj/map_metadata/football/tmap = map
+		if (!isemptylist(tmap.player_count_red))
+			FR.player_number = pick(tmap.player_count_red)
+			FR.update_icon()
+	..()
+	return TRUE
+
+
 /datum/job/civilian/football_blue
 	title = "Chad Town Football Club"
 	en_meaning = ""
@@ -144,6 +169,32 @@
 	var/obj/item/clothing/under/football/blue/FB = new /obj/item/clothing/under/football/blue(H)
 	H.equip_to_slot_or_del(FB, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+	if (map && map.ID == MAP_FOOTBALL)
+		var/obj/map_metadata/football/tmap = map
+		if (!isemptylist(tmap.player_count_blue))
+			FB.player_number = pick(tmap.player_count_blue)
+			FB.update_icon()
+
+	..()
+	return TRUE
+
+/datum/job/civilian/football_blue/goalkeeper
+	title = "Chad Town Football Club Goalkeeper"
+	en_meaning = ""
+	rank_abbreviation = ""
+	spawn_location = "JoinLateCivB"
+	min_positions = 1
+	max_positions = 1
+	is_football = TRUE
+
+
+/datum/job/civilian/football_blue/goalkeeper/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Chad Town Football Club"
+	var/obj/item/clothing/under/football/blue/goalkeeper/FB = new /obj/item/clothing/under/football/blue/goalkeeper(H)
+	H.equip_to_slot_or_del(FB, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/blue(H), slot_gloves)
 	if (map && map.ID == MAP_FOOTBALL)
 		var/obj/map_metadata/football/tmap = map
 		if (!isemptylist(tmap.player_count_blue))
