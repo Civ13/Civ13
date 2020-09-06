@@ -93,12 +93,16 @@
 	var/area/A = get_area(src)
 	if (ishuman(user))
 		var/mob/living/human/H = user
-		if (!istype(A, /area/caribbean/football/blue/goalkeeper) && !istype(A, /area/caribbean/football/red/goalkeeper) && !(findtext(H.original_job_title, "goalkeeper")))
+		if (!istype(A, /area/caribbean/football/blue/goalkeeper) && !istype(A, /area/caribbean/football/red/goalkeeper))
+			return
+		else if (!(findtext(H.original_job_title, "goalkeeper")))
 			return
 		else
-			owner.football = null
-			owner = null
-			..()
+			if (owner)
+				owner.football = null
+				owner = null
+			return
+	..()
 //goal posts
 /obj/effect/step_trigger/goal
 	name = "goalpost"
