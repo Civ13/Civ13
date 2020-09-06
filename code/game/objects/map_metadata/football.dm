@@ -24,6 +24,7 @@
 		"U.B.U." = 0,
 		"C.T.F.C." = 0,
 	)
+	var/stopped = FALSE
 	var/list/player_count_red = list(1,2,3,4,5,6,7,8,9,10,11)
 	var/list/player_count_blue = list(1,2,3,4,5,6,7,8,9,10,11)
 	New()
@@ -77,13 +78,26 @@
 		return TRUE
 
 /obj/map_metadata/football/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+	return ((processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods) && !stopped)
 
 /obj/map_metadata/football/cross_message(faction)
+	var/warning_sound = sound('sound/effects/football_whistle.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	for (var/mob/M in player_list)
+		M.client << warning_sound
 	return "<font size = 4>The match has started!</font>"
 
 /obj/map_metadata/football/reverse_cross_message(faction)
 	return ""
+
+/obj/map_metadata/football/reset_ball()
+	stopped = TRUE
+	for (var/mob/living/human/H in player_list)
+		var/turf/spawnpoint = null
+		var/list/turfs = latejoin_turfs[H.original_job.spawn_location]
+		spawnpoint = pick(turfs)
+		H.loc = spawnpoint
+	spawn(300)
+		stopped = FALSE
 
 ///////////////////////////////////////////////////
 /datum/job/civilian/football_red

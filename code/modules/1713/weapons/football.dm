@@ -44,7 +44,7 @@
 /mob/living/human/var/obj/item/football/football = null
 
 /obj/item/football
-	name = "football"
+	name = "ball"
 	desc = "A classic black and white football."
 	icon = 'icons/obj/football.dmi'
 	icon_state = "football"
@@ -83,3 +83,23 @@
 		owner.football = null
 		owner = null
 		..()
+//goal posts
+/obj/effect/step_trigger/goal
+	name = "goalpost"
+	var/team = null
+/obj/effect/step_trigger/goal/Trigger(var/atom/movable/A)
+	if (istype(A, /obj/item/football) && team)
+		if (istype(map, /obj/map_metadata/football))
+			var/obj/map_metadata/football/MF = map
+			MF.reset_ball()
+			MF.scores[team] += 1
+			world << "<font size=4 color='orange'>GOAL! [team] scores!</font>"
+			return
+
+/obj/effect/step_trigger/goal/red
+	name = "UBU goalpost"
+	team = "U.B.U."
+
+/obj/effect/step_trigger/goal/blue
+	name = "CTFC goalpost"
+	team = "C.T.F.C."
