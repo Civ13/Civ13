@@ -38,19 +38,21 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 		if (J.is_nomad == TRUE)
 			. = FALSE
-		if (J.is_cowboy == TRUE)
+		else if (J.is_cowboy == TRUE)
 			. = FALSE
-		if (J.is_civilizations == TRUE)
+		else if (J.is_civilizations == TRUE)
 			. = FALSE
-		if (J.is_rcw == TRUE)
+		else if (J.is_rcw == TRUE)
 			. = FALSE
-		if (J.is_pioneer == TRUE)
+		else if (J.is_pioneer == TRUE)
 			. = FALSE
-		if (J.is_deal == TRUE)
+		else if (J.is_deal == TRUE)
 			. = FALSE
-		if (J.is_prison == TRUE)
+		else if (J.is_prison == TRUE)
 			. = FALSE
-		if (J.is_civil_war == TRUE)
+		else if (J.is_civil_war == TRUE)
+			. = FALSE
+		else if (J.is_football == TRUE)
 			. = FALSE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
