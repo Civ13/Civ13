@@ -136,7 +136,7 @@
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
 		invisibility = 0
-	if (has_hunger_and_thirst)
+	if (has_hunger_and_thirst && (map.civilizations || map.nomads || map.has_hunger))
 		var/water_m = 1
 		var/food_m = 1
 		if (find_trait("Gigantism"))
