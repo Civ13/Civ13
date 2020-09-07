@@ -1,3 +1,16 @@
+var/global/list/anvil_recipes = list(
+	//name = list(name, category, first age, last age, steel cost, iron cost, bronze cost, kevlar cost, result)
+	"Derringer M95 Pistol" = list("Derringer M95 Pistol","guns",4,5,15,0,0,0,/obj/item/weapon/gun/projectile/revolver/derringer)
+	"Colt Peacemaker Revolver" = list("Colt Peacemaker Revolver","guns",4,5,25,0,0,0,/obj/item/weapon/gun/projectile/revolver/peacemaker)
+	"Martini-Henry Rifle" = list("Martini-Henry Rifle","guns",4,5,35,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry)
+	"Winchester Repeater" = list("Winchester Repeater","guns",4,5,50,0,0,0,/obj/item/weapon/gun/projectile/leveraction/winchester)
+	"Evans Repeater" = list("Evans Repeater","guns",4,5,60,0,0,0,/obj/item/weapon/gun/projectile/leveraction/evansrepeater)
+	"Henry Repeater" = list("Henry Repeater","guns",4,5,55,0,0,0,/obj/item/weapon/gun/projectile/leveraction/henryrepeater)
+	"Sharps Rifle" = list("Sharps Rifle","guns",4,5,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot)
+	"Coach Gun" = list("Coach Gun","guns",4,6,22,0,0,0,/obj/item/weapon/gun/projectile/shotgun/coachgun)
+	"Gewehr 71" = list("Gewehr 71","guns",4,6,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/gewehr71)
+
+)
 /obj/structure/anvil
 	name = "iron anvil"
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has 0 hot iron bars on it."
@@ -12,6 +25,7 @@
 	var/base_icon = "iron"
 	not_movable = FALSE
 	not_disassemblable = TRUE
+
 obj/structure/anvil/New()
 	..()
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
@@ -144,134 +158,26 @@ obj/structure/anvil/New()
 			display2 = list("Steel rods (2)", "Cancel")*/
 		if (choice2 == "Cancel")
 			return
-
-		if (choice2 == "Derringer M95 Pistol (15)")
-			if (steel_amt >= 15)
-				user << "You begin crafting a Derringer..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,220,src) && steel_amt >= 15)
-					user << "You craft a Derringer."
-					steel_amt -= 15
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/revolver/derringer(user.loc)
+		else
+			if (anvil_recipes[choice2])
+				choice2 = splittext(choice2," (")[1]
+					//name = (name,category, first age, last age, steel cost, iron cost, bronze cost, kevlar cost)
+				if (steel_amt >= anvil_recipes[choice2][5] && iron_amt >= anvil_recipes[choice2][6] && bronze_amt >= anvil_recipes[choice2][7] && kevlar_amt >= anvil_recipes[choice2][8])
+					user << "You begin crafting a [choice2]..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,(anvil_recipes[choice2][5]+anvil_recipes[choice2][6]+anvil_recipes[choice2][7]+anvil_recipes[choice2][8])*10,src) && steel_amt >= anvil_recipes[choice2][5] && iron_amt >= anvil_recipes[choice2][6] && bronze_amt >= anvil_recipes[choice2][7] && kevlar_amt >= anvil_recipes[choice2][8])
+						user << "You craft a [choice2]."
+						steel_amt -= anvil_recipes[choice2][5]
+						iron_amt -= anvil_recipes[choice2][6]
+						bronze_amt -= anvil_recipes[choice2][7]
+						kevlar_amt -= anvil_recipes[choice2][8]
+						if (steel_amt <= 0 && iron_amt <= 0 && bronze_amt <= 0 && kevlar_amt <= 0)
+							icon_state = "[base_icon]_anvil"
+						new anvil_recipes[choice2][9](user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more resources to make this!</span>"
 					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-		if (choice2 == "Colt Peacemaker Revolver (25)")
-			if (steel_amt >= 25)
-				user << "You begin crafting a Colt Peacemaker..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,220,src) && steel_amt >= 25)
-					user << "You craft a Colt Peacemaker."
-					steel_amt -= 25
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/revolver/peacemaker(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-		if (choice2 == "Martini-Henry Rifle (35)")
-			if (steel_amt >= 35)
-				user << "You begin crafting a Martini-Henry..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,170,src) && steel_amt >= 35)
-					user << "You craft a Martini-Henry."
-					steel_amt -= 35
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-		if (choice2 == "Winchester Repeater (50)")
-			if (steel_amt >= 50)
-				user << "You begin crafting a Winchester..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,220,src) && steel_amt >= 50)
-					user << "You craft a Winchester."
-					steel_amt -= 50
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/leveraction/winchester(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-		if (choice2 == "Evans Repeater (60)")
-			if (steel_amt >= 65)
-				user << "You begin crafting a Evans Repeater..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,220,src) && steel_amt >= 60)
-					user << "You craft a Evans Repeater."
-					steel_amt -= 60
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/leveraction/evansrepeater(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-		if (choice2 == "Henry Repeater (55)")
-			if (steel_amt >= 55)
-				user << "You begin crafting a Henry Repeater..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,220,src) && steel_amt >= 55)
-					user << "You craft a Henry Repeater."
-					steel_amt -= 55
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/leveraction/henryrepeater(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-		if (choice2 == "Sharps Rifle (30)")
-			if (steel_amt >= 30)
-				user << "You begin crafting a Sharps Rifle..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,220,src) && steel_amt >= 30)
-					user << "You craft a Sharps Rifle."
-					steel_amt -= 30
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/boltaction/singleshot(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-		if (choice2 == "Coach Gun (22)")
-			if (steel_amt >= 22)
-				user << "You begin crafting a Coach Gun..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,220,src) && steel_amt >= 22)
-					user << "You craft a Coach Gun."
-					steel_amt -= 22
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/shotgun/coachgun(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
-
-		if (choice2 == "Gewehr 71 (30)")
-			if (steel_amt >= 30)
-				user << "You begin crafting a Gewehr 71..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,170,src) && steel_amt >= 30)
-					user << "You craft a Gewehr 71."
-					steel_amt -= 30
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/boltaction/gewehr71(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
 
 //Makeshift AK for ungas
 
@@ -3662,3 +3568,15 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more steel to make this!</span>"
 					return
+
+/obj/structure/anvil/steel
+	name = "stone anvil"
+	desc = "An advanced steel anvil. The blacksmith's main work tool."
+	icon_state = "steel_anvil"
+	base_icon = "steel"
+
+/obj/structure/anvil/stone
+	name = "stone anvil"
+	desc = "A crude stone anvil. The blacksmith's main work tool."
+	icon_state = "stone_anvil"
+	base_icon = "stone"
