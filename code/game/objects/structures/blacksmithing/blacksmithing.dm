@@ -170,7 +170,8 @@ obj/structure/anvil/New()
 						kevlar_amt -= anvil_recipes[choice2][8]
 						if (steel_amt <= 0 && iron_amt <= 0 && bronze_amt <= 0 && kevlar_amt <= 0)
 							icon_state = "[base_icon]_anvil"
-						new anvil_recipes[choice2][9](user.loc)
+						var/tpath = anvil_recipes[choice2][9]
+						new tpath(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more resources to make this!</span>"
