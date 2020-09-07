@@ -1,15 +1,15 @@
 var/global/list/anvil_recipes = list(
 	//name = list(name, category, first age, last age, steel cost, iron cost, bronze cost, kevlar cost, result)
-	"Derringer M95 Pistol" = list("Derringer M95 Pistol","guns",4,5,15,0,0,0,/obj/item/weapon/gun/projectile/revolver/derringer)
-	"Colt Peacemaker Revolver" = list("Colt Peacemaker Revolver","guns",4,5,25,0,0,0,/obj/item/weapon/gun/projectile/revolver/peacemaker)
-	"Martini-Henry Rifle" = list("Martini-Henry Rifle","guns",4,5,35,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry)
-	"Winchester Repeater" = list("Winchester Repeater","guns",4,5,50,0,0,0,/obj/item/weapon/gun/projectile/leveraction/winchester)
-	"Evans Repeater" = list("Evans Repeater","guns",4,5,60,0,0,0,/obj/item/weapon/gun/projectile/leveraction/evansrepeater)
-	"Henry Repeater" = list("Henry Repeater","guns",4,5,55,0,0,0,/obj/item/weapon/gun/projectile/leveraction/henryrepeater)
-	"Sharps Rifle" = list("Sharps Rifle","guns",4,5,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot)
-	"Coach Gun" = list("Coach Gun","guns",4,6,22,0,0,0,/obj/item/weapon/gun/projectile/shotgun/coachgun)
-	"Gewehr 71" = list("Gewehr 71","guns",4,6,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/gewehr71)
-	"Makeshift AK-47" = list("Makeshift AK-47","guns",7,8,32,0,0,0,new/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47)
+	"Derringer M95 Pistol" = list("Derringer M95 Pistol","guns",4,5,15,0,0,0,/obj/item/weapon/gun/projectile/revolver/derringer),
+	"Colt Peacemaker Revolver" = list("Colt Peacemaker Revolver","guns",4,5,25,0,0,0,/obj/item/weapon/gun/projectile/revolver/peacemaker),
+	"Martini-Henry Rifle" = list("Martini-Henry Rifle","guns",4,5,35,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry),
+	"Winchester Repeater" = list("Winchester Repeater","guns",4,5,50,0,0,0,/obj/item/weapon/gun/projectile/leveraction/winchester),
+	"Evans Repeater" = list("Evans Repeater","guns",4,5,60,0,0,0,/obj/item/weapon/gun/projectile/leveraction/evansrepeater),
+	"Henry Repeater" = list("Henry Repeater","guns",4,5,55,0,0,0,/obj/item/weapon/gun/projectile/leveraction/henryrepeater),
+	"Sharps Rifle" = list("Sharps Rifle","guns",4,5,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot),
+	"Coach Gun" = list("Coach Gun","guns",4,6,22,0,0,0,/obj/item/weapon/gun/projectile/shotgun/coachgun),
+	"Gewehr 71" = list("Gewehr 71","guns",4,6,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/gewehr71),
+	"Makeshift AK-47" = list("Makeshift AK-47","guns",7,8,32,0,0,0,new/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47),
 	
 )
 /obj/structure/anvil
