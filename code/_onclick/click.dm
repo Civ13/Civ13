@@ -498,6 +498,7 @@
 			var/mob/living/human/H = M
 			if (H.football)
 				H.football.owner = null
+				H.football.last_owner = H
 				H.football = null
 		jump_act(src, M)
 	else

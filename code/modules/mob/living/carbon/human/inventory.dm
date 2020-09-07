@@ -47,6 +47,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 					break
 			H.do_attack_animation(get_step(H,H.dir))
 			H.visible_message("[H] passes \the [H.football.name].")
+			H.football.last_owner = H.football.owner
 			H.football.owner = null
 			H.football.throw_at(target, 3, H.football.throw_speed-1, H)
 			H.football = null
@@ -60,14 +61,15 @@ This saves us from having to call add_fingerprint() any time something is put in
 					if (HM.football)
 						opponent_has_ball = HM.football
 					if (prob(35) && opponent_has_ball)
-						H.visible_message("<span color='red'>[H] takes the ball from [HM]!</span>")
+						H.visible_message("<font color='red'>[H] takes the ball from [HM]!</font>")
 						playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
+						opponent_has_ball.last_owner = H
 						opponent_has_ball.owner = H
 						H.football = opponent_has_ball
 						HM.football = null
 						opponent_has_ball.forceMove(H.loc)
 					else
-						H.visible_message("<span color='yellow'>[H] pressures [HM]!</span>")
+						H.visible_message("<font color='yellow'>[H] pressures [HM]!</font>")
 						playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 					return
 	else

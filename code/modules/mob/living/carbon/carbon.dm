@@ -416,16 +416,19 @@
 		var/obj/item/football/FB = AM
 		if (!FB.owner && !src.football)
 			FB.owner = src
+			FB.last_owner = src
 			src.football = FB
 			FB.update_movement()
 	else if (istype(AM, /mob/living/human))
 		var/mob/living/human/HM = AM
 		if (HM.civilization != src.civilization && (HM.dir == OPPOSITE_DIR(src.dir) || findtext(HM.original_job_title, "goalkeeper") || findtext(src.original_job_title, "goalkeeper")))
 			if (src.football)
+				src.football.last_owner = src
 				src.football.owner = null
 				src.football = null
 				visible_message("[src] bumps into [HM] and loses control of the ball!")
 			else if (HM.football)
+				HM.football.last_owner = HM
 				HM.football.owner = null
 				HM.football = null
 				visible_message("[HM] bumps into [src] and loses control of the ball!")

@@ -254,6 +254,7 @@
 						break
 				src.do_attack_animation(H.football)
 				H.football.owner = null
+				H.football.last_owner = H
 				H.football.throw_at(target, range, H.football.throw_speed, src)
 				H.do_attack_animation(get_step(H,H.dir))
 				visible_message("[src] kicks \the [H.football.name].")
@@ -263,7 +264,7 @@
 				var/area/A = get_area(H.loc)
 				if ((istype(A, /area/caribbean/football/blue/goalkeeper) && findtext(H.original_job_title, "Chad")) || (istype(A, /area/caribbean/football/red/goalkeeper) && findtext(H.original_job_title, "Unga")))
 					for(var/obj/item/football/FB in range(1,H))
-						if (!FB.owner)
+						if (!FB.owner && isturf(FB.loc))
 							H.put_in_active_hand(FB)
 							FB.pickup(H)
 							visible_message("<font color='yellow'>[H] picks up the ball!</font>")
@@ -280,12 +281,13 @@
 							H.do_attack_animation(get_step(H,H.dir))
 							HM.Weaken(1)
 							if (HM.football)
+								HM.football.last_owner = HM
 								HM.football.owner = null
 								HM.football.throw_at(get_step(HM.loc,HM.dir), 1, 1, HM)
 								HM.football = null
 							return
 						else
-							visible_message("<span color='yellow'>[src] tries to tackle [HM] but fails!</span>")
+							visible_message("<font color='yellow'>[src] tries to tackle [HM] but fails!</font>")
 							playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 						return
 		return

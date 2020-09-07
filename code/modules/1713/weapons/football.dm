@@ -74,7 +74,7 @@
 	allow_spin = FALSE
 
 	var/mob/living/human/owner = null
-
+	var/mob/living/human/last_owner = null
 /obj/item/football/proc/update_movement()
 	if (owner)
 		src.dir = owner.dir
@@ -112,7 +112,12 @@
 			var/obj/map_metadata/football/MF = map
 			MF.reset_ball()
 			MF.scores[team] += 1
-			world << "<font size=4 color='orange'>GOAL! [team] scores!</font>"
+			var/obj/item/football/FB = A
+			var/scorer = "Unknown"
+			if (FB.last_owner)
+				scorer = FB.last_owner
+			world << "<font size=4 color='orange'>GOAL! <b>[scorer]</b> scores for <b>[team]</b>!</font>"
+			FB.last_owner = null
 			return
 
 /obj/effect/step_trigger/goal/red

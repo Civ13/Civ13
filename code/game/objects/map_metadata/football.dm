@@ -102,6 +102,7 @@
 		spawnpoint = pick(turfs)
 		if (FB.owner)
 			FB.owner.football = null
+			FB.last_owner = FB.owner
 			FB.owner = null
 		FB.loc = spawnpoint
 	spawn(200)
