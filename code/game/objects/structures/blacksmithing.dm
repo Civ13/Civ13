@@ -1,14 +1,15 @@
 /obj/structure/anvil
-	name = "anvil"
+	name = "iron anvil"
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has 0 hot iron bars on it."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "anvil1"
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "iron_anvil"
 	density = TRUE
 	anchored = TRUE
 	var/iron_amt = 0
 	var/bronze_amt = 0
 	var/steel_amt = 0
 	var/kevlar_amt = 0
+	var/base_icon = "iron"
 	not_movable = FALSE
 	not_disassemblable = TRUE
 obj/structure/anvil/New()
@@ -33,26 +34,26 @@ obj/structure/anvil/New()
 	else
 		if (istype(P, /obj/item/stack/material/iron) && steel_amt == 0)
 			user << "You begin smithing the iron..."
-			icon_state = "anvil2"
+			icon_state = "[base_icon]_anvil_use"
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 			if (do_after(user,15*P.amount,src))
 				user << "<span class='notice'>You smite the iron.</span>"
 				iron_amt += P.amount
 				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
-				icon_state = "anvil3"
+				icon_state = "[base_icon]_anvil_use2"
 				qdel(P)
 		else if (istype(P, /obj/item/stack/material/iron) && steel_amt > 0)
 			user << "<span class='notice'>You can't smelt iron while there is steel on the anvil! Finish the steel first.</span>"
 			return
 		else if (istype(P, /obj/item/stack/material/steel) && iron_amt == 0 && map.ordinal_age >= 2)
 			user << "You begin smithing the steel..."
-			icon_state = "anvil2"
+			icon_state = "[base_icon]_anvil_use"
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 			if (do_after(user,15*P.amount,src))
 				user << "<span class='notice'>You smite the steel.</span>"
 				steel_amt += P.amount
 				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [steel_amt] hot steel bars on it."
-				icon_state = "anvil3"
+				icon_state = "[base_icon]_anvil_use2"
 				qdel(P)
 		else if (istype(P, /obj/item/stack/material/steel) && iron_amt > 0)
 			user << "<span class='notice'>You can't smelt steel while there is iron on the anvil! Finish the iron first.</span>"
@@ -152,7 +153,7 @@ obj/structure/anvil/New()
 					user << "You craft a Derringer."
 					steel_amt -= 15
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/revolver/derringer(user.loc)
 					return
 			else
@@ -166,7 +167,7 @@ obj/structure/anvil/New()
 					user << "You craft a Colt Peacemaker."
 					steel_amt -= 25
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/revolver/peacemaker(user.loc)
 					return
 			else
@@ -180,7 +181,7 @@ obj/structure/anvil/New()
 					user << "You craft a Martini-Henry."
 					steel_amt -= 35
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry(user.loc)
 					return
 			else
@@ -194,7 +195,7 @@ obj/structure/anvil/New()
 					user << "You craft a Winchester."
 					steel_amt -= 50
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/leveraction/winchester(user.loc)
 					return
 			else
@@ -208,7 +209,7 @@ obj/structure/anvil/New()
 					user << "You craft a Evans Repeater."
 					steel_amt -= 60
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/leveraction/evansrepeater(user.loc)
 					return
 			else
@@ -222,7 +223,7 @@ obj/structure/anvil/New()
 					user << "You craft a Henry Repeater."
 					steel_amt -= 55
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/leveraction/henryrepeater(user.loc)
 					return
 			else
@@ -236,7 +237,7 @@ obj/structure/anvil/New()
 					user << "You craft a Sharps Rifle."
 					steel_amt -= 30
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/boltaction/singleshot(user.loc)
 					return
 			else
@@ -250,7 +251,7 @@ obj/structure/anvil/New()
 					user << "You craft a Coach Gun."
 					steel_amt -= 22
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/shotgun/coachgun(user.loc)
 					return
 			else
@@ -265,7 +266,7 @@ obj/structure/anvil/New()
 					user << "You craft a Gewehr 71."
 					steel_amt -= 30
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/boltaction/gewehr71(user.loc)
 					return
 			else
@@ -282,7 +283,7 @@ obj/structure/anvil/New()
 					user << "You craft a Makeshift AK-47."
 					steel_amt -= 32
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47(user.loc)
 					return
 			else
@@ -299,7 +300,7 @@ obj/structure/anvil/New()
 					user << "You craft a small sword."
 					steel_amt -= 10
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/smallsword(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -316,7 +317,7 @@ obj/structure/anvil/New()
 					user << "You craft a sabre."
 					steel_amt -= 15
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/sabre(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -333,7 +334,7 @@ obj/structure/anvil/New()
 					user << "You craft a cutlass."
 					steel_amt -= 12
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/cutlass(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -350,7 +351,7 @@ obj/structure/anvil/New()
 					user << "You craft a longquan."
 					steel_amt -= 12
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longquan(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -367,7 +368,7 @@ obj/structure/anvil/New()
 					user << "You craft a rapier."
 					steel_amt -= 18
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/rapier(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -384,7 +385,7 @@ obj/structure/anvil/New()
 					user << "You craft a spadroon."
 					steel_amt -= 15
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/spadroon(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -401,7 +402,7 @@ obj/structure/anvil/New()
 					user << "You craft an arming sword."
 					steel_amt -= 15
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/armingsword(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -418,7 +419,7 @@ obj/structure/anvil/New()
 					user << "You craft a longsword."
 					steel_amt -= 18
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longsword(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -436,7 +437,7 @@ obj/structure/anvil/New()
 					user << "You craft a Katana."
 					steel_amt -= 15
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/katana(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -454,7 +455,7 @@ obj/structure/anvil/New()
 					user << "You craft a wakazashi."
 					steel_amt -= 10
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/wakazashi(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -472,7 +473,7 @@ obj/structure/anvil/New()
 					user << "You craft a tanto."
 					steel_amt -= 5
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/knife/SW = new/obj/item/weapon/material/knife/tanto(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -492,7 +493,7 @@ obj/structure/anvil/New()
 					user << "You craft a katana."
 					steel_amt -= 30
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/katana(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -510,7 +511,7 @@ obj/structure/anvil/New()
 					user << "You craft a wakazashi."
 					steel_amt -= 20
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/wakazashi(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -528,7 +529,7 @@ obj/structure/anvil/New()
 					user << "You craft a tanto."
 					steel_amt -= 10
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/knife/SW = new/obj/item/weapon/material/knife/tanto(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -546,7 +547,7 @@ obj/structure/anvil/New()
 					user << "You craft the iron kanobo mace."
 					steel_amt -= 8
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/boarding_axe(user.loc)
 					return
 			else
@@ -561,7 +562,7 @@ obj/structure/anvil/New()
 					user << "You craft the halberd."
 					steel_amt -= 14
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/halberd/steel(user.loc)
 					return
 			else
@@ -575,7 +576,7 @@ obj/structure/anvil/New()
 					user << "You craft the pike."
 				steel_amt -= 16
 				if (steel_amt <= 0)
-					icon_state = "anvil1"
+					icon_state = "[base_icon]_anvil"
 				new/obj/item/weapon/material/pike/steel(user.loc)
 				return
 			else
@@ -589,7 +590,7 @@ obj/structure/anvil/New()
 					user << "You craft the naginata."
 				steel_amt -= 16
 				if (steel_amt <= 0)
-					icon_state = "anvil1"
+					icon_state = "[base_icon]_anvil"
 				new/obj/item/weapon/material/naginata/steel(user.loc)
 				return
 			else
@@ -620,7 +621,7 @@ obj/structure/anvil/New()
 						user << "You craft the bolo machete."
 					steel_amt -= 12
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/sword/bolo(user.loc)
 					return
 				else
@@ -634,7 +635,7 @@ obj/structure/anvil/New()
 						user << "You craft the kukri machete."
 					steel_amt -= 12
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/sword/kukri(user.loc)
 					return
 				else
@@ -648,7 +649,7 @@ obj/structure/anvil/New()
 						user << "You craft the bolo machete."
 					steel_amt -= 16
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/sword/bolo(user.loc)
 					return
 				else
@@ -662,7 +663,7 @@ obj/structure/anvil/New()
 						user << "You craft the kukri machete."
 					steel_amt -= 16
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/sword/kukri(user.loc)
 					return
 				else
@@ -693,7 +694,7 @@ obj/structure/anvil/New()
 						user << "You craft the bowie knife."
 					iron_amt -= 8
 					if (iron_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/kitchen/utensil/knife/bowie(user.loc)
 					return
 				else
@@ -707,7 +708,7 @@ obj/structure/anvil/New()
 						user << "You craft the trench knife."
 					steel_amt -= 10
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/kitchen/utensil/knife/trench(user.loc)
 					return
 				else
@@ -721,7 +722,7 @@ obj/structure/anvil/New()
 						user << "You craft the miltiary knife."
 					iron_amt -= 14
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/kitchen/utensil/knife/military(user.loc)
 					return
 				else
@@ -735,7 +736,7 @@ obj/structure/anvil/New()
 						user << "You craft the bowie knife."
 					steel_amt -= 12
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/kitchen/utensil/knife/bowie(user.loc)
 					return
 				else
@@ -749,7 +750,7 @@ obj/structure/anvil/New()
 						user << "You craft the trench knife."
 					steel_amt -= 10
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/kitchen/utensil/knife/trench(user.loc)
 					return
 				else
@@ -763,7 +764,7 @@ obj/structure/anvil/New()
 						user << "You craft the miltiary knife."
 					steel_amt -= 18
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/weapon/material/kitchen/utensil/knife/military(user.loc)
 					return
 				else
@@ -781,7 +782,7 @@ obj/structure/anvil/New()
 					user << "You craft a scimitar."
 					steel_amt -= 12
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/scimitar(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -799,7 +800,7 @@ obj/structure/anvil/New()
 					user << "You craft a saif."
 					steel_amt -= 15
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/saif(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -817,7 +818,7 @@ obj/structure/anvil/New()
 					user << "You craft a scimitar."
 					steel_amt -= 20
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/scimitar(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -835,7 +836,7 @@ obj/structure/anvil/New()
 					user << "You craft a ceremonial saif."
 					steel_amt -= 20
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/arabsword(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -853,7 +854,7 @@ obj/structure/anvil/New()
 					user << "You craft a scimitar."
 					steel_amt -= 23
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/arabsword2(user.loc)
 					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 					SW.health = SW.maxhealth
@@ -873,7 +874,7 @@ obj/structure/anvil/New()
 					user << "You craft three steel rods!"
 					steel_amt -= 2
 					if (steel_amt <= 0)
-						icon_state = "anvil1"
+						icon_state = "[base_icon]_anvil"
 					new/obj/item/stack/material/steelrods(user.loc)
 					new/obj/item/stack/material/steelrods(user.loc)
 					return
@@ -918,7 +919,7 @@ obj/structure/anvil/New()
 						user << "You craft a small sword."
 						iron_amt -= 10
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/smallsword/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -935,7 +936,7 @@ obj/structure/anvil/New()
 						user << "You craft a gladius."
 						iron_amt -= 10
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/gladius(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -952,7 +953,7 @@ obj/structure/anvil/New()
 						user << "You craft a xiphos."
 						iron_amt -= 14
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/xiphos(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -969,7 +970,7 @@ obj/structure/anvil/New()
 						user << "You craft a sabre."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/sabre/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -986,7 +987,7 @@ obj/structure/anvil/New()
 						user << "You craft a cutlass."
 						iron_amt -= 12
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/cutlass/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1003,7 +1004,7 @@ obj/structure/anvil/New()
 						user << "You craft a longquan."
 						iron_amt -= 12
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longquan/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1020,7 +1021,7 @@ obj/structure/anvil/New()
 						user << "You craft a rapier."
 						iron_amt -= 18
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/rapier/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1037,7 +1038,7 @@ obj/structure/anvil/New()
 						user << "You craft a spadroon."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/spadroon/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1054,7 +1055,7 @@ obj/structure/anvil/New()
 						user << "You craft an uruk-hai scimitar."
 						iron_amt -= 16
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/urukhaiscimitar(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1071,7 +1072,7 @@ obj/structure/anvil/New()
 						user << "You craft an arming sword."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/armingsword/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1088,7 +1089,7 @@ obj/structure/anvil/New()
 						user << "You craft a longsword."
 						iron_amt -= 18
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longsword/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1105,7 +1106,7 @@ obj/structure/anvil/New()
 						user << "You craft a Katana."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/katana/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1125,7 +1126,7 @@ obj/structure/anvil/New()
 						user << "You craft a crude musket."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/gun/projectile/flintlock/crude(user.loc)
 						return
 				else
@@ -1139,7 +1140,7 @@ obj/structure/anvil/New()
 						user << "You craft a musket."
 						iron_amt -= 30
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/gun/projectile/flintlock/musket(user.loc)
 						return
 				else
@@ -1153,7 +1154,7 @@ obj/structure/anvil/New()
 						user << "You craft a musketoon."
 						iron_amt -= 25
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/gun/projectile/flintlock/musketoon(user.loc)
 						return
 				else
@@ -1167,7 +1168,7 @@ obj/structure/anvil/New()
 						user << "You craft a blunderbuss."
 						iron_amt -= 25
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/gun/projectile/flintlock/blunderbuss(user.loc)
 						return
 				else
@@ -1181,7 +1182,7 @@ obj/structure/anvil/New()
 						user << "You craft a pistol."
 						iron_amt -= 20
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/gun/projectile/flintlock/pistol(user.loc)
 						return
 				else
@@ -1218,7 +1219,7 @@ obj/structure/anvil/New()
 							user << "You craft the roman standard."
 						iron_amt -= 10
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/roman_standard(user.loc)
 						return
 				else
@@ -1232,7 +1233,7 @@ obj/structure/anvil/New()
 							user << "You craft the greek standard."
 						iron_amt -= 10
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/greek_standard(user.loc)
 						return
 				else
@@ -1246,7 +1247,7 @@ obj/structure/anvil/New()
 							user << "You craft the egyptian standard."
 						iron_amt -= 10
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/egyptian_standard(user.loc)
 						return
 				else
@@ -1264,7 +1265,7 @@ obj/structure/anvil/New()
 						user << "You craft the athenian aspis shield."
 						iron_amt -= 13
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/nomads/aspis(user.loc)
 						return
 				else
@@ -1278,7 +1279,7 @@ obj/structure/anvil/New()
 						user << "You craft the athenian aspis shield."
 						iron_amt -= 13
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/nomads/spartan(user.loc)
 						return
 				else
@@ -1292,7 +1293,7 @@ obj/structure/anvil/New()
 						user << "You craft the pegasus aspis shield."
 						iron_amt -= 13
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/nomads/aspis/pegasus(user.loc)
 						return
 				else
@@ -1306,7 +1307,7 @@ obj/structure/anvil/New()
 						user << "You craft the owl aspis shield."
 						iron_amt -= 13
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/nomads/aspis/owl(user.loc)
 						return
 				else
@@ -1321,7 +1322,7 @@ obj/structure/anvil/New()
 						user << "You craft the egyptian shield."
 						iron_amt -= 13
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/egyptian(user.loc)
 						return
 				else
@@ -1335,7 +1336,7 @@ obj/structure/anvil/New()
 						user << "You craft the scutum shield."
 						iron_amt -= 14
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/scutum(user.loc)
 						return
 				else
@@ -1355,7 +1356,7 @@ obj/structure/anvil/New()
 							user << "You craft the roman shield."
 						iron_amt -= 14
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/roman(user.loc)
 						return
 					else
@@ -1369,7 +1370,7 @@ obj/structure/anvil/New()
 							user << "You craft the roman shield."
 						iron_amt -= 14
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/roman/blue(user.loc)
 						return
 					else
@@ -1383,7 +1384,7 @@ obj/structure/anvil/New()
 							user << "You craft the praetorian roman shield."
 						iron_amt -= 16
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/roman/praetorian(user.loc)
 						return
 					else
@@ -1401,7 +1402,7 @@ obj/structure/anvil/New()
 						user << "You craft the semi oval shield."
 						iron_amt -= 16
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/iron/nomads/semioval(user.loc)
 						return
 				else
@@ -1416,7 +1417,7 @@ obj/structure/anvil/New()
 						user << "You craft the semi oval templar shield."
 						iron_amt -= 16
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/iron/nomads/semioval/templar(user.loc)
 						return
 				else
@@ -1430,7 +1431,7 @@ obj/structure/anvil/New()
 						user << "You craft the orkish shield."
 						iron_amt -= 13
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/shield/iron/orc(user.loc)
 						return
 				else
@@ -1467,7 +1468,7 @@ obj/structure/anvil/New()
 						user << "You craft the naginata."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/naginata(user.loc)
 						return
 				else
@@ -1482,7 +1483,7 @@ obj/structure/anvil/New()
 						user << "You craft the halberd."
 						iron_amt -= 10
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/halberd(user.loc)
 						return
 				else
@@ -1496,7 +1497,7 @@ obj/structure/anvil/New()
 						user << "You craft the halberd."
 						iron_amt -= 12
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/pike(user.loc)
 						return
 				else
@@ -1527,7 +1528,7 @@ obj/structure/anvil/New()
 							user << "You craft the bolo machete."
 						iron_amt -= 12
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/sword/bolo/iron(user.loc)
 						return
 					else
@@ -1541,7 +1542,7 @@ obj/structure/anvil/New()
 							user << "You craft the kukri machete."
 						iron_amt -= 12
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/sword/kukri/iron(user.loc)
 						return
 					else
@@ -1572,7 +1573,7 @@ obj/structure/anvil/New()
 							user << "You craft the bowie knife."
 						iron_amt -= 8
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/kitchen/utensil/knife/bowie/iron(user.loc)
 						return
 					else
@@ -1586,7 +1587,7 @@ obj/structure/anvil/New()
 							user << "You craft the trench knife."
 						iron_amt -= 10
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/kitchen/utensil/knife/trench/iron(user.loc)
 						return
 					else
@@ -1600,7 +1601,7 @@ obj/structure/anvil/New()
 							user << "You craft the miltiary knife."
 						iron_amt -= 14
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/kitchen/utensil/knife/military/iron(user.loc)
 						return
 					else
@@ -1615,7 +1616,7 @@ obj/structure/anvil/New()
 						user << "You craft the whaling harpoon."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						new/obj/item/weapon/material/harpoon/iron(user.loc)
 						return
 				else
@@ -1642,7 +1643,7 @@ obj/structure/anvil/New()
 						user << "You craft a scimitar."
 						iron_amt -= 12
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/scimitar/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -1660,7 +1661,7 @@ obj/structure/anvil/New()
 						user << "You craft a saif."
 						iron_amt -= 15
 						if (iron_amt <= 0)
-							icon_state = "anvil1"
+							icon_state = "[base_icon]_anvil"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/saif/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
@@ -2211,7 +2212,7 @@ obj/structure/anvil/New()
 							user << "You craft the burgundian sallet helmet."
 							iron_amt -= 12
 							if (iron_amt <= 0)
-								icon_state = "anvil1"
+								icon_state = "[base_icon]_anvil"
 							new/obj/item/clothing/head/helmet/sallet/burg(user.loc)
 							return
 				else
