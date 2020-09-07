@@ -3560,3 +3560,13 @@ obj/structure/anvil/New()
 	desc = "A crude stone anvil. The blacksmith's main work tool."
 	icon_state = "stone_anvil"
 	base_icon = "stone"
+
+/obj/structure/kiln
+	name = "kiln"
+	desc = "A brick kiln, used for metallurgy purposes."
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "kiln_off"
+	density = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = FALSE
