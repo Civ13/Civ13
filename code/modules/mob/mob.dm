@@ -272,7 +272,7 @@
 				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
 				src.do_attack_animation(get_step(src,dir))
 				Weaken(1)
-				for (var/mob/living/human/HM in get_step(src.loc, dir))
+				for (var/mob/living/human/HM in range(1,H))
 					if (HM.civilization != H.civilization) //no tackling on same team
 						if (prob(60))
 							visible_message("<font color='red'>[src] tackles [HM]!</font>")
@@ -283,6 +283,7 @@
 								HM.football.owner = null
 								HM.football.throw_at(get_step(HM.loc,HM.dir), 1, 1, HM)
 								HM.football = null
+							return
 						else
 							visible_message("<span color='yellow'>[src] tries to tackle [HM] but fails!</span>")
 							playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
