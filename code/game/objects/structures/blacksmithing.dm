@@ -9,7 +9,8 @@ var/global/list/anvil_recipes = list(
 	"Sharps Rifle" = list("Sharps Rifle","guns",4,5,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot)
 	"Coach Gun" = list("Coach Gun","guns",4,6,22,0,0,0,/obj/item/weapon/gun/projectile/shotgun/coachgun)
 	"Gewehr 71" = list("Gewehr 71","guns",4,6,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/gewehr71)
-
+	"Makeshift AK-47" = list("Makeshift AK-47","guns",7,8,32,0,0,0,new/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47)
+	
 )
 /obj/structure/anvil
 	name = "iron anvil"
@@ -153,15 +154,11 @@ obj/structure/anvil/New()
 			if (H.orc)
 				display2 = list("Cancel")
 		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
-	/*	else if (choice == "Other")
-		if(map.ordinal_age >= 4)
-			display2 = list("Steel rods (2)", "Cancel")*/
 		if (choice2 == "Cancel")
 			return
 		else
 			if (anvil_recipes[choice2])
 				choice2 = splittext(choice2," (")[1]
-					//name = (name,category, first age, last age, steel cost, iron cost, bronze cost, kevlar cost)
 				if (steel_amt >= anvil_recipes[choice2][5] && iron_amt >= anvil_recipes[choice2][6] && bronze_amt >= anvil_recipes[choice2][7] && kevlar_amt >= anvil_recipes[choice2][8])
 					user << "You begin crafting a [choice2]..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -178,23 +175,6 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more resources to make this!</span>"
 					return
-
-//Makeshift AK for ungas
-
-		if (choice2 == "Makeshift AK-47 (32)")
-			if (steel_amt >= 32)
-				user << "You begin crafting a Makeshift AK-47..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,170,src) && steel_amt >= 32)
-					user << "You craft a Makeshift AK-47."
-					steel_amt -= 32
-					if (steel_amt <= 0)
-						icon_state = "[base_icon]_anvil"
-					new/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
 
 //Swordz
 
