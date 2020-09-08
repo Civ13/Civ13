@@ -132,9 +132,9 @@
 			shirt_sides.color = shirt_sides_color
 			var/image/shirt_sleeves = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_sleeves")
 			shirt_sleeves.color = shirt_sleeves_color
-			var/image/shirt_vstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_vstripes")
+			var/image/shirt_vstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_stripes_vertical")
 			shirt_vstripes.color = shirt_vstripes_color
-			var/image/shirt_hstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_hstripes")
+			var/image/shirt_hstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_stripes_horizontal")
 			shirt_hstripes.color = shirt_hstripes_color
 			overlays += shirt
 			overlays += shorts
