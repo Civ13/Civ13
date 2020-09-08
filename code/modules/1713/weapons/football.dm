@@ -120,8 +120,8 @@
 			else
 				shirt_sides_color = input
 		var/add5 = WWinput(user, "Shirt Number", "Do you want to add a number to the shirt?", "No", list("Yes","No"))
-		if (!shirt_sides_color && add5 == "Yes")
-			var/input = WWinput(user, "Shirt Collar - Choose a number:", "Shirt Number" , "Cancel", list(1,2,3,4,5,6,7,8,9,10,11))
+		if (add5 == "Yes")
+			var/input = WWinput(user, "Shirt Collar - Choose a number:", "Shirt Number" , "Cancel", list(1,2,3,4,5,6,7,8,9,10,11, "Cancel"))
 			if (input != "Cancel")
 				player_number = input
 		if (shirt_color && shorts_color)
