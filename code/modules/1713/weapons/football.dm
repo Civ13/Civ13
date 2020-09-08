@@ -124,9 +124,6 @@
 			MF.reset_ball()
 			MF.scores[team] += 1
 			var/obj/item/football/FB = A
-			var/scorer = "Unknown"
-			if (FB.last_owner)
-				scorer = FB.last_owner
 			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
 			FB.last_owner = null
 			return
