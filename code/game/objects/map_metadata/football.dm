@@ -39,32 +39,44 @@
 		spawn(600)
 			points_check()
 
-/obj/map_metadata/football/proc/assign_teams(team1 = "U.B.U.", team2 = "C.T.F.C.")
+/obj/map_metadata/football/proc/assign_teams(team1 = "U.B.U.", team2 = "C.T.F.C.", client/triggerer = null)
 	var/F = file("SQL/sports_teams.txt")
+	var/list/teamlist = list("U.B.U.", "C.T.F.C.")
 	if (fexists(F))
 		var/list/temp_stats1 = file2list(F,"\n")
 		for (var/i = 1, i <= temp_stats1.len, i++)
 			if (findtext(temp_stats1[i], ";"))
 				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
 				teams += list(temp_stats2[1] = list(temp_stats2[1],0,temp_stats2[3],temp_stats2[4],temp_stats2[5],temp_stats2[6],temp_stats2[7],temp_stats2[8],temp_stats2[9]))
+				teamlist += temp_stats2[1]
 				world.log << "Finished loading teams."
-	for (var/datum/job/job in job_master.faction_organized_occupations)
-		if (istype(job, /datum/job/civilian/football_red/goalkeeper))
-			job.title = "[teams[team1][1]] goalkeeper"
-			job.selection_color = teams[team1][5]
+	if (triggerer)
+		var/t_team1 = WWinput(triggerer, "Team Selection", "Select team 1:", "U.B.U.", teamlist)
+		var/t_team2 = WWinput(triggerer, "Team Selection", "Select team 2:", "C.T.F.C.", teamlist)
+		team1 = t_team1
+		team2 = t_team2
+		world << "<font size=4>This match will be between [team1] and [team2]!</font>"
+	spawn(2)
+		for (var/datum/job/job in job_master.faction_organized_occupations)
+			if (istype(job, /datum/job/civilian/football_red/goalkeeper))
+				job.title = "[teams[team1][1]] goalkeeper"
+				job.selection_color = teams[team1][5]
 
-		else if (istype(job, /datum/job/civilian/football_red))
-			job.title = teams[team1][1]
-			job.selection_color = teams[team1][5]
+			else if (istype(job, /datum/job/civilian/football_red))
+				job.title = teams[team1][1]
+				job.selection_color = teams[team1][5]
 
-		else if (istype(job, /datum/job/civilian/football_blue/goalkeeper))
-			job.title = "[teams[team2][1]] goalkeeper"
-			job.selection_color = teams[team2][5]
+			else if (istype(job, /datum/job/civilian/football_blue/goalkeeper))
+				job.title = "[teams[team2][1]] goalkeeper"
+				job.selection_color = teams[team2][5]
 
-		else if (istype(job, /datum/job/civilian/football_blue))
-			job.title = teams[team2][1]
-			job.selection_color = teams[team2][5]
-		
+			else if (istype(job, /datum/job/civilian/football_blue))
+				job.title = teams[team2][1]
+				job.selection_color = teams[team2][5]
+		for (var/obj/effect/step_trigger/goal/red/GR in world)
+			GR.assign()
+		for (var/obj/effect/step_trigger/goal/blue/GB in world)
+			GB.assign()	
 /obj/map_metadata/football/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_football == TRUE)

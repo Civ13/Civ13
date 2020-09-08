@@ -158,10 +158,16 @@
 	else
 		..()
 //for automatic assignement of colors, ie, roundstart
-/obj/item/clothing/under/football/custom/proc/assign_style(name,shorts_color,shirt_color,shorts_sides_color=null,shirt_sleeves_color=null,shirt_sides_color=null,shirt_vstripes_color=null,shirt_hstripes_color=null,c_player_number=0)
-
-	if (shirt_color && shorts_color)
-		uncolored = FALSE
+/obj/item/clothing/under/football/custom/proc/assign_style(tname,tshorts_color,tshirt_color,tshorts_sides_color=null,tshirt_sleeves_color=null,tshirt_sides_color=null,tshirt_vstripes_color=null,tshirt_hstripes_color=null,c_player_number=0)
+	uncolored = FALSE
+	src.shorts_color = tshorts_color
+	src.shirt_color = tshirt_color
+	src.shorts_sides_color = tshorts_sides_color
+	src.shirt_sleeves_color = tshirt_sleeves_color
+	src.shirt_sides_color = tshirt_sides_color
+	src.shirt_vstripes_color = tshirt_vstripes_color
+	src.shirt_hstripes_color = tshirt_hstripes_color
+	if (shirt_color && tshorts_color)
 		var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt")
 		shirt.color = shirt_color
 		var/image/shorts = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shorts")
@@ -192,6 +198,8 @@
 		overlays += symbols
 		if (c_player_number != 0)
 			src.player_number = c_player_number
+		spawn(10)
+			uncolored = FALSE
 		return
 /////////SHOES////////////////////////
 /obj/item/clothing/shoes/football
