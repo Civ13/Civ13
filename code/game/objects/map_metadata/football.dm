@@ -39,7 +39,7 @@
 		spawn(600)
 			points_check()
 
-/obj/map_metadata/football/proc/assign_teams(team1 = "U.B.U.", team2 = "C.T.F.C.", client/triggerer = null)
+/obj/map_metadata/football/proc/assign_teams(client/triggerer = null)
 	var/F = file("SQL/sports_teams.txt")
 	var/list/teamlist = list("U.B.U.", "C.T.F.C.")
 	if (fexists(F))

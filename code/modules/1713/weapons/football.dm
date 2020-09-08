@@ -160,14 +160,21 @@
 //for automatic assignement of colors, ie, roundstart
 /obj/item/clothing/under/football/custom/proc/assign_style(tname,tshorts_color,tshirt_color,tshorts_sides_color=null,tshirt_sleeves_color=null,tshirt_sides_color=null,tshirt_vstripes_color=null,tshirt_hstripes_color=null,c_player_number=0)
 	uncolored = FALSE
-	src.shorts_color = tshorts_color
-	src.shirt_color = tshirt_color
-	src.shorts_sides_color = tshorts_sides_color
-	src.shirt_sleeves_color = tshirt_sleeves_color
-	src.shirt_sides_color = tshirt_sides_color
-	src.shirt_vstripes_color = tshirt_vstripes_color
-	src.shirt_hstripes_color = tshirt_hstripes_color
-	if (shirt_color && tshorts_color)
+	if (tshorts_color != "null" && tshorts_color != "")
+		src.shorts_color = tshorts_color
+	if (tshirt_color != "null" && tshirt_color != "")
+		src.shirt_color = tshirt_color
+	if (tshorts_sides_color != "null" && tshorts_sides_color != "")
+		src.shorts_sides_color = tshorts_sides_color
+	if (tshirt_sleeves_color != "null" && tshirt_sleeves_color != "")
+		src.shirt_sleeves_color = tshirt_sleeves_color
+	if (tshirt_sides_color != "null" && tshirt_sides_color != "")
+		src.shirt_sides_color = tshirt_sides_color
+	if (tshirt_vstripes_color != "null" && tshirt_vstripes_color != "")
+		src.shirt_vstripes_color = tshirt_vstripes_color
+	if (tshirt_hstripes_color != "null" && tshirt_hstripes_color != "")
+		src.shirt_hstripes_color = tshirt_hstripes_color
+	if (tshirt_color && tshorts_color)
 		var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt")
 		shirt.color = shirt_color
 		var/image/shorts = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shorts")
@@ -318,3 +325,21 @@
 		if (map && map.ID == MAP_FOOTBALL)
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team2][1]
+
+/obj/structure/submitter
+	name = "Team Registration Terminal"
+	desc = "Register your team here!"
+	icon = 'icons/obj/computers.dmi'
+	icon_state = "1980_computer_on"
+	layer = 5
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+/*
+/obj/structure/submitter/attack_hand(mob/living/human/mob as mob)
+	if (!ishuman(mob))
+		return
+	var/list/templist = list()
+*/
