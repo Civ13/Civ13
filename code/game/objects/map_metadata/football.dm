@@ -21,10 +21,8 @@
 	songs = list(
 		"Forever Blowing Bubbles:1" = 'sound/music/forever_blowing_bubbles.ogg',)
 	is_singlefaction = TRUE
-	scores = list(
-		"U.B.U." = 0,
-		"C.T.F.C." = 0,
-	)
+	var/team1 = "U.B.U."
+	var/team2 = "C.T.F.C."
 	var/list/teams = list(
 						//name, score, shorts color, short stripes color, shirt color, shirt sleeves color, shirt collar color, shirt v stripes, shirt h stripes
 		"U.B.U." = list("U.B.U.",0,"#262626",null,"#AE001A","#BB9634",null,null,null),
@@ -52,7 +50,7 @@
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color='#AE001A'><b>UBU [scores["U.B.U."]]</font><font size=3 color='#FFF'> - </font><font size=3 color='#84A2CE'>[scores["C.T.F.C."]] CTFC</b></font>"
+	world << "<font size=3 color=[teams[team1][5]]><b>[teams[team1][1]] [teams[team1][2]]</font><font size=3 color='#FFF'> - </font><font size=3 color=[teams[team2][5]]>[teams[team2][2]] [teams[team2][1]]</b></font>"
 	spawn(300)
 		points_check()
 
@@ -65,21 +63,22 @@
 		ticker.finished = TRUE
 		var/message = ""
 		message = "The round has ended!"
-		if (scores["U.B.U."] > scores["C.T.F.C."])
-			message = "<b>Unga Bunga United</b> have won the match!"
-			world << "<font size = 4 color='#AE001A'><span class = 'notice'>[message]</span></font>"
+		if (teams[team1][2] > teams[team2][2])
+			message = "<b>[team1]</b> have won the match!"
+			world << "<font size=4 color=[teams[team1][5]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			return FALSE
-		else if (scores["C.T.F.C."] > scores["U.B.U."])
-			message = "<b>Chad Town Football Club</b> have won the match!"
-			world << "<font size = 4 color='#84A2CE'><span class = 'notice'>[message]</span></font>"
+
+		else if (teams[team2][2] > teams[team1][2])
+			message = "<b>[team2]</b> have won the match!"
+			world << "<font size=4 color=[teams[team2][5]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			return FALSE
 		else
 			message = "The match ended in a draw!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			world << "<font size=4>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			return FALSE
@@ -93,7 +92,7 @@
 	var/warning_sound = sound('sound/effects/football_whistle.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
-	return "<font size = 4>The match has started!</font>"
+	return "<font size=4>The match has started!</font>"
 
 /obj/map_metadata/football/reverse_cross_message(faction)
 	return ""

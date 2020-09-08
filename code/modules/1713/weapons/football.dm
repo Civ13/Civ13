@@ -269,21 +269,39 @@
 /obj/effect/step_trigger/goal
 	name = "goalpost"
 	var/team = null
+
+	New()
+		..()
+		spawn(10)
+			assign()
+/obj/effect/step_trigger/goal/proc/assign()
+	return
+
 /obj/effect/step_trigger/goal/Trigger(var/atom/movable/A)
 	if (istype(A, /obj/item/football) && team)
 		if (istype(map, /obj/map_metadata/football))
 			var/obj/map_metadata/football/MF = map
 			MF.reset_ball()
-			MF.scores[team] += 1
+			MF.teams[team][2] += 1
 			var/obj/item/football/FB = A
 			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
 			FB.last_owner = null
 			return
 
 /obj/effect/step_trigger/goal/red
-	name = "UBU goalpost"
-	team = "U.B.U."
+	name = "team 1 goalpost"
+	team = "red"
+
+	assign()
+		if (map && map.ID == MAP_FOOTBALL)
+			var/obj/map_metadata/football/FBM = map
+			team = FBM.teams[FBM.team1][1]
 
 /obj/effect/step_trigger/goal/blue
-	name = "CTFC goalpost"
-	team = "C.T.F.C."
+	name = "team 2 goalpost"
+	team = "blue"
+
+	assign()
+		if (map && map.ID == MAP_FOOTBALL)
+			var/obj/map_metadata/football/FBM = map
+			team = FBM.teams[FBM.team2][1]
