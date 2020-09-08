@@ -240,17 +240,21 @@
 	set name = "Activate Held Object"
 	set category = null
 	set src = usr
-	if (map && map.ID == MAP_FOOTBALL)
-		if (ishuman(src))
-			var/mob/living/human/H = src
-			if (H.football) //if we have the ball, pass it to nearest friendly player
-				var/mob/living/human/NEAR = null
-				for (var/mob/living/human/PNEAR in range(1,H))
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		if (H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football)) //if we have the ball, pass it to nearest friendly player
+			var/mob/living/human/NEAR = null
+			for (var/mob/living/human/PNEAR in range(1,H))
+				if (!NEAR && PNEAR.civilization == H.civilization)
+					NEAR = PNEAR
+					break
+			if (!NEAR)
+				for (var/mob/living/human/PNEAR in range(2,H))
 					if (!NEAR && PNEAR.civilization == H.civilization)
 						NEAR = PNEAR
 						break
 				if (!NEAR)
-					for (var/mob/living/human/PNEAR in range(2,H))
+					for (var/mob/living/human/PNEAR in range(3,H))
 						if (!NEAR && PNEAR.civilization == H.civilization)
 							NEAR = PNEAR
 							break
@@ -259,51 +263,46 @@
 							if (!NEAR && PNEAR.civilization == H.civilization)
 								NEAR = PNEAR
 								break
-						if (!NEAR)
-							for (var/mob/living/human/PNEAR in range(3,H))
-								if (!NEAR && PNEAR.civilization == H.civilization)
-									NEAR = PNEAR
-									break
-				var/obj/item/football/FB = H.football
-				H.do_attack_animation(H.football)
-				H.football = null
-				FB.owner = null
-				FB.last_owner = H
-				FB.throw_at(NEAR, FB.throw_range, FB.throw_speed, H)
-				H.do_attack_animation(get_step(H,H.dir))
-				playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
-				visible_message("[H] passes \the [FB] to [NEAR].")
-				return
-			else if (!H.football && findtext(H.original_job_title, "goalkeeper"))
-				var/area/A = get_area(H.loc)
-				if ((istype(A, /area/caribbean/football/blue/goalkeeper) && findtext(H.original_job_title, "Chad")) || (istype(A, /area/caribbean/football/red/goalkeeper) && findtext(H.original_job_title, "Unga")))
-					for(var/obj/item/football/FB in range(1,H))
-						if (!FB.owner && isturf(FB.loc))
-							H.put_in_active_hand(FB)
-							FB.pickup(H)
-							visible_message("<font color='yellow'>[H] picks up the ball!</font>")
-							return
-			else if (!H.football && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
-				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
-				src.do_attack_animation(get_step(src,dir))
-				Weaken(1)
-				for (var/mob/living/human/HM in range(1,H))
-					if (HM.civilization != H.civilization) //no tackling on same team
-						if (prob(60))
-							visible_message("<font color='red'>[src] tackles [HM]!</font>")
-							playsound(loc, 'sound/weapons/punch1.ogg', 50, 1)
-							H.do_attack_animation(get_step(H,H.dir))
-							HM.Weaken(1)
-							if (HM.football)
-								HM.football.last_owner = HM
-								HM.football.owner = null
-								HM.football.throw_at(get_step(HM.loc,HM.dir), 1, 1, HM)
-								HM.football = null
-							return
-						else
-							visible_message("<font color='yellow'>[src] tries to tackle [HM] but fails!</font>")
-							playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+			var/obj/item/football/FB = H.football
+			H.do_attack_animation(H.football)
+			H.football = null
+			FB.owner = null
+			FB.last_owner = H
+			FB.throw_at(NEAR, FB.throw_range, FB.throw_speed, H)
+			H.do_attack_animation(get_step(H,H.dir))
+			playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
+			visible_message("[H] passes \the [FB] to [NEAR].")
+			return
+		else if (!H.football && H.gloves && istype(H.gloves, /obj/item/clothing/gloves/goalkeeper))
+			var/area/A = get_area(H.loc)
+			if ((istype(A, /area/caribbean/football/blue/goalkeeper) && findtext(H.original_job_title, "Chad")) || (istype(A, /area/caribbean/football/red/goalkeeper) && findtext(H.original_job_title, "Unga")))
+				for(var/obj/item/football/FB in range(1,H))
+					if (!FB.owner && isturf(FB.loc))
+						H.put_in_active_hand(FB)
+						FB.pickup(H)
+						visible_message("<font color='yellow'>[H] picks up the ball!</font>")
 						return
+		else if (!H.football && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
+			H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
+			src.do_attack_animation(get_step(src,dir))
+			Weaken(1)
+			for (var/mob/living/human/HM in range(1,H))
+				if (HM.civilization != H.civilization) //no tackling on same team
+					if (prob(60))
+						visible_message("<font color='red'>[src] tackles [HM]!</font>")
+						playsound(loc, 'sound/weapons/punch1.ogg', 50, 1)
+						H.do_attack_animation(get_step(H,H.dir))
+						HM.Weaken(1)
+						if (HM.football)
+							HM.football.last_owner = HM
+							HM.football.owner = null
+							HM.football.throw_at(get_step(HM.loc,HM.dir), 1, 1, HM)
+							HM.football = null
+						return
+					else
+						visible_message("<font color='yellow'>[src] tries to tackle [HM] but fails!</font>")
+						playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+					return
 		return
 	if (hand)
 		var/obj/item/W = l_hand

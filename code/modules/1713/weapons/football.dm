@@ -54,7 +54,18 @@
 	siemens_coefficient = 0.6
 	force = 0.0
 	throwforce = 0.0
+/obj/item/clothing/gloves/goalkeeper/red
+	name = "red goalkeeper gloves"
+	initial_name = "red goalkeeper gloves"
+	icon_state = "red"
+	item_state = "redgloves"
 
+/obj/item/clothing/gloves/goalkeeper/blue
+	name = "blue goalkeeper gloves"
+	initial_name = "blue goalkeeper gloves"
+	icon_state = "blue"
+	item_state = "bluegloves"
+	
 /mob/living/human/var/obj/item/football/football = null
 
 /obj/item/football
