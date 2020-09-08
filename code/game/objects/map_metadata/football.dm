@@ -36,20 +36,13 @@
 	var/list/player_count_blue = list(1,2,3,4,5,6,7,8,9,10,11)
 	New()
 		..()
+		load_teams()
 		spawn(600)
 			points_check()
 
 /obj/map_metadata/football/proc/assign_teams(client/triggerer = null)
-	var/F = file("SQL/sports_teams.txt")
+	load_teams()
 	var/list/teamlist = list("U.B.U.", "C.T.F.C.")
-	if (fexists(F))
-		var/list/temp_stats1 = file2list(F,"\n")
-		for (var/i = 1, i <= temp_stats1.len, i++)
-			if (findtext(temp_stats1[i], ";"))
-				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
-				teams += list(temp_stats2[1] = list(temp_stats2[1],0,temp_stats2[3],temp_stats2[4],temp_stats2[5],temp_stats2[6],temp_stats2[7],temp_stats2[8],temp_stats2[9]))
-				teamlist += temp_stats2[1]
-				world.log << "Finished loading teams."
 	if (triggerer)
 		var/t_team1 = WWinput(triggerer, "Team Selection", "Select team 1:", "U.B.U.", teamlist)
 		var/t_team2 = WWinput(triggerer, "Team Selection", "Select team 2:", "C.T.F.C.", teamlist)
@@ -77,6 +70,24 @@
 			GR.assign()
 		for (var/obj/effect/step_trigger/goal/blue/GB in world)
 			GB.assign()	
+/obj/map_metadata/football/proc/save_teams()
+	var/F = file("SQL/sports_teams.txt")
+	for (var/i in teams)
+		var/txtexport = list2text(teams[i])
+		text2file(txtexport,F)
+	return
+/obj/map_metadata/football/proc/load_teams()
+	var/F = file("SQL/sports_teams.txt")
+	var/list/teamlist = list()
+	if (fexists(F))
+		var/list/temp_stats1 = file2list(F,"\n")
+		for (var/i = 1, i <= temp_stats1.len, i++)
+			if (findtext(temp_stats1[i], ";"))
+				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
+				teams += list(temp_stats2[1] = list(temp_stats2[1],0,temp_stats2[3],temp_stats2[4],temp_stats2[5],temp_stats2[6],temp_stats2[7],temp_stats2[8],temp_stats2[9]))
+				teamlist += temp_stats2[1]
+				world.log << "Finished loading teams."
+	return
 /obj/map_metadata/football/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_football == TRUE)
@@ -278,3 +289,21 @@
 
 	..()
 	return TRUE
+
+/////////TEAM DATUMS/////////
+/datum/team
+	var/name = "Generic Team"
+	var/datum/team_uniforms/main_uniform = null
+	var/datum/team_uniforms/secondary_uniform = null
+	var/datum/team_uniforms/goalkeeper_uniform = null
+
+/datum/team_uniforms
+	var/name = "Generic Team"
+	var/utype = "main" //main, secondary, goalkeeper
+	var/shorts_color = "#000000"
+	var/shirt_color = "#FFFFFF"
+	var/shorts_sides_color=null
+	var/shirt_sleeves_color=null
+	var/shirt_sides_color=null
+	var/shirt_vstripes_color=null
+	var/shirt_hstripes_color=null

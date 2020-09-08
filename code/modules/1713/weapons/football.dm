@@ -326,91 +326,133 @@
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team2][1]
 /////////////////TEAM CREATOR/////////////////////
-/*
+
 /obj/structure/submitter
 	name = "Team Registration Terminal"
 	desc = "Register your team here!"
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "1980_computer_on"
 	layer = 5
-	active = FALSE
+	var/active = FALSE
 	density = TRUE
 	anchored = TRUE
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-
+	var/mob/living/user = null
+	var/list/pending = list()
 /obj/structure/submitter/attack_hand(mob/living/human/mob as mob)
 	if (!ishuman(mob))
 		return
 	if (!active)
 		return
-	var/list/templist = list()
+	mob.setClickCooldown(40)
+	mob << "You take a blank kit from the Terminal. You can now customise it."
+	new/obj/item/clothing/under/football/custom(loc)
+	return
 
-/obj/structure/submitter/proc/do_html(var/mob/m)
-
-	if (m)
-		m << browse({"
-
-		<br>
-		<html>
-
-		<head>
-		[common_browser_style]
-		</head>
-
-		<body>
-
-		<script language="javascript">
-
-		function set(input) {
-			window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-		}
-
-		</script>
-
-		<center>
-		<big><b>[ship] wheel</b></big><br><br>
-		</center>
-		<font size='3'>
-		<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
-		Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
-		Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
-		Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
-		<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
-		</font>
-		</body>
-		</html>
-		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-
-/obj/structure/submitter/interact(var/mob/m)
-	if (user)
-		if (get_dist(src, user) > 1)
-			user = null
-	restart
-
-	if (user && user != m)
-		if (user.client)
+/obj/structure/submitter/attackby(obj/item/clothing/W as obj, mob/living/mob as mob)
+	if (!istype(W, /obj/item/clothing/under/football/custom))
+		return
+	var/obj/item/clothing/under/football/custom/CU = W
+	if (mob.ckey in pending) //continue
+		var/datum/team/T = pending[mob.ckey]
+		var/list/olist = list("Cancel")
+		if (!T.main_uniform)
+			olist += "Main"
+		if (!T.secondary_uniform)
+			olist += "Secondary"
+		if (!T.goalkeeper_uniform)
+			olist += "Goalkeeper"
+		if (olist.len > 1)
+			var/input4 = WWinput(mob, "Team Creator", "Welcome back! You are creating [T.name]. Which uniform is this?","Cancel",olist)
+			switch(input4)
+				if ("Main")
+					T.main_uniform = new/datum/team_uniforms
+					T.main_uniform.name = T.name
+					T.main_uniform.utype = "main"
+					T.main_uniform.shorts_color = CU.shorts_color
+					T.main_uniform.shirt_color = CU.shirt_color
+					T.main_uniform.shorts_sides_color = CU.shorts_sides_color
+					T.main_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
+					T.main_uniform.shirt_sides_color = CU.shirt_sides_color
+					T.main_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
+					T.main_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+				if ("Secondary")
+					T.secondary_uniform = new/datum/team_uniforms
+					T.secondary_uniform.name = T.name
+					T.secondary_uniform.utype = "secondary"
+					T.secondary_uniform.shorts_color = CU.shorts_color
+					T.secondary_uniform.shirt_color = CU.shirt_color
+					T.secondary_uniform.shorts_sides_color = CU.shorts_sides_color
+					T.secondary_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
+					T.secondary_uniform.shirt_sides_color = CU.shirt_sides_color
+					T.secondary_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
+					T.secondary_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+				if ("Goalkeeper")
+					T.goalkeeper_uniform = new/datum/team_uniforms
+					T.goalkeeper_uniform.name = T.name
+					T.goalkeeper_uniform.utype = "goalkeeper"
+					T.goalkeeper_uniform.shorts_color = CU.shorts_color
+					T.goalkeeper_uniform.shirt_color = CU.shirt_color
+					T.goalkeeper_uniform.shorts_sides_color = CU.shorts_sides_color
+					T.goalkeeper_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
+					T.goalkeeper_uniform.shirt_sides_color = CU.shirt_sides_color
+					T.goalkeeper_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
+					T.goalkeeper_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+			if (T.goalkeeper_uniform && T.secondary_uniform && T.main_uniform)
+				var/obj/map_metadata/football/FM = map
+				FM.teams += list("[T.name]" = list(T))
+				WWalert("You sucessfully added the team! It is now selectable.")
+				FM.save_teams()
+				return
+		return
+	else //start new team
+		var/input1 = WWinput(mob, "Team Creator", "Welcome to the team creator! Here you will be able to design your new sports team. You will need 3 kits (main, alternative, goalkeeper). Lets start by choosing a name.","Cancel",list("Cancel", "Start"))
+		if (input1 == "Cancel")
 			return
 		else
-			user = null
-			goto restart
-	else
-		user = m
-		do_html(user)
-
-/obj/structure/submitter/Topic(href, href_list, hsrc)
-
-	var/mob/user = usr
-
-	if (!user)
-		return
-
-	user.face_atom(src)
-
-	if (href_list["set_anchor"])
-
-
-	sleep(0.5)
-	do_html(user)
-*/
+			var/input2 = input(mob, "Team Name", "Choose a Team Name. Keep it under 20 characters!") as text
+			if (!input2 || input2 == "")
+				return
+			else
+				var/datum/team/T = new/datum/team
+				T.name = input2
+				pending += list("[mob.ckey]" = list(T))
+				var/input3 = WWinput(mob, "Team Creator", "Which type is the kit you submitted?","Main",list("Main", "Secondary", "Goalkeeper"))
+				switch(input3)
+					if ("Main")
+						T.main_uniform = new/datum/team_uniforms
+						T.main_uniform.name = T.name
+						T.main_uniform.utype = "main"
+						T.main_uniform.shorts_color = CU.shorts_color
+						T.main_uniform.shirt_color = CU.shirt_color
+						T.main_uniform.shorts_sides_color = CU.shorts_sides_color
+						T.main_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
+						T.main_uniform.shirt_sides_color = CU.shirt_sides_color
+						T.main_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
+						T.main_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+					if ("Secondary")
+						T.secondary_uniform = new/datum/team_uniforms
+						T.secondary_uniform.name = T.name
+						T.secondary_uniform.utype = "secondary"
+						T.secondary_uniform.shorts_color = CU.shorts_color
+						T.secondary_uniform.shirt_color = CU.shirt_color
+						T.secondary_uniform.shorts_sides_color = CU.shorts_sides_color
+						T.secondary_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
+						T.secondary_uniform.shirt_sides_color = CU.shirt_sides_color
+						T.secondary_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
+						T.secondary_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+					if ("Goalkeeper")
+						T.goalkeeper_uniform = new/datum/team_uniforms
+						T.goalkeeper_uniform.name = T.name
+						T.goalkeeper_uniform.utype = "goalkeeper"
+						T.goalkeeper_uniform.shorts_color = CU.shorts_color
+						T.goalkeeper_uniform.shirt_color = CU.shirt_color
+						T.goalkeeper_uniform.shorts_sides_color = CU.shorts_sides_color
+						T.goalkeeper_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
+						T.goalkeeper_uniform.shirt_sides_color = CU.shirt_sides_color
+						T.goalkeeper_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
+						T.goalkeeper_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+				WWalert(mob,"You can now continue editing this team by submitting the remaining kits.","Team Creator")
+				return
