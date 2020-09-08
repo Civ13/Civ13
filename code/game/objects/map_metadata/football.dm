@@ -38,6 +38,33 @@
 		..()
 		spawn(600)
 			points_check()
+
+/obj/map_metadata/football/proc/assign_teams(team1 = "U.B.U.", team2 = "C.T.F.C.")
+	var/F = file("SQL/sports_teams.txt")
+	if (fexists(F))
+		var/list/temp_stats1 = file2list(F,"\n")
+		for (var/i = 1, i <= temp_stats1.len, i++)
+			if (findtext(temp_stats1[i], ";"))
+				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
+				teams += list(temp_stats2[1] = list(temp_stats2[1],0,temp_stats2[3],temp_stats2[4],temp_stats2[5],temp_stats2[6],temp_stats2[7],temp_stats2[8],temp_stats2[9]))
+				world.log << "Finished loading teams."
+	for (var/datum/job/job in job_master.faction_organized_occupations)
+		if (istype(job, /datum/job/civilian/football_red/goalkeeper))
+			job.title = "[teams[team1][1]] goalkeeper"
+			job.selection_color = teams[team1][5]
+
+		else if (istype(job, /datum/job/civilian/football_red))
+			job.title = teams[team1][1]
+			job.selection_color = teams[team1][5]
+
+		else if (istype(job, /datum/job/civilian/football_blue/goalkeeper))
+			job.title = "[teams[team2][1]] goalkeeper"
+			job.selection_color = teams[team2][5]
+
+		else if (istype(job, /datum/job/civilian/football_blue))
+			job.title = teams[team2][1]
+			job.selection_color = teams[team2][5]
+		
 /obj/map_metadata/football/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_football == TRUE)
@@ -141,17 +168,16 @@
 
 /datum/job/civilian/football_red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Unga Bunga United"
 	if (map && istype(map, /obj/map_metadata/football))
 		var/obj/map_metadata/football/FM = map
 		H.team = FM.team1
-	var/obj/item/clothing/under/football/red/FR = new /obj/item/clothing/under/football/red(H)
-	H.equip_to_slot_or_del(FR, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-	if (map && map.ID == MAP_FOOTBALL)
-		var/obj/map_metadata/football/tmap = map
-		if (!isemptylist(tmap.player_count_red))
-			FR.player_number = pick(tmap.player_count_red)
+		H.civilization = FM.team1
+		var/obj/item/clothing/under/football/custom/FR = new /obj/item/clothing/under/football/custom(H)
+		H.equip_to_slot_or_del(FR, slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1][3],FM.teams[FM.team1][5],FM.teams[FM.team1][4],FM.teams[FM.team1][6],FM.teams[FM.team1][7],FM.teams[FM.team1][8],FM.teams[FM.team1][9],0)
+		if (!isemptylist(FM.player_count_red))
+			FR.player_number = pick(FM.player_count_red)
 			FR.update_icon()
 	..()
 	return TRUE
@@ -168,18 +194,17 @@
 
 /datum/job/civilian/football_red/goalkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Unga Bunga United"
 	if (map && istype(map, /obj/map_metadata/football))
 		var/obj/map_metadata/football/FM = map
 		H.team = FM.team1
-	var/obj/item/clothing/under/football/red/goalkeeper/FR = new /obj/item/clothing/under/football/red/goalkeeper(H)
-	H.equip_to_slot_or_del(FR, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/red(H), slot_gloves)
-	if (map && map.ID == MAP_FOOTBALL)
-		var/obj/map_metadata/football/tmap = map
-		if (!isemptylist(tmap.player_count_red))
-			FR.player_number = pick(tmap.player_count_red)
+		H.civilization = FM.team1
+		var/obj/item/clothing/under/football/red/goalkeeper/FR = new /obj/item/clothing/under/football/red/goalkeeper(H)
+		H.equip_to_slot_or_del(FR, slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/red(H), slot_gloves)
+//		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1][3],FM.teams[FM.team1][5],FM.teams[FM.team1][4],sFM.teams[FM.team1][6],FM.teams[FM.team1][7],FM.teams[FM.team1][8],FM.teams[FM.team1][9],0)
+		if (!isemptylist(FM.player_count_red))
+			FR.player_number = pick(FM.player_count_red)
 			FR.update_icon()
 	..()
 	return TRUE
@@ -198,17 +223,16 @@
 
 /datum/job/civilian/football_blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Chad Town Football Club"
 	if (map && istype(map, /obj/map_metadata/football))
 		var/obj/map_metadata/football/FM = map
 		H.team = FM.team2
-	var/obj/item/clothing/under/football/blue/FB = new /obj/item/clothing/under/football/blue(H)
-	H.equip_to_slot_or_del(FB, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-	if (map && map.ID == MAP_FOOTBALL)
-		var/obj/map_metadata/football/tmap = map
-		if (!isemptylist(tmap.player_count_blue))
-			FB.player_number = pick(tmap.player_count_blue)
+		H.civilization = FM.team2
+		var/obj/item/clothing/under/football/custom/FB = new /obj/item/clothing/under/football/custom(H)
+		H.equip_to_slot_or_del(FB, slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2][3],FM.teams[FM.team2][5],FM.teams[FM.team2][4],FM.teams[FM.team2][6],FM.teams[FM.team2][7],FM.teams[FM.team2][8],FM.teams[FM.team2][9],0)
+		if (!isemptylist(FM.player_count_blue))
+			FB.player_number = pick(FM.player_count_blue)
 			FB.update_icon()
 
 	..()
@@ -227,18 +251,17 @@
 
 /datum/job/civilian/football_blue/goalkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Chad Town Football Club"
 	if (map && istype(map, /obj/map_metadata/football))
 		var/obj/map_metadata/football/FM = map
 		H.team = FM.team2
-	var/obj/item/clothing/under/football/blue/goalkeeper/FB = new /obj/item/clothing/under/football/blue/goalkeeper(H)
-	H.equip_to_slot_or_del(FB, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/blue(H), slot_gloves)
-	if (map && map.ID == MAP_FOOTBALL)
-		var/obj/map_metadata/football/tmap = map
-		if (!isemptylist(tmap.player_count_blue))
-			FB.player_number = pick(tmap.player_count_blue)
+		H.civilization = FM.team2
+		var/obj/item/clothing/under/football/blue/goalkeeper/FB = new /obj/item/clothing/under/football/blue/goalkeeper(H)
+		H.equip_to_slot_or_del(FB, slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/blue(H), slot_gloves)
+//		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2][3],FM.teams[FM.team2][5],FM.teams[FM.team2][4],sFM.teams[FM.team2][6],FM.teams[FM.team2][7],FM.teams[FM.team2][8],FM.teams[FM.team2][9],0)
+		if (!isemptylist(FM.player_count_blue))
+			FB.player_number = pick(FM.player_count_blue)
 			FB.update_icon()
 
 	..()
