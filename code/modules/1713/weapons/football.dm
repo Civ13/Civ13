@@ -325,21 +325,92 @@
 		if (map && map.ID == MAP_FOOTBALL)
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team2][1]
-
+/////////////////TEAM CREATOR/////////////////////
+/*
 /obj/structure/submitter
 	name = "Team Registration Terminal"
 	desc = "Register your team here!"
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "1980_computer_on"
 	layer = 5
+	active = FALSE
 	density = TRUE
 	anchored = TRUE
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-/*
+
 /obj/structure/submitter/attack_hand(mob/living/human/mob as mob)
 	if (!ishuman(mob))
 		return
+	if (!active)
+		return
 	var/list/templist = list()
+
+/obj/structure/submitter/proc/do_html(var/mob/m)
+
+	if (m)
+		m << browse({"
+
+		<br>
+		<html>
+
+		<head>
+		[common_browser_style]
+		</head>
+
+		<body>
+
+		<script language="javascript">
+
+		function set(input) {
+			window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
+		}
+
+		</script>
+
+		<center>
+		<big><b>[ship] wheel</b></big><br><br>
+		</center>
+		<font size='3'>
+		<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+		Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
+		Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
+		Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
+		<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
+		</font>
+		</body>
+		</html>
+		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+
+/obj/structure/submitter/interact(var/mob/m)
+	if (user)
+		if (get_dist(src, user) > 1)
+			user = null
+	restart
+
+	if (user && user != m)
+		if (user.client)
+			return
+		else
+			user = null
+			goto restart
+	else
+		user = m
+		do_html(user)
+
+/obj/structure/submitter/Topic(href, href_list, hsrc)
+
+	var/mob/user = usr
+
+	if (!user)
+		return
+
+	user.face_atom(src)
+
+	if (href_list["set_anchor"])
+
+
+	sleep(0.5)
+	do_html(user)
 */
