@@ -16,9 +16,10 @@
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "football game"
 	mission_start_message = "Two minutes untill the game starts!"
+	ambience = list('sound/ambience/football.ogg')
 	faction1 = CIVILIAN
 	songs = list(
-		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
+		"Football Match:1" = 'sound/ambience/football.ogg',)
 	is_singlefaction = TRUE
 	scores = list(
 		"U.B.U." = 0,

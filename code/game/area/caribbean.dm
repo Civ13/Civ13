@@ -1123,7 +1123,7 @@
 	name = "Football Field"
 	icon_state = "green1"
 	climate = "temperate"
-
+	ambience = list("sound/ambience/football.ogg")
 /area/caribbean/football/red
 	name = "Football Field"
 	icon_state = "red1"
