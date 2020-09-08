@@ -152,9 +152,47 @@
 				overlays += shirt_vstripes
 			if (shirt_hstripes_color)
 				overlays += shirt_hstripes
+			var/image/symbols = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_symbols")
+			overlays += symbols
 			return
 	else
 		..()
+//for automatic assignement of colors, ie, roundstart
+/obj/item/clothing/under/football/custom/proc/assign_style(name,shorts_color,shirt_color,shorts_sides_color=null,shirt_sleeves_color=null,shirt_sides_color=null,shirt_vstripes_color=null,shirt_hstripes_color=null,c_player_number=0)
+
+	if (shirt_color && shorts_color)
+		uncolored = FALSE
+		var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt")
+		shirt.color = shirt_color
+		var/image/shorts = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shorts")
+		shorts.color = shorts_color
+		var/image/shorts_sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shorts_sides")
+		shorts_sides.color = shorts_sides_color
+		var/image/shirt_sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_sides")
+		shirt_sides.color = shirt_sides_color
+		var/image/shirt_sleeves = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_sleeves")
+		shirt_sleeves.color = shirt_sleeves_color
+		var/image/shirt_vstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_stripes_vertical")
+		shirt_vstripes.color = shirt_vstripes_color
+		var/image/shirt_hstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_stripes_horizontal")
+		shirt_hstripes.color = shirt_hstripes_color
+		overlays += shirt
+		overlays += shorts
+		if (shorts_sides_color)
+			overlays += shorts_sides
+		if (shirt_sides_color)
+			overlays += shirt_sides
+		if (shirt_sleeves_color)
+			overlays += shirt_sleeves
+		if (shirt_vstripes_color)
+			overlays += shirt_vstripes
+		if (shirt_hstripes_color)
+			overlays += shirt_hstripes
+		var/image/symbols = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_symbols")
+		overlays += symbols
+		if (c_player_number != 0)
+			src.player_number = c_player_number
+		return
 /////////SHOES////////////////////////
 /obj/item/clothing/shoes/football
 	name = "football trainers"

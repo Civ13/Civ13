@@ -25,6 +25,14 @@
 		"U.B.U." = 0,
 		"C.T.F.C." = 0,
 	)
+	var/list/teams = list(
+						//name, score, shorts color, short stripes color, shirt color, shirt sleeves color, shirt collar color, shirt v stripes, shirt h stripes
+		"U.B.U." = list("U.B.U.",0,"#262626",null,"#AE001A","#BB9634",null,null,null),
+		"C.T.F.C." = list("C.T.F.C.",0,"#EBEBEA",null,"#84A2CE",null,"#CDE4FB",null,null),
+	)
+
+	var/list/scorers = list()
+	
 	var/stopped = FALSE
 	var/list/player_count_red = list(1,2,3,4,5,6,7,8,9,10,11)
 	var/list/player_count_blue = list(1,2,3,4,5,6,7,8,9,10,11)

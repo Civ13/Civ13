@@ -517,6 +517,8 @@ var/global/list/damage_icon_parts = list()
 				var/image/shirt_sides = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_sides")
 				var/image/shirt_vstripes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_stripes_vertical")
 				var/image/shirt_hstripes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_stripes_horizontal")
+				var/image/symbols = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_symbols")
+
 				if (CU.shorts_sides_color)
 					shorts_sides.color = CU.shorts_sides_color
 				if (CU.shirt_sides_color)
@@ -539,6 +541,7 @@ var/global/list/damage_icon_parts = list()
 					standing.overlays += shirt_vstripes
 				if (CU.shirt_hstripes_color)
 					standing.overlays += shirt_hstripes
+				standing.overlays += symbols
 			if (CU.player_number != 0 &&  CU.player_number != "0")
 				standing.overlays += image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "u_[CU.player_number]")
 
