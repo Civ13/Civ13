@@ -43,7 +43,107 @@
 	icon_state = "football_blue_gk"
 	item_state = "football_blue_gk"
 	worn_state = "football_blue_gk"
+///////////CUSTOM JERSEY//////////////
+/obj/item/clothing/under/football/custom
+	name = "football jersey"
+	desc = "A football team's official jersey."
+	var/uncolored = FALSE
+	var/shirt_color = 0
+	var/shorts_color = 0
+	var/shorts_sides_color = 0
+	var/shirt_sides_color = 0
+	var/shirt_sleeves_color = 0
+	var/shirt_hstripes_color = 0
+	var/shirt_vstripes_color = 0
+	item_state = "football_custom"
+	icon_state = "football_custom"
+	worn_state = "football_custom"
+	heat_protection = LOWER_TORSO|UPPER_TORSO
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
 
+
+/obj/item/clothing/under/football/custom/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!shorts_color)
+			var/input = WWinput(user, "Shorts - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shorts_color = input
+
+		if (!shorts_sides_color)
+			var/input = WWinput(user, "Shorts Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shorts_sides_color = input
+
+		if (!shirt_color)
+			var/input = WWinput(user, "Shirt - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shirt_color = input
+
+		if (!shirt_sides_color)
+			var/input = WWinput(user, "Shirt Collar - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shirt_sides_color = input
+
+		if (!shirt_sleeves_color)
+			var/input = WWinput(user, "Shirt Sleeves - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shirt_sleeves_color = input
+
+		if (!shirt_hstripes_color)
+			var/input = WWinput(user, "Shirt Horizontal Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shirt_hstripes_color = input
+
+		if (!shirt_vstripes_color)
+			var/input = WWinput(user, "Shirt Vertical Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shirt_vstripes_color = input
+
+		if (shirt_color && shorts_color && shorts_sides_color && shirt_sides_color && shirt_sleeves_color && shirt_hstripes_color && shirt_vstripes_color)
+			uncolored = FALSE
+			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt")
+			shirt.color = shirt_color
+			var/image/shorts = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shorts")
+			shorts.color = shorts_color
+			var/image/shorts_sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shorts_sides")
+			shorts_sides.color = shorts_sides_color
+			var/image/shirt_sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_sides")
+			shirt_sides.color = shirt_sides_color
+			var/image/shirt_sleeves = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_sleeves")
+			shirt_sleeves.color = shirt_sleeves_color
+			var/image/shirt_vstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_vstripes")
+			shirt_vstripes.color = shirt_vstripes_color
+			var/image/shirt_hstripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt_hstripes")
+			shirt_hstripes.color = shirt_hstripes_color
+			overlays += shirt
+			overlays += shorts
+			overlays += shorts_sides
+			overlays += shirt_sides
+			overlays += shirt_sleeves
+			overlays += shirt_vstripes
+			overlays += shirt_hstripes
+			return
+	else
+		..()
+/////////SHOES////////////////////////
 /obj/item/clothing/shoes/football
 	name = "football trainers"
 	desc = "A pair of football trainers."
@@ -54,6 +154,8 @@
 	siemens_coefficient = 0.6
 	force = 0.0
 	throwforce = 0.0
+
+////////////GLOVES/////////////////
 /obj/item/clothing/gloves/goalkeeper/red
 	name = "red goalkeeper gloves"
 	initial_name = "red goalkeeper gloves"
