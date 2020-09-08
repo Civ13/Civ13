@@ -50,10 +50,18 @@
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color=[teams[team1][5]]><b>[teams[team1][1]] [teams[team1][2]]</font><font size=3 color='#FFF'> - </font><font size=3 color=[teams[team2][5]]>[teams[team2][2]] [teams[team2][1]]</b></font>"
+	world << "<font size=3 color=[teams[team1][5]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][5]]>[teams[team2][1]]</b></font>"
 	spawn(300)
 		points_check()
 
+/obj/map_metadata/football/proc/scorers_check()
+	if (scorers.len)
+		var/list/tmplistc = sortTim(scorers, /proc/cmp_numeric_dsc,TRUE)
+		for (var/i in tmplistc)
+			if ([tmplistc[i]]>1)
+				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goals</font>"
+			else
+				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goal</font>"
 /obj/map_metadata/football/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
@@ -68,6 +76,7 @@
 			world << "<font size=4 color=[teams[team1][5]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
+			scorers_check()
 			return FALSE
 
 		else if (teams[team2][2] > teams[team1][2])
@@ -75,12 +84,14 @@
 			world << "<font size=4 color=[teams[team2][5]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
+			scorers_check()
 			return FALSE
 		else
 			message = "The match ended in a draw!"
 			world << "<font size=4>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
+			scorers_check()
 			return FALSE
 		last_win_condition = win_condition.hash
 		return TRUE
@@ -117,6 +128,7 @@
 		stopped = FALSE
 
 ///////////////////////////////////////////////////
+/mob/living/human/var/team = null
 /datum/job/civilian/football_red
 	title = "Unga Bunga United"
 	en_meaning = ""
@@ -130,6 +142,9 @@
 /datum/job/civilian/football_red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Unga Bunga United"
+	if (map && istype(map, /obj/map_metadata/football))
+		var/obj/map_metadata/football/FM = map
+		H.team = FM.team1
 	var/obj/item/clothing/under/football/red/FR = new /obj/item/clothing/under/football/red(H)
 	H.equip_to_slot_or_del(FR, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
@@ -154,6 +169,9 @@
 /datum/job/civilian/football_red/goalkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Unga Bunga United"
+	if (map && istype(map, /obj/map_metadata/football))
+		var/obj/map_metadata/football/FM = map
+		H.team = FM.team1
 	var/obj/item/clothing/under/football/red/goalkeeper/FR = new /obj/item/clothing/under/football/red/goalkeeper(H)
 	H.equip_to_slot_or_del(FR, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
@@ -181,6 +199,9 @@
 /datum/job/civilian/football_blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Chad Town Football Club"
+	if (map && istype(map, /obj/map_metadata/football))
+		var/obj/map_metadata/football/FM = map
+		H.team = FM.team2
 	var/obj/item/clothing/under/football/blue/FB = new /obj/item/clothing/under/football/blue(H)
 	H.equip_to_slot_or_del(FB, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
@@ -207,6 +228,9 @@
 /datum/job/civilian/football_blue/goalkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Chad Town Football Club"
+	if (map && istype(map, /obj/map_metadata/football))
+		var/obj/map_metadata/football/FM = map
+		H.team = FM.team2
 	var/obj/item/clothing/under/football/blue/goalkeeper/FB = new /obj/item/clothing/under/football/blue/goalkeeper(H)
 	H.equip_to_slot_or_del(FB, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
