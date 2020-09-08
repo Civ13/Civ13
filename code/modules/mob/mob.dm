@@ -283,7 +283,7 @@
 						FB.pickup(H)
 						visible_message("<font color='yellow'>[H] picks up the ball!</font>")
 						return
-		else if (!H.football && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
+		else if (!H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football) && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
 			H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
 			src.do_attack_animation(get_step(src,dir))
 			Weaken(1)
