@@ -69,7 +69,7 @@
 	// can't click on stuff when we're lying, unless it's a bed
 	if (ishuman(src))
 		var/mob/living/human/H = src
-		if (H.football)
+		if (H.football && istype(H.shoes, /obj/item/clothing/shoes/football))
 			var/obj/item/football/FB = H.football
 			H.do_attack_animation(H.football)
 			H.football = null
