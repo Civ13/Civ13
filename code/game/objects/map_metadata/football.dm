@@ -168,7 +168,7 @@
 	min_positions = 10
 	max_positions = 10
 	is_football = TRUE
-	selection_color = "#84A2CE"
+	selection_color = "#6f8bb6"
 
 
 /datum/job/civilian/football_blue/equip(var/mob/living/human/H)
@@ -194,7 +194,7 @@
 	min_positions = 1
 	max_positions = 1
 	is_football = TRUE
-	selection_color = "#84A2CE"
+	selection_color = "#6f8bb6"
 
 
 /datum/job/civilian/football_blue/goalkeeper/equip(var/mob/living/human/H)
