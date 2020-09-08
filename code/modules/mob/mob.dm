@@ -304,7 +304,6 @@
 						visible_message("<font color='yellow'>[src] tries to tackle [HM] but fails!</font>")
 						playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 					return
-		return
 	if (hand)
 		var/obj/item/W = l_hand
 		if (W)
