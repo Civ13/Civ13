@@ -65,7 +65,7 @@
 	initial_name = "blue goalkeeper gloves"
 	icon_state = "blue"
 	item_state = "bluegloves"
-	
+
 /mob/living/human/var/obj/item/football/football = null
 
 /obj/item/football
@@ -127,7 +127,7 @@
 			var/scorer = "Unknown"
 			if (FB.last_owner)
 				scorer = FB.last_owner
-			world << "<font size=4 color='orange'>GOAL! <b>[scorer]</b> scores for <b>[team]</b>!</font>"
+			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
 			FB.last_owner = null
 			return
 
