@@ -285,7 +285,7 @@
 			MF.teams[team][2] += 1
 			var/obj/item/football/FB = A
 			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
-			var/scorer = " [FB.last_owner.name] ([FB.last_owner.ckey]) <b>([FB.team])</b>"
+			var/scorer = " [FB.last_owner.name] ([FB.last_owner.ckey]) <b>([FB.last_owner.team])</b>"
 			FB.last_owner = null
 			if (MF.scorers[scorer])
 				MF.scorers[scorer] += 1

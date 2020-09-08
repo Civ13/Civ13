@@ -58,7 +58,7 @@
 	if (scorers.len)
 		var/list/tmplistc = sortTim(scorers, /proc/cmp_numeric_dsc,TRUE)
 		for (var/i in tmplistc)
-			if ([tmplistc[i]]>1)
+			if (tmplistc[i]>1)
 				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goals</font>"
 			else
 				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goal</font>"
