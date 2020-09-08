@@ -80,6 +80,26 @@
 			playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
 			visible_message("[src] kicks \the [FB.name].")
 			return
+		else if (!H.football && ishuman(A) && istype(H.shoes, /obj/item/clothing/shoes/football)) //if we dont have the ball, try to apply pressure and take the ball without tackling
+			var/mob/living/human/HM = A
+			if (HM.civilization != H.civilization && H.stats["stamina"][1] >= 7) //no pressure on same team
+				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 7, 0)
+				H.do_attack_animation(get_step(H,dir))
+				var/obj/item/football/opponent_has_ball = null
+				if (HM.football)
+					opponent_has_ball = HM.football
+				if (prob(35) && opponent_has_ball)
+					H.visible_message("<font color='red'>[H] takes the ball from [HM]!</font>")
+					playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
+					opponent_has_ball.last_owner = H
+					opponent_has_ball.owner = H
+					H.football = opponent_has_ball
+					HM.football = null
+					opponent_has_ball.forceMove(H.loc)
+				else
+					H.visible_message("<font color='yellow'>[H] pressures [HM]!</font>")
+					playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+				return
 		if (istype(H.get_active_hand(),/obj/item/weapon/flamethrower))
 			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
 			var/cdir = get_dir(H,A)

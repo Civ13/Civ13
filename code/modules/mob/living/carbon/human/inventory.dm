@@ -35,69 +35,14 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/human/H = mob
-	if (map && map.ID == MAP_FOOTBALL)
-		if (H.football) //if we have the ball, pass it to nearest friendly player
-			var/mob/living/human/NEAR = null
-			for (var/mob/living/human/PNEAR in range(1,H))
-				if (!NEAR && PNEAR.civilization == H.civilization)
-					NEAR = PNEAR
-					break
-			if (!NEAR)
-				for (var/mob/living/human/PNEAR in range(2,H))
-					if (!NEAR && PNEAR.civilization == H.civilization)
-						NEAR = PNEAR
-						break
-				if (!NEAR)
-					for (var/mob/living/human/PNEAR in range(3,H))
-						if (!NEAR && PNEAR.civilization == H.civilization)
-							NEAR = PNEAR
-							break
-					if (!NEAR)
-						for (var/mob/living/human/PNEAR in range(3,H))
-							if (!NEAR && PNEAR.civilization == H.civilization)
-								NEAR = PNEAR
-								break
-			var/obj/item/football/FB = H.football
-			H.do_attack_animation(H.football)
-			H.football = null
-			FB.owner = null
-			FB.last_owner = H
-			FB.throw_at(NEAR, FB.throw_range, FB.throw_speed, H)
-			H.do_attack_animation(get_step(H,H.dir))
-			playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
-			visible_message("[H] passes \the [FB] to [NEAR].")
-			return
-/*
-		else if (!H.football) //if we dont have the ball, try to apply pressure and take the ball without tackling
-			for (var/mob/living/human/HM in get_step(H.loc, dir))
-				if (HM.civilization != H.civilization && H.stats["stamina"][1] >= 7) //no pressure on same team
-					H.stats["stamina"][1] = max(H.stats["stamina"][1] - 7, 0)
-					H.do_attack_animation(get_step(H,dir))
-					var/obj/item/football/opponent_has_ball = null
-					if (HM.football)
-						opponent_has_ball = HM.football
-					if (prob(35) && opponent_has_ball)
-						H.visible_message("<font color='red'>[H] takes the ball from [HM]!</font>")
-						playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
-						opponent_has_ball.last_owner = H
-						opponent_has_ball.owner = H
-						H.football = opponent_has_ball
-						HM.football = null
-						opponent_has_ball.forceMove(H.loc)
-					else
-						H.visible_message("<font color='yellow'>[H] pressures [HM]!</font>")
-						playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
-					return
-*/
-	else
-		var/obj/item/I = mob.get_active_hand()
-		if (!I)
-			return
-		if (!I.secondary_action)
-			return
-		I.secondary_attack_self(mob)
+
+	var/obj/item/I = mob.get_active_hand()
+	if (!I)
 		return
+	if (!I.secondary_action)
+		return
+	I.secondary_attack_self(mob)
+	return
 
 //secondary Activate-Held-Object, when an object has more than a action possible (i.e. vehicle controls)
 /client/verb/try_to_buckle()

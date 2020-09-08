@@ -243,22 +243,36 @@
 	if (map && map.ID == MAP_FOOTBALL)
 		if (ishuman(src))
 			var/mob/living/human/H = src
-			if (H.football)
-				var/obj/item/football/FB = H.football
-				var/throw_dir = H.dir
-				for(var/i = 1; i < 5; i++)
-					var/turf/new_turf = get_step(H.loc, throw_dir)
-					target = new_turf
-					if(new_turf && new_turf.density)
+			if (H.football) //if we have the ball, pass it to nearest friendly player
+				var/mob/living/human/NEAR = null
+				for (var/mob/living/human/PNEAR in range(1,H))
+					if (!NEAR && PNEAR.civilization == H.civilization)
+						NEAR = PNEAR
 						break
-				src.do_attack_animation(FB)
+				if (!NEAR)
+					for (var/mob/living/human/PNEAR in range(2,H))
+						if (!NEAR && PNEAR.civilization == H.civilization)
+							NEAR = PNEAR
+							break
+					if (!NEAR)
+						for (var/mob/living/human/PNEAR in range(3,H))
+							if (!NEAR && PNEAR.civilization == H.civilization)
+								NEAR = PNEAR
+								break
+						if (!NEAR)
+							for (var/mob/living/human/PNEAR in range(3,H))
+								if (!NEAR && PNEAR.civilization == H.civilization)
+									NEAR = PNEAR
+									break
+				var/obj/item/football/FB = H.football
+				H.do_attack_animation(H.football)
 				H.football = null
 				FB.owner = null
 				FB.last_owner = H
-				FB.throw_at(H.loc, 4, FB.throw_speed, src)
+				FB.throw_at(NEAR, FB.throw_range, FB.throw_speed, H)
 				H.do_attack_animation(get_step(H,H.dir))
 				playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
-				visible_message("[src] passes \the [FB.name].")
+				visible_message("[H] passes \the [FB] to [NEAR].")
 				return
 			else if (!H.football && findtext(H.original_job_title, "goalkeeper"))
 				var/area/A = get_area(H.loc)
