@@ -37,21 +37,38 @@ This saves us from having to call add_fingerprint() any time something is put in
 		return
 	var/mob/living/human/H = mob
 	if (map && map.ID == MAP_FOOTBALL)
-		if (H.football) //if we have the ball, pass it in the direction we face
-			var/turf/target = get_turf(get_step(H,H.dir))
-			var/throw_dir = H.dir
-			for(var/i = 1; i < 3; i++)
-				var/turf/new_turf = get_step(target, throw_dir)
-				target = new_turf
-				if(new_turf && new_turf.density)
+		if (H.football) //if we have the ball, pass it to nearest friendly player
+			var/mob/living/human/NEAR = null
+			for (var/mob/living/human/PNEAR in range(1,H))
+				if (!NEAR && PNEAR.civilization == H.civilization)
+					NEAR = PNEAR
 					break
-			H.do_attack_animation(get_step(H,H.dir))
-			H.visible_message("[H] passes \the [H.football.name].")
-			H.football.last_owner = H.football.owner
-			H.football.owner = null
-			H.football.throw_at(target, 3, H.football.throw_speed-1, H)
+			if (!NEAR)
+				for (var/mob/living/human/PNEAR in range(2,H))
+					if (!NEAR && PNEAR.civilization == H.civilization)
+						NEAR = PNEAR
+						break
+				if (!NEAR)
+					for (var/mob/living/human/PNEAR in range(3,H))
+						if (!NEAR && PNEAR.civilization == H.civilization)
+							NEAR = PNEAR
+							break
+					if (!NEAR)
+						for (var/mob/living/human/PNEAR in range(3,H))
+							if (!NEAR && PNEAR.civilization == H.civilization)
+								NEAR = PNEAR
+								break
+			var/obj/item/football/FB = H.football
+			H.do_attack_animation(H.football)
 			H.football = null
+			FB.owner = null
+			FB.last_owner = H
+			FB.throw_at(NEAR, FB.throw_range, FB.throw_speed, H)
+			H.do_attack_animation(get_step(H,H.dir))
+			playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
+			visible_message("[H] passes \the [FB] to [NEAR].")
 			return
+/*
 		else if (!H.football) //if we dont have the ball, try to apply pressure and take the ball without tackling
 			for (var/mob/living/human/HM in get_step(H.loc, dir))
 				if (HM.civilization != H.civilization && H.stats["stamina"][1] >= 7) //no pressure on same team
@@ -72,6 +89,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 						H.visible_message("<font color='yellow'>[H] pressures [HM]!</font>")
 						playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 					return
+*/
 	else
 		var/obj/item/I = mob.get_active_hand()
 		if (!I)

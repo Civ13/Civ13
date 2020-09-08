@@ -244,21 +244,21 @@
 		if (ishuman(src))
 			var/mob/living/human/H = src
 			if (H.football)
-				var/turf/target = get_turf(H.football.loc)
-				var/range = H.football.throw_range
+				var/obj/item/football/FB = H.football
 				var/throw_dir = H.dir
-				for(var/i = 1; i < range; i++)
-					var/turf/new_turf = get_step(target, throw_dir)
+				for(var/i = 1; i < 5; i++)
+					var/turf/new_turf = get_step(H.loc, throw_dir)
 					target = new_turf
 					if(new_turf && new_turf.density)
 						break
-				src.do_attack_animation(H.football)
-				H.football.owner = null
-				H.football.last_owner = H
-				H.football.throw_at(target, range, H.football.throw_speed, src)
-				H.do_attack_animation(get_step(H,H.dir))
-				visible_message("[src] kicks \the [H.football.name].")
+				src.do_attack_animation(FB)
 				H.football = null
+				FB.owner = null
+				FB.last_owner = H
+				FB.throw_at(H.loc, 4, FB.throw_speed, src)
+				H.do_attack_animation(get_step(H,H.dir))
+				playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
+				visible_message("[src] passes \the [FB.name].")
 				return
 			else if (!H.football && findtext(H.original_job_title, "goalkeeper"))
 				var/area/A = get_area(H.loc)

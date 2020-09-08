@@ -64,8 +64,8 @@
 	icon_state = "football"
 	force = 0.0
 	throwforce = 0.0
-	throw_speed = 2
-	throw_range = 7
+	throw_speed = 0.5
+	throw_range = 9
 	item_state = "football"
 	w_class = 4.0
 	layer = 6

@@ -69,7 +69,17 @@
 	// can't click on stuff when we're lying, unless it's a bed
 	if (ishuman(src))
 		var/mob/living/human/H = src
-
+		if (H.football)
+			var/obj/item/football/FB = H.football
+			H.do_attack_animation(H.football)
+			H.football = null
+			FB.owner = null
+			FB.last_owner = H
+			FB.throw_at(A, FB.throw_range, FB.throw_speed, H)
+			H.do_attack_animation(get_step(H,H.dir))
+			playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
+			visible_message("[src] kicks \the [FB.name].")
+			return
 		if (istype(H.get_active_hand(),/obj/item/weapon/flamethrower))
 			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
 			var/cdir = get_dir(H,A)
