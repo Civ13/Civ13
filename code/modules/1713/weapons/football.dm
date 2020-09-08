@@ -74,8 +74,8 @@
 				return
 			else
 				shorts_color = input
-
-		if (!shorts_sides_color)
+		var/add1 = WWinput(user, "Short Stripes", "Do you want to add side stripes to the shorts?", "No", list("Yes","No"))
+		if (!shorts_sides_color && add1 == "Yes")
 			var/input = WWinput(user, "Shorts Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
@@ -89,35 +89,38 @@
 			else
 				shirt_color = input
 
-		if (!shirt_sides_color)
-			var/input = WWinput(user, "Shirt Collar - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
-			if (input == null || input == "")
-				return
-			else
-				shirt_sides_color = input
-
-		if (!shirt_sleeves_color)
+		var/add3 = WWinput(user, "Shirt Sleeves", "Do you want to add a different color to sleeves?", "No", list("Yes","No"))
+		if (!shirt_sleeves_color && add3 == "Yes")
 			var/input = WWinput(user, "Shirt Sleeves - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
 				shirt_sleeves_color = input
 
-		if (!shirt_hstripes_color)
+		var/add4 = WWinput(user, "Shirt Stripes", "Do you want to add a shirt stripes?", "No", list("Horizontal Stripes", "Vertical Stripes", "No"))
+		if (!shirt_hstripes_color && add4 == "Horizontal Stripes")
 			var/input = WWinput(user, "Shirt Horizontal Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
 				shirt_hstripes_color = input
 
-		if (!shirt_vstripes_color)
+		if (!shirt_vstripes_color && add4 == "Vertical Stripes")
 			var/input = WWinput(user, "Shirt Vertical Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
 				shirt_vstripes_color = input
 
-		if (shirt_color && shorts_color && shorts_sides_color && shirt_sides_color && shirt_sleeves_color && shirt_hstripes_color && shirt_vstripes_color)
+		var/add2 = WWinput(user, "Shirt Collar", "Do you want to add a different color to collars and sleeve tips?", "No", list("Yes","No"))
+		if (!shirt_sides_color && add2 == "Yes")
+			var/input = WWinput(user, "Shirt Collar - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shirt_sides_color = input
+
+		if (shirt_color && shorts_color)
 			uncolored = FALSE
 			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt")
 			shirt.color = shirt_color
@@ -135,11 +138,16 @@
 			shirt_hstripes.color = shirt_hstripes_color
 			overlays += shirt
 			overlays += shorts
-			overlays += shorts_sides
-			overlays += shirt_sides
-			overlays += shirt_sleeves
-			overlays += shirt_vstripes
-			overlays += shirt_hstripes
+			if (shorts_sides_color)
+				overlays += shorts_sides
+			if (shirt_sides_color)
+				overlays += shirt_sides
+			if (shirt_sleeves_color)
+				overlays += shirt_sleeves
+			if (shirt_vstripes_color)
+				overlays += shirt_vstripes
+			if (shirt_hstripes_color)
+				overlays += shirt_hstripes
 			return
 	else
 		..()
