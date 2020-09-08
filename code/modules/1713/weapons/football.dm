@@ -69,14 +69,14 @@
 /obj/item/clothing/under/football/custom/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!shorts_color)
-			var/input = WWinput(user, "Shorts - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			var/input = WWinput(user, "Shorts - Choose a color:", "Shorts Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
 				shorts_color = input
 		var/add1 = WWinput(user, "Short Stripes", "Do you want to add side stripes to the shorts?", "No", list("Yes","No"))
 		if (!shorts_sides_color && add1 == "Yes")
-			var/input = WWinput(user, "Shorts Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			var/input = WWinput(user, "Shorts Stripes - Choose a color:", "Short Stripes Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
@@ -91,7 +91,7 @@
 
 		var/add3 = WWinput(user, "Shirt Sleeves", "Do you want to add a different color to sleeves?", "No", list("Yes","No"))
 		if (!shirt_sleeves_color && add3 == "Yes")
-			var/input = WWinput(user, "Shirt Sleeves - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			var/input = WWinput(user, "Shirt Sleeves - Choose a color:", "Shirt Sleeves Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
@@ -99,14 +99,14 @@
 
 		var/add4 = WWinput(user, "Shirt Stripes", "Do you want to add a shirt stripes?", "No", list("Horizontal Stripes", "Vertical Stripes", "No"))
 		if (!shirt_hstripes_color && add4 == "Horizontal Stripes")
-			var/input = WWinput(user, "Shirt Horizontal Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			var/input = WWinput(user, "Shirt Horizontal Stripes - Choose a color:", "Shirt Horizontal Stripes Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
 				shirt_hstripes_color = input
 
 		if (!shirt_vstripes_color && add4 == "Vertical Stripes")
-			var/input = WWinput(user, "Shirt Vertical Stripes - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			var/input = WWinput(user, "Shirt Vertical Stripes - Choose a color:", "Shirt Vertical Stripes Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
@@ -114,7 +114,7 @@
 
 		var/add2 = WWinput(user, "Shirt Collar", "Do you want to add a different color to collars and sleeve tips?", "No", list("Yes","No"))
 		if (!shirt_sides_color && add2 == "Yes")
-			var/input = WWinput(user, "Shirt Collar - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			var/input = WWinput(user, "Shirt Collar - Choose a color:", "Shirt Collar Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
