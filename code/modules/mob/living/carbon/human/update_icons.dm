@@ -505,6 +505,40 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
+		else if (istype(w_uniform, /obj/item/clothing/under/football/custom))
+			var/obj/item/clothing/under/football/custom/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shorts")
+				pants.color = CU.shorts_color
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt")
+				shirt.color = CU.shirt_color
+				var/image/shirt_sleeves = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_sleeves")
+				var/image/shorts_sides = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_short_sides")
+				var/image/shirt_sides = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_sides")
+				var/image/shirt_vstripes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_stripes_vertical")
+				var/image/shirt_hstripes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_stripes_horizontal")
+				if (CU.shorts_sides_color)
+					shorts_sides.color = CU.shorts_sides_color
+				if (CU.shirt_sides_color)
+					shirt_sides.color = CU.shirt_sides_color
+				if (CU.shirt_sleeves_color)
+					shirt_sleeves.color = CU.shirt_sleeves_color
+				if (CU.shirt_vstripes_color)
+					shirt_vstripes.color = CU.shirt_vstripes_color
+				if (CU.shirt_hstripes_color)
+					shirt_hstripes.color = CU.shirt_hstripes_color
+				standing.overlays += pants
+				standing.overlays += shirt
+				if (CU.shorts_sides_color)
+					standing.overlays += shorts_sides
+				if (CU.shirt_sides_color)
+					standing.overlays += shirt_sides
+				if (CU.shirt_sleeves_color)
+					standing.overlays += shirt_sleeves
+				if (CU.shirt_vstripes_color)
+					standing.overlays += shirt_vstripes
+				if (CU.shirt_hstripes_color)
+					standing.overlays += shirt_hstripes
 		else if (istype(w_uniform, /obj/item/clothing/under/customtribalrobe))
 			var/obj/item/clothing/under/customtribalrobe/CU = w_uniform
 			if (!CU.uncolored)
