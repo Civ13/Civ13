@@ -680,34 +680,17 @@ bullet_act
 		if (istype(O, /obj/item/football))
 			var/obj/item/football/FB = O
 			if (!src.football)
-				if (findtext(src.original_job_title,"goalkeeper"))
-					visible_message("<font color='yellow'>[src] blocks the ball!</font>")
-					var/newdir = dir
-					switch(dir)
-						if (NORTH)
-							newdir = pick(EAST,WEST)
-						if (SOUTH)
-							newdir = pick(EAST,WEST)
-						if (EAST)
-							newdir = pick(NORTH,SOUTH)
-						if (WEST)
-							newdir = pick(NORTH,SOUTH)
-					if (FB.owner)
-						FB.last_owner = FB.owner
+				if (gloves && istype(gloves, /obj/item/clothing/gloves/goalkeeper))
+					var/area/A = get_area(src.loc)
+					if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
+						visible_message("<font color='yellow'>[src] blocks and picks up the ball!</font>")
+						src.put_in_active_hand(FB)
 						FB.owner.football = null
 						FB.owner = null
-					var/throwtgt = null
-					switch(newdir)
-						if (NORTH)
-							throwtgt = locate(x,y+4,z)
-						if (SOUTH)
-							throwtgt = locate(x,y-4,z)
-						if (EAST)
-							throwtgt = locate(x+4,y,z)
-						if (WEST)
-							throwtgt = locate(x-4,y,z)
-					FB.throw_at(throwtgt, 4, FB.throw_speed, src)
-					src.do_attack_animation(get_step(loc,src.dir))
+						FB.last_owner = src
+						FB.pickup(src)
+						return
+						src.do_attack_animation(get_step(loc,src.dir))
 				else
 					src.football = FB
 					FB.owner = src

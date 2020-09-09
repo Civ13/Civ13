@@ -276,7 +276,7 @@
 				return
 		else if (!H.football && H.gloves && istype(H.gloves, /obj/item/clothing/gloves/goalkeeper))
 			var/area/A = get_area(H.loc)
-			if ((istype(A, /area/caribbean/football/blue/goalkeeper) && findtext(H.original_job_title, "Chad")) || (istype(A, /area/caribbean/football/red/goalkeeper) && findtext(H.original_job_title, "Unga")))
+			if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
 				for(var/obj/item/football/FB in range(1,H))
 					if (!FB.owner && isturf(FB.loc))
 						H.put_in_active_hand(FB)
