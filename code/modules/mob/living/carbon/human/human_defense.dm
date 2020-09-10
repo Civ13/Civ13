@@ -680,32 +680,27 @@ bullet_act
 		if (istype(O, /obj/item/football))
 			var/obj/item/football/FB = O
 			if (!src.football)
-				if (findtext(src.original_job_title,"goalkeeper"))
-					visible_message("<font color='yellow'>[src] blocks the ball!</font>")
-					var/newdir = dir
-					switch(dir)
-						if (NORTH)
-							newdir = pick(EAST,WEST)
-						if (SOUTH)
-							newdir = pick(EAST,WEST)
-						if (EAST)
-							newdir = pick(NORTH,SOUTH)
-						if (WEST)
-							newdir = pick(NORTH,SOUTH)
-					if (FB.owner)
+				if (gloves && istype(gloves, /obj/item/clothing/gloves/goalkeeper))
+					var/area/A = get_area(src.loc)
+					if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
+						visible_message("<font color='yellow'>[src] blocks and picks up the ball!</font>")
+						src.put_in_active_hand(FB)
 						FB.owner.football = null
 						FB.owner = null
-					FB.throw_at(get_step(loc,newdir), pick(3,4), FB.throw_speed, src)
-					src.do_attack_animation(get_step(loc,src.dir))
+						FB.last_owner = src
+						FB.pickup(src)
+						return
+						src.do_attack_animation(get_step(loc,src.dir))
 				else
 					src.football = FB
 					FB.owner = src
+					FB.last_owner = src
 					FB.update_movement()
 		if (in_throw_mode && !get_active_hand() && speed <= THROWFORCE_SPEED_DIVISOR && prob(round(75/O.w_class)))	//empty active hand and we're in throw mode
 			if (canmove && !restrained())
 				if (isturf(O.loc))
 					put_in_active_hand(O)
-					visible_message("<span class='warning'>[src] catches [O]!</span>")
+					visible_message("<span class='warning'>[src] catches \the [O]!</span>")
 					throw_mode_off()
 					return
 
