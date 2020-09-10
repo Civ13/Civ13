@@ -123,7 +123,7 @@
 		else if (istype(I, /obj/item) && I.basematerials.len)
 			H << "You put \the [I] into \the [src] to recycle it."
 			if (I.basematerials[1] == "tin")
-				tin += I.basematerials[2]
+				new/obj/item/stack/material/tin(src.loc)
 			qdel(I)
 
 		else
