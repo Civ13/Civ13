@@ -350,10 +350,6 @@
 				I.loc = src
 				visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
 				return
-		else
-			..()
-	else
-		..()
 
 /obj/structure/furnace/kiln/process()
 	for (var/obj/item/weapon/clay/mold/MCC in contents)
