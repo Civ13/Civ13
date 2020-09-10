@@ -401,9 +401,10 @@
 					T["goalkeeper_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 			if (T["goalkeeper_uniform"] && T["secondary_uniform"] && T["main_uniform"])
 				var/obj/map_metadata/football/FM = map
-				FM.teams += list("[T[name]]" = list(T))
-				WWalert("You sucessfully added the team! It is now selectable.")
+				FM.teams += list("[T["name"]]" = T)
+				WWalert(mob,"You sucessfully added the team! It is now selectable.")
 				FM.save_teams()
+				pending -= pending[mob.ckey]
 				return
 		return
 	else //start new team
@@ -417,7 +418,7 @@
 			else
 				var/list/T = list()
 				T["name"] = input2
-				pending += list("[mob.ckey]" = list(T))
+				pending += list("[mob.ckey]" = T)
 				var/input3 = WWinput(mob, "Team Creator", "Which type is the kit you submitted?","Main",list("Main", "Secondary", "Goalkeeper"))
 				switch(input3)
 					if ("Main")

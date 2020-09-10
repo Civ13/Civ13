@@ -72,8 +72,10 @@
 			GB.assign()	
 /obj/map_metadata/football/proc/save_teams()
 	var/F = file("SQL/sports_teams.txt")
+	if (fexists(F))
+		fdel(F)
 	for (var/i in teams)
-		var/txtexport = list2params(teams[i])
+		var/txtexport = "[teams[i]["name"]]|||[list2params(teams[i])]"
 		text2file(txtexport,F)
 	return
 /obj/map_metadata/football/proc/load_teams()
