@@ -1,5 +1,6 @@
 var/global/list/anvil_recipes = list(
 	//name = list(name, category, first age, last age, steel cost, iron cost, bronze cost, kevlar cost, result)
+	///*Industrial guns and stuff*///
 	"Derringer M95 Pistol" = list("Derringer M95 Pistol","guns",4,5,15,0,0,0,/obj/item/weapon/gun/projectile/revolver/derringer),
 	"Colt Peacemaker Revolver" = list("Colt Peacemaker Revolver","guns",4,5,25,0,0,0,/obj/item/weapon/gun/projectile/revolver/peacemaker),
 	"Martini-Henry Rifle" = list("Martini-Henry Rifle","guns",4,5,35,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry),
@@ -11,6 +12,26 @@ var/global/list/anvil_recipes = list(
 	"Gewehr 71" = list("Gewehr 71","guns",4,6,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/gewehr71),
 	"Makeshift AK-47" = list("Makeshift AK-47","guns",7,8,32,0,0,0,new/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47),
 	
+	///*Shields & Tools*///
+	"Athenian Aspis Shield" = list("Athenian Aspis Shield","shield",1,1,0,13,0,0,/obj/item/weapon/shield/nomads/aspis),
+	"Spartan Aspis Shield" = list("Spartan Aspis Shield","shield",1,1,0,13,0,0,/obj/item/weapon/shield/nomads/spartan),
+	"Pegasus Aspis Shield" = list("Pegasus Aspis Shield","shield",1,1,0,13,0,0,/obj/item/weapon/shield/nomads/aspis/pegasus),
+	"Owl Aspis Shield" = list("Owl Aspis Shield","shield",1,1,0,13,0,0,/obj/item/weapon/shield/nomads/aspis/owl),
+	"Egyptian Shield" = list("Egyptian Shield","shield",1,1,0,13,0,0,/obj/item/weapon/shield/egyptian),
+	"Scutum Shield" = list("Scutum Shield","shield",1,1,0,14,0,0,/obj/item/weapon/shield/scutum),
+	"Roman Shield" = list("Roman Shield","shield",1,1,0,14,0,0,/obj/item/weapon/shield/roman),
+	"Blue Roman Shield" = list("Blue Roman Shield","shield",1,1,0,14,0,0,/obj/item/weapon/shield/roman/blue),
+	"Praetorian Roman Shield" = list("Praetorian Roman Shield","shield",1,2,0,16,0,0,/obj/item/weapon/shield/roman/praetorian),
+	"Semi Oval Shield" = list("Semi Oval Shield","shield",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval),
+	"Semi Oval Templar Shield" = list("Semi Oval Templar Shield","shield",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval/templar),
+	"Orkish Shield" = list("Orkish Shield","shield",1,2,0,16,0,0,/obj/item/weapon/shield/iron/orc),
+
+	///*Muskets*///
+	"Crude Musket" = list("Crude Musket","guns",3,4,0,15,0,0,/obj/item/weapon/gun/projectile/flintlock/crude),
+	"Flintlock Musket" = list("Flintlock Musket","guns",3,4,0,30,0,0,/obj/item/weapon/gun/projectile/flintlock/musket),
+	"Flintlock Musketoon" = list("Flintlock Musketoon","guns",3,4,0,25,0,0,/obj/item/weapon/gun/projectile/flintlock/musketoon),
+	"Flintlock Blunderbuss" = list("Flintlock Blunderbuss","guns",3,4,0,25,0,0,/obj/item/weapon/gun/projectile/flintlock/blunderbuss),
+	"Flintlock Pistol" = list("Flintlock Pistol","guns",3,4,0,20,0,0,/obj/item/weapon/gun/projectile/flintlock/pistol),
 )
 /obj/structure/anvil
 	name = "iron anvil"
@@ -998,328 +1019,6 @@ obj/structure/anvil/New()
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
 						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-		else if (choice == "Guns")
-			var/list/display3 = list("Crude Musket (15)", "Flintlock Pistol (20)", "Flintlock Musketoon (25)", "Flintlock Musket (30)", "Flintlock Blunderbuss (25)", "Cancel")
-			var/choice3 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display3)
-			if (choice3 == "Crude Musket (15)")
-				if (iron_amt >= 15)
-					user << "You begin crafting a crude musket..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 15)
-						user << "You craft a crude musket."
-						iron_amt -= 15
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/gun/projectile/flintlock/crude(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice3 == "Flintlock Musket (30)")
-				if (iron_amt >= 30)
-					user << "You begin crafting a musket..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,250,src) && iron_amt >= 30)
-						user << "You craft a musket."
-						iron_amt -= 30
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/gun/projectile/flintlock/musket(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice3 == "Flintlock Musketoon (25)")
-				if (iron_amt >= 25)
-					user << "You begin crafting a musketoon..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,250,src) && iron_amt >= 25)
-						user << "You craft a musketoon."
-						iron_amt -= 25
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/gun/projectile/flintlock/musketoon(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice3 == "Flintlock Blunderbuss (25)")
-				if (iron_amt >= 25)
-					user << "You begin crafting a blunderbuss..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,250,src) && iron_amt >= 25)
-						user << "You craft a blunderbuss."
-						iron_amt -= 25
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/gun/projectile/flintlock/blunderbuss(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice3 == "Flintlock Pistol (20)")
-				if (iron_amt >= 20)
-					user << "You begin crafting a pistol..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,200,src) && iron_amt >= 20)
-						user << "You craft a pistol."
-						iron_amt -= 20
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/gun/projectile/flintlock/pistol(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice3 == "Cancel")
-				return
-
-
-		else if (choice == "Shields & Tools")
-			var/list/display4 = list("Cancel")
-			if (map.ordinal_age == 2)
-				if (H.orc)
-					display4 = list( "Orkish Shield (16)", "Cancel")
-				else
-					display4 = list("Semi Oval Shield(16)", "Semi Oval Templar Shield(16)", "Cancel")
-			else if (map.ordinal_age == 0)
-				display4 = list("Cancel")
-			else
-				display4 = list("Classic Era Standards(10)", "Athenian Aspis Shield(13)", "Spartan Aspis Shield(13)", "Pegasus Aspis Shield(13)", "Owl Aspis Shield(13)", "Egyptian Shield(13)", "Scutum Shield(14)", "Roman Shields(14)", "Cancel")
-			var/choice4 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display4)
-
-			if (choice4 == "Classic Era Standards(10)")
-				var/list/display5 = list("Cancel")
-				if (map.ordinal_age == 1)
-					display5 = list("Roman Standard(10)", "Greek Standard(10)", "Egyptian Standard(10)", "Cancel")
-				var/choice5 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display5)
-
-				if (choice5 == "Roman Standard(10)")
-					if (iron_amt >= 10)
-						user << "You begin crafting the roman standard..."
-						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,130,src) && iron_amt >= 10)
-							user << "You craft the roman standard."
-						iron_amt -= 10
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/material/roman_standard(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-				if (choice5 == "Greek Standard(10)")
-					if (iron_amt >= 10)
-						user << "You begin crafting the greek standard..."
-						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,130,src) && iron_amt >= 10)
-							user << "You craft the greek standard."
-						iron_amt -= 10
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/material/greek_standard(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-				if (choice5 == "Egyptian Standard(10)")
-					if (iron_amt >= 10)
-						user << "You begin crafting the egyptian standard..."
-						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,130,src) && iron_amt >= 10)
-							user << "You craft the egyptian standard."
-						iron_amt -= 10
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/material/egyptian_standard(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-
-				if (choice5 == "Cancel")
-					return
-
-			if (choice4 == "Athenian Aspis Shield(13)")
-				if (iron_amt >= 13)
-					user << "You begin crafting the athenian aspis shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 13)
-						user << "You craft the athenian aspis shield."
-						iron_amt -= 13
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/nomads/aspis(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice4 == "Spartan Aspis Shield(13)")
-				if (iron_amt >= 13)
-					user << "You begin crafting the spartan aspis shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 13)
-						user << "You craft the athenian aspis shield."
-						iron_amt -= 13
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/nomads/spartan(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice4 == "Pegasus Aspis Shield(13)")
-				if (iron_amt >= 13)
-					user << "You begin crafting the pegasus aspis shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 13)
-						user << "You craft the pegasus aspis shield."
-						iron_amt -= 13
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/nomads/aspis/pegasus(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice4 == "Owl Aspis Shield(13)")
-				if (iron_amt >= 13)
-					user << "You begin crafting the owl aspis shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 13)
-						user << "You craft the owl aspis shield."
-						iron_amt -= 13
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/nomads/aspis/owl(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-
-			if (choice4 == "Egyptian Shield(13)")
-				if (iron_amt >= 13)
-					user << "You begin crafting the egyptian shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 13)
-						user << "You craft the egyptian shield."
-						iron_amt -= 13
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/egyptian(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice4 == "Scutum Shield(14)")
-				if (iron_amt >= 14)
-					user << "You begin crafting the scutum shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 14)
-						user << "You craft the scutum shield."
-						iron_amt -= 14
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/scutum(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-
-			if (choice4 == "Roman Shields(14)")
-				var/list/display6 = list("Cancel")
-				if (map.ordinal_age == 1)
-					display6 = list("Roman Shield(14)", "Blue Roman Shield(14)", "Praetorian Roman Shield(16)", "Cancel")
-				var/choice6 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display6)
-				if (choice6 == "Roman Shield(14)")
-					if (iron_amt >= 14)
-						user << "You begin crafting the roman shield..."
-						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,160,src) && iron_amt >= 14)
-							user << "You craft the roman shield."
-						iron_amt -= 14
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/roman(user.loc)
-						return
-					else
-						user << "<span class='notice'>You need more iron to make this!</span>"
-						return
-				if (choice6 == "Blue Roman Shield(14)")
-					if (iron_amt >= 14)
-						user << "You begin crafting the roman shield..."
-						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,160,src) && iron_amt >= 14)
-							user << "You craft the roman shield."
-						iron_amt -= 14
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/roman/blue(user.loc)
-						return
-					else
-						user << "<span class='notice'>You need more iron to make this!</span>"
-						return
-				if (choice6 == "Praetorian Roman Shield(16)")
-					if (iron_amt >= 16)
-						user << "You begin crafting the praetorian roman shield..."
-						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,180,src) && iron_amt >= 16)
-							user << "You craft the praetorian roman shield."
-						iron_amt -= 16
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/roman/praetorian(user.loc)
-						return
-					else
-						user << "<span class='notice'>You need more iron to make this!</span>"
-						return
-
-				if (choice6 == "Cancel")
-					return
-
-			if (choice4 == "Semi Oval Shield(16)")
-				if (iron_amt >= 16)
-					user << "You begin crafting the semi oval shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,180,src) && iron_amt >= 16)
-						user << "You craft the semi oval shield."
-						iron_amt -= 16
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/iron/nomads/semioval(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-
-			if (choice4 == "Semi Oval Templar Shield(16)")
-				if (iron_amt >= 16)
-					user << "You begin crafting the semi oval templar shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,180,src) && iron_amt >= 16)
-						user << "You craft the semi oval templar shield."
-						iron_amt -= 16
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/iron/nomads/semioval/templar(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
-					return
-			if (choice4 == "Orkish Shield (16)")
-				if (iron_amt >= 13)
-					user << "You begin crafting the orkish shield..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 13)
-						user << "You craft the orkish shield."
-						iron_amt -= 13
-						if (iron_amt <= 0)
-							icon_state = "[base_icon]_anvil"
-						new/obj/item/weapon/shield/iron/orc(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
