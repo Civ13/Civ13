@@ -180,7 +180,8 @@ RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybrick
 
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
 
-RECIPE: /material/clay/,furnace,/obj/structure/furnace/clay,10,150,1,1,none,26,0,0,8,null
+RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace/clay,10,150,1,1,none,26,0,0,8,null
+RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
 
 RECIPE: /material/clay/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
 
@@ -1229,7 +1230,7 @@ RECIPE: /material/stone/,full stone window,/obj/structure/window_frame/stonefull
 
 //*************| STONE PRODUCTION BUILDINGS & ECONOMY |***************
 
-RECIPE: /material/stone/,furnace,/obj/structure/furnace,10,150,1,1,production,26,0,0,8,null
+RECIPE: /material/stone/,stone bloomery,/obj/structure/furnace,10,150,1,1,production,26,0,0,8,null
 RECIPE: /material/stone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,null
 
 //*************| STONE WEAPONS & PROJECTILES |***************
@@ -2051,6 +2052,7 @@ RECIPE: /material/wood/,specialist armorbench,/obj/structure/anvil/armorbench/sp
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
 
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
+RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,25,220,1,1,production,0,87,0,8,null
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 
@@ -2213,7 +2215,7 @@ RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7
 RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,3,100,1,1,structures,0,0,0,8,null
 
 RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
-RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1,structures,26,0,0,8,null
+RECIPE: /material/sandstone/,sandstone bloomery,/obj/structure/furnace/sandstone,10,150,1,1,structures,26,0,0,8,null
 
 //*********************| SANDSTONE FORTIFICATIONS |**************************
 

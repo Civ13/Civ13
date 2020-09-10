@@ -1,4 +1,3 @@
-
 ////Furnaces////
 /obj/structure/furnace
 	name = "bloomery"
