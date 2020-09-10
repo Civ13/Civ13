@@ -71,6 +71,7 @@
 "os" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "qx" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCivA"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "qB" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
+"qD" = (/obj/structure/submitter,/turf/floor/dirt,/area/caribbean/football/nopass)
 "ts" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/item/football,/obj/effect/landmark{name = "football"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "tS" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/flag/blue,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "wu" = (/obj/structure/grille/fence/picket,/turf/floor/dirt,/area/caribbean/football)
@@ -104,7 +105,7 @@ abababababababababababababababababababababababababababababababababababababababab
 ababababababababababababababababababababababababababababababababababababababababababababab
 ababababababababababababababababababababababababababababababababababababababababababababab
 ababababababababababababababababababababababababababababababababababababababababababababab
-ababacacacacacacacacacacacacacacacacacadadacacacacacacacacacacacacacacacacacacabababababab
+ababacacacacacacacacacacacacacacacacacqDqDacacacacacacacacacacacacacacacacacacabababababab
 ababacacacacacacacacacacacacacacacacacadadacacacacacacacacacacacacacacacacacacabababababab
 ababacacaeafafafafafafafafafafafafafapagagaqafafafafafafafafafafafafafaeacacacabababababab
 ababacactSaiajakakakakakakakakakakakakamatananananananananananananTpawaBacacacabababababab
