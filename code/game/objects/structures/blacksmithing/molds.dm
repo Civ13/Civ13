@@ -1,12 +1,13 @@
 ///////////RAW MOLDS/////////////
 /obj/item/weapon/clay/mold
 	name = "unfired clay ingot mold"
-    desc = "An unfired mould."
+	desc = "An unfired mould."
 	icon = 'icons/obj/metallurgy.dmi'
 	icon_state = "ingot_mold_raw"
 	base_icon = "ingot_mold"
 	result = /obj/item/weapon/clay/mold/fired
 	var/fired = FALSE
+	var/list/contents_materials = list()
 	var/capacity = 0
 	var/max_capacity = 0
 	var/current_material = null
@@ -20,20 +21,60 @@
 	else
 		icon_state = "[base_icon]_empty"
 
-/obj/item/weapon/clay/mold/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/weapon/clay/mold/attackby(obj/item/I as obj, mob/user as mob)
 	if (!fired)
 		return
-	if (istype(W, /obj/item/weapon/clay/mold/clayjug) || istype(W, /obj/item/weapon/clay/mold/claypot))
-		var/obj/item/weapon/clay/mold/ML = W
+	if (istype(I, /obj/item/weapon/clay/mold/clayjug) || istype(I, /obj/item/weapon/clay/mold/claypot))
+		var/obj/item/weapon/clay/mold/ML = I
 		if (ML.capacity > 0 && src.capacity == 0)
-			user.visible_message("[user] pours the molten [ML.material] into \the [src].")
+			user.visible_message("[user] pours the molten [ML.current_material] into \the [src].")
 			src.capacity = ML.capacity
 			src.current_material = ML.current_material
 			ML.current_material = null
 			ML.capacity = 0
 			ML.update_icon()
 			src.update_icon()
-
+	else if (istype(I, /obj/item/stack/ore))
+		var/obj/item/stack/ore/O = I
+		if (istype(O, /obj/item/stack/ore/gold))
+			if (contents_materials.len == 0)
+				contents_materials += list("gold" = O.amount)
+				qdel(I)
+			else if  (contents_materials.len == 1 && contents_materials["gold"])
+				contents_materials["gold"] += O.amount
+				qdel(I)
+		else if (istype(O, /obj/item/stack/ore/silver))
+			if (contents_materials.len == 0)
+				contents_materials += list("silver" = O.amount)
+				qdel(I)
+			else if  (contents_materials.len == 1 && contents_materials["silver"])
+				contents_materials["silver"] += O.amount
+				qdel(I)
+		else if (istype(O, /obj/item/stack/ore/copper))
+			if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["tin"]))
+				contents_materials += list("copper" = O.amount)
+				qdel(I)
+			else if ((contents_materials.len == 1 && contents_materials["copper"]) || (contents_materials.len == 2 && contents_materials["copper"]))
+				contents_materials["copper"] += O.amount
+				qdel(I)
+		else if (istype(O, /obj/item/stack/ore/tin))
+			if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["copper"]))
+				contents_materials += list("tin" = O.amount)
+				qdel(I)
+			else if ((contents_materials.len == 1 && contents_materials["tin"]) || (contents_materials.len == 2 && contents_materials["tin"]))
+				contents_materials["tin"] += O.amount
+				qdel(I)
+		else if (istype(O, /obj/item/stack/ore/lead))
+			if (contents_materials.len == 0)
+				contents_materials += list("lead" = O.amount)
+				qdel(I)
+			else if (contents_materials.len == 1 && contents_materials["lead"])
+				contents_materials["lead"] += O.amount
+				qdel(I)
+		else
+			user << "You cannot use this material on a kiln."
+			return
+		return
 /obj/item/weapon/clay/mold/axehead
 	name = "unfired clay axehead mold"
 	icon_state = "axehead_mold_raw"
@@ -92,7 +133,7 @@
 
 /obj/item/weapon/clay/mold/clayjug
 	name = "unfired clay blacksmith jug"
-    desc = "An unfired blacksmith jug."
+	desc = "An unfired blacksmith jug."
 	icon_state = "clay_jug_raw"
 	base_icon = "clay_jug"
 	result = /obj/item/weapon/clay/mold/clayjug/fired
@@ -100,7 +141,7 @@
 //////FIRED MOLDS/////////
 /obj/item/weapon/clay/mold/fired
 	name = "unfired clay ingot mold"
-    desc = "A mould."
+	desc = "A mould."
 	icon_state = "ingot_mold_empty"
 	base_icon = "ingot_mold"
 	fired = TRUE
@@ -157,7 +198,7 @@
 
 /obj/item/weapon/clay/mold/clayjug/fired
 	name = "unfired clay blacksmith jug"
-    desc = "A blacksmith jug."
+	desc = "A blacksmith jug."
 	icon_state = "clay_jug_empty"
 	base_icon = "clay_jug"
 	fired = TRUE

@@ -155,42 +155,6 @@
 				contents += NO
 				contents -= I
 				qdel(I)
-			else if (istype(I, /obj/item/stack/ore/gold))
-				var/obj/item/stack/material/gold/NO = new/obj/item/stack/material/gold(src)
-				NO.amount = I.amount
-				contents += NO
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/stack/ore/silver))
-				var/obj/item/stack/material/silver/NO = new/obj/item/stack/material/silver(src)
-				NO.amount = I.amount
-				contents += NO
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/stack/ore/iron))
-				var/obj/item/stack/material/iron/NO = new/obj/item/stack/material/iron(src)
-				NO.amount = I.amount
-				contents += NO
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/stack/ore/copper))
-				var/obj/item/stack/material/copper/NO = new/obj/item/stack/material/copper(src)
-				NO.amount = I.amount
-				contents += NO
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/stack/ore/tin))
-				var/obj/item/stack/material/tin/NO = new/obj/item/stack/material/tin(src)
-				NO.amount = I.amount
-				contents += NO
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/stack/ore/lead))
-				var/obj/item/stack/material/lead/NO = new/obj/item/stack/material/lead(src)
-				NO.amount = I.amount
-				contents += NO
-				contents -= I
-				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
