@@ -50,7 +50,7 @@
 /obj/item/stack/ore/iron_sponge //crude refined iron from a bloomery. Use on anvil for wrought iron
 	name = "sponge iron"
 	desc = "Very crude iron, can be further refined into wrought iron in an anvil."
-	icon_state = "ore_iron_sponge"
+	icon_state = "ore_sponge_iron"
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -71,7 +71,7 @@
 /obj/item/stack/ore/iron_pig //slighly better iron from a blast furnace.
 	name = "pig iron"
 	desc = "A soft iron with a high carbon content. Used to make steel using an anvil."
-	icon_state = "ore_iron_pig"
+	icon_state = "ore_pig_iron"
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
