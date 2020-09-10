@@ -71,6 +71,20 @@
 			else if (contents_materials.len == 1 && contents_materials["lead"])
 				contents_materials["lead"] += O.amount
 				qdel(I)
+		else if (istype(O, /obj/item/stack/material/iron))
+			if (contents_materials.len == 0)
+				contents_materials += list("iron" = O.amount)
+				qdel(I)
+			else if (contents_materials.len == 1 && contents_materials["iron"])
+				contents_materials["iron"] += O.amount
+				qdel(I)
+		else if (istype(O, /obj/item/stack/material/steel))
+			if (contents_materials.len == 0)
+				contents_materials += list("steel" = O.amount)
+				qdel(I)
+			else if (contents_materials.len == 1 && contents_materials["steel"])
+				contents_materials["steel"] += O.amount
+				qdel(I)
 		else
 			user << "You cannot use this material on a kiln."
 			return
