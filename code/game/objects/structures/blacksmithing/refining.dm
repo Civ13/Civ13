@@ -244,7 +244,7 @@
 	name = "blast furnace"
 	desc = "An industrial blast furnace, used to make advanced alloys."
 	icon = 'icons/obj/metallurgy.dmi'
-	icon_state = "blast_furnace_off"
+	icon_state = "blast_furnace"
 	base_state = "blast_furnace"
 
 ////////ADVANCED METALLURGY STUFF/////////
@@ -252,7 +252,7 @@
 	name = "kiln"
 	desc = "A clay brick kiln, used for metallurgy."
 	icon = 'icons/obj/metallurgy.dmi'
-	icon_state = "kiln_off"
+	icon_state = "kiln"
 	base_state = "kiln"
 /obj/structure/furnace/kiln/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))

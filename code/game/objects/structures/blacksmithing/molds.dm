@@ -140,56 +140,56 @@
 
 //////FIRED MOLDS/////////
 /obj/item/weapon/clay/mold/fired
-	name = "unfired clay ingot mold"
-	desc = "A mould."
+	name = "ingot mold"
+	desc = "A mold."
 	icon_state = "ingot_mold_empty"
 	base_icon = "ingot_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/axehead/fired
-	name = "unfired clay axehead mold"
+	name = "axehead mold"
 	icon_state = "axehead_mold_empty"
 	base_icon = "axehead_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/sword/fired
-	name = "unfired clay sword mold"
+	name = "sword mold"
 	icon_state = "sword_mold_empty"
 	base_icon = "sword_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/knife/fired
-	name = "unfired clay knife mold"
+	name = "knife mold"
 	icon_state = "knife_mold_empty"
 	base_icon = "knife_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/spearhead/fired
-	name = "unfired clay spearhead mold"
+	name = "spearhead mold"
 	icon_state = "spearhead_mold_empty"
 	base_icon = "spearhead_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/pickaxe/fired
-	name = "unfired clay pickaxe mold"
+	name = "pickaxe mold"
 	icon_state = "pickaxe_mold_empty"
 	base_icon = "pickaxe_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/shovel/fired
-	name = "unfired clay shovel mold"
+	name = "shovel mold"
 	icon_state = "shovel_mold_empty"
 	base_icon = "shovel_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/arrowhead/fired
-	name = "unfired clay arrowhead mold"
+	name = "arrowhead mold"
 	icon_state = "arrowhead_mold_empty"
 	base_icon = "arrowhead_mold"
 	fired = TRUE
 
 /obj/item/weapon/clay/mold/claypot/fired
-	name = "unfired clay blacksmith pot"
+	name = "clay blacksmith pot"
 	desc = "A blacksmith pot."
 	icon_state = "clay_pot_empty"
 	base_icon = "clay_pot"
@@ -197,7 +197,7 @@
 	max_capacity = 20
 
 /obj/item/weapon/clay/mold/clayjug/fired
-	name = "unfired clay blacksmith jug"
+	name = "clay blacksmith jug"
 	desc = "A blacksmith jug."
 	icon_state = "clay_jug_empty"
 	base_icon = "clay_jug"
