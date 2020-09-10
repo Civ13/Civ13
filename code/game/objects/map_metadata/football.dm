@@ -73,7 +73,7 @@
 /obj/map_metadata/football/proc/save_teams()
 	var/F = file("SQL/sports_teams.txt")
 	for (var/i in teams)
-		var/txtexport = list2text(teams[i])
+		var/txtexport = list2params(teams[i])
 		text2file(txtexport,F)
 	return
 /obj/map_metadata/football/proc/load_teams()
@@ -289,21 +289,3 @@
 
 	..()
 	return TRUE
-
-/////////TEAM DATUMS/////////
-/datum/team
-	var/name = "Generic Team"
-	var/datum/team_uniforms/main_uniform = null
-	var/datum/team_uniforms/secondary_uniform = null
-	var/datum/team_uniforms/goalkeeper_uniform = null
-
-/datum/team_uniforms
-	var/name = "Generic Team"
-	var/utype = "main" //main, secondary, goalkeeper
-	var/shorts_color = "#000000"
-	var/shirt_color = "#FFFFFF"
-	var/shorts_sides_color=null
-	var/shirt_sleeves_color=null
-	var/shirt_sides_color=null
-	var/shirt_vstripes_color=null
-	var/shirt_hstripes_color=null
