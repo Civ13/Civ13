@@ -418,13 +418,13 @@ RECIPE: /material/woolcloth/,customizable renaissance clothing,/obj/item/clothin
 RECIPE: /material/woolcloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,pilgrim uniform,/obj/item/clothing/under/pilgrim,4,75,0,1,clothing,0,0,80,4,null
-RECIPE: /material/woolccloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,80,8,null
+RECIPE: /material/woolcloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,80,8,null
 RECIPE: /material/woolcloth/,custom victorian uniform,/obj/item/clothing/under/customvicuniform,3,75,0,1,clothing,0,0,98,8,null
-RECIPE: /material/woolccloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
-RECIPE: /material/woolccloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
-RECIPE: /material/woolccloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
-RECIPE: /material/woolccloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
-RECIPE: /material/woolccloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
+RECIPE: /material/woolcloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/woolcloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/woolcloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/woolcloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
+RECIPE: /material/woolcloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/woolcloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
 RECIPE: /material/woolcloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
 

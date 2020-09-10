@@ -156,6 +156,12 @@ default behaviour is:
 			return TRUE
 
 /mob/living/proc/can_swap_with(var/mob/living/tmob)
+	if (map && map.ID == MAP_FOOTBALL)
+		return FALSE
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		if (H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football))
+			return FALSE
 	if (tmob.buckled || buckled)
 		return FALSE
 	//BubbleWrap: people in handcuffs are always switched around as if they were on 'help' intent to prevent a person being pulled from being seperated from their puller

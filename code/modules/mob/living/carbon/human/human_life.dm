@@ -136,7 +136,7 @@
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
 		invisibility = 0
-	if (has_hunger_and_thirst)
+	if (has_hunger_and_thirst && (map.civilizations || map.nomads || map.has_hunger))
 		var/water_m = 1
 		var/food_m = 1
 		if (find_trait("Gigantism"))
@@ -153,6 +153,12 @@
 		if (istype(buckled, /obj/structure/cross))
 			food_m *= 1.5
 			water_m *= 5
+
+		if (map && map.ID == MAP_FOOTBALL && (l_hand || r_hand))
+			var/area/A = get_area(loc)
+			if (!istype(A, /area/caribbean/football/red/goalkeeper) && !istype(A, /area/caribbean/football/red/goalkeeper))
+				if (istype(l_hand, /obj/item/football) || istype(r_hand, /obj/item/football))
+					src.drop_item(loc)
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)

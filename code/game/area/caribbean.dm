@@ -1123,14 +1123,30 @@
 	name = "Football Field"
 	icon_state = "green1"
 	climate = "temperate"
-
+	ambience = list("sound/ambience/football.ogg")
 /area/caribbean/football/red
 	name = "Football Field"
 	icon_state = "red1"
 
+/area/caribbean/football/red/score
+	name = "Football Field"
+	icon_state = "red2"
+
+/area/caribbean/football/red/goalkeeper
+	name = "Football Field"
+	icon_state = "red3"
+
 /area/caribbean/football/blue
 	name = "Football Field"
 	icon_state = "blue2"
+
+/area/caribbean/football/blue/goalkeeper
+	name = "Football Field"
+	icon_state = "blue1"
+
+/area/caribbean/football/blue/score
+	name = "Football Field"
+	icon_state = "blue3"
 
 /area/caribbean/football/midfield
 	icon_state = "green1"
