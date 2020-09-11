@@ -55,19 +55,19 @@
 		for (var/datum/job/job in job_master.faction_organized_occupations)
 			if (istype(job, /datum/job/civilian/football_red/goalkeeper))
 				job.title = "[teams[team1][1]] goalkeeper"
-				job.selection_color = teams[team1]["main uniform"][3]
+				job.selection_color = teams[team1]["main uniform"]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_red))
 				job.title = teams[team1][1]
-				job.selection_color = teams[team1]["main uniform"][3]
+				job.selection_color = teams[team1]["main uniform"]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_blue/goalkeeper))
 				job.title = "[teams[team2][1]] goalkeeper"
-				job.selection_color = teams[team2]["main uniform"][3]
+				job.selection_color = teams[team2]["main uniform"]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_blue))
 				job.title = teams[team2][1]
-				job.selection_color = teams[team2]["main uniform"][3]
+				job.selection_color = teams[team2]["main uniform"]["shirt_color"]
 		for (var/obj/effect/step_trigger/goal/red/GR in world)
 			GR.assign()
 		for (var/obj/effect/step_trigger/goal/blue/GB in world)
@@ -133,7 +133,7 @@
 		message = "The round has ended!"
 		if (teams[team1][2] > teams[team2][2])
 			message = "<b>[team1]</b> have won the match!"
-			world << "<font size=4 color=[teams[team1]["main uniform"][3]]>[message]</font>"
+			world << "<font size=4 color=[teams[team1]["main uniform"]["shirt_color"]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -141,7 +141,7 @@
 
 		else if (teams[team2][2] > teams[team1][2])
 			message = "<b>[team2]</b> have won the match!"
-			world << "<font size=4 color=[teams[team2]["main uniform"][3]]>[message]</font>"
+			world << "<font size=4 color=[teams[team2]["main uniform"]["shirt_color"]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -234,7 +234,9 @@
 		var/obj/item/clothing/under/football/custom/FR = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FR, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/red(H), slot_gloves)
+		var/obj/item/clothing/gloves/goalkeeper/red/RG = new/obj/item/clothing/gloves/goalkeeper/red(H)
+		RG.color = FM.teams[FM.team1]["goalkeeper uniform"]["shorts_color"]
+		H.equip_to_slot_or_del(RG, slot_gloves)
 		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1]["goalkeeper uniform"]["shorts_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shorts_sides_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_sleeves_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_sides_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_vstripes_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_red))
 			FR.player_number = pick(FM.player_count_red)
@@ -291,7 +293,9 @@
 		var/obj/item/clothing/under/football/custom/FB = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FB, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/blue(H), slot_gloves)
+		var/obj/item/clothing/gloves/goalkeeper/blue/BG = new/obj/item/clothing/gloves/goalkeeper/blue(H)
+		BG.color = FM.teams[FM.team2]["goalkeeper uniform"]["shorts_color"]
+		H.equip_to_slot_or_del(BG, slot_gloves)
 		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2]["goalkeeper uniform"]["shorts_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shorts_sides_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_sleeves_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_sides_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_vstripes_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_blue))
 			FB.player_number = pick(FM.player_count_blue)

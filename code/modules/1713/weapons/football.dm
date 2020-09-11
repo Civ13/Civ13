@@ -222,16 +222,18 @@
 
 ////////////GLOVES/////////////////
 /obj/item/clothing/gloves/goalkeeper/red
-	name = "red goalkeeper gloves"
-	initial_name = "red goalkeeper gloves"
-	icon_state = "red"
-	item_state = "redgloves"
+	name = "goalkeeper gloves"
+	initial_name = "goalkeeper gloves"
+	icon_state = "latex"
+	item_state = "latex"
+	color = "#ffffff"
 
 /obj/item/clothing/gloves/goalkeeper/blue
-	name = "blue goalkeeper gloves"
-	initial_name = "blue goalkeeper gloves"
-	icon_state = "blue"
-	item_state = "bluegloves"
+	name = "goalkeeper gloves"
+	initial_name = "goalkeeper gloves"
+	icon_state = "latex"
+	item_state = "latex"
+	color = "#ffffff"
 
 /mob/living/human/var/obj/item/football/football = null
 
