@@ -42,7 +42,9 @@
 
 /obj/map_metadata/football/proc/assign_teams(client/triggerer = null)
 	load_teams()
-	var/list/teamlist = list("Unga Utd.", "Chad Town F.C.")
+	var/list/teamlist = list()
+	for (var/i in teams)
+		teamlist += teams[i][1]
 	if (triggerer)
 		var/t_team1 = WWinput(triggerer, "Team Selection", "Select team 1:", teamlist[1], teamlist)
 		var/t_team2 = WWinput(triggerer, "Team Selection", "Select team 2:", teamlist[2], teamlist)
@@ -108,7 +110,7 @@
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color=[teams[team1]["main uniform"][3]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2]["main uniform"][3]]>[teams[team2][1]]</b></font>"
+	world << "<font size=3 color=[teams[team1]["main uniform"]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2]["main uniform"]["shirt_color"]]>[teams[team2][1]]</b></font>"
 	spawn(300)
 		points_check()
 
