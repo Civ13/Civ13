@@ -27,7 +27,7 @@
 	var/team2_kit = "main uniform"
 	var/list/teams = list(
 						//name, score, shorts color, short stripes color, shirt color, shirt sleeves color, shirt collar color, shirt v stripes, shirt h stripes
-		"Chad Town F.C." = list("Chad Town F.C.",0,"main uniform" = list("shorts_color" = "#EBEBEA","shirt_color"="#84A2CE","shirt_sides_color"="#CDE4FB"),"secondary uniform" = list("shorts_color"="#84a2ce","shirt_color"="#c0c0c0","shirt_sides_color"="#84a2ce"),"goalkeeper uniform" = list("shorts_color"="#84a2ce","shirt_color"="#333333","shirt_sides_color"="#84a2ce")),
+		"Chad Town F.C." = list("Chad Town F.C.",0,"main uniform" = list("shorts_color" = "#EBEBEA","shirt_color"="#84A2CE","shirt_sides_color"="#CDE4FB"),"secondary uniform" = list("shorts_color"="#84a2ce","shirt_color"="#EBEBEA","shirt_sides_color"="#84a2ce"),"goalkeeper uniform" = list("shorts_color"="#84a2ce","shirt_color"="#333333","shirt_sides_color"="#84a2ce")),
 		"Unga Utd." = list("Unga Utd.",0,"main uniform" = list("shorts_color" = "#262626","shirt_color"="#AE001A","shirt_sleeves_color"="#BB9634"),"secondary uniform" = list("shorts_color"="#bb9634","shirt_color"="#ffffff","shirt_sleeves_color"="#ae001a","shirt_sides_color"="#bb9634"),"goalkeeper uniform" = list("shorts_color"="#ae001a","shirt_color"="#bb9634","shirt_sides_color"="#ae001a")),
 	)
 
