@@ -70,6 +70,10 @@
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 	flammable = FALSE
 
+/obj/structure/grille/fence/picket/goalpost/New()
+	..()
+	icon_state = "goalpost"
+	color = null
 /obj/structure/grille/fence/picket/goalpost/attackby(obj/O as obj, mob/user as mob)
 	return
 /obj/structure/grille/fence/picket/goalpost/attack_hand(mob/user as mob)
