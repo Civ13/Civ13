@@ -41,6 +41,12 @@
 		load_teams()
 		spawn(600)
 			points_check()
+			for (var/obj/structure/banner/faction/team/team1/T1 in world)
+				T1.team = team1
+				T1.assign_team(team1)
+			for (var/obj/structure/banner/faction/team/team2/T2 in world)
+				T2.team = team2
+				T2.assign_team(team2)
 
 /obj/map_metadata/football/proc/assign_teams(client/triggerer = null)
 	load_teams()
@@ -64,6 +70,12 @@
 		team1 = t_team1
 		team2 = t_team2
 		world << "<font size=4>This match will be between [team1] and [team2]!</font>"
+		for (var/obj/structure/banner/faction/team/team1/T1 in world)
+			T1.team = team1
+			T1.assign_team(team1)
+		for (var/obj/structure/banner/faction/team/team2/T2 in world)
+			T2.team = team2
+			T2.assign_team(team2)
 	spawn(2)
 		for (var/datum/job/job in job_master.faction_organized_occupations)
 			if (istype(job, /datum/job/civilian/football_red/goalkeeper))

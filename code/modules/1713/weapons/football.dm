@@ -262,10 +262,13 @@
 	return
 
 /obj/item/football/Crossed(mob/living/human/user)
-	if (!owner && !user.football)
-		owner = user
-		user.football = src
-		return
+	if (ishuman(user))
+		if (!owner && !user.football)
+			owner = user
+			user.football = src
+			return
+		else
+			..()
 	else
 		..()
 
