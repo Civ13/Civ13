@@ -1,4 +1,4 @@
-"aa" = (/obj/structure/grille/fence/picket/goalpost{dir = 1},/obj/structure/grille/fence/picket/goalpost{dir = 4},/turf/floor/dirt,/area/caribbean/football)
+"aa" = (/obj/structure/grille/fence/picket/goalpost{dir = 9},/turf/floor/dirt,/area/caribbean/football)
 "ab" = (/turf/wall/indestructable/black,/area/caribbean/football/nopass)
 "ac" = (/turf/floor/dirt,/area/caribbean/football)
 "ad" = (/turf/floor/dirt,/area/caribbean/football/nopass)
@@ -59,7 +59,7 @@
 "bj" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "bk" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/nopass)
 "bl" = (/obj/map_metadata/football,/turf/floor/dirt,/area/caribbean/football)
-"bm" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/banner/faction/team/team2,/obj/structure/grille/fence/picket/goalpost{dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"bm" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/banner/faction/team/team2,/obj/structure/grille/fence/picket/goalpost{dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "bn" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
 "bo" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
 "bq" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
@@ -72,12 +72,14 @@
 "qB" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "qD" = (/obj/structure/submitter,/turf/floor/dirt,/area/caribbean/football/nopass)
 "ts" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/item/football,/obj/effect/landmark{name = "football"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
-"wu" = (/obj/structure/grille/fence/picket/goalpost{dir = 1},/turf/floor/dirt,/area/caribbean/football)
-"xL" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/banner/faction/team/team1,/obj/structure/grille/fence/picket/goalpost{dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"wu" = (/obj/structure/grille/fence/picket/goalpost{dir = 8},/turf/floor/dirt,/area/caribbean/football)
+"xL" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/banner/faction/team/team1,/obj/structure/grille/fence/picket/goalpost{dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "yP" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/banner/faction/team/team2,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"zk" = (/obj/structure/grille/fence/picket/goalpost{dir = 10},/turf/floor/dirt,/area/caribbean/football)
 "Bq" = (/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
 "Bz" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/effect/step_trigger/goal/blue,/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/score)
-"Es" = (/obj/structure/grille/fence/picket/goalpost{dir = 4},/obj/structure/grille/fence/picket/goalpost{dir = 1},/turf/floor/dirt,/area/caribbean/football)
+"Es" = (/obj/structure/grille/fence/picket/goalpost{dir = 5},/turf/floor/dirt,/area/caribbean/football)
+"Fj" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/banner/faction/team/team1,/obj/structure/grille/fence/picket/goalpost,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "LW" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "NU" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "NW" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
@@ -89,6 +91,9 @@
 "SY" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "Tp" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "TO" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/effect/landmark{name = "football"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
+"VU" = (/obj/structure/grille/fence/picket/goalpost{dir = 4},/turf/floor/dirt,/area/caribbean/football)
+"WM" = (/obj/structure/grille/fence/picket/goalpost{dir = 6},/turf/floor/dirt,/area/caribbean/football)
+"Xw" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/banner/faction/team/team2,/obj/structure/grille/fence/picket/goalpost,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "Yx" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "YA" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/banner/faction/team/team1,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 
@@ -112,10 +117,10 @@ ababacacahaxasasasasasasasasasasasasasaubaavavavavavavavavavavavavavayaQacacacab
 ababacacahaxasasasasasasasasasasasasasaubaavavavavavavavavavavavavavayaQacacacabababababab
 ababacacahazaAaAasasasasasasasasasasasaCaXavavavavavavavavavavavaDaDbbaQacacacabababababab
 ababacaabmbebiaGazasasasasasasasasasaIaJaKqBavavavavavavavavavaRaobnboxLEsacacabababababab
-ababacwuaFSDQMaOaPazasasasasasasasaIataubaamqBavavavavavavavaRNUONaNbqBzwuacacabababababab
-ababacwuaFSDQMaOaxaSaxasasasasasaTaUaWtsTOaWjtYxavavavavavaySYayONaNbqBzwuacacabababababab
-ababacwuaFSDQMaOaYarasasasasasasasbcLWaubaaMcbavavavavavavavaLmnONaNbqBzwuacacabababababab
-ababacaabmNWidaHarasasasasasasasasasbcbdPucbavavavavavavavavavaLaEBqRexLEsacacabababababab
+ababacwuaFSDQMaOaPazasasasasasasasaIataubaamqBavavavavavavavaRNUONaNbqBzVUacacabababababab
+ababacwuaFSDQMaOaxaSaxasasasasasaTaUaWtsTOaWjtYxavavavavavaySYayONaNbqBzVUacacabababababab
+ababacwuaFSDQMaOaYarasasasasasasasbcLWaubaaMcbavavavavavavavaLmnONaNbqBzVUacacabababababab
+ababaczkXwNWidaHarasasasasasasasasasbcbdPucbavavavavavavavavavaLaEBqReFjWMacacabababababab
 ababacacaharakakasasasasasasasasasasasbfosavavavavavavavavavavavananTpaQacacacabababababab
 ababacacahaxasasasasasasasasasasasasasaubaavavavavavavavavavavavavavayaQacacacabababababab
 ababacacahaxasasasasasasasasasasasasasaubaavavavavavavavavavavavavavayaQacacacabababababab
