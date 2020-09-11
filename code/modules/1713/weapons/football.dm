@@ -160,19 +160,19 @@
 //for automatic assignement of colors, ie, roundstart
 /obj/item/clothing/under/football/custom/proc/assign_style(tname,tshorts_color,tshirt_color,tshorts_sides_color=null,tshirt_sleeves_color=null,tshirt_sides_color=null,tshirt_vstripes_color=null,tshirt_hstripes_color=null,c_player_number=0)
 	uncolored = FALSE
-	if (tshorts_color != "null" && tshorts_color != "")
+	if (tshorts_color != "null" && tshorts_color != "" && tshorts_color != "0")
 		src.shorts_color = tshorts_color
-	if (tshirt_color != "null" && tshirt_color != "")
+	if (tshirt_color != "null" && tshirt_color != "" && tshirt_color != "0")
 		src.shirt_color = tshirt_color
-	if (tshorts_sides_color != "null" && tshorts_sides_color != "")
+	if (tshorts_sides_color != "null" && tshorts_sides_color != "" && tshorts_sides_color != "0")
 		src.shorts_sides_color = tshorts_sides_color
-	if (tshirt_sleeves_color != "null" && tshirt_sleeves_color != "")
+	if (tshirt_sleeves_color != "null" && tshirt_sleeves_color != "" && tshirt_sleeves_color != "0")
 		src.shirt_sleeves_color = tshirt_sleeves_color
-	if (tshirt_sides_color != "null" && tshirt_sides_color != "")
+	if (tshirt_sides_color != "null" && tshirt_sides_color != "" && tshirt_sides_color != "0")
 		src.shirt_sides_color = tshirt_sides_color
-	if (tshirt_vstripes_color != "null" && tshirt_vstripes_color != "")
+	if (tshirt_vstripes_color != "null" && tshirt_vstripes_color != "" && tshirt_vstripes_color != "0")
 		src.shirt_vstripes_color = tshirt_vstripes_color
-	if (tshirt_hstripes_color != "null" && tshirt_hstripes_color != "")
+	if (tshirt_hstripes_color != "null" && tshirt_hstripes_color != "" && tshirt_hstripes_color != "0")
 		src.shirt_hstripes_color = tshirt_hstripes_color
 	if (tshirt_color && tshorts_color)
 		var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt")
@@ -368,8 +368,6 @@
 			switch(input4)
 				if ("Main")
 					T["main_uniform"] = list()
-					T["main_uniform"]["name"] = T["name"]
-					T["main_uniform"]["utype"] = "main"
 					T["main_uniform"]["shorts_color"] = CU.shorts_color
 					T["main_uniform"]["shirt_color"] = CU.shirt_color
 					T["main_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
@@ -379,8 +377,6 @@
 					T["main_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 				if ("Secondary")
 					T["secondary_uniform"] = list()
-					T["secondary_uniform"]["name"] = T["name"]
-					T["secondary_uniform"]["utype"] = "secondary"
 					T["secondary_uniform"]["shorts_color"] = CU.shorts_color
 					T["secondary_uniform"]["shirt_color"] = CU.shirt_color
 					T["secondary_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
@@ -390,8 +386,6 @@
 					T["secondary_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 				if ("Goalkeeper")
 					T["goalkeeper_uniform"] = list()
-					T["goalkeeper_uniform"]["name"] = T["name"]
-					T["goalkeeper_uniform"]["utype"] = "goalkeeper"
 					T["goalkeeper_uniform"]["shorts_color"] = CU.shorts_color
 					T["goalkeeper_uniform"]["shirt_color"] = CU.shirt_color
 					T["goalkeeper_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
@@ -423,8 +417,6 @@
 				switch(input3)
 					if ("Main")
 						T["main_uniform"] = list()
-						T["main_uniform"]["name"] = T["name"]
-						T["main_uniform"]["utype"] = "main"
 						T["main_uniform"]["shorts_color"] = CU.shorts_color
 						T["main_uniform"]["shirt_color"] = CU.shirt_color
 						T["main_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
@@ -434,8 +426,6 @@
 						T["main_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 					if ("Secondary")
 						T["secondary_uniform"] = list()
-						T["secondary_uniform"]["name"] = T["name"]
-						T["secondary_uniform"]["utype"] = "secondary"
 						T["secondary_uniform"]["shorts_color"] = CU.shorts_color
 						T["secondary_uniform"]["shirt_color"] = CU.shirt_color
 						T["secondary_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
@@ -445,8 +435,6 @@
 						T["secondary_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 					if ("Goalkeeper")
 						T["goalkeeper_uniform"] = list()
-						T["goalkeeper_uniform"]["name"] = T["name"]
-						T["goalkeeper_uniform"]["utype"] = "goalkeeper"
 						T["goalkeeper_uniform"]["shorts_color"] = CU.shorts_color
 						T["goalkeeper_uniform"]["shirt_color"] = CU.shirt_color
 						T["goalkeeper_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
