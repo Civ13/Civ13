@@ -23,6 +23,8 @@
 	is_singlefaction = TRUE
 	var/team1 = "Unga Utd."
 	var/team2 = "Chad Town F.C."
+	var/team1_kit = "main uniform"
+	var/team2_kit = "main uniform"
 	var/list/teams = list(
 						//name, score, shorts color, short stripes color, shirt color, shirt sleeves color, shirt collar color, shirt v stripes, shirt h stripes
 		"Chad Town F.C." = list("Chad Town F.C.",0,"main uniform" = list("shorts_color" = "#EBEBEA","shirt_color"="#84A2CE","shirt_sides_color"="#CDE4FB"),"secondary uniform" = list("shorts_color"="#84a2ce","shirt_color"="#c0c0c0","shirt_sides_color"="#84a2ce"),"goalkeeper uniform" = list("shorts_color"="#84a2ce","shirt_color"="#333333","shirt_sides_color"="#84a2ce")),
@@ -47,7 +49,18 @@
 		teamlist += teams[i][1]
 	if (triggerer)
 		var/t_team1 = WWinput(triggerer, "Team Selection", "Select team 1:", teamlist[1], teamlist)
+		var/t_team1_k = WWinput(triggerer, "Team Selection", "Which kit shall team 1 use?", "Main", list("Main","Secondary"))
+		if (t_team1_k == "Main")
+			team1_kit = "main uniform"
+		else
+			team1_kit = "secondary uniform"
+
 		var/t_team2 = WWinput(triggerer, "Team Selection", "Select team 2:", teamlist[2], teamlist)
+		var/t_team2_k = WWinput(triggerer, "Team Selection", "Which kit shall team 2 use?", "Main", list("Main","Secondary"))
+		if (t_team2_k == "Main")
+			team2_kit = "main uniform"
+		else
+			team2_kit = "secondary uniform"
 		team1 = t_team1
 		team2 = t_team2
 		world << "<font size=4>This match will be between [team1] and [team2]!</font>"
@@ -55,19 +68,19 @@
 		for (var/datum/job/job in job_master.faction_organized_occupations)
 			if (istype(job, /datum/job/civilian/football_red/goalkeeper))
 				job.title = "[teams[team1][1]] goalkeeper"
-				job.selection_color = teams[team1]["main uniform"]["shirt_color"]
+				job.selection_color = teams[team1][team1_kit]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_red))
 				job.title = teams[team1][1]
-				job.selection_color = teams[team1]["main uniform"]["shirt_color"]
+				job.selection_color = teams[team1][team1_kit]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_blue/goalkeeper))
 				job.title = "[teams[team2][1]] goalkeeper"
-				job.selection_color = teams[team2]["main uniform"]["shirt_color"]
+				job.selection_color = teams[team2][team2_kit]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_blue))
 				job.title = teams[team2][1]
-				job.selection_color = teams[team2]["main uniform"]["shirt_color"]
+				job.selection_color = teams[team2][team2_kit]["shirt_color"]
 		for (var/obj/effect/step_trigger/goal/red/GR in world)
 			GR.assign()
 		for (var/obj/effect/step_trigger/goal/blue/GB in world)
@@ -110,7 +123,7 @@
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color=[teams[team1]["main uniform"]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2]["main uniform"]["shirt_color"]]>[teams[team2][1]]</b></font>"
+	world << "<font size=3 color=[teams[team1][team1_kit]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][team2_kit]["shirt_color"]]>[teams[team2][1]]</b></font>"
 	spawn(300)
 		points_check()
 
@@ -133,7 +146,7 @@
 		message = "The round has ended!"
 		if (teams[team1][2] > teams[team2][2])
 			message = "<b>[team1]</b> have won the match!"
-			world << "<font size=4 color=[teams[team1]["main uniform"]["shirt_color"]]>[message]</font>"
+			world << "<font size=4 color=[teams[team1][team1_kit]["shirt_color"]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -141,7 +154,7 @@
 
 		else if (teams[team2][2] > teams[team1][2])
 			message = "<b>[team2]</b> have won the match!"
-			world << "<font size=4 color=[teams[team2]["main uniform"]["shirt_color"]]>[message]</font>"
+			world << "<font size=4 color=[teams[team2][team2_kit]["shirt_color"]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -208,7 +221,7 @@
 		var/obj/item/clothing/under/football/custom/FR = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FR, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1]["main uniform"]["shorts_color"],FM.teams[FM.team1]["main uniform"]["shirt_color"],FM.teams[FM.team1]["main uniform"]["shorts_sides_color"],FM.teams[FM.team1]["main uniform"]["shirt_sleeves_color"],FM.teams[FM.team1]["main uniform"]["shirt_sides_color"],FM.teams[FM.team1]["main uniform"]["shirt_vstripes_color"],FM.teams[FM.team1]["main uniform"]["shirt_hstripes_color"],0)
+		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1][FM.team1_kit]["shorts_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_color"],FM.teams[FM.team1][FM.team1_kit]["shorts_sides_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_sleeves_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_sides_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_vstripes_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_red))
 			FR.player_number = pick(FM.player_count_red)
 			FR.update_icon()
@@ -265,7 +278,7 @@
 		var/obj/item/clothing/under/football/custom/FB = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FB, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2]["goalkeeper uniform"]["shorts_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shorts_sides_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_sleeves_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_sides_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_vstripes_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_hstripes_color"],0)
+		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2][FM.team2_kit]["shorts_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_color"],FM.teams[FM.team2][FM.team2_kit]["shorts_sides_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_sleeves_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_sides_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_vstripes_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_blue))
 			FB.player_number = pick(FM.player_count_blue)
 			FB.update_icon()
