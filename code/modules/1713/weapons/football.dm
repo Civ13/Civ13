@@ -307,6 +307,7 @@
 			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
 			var/scorer = " [FB.last_owner.name] ([FB.last_owner.ckey]) <b>([FB.last_owner.team])</b>"
 			FB.last_owner = null
+			FB.owner = null
 			if (MF.scorers[scorer])
 				MF.scorers[scorer] += 1
 			else

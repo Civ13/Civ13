@@ -76,6 +76,8 @@
 			FB.owner = null
 			FB.last_owner = H
 			FB.throw_at(A, FB.throw_range, FB.throw_speed, H)
+			FB.owner = null
+			H.football = null
 			H.do_attack_animation(get_step(H,H.dir))
 			playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
 			visible_message("[src] kicks \the [FB.name].")

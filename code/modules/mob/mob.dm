@@ -278,9 +278,11 @@
 			var/area/A = get_area(H.loc)
 			if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
 				for(var/obj/item/football/FB in range(1,H))
-					if (!FB.owner && isturf(FB.loc))
+					if ((!FB.owner || FB.owner == H) && isturf(FB.loc))
 						H.put_in_active_hand(FB)
 						FB.pickup(H)
+						H.football = null
+						FB.owner = null
 						visible_message("<font color='yellow'>[H] picks up the ball!</font>")
 						return
 		else if (!H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football) && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
