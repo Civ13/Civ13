@@ -185,6 +185,17 @@ RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26
 
 RECIPE: /material/clay/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
 
+RECIPE: /material/clay/,unfired ingot mold,/obj/item/weapon/clay/mold,1.5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired axehead mold,/obj/item/weapon/clay/mold/axehead,1.5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired sword mold,/obj/item/weapon/clay/mold/sword,5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired knife mold,/obj/item/weapon/clay/mold/knife,1,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired spearhead mold,/obj/item/weapon/clay/mold/spearhead,1.5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired pickaxe mold,/obj/item/weapon/clay/mold/pickaxe,3,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired shovel mold,/obj/item/weapon/clay/mold/shovel,3,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired arrowhead mold,/obj/item/weapon/clay/mold/arrowhead,1,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired blacksmith clay pot,/obj/item/weapon/clay/mold/claypot,2,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired blacksmith clay jug,/obj/item/weapon/clay/mold/clayjug,5,40,0,1,molds,0,0,0,8,null
+
 //*****************| CLAY STUCCO |***************************
 
 RECIPE: /material/clay/,raw stucco,/obj/item/weapon/stucco/generic,1.5,25,0,1,wall coverings & stucco,18,0,0,8,null
