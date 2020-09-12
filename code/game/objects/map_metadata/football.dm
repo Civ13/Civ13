@@ -21,12 +21,14 @@
 	songs = list(
 		"Forever Blowing Bubbles:1" = 'sound/music/forever_blowing_bubbles.ogg',)
 	is_singlefaction = TRUE
-	var/team1 = "U.B.U."
-	var/team2 = "C.T.F.C."
+	var/team1 = "Unga Utd."
+	var/team2 = "Chad Town F.C."
+	var/team1_kit = "main uniform"
+	var/team2_kit = "main uniform"
 	var/list/teams = list(
 						//name, score, shorts color, short stripes color, shirt color, shirt sleeves color, shirt collar color, shirt v stripes, shirt h stripes
-		"U.B.U." = list("U.B.U.",0,"#262626",null,"#AE001A","#BB9634",null,null,null),
-		"C.T.F.C." = list("C.T.F.C.",0,"#EBEBEA",null,"#84A2CE",null,"#CDE4FB",null,null),
+		"Chad Town F.C." = list("Chad Town F.C.",0,"main uniform" = list("shorts_color" = "#EBEBEA","shirt_color"="#84A2CE","shirt_sides_color"="#CDE4FB"),"secondary uniform" = list("shorts_color"="#84a2ce","shirt_color"="#EBEBEA","shirt_sides_color"="#84a2ce"),"goalkeeper uniform" = list("shorts_color"="#84a2ce","shirt_color"="#333333","shirt_sides_color"="#84a2ce")),
+		"Unga Utd." = list("Unga Utd.",0,"main uniform" = list("shorts_color" = "#262626","shirt_color"="#AE001A","shirt_sleeves_color"="#BB9634"),"secondary uniform" = list("shorts_color"="#bb9634","shirt_color"="#ffffff","shirt_sleeves_color"="#ae001a","shirt_sides_color"="#bb9634"),"goalkeeper uniform" = list("shorts_color"="#ae001a","shirt_color"="#bb9634","shirt_sides_color"="#ae001a")),
 	)
 
 	var/list/scorers = list()
@@ -39,52 +41,85 @@
 		load_teams()
 		spawn(600)
 			points_check()
+			for (var/obj/structure/banner/faction/team/team1/T1 in world)
+				T1.team = team1
+				T1.assign_team(team1)
+			for (var/obj/structure/banner/faction/team/team2/T2 in world)
+				T2.team = team2
+				T2.assign_team(team2)
 
 /obj/map_metadata/football/proc/assign_teams(client/triggerer = null)
 	load_teams()
-	var/list/teamlist = list("U.B.U.", "C.T.F.C.")
+	var/list/teamlist = list()
+	for (var/i in teams)
+		teamlist += teams[i][1]
 	if (triggerer)
-		var/t_team1 = WWinput(triggerer, "Team Selection", "Select team 1:", "U.B.U.", teamlist)
-		var/t_team2 = WWinput(triggerer, "Team Selection", "Select team 2:", "C.T.F.C.", teamlist)
+		var/t_team1 = WWinput(triggerer, "Team Selection", "Select team 1:", teamlist[1], teamlist)
+		var/t_team1_k = WWinput(triggerer, "Team Selection", "Which kit shall team 1 use?", "Main", list("Main","Secondary"))
+		if (t_team1_k == "Main")
+			team1_kit = "main uniform"
+		else
+			team1_kit = "secondary uniform"
+
+		var/t_team2 = WWinput(triggerer, "Team Selection", "Select team 2:", teamlist[2], teamlist)
+		var/t_team2_k = WWinput(triggerer, "Team Selection", "Which kit shall team 2 use?", "Main", list("Main","Secondary"))
+		if (t_team2_k == "Main")
+			team2_kit = "main uniform"
+		else
+			team2_kit = "secondary uniform"
 		team1 = t_team1
 		team2 = t_team2
 		world << "<font size=4>This match will be between [team1] and [team2]!</font>"
+		for (var/obj/structure/banner/faction/team/team1/T1 in world)
+			T1.team = team1
+			T1.assign_team(team1)
+		for (var/obj/structure/banner/faction/team/team2/T2 in world)
+			T2.team = team2
+			T2.assign_team(team2)
 	spawn(2)
 		for (var/datum/job/job in job_master.faction_organized_occupations)
 			if (istype(job, /datum/job/civilian/football_red/goalkeeper))
 				job.title = "[teams[team1][1]] goalkeeper"
-				job.selection_color = teams[team1][5]
+				job.selection_color = teams[team1][team1_kit]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_red))
 				job.title = teams[team1][1]
-				job.selection_color = teams[team1][5]
+				job.selection_color = teams[team1][team1_kit]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_blue/goalkeeper))
 				job.title = "[teams[team2][1]] goalkeeper"
-				job.selection_color = teams[team2][5]
+				job.selection_color = teams[team2][team2_kit]["shirt_color"]
 
 			else if (istype(job, /datum/job/civilian/football_blue))
 				job.title = teams[team2][1]
-				job.selection_color = teams[team2][5]
+				job.selection_color = teams[team2][team2_kit]["shirt_color"]
 		for (var/obj/effect/step_trigger/goal/red/GR in world)
 			GR.assign()
 		for (var/obj/effect/step_trigger/goal/blue/GB in world)
 			GB.assign()	
 /obj/map_metadata/football/proc/save_teams()
 	var/F = file("SQL/sports_teams.txt")
+	if (fexists(F))
+		fdel(F)
 	for (var/i in teams)
-		var/txtexport = list2text(teams[i])
+		var/txtexport = "[teams[i]["name"]]|||[list2params(teams[i]["main_uniform"])]===[list2params(teams[i]["secondary_uniform"])]===[list2params(teams[i]["goalkeeper_uniform"])]"
 		text2file(txtexport,F)
 	return
 /obj/map_metadata/football/proc/load_teams()
 	var/F = file("SQL/sports_teams.txt")
 	var/list/teamlist = list()
 	if (fexists(F))
+		teams = list()
 		var/list/temp_stats1 = file2list(F,"\n")
 		for (var/i = 1, i <= temp_stats1.len, i++)
-			if (findtext(temp_stats1[i], ";"))
-				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
-				teams += list(temp_stats2[1] = list(temp_stats2[1],0,temp_stats2[3],temp_stats2[4],temp_stats2[5],temp_stats2[6],temp_stats2[7],temp_stats2[8],temp_stats2[9]))
+			if (findtext(temp_stats1[i], "|||"))
+				var/list/temp_stats2 = splittext(temp_stats1[i], "|||")
+				var/list/temp_stats3 = splittext(temp_stats2[2], "===")
+				var/list/main_uni = params2list(temp_stats3[1])
+				var/list/sec_uni = params2list(temp_stats3[2])
+				var/list/gk_uni = params2list(temp_stats3[3])
+
+				teams += list(temp_stats2[1] = list(temp_stats2[1],0,"main uniform" = main_uni,"secondary uniform" = sec_uni,"goalkeeper uniform" = gk_uni))
 				teamlist += temp_stats2[1]
 				world.log << "Finished loading teams."
 	return
@@ -100,7 +135,7 @@
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color=[teams[team1][5]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][5]]>[teams[team2][1]]</b></font>"
+	world << "<font size=3 color=[teams[team1][team1_kit]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][team2_kit]["shirt_color"]]>[teams[team2][1]]</b></font>"
 	spawn(300)
 		points_check()
 
@@ -123,7 +158,7 @@
 		message = "The round has ended!"
 		if (teams[team1][2] > teams[team2][2])
 			message = "<b>[team1]</b> have won the match!"
-			world << "<font size=4 color=[teams[team1][5]]>[message]</font>"
+			world << "<font size=4 color=[teams[team1][team1_kit]["shirt_color"]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -131,7 +166,7 @@
 
 		else if (teams[team2][2] > teams[team1][2])
 			message = "<b>[team2]</b> have won the match!"
-			world << "<font size=4 color=[teams[team2][5]]>[message]</font>"
+			world << "<font size=4 color=[teams[team2][team2_kit]["shirt_color"]]>[message]</font>"
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -198,7 +233,7 @@
 		var/obj/item/clothing/under/football/custom/FR = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FR, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1][3],FM.teams[FM.team1][5],FM.teams[FM.team1][4],FM.teams[FM.team1][6],FM.teams[FM.team1][7],FM.teams[FM.team1][8],FM.teams[FM.team1][9],0)
+		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1][FM.team1_kit]["shorts_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_color"],FM.teams[FM.team1][FM.team1_kit]["shorts_sides_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_sleeves_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_sides_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_vstripes_color"],FM.teams[FM.team1][FM.team1_kit]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_red))
 			FR.player_number = pick(FM.player_count_red)
 			FR.update_icon()
@@ -221,11 +256,13 @@
 		var/obj/map_metadata/football/FM = map
 		H.team = FM.team1
 		H.civilization = FM.team1
-		var/obj/item/clothing/under/football/red/goalkeeper/FR = new /obj/item/clothing/under/football/red/goalkeeper(H)
+		var/obj/item/clothing/under/football/custom/FR = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FR, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/red(H), slot_gloves)
-//		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1][3],FM.teams[FM.team1][5],FM.teams[FM.team1][4],sFM.teams[FM.team1][6],FM.teams[FM.team1][7],FM.teams[FM.team1][8],FM.teams[FM.team1][9],0)
+		var/obj/item/clothing/gloves/goalkeeper/red/RG = new/obj/item/clothing/gloves/goalkeeper/red(H)
+		RG.color = FM.teams[FM.team1]["goalkeeper uniform"]["shorts_color"]
+		H.equip_to_slot_or_del(RG, slot_gloves)
+		FR.assign_style(FM.teams[FM.team1][1],FM.teams[FM.team1]["goalkeeper uniform"]["shorts_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shorts_sides_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_sleeves_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_sides_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_vstripes_color"],FM.teams[FM.team1]["goalkeeper uniform"]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_red))
 			FR.player_number = pick(FM.player_count_red)
 			FR.update_icon()
@@ -253,7 +290,7 @@
 		var/obj/item/clothing/under/football/custom/FB = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FB, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2][3],FM.teams[FM.team2][5],FM.teams[FM.team2][4],FM.teams[FM.team2][6],FM.teams[FM.team2][7],FM.teams[FM.team2][8],FM.teams[FM.team2][9],0)
+		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2][FM.team2_kit]["shorts_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_color"],FM.teams[FM.team2][FM.team2_kit]["shorts_sides_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_sleeves_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_sides_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_vstripes_color"],FM.teams[FM.team2][FM.team2_kit]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_blue))
 			FB.player_number = pick(FM.player_count_blue)
 			FB.update_icon()
@@ -278,32 +315,16 @@
 		var/obj/map_metadata/football/FM = map
 		H.team = FM.team2
 		H.civilization = FM.team2
-		var/obj/item/clothing/under/football/blue/goalkeeper/FB = new /obj/item/clothing/under/football/blue/goalkeeper(H)
+		var/obj/item/clothing/under/football/custom/FB = new /obj/item/clothing/under/football/custom(H)
 		H.equip_to_slot_or_del(FB, slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
-		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/goalkeeper/blue(H), slot_gloves)
-//		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2][3],FM.teams[FM.team2][5],FM.teams[FM.team2][4],sFM.teams[FM.team2][6],FM.teams[FM.team2][7],FM.teams[FM.team2][8],FM.teams[FM.team2][9],0)
+		var/obj/item/clothing/gloves/goalkeeper/blue/BG = new/obj/item/clothing/gloves/goalkeeper/blue(H)
+		BG.color = FM.teams[FM.team2]["goalkeeper uniform"]["shorts_color"]
+		H.equip_to_slot_or_del(BG, slot_gloves)
+		FB.assign_style(FM.teams[FM.team2][1],FM.teams[FM.team2]["goalkeeper uniform"]["shorts_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shorts_sides_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_sleeves_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_sides_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_vstripes_color"],FM.teams[FM.team2]["goalkeeper uniform"]["shirt_hstripes_color"],0)
 		if (!isemptylist(FM.player_count_blue))
 			FB.player_number = pick(FM.player_count_blue)
 			FB.update_icon()
 
 	..()
 	return TRUE
-
-/////////TEAM DATUMS/////////
-/datum/team
-	var/name = "Generic Team"
-	var/datum/team_uniforms/main_uniform = null
-	var/datum/team_uniforms/secondary_uniform = null
-	var/datum/team_uniforms/goalkeeper_uniform = null
-
-/datum/team_uniforms
-	var/name = "Generic Team"
-	var/utype = "main" //main, secondary, goalkeeper
-	var/shorts_color = "#000000"
-	var/shirt_color = "#FFFFFF"
-	var/shorts_sides_color=null
-	var/shirt_sleeves_color=null
-	var/shirt_sides_color=null
-	var/shirt_vstripes_color=null
-	var/shirt_hstripes_color=null

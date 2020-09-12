@@ -685,8 +685,9 @@ bullet_act
 					if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
 						visible_message("<font color='yellow'>[src] blocks and picks up the ball!</font>")
 						src.put_in_active_hand(FB)
-						FB.owner.football = null
-						FB.owner = null
+						if (FB.owner)
+							FB.owner.football = null
+							FB.owner = null
 						FB.last_owner = src
 						FB.pickup(src)
 						return

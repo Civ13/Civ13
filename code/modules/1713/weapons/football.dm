@@ -160,19 +160,19 @@
 //for automatic assignement of colors, ie, roundstart
 /obj/item/clothing/under/football/custom/proc/assign_style(tname,tshorts_color,tshirt_color,tshorts_sides_color=null,tshirt_sleeves_color=null,tshirt_sides_color=null,tshirt_vstripes_color=null,tshirt_hstripes_color=null,c_player_number=0)
 	uncolored = FALSE
-	if (tshorts_color != "null" && tshorts_color != "")
+	if (tshorts_color != "null" && tshorts_color != "" && tshorts_color != "0")
 		src.shorts_color = tshorts_color
-	if (tshirt_color != "null" && tshirt_color != "")
+	if (tshirt_color != "null" && tshirt_color != "" && tshirt_color != "0")
 		src.shirt_color = tshirt_color
-	if (tshorts_sides_color != "null" && tshorts_sides_color != "")
+	if (tshorts_sides_color != "null" && tshorts_sides_color != "" && tshorts_sides_color != "0")
 		src.shorts_sides_color = tshorts_sides_color
-	if (tshirt_sleeves_color != "null" && tshirt_sleeves_color != "")
+	if (tshirt_sleeves_color != "null" && tshirt_sleeves_color != "" && tshirt_sleeves_color != "0")
 		src.shirt_sleeves_color = tshirt_sleeves_color
-	if (tshirt_sides_color != "null" && tshirt_sides_color != "")
+	if (tshirt_sides_color != "null" && tshirt_sides_color != "" && tshirt_sides_color != "0")
 		src.shirt_sides_color = tshirt_sides_color
-	if (tshirt_vstripes_color != "null" && tshirt_vstripes_color != "")
+	if (tshirt_vstripes_color != "null" && tshirt_vstripes_color != "" && tshirt_vstripes_color != "0")
 		src.shirt_vstripes_color = tshirt_vstripes_color
-	if (tshirt_hstripes_color != "null" && tshirt_hstripes_color != "")
+	if (tshirt_hstripes_color != "null" && tshirt_hstripes_color != "" && tshirt_hstripes_color != "0")
 		src.shirt_hstripes_color = tshirt_hstripes_color
 	if (tshirt_color && tshorts_color)
 		var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "football_custom_shirt")
@@ -222,16 +222,18 @@
 
 ////////////GLOVES/////////////////
 /obj/item/clothing/gloves/goalkeeper/red
-	name = "red goalkeeper gloves"
-	initial_name = "red goalkeeper gloves"
-	icon_state = "red"
-	item_state = "redgloves"
+	name = "goalkeeper gloves"
+	initial_name = "goalkeeper gloves"
+	icon_state = "latex"
+	item_state = "latex"
+	color = "#ffffff"
 
 /obj/item/clothing/gloves/goalkeeper/blue
-	name = "blue goalkeeper gloves"
-	initial_name = "blue goalkeeper gloves"
-	icon_state = "blue"
-	item_state = "bluegloves"
+	name = "goalkeeper gloves"
+	initial_name = "goalkeeper gloves"
+	icon_state = "latex"
+	item_state = "latex"
+	color = "#ffffff"
 
 /mob/living/human/var/obj/item/football/football = null
 
@@ -260,10 +262,13 @@
 	return
 
 /obj/item/football/Crossed(mob/living/human/user)
-	if (!owner && !user.football)
-		owner = user
-		user.football = src
-		return
+	if (ishuman(user))
+		if (!owner && !user.football)
+			owner = user
+			user.football = src
+			return
+		else
+			..()
 	else
 		..()
 
@@ -302,6 +307,7 @@
 			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
 			var/scorer = " [FB.last_owner.name] ([FB.last_owner.ckey]) <b>([FB.last_owner.team])</b>"
 			FB.last_owner = null
+			FB.owner = null
 			if (MF.scorers[scorer])
 				MF.scorers[scorer] += 1
 			else
@@ -332,7 +338,6 @@
 	desc = "Register your team here!"
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "1980_computer_on"
-	layer = 5
 	var/active = FALSE
 	density = TRUE
 	anchored = TRUE
@@ -356,55 +361,50 @@
 		return
 	var/obj/item/clothing/under/football/custom/CU = W
 	if (mob.ckey in pending) //continue
-		var/datum/team/T = pending[mob.ckey]
+		var/list/T = pending[mob.ckey]
 		var/list/olist = list("Cancel")
-		if (!T.main_uniform)
+		if (!T["main_uniform"])
 			olist += "Main"
-		if (!T.secondary_uniform)
+		if (!T["secondary_uniform"])
 			olist += "Secondary"
-		if (!T.goalkeeper_uniform)
+		if (!T["goalkeeper_uniform"])
 			olist += "Goalkeeper"
 		if (olist.len > 1)
-			var/input4 = WWinput(mob, "Team Creator", "Welcome back! You are creating [T.name]. Which uniform is this?","Cancel",olist)
+			var/input4 = WWinput(mob, "Team Creator", "Welcome back! You are creating [T["name"]]. Which uniform is this?","Cancel",olist)
 			switch(input4)
 				if ("Main")
-					T.main_uniform = new/datum/team_uniforms
-					T.main_uniform.name = T.name
-					T.main_uniform.utype = "main"
-					T.main_uniform.shorts_color = CU.shorts_color
-					T.main_uniform.shirt_color = CU.shirt_color
-					T.main_uniform.shorts_sides_color = CU.shorts_sides_color
-					T.main_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
-					T.main_uniform.shirt_sides_color = CU.shirt_sides_color
-					T.main_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
-					T.main_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+					T["main_uniform"] = list()
+					T["main_uniform"]["shorts_color"] = CU.shorts_color
+					T["main_uniform"]["shirt_color"] = CU.shirt_color
+					T["main_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
+					T["main_uniform"]["shirt_sleeves_color"] = CU.shirt_sleeves_color
+					T["main_uniform"]["shirt_sides_color"] = CU.shirt_sides_color
+					T["main_uniform"]["shirt_vstripes_color"] = CU.shirt_vstripes_color
+					T["main_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 				if ("Secondary")
-					T.secondary_uniform = new/datum/team_uniforms
-					T.secondary_uniform.name = T.name
-					T.secondary_uniform.utype = "secondary"
-					T.secondary_uniform.shorts_color = CU.shorts_color
-					T.secondary_uniform.shirt_color = CU.shirt_color
-					T.secondary_uniform.shorts_sides_color = CU.shorts_sides_color
-					T.secondary_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
-					T.secondary_uniform.shirt_sides_color = CU.shirt_sides_color
-					T.secondary_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
-					T.secondary_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+					T["secondary_uniform"] = list()
+					T["secondary_uniform"]["shorts_color"] = CU.shorts_color
+					T["secondary_uniform"]["shirt_color"] = CU.shirt_color
+					T["secondary_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
+					T["secondary_uniform"]["shirt_sleeves_color"] = CU.shirt_sleeves_color
+					T["secondary_uniform"]["shirt_sides_color"] = CU.shirt_sides_color
+					T["secondary_uniform"]["shirt_vstripes_color"] = CU.shirt_vstripes_color
+					T["secondary_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 				if ("Goalkeeper")
-					T.goalkeeper_uniform = new/datum/team_uniforms
-					T.goalkeeper_uniform.name = T.name
-					T.goalkeeper_uniform.utype = "goalkeeper"
-					T.goalkeeper_uniform.shorts_color = CU.shorts_color
-					T.goalkeeper_uniform.shirt_color = CU.shirt_color
-					T.goalkeeper_uniform.shorts_sides_color = CU.shorts_sides_color
-					T.goalkeeper_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
-					T.goalkeeper_uniform.shirt_sides_color = CU.shirt_sides_color
-					T.goalkeeper_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
-					T.goalkeeper_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
-			if (T.goalkeeper_uniform && T.secondary_uniform && T.main_uniform)
+					T["goalkeeper_uniform"] = list()
+					T["goalkeeper_uniform"]["shorts_color"] = CU.shorts_color
+					T["goalkeeper_uniform"]["shirt_color"] = CU.shirt_color
+					T["goalkeeper_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
+					T["goalkeeper_uniform"]["shirt_sleeves_color"] = CU.shirt_sleeves_color
+					T["goalkeeper_uniform"]["shirt_sides_color"] = CU.shirt_sides_color
+					T["goalkeeper_uniform"]["shirt_vstripes_color"] = CU.shirt_vstripes_color
+					T["goalkeeper_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
+			if (T["goalkeeper_uniform"] && T["secondary_uniform"] && T["main_uniform"])
 				var/obj/map_metadata/football/FM = map
-				FM.teams += list("[T.name]" = list(T))
-				WWalert("You sucessfully added the team! It is now selectable.")
+				FM.teams += list("[T["name"]]" = T)
+				WWalert(mob,"You sucessfully added the team! It is now selectable.")
 				FM.save_teams()
+				pending -= pending[mob.ckey]
 				return
 		return
 	else //start new team
@@ -416,43 +416,37 @@
 			if (!input2 || input2 == "")
 				return
 			else
-				var/datum/team/T = new/datum/team
-				T.name = input2
-				pending += list("[mob.ckey]" = list(T))
+				var/list/T = list()
+				T["name"] = input2
+				pending += list("[mob.ckey]" = T)
 				var/input3 = WWinput(mob, "Team Creator", "Which type is the kit you submitted?","Main",list("Main", "Secondary", "Goalkeeper"))
 				switch(input3)
 					if ("Main")
-						T.main_uniform = new/datum/team_uniforms
-						T.main_uniform.name = T.name
-						T.main_uniform.utype = "main"
-						T.main_uniform.shorts_color = CU.shorts_color
-						T.main_uniform.shirt_color = CU.shirt_color
-						T.main_uniform.shorts_sides_color = CU.shorts_sides_color
-						T.main_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
-						T.main_uniform.shirt_sides_color = CU.shirt_sides_color
-						T.main_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
-						T.main_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+						T["main_uniform"] = list()
+						T["main_uniform"]["shorts_color"] = CU.shorts_color
+						T["main_uniform"]["shirt_color"] = CU.shirt_color
+						T["main_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
+						T["main_uniform"]["shirt_sleeves_color"] = CU.shirt_sleeves_color
+						T["main_uniform"]["shirt_sides_color"] = CU.shirt_sides_color
+						T["main_uniform"]["shirt_vstripes_color"] = CU.shirt_vstripes_color
+						T["main_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 					if ("Secondary")
-						T.secondary_uniform = new/datum/team_uniforms
-						T.secondary_uniform.name = T.name
-						T.secondary_uniform.utype = "secondary"
-						T.secondary_uniform.shorts_color = CU.shorts_color
-						T.secondary_uniform.shirt_color = CU.shirt_color
-						T.secondary_uniform.shorts_sides_color = CU.shorts_sides_color
-						T.secondary_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
-						T.secondary_uniform.shirt_sides_color = CU.shirt_sides_color
-						T.secondary_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
-						T.secondary_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+						T["secondary_uniform"] = list()
+						T["secondary_uniform"]["shorts_color"] = CU.shorts_color
+						T["secondary_uniform"]["shirt_color"] = CU.shirt_color
+						T["secondary_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
+						T["secondary_uniform"]["shirt_sleeves_color"] = CU.shirt_sleeves_color
+						T["secondary_uniform"]["shirt_sides_color"] = CU.shirt_sides_color
+						T["secondary_uniform"]["shirt_vstripes_color"] = CU.shirt_vstripes_color
+						T["secondary_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 					if ("Goalkeeper")
-						T.goalkeeper_uniform = new/datum/team_uniforms
-						T.goalkeeper_uniform.name = T.name
-						T.goalkeeper_uniform.utype = "goalkeeper"
-						T.goalkeeper_uniform.shorts_color = CU.shorts_color
-						T.goalkeeper_uniform.shirt_color = CU.shirt_color
-						T.goalkeeper_uniform.shorts_sides_color = CU.shorts_sides_color
-						T.goalkeeper_uniform.shirt_sleeves_color = CU.shirt_sleeves_color
-						T.goalkeeper_uniform.shirt_sides_color = CU.shirt_sides_color
-						T.goalkeeper_uniform.shirt_vstripes_color = CU.shirt_vstripes_color
-						T.goalkeeper_uniform.shirt_hstripes_color = CU.shirt_hstripes_color
+						T["goalkeeper_uniform"] = list()
+						T["goalkeeper_uniform"]["shorts_color"] = CU.shorts_color
+						T["goalkeeper_uniform"]["shirt_color"] = CU.shirt_color
+						T["goalkeeper_uniform"]["shorts_sides_color"] = CU.shorts_sides_color
+						T["goalkeeper_uniform"]["shirt_sleeves_color"] = CU.shirt_sleeves_color
+						T["goalkeeper_uniform"]["shirt_sides_color"] = CU.shirt_sides_color
+						T["goalkeeper_uniform"]["shirt_vstripes_color"] = CU.shirt_vstripes_color
+						T["goalkeeper_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 				WWalert(mob,"You can now continue editing this team by submitting the remaining kits.","Team Creator")
 				return
