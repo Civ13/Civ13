@@ -450,3 +450,25 @@
 						T["goalkeeper_uniform"]["shirt_hstripes_color"] = CU.shirt_hstripes_color
 				WWalert(mob,"You can now continue editing this team by submitting the remaining kits.","Team Creator")
 				return
+
+/////////////////GOALPOSTS/////////////////
+
+/obj/structure/goalpost
+	name = "goalpost"
+	desc = "A goalpost"
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "goalpostX"
+	flammable = FALSE
+	opacity = FALSE
+	density = TRUE
+	layer = 8
+	anchored = TRUE
+
+/obj/structure/goalpost/attackby(obj/O as obj, mob/user as mob)
+	return
+/obj/structure/goalpost/attack_hand(mob/user as mob)
+	return
+
+/obj/structure/goalpost/inner
+	icon_state = "goalpost_i"
+	density = FALSE

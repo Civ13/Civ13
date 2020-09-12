@@ -61,23 +61,6 @@
 	icon_state = "p[rand(1,3)]"
 	color = "#c8c8c8"
 
-/obj/structure/grille/fence/picket/goalpost
-	name = "goalpost"
-	desc = "A goalpost"
-	icon = 'icons/obj/fence.dmi'
-	icon_state = "goalpost"
-	health = 5000000
-	hitsound = 'sound/effects/wooddoorhit.ogg'
-	flammable = FALSE
-
-/obj/structure/grille/fence/picket/goalpost/New()
-	..()
-	icon_state = "goalpost"
-	color = null
-/obj/structure/grille/fence/picket/goalpost/attackby(obj/O as obj, mob/user as mob)
-	return
-/obj/structure/grille/fence/picket/goalpost/attack_hand(mob/user as mob)
-	return
 /obj/structure/barricade/wood_pole/attackby(obj/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/leash))
 		var/obj/item/weapon/leash/L = O

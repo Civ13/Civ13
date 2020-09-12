@@ -163,6 +163,19 @@
 	icon_state = "centralline"
 	layer = 2
 
+/obj/structure/sign/traffic/semicircle
+	name = "white line"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "circle"
+	layer = 2
+
+/obj/structure/sign/traffic/semicircle/largest
+	name = "white line"
+	icon = 'icons/obj/decals_widest.dmi'
+	pixel_y = -6
+	icon_state = "circle"
+	layer = 2
+
 /obj/structure/sign/traffic/side
 	name = "yellow line"
 	icon_state = "sideline"
