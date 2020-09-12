@@ -137,8 +137,10 @@
 		if (!istype(A, /area/caribbean/football/red/goalkeeper) && !istype(A, /area/caribbean/football/blue/goalkeeper))
 			if (istype(l_hand, /obj/item/football))
 				drop_from_inventory(l_hand, loc, TRUE)
+				drop_item()
 			if (istype(r_hand, /obj/item/football))
 				drop_from_inventory(r_hand, loc, TRUE)
+				drop_item()
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
 		invisibility = 0

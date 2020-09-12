@@ -278,7 +278,7 @@
 			var/area/A = get_area(H.loc)
 			if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
 				for(var/obj/item/football/FB in range(1,H))
-					if ((!FB.owner || FB.owner == H) && isturf(FB.loc))
+					if ((!FB.owner || FB.owner == H || H.football == FB) && isturf(FB.loc))
 						H.put_in_active_hand(FB)
 						FB.pickup(H)
 						H.football = null
