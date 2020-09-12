@@ -163,6 +163,7 @@ var/global/list/anvil_recipes = list(
 	var/base_icon = "iron"
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	var/list/accepted_materials = list("copper", "bronze", "iron")
 
 obj/structure/anvil/New()
 	..()
@@ -206,15 +207,88 @@ obj/structure/anvil/New()
 					qdel(P)
 					var/obj/item/stack/material/iron/I = new/obj/item/stack/material/iron(loc)
 					I.amount = amt
-
+		else if (istype(P, /obj/item/weapon/clay/mold))
+			var/obj/item/weapon/clay/mold/ML = P
+			if (!ML.fired)
+				user << "<span class='warning'>This mold is not fired!</span>"
+				return
+			else if (ML.capacity <= 0 || ML.current_material == null)
+				user << "<span class='warning'>This mold is empty!</span>"
+				return
+			else if (!(ML.current_material in accepted_materials))
+				user << "<span class='warning'>You can't use this material on this anvil.</span>"
+				return
+			else if (ML.craftable_classes)
+				switch(ML.craftable_classes)
+					if ("ingots")
+						user << "You begin crafting the ingot..."
+						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+							if (ML && ML.capacity)
+								switch(ML.current_material)
+									if ("copper")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/copper/NM = new/obj/item/stack/material/copper(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
+									if ("bronze")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/bronze/NM = new/obj/item/stack/material/bronze(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
+									if ("tin")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/tin/NM = new/obj/item/stack/material/tin(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
+									if ("gold")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/gold/NM = new/obj/item/stack/material/gold(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
+									if ("silver")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/silver/NM = new/obj/item/stack/material/silver(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
+									if ("lead")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/lead/NM = new/obj/item/stack/material/lead(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
+								ML.update_icon()
+								return
+					if ("knives")
+						user << "You begin crafting the [ML.current_material] knife..."
+						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+							if (ML && ML.capacity)
+								ML.capacity = 0
+								ML.update_icon()
+								new/obj/item/weapon/material/kitchen/utensil/knife(loc,ML.current_material)
+								ML.current_material = null
+								user << "You finish crafting the [ML.current_material] knife."
+								return
 /obj/structure/anvil/steel
 	name = "stone anvil"
 	desc = "An advanced steel anvil. The blacksmith's main work tool."
 	icon_state = "steel_anvil"
 	base_icon = "steel"
+	accepted_materials = list("copper", "bronze", "iron", "steel")
 
 /obj/structure/anvil/stone
 	name = "stone anvil"
 	desc = "A crude stone anvil. The blacksmith's main work tool."
 	icon_state = "stone_anvil"
 	base_icon = "stone"
+	accepted_materials = list("copper", "bronze")

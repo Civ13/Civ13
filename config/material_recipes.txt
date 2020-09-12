@@ -1232,6 +1232,7 @@ RECIPE: /material/stone/,full stone window,/obj/structure/window_frame/stonefull
 
 RECIPE: /material/stone/,stone bloomery,/obj/structure/furnace,10,150,1,1,production,26,0,0,8,null
 RECIPE: /material/stone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,null
+RECIPE: /material/stone/,stone anvil,/obj/structure/anvil/stone,25,150,1,1,production,25,0,0,8,null
 
 //*************| STONE WEAPONS & PROJECTILES |***************
 
@@ -1613,6 +1614,7 @@ RECIPE: /material/steel/,250u large fuel tank,/obj/item/weapon/reagent_container
 RECIPE: /material/steel/,450u huge fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank,36,185,0,1,fuel tanks,120,0,0,8,null
 
 //*********************| STEEL PRODUCTION & ECONOMY |**************************
+RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,production,25,0,0,8,null
 
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
 
@@ -2045,7 +2047,7 @@ RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,2
 
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 
-RECIPE: /material/iron/,anvil,/obj/structure/anvil,25,150,1,1,production,25,0,0,8,null
+RECIPE: /material/iron/,iron anvil,/obj/structure/anvil,25,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
 RECIPE: /material/wood/,specialist armorbench,/obj/structure/anvil/armorbench/specialist,15,210,1,1,production,120,0,0,8,null
 
