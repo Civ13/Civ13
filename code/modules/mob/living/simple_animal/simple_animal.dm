@@ -230,7 +230,7 @@
 		Move(get_step(src,moving_to))
 		turns_since_move = FALSE
 		return "wander"
-	else if (t_behaviour == "hunt" || t_behaviour == "defends")
+	else if (t_behaviour == "hunt" || (t_behaviour == "defends" && target_mob))
 		a_intent = I_HARM
 		if(prob(50))
 			if(!isemptylist(hostilesounds))
