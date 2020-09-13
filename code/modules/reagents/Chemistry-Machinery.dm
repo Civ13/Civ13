@@ -585,6 +585,12 @@
 /obj/structure/distillery/New()
 	..()
 	reagents = new /datum/reagents(80)
+/obj/structure/distillery/update_icon()
+	..()
+	if (on)
+		icon_state = "distillery1"
+	else
+		icon_state = "distillery"
 
 /obj/structure/distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_NORMAL))
