@@ -1,7 +1,7 @@
 /mob/living/simple_animal/mouse
 	name = "mouse"
 	real_name = "mouse"
-	desc = "It's a retarded ass mouse that doesnt give you the plague anymore, you are welcome"
+	desc = "It's a retarded ass mouse that doesnt give you the plague"
 	icon_state = "mouse_gray"
 	item_state = "mouse_gray"
 	icon_living = "mouse_gray"
