@@ -568,3 +568,102 @@
 		user << browse("<TITLE>Pill Maker</TITLE>Condimaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
 	onclose(user, "chem_master")
 	return
+
+//////////////ETHANOL REFINERY/////////////////
+
+/obj/structure/distillery
+	name = "alcohol distiller"
+	desc = "A alcohol distiller. Turns any alcoholic drink into pure ethanol."
+	density = FALSE
+	anchored = FALSE
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "distillery"
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	var/on = FALSE
+	var/obj/item/weapon/reagent_containers/glass/collector = null
+/obj/structure/distillery/New()
+	..()
+	reagents = new /datum/reagents(80)
+
+/obj/structure/distillery/attack_hand(var/mob/living/human/H)
+	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_NORMAL))
+		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		return
+	if (reagents.total_volume <= 0)
+		H << "The distiller is empty."
+		return
+	if (!collector && !on)
+		H << "You cannot turn the distiller on without a collector."
+		return
+	if (collector && !on)
+		H << "You turn the distiller on."
+		on = TRUE
+		update_icon()
+		process_distillery()
+	..()
+/obj/structure/distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/human/H as mob)
+	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		return
+	if (B.reagents)
+		if (B.reagents.total_volume > 0 && collector.reagents.get_free_space() > 0)
+			var/amt_transf = collector.reagents.get_free_space()
+			var/tamt = B.reagents.trans_to_holder(src.reagents, min(10, amt_transf), TRUE, FALSE)
+			H << "You pour [tamt] units from \the [B] into the distiller."
+			update_icon()
+			return
+	if (istype(B, /obj/item/weapon/reagent_containers/glass/) && !collector)
+		if (B.reagents.total_volume > 0)
+			H << "The collector must be empty!"
+			return
+		else
+			H << "You place [B] as the collector for the distiller."
+			collector =  B
+			H.drop_item()
+			B.loc = src
+			update_icon()
+			return
+	..()
+
+/obj/structure/distillery/verb/empty()
+	set category = null
+	set name = "Remove Collector"
+	set src in range(1, usr)
+
+	if (!collector)
+		usr << "There is nothing to remove from \the [src]."
+		return
+
+	if (on)
+		usr << "<span class = 'danger'>You cannot remove the [collector] while the distiller is running!</span>"
+		return
+
+	if (collector && !on)
+		visible_message("You remove \the [collector].","[usr] removes \the [collector] from \the [src].")
+		collector.loc = get_turf(src)
+		collector = null
+		return
+
+	return
+
+/obj/structure/distillery/proc/process_distillery()
+	if (!on)
+		return
+	else
+		spawn(150)
+			var/ethanol_sum = 0
+			for (var/datum/reagent/r in reagents.reagent_list)
+				if (istype(r, /datum/reagent/ethanol))
+					ethanol_sum += reagents.get_reagent_amount(r.id)*(1-(r.strength/100))
+					reagents.remove_reagent(r.id,reagents.get_reagent_amount(r.id))
+				else
+					reagents.remove_reagent(r.id,reagents.get_reagent_amount(r.id))
+
+			var/voltotransf = min(collector.reagents.get_free_space(),ethanol_sum)
+			collector.reagents.add_reagent("ethanol",voltotransf)
+
+
+			on = FALSE
+			update_icon()
+			visible_message("\The [src] finishes distilling.")

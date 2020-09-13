@@ -1745,6 +1745,7 @@ RECIPE: /material/wood/,compost bin,/obj/structure/compost,10,150,1,1,economy & 
 RECIPE: /material/wood/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,economy & production,118,0,0,8,null
+RECIPE: /material/wood/,ethanol distillery,/obj/structure/distillery,15,180,1,1,economy & production,45,0,0,8,null
 
 RECIPE: /material/wood/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
