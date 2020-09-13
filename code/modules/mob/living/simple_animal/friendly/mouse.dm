@@ -1,7 +1,7 @@
 /mob/living/simple_animal/mouse
 	name = "mouse"
 	real_name = "mouse"
-	desc = "It's a small rodent."
+	desc = "It's a retarded ass mouse that doesnt give you the plague anymore, you are welcome"
 	icon_state = "mouse_gray"
 	item_state = "mouse_gray"
 	icon_living = "mouse_gray"
@@ -54,17 +54,17 @@
 	if(body_color == "black")
 		if(map && map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
 			if(prob(50))
-				plaguemouse = TRUE
+				plaguemouse = FALSE
 		else
 			if(prob(25))
-				plaguemouse = TRUE
+				plaguemouse = FALSE
 	else
 		if(map && map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
 			if(prob(10))
-				plaguemouse = TRUE
+				plaguemouse = FALSE
 		else
 			if(prob(5))
-				plaguemouse = TRUE
+				plaguemouse = FALSE
 
 /mob/living/simple_animal/mouse/proc/splat()
 	health = FALSE
@@ -96,16 +96,16 @@
 			stance = HOSTILE_STANCE_ATTACK
 			stance_step = 6
 			if(plaguemouse && prob(2*dmod))
-				M.disease = TRUE
+				M.disease = FALSE
 				M.disease_type = "plague"
 			else if((plaguemouse && prob(0.03*dmod)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //2 percent chance because of if-else logic,
-				M.disease = TRUE
+				M.disease = FALSE
 				M.disease_type = "plague"
 			else if(plaguemouse && body_color == "black" && prob(4*dmod)) //prob is 3 percent.
-				M.disease = TRUE
+				M.disease = FALSE
 				M.disease_type = "plague"
 			else if((plaguemouse && body_color == "black" && prob(5*dmod)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //four percent chance kinda
-				M.disease = TRUE
+				M.disease = FALSE
 				M.disease_type = "plague"
 	..()
 
