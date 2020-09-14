@@ -502,7 +502,7 @@ obj/structure/anvil/New()
 ///////////////KEVLAR//////////////
 		else if (istype(P, /obj/item/stack/material/kevlar))
 			var/list/optlist = list("cancel")
-			else if (map.ordinal_age >= 7)
+			if (map.ordinal_age >= 7)
 				optlist = list("cancel","helmets","us lwt helmets","pasgt helmets","pasgt armor","armor")
 
 			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
@@ -532,7 +532,7 @@ obj/structure/anvil/New()
 /////////BRONZE//////////
 		else if (istype(P, /obj/item/stack/material/bronze))
 			var/list/optlist = list("cancel")
-			else if (map.ordinal_age <= 2)
+			if (map.ordinal_age <= 2)
 				optlist = list("cancel","shields","helmets","armor")
 			else if (map.ordinal_age == 3)
 				optlist = list("cancel","helmets")
