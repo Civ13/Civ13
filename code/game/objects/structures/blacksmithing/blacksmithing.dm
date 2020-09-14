@@ -1,5 +1,9 @@
 var/global/list/anvil_recipes = list(
 	//name = list(name, category, first age, last age, steel cost, iron cost, bronze cost, kevlar cost, result)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//|| Weapons ||///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///*Industrial guns and stuff*///
 	"Derringer M95 Pistol" = list("Derringer M95 Pistol","guns",4,5,15,0,0,0,/obj/item/weapon/gun/projectile/revolver/derringer),
 	"Colt Peacemaker Revolver" = list("Colt Peacemaker Revolver","guns",4,5,25,0,0,0,/obj/item/weapon/gun/projectile/revolver/peacemaker),
@@ -12,7 +16,15 @@ var/global/list/anvil_recipes = list(
 	"Gewehr 71" = list("Gewehr 71","guns",4,6,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/gewehr71),
 	"Makeshift AK-47" = list("Makeshift AK-47","guns",7,8,32,0,0,0,new/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47),
 
-	///*Melee*///
+	///*Muskets*///
+	"Crude Musket" = list("Crude Musket","guns",3,4,0,15,0,0,/obj/item/weapon/gun/projectile/flintlock/crude),
+	"Flintlock Musket" = list("Flintlock Musket","guns",3,4,0,30,0,0,/obj/item/weapon/gun/projectile/flintlock/musket),
+	"Flintlock Musketoon" = list("Flintlock Musketoon","guns",3,4,0,25,0,0,/obj/item/weapon/gun/projectile/flintlock/musketoon),
+	"Flintlock Blunderbuss" = list("Flintlock Blunderbuss","guns",3,4,0,25,0,0,/obj/item/weapon/gun/projectile/flintlock/blunderbuss),
+	"Flintlock Pistol" = list("Flintlock Pistol","guns",3,4,0,20,0,0,/obj/item/weapon/gun/projectile/flintlock/pistol),
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///*Melee*/
 		/*Swords*/
 	"Gladius" = list("Gladius","swords",1,1,0,10,0,0,/obj/item/weapon/material/sword/gladius),
 	"Xiphos" = list("Xiphos","swords",1,1,0,14,0,0,/obj/item/weapon/material/sword/xiphos),
@@ -56,7 +68,6 @@ var/global/list/anvil_recipes = list(
 	"Naginata" = list("Naginata","other weapons",2,3,16,14,0,0,/obj/item/weapon/material/naginata),
 
 		/*Orc Weapons*/
-
 	"Uruk-Hai Scimitar" = list("Uruk-Hai Scimitar","orkish weapons",2,2,0,16,0,0,/obj/item/weapon/material/sword/urukhaiscimitar), // needs orc code.
 
 	///*Shields & Tools*///
@@ -74,18 +85,11 @@ var/global/list/anvil_recipes = list(
 	"Semi Oval Templar Shield" = list("Semi Oval Templar Shield","shield",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval/templar),
 
 		/*Orc Shields*/
-
 	"Orkish Shield" = list("Orkish Shield","orkish shields",1,2,0,16,0,0,/obj/item/weapon/shield/iron/orc),
-
-	///*Muskets*///
-	"Crude Musket" = list("Crude Musket","guns",3,4,0,15,0,0,/obj/item/weapon/gun/projectile/flintlock/crude),
-	"Flintlock Musket" = list("Flintlock Musket","guns",3,4,0,30,0,0,/obj/item/weapon/gun/projectile/flintlock/musket),
-	"Flintlock Musketoon" = list("Flintlock Musketoon","guns",3,4,0,25,0,0,/obj/item/weapon/gun/projectile/flintlock/musketoon),
-	"Flintlock Blunderbuss" = list("Flintlock Blunderbuss","guns",3,4,0,25,0,0,/obj/item/weapon/gun/projectile/flintlock/blunderbuss),
-	"Flintlock Pistol" = list("Flintlock Pistol","guns",3,4,0,20,0,0,/obj/item/weapon/gun/projectile/flintlock/pistol),
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//|| Helmets ||///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///*Iron Helmets*///
-
 			/*Classical*/
 	"Roman Helmet" = list("Roman Helmet","helmets",1,1,0,10,0,0,/obj/item/clothing/head/helmet/roman/nomads),
 	"Centurion Helmet" = list("Centurion Helmet","helmets",1,1,0,14,0,0,/obj/item/clothing/head/helmet/roman_centurion/nomads),
@@ -127,7 +131,6 @@ var/global/list/anvil_recipes = list(
 	"Imperial Chinese Helmet" = list("Imperial Chinese Helmet","other helmets",2,3,0,10,0,0,/obj/item/clothing/head/helmet/medieval/imperial_chinese),
 
 				/*Japanese Helmets & Headwear*/
-
 	"Samurai Helmet" = list("Samurai Helmet","japanese helmets",2,3,0,15,0,0,/obj/item/clothing/head/helmet/samurai/guard),
 	"Red Samurai Helmet" = list("Red Samurai Helmet","japanese helmets",2,3,0,15,0,0,/obj/item/clothing/head/helmet/samurai/guard/red),
 	"Blue Samurai Helmet" = list("Blue Samurai Helmet","japanese helmets",2,3,0,15,0,0,/obj/item/clothing/head/helmet/samurai/guard/blue),
@@ -152,7 +155,138 @@ var/global/list/anvil_recipes = list(
 				/*Modern Iron Helmets*/
 	"Scrap Helmet" = list("Scrap Helmet","helmets",4,4,0,15,0,0,/obj/item/clothing/head/helmet/scrap),
 
+	///*Bronze Helmets*///
+			/*Classical*/
+	"Gladiator Helmet" = list("Gladiator Helmet","helmets",1,1,0,0,10,0,/obj/item/clothing/head/helmet/gladiator/nomads),
+	"Chinese Warrior Helmet" = list("Chinese Warrior Helmet","helmets",1,1,0,0,10,0,/obj/item/clothing/head/helmet/chinese_warrior),
+	"Egyptian War Headdress" = list("Egyptian War Headdress","helmets",1,1,0,0,11,0,/obj/item/clothing/head/helmet/egyptian/nomads),
+
+	"Greek Helmet" = list("Greek Helmet","helmets",1,1,0,0,10,0,/obj/item/clothing/head/helmet/greek/nomads),
+	"Dimoerites Helmet" = list("Dimoerites Helmet","helmets",1,1,0,0,14,0,/obj/item/clothing/head/helmet/greek_sl/nomads),
+	"Lochagos Helmet" = list("Lochagos Helmet","helmets",1,1,0,0,14,0,/obj/item/clothing/head/helmet/greek_commander/nomads),
+	"Anax Helmet" = list("Anax Helmet","helmets",1,1,0,0,18,0,/obj/item/clothing/head/helmet/anax),
+
+			/*Imperial*/
+	"Dragoon Helmet" = list("Dragoon Helmet","helmets",3,3,0,0,10,0,/obj/item/clothing/head/helmet/napoleonic/dragoon),
+
+	///*Steel Helmets*///
+			/*World Wars*/
+	"Pickelhaube Helmet" = list("Picklehaube Helmet","helmets",5,5,6,0,0,0,/obj/item/clothing/head/helmet/modern/pickelhaube),
+	"Mesh Pickelhaube Helmet" = list("Mesh Picklehaube Helmet","helmets",5,5,6,0,0,0,/obj/item/clothing/head/helmet/ww/pickelhaube2),
+
+	"Stahlhelm Helmet" = list("Stahlhelm Helmet","helmets",5,6,9,0,0,0,/obj/item/clothing/head/helmet/modern/stahlhelm),
+
+	"Soviet Helmet" = list("Soviet Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww2/soviet),
+	"M1 Helmet" = list("M1 Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww2/usm1),
+	"Type 92 Helmet" = list("Type 92 Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww2/japhelm),
+	"Mk2 Brodie Helmet" = list("Mk2 Brodie Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww/mk2brodieog),
+	"M26 Adrian Helmet" = list("M26 Adrian Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww2/adrianm26),
+
+				/*Brodie Helmets*/
+	"Mk1 Brodie (Apple Green)" = list("Mk1 Brodie (Apple Green)","mk1 brodie",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/mk1brodieag),
+	"Mk1 Brodie (Duck Egg Blue)" = list("Mk1 Brodie (Duck Egg Blue)","mk1 brodie",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/mk1brodiedeb),
+
+				/*Adrian Helmets*/
+	"Standard M15 Adrian" = list("Standard M15 Adrian","m15 adrian",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/adrian),
+	"Russian M15 Adrian" = list("Russian M15 Adrian","m15 adrian",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/adriansoviet),
+	"Greek M15 Adrian" = list("Greek M15 Adrian","m15 adrian",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/adriangreek),
+
+		/*Cold War to Modern Helmets*/
+	"USSR SSh-68 Helmet" = list("USSR SSh-68 Helmet","helmets",7,7,10,0,0,0,/obj/item/clothing/head/helmet/modern/ssh_68),
+	"Korean War US M1 Helmet" = list("Korean War US M1 Helmet","helmets",7,7,12,0,0,0,/obj/item/clothing/head/helmet/korean/usm1),
+	"Russian ZSh-1 Helmet" = list("Russian ZSh-1 Helmet","helmets",7,7,12,0,0,0,/obj/item/clothing/head/helmet/modern/zsh1),
+
+	"Modern US M1 Helmet" = list("Modern US M1 Helmet","helmets",8,8,12,0,0,0,/obj/item/clothing/head/helmet/modern/ushelmet),
+	"Russian ZSh-2 helmet" = list("Russian ZSh-2 helmet","helmets",8,8,14,0,0,0,/obj/item/clothing/head/helmet/modern/a6b47),
+
+				/*USSR Heavy Helmets*/
+	"USSR MASKA1 Helmet" = list("USSR MASKA1 Helmet","ussr heavy visored helmets",7,7,15,0,0,0,/obj/item/clothing/head/helmet/modern/sovietfacehelmet/nomads),
+	"USSR K6-3 Helmet" = list("USSR K6-3 Helmet","ussr heavy visored helmets",7,7,16,0,0,0,/obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding/nomads),
+
+	///*Kevlar Helmets*///
+			/*Cold War*/
+	"Kevlar Helmet" = list("Kevlar Helmet","helmets",7,8,0,0,0,10,/obj/item/clothing/head/helmet/kevlarhelmet),
+	"SWAT Helmet" = list("SWAT Helmet","helmets",7,8,0,0,0,12,/obj/item/clothing/head/helmet/swat),
+
+				/*PASGT Helmets*/
+	"Standard PASGT Helmet" = list("Standard PASGT Helmet","pasgt helmets",7,7,0,0,0,10,/obj/item/clothing/head/helmet/modern/pasgt),
+	"Desert PASGT Helmet" = list("Desert PASGT Helmet","pasgt helmets",7,7,0,0,0,10,/obj/item/clothing/head/helmet/modern/pasgt/desert),
+
+			/*Modern*/
+	"Tactical Helmet" = list("Tactical Helmet","helmets",7,8,0,0,0,14,/obj/item/clothing/head/helmet/tactical),
+
+				/*US LWT Helmets*/
+	"Standard US LWT Helmet" = list("Standard US LWT Helmet","us lwt helmets",7,7,0,0,0,12,/obj/item/clothing/head/helmet/modern/lwh),
+	"Black US LWT Helmet" = list("Black US LWT Helmet","us lwt helmets",7,7,0,0,0,12,/obj/item/clothing/head/helmet/modern/lwh/black),
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//|| Armor ||///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///*Bronze Armor*///
+			/*Classical*/
+	"Egyptian Lamellar Armor" = list("Egyptian Lamellar Armor","armor",1,1,0,0,8,0,/obj/item/clothing/suit/armor/ancient/bronze_lamellar),
+	"Chinese Lamellar Armor" = list("Chinese Lamellar Armor","armor",1,1,0,0,8,0,/obj/item/clothing/suit/armor/ancient/bronze_lamellar/chinese),
+
+	///*Iron Armor*///
+			/*Classical*/
+	"Scale Armor" = list("Scale Armor","armor",1,1,0,14,0,0,/obj/item/clothing/suit/armor/ancient/scale),
+
+			/*Medieval*/
+	"Chainmail" = list("Chainmail","armor",2,2,0,10,0,0,/obj/item/clothing/suit/armor/medieval/chainmail),
+	"Iron Chestplate" = list("Chainmail","armor",2,2,0,12,0,0,/obj/item/clothing/suit/armor/medieval/iron_chestplate),
+	"Hauberk" = list("Hauberk","armor",2,2,0,12,0,0,/obj/item/clothing/suit/armor/medieval/hauberk),
+	"Emirate Armor" = list("Emirate Armor","armor",2,2,0,14,0,0,/obj/item/clothing/suit/armor/medieval/emirate),
+	"Plated Armor" = list("Plated Armor","armor",2,2,0,16,0,0,/obj/item/clothing/suit/armor/medieval),
+
+				/*Armor Accessories*/
+	"Gauntlets" = list("Gauntlets","armor",2,2,0,10,0,0,/obj/item/clothing/gloves/gauntlets),
+	"Plated Boots" = list("Plated Boots","armor",2,2,0,10,0,0,/obj/item/clothing/shoes/medieval/knight),
+
+				/*Orkish Armor*/
+	"Grunt Armor" = list("Grunt Armor","orkish armor",2,2,0,10,0,0,/obj/item/clothing/suit/armor/ork_grunt),
+	"Urukhai Armor" = list("Urukhai Armor","orkish armor",2,2,0,12,0,0,/obj/item/clothing/suit/armor/ork_urukhai),
+
+	"Orkish Gauntlets" = list("Orkish Gauntlets","orkish armor",2,2,0,10,0,0,/obj/item/clothing/gloves/gauntlets/orc),
+	"Orkish Sabatons" = list("Orkish Sabatons","orkish armor",2,2,0,10,0,0,/obj/item/clothing/shoes/orc),
+
+				/*Other Cultural Armor*/
+	"Varangian Lamellar Armor" = list("Varangian Lamellar Armor","other armor",2,2,0,12,0,0,/obj/item/clothing/suit/armor/medieval/varangian),
+	"Imperial Chinese Armor" = list("Imperial Chinese Armor","other armor",2,3,0,13,0,0,/obj/item/clothing/suit/armor/medieval/imperial_chinese),
+
+				/*Japanese Armor & Accessories*/
+	"Metal Samurai Armor" = list("Metal Samurai Armor","japanese armor",2,3,0,16,0,0,/obj/item/clothing/suit/armor/samurai),
+	"Red Metal Samurai Armor" = list("Red Metal Samurai Armor","japanese armor",2,3,0,16,0,0,/obj/item/clothing/suit/armor/samurai/red),
+	"Blue Metal Samurai Armor" = list("Blue Metal Samurai Armor","japanese armor",2,3,0,16,0,0,/obj/item/clothing/suit/armor/samurai/blue),
+	"Black Metal Samurai Armor" = list("Black Metal Samurai Armor","japanese armor",2,3,0,16,0,0,/obj/item/clothing/suit/armor/samurai/black),
+
+	"Kote Bracer Gauntlets" = list("Kote Bracer Gauntlets","japanese armor",2,3,0,10,0,0,/obj/item/clothing/gloves/gauntlets/kote),
+	"Tsuranuki Shinguard Boots" = list("Tsuranuki Shinguard Boots","japanese armor",2,3,0,10,0,0,/obj/item/clothing/shoes/tsuranuki),
+
+			/*Imperial*/
+	"Imperial Chestplate" = list("Imperial Chestplate","armor",3,3,0,14,0,0,/obj/item/clothing/suit/armor/imperial/imperial_chestplate),
+
+			/*Modern Iron Armor*/
+	"Scrap Armor" = list("Scrap Armor","armor",8,8,0,16,0,0,/obj/item/clothing/suit/armor/scrap),
+
+	///*Steel Armor*///
+			/*World Wars*/
+	"Dayfield Body Armor" = list("Dayfield Body Armor","armor",5,5,10,0,0,0,/obj/item/clothing/accessory/armor/modern/british),
+	"Breastplate Body Armor" = list("Breastplate Body Armor","armor",5,5,12,0,0,0,/obj/item/clothing/accessory/armor/modern/plate),
+
+	///*Kevlar Armor*///
+			/*Cold War*/
+	"Police Bullet-Proof Vest" = list("Police Bullet-Proof Vest","armor",7,8,0,0,0,10,/obj/item/clothing/suit/police),
+	"Standard Kevlar Vest" = list("Standard Kevlar Vest","armor",7,8,0,0,0,14,/obj/item/clothing/accessory/armor/nomads/kevlarblack),
+
+				/*PASGT Armor*/
+	"Standard PASGT Armor" = list("Standard PASGT Armor","pasgt armor",7,7,0,0,0,12,/obj/item/clothing/accessory/armor/coldwar/pasgt),
+	"Khaki PASGT Armor" = list("Khaki PASGT Armor","pasgt armor",7,7,0,0,0,12,/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki),
+
+			/*Modern*/
+	"SWAT Heavy Vest" = list("SWAT Heavy Vest","helmets",8,8,0,0,0,16,/obj/item/clothing/suit/swat),
 )
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /obj/structure/anvil
 	name = "iron anvil"
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has 0 hot iron bars on it."
