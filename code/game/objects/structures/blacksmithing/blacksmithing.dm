@@ -1,3 +1,31 @@
+/* category list
+guns
+
+swords
+machetes
+
+other weapons
+shield
+helmets
+sallet helmets
+other helmets
+armor
+japanese armor
+other armor
+
+japanese helmets
+mk1 brodie
+m15 adrian
+ussr heavy visored helmets
+pasgt helmets
+us lwt helmets
+pasgt armor
+
+orkish weapons
+orkish shields
+orkish headwear
+orkish helmets
+*/
 var/global/list/anvil_recipes = list(
 	//name = list(name, category, first age, last age, steel cost, iron cost, bronze cost, kevlar cost, result)
 
@@ -48,6 +76,7 @@ var/global/list/anvil_recipes = list(
 	"Ceremonial Katana" = list("Ceremonial Katana","swords",6,8,30,30,0,0,/obj/item/weapon/material/sword/katana), //applied double cost or required 'ceremonial' subtype.
 
 		/*Other Weapons*/
+	"Knife" = list("Knife","knives",2,5,1,1,0,0,/obj/item/weapon/material/kitchen/utensil/knife),
 	"Tanto" = list("Tanto","knives",2,5,5,5,0,0,/obj/item/weapon/material/knife/tanto),
 	"Bowie Knife" = list("Bowie Knife","knives",4,6,8,8,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie),
 	"Bowie Knife" = list("Bowie Knife","knives",7,8,12,12,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie), //price inflated +4 out of era
@@ -71,18 +100,18 @@ var/global/list/anvil_recipes = list(
 	"Uruk-Hai Scimitar" = list("Uruk-Hai Scimitar","orkish weapons",2,2,0,16,0,0,/obj/item/weapon/material/sword/urukhaiscimitar), // needs orc code.
 
 	///*Shields & Tools*///
-	"Athenian Aspis Shield" = list("Athenian Aspis Shield","shield",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/aspis), //this paragraph changed from iron to bronze
-	"Spartan Aspis Shield" = list("Spartan Aspis Shield","shield",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/spartan),
-	"Pegasus Aspis Shield" = list("Pegasus Aspis Shield","shield",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/aspis/pegasus),
-	"Owl Aspis Shield" = list("Owl Aspis Shield","shield",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/aspis/owl),
-	"Egyptian Shield" = list("Egyptian Shield","shield",1,1,0,0,13,0,/obj/item/weapon/shield/egyptian), //
+	"Athenian Aspis Shield" = list("Athenian Aspis Shield","shields",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/aspis), //this paragraph changed from iron to bronze
+	"Spartan Aspis Shield" = list("Spartan Aspis Shield","shields",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/spartan),
+	"Pegasus Aspis Shield" = list("Pegasus Aspis Shield","shields",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/aspis/pegasus),
+	"Owl Aspis Shield" = list("Owl Aspis Shield","shields",1,1,0,0,13,0,/obj/item/weapon/shield/nomads/aspis/owl),
+	"Egyptian Shield" = list("Egyptian Shield","shields",1,1,0,0,13,0,/obj/item/weapon/shield/egyptian), //
 
-	"Scutum Shield" = list("Scutum Shield","shield",1,1,0,14,0,0,/obj/item/weapon/shield/scutum),
-	"Roman Shield" = list("Roman Shield","shield",1,1,0,14,0,0,/obj/item/weapon/shield/roman),
-	"Blue Roman Shield" = list("Blue Roman Shield","shield",1,1,0,14,0,0,/obj/item/weapon/shield/roman/blue),
-	"Praetorian Roman Shield" = list("Praetorian Roman Shield","shield",1,2,0,16,0,0,/obj/item/weapon/shield/roman/praetorian),
-	"Semi Oval Shield" = list("Semi Oval Shield","shield",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval),
-	"Semi Oval Templar Shield" = list("Semi Oval Templar Shield","shield",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval/templar),
+	"Scutum Shield" = list("Scutum Shield","shields",1,1,0,14,0,0,/obj/item/weapon/shield/scutum),
+	"Roman Shield" = list("Roman Shield","shields",1,1,0,14,0,0,/obj/item/weapon/shield/roman),
+	"Blue Roman Shield" = list("Blue Roman Shield","shields",1,1,0,14,0,0,/obj/item/weapon/shield/roman/blue),
+	"Praetorian Roman Shield" = list("Praetorian Roman Shield","shields",1,2,0,16,0,0,/obj/item/weapon/shield/roman/praetorian),
+	"Semi Oval Shield" = list("Semi Oval Shield","shields",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval),
+	"Semi Oval Templar Shield" = list("Semi Oval Templar Shield","shields",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval/templar),
 
 		/*Orc Shields*/
 	"Orkish Shield" = list("Orkish Shield","orkish shields",1,2,0,16,0,0,/obj/item/weapon/shield/iron/orc),
@@ -149,11 +178,11 @@ var/global/list/anvil_recipes = list(
 	"Beserker Helmet" = list("Beserker Helmet","orkish helmets",2,2,0,15,0,0,/obj/item/clothing/head/helmet/orc_beserker),
 
 				/*Early Modern Iron Helmets*/
-	"Pickelhaube" = list("Pickelhaube","helmets",4,4,0,7,0,0,/obj/item/clothing/head/helmet/modern/pickelhaube),
-	"Pith Helmet" = list("Pith Helmet","helmets",4,4,0,7,0,0,/obj/item/clothing/head/helmet/modern/pith),
+	"Pickelhaube" = list("Pickelhaube","helmets",4,5,0,7,0,0,/obj/item/clothing/head/helmet/modern/pickelhaube),
+	"Pith Helmet" = list("Pith Helmet","helmets",4,5,0,7,0,0,/obj/item/clothing/head/helmet/modern/pith),
 
 				/*Modern Iron Helmets*/
-	"Scrap Helmet" = list("Scrap Helmet","helmets",4,4,0,15,0,0,/obj/item/clothing/head/helmet/scrap),
+	"Scrap Helmet" = list("Scrap Helmet","helmets",4,5,0,15,0,0,/obj/item/clothing/head/helmet/scrap),
 
 	///*Bronze Helmets*///
 			/*Classical*/
@@ -209,15 +238,15 @@ var/global/list/anvil_recipes = list(
 	"SWAT Helmet" = list("SWAT Helmet","helmets",7,8,0,0,0,12,/obj/item/clothing/head/helmet/swat),
 
 				/*PASGT Helmets*/
-	"Standard PASGT Helmet" = list("Standard PASGT Helmet","pasgt helmets",7,7,0,0,0,10,/obj/item/clothing/head/helmet/modern/pasgt),
-	"Desert PASGT Helmet" = list("Desert PASGT Helmet","pasgt helmets",7,7,0,0,0,10,/obj/item/clothing/head/helmet/modern/pasgt/desert),
+	"Standard PASGT Helmet" = list("Standard PASGT Helmet","pasgt helmets",7,8,0,0,0,10,/obj/item/clothing/head/helmet/modern/pasgt),
+	"Desert PASGT Helmet" = list("Desert PASGT Helmet","pasgt helmets",7,8,0,0,0,10,/obj/item/clothing/head/helmet/modern/pasgt/desert),
 
 			/*Modern*/
 	"Tactical Helmet" = list("Tactical Helmet","helmets",7,8,0,0,0,14,/obj/item/clothing/head/helmet/tactical),
 
 				/*US LWT Helmets*/
-	"Standard US LWT Helmet" = list("Standard US LWT Helmet","us lwt helmets",7,7,0,0,0,12,/obj/item/clothing/head/helmet/modern/lwh),
-	"Black US LWT Helmet" = list("Black US LWT Helmet","us lwt helmets",7,7,0,0,0,12,/obj/item/clothing/head/helmet/modern/lwh/black),
+	"Standard US LWT Helmet" = list("Standard US LWT Helmet","us lwt helmets",8,8,0,0,0,12,/obj/item/clothing/head/helmet/modern/lwh),
+	"Black US LWT Helmet" = list("Black US LWT Helmet","us lwt helmets",8,8,0,0,0,12,/obj/item/clothing/head/helmet/modern/lwh/black),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //|| Armor ||///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +294,7 @@ var/global/list/anvil_recipes = list(
 	"Imperial Chestplate" = list("Imperial Chestplate","armor",3,3,0,14,0,0,/obj/item/clothing/suit/armor/imperial/imperial_chestplate),
 
 			/*Modern Iron Armor*/
-	"Scrap Armor" = list("Scrap Armor","armor",8,8,0,16,0,0,/obj/item/clothing/suit/armor/scrap),
+	"Scrap Armor" = list("Scrap Armor","armor",8,8,13,16,0,0,/obj/item/clothing/suit/armor/scrap),
 
 	///*Steel Armor*///
 			/*World Wars*/
@@ -341,10 +370,197 @@ obj/structure/anvil/New()
 					qdel(P)
 					var/obj/item/stack/material/iron/I = new/obj/item/stack/material/iron(loc)
 					I.amount = amt
+/////////IRON//////////
 		else if (istype(P, /obj/item/stack/material/iron))
-			return
+			var/list/optlist = list("cancel")
+			if (H.orc)
+				optlist = list("cancel", "orkish shields", "orkish headwear", "orkish helmets")
+				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "cancel")
+					return
+				var/list/newlist = list("Cancel")
+				for(var/i in anvil_recipes)
+					if (anvil_recipes[i])
+						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][6] > 0)
+							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][6] iron"
+				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+				if (choice2 == "Cancel")
+					return
+				var/list/parsed_choice2 = splittext(choice2," - ")
+				if (anvil_recipes[parsed_choice2[1]])
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+						user << "You begin crafting \the [parsed_choice2[1]]..."
+						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+								P.amount -= anvil_recipes[parsed_choice2[1]][6]
+								if (P.amount <= 0)
+									qdel(P)
+								user << "You finish crafting \the [parsed_choice2[1]]."
+								var/rtype = anvil_recipes[parsed_choice2[1]][9]
+								new rtype (loc,"iron")
+								return
+			else
+				if (map.ordinal_age <= 1)
+					optlist = list("cancel","shields","helmets","armor")
+				else if (map.ordinal_age <= 3)
+					optlist = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear")
+				else if (map.ordinal_age == 4)
+					optlist = list("cancel","helmets","armor")
+				else if (map.ordinal_age == 5)
+					optlist = list("cancel","helmets","armor")
+				else if (map.ordinal_age == 8)
+					optlist = list("cancel","helmets","armor")
+				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "cancel")
+					return
+				var/list/newlist = list("Cancel")
+				for(var/i in anvil_recipes)
+					if (anvil_recipes[i])
+						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][6] > 0)
+							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][6] iron"
+				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+				if (choice2 == "Cancel")
+					return
+				var/list/parsed_choice2 = splittext(choice2," - ")
+				if (anvil_recipes[parsed_choice2[1]])
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+						user << "You begin crafting \the [parsed_choice2[1]]..."
+						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+								P.amount -= anvil_recipes[parsed_choice2[1]][6]
+								if (P.amount <= 0)
+									qdel(P)
+								user << "You finish crafting \the [parsed_choice2[1]]."
+								var/rtype = anvil_recipes[parsed_choice2[1]][9]
+								new rtype (loc,"iron")
+								return
+/////////STEEL//////////
 		else if (istype(P, /obj/item/stack/material/steel))
-			return
+			var/list/optlist = list("cancel")
+			if (H.orc)
+				optlist = list("cancel", "orkish shields", "orkish headwear", "orkish helmets")
+				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "cancel")
+					return
+				var/list/newlist = list("Cancel")
+				for(var/i in anvil_recipes)
+					if (anvil_recipes[i])
+						if (anvil_recipes[i][2] == choice && map.ordinal_age <= anvil_recipes[i][5] > 0)
+							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][5] steel"
+				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+				if (choice2 == "Cancel")
+					return
+				var/list/parsed_choice2 = splittext(choice2," - ")
+				if (anvil_recipes[parsed_choice2[1]])
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+						user << "You begin crafting \the [parsed_choice2[1]]..."
+						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+								P.amount -= anvil_recipes[parsed_choice2[1]][5]
+								if (P.amount <= 0)
+									qdel(P)
+								user << "You finish crafting \the [parsed_choice2[1]]."
+								var/rtype = anvil_recipes[parsed_choice2[1]][9]
+								new rtype (loc,"steel")
+								return
+			else
+				if (map.ordinal_age >= 2 && map.ordinal_age <= 3)
+					optlist = list("cancel","other weapons")
+				else if (map.ordinal_age == 5)
+					optlist = list("cancel","helmets","mk1 brodie","m15 adrian","armor")
+				else if (map.ordinal_age == 6)
+					optlist = list("cancel","helmets","armor")
+				else if (map.ordinal_age == 7)
+					optlist = list("cancel","helmets","ussr heavy visored helmets","armor")
+				else if (map.ordinal_age == 8)
+					optlist = list("cancel","helmets","armor")
+
+				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "cancel")
+					return
+				var/list/newlist = list("Cancel")
+				for(var/i in anvil_recipes)
+					if (anvil_recipes[i])
+						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][5] > 0)
+							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][5] steel"
+				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+				if (choice2 == "Cancel")
+					return
+				var/list/parsed_choice2 = splittext(choice2," - ")
+				if (anvil_recipes[parsed_choice2[1]])
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+						user << "You begin crafting \the [parsed_choice2[1]]..."
+						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+								P.amount -= anvil_recipes[parsed_choice2[1]][5]
+								if (P.amount <= 0)
+									qdel(P)
+								user << "You finish crafting \the [parsed_choice2[1]]."
+								var/rtype = anvil_recipes[parsed_choice2[1]][9]
+								new rtype (loc,"steel")
+								return
+///////////////KEVLAR//////////////
+		else if (istype(P, /obj/item/stack/material/kevlar))
+			var/list/optlist = list("cancel")
+			else if (map.ordinal_age >= 7)
+				optlist = list("cancel","helmets","us lwt helmets","pasgt helmets","pasgt armor","armor")
+
+			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+			if (choice == "cancel")
+				return
+			var/list/newlist = list("Cancel")
+			for(var/i in anvil_recipes)
+				if (anvil_recipes[i])
+					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][8] > 0)
+						newlist += "[anvil_recipes[i][1] - anvil_recipes[i][8] kevlar"
+			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+			if (choice2 == "Cancel")
+				return
+			var/list/parsed_choice2 = splittext(choice2," - ")
+			if (anvil_recipes[parsed_choice2[1]])
+				if (P.amount >= anvil_recipes[parsed_choice2[1]][8])
+					user << "You begin crafting \the [parsed_choice2[1]]..."
+					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][8],src,can_move=FALSE))
+						if (P.amount >= anvil_recipes[parsed_choice2[1]][8])
+							P.amount -= anvil_recipes[parsed_choice2[1]][8]
+							if (P.amount <= 0)
+								qdel(P)
+							user << "You finish crafting \the [parsed_choice2[1]]."
+							var/rtype = anvil_recipes[parsed_choice2[1]][9]
+							new rtype (loc,"kevlar")
+							return
+/////////BRONZE//////////
+		else if (istype(P, /obj/item/stack/material/bronze))
+			var/list/optlist = list("cancel")
+			else if (map.ordinal_age <= 2)
+				optlist = list("cancel","shields","helmets","armor")
+			else if (map.ordinal_age == 3)
+				optlist = list("cancel","helmets")
+	
+			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+			if (choice == "cancel")
+				return
+			var/list/newlist = list("Cancel")
+			for(var/i in anvil_recipes)
+				if (anvil_recipes[i])
+					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][7] > 0)
+						newlist += "[anvil_recipes[i][1] - anvil_recipes[i][7] bronze"
+			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+			if (choice2 == "Cancel")
+				return
+			var/list/parsed_choice2 = splittext(choice2," - ")
+			if (anvil_recipes[parsed_choice2[1]])
+				if (P.amount >= anvil_recipes[parsed_choice2[1]][7])
+					user << "You begin crafting \the [parsed_choice2[1]]..."
+					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][7],src,can_move=FALSE))
+						if (P.amount >= anvil_recipes[parsed_choice2[1]][7])
+							P.amount -= anvil_recipes[parsed_choice2[1]][7]
+							if (P.amount <= 0)
+								qdel(P)
+							user << "You finish crafting \the [parsed_choice2[1]]."
+							var/rtype = anvil_recipes[parsed_choice2[1]][9]
+							new rtype (loc,"bronze")
+							return
 		else if (istype(P, /obj/item/weapon/clay/mold))
 			var/obj/item/weapon/clay/mold/ML = P
 			if (!ML.fired)
@@ -428,7 +644,53 @@ obj/structure/anvil/New()
 								user << "You finish crafting the [ML.current_material] axehead."
 								return
 					if ("swords")
-						return
+						var/list/optlist = list("cancel")
+						if (H.orc)
+							optlist = list("cancel", "orkish weapons")
+						else
+							optlist = list("cancel", "knives", "machetes", "swords")
+						var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+						if (choice == "cancel")
+							return
+						var/list/newlist = list("Cancel")
+						var/mat = 0
+						for(var/i in anvil_recipes)
+							if (anvil_recipes[i])
+								mat = 0
+								if (ML.current_material == "bronze")
+									mat = anvil_recipes[i][7]
+								if (ML.current_material == "copper")
+									mat = anvil_recipes[i][7]*1.2
+								if (ML.current_material == "iron")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "steel")
+									mat = anvil_recipes[i][6]
+								if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+									newlist += "[anvil_recipes[i][1] - [mat] [ML.current_material]"
+						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+						if (choice2 == "Cancel")
+							return
+						var/list/parsed_choice2 = splittext(choice2," - ")
+						if (anvil_recipes[parsed_choice2[1]])
+							if (ML.current_material == "bronze")
+									mat = anvil_recipes[parsed_choice2[1]][7]
+								if (ML.current_material == "copper")
+									mat = anvil_recipes[parsed_choice2[1]][7]*1.2
+								if (ML.current_material == "iron")
+									mat = anvil_recipes[parsed_choice2[1]][5]
+								if (ML.current_material == "steel")
+									mat = anvil_recipes[parsed_choice2[1]][6]
+							if (ML.capacity >= mat)
+								user << "You begin crafting \the [parsed_choice2[1]]..."
+								if (do_after(user,10*mat,src,can_move=FALSE))
+									if (ML.capacity >= mat)
+										ML.capacity -= mat
+										if (ML.capacity <= 0)
+											ML.update_icon()
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
+										return
 					if ("spearheads")
 						user << "You begin crafting the [ML.current_material] spearhead..."
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
