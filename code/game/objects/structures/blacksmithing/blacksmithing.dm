@@ -382,7 +382,7 @@ obj/structure/anvil/New()
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][6] > 0)
-							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][6] iron"
+							newlist += "[anvil_recipes[i][1]] - anvil_recipes[i][6]] iron"
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
 					return
@@ -417,7 +417,7 @@ obj/structure/anvil/New()
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][6] > 0)
-							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][6] iron"
+							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
 					return
@@ -446,7 +446,7 @@ obj/structure/anvil/New()
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age <= anvil_recipes[i][5] > 0)
-							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][5] steel"
+							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
 					return
@@ -482,7 +482,7 @@ obj/structure/anvil/New()
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][5] > 0)
-							newlist += "[anvil_recipes[i][1] - anvil_recipes[i][5] steel"
+							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
 					return
@@ -512,7 +512,7 @@ obj/structure/anvil/New()
 			for(var/i in anvil_recipes)
 				if (anvil_recipes[i])
 					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][8] > 0)
-						newlist += "[anvil_recipes[i][1] - anvil_recipes[i][8] kevlar"
+						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][8]] kevlar"
 			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 			if (choice2 == "Cancel")
 				return
@@ -544,7 +544,7 @@ obj/structure/anvil/New()
 			for(var/i in anvil_recipes)
 				if (anvil_recipes[i])
 					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][7] > 0)
-						newlist += "[anvil_recipes[i][1] - anvil_recipes[i][7] bronze"
+						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][7]] bronze"
 			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 			if (choice2 == "Cancel")
 				return
@@ -666,20 +666,20 @@ obj/structure/anvil/New()
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][6]
 								if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
-									newlist += "[anvil_recipes[i][1] - [mat] [ML.current_material]"
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")
 							return
 						var/list/parsed_choice2 = splittext(choice2," - ")
 						if (anvil_recipes[parsed_choice2[1]])
 							if (ML.current_material == "bronze")
-									mat = anvil_recipes[parsed_choice2[1]][7]
-								if (ML.current_material == "copper")
-									mat = anvil_recipes[parsed_choice2[1]][7]*1.2
-								if (ML.current_material == "iron")
-									mat = anvil_recipes[parsed_choice2[1]][5]
-								if (ML.current_material == "steel")
-									mat = anvil_recipes[parsed_choice2[1]][6]
+								mat = anvil_recipes[parsed_choice2[1]][7]
+							if (ML.current_material == "copper")
+								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
+							if (ML.current_material == "iron")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "steel")
+								mat = anvil_recipes[parsed_choice2[1]][6]
 							if (ML.capacity >= mat)
 								user << "You begin crafting \the [parsed_choice2[1]]..."
 								if (do_after(user,10*mat,src,can_move=FALSE))
