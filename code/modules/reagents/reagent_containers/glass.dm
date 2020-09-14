@@ -31,6 +31,7 @@
 		/mob/living/simple_animal/pig_gilt,
 		/obj/structure/oil_spring,
 		/obj/structure/refinery,
+		/obj/structure/distillery,
 		/obj/structure/oilwell,
 		/obj/structure/heatsource,
 		/obj/item/flashlight/lantern,

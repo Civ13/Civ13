@@ -34,6 +34,7 @@
 	var/atomic_nr = 0 //0 means its not a core element
 	var/chemical_symbol = "" //"" means its not a core element
 	var/radioactive = FALSE
+	var/strength = 100 // This is, essentially, units between stages - the lower, the stronger. Less fine tuning, more clarity.
 
 /datum/reagent/proc/remove_self(var/amount) // Shortcut
 	holder.remove_reagent(id, amount)
