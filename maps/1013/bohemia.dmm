@@ -98,7 +98,7 @@
 "bT" = (/obj/covers/wood,/obj/structure/closet/crate/cart/wooden,/turf/floor/dirt,/area/caribbean/void/caves)
 "bU" = (/obj/structure/practice_dummy,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bV" = (/obj/covers/cobblestone,/obj/structure/simple_door/key_door/civ/hall{health = 5000; unique_door_name = "Guard's Tower"},/turf/floor/grass,/area/caribbean/nomads/forest)
-"bW" = (/obj/item/weapon/pickaxe,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"bW" = (/obj/item/weapon/material/pickaxe,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bX" = (/obj/structure/mine_support,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bY" = (/obj/item/stack/material/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bZ" = (/obj/covers/romanroad,/turf/floor/dirt,/area/caribbean/nomads/forest)

@@ -82,7 +82,7 @@
 		/obj/item/weapon/attachment,
 		/obj/item/ammo_casing,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
-		/obj/item/weapon/shovel,
+		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		)
 

@@ -417,6 +417,73 @@ obj/structure/anvil/New()
 								ML.current_material = null
 								user << "You finish crafting the [ML.current_material] knife."
 								return
+					if ("axes")
+						user << "You begin crafting the [ML.current_material] axehead..."
+						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+							if (ML && ML.capacity)
+								ML.capacity = 0
+								ML.update_icon()
+								new/obj/item/weapon/material/part/axehead(loc,ML.current_material)
+								ML.current_material = null
+								user << "You finish crafting the [ML.current_material] axehead."
+								return
+					if ("swords")
+						return
+					if ("spearheads")
+						user << "You begin crafting the [ML.current_material] spearhead..."
+						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+							if (ML && ML.capacity)
+								ML.capacity = 0
+								ML.update_icon()
+								new/obj/item/weapon/material/part/spearhead(loc,ML.current_material)
+								ML.current_material = null
+								user << "You finish crafting the [ML.current_material] spearhead."
+								return
+
+					if ("pickaxes")
+						user << "You begin crafting the [ML.current_material] pickaxe head..."
+						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+							if (ML && ML.capacity)
+								ML.capacity = 0
+								ML.update_icon()
+								new/obj/item/weapon/material/part/pickaxe(loc,ML.current_material)
+								ML.current_material = null
+								user << "You finish crafting the [ML.current_material] pickaxe head."
+								return
+					if ("shovels")
+						user << "You begin crafting the [ML.current_material] shovel head..."
+						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+							if (ML && ML.capacity)
+								ML.capacity = 0
+								ML.update_icon()
+								new/obj/item/weapon/material/part/shovel(loc,ML.current_material)
+								ML.current_material = null
+								user << "You finish crafting the [ML.current_material] shovel head."
+								return
+					if ("arrowheads")
+						if (ML.current_material in list("copper", "bronze", "iron", "steel"))
+							user << "You begin crafting the [ML.current_material] arrowheads..."
+							if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+								if (ML && ML.capacity)
+									var/tamt = ML.capacity
+									ML.capacity = 0
+									switch(ML.current_material)
+										if ("copper")
+											var/obj/item/stack/arrowhead/copper/AH = new/obj/item/stack/arrowhead/copper(loc)
+											AH.amount = tamt*3
+										if ("iron")
+											var/obj/item/stack/arrowhead/iron/AH = new/obj/item/stack/arrowhead/iron(loc)
+											AH.amount = tamt*3
+										if ("steel")
+											var/obj/item/stack/arrowhead/steel/AH = new/obj/item/stack/arrowhead/steel(loc)
+											AH.amount = tamt*3
+										if ("bronze")
+											var/obj/item/stack/arrowhead/bronze/AH = new/obj/item/stack/arrowhead/bronze(loc)
+											AH.amount = tamt*3
+									ML.current_material = null
+									ML.update_icon()
+									user << "You finish crafting the [ML.current_material] arrowheads."
+									return
 /obj/structure/anvil/steel
 	name = "stone anvil"
 	desc = "An advanced steel anvil. The blacksmith's main work tool."

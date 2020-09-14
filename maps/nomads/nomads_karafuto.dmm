@@ -167,7 +167,7 @@
 "dk" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass,/area/caribbean/nomads)
 "dl" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass,/area/caribbean/nomads)
 "dm" = (/obj/structure/religious/remains,/turf/floor/grass,/area/caribbean/nomads)
-"dn" = (/obj/item/weapon/shovel/bone,/turf/floor/grass,/area/caribbean/nomads)
+"dn" = (/obj/item/weapon/material/shovel/bone,/turf/floor/grass,/area/caribbean/nomads)
 "do" = (/obj/structure/religious/grave,/obj/structure/religious/remains,/turf/floor/grass,/area/caribbean/nomads)
 "dp" = (/obj/structure/religious/gravestone,/turf/floor/grass,/area/caribbean/nomads)
 "dq" = (/obj/item/weapon/horn,/turf/floor/grass,/area/caribbean/nomads)

@@ -97,7 +97,7 @@
 "bS" = (/mob/living/simple_animal/frog/poisonous,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "bT" = (/obj/item/stack/material/stone{amount = 50},/obj/structure/closet/crate/empty{name = "hard materials crate"},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "bU" = (/obj/item/stack/material/wood{amount = 50},/obj/item/stack/material/wood{amount = 50},/obj/structure/closet/crate/empty{name = "soft materials crate"},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
-"bV" = (/obj/structure/closet/crate/empty{name = "tool crate"},/obj/item/weapon/pickaxe/bone,/obj/item/weapon/pickaxe/bone,/obj/item/weapon/shovel/bone,/obj/item/weapon/shovel/bone,/obj/item/weapon/material/hatchet/tribal,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
+"bV" = (/obj/structure/closet/crate/empty{name = "tool crate"},/obj/item/weapon/material/pickaxe/bone,/obj/item/weapon/material/pickaxe/bone,/obj/item/weapon/material/shovel/bone,/obj/item/weapon/material/shovel/bone,/obj/item/weapon/material/hatchet/tribal,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "bW" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND1"},/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/temperate)
 "bX" = (/obj/item/stack/farming/seeds/cotton,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/temperate)
 "bY" = (/obj/effect/spawner/objspawner/tree,/mob/living/simple_animal/frog,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)

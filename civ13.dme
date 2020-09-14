@@ -361,6 +361,7 @@
 #include "code\game\objects\structures\window.dm"
 #include "code\game\objects\structures\blacksmithing\blacksmithing.dm"
 #include "code\game\objects\structures\blacksmithing\molds.dm"
+#include "code\game\objects\structures\blacksmithing\parts.dm"
 #include "code\game\objects\structures\blacksmithing\refining.dm"
 #include "code\game\objects\structures\crates_lockers\closets.dm"
 #include "code\game\objects\structures\crates_lockers\crates.dm"
