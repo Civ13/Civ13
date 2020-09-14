@@ -207,6 +207,10 @@ obj/structure/anvil/New()
 					qdel(P)
 					var/obj/item/stack/material/iron/I = new/obj/item/stack/material/iron(loc)
 					I.amount = amt
+		else if (istype(P, /obj/item/stack/material/iron))
+			return
+		else if (istype(P, /obj/item/stack/material/steel))
+			return
 		else if (istype(P, /obj/item/weapon/clay/mold))
 			var/obj/item/weapon/clay/mold/ML = P
 			if (!ML.fired)
