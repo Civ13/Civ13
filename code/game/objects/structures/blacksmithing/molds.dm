@@ -47,7 +47,7 @@
 			ML.capacity -= amt_to_transfer
 			ML.update_icon()
 			src.update_icon()
-	else if (istype(I, /obj/item/stack/ore))
+	else if (istype(I, /obj/item/stack/ore) || istype(I, /obj/item/stack/material))
 		var/obj/item/stack/ore/O = I
 		if (istype(O, /obj/item/stack/ore/gold))
 			if (contents_materials.len == 0)
