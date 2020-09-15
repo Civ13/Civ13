@@ -76,8 +76,8 @@ var/global/list/anvil_recipes = list(
 	"Ceremonial Katana" = list("Ceremonial Katana","swords",6,8,30,30,0,0,/obj/item/weapon/material/sword/katana), //applied double cost or required 'ceremonial' subtype.
 
 		/*Other Weapons*/
-	"Knife" = list("Knife","knives",2,5,1,1,0,0,/obj/item/weapon/material/kitchen/utensil/knife),
-	"Throwing Knife" = list("Throwing Knife","knives",2,8,1.5,1.5,1.5,/obj/item/weapon/material/thrown/throwing_knife),
+	"Knife" = list("Knife","knives",0,8,1,1,1,1,/obj/item/weapon/material/kitchen/utensil/knife),
+	"Throwing Knife" = list("Throwing Knife","knives",2,8,1.5,1.5,1.5,1.5,/obj/item/weapon/material/thrown/throwing_knife),
 	"Tanto" = list("Tanto","knives",2,5,5,5,0,0,/obj/item/weapon/material/knife/tanto),
 	"Bowie Knife" = list("Bowie Knife","knives",4,6,8,8,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie),
 	"Bowie Knife" = list("Bowie Knife","knives",7,8,12,12,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie), //price inflated +4 out of era
