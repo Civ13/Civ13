@@ -25,6 +25,10 @@
 /obj/item/weapon/clay/mold/examine(mob/user)
 	if (capacity > 0)
 		user << "Has [capacity] unit[capacity > 1 ? "s" : ""] of [current_material] in it."
+	if (contents_materials.len)
+		for (var/i in contents_materials)
+			if (contents_materials[i]>0)
+				user << "Has [contents_materials[i]] unit[contents_materials[i] > 1 ? "s" : ""] of [i] in it."
 /obj/item/weapon/clay/mold/attackby(obj/item/I as obj, mob/user as mob)
 	if (!fired)
 		return
