@@ -47,8 +47,9 @@
 			user.visible_message("[user] pours [amt_to_transfer] unit[amt_to_transfer > 1 ? "s" : ""] of [ML.current_material] into the molten [ML.current_material] into \the [src].")
 			src.capacity += amt_to_transfer
 			src.current_material = ML.current_material
-			ML.current_material = null
 			ML.capacity -= amt_to_transfer
+			if (ML.capacity <= 0)
+				ML.current_material = null
 			ML.update_icon()
 			src.update_icon()
 	else if (istype(I, /obj/item/stack/ore) || istype(I, /obj/item/stack/material))
