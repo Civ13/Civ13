@@ -77,6 +77,7 @@ var/global/list/anvil_recipes = list(
 
 		/*Other Weapons*/
 	"Knife" = list("Knife","knives",2,5,1,1,0,0,/obj/item/weapon/material/kitchen/utensil/knife),
+	"Throwing Knife" = list("Throwing Knife","knives",2,8,1.5,1.5,1.5,/obj/item/weapon/material/thrown/throwing_knife),
 	"Tanto" = list("Tanto","knives",2,5,5,5,0,0,/obj/item/weapon/material/knife/tanto),
 	"Bowie Knife" = list("Bowie Knife","knives",4,6,8,8,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie),
 	"Bowie Knife" = list("Bowie Knife","knives",7,8,12,12,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie), //price inflated +4 out of era
@@ -85,6 +86,13 @@ var/global/list/anvil_recipes = list(
 	"Military Knife" = list("Military Knife","knives",5,7,14,14,0,0,/obj/item/weapon/material/kitchen/utensil/knife/military),
 	"Military Knife" = list("Military Knife","knives",8,8,18,14,0,0,/obj/item/weapon/material/kitchen/utensil/knife/military), //price inflated +4 out of era
 	"Ceremonial Tanto" = list("Ceremonial Tanto","knives",6,8,10,10,0,0,/obj/item/weapon/material/knife/tanto), //applied double cost or required 'ceremonial' subtype.
+	"Razor Blade" = list("Razor Blade","knives",0,8,2,2,2,0,/obj/item/weapon/material/kitchen/utensil/knife/razorblade),
+	"Circumcision Knife" = list("Circumcision Knife","knives",0,8,2,2,0,0,/obj/item/weapon/material/kitchen/utensil/knife/circumcision),
+	"Butcher's Cleaver" = list("Butcher's Cleaver","knives",0,8,3,3,0,0,/obj/item/weapon/material/knife/butcher),
+
+	"Hatchet Head" = list("Hatchet Head","axes",0,8,3,3,3,3,/obj/item/weapon/material/part/axehead/hatchet),
+	"Throwing Axe Head" = list("Throwing Axe Head","axes",0,8,3,3,3,3,/obj/item/weapon/material/part/axehead/throwing),
+	"Battle Axe Head" = list("Battle Axe Head","axes",0,3,8,8,8,8,/obj/item/weapon/material/part/axehead/battleaxe),
 
 	"Bolo Machete" = list("Bolo Machete","machetes",4,5,12,12,0,0,/obj/item/weapon/material/sword/bolo),
 	"Bolo Machete" = list("Bolo Machete","machetes",6,8,16,16,0,0,/obj/item/weapon/material/sword/bolo), //price inflated +4 out of era
@@ -627,25 +635,117 @@ obj/structure/anvil/New()
 								ML.update_icon()
 								return
 					if ("knives")
-						user << "You begin crafting the [ML.current_material] knife..."
-						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
-							if (ML && ML.capacity)
-								ML.capacity = 0
-								ML.update_icon()
-								new/obj/item/weapon/material/kitchen/utensil/knife(loc,ML.current_material)
-								ML.current_material = null
-								user << "You finish crafting the [ML.current_material] knife."
-								return
+						var/list/newlist = list("Cancel")
+						var/mat = 0
+						for(var/i in anvil_recipes)
+							if (anvil_recipes[i])
+								mat = 0
+								if (ML.current_material == "bronze")
+									mat = anvil_recipes[i][7]
+								if (ML.current_material == "copper")
+									mat = anvil_recipes[i][7]*1.2
+								if (ML.current_material == "tin")
+									mat = anvil_recipes[i][7]*1.4
+								if (ML.current_material == "gold")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "silver")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "lead")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "iron")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "steel")
+									mat = anvil_recipes[i][6]
+								if (anvil_recipes[i][2] == "knives" && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
+						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+						if (choice2 == "Cancel")
+							return
+						var/list/parsed_choice2 = splittext(choice2," - ")
+						if (anvil_recipes[parsed_choice2[1]])
+							if (ML.current_material == "bronze")
+								mat = anvil_recipes[parsed_choice2[1]][7]
+							if (ML.current_material == "copper")
+								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
+							if (ML.current_material == "tin")
+								mat = anvil_recipes[parsed_choice2[1]][7]*1.4
+							if (ML.current_material == "gold")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "silver")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "lead")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "iron")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "steel")
+								mat = anvil_recipes[parsed_choice2[1]][6]
+							if (ML.capacity >= mat)
+								user << "You begin crafting \the [parsed_choice2[1]]..."
+								if (do_after(user,10*mat,src,can_move=FALSE))
+									if (ML.capacity >= mat)
+										ML.capacity -= mat
+										if (ML.capacity <= 0)
+											ML.update_icon()
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
+										return
 					if ("axes")
-						user << "You begin crafting the [ML.current_material] axehead..."
-						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
-							if (ML && ML.capacity)
-								ML.capacity = 0
-								ML.update_icon()
-								new/obj/item/weapon/material/part/axehead(loc,ML.current_material)
-								ML.current_material = null
-								user << "You finish crafting the [ML.current_material] axehead."
-								return
+						var/list/newlist = list("Cancel")
+						var/mat = 0
+						for(var/i in anvil_recipes)
+							if (anvil_recipes[i])
+								mat = 0
+								if (ML.current_material == "bronze")
+									mat = anvil_recipes[i][7]
+								if (ML.current_material == "copper")
+									mat = anvil_recipes[i][7]*1.2
+								if (ML.current_material == "tin")
+									mat = anvil_recipes[i][7]*1.4
+								if (ML.current_material == "gold")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "silver")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "lead")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "iron")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "steel")
+									mat = anvil_recipes[i][6]
+								if (anvil_recipes[i][2] == "axes" && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
+						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+						if (choice2 == "Cancel")
+							return
+						var/list/parsed_choice2 = splittext(choice2," - ")
+						if (anvil_recipes[parsed_choice2[1]])
+							if (ML.current_material == "bronze")
+								mat = anvil_recipes[parsed_choice2[1]][7]
+							if (ML.current_material == "copper")
+								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
+							if (ML.current_material == "tin")
+								mat = anvil_recipes[parsed_choice2[1]][7]*1.4
+							if (ML.current_material == "gold")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "silver")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "lead")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "iron")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "steel")
+								mat = anvil_recipes[parsed_choice2[1]][6]
+							if (ML.capacity >= mat)
+								user << "You begin crafting \the [parsed_choice2[1]]..."
+								if (do_after(user,10*mat,src,can_move=FALSE))
+									if (ML.capacity >= mat)
+										ML.capacity -= mat
+										if (ML.capacity <= 0)
+											ML.update_icon()
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
+										return
 					if ("swords")
 						var/list/optlist = list("cancel")
 						if (H.orc)

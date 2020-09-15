@@ -24,6 +24,18 @@
 	result_name = "axe"
 	material = null
 
+/obj/item/weapon/material/part/axehead/hatchet
+	name = "hatchet head"
+	result = /obj/item/weapon/material/hatchet
+
+/obj/item/weapon/material/part/axehead/battleaxe
+	name = "battleaxe head"
+	result = /obj/item/weapon/material/hatchet/battleaxe
+
+/obj/item/weapon/material/part/axehead/throwing
+	name = "throwing axe head"
+	result = /obj/item/weapon/material/thrown/throwing_axe
+
 /obj/item/weapon/material/part/shovel
 	name = "crude shovel head"
 	icon_state = "crude_shovel"
