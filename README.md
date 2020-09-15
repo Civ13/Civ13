@@ -42,8 +42,8 @@ You will need a windows machine or a virtual machine running it from another OS.
 ## Setting up a Server
 1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
  
- 2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13-SS13/Civ13/master/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install*** wget first.
- 
- 3. Use **sudo bash INSTALL** and it should install everything you need.
- 
- 7. You're all set! Run the **launch.py** file inside the **scripts/** folder. Use ***python3 launch.py***.
+2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13/Civ13/master/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install*** wget first.
+
+3. Use **sudo bash INSTALL** and it should install everything you need.
+
+4. You're all set! Run the **launch.py** file inside the **scripts/** folder. Use ***python3 launch.py***.
