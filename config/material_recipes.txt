@@ -1466,8 +1466,6 @@ RECIPE: /material/gold/,gold sarcophagus,/obj/structure/closet/coffin/sarcophagu
 
 //*****************| GOLD WEAPONS & TOOLS |***************************
 
-RECIPE: /material/gold/,gold hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,10,10,0,8,gold
-RECIPE: /material/gold/,gold-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,10,10,0,3,gold
 RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none,0,0,0,8,null
 
 //************************************************************
@@ -1477,9 +1475,6 @@ RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 
 //*****************| SILVER WEAPONS & TOOLS |***************************
-
-RECIPE: /material/silver/,silver hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,10,10,0,8,silver
-RECIPE: /material/silver/,silver-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,10,10,0,3,silver
 
 //*****************| SILVER CLOTHING & ACCESSORIES |***************************
 
@@ -1516,14 +1511,7 @@ RECIPE: /material/copper/,handbell,/obj/item/weapon/handbell,2,50,0,1,none,40,0,
 
 //*****************| COPPER WEAPONS & TOOLS |***************************
 
-RECIPE: /material/copper/,copper hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,8,8,0,8,copper
-RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,8,8,0,3,copper
-RECIPE: /material/copper/,copper small sword,/obj/item/weapon/material/sword/smallsword/copper,10,70,0,1,weapons,18,18,0,2,copper
-
 //*****************| COPPER PROJECTILES & BULLETS, GRENADES |***************************
-
-RECIPE: /material/copper/,copper arrowhead (x4),/obj/item/stack/arrowhead/copper,1,10,0,1,ammunition,0,16,0,8,null
-
 
 RECIPE: /material/copper/,rifle casing (x3),/obj/item/stack/ammopart/casing/rifle,1,25,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/copper/,pistol casing (x3),/obj/item/stack/ammopart/casing/pistol,1,25,0,1,ammunition,105,0,0,8,null
@@ -1564,13 +1552,9 @@ RECIPE: /material/steel/,wheelchair,/obj/structure/bed/chair/wheelchair,6,140,0,
 RECIPE: /material/steel/,zippo lighter,/obj/item/weapon/flame/lighter/zippo,4,95,0,1,none,145,0,0,8,null
 
 //*********************| STEEL WEAPONS & TOOLS |**************************
-
-RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,3,steel
-RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,4,null
 RECIPE: /material/steel/,throwing axe,/obj/item/weapon/material/thrown/throwing_axe,3,20,0,1,weapons,50,44,0,8,null
 RECIPE: /material/steel/,steel throwing knife,/obj/item/weapon/material/thrown/throwing_knife,2,20,0,1,weapons,50,44,0,8,steel
 
-RECIPE: /material/steel/,steel hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
@@ -1663,8 +1647,6 @@ RECIPE: /material/steel/,cell tower,/obj/structure/cell_tower,15,180,1,1,none,21
 
 //*********************| STEEL PROJECTILES|**************************
 
-RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
-
 //*********************| STEEL DECORATION|**************************
 
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
@@ -1677,22 +1659,10 @@ RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole,6,95,0,1,none,0,0,0,8
 RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4,60,0,1,none,15,0,0,8,null
 
 //*********************| BRONZE WEAPONS & TOOLS |*************************
-RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
 
-RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,3,bronze
-
-RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,2,null
-RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,18,95,0,1,weapons,24,16,0,2,null
-RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,18,105,0,1,weapons,24,16,0,2,null
-
-RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,21,16,0,2,bronze
-RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,24,21,0,2,bronze
-
-
 //*********************| BRONZE PROJECTILES |*************************
-RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,21,0,8,null
 
 //*********************| BRONZE ARMOR |*************************
 RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,1,bronze
@@ -1829,11 +1799,11 @@ RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
-RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
+RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,4,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,assagai spear,/obj/item/weapon/material/spear/assagai,4,90,0,1,weapons,0,22,0,3,wood
 RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0,22,0,2,wood
-RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,4,70,0,1,weapons,0,22,0,2,wood
-RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,4,90,0,1,weapons,0,22,0,2,wood
+RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,6,70,0,1,weapons,0,22,0,2,wood
+RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,8,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,2,wood
 RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0,1,weapons,0,95,0,8,null
@@ -2076,13 +2046,10 @@ RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,produ
 
 //*********************| IRON TOOLS |**************************
 
-RECIPE: /material/iron/,hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,butcher's cleaver,/obj/item/weapon/material/knife/butcher,3,40,0,1,tools,20,0,25,8,iron
 RECIPE: /material/iron/,circumcision knife,/obj/item/weapon/material/kitchen/utensil/knife/circumcision,2,60,0,1,tools,25,0,0,8,null
 
 RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
-RECIPE: /material/iron/,shovel,/obj/item/weapon/material/shovel,2,50,0,1,tools,0,0,0,8,null
-RECIPE: /material/iron/,pickaxe,/obj/item/weapon/material/pickaxe,3,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,iron
@@ -2117,9 +2084,7 @@ RECIPE: /material/iron/,locker,/obj/structure/closet,4,80,1,1,furniture,105,0,0,
 
 RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weapons,0,32,0,8,null
 
-RECIPE: /material/iron/,iron-tipped spear,/obj/item/weapon/material/spear,2,50,0,1,weapons,27,16,0,3,iron
 RECIPE: /material/iron/,battle axe,/obj/item/weapon/material/hatchet/battleaxe,8,70,0,1,weapons,27,16,0,8,iron
-RECIPE: /material/iron/,iron shield,/obj/item/weapon/shield/iron,4,85,0,1,weapons,27,27,0,4,null
 RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,throwing knife,/obj/item/weapon/material/thrown/throwing_knife,4,20,0,1,weapons,0,39,0,8,iron
@@ -2137,7 +2102,6 @@ RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,cons
 
 //*********************| IRON PROJECTILES & BULLETS |**************************
 
-RECIPE: /material/iron/,iron arrowhead (x4),/obj/item/stack/arrowhead/iron,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/iron/,musket ball (x2),/obj/item/stack/ammopart/musketball,1,25,0,1,projectiles,0,80,0,8,null
 RECIPE: /material/iron/,small musket ball (x3),/obj/item/stack/ammopart/musketball_pistol,1,25,0,1,projectiles,0,80,0,8,null
 RECIPE: /material/iron/,blunderbuss ball (x2),/obj/item/stack/ammopart/blunderbuss,1,25,0,1,projectiles,0,80,0,8,null

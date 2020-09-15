@@ -112,7 +112,10 @@ var/global/list/anvil_recipes = list(
 	"Praetorian Roman Shield" = list("Praetorian Roman Shield","shields",1,2,0,16,0,0,/obj/item/weapon/shield/roman/praetorian),
 	"Semi Oval Shield" = list("Semi Oval Shield","shields",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval),
 	"Semi Oval Templar Shield" = list("Semi Oval Templar Shield","shields",2,2,0,16,0,0,/obj/item/weapon/shield/iron/nomads/semioval/templar),
-
+	
+	"Bronze Shield" = list("Bronze Shield","shields",1,2,0,0,8,0,/obj/item/weapon/shield/bronze),
+	"Iron Shield" = list("Iron Shield","shields",1,2,0,10,0,0,/obj/item/weapon/shield/iron),
+	"Steel Shield" = list("Steel Shield","shields",2,2,10,0,0,0,/obj/item/weapon/shield/steel),
 		/*Orc Shields*/
 	"Orkish Shield" = list("Orkish Shield","orkish shields",1,2,0,16,0,0,/obj/item/weapon/shield/iron/orc),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
