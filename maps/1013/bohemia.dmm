@@ -145,7 +145,7 @@
 "cO" = (/obj/covers/cobblestone,/obj/structure/anvil,/obj/roof/clay,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cP" = (/obj/covers/cobblestone,/obj/structure/repair/workbench,/obj/roof/clay,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cQ" = (/obj/covers/cobblestone,/obj/structure/repair/grindstone,/obj/roof/clay,/turf/floor/grass,/area/caribbean/nomads/forest)
-"cR" = (/obj/covers/cobblestone,/obj/structure/furnace/clay,/obj/roof/clay,/turf/floor/grass,/area/caribbean/nomads/forest)
+"cR" = (/obj/covers/cobblestone,/obj/structure/furnace,/obj/roof/clay,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cS" = (/obj/covers/cobblestone,/obj/structure/window/classic/reinforced,/obj/structure/barricade,/obj/roof/clay,/obj/structure/curtain/leather/open,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cT" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/nordic,/obj/roof/thatch,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cU" = (/obj/covers/cobblestone,/obj/structure/mine_support/stone,/obj/item/flashlight/torch/on/unlimited,/obj/roof/clay,/turf/floor/grass,/area/caribbean/nomads/forest)

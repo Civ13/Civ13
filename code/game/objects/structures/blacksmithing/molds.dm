@@ -23,17 +23,24 @@
 		icon_state = "[base_icon]_empty"
 
 /obj/item/weapon/clay/mold/examine(mob/user)
+	..()
 	if (capacity > 0)
 		user << "Has [capacity] unit[capacity > 1 ? "s" : ""] of [current_material] in it."
 	if (contents_materials.len)
 		for (var/i in contents_materials)
 			if (contents_materials[i]>0)
-				user << "Has [contents_materials[i]] unit[contents_materials[i] > 1 ? "s" : ""] of [i] in it."
+				user << "Has <b>[contents_materials[i]]</b> unit[contents_materials[i] > 1 ? "s" : ""] of [i] in it."
+	if (max_capacity > 0)
+		user << "Has a maximum capacity of <b>[max_capacity]</b> units."
 /obj/item/weapon/clay/mold/attackby(obj/item/I as obj, mob/user as mob)
 	if (!fired)
+		user << "<span class='warning'>This [src] is unfired!</span>"
 		return
 	if (istype(I, /obj/item/weapon/clay/mold))
 		var/obj/item/weapon/clay/mold/ML = I
+		if (!ML.fired)
+			user << "<span class='warning'>This [ML] is unfired!</span>"
+			return
 		if (ML.fired && ML.capacity > 0 && (src.capacity < src.max_capacity) && (src.current_material == ML.current_material || !src.current_material))
 			var/amt_to_transfer = min(max_capacity - capacity, ML.capacity)
 			var/input = input(user, "Transfer", "How much of the [ML.current_material] do you want to transfer? Free capacity: [amt_to_transfer]", amt_to_transfer) as num
@@ -186,7 +193,7 @@
 	base_icon = "axehead_mold"
 	fired = TRUE
 	craftable_classes = "axes"
-	max_capacity = 5
+	max_capacity = 10
 
 /obj/item/weapon/clay/mold/sword/fired
 	name = "sword mold"
@@ -202,7 +209,7 @@
 	base_icon = "knife_mold"
 	fired = TRUE
 	craftable_classes = "knives"
-	max_capacity = 10
+	max_capacity = 20
 
 /obj/item/weapon/clay/mold/spearhead/fired
 	name = "spearhead mold"

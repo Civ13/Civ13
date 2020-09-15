@@ -56,7 +56,7 @@
 "bd" = (/obj/covers/thatch,/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather/open,/obj/covers/jail/woodjail{health = 600},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/roof/palm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "be" = (/obj/covers/thatch,/obj/structure/filingcabinet/chestdrawer,/obj/roof/palm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "bf" = (/obj/covers/thatch,/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/obj/roof/palm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
-"bg" = (/obj/structure/furnace/clay{fuel = 100},/turf/floor/dirt,/area/caribbean/void/caves)
+"bg" = (/obj/structure/furnace{fuel = 100},/turf/floor/dirt,/area/caribbean/void/caves)
 "bh" = (/obj/covers/thatch,/obj/roof/palm,/obj/structure/simple_door/key_door/japanese,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "bi" = (/obj/covers/thatch,/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather/open,/obj/covers/jail/woodjail{health = 600},/obj/roof/palm,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "bj" = (/obj/structure/oven{fuel = 1000},/turf/floor/dirt,/area/caribbean/void/caves)
