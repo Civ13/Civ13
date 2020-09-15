@@ -8,7 +8,7 @@
 	var/base_icon = "iron"
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/list/accepted_materials = list("copper", "bronze", "iron")
+	var/list/accepted_materials = list("copper", "tin", "gold", "silver","bronze", "iron")
 obj/structure/anvil/New()
 	..()
 	desc = "A heavy iron anvil. The blacksmith's main work tool."
@@ -640,11 +640,11 @@ obj/structure/anvil/update_icon()
 	desc = "An advanced steel anvil. The blacksmith's main work tool."
 	icon_state = "steel_anvil"
 	base_icon = "steel"
-	accepted_materials = list("copper", "bronze", "iron", "steel")
+	accepted_materials = list("copper", "tin", "gold", "silver", "lead","bronze", "iron", "steel")
 
 /obj/structure/anvil/stone
 	name = "stone anvil"
 	desc = "A crude stone anvil. The blacksmith's main work tool."
 	icon_state = "stone_anvil"
 	base_icon = "stone"
-	accepted_materials = list("copper", "bronze")
+	accepted_materials = list("copper", "tin", "bronze")
