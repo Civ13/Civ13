@@ -50,7 +50,8 @@
 
 /obj/item/weapon/material/part/attackby(obj/item/weapon/material/handle/HANDLE, mob/living/human/H)
 	if (result && material && src)
-		new result(H.loc,material)
+		var/obj/item/weapon/material/M = new result(get_turf(H),material.name)
+		M.loc = H.loc
 		qdel(HANDLE)
 		qdel(src)
 		H << "You finish assembling the [result_name]."
