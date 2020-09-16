@@ -55,7 +55,7 @@
 			src.capacity += amt_to_transfer
 			src.current_material = ML.current_material
 			ML.capacity -= amt_to_transfer
-			if (ML.capacity <= 0)
+			if (ML.capacity <= 1)
 				ML.current_material = null
 			ML.update_icon()
 			src.update_icon()

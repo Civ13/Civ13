@@ -61,7 +61,7 @@
 	material = null
 
 /obj/item/weapon/material/part/attackby(obj/item/weapon/material/handle/HANDLE, mob/living/human/H)
-	if (result && material && src)
+	if (result && material && src && istype(HANDLE, /obj/item/weapon/material/handle))
 		var/obj/item/weapon/material/M = new result(get_turf(H),material.name)
 		M.loc = H.loc
 		qdel(HANDLE)

@@ -553,16 +553,19 @@ obj/structure/anvil/update_icon()
 								update_icon()
 								return
 					if ("spearheads")
-						user << "You begin crafting the [ML.current_material] spearhead..."
+						user << "You begin crafting the [ML.current_material] spearheads..."
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
 							if (ML && ML.capacity)
-								ML.capacity = 0
-								ML.update_icon()
-								new/obj/item/weapon/material/part/spearhead(loc,ML.current_material)
-								ML.current_material = null
-								user << "You finish crafting the [ML.current_material] spearhead."
+								var/tamt = Floor(ML.capacity/3)
+								if (tamt >= 1)
+									ML.capacity = 0
+									ML.update_icon()
+									for (var/i=1, i<=tamt, i++)
+										new/obj/item/weapon/material/part/spearhead(loc,ML.current_material)
+									ML.current_material = null
+									user << "You finish crafting the [ML.current_material] spearheads."
 
 							in_use = FALSE
 						else
@@ -571,16 +574,19 @@ obj/structure/anvil/update_icon()
 						return
 
 					if ("pickaxes")
-						user << "You begin crafting the [ML.current_material] pickaxe head..."
+						user << "You begin crafting the [ML.current_material] pickaxe heads..."
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
 							if (ML && ML.capacity)
-								ML.capacity = 0
-								ML.update_icon()
-								new/obj/item/weapon/material/part/pickaxe(loc,ML.current_material)
-								ML.current_material = null
-								user << "You finish crafting the [ML.current_material] pickaxe head."
+								var/tamt = Floor(ML.capacity/3)
+								if (tamt >= 1)
+									ML.capacity = 0
+									ML.update_icon()
+									for (var/i=1, i<=tamt, i++)
+										new/obj/item/weapon/material/part/pickaxe(loc,ML.current_material)
+									ML.current_material = null
+									user << "You finish crafting the [ML.current_material] pickaxe heads."
 
 							in_use = FALSE
 						else
@@ -593,11 +599,14 @@ obj/structure/anvil/update_icon()
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
 							if (ML && ML.capacity)
-								ML.capacity = 0
-								ML.update_icon()
-								new/obj/item/weapon/material/part/shovel(loc,ML.current_material)
-								ML.current_material = null
-								user << "You finish crafting the [ML.current_material] shovel head."
+								var/tamt = Floor(ML.capacity/2)
+								if (tamt >= 1)
+									ML.capacity = 0
+									ML.update_icon()
+									for (var/i=1, i<=tamt, i++)
+										new/obj/item/weapon/material/part/shovel(loc,ML.current_material)
+									ML.current_material = null
+									user << "You finish crafting the [ML.current_material] shovel head."
 
 							in_use = FALSE
 						else
@@ -636,7 +645,7 @@ obj/structure/anvil/update_icon()
 							update_icon()
 							return
 /obj/structure/anvil/steel
-	name = "stone anvil"
+	name = "steel anvil"
 	desc = "An advanced steel anvil. The blacksmith's main work tool."
 	icon_state = "steel_anvil"
 	base_icon = "steel"
