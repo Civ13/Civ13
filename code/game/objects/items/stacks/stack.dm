@@ -1198,21 +1198,21 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else
 			if (istype(H.l_hand, /obj/item/stack/medical/advanced/herbs))
 				var/obj/item/stack/medical/advanced/herbs/NB = H.l_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
-					user << "<span class = 'warning'>You need at least one medicinal herb in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>"
 					return
 			else if (istype(H.r_hand, /obj/item/stack/medical/advanced/herbs))
 				var/obj/item/stack/medical/advanced/herbs/NB = H.r_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
-					user << "<span class = 'warning'>You need at least one medicinal herb in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>"
 					return
 
 	else if (findtext(recipe.title, "khepresh war crown"))
