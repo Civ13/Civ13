@@ -2047,7 +2047,7 @@ RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,2
 
 RECIPE: /material/iron/,anvil,/obj/structure/anvil,25,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
-RECIPE: /material/wood/,specialist armorbench,/obj/structure/anvil/armorbench/specialist,15,210,1,1,production,120,0,0,8,null
+RECIPE: /material/iron/,specialist armorbench,/obj/structure/anvil/armorbench/specialist,15,210,1,1,production,120,0,0,8,null
 
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
 
