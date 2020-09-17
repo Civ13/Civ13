@@ -1,7 +1,7 @@
 ///////////RAW MOLDS/////////////
 /obj/item/weapon/clay/mold
 	name = "unfired clay ingot mold"
-	desc = "An unfired mould."
+	desc = "An unfired mold."
 	icon = 'icons/obj/metallurgy.dmi'
 	icon_state = "ingot_mold_raw"
 	base_icon = "ingot_mold"
@@ -34,12 +34,12 @@
 		user << "Has a maximum capacity of <b>[max_capacity]</b> units."
 /obj/item/weapon/clay/mold/attackby(obj/item/I as obj, mob/user as mob)
 	if (!fired)
-		user << "<span class='warning'>This [src] is unfired!</span>"
+		user << "<span class='warning'>[src] is unfired!</span>"
 		return
 	if (istype(I, /obj/item/weapon/clay/mold))
 		var/obj/item/weapon/clay/mold/ML = I
 		if (!ML.fired)
-			user << "<span class='warning'>This [ML] is unfired!</span>"
+			user << "<span class='warning'>[ML] is unfired!</span>"
 			return
 		if (ML.fired && ML.capacity > 0 && (src.capacity < src.max_capacity) && (src.current_material == ML.current_material || !src.current_material))
 			var/amt_to_transfer = min(max_capacity - capacity, ML.capacity)
@@ -60,60 +60,111 @@
 			ML.update_icon()
 			src.update_icon()
 	else if (istype(I, /obj/item/stack/ore) || istype(I, /obj/item/stack/material))
-		var/obj/item/stack/ore/O = I
-		if (istype(O, /obj/item/stack/ore/gold))
-			if (contents_materials.len == 0)
-				contents_materials += list("gold" = O.amount)
-				qdel(I)
-			else if  (contents_materials.len == 1 && contents_materials["gold"])
-				contents_materials["gold"] += O.amount
-				qdel(I)
-		else if (istype(O, /obj/item/stack/ore/silver))
-			if (contents_materials.len == 0)
-				contents_materials += list("silver" = O.amount)
-				qdel(I)
-			else if  (contents_materials.len == 1 && contents_materials["silver"])
-				contents_materials["silver"] += O.amount
-				qdel(I)
-		else if (istype(O, /obj/item/stack/ore/copper))
-			if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["tin"]))
-				contents_materials += list("copper" = O.amount)
-				qdel(I)
-			else if ((contents_materials.len == 1 && contents_materials["copper"]) || (contents_materials.len == 2 && contents_materials["copper"]))
-				contents_materials["copper"] += O.amount
-				qdel(I)
-		else if (istype(O, /obj/item/stack/ore/tin))
-			if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["copper"]))
-				contents_materials += list("tin" = O.amount)
-				qdel(I)
-			else if ((contents_materials.len == 1 && contents_materials["tin"]) || (contents_materials.len == 2 && contents_materials["tin"]))
-				contents_materials["tin"] += O.amount
-				qdel(I)
-		else if (istype(O, /obj/item/stack/ore/lead))
-			if (contents_materials.len == 0)
-				contents_materials += list("lead" = O.amount)
-				qdel(I)
-			else if (contents_materials.len == 1 && contents_materials["lead"])
-				contents_materials["lead"] += O.amount
-				qdel(I)
-		else if (istype(O, /obj/item/stack/material/iron))
-			if (contents_materials.len == 0)
-				contents_materials += list("iron" = O.amount)
-				qdel(I)
-			else if (contents_materials.len == 1 && contents_materials["iron"])
-				contents_materials["iron"] += O.amount
-				qdel(I)
-		else if (istype(O, /obj/item/stack/material/steel))
-			if (contents_materials.len == 0)
-				contents_materials += list("steel" = O.amount)
-				qdel(I)
-			else if (contents_materials.len == 1 && contents_materials["steel"])
-				contents_materials["steel"] += O.amount
-				qdel(I)
-		else
-			user << "You cannot use this material on a kiln."
+		if (istype(src, /obj/item/weapon/clay/mold/clayjug) || istype(src, /obj/item/weapon/clay/mold/claypot))
+			var/current_cap = 0
+			for (var/i in contents_materials)
+				current_cap += contents_materials[i]
+			if (current_cap >= max_capacity)
+				user << "<span class='warning'>[src] is full!</span>"
+				return
+			var/max_free_cap = max_capacity-current_cap
+			var/obj/item/stack/O = I
+			var/cap_to_add = min(max_free_cap, O.amount)
+			if (istype(O, /obj/item/stack/ore/gold))
+				if (contents_materials.len == 0)
+					contents_materials += list("gold" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+				else if  (contents_materials.len == 1 && contents_materials["gold"])
+					contents_materials["gold"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+			else if (istype(O, /obj/item/stack/ore/silver))
+				if (contents_materials.len == 0)
+					contents_materials += list("silver" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+				else if  (contents_materials.len == 1 && contents_materials["silver"])
+					contents_materials["silver"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+			else if (istype(O, /obj/item/stack/ore/copper))
+				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["tin"]))
+					contents_materials += list("copper" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+				else if ((contents_materials.len == 1 && contents_materials["copper"]) || (contents_materials.len == 2 && contents_materials["copper"]))
+					contents_materials["copper"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+			else if (istype(O, /obj/item/stack/ore/tin))
+				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["copper"]))
+					contents_materials += list("tin" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+				else if ((contents_materials.len == 1 && contents_materials["tin"]) || (contents_materials.len == 2 && contents_materials["tin"]))
+					contents_materials["tin"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+			else if (istype(O, /obj/item/stack/ore/lead))
+				if (contents_materials.len == 0)
+					contents_materials += list("lead" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+				else if (contents_materials.len == 1 && contents_materials["lead"])
+					contents_materials["lead"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+			else if (istype(O, /obj/item/stack/material/iron))
+				if (contents_materials.len == 0)
+					contents_materials += list("iron" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+				else if (contents_materials.len == 1 && contents_materials["iron"])
+					contents_materials["iron"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+			else if (istype(O, /obj/item/stack/material/steel))
+				if (contents_materials.len == 0)
+					contents_materials += list("steel" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+				else if (contents_materials.len == 1 && contents_materials["steel"])
+					contents_materials["steel"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					user << "You put some [O] in \the [src]."
+			else
+				user << "You cannot use this material on a kiln."
+				return
 			return
-		return
 /obj/item/weapon/clay/mold/axehead
 	name = "unfired clay axehead mold"
 	icon_state = "axehead_mold_raw"
