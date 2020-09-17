@@ -9,15 +9,17 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	var/list/accepted_materials = list("copper", "tin", "gold", "silver","bronze", "iron")
-obj/structure/anvil/New()
+
+/obj/structure/anvil/New()
 	..()
 	desc = "A heavy iron anvil. The blacksmith's main work tool."
 
-obj/structure/anvil/update_icon()
+/obj/structure/anvil/update_icon()
 	if (in_use)
 		icon_state = "[base_icon]_anvil_use"
 	else
 		icon_state = "[base_icon]_anvil"
+
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
 	var/mob/living/human/H = user
 	if (istype(P,/obj/item/weapon/wrench))
@@ -34,7 +36,15 @@ obj/structure/anvil/update_icon()
 		user << "You don't know how to use this."
 		return
 	else
+		if (istype(P, /obj/item/stack/material))
+			var/obj/item/stack/material/MTR = P
+			if (!(MTR.default_type in accepted_materials))
+				user << "<span class='warning'>You can't use this material on this anvil.</span>"
+				return
 		if (istype(P, /obj/item/stack/ore/iron_pig))
+			if (!("iron" in accepted_materials))
+				user << "<span class='warning'>You can't use this material on this anvil.</span>"
+				return
 			user << "You begin smithing the pig iron..."
 			icon_state = "[base_icon]_anvil_use"
 			in_use = TRUE
@@ -52,6 +62,9 @@ obj/structure/anvil/update_icon()
 				in_use = FALSE
 			update_icon()
 		else if (istype(P, /obj/item/stack/ore/iron_sponge))
+			if (!("iron" in accepted_materials))
+				user << "<span class='warning'>You can't use this material on this anvil.</span>"
+				return
 			user << "You begin smithing the sponge iron..."
 			icon_state = "[base_icon]_anvil_use"
 			in_use = TRUE
@@ -106,8 +119,10 @@ obj/structure/anvil/update_icon()
 			else
 				if (map.ordinal_age <= 1)
 					optlist = list("cancel","shields","helmets","armor")
-				else if (map.ordinal_age <= 3)
+				else if (map.ordinal_age == 2)
 					optlist = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear")
+				else if (map.ordinal_age == 3)
+					optlist = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear")
 				else if (map.ordinal_age == 4)
 					optlist = list("cancel","helmets","armor")
 				else if (map.ordinal_age == 5)
@@ -180,8 +195,12 @@ obj/structure/anvil/update_icon()
 						update_icon()
 						return
 			else
-				if (map.ordinal_age >= 2 && map.ordinal_age <= 3)
+				if (map.ordinal_age == 2)
 					optlist = list("cancel","other weapons")
+				else if (map.ordinal_age == 3)
+					optlist = list("cancel","other weapons")
+				else if (map.ordinal_age == 4)
+					optlist = list("cancel","guns")
 				else if (map.ordinal_age == 5)
 					optlist = list("cancel","helmets","mk1 brodie","m15 adrian","armor")
 				else if (map.ordinal_age == 6)
@@ -419,7 +438,9 @@ obj/structure/anvil/update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
-										if (ML.capacity <= 0)
+										if (ML.capacity < 1)
+											ML.current_material = null
+											ML.capacity = 0
 											ML.update_icon()
 										user << "You finish crafting \the [parsed_choice2[1]]."
 										var/rtype = anvil_recipes[parsed_choice2[1]][9]
@@ -482,7 +503,9 @@ obj/structure/anvil/update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
-										if (ML.capacity <= 0)
+										if (ML.capacity < 1)
+											ML.current_material = null
+											ML.capacity = 0
 											ML.update_icon()
 										user << "You finish crafting \the [parsed_choice2[1]]."
 										var/rtype = anvil_recipes[parsed_choice2[1]][9]
@@ -541,7 +564,9 @@ obj/structure/anvil/update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
-										if (ML.capacity <= 0)
+										if (ML.capacity < 1)
+											ML.current_material = null
+											ML.capacity = 0
 											ML.update_icon()
 										user << "You finish crafting \the [parsed_choice2[1]]."
 										var/rtype = anvil_recipes[parsed_choice2[1]][9]
