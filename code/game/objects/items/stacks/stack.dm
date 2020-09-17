@@ -648,7 +648,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
 				qdelHandReturn(H.r_hand, H)
 	//Handle Craftin.
-	if (!findtext(recipe.title, "wood spear"))
+	if (!findtext(recipe.title, "wood spear") && !findtext(recipe.title, "mold"))
 		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe") || findtext(recipe.title, "stone sledgehammer") || findtext(recipe.title, "lead sledgehammer") || findtext(recipe.title, "bronze sledgehammer")|| findtext(recipe.title, "iron sledgehammer")|| findtext(recipe.title, "steel sledgehammer")|| findtext(recipe.title, "uranium sledgehammer"))
 			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 				user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"

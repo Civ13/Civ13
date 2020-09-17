@@ -1406,8 +1406,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a miner who is tasked with collecting metals for the local lord and smithy. Explore the area, mine, and sell to the <b>Merchant or Blacksmith</b> what you find!")
 	H.setStat("strength", STAT_HIGH)

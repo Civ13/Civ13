@@ -32,7 +32,7 @@
 	sharp = TRUE
 	usespeed = 1.3
 
-/obj/item/weapon/shovel
+/obj/item/weapon/material/shovel
 	name = "shovel"
 	desc = "A large tool for digging and moving dirt."
 	icon = 'icons/obj/items.dmi'
@@ -48,20 +48,23 @@
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
 	var/usespeed = 1.2
+	default_material = "iron"
+	force_divisor = 0.25
+	thrown_force_divisor = 0.15
 
-/obj/item/weapon/shovel/bone
+/obj/item/weapon/material/shovel/bone
 	name = "bone shovel"
 	icon_state = "shovel_bone"
 	usespeed = 1
 
-/obj/item/weapon/shovel/trench
+/obj/item/weapon/material/shovel/trench
 	name = "Entrenching Tool"
 	desc = "A shovel used specifically for digging trenches."
 	icon_state = "german_shovel2"
 	var/dig_speed = 7
 	usespeed = 0.8
 
-/obj/item/weapon/pickaxe/jackhammer
+/obj/item/weapon/material/pickaxe/jackhammer
 	name = "jackhammer"
 	desc = "An effecient mining tool."
 	icon = 'icons/obj/items.dmi'
@@ -78,37 +81,42 @@
 	usespeed = 1.4
 
 //Needs two hands to use.
-/obj/item/weapon/pickaxe/jackhammer/proc/special_check(mob/user)
+/obj/item/weapon/material/pickaxe/jackhammer/proc/special_check(mob/user)
 	if (!(user.has_empty_hand(both = FALSE)))
 		user << "<span class='warning'>You need both hands to use the [src]!</span>"
 		return FALSE
 	..()
 
-/obj/item/weapon/pickaxe
+/obj/item/weapon/material/pickaxe
 	name = "pickaxe"
 	desc = "Miner's favorite."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "pickaxe"
-	force = 9.0
 	flags = CONDUCT
-	throwforce = 4.0
 	w_class = 3.0
 	item_state = "pickaxe"
 	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
+	default_material = "iron"
 	var/usespeed = 1.2
+	force_divisor = 0.35
+	thrown_force_divisor = 0.25
 
-/obj/item/weapon/pickaxe/bone
+/obj/item/weapon/material/pickaxe/bone
 	name = "bone pickaxe"
 	icon_state = "pickaxe_bone"
 	usespeed = 1
-/obj/item/weapon/pickaxe/stone
+	default_material = "bone"
+
+/obj/item/weapon/material/pickaxe/stone
 	name = "stone pickaxe"
 	usespeed = 1.1
 	icon_state = "spick"
-/obj/item/weapon/shovel/spade
+	default_material = "stone"
+
+/obj/item/weapon/material/shovel/spade
 	name = "spade"
 	desc = "A small tool for digging and moving dirt."
 	icon_state = "spade"
@@ -119,13 +127,13 @@
 	weight = 1.18
 	usespeed = 0.8
 
-/obj/item/weapon/shovel/spade/foldable
+/obj/item/weapon/material/shovel/spade/foldable
 	name = "foldable shovel"
 	icon_state = "german_shovel2"
 	item_state = "lopata"
 	usespeed = 0.7
 
-/obj/item/weapon/shovel/spade/small
+/obj/item/weapon/material/shovel/spade/small
 	name = "small shovel"
 	icon_state = "lopata"
 	item_state = "lopata"
@@ -205,7 +213,7 @@
 	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
 	design = "smooth"
 
-/obj/item/weapon/shovel/attack_self(mob/user)
+/obj/item/weapon/material/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
 	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine","Cancel")
 	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)

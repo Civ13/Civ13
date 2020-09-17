@@ -263,7 +263,7 @@
 "fc" = (/obj/item/weapon/barrier,/obj/item/weapon/barrier,/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/tribes/grasslands)
 "fd" = (/obj/item/weapon/barrier,/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/tribes/grasslands)
 "fe" = (/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/tribes/grasslands)
-"ff" = (/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/grass,/area/caribbean/tribes/grasslands)
+"ff" = (/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/turf/floor/grass,/area/caribbean/tribes/grasslands)
 "fg" = (/obj/covers/wood,/obj/structure/railing,/turf/floor/beach/water,/area/caribbean/tribes/beach)
 "fh" = (/obj/structure/closet/crate/bayonets,/turf/floor/beach/sand,/area/caribbean/colonies/dutch{location = 1; name = "Dutch Base"})
 "fi" = (/obj/structure/closet/crate/bayonets,/turf/floor/beach/sand,/area/caribbean/tribes/beach)

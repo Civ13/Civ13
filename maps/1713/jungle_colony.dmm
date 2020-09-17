@@ -231,7 +231,7 @@
 "ew" = (/obj/covers/wood,/obj/structure/closet/crate/bayonets,/turf/floor/grass,/area/caribbean/roofed)
 "ex" = (/obj/structure/barricade/wood_pole,/obj/structure/sign/custom{desc = "<b> West:</b> The Inn, and the Bank.</br> <b>South:</b> the Guard Barracks</br> <b>East:</b> Colony Hall and Well"; name = "Directions"},/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "ey" = (/obj/covers/cobblestone,/obj/effect/landmark/npctarget,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
-"ez" = (/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/pickaxe,/obj/item/weapon/pickaxe,/obj/item/weapon/hammer,/obj/item/weapon/hammer,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/structure/closet/crate/empty{name = "tool crate"},/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"ez" = (/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/hammer,/obj/item/weapon/hammer,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/structure/closet/crate/empty{name = "tool crate"},/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "eA" = (/obj/covers/wood,/obj/structure/closet/crate/webbings,/turf/floor/grass,/area/caribbean/roofed)
 "eB" = (/obj/structure/closet/crate/wood,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "eC" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/obj/covers/carpet/greencarpet,/turf/floor/grass,/area/caribbean/roofed)

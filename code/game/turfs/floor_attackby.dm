@@ -147,10 +147,10 @@
 		C.reagents.del_reagent("cholera")
 		return
 
-	else if (istype(C, /obj/item/weapon/shovel))
+	else if (istype(C, /obj/item/weapon/material/shovel))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
-		var/obj/item/weapon/shovel/SH = C
+		var/obj/item/weapon/material/shovel/SH = C
 		if (H.a_intent != I_DISARM)
 
 			if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
@@ -248,8 +248,8 @@
 			user.drop_from_inventory(C)
 			qdel(C)
 			return
-	else if (istype(C, /obj/item/weapon/pickaxe))
-		var/obj/item/weapon/pickaxe/SH = C
+	else if (istype(C, /obj/item/weapon/material/pickaxe))
+		var/obj/item/weapon/material/pickaxe/SH = C
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
@@ -795,7 +795,7 @@
 			make_grass()
 			playsound(src, 'sound/items/Ratchet.ogg', 80, TRUE)
 			return
-		else if (istype(C, /obj/item/weapon/shovel) && (flooring.flags & TURF_REMOVE_SHOVEL))
+		else if (istype(C, /obj/item/weapon/material/shovel) && (flooring.flags & TURF_REMOVE_SHOVEL))
 			user << "<span class='notice'>You shovel off the [flooring.descriptor].</span>"
 			make_grass()
 			playsound(src, 'sound/items/Deconstruct.ogg', 80, TRUE)
@@ -833,7 +833,7 @@
 	return ..()
 
 /turf/floor/mining/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/pickaxe))
+	if (istype(C, /obj/item/weapon/material/pickaxe))
 		var/mob/living/human/H = user
 		if (istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with the [C.name].</span>")
