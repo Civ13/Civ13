@@ -62,9 +62,6 @@
 				in_use = FALSE
 			update_icon()
 		else if (istype(P, /obj/item/stack/ore/iron_sponge))
-			if (!("iron" in accepted_materials))
-				user << "<span class='warning'>You can't use this material on this anvil.</span>"
-				return
 			user << "You begin smithing the sponge iron..."
 			icon_state = "[base_icon]_anvil_use"
 			in_use = TRUE
