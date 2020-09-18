@@ -56,6 +56,7 @@
 	name = "bone shovel"
 	icon_state = "shovel_bone"
 	usespeed = 1
+	default_material = "bone"
 
 /obj/item/weapon/material/shovel/trench
 	name = "Entrenching Tool"
