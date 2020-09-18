@@ -165,6 +165,7 @@ RECIPE: /material/clay/,unfired clay wine cup,/obj/item/weapon/clay/winecup,1,30
 RECIPE: /material/clay/,unfired clay bowl,/obj/item/weapon/clay/claybowl,1,30,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay jug,/obj/item/weapon/clay/clayjug,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay cup,/obj/item/weapon/clay/claycup,1,30,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay cooking pot,/obj/item/weapon/clay/cookingpot,2,20,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired very small clay pot,/obj/item/weapon/clay/verysmallclaypot,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired small clay pot,/obj/item/weapon/clay/smallclaypot,1,30,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,50,0,1,kitchen,0,0,0,8,null

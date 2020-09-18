@@ -393,6 +393,19 @@
 	on_stove = FALSE
 	flags = OPENCONTAINER
 
+/obj/item/weapon/reagent_containers/glass/small_pot/clay
+	desc = "A primitive clay pot, used for boiling water and cooking."
+	name = "clay cooking pot"
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "cookingpot"
+	item_state = "bucket"
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 40
+	on_stove = FALSE
+	flags = OPENCONTAINER
+
 /obj/item/weapon/reagent_containers/glass/fermenterbarrel
 	desc = "A fermenter barrel, use it to make alcoholic drinks like ale, beer and cider."
 	name = "fermenter barrel"
