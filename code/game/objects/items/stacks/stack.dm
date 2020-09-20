@@ -1166,7 +1166,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
-*/
+
 	else if (findtext(recipe.title, "grandfather clock"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			user << "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>"
