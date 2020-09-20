@@ -171,22 +171,22 @@ var/global/list/anvil_recipes = list(
 	"Imperial Chinese Helmet" = list("Imperial Chinese Helmet","other helmets",2,3,0,10,0,0,/obj/item/clothing/head/helmet/medieval/imperial_chinese),
 
 				/*Japanese Helmets & Headwear*/
-	"Samurai Helmet" = list("Samurai Helmet","japanese helmets",2,3,0,13,0,0,/obj/item/clothing/head/helmet/samurai/warrior),          //* Iron Samurai Warrior helms
+	"Samurai Helmet" = list("Samurai Helmet","japanese helmets",2,3,0,13,0,0,/obj/item/clothing/head/helmet/samurai),          //* Iron Samurai Warrior helms
 	"Red Samurai Helmet" = list("Red Samurai Helmet","japanese helmets",2,3,0,13,0,0,/obj/item/clothing/head/helmet/samurai/red),
 	"Blue Samurai Helmet" = list("Blue Samurai Helmet","japanese helmets",2,3,0,13,0,0,/obj/item/clothing/head/helmet/samurai/blue),
 	"Black Samurai Helmet" = list("Black Samurai Helmet","japanese helmets",2,3,0,13,0,0,/obj/item/clothing/head/helmet/samurai/black),
 
-	"Samurai Helmet" = list("Samurai Helmet","japanese helmets",2,3,10,0,0,0,/obj/item/clothing/head/helmet/samurai/warrior),          //* Steel Samurai Warrior helms
+	"Samurai Helmet" = list("Samurai Helmet","japanese helmets",2,3,10,0,0,0,/obj/item/clothing/head/helmet/samurai),          //* Steel Samurai Warrior helms
 	"Red Samurai Helmet" = list("Red Samurai Helmet","japanese helmets",2,3,10,0,0,0,/obj/item/clothing/head/helmet/samurai/red),
 	"Blue Samurai Helmet" = list("Blue Samurai Helmet","japanese helmets",2,3,10,0,0,0,/obj/item/clothing/head/helmet/samurai/blue),
 	"Black Samurai Helmet" = list("Black Samurai Helmet","japanese helmets",2,3,10,0,0,0,/obj/item/clothing/head/helmet/samurai/black),
 
-	"Samurai Lord Helmet" = list("Samurai Lord Helmet","japanese helmets",2,2,0,15,0,0,/obj/item/clothing/head/helmet/samurai/lord),                    //* Iron Medieval Samurai Lord helms
+	"Samurai Lord Helmet" = list("Samurai Lord Helmet","japanese helmets",2,2,0,15,0,0,/obj/item/clothing/head/helmet/samurai/lord/brown),                //* Iron Medieval Samurai Lord helms
 	"Red Samurai Lord Helmet" = list("Red Samurai Lord Helmet","japanese helmets",2,2,0,15,0,0,/obj/item/clothing/head/helmet/samurai/lord/red),
 	"Blue Samurai Lord Helmet" = list("Blue Samurai Lord Helmet","japanese helmets",2,2,0,15,0,0,/obj/item/clothing/head/helmet/samurai/lord/blue),
 	"Black Samurai Lord Helmet" = list("Black Samurai Lord Helmet","japanese helmets",2,2,0,15,0,0,/obj/item/clothing/head/helmet/samurai/lord/black),
 
-	"Samurai Lord Helmet" = list("Samurai Lord Helmet","japanese helmets",3,3,25,0,0,0,/obj/item/clothing/head/helmet/samurai/lord),                    //* Steel Imperial Samurai Lord Warrior helms
+	"Samurai Lord Helmet" = list("Samurai Lord Helmet","japanese helmets",3,3,25,0,0,0,/obj/item/clothing/head/helmet/samurai/lord/brown),                //* Steel Imperial Samurai Lord Warrior helms
 	"Red Samurai Lord Helmet" = list("Red Samurai Lord Helmet","japanese helmets",3,3,25,0,0,0,/obj/item/clothing/head/helmet/samurai/lord/red),
 	"Blue Samurai Lord Helmet" = list("Blue Samurai Lord Helmet","japanese helmets",3,3,25,0,0,0,/obj/item/clothing/head/helmet/samurai/lord/blue),
 	"Black Samurai Lord Helmet" = list("Black Samurai Lord Helmet","japanese helmets",3,3,25,0,0,0,/obj/item/clothing/head/helmet/samurai/lord/black),
