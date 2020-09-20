@@ -1824,7 +1824,7 @@
 	armor = list(melee = 60, arrow = 50, gun = 10, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 45
 
-/obj/item/clothing/head/helmet/samurai/lord
+/obj/item/clothing/head/helmet/samurai/lord/brown
 	name = "samurai lord helmet"
 	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
 	icon_state = "samurai_lord3"
@@ -1835,10 +1835,10 @@
 	slowdown = 0.15
 	var/toggled = FALSE
 
-/obj/item/clothing/head/helmet/samurai/lord/verb/toggle_visor()
+/obj/item/clothing/head/helmet/samurai/lord/brown/verb/toggle_visor()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/head/helmet/samurai/lord)
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/brown)
 		return
 	else
 		if (toggled)
@@ -1934,14 +1934,14 @@
 	item_state = "samurai_guard4"
 	worn_state = "samurai_guard4"
 
-obj/item/clothing/head/helmet/samurai/red
+/obj/item/clothing/head/helmet/samurai/red
 	name = "red samurai helmet"
 	desc = "A thick metal helmet of japanese origin. Typically worn by feudal warriors."
 	icon_state = "samurai_warrior1"
 	item_state = "samurai_warrior1"
 	worn_state = "samurai_warrior1"
 
-obj/item/clothing/head/helmet/samurai/blue
+/obj/item/clothing/head/helmet/samurai/blue
 	name = "blue samurai helmet"
 	desc = "A thick metal helmet of japanese origin. Typically worn by feudal warriors."
 	icon_state = "samurai_warrior2"
@@ -1955,17 +1955,18 @@ obj/item/clothing/head/helmet/samurai/black
 	item_state = "samurai_warrior4"
 	worn_state = "samurai_warrior4"
 
-obj/item/clothing/head/helmet/samurai/lord/red
+/obj/item/clothing/head/helmet/samurai/lord/red
 	name = "red samurai lord helmet"
 	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
 	icon_state = "samurai_lord1"
 	item_state = "samurai_lord1"
 	worn_state = "samurai_lord1"
+	var/toggled = FALSE
 
-obj/item/clothing/head/helmet/samurai/lord/red/verb/toggle_visor()
+/obj/item/clothing/head/helmet/samurai/lord/red/verb/toggle_visor()
 	set category = null
 	set src in usr
-	if (type != obj/item/clothing/head/helmet/samurai/lord/red/lord/blue)
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/red)
 		return
 	else
 		if (toggled)
@@ -1989,17 +1990,18 @@ obj/item/clothing/head/helmet/samurai/lord/red/verb/toggle_visor()
 			body_parts_covered = HEAD|FACE
 			flags_inv = BLOCKHAIR
 
-obj/item/clothing/head/helmet/samurai/lord/blue
+/obj/item/clothing/head/helmet/samurai/lord/blue
 	name = "blue samurai lord helmet"
 	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
 	icon_state = "samurai_lord2"
 	item_state = "samurai_lord2"
 	worn_state = "samurai_lord2"
+	var/toggled = FALSE
 
-obj/item/clothing/head/helmet/samurai/lord/blue/verb/toggle_visor()
+/obj/item/clothing/head/helmet/samurai/lord/blue/verb/toggle_visor()
 	set category = null
 	set src in usr
-	if (type != obj/item/clothing/head/helmet/samurai/lord/blue)
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/blue)
 		return
 	else
 		if (toggled)
@@ -2023,17 +2025,18 @@ obj/item/clothing/head/helmet/samurai/lord/blue/verb/toggle_visor()
 			body_parts_covered = HEAD|FACE
 			flags_inv = BLOCKHAIR
 
-obj/item/clothing/head/helmet/samurai/lord/black
+/obj/item/clothing/head/helmet/samurai/lord/black
 	name = "black samurai lord helmet"
 	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
 	icon_state = "samurai_lord4"
 	item_state = "samurai_lord4"
 	worn_state = "samurai_lord4"
+	var/toggled = FALSE
 
-obj/item/clothing/head/helmet/samurai/lord/black/verb/toggle_visor()
+/obj/item/clothing/head/helmet/samurai/lord/black/verb/toggle_visor()
 	set category = null
 	set src in usr
-	if (type != obj/item/clothing/head/helmet/samurai/lord/black)
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/black)
 		return
 	else
 		if (toggled)
