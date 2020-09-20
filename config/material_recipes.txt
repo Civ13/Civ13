@@ -288,6 +288,16 @@ RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather
 
 RECIPE: /material/leather/,hatchigane headband,/obj/item/clothing/head/helmet/hatchigane,3,90,0,1,armor,0,16,21,3,null
 
+RECIPE: /material/leather/,leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard,7,90,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,red leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,90,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,blue leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,90,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,black leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,90,0,1,armor,0,16,21,3,null
+
+RECIPE: /material/leather/,leather samurai armor,/obj/item/clothing/suit/armor/samurai,10,130,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,red leather samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,130,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,blue leather samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,130,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,black leather samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,130,0,1,armor,0,16,21,3,null
+
 RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,16,22,2,null
 
 RECIPE: /material/leather/,leather skullcap helmet,/obj/item/clothing/head/helmet/leather_skullcap,3,100,0,1,armor,0,27,27,3,null
@@ -1722,7 +1732,6 @@ RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,economy & produc
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
-RECIPE: /material/wood/,armorbench,/obj/structure/anvil/armorbench,10,150,1,1,economy & production,25,0,0,8,null
 RECIPE: /material/wood/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
@@ -2029,7 +2038,6 @@ RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,2
 
 RECIPE: /material/iron/,iron anvil,/obj/structure/anvil,20,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
-RECIPE: /material/iron/,specialist armorbench,/obj/structure/anvil/armorbench/specialist,15,210,1,1,production,120,0,0,8,null
 
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
 
