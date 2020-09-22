@@ -1597,60 +1597,90 @@
 	/* Medieval Japanese*/
 
 /obj/item/clothing/suit/armor/samurai
-	name = "kozane armor"
+	name = "leather samurai armor"
 	desc = "A protective & lightweight armor, bound to and covering most of the body yet slightly flexible. Often worn by a lord's bodyguards."
 	icon_state = "samurai3"
 	item_state = "samurai3"
 	worn_state = "samurai3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //nerfed, same as bronze chest plate
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 15
 	slowdown = 0.45
 	health = 35
 
 /obj/item/clothing/suit/armor/samurai/red
-	name = "red kozane armor"
+	name = "red leather samurai armor"
 	icon_state = "samurai1"
 	item_state = "samurai1"
 	worn_state = "samurai1"
 
 /obj/item/clothing/suit/armor/samurai/blue
-	name = "blue kozane armor"
+	name = "blue leather samurai armor"
 	icon_state = "samurai2"
 	item_state = "samurai2"
 	worn_state = "samurai2"
 
 /obj/item/clothing/suit/armor/samurai/black
-	name = "black kozane armor"
+	name = "black leather samurai armor"
 	icon_state = "samurai4"
 	item_state = "samurai4"
 	worn_state = "samurai4"
 
-/obj/item/clothing/suit/armor/samurai/lord
-	name = "kozane armor"
-	desc = "A thick, metal armor of japanese origin, covering most of the body. Often worn by a lord."
-	icon_state = "samurai_lord3"
-	item_state = "samurai_lord3"
-	worn_state = "samurai_lord3"
+/obj/item/clothing/suit/armor/samurai/warrior
+	name = "samurai armor"
+	desc = "A dense, metal armor of japanese origin, covering most of the body. Often worn by a loyal warriors to a feudal lord."
+	icon_state = "samurai_warrior3"
+	item_state = "samurai_warrior3"
+	worn_state = "samurai_warrior3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 65, arrow = 75, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
 	slowdown = 0.9
 
+/obj/item/clothing/suit/armor/samurai/warrior/red
+	name = "red samurai armor"
+	icon_state = "samurai_warrior1"
+	item_state = "samurai_warrior1"
+	worn_state = "samurai_warrior1"
+
+/obj/item/clothing/suit/armor/samurai/warrior/blue
+	name = "blue kozane armor"
+	icon_state = "samurai_warrior2"
+	item_state = "samurai_warrior2"
+	worn_state = "samurai_warrior2"
+
+/obj/item/clothing/suit/armor/samurai/warrior/black
+	name = "black kozane armor"
+	icon_state = "samurai_warrior4"
+	item_state = "samurai_warrior4"
+	worn_state = "samurai_warrior4"
+
+/obj/item/clothing/suit/armor/samurai/lord
+	name = "samurai lord armor"
+	desc = "A thick, expensive armor of japanese origin. Often worn by feudal lords."
+	icon_state = "samurai_lord3"
+	item_state = "samurai_lord3"
+	worn_state = "samurai_lord3"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 85, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
 /obj/item/clothing/suit/armor/samurai/lord/red
-	name = "red kozane armor"
+	name = "red samurai lord armor"
 	icon_state = "samurai_lord1"
 	item_state = "samurai_lord1"
 	worn_state = "samurai_lord1"
 
 /obj/item/clothing/suit/armor/samurai/lord/blue
-	name = "blue kozane armor"
+	name = "blue samurai lord armor"
 	icon_state = "samurai_lord2"
 	item_state = "samurai_lord2"
 	worn_state = "samurai_lord2"
 
 /obj/item/clothing/suit/armor/samurai/lord/black
-	name = "black kozane armor"
+	name = "black samurai lord armor"
 	icon_state = "samurai_lord4"
 	item_state = "samurai_lord4"
 	worn_state = "samurai_lord4"
@@ -1786,13 +1816,51 @@
 
 /obj/item/clothing/head/helmet/samurai
 	name = "samurai helmet"
-	desc = "A thick metal helmet of japanese origin. Typically worn by feudal lords."
-	icon_state = "samurai3"
-	item_state = "samurai3"
-	worn_state = "samurai3"
+	desc = "A thick metal helmet of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_warrior3"
+	item_state = "samurai_warrior3"
+	worn_state = "samurai_warrior3"
 	body_parts_covered = HEAD
 	armor = list(melee = 60, arrow = 50, gun = 10, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 45
+
+/obj/item/clothing/head/helmet/samurai/lord/brown
+	name = "samurai lord helmet"
+	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_lord3"
+	item_state = "samurai_lord3"
+	worn_state = "samurai_lord3"
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 45
+	slowdown = 0.15
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/samurai/lord/brown/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/brown)
+		return
+	else
+		if (toggled)
+			item_state = "samurai_lord3_o"
+			icon_state = "samurai_lord3_o"
+			worn_state = "samurai_lord3_o"
+			item_state_slots["slot_head"] = "samurai_lord3_o"
+			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "samurai_lord3"
+			icon_state = "samurai_lord3"
+			worn_state = "samurai_lord3"
+			item_state_slots["slot_head"] = "samurai_lord3"
+			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/helmet/jingasa
 	name = "jingasa"
@@ -1836,56 +1904,161 @@
 	health = 30
 
 /obj/item/clothing/head/helmet/samurai/guard
-	name = "leather kabuto"
-	desc = "A helmet of japanese origin."
+	name = "leather samurai helmet"
+	desc = "A thick leather helmet of japanese origin. Typically worn by petty guards and light infantry."
 	icon_state = "samurai_guard3"
 	item_state = "samurai_guard3"
 	worn_state = "samurai_guard3"
 	body_parts_covered = HEAD
-	armor = list(melee = 45, arrow = 40, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //nerfed, metal helmet now distinct.
+	armor = list(melee = 45, arrow = 40, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	health = 32
 
 /obj/item/clothing/head/helmet/samurai/guard/red
-	name = "red leather kabuto"
-	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
+	name = "red leather samurai helmet"
+	desc = "A thick leather helmet of japanese origin. Typically worn by petty guards and light infantry."
 	icon_state = "samurai_guard1"
 	item_state = "samurai_guard1"
 	worn_state = "samurai_guard1"
 
 /obj/item/clothing/head/helmet/samurai/guard/blue
-	name = "blue leather kabuto"
-	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
+	name = "blue leather samurai helmet"
+	desc = "A thick leather helmet of japanese origin. Typically worn by petty guards and light infantry."
 	icon_state = "samurai_guard2"
 	item_state = "samurai_guard2"
 	worn_state = "samurai_guard2"
 
 /obj/item/clothing/head/helmet/samurai/guard/black
-	name = "black leather kabuto"
-	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
+	name = "black leather samurai helmet"
+	desc = "A thick leather helmet of japanese origin. Typically worn by petty guards and light infantry."
 	icon_state = "samurai_guard4"
 	item_state = "samurai_guard4"
 	worn_state = "samurai_guard4"
 
-obj/item/clothing/head/helmet/samurai/red
+/obj/item/clothing/head/helmet/samurai/red
 	name = "red samurai helmet"
-	desc = "A thick metal helmet of japanese origin. Typically worn by feudal lords."
-	icon_state = "samurai1"
-	item_state = "samurai1"
-	worn_state = "samurai1"
+	desc = "A thick metal helmet of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_warrior1"
+	item_state = "samurai_warrior1"
+	worn_state = "samurai_warrior1"
 
-obj/item/clothing/head/helmet/samurai/blue
+/obj/item/clothing/head/helmet/samurai/blue
 	name = "blue samurai helmet"
-	desc = "A thick metal helmet of japanese origin. Typically worn by feudal lords."
-	icon_state = "samurai2"
-	item_state = "samurai2"
-	worn_state = "samurai2"
+	desc = "A thick metal helmet of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_warrior2"
+	item_state = "samurai_warrior2"
+	worn_state = "samurai_warrior2"
 
 obj/item/clothing/head/helmet/samurai/black
 	name = "black samurai helmet"
-	desc = "A thick metal helmet of japanese origin. Typically worn by feudal lords."
-	icon_state = "samurai4"
-	item_state = "samurai4"
-	worn_state = "samurai4"
+	desc = "A thick metal helmet of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_warrior4"
+	item_state = "samurai_warrior4"
+	worn_state = "samurai_warrior4"
+
+/obj/item/clothing/head/helmet/samurai/lord/red
+	name = "red samurai lord helmet"
+	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_lord1"
+	item_state = "samurai_lord1"
+	worn_state = "samurai_lord1"
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/samurai/lord/red/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/red)
+		return
+	else
+		if (toggled)
+			item_state = "samurai_lord1_o"
+			icon_state = "samurai_lord1_o"
+			worn_state = "samurai_lord1_o"
+			item_state_slots["slot_head"] = "samurai_lord1_o"
+			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "samurai_lord1"
+			icon_state = "samurai_lord1"
+			worn_state = "samurai_lord1"
+			item_state_slots["slot_head"] = "samurai_lord1"
+			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/helmet/samurai/lord/blue
+	name = "blue samurai lord helmet"
+	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_lord2"
+	item_state = "samurai_lord2"
+	worn_state = "samurai_lord2"
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/samurai/lord/blue/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/blue)
+		return
+	else
+		if (toggled)
+			item_state = "samurai_lord2_o"
+			icon_state = "samurai_lord2_o"
+			worn_state = "samurai_lord2_o"
+			item_state_slots["slot_head"] = "samurai_lord2_o"
+			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "samurai_lord2"
+			icon_state = "samurai_lord2"
+			worn_state = "samurai_lord2"
+			item_state_slots["slot_head"] = "samurai_lord2"
+			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/helmet/samurai/lord/black
+	name = "black samurai lord helmet"
+	desc = "A impressionable & thick metal helmet with a jaw protective plate built in of japanese origin. Typically worn by feudal warriors."
+	icon_state = "samurai_lord4"
+	item_state = "samurai_lord4"
+	worn_state = "samurai_lord4"
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/samurai/lord/black/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/samurai/lord/black)
+		return
+	else
+		if (toggled)
+			item_state = "samurai_lord4_o"
+			icon_state = "samurai_lord4_o"
+			worn_state = "samurai_lord4_o"
+			item_state_slots["slot_head"] = "samurai_lord4_o"
+			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "samurai_lord4"
+			icon_state = "samurai_lord4"
+			worn_state = "samurai_lord4"
+			item_state_slots["slot_head"] = "samurai_lord4"
+			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
 
 	/* Medieval Japanese Masks*/
 

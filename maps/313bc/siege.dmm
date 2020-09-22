@@ -276,7 +276,7 @@
 "fp" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/grass,/area/caribbean/forest/dirt)
 "fq" = (/obj/structure/wild/tallgrass,/obj/item/weapon/siegeladder,/turf/floor/dirt/dust,/area/caribbean/forest/dirt)
 "fr" = (/obj/item/weapon/material/hatchet,/turf/floor/dirt,/area/caribbean/roman)
-"fs" = (/obj/structure/wild/tallgrass,/obj/item/weapon/pickaxe,/turf/floor/dirt,/area/caribbean/roman)
+"fs" = (/obj/structure/wild/tallgrass,/obj/item/weapon/material/pickaxe,/turf/floor/dirt,/area/caribbean/roman)
 "ft" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/turf/floor/dirt,/area/caribbean/roman)
 "fu" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/turf/floor/dirt,/area/caribbean/roman)
 "fv" = (/obj/structure/closet/crate/empty{name = "vegetables crate"},/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,/obj/item/weapon/reagent_containers/food/snacks/grown/lemon,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,/turf/floor/dirt/dust,/area/caribbean/roman)

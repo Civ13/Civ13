@@ -479,7 +479,7 @@
 		user.setClickCooldown(16)
 		return 1 //We do have legs now though, so we can kick.
 
-//Kicking
+//Biting
 /atom/proc/bite_act(mob/living/human/user)
 	if (!user.canClick())
 		return

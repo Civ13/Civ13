@@ -4,6 +4,7 @@
     * - Indian-Carib Cultural Accessories
     * - Bone Clothing, Armor & Accessories
     * - Stone-Age Masks
+    * - Zulu
     * - Miscallaneous */
 
 /* Stone-Age Uniforms*/
@@ -193,6 +194,29 @@
 	item_state = "bumba"
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 15, arrow = 10, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
+
+/* Zulu*/
+
+/obj/item/clothing/under/zulu_slene
+	name = "slene cowfur loincloth"
+	desc = "A wrap of cow fur tassles fashioned into a loincloth, often worn by the zulu people."
+	icon_state = "zulu_slene"
+	item_state = "zulu_slene"
+	worn_state = "zulu_slene"
+
+/obj/item/clothing/suit/zulu_mbata
+	name = "mbata pelt vest"
+	desc = "A shoulder vest made from big cat pelt, worn ceremonially & military dress by the zulu."
+	icon_state = "zulu_mbata"
+	item_state = "zulu_mbata"
+	worn_state = "zulu_mbata"
+
+/obj/item/clothing/head/zulu_umghele
+	name = "umghele headband"
+	desc = "A headband made from big cat pelt, worn ceremonially & military dress by the zulu."
+	icon_state = "zulu_umghele"
+	item_state = "zulu_umghele"
+	worn_state = "zulu_umghele"
 
 /* Miscallaneous*/
 

@@ -4,7 +4,7 @@
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
-
+	has_hunger = TRUE
 	no_winner = "No faction controls the Castle."
 
 	faction_organization = list(

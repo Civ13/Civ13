@@ -428,6 +428,19 @@ var/global/redirect_all_players = null
 		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP && map.ID != MAP_HILL_203)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
+//prevent boss spawns if there are enemies in the building
+		if (map && map.ID == MAP_ALLEYWAY)
+			if (actual_job && actual_job.title == "Yama Wakagashira")
+				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_two))
+					if (HM.original_job.is_ichi)
+						WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
+						return
+			if (actual_job.title == "Ichi Wakagashira")
+				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_one))
+					if (HM.original_job.is_yama)
+						WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
+						return
+		/area/caribbean/houses/nml_one
 /* "Old" whitelisting proccess
 		if (actual_job.whitelisted)
 			if (!actual_job.validate(client))
@@ -576,38 +589,44 @@ var/global/redirect_all_players = null
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
 	if (job.is_deal)
-		var/y_nr = 0
-		var/g_nr = 0
-		var/r_nr = 0
-		var/b_nr = 0
-//		var/p_nr = 0
-		for (var/datum/job/joby in job_master.occupations)
-			if (istype(joby, /datum/job/civilian/businessman/red))
-				r_nr = joby.current_positions
-			else if(istype(joby, /datum/job/civilian/businessman/blue))
-				b_nr = joby.current_positions
-			else if(istype(joby, /datum/job/civilian/businessman/green))
-				g_nr = joby.current_positions
-			else if(istype(joby, /datum/job/civilian/businessman/yellow))
-				y_nr = joby.current_positions
-//			else if(istype(joby, /datum/job/civilian/policeofficer))
-//				p_nr = joby.current_positions
+		var/y_nr = processes.job_data.get_active_positions("Goldstein Solutions")
+		var/g_nr = processes.job_data.get_active_positions("Kogama Kraftsmen")
+		var/r_nr = processes.job_data.get_active_positions("Rednikov Industries")
+		var/b_nr = processes.job_data.get_active_positions("Giovanni Blu Stocks")
+
 		if (istype(job, /datum/job/civilian/businessman/red))
-			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > g_nr)
+			if (r_nr > y_nr || r_nr > b_nr || r_nr > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/blue))
-			if (job.current_positions > y_nr || job.current_positions > r_nr && job.current_positions > g_nr)
+			if (b_nr > y_nr || b_nr > r_nr || b_nr > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/green))
-			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > r_nr)
+			if (g_nr > y_nr || g_nr > b_nr || g_nr > r_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/yellow))
-			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr)
+			if (y_nr > r_nr || y_nr > b_nr || y_nr > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
+	if (job.is_yakuza)
+		var/yy_nr = processes.job_data.get_active_positions("Yamaguchi-Gumi Kaiin")
+		var/yi_nr = processes.job_data.get_active_positions("Ichiwa-Kai Kaiin")
+		for (var/datum/job/joby in job_master.occupations)
+			if (istype(joby, /datum/job/japanese/yakuza))
+				yy_nr = joby.current_positions
+			else if(istype(joby, /datum/job/japanese/yakuza_ichi))
+				yi_nr = joby.current_positions
+		if (istype(job, /datum/job/japanese/yakuza_ichi))
+			if (yi_nr > yy_nr)
+				WWalert(usr,"Too many people playing as Ichiwa: [yi_nr] Ichiwa, [yy_nr] Yamaguchi","Error")
+				return FALSE
+		else if(istype(job, /datum/job/japanese/yakuza))
+			if (yy_nr > yi_nr)
+				WWalert(usr,"Too many people playing as Yamaguchi: [yi_nr] Ichiwa, [yy_nr] Yamaguchi","Error")
+				return FALSE
+
 //		else if(istype(job, /datum/job/civilian/policeofficer))
 //			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > y_nr)
 //				WWalert(usr,"Too many people playing as this role.","Error")

@@ -230,7 +230,7 @@
 		Move(get_step(src,moving_to))
 		turns_since_move = FALSE
 		return "wander"
-	else if (t_behaviour == "hunt" || t_behaviour == "defends")
+	else if (t_behaviour == "hunt" || (t_behaviour == "defends" && target_mob))
 		a_intent = I_HARM
 		if(prob(50))
 			if(!isemptylist(hostilesounds))
@@ -642,6 +642,18 @@
 				else if (istype(src, /mob/living/simple_animal/goat))
 					var/obj/item/stack/material/pelt/goatpelt/NP = new/obj/item/stack/material/pelt/goatpelt(get_turf(src))
 					NP.amount = 2
+				else if (istype(src, /mob/living/simple_animal/cow))
+					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
+					NP.amount = 2
+				else if (istype(src, /mob/living/simple_animal/bull))
+					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/bison))
+					var/obj/item/stack/material/pelt/bisonpelt/NP = new/obj/item/stack/material/pelt/bisonpelt(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/bisonbull))
+					var/obj/item/stack/material/pelt/bisonpelt/NP = new/obj/item/stack/material/pelt/bisonpelt(get_turf(src))
+					NP.amount = 4
 				else if (istype(user, /mob/living/human))
 					var/mob/living/human/HM = user
 					HM.adaptStat("medical", amt/3)

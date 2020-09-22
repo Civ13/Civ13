@@ -648,7 +648,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
 				qdelHandReturn(H.r_hand, H)
 	//Handle Craftin.
-	if (!findtext(recipe.title, "wood spear"))
+	if (!findtext(recipe.title, "wood spear") && !findtext(recipe.title, "mold"))
 		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe") || findtext(recipe.title, "stone sledgehammer") || findtext(recipe.title, "lead sledgehammer") || findtext(recipe.title, "bronze sledgehammer")|| findtext(recipe.title, "iron sledgehammer")|| findtext(recipe.title, "steel sledgehammer")|| findtext(recipe.title, "uranium sledgehammer"))
 			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 				user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
@@ -1118,8 +1118,8 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
-/* //disabled until Shinobi can know what's happening with japanese armor and we can remove/substitute.
-	else if (findtext(recipe.title, "tatami samurai armor") || findtext(recipe.title, "red tatami samurai armor") || findtext(recipe.title, "blue tatami samurai armor") || findtext(recipe.title, "black tatami samurai armor"))
+
+	else if (findtext(recipe.title, "leather samurai armor") || findtext(recipe.title, "red leather samurai armor") || findtext(recipe.title, "blue leather samurai armor") || findtext(recipe.title, "black leather samurai armor"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 10 leather in one of your hands in order to make this.</span>"
 			return
@@ -1143,7 +1143,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need a stack of at least 5 iron in one your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "leather kabuto helmet") || findtext(recipe.title, "red leather kabuto helmet") || findtext(recipe.title, "blue leather kabuto helmet") || findtext(recipe.title, "black leather kabuto helmet"))
+	else if (findtext(recipe.title, "leather samurai helmet") || findtext(recipe.title, "red leather samurai helmet") || findtext(recipe.title, "blue leather samurai helmet") || findtext(recipe.title, "black leather samurai helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 7 leather in one of your hands in order to make this.</span>"
 			return
@@ -1166,7 +1166,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
-*/
+
 	else if (findtext(recipe.title, "grandfather clock"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			user << "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>"
@@ -1198,21 +1198,21 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else
 			if (istype(H.l_hand, /obj/item/stack/medical/advanced/herbs))
 				var/obj/item/stack/medical/advanced/herbs/NB = H.l_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
-					user << "<span class = 'warning'>You need at least one medicinal herb in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>"
 					return
 			else if (istype(H.r_hand, /obj/item/stack/medical/advanced/herbs))
 				var/obj/item/stack/medical/advanced/herbs/NB = H.r_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
-					user << "<span class = 'warning'>You need at least one medicinal herb in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>"
 					return
 
 	else if (findtext(recipe.title, "khepresh war crown"))

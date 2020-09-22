@@ -6,6 +6,7 @@
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
+	has_hunger = TRUE
 
 	faction_organization = list(
 		INDIANS,
@@ -55,6 +56,8 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 		if (J.is_prison == TRUE)
 			. = FALSE
 		if (J.is_civil_war == TRUE)
+			. = FALSE
+		if (J.is_football == TRUE)
 			. = FALSE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE

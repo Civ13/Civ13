@@ -53,7 +53,7 @@
 "ba" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass,/area/caribbean)
 "bb" = (/obj/covers/concretefloor,/turf/floor/grass,/area/caribbean)
 "bc" = (/obj/covers/concretefloor,/obj/effect/decal/cleanable/cobweb,/turf/floor/grass,/area/caribbean)
-"bd" = (/obj/covers/concretefloor,/obj/structure/closet/crate,/obj/item/weapon/shovel,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/turf/floor/grass,/area/caribbean)
+"bd" = (/obj/covers/concretefloor,/obj/structure/closet/crate,/obj/item/weapon/material/shovel,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/turf/floor/grass,/area/caribbean)
 "be" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest-prop"; layer = 5; stage = 7; vstatic = 1},/turf/floor/dirt/ploughed,/area/caribbean)
 "bf" = (/turf/floor/dirt/ploughed,/area/caribbean)
 "bg" = (/obj/structure/religious/remains{name = "Jack Riker"},/turf/floor/dirt/ploughed,/area/caribbean)

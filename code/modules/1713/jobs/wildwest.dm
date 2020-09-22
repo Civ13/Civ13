@@ -495,8 +495,8 @@
 		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.add_note("Role", "You are a <b>Prospector</b>, living in Little Creek. Mine and keep the town supplied with raw materials.")
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)

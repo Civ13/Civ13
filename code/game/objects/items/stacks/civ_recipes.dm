@@ -69,7 +69,6 @@
 	recipes = list()
 	if (hardness>=40 && current_res[1] > 8 && (map && map.ID != MAP_GULAG13))
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
-		recipes += new/datum/stack_recipe("[display_name] knife", /obj/item/weapon/material/kitchen/utensil/knife, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] spoon", /obj/item/weapon/material/kitchen/utensil/spoon, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 	for(var/i in craftlist_list)
 		if(i[1]== "[type]/" && current_res[1]>=text2num(i[9]) && current_res[2]>=text2num(i[10]) && current_res[3]>=text2num(i[11]) && map && map.ordinal_age <= text2num(i[12]))
@@ -103,15 +102,10 @@ datum/admins/proc/print_crafting_recipes()
 			matlist |= matname
 		matlist = sortTim(matlist,/proc/cmp_text_asc,FALSE)
 		for (var/m in matlist)
-			recipe_list <<"===[m]==="
-			recipe_list <<"{| class=\"wikitable sortable\" style=\"text-align: left"
-			recipe_list <<"! Item"
-			recipe_list <<"! Cost"
-			recipe_list <<"! Material"
-			recipe_list <<"! Category"
-			recipe_list <<"! Research Needed"
-			recipe_list <<"! Available Until"
-			recipe_list << " "
+			recipe_list <<"## [m]"
+			recipe_list <<"\n"
+			recipe_list <<"| Item | Cost| Material | Category | Research Needed | Available Until |"
+			recipe_list <<"| -------- | ---- | ---------- | -------- | ------------------------- | ------------------------------- |"
 			for (var/i in craftlist_list)
 				var/matname = replacetext(i[1], "/material/", "")
 				matname = replacetext(matname, "/", "")
@@ -155,9 +149,9 @@ datum/admins/proc/print_crafting_recipes()
 								requirements = "[requirements],"
 							requirements = "[requirements] [i[11]] Medical"
 						requirements = "[requirements] research points."
-					var/crafting_print_var = "|- id=\"[i[2]]\"\n! [i[2]]\n| [i[4]]\n| [matname]\n| [subcategory]\n| [requirements]\n| Available until [av_age].\n"
+					var/crafting_print_var = "| [i[2]] | [i[4]] | [matname] | [subcategory] | [requirements] | Available until [av_age]. |"
 					recipe_list << crafting_print_var
-			recipe_list << "|}"
+			recipe_list <<"\n"
 		world.log << "Finished saving all crafting recipes into \"recipes.txt\" with Wiki format."
 	else
 		for (var/i in craftlist_list)

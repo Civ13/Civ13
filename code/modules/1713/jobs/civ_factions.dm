@@ -405,8 +405,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
 	H.setStat("strength", STAT_HIGH)
@@ -1181,8 +1181,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
 	H.setStat("strength", STAT_HIGH)
@@ -1960,8 +1960,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
 	H.setStat("strength", STAT_HIGH)
@@ -2739,8 +2739,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
 	H.setStat("strength", STAT_HIGH)

@@ -18,6 +18,10 @@
 	block_chance = 12
 	cooldownw = 7
 
+/obj/item/weapon/material/harpoon/iron
+	name = "iron harpoon"
+	default_material = "iron"
+
 /obj/item/weapon/material/handle
 	name = "handle"
 	sharp = FALSE
@@ -215,6 +219,15 @@
 		for (var/obj/structure/bed/B in get_turf(TARGETMOB))
 			if (B.buckled_mob == TARGETMOB)
 				return
+
+/obj/item/weapon/material/spear/assagai
+	name = "assagai spear"
+	desc = "A long hafted wood spear with a finely sharpened iron point; rewnown for being the weapon of choice of zulu warriors."
+	icon_state = "assagai"
+	item_state = "assagai"
+	worn_state = "assagai"
+	force_divisor = 0.8 // 32 with hardness 40 (wood)
+	thrown_force_divisor = 1.6 // 29 with weight 18 (wood)
 
 /obj/item/weapon/material/quarterstaff
 	name = "quarterstaff"
@@ -707,6 +720,10 @@
 	value = 15
 	cooldownw = 12
 
+/obj/item/weapon/material/halberd/steel
+	default_material = "steel"
+	value = 20
+
 /obj/item/weapon/material/pike
 	name = "pike"
 	sharp = TRUE
@@ -726,6 +743,10 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
 	cooldownw = 13
+
+/obj/item/weapon/material/pike/steel
+	default_material = "steel"
+	value = 23
 
 /obj/item/weapon/material/hatchet/battleaxe
 	name = "battle axe"

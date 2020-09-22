@@ -368,7 +368,7 @@
 		/obj/item/weapon/handcuffs,
 		/obj/item/ammo_casing,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
-		/obj/item/weapon/shovel,
+		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		/obj/item/weapon/melee/classic_baton
 		)
@@ -400,7 +400,7 @@
 		/obj/item/weapon/handcuffs,
 		/obj/item/ammo_casing,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
-		/obj/item/weapon/shovel,
+		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		/obj/item/weapon/melee/classic_baton
 		)
@@ -1239,4 +1239,4 @@
 	slots = 8
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/knife, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/shovel, /obj/item/weapon/key)
+		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/knife, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/material/shovel, /obj/item/weapon/key)
