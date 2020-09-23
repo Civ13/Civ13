@@ -152,7 +152,7 @@ var/global/list/anvil_recipes = list(
 	"Conical Helmet" = list("Conical Helmet","helmets",2,3,0,6,0,0,/obj/item/clothing/head/helmet/medieval/helmet3),
 	"Protective Conical Helmet" = list("Protective Conical Helmet","helmets",2,3,0,10,0,0,/obj/item/clothing/head/helmet/medieval/helmet1),
 
-	"Morion Helmet" = list("Morion Helmet","helmets",3,3,0,10,0,0,/obj/item/clothing/head/helmet/medieval/helmet1),
+	"Morion Helmet" = list("Morion Helmet","helmets",3,3,0,10,0,0,/obj/item/clothing/head/helmet/imperial/morion),
 
 				/*Sallet Helmets*/
 	"Italian Sallet Helmet" = list("Italian Sallet Helmet","sallet helmets",2,2,0,12,0,0,/obj/item/clothing/head/helmet/sallet/italian),
