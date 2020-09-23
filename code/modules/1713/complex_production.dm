@@ -537,7 +537,7 @@
 	bitesize = 4
 	raw = FALSE
 	rots = FALSE
-	satisfaction = -2
+	satisfaction = 1
 	non_vegetarian = TRUE
 	New()
 		..()
@@ -562,7 +562,7 @@
 	bitesize = 1
 	raw = FALSE
 	rots = FALSE
-	satisfaction = -1
+	satisfaction = 3
 	non_vegetarian = TRUE
 	New()
 		..()

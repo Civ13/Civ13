@@ -467,13 +467,11 @@ var/list/global/floor_cache = list()
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 	if (irrigation && irrigation_overlay)
 		if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
-			var/choice = WWinput(user, "Do you want to start filling up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
+			var/choice = WWinput(user, "Do you want to fill up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
 			if (choice == "Yes")
 				user << "You shove some dirt into the irrigation channel."
-				flooded=FALSE
-				irrigation = FALSE
-				salty = FALSE
-				irrigation_overlay = null
+				ChangeTurf(get_base_turf_by_area(src))
+				qdel(C)
 				return
 
 		else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))

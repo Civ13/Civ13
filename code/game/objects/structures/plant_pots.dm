@@ -395,7 +395,14 @@
 			if (do_after(user, 15, src))
 				user << "You finish [plantverb] the [WS.name]..."
 				var/obj/structure/plant_pot/medium_planter/clay/yellow/filled/S = new /obj/structure/plant_pot/medium_planter/clay/yellow/filled(loc)
-				S.icon_state = "[planttype][WS.plant]"
+				if (WS.plant == "coconut")
+					var/choice = WWinput(user, "What type of plant?","Choose a plant type","Normal",list("Decorative Coconut Tree", "Wavy Coconut Tree"))						
+					if (choice == "Decorative Coconut Tree")
+						S.icon_state = "[planttype]coconut"
+					if (choice == "Wavy Coconut Tree")
+						S.icon_state = "[planttype]coconut2"
+				else
+					S.icon_state = "[planttype][WS.plant]"
 				S.desc = "A planter with a purely decorative [WS.plant] plant."
 				S.filled_type = WS.type
 				WS.amount -= 1
