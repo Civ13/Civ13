@@ -18,6 +18,10 @@
 	block_chance = 12
 	cooldownw = 7
 
+/obj/item/weapon/material/harpoon/iron
+	name = "iron harpoon"
+	default_material = "iron"
+
 /obj/item/weapon/material/handle
 	name = "handle"
 	sharp = FALSE
@@ -162,12 +166,15 @@
 	throw_range = 11
 	allow_spin = FALSE
 	force_divisor = 0.7 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
+	thrown_force_divisor = 2 // 40 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 6
 	block_chance = 15
 	cooldownw = 9
 
+/obj/item/weapon/material/spear/iron
+	name = "iron spear"
+	default_material = "iron"
 /obj/item/weapon/material/spear/attack(atom/A, mob/living/user, def_zone)
 	..()
 	if (isliving(A) && prob(33))
@@ -212,6 +219,15 @@
 		for (var/obj/structure/bed/B in get_turf(TARGETMOB))
 			if (B.buckled_mob == TARGETMOB)
 				return
+
+/obj/item/weapon/material/spear/assagai
+	name = "assagai spear"
+	desc = "A long hafted wood spear with a finely sharpened iron point; rewnown for being the weapon of choice of zulu warriors."
+	icon_state = "assagai"
+	item_state = "assagai"
+	worn_state = "assagai"
+	force_divisor = 0.8 // 32 with hardness 40 (wood)
+	thrown_force_divisor = 1.6 // 29 with weight 18 (wood)
 
 /obj/item/weapon/material/quarterstaff
 	name = "quarterstaff"
@@ -263,8 +279,8 @@
 	throw_speed = 7
 	throw_range = 11
 	allow_spin = FALSE
-	force_divisor = 0.4 // 30 with hardness 60 (steel)
-	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	force_divisor = 0.85 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.95 // 16 with weight 20 (steel)
 	attack_verb = list("bashed","impaled","beaten")
 	value = 30
 	block_chance = 36
@@ -420,7 +436,7 @@
 	throw_range = 14
 	allow_spin = FALSE
 	force_divisor = 0.7 // 28 with hardness 40 (wood)
-	thrown_force_divisor = 1.5 // 27 with weight 18 (wood)
+	thrown_force_divisor = 2.5 // 45 with weight 18 (wood)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 10
@@ -509,7 +525,7 @@
 	throw_range = 8
 	allow_spin = FALSE
 	force_divisor = 0.85 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 1.1 // 24 with weight 20 (steel)
+	thrown_force_divisor = 1.5 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 15
@@ -704,6 +720,10 @@
 	value = 15
 	cooldownw = 12
 
+/obj/item/weapon/material/halberd/steel
+	default_material = "steel"
+	value = 20
+
 /obj/item/weapon/material/pike
 	name = "pike"
 	sharp = TRUE
@@ -719,10 +739,14 @@
 	allow_spin = FALSE
 	block_chance = 12
 	force_divisor = 0.85 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	thrown_force_divisor = 1 // 20 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
 	cooldownw = 13
+
+/obj/item/weapon/material/pike/steel
+	default_material = "steel"
+	value = 23
 
 /obj/item/weapon/material/hatchet/battleaxe
 	name = "battle axe"

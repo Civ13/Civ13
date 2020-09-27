@@ -537,8 +537,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
 	H.setStat("strength", STAT_HIGH)
@@ -1588,8 +1588,8 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
 		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
-	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
 	H.setStat("strength", STAT_HIGH)
@@ -2069,13 +2069,13 @@
 	return TRUE
 
 /datum/job/civilian/businessman/green
-	title = "MacGreene Traders"
+	title = "Kogama Kraftsmen"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
-	title = "MacGreene Traders CEO"
+	title = "Kogama Kraftsmen CEO"
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2085,7 +2085,7 @@
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-	H.name = H.species.get_random_gaelic_name(H.gender)
+	H.name = H.species.get_random_japanese_name(H.gender)
 	H.real_name = H.name
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessgreen(H), slot_l_store)
@@ -2254,3 +2254,65 @@
 	H.setStat("medical", STAT_VERY_HIGH)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+/datum/job/civilian/mechanic
+	title = "Mechanic"
+	en_meaning = ""
+	rank_abbreviation = "Mechanic"
+	whitelisted = TRUE
+	spawn_location = "JoinLateCivF"
+	selection_color = "#cd853f"
+	is_deal = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/mechanic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/black(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
+	H.add_note("Role", "You are a Mechanic. You can be payed to repair vehicles that have broken down in the middle of the road. If you're feeling sneaky, maybe help dispose of bodies for some extra cash on the side.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+
+/datum/job/civilian/hobo
+	title = "Homeless Man"
+	en_meaning = ""
+	rank_abbreviation = ""
+	whitelisted = TRUE
+	spawn_location = "JoinLateCivG"
+	selection_color = "#8b4513	"
+	is_deal = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/hobo/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/gatorpants(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket4(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/trash(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.add_note("Role", "You are a Bum. You should find a way to earn some cash. Maybe try helping out one of the gangs in the area.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)

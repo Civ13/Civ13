@@ -121,7 +121,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "ammo box (.45-70 Government)"
 	icon_state = "oldbox"
 	caliber = "a4570"
-	w_class = 3
+	w_class = 2
 
 	ammo_type = /obj/item/ammo_casing/a4570
 	max_ammo = 15
@@ -429,6 +429,17 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.1
 	multiple_sprites = TRUE
 
+	pouch = TRUE
+
+/obj/item/ammo_magazine/c43
+	name = "bullet pouch (.43 Spanish)"
+	desc = "a pouch of .43 Spanish bullets, mostly used on the spanish rolling block rifle."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a43
+	caliber = "a43"
+	max_ammo = 30
+	weight = 0.1
+	multiple_sprites = TRUE
 	pouch = TRUE
 
 /obj/item/ammo_magazine/webly445

@@ -15,7 +15,7 @@
 	max_shells = 15
 	slot_flags = SLOT_SHOULDER
 	caliber = "a44"
-	recoil = 2 //extra kickback
+	recoil = 0 //extra kickback
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a44
 //	magazine_type = /obj/item/ammo_magazine/musketball
@@ -108,7 +108,7 @@
 */
 /obj/item/weapon/gun/projectile/leveraction/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (gun_safety && safetyon)

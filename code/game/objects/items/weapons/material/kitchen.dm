@@ -63,6 +63,13 @@
 	desc = "It's a fork. Sure is pointy."
 	icon_state = "fork"
 
+/obj/item/weapon/material/kitchen/utensil/chopsticks
+	name = "chopsticks"
+	desc = "It's pair of chopsticks. Wan' sum rice muhda fukka?"
+	icon_state = "chopsticks"
+	material = "wood"
+	color = null
+
 /obj/item/weapon/material/kitchen/utensil/spoon
 	name = "spoon"
 	desc = "It's a spoon. You can see your own upside-down face in it."
@@ -181,6 +188,9 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.6
 
+/obj/item/weapon/material/kitchen/utensil/knife/bowie/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/kitchen/utensil/knife/fancy
 	name = "fancy knife"
 	desc = "A expensive knife."
@@ -202,6 +212,9 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.7
+
+/obj/item/weapon/material/kitchen/utensil/knife/trench/iron
+	default_material = "iron"
 
 /obj/item/weapon/material/kitchen/utensil/knife/meat
 	name = "meat knife"
@@ -269,6 +282,9 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.9
 
+/obj/item/weapon/material/kitchen/utensil/knife/military/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/kitchen/utensil/knife/shadowdagger
 	name = "shadow dagger"
 	desc = "A tactical knife."
@@ -314,8 +330,8 @@
 	force_divisor = 0.3
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
-	name = "bone knife"
-	desc = "A small knife with a bone blade and obsidian handle."
+	name = "tribal bone knife"
+	desc = "A small knife with a bone blade and ridged handle."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "boneknife"
 	item_state = "knife"
@@ -323,6 +339,7 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.1
+	default_material = "bone"
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone/New()
 	..()

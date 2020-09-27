@@ -7,7 +7,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/temperate,/area/caribbean/no_mans_land/invisible_wall/desert,/area/caribbean/no_mans_land/invisible_wall/semiarid,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3600 // 6 minutes!
 	force_mapgen = TRUE
-
+	has_hunger = TRUE
 	faction_organization = list(
 		CIVILIAN,)
 
@@ -27,7 +27,7 @@
 	availablefactions_run = TRUE
 	civilizations = TRUE
 	is_RP = TRUE
-	force_mapgen = TRUE
+	force_mapgen = FALSE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Faction-Based RP"

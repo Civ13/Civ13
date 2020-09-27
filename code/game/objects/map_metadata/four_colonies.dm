@@ -5,6 +5,7 @@
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
+	has_hunger = TRUE
 
 	faction_organization = list(
 		BRITISH,
@@ -45,6 +46,8 @@ obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 	else if (J.is_ww1 == TRUE)
 		. = FALSE
 	else if (J.is_civil_war == TRUE)
+		. = FALSE
+	else if (J.is_football == TRUE)
 		. = FALSE
 	else
 		. = TRUE

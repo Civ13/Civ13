@@ -6,7 +6,7 @@
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // q0 minutes!
-
+	has_hunger = TRUE
 
 	faction_organization = list(
 		CIVILIAN,)
@@ -18,7 +18,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>To win, your faction must collect <b>3000</b> liters of Oil! The grace wall will be up for 40 minutes.</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>To win, your faction must collect <b>3000</b> liters of Oil! The grace wall will be up for 40 minutes.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")

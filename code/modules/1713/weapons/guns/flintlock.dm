@@ -114,7 +114,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked)
@@ -127,7 +127,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (cocked)
@@ -203,7 +203,7 @@
 	effectiveness_mod = 0.98
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "brownbess"
 
 /obj/item/weapon/gun/projectile/flintlock/charleville

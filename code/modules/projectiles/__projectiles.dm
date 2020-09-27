@@ -348,6 +348,11 @@
 	penetrating = 1
 	armor_penetration = 3
 
+/obj/item/projectile/bullet/pistol/a43
+	damage = DAMAGE_VERY_HIGH - 4
+	penetrating = 1
+	armor_penetration = 5
+
 /obj/item/projectile/bullet/pistol/a45
 	damage = DAMAGE_VERY_HIGH - 3
 	penetrating = 1

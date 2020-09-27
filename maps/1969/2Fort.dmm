@@ -1,0 +1,103 @@
+"a" = (/turf/floor/dirt,/area/caribbean)
+"b" = (/obj/covers/cement_wall,/turf/floor/dirt,/area/caribbean)
+"c" = (/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean)
+"d" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateFR"},/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean)
+"e" = (/obj/covers/cement_wall,/obj/item/flashlight/torch/on/unlimited,/turf/floor/dirt,/area/caribbean)
+"f" = (/obj/covers/cobblestone,/obj/item/flashlight/torch/on/unlimited,/turf/floor/dirt,/area/caribbean)
+"g" = (/obj/covers/cobblestone,/obj/structure/railing,/turf/floor/dirt,/area/caribbean)
+"h" = (/turf/floor/beach/water/deep,/area/caribbean)
+"i" = (/obj/structure/railing{dir = 4},/turf/floor/beach/water/deep,/area/caribbean)
+"j" = (/obj/structure/railing{dir = 8},/turf/floor/beach/water,/area/caribbean)
+"k" = (/turf/floor/beach/water,/area/caribbean)
+"l" = (/obj/structure/railing{dir = 4},/turf/floor/beach/water,/area/caribbean)
+"m" = (/obj/structure/railing{dir = 8},/turf/floor/beach/water/deep,/area/caribbean)
+"n" = (/obj/structure/railing{dir = 8},/obj/item/flashlight/torch/on/unlimited,/turf/floor/beach/water,/area/caribbean)
+"o" = (/obj/structure/railing{dir = 8},/obj/item/flashlight/torch/on/unlimited,/turf/floor/beach/water/deep,/area/caribbean)
+"p" = (/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"q" = (/obj/covers/cobblestone,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"r" = (/obj/covers/cobblestone,/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers{icon_state = "vickers"; dir = 1},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"s" = (/obj/covers/cobblestone,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"t" = (/obj/covers/cobblestone,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 4},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"u" = (/obj/covers/cobblestone,/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"v" = (/obj/covers/cobblestone,/turf/floor/beach/water/deep,/area/caribbean)
+"w" = (/obj/covers/cobblestone,/obj/item/flashlight/torch/on/unlimited,/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"x" = (/obj/covers/cobblestone,/obj/structure/closet/crate/ww1/ammo_vickers,/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"y" = (/obj/covers/cobblestone,/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers{icon_state = "vickers"; dir = 8},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"z" = (/obj/covers/cobblestone,/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers{icon_state = "vickers"; dir = 4},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 4},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"A" = (/obj/covers/cobblestone,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/obj/effect/floor_decal/dirtwall,/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"B" = (/obj/covers/cobblestone,/obj/effect/floor_decal/dirtwall,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 4},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"C" = (/obj/covers/cobblestone,/obj/effect/floor_decal/dirtwall,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"D" = (/obj/covers/cobblestone,/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers,/obj/effect/floor_decal/dirtwall,/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"E" = (/obj/covers/cobblestone,/obj/effect/floor_decal/dirtwall,/turf/floor/beach/water/deep,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"F" = (/obj/item/flashlight/torch/on/unlimited,/turf/floor/beach/water/deep,/area/caribbean)
+"G" = (/obj/structure/railing{dir = 8},/obj/structure/railing,/obj/item/flashlight/torch/on/unlimited,/turf/floor/beach/water,/area/caribbean)
+"H" = (/obj/structure/railing,/turf/floor/beach/water,/area/caribbean)
+"I" = (/obj/structure/railing{dir = 4},/obj/structure/railing,/turf/floor/beach/water,/area/caribbean)
+"J" = (/obj/covers/cement_wall,/obj/item/flashlight/torch/on/unlimited,/turf/floor/beach/water,/area/caribbean)
+"K" = (/obj/effect/landmark{name = "JoinLateRN"},/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean)
+"L" = (/obj/effect/landmark{name = "JoinLateRN"},/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean)
+"M" = (/obj/covers/cobblestone,/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean)
+"N" = (/obj/item/flashlight/torch/on/unlimited,/turf/floor/dirt,/area/caribbean)
+
+(1,1,1) = {"
+bbbbbbbbbbcccccccccccccccccccccccccccccccccbbbbbbbbbbbbbbbbb
+bccccddccecccccccccccccccccccccccccccccccccbcccccccccccccccc
+bcfcfddfcccccccccccccccccccccccccccccccccccccccccccccccccccc
+bccccddccecccccccccccccccccccccccccccccccccbbccbcbbbbbcbbbbb
+bccccccccbcccccccccccccccccccccccccccccccccbbccbcccbcccccccb
+bbbbbbbbbbcccccccccccccccccccccccccccccccccbbccbcccbcccccccb
+bbbbbbbbbbccccccebggggggggggggbecccccfbbbbbbbbbbbbbbbbbbbbbb
+hhhhhhhhhiccccccjkkkkkkkkkkkkkklccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccjkkkkkkkkkkkkkklcccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccnkkkkkkkkkkkkkklccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccjkkkkkkkkkkkkkklccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccjkkkkkkkkkkkkkklcccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhpqrsrtphhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhquuuuuthhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccvvvvvuwuuuwuvvvvccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccvvvvvuuxxxuuvvvvcccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhyuxxxuzhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhAwuuuwBhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhpCDEDBphhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccFhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccohhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhiccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccmhhhhhhhhhhhhhhicccccfmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccjkkkkkkkkkkkkkklccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhiccccccGHHHHHHHHHHHHHHIccccccmhhhhhhhhhhhhhhhhhhhhh
+hhhhhhhhhicccccccccccccccccccccccccccfjkkkkkkkkkkkkkkkkkkkkk
+hhhhhhhhklcccccbecccccccccccccebccccccjkkkkkkkkkkkkkkkkkkkkk
+hhhhhhhhkJcccccbcccccccccccccccbccccccebaaaaaaaaaaaaaaaaaaaa
+bbbbbbbbbbcccccccccccccccccccccccccccccbbbbbbbbbbbbabbbbbbba
+bccccccccecccccccccccccccccccccccccccccaaaecccccccbbbcccccba
+bccKLccccbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccccccccccMMMMMba
+bccKLccccbaaaaaaNaaaaNaNaNaaNaaaaaaaaaaaaaeccccccccccMMMMMba
+bccLLcccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcccccccbbbcccccba
+bbbbbbbbbeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbabbbbbbba
+"}

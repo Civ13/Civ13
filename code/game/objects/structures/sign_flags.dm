@@ -163,6 +163,19 @@
 	icon_state = "centralline"
 	layer = 2
 
+/obj/structure/sign/traffic/semicircle
+	name = "white line"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "circle"
+	layer = 2
+
+/obj/structure/sign/traffic/semicircle/largest
+	name = "white line"
+	icon = 'icons/obj/decals_widest.dmi'
+	pixel_y = -6
+	icon_state = "circle"
+	layer = 2
+
 /obj/structure/sign/traffic/side
 	name = "yellow line"
 	icon_state = "sideline"
@@ -264,6 +277,16 @@
 	desc = "The yellow and green flag of the Shia Hezbollah organization."
 	icon_state = "flag_hezbollah"
 
+/obj/structure/sign/flag/philippine
+	name = "Filipino flag"
+	desc = "The flag of the Philippines."
+	icon_state = "flag_fp"
+
+/obj/structure/sign/flag/philippine_war
+	name = "Filipino flag"
+	desc = "The flag of the Philippines. Flipped for wartime."
+	icon_state = "flag_fp_war"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."
@@ -282,8 +305,8 @@
 	desc = "A sign with the logo of Giovanni Blu Stocks"
 	icon_state = "blue_logo"
 /obj/structure/sign/logo/green
-	name = "MacGreene Traders"
-	desc = "A sign with the logo of MacGreene Traders"
+	name = "Kogama Kraftsmen"
+	desc = "A sign with the logo of Kogama Kraftsmen Traders"
 	icon_state = "green_logo"
 
 /obj/item/flagmaker

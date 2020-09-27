@@ -6,7 +6,7 @@
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
-
+	has_hunger = TRUE
 
 	faction_organization = list(
 		CIVILIAN,)
@@ -19,7 +19,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
@@ -120,7 +120,7 @@
 	gamemode = "Wasteland"
 	nonukes = TRUE
 
-	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 
 /obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)

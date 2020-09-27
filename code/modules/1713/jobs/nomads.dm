@@ -6,20 +6,20 @@
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel/bone(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
 		else if (map.ordinal_age == 1)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel/bone(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
 		else if (map.ordinal_age == 2)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
 		else if (map.ordinal_age >= 3)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
 	if (!map.chad_mode)
 
 //knives and other tools/////////////////////////////////////////////////
@@ -166,56 +166,56 @@
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 //coats/////////////////////////////////////////////////
-		spawn(5)
-			var/area/mob_area = get_area(src)
-			if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
-				if (map.ordinal_age < 4)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
-					if (map.ordinal_age == 0)
-						equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
-				else if (map.ordinal_age == 4)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-				else if (map.ordinal_age >= 5)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-				update_inv_wear_suit(1)
-			else if (mob_area.climate == "desert")
+	spawn(5)
+		var/area/mob_area = get_area(src)
+		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
+			if (map.ordinal_age < 4)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 				if (map.ordinal_age == 0)
-					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-				w_uniform = null
-				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
-				update_inv_w_uniform(1)
-			if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
-				var/f_res = FALSE
-				var/f_sens = FALSE
-				for (var/i in traits)
-					if (i == "Cold Sensitivity")
-						f_sens = TRUE
-					else if (i == "Heat Tolerance")
-						f_res = TRUE
-					else if (i == "Heat Sensitivity")
-						traits -= i
-					else if (i == "Cold Tolerance")
-						traits -= i
-				if (!f_res)
-					traits += "Heat Tolerance"
-				if (!f_sens)
-					traits += "Cold Sensitivity"
-			else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
-				var/f_res = FALSE
-				var/f_sens = FALSE
-				for (var/i in traits)
-					if (i == "Heat Sensitivity")
-						f_sens = TRUE
-					else if (i == "Cold Tolerance")
-						f_res = TRUE
-					else if (i == "Cold Sensitivity")
-						traits -= i
-					else if (i == "Heat Tolerance")
-						traits -= i
-				if (!f_res)
-					traits += "Cold Tolerance"
-				if (!f_sens)
-					traits += "Heat Sensitivity"
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+			else if (map.ordinal_age == 4)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+			else if (map.ordinal_age >= 5)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+			update_inv_wear_suit(1)
+		else if (mob_area.climate == "desert")
+			if (map.ordinal_age == 0)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			w_uniform = null
+			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
+			update_inv_w_uniform(1)
+		if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
+			var/f_res = FALSE
+			var/f_sens = FALSE
+			for (var/i in traits)
+				if (i == "Cold Sensitivity")
+					f_sens = TRUE
+				else if (i == "Heat Tolerance")
+					f_res = TRUE
+				else if (i == "Heat Sensitivity")
+					traits -= i
+				else if (i == "Cold Tolerance")
+					traits -= i
+			if (!f_res)
+				traits += "Heat Tolerance"
+			if (!f_sens)
+				traits += "Cold Sensitivity"
+		else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
+			var/f_res = FALSE
+			var/f_sens = FALSE
+			for (var/i in traits)
+				if (i == "Heat Sensitivity")
+					f_sens = TRUE
+				else if (i == "Cold Tolerance")
+					f_res = TRUE
+				else if (i == "Cold Sensitivity")
+					traits -= i
+				else if (i == "Heat Tolerance")
+					traits -= i
+			if (!f_res)
+				traits += "Cold Tolerance"
+			if (!f_sens)
+				traits += "Heat Sensitivity"
 
 
 ///////////////LANGUAGE PROC/////////////////////////
@@ -921,7 +921,7 @@
 	title = "Wolf tribesman"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateIND4"
+	spawn_location = "JoinLateIND5"
 
 
 	min_positions = 9999
@@ -935,7 +935,7 @@
 	H.religion = "Moon Worshippers"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
-	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
+	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Powerful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
 
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_LOW)
@@ -955,7 +955,7 @@
 	title = "Lizard tribesman"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateIND4"
+	spawn_location = "JoinLateIND6"
 
 
 	min_positions = 9999
@@ -987,7 +987,7 @@
 	title = "Crustacean tribesman"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateIND4"
+	spawn_location = "JoinLateIND7"
 
 
 	min_positions = 9999

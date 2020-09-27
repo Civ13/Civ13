@@ -364,6 +364,17 @@
 	icon_state = "chinese"
 	name = "Republic of China Flag"
 	desc = "The Republic of China flag."
+
+/obj/structure/flag/filipino
+	icon_state = "filipino"
+	name = "Philippines Republic"
+	desc = "The Republic of the Philippines flag."
+
+/obj/structure/flag/filipino_war
+	icon_state = "filipino_wartime"
+	name = "Philippines Republic"
+	desc = "The Republic of the Philippines flag. This one flipped for wartime."
+
 /obj/structure/flag/pole
 	icon_state = "flagpole_blank"
 	name = "Flagpole"
@@ -403,23 +414,12 @@
 			qdel(src)
 /obj/structure/flag/pole/custom/attack_hand(var/mob/living/human/H)
 	if (uncolored)
-		var/input = input(H, "Flag Color - Choose a hex color (without the # | default is white):", "Flag Color" , "FFFFFF")
+		var/input = WWinput(H, "Flag Color - Choose a color:", "Flag Color" , "#FFFFFF", "color")
 		if (input == null || input == "")
 			return
 		else
-			input = uppertext(input)
-			if (length(input) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(input,i,i+1)
-				else
-					numtocheck = copytext(input,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			flagcolor = addtext("#",input)
+
+			flagcolor= input
 	if (!symbol)
 		var/display = list("Moon", "Cross", "Star", "Sun", "Plus", "Saltire", "None", "Cancel")
 		var/input =  WWinput(H, "What symbol would you like?", "Flag Making", "Cancel", display)
@@ -443,23 +443,12 @@
 		else
 			H << "<span class='notice'>That does not exist!</span>"
 	if (!symbolcolor)
-		var/input = input(H, "Symbol Color - Choose a hex color (without the # | default is black):", "Symbol Color" , "000000")
+		var/input = WWinput(H, "Symbol Color - Choose a color:", "Symbol Color" , "#000000", "color")
 		if (input == null || input == "")
 			return
 		else
-			input = uppertext(input)
-			if (length(input) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(input,i,i+1)
-				else
-					numtocheck = copytext(input,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			symbolcolor = addtext("#",input)
+
+			symbolcolor= input
 	if (flagcolor && symbol && symbolcolor)
 		uncolored = FALSE
 		var/image/flag = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_cloth")

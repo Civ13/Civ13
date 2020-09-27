@@ -284,11 +284,11 @@
 	name = "green diskette"
 	icon_state = "disk_green"
 	item_state = "disk_green"
-	faction = "MacGreene Traders"
+	faction = "Kogama Kraftsmen"
 
 /obj/item/weapon/disk/green/fake
 	name = "green diskette"
-	faction = "MacGreene Traders"
+	faction = "Kogama Kraftsmen"
 	fake = TRUE
 ///OSes/////////////////
 
@@ -334,7 +334,7 @@
 
 /obj/item/stack/component/green
 	name = "McGT S5R1 chip"
-	desc = "A highly advanced chip, manufactured by MacGreene Traders."
+	desc = "A highly advanced chip, manufactured by Kogama Kraftsmen."
 	icon_state = "card_ram"
 
 /obj/item/stack/component/blue
@@ -364,13 +364,13 @@
 	desc = "A rare chemical, in crystallized form. Has a red tinge."
 	icon_state = "ore_crimsonite"
 	produces = /obj/item/stack/component/red
-	
+
 /obj/item/stack/precursor/green
 	name = "verdine crystals"
 	desc = "A rare chemical, in crystallized form. Has a green tinge."
 	icon_state = "ore_verdine"
 	produces = /obj/item/stack/component/green
-	
+
 /obj/item/stack/precursor/blue
 	name = "indigon crystals"
 	desc = "A rare chemical, in crystallized form. Has a blue tinge."
@@ -382,7 +382,7 @@
 	desc = "A rare chemical, in crystallized form. Has a yellow tinge."
 	icon_state = "ore_galdonium"
 	produces = /obj/item/stack/component/yellow
-	
+
 //////////////////assembler/////////////////////
 /obj/structure/assembler
 	name = "assembler"
@@ -418,7 +418,7 @@
 
 /obj/structure/assembler/loader/green
 	requires = /obj/item/stack/precursor/green
-	faction = "MacGreene Traders"
+	faction = "Kogama Kraftsmen"
 
 /obj/structure/assembler/loader/yellow
 	requires = /obj/item/stack/precursor/yellow

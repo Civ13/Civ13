@@ -322,6 +322,27 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/stack/material/rawkevlar
+	name = "raw kevlar"
+	icon_state = "sheet-rawkevlar"
+	default_type = "rawkevlar"
+	value = 1
+	w_class = 2.0
+
+/obj/item/stack/material/preparedkevlar
+	name = "prepared kevlar"
+	icon_state = "sheet-preparedkevlar"
+	default_type = "preparedkevlar"
+	value = 1
+	w_class = 2.0
+
+/obj/item/stack/material/kevlar
+	name = "kevlar sheets"
+	icon_state = "sheet-kevlar"
+	default_type = "kevlar"
+	value = 15
+	w_class = 2.0
+
 /obj/item/stack/material/rags
 	name = "rags"
 	icon = 'icons/obj/trash.dmi'
@@ -493,6 +514,24 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 2
+
+/obj/item/stack/material/pelt/cowpelt
+	name = "cow pelt"
+	desc = "A pelt from a skinned cow."
+	icon_state = "sheet-cowpelt"
+	default_type = "cowpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 5
+
+/obj/item/stack/material/pelt/bisonpelt
+	name = "bison pelt"
+	desc = "A pelt from a skinned bison."
+	icon_state = "sheet-bisonpelt"
+	default_type = "bisonpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 15
 
 /obj/item/stack/material/pelt/orcpelt
 	name = "Orc Pelt"

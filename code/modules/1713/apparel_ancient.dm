@@ -15,7 +15,8 @@
  * 13 - Fur Coats
  * 14 - Fur Shoes
  * 15 - Ancient Facemasks & Covers
- * 16 - Miscallaneous*/
+ * 16 - Miscallaneous
+ * 16a - Asian Uniforms*/
 
 /*Roman Uniforms & Sandals*/
 
@@ -268,12 +269,24 @@
 
 /obj/item/clothing/suit/armor/ancient/bronze_lamellar
 	name = "bronze egyptian lamellar"
-	desc = "A bronze lamellar armor of egyptian design."
+	desc = "A bronze lamellar armor, used by soldiers of pharoahic dynasties."
 	icon_state = "egyptian_lamellar"
 	item_state = "egyptian_lamellar"
 	worn_state = "egyptian_lamellar"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //identical to bronze armor
+	value = 25
+	slowdown = 0.7
+	health = 48
+
+/obj/item/clothing/suit/armor/ancient/bronze_lamellar/chinese
+	name = "bronze chinese lamellar"
+	desc = "A bronze lamellar armor, used by warriors of early chinese dynasties."
+	icon_state = "chinese_lamellar"
+	item_state = "chinese_lamellar"
+	worn_state = "chinese_lamellar"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 25
 	slowdown = 0.7
 	health = 48
@@ -492,6 +505,16 @@
 	armor = list(melee = 27, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
 	health = 20
 
+/obj/item/clothing/head/helmet/hatchigane
+	name = "hatchigane headband"
+	desc = "A armored leather headband of japanese design, it wears away petty attacks but will not withstand heavy blows."
+	icon_state = "hatchigane"
+	item_state = "hatchigane"
+	worn_state = "hatchigane"
+	body_parts_covered = HEAD
+	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+	health = 15
+
 /obj/item/clothing/head/helmet/khepresh
 	name = "khepresh war crown"
 	desc = "A ornate egyptian war crown made of leather and gold. It is not as protective as bronze or iron, but practical for protecting your majesty."
@@ -614,6 +637,17 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 40
+
+/obj/item/clothing/head/helmet/chinese_warrior
+	name = "chinese warrior helmet"
+	desc = "A bronze helmet, used by early chinese dynasties."
+	icon_state = "bronze_chinese"
+	item_state = "bronze_chinese"
+	worn_state = "bronze_chinese"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 30
 
 /*Royal & Laurel Headwear*/
 
@@ -788,6 +822,15 @@
 	worn_state = "goatpelt"
 	heat_protection = HEAD|ARMS
 	var/colortype = "beige" //erm...
+
+/obj/item/clothing/head/bisonpelt
+	name = "bisonpelt headcover"
+	desc = "A bison pelt turned into a headcover. The thick matted fur keeps the cold off your body; the horns are just for show."
+	icon_state = "bisonpelt"
+	item_state = "bisonpelt"
+	worn_state = "bisonpelt"
+	cold_protection = HEAD|ARMS
+	var/colortype = "brown"
 
 /*Fur Coats*/
 
@@ -1057,6 +1100,17 @@
 
 /*Miscallaneous*/
 
+	/* Asian Uniforms*/
+
+/obj/item/clothing/under/kimono
+	name = "white kimono"
+	desc = "A plain kimono in popular asian style, with simplistic underwear concealed beneath." //skipping the notion that its skintight.
+	icon_state = "kimono"
+	item_state = "kimono"
+	worn_state = "kimono"
+
+	/* Asian Uniforms - End*/
+
 /obj/item/clothing/under/towel  //this was incorrectly reported as a exterior suit, it is actually a interior uniform
 	name = "white towel"
 	desc = "A simple towel to wrap around yourself."
@@ -1170,3 +1224,14 @@
 	slowdown = 1
 	health = 90
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
+
+/obj/item/clothing/head/helmet/yellow_ninja
+	name = "yellow ninja headband"
+	desc = "A armored leather headband of japanese design, wearing it makes you feel faster and the urge to flail your arms behind you as you run."
+	icon_state = "yellow_ninja"
+	item_state = "yellow_ninja"
+	worn_state = "yellow_ninja"
+	body_parts_covered = HEAD
+	armor = list(melee = 30, arrow = 40, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+	health = 30
+	slowdown = -0.40

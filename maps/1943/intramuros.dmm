@@ -414,7 +414,7 @@
 "hX" = (/obj/structure/vehicleparts/frame/m4{dir = 1},/obj/structure/bed/chair/loader{anchored = 1; dir = 1; icon_state = "officechair_white"},/turf/floor/plating/road,/area/caribbean)
 "hY" = (/obj/structure/vehicleparts/frame/m4/right/door{dir = 1},/obj/effect/autoassembler,/obj/item/weapon/radio/faction2,/turf/floor/plating/road,/area/caribbean)
 "hZ" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/turf/floor/wood,/area/caribbean/roofed)
-"ia" = (/obj/structure/table/rack,/obj/item/weapon/pickaxe,/turf/floor/wood,/area/caribbean/roofed)
+"ia" = (/obj/structure/table/rack,/obj/item/weapon/material/pickaxe,/turf/floor/wood,/area/caribbean/roofed)
 "ib" = (/obj/structure/table/rack,/obj/item/weapon/fishing,/turf/floor/wood,/area/caribbean/roofed)
 "ic" = (/obj/structure/table/rack,/obj/item/weapon/fishing/net,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
 "id" = (/obj/structure/table/rack,/obj/item/weapon/wrench,/obj/item/weapon/crowbar,/turf/floor/wood,/area/caribbean/roofed)

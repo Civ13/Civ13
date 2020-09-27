@@ -19,7 +19,7 @@
 	var/fac_nr = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the deal"
-	mission_start_message = "<font size=4><b>4</b> corporations are fighting for control of the disks.<br>Please read the manual: http://civ13.com/wiki/index.php/The_Art_of_the_Deal</font>"
+	mission_start_message = "<font size=4><b>4</b> corporations are fighting for control of the disks.<br>Please read the manual: https://civ13.github.io/civ13-wiki/The_Art_of_the_Deal</font>"
 	var/winner_name = "Unknown"
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN
@@ -28,7 +28,7 @@
 	scores = list(
 		"Rednikov Industries" = 0,
 		"Giovanni Blu Stocks" = 0,
-		"MacGreene Traders" = 0,
+		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,
 		"Police" = 0,)
 	required_players = 6
@@ -47,10 +47,10 @@
 	possibilities1 = list("crimsonite crystals","indigon crystals","galdonium crystals")
 	possibilities1 -= picked
 	if ("galdonium crystals" in possibilities1)
-		assign_precursors["MacGreene Traders"] = "galdonium crystals"
+		assign_precursors["Kogama Kraftsmen"] = "galdonium crystals"
 	else
-		assign_precursors["MacGreene Traders"] = pick(possibilities1)
-	picked += assign_precursors["MacGreene Traders"]
+		assign_precursors["Kogama Kraftsmen"] = pick(possibilities1)
+	picked += assign_precursors["Kogama Kraftsmen"]
 	possibilities1 = list("crimsonite crystals","indigon crystals","verdine crystals")
 	possibilities1 -= picked
 	assign_precursors["Goldstein Solutions"] = pick(possibilities1)
@@ -61,7 +61,7 @@
 		score()
 	var/newnamea = list("Rednikov Industries" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
 	var/newnameb = list("Giovanni Blu Stocks" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
-	var/newnamec = list("MacGreene Traders" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
+	var/newnamec = list("Kogama Kraftsmen" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
 	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(230,230,230,null,0,"cross","#7F0000","#FFFFFF",0,0))
@@ -166,7 +166,7 @@
 					else
 						new/obj/item/weapon/disk/red(SF)
 						new/obj/item/weapon/disk/red/fake(SF)
-				if ("MacGreene Traders")
+				if ("Kogama Kraftsmen")
 					if (SF.opened)
 						new/obj/item/weapon/disk/green(SF.loc)
 						new/obj/item/weapon/disk/green/fake(SF.loc)
@@ -198,7 +198,7 @@
 	if (prob(100))
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
-		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(300,500)))
+		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(300,500)), list(/obj/item/weapon/material/sword/katana,rand(300,500)))
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
@@ -596,7 +596,7 @@
 				var/faction
 				switch(i[6])
 					if ("mail@greene.ug")
-						faction = "MacGreene Traders"
+						faction = "Kogama Kraftsmen"
 					if ("mail@rednikov.ug")
 						faction = "Rednikov Industries"
 					if ("mail@goldstein.ug")

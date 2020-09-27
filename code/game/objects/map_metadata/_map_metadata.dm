@@ -75,7 +75,7 @@ var/civmax_research = list(230,230,230)
 	)
 	var/required_players = 1
 	var/time_both_sides_locked = -1
-	var/time_to_end_round_after_both_sides_locked = 6000
+	var/time_to_end_round_after_both_sides_locked = 9000
 	var/admins_triggered_roundend = FALSE
 	var/admins_triggered_noroundend = FALSE
 
@@ -115,6 +115,7 @@ var/civmax_research = list(230,230,230)
 	//civ stuff
 	var/civilizations = FALSE
 	var/nomads = FALSE
+	var/has_hunger = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/custom_civs = list()
 	var/list/custom_religions = list()
@@ -152,37 +153,37 @@ var/civmax_research = list(230,230,230)
 
 	var/age2_lim = 135
 	var/age2_done = 0
-	var/age2_timer = 40000
+	var/age2_timer = 24*36000
 	var/age2_top = 65
 
 	var/age3_lim = 230
 	var/age3_done = 0
-	var/age3_timer = 42000
+	var/age3_timer = 2*24*36000
 	var/age3_top = 95
 
 	var/age4_lim = 290
 	var/age4_done = 0
-	var/age4_timer = 44000
+	var/age4_timer = 3*24*36000
 	var/age4_top = 105
 
 	var/age5_lim = 335
 	var/age5_done = 0
-	var/age5_timer = 46000
+	var/age5_timer = 4*24*36000
 	var/age5_top = 125
 
 	var/age6_lim = 420
 	var/age6_done = 0
-	var/age6_timer = 48000
+	var/age6_timer = 5*24*36000
 	var/age6_top = 178
 
 	var/age7_lim = 540
 	var/age7_done = 0
-	var/age7_timer = 50000
+	var/age7_timer = 6*24*36000
 	var/age7_top = 195
 
 	var/age8_lim = 620
 	var/age8_done = 0
-	var/age8_timer = 52000
+	var/age8_timer = 7*24*36000
 	var/age8_top = 230
 
 	var/orespawners = 0
@@ -462,7 +463,8 @@ var/civmax_research = list(230,230,230)
 					set_ordinal_age()
 					age1_done = TRUE
 					age2_timer = (world.time + age2_timer)
-					default_research = 25
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 25
 					break
 
 		else if (age2_done == FALSE)
@@ -475,7 +477,8 @@ var/civmax_research = list(230,230,230)
 					set_ordinal_age()
 					age2_done = TRUE
 					age3_timer = (world.time + age3_timer)
-					default_research = 50
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 50
 					break
 
 		else if (age3_done == FALSE)
@@ -487,7 +490,8 @@ var/civmax_research = list(230,230,230)
 					age = "1713"
 					set_ordinal_age()
 					age3_done = TRUE
-					default_research = 80
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 80
 					break
 
 		else if (age4_done == FALSE)
@@ -499,7 +503,8 @@ var/civmax_research = list(230,230,230)
 					age = "1873"
 					set_ordinal_age()
 					age4_done = TRUE
-					default_research = 105
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 105
 					break
 		else if (age5_done == FALSE)
 			var/count = 0
@@ -510,7 +515,8 @@ var/civmax_research = list(230,230,230)
 					age = "1903"
 					set_ordinal_age()
 					age5_done = TRUE
-					default_research = 120
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 120
 					break
 		else if (age6_done == FALSE)
 			var/count = 0
@@ -521,7 +527,8 @@ var/civmax_research = list(230,230,230)
 					age = "1943"
 					set_ordinal_age()
 					age6_done = TRUE
-					default_research = 145
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 145
 					break
 		else if (age7_done == FALSE)
 			var/count = 0
@@ -532,7 +539,8 @@ var/civmax_research = list(230,230,230)
 					age = "1969"
 					set_ordinal_age()
 					age7_done = TRUE
-					default_research = 175
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 175
 					break
 		else if (age8_done == FALSE)
 			var/count = 0
@@ -543,7 +551,8 @@ var/civmax_research = list(230,230,230)
 					age = "2013"
 					set_ordinal_age()
 					age8_done = TRUE
-					default_research = 210
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 210
 					break
 /obj/map_metadata/proc/check_events()
 	return TRUE
@@ -710,7 +719,8 @@ var/civmax_research = list(230,230,230)
 		GERMAN = 0,
 		AMERICAN = 0,
 		VIETNAMESE = 0,
-		CHINESE = 0,)
+		CHINESE = 0,
+		FILIPINO = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -820,6 +830,8 @@ var/civmax_research = list(230,230,230)
 			return "Vietnamese"
 		if (CHINESE)
 			return "Chinese"
+		if (FILIPINO)
+			return "Filipino"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -856,6 +868,8 @@ var/civmax_research = list(230,230,230)
 			return "Vietcong group"
 		if (CHINESE)
 			return "Poeple's Liberation Army"
+		if (FILIPINO)
+			return "Philippine Revolutionary Army"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -892,6 +906,8 @@ var/civmax_research = list(230,230,230)
 			return "Vietnamese"
 		if ("People's Liberation Army")
 			return "Chinese"
+		if ("Philippine Revolutionary Army")
+			return "Filipino"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

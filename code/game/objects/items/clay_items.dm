@@ -11,6 +11,7 @@
 	throw_speed = 3
 	throw_range = 5
 	var/result = "none"
+	var/base_icon = "claylump"
 	value = 1
 
 /obj/item/weapon/clay/roofing
@@ -434,3 +435,8 @@
 	desc = "Raw stucco. It has a creamy complexion, ready to be applied onto a crude stone surface"
 	icon_state = "roman_stucco"
 	item_state = "roman_stucco"
+
+/obj/item/weapon/clay/cookingpot
+	name = "unfired clay cooking pot"
+	icon_state = "unfired_cookingpot"
+	result = /obj/item/weapon/reagent_containers/glass/small_pot/clay

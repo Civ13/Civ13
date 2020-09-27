@@ -131,7 +131,7 @@
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
@@ -291,6 +291,22 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
+/obj/item/weapon/gun/projectile/revolver/colt1892
+	name = "Colt M1892"
+	desc = "Officialy the M1892 Colt Single Action Army Revolver."
+	icon_state = "colt1892"
+	base_icon = "colt1892"
+	w_class = 2
+	caliber = "a38"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c38
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = FALSE
+	cocked = FALSE
+
 /obj/item/weapon/gun/projectile/revolver/makeshift
 	name = "Makeshift Revolver"
 	desc = "A cheap makeshift revolver."
@@ -438,6 +454,26 @@
 	blackpowder = FALSE
 	cocked = FALSE
 	pocket = TRUE
+	effectiveness_mod = 0.9
+
+/obj/item/weapon/gun/projectile/revolver/sw3
+	name = "Orbea Hermanos"
+	desc = "A smith 'n Wesson revolver, chambered in .32 S&W. This being the spanish copy cat."
+	icon_state = "snw3"
+	base_icon = "snw3"
+	w_class = 1
+	caliber = "a32"
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c32
+	ammo_type = /obj/item/ammo_casing/a32
+	weight = 1.6
+	equiptimer = 3
+	single_action = TRUE
+	blackpowder = FALSE
+	cocked = FALSE
+	pocket = FALSE
 	effectiveness_mod = 0.9
 
 /obj/item/weapon/gun/projectile/revolver/t26_revolver
@@ -715,7 +751,7 @@
 
 /obj/item/weapon/gun/projectile/revolving/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
@@ -907,7 +943,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)

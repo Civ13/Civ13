@@ -13,7 +13,7 @@
 	max_shells = 5
 	slot_flags = SLOT_SHOULDER
 	caliber = "a762x54"
-	recoil = 2 //extra kickback
+	recoil = 0 //extra kickback
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
@@ -209,7 +209,7 @@
 	effectiveness_mod = 0.99
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -232,7 +232,7 @@
 	effectiveness_mod = 0.98
 	bolt_safety = FALSE
 	value = 90
-	recoil = 4
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
@@ -242,6 +242,37 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	load_delay = 7
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock
+	name = "Rolling-Block Rifle"
+	desc = "A single-shot, rolling block rifle, with a long range. Uses .45-70 Gov cartridges."
+	icon_state ="rollingblock"
+	item_state ="rollingblock"
+	base_icon = "rollingblock"
+	force = 13
+	caliber = "a4570"
+	weight = 5
+	effectiveness_mod = 1.02
+	bolt_safety = FALSE
+	value = 90
+	recoil = 0
+	slot_flags = SLOT_SHOULDER
+	throwforce = 17
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a4570
+	magazine_type = /obj/item/ammo_magazine/sharps
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	max_shells = 1
+	load_delay = 7
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/spanish
+	name = "Rolling-Block Rifle"
+	desc = "A single-shot, rolling block rifle, with a long range. This Spanish one uses .43 cartridges."
+	caliber = "a43"
+	effectiveness_mod = 0.98
+	ammo_type = /obj/item/ammo_casing/a43
+	magazine_type = /obj/item/ammo_magazine/c43
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt
 	name = "Makeshift Bolt"
@@ -255,7 +286,7 @@
 	effectiveness_mod = 0.98
 	bolt_safety = FALSE
 	value = 90
-	recoil = 6
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
@@ -312,7 +343,7 @@
 	effectiveness_mod = 0.96
 	bolt_safety = FALSE
 	value = 100
-	recoil = 2
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -349,7 +380,7 @@
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -407,7 +438,7 @@
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -465,7 +496,7 @@
 	value = 100
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/arisaka99
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -540,7 +571,7 @@
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 1
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -596,7 +627,7 @@
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -619,7 +650,7 @@
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
-	recoil = 1
+	recoil = 0
 	force = 10
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -643,7 +674,7 @@
 	effectiveness_mod = 0.89
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -655,7 +686,7 @@
 	name = "Mauser M1893"
 	desc = "A german bolt-action rifle commonly known as the \"Spanish Mauser\", chambered in 7x57mm Mauser ammunition."
 	icon_state = "mauser93"
-	item_state = "gewehr98"
+	item_state = "mauser93"
 	base_icon = "mauser93"
 	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	caliber = "a7x57"
@@ -666,7 +697,7 @@
 	effectiveness_mod = 0.91
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -698,7 +729,7 @@
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -752,7 +783,7 @@
 	weight = 4.2
 	bolt_safety = FALSE
 	value = 80
-	recoil = 2
+	recoil = 0
 	throwforce = 16
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
@@ -776,7 +807,7 @@
 	effectiveness_mod = 0.85
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -796,7 +827,7 @@
 	effectiveness_mod = 0.98
 	value = 120
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 12
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -818,7 +849,7 @@
 	effectiveness_mod = 0.75
 	value = 120
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 12
 	throwforce = 20
 	max_shells = 8
@@ -850,7 +881,7 @@
 	effectiveness_mod = 0.96
 	bolt_safety = FALSE
 	value = 100
-	recoil = 2
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -882,7 +913,7 @@
 	effectiveness_mod = 0.99
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -904,7 +935,7 @@
 	effectiveness_mod = 0.97
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -926,7 +957,7 @@
 	effectiveness_mod = 0.94
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -975,7 +1006,7 @@
 	effectiveness_mod = 1.15
 	value = 130
 	slot_flags = SLOT_SHOULDER
-	recoil = 1.8
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -1000,7 +1031,7 @@
 	effectiveness_mod = 1.2
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS

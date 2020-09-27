@@ -132,11 +132,19 @@
 			adjustBruteLoss(-2)
 			if (halloss > 40)
 				adjustHalLoss(-30)
-
+	if (map && map.ID == MAP_FOOTBALL && (r_hand || l_hand))
+		var/area/A = get_area(loc)
+		if (!istype(A, /area/caribbean/football/red/goalkeeper) && !istype(A, /area/caribbean/football/blue/goalkeeper))
+			if (istype(l_hand, /obj/item/football))
+				drop_from_inventory(l_hand, loc, TRUE)
+				drop_item()
+			if (istype(r_hand, /obj/item/football))
+				drop_from_inventory(r_hand, loc, TRUE)
+				drop_item()
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
 		invisibility = 0
-	if (has_hunger_and_thirst)
+	if (has_hunger_and_thirst && (map.civilizations || map.nomads || map.has_hunger))
 		var/water_m = 1
 		var/food_m = 1
 		if (find_trait("Gigantism"))
@@ -153,6 +161,7 @@
 		if (istype(buckled, /obj/structure/cross))
 			food_m *= 1.5
 			water_m *= 5
+
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
@@ -1433,7 +1442,12 @@
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
 				if (JAPANESE)
-					holder2.icon_state = "jp_basic"
+					if (original_job.is_yakuza && original_job.is_yama)
+						holder2.icon_state = "yamaguchi"
+					else if (original_job.is_yakuza && original_job.is_ichi)
+						holder2.icon_state = "ichiwa"
+					else
+						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
@@ -1442,7 +1456,9 @@
 					else
 						holder2.icon_state = "ru_basic"
 				if (GERMAN)
-					if (map.ordinal_age <= 5)
+					if (map.ordinal_age <= 1)
+						holder2.icon_state = "ger0_basic"
+					else if (map.ordinal_age <= 5)
 						holder2.icon_state = "ger_basic"
 					else if (map.ordinal_age == 6)
 						holder2.icon_state = "ger2_basic"
@@ -1455,6 +1471,8 @@
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
+				if (FILIPINO)
+					holder2.icon_state = "fp_basic"
 				if (CHINESE)
 					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)

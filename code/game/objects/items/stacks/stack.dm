@@ -20,9 +20,9 @@
 	var/real_value = 1
 	value = 1
 	var/can_stack = FALSE //Determines if stacks should be auto-merged.
-	var/customcolor = "FFFFFF"
-	var/customcolor1 = "000000"
-	var/customcolor2 = "FFFFFF"
+	var/customcolor = "#FFFFFF"
+	var/customcolor1 = "#000000"
+	var/customcolor2 = "#FFFFFF"
 	var/customcode = "0000"
 	var/customname = ""
 
@@ -49,7 +49,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 //Merging two stacks, logic to avoid going over the max_amount cap.
 //If we get stack with amount 0, we delete it.
-/obj/item/proc/merge(obj/item/stack/S)
+/obj/item/stack/proc/merge(obj/item/stack/S)
+	if(S.amount == S.max_amount || src.amount == src.max_amount)
+		return
 	var/transfer = src.amount
 	transfer = min(transfer, S.max_amount - S.amount)
 	if(pulledby)
@@ -295,7 +297,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
 		H << "<span class = 'danger'>You can't build here!</span>"
 		return
-	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle") || findtext(recipe.title, "drinking glass") || findtext(recipe.title, "teapot") || findtext(recipe.title, "teacup") || findtext(recipe.title, "wine glass") || findtext(recipe.title, "black leather shoes") || findtext(recipe.title, "black leather boots") || findtext(recipe.title, "leather boots"))
+	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "armorbench") ||  findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle") || findtext(recipe.title, "drinking glass") || findtext(recipe.title, "teapot") || findtext(recipe.title, "teacup") || findtext(recipe.title, "wine glass") || findtext(recipe.title, "black leather shoes") || findtext(recipe.title, "black leather boots") || findtext(recipe.title, "leather boots"))
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
@@ -387,14 +389,18 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			if (findtext(recipe.title, "wall") || findtext(recipe.title, "door"))
 				H << "<span class = 'danger'>You don't know how to make this.</span>"
 				return
-	if (findtext(recipe.title, "custom sign"))
+	if (findtext(recipe.title, "custom") && findtext(recipe.title, "sign"))
 		customname = input(user, "Choose a name for this sign:") as text|null
 		if (customname == null)
 			customname = "Sign"
 		customdesc = input(user, "Choose a description for this sign:") as text|null
 		if (customdesc == null)
 			customdesc = "An empty sign."
-	if (findtext(recipe.title, "signpost"))
+	else if (findtext(recipe.title, "castle gate control"))
+		for(var/obj/structure/gatecontrol/GC in range(6, user.loc))
+			user << "<span class = 'danger'>You cannot build a control so close to another one!</span>"
+			return
+	else if (findtext(recipe.title, "signpost"))
 		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
 			customdesc = "<b>West:</b> [indesc]"
@@ -410,7 +416,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		indesc = input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>South:</b> [indesc]"
-	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
+	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -447,63 +453,25 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			build_override_door.name = keyname
 			build_override_door.custom_code = key.code
 
-	if (findtext(recipe.title, "tin can"))
+	else if (findtext(recipe.title, "tin can"))
 		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
 		if (customname == "" || customname == null)
 			customname = ""
-		customcolor1 = input(user, "Choose a main hex color (without the #):", "Tin Can Main Color" , "000000")
+		customcolor1 = input(user, "Choose a main color:", "Tin Can Main Color" , "#000000")
 		if (customcolor1 == null || customcolor1 == "")
 			customcolor1 = "#000000"
-		else
-			customcolor1 = uppertext(customcolor1)
-			if (length(customcolor1) != 6)
-				customcolor1 = "#000000"
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor1,i,i+1)
-				else
-					numtocheck = copytext(customcolor1,i,0)
-				if (!(numtocheck in listallowed))
-					customcolor1 = "#000000"
-		customcolor2 = input(user, "Choose a secondary hex color (without the #):", "Tin Can Secondary Color" , "FFFFFF")
+
+		customcolor2 = WWinput(user, "Choose a secondary color:", "Tin Can Secondary Color" , "#FFFFFF", "color")
 		if (customcolor2 == null || customcolor2 == "")
 			customcolor2 = "#FFFFFF"
-		else
-			customcolor2 = uppertext(customcolor2)
-			if (length(customcolor2) != 6)
-				customcolor2 = "#FFFFFF"
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor2,i,i+1)
-				else
-					numtocheck = copytext(customcolor2,i,0)
-				if (!(numtocheck in listallowed))
-					customcolor2 = "#FFFFFF"
 
 	else if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
 			customname = "cigarette pack"
-		customcolor = input(user, "Choose a hex color (without the #):", "Cigarette Pack Color" , "000000")
+		customcolor = input(user, "Choose a color:", "Cigarette Pack Color" , "#000000")
 		if (customcolor == null || customcolor == "")
 			return
-		else
-			customcolor = uppertext(customcolor)
-			if (length(customcolor) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor,i,i+1)
-				else
-					numtocheck = copytext(customcolor,i,0)
-				if (!(numtocheck in listallowed))
-					return
 
 	else if (recipe.result_type == /obj/structure/religious/statue)
 		customname = input("What name to give to the statue?", "Statue", "[recipe.use_material] statue") as text
@@ -540,22 +508,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a name for this vehicle:", "Vehicle Name" , "motorcycle")
 		if (customname == "" || customname == null)
 			customname = "motorcycle"
-		customcolor = input(user, "Choose a hex color (without the #):", "Vehicle Color" , "FFFFFF")
+		customcolor = WWinput(user, "Choose a color:", "Vehicle Color" , "#FFFFFF", "color")
 		if (customcolor == null || customcolor == "")
 			return
-		else
-			customcolor = uppertext(customcolor)
-			if (length(customcolor) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor,i,i+1)
-				else
-					numtocheck = copytext(customcolor,i,0)
-				if (!(numtocheck in listallowed))
-					return
 
 	else if (findtext(recipe.title, "locomotive"))
 		if (H.getStatCoeff("crafting") < 1.9)
@@ -581,22 +536,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a name for this pump:", "Fuel Pump Name" , "fuel pump")
 		if (customname == "" || customname == null)
 			customname = "fuel pump"
-		customcolor = input(user, "Fuel Pump - Choose a hex color (without the #):", "Fuel Pump Color" , "FFFFFF")
+		customcolor = input(user, "Fuel Pump - Choose a color:", "Fuel Pump Color" , "#FFFFFF")
 		if (customcolor == null || customcolor == "")
 			return
-		else
-			customcolor = uppertext(customcolor)
-			if (length(customcolor) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor,i,i+1)
-				else
-					numtocheck = copytext(customcolor,i,0)
-				if (!(numtocheck in listallowed))
-					return
+
 	else if (findtext(recipe.title, "oil deposit"))
 		if (H.civilization == null || H.civilization == "none")
 			user << "You need to be part of a faction to build this!"
@@ -651,7 +594,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
 			return
-	else if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner"))
+	else if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner") || findtext(recipe.title, "official faction paper"))
 		if (H.civilization == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>"
 			return
@@ -705,7 +648,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
 				qdelHandReturn(H.r_hand, H)
 	//Handle Craftin.
-	if (!findtext(recipe.title, "wood spear"))
+	if (!findtext(recipe.title, "wood spear") && !findtext(recipe.title, "mold"))
 		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe") || findtext(recipe.title, "stone sledgehammer") || findtext(recipe.title, "lead sledgehammer") || findtext(recipe.title, "bronze sledgehammer")|| findtext(recipe.title, "iron sledgehammer")|| findtext(recipe.title, "steel sledgehammer")|| findtext(recipe.title, "uranium sledgehammer"))
 			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 				user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
@@ -1081,6 +1024,29 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need a stack of at least 2 bone in one your hands in order to make this.</span>"
 					return
 
+	else if (findtext(recipe.title, "armorbench"))
+		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+			user << "<span class = 'warning'>You need a stack of at least 10 wood in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/iron))
+				var/obj/item/stack/material/stone/NB = H.l_hand
+				if (NB.amount >= 3)
+					NB.amount -= 3
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/iron))
+				var/obj/item/stack/material/stone/NB = H.r_hand
+				if (NB.amount >= 3)
+					NB.amount -= 3
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
+					return
 	else if (findtext(recipe.title, "fortress wall"))
 		if (!istype(H.l_hand, /obj/item/stack/material/stone) && !istype(H.r_hand, /obj/item/stack/material/stone))
 			user << "<span class = 'warning'>You need a stack of at least 8 stone in one of your hands in order to make this.</span>"
@@ -1152,8 +1118,8 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
-/* //disabled until Shinobi can know what's happening with japanese armor and we can remove/substitute.
-	else if (findtext(recipe.title, "tatami samurai armor") || findtext(recipe.title, "red tatami samurai armor") || findtext(recipe.title, "blue tatami samurai armor") || findtext(recipe.title, "black tatami samurai armor"))
+
+	else if (findtext(recipe.title, "leather samurai armor") || findtext(recipe.title, "red leather samurai armor") || findtext(recipe.title, "blue leather samurai armor") || findtext(recipe.title, "black leather samurai armor"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 10 leather in one of your hands in order to make this.</span>"
 			return
@@ -1177,7 +1143,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need a stack of at least 5 iron in one your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "leather kabuto helmet") || findtext(recipe.title, "red leather kabuto helmet") || findtext(recipe.title, "blue leather kabuto helmet") || findtext(recipe.title, "black leather kabuto helmet"))
+	else if (findtext(recipe.title, "leather samurai helmet") || findtext(recipe.title, "red leather samurai helmet") || findtext(recipe.title, "blue leather samurai helmet") || findtext(recipe.title, "black leather samurai helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 7 leather in one of your hands in order to make this.</span>"
 			return
@@ -1200,7 +1166,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
-*/
+
 	else if (findtext(recipe.title, "grandfather clock"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			user << "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>"
@@ -1232,21 +1198,21 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else
 			if (istype(H.l_hand, /obj/item/stack/medical/advanced/herbs))
 				var/obj/item/stack/medical/advanced/herbs/NB = H.l_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
-					user << "<span class = 'warning'>You need at least one medicinal herb in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>"
 					return
 			else if (istype(H.r_hand, /obj/item/stack/medical/advanced/herbs))
 				var/obj/item/stack/medical/advanced/herbs/NB = H.r_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
-					user << "<span class = 'warning'>You need at least one medicinal herb in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>"
 					return
 
 	else if (findtext(recipe.title, "khepresh war crown"))
@@ -1531,11 +1497,11 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	else if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/money/silvercoin)
-		produced = 100
+		produced = 10
 	else if (recipe.result_type == /obj/item/stack/money/goldcoin)
-		produced = 50
+		produced = 5
 	else if (recipe.result_type == /obj/item/stack/money/coppercoin)
-		produced = 50
+		produced = 5
 	else if (recipe.result_type == /obj/item/stack/material/barbwire)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/arrowhead/stone)
@@ -1591,23 +1557,11 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			T.name = "[T.caliber]mm cannon casing"
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
-			var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				O.color = addtext("#",input)
+				O.color = input
 				return
 		if (build_override_firelance)
 			build_override_firelance.loc = get_turf(O)
@@ -1746,28 +1700,33 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
-			FP.customcolor = addtext("#",customcolor)
+			FP.customcolor = customcolor
 			FP.owner = customvar
 			FP.name = customname
 			FP.do_color()
 		else if (istype(O, /obj/item/vehicleparts/frame))
 			var/obj/item/vehicleparts/frame/FF = O
-			FF.customcolor = addtext("#",customcolor)
+			FF.customcolor = customcolor
 			FF.name = customname
 			FF.do_color()
 		else if (istype(O, /obj/item/weapon/storage/fancy/cigarettes))
 			var/obj/item/weapon/storage/fancy/cigarettes/C = O
-			C.customcolor = addtext("#",customcolor)
+			C.customcolor = customcolor
 			C.name = customname
 			C.do_color()
 		else if (istype(O, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C = O
-			C.customcolor1 = addtext("#",customcolor1)
-			C.customcolor2 = addtext("#",customcolor2)
+			C.customcolor1 = customcolor1
+			C.customcolor2 = customcolor2
 			C.brand = "[customname] "
 			C.name = "empty [C.brand]can"
 			C.do_color()
-
+		else if (istype(O, /obj/item/weapon/paper/official))
+			var/obj/item/weapon/paper/official/C = O
+			C.faction = H.civilization
+			C.color1 = map.custom_civs[H.civilization][7]
+			C.color2 = map.custom_civs[H.civilization][8]
+			C.update_icon()
 		else if (istype(O, /obj/structure/religious/statue))
 			var/obj/structure/religious/statue/RB = O
 			RB.statue_material = recipe.use_material
@@ -1911,21 +1870,21 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			new/obj/item/ammo_casing/bolt(get_turf(O))
 		else if (istype(O, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
-			C1.customcolor1 = addtext("#",customcolor1)
-			C1.customcolor2 = addtext("#",customcolor2)
+			C1.customcolor1 = customcolor1
+			C1.customcolor2 = customcolor2
 			C1.brand = "[customname] "
 			C1.name = "empty [C1.brand]can"
 			C1.do_color()
 		else if (istype(O, /obj/item/weapon/can/small))
 			var/obj/item/weapon/can/small/C1 = new/obj/item/weapon/can/small(get_turf(O))
-			C1.customcolor1 = addtext("#",customcolor1)
-			C1.customcolor2 = addtext("#",customcolor2)
+			C1.customcolor1 = customcolor1
+			C1.customcolor2 = customcolor2
 			C1.brand = "[customname] "
 			C1.name = "empty [C1.brand]can"
 			C1.do_color()
 			var/obj/item/weapon/can/small/C2 = new/obj/item/weapon/can/small(get_turf(O))
-			C2.customcolor1 = addtext("#",customcolor1)
-			C2.customcolor2 = addtext("#",customcolor2)
+			C2.customcolor1 = customcolor1
+			C2.customcolor2 = customcolor2
 			C2.brand = "[customname] "
 			C2.name = "empty [C2.brand]can"
 			C2.do_color()

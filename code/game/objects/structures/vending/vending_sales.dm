@@ -70,7 +70,7 @@
 				inputp = 0
 			if (inputp < 0)
 				inputp = 0
-			product.price = inputp/10
+			product.price = inputp
 			if (istype(W, /obj/item/stack))
 				var/obj/item/stack/S = W
 				product.amount = S.amount
@@ -110,7 +110,7 @@
 			else
 				for(var/datum/data/vending_product/VP in product_records)
 					if (VP.product_name == choice2)
-						var/input3 = input("The current price for [VP.product_name] is [VP.price*10] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
+						var/input3 = input("The current price for [VP.product_name] is [VP.price] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
 						if (input3 < 0 || input3 == null)
 							return FALSE
 						else
@@ -175,14 +175,14 @@
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			data["moneyin"] = moneyin/4
 		else
-			data["moneyin"] = moneyin*10
+			data["moneyin"] = moneyin
 	else
 		data["mode"] = FALSE
 		data["company"] = owner
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			data["moneyin"] = moneyin/4
 		else
-			data["moneyin"] = moneyin*10
+			data["moneyin"] = moneyin
 		var/list/listed_products = list()
 
 		for (var/key = TRUE to product_records.len)

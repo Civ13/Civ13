@@ -3,7 +3,6 @@
 	desc = "A gun that fires bullets."
 	icon_state = "musket"
 	w_class = 3
-	recoil = 1
 
 	var/caliber = "musketball"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled
@@ -278,10 +277,12 @@
 		..()
 	else
 		unload_ammo(user)
+		update_icon()
 
 /obj/item/weapon/gun/projectile/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
 		unload_ammo(user, allow_dump=0)
+		update_icon()
 	else
 		return ..()
 

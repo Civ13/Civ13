@@ -798,7 +798,7 @@
 				mdomain = "rednikov.ug"
 			if ("Giovanni Blu Stocks")
 				mdomain = "blu.ug"
-			if ("MacGreene Traders")
+			if ("Kogama Kraftsmen")
 				mdomain = "greene.ug"
 			if ("Goldstein Solutions")
 				mdomain = "goldstein.ug"
@@ -827,7 +827,7 @@
 			mdomain = "rednikov.ug"
 		if ("Giovanni Blu Stocks")
 			mdomain = "blu.ug"
-		if ("MacGreene Traders")
+		if ("Kogama Kraftsmen")
 			mdomain = "greene.ug"
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
@@ -1721,8 +1721,8 @@
 					forsale = map.assign_precursors["Rednikov Industries"]
 				if ("Giovanni Blu Stocks")
 					forsale = map.assign_precursors["Giovanni Blu Stocks"]
-				if ("MacGreene Traders")
-					forsale = map.assign_precursors["MacGreene Traders"]
+				if ("Kogama Kraftsmen")
+					forsale = map.assign_precursors["Kogama Kraftsmen"]
 				if ("Goldstein Solutions")
 					forsale = map.assign_precursors["Goldstein Solutions"]
 

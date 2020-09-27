@@ -9,7 +9,8 @@
 	return null
 
 /mob/living/human/attack_hand(mob/living/human/M as mob)
-
+	if (map && map.ID == MAP_FOOTBALL)
+		return
 	var/mob/living/human/H = M
 	if (istype(H))
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
@@ -97,6 +98,14 @@
 
 		if (I_GRAB)
 			if (anchored)
+				return FALSE
+			var/f1 = FALSE
+			var/f2 = FALSE
+			for (var/obj/structure/vehicleparts/frame/FR1 in get_turf(src))
+				f1 = TRUE
+			for (var/obj/structure/vehicleparts/frame/FR2 in get_turf(tgt))
+				f2 = TRUE
+			if (f1 != f2)
 				return FALSE
 			if (M == src)
 				var/obj/item/organ/external/organ = get_organ(tgt)

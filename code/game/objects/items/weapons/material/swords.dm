@@ -192,7 +192,7 @@ obj/item/weapon/material/sword/wakazashi
 	..()
 	var/mob/living/human/H = user
 	if(istype(A, H))
-		if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+		if (istype(H) && (H.faction_text == "INDIANS"))
 			user << "<span class = 'danger'>You have no idea how to do this.</span>"
 			return
 		if (A == user)
@@ -303,6 +303,42 @@ obj/item/weapon/material/sword/armingsword/bronze
 	block_chance = 35
 	cooldownw = 7
 
+/obj/item/weapon/material/sword/bolo
+	name = "bolo"
+	desc = "A very common filipino machete like sword."
+	icon_state = "bolo"
+	item_state = "bolo"
+	throw_speed = 3
+	throw_range = 6
+	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 37
+	cooldownw = 9
+	value = 30
+
+/obj/item/weapon/material/sword/bolo/iron
+	default_material = "iron"
+	value = 25
+
+/obj/item/weapon/material/sword/kukri
+	name = "kukri"
+	desc = "A very distinctly shaped machete originating in the outback for hacking through thick brush."
+	icon_state = "kukri"
+	item_state = "kukri"
+	throw_speed = 3
+	throw_range = 6
+	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 37
+	cooldownw = 9
+	value = 30
+
+/obj/item/weapon/material/sword/kukri/iron
+	default_material = "iron"
+	value = 25
+
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
 	desc = "A medium-sized, curved sword, preferred by pirates."
@@ -336,6 +372,24 @@ obj/item/weapon/material/sword/cutlass/iron
 
 obj/item/weapon/material/sword/scimitar/iron
 	default_material = "iron"
+
+/obj/item/weapon/material/sword/longquan
+	name = "longquan"
+	desc = "A medium-sized oriental sword; preferred by chinese warriors & soldiers."
+	icon_state = "longquan"
+	item_state = "longquan"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 30
+	cooldownw = 8
+	value = 45
+
+/obj/item/weapon/material/sword/longquan/iron
+	default_material = "iron"
+	value = 40
 
 /obj/item/weapon/material/sword/saif
 	name = "saif"
@@ -442,7 +496,7 @@ obj/item/weapon/material/sword/rapier/iron
 
 /obj/item/weapon/material/sword/xiphos
 	name = "xiphos"
-	desc = "A small sword, used by Hellenic soldiers."
+	desc = "A small sword, used by hellenic soldiers."
 	icon_state = "xiphos"
 	item_state = "gladius"
 	default_material = "iron"

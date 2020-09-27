@@ -70,41 +70,14 @@
 		choosesymbol = WWinput(src, "Choose a symbol for the new faction:", "Faction Creation", "Cancel", list("Cancel","star","sun","moon","cross","big cross","saltire"))
 		if (choosesymbol == "Cancel")
 			return
-		choosecolor1 = input(H, "Choose the main/symbol hex color (without the #):", "Color" , "000000")
+		choosecolor1 = WWinput(H, "Choose main/symbol color:", "Color" , "#000000", "color")
 		if (choosecolor1 == null || choosecolor1 == "")
 			return
-		else
-			choosecolor1 = uppertext(choosecolor1)
-			if (length(choosecolor1) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor1,i,i+1)
-				else
-					numtocheck = copytext(choosecolor1,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor1 = addtext("#",choosecolor1)
 
-		choosecolor2 = input(H, "Choose the secondary/background hex color (without the #):", "Color" , "FFFFFF")
+		choosecolor2 = WWinput(H, "Choose the secondary/background color:", "Color" , "#FFFFFF", "color")
 		if (choosecolor2 == null || choosecolor2 == "")
 			return
-		else
-			choosecolor2 = uppertext(choosecolor2)
-			if (length(choosecolor2) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor2,i,i+1)
-				else
-					numtocheck = copytext(choosecolor2,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor2 = addtext("#",choosecolor2)
+
 		H.civilization = newname
 		H.leader = TRUE
 		H.faction_perms = list(1,1,1,1)
@@ -350,6 +323,7 @@
 		update_icon()
 		invisibility = 0
 
+
 /obj/structure/banner/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
 		user << "You start ripping off the [src]..."
@@ -358,7 +332,46 @@
 			qdel(src)
 	else
 		..()
+/obj/structure/banner/faction/team
+	var/team = null
+	name = "team banner"
+	desc = "A sports team banner."
 
+/obj/structure/banner/faction/team/New()
+	..()
+	assign_team()
+
+/obj/structure/banner/faction/team/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	return
+
+/obj/structure/banner/faction/team/attack_hand(mob/user as mob)
+	return
+
+/obj/structure/banner/faction/team/proc/assign_team(new_team = null)
+	if (!new_team)
+		new_team = src.team
+	if (map && map.ID == MAP_FOOTBALL)
+		var/obj/map_metadata/football/FM = map
+		if (FM.team1 == src.team)
+			color1 = FM.teams[src.team][FM.team1_kit]["shirt_color"]
+			color2 = FM.teams[src.team][FM.team1_kit]["shorts_color"]
+		else if  (FM.team2 == src.team)
+			color1 = FM.teams[src.team][FM.team2_kit]["shirt_color"]
+			color2 = FM.teams[src.team][FM.team2_kit]["shorts_color"]
+		else
+			color1 = FM.teams[src.team]["main uniform"]["shirt_color"]
+			color2 = FM.teams[src.team]["main uniform"]["shorts_color"]
+		var/image/overc = image("icon" = icon, "icon_state" = "[bstyle]_1")
+		overc.color = color1
+		overlays += overc
+		var/image/overc1 = image("icon" = icon, "icon_state" = "[bstyle]_2")
+		overc1.color = color2
+		overlays += overc1
+		name = "[src.team] banner"
+		update_icon()
+/obj/structure/banner/faction/team/team1
+
+/obj/structure/banner/faction/team/team2
 
 /obj/item/weapon/poster/faction
 	name = "rolled faction poster"

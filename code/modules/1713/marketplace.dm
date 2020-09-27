@@ -24,7 +24,7 @@
 			for(var/obj/structure/vending/sales/S in vending_machine_list)
 				if (S.owner == relf)
 					vm_owned++
-			body += "<b>[relf]</b>: [tmplistc[relf]*10] silver coins. [vm_owned] vending points.</br>"
+			body += "<b>[relf]</b>: [tmplistc[relf]] silver coins. [vm_owned] vending points.</br>"
 		body += {"<br>
 			</body></html>
 		"}
@@ -57,7 +57,7 @@
 			if (map.custom_civs[user.civilization][4] == user)
 				if (map.custom_civs[user.civilization][5]>0)
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = map.custom_civs[user.civilization][5]*2.5
+					GC.amount = map.custom_civs[user.civilization][5]/4
 					map.custom_civs[user.civilization][5]=0
 					user << "You withdraw [GC.amount] gold coins in faction funds."
 					return
@@ -112,9 +112,9 @@
 						price_without_tax = j[3]-businesstax
 						map.custom_civs[user.civilization][5] += businesstax
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = price_without_tax*2.5
+					GC.amount = price_without_tax/4
 					j[3] = 0
-					user << "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax*10] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>"
+					user << "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>"
 		return
 
 	else if (choice1 == "Buy Stock")
@@ -126,7 +126,7 @@
 			var/found = FALSE
 			for(var/list/i in map.sales_registry)
 				if (i[5])
-					tempbuylist += "[i[2]]% of [i[1]], at [i[3]*10] sc"
+					tempbuylist += "[i[2]]% of [i[1]], at [i[3]] sc"
 					found = TRUE
 			if (!found)
 				user << "<span class='notice'>There are no stocks for sale!</span>"
@@ -173,7 +173,7 @@
 											LL[5] = 0
 											map.sales_registry -= LL
 							else
-								user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
+								user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]] sc and you only have [M.amount*M.value] sc.</span>"
 								return
 				else
 					user << "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>"
