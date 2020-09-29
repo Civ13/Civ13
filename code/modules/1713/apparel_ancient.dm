@@ -1228,8 +1228,8 @@
 /obj/item/clothing/mask/stone_jewelled
 	name = "jewelled stone mask"
 	desc = "A jewelled stone mask, possibly sometype of honorific attire?"
-	icon_state = "stone_mask"
-	item_state = "stone_mask"
+	icon_state = "stone_mask_jeweled"
+	item_state = "stone_mask_jeweled"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
 	w_class = 2
