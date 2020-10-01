@@ -671,7 +671,7 @@
 	desc = "An advanced steel anvil. The blacksmith's main work tool."
 	icon_state = "steel_anvil"
 	base_icon = "steel"
-	accepted_materials = list("copper", "tin", "gold", "silver", "lead", "bronze", "iron", "steel")
+	accepted_materials = list("copper", "tin", "gold", "silver", "lead", "bronze", "iron", "steel", "kevlar")
 
 /obj/structure/anvil/stone
 	name = "stone anvil"

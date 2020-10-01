@@ -589,10 +589,10 @@ var/global/redirect_all_players = null
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
 	if (job.is_deal)
-		var/y_nr = processes.job_data.get_active_positions("Goldstein Solutions")
-		var/g_nr = processes.job_data.get_active_positions("Kogama Kraftsmen")
-		var/r_nr = processes.job_data.get_active_positions("Rednikov Industries")
-		var/b_nr = processes.job_data.get_active_positions("Giovanni Blu Stocks")
+		var/y_nr = processes.job_data.get_active_positions_name("Goldstein Solutions")
+		var/g_nr = processes.job_data.get_active_positions_name("Kogama Kraftsmen")
+		var/r_nr = processes.job_data.get_active_positions_name("Rednikov Industries")
+		var/b_nr = processes.job_data.get_active_positions_name("Giovanni Blu Stocks")
 
 		if (istype(job, /datum/job/civilian/businessman/red))
 			if (r_nr > y_nr || r_nr > b_nr || r_nr > g_nr)
@@ -611,8 +611,8 @@ var/global/redirect_all_players = null
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 	if (job.is_yakuza)
-		var/yy_nr = processes.job_data.get_active_positions("Yamaguchi-Gumi Kaiin")
-		var/yi_nr = processes.job_data.get_active_positions("Ichiwa-Kai Kaiin")
+		var/yy_nr = processes.job_data.get_active_positions_name("Yamaguchi-Gumi Kaiin")
+		var/yi_nr = processes.job_data.get_active_positions_name("Ichiwa-Kai Kaiin")
 		for (var/datum/job/joby in job_master.occupations)
 			if (istype(joby, /datum/job/japanese/yakuza))
 				yy_nr = joby.current_positions
