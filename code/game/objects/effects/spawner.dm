@@ -498,17 +498,11 @@
 	create_path = /mob/living/simple_animal/hostile/zombie
 	timer = 1000
 
-/obj/effect/spawner/mobspawner/zombies/many
-	max_number = 20
-	max_range = 4
-	timer = 500
-
 /obj/effect/spawner/mobspawner/zombies/special
 	activated = FALSE
 	max_range = 9
 	max_number = 14
 	timer = 600
-
 
 /obj/effect/spawner/mobspawner/zombies/special/getEmptyTurf()
 	var/list/turf/emptyTurfs = new
