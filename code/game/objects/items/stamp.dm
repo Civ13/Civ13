@@ -33,3 +33,6 @@
 /obj/item/weapon/stamp/baily
 	name = "Baily approval"
 	icon_state = "stamp-fr"
+
+/obj/item/weapon/stamp/mail
+	icon_state = "stamp_blank"
