@@ -58,11 +58,7 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/pioneers/wasteland_two
 	ID = MAP_PIONEERS_WASTELAND_2
 	title = "Pioneer Wastland II"
-	gamemode = "Wasteland"
-
-	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	gamemode = "Zombie Wasteland"
+	civilizations = TRUE
+	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can the town survive?</big><br><br> <i>***Map Mechanics*** <br><br>- Zombies will spawn in some areas <b>anywhere could be dangerous</b>.<br><br>- Bodies will turn into zombies after a while! To prevent this, <b>remove the head from the body</b>.<br><br>- Getting bit or scratched by a zombie will not automatically turn you into one. However, theres a small chance you get <b>infected with the zombie virus</b>. You will get high fevers and massive headaches. This can be prevented by taking <b>Potassium Iodide</b>, as it will kill the virus, even after symptoms have started.</i>"
 	ambience = list('sound/ambience/desert.ogg')
-
-/obj/map_metadata/pioneers/wasteland_two/proc/zombies(var/start = TRUE)
-	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
-		S.activated = start
