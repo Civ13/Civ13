@@ -316,9 +316,11 @@ var/global/redirect_all_players = null
 			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
-		if (map && map.civilizations == TRUE)
+		if (map && map.civilizations == TRUE && !map.ID == MAP_PIONEERS_WASTELAND_2)
 			close_spawn_windows()
 			AttemptLateSpawn(pick(map.availablefactions))
+		else if (map && map.ID == MAP_PIONEERS_WASTELAND_2)
+			LateChoices()
 		else
 			return
 		return TRUE
