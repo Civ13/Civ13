@@ -1859,6 +1859,7 @@ RECIPE: /material/wood/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,fu
 RECIPE: /material/wood/,practice dummy,/obj/structure/practice_dummy,8,120,1,1,furniture,18,0,0,8,null
 RECIPE: /material/wood/,large barrel,/obj/structure/reagent_dispensers/largebarrel,16,100,1,1,furniture,19,0,0,8,null
 RECIPE: /material/wood/,practice target,/obj/structure/practice_dummy/target,6,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,wood mailbox,/obj/structure/closet/crate/wall_mailbox/wood_mailbox,3,65,1,1,furniture,40,0,0,8,null
 RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,wardrobe,/obj/structure/closet/cabinet,5,80,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,furniture,41,0,0,8,null
