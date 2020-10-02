@@ -3,7 +3,7 @@
 SERVER_NAME Civilization 13
 
 ## Where is the game folder located?
-MASTER_DIRECTORY D:\GitHub\Civ13
+MASTER_DIRECTORY /home/1713
 
 ## If this server is running: Persistence mode, RP maps only, TDM only, or both (PERSISTENCE RP TDM ALL).
 ALLOWED_GAMEMODES ALL
@@ -12,7 +12,7 @@ ALLOWED_GAMEMODES ALL
 #HUB_BODY From the Stone Age to the Industrial Age
 
 ## Use a link to a banner on your hub message? Comment out if not
-#HUB_BANNER_URL https://i.imgur.com/napac0L.png
+HUB_BANNER_URL https://i.imgur.com/napac0L.png
 
 ## Open the hub discord link in a new window? 1 = yes, 0 = no
 OPEN_HUB_DISCORD_IN_NEW_WINDOW 1
@@ -24,13 +24,13 @@ TESTING_PORT 11000
 HUBTESTING_PORT 11001
 
 ## Put on byond hub: uncomment this to put your server on the byond hub.
-#HUB
+HUB
 
 # Lobby time: This is the amount of time between rounds that players have to setup their characters and be ready.
-LOBBY_COUNTDOWN 60
+LOBBY_COUNTDOWN 90
 
 # Round End Time: This is the amount of time after the round ends that players have to murder death kill each other.
-ROUND_END_COUNTDOWN 120
+ROUND_END_COUNTDOWN 90
 
 ## log OOC channel
 LOG_OOC
@@ -124,16 +124,16 @@ USE_JOB_WHITELIST
 
 ## set a server location for world reboot. Don't include the byond://, just give the address and port.
 # Don't set this to the same server, BYOND will automatically restart players to the server when it has restarted.
-#SERVER 192.210.161.174:23999
+SERVER 192.210.161.174:23999
 
 ## donation address
 DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
-#RULESURL http://civ13.com/wiki/index.php?title=Rules
+RULESURL http://civ13.com/wiki/index.php?title=Rules
 
 ## discord address
-#DISCORDURL https://discord.gg/hBEtg4x
+DISCORDURL https://discord.gg/hBEtg4x
 
 ## Wiki address
 WIKIURL https://civ13.github.io/civ13-wiki/
@@ -142,7 +142,7 @@ WIKIURL https://civ13.github.io/civ13-wiki/
 WEBSITEURL http://civ13.com/
 
 ##Github address
-#GITHUBURL https://github.com/civ13/civ13/
+GITHUBURL https://github.com/civ13/civ13/
 
 ##Github repo id
 ##This can be found by going to https://api.github.com/users/<user name here>/repos
@@ -167,7 +167,7 @@ TICKLAG 0.4
 #AUTOMUTE_ON
 
 ## Communication key for receiving data through world/Topic(), you don't want to give this out
-#COMMS_KEY butternutter
+#COMMS_KEY default_pwd
 
 ## World address and port for server recieving cross server messages
 #CROSS_SERVER_ADDRESS byond:\\address:port
