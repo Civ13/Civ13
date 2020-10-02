@@ -1,4 +1,4 @@
-/////MAILBOX/////
+/////MAILBOXES/////
 
 /obj/structure/closet/crate/wall_mailbox
 	name = "wall mailbox"
@@ -37,6 +37,10 @@
 			continue
 		if (!istype(O, /obj/item/weapon/paper) && !istype(O, /obj/item/weapon/photo) && !istype(O, /obj/item/weapon/storage/envelope))
 			continue
+		if (istype(O, /obj/item/weapon/storage/envelope))
+			var/obj/item/weapon/storage/envelope/E = O
+			if (E.opened == TRUE)
+				continue
 		O.forceMove(src)
 		itemcount++
 		contents_stored = itemcount
@@ -47,16 +51,17 @@
 
 /obj/structure/closet/crate/wall_mailbox/toggle(mob/user as mob)
 	..()
-	if (opened)
-		var/image/mailbox_open_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_open")
-		mailbox_open_color_overlay.color = mailbox_color
-		overlays += mailbox_open_color_overlay
+	if (!istype(src, /obj/structure/closet/crate/wall_mailbox/wood_mailbox))
+		if (opened)
+			var/image/mailbox_open_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_open")
+			mailbox_open_color_overlay.color = mailbox_color
+			overlays += mailbox_open_color_overlay
 
-	if (!opened)
-		var/image/mailbox_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_closed")
-		mailbox_color_overlay.color = mailbox_color
-		overlays += mailbox_color_overlay
-		return
+		if (!opened)
+			var/image/mailbox_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_closed")
+			mailbox_color_overlay.color = mailbox_color
+			overlays += mailbox_color_overlay
+			return
 
 /obj/structure/closet/crate/wall_mailbox/attackby(var/obj/item/W as obj, mob/user as mob)
 	if (!istype(W, /obj/item/weapon/storage/envelope) && !istype(W, /obj/item/weapon/paper) && !istype(W, /obj/item/weapon/key) && !istype(W, /obj/item/weapon/storage/belt/keychain) && !istype(W, /obj/item/weapon/photo) && !istype(W, /obj/item/weapon/hammer))
@@ -91,6 +96,15 @@
 	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
 		..()
 		return
+
+/obj/structure/closet/crate/wall_mailbox/wood_mailbox
+	name = "wood mailbox"
+	desc = "A wood box with a slot to accept mail."
+	icon = 'icons/obj/mail.dmi'
+	icon_state = "wood_mailbox_closed"
+	icon_closed = "wood_mailbox_closed"
+	icon_opened = "wood_mailbox_open"
+	density = TRUE
 
 /////ENVELOPE/////
 
@@ -228,9 +242,9 @@
 				usr << "<span class='warning'>There is a wax seal already!</span>"
 				return
 			var/wax = WWinput(user, "What color should the wax seal be?","Wax seal","Normal",list("cancel", "red", "black", "blue", "green", "pink", "white"))
-			if (wax == "cancel")
+			if (wax == "Cancel")
 				return
-			if (wax != "cancel")
+			if (wax != "Cancel")
 				var/image/wax_seal = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wax_seal_[wax]")
 				overlays += wax_seal
 				desc += "<br>This envelope has been sealed with [wax] wax."
