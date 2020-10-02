@@ -853,10 +853,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (H.getStatCoeff("crafting") < 2)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	else if (findtext(recipe.title, "monumental marble statue of venus") || findtext(recipe.title, "monumental bronze statue of karl marx"))
-		if (H.getStatCoeff("crafting") < 2)
-			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
-			return
 
 		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
 			user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
@@ -880,6 +876,12 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
 					return
+
+	else if (findtext(recipe.title, "monumental marble statue of venus") || findtext(recipe.title, "monumental bronze statue of karl marx"))
+		if (H.getStatCoeff("crafting") < 2)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
 	else if (findtext(recipe.title, "gong") && !findtext(recipe.title, "gong mallet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/bronze) && !istype(H.r_hand, /obj/item/stack/material/bronze))
 			user << "<span class = 'warning'>You need a stack of at least 5 bronze ingots in one of your hands in order to make this.</span>"
@@ -1563,6 +1565,30 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			else
 				O.color = input
 				return
+		if (istype(O, /obj/structure/closet/crate/wall_mailbox) && !istype(O, /obj/structure/closet/crate/wall_mailbox/wood_mailbox))
+			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				var/obj/structure/closet/crate/wall_mailbox/M = O
+				var/image/mailbox_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_closed")
+				mailbox_color_overlay.color = input
+				M.mailbox_color = input
+				M.overlays += mailbox_color_overlay
+				M.loc = get_step(user, user.dir)
+				return
+		if (istype(O, /obj/structure/sign) && !istype(O, /obj/structure/sign/signpost))
+			if (customname != "")
+				O.name = customname
+			if (customdesc != "")
+				O.desc = customdesc
+			var/obj/structure/sign/S = O
+			S.loc = get_step(user, user.dir)
+			return
+		if (istype(O, /obj/structure/noticeboard) || istype(O, /obj/structure/mirror))
+			var/obj/structure/noticeboard/N = O
+			N.loc = get_step(user, user.dir)
+			return
 		if (build_override_firelance)
 			build_override_firelance.loc = get_turf(O)
 			build_override_firelance.set_dir(user.dir)

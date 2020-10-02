@@ -1859,6 +1859,7 @@ RECIPE: /material/wood/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,fu
 RECIPE: /material/wood/,practice dummy,/obj/structure/practice_dummy,8,120,1,1,furniture,18,0,0,8,null
 RECIPE: /material/wood/,large barrel,/obj/structure/reagent_dispensers/largebarrel,16,100,1,1,furniture,19,0,0,8,null
 RECIPE: /material/wood/,practice target,/obj/structure/practice_dummy/target,6,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,wood mailbox,/obj/structure/closet/crate/wall_mailbox/wood_mailbox,3,65,1,1,furniture,40,0,0,8,null
 RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,wardrobe,/obj/structure/closet/cabinet,5,80,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,furniture,41,0,0,8,null
@@ -1925,6 +1926,8 @@ RECIPE: /material/wood/,passport,/obj/item/clothing/accessory/storage/passport,3
 RECIPE: /material/wood/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,official faction paper,/obj/item/weapon/paper/official,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,envelope,/obj/item/weapon/storage/envelope,2,35,0,1,paper & printing,40,0,0,8,null
+RECIPE: /material/wood/,wax seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
 RECIPE: /material/wood/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,0,0,8,null
 RECIPE: /material/wood/,grey folder,/obj/item/weapon/folder,1,75,0,1,paper & printing,120,0,0,8,null
 RECIPE: /material/wood/,yellow folder,/obj/item/weapon/folder/yellow,1,75,0,1,paper & printing,120,0,0,8,null
@@ -2081,6 +2084,8 @@ RECIPE: /material/iron/,grill,/obj/structure/oven/grill,8,150,1,1,production,150
 RECIPE: /material/iron/,iron altar,/obj/structure/altar/iron,12,200,1,1,furniture,0,0,0,8,null
 
 RECIPE: /material/iron/,locker,/obj/structure/closet,4,80,1,1,furniture,105,0,0,8,null
+
+RECIPE: /material/iron/,wall mailbox,/obj/structure/closet/crate/wall_mailbox,3,65,1,1,furniture,90,0,0,8,null
 
 //*********************| IRON WEAPONS |**************************
 
