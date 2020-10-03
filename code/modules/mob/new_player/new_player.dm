@@ -325,6 +325,7 @@ var/global/redirect_all_players = null
 			return
 		return TRUE
 
+
 	if (href_list["nomads"])
 
 		if (client && client.quickBan_isbanned("Playing"))
