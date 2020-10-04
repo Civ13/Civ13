@@ -30,6 +30,17 @@
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 75
 
+/obj/item/clothing/suit/storage/coat/bizarre_coat
+	name = "bizarre dark blue coat"
+	desc = "A very stylish coat."
+	icon_state = "bizarre_coat"
+	item_state = "bizarre_coat"
+	worn_state = "bizarre_coat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 150
+
 /obj/item/clothing/suit/storage/coat/oldyjacket
 	name = "red jacket"
 	desc = "A red jacket from the 80s."
@@ -124,6 +135,14 @@
 	icon_state = "traffic_cop"
 	item_state = "traffic_cop"
 	worn_state = "traffic_cop"
+
+/obj/item/clothing/head/bizarre_hat
+	name = "bizarre dark blue hat"
+	desc = "A dark blue hat worn by troublemakers."
+	icon_state = "bizarre_hat"
+	item_state = "bizarre_hat"
+	worn_state = "bizarre_hat"
+
 
 /* US Army Clothes*/
 
