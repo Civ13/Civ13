@@ -220,6 +220,7 @@
 				MAP_COLONY = 0,
 				MAP_JUNGLE_COLONY = 4,
 				MAP_PIONEERS = 10,
+				MAP_PIONEERS_WASTELAND_2 = 10,
 				MAP_FOUR_COLONIES = 30,
 			)
 		else if (epoch == "Civilization 13 (Prison Camps)")

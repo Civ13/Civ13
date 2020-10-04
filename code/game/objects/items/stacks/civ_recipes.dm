@@ -19,7 +19,7 @@
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/human/user, var/forced=FALSE)
 	if (map && map.civilizations)
 		var/list/current_res = list(0,0,0)
-		if ((civ == "Nomad" || map.ID == MAP_TRIBES) && user)
+		if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
 			if (user.civilization == "none")
 				current_res = list(map.default_research,map.default_research,map.default_research)
 			else
