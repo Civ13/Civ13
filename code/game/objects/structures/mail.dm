@@ -242,9 +242,9 @@
 				usr << "<span class='warning'>There is a wax seal already!</span>"
 				return
 			var/wax = WWinput(user, "What color should the wax seal be?","Wax seal","Normal",list("cancel", "red", "black", "blue", "green", "pink", "white"))
-			if (wax == "Cancel")
+			if (wax == "cancel")
 				return
-			if (wax != "Cancel")
+			if (wax != "cancel")
 				var/image/wax_seal = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wax_seal_[wax]")
 				overlays += wax_seal
 				desc += "<br>This envelope has been sealed with [wax] wax."
