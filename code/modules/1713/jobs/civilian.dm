@@ -1048,6 +1048,10 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/holster/hip/filled_a = new /obj/item/clothing/accessory/holster/hip(null)
+	filled_a.attackby(new/obj/item/weapon/gun/projectile/revolver/peacemaker, H)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(filled_a, H)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/really_black_suit(H), slot_wear_suit)
 //head
@@ -1055,7 +1059,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c45(H), slot_belt)
 //	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this town. Organize your men and build a town!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1075,7 +1079,7 @@
 	en_meaning = "Town Chief Carpenter/Planner"
 	rank_abbreviation = "Head Architect"
 
-	spawn_location = "JoinLateCivA"
+	spawn_location = "JoinLateCivC"
 
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -1245,7 +1249,7 @@
 	rank_abbreviation = "Judge"
 
 
-	spawn_location = "JoinLateCivA"
+	spawn_location = "JoinLateCivC"
 	is_officer = TRUE
 	whitelisted = TRUE
 
@@ -1693,8 +1697,10 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 
 	//head
-		if (prob(10))
+		if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (prob(5))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/unionhatlight(H), slot_head)
 		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (prob(30))
@@ -1766,8 +1772,10 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 
 	//head
-		if (prob(10))
+		if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (prob(5))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/unionhatlight(H), slot_head)
 		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (prob(30))
@@ -1941,9 +1949,11 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 
-	//head
-		if (prob(10))
+		//head
+		if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (prob(5))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/unionhatlight(H), slot_head)
 		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (prob(30))

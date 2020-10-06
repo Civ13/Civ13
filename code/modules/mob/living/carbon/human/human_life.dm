@@ -1593,7 +1593,7 @@
 									for (var/obj/item/organ/external/head/H in organs)
 										found = TRUE
 										break
-									if (map.ID == MAP_NOMADS_WASTELAND_2 || MAP_PIONEERS_WASTELAND_2 && found)
+									if ((map.ID == MAP_NOMADS_WASTELAND_2 || map.ID == MAP_PIONEERS_WASTELAND_2) && found)
 										var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
 										playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
 										//transferring vars.
