@@ -499,9 +499,9 @@
 	timer = 1000
 
 /obj/effect/spawner/mobspawner/zombies/many
-	max_number = 20
-	max_range = 4
-	timer = 500
+	max_number = 8
+	max_range = 7
+	timer = 300
 
 /obj/effect/spawner/mobspawner/zombies/special
 	activated = FALSE
