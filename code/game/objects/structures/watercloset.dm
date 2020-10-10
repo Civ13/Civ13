@@ -56,6 +56,14 @@
 	icon_state = "toilet[open][cistern]"
 
 /obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+	if (istype(I, /obj/item/weapon/hammer) && !istype(src, /obj/structure/toilet/pit_latrine))
+		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
+		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+		if (do_after(user,50,src))
+			visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
+			qdel(src)
+			return
+
 	if (istype(I, /obj/item/weapon/crowbar))
 		user << "<span class='notice'>You start to [cistern ? "replace the lid on the cistern" : "lift the lid off the cistern"].</span>"
 		playsound(loc, 'sound/effects/stonedoor_openclose.ogg', 50, TRUE)
@@ -64,8 +72,8 @@
 			cistern = !cistern
 			update_icon()
 			return
-	
-	if (istype(src, /obj/structure/toilet/pit_latrine)) 
+
+	if (istype(src, /obj/structure/toilet/pit_latrine))
 		if (istype(I, /obj/item/weapon/barrier))
 			var/obj/structure/toilet/pit_latrine/PT = src
 			visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
@@ -73,15 +81,6 @@
 			qdel(I)
 			if (PT.filled >= 4)
 				visible_message("The pit latrine gets covered.")
-				qdel(src)
-				return
-				
-	if (istype(src, /obj/structure/toilet/outhouse))
-		if (istype(I, /obj/item/weapon/hammer))
-			visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
-			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-			if (do_after(user,50,src))
-				visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 				qdel(src)
 				return
 
@@ -486,6 +485,14 @@
 			watertemp = newtemp
 			user.visible_message("<span class='notice'>\The [user] adjusts \the [src] with \the [I].</span>", "<span class='notice'>You adjust the shower with \the [I].</span>")
 			add_fingerprint(user)
+
+	if (istype(I, /obj/item/weapon/hammer))
+		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
+		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+		if (do_after(user,50,src))
+			visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
+			qdel(src)
+			return
 
 /obj/structure/shower/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
 	overlays.Cut()					//once it's been on for a while, in addition to handling the water overlay.
