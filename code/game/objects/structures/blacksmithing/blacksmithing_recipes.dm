@@ -196,9 +196,9 @@ var/global/list/anvil_recipes = list(
 	//"Blue Samurai Lord Helmet" = list("Blue Samurai Lord Helmet","japanese helmets",3,3,25,0,0,0,/obj/item/clothing/head/helmet/samurai/lord/blue),
 	//"Black Samurai Lord Helmet" = list("Black Samurai Lord Helmet","japanese helmets",3,3,25,0,0,0,/obj/item/clothing/head/helmet/samurai/lord/black),
 
-	"Samurai Mask" = list("Samurai Mask","japanese headwear",2,3,0,8,0,0,/obj/item/clothing/head/helmet/samurai/guard),
-	"Red Samurai Mask" = list("Red Samurai Mask","japanese headwear",2,3,0,8,0,0,/obj/item/clothing/head/helmet/samurai/guard/red),
-	"Blue Samurai Mask" = list("Blue Samurai Mask","japanese headwear",2,3,0,8,0,0,/obj/item/clothing/head/helmet/samurai/guard/blue),
+	"Samurai Mask" = list("Samurai Mask","japanese headwear",2,3,0,8,0,0,/obj/item/clothing/mask/samurai),
+	"Red Samurai Mask" = list("Red Samurai Mask","japanese headwear",2,3,0,8,0,0,/obj/item/clothing/mask/samurai/red),
+	"Blue Samurai Mask" = list("Blue Samurai Mask","japanese headwear",2,3,0,8,0,0,/obj/item/clothing/mask/samurai/blue),
 
 				/*Orkish Helmets & Headwear*/
 	"Horned Helmet" = list("Horned Helmet","orkish headwear",2,2,0,10,0,0,/obj/item/clothing/head/helmet/horned),
