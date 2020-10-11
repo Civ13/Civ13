@@ -180,7 +180,7 @@ var/global/list/anvil_recipes = list(
 	"Imperial Chinese Helmet" = list("Imperial Chinese Helmet","other helmets",2,3,0,10,0,0,/obj/item/clothing/head/helmet/medieval/imperial_chinese),
 
 				/*Japanese Helmets & Headwear*/
-	"Samurai Helmet" = list("Samurai Helmet","japanese helmets",2,3,10,13,0,0,/obj/item/clothing/head/helmet/samurai),          //* Steel Samurai Warrior helms
+	"Samurai Helmet" = list("Samurai Helmet","japanese helmets",2,3,10,13,0,0,/obj/item/clothing/head/helmet/samurai),
 	"Red Samurai Helmet" = list("Red Samurai Helmet","japanese helmets",2,3,10,13,0,0,/obj/item/clothing/head/helmet/samurai/red),
 	"Blue Samurai Helmet" = list("Blue Samurai Helmet","japanese helmets",2,3,10,13,0,0,/obj/item/clothing/head/helmet/samurai/blue),
 	"Black Samurai Helmet" = list("Black Samurai Helmet","japanese helmets",2,3,10,13,0,0,/obj/item/clothing/head/helmet/samurai/black),
@@ -230,7 +230,6 @@ var/global/list/anvil_recipes = list(
 
 	///*Steel Helmets*///
 			/*World Wars*/
-	"(Steel) Pickelhaube Helmet" = list("(Steel) Picklehaube Helmet","helmets",5,5,6,0,0,0,/obj/item/clothing/head/helmet/modern/pickelhaube),
 	"Mesh Pickelhaube Helmet" = list("Mesh Picklehaube Helmet","helmets",5,5,6,0,0,0,/obj/item/clothing/head/helmet/ww/pickelhaube2),
 
 	"Stahlhelm Helmet" = list("Stahlhelm Helmet","helmets",5,6,9,0,0,0,/obj/item/clothing/head/helmet/modern/stahlhelm),
@@ -312,15 +311,11 @@ var/global/list/anvil_recipes = list(
 	"Imperial Chinese Armor" = list("Imperial Chinese Armor","other armor",2,3,0,13,0,0,/obj/item/clothing/suit/armor/medieval/imperial_chinese),
 
 				/*Japanese Armor & Accessories*/
-	"(Iron) Metal Samurai Armor" = list("(Iron) Metal Samurai Armor","japanese armor",2,3,0,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior),                   //* Iron Samurai Warrior armor
-	"(Iron) Red Metal Samurai Armor" = list("(Iron) Red Metal Samurai Armor","japanese armor",2,3,0,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior/red),
-	"(Iron) Blue Metal Samurai Armor" = list("(Iron) Blue Metal Samurai Armor","japanese armor",2,3,0,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior/blue),
-	"(Iron) Black Metal Samurai Armor" = list("(Iron) Black Metal Samurai Armor","japanese armor",2,3,0,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior/black),
 
-	"(Steel) Metal Samurai Armor" = list("(Steel) Metal Samurai Armor","japanese armor",2,3,11,0,0,0,/obj/item/clothing/suit/armor/samurai/warrior),                   //* Steel Samurai Warrior armor
-	"(Steel) Red Metal Samurai Armor" = list("(Steel) Red Metal Samurai Armor","japanese armor",2,3,11,0,0,0,/obj/item/clothing/suit/armor/samurai/warrior/red),
-	"(Steel) Blue Metal Samurai Armor" = list("(Steel) Blue Metal Samurai Armor","japanese armor",2,3,11,0,0,0,/obj/item/clothing/suit/armor/samurai/warrior/blue),
-	"(Steel) Black Metal Samurai Armor" = list("(Steel) Black Metal Samurai Armor","japanese armor",2,3,11,0,0,0,/obj/item/clothing/suit/armor/samurai/warrior/black),
+	"Metal Samurai Armor" = list("Metal Samurai Armor","japanese armor",2,3,11,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior),
+	"Red Metal Samurai Armor" = list("Red Metal Samurai Armor","japanese armor",2,3,11,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior/red),
+	"Blue Metal Samurai Armor" = list("Blue Metal Samurai Armor","japanese armor",2,3,11,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior/blue),
+	"Black Metal Samurai Armor" = list("Black Metal Samurai Armor","japanese armor",2,3,11,14,0,0,/obj/item/clothing/suit/armor/samurai/warrior/black),
 
 	"(Iron) Metal Samurai Lord Armor" = list("(Iron) Metal Samurai Lord Armor","japanese armor",2,2,0,17,0,0,/obj/item/clothing/suit/armor/samurai/lord),                    //* Iron Medieval Samurai Lord armor
 	"(Iron) Red Metal Samurai Lord Armor" = list("(Iron) Red Metal Samurai Lord Armor","japanese armor",2,2,0,17,0,0,/obj/item/clothing/suit/armor/samurai/lord/red),
