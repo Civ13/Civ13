@@ -193,9 +193,9 @@
 						return
 			else
 				if (map.ordinal_age == 2)
-					optlist = list("cancel","other weapons")
+					optlist = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons")
 				else if (map.ordinal_age == 3)
-					optlist = list("cancel","other weapons")
+					optlist = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons")
 				else if (map.ordinal_age == 4)
 					optlist = list("cancel","guns")
 				else if (map.ordinal_age == 5)
