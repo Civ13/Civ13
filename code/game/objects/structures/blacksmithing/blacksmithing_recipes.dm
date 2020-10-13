@@ -64,8 +64,10 @@ var/global/list/anvil_recipes = list(
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///*Melee*/
 		/*Swords*/
-	"Gladius" = list("Gladius","swords",1,1,0,10,0,0,/obj/item/weapon/material/sword/gladius),
-	"Xiphos" = list("Xiphos","swords",1,1,0,14,0,0,/obj/item/weapon/material/sword/xiphos),
+	"Gaelic Shortsword" = list("Gaelic Shortsword","swords",1,1,0,10,10,0,/obj/item/weapon/material/sword/gaelic),
+	"Gladius" = list("Gladius","swords",1,1,0,10,10,0,/obj/item/weapon/material/sword/gladius),
+	"Khopesh" = list("Khopesh","swords",1,1,0,14,14,0,/obj/item/weapon/material/sword/khopesh),
+	"Xiphos" = list("Xiphos","swords",1,1,0,14,14,0,/obj/item/weapon/material/sword/xiphos),
 	"Wakazashi" = list("Wakazashi","swords",2,5,10,0,0,0,/obj/item/weapon/material/sword/wakazashi),
 	"Small Sword" = list("Small Sword","swords",2,3,10,10,0,0,/obj/item/weapon/material/sword/smallsword),
 	"Longquan" = list("Longquan","swords",2,3,12,12,0,0,/obj/item/weapon/material/sword/longquan),
@@ -216,6 +218,9 @@ var/global/list/anvil_recipes = list(
 
 	///*Bronze Helmets*///
 			/*Classical*/
+
+	"Phrigian Helmet" = list("Phrigian Helmet","helmets",1,1,0,0,6,0,/obj/item/clothing/head/helmet/phrigian),
+
 	"Gladiator Helmet" = list("Gladiator Helmet","helmets",1,1,0,0,10,0,/obj/item/clothing/head/helmet/gladiator/nomads),
 	"Chinese Warrior Helmet" = list("Chinese Warrior Helmet","helmets",1,1,0,0,10,0,/obj/item/clothing/head/helmet/chinese_warrior),
 	"Egyptian War Headdress" = list("Egyptian War Headdress","helmets",1,1,0,0,11,0,/obj/item/clothing/head/helmet/egyptian/nomads),

@@ -494,6 +494,36 @@ obj/item/weapon/material/sword/rapier/iron
 	cooldownw = 6
 	value = 35
 
+/obj/item/weapon/material/sword/gaelic
+	name = "gaelic shortsword"
+	desc = "A relatively small sword with a dramatic hilt, used by Gaelic warriors."
+	icon_state = "gaelic_short"
+	item_state = "gaelic_short"
+	default_material = "bronze"
+	throw_speed = 2
+	throw_range = 6
+	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 25
+	cooldownw = 6
+	value = 35
+
+/obj/item/weapon/material/sword/khopesh
+	name = "khopesh"
+	desc = "A curved sword, used by soldiers of egyptian dynasties & desert warriors."
+	icon_state = "khopesh"
+	item_state = "khopesh"
+	default_material = "bronze"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 28
+	cooldownw = 7
+	value = 40
+
 /obj/item/weapon/material/sword/xiphos
 	name = "xiphos"
 	desc = "A small sword, used by hellenic soldiers."
