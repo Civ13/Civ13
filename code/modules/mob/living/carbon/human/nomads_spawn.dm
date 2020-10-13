@@ -8,10 +8,26 @@
 		var/new_eyes = "Black"
 		var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Randomize",list(/*"Biome Appropriate",*/"Randomize","Customize"))
 		if (choices == "Customize")
-//				var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla"))
-//				if (choice_race == "Randomize")
-//					choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla")
-			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
+			var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla","Wolf"))
+			if (choice_race == "Randomize")
+				choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla","Wolf")
+			switch(choice_race)
+				if ("Gorilla")
+					gorillaman = 1
+				if ("Orc")
+					orc = 1
+				if ("Ant")
+					ant = 1
+				if ("Lizard")
+					lizard = 1
+				if ("Wolf")
+					wolfman = 1
+				if ("Crustacean")
+					crab = 1
+			var/choice1 = "English"
+			if (choice_race == "Human")
+				choice1 = "English"
+				//choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
 			if (choice1 == "Randomize")
 				choice1 = pick("Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin")
 			else
