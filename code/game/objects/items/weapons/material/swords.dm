@@ -359,8 +359,8 @@ obj/item/weapon/material/sword/cutlass/iron
 /obj/item/weapon/material/sword/scimitar
 	name = "scimitar"
 	desc = "A medium-sized, curved sword, preferred by arabs."
-	icon_state = "cutlass"
-	item_state = "cutlass"
+	icon_state = "scimitar"
+	item_state = "sabre"
 	throw_speed = 2
 	throw_range = 4
 	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
