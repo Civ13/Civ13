@@ -440,7 +440,7 @@
 											ML.capacity = 0
 											ML.update_icon()
 										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/rtype = anvil_recipes[parsed_choice2[1]][9]
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
@@ -505,7 +505,7 @@
 											ML.capacity = 0
 											ML.update_icon()
 										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/rtype = anvil_recipes[parsed_choice2[1]][9]
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
@@ -566,7 +566,7 @@
 											ML.capacity = 0
 											ML.update_icon()
 										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/rtype = anvil_recipes[parsed_choice2[1]][9]
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
