@@ -644,6 +644,7 @@ RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh
 RECIPE: /material/cloth/,phrigian hat,/obj/item/clothing/head/phrigian_hat,4,55,0,1,hats,0,0,38,2,null
 RECIPE: /material/cloth/,red phrigian hat,/obj/item/clothing/head/phrigian_hat/red,4,55,0,1,hats,0,0,38,2,null
 RECIPE: /material/cloth/,blue phrigian hat,/obj/item/clothing/head/phrigian_hat/blue,4,55,0,1,hats,0,0,38,2,null
+RECIPE: /material/cloth/,doge hat,/obj/item/clothing/head/phrigian_hat/doge,4,104,0,1,hats,0,0,38,3,null
 RECIPE: /material/cloth/,plague doctor hat,/obj/item/clothing/head/plaguedoctor,4,65,0,1,hats,0,0,38,3,null
 RECIPE: /material/cloth/,nun hood,/obj/item/clothing/head/nun_hood,4,65,0,1,hats,0,0,38,3,null
 RECIPE: /material/cloth/,customizable hennin,/obj/item/clothing/head/custom_hennin,2,55,0,1,hats,0,0,38,3,null
@@ -726,6 +727,7 @@ RECIPE: /material/cloth/,emirate tunic,/obj/item/clothing/under/medieval/emirate
 RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/cloth/,doge outfit,/obj/item/clothing/under/renaissance/doge,8,147,0,1,clothing,0,0,38,3,null
 RECIPE: /material/cloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/cloth/,customizable pontifical clothing,/obj/item/clothing/under/custompontifical,6,105,0,1,clothing,0,0,59,8,null
 RECIPE: /material/cloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
@@ -929,6 +931,7 @@ RECIPE: /material/bearpelt/white/,fur gloves,/obj/item/clothing/gloves/thick/lea
 RECIPE: /material/bearpelt/white/,bear pelt headcover,/obj/item/clothing/head/bearpelt/white,4,150,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/white/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/white/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/bearpelt/white/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
 
 //*****************| WHITE BEARPELT ARMOR|***************************
 
@@ -958,6 +961,7 @@ RECIPE: /material/wolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/g
 RECIPE: /material/wolfpelt/,wolf pelt headcover,/obj/item/clothing/head/wolfpelt,4,150,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/wolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/wolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,12,220,0,1,none,0,0,38,8,null
 
 //**************************************************************
 //*********************| CATPELT |******************************
@@ -1100,6 +1104,7 @@ RECIPE: /material/whitefoxpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fu
 RECIPE: /material/whitefoxpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/whitefoxpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/whitefoxpelt/,white fox pelt headcover,/obj/item/clothing/head/foxpelt/white,3,150,0,1,none,0,0,0,8,null
+RECIPE: /material/whitefoxpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
 RECIPE: /material/whitefoxpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/whitefoxpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 
