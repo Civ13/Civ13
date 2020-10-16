@@ -155,6 +155,13 @@
 	item_state = "phrigian_hat_blue"
 	worn_state = "phrigian_hat_blue"
 
+/obj/item/clothing/head/phrigian_hat/doge
+	name = "doge hat"
+	desc = "a ornate knob ended hat banded in gold of the ancient phrigian design. Often worn by republic rulers over many petty merchantile aristocrats."
+	icon_state = "doge"
+	item_state = "doge"
+	worn_state = "doge"
+
 /obj/item/clothing/head/hooded_cape
 	name = "long black hooded cape"
 	desc = "A long black hooded cape. Often worn those wishing to conceal themselves in the shadows."
@@ -259,6 +266,14 @@
 	worn_state = "fancy_fur_coat"
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/suit/storage/jacket/regal
+	name = "regal ermine cape"
+	desc = "A large cape finely decked in stylized fur pattern often used to denote the most prominent members amongst noble circles."
+	icon_state = "regal_cape"
+	item_state = "regal_cape"
+	worn_state = "regal_cape"
+	cold_protection = UPPER_TORSO|ARMS
+
 /* Medieval Uniforms*/
 
 /obj/item/clothing/under/medieval
@@ -281,6 +296,13 @@
 	icon_state = "renaissance"
 	item_state = "renaissance"
 	worn_state = "renaissance"
+
+/obj/item/clothing/under/renaissance/doge
+	name = "doge outfit"
+	desc = "A gold embroidered baggy renaissance-style outfit. Often worn by republic rulers over many petty merchantile aristocrats."
+	icon_state = "doge"
+	item_state = "doge"
+	worn_state = "doge"
 
 /obj/item/clothing/under/renaissance_pontifical
 	name = "pontifical renaissance clothing"
