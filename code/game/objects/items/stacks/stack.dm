@@ -1002,6 +1002,54 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need at least 0.2 parts of a leather sheet in one of your hands in order to make this.</span>"
 					return
 
+	else if (findtext(recipe.title, "doge hat"))
+		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
+			user << "<span class = 'warning'>You need a stack of at least 4 cloth in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/gold))
+				var/obj/item/stack/material/gold/NB = H.l_hand
+				if (NB.amount >= 1)
+					NB.amount -= 1
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 1 gold in one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/gold))
+				var/obj/item/stack/material/gold/NB = H.r_hand
+				if (NB.amount >= 1)
+					NB.amount -= 1
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 1 gold in one your hands in order to make this.</span>"
+					return
+
+	else if (findtext(recipe.title, "doge outfit"))
+		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
+			user << "<span class = 'warning'>You need a stack of at least 8 cloth in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/gold))
+				var/obj/item/stack/material/gold/NB = H.l_hand
+				if (NB.amount >= 1)
+					NB.amount -= 1
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 1 gold in one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/gold))
+				var/obj/item/stack/material/gold/NB = H.r_hand
+				if (NB.amount >= 1)
+					NB.amount -= 1
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 1 gold in one your hands in order to make this.</span>"
+					return
+
 	else if (findtext(recipe.title, "fiendish headdress"))
 		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
 			user << "<span class = 'warning'>You need a stack of at least 2 cloth in one of your hands in order to make this.</span>"
@@ -1032,7 +1080,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/stone/NB = H.l_hand
+				var/obj/item/stack/material/iron/NB = H.l_hand
 				if (NB.amount >= 3)
 					NB.amount -= 3
 					if (NB.amount <= 0)
@@ -1041,7 +1089,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/stone/NB = H.r_hand
+				var/obj/item/stack/material/iron/NB = H.r_hand
 				if (NB.amount >= 3)
 					NB.amount -= 3
 					if (NB.amount <= 0)
