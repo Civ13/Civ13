@@ -389,7 +389,7 @@
 										ML.current_material = null
 										var/obj/item/stack/material/steel/NM = new/obj/item/stack/material/steel(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										user << "You finish crafting the steel sheet."
 								ML.update_icon()
 
 							in_use = FALSE
