@@ -376,6 +376,20 @@
 										var/obj/item/stack/material/lead/NM = new/obj/item/stack/material/lead(loc)
 										NM.amount = tamt
 										user << "You finish crafting the ingot."
+									if ("iron")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/iron/NM = new/obj/item/stack/material/iron(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
+									if ("steel")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/steel/NM = new/obj/item/stack/material/steel(loc)
+										NM.amount = tamt
+										user << "You finish crafting the ingot."
 								ML.update_icon()
 
 							in_use = FALSE
