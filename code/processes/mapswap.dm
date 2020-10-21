@@ -157,6 +157,7 @@
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK_TDM = 0,
+				MAP_NATIONSRP = 0,
 				MAP_MISSIONARY_RIDGE = 20,
 			)
 		else if (epoch == "Imperial Age (1650-1780)")
