@@ -178,6 +178,9 @@ var/list/global/floor_cache = list()
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
+	for (var/obj/OB in src)
+		if (OB.density == 1)
+			return 0
 	if (isliving(O) && !ishuman(O))
 		return ..()
 	if(isliving(O))
