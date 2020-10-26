@@ -396,6 +396,26 @@
 						real_name = name
 						add_note("Known Languages", "Greek")
 						return
+		else if (map.ID == MAP_NATIONSRP)
+			spawn(5)
+				//west
+				if (x<75)
+					add_language("Japanese",TRUE)
+					for (var/datum/language/japanese/A in languages)
+						default_language = A
+					name = species.get_random_japanese_name(gender)
+					real_name = name
+					add_note("Known Languages", "Japanese and English")
+					return
+				//EAST
+				else
+					add_language("Spanish",TRUE)
+					for (var/datum/language/spanish/A in languages)
+						default_language = A
+					name = species.get_random_spanish_name(gender)
+					real_name = name
+					add_note("Known Languages", "Spanish and English")
+					return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
