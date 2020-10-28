@@ -22,34 +22,34 @@
 
 	switch (nutrition)
 		if (-INFINITY to 50)
-			tally += 1.50
+			tally += 2.50
 		if (50 to 75)
-			tally += 1.25
+			tally += 2.25
 		if (75 to 100)
-			tally += 1.00
+			tally += 2.00
 		if (100 to 150)
-			tally += 0.75
+			tally += 1.75
 		if (150 to 220)
-			tally += 0.50
+			tally += 1.50
 
 	switch (water)
 		if (-INFINITY to 50)
-			tally += 1.50
+			tally += 2.50
 		if (50 to 75)
-			tally += 1.25
+			tally += 2.25
 		if (75 to 100)
-			tally += 1.00
+			tally += 2.00
 		if (100 to 150)
-			tally += 0.75
+			tally += 1.75
 		if (150 to 192)
-			tally += 0.50
+			tally += 1.50
 	switch (mood)
 		if (0 to 20)
-			tally += 1
+			tally += 0.90
 		if (20 to 40)
-			tally += 0.7
+			tally += 0.8
 		if (40 to 60)
-			tally += 0.4
+			tally += 0.2
 	if (wear_suit)
 		var/obj/item/clothing/WS = wear_suit
 		tally += WS.slowdown
@@ -74,11 +74,11 @@
 		for (var/organ_name in list("l_hand","r_hand","l_arm","r_arm"))
 			var/obj/item/organ/external/E = get_organ(organ_name)
 			if (!E || E.is_stump())
-				tally += 3
+				tally += 2
 			if (E.status & ORGAN_SPLINTED)
 				tally += 0.4
 			else if (E.status & ORGAN_BROKEN)
-				tally += 1.2
+				tally += 1
 	else
 		for (var/organ_name in list("l_foot","r_foot","l_leg","r_leg"))
 			var/obj/item/organ/external/E = get_organ(organ_name)
@@ -106,7 +106,7 @@
 	tally += max(2 * stance_damage, FALSE) //damaged/missing feet or legs is slow
 
 	if (chem_effects.Find(CE_SPEEDBOOST))
-		tally -= 0.10
+		tally -= 0.40
 
 	stored_tally = tally
 
