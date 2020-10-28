@@ -179,7 +179,7 @@ var/list/global/floor_cache = list()
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
 	for (var/obj/OB in src)
-		if (OB.density == 1)
+		if (OB.density == 1 && !(istype(OB, /obj/structure/window/barrier)))
 			return 0
 	if (isliving(O) && !ishuman(O))
 		return ..()
