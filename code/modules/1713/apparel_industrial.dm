@@ -301,9 +301,9 @@
 /obj/item/clothing/under/waistcoat
 	name = "white shirt and black waistcoat"
 	desc = "A no nonsense black waistcoat with white shirt."
-	icon_state = "Waistcoat"
-	item_state = "Waistcoat"
-	worn_state = "Waistcoat"
+	icon_state = "waistcoat"
+	item_state = "waistcoat"
+	worn_state = "waistcoat"
 
 /obj/item/clothing/suit/storage/coat/victorian_peacoat
 	name = "black peacoat"
