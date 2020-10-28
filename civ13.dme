@@ -10,6 +10,7 @@
 #define DEBUG
 // END_PREFERENCES
 // BEGIN_INCLUDE
+#include "kalzma_crossing.dmm"
 #include "code\_macros.dm"
 #include "code\client_macros.dm"
 #include "code\global.dm"
