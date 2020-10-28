@@ -450,12 +450,13 @@ RECIPE: /material/woolcloth/,custom colonial outfit,/obj/item/clothing/under/cus
 RECIPE: /material/woolcloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/woolcloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
 RECIPE: /material/woolcloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
-
+RECIPE: /material/woolcloth/,waistcoat,/obj/item/clothing/under/waistcoat,5,110,0,1,clothing,0,0,105,8,null
 RECIPE: /material/woolcloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,short black dress,/obj/item/clothing/under/blackdress/short,4,75,0,1,feminine clothing,0,0,98,6,null
+RECIPE: /material/woolcloth/,proper black dress,/obj/item/clothing/under/victorian_prim,4,75,0,1,feminine clothing,0,0,105,8,null
 //*****************| WOOLCLOTH SUITS & COATS |***************************
 
 RECIPE: /material/woolcloth/,steppe shaman wool coat,/obj/item/clothing/suit/storage/jacket/steppe_shaman,6,140,0,1,jackets & vests,0,0,33,3,null
@@ -479,7 +480,7 @@ RECIPE: /material/woolcloth/,checkered suit,/obj/item/clothing/suit/storage/jack
 RECIPE: /material/woolcloth/,navy suit,/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/woolcloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/woolcloth/,motorist jacket,/obj/item/clothing/suit/storage/jacket/motorist,6,110,0,1,jackets & vests,180,0,0,8,null
-
+RECIPE: /material/woolcloth/,victorian peacoat,/obj/item/clothing/suit/storage/coat/victorian_peacoat,7,110,0,1,jackets & vests,0,0,105,8,null
 //*****************| WOOLCLOTH ACCESSORIES |***************************
 
 RECIPE: /material/woolcloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
@@ -607,6 +608,9 @@ RECIPE: /material/cloth/,orange hawaiian shirt,/obj/item/clothing/suit/hawaiian/
 RECIPE: /material/cloth/,purple hawaiian shirt,/obj/item/clothing/suit/hawaiian/purple,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,green hawaiian shirt,/obj/item/clothing/suit/hawaiian/green,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,motorist jacket,/obj/item/clothing/under/motorist,6,110,0,1,jackets & vests,0,0,180,8,null
+RECIPE: /material/cloth/,chest length apron,/obj/item/clothing/suit/storage/closechest_apron_f,4,100,0,1,jackets & vests,0,0,105,8,null
+RECIPE: /material/cloth/,waist length apron,/obj/item/clothing/suit/storage/openchest_apron_f,4,100,0,1,jackets & vests,0,0,105,8,null
+
 
 //*****************| CLOTH ARMOR |***************************
 
