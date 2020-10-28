@@ -298,6 +298,20 @@
 	item_state = "victorianblred"
 	worn_state = "victorianblred"
 
+/obj/item/clothing/under/waistcoat
+	name = "white shirt and black waistcoat"
+	desc = "A no nonsense black waistcoat with white shirt."
+	icon_state = "waistcoat"
+	item_state = "waistcoat"
+	worn_state = "waistcoat"
+
+/obj/item/clothing/suit/storage/coat/victorian_peacoat
+	name = "black peacoat"
+	desc = "A no nonsense black peacoat"
+	icon_state = "victorian_peacoat"
+	item_state = "victorian_peacoat"
+	worn_state = "victorian_peacoat"
+
 /* Womens Fashion*/
 
 /obj/item/clothing/under/saloondress
@@ -342,6 +356,26 @@
 	item_state = "victorianreddress"
 	worn_state = "victorianreddress"
 
+/obj/item/clothing/under/victorian_prim
+	name = "neck length black dress"
+	desc = "A prim and proper black dress, covers from neck to ankle."
+	icon_state = "victorian_dress"
+	item_state = "victorian_dress"
+	worn_state = "victorian_dress"
+
+/obj/item/clothing/suit/storage/closechest_apron_f
+	name = "chest length apron"
+	desc = "A white apron that covers up to the chest, the ruffles are popular with the french."
+	icon_state = "closechest_apron_f"
+	item_state = "closechest_apron_f"
+	worn_state = "closechest_apron_f"
+
+/obj/item/clothing/suit/storage/openchest_apron_f
+	name = "waist length apron"
+	desc = "A white apron that covers up to the waist, the ruffles are popular with the french."
+	icon_state = "openchest_apron_f"
+	item_state = "openchest_apron_f"
+	worn_state = "openchest_apron_f"
 /* Womens Fashion - End*/
 
 /obj/item/clothing/under/union_uniform
