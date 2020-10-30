@@ -431,25 +431,25 @@
 /mob/living/simple_animal/boar_gilt/death()
 	if (!removed_from_list)
 		removed_from_list=TRUE
-		pig_count -= 1
+		boar_count -= 1
 	..()
 /mob/living/simple_animal/boar_boar/death()
 	if (!removed_from_list)
 		removed_from_list=TRUE
-		pig_count -= 1
+		boar_count -= 1
 	..()
 /mob/living/simple_animal/boar_gilt/Destroy()
 	if (!removed_from_list)
 		removed_from_list=TRUE
-		pig_count -= 1
+		boar_count -= 1
 	..()
 /mob/living/simple_animal/boar_gilt/Destroy()
 	if (!removed_from_list)
 		removed_from_list=TRUE
-		pig_count -= 1
+		boar_count -= 1
 	..()
 /mob/living/simple_animal/boar_gilt/New()
-	pig_count += 1
+	boar_count += 1
 	..()
 	spawn(1)
 		if (piglet)
@@ -466,7 +466,7 @@
 				mob_size = MOB_MEDIUM
 
 /mob/living/simple_animal/pig_gilt/New()
-	pig_count += 1
+	boar_count += 1
 	udder = new(50)
 	udder.my_atom = src
 	..()
@@ -509,7 +509,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && pig_count < 30)
+	if (!pregnant && boar_count < 30)
 		var/nearbyObjects = range(1,src) //3x3 area around pig
 		for(var/mob/living/simple_animal/boar_boar/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)

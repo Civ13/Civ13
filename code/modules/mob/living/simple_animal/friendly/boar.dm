@@ -1,5 +1,5 @@
 /mob/living/simple_animal/boar
-	name = "wild boar"
+	name = "Not boar"
 	desc = "A wild boar, these stocky mammals of the suidae family root through forest undergrowth, their meat is considered a delicacy."
 	icon = 'icons/mob/animal_big.dmi'
 	icon_state = "boar"

@@ -40,7 +40,7 @@ var/pig_count = 0
 var/deer_count = 0
 var/wolf_count = 0
 var/bear_count = 0
-
+var/boar_count = 0
 /proc/get_season()
 	return capitalize(lowertext(season))
 
