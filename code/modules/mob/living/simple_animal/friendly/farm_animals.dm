@@ -365,6 +365,186 @@
 				B.piglet = TRUE
 			visible_message("A piglet has been born!")
 
+/mob/living/simple_animal/boar_boar
+	name = "boar"
+	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	icon_state = "boar_boar"
+	icon_living = "boar_boar"
+	icon_dead = ""
+	speak = list("Gweeeeiiirrr!","Ghhhhhhh!","Oeerrrrhhh!")
+	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	speak_chance = 1
+	move_to_delay = 5
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	faction = list("neutral")
+	attack_sound = 'sound/weapons/punch1.ogg'
+	health = 150
+	maxHealth = 150
+	melee_damage_lower = 8
+	melee_damage_upper = 15
+	stop_automated_movement_when_pulled = 1
+	mob_size = MOB_MEDIUM
+	var/piglet = FALSE
+	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
+	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	predatory_carnivore = 1
+	behaviour = "defends"
+	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
+
+/mob/living/simple_animal/boar_gilt
+	name = "boar gilt"
+	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	icon_state = "boar_gilt"
+	icon_living = "boar_gilt"
+	icon_dead = "boar_dead"
+	speak = list("Gweeeeiiirrr!","Ghhhhhhh!","Oeerrrrhhh!")
+	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	speak_chance = 1
+	move_to_delay = 5
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 60
+	var/piglet = FALSE
+	var/datum/reagents/udder = null
+	var/pregnant = FALSE
+	var/birthCountdown = 0
+	var/overpopulationCountdown = 0
+	mob_size = MOB_MEDIUM
+	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
+	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	behaviour = "defends"
+	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
+
+/mob/living/simple_animal/boar_gilt/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		boar_count -= 1
+	..()
+/mob/living/simple_animal/boar_boar/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		boar_count -= 1
+	..()
+/mob/living/simple_animal/boar_gilt/Destroy()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		boar_count -= 1
+	..()
+/mob/living/simple_animal/boar_gilt/Destroy()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		boar_count -= 1
+	..()
+/mob/living/simple_animal/boar_gilt/New()
+	boar_count += 1
+	..()
+	spawn(1)
+		if (piglet)
+			icon_state = "boar_piglet"
+			icon_living = "boar_piglet"
+			icon_dead = "pig_piglet_dead"
+			meat_amount = 1
+			mob_size = MOB_SMALL
+			spawn(3000)
+				piglet = FALSE
+				icon_state = "boar_boar"
+				icon_living = "boar_boar"
+				icon_dead = "boar_dead"
+				mob_size = MOB_MEDIUM
+
+/mob/living/simple_animal/boar_gilt/New()
+	boar_count += 1
+	udder = new(50)
+	udder.my_atom = src
+	..()
+	spawn(1)
+		if (piglet)
+			icon_state = "boar_piglet"
+			icon_living = "boar_piglet"
+			icon_dead = "pig_piglet_dead"
+			meat_amount = 2
+			udder.remove_reagent("milk")
+			mob_size = MOB_SMALL
+			spawn(3000)
+				piglet = FALSE
+				icon_state = "boar_gilt"
+				icon_living = "boar_gilt"
+				icon_dead = "boar_dead"
+				mob_size = MOB_MEDIUM
+
+/mob/living/simple_animal/boar_gilt/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	var/obj/item/weapon/reagent_containers/glass/G = O
+	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
+		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
+		if (G.reagents.total_volume >= G.volume)
+			user << "<span class = 'red'>The [O] is full.</span>"
+		if (!transfered)
+			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+	else
+		..()
+
+/mob/living/simple_animal/boar_gilt/Life()
+	. = ..()
+	if (stat == CONSCIOUS)
+		if (udder && prob(5) && !piglet)
+			udder.add_reagent("milk", rand(5, 10))
+	else
+		return
+
+	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
+		overpopulationCountdown--
+		return
+
+	if (!pregnant && boar_count < 30)
+		var/nearbyObjects = range(1,src) //3x3 area around pig
+		for(var/mob/living/simple_animal/boar_boar/M in nearbyObjects)
+			if (M.stat == CONSCIOUS)
+				pregnant = TRUE
+				birthCountdown = 600
+				break
+
+		if (pregnant)
+			nearbyObjects = range(7,src) //15x15 area around pig
+
+			var/pigCount = 0
+			for(var/mob/living/simple_animal/boar_gilt/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					pigCount++
+
+			for(var/mob/living/simple_animal/boar_boar/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					pigCount++
+
+			if (pigCount > 5) // max 5 boar_boars/boar_gilt in a 15x15 area around boar gilt
+				overpopulationCountdown = 300
+				pregnant = FALSE
+	else if (pregnant)
+		birthCountdown--
+		if (birthCountdown <= 0)
+			pregnant = FALSE
+			if (prob(50))
+				var/mob/living/simple_animal/boar_gilt/C = new/mob/living/simple_animal/boar_gilt(loc)
+				C.piglet = TRUE
+			else
+				var/mob/living/simple_animal/boar_boar/B = new/mob/living/simple_animal/boar_gilt(loc)
+				B.piglet = TRUE
+			visible_message("A boar piglet has been born!")
+
 
 //goat
 /mob/living/simple_animal/goat

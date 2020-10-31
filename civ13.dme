@@ -757,7 +757,6 @@
 #include "code\modules\mob\living\simple_animal\simple_animal_mutated.dm"
 #include "code\modules\mob\living\simple_animal\friendly\bats.dm"
 #include "code\modules\mob\living\simple_animal\friendly\birds.dm"
-#include "code\modules\mob\living\simple_animal\friendly\boar.dm"
 #include "code\modules\mob\living\simple_animal\friendly\cat.dm"
 #include "code\modules\mob\living\simple_animal\friendly\cockroach.dm"
 #include "code\modules\mob\living\simple_animal\friendly\crab.dm"
@@ -966,5 +965,6 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
+#include "maps\1713\four_colonies.dmm"
 #include "maps\1873\nationsrp.dmm"
 // END_INCLUDE

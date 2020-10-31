@@ -144,6 +144,20 @@
 	spawn(rand(timer,timer*1.5))
 		spawnerproc()
 
+/obj/effect/spawner/mobspawner/boars
+	name = "boars spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/boar_boar
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/boars_f
+	name = "boar gilt spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/boar_gilt
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/turkeys
 	name = "turkey spawner"
 	max_number = 2
@@ -171,14 +185,6 @@
 	max_number = 1
 	max_range = 12
 	create_path = /mob/living/simple_animal/hostile/panther
-	timer = 3000
-
-/obj/effect/spawner/mobspawner/boar
-	name = "boar spawner"
-	hostile = TRUE
-	max_number = 3
-	max_range = 12
-	create_path = /mob/living/simple_animal/boar
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/fox
