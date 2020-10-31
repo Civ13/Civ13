@@ -7,11 +7,11 @@
 	icon_dead = "samoyed_dead"
 	icon_gib = "samoyed_dead"
 
-	health = 55
-	maxHealth = 55
+	health = 250
+	maxHealth = 250
 
-	melee_damage_lower = 25
-	melee_damage_upper = 35
+	melee_damage_lower = 35
+	melee_damage_upper = 45
 
 
 	response_help = "pets"

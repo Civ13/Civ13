@@ -367,7 +367,7 @@
 
 /mob/living/simple_animal/boar_boar
 	name = "boar"
-	desc = "A small Woolly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
 	icon_state = "boar_boar"
 	icon_living = "boar_boar"
 	icon_dead = ""
@@ -385,8 +385,8 @@
 	attack_sound = 'sound/weapons/punch1.ogg'
 	health = 150
 	maxHealth = 150
-	melee_damage_lower = 2
-	melee_damage_upper = 6
+	melee_damage_lower = 8
+	melee_damage_upper = 15
 	stop_automated_movement_when_pulled = 1
 	mob_size = MOB_MEDIUM
 	var/piglet = FALSE
@@ -394,12 +394,13 @@
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	predatory_carnivore = 1
 	behaviour = "defends"
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
 
 /mob/living/simple_animal/boar_gilt
 	name = "boar gilt"
-	desc = "A small Woolly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
 	icon_state = "boar_gilt"
 	icon_living = "boar_gilt"
 	icon_dead = "boar_dead"
@@ -465,7 +466,7 @@
 				icon_dead = "boar_dead"
 				mob_size = MOB_MEDIUM
 
-/mob/living/simple_animal/pig_gilt/New()
+/mob/living/simple_animal/boar_gilt/New()
 	boar_count += 1
 	udder = new(50)
 	udder.my_atom = src
@@ -537,10 +538,10 @@
 		if (birthCountdown <= 0)
 			pregnant = FALSE
 			if (prob(50))
-				var/mob/living/simple_animal/pig_gilt/C = new/mob/living/simple_animal/boar_gilt(loc)
+				var/mob/living/simple_animal/boar_gilt/C = new/mob/living/simple_animal/boar_gilt(loc)
 				C.piglet = TRUE
 			else
-				var/mob/living/simple_animal/pig_boar/B = new/mob/living/simple_animal/boar_gilt(loc)
+				var/mob/living/simple_animal/boar_boar/B = new/mob/living/simple_animal/boar_gilt(loc)
 				B.piglet = TRUE
 			visible_message("A boar piglet has been born!")
 

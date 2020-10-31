@@ -25,6 +25,42 @@
 
 	)
 
+/obj/structure/vending/muskets/english
+	name = "English musket rack"
+	desc = "A rack of war muskets."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/brownbess = 15,
+
+	)
+
+/obj/structure/vending/muskets/french
+	name = "French musket rack"
+	desc = "A rack of smoothbore charleville muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/charleville = 15,
+
+	)
+
+/obj/structure/vending/muskets/spanish
+	name = "Spanish musket rack"
+	desc = "A rack of smoothbore M1752 muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
+
+	)
+
+/obj/structure/vending/muskets/portuguese
+	name = "Portuguese musket rack"
+	desc = "A rack of smoothbore Portuguese muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
+
+	)
+
 /obj/structure/vending/flintlock
 	name = "Flintlock weapon rack"
 	desc = "An assorted rack of flintlock weapons."

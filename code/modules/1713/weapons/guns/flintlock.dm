@@ -167,7 +167,7 @@
 	effectiveness_mod = 0.98
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "mosquete1752"
 
 /obj/item/weapon/gun/projectile/flintlock/jezail
@@ -179,7 +179,7 @@
 	effectiveness_mod = 0.97
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "jezail"
 
 /obj/item/weapon/gun/projectile/flintlock/kabyle
@@ -191,7 +191,7 @@
 	effectiveness_mod = 0.93
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "moukalla"
 
 /obj/item/weapon/gun/projectile/flintlock/brownbess
@@ -215,7 +215,7 @@
 	effectiveness_mod = 0.98
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "charleville_mousquet"
 
 /obj/item/weapon/gun/projectile/flintlock/plexico

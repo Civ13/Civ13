@@ -141,7 +141,7 @@
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 5
-
+	var/babyreindeer = FALSE
 	health = 50
 	mob_size = MOB_LARGE
 	female = FALSE
@@ -182,3 +182,99 @@
 	icon_gib = "elk_f_dead"
 
 	female = TRUE
+
+/mob/living/simple_animal/deer/dikdik/male
+	name = "dik-dik stag"
+	desc = "A small little mammal seems kinda cute, might be good eating if you can catch it."
+	icon_state = "dikdik_male"
+	icon_living = "dikdik_male"
+	icon_dead = "dikdik_dead"
+	icon_gib = "dikdik_dead"
+	speak = list("ssssceeeee","Shhhhk","Szzzzzzeeee")
+	speak_emote = list("shrillss","whistless")
+	emote_hear = list("shrills")
+	emote_see = list("shakes its head", "looks attently")
+	speak_chance = TRUE
+	move_to_delay = 1.5
+	see_in_dark = 8
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	var/babydikdikdeer = FALSE
+	health = 45
+	mob_size = MOB_SMALL
+	female = FALSE
+
+/mob/living/simple_animal/deer/dikdik/female
+	name = "dik-dik doe"
+	icon_state = "dikdik_female"
+	icon_living = "dikdik_female"
+	icon_dead = "reindeer_f_dead"
+	icon_gib = "reindeer_f_dead"
+	mob_size = MOB_SMALL
+	female = TRUE
+
+/mob/living/simple_animal/deer/dikdik/New()
+	deer_count += 1
+	..()
+	spawn(1)
+		if (babydeer)
+			icon_state = "babydikdik"
+			icon_living = "babydikdik"
+			icon_dead = "dikdik_dead"
+			meat_amount = 1
+			mob_size = MOB_SMALL
+			spawn(3000)
+				if (female)
+					babydeer = FALSE
+					icon_state = "dikdik_female"
+					icon_living = "dikdik_female"
+					icon_dead = "dikdik_dead"
+					mob_size = MOB_SMALL
+				else
+					babydeer = FALSE
+					icon_state = "dikdik_male"
+					icon_living = "dikdik_male"
+					icon_dead = "dikdik_dead"
+					mob_size = MOB_SMALL
+
+
+/mob/living/simple_animal/deer/dikdik/Life()
+	..()
+	if (female)
+		if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
+			overpopulationCountdown--
+			return
+
+		if (!pregnant && deer_count < 30)
+			var/nearbyObjects = range(1,src) //3x3 area around the deer
+			for(var/mob/living/simple_animal/deer/dikdik/male/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					pregnant = TRUE
+					birthCountdown = 600
+					break
+
+			if (pregnant)
+				nearbyObjects = range(7,src) //15x15 area around the deer
+				var/deerCount = 0
+				for(var/mob/living/simple_animal/deer/dikdik/female/M in nearbyObjects)
+					if (M.stat == CONSCIOUS)
+						deerCount++
+
+				for(var/mob/living/simple_animal/deer/dikdik/male/M in nearbyObjects)
+					if (M.stat == CONSCIOUS)
+						deerCount++
+
+				if (deerCount > 5) // max 5 deers in a 15x15 area around deer
+					overpopulationCountdown = 300
+					pregnant = FALSE
+		else if (pregnant)
+			birthCountdown--
+			if (birthCountdown <= 0)
+				pregnant = FALSE
+				if (prob(50))
+					var/mob/living/simple_animal/deer/dikdik/female/C = new/mob/living/simple_animal/deer/dikdik/female(loc)
+					C.babydeer = TRUE
+				else
+					var/mob/living/simple_animal/deer/dikdik/male/B = new/mob/living/simple_animal/deer/dikdik/male(loc)
+					B.babydeer = TRUE
+				visible_message("A dik-dik has been born!")
