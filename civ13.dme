@@ -283,6 +283,7 @@
 #include "code\game\objects\map_metadata\nationsrp.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
+#include "code\game\objects\map_metadata\nomads_africa.dm"
 #include "code\game\objects\map_metadata\nomads_continental.dm"
 #include "code\game\objects\map_metadata\nomads_desert.dm"
 #include "code\game\objects\map_metadata\nomads_divide.dm"
@@ -965,6 +966,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\four_colonies.dmm"
-#include "maps\1873\nationsrp.dmm"
+#include "maps\nomads\nomads_europe.dmm"
 // END_INCLUDE
