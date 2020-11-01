@@ -965,6 +965,4 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\four_colonies.dmm"
-#include "maps\1873\nationsrp.dmm"
 // END_INCLUDE
