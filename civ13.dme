@@ -283,6 +283,7 @@
 #include "code\game\objects\map_metadata\nationsrp.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
+#include "code\game\objects\map_metadata\nomads_africa.dm"
 #include "code\game\objects\map_metadata\nomads_continental.dm"
 #include "code\game\objects\map_metadata\nomads_desert.dm"
 #include "code\game\objects\map_metadata\nomads_divide.dm"
