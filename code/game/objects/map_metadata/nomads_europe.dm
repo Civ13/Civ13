@@ -7,6 +7,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
+	chad_mode_plus = TRUE
 	faction_organization = list(
 		CIVILIAN,)
 
