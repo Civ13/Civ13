@@ -3,10 +3,10 @@
 	name = "black bear boar"
 	desc = "Rawr Rawr!!"
 	icon_state = "black_bear"
+	icon = 'icons/mob/animal_64.dmi'
 	icon_living = "black_bear"
 	icon_dead = "black_bear_dead"
 	icon_gib = "blackbear_gib"
-	icon = 'icons/mob/animal_64.dmi'
 	speak = list("RAWR!","Rawr!","GRR!","Growl!")
 	speak_emote = list("growls", "roars")
 	emote_hear = list("rawrs","grumbles","grawls")
