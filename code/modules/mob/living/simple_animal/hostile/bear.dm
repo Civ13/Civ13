@@ -2,10 +2,10 @@
 /mob/living/simple_animal/hostile/bear
 	name = "black bear boar"
 	desc = "Rawr Rawr!!"
-	icon_state = "black_bear"
 	icon = 'icons/mob/animal_64.dmi'
-	icon_living = "black_bear"
-	icon_dead = "black_bear_dead"
+	icon_state = "blackbear"
+	icon_living = "blackbear"
+	icon_dead = "blackbear_dead"
 	icon_gib = "blackbear_gib"
 	speak = list("RAWR!","Rawr!","GRR!","Growl!")
 	speak_emote = list("growls", "roars")
@@ -124,40 +124,43 @@
 
 /mob/living/simple_animal/hostile/bear/brown
 	name = "brown bear"
-	icon_state = "brown_bear"
-	icon_living = "brown_bear"
-	icon_dead = "brown_bear_dead"
+	icon_state = "brownbear"
+	icon_living = "brownbear"
+	icon_dead = "brown_beardead"
 	icon_gib = "brownbear_gib"
 	btype = "brown"
 
 /mob/living/simple_animal/hostile/bear/polar
 	name = "polar bear"
-	icon_state = "polar_bear"
-	icon_living = "polar_bear"
-	icon_dead = "polar_bear_dead"
+	icon_state = "polarbear"
+	icon_living = "polarbear"
+	icon_dead = "polarbear_dead"
 	icon_gib = "polarbear_gib"
 	btype = "polar"
 
+/* //Require more testing
+
 /mob/living/simple_animal/hostile/bear/blonde
 	name = "blonde brown bear"
-	icon_state = "blonde_bear"
-	icon_living = "blonde_bear"
-	icon_dead = "blonde_bear_dead"
-	icon_gib = "brownbear_gib"
+	icon_state = "blondebear"
+	icon_living = "blondebear"
+	icon_dead = "blondebear_dead"
+	icon_gib = "blondbear_gib"
 	btype = "blonde"
 
 /mob/living/simple_animal/hostile/bear/grey
 	name = "grey bear"
-	icon_state = "grey_bear"
-	icon_living = "grey_bear"
-	icon_dead = "grey_bear_dead"
-	icon_gib = "brownbear_gib"
+	icon_state = "greybear"
+	icon_living = "greybear"
+	icon_dead = "greybear_dead"
+	icon_gib = "greybear_gib"
 	btype = "grey"
 
-/mob/living/simple_animal/hostile/bear/grey
+/mob/living/simple_animal/hostile/bear/darkbrown
 	name = "darkbrown bear"
-	icon_state = "darkbrown_bear"
-	icon_living = "darkbrown_bear"
-	icon_dead = "darkbrown_bear_dead"
-	icon_gib = "brownbear_gib"
+	icon_state = "darkbrownbear"
+	icon_living = "darkbrownbear"
+	icon_dead = "darkbrownbear_dead"
+	icon_gib = "darkbrownbear_gib"
 	btype = "darkbrown"
+*/
