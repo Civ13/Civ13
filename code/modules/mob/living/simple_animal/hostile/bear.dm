@@ -2,11 +2,11 @@
 /mob/living/simple_animal/hostile/bear
 	name = "black bear boar"
 	desc = "Rawr Rawr!!"
-	icon_state = "black_bear"
 	icon = 'icons/mob/animal_64.dmi'
-	icon_living = "black_bear"
-	icon_dead = "black_bear_dead"
-	icon_gib = "blackbear_gib"
+	icon_state = "blackbear"
+	icon_living = "blackbear"
+	icon_dead = "blackbear_dead"
+	icon_gib = "bear_gib"
 	speak = list("RAWR!","Rawr!","GRR!","Growl!")
 	speak_emote = list("growls", "roars")
 	emote_hear = list("rawrs","grumbles","grawls")
@@ -124,19 +124,19 @@
 
 /mob/living/simple_animal/hostile/bear/brown
 	name = "brown bear"
-	icon_state = "brown_bear"
-	icon_living = "brown_bear"
-	icon_dead = "brown_bear_dead"
-	icon_gib = "brownbear_gib"
+	icon_state = "brownbear"
+	icon_living = "brownbear"
+	icon_dead = "brown_beardead"
 	btype = "brown"
 
 /mob/living/simple_animal/hostile/bear/polar
 	name = "polar bear"
-	icon_state = "polar_bear"
-	icon_living = "polar_bear"
-	icon_dead = "polar_bear_dead"
-	icon_gib = "polarbear_gib"
+	icon_state = "polarbear"
+	icon_living = "polarbear"
+	icon_dead = "polarbear_dead"
 	btype = "polar"
+
+/* //Require more testing
 
 /mob/living/simple_animal/hostile/bear/blonde
 	name = "blonde brown bear"
@@ -154,10 +154,11 @@
 	icon_gib = "brownbear_gib"
 	btype = "grey"
 
-/mob/living/simple_animal/hostile/bear/grey
+/mob/living/simple_animal/hostile/bear/darkbrown
 	name = "darkbrown bear"
 	icon_state = "darkbrown_bear"
 	icon_living = "darkbrown_bear"
 	icon_dead = "darkbrown_bear_dead"
 	icon_gib = "brownbear_gib"
 	btype = "darkbrown"
+*/
