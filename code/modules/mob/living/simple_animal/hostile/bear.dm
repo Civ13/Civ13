@@ -1,6 +1,5 @@
-
 /mob/living/simple_animal/hostile/bear
-	name = "black bear boar"
+	name = "black bear"
 	desc = "Rawr Rawr!!"
 	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "blackbear"
@@ -37,7 +36,11 @@
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
 
-/mob/living/simple_animal/hostile/bear/female
+/mob/living/simple_animal/hostile/bear/boar
+	name = "black bear boar"
+	female = FALSE
+
+/mob/living/simple_animal/hostile/bear/sow
 	name = "black bear sow"
 	female = TRUE
 
@@ -81,17 +84,17 @@
 		if (birthCountdown <= 0)
 			pregnant = FALSE
 			if (prob(50))
-				var/mob/living/simple_animal/hostile/bear/C = new/mob/living/simple_animal/hostile/bear(loc)
+				var/mob/living/simple_animal/hostile/bear/boar/C = new/mob/living/simple_animal/hostile/bear/boar(loc)
 				C.cub = TRUE
 				C.btype = btype
 			else
-				var/mob/living/simple_animal/hostile/bear/female/B = new/mob/living/simple_animal/hostile/bear/female(loc)
+				var/mob/living/simple_animal/hostile/bear/sow/B = new/mob/living/simple_animal/hostile/bear/sow(loc)
 				B.cub = TRUE
 				B.btype = btype
 			visible_message("A bear cub has been born!")
 	..()
 
-/mob/living/simple_animal/hostile/bear/New()
+/mob/living/simple_animal/hostile/bear/boar/New()
 	bear_count += 1
 	..()
 	spawn(1)
@@ -122,21 +125,57 @@
 				name = "[btype] bear boar"
 			icon_state = "[btype]bear"
 
-/mob/living/simple_animal/hostile/bear/brown
-	name = "brown bear"
+/mob/living/simple_animal/hostile/bear/boar/black
+	name = "black bear boar"
+	icon_state = "blackbear"
+	icon_living = "blackbear"
+	icon_dead = "blackbear_dead"
+	icon_gib = "blackbear_gib"
+	btype = "black"
+	female = FALSE
+
+/mob/living/simple_animal/hostile/bear/sow/black
+	name = "black bear sow"
+	icon_state = "blackbear"
+	icon_living = "blackbear"
+	icon_dead = "blackbear_dead"
+	icon_gib = "blackbear_gib"
+	btype = "black"
+	female = TRUE
+
+/mob/living/simple_animal/hostile/bear/boar/brown
+	name = "brown bear boar"
 	icon_state = "brownbear"
 	icon_living = "brownbear"
-	icon_dead = "brown_beardead"
+	icon_dead = "brownbear_dead"
 	icon_gib = "brownbear_gib"
 	btype = "brown"
 
-/mob/living/simple_animal/hostile/bear/polar
-	name = "polar bear"
+/mob/living/simple_animal/hostile/bear/sow/brown
+	name = "brown bear sow"
+	icon_state = "brownbear"
+	icon_living = "brownbear"
+	icon_dead = "brownbear_dead"
+	icon_gib = "brownbear_gib"
+	btype = "brown"
+	female = TRUE
+
+/mob/living/simple_animal/hostile/bear/boar/polar
+	name = "polar bear boar"
 	icon_state = "polarbear"
 	icon_living = "polarbear"
 	icon_dead = "polarbear_dead"
 	icon_gib = "polarbear_gib"
 	btype = "polar"
+
+/mob/living/simple_animal/hostile/bear/sow/polar
+	name = "polar bear sow"
+	icon_state = "polarbear"
+	icon_living = "polarbear"
+	icon_dead = "polarbear_dead"
+	icon_gib = "polarbear_gib"
+	btype = "polar"
+	female = TRUE
 
 /* //Require more testing
 
