@@ -636,9 +636,12 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/alligator))
 					var/obj/item/stack/material/pelt/gatorpelt/NP = new/obj/item/stack/material/pelt/gatorpelt(get_turf(src))
 					NP.amount = 3
-				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor))
+				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor) && !istype(src, /mob/living/simple_animal/pachy))
 					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
 					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))
+					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+					NP.amount = 1
 				else if (istype(src, /mob/living/simple_animal/sheep))
 					var/obj/item/stack/material/pelt/sheeppelt/NP = new/obj/item/stack/material/pelt/sheeppelt(get_turf(src))
 					NP.amount = 2
