@@ -138,3 +138,38 @@
 		processing_objects -= src
 		growing = FALSE
 		return
+
+/mob/living/simple_animal/ianthasaurus
+	name = "ianthasaurus"
+	desc = "A cute tiny ianthasaurus."
+	icon = 'icons/mob/critter.dmi'
+	icon_state = "ianthasaurus"
+	icon_living = "ianthasaurus"
+	icon_dead = "ianthasaurus_dead"
+	speak_emote = list("hisses")
+	health = 10
+	maxHealth = 10
+	attacktext = "bitten"
+	melee_damage_lower = TRUE
+	melee_damage_upper = 2
+	response_help  = "pets"
+	response_disarm = "shoos"
+	response_harm   = "stomps on"
+	mob_size = MOB_MINISCULE
+	possession_candidate = TRUE
+	scavenger = 1
+
+/mob/living/simple_animal/ianthasaurus/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
+		visible_message("\The [src] eats \the [C]!")
+		qdel(C)
+		adjustBruteLoss(-1)
+	..()

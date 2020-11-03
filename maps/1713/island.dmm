@@ -47,6 +47,7 @@
 "aU" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/island)
 "aV" = (/obj/structure/wild/tree/anchored,/obj/structure/wild/tree/anchored,/turf/floor/grass,/area/caribbean/island)
 "aW" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/island)
+"aX" = (/obj/structure/vending/muskets/spanish,/turf/floor/beach/sand,/area/caribbean/island)
 "aY" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/island)
 "aZ" = (/turf/floor/dirt,/area/caribbean/island)
 "ba" = (/turf/floor/beach/sand,/area/caribbean/island)
@@ -55,6 +56,7 @@
 "bd" = (/turf/wall/rockwall,/area/caribbean/island)
 "be" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/dirt,/area/caribbean/island)
 "bf" = (/obj/structure/wild/rock,/turf/floor/beach/sand,/area/caribbean/island)
+"bg" = (/obj/structure/vending/muskets/english,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "bh" = (/obj/item/weapon/beartrap,/obj/item/weapon/beartrap,/obj/item/weapon/beartrap,/obj/item/weapon/beartrap,/obj/item/weapon/beartrap,/turf/floor/grass,/area/caribbean/island)
 "bi" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/dirt,/area/caribbean/island)
 "bj" = (/obj/structure/wild/bush/big{name = "large bush"},/turf/wall/rockwall,/area/caribbean/island)
@@ -91,12 +93,10 @@
 "bQ" = (/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/obj/structure/table/wood,/turf/floor/grass,/area/caribbean/island)
 "bR" = (/obj/item/weapon/material/sword/spadroon,/obj/item/weapon/material/sword/spadroon,/obj/structure/table/wood,/turf/floor/grass,/area/caribbean/island)
 "bS" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/grass,/area/caribbean/island)
-"bT" = (/obj/structure/vending/flintlock,/turf/floor/beach/sand,/area/caribbean/island)
 "bU" = (/obj/structure/closet/crate/musketball,/turf/floor/grass,/area/caribbean/island)
 "bV" = (/obj/item/weapon/grenade/bomb,/turf/floor/beach/sand,/area/caribbean/island)
 "bW" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/beach/sand,/area/caribbean/island)
 "bX" = (/obj/structure/barricade,/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/island)
-"bY" = (/obj/structure/vending/muskets,/turf/floor/beach/sand,/area/caribbean/island)
 "bZ" = (/obj/structure/flag/pirates,/turf/floor/beach/sand,/area/caribbean/island)
 "ca" = (/turf/wall/wood,/area/caribbean/british/ship/office)
 "cb" = (/turf/wall/wood{opacity = 0},/area/caribbean/british/ship/main_deck)
@@ -228,7 +228,6 @@
 "ex" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "ey" = (/obj/item/violin,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
 "ez" = (/obj/structure/vending/britishapparel,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
-"eA" = (/obj/structure/vending/muskets,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "eB" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood/ship,/area/caribbean/british/ship{name = "Second Deck"})
 "eC" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale,/obj/structure/closet/crate/empty,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
 "eD" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/item/weapon/cane,/obj/item/weapon/cane,/obj/item/clothing/glasses/eyepatch,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
@@ -433,9 +432,9 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieieibabababaajajaS
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieieibabababaajajajajamamamaSajaSaOeUajamamajaOambHaSaQajajajbLajbaaZaZaLajamaYajajamaMajamamajajajajajajajajbabababaeieieiaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieibababaajbaamajaOaQajajajaQajaSajajajbabIbMetajbNaPbObHajbabaaZbeaZaZcXajaSaOajajajaOajambaajbuajajajajbababababaeieieiaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieieibabaaQbaamajajajaPbobBffepeqepajamajaZajbLbabQbRbQbKbSbabaaZbieNeObkajbaajaYajamajajambaajajamajbabababababababaeieiaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieibababaajajajeKamaOajcxbTbaflbGbDbUajajbzbAbabababWbabWbabababababaajajajbababaajeUaNajajajamajajajbababababababababaeieiaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieieibabaajameUaSajaRajcxbTbababababababababababababababababababZbababaajbababababBbBbBbBbXajajajeHbabababababababababaeieiaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieibaajbaajaQajajajambobYbabababababZbabababababacJcnbabactcAcJbabababababababaajcFajcFcxbaajajbaajbababababababababaeieiaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieibababaajajajeKamaOajcxaXbaflbGbDbUajajbzbAbabababWbabWbabababababaajajajbababaajeUaNajajajamajajajbababababababababaeieiaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieieibabaajameUaSajaRajcxaXbababababababababababababababababababZbababaajbababababBbBbBbBbXajajajeHbabababababababababaeieiaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieibaajbaajaQajajajamboaXbabababababZbabababababacJcnbabactcAcJbabababababababaajcFajcFcxbaajajbaajbababababababababaeieiaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeiaaaaaaaaaaaaeibabaajajaNaNeSajeMajaObababacIctbacJbVbababababacYfffffgffffcYbVbabababababababaajajcFcxajaNajamajbabababaeibabaeieieieiaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieieiaaaaaaeieibababaajajajajamajaNbCbabafdcYfffgfhbVbabababababababababababababababababababababaajajcxajajajaSajajajajbaeieieieieieiaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeieieieieieieieibababaajamajbaajbababafhfffffhbababababababababaejbabababababababafffffjbabababababafjfkamajaSaMajamamajbababaeieiaaaaaaaaaaaaaaaa
@@ -467,7 +466,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacjcjcjcjcjcjcj
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacrcQcjcjcjcjcjcjcwcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfevewcfcfcfcfczcfcfcfcfcfcfcfcPccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacjcQcjcjcjcjcScjcacfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfexexcfcfcfcfcccPcfcfcfcfererccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacCcQcjcTcTeycjezcacdcdcfcecfcecfcfcecfcecfcfcecfcecfcfcfcfcfcfcccccfcfcfcfesccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacacacacacacbcbcbcbcUcbcbcbcbcUcbcbcbcbcUcbcbcbcdcdcecfcccceAeAeAeAccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacacacacacacbcbcbcbcUcbcbcbcbcUcbcbcbcbcUcbcbcbcdcdcecfccccbgbgbgbgccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacbcbcbcbcbccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 eoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
