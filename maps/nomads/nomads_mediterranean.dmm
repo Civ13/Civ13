@@ -82,7 +82,7 @@
 "bD" = (/turf/floor/grass,/area/caribbean/nomads/forest)
 "bE" = (/obj/structure/wild/smallbush,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/colonies/swamp)
 "bF" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"bG" = (/mob/living/simple_animal/hostile/bear,/turf/floor/grass,/area/caribbean/nomads/forest)
+"bG" = (/mob/living/simple_animal/hostile/bear/boar/black,/turf/floor/grass,/area/caribbean/nomads/forest)
 "bH" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/nomads/forest)
 "bI" = (/turf/floor/dirt,/area/caribbean/sea/sea)
 "bJ" = (/turf/floor/dirt/underground,/area/caribbean/void/caves/special)

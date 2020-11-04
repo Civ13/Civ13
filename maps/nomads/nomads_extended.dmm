@@ -135,7 +135,7 @@
 "cE" = (/obj/structure/wild/tree/dead_tree,/turf/wall/old_stone,/area/caribbean/nomads/forest)
 "cF" = (/obj/effect/spawner/mobspawner/snake,/turf/floor/dirt,/area/caribbean/void/caves)
 "cG" = (/obj/structure/multiz/ladder/ww2/tunneltop,/turf/floor/dirt,/area/caribbean/void/caves)
-"cH" = (/mob/living/simple_animal/hostile/bear,/turf/floor/grass,/area/caribbean/nomads/forest)
+"cH" = (/mob/living/simple_animal/hostile/bear/sow/black,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cI" = (/mob/living/simple_animal/leech,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cJ" = (/mob/living/simple_animal/monkey,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cK" = (/turf/floor/plating/stone_old{name = "ancient road"},/area/caribbean/nomads/forest)
