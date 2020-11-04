@@ -160,7 +160,7 @@
 "dd" = (/obj/covers/cobblestone/stairs{dir = 1; icon_state = "rampup"},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "de" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "df" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/nomads/forest)
-"dg" = (/mob/living/simple_animal/hostile/bear,/turf/floor/grass,/area/caribbean/nomads/forest)
+"dg" = (/mob/living/simple_animal/hostile/bear/sow/black,/turf/floor/grass,/area/caribbean/nomads/forest)
 "dh" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest/Jungle)
 "di" = (/obj/structure/religious/monument/cultist/moloch{icon_state = "moloch_top"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest/Jungle)
 "dj" = (/obj/structure/religious/monument/cultist/moloch,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest/Jungle)

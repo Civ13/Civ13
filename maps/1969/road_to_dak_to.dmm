@@ -17,7 +17,7 @@
 "aq" = (/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
 "ar" = (/obj/structure/window/barrier{dir = 8; icon_state = "dirt_wall"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "as" = (/obj/structure/wild/jungle,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"at" = (/mob/living/simple_animal/hostile/bear/brown,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"at" = (/mob/living/simple_animal/hostile/bear/boar/brown,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "au" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "av" = (/obj/structure/window/barrier{dir = 1; icon_state = "dirt_wall"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "aw" = (/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)

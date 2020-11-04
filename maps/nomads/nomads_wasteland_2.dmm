@@ -114,7 +114,7 @@
 "cj" = (/obj/structure/wild/smallbush,/mob/living/simple_animal/monkey,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ck" = (/mob/living/simple_animal/parrot,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cl" = (/obj/covers/cobblestone,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/flag/us,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"cm" = (/mob/living/simple_animal/hostile/bear,/turf/floor/grass,/area/caribbean/nomads/forest)
+"cm" = (/mob/living/simple_animal/hostile/bear/sow/black,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cn" = (/mob/living/simple_animal/monkey,/turf/floor/grass,/area/caribbean/nomads/forest)
 "co" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand,/area/caribbean/nomads/forest)
 "cp" = (/obj/effect/spawner/mobspawner/snake,/turf/floor/dirt,/area/caribbean/void/caves)

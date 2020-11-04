@@ -160,7 +160,7 @@
 "dd" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/winter,/area/caribbean/nomads/snow)
 "de" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "df" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/nomads/forest)
-"dg" = (/mob/living/simple_animal/hostile/bear,/turf/floor/grass,/area/caribbean/nomads/forest)
+"dg" = (/mob/living/simple_animal/hostile/bear/sow/black,/turf/floor/grass,/area/caribbean/nomads/forest)
 "dh" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "di" = (/obj/structure/wild/smallbush,/turf/floor/beach/water,/area/caribbean/nomads/forest)
 "dj" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)

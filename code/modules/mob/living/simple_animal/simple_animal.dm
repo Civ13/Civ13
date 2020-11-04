@@ -600,13 +600,22 @@
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 					bone.name = "[name] bone"
 					bone.amount = amt
-				if (istype(src, /mob/living/simple_animal/hostile/bear))
+				if (istype(src, /mob/living/simple_animal/hostile/bear/boar/black))
 					var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(get_turf(src))
 					NP.amount = 6
-				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
+				if (istype(src, /mob/living/simple_animal/hostile/bear/sow/black))
+					var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(get_turf(src))
+					NP.amount = 6
+				if (istype(src, /mob/living/simple_animal/hostile/bear/boar/polar))
 					var/obj/item/stack/material/pelt/bearpelt/white/NP = new/obj/item/stack/material/pelt/bearpelt/white(get_turf(src))
 					NP.amount = 6
-				else if (istype(src, /mob/living/simple_animal/hostile/bear/brown))
+				if (istype(src, /mob/living/simple_animal/hostile/bear/sow/polar))
+					var/obj/item/stack/material/pelt/bearpelt/white/NP = new/obj/item/stack/material/pelt/bearpelt/white(get_turf(src))
+					NP.amount = 6
+				if (istype(src, /mob/living/simple_animal/hostile/bear/boar/brown))
+					var/obj/item/stack/material/pelt/bearpelt/brown/NP = new/obj/item/stack/material/pelt/bearpelt/brown(get_turf(src))
+					NP.amount = 6
+				if (istype(src, /mob/living/simple_animal/hostile/bear/sow/brown))
 					var/obj/item/stack/material/pelt/bearpelt/brown/NP = new/obj/item/stack/material/pelt/bearpelt/brown(get_turf(src))
 					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
@@ -636,7 +645,10 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/alligator))
 					var/obj/item/stack/material/pelt/gatorpelt/NP = new/obj/item/stack/material/pelt/gatorpelt(get_turf(src))
 					NP.amount = 3
-				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor) && !istype(src, /mob/living/simple_animal/pachy))
+				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor))
+					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/pachy))
 					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
 					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))

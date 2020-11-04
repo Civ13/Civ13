@@ -216,27 +216,51 @@
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/bears
-	name = "black bear spawner"
+	name = "black bear boar spawner"
 	hostile = TRUE
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/bear
+	create_path = /mob/living/simple_animal/hostile/bear/boar/black
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/bears_f
+	name = "black bear sow spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/bear/sow/black
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/bears/brown
-	name = "brown bear spawner"
+	name = "brown bear boar spawner"
 	hostile = TRUE
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/bear/brown
+	create_path = /mob/living/simple_animal/hostile/bear/boar/brown
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/bears_f/brown
+	name = "brown bear sow spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/bear/sow/brown
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/bears/polar
-	name = "polar bear spawner"
+	name = "polar bear boar spawner"
 	hostile = TRUE
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/bear/polar
+	create_path = /mob/living/simple_animal/hostile/bear/boar/polar
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/bears_f/polar
+	name = "polar bear sow spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/bear/sow/polar
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/groundsloth
