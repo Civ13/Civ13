@@ -47,6 +47,13 @@
 
 /* Colonial Uniforms*/
 
+/obj/item/clothing/under/merchant
+	name = "fancy colonial merchant outfit"
+	desc = "A set composed of a quality white linen inner-shirt, dark blue coat with golden decorations and  trousers."
+	icon_state = "merchant_suit"
+	item_state = "merchant_suit"
+	worn_state = "merchant_suit"
+
 /obj/item/clothing/under/civ4
 	name = "fancy colonial clothing"
 	desc = "A set composed of a quality white linen shirt and black trousers."

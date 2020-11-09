@@ -173,3 +173,72 @@
 		qdel(C)
 		adjustBruteLoss(-1)
 	..()
+
+
+/mob/living/simple_animal/tiktaalik
+	name = "tiktaalik"
+	desc = "A cute tiny amphibian like fish with fin legs."
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "tiktaalik"
+	icon_living = "tiktaalik"
+	icon_dead = "tiktaalik_dead"
+	speak_emote = list("screaches")
+	health = 6
+	maxHealth = 6
+	attacktext = "bitten"
+	melee_damage_lower = TRUE
+	melee_damage_upper = 2
+	response_help  = "pets"
+	response_disarm = "shoos"
+	response_harm   = "stomps on"
+	mob_size = MOB_MINISCULE
+	possession_candidate = TRUE
+
+/mob/living/simple_animal/tiktaalik/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
+		visible_message("\The [src] eats \the [C]!")
+		qdel(C)
+		adjustBruteLoss(-1)
+	..()
+
+/mob/living/simple_animal/ichthyostega
+	name = "ichthyostega"
+	desc = "An early amphibian with fully formed legs."
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "ichthyostega"
+	icon_living = "ichthyostega"
+	icon_dead = "ichthyostega_dead"
+	speak_emote = list("screaches")
+	health = 8
+	maxHealth = 8
+	attacktext = "bitten"
+	melee_damage_lower = TRUE
+	melee_damage_upper = 2
+	response_help  = "pets"
+	response_disarm = "shoos"
+	response_harm   = "stomps on"
+	mob_size = MOB_MINISCULE
+	possession_candidate = TRUE
+
+/mob/living/simple_animal/ichthyostega/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
+		visible_message("\The [src] eats \the [C]!")
+		qdel(C)
+		adjustBruteLoss(-1)
+	..()
