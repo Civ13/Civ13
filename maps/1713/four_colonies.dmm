@@ -441,7 +441,7 @@
 "iA" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/colonies/beach)
 "iB" = (/obj/map_metadata/four_colonies,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "iC" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/paper/official,/obj/item/weapon/pen,/turf/floor/dirt,/area/caribbean/colonies/british)
-"iE" = (/mob/living/simple_animal/hostile/bear,/turf/floor/grass,/area/caribbean/colonies/jungle)
+"iE" = (/mob/living/simple_animal/hostile/bear/sow/black,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "iG" = (/turf/floor/dirt,/area/caribbean/colonies/caves)
 "iH" = (/turf/floor/grass,/area/caribbean/colonies/jungle)
 
