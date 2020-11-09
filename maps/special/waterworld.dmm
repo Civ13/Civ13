@@ -87,7 +87,7 @@
 "bI" = (/obj/structure/wild/rock,/turf/floor/dirt/burned,/area/caribbean)
 "bJ" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt,/area/caribbean)
 "bK" = (/obj/structure/oil_spring,/turf/floor/beach/sand,/area/caribbean)
-"bL" = (/obj/covers/fancywood,/obj/structure/closet/wardrobe,/obj/item/clothing/under/ww1/trenchsuit,/obj/item/weapon/material/kitchen/utensil/knife/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/storage/backpack,/obj/item/weapon/gun/projectile/revolver/coltnewpolice,/obj/item/ammo_magazine/c38,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/handcuffs/old,/turf/floor/dirt,/area/caribbean)
+"bL" = (/obj/covers/fancywood,/obj/structure/closet/wardrobe,/obj/item/clothing/under/ww1/trenchsuit,/obj/item/weapon/material/kitchen/utensil/knife/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/storage/backpack,/obj/item/weapon/gun/projectile/revolver/coltpolicepositive,/obj/item/ammo_magazine/c38,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/handcuffs/old,/turf/floor/dirt,/area/caribbean)
 "bM" = (/obj/structure/wild/palm,/turf/floor/grass,/area/caribbean)
 "bN" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean)
 "bO" = (/obj/structure/wild/jungle,/turf/floor/grass,/area/caribbean)
