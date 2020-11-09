@@ -499,7 +499,7 @@ obj/item/weapon/material/sword/rapier/iron
 	desc = "A small sword, used by hellenic soldiers."
 	icon_state = "xiphos"
 	item_state = "gladius"
-	default_material = "iron"
+//	default_material = "iron" -> Lazyfix. Xiphos default_material var is overriding the bronze casting material. Requires further investigation.
 	throw_speed = 2
 	throw_range = 4
 	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
