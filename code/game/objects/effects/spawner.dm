@@ -443,6 +443,20 @@
 	create_path = /mob/living/simple_animal/camel
 	timer = 5000
 
+/obj/effect/spawner/mobspawner/cattle
+	name = "cattle cow spawner"
+	max_number = 2
+	max_range = 8
+	create_path = /mob/living/simple_animal/cattle
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/cattle/bull
+	name = "cattle bull spawner"
+	max_number = 2
+	max_range = 8
+	create_path = /mob/living/simple_animal/cattle/bull
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/wolves
 	name = "wolf spawner"
 	hostile = TRUE
