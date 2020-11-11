@@ -56,7 +56,6 @@
 	var/scavenger = 0 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
-
 	var/starves = TRUE
 
 	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunt: move towards prey areas. defends: will attack only if attacked
@@ -525,7 +524,7 @@
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/chicken) || istype(src, /mob/living/simple_animal/rooster))
 							new/obj/item/weapon/chicken_carcass(get_turf(src))
-						else if (istype(src, /mob/living/simple_animal/cow) || istype(src, /mob/living/simple_animal/bull))
+						else if (istype(src, /mob/living/simple_animal/cattle/cow) || istype(src, /mob/living/simple_animal/cattle/bull))
 							new/obj/item/weapon/reagent_containers/food/snacks/cow/stomach(get_turf(src))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
@@ -663,10 +662,10 @@
 				else if (istype(src, /mob/living/simple_animal/goat))
 					var/obj/item/stack/material/pelt/goatpelt/NP = new/obj/item/stack/material/pelt/goatpelt(get_turf(src))
 					NP.amount = 2
-				else if (istype(src, /mob/living/simple_animal/cow))
+				else if (istype(src, /mob/living/simple_animal/cattle/cow))
 					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
 					NP.amount = 2
-				else if (istype(src, /mob/living/simple_animal/bull))
+				else if (istype(src, /mob/living/simple_animal/cattle/bull))
 					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
 					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/bison))
