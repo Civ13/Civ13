@@ -198,8 +198,8 @@
 /* Zulu*/
 
 /obj/item/clothing/under/zulu_slene
-	name = "slene cowfur loincloth"
-	desc = "A wrap of cow fur tassles fashioned into a loincloth, often worn by the zulu people."
+	name = "slene cattle fur loincloth"
+	desc = "A wrap of cattle fur tassles fashioned into a loincloth, often worn by the zulu people."
 	icon_state = "zulu_slene"
 	item_state = "zulu_slene"
 	worn_state = "zulu_slene"
