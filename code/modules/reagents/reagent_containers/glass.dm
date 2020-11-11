@@ -25,7 +25,7 @@
 		/obj/structure/sink,
 		/obj/structure/engine,
 		/obj/item/weapon/storage,
-		/mob/living/simple_animal/cow,
+		/mob/living/simple_animal/cattle/cow,
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
 		/mob/living/simple_animal/pig_gilt,
