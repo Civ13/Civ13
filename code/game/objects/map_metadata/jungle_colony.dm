@@ -82,4 +82,18 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/jungle_colony/cross_message(faction)
 	return ""
 
-
+/obj/map_metadata/jungle_colony/New()
+	..()
+	spawn(500)
+		if (season == "SPRING") //fixes game setting the season as spring
+			season = "Wet Season"
+	spawn(500)
+		for (var/i = 1, i <= 65, i++)
+			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/sea/sea))
+			new/obj/structure/fish(areaspawn)
+	spawn(500)
+		for (var/i = 1, i <= 30, i++)
+			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
+			new/obj/structure/piranha(areaspawn)
+	spawn(18000)
+		seasons()
