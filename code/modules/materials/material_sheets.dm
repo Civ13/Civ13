@@ -516,8 +516,8 @@
 	value = 2
 
 /obj/item/stack/material/pelt/cowpelt
-	name = "cow pelt"
-	desc = "A pelt from a skinned cow."
+	name = "cattle pelt"
+	desc = "A pelt from skinned cattle."
 	icon_state = "sheet-cowpelt"
 	default_type = "cowpelt"
 	w_class = 2.0

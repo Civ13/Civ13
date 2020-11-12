@@ -1036,7 +1036,7 @@ RECIPE: /material/goatpelt/,goat pelt headcover,/obj/item/clothing/head/goatpelt
 //*********************| COWPELT |***************************
 //**************************************************************
 
-RECIPE: /material/cowpelt/,slene cowfur loincloth,/obj/item/clothing/under/zulu_slene,2,80,0,1,none,0,0,0,3,null
+RECIPE: /material/cowpelt/,slene cattlefur loincloth,/obj/item/clothing/under/zulu_slene,2,80,0,1,none,0,0,0,3,null
 RECIPE: /material/cowpelt/,nguni shield,/obj/item/weapon/shield/nguni_shield,6,160,0,1,none,0,0,0,3,null
 
 RECIPE: /material/cowpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
