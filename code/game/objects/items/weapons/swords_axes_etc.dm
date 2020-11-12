@@ -253,7 +253,7 @@
 				target.forcesay(list("-hrk!", "-hrgh!", "-urgh!", "-kh!", "-hrnk!"))
 
 		if (garroting) //Only do oxyloss if in agreesive grab to prevent passive grab choking or something.
-			target.adjustOxyLoss(3) //Stack the chokes with additional oxyloss for quicker death
+			target.adjustOxyLoss(6) //Stack the chokes with additional oxyloss for quicker death
 			if(prob(40))
 				target.stuttering = max(target.stuttering, 3) //It will hamper your voice, being choked and all.
 				target.losebreath = max(target.losebreath, 3)
