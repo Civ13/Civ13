@@ -1,5 +1,6 @@
 /*Index*/
 /*  * - Stone-Age Uniforms
+    * - Stone-Age Pelt Coats
     * - Indian-Carib Cultural Clothing
     * - Indian-Carib Cultural Accessories
     * - Bone Clothing, Armor & Accessories
@@ -43,35 +44,59 @@
 	item_state = "leaves_skirt_long"
 	worn_state = "leaves_skirt_long"
 
-/obj/item/clothing/suit/prehistoricfurcoat/brown
-	name = "brown prehistoric pelt coat"
-	desc = "A makeshift brown pelt coat made from fur skins, worn to protect early man from the elements."
-	icon_state = "prehistoric_fur_brown"
-	item_state = "prehistoric_fur_brown"
-	worn_state = "prehistoric_fur_brown"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+/* Stone-Age Pelt Coats*/
+
+/obj/item/clothing/suit/prehistoricfurcoat
+	name = "primitive pelt coat"
+	icon_state = "prehistoric_fur1"
+	item_state = "prehistoric_fur1"
+	worn_state = "prehistoric_fur1"
+	desc = "A makeshift pelt coat made from fur skins, worn to protect early man from the elements."
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 15, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
+	var/specific = FALSE
+	var/colorn = 2
+
+/obj/item/clothing/suit/prehistoricfurcoat/brown
+	name = "brown primitive pelt coat"
+	desc = "A makeshift brown pelt coat made from fur skins, worn to protect early man from the elements."
+	specific = TRUE
+	colorn = 1
 
 /obj/item/clothing/suit/prehistoricfurcoat/black
-	name = "black prehistoric pelt coat"
+	name = "black primitive pelt coat"
 	desc = "A makeshift black pelt coat made from fur skins, worn to protect early man from the elements."
-	icon_state = "prehistoric_fur_black"
-	item_state = "prehistoric_fur_black"
-	worn_state = "prehistoric_fur_black"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 15, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
+	icon_state = "prehistoric_fur2"
+	item_state = "prehistoric_fur2"
+	worn_state = "prehistoric_fur2"
+	specific = TRUE
+	colorn = 2
 
 /obj/item/clothing/suit/prehistoricfurcoat/white
-	name = "white prehistoric pelt coat"
+	name = "white primitive pelt coat"
 	desc = "A makeshift white pelt coat made from fur skins, worn to protect early man from the elements."
-	icon_state = "prehistoric_fur_white"
-	item_state = "prehistoric_fur_white"
-	worn_state = "prehistoric_fur_white"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 15, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
+	icon_state = "prehistoric_fur3"
+	item_state = "prehistoric_fur3"
+	worn_state = "prehistoric_fur3"
+	specific = TRUE
+	colorn = 3
+
+/obj/item/clothing/suit/prehistoricfurcoat/grey
+	name = "grey primitive pelt coat"
+	desc = "A makeshift grey pelt coat made from fur skins, worn to protect early man from the elements."
+	icon_state = "prehistoric_fur4"
+	item_state = "prehistoric_fur4"
+	worn_state = "prehistoric_fur4"
+	specific = TRUE
+	colorn = 4
+
+/obj/item/clothing/suit/prehistoricfurcoat/New()
+	..()
+	if (!specific)
+		colorn = pick(1,2,3,4)
+		icon_state = "prehistoric_fur[colorn]"
+		item_state = "prehistoric_fur[colorn]"
+		worn_state = "prehistoric_fur[colorn]"
 
 /* Indian-Carib Cultural Clothing*/
 

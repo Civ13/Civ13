@@ -301,6 +301,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+	if (findtext(recipe.title, "leather samurai helmet") || findtext(recipe.title, "red leather samurai helmet") || findtext(recipe.title, "blue leather samurai helmet") || findtext(recipe.title, "black leather samurai") || findtext(recipe.title, "leather samurai armor") || findtext(recipe.title, "red leather samurai armor") || findtext(recipe.title, "blue leather samurai armor") ||  findtext(recipe.title, "black leather samurai armor") || findtext(recipe.title, "hatchigane headband"))
+		if (H.faction_text == INDIANS)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
 	if (findtext(recipe.title, "talisman"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
