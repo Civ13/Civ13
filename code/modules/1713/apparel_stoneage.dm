@@ -43,6 +43,25 @@
 	item_state = "leaves_skirt_long"
 	worn_state = "leaves_skirt_long"
 
+/obj/item/clothing/suit/woodarmor
+	name = "primitive wood armor"
+	desc = "A wooden set of armor made of small planks held together by hemp."
+	icon_state = "wooden_chestarmor"
+	item_state = "wooden_chestarmor"
+	worn_state = "wooden_chestarmor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 15, arrow = 18, gun = FALSE, energy = 10, bomb = 4, bio = 20, rad = 15)
+
+/obj/item/clothing/suit/nativebonearmor
+	name = "primitive bone hair-pipe armor"
+	desc = "A bone set of chest armor made of small bones and shells held together by hemp."
+	icon_state = "native_bonearmor"
+	item_state = "native_bonearmor"
+	worn_state = "native_bonearmor"
+	body_parts_covered = UPPER_TORSO
+	armor = list(melee = 21, arrow = 13, gun = FALSE, energy = 8, bomb = 6, bio = 10, rad = 18)
+
+
 /obj/item/clothing/suit/prehistoricfurcoat/brown
 	name = "brown prehistoric pelt coat"
 	desc = "A makeshift brown pelt coat made from fur skins, worn to protect early man from the elements."
