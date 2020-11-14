@@ -377,9 +377,8 @@ RECIPE: /material/electronics/,television,/obj/structure/TV/television,3,80,1,1,
 //*********************| WOOLCLOTH |****************************
 //**************************************************************
 
-RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,0,8,null
-
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
+RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,20,8,null
 RECIPE: /material/woolcloth/,oven mittens,/obj/item/clothing/gloves/oven,3,80,0,1,gloves,45,0,8,8,null
 RECIPE: /material/woolcloth/,motorist gloves,/obj/item/clothing/gloves/motorist,3,80,0,1,gloves,0,0,180,8,null
 
@@ -420,9 +419,6 @@ RECIPE: /material/woolcloth/,grey kerchief,/obj/item/clothing/mask/shemagh/greyk
 
 //*****************| WOOLCLOTH UNIFORMS |***************************
 
-RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,28,5,null
 RECIPE: /material/woolcloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,28,5,null
 RECIPE: /material/woolcloth/,steppe wool tunic,/obj/item/clothing/under/medieval/steppe_tunic,3,100,0,1,clothing,0,0,33,3,null
@@ -432,6 +428,9 @@ RECIPE: /material/woolcloth/,black haori,/obj/item/clothing/under/haori,3,100,0,
 RECIPE: /material/woolcloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
 RECIPE: /material/woolcloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
@@ -915,7 +914,8 @@ RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,1
 //**************************************************************
 //*****************| BROWN BEARPELT CLOTHES|***************************
 
-RECIPE: /material/bearpelt/brown/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/brown/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/bearpelt/brown/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/bearpelt/brown/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,0,25,null
 RECIPE: /material/bearpelt/brown/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/brown/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
@@ -929,7 +929,8 @@ RECIPE: /material/bearpelt/brown/,brown napoleonic bearskin hat,/obj/item/clothi
 
 //*****************| WHITE BEARPELT CLOTHES |***************************
 
-RECIPE: /material/bearpelt/white/,fur coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/bearpelt/white/,fur coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/bearpelt/white/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/white/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/white/,bear pelt headcover,/obj/item/clothing/head/bearpelt/white,4,150,0,1,none,0,0,0,8,null
@@ -943,7 +944,8 @@ RECIPE: /material/bearpelt/white/,white napoleonic bearskin hat,/obj/item/clothi
 
 //*****************| BLACK BEARPELT CLOTHES |***************************
 
-RECIPE: /material/bearpelt/black/,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/black,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/bearpelt/black,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/bearpelt/black/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fancy_fur_coat,10,200,0,1,none,0,0,0,25,null
 RECIPE: /material/bearpelt/black/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
@@ -959,7 +961,8 @@ RECIPE: /material/bearpelt/black/,black napoleonic bearskin hat,/obj/item/clothi
 //*********************| WOLFPELT |*****************************
 //**************************************************************
 
-RECIPE: /material/wolfpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/grey,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/wolfpelt/,primative pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/grey,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/wolfpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/grey,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/wolfpelt/,fur boots,/obj/item/clothing/shoes/fur/grey,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/grey,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,wolf pelt headcover,/obj/item/clothing/head/wolfpelt,4,150,0,1,none,0,0,0,8,null
@@ -971,7 +974,8 @@ RECIPE: /material/wolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/ja
 //*********************| CATPELT |******************************
 //**************************************************************
 
-RECIPE: /material/catpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/catpelt/,pelt coat,/obj/item/clothing/suit/prehistoricfurcoat,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/catpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/catpelt/,fur boots,/obj/item/clothing/shoes/fur,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/catpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/catpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
@@ -1022,7 +1026,8 @@ RECIPE: /material/gatorpelt/,shirtless alligator scale pants,/obj/item/clothing/
 //*********************| SHEEPPELT |***************************
 //**************************************************************
 
-RECIPE: /material/sheeppelt/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/sheeppelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/sheeppelt/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/sheeppelt/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/sheeppelt/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/sheeppelt/,sheep pelt headcover,/obj/item/clothing/head/sheeppelt,3,150,0,1,none,0,0,0,8,null
@@ -1050,7 +1055,8 @@ RECIPE: /material/bisonpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,non
 RECIPE: /material/bisonpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bisonpelt/,bisonhead furhat,/obj/item/clothing/head/furhat/bison,3,100,0,1,none,0,0,89,8,null
 
-RECIPE: /material/bisonpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bisonpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/bisonpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/bisonpelt/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,0,8,null
 RECIPE: /material/bisonpelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bisonpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
@@ -1059,7 +1065,8 @@ RECIPE: /material/bisonpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/
 //*********************| MONKEYPELT |***************************
 //**************************************************************
 
-RECIPE: /material/monkeypelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/monkeypelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/monkeypelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/monkeypelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/monkeypelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/monkeypelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
@@ -1077,7 +1084,8 @@ RECIPE: /material/orcpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/or
 //*********************| GORILLAPELT |**************************
 //**************************************************************
 
-RECIPE: /material/gorillapelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/gorillapelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/black,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/gorillapelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/gorillapelt/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/gorillapelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/gorillapelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
@@ -1095,7 +1103,8 @@ RECIPE: /material/humanpelt/,skin gloves,/obj/item/clothing/gloves/thick/leather
 //*********************| FOXPELT |******************************
 //**************************************************************
 
-RECIPE: /material/foxpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/foxpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/foxpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/foxpelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/foxpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/foxpelt/,fox pelt headcover,/obj/item/clothing/head/foxpelt,3,150,0,1,none,0,0,0,8,null
@@ -1104,7 +1113,8 @@ RECIPE: /material/foxpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,
 
 //*****************| WHITE FOXPELT |***************************
 
-RECIPE: /material/whitefoxpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/whitefoxpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/whitefoxpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/whitefoxpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/whitefoxpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/whitefoxpelt/,white fox pelt headcover,/obj/item/clothing/head/foxpelt/white,3,150,0,1,none,0,0,0,8,null
