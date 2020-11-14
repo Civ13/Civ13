@@ -72,11 +72,11 @@
  * Screwdriver
  */
 /obj/item/weapon/hammer
-	name = "hammer"
+	name = "primitive wooden mallet"
 	desc = "Tear stuff apart with this."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "hammer"
-	item_state = "hammer"
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "tribalhammer"
+	item_state = "tribalhammer"
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = WEAPON_FORCE_NORMAL + 4
