@@ -375,6 +375,7 @@
 	desc = "A very crude hatchet, made with wood and flint."
 	icon = 'icons/obj/old_weapons.dmi'
 	icon_state = "flint_axe"
+	item_state = "flinthatchet"
 	chopping_speed = 1.5
 
 /obj/item/weapon/material/boarding_axe

@@ -72,11 +72,28 @@
  * Screwdriver
  */
 /obj/item/weapon/hammer
-	name = "hammer"
+	name = "ball-peel hammer"
 	desc = "Tear stuff apart with this."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "hammer"
 	item_state = "hammer"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_NORMAL + 4
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 5
+	throw_range = 5
+
+	attack_verb = list("bludgeoned", "hit")
+	flammable = TRUE
+
+/obj/item/weapon/tribalhammer
+	name = "primitive wooden mallet"
+	desc = "hit stuff together with this."
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "tribalhammer"
+	item_state = "tribalhammer"
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = WEAPON_FORCE_NORMAL + 4
