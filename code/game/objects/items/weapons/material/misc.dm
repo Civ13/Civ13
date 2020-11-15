@@ -356,7 +356,7 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"
 	material = "stone"
-	item_state = "bonehatchet"
+	item_state = "stonehatchet"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
