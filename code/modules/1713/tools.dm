@@ -114,7 +114,7 @@
 /obj/item/weapon/material/pickaxe/stone
 	name = "stone pickaxe"
 	usespeed = 1.1
-	icon_state = "spick"
+	icon_state = "s_pickaxe"
 	default_material = "stone"
 
 /obj/item/weapon/material/shovel/spade
