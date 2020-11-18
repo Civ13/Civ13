@@ -600,7 +600,7 @@
 					bone.name = "[name] bone"
 					bone.amount = amt
 				if (istype(src, /mob/living/simple_animal/hostile/bear)) //all bears on the inheritance path drop leather to compensate for improper types.
-					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+					var/obj/item/stack/material/leather/NP = new/obj/item/stack/material/leather(get_turf(src))
 					NP.amount = 1.5
 				if (istype(src, /mob/living/simple_animal/hostile/bear/boar/black))
 					var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(get_turf(src))
