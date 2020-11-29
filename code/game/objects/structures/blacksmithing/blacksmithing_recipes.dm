@@ -163,7 +163,9 @@ var/global/list/anvil_recipes = list(
 	"Conical Helmet" = list("Conical Helmet","helmets",2,3,0,6,0,0,/obj/item/clothing/head/helmet/medieval/helmet3),
 	"Protective Conical Helmet" = list("Protective Conical Helmet","helmets",2,3,0,10,0,0,/obj/item/clothing/head/helmet/medieval/helmet1),
 
+                 /*Imperial Helmets*/
 	"Morion Helmet" = list("Morion Helmet","helmets",3,3,0,10,0,0,/obj/item/clothing/head/helmet/imperial/morion),
+	"Cabasset Helmet" = list("Cabasset Helmet","helmets",3,3,0,8,0,0,/obj/item/clothing/head/helmet/imperial/cabasset),
 
 				/*Sallet Helmets*/
 	"Italian Sallet Helmet" = list("Italian Sallet Helmet","sallet helmets",2,2,0,12,0,0,/obj/item/clothing/head/helmet/sallet/italian),
@@ -230,7 +232,7 @@ var/global/list/anvil_recipes = list(
 	"Lochagos Helmet" = list("Lochagos Helmet","helmets",1,1,0,0,14,0,/obj/item/clothing/head/helmet/greek_commander/nomads),
 	"Anax Helmet" = list("Anax Helmet","helmets",1,1,0,0,18,0,/obj/item/clothing/head/helmet/anax),
 
-			/*Imperial*/
+			/*Napoleonic*/
 	"Dragoon Helmet" = list("Dragoon Helmet","helmets",3,3,0,0,10,0,/obj/item/clothing/head/helmet/napoleonic/dragoon),
 
 	///*Steel Helmets*///
