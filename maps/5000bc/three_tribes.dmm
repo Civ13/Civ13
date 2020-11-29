@@ -85,7 +85,7 @@
 "bG" = (/obj/structure/wild/bamboo,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bH" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "bI" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"bJ" = (/obj/effect/spawner/mobspawner/boar,/turf/floor/grass,/area/caribbean/nomads/forest)
+"bJ" = (/obj/effect/spawner/mobspawner/boars,/turf/floor/grass,/area/caribbean/nomads/forest)
 "bK" = (/obj/covers/roads/roman,/turf/floor/beach/sand,/area/caribbean/nomads/forest)
 "bL" = (/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/nomads/forest)
 "bM" = (/obj/effect/spawner/orespawner,/turf/floor/dirt/underground,/area/caribbean/void/caves)

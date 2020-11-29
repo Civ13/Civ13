@@ -96,7 +96,7 @@
 "bR" = (/obj/item/weapon/storage/fancy/cigar,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bS" = (/obj/effect/landmark{icon_state = "x2"; name = "JoinLatePT"},/obj/structure/bed/chair/wood/red,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bT" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"bU" = (/mob/living/simple_animal/bull,/turf/floor/beach/sand,/area/caribbean/desert/town)
+"bU" = (/mob/living/simple_animal/cattle/bull,/turf/floor/beach/sand,/area/caribbean/desert/town)
 "bV" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bW" = (/obj/structure/sign/kiddieplaque{desc = "Armory"; name = "Armory"},/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "bX" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})

@@ -49,5 +49,7 @@
 			. = FALSE
 		if (J.is_ww1 == TRUE)
 			. = FALSE
+		if (J.is_ancient == TRUE)
+			. = FALSE
 
 
