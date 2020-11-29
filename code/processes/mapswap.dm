@@ -157,7 +157,7 @@
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK_TDM = 0,
-				MAP_NATIONSRP = 0,
+//				MAP_NATIONSRP = 0,
 				MAP_MISSIONARY_RIDGE = 20,
 			)
 		else if (epoch == "Imperial Age (1650-1780)")
@@ -213,7 +213,7 @@
 				MAP_NOMADS_WASTELAND_2 = 0,
 				MAP_NOMADS_NEW_WORLD = 10,
 				MAP_NOMADS_MEDITERRANEAN = 10,
-				MAP_NOMADS_ISLAND = 0,
+//				MAP_NOMADS_ISLAND = 0,
 				MAP_NOMADS_KARAFUTO = 0,
 			)
 		else if (epoch == "Civilization 13 (Colony & Pioneers)")
