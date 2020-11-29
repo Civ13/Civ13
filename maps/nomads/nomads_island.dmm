@@ -82,7 +82,7 @@
 "bP" = (/mob/living/simple_animal/pig_gilt,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bQ" = (/mob/living/simple_animal/pig_boar,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bR" = (/obj/effect/spawner/mobspawner/panthers,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"bS" = (/mob/living/simple_animal/boar,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"bS" = (/mob/living/simple_animal/boar_boar,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bT" = (/obj/structure/wild/smallbush,/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/nomads/forest/Jungle)
 "bU" = (/obj/structure/wild/junglebush,/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/nomads/forest/Jungle)
 "bV" = (/obj/structure/sink/puddle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)

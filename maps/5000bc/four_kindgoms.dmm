@@ -221,7 +221,7 @@
 "em" = (/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/covers/tatami,/obj/roof/thatch,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "en" = (/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/covers/tatami,/obj/structure/roof_support/bamboo,/obj/roof/thatch,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "eo" = (/obj/structure/wild/palm,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
-"ep" = (/obj/effect/spawner/mobspawner/boar,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
+"ep" = (/mob/living/simple_animal/boar_boar,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "eq" = (/turf/floor/lava/permanent,/area/caribbean/void/caves)
 "er" = (/turf/floor/lava/permanent,/area/caribbean/void/caves/special)
 "es" = (/turf/wall/rockwall,/area/caribbean/void/caves/special)
