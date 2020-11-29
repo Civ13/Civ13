@@ -967,5 +967,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1873\nationsrp.dmm"
+#include "maps\nomads\nomads_europe.dmm"
 // END_INCLUDE
