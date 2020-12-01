@@ -1099,5 +1099,15 @@ var/civmax_research = list(230,230,230)
 
 //loads faction-specific recipes, if called on /New()
 
-/obj/map_metadata/proc/load_new_recipes(var/datum/job/J)
-	return
+/obj/map_metadata/proc/load_new_recipes()
+	var/F3 = file("config/material_recipes_carib.txt")
+
+	if (fexists(F3))
+		var/list/craftlist_temp = file2list(F3,"\n")
+		for (var/i in craftlist_temp)
+			if (findtext(i, ","))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_lists["INDIANS"] += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
