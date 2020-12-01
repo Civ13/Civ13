@@ -710,7 +710,6 @@ RECIPE: /material/stone/,stone anvil,/obj/structure/anvil/stone,25,150,1,1,produ
 
 RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
 RECIPE: /material/stone/,stone arrowhead (x4),/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
-RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,null
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 
 //*************| STONE BRICKS & CONSTRUCTIONS |***************
@@ -1158,8 +1157,6 @@ RECIPE: /material/wood/,work propaganda poster,/obj/item/weapon/poster/faction/w
 RECIPE: /material/wood/,leader propaganda poster,/obj/item/weapon/poster/faction/lead,1,25,0,1,paper & printing,19,0,0,8,null
 
 //*********************| WOOD SIEGE WEAPONS |**************************
-
-RECIPE: /material/wood/,catapult,/obj/structure/catapult,50,450,1,1,siege weapons,24,33,0,8,null
 
 RECIPE: /material/wood/,siege ladder,/obj/item/weapon/siegeladder,8,100,0,1,siege weapons,24,33,0,8,null
 
