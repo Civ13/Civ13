@@ -127,12 +127,9 @@
 			update_icon()
 
 /obj/item/weapon/gun/projectile/revolver/special_check(mob/user)
-	var/mob/living/human/H = user
+//	var/mob/living/human/H = user
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
-		return FALSE
-	if (istype(H) && (H.faction_text == "INDIANS"))
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
@@ -750,10 +747,7 @@
 			cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolving/special_check(mob/user)
-	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS"))
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
-		return FALSE
+//	var/mob/living/human/H = user
 	if (!cocked && single_action)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
@@ -942,10 +936,7 @@
 			update_icon()
 
 /obj/item/weapon/gun/projectile/capnball/special_check(mob/user)
-	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS"))
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
-		return FALSE
+//	var/mob/living/human/H = user
 	if (!cocked && single_action)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
