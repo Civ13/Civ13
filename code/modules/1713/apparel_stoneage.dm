@@ -218,22 +218,21 @@
 
 /obj/item/clothing/suit/woodarmor
 	name = "primitive wood armor"
-	desc = "A wooden set of armor made of small planks held together by hemp."
+	desc = "A wooden set of armor made of small planks held together by plant fiber ropes."
 	icon_state = "wooden_chestarmor"
 	item_state = "wooden_chestarmor"
 	worn_state = "wooden_chestarmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 15, arrow = 18, gun = FALSE, energy = 10, bomb = 4, bio = 20, rad = 15)
 
-/obj/item/clothing/suit/nativebonearmor
+/obj/item/clothing/suit/hairbonearmor
 	name = "primitive bone hair-pipe armor"
-	desc = "A bone set of chest armor made of small bones and shells held together by hemp."
+	desc = "A bone set of chest armor made of tightly packed small bones held together by plant fiber ropes."
 	icon_state = "native_bonearmor"
 	item_state = "native_bonearmor"
 	worn_state = "native_bonearmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 21, arrow = 13, gun = FALSE, energy = 8, bomb = 6, bio = 10, rad = 18)
-
 
 /obj/item/clothing/accessory/armband/talisman
 	name = "bone talisman"
@@ -323,7 +322,7 @@
 
 /obj/item/clothing/head/chief_hat
 	name = "chief hat"
-	desc = "A hat made with withe feathers. Worn by tribal leaders."
+	desc = "A hat made with with feathers. Worn by tribal leaders."
 	icon_state = "chief_hat"
 	item_state = "chief_hat"
 	flags_inv = BLOCKHEADHAIR
