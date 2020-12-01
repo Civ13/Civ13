@@ -1,4 +1,4 @@
-//************| MATERIAL_RECIPIES GENERAL INDEX |**********************************************************************************
+//************| CARIB_RECIPIES GENERAL INDEX |**********************************************************************************
 //********| Follow the lines to find subcategories |*******************************************************************************
 //**| Using 'find' command in the 'edit' menu is recommended |*********************************************************************
 //**| No two subtitles will be the same other than in index, and single titles are easy to locate |********************************
@@ -336,6 +336,10 @@ RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/stor
 RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,4,80,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,3,80,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,6,80,0,1,weapon accessories,0,54,0,8,null
+
+RECIPE: /material/leather/,bullet pouch,/obj/item/ammo_magazine/emptypouch,3,70,0,1,weapon accessories,0,0,85,8,null
+RECIPE: /material/leather/,hip holster,/obj/item/clothing/accessory/holster/hip,2,50,0,1,weapon accessories,0,0,85,8,null
+RECIPE: /material/leather/,double hip holster,/obj/item/clothing/accessory/holster/hip/double,3,70,0,1,weapon accessories,0,0,85,8,null
 
 //**************************************************************
 //*********************| ELECTRONICS ***************************
@@ -1526,7 +1530,6 @@ RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95
 //*********************************************************
 
 RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
-RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,3,55,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,null
@@ -1630,7 +1633,6 @@ RECIPE: /material/steel/,250u large fuel tank,/obj/item/weapon/reagent_container
 RECIPE: /material/steel/,450u huge fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank,36,185,0,1,fuel tanks,120,0,0,8,null
 
 //*********************| STEEL PRODUCTION & ECONOMY |**************************
-RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,production,35,0,0,8,null
 
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
 
@@ -1676,8 +1678,6 @@ RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole,6,95,0,1,none,0,0,0,8
 //********************************************************
 //*********************| BRONZE |*************************
 //********************************************************
-
-RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4,60,0,1,none,15,0,0,8,null
 
 //*********************| BRONZE WEAPONS & TOOLS |*************************
 RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
@@ -1935,8 +1935,6 @@ RECIPE: /material/wood/,holy book,/obj/item/weapon/book/holybook,15,240,1,1,pape
 
 RECIPE: /material/wood/,visa (empty),/obj/item/weapon/visa,1,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,passport,/obj/item/clothing/accessory/storage/passport,3,150,0,1,paper & printing,19,0,0,8,null
-RECIPE: /material/wood/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
-RECIPE: /material/wood/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,official faction paper,/obj/item/weapon/paper/official,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,envelope,/obj/item/weapon/storage/envelope,2,35,0,1,paper & printing,40,0,0,8,null
 RECIPE: /material/wood/,wax seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
@@ -2021,6 +2019,129 @@ RECIPE: /material/bamboo/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,non
 
 RECIPE: /material/bamboo/,training sword,/obj/item/weapon/material/sword/training/bamboo,8,80,0,1,none,0,21,0,3,bamboo
 RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,none,0,0,0,3,bamboo
+
+//*******************************************************
+//*********************| IRON |**************************
+//*******************************************************
+
+RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
+
+RECIPE: /material/iron/,ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,24,120,0,8,iron
+
+//*********************| IRON LOCOMOTIVES & TRACKS |**************************
+
+RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (left turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
+
+RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
+
+RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
+
+//*********************| IRON PRODUCTION & ECONOMY |**************************
+
+RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
+
+RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
+
+RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
+RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,25,220,1,1,production,0,55,0,8,null
+
+RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
+
+RECIPE: /material/iron/,large drying rack,/obj/structure/drying_rack,8,120,1,1,production,0,0,16,8,null
+RECIPE: /material/iron/,canner,/obj/structure/canner,7,120,1,1,production,95,0,0,8,null
+RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,production,0,0,90,8,null
+
+//*********************| IRON TOOLS |**************************
+
+RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
+RECIPE: /material/iron/,trench shovel,/obj/item/weapon/material/shovel/trench,2,50,0,1,tools,14,0,0,8,null
+RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
+RECIPE: /material/iron/,planting trowel,/obj/item/weapon/material/trowel,3,35,0,1,tools,20,0,0,8,iron
+RECIPE: /material/iron/,pitchfork,/obj/item/weapon/material/pitchfork,4,120,0,1,tools,30,0,0,8,null
+RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
+RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
+RECIPE: /material/iron/,firearm cleaning kit,/obj/item/weapon/gun_cleaning_kit,5,80,0,1,tools,0,90,0,8,null
+RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null
+RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing/modern,5,60,0,1,tools,120,0,0,8,null
+
+RECIPE: /material/iron/,handcuffs,/obj/item/weapon/handcuffs,1,50,0,1,tools,0,61,0,8,null
+
+//*********************| IRON FURNITURE, DECORATION & RELIGION |**************************
+
+RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
+
+RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
+
+RECIPE: /material/iron/,brazier,/obj/structure/brazier,4,90,1,1,production,33,0,0,8,null
+
+RECIPE: /material/iron/,grill,/obj/structure/oven/grill,8,150,1,1,production,150,0,0,8,null
+
+RECIPE: /material/iron/,iron altar,/obj/structure/altar/iron,12,200,1,1,furniture,0,0,0,8,null
+
+RECIPE: /material/iron/,locker,/obj/structure/closet,4,80,1,1,furniture,105,0,0,8,null
+
+RECIPE: /material/iron/,wall mailbox,/obj/structure/closet/crate/wall_mailbox,3,65,1,1,furniture,90,0,0,8,null
+
+//*********************| IRON WEAPONS |**************************
+
+RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weapons,0,32,0,8,null
+RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
+RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
+
+RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
+
+//*********************| IRON CONSTRUCTIONS |**************************
+
+RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,5,50,1,1,construction,28,0,0,8,null
+
+RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
+RECIPE: /material/iron/,chainlink fence,/obj/structure/grille/chainlinkfence,3,80,1,1,construction,120,0,0,8,null
+RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,construction,120,0,0,8,null
+
+//*********************| IRON PROJECTILES & BULLETS |**************************
+
+RECIPE: /material/iron/,revolver speedloader (6),/obj/item/ammo_magazine/emptyspeedloader,1,45,0,1,magazines,100,0,0,8,null
+RECIPE: /material/iron/,pistol magazine (8),/obj/item/ammo_magazine/emptymagazine/pistol/a45,2,45,0,1,magazines,105,0,0,8,null
+RECIPE: /material/iron/,pistol magazine (15),/obj/item/ammo_magazine/emptymagazine/pistol,3,45,0,1,magazines,105,0,0,8,null
+RECIPE: /material/iron/,magazine (30),/obj/item/ammo_magazine/emptymagazine/small,4,45,0,1,magazines,130,0,0,8,null
+RECIPE: /material/iron/,drum magazine (65),/obj/item/ammo_magazine/emptymagazine,7,45,0,1,magazines,135,0,0,8,null
+
+//*********************| IRON CLOTHING & ACCESSORIES |**************************
+
+RECIPE: /material/iron/,iron arm bangles,/obj/item/clothing/accessory/armband/armbangle,2,95,0,1,none,0,0,0,8,null
+RECIPE: /material/iron/,monocle,/obj/item/clothing/glasses/monocle,3,110,0,1,none,0,61,0,8,null
+
+//*********************| IRON HEALTHCARE |**************************
+
+RECIPE: /material/iron/,splints,/obj/item/stack/medical/splint,2,75,0,1,healthcare,35,0,44,8,null
+RECIPE: /material/iron/,retractor,/obj/item/weapon/surgery/retractor,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,bone saw,/obj/item/weapon/surgery/bone_saw,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,bone setter,/obj/item/weapon/surgery/bonesetter,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,scalpel,/obj/item/weapon/surgery/scalpel,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,syringe,/obj/item/weapon/reagent_containers/syringe,1,25,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,hemostat,/obj/item/weapon/surgery/hemostat,2,50,0,1,healthcare,35,0,67,8,null
+RECIPE: /material/iron/,cautery,/obj/item/weapon/surgery/cautery,2,50,0,1,healthcare,35,0,67,8,null
+RECIPE: /material/iron/,surgical drill,/obj/item/weapon/surgery/surgicaldrill,2,50,0,1,healthcare,35,0,110,8,null
+
+//*********************| IRON FIREARMS |**************************
+
+RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient/matchlock,18,140,0,1,firearms,0,70,0,5,null
+RECIPE: /material/iron/,matchlock tanegashima,obj/item/weapon/gun/projectile/ancient/tanegashima,18,140,0,1,firearms,0,70,0,5,null
+RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
+RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
+RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null
 
 //*******************************************************
 //*********************| SANDSTONE |*********************
