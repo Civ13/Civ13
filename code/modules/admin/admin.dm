@@ -1070,12 +1070,11 @@ var/list/atom_types = null
 	var/F3 = file("config/material_recipes.txt")
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")
-		craftlist_list = list()
 		for (var/i in craftlist_temp)
 			if (findtext(i, ",") && findtext(i,"RECIPE: "))
 				var/tmpi = replacetext(i, "RECIPE: ", "")
 				var/list/current = splittext(tmpi, ",")
-				craftlist_list += list(current)
+				craftlist_lists["global"] = list(current)
 				if (current.len != 13)
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 	else
