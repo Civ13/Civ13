@@ -131,9 +131,9 @@
 
 //**| WOOD |**| WOOD VEHICLES & LOCOMOTIVES |**| WOOD PRODUCTION & ECONOMY |**| WOOD CONSTRUCTIONS |**| WOOD BARRICADES |**| WOOD HYGIENE |**| WOOD WEAPONS |**| WOOD PROJECTILES & SHAFTS |*******
 //*************************************************************************************************************************************************************************************************
-//**| WOOD TOOLS |**| WOOD FURNITURE |**| WOOD DECORATION & MONUMENTS |**| WOOD CLOTHING |**| WOOD KITCHEN |**| WOOD ENTERTAINMENT |**| WOOD RESEARCH & PAPER |**| WOOD SIEGE WEAPONS |**| WOOD HEALTHCARE |**
+//**| WOOD TOOLS |**| WOOD FURNITURE |**| WOOD DECORATION & MONUMENTS |**| WOOD CLOTHING |**| WOOD ARMOR |**| WOOD KITCHEN |**| WOOD ENTERTAINMENT |**| WOOD RESEARCH & PAPER |********************
 //*************************************************************************************************************************************************************************************************
-//**| WOOD PAINTINGS |**| WOOD PUNISHMENTS |*******************************************************************************************************************************************************
+//**| WOOD SIEGE WEAPONS |**| WOOD HEALTHCARE |**| WOOD PAINTINGS |**| WOOD PUNISHMENTS |**********************************************************************************************************
 //*************************************************************************************************************************************************************************************************
 
 /**| BAMBOO |**| BAMBOO DECORATION & RELIGION | BAMBOO CONSTRUCTIONS |**| BAMBOO RESEARCH & PAPER |**| BAMBOO CLOTHING |**| BAMBOO WEAPONS |
@@ -1150,6 +1150,7 @@ RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talis
 RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,2,null
 RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,2,null
 RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,1,null
+RECIPE: /material/bone/,primitive bone hair-pipe armor,/obj/item/clothing/suit/hairbonearmor,5,100,0,1,none,0,0,0,2,null
 RECIPE: /material/bone/,bone hatchet,/obj/item/weapon/material/hatchet/tribal/bone,2,35,0,1,none,0,0,0,8,bone
 RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,4,bone
 RECIPE: /material/bone/,tribal bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,4,bone
@@ -1907,6 +1908,10 @@ RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoe
 
 RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
+
+//*********************| WOOD ARMOR |**************************
+
+/material/wood/,primitive wood armor,/obj/item/clothing/suit/woodarmor,15,150,0,1,none,0,0,0,2,null
 
 //*********************| WOOD KITCHEN |**************************
 
