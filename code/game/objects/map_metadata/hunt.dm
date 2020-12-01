@@ -30,6 +30,8 @@
 
 /obj/map_metadata/hunt/New()
 	..()
+	spawn(200)
+		load_new_recipes()
 	spawn(1200)
 		for (var/i = 1, i <= 50, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/island/river))
@@ -58,3 +60,17 @@ obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 	return "The gracewall is now removed."
 
 
+
+/obj/map_metadata/hunt/load_new_recipes()
+
+	var/F3 = file("config/material_recipes_carib.txt")
+
+	if (fexists(F3))
+		var/list/craftlist_temp = file2list(F3,"\n")
+		for (var/i in craftlist_temp)
+			if (findtext(i, ","))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_lists["INDIANS"] += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."

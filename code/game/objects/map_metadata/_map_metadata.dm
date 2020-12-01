@@ -1100,28 +1100,4 @@ var/civmax_research = list(230,230,230)
 //loads faction-specific recipes, if called on /New()
 
 /obj/map_metadata/proc/load_new_recipes(var/datum/job/J)
-
-	var/F3 = file("config/faction_recipies/material_recipes_carib.txt")
-	var/F4 = file("config/material_recipes.txt")
-
-	if (istype(J, /datum/job/indians/tribes/red))
-		if (fexists(F3))
-			var/list/craftlist_temp = file2list(F3,"\n")
-			for (var/i in craftlist_temp)
-				if (findtext(i, ","))
-					var/tmpi = replacetext(i, "RECIPE: ", "")
-					var/list/current = splittext(tmpi, ",")
-					craftlist_lists["INDIANS"] = list(current)
-					if (current.len != 13)
-						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
-
-	if (istype(J, /datum/job/pirates/marooned))
-		if (fexists(F4))
-			var/list/craftlist_temp = file2list(F4,"\n")
-			for (var/i in craftlist_temp)
-				if (findtext(i, ","))
-					var/tmpi = replacetext(i, "RECIPE: ", "")
-					var/list/current = splittext(tmpi, ",")
-					craftlist_lists["PIRATES"] = list(current)
-					if (current.len != 13)
-						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+	return

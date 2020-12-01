@@ -17,6 +17,9 @@
 */
 
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/human/user, var/forced=FALSE)
+	var/faction = "global"
+	if (user.faction_text in global.craftlist_lists)
+		faction = user.faction_text
 	if (map && map.civilizations)
 		var/list/current_res = list(0,0,0)
 		if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
@@ -37,7 +40,7 @@
 				current_res = map.cive_research
 			else if (civ == "Civilization F Citizen")
 				current_res = map.civf_research
-		generate_recipes_civs(current_res)
+		generate_recipes_civs(current_res,faction)
 	else
 		if (!recipes || forced)
 			var/list/current_res = list(0,0,0)
@@ -61,13 +64,13 @@
 						current_res = list(185,185,185)
 					if (8)
 						current_res = list(210,210,210)
-			generate_recipes_civs(current_res)
+			generate_recipes_civs(current_res,faction)
 	return recipes
 
-/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0))
+/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global")
 
 	recipes = list()
-	var chosen_list = craftlist_lists["global"]
+	var chosen_list = craftlist_lists[faction]
 	if (hardness>=40 && current_res[1] > 8 && (map && map.ID != MAP_GULAG13))
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] spoon", /obj/item/weapon/material/kitchen/utensil/spoon, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
