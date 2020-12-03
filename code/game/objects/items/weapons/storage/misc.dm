@@ -93,7 +93,6 @@
 	return TRUE
 
 /obj/item/weapon/storage/ww2/shaving_kit
-	name = "Shaving kit"
 	name = "small pouch"
 	desc = "It's a small leather pouch."
 	icon_state = "shaving_kit"
