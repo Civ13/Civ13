@@ -1,6 +1,6 @@
 /obj/item/weapon/cane
 	name = "cane"
-	desc = "A cane used by a true gentlemen."
+	desc = "A cane used to walk with."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "woodcane"
 	item_state = "woodcane"
@@ -11,3 +11,4 @@
 
 	attack_verb = list("bludgeoned", "whacked", "disciplined")
 	flammable = TRUE
+
