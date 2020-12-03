@@ -1622,7 +1622,7 @@ RECIPE: /material/steel/,clock,/obj/structure/sign/clock,9,200,1,1,none,98,0,0,8
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
-RECIPE: /material/steel/,wistle,/obj/item/weapon/whistle,4,70,0,1,tools,80,0,0,8,null
+RECIPE: /material/steel/,whistle,/obj/item/weapon/whistle,4,70,0,1,tools,80,0,0,8,null
 RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90,0,1,tools,60,0,0,8,null
 //*********************| STEEL SIEGE WEAPONS |**************************
 
