@@ -16,11 +16,26 @@
 ///////////////////////////////////////////////////////
 */
 
-/material/proc/get_recipes_civs(var/civ = "none", var/mob/living/human/user, var/forced=FALSE)
+/material/proc/get_recipes_civs(var/mob/living/human/user=null, var/forced=FALSE)
 	var/faction = "global"
-	if (user.faction_text in global.craftlist_lists)
-		faction = user.faction_text
+	if (user)
+		if (user.faction_text in global.craftlist_lists)
+			faction = user.faction_text
+
+		if (user.orc && ("orc" in global.craftlist_lists))
+			faction = "orc"
+		else if (user.ant && ("ant" in global.craftlist_lists))
+			faction = "ant"
+		else if (user.lizard && ("lizard" in global.craftlist_lists))
+			faction = "lizard"
+		else if (user.gorillaman && ("gorilla" in global.craftlist_lists))
+			faction = "gorilla"
+		else if (user.crab && ("crustacean" in global.craftlist_lists))
+			faction = "crustacean"
+		else if (user.wolfman && ("wolf" in global.craftlist_lists))
+			faction = "wolf"
 	if (map && map.civilizations)
+		var/civ = user.original_job_title
 		var/list/current_res = list(0,0,0)
 		if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
 			if (user.civilization == "none")
@@ -42,9 +57,9 @@
 				current_res = map.civf_research
 		generate_recipes_civs(current_res,faction)
 	else
-		if (!recipes || forced)
-			var/list/current_res = list(0,0,0)
-			if (map)
+		var/list/current_res = list(0,0,0)
+		if (map)
+			if (user.civilization == "none")
 				switch (map.ordinal_age)
 					if (0)
 						current_res = list(0,0,0)
@@ -64,7 +79,9 @@
 						current_res = list(185,185,185)
 					if (8)
 						current_res = list(210,210,210)
-			generate_recipes_civs(current_res,faction)
+			else
+				current_res = map.custom_civs[user.civilization]
+		generate_recipes_civs(current_res,faction)
 	return recipes
 
 /material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global")

@@ -1100,7 +1100,7 @@ var/civmax_research = list(230,230,230)
 //loads faction-specific recipes, if called on /New()
 
 /obj/map_metadata/proc/load_new_recipes()
-	var/F3 = file("config/material_recipes_carib.txt")
+	var/F3 = file("config/crafting/material_recipes_carib.txt")
 
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")

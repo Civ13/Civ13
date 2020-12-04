@@ -513,6 +513,7 @@ RECIPE: /material/cloth/,small sail,/obj/item/sail,15,125,0,1,none,0,0,22,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
 RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null
 RECIPE: /material/cloth/,cashbag,/obj/item/weapon/storage/bag/cash,1,105,0,1,none,0,0,90,8,null
+
 RECIPE: /material/cloth/,courier sneakers,/obj/item/clothing/shoes/sneakers/courier,3,80,0,1,foot wear,0,0,180,8,null
 RECIPE: /material/cloth/,oven mittens,/obj/item/clothing/gloves/oven,3,80,0,1,gloves,45,0,8,8,null
 RECIPE: /material/cloth/,motorist gloves,/obj/item/clothing/gloves/motorist,3,80,0,1,gloves,0,0,180,8,null
@@ -842,7 +843,6 @@ RECIPE: /material/plastic/,blood pack,/obj/item/weapon/reagent_containers/blood/
 RECIPE: /material/plastic/,lighter,/obj/item/weapon/flame/lighter/random,3,95,0,1,none,150,0,0,8,null
 
 RECIPE: /material/plastic/,bug swatter,/obj/item/weapon/swatter/modern,8,70,0,1,none,0,0,0,8,null
-RECIPE: 
 
 RECIPE: /material/plastic/,D2,/obj/item/weapon/dice/d2,1,205,0,1,dice,147,0,0,8,null
 RECIPE: /material/plastic/,D4,/obj/item/weapon/dice/d4,1,205,0,1,dice,147,0,0,8,null
@@ -851,7 +851,7 @@ RECIPE: /material/plastic/,D8,/obj/item/weapon/dice/d8,1,205,0,1,dice,147,0,0,8,
 RECIPE: /material/plastic/,D10,/obj/item/weapon/dice/d10,1,205,0,1,dice,147,0,0,8,null
 RECIPE: /material/plastic/,D00,/obj/item/weapon/dice/d00,1,205,0,1,dice,147,0,0,8,null
 RECIPE: /material/plastic/,D12,/obj/item/weapon/dice/d12,1,205,0,1,dice,147,0,0,8,null
-RECIPE: /material/plastic/,D20,/obj/item/weapon/dice/d20,1,205,0,1,dice,147,0,0,8,null
+RECIPE: /material/plastic/,D20,/obj/item/weapon/dice/d20,1,205,0,1,dice,147,0,0,8,nul
 
 //*****************| PLASTIC STORAGE |***************************
 
@@ -1246,6 +1246,7 @@ RECIPE: /material/stone/,reverse pink marble checkerboard floor,/obj/covers/marb
 //*************| STONE CONSTRUCTIONS & DECORATIONS |***************
 
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
+
 RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,religious & decoration,28,0,0,8,null
 
@@ -1383,6 +1384,7 @@ RECIPE: /material/glass/,teacup,/obj/item/weapon/reagent_containers/food/drinks/
 RECIPE: /material/glass/,wine glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,49,0,0,8,null
 RECIPE: /material/glass/,beer mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,2,25,0,1,drinks,75,0,0,8,null
 RECIPE: /material/glass/,coffee mug,/obj/item/weapon/reagent_containers/food/drinks/britmug,2,25,0,1,drinks,110,0,0,8,null
+
 //*************| GLASS ELECTRICAL |***************
 
 RECIPE: /material/glass/,small lightbulb frame,/obj/structure/lamp/lamp_small,2,35,0,1,electrical,115,0,0,8,null
@@ -1413,6 +1415,11 @@ RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/
 RECIPE: /material/glass/,green glasses,/obj/item/clothing/glasses/gglasses,6,120,0,1,eyewear,110,120,0,8,null
 RECIPE: /material/glass/,corrective glasses,/obj/item/clothing/glasses/regular,6,120,0,1,eyewear,110,120,0,8,null
 
+//*************| GLASS EYEWEAR |***************
+
+RECIPE: /material/glass/,sunglasses,/obj/item/clothing/glasses/sunglasses,2,90,1,1,none,140,0,0,8,null
+RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/large,2,90,1,1,none,165,0,0,8,null
+
 //**************************************************************
 //************************ROBERTS CARTS*************************
 //**************************************************************
@@ -1436,9 +1443,11 @@ RECIPE: /material/bronze/,bronze cart,/obj/structure/closet/crate/cart/bronze,30
 //EARLY MODERN AGE STEEL CART//
 RECIPE: /material/steel/,steel cart,/obj/structure/closet/crate/cart/steel,30,190,1,1,logistics,147,0,0,9,null
 //EARLY MODERN AGE STEEL CART//
+
 //shopping cart//
 RECIPE: /material/steel/,shopping cart,/obj/structure/shopping_cart,30,190,1,1,logistics,149,0,0,9,null
 //shopping cart//
+
 //**************************************************************
 //************************ROBERTS CARTS*************************
 //**************************************************************
@@ -1616,6 +1625,8 @@ RECIPE: /material/steel/,rollerchair,/obj/structure/bed/chair/office/light,8,150
 RECIPE: /material/steel/,drink shaker,/obj/item/weapon/reagent_containers/food/drinks/shaker,3,30,0,1,none,125,0,0,8,null
 RECIPE: /material/steel/,watch,/obj/item/clothing/gloves/watch/watch,6,200,0,1,none,125,60,0,8,null
 RECIPE: /material/steel/,clock,/obj/structure/sign/clock,9,200,1,1,none,98,0,0,8,null
+RECIPE: /material/steel/,wheelchair,/obj/structure/bed/chair/wheelchair,6,140,0,1,none,95,0,98,8,null
+RECIPE: /material/steel/,zippo lighter,/obj/item/weapon/flame/lighter/zippo,4,95,0,1,none,145,0,0,8,null
 
 //*********************| STEEL WEAPONS & TOOLS |**************************
 
@@ -1624,6 +1635,7 @@ RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tool
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,whistle,/obj/item/weapon/whistle,4,70,0,1,tools,80,0,0,8,null
 RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90,0,1,tools,60,0,0,8,null
+
 //*********************| STEEL SIEGE WEAPONS |**************************
 
 RECIPE: /material/steel/,cannon,/obj/structure/cannon,35,600,1,1,siege weapons,71,79,0,4,null
@@ -1708,6 +1720,10 @@ RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glas
 RECIPE: /material/steel/,large crate,/obj/structure/closet/crate/large,15,230,1,1,storage,110,0,0,8,steel
 RECIPE: /material/steel/,paper bin,/obj/item/weapon/paper_bin/empty,4,60,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,lunchkit,/obj/item/weapon/storage/ww2/slunch,8,180,0,1,storage,115,130,0,8,null
+RECIPE: /material/steel/,storage,/obj/structure/closet/fridge,15,230,1,1,storage,150,0,178,8,null
+
+RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,storage,105,0,0,8,null
+RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,storage,120,0,0,8,null
 
 //*********************| STEEL ELECTRICAL & COMMUNICATION|**************************
 
@@ -1770,6 +1786,8 @@ RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,n
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
 
 //RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
+
+RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 
@@ -1938,6 +1956,10 @@ RECIPE: /material/wood/,modern table,/obj/structure/table/modern/table,7,50,1,1,
 RECIPE: /material/wood/,fancy table,/obj/structure/table/fancy,7,50,1,1,furniture,95,0,0,8,null
 RECIPE: /material/wood/,coatrack,/obj/structure/table/rack/coatrack,3,50,1,1,furniture,95,0,0,8,null
 RECIPE: /material/wood/,grandfather clock,/obj/structure/wallclock,6,150,1,1,furniture,110,0,0,8,null
+RECIPE: /material/wood/,grandfather clock,/obj/structure/TV/grandfather,9,160,1,1,furniture,42,0,0,8,null
+RECIPE: /material/wood/,shell rack,/obj/structure/shellrack,6,90,1,1,furniture,80,105,0,8,null
+RECIPE: /material/wood/,large crate,/obj/structure/closet/crate/empty/large,8,80,1,1,furniture,95,0,0,8,null
+RECIPE: /material/wood/,military crate,/obj/structure/closet/crate/ww2,5,50,1,1,furniture,105,0,0,8,null
 
 //*********************| WOOD DECORATION & MONUMENTS |**************************
 
@@ -2004,6 +2026,8 @@ RECIPE: /material/wood/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & prin
 RECIPE: /material/wood/,official faction paper,/obj/item/weapon/paper/official,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,envelope,/obj/item/weapon/storage/envelope,2,35,0,1,paper & printing,40,0,0,8,null
 RECIPE: /material/wood/,envelope seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
+RECIPE: /material/wood/,wax seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
+
 RECIPE: /material/wood/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,0,0,8,null
 RECIPE: /material/wood/,grey folder,/obj/item/weapon/folder,1,75,0,1,paper & printing,120,0,0,8,null
 RECIPE: /material/wood/,yellow folder,/obj/item/weapon/folder/yellow,1,75,0,1,paper & printing,120,0,0,8,null
@@ -2121,6 +2145,20 @@ RECIPE: /material/iron/,ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,
 //RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
 //RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
 //RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (left turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
+
+RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
+
+RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
 
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 
@@ -2212,6 +2250,7 @@ RECIPE: /material/iron/,drum magazine (65),/obj/item/ammo_magazine/emptymagazine
 
 RECIPE: /material/iron/,iron arm bangles,/obj/item/clothing/accessory/armband/armbangle,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/iron/,monocle,/obj/item/clothing/glasses/monocle,3,110,0,1,none,0,61,0,8,null
+
 RECIPE: /material/iron/,pocket watch,/obj/item/weapon/watch/pocket,6,200,0,1,none,105,61,0,8,null
 
 //*********************| IRON HEALTHCARE |**************************
@@ -2274,6 +2313,7 @@ RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/s
 
 RECIPE: /material/sandstone/,sandstone roof builder,/obj/item/weapon/roofbuilder/sandstone,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone doors,/obj/structure/simple_door/sandstone,5,50,1,1,construction,5,0,0,8,null
+
 //*********************| SANDSTONE DECORATIONS & MONUMENTS |**************************
 
 RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religious & decoration,0,0,0,8,null
@@ -2288,7 +2328,6 @@ RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,
 
 RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
 RECIPE: /material/sandstone/,sandstone kiln,/obj/structure/furnace/kiln/sandstone,10,150,1,1,structures,26,0,0,8,null
-
 
 //*********************| SANDSTONE FORTIFICATIONS |**************************
 

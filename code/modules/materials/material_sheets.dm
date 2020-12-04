@@ -622,7 +622,7 @@
 			qdel(src)
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
 	var/mob/living/human/U = user
-	recipes = material.get_recipes_civs(U.original_job_title, U)
+	recipes = material.get_recipes_civs(U)
 	..()
 
 /obj/item/stack/material/fossil
