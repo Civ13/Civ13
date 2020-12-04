@@ -40,6 +40,7 @@
 		/obj/structure/fuelpump,
 		/obj/item/stack/ore,
 		/turf/floor/dirt/underground,
+		/turf/floor/trench,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
