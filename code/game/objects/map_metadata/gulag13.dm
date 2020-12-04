@@ -108,9 +108,10 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/gulag13/load_new_recipes()
-	var/F3 = file("config/material_recipes_camp.txt")
+	var/F3 = file("config/crafting/material_recipes_camp.txt")
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_lists["global"] = list()
 		for (var/i in craftlist_temp)
 			if (findtext(i, ","))
 				var/tmpi = replacetext(i, "RECIPE: ", "")

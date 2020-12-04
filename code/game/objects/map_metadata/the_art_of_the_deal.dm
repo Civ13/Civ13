@@ -136,9 +136,10 @@
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 /obj/map_metadata/the_art_of_the_deal/load_new_recipes() //bow ungas BTFO
-	var/F3 = file("config/material_recipes_camp.txt")
+	var/F3 = file("config/crafting/material_recipes_camp.txt")
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_lists["global"] = list()
 		for (var/i in craftlist_temp)
 			if (findtext(i, ","))
 				var/tmpi = replacetext(i, "RECIPE: ", "")

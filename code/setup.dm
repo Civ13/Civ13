@@ -56,7 +56,8 @@
 
 	admin_notice("<span class='danger'>Initializing crafting recipes...</span>", R_DEBUG)
 	sleep(-1)
-	var/F3 = file("config/material_recipes.txt")
+
+	var/F3 = file("config/crafting/material_recipes.txt")
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")
 		for (var/i in craftlist_temp)

@@ -20,6 +20,19 @@
 	var/faction = "global"
 	if (user.faction_text in global.craftlist_lists)
 		faction = user.faction_text
+
+	if (user.orc && ("orc" in global.craftlist_lists))
+		faction = "orc"
+	else if (user.ant && ("ant" in global.craftlist_lists))
+		faction = "ant"
+	else if (user.lizard && ("lizard" in global.craftlist_lists))
+		faction = "lizard"
+	else if (user.gorillaman && ("gorilla" in global.craftlist_lists))
+		faction = "gorilla"
+	else if (user.crab && ("crustacean" in global.craftlist_lists))
+		faction = "crustacean"
+	else if (user.wolfman && ("wolf" in global.craftlist_lists))
+		faction = "wolf"
 	if (map && map.civilizations)
 		var/list/current_res = list(0,0,0)
 		if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)

@@ -1067,7 +1067,7 @@ var/list/atom_types = null
 	load_recipes()
 
 /proc/load_recipes()
-	var/F3 = file("config/material_recipes.txt")
+	var/F3 = file("config/crafting/material_recipes.txt")
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")
 		for (var/i in craftlist_temp)
@@ -1079,6 +1079,8 @@ var/list/atom_types = null
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 	else
 		admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+	if (map)
+		map.load_new_recipes()
 	world.log << "Finished loading recipes."
 /datum/admins/proc/toggle_ores()
 	set category = "Special"
