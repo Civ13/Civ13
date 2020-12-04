@@ -851,7 +851,7 @@ RECIPE: /material/plastic/,D8,/obj/item/weapon/dice/d8,1,205,0,1,dice,147,0,0,8,
 RECIPE: /material/plastic/,D10,/obj/item/weapon/dice/d10,1,205,0,1,dice,147,0,0,8,null
 RECIPE: /material/plastic/,D00,/obj/item/weapon/dice/d00,1,205,0,1,dice,147,0,0,8,null
 RECIPE: /material/plastic/,D12,/obj/item/weapon/dice/d12,1,205,0,1,dice,147,0,0,8,null
-RECIPE: /material/plastic/,D20,/obj/item/weapon/dice/d20,1,205,0,1,dice,147,0,0,8,nul
+RECIPE: /material/plastic/,D20,/obj/item/weapon/dice/d20,1,205,0,1,dice,147,0,0,8,null
 
 //*****************| PLASTIC STORAGE |***************************
 
