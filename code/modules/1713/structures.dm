@@ -136,14 +136,17 @@
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
 /obj/structure/wallclock
-	name = "wall clock"
-	desc = "A classic wall clock."
+	name = "standing clock"
+	desc = "A classic standing clock."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wall_clock"
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	anchored = TRUE
+/obj/structure/wallclock/examine(mob/user)
+	..()
+	user << "<big>It is now [clock_time()].</big>"
 
 /obj/structure/props/junk
 	name = "junk"

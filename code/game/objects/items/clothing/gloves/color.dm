@@ -16,6 +16,13 @@
 	icon_state = "latex"
 	item_state = "latex"
 
+/obj/item/clothing/gloves/watch
+	name = "time gloves"
+	desc = "Hypothetical time gloves. Works like a watch. If you find these tell an admin"
+
+/obj/item/clothing/gloves/watch/examine(mob/user)
+	..()
+	user << "<big>It is now [clock_time()].</big>"
 /obj/item/clothing/gloves/watch/watch
 	name = "watch"
 	desc = "A watch you wear on your hand."

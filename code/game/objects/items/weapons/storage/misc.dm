@@ -1,19 +1,11 @@
-/obj/item/weapon/storage/pill_bottle/dice
-	name = "pack of dice"
-	desc = "It's a small container with dice inside."
-
-	New()
-		..()
-		new /obj/item/weapon/dice( src )
-		new /obj/item/weapon/dice/d20( src )
-
 /obj/item/weapon/storage/ww2
 	name = "messkit"
-	desc = "It's a standard issue messkit for military personel"
+	desc = "It's a cheap tin messkit"
 	icon_state = "gerkit"
 	item_state = "gerkit"
 	max_storage_space = 8
-	w_class = 1
+	w_class = 2
+	max_w_class = 1
 	can_hold = new/list(
 	/obj/item/weapon/material/kitchen/utensil,
 	/obj/item/weapon/reagent_containers/food/snacks,
@@ -101,8 +93,8 @@
 	return TRUE
 
 /obj/item/weapon/storage/ww2/shaving_kit
-	name = "Shaving kit"
-	desc = "It's a standard issue shaving kit for military personel"
+	name = "small pouch"
+	desc = "It's a small leather pouch."
 	icon_state = "shaving_kit"
 	item_state = "shaving_kit"
 	max_storage_space = 2
@@ -115,8 +107,8 @@
 /obj/item/weapon/storage/ww2/shaving_kit/german
 	name = "german shaving kit"
 	desc = "It's a standard issue shaving kit for german military personel"
-	icon_state = "shaving_kit"
-	item_state = "shaving_kit"
+	icon_state = "shaving_kit_germ"
+	item_state = "shaving_kit_germ"
 	New()
 		..()
 		new /obj/item/weapon/material/kitchen/utensil/knife/razorblade( src )
@@ -132,3 +124,11 @@
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20,30,40)
 	volume = 40
+
+/obj/item/weapon/storage/ww2/slunch
+	name = "lunch kit"
+	desc = "It's a lunch kit pressed from steel."
+	icon_state = "slunch"
+	item_state = "slunch"
+	max_storage_space = 12
+	w_class = 2

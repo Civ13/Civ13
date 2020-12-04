@@ -155,6 +155,7 @@
 #include "code\game\objects\items\bin.dm"
 #include "code\game\objects\items\cards.dm"
 #include "code\game\objects\items\clay_items.dm"
+#include "code\game\objects\items\clipboard.dm"
 #include "code\game\objects\items\glassjar.dm"
 #include "code\game\objects\items\pen.dm"
 #include "code\game\objects\items\soap.dm"
