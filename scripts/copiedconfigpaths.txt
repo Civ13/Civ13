@@ -1,7 +1,7 @@
 config/tips.txt
 config/motd.txt
 config/admin_ranks.txt
-config/crafting/material_recipes.txt
+config/crafting/material_recipes_global.txt
 config/crafting/material_recipes_camp.txt
 config/crafting/material_recipes_kwai.txt
 config/crafting/material_recipes_carib.txt
