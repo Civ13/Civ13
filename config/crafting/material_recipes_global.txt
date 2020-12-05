@@ -1325,7 +1325,7 @@ RECIPE: /material/stone/,castle gate control,/obj/structure/gatecontrol,5,100,1,
 
 RECIPE: /material/stone/,roman door,/obj/structure/simple_door/key_door/anyone/roman,5,50,1,1,construction,28,0,0,8,null
 
-RECIPE: /material/stone/,large stone double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/stone,10,100,1,1,none,18,0,0,1,null
+RECIPE: /material/stone/,large stone double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/stone,10,100,1,1,none,18,0,0,8,null
 RECIPE: /material/stone/,locked large stone double doors,/obj/structure/simple_door/key_door/custom/doubledoor/stone,20,200,1,1,none,28,0,0,8,null
 
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/barrier/rock,3,70,1,1,fortifications,0,0,0,8,null
@@ -1520,7 +1520,7 @@ RECIPE: /material/steel/,steel public bathtub,/obj/structure/shower/bathtub/big/
 
 RECIPE: /material/gold/,gold coins,/obj/item/stack/money/goldcoin,1,35,0,1,none,0,0,0,8,null
 
-RECIPE: /material/gold/,large gold double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/gold,5,100,1,1,none,18,0,0,1,null
+RECIPE: /material/gold/,large gold double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/gold,5,100,1,1,none,18,0,0,8,null
 RECIPE: /material/gold/,locked large gold double doors,/obj/structure/simple_door/key_door/custom/doubledoor/gold,10,150,1,1,none,28,0,0,8,null
 
 //*****************| GOLD CLOTHING & ACCESSORIES |***************************
@@ -1545,7 +1545,7 @@ RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none
 
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 
-RECIPE: /material/silver/,large silver double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/silver,5,100,1,1,none,18,0,0,1,null
+RECIPE: /material/silver/,large silver double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/silver,5,100,1,1,none,18,0,0,8,null
 RECIPE: /material/silver/,locked large silver double doors,/obj/structure/simple_door/key_door/custom/doubledoor/silver,10,150,1,1,none,28,0,0,8,null
 
 //*****************| SILVER WEAPONS & TOOLS |***************************
@@ -1568,7 +1568,7 @@ RECIPE: /material/tin/,small tin pot,/obj/item/weapon/reagent_containers/glass/s
 RECIPE: /material/tin/,dummy armor,/obj/item/weapon/dummy_armor,4,120,1,1,none,18,0,0,8,null
 RECIPE: /material/tin/,messtin,/obj/item/weapon/storage/ww2,8,180,0,1,none,115,110,0,8,null
 
-RECIPE: /material/tin/,large tin double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/tin,5,100,1,1,none,18,0,0,1,null
+RECIPE: /material/tin/,large tin double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/tin,5,100,1,1,none,18,0,0,8,null
 RECIPE: /material/tin/,locked large tin double doors,/obj/structure/simple_door/key_door/custom/doubledoor/tin,8,150,1,1,none,28,0,0,8,null
 
 //*****************| TIN CANS |***************************
@@ -1588,7 +1588,7 @@ RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/g
 RECIPE: /material/copper/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,null
 RECIPE: /material/copper/,handbell,/obj/item/weapon/handbell,2,50,0,1,none,40,0,0,8,null
 
-RECIPE: /material/copper/,large copper double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/copper,5,100,1,1,none,18,0,0,1,null
+RECIPE: /material/copper/,large copper double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/copper,5,100,1,1,none,18,0,0,8,null
 RECIPE: /material/copper/,locked large copper double doors,/obj/structure/simple_door/key_door/custom/doubledoor/copper,10,150,1,1,none,28,0,0,8,null
 
 //*****************| COPPER WEAPONS & TOOLS |***************************
@@ -1762,10 +1762,9 @@ RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole,6,95,0,1,none,0,0,0,8
 
 RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4,60,0,1,none,15,0,0,8,null
 RECIPE: /material/bronze/,ashtray,/obj/item/weapon/material/ashtray/bronze,3,30,0,1,none,20,0,0,8,null
-RECIPE: /material/bronze/,large bronze double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/bronze,5,50,1,1,none,18,0,0,1,null
 
-RECIPE: /material/bronze/,unlocked large bronze double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/bronze,8,80,1,1,none,30,0,0,8,null
-RECIPE: /material/bronze/,locked large bronze double doors,/obj/structure/simple_door/key_door/custom/doubledoor/bronze,13,150,1,1,none,28,0,0,8,null
+RECIPE: /material/bronze/,large bronze double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/bronze,8,100,1,1,none,18,0,0,8,null
+RECIPE: /material/lead/,locked bronze double doors,/obj/structure/simple_door/key_door/custom/doubledoor/bronze,13,150,1,1,none,28,0,0,8,null
 
 //*********************| BRONZE WEAPONS & TOOLS |*************************
 
@@ -2173,20 +2172,6 @@ RECIPE: /material/iron/,ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,
 //RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
 //RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
 //RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail (left turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
-
-RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
-
-RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
 
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 
