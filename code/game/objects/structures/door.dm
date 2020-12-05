@@ -63,7 +63,7 @@
 	update_material(material_name)
 	door_list += src
 	if (material)
-		if (get_material_name() == "wood")
+		if (get_material_name() == "wood" || "bamboo")
 			flammable = TRUE
 	for(var/obj/roof/R in range(1,src))
 		R.update_transparency(0)

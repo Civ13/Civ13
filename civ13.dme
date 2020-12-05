@@ -379,6 +379,7 @@
 #include "code\game\objects\structures\key_doors\key_door.dm"
 #include "code\game\objects\structures\key_doors\keychain.dm"
 #include "code\game\objects\structures\key_doors\keyslot.dm"
+#include "code\game\objects\structures\key_doors\types\custom_keydoor.dm"
 #include "code\game\objects\structures\key_doors\types\groups.dm"
 #include "code\game\objects\structures\key_doors\types\groups_unaligned.dm"
 #include "code\game\objects\structures\kitchen\oven.dm"
