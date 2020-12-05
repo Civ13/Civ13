@@ -1347,6 +1347,52 @@
 	hardness = 100
 	buildstack = /obj/item/stack/material/sandstone
 
+/obj/covers/sandstone_block_wall
+	name = "sandstone block wall"
+	desc = "A sandstone block wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_block_wall0"
+	base_icon_state = "sandstone_block_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 400
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 7
+	material = "Stone"
+	hardness = 100
+	buildstack = /obj/item/stack/material/sandstone
+	adjusts = TRUE
+
+/obj/covers/sandstone_block_wall/archway
+	name = "sandstone block archway"
+	desc = "A sandstone block archway."
+	icon_state = "sandstone_block_archway"
+	base_icon_state = "sandstone_block_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
+
+/obj/covers/sandstone_block_wall/archway/red
+	name = "red sandstone block archway"
+	desc = "red sandstone stone block archway."
+	icon_state = "redsandstone_block_archway"
+	base_icon_state = "redsandstone_block_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
+
+/obj/covers/sandstone_block_wall/red
+	name = "red sandstone block wall"
+	desc = "A red sandstone block wall."
+	icon_state = "redsandstone_block_wall0"
+	base_icon_state = "redsandstone_block_wall"
+
 /obj/covers/sandstone_wall
 	name = "sandstone brick wall"
 	desc = "A sandstone wall."
