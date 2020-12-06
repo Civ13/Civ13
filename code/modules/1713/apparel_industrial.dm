@@ -201,6 +201,10 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	icon_override = TRUE
 
+/obj/item/weapon/watch/pocket/examine(mob/user)
+	..()
+	user << "<big>It is now [clock_time()].</big>"
+
 /obj/item/weapon/watch/pocket/attack_self(var/mob/living/L)
 	L << "<big>It is now [clock_time()].</big>"
 	return

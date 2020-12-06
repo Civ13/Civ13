@@ -63,7 +63,7 @@
 	update_material(material_name)
 	door_list += src
 	if (material)
-		if (get_material_name() == "wood")
+		if (get_material_name() == "wood" || "bamboo")
 			flammable = TRUE
 	for(var/obj/roof/R in range(1,src))
 		R.update_transparency(0)
@@ -404,9 +404,9 @@
 	..(newloc, "wood")
 	basic_icon = "wood2"
 	name = "Windowed"
-/obj/structure/simple_door/resin/New(var/newloc,var/material_name)
-	..(newloc, "resin")
-
+///obj/structure/simple_door/resin/New(var/newloc,var/material_name)
+//	..(newloc, "resin")
+//resin is not an extant material, this is a broken door - siro
 /obj/structure/simple_door/key_door/custom/jail/woodjail/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	basic_icon = "woodcell"

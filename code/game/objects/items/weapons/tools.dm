@@ -112,7 +112,7 @@
 	icon_state = "globe"
 	item_state = "globe"
 	flags = CONDUCT
-	slot_flags = SLOT_BELT | SLOT_POCKET
+	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL + 1
 	w_class = 2.0
 	throwforce = WEAPON_FORCE_NORMAL
@@ -402,3 +402,12 @@
 
 	attack_verb = list("jabbed", "hit", "bashed")
 	flammable = TRUE
+
+/obj/item/weapon/whistle/tin
+	name = "whistle"
+	desc = "A cheap whistle made from tin."
+	icon = 'icons/obj/clothing/masks.dmi'
+	icon_state = "whistle"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	w_class = 1.0

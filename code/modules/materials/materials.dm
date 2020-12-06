@@ -219,6 +219,7 @@ var/list/name_to_material
 	name = "obsidian"
 	icon_colour = "#060606"
 	hardness = 85
+//	door_icon_base = "stone" (too dark)
 	sheet_singular_name = "cut rock"
 	sheet_plural_name = "cut rocks"
 	stack_type = /obj/item/stack/material/obsidian
@@ -310,6 +311,7 @@ var/list/name_to_material
 	icon_colour = "#EDD12F"
 	hardness = 70
 	weight = 24
+	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/gold
@@ -319,6 +321,7 @@ var/list/name_to_material
 	icon_colour = "#b87333"
 	hardness = 42
 	weight = 14
+	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/copper
@@ -337,6 +340,7 @@ var/list/name_to_material
 	icon_colour = "#d3d4d5"
 	hardness = 40
 	weight = 11
+	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/tin
@@ -346,6 +350,7 @@ var/list/name_to_material
 	icon_colour = "#7c4611"
 	hardness = 47
 	weight = 17
+	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/bronze
@@ -355,6 +360,7 @@ var/list/name_to_material
 	icon_colour = "#444f53"
 	hardness = 35
 	weight = 30
+	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/lead
@@ -364,6 +370,7 @@ var/list/name_to_material
 	icon_colour = "#D1E6E3"
 	hardness = 65
 	weight = 22
+	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/silver
@@ -439,16 +446,19 @@ var/list/name_to_material
 	name = "bone"
 	icon_colour = "#ccd1c4"
 	hardness = 45
+	door_icon_base = "bone"
 	sheet_singular_name = "piece"
 	sheet_plural_name = "pieces"
+	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	stack_type = /obj/item/stack/material/bone
 
 /material/stone/marble
 	name = "marble"
-	icon_colour = "#AAAAAA"
+	icon_colour = "#fffcf0" // marble - white
 	weight = 26
 	integrity = 201 //hack to stop kitchen benches being flippable, todo: refactor into weight system
 	hardness = 100
+	door_icon_base = "stone"
 	stack_type = /obj/item/stack/material/marble
 
 /material/steel
@@ -459,6 +469,7 @@ var/list/name_to_material
 	hardness = 60
 	integrity = 300
 	hitsound = 'sound/weapons/genhit.ogg'
+	door_icon_base = "metal"
 	stack_type = /obj/item/stack/material/steel
 
 /material/glass
@@ -488,6 +499,7 @@ var/list/name_to_material
 	icon_colour = "#5C5454"
 	hardness = 55
 	weight = 22
+	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	hitsound = 'sound/weapons/smash.ogg'
@@ -528,6 +540,7 @@ var/list/name_to_material
 	name = "softwood"
 	hardness = 90
 	integrity = 80
+	door_icon_base = "wood"
 	icon_colour = "#D2BA9C"
 
 /material/bamboo
