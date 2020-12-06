@@ -132,7 +132,7 @@
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
-//				MAP_GULAG13 = 15,
+				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
 				MAP_SMALLINGRAD = 0,
 				MAP_NANJING = 20,
@@ -157,6 +157,7 @@
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK_TDM = 0,
+//				MAP_NATIONSRP = 0,
 				MAP_MISSIONARY_RIDGE = 20,
 			)
 		else if (epoch == "Imperial Age (1650-1780)")
@@ -212,7 +213,7 @@
 				MAP_NOMADS_WASTELAND_2 = 0,
 				MAP_NOMADS_NEW_WORLD = 10,
 				MAP_NOMADS_MEDITERRANEAN = 10,
-				MAP_NOMADS_ISLAND = 0,
+//				MAP_NOMADS_ISLAND = 0,
 				MAP_NOMADS_KARAFUTO = 0,
 			)
 		else if (epoch == "Civilization 13 (Colony & Pioneers)")
@@ -220,6 +221,7 @@
 				MAP_COLONY = 0,
 				MAP_JUNGLE_COLONY = 4,
 				MAP_PIONEERS = 10,
+				MAP_PIONEERS_WASTELAND_2 = 10,
 				MAP_FOUR_COLONIES = 30,
 			)
 		else if (epoch == "Civilization 13 (Prison Camps)")

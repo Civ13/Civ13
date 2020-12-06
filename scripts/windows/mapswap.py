@@ -2,7 +2,6 @@ import sys
 import os
 import shutil
 import time
-import psutil
 import signal
 
 def getListOfFiles(dirName):

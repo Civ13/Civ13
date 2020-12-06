@@ -1,6 +1,6 @@
 /mob/living/simple_animal/hostile/buffalo
 	name = "buffalo"
-	desc =  "A Large member of the Bovine Family, They are grazers and will be hostile if harmed."
+	desc =  "A large member of the bovine Family, they are grazers and will be hostile if harmed."
 	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "buffalo"
 	icon_living = "buffalo"

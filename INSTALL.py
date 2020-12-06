@@ -8,11 +8,17 @@ t1 = time.time()
 ## if you want to change the installation directories, edit the mdir and cdir variables. mdir is the folder to install path, cdir is the civ13 game path to create.
 mdir = os.path.dirname(os.path.abspath(__file__))
 cdir = "civ13"
+if (len(sys.argv)<3):
+  print("ERROR: Missing the byond version to download. Use 'python install.py MAJOR MINOR'")
+  quit()
 byond_version_major = sys.argv[1]
 byond_version_minor = sys.argv[2]
 ####
 ####
 
+if sys.platform == "win32" or sys.platform == "darwin":
+  print("ERROR: This script only runs on linux.")
+  quit()
 print("Installing dependencies...")
 os.system("sudo apt install make git unzip python3 python3-pip lib32z1 lib32ncurses5 libc6-i386 lib32stdc++6")
 os.system("sudo apt autoremove")

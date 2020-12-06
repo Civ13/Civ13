@@ -132,7 +132,15 @@
 			adjustBruteLoss(-2)
 			if (halloss > 40)
 				adjustHalLoss(-30)
-
+	if (map && map.ID == MAP_FOOTBALL && (r_hand || l_hand))
+		var/area/A = get_area(loc)
+		if (!istype(A, /area/caribbean/football/red/goalkeeper) && !istype(A, /area/caribbean/football/blue/goalkeeper))
+			if (istype(l_hand, /obj/item/football))
+				drop_from_inventory(l_hand, loc, TRUE)
+				drop_item()
+			if (istype(r_hand, /obj/item/football))
+				drop_from_inventory(r_hand, loc, TRUE)
+				drop_item()
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
 		invisibility = 0
@@ -153,6 +161,7 @@
 		if (istype(buckled, /obj/structure/cross))
 			food_m *= 1.5
 			water_m *= 5
+
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
@@ -1584,7 +1593,7 @@
 									for (var/obj/item/organ/external/head/H in organs)
 										found = TRUE
 										break
-									if (map.ID == MAP_NOMADS_WASTELAND_2 && found)
+									if ((map.ID == MAP_NOMADS_WASTELAND_2 || map.ID == MAP_PIONEERS_WASTELAND_2) && found)
 										var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
 										playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
 										//transferring vars.

@@ -47,6 +47,8 @@ obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (J.is_civil_war == TRUE)
 		. = FALSE
+	else if (J.is_football == TRUE)
+		. = FALSE
 	else
 		. = TRUE
 /obj/map_metadata/four_colonies/faction2_can_cross_blocks()

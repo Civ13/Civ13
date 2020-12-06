@@ -24,8 +24,8 @@
 		list("merchant","beer crate", /obj/structure/closet/crate/rations/beer,60),
 		list("merchant","ale crate", /obj/structure/closet/crate/rations/ale,70),
 
-		list("merchant","cow", /mob/living/simple_animal/cow,160),
-		list("merchant","bull", /mob/living/simple_animal/bull,150),
+		list("merchant","cow", /mob/living/simple_animal/cattle/cow,160),
+		list("merchant","bull", /mob/living/simple_animal/cattle/bull,150),
 		list("merchant","sheep ram", /mob/living/simple_animal/sheep,80),
 		list("merchant","sheep ewe", /mob/living/simple_animal/sheep/female,90),
 		list("merchant","pig boar", /mob/living/simple_animal/pig_boar,100),

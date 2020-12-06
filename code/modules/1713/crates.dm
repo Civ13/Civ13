@@ -195,6 +195,7 @@ obj/structure/closet/crate/empty
 	opacity = FALSE
 	density = FALSE
 	storagecap = 6
+	anchored = TRUE
 
 /obj/structure/closet/crate/bayonets
 	name = "bayonets crate"

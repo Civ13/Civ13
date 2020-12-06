@@ -25,6 +25,42 @@
 
 	)
 
+/obj/structure/vending/muskets/english
+	name = "English musket rack"
+	desc = "A rack of war muskets."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/brownbess = 15,
+
+	)
+
+/obj/structure/vending/muskets/french
+	name = "French musket rack"
+	desc = "A rack of smoothbore charleville muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/charleville = 15,
+
+	)
+
+/obj/structure/vending/muskets/spanish
+	name = "Spanish musket rack"
+	desc = "A rack of smoothbore M1752 muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
+
+	)
+
+/obj/structure/vending/muskets/portuguese
+	name = "Portuguese musket rack"
+	desc = "A rack of smoothbore Portuguese muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
+
+	)
+
 /obj/structure/vending/flintlock
 	name = "Flintlock weapon rack"
 	desc = "An assorted rack of flintlock weapons."
@@ -44,7 +80,7 @@
 		/obj/item/weapon/gun/projectile/flintlock/springfield = 15,
 		/obj/item/weapon/gun/projectile/flintlock/springfield1795 = 5,
 		/obj/item/weapon/attachment/bayonet = 15,
-		/obj/item/weapon/shovel/trench = 15,
+		/obj/item/weapon/material/shovel/trench = 15,
 	)
 
 /obj/structure/vending/confederate_apparel
@@ -142,7 +178,7 @@
 		/obj/item/clothing/head/helmet/ww/adrian = 15,
 		/obj/item/clothing/mask/gas/french = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/french = 50,
 	)
@@ -160,7 +196,7 @@
 	    /obj/item/clothing/head/helmet/ww/mk1brodiedeb = 15,
 		/obj/item/clothing/mask/gas/british = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/british = 50,
 	)
@@ -178,7 +214,7 @@
 		/obj/item/clothing/head/helmet/modern/pickelhaube = 15,
 		/obj/item/clothing/mask/gas/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 	)
@@ -206,7 +242,7 @@
 		/obj/item/clothing/head/japcap = 15,
 		/obj/item/clothing/head/japcap2 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
@@ -246,7 +282,7 @@
 		/obj/item/clothing/head/chinese_ushanka = 15,
 		/obj/item/clothing/head/ww2/chicap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
 	)
@@ -265,7 +301,7 @@
 		/obj/item/clothing/head/ww2/chicap2 = 15,
 		/obj/item/clothing/head/ww2/german_fieldcap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
 	)
@@ -283,7 +319,7 @@
 		/obj/item/clothing/head/helmet/ww2/ustannet = 5,
 		/obj/item/clothing/head/helmet/ww2/usm1 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 	)
@@ -299,7 +335,7 @@
 		/obj/item/clothing/head/helmet/korean/ustannet = 5,
 		/obj/item/clothing/head/helmet/korean/usm1 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 	)
@@ -329,7 +365,7 @@
 		/obj/item/clothing/head/helmet/ww2/japhelm = 15,
 		/obj/item/clothing/head/ww2/jap_headband = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
@@ -345,7 +381,7 @@
 		/obj/item/clothing/head/helmet/ww2/japhelm_snlf = 15,
 		/obj/item/clothing/head/ww2/jap_headband = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
@@ -389,7 +425,7 @@ obj/structure/vending/japweapons_ww2
 		/obj/item/clothing/suit/storage/coat/ruscoat = 15,
 		/obj/item/clothing/head/ruscap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
@@ -480,7 +516,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/head/helmet/ww2/soviet = 15,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/flashlight/flashlight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
@@ -499,7 +535,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/head/helmet/ww2/gerhelm = 15,
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/flashlight/flashlight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
@@ -518,7 +554,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/head/helmet/ww2/ss/dark = 15,
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/flashlight/flashlight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
@@ -537,7 +573,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/head/helmet/ww2/ss/dark = 10,
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/flashlight/flashlight = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 10,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 20,
@@ -641,7 +677,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/head/helmet/modern/pasgt/desert = 15,
 		/obj/item/clothing/glasses/tactical_goggles = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
-		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 	)

@@ -306,22 +306,31 @@ var/global/redirect_all_players = null
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
-				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes" && !map.ID == MAP_PIONEERS_WASTELAND_2)
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg)
 					close_spawn_windows()
 					AttemptLateSpawn(pick(map.availablefactions))
 					return TRUE
+				else if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes" && map.ID == MAP_PIONEERS_WASTELAND_2)
+					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+					log_admin(msg)
+					message_admins(msg)
+					LateChoices()
+					return TRUE
 			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
-		if (map && map.civilizations == TRUE)
+		if (map && map.civilizations == TRUE && !map.ID == MAP_PIONEERS_WASTELAND_2)
 			close_spawn_windows()
 			AttemptLateSpawn(pick(map.availablefactions))
+		else if (map && map.ID == MAP_PIONEERS_WASTELAND_2)
+			LateChoices()
 		else
 			return
 		return TRUE
+
 
 	if (href_list["nomads"])
 
@@ -589,10 +598,10 @@ var/global/redirect_all_players = null
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
 	if (job.is_deal)
-		var/y_nr = processes.job_data.get_active_positions("Goldstein Solutions")
-		var/g_nr = processes.job_data.get_active_positions("Kogama Kraftsmen")
-		var/r_nr = processes.job_data.get_active_positions("Rednikov Industries")
-		var/b_nr = processes.job_data.get_active_positions("Giovanni Blu Stocks")
+		var/y_nr = processes.job_data.get_active_positions_name("Goldstein Solutions")
+		var/g_nr = processes.job_data.get_active_positions_name("Kogama Kraftsmen")
+		var/r_nr = processes.job_data.get_active_positions_name("Rednikov Industries")
+		var/b_nr = processes.job_data.get_active_positions_name("Giovanni Blu Stocks")
 
 		if (istype(job, /datum/job/civilian/businessman/red))
 			if (r_nr > y_nr || r_nr > b_nr || r_nr > g_nr)
@@ -611,8 +620,8 @@ var/global/redirect_all_players = null
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 	if (job.is_yakuza)
-		var/yy_nr = processes.job_data.get_active_positions("Yamaguchi-Gumi Kaiin")
-		var/yi_nr = processes.job_data.get_active_positions("Ichiwa-Kai Kaiin")
+		var/yy_nr = processes.job_data.get_active_positions_name("Yamaguchi-Gumi Kaiin")
+		var/yi_nr = processes.job_data.get_active_positions_name("Ichiwa-Kai Kaiin")
 		for (var/datum/job/joby in job_master.occupations)
 			if (istype(joby, /datum/job/japanese/yakuza))
 				yy_nr = joby.current_positions

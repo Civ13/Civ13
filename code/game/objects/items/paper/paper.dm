@@ -89,6 +89,15 @@
 			icon_state = "Colonial_Paper_Empty"
 			desc = "A blank paper sheet."
 
+/obj/item/weapon/paper/verb/airplane()
+	set name = "Make Paper Airplane"
+	set category = "Object"
+	set src in usr
+	src.icon_state = "paper_plane"
+	src.throw_range = 14
+	src.name = "airplane- \"[src.name]\""
+	add_fingerprint(usr)
+
 /obj/item/weapon/paper/update_icon()
 	if (base_icon == "paper")
 		if (map && map.ordinal_age <= 1)
@@ -376,7 +385,7 @@
 
 
 		// if paper is not in usr, then it must be near them, or in a clipboard or folder, which must be in or near usr
-		if (loc != usr && !Adjacent(usr) && (loc.loc == usr || loc.Adjacent(usr)) )
+		if (loc != usr && !Adjacent(usr) && !((istype(loc, /obj/item/weapon/clipboard) || istype(loc, /obj/item/weapon/folder)) && (loc.loc == usr || loc.Adjacent(usr)) ) )
 			return
 /*
 		t = checkhtml(t)
@@ -471,32 +480,22 @@
 		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]")
 		return
 
-	else if (istype(P, /obj/item/weapon/stamp))
-		if ((!in_range(src, usr) && loc != user && loc.loc != user && user.get_active_hand() != P))
+	else if ((istype(P, /obj/item/weapon/stamp) && !( istype(P, /obj/item/weapon/stamp/mail))))
+		if ((!in_range(src, usr) && loc != user && !( istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
 			return
 		playsound(src,'sound/effects/Stamp.ogg',40,1)
-		stamps += (stamps=="" ? "<HR>" : "<BR>") + "<i>This paper is marked with the [P.name].</i>"
-
+		stamps += "<img src=large_[P.icon_state].png>"
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
-		x = rand(-2, 2)
-		y = rand(-3, 2)
-		offset_x += x
-		offset_y += y
-		stampoverlay.pixel_x = x
-		stampoverlay.pixel_y = y
-
-
-		if (!ico)
-			ico = new
-		ico += "paper_[P.icon_state]"
+		stampoverlay.pixel_x = rand(-2, 2)
+		stampoverlay.pixel_y = rand(-3, 2)
 		stampoverlay.icon_state = "paper_[P.icon_state]"
 
-		if (!stamped)
+		if(!stamped)
 			stamped = new
 		stamped += P.type
 		overlays += stampoverlay
 
-		user << "<span class='notice'>You stamp the paper with your hot wax seal.</span>"
+		user << "<span class='notice'>You stamp the paper with the [P.name].</span>"
 
 	else if (istype(P, /obj/item/weapon/flame))
 		burnpaper(P, user)

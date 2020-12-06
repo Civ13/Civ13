@@ -323,6 +323,7 @@
 		update_icon()
 		invisibility = 0
 
+
 /obj/structure/banner/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
 		user << "You start ripping off the [src]..."
@@ -331,7 +332,46 @@
 			qdel(src)
 	else
 		..()
+/obj/structure/banner/faction/team
+	var/team = null
+	name = "team banner"
+	desc = "A sports team banner."
 
+/obj/structure/banner/faction/team/New()
+	..()
+	assign_team()
+
+/obj/structure/banner/faction/team/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	return
+
+/obj/structure/banner/faction/team/attack_hand(mob/user as mob)
+	return
+
+/obj/structure/banner/faction/team/proc/assign_team(new_team = null)
+	if (!new_team)
+		new_team = src.team
+	if (map && map.ID == MAP_FOOTBALL)
+		var/obj/map_metadata/football/FM = map
+		if (FM.team1 == src.team)
+			color1 = FM.teams[src.team][FM.team1_kit]["shirt_color"]
+			color2 = FM.teams[src.team][FM.team1_kit]["shorts_color"]
+		else if  (FM.team2 == src.team)
+			color1 = FM.teams[src.team][FM.team2_kit]["shirt_color"]
+			color2 = FM.teams[src.team][FM.team2_kit]["shorts_color"]
+		else
+			color1 = FM.teams[src.team]["main uniform"]["shirt_color"]
+			color2 = FM.teams[src.team]["main uniform"]["shorts_color"]
+		var/image/overc = image("icon" = icon, "icon_state" = "[bstyle]_1")
+		overc.color = color1
+		overlays += overc
+		var/image/overc1 = image("icon" = icon, "icon_state" = "[bstyle]_2")
+		overc1.color = color2
+		overlays += overc1
+		name = "[src.team] banner"
+		update_icon()
+/obj/structure/banner/faction/team/team1
+
+/obj/structure/banner/faction/team/team2
 
 /obj/item/weapon/poster/faction
 	name = "rolled faction poster"

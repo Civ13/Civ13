@@ -447,6 +447,8 @@
 	name = "reinforced table"
 	desc = "A very hard table."
 	icon_state = "reinftable"
+	health = 350
+	not_movable = TRUE
 	frame = /obj/structure/table_frame
 	framestack = /obj/item/stack/material/steel
 	buildstack = /obj/item/stack/material/steel

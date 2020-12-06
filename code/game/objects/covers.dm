@@ -717,21 +717,21 @@
 /* Road Destruction*/
 
 /obj/covers/roads/modern/attackby(obj/O as obj, mob/living/human/user as mob)
-	if (istype(O,/obj/item/weapon/pickaxe/bone))
+	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,65,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe))
+	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,45,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,25,src))
@@ -740,13 +740,13 @@
 			qdel(src)
 
 /obj/covers/roads/dirt/attackby(obj/O as obj, mob/living/human/user as mob)
-	if (istype(O, /obj/item/weapon/shovel/bone))
+	if (istype(O, /obj/item/weapon/material/shovel/bone))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
 		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
 		if (do_after(user,60,src))
 			user << "<span class='notice'>You finish filling over \the [src].</span>"
 			qdel(src)
-	else if (istype(O, /obj/item/weapon/shovel))
+	else if (istype(O, /obj/item/weapon/material/shovel))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
 		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
 		if (do_after(user,30,src))
@@ -754,21 +754,21 @@
 			qdel(src)
 
 /obj/covers/roads/roman/attackby(obj/O as obj, mob/living/human/user as mob)
-	if (istype(O,/obj/item/weapon/pickaxe/bone))
+	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,65,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe))
+	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,45,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,25,src))
@@ -777,21 +777,21 @@
 			qdel(src)
 
 /obj/covers/roads/cobble/attackby(obj/O as obj, mob/living/human/user as mob)
-	if (istype(O,/obj/item/weapon/pickaxe/bone))
+	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,65,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe))
+	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,45,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,25,src))
@@ -800,21 +800,21 @@
 			qdel(src)
 
 /obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/human/user as mob)
-	if (istype(O,/obj/item/weapon/pickaxe/bone))
+	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,65,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/sandstone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe))
+	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,45,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/sandstone(loc)
 			qdel(src)
-	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
 		if (do_after(user,25,src))
@@ -1346,6 +1346,52 @@
 	material = "Stone"
 	hardness = 100
 	buildstack = /obj/item/stack/material/sandstone
+
+/obj/covers/sandstone_block_wall
+	name = "sandstone block wall"
+	desc = "A sandstone block wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_block_wall0"
+	base_icon_state = "sandstone_block_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 400
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 7
+	material = "Stone"
+	hardness = 100
+	buildstack = /obj/item/stack/material/sandstone
+	adjusts = TRUE
+
+/obj/covers/sandstone_block_wall/archway
+	name = "sandstone block archway"
+	desc = "A sandstone block archway."
+	icon_state = "sandstone_block_archway"
+	base_icon_state = "sandstone_block_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
+
+/obj/covers/sandstone_block_wall/archway/red
+	name = "red sandstone block archway"
+	desc = "red sandstone stone block archway."
+	icon_state = "redsandstone_block_archway"
+	base_icon_state = "redsandstone_block_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
+
+/obj/covers/sandstone_block_wall/red
+	name = "red sandstone block wall"
+	desc = "A red sandstone block wall."
+	icon_state = "redsandstone_block_wall0"
+	base_icon_state = "redsandstone_block_wall"
 
 /obj/covers/sandstone_wall
 	name = "sandstone brick wall"

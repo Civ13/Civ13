@@ -204,6 +204,7 @@
 	desc = "A paper water cup."
 	icon_state = "water_cup_e"
 	possible_transfer_amounts = null
+	w_class = 1
 	volume = 10
 	center_of_mass = list("x"=16, "y"=12)
 	New()
@@ -283,6 +284,13 @@
 /obj/item/weapon/reagent_containers/food/drinks/britcup
 	name = "cup"
 	desc = "A cup with the British flag emblazoned on it."
+	icon_state = "britcup"
+	volume = 30
+	center_of_mass = list("x"=15, "y"=13)
+
+/obj/item/weapon/reagent_containers/food/drinks/britmug
+	name = "coffee mug"
+	desc = "A ceramic mug with a bright ensign emblazoned on it."
 	icon_state = "britcup"
 	volume = 30
 	center_of_mass = list("x"=15, "y"=13)

@@ -1,4 +1,3 @@
-
 /mob/living/simple_animal/hostile/dinosaur/velociraptor
 	name = "velociraptor"
 	desc = "Yep. You are fucked."
@@ -23,6 +22,65 @@
 	health = 140
 	melee_damage_lower = 35
 	melee_damage_upper = 40
+	mob_size = MOB_LARGE
+	predatory_carnivore = 1
+	carnivore = 1
+	faction = "neutral"
+	can_bite_limbs_off = TRUE
+
+/mob/living/simple_animal/hostile/dinosaur/compsognathus
+	name = "compsognathus"
+	desc = "Deadly in numbers..."
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "compsognathus"
+	icon_living = "compsognathus"
+	icon_dead = "compsognathus_dead"
+	icon_gib = "compsognathus_dead"
+	speak = list("hisss","kkk!","krrrr")
+	speak_emote = list("chirp", "hiss")
+	emote_hear = list("chirps","hisses")
+	emote_see = list("stares ferociously", "grunts")
+	speak_chance = TRUE
+	move_to_delay = 2
+	see_in_dark = 8
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "pokes"
+	stop_automated_movement_when_pulled = FALSE
+	maxHealth = 40
+	health = 40
+	melee_damage_lower = 25
+	melee_damage_upper = 10
+	mob_size = MOB_SMALL
+	predatory_carnivore = 1
+	carnivore = 1
+	faction = "neutral"
+
+/mob/living/simple_animal/hostile/dinosaur/dimetrodon
+	name = "dimetrodon"
+	desc = "A large predatory reptile very deadly."
+	icon = 'icons/mob/animal_big.dmi'
+	icon_state = "dimetrodon"
+	icon_living = "dimetrodon"
+	icon_dead = "dimetrodon_dead"
+	icon_gib = "dimetrodon_dead"
+	speak = list("hisss","kkk!","krrrr")
+	speak_emote = list("bellow", "hiss")
+	emote_hear = list("bellows","hisses")
+	emote_see = list("stares ferociously", "grunts")
+	speak_chance = TRUE
+	move_to_delay = 3
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "pokes"
+	stop_automated_movement_when_pulled = FALSE
+	maxHealth = 240
+	health = 240
+	melee_damage_lower = 45
+	melee_damage_upper = 50
 	mob_size = MOB_LARGE
 	predatory_carnivore = 1
 	carnivore = 1

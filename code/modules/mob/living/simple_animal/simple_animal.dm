@@ -56,7 +56,6 @@
 	var/scavenger = 0 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
-
 	var/starves = TRUE
 
 	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunt: move towards prey areas. defends: will attack only if attacked
@@ -230,7 +229,7 @@
 		Move(get_step(src,moving_to))
 		turns_since_move = FALSE
 		return "wander"
-	else if (t_behaviour == "hunt" || t_behaviour == "defends")
+	else if (t_behaviour == "hunt" || (t_behaviour == "defends" && target_mob))
 		a_intent = I_HARM
 		if(prob(50))
 			if(!isemptylist(hostilesounds))
@@ -517,12 +516,15 @@
 						else if (istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar))
 							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
-						else if (istype(src, /mob/living/simple_animal/boar))
+						else if (istype(src, /mob/living/simple_animal/boar_gilt))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
+							new/obj/item/weapon/pigleg(get_turf(src))
+						else if (istype(src, /mob/living/simple_animal/boar_boar))
 							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/chicken) || istype(src, /mob/living/simple_animal/rooster))
 							new/obj/item/weapon/chicken_carcass(get_turf(src))
-						else if (istype(src, /mob/living/simple_animal/cow) || istype(src, /mob/living/simple_animal/bull))
+						else if (istype(src, /mob/living/simple_animal/cattle/cow) || istype(src, /mob/living/simple_animal/cattle/bull))
 							new/obj/item/weapon/reagent_containers/food/snacks/cow/stomach(get_turf(src))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
@@ -597,13 +599,25 @@
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 					bone.name = "[name] bone"
 					bone.amount = amt
-				if (istype(src, /mob/living/simple_animal/hostile/bear))
+				if (istype(src, /mob/living/simple_animal/hostile/bear)) //all bears on the inheritance path drop leather to compensate for improper types.
+					var/obj/item/stack/material/leather/NP = new/obj/item/stack/material/leather(get_turf(src))
+					NP.amount = 1.5
+				if (istype(src, /mob/living/simple_animal/hostile/bear/boar/black))
 					var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(get_turf(src))
 					NP.amount = 6
-				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
+				if (istype(src, /mob/living/simple_animal/hostile/bear/sow/black))
+					var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(get_turf(src))
+					NP.amount = 6
+				if (istype(src, /mob/living/simple_animal/hostile/bear/boar/polar))
 					var/obj/item/stack/material/pelt/bearpelt/white/NP = new/obj/item/stack/material/pelt/bearpelt/white(get_turf(src))
 					NP.amount = 6
-				else if (istype(src, /mob/living/simple_animal/hostile/bear/brown))
+				if (istype(src, /mob/living/simple_animal/hostile/bear/sow/polar))
+					var/obj/item/stack/material/pelt/bearpelt/white/NP = new/obj/item/stack/material/pelt/bearpelt/white(get_turf(src))
+					NP.amount = 6
+				if (istype(src, /mob/living/simple_animal/hostile/bear/boar/brown))
+					var/obj/item/stack/material/pelt/bearpelt/brown/NP = new/obj/item/stack/material/pelt/bearpelt/brown(get_turf(src))
+					NP.amount = 6
+				if (istype(src, /mob/living/simple_animal/hostile/bear/sow/brown))
 					var/obj/item/stack/material/pelt/bearpelt/brown/NP = new/obj/item/stack/material/pelt/bearpelt/brown(get_turf(src))
 					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
@@ -633,19 +647,28 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/alligator))
 					var/obj/item/stack/material/pelt/gatorpelt/NP = new/obj/item/stack/material/pelt/gatorpelt(get_turf(src))
 					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/trex))
+					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+					NP.amount = 10
 				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor))
 					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
 					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/pachy))
+					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))
+					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+					NP.amount = 1
 				else if (istype(src, /mob/living/simple_animal/sheep))
 					var/obj/item/stack/material/pelt/sheeppelt/NP = new/obj/item/stack/material/pelt/sheeppelt(get_turf(src))
 					NP.amount = 2
 				else if (istype(src, /mob/living/simple_animal/goat))
 					var/obj/item/stack/material/pelt/goatpelt/NP = new/obj/item/stack/material/pelt/goatpelt(get_turf(src))
 					NP.amount = 2
-				else if (istype(src, /mob/living/simple_animal/cow))
+				else if (istype(src, /mob/living/simple_animal/cattle/cow))
 					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
 					NP.amount = 2
-				else if (istype(src, /mob/living/simple_animal/bull))
+				else if (istype(src, /mob/living/simple_animal/cattle/bull))
 					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
 					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/bison))

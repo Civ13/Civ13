@@ -8,10 +8,26 @@
 		var/new_eyes = "Black"
 		var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Randomize",list(/*"Biome Appropriate",*/"Randomize","Customize"))
 		if (choices == "Customize")
-//				var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla"))
-//				if (choice_race == "Randomize")
-//					choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla")
-			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
+			var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla","Wolf"))
+			if (choice_race == "Randomize")
+				choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla","Wolf")
+			switch(choice_race)
+				if ("Gorilla")
+					gorillaman = 1
+				if ("Orc")
+					orc = 1
+				if ("Ant")
+					ant = 1
+				if ("Lizard")
+					lizard = 1
+				if ("Wolf")
+					wolfman = 1
+				if ("Crustacean")
+					crab = 1
+			var/choice1 = "English"
+			if (choice_race == "Human")
+				choice1 = "English"
+				//choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
 			if (choice1 == "Randomize")
 				choice1 = pick("Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin")
 			else
@@ -591,33 +607,33 @@
 					name = species.get_random_german_name(gender)
 					real_name = name
 					add_note("Known Languages", "German")
-					possible_h_list = list("Light Brown","Blond","Dirty Blond")
-					possible_e_list = list("Blue","Green")
+					possible_h_list = list("Dirty Blond","Light Brown","Dark Brown")
+					possible_e_list = list("Blue","Brown")
 					possible_s_list = list(-15,-30)
 				if ("sea")
-					add_language("Gaelic",TRUE)
+					add_language("Cherokee",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
-					for (var/datum/language/gaelic/A in languages)
+					for (var/datum/language/cherokee/A in languages)
 						default_language = A
-					name = species.get_random_gaelic_name(gender)
+					name = species.get_random_cherokee_name(gender)
 					real_name = name
-					add_note("Known Languages", "Gaelic")
-					possible_h_list = list("Orange","Red")
-					possible_e_list = list("Blue","Green","Brown")
-					possible_s_list = list(-22,-37)
+					add_note("Known Languages", "Cherokee")
+					possible_h_list = list("Brown","Black")
+					possible_e_list = list("Brown")
+					possible_s_list = list(-49,-56)
 				if ("semiarid","desert")
-					add_language("French",TRUE)
+					add_language("Italian",TRUE)
 					remove_language("English")
-					remove_note("Known Languages","French")
-					for (var/datum/language/french/A in languages)
+					remove_note("Known Languages","English")
+					for (var/datum/language/italian/A in languages)
 						default_language = A
-					name = species.get_random_french_name(gender)
+					name = species.get_random_italian_name(gender)
 					real_name = name
-					add_note("Known Languages", "French")
-					possible_h_list = list("Light Brown","Dark Brown")
-					possible_e_list = list("Green","Brown")
-					possible_s_list = list(-29,-48)
+					add_note("Known Languages", "Italian")
+					possible_h_list = list("Black","Dark Brown")
+					possible_e_list = list("Brown")
+					possible_s_list = list(-31,-49)
 
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)
@@ -713,6 +729,127 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
+	else if (map.ID == MAP_NOMADS_AFRICA)
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		var/area/mob_area = get_area(src)
+		spawn(5)
+			switch (mob_area.climate)
+				if ("jungle")
+					add_language("Swahili",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/swahili/A in languages)
+						default_language = A
+					name = species.get_random_swahili_name(gender)
+					real_name = name
+					add_note("Known Languages", "Swahili")
+					possible_h_list = list("Brown","Black")
+					possible_e_list = list("Brown")
+					possible_s_list = list(-40,-60)
+				if ("savanah")
+					add_language("Zulu",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","Zulu")
+					for (var/datum/language/zulu/A in languages)
+						default_language = A
+					name = species.get_random_zulu_name(gender)
+					real_name = name
+					add_note("Known Languages", "Zulu")
+					possible_h_list = list("Black")
+					possible_e_list = list("Brown")
+					possible_s_list = list(-45,-60)
+				if ("desert")
+					add_language("Egyptian",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/cherokee/A in languages)
+						default_language = A
+					name = species.get_random_cherokee_name(gender)
+					real_name = name
+					add_note("Known Languages", "Egyptian")
+					possible_h_list = list("Brown","Black")
+					possible_e_list = list("Brown")
+					possible_s_list = list(-29,-35)
+				if ("semiarid")
+					add_language("Greek",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/greek/A in languages)
+						default_language = A
+					name = species.get_random_greek_name(gender)
+					real_name = name
+					add_note("Known Languages", "Greek")
+					possible_h_list = list("Light Brown","Dark Brown")
+					possible_e_list = list("Brown")
+					possible_s_list = list(-29,-34)
+
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
+	else if (map.ID == MAP_NATIONSRP)
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		spawn(5)
+			//west
+			if (x<75)
+				add_language("Japanese",TRUE)
+				remove_note("Known Languages","English")
+				for (var/datum/language/japanese/A in languages)
+					default_language = A
+				name = species.get_random_japanese_name(gender)
+				real_name = name
+				add_note("Known Languages", "Japanese and English")
+				possible_h_list = list("Light Brown","Dark Brown")
+				possible_e_list = list("Green","Brown","Black")
+				possible_s_list = list(-35,-60)
+			//EAST
+			else
+				add_language("Spanish",TRUE)
+				remove_note("Known Languages","English")
+				for (var/datum/language/spanish/A in languages)
+					default_language = A
+				name = species.get_random_spanish_name(gender)
+				real_name = name
+				add_note("Known Languages", "Spanish and English")
+				possible_h_list = list("Light Brown","Dark Brown")
+				possible_e_list = list("Green","Brown","Black")
+				possible_s_list = list(-45,-65)
+				return
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
 	else
 		if (faction_text == ARAB)
 			s_tone = -90
@@ -725,3 +862,4 @@
 
 	force_update_limbs()
 	update_body()
+

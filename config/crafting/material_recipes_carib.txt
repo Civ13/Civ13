@@ -1,0 +1,1348 @@
+//************| CARIB_RECIPIES GENERAL INDEX |**********************************************************************************
+//********| Follow the lines to find subcategories |*******************************************************************************
+//**| Using 'find' command in the 'edit' menu is recommended |*********************************************************************
+//**| No two subtitles will be the same other than in index, and single titles are easy to locate |********************************
+//**| Search "index", in find command to jump back to the top |********************************************************************
+//**| Index was made by @FantasticFwoosh, ping me if there's a problem other than the list content, unless caused by this index |**
+
+//**| CLAY |**| CLAY ROOFING |**| CLAY KITCHEN OBJECTS |**| CLAY BUILDING MATERIALS, FLOORS & STRUCTURES |**| CLAY STUCCO |**| CLAY PLANT POTS |**
+//************************************************************************************************************************************************
+
+//**| LEATHER |**| LEATHER WEAPONS & TOOLS |**| LEATHER FURNITURE |**| LEATHER STORAGE |**| LEATHER HEALTHCARE |**| LEATHER UNIFORMS & JACKETS |**| LEATHER HATS |**| LEATHER SHOES |**| LEATHER ARMOR |**
+//********************************************************************************************************************************************************************************************************
+//**| LEATHER ACCESSORIES |**| LEATHER WEAPON ACCESSORIES |
+//*********************************************************
+
+//**| ELECTRONICS |**| ELECTRONICS RADIO & COMMUNICATION |**| ELECTRONICS CAMERAS |**| ELECTRONICS FURNITURE |**
+//**************************************************************************************************************
+
+//**| WOOLCLOTH |**| WOOLCLOTH HATS |**| WOOLCLOTH MASKS & EYEWEAR |**| WOOLCLOTH UNIFORMS |**| WOOLCLOTH SUITS & COATS |**| WOOLCLOTH ACCESORIES |**| WOOLCLOTH BEDSHEETS |**
+//****************************************************************************************************************************************************************************
+
+//**| CLOTH |**| CLOTH ACCESSORIES |**| CLOTH BEDSHEETS |**| CLOTH BANNERS & FLAGS |**| CLOTH HEALTHCARE |**| CLOTH CARPETS |**| CLOTH FURNITURE |**| CLOTH SUITS, VESTS, COATS, JACKETS |**
+//******************************************************************************************************************************************************************************************
+//**| CLOTH ARMOR |**| CLOTH HATS |**| CLOTH MASKS & EYEWEAR |**| CLOTH UNIFORMS |**| CLOTH MILITARY UNIFORMS |**********************************************************************************************
+//******************************************************************************************************************************************************************************************
+
+//**| BARBWIRE |**
+//****************
+
+//**| LEAD |**
+//************
+
+//**| PLASTIC |**| PLASTIC STORAGE |**| PLASTIC GAS MASKS |**| PLASTIC FACE MASKS |**| PLASTIC SIGNS |**| PLASTIC DRINKS |**| PLASTIC CLOTHING & ARMOR |**
+//********************************************************************************************************************************************************
+
+//**| KEVLAR |**
+//**************
+
+//**| CHITIN |**
+//**************
+
+//**| BEARPELT |**| BROWN BEARPELT |**| WHITE BEARPELT |**| BLACK BEARPELT |**
+//****************************************************************************
+
+//**| WOLFPELT |**
+//****************
+
+//**| CATPELT |**| PANTHERPELT |**| LIONPELT |**
+//**********************************************
+
+//**| LIZARDPELT |**| GATORPELT |**
+//*********************************
+
+//**| SHEEPPELT |**| GOATPELT |**
+//*******************************
+
+//**| COWPELT |**| BISONPELT |**
+//******************************
+
+//**| MONKEYPELT |**
+//******************
+
+//**| ORCPELT |*****
+//******************
+
+//**| GORILLAPELT |**
+//*******************
+
+//**| HUMANPELT |**
+//*****************
+
+//**| FOXPELT |**| WHITE FOXPELT |**
+//**********************************
+
+//**| TOBACCO |**
+//***************
+
+//**| COCAINE |**
+//***************
+
+//**| POPPY |**
+//*************
+
+//**| BONE |**|FOSSILS|**
+//***********************
+
+//**| STONE |**| STONE SUPPORTS |**| STONE RESEARCH & TOOLS |**| STONE FLOORS |**| (STONE) RAW MARBLE FLOORS |**| (STONE) MARBLE FLOORS |**| (STONE) DECORATIVE MARBLE FLOORS #1 |****************
+//************************************************************************************************************************************************************************************************
+//**| (STONE) DECORATIVE MARBLE FLOORS #2 |**| STONE CONSTRUCTIONS & DECORATIONS |**| STONE MONUMENTS |**| STONE ROADS |**| STONE 'STATUE' & WINDOWS |**| STONE PRODUCTION BUILDINGS & ECONOMY |**
+//************************************************************************************************************************************************************************************************
+//**| STONE WEAPONS & PROJECTILES |**| STONE BRICKS & CONSTRUCTIONS |**| STONE WALL, DOORWAYS & FORTIFICATION CONSTRUCTIONS |*********************************************************************
+//************************************************************************************************************************************************************************************************
+
+//**| RAGS |**
+//************
+
+//**| HEMP |**
+//************
+
+//**| FLAX |**
+//************
+
+//**| ROPE |**
+//************
+
+//**| GLASS |**| GLASS DRINKS |**| GLASS ELECTRICAL |**| GLASS CHEMISTRY |**| GLASS FURNITURE |**| GLASS EYEWEAR |**
+//******************************************************************************************************************
+
+//**| ROBERTS CARTS |**| ROBERTS FACTORIES |**| ROBERTS BATHTUBS |**
+//******************************************************************
+
+//**| GOLD |**| GOLD CLOTHING & ACCESSORIES |**| GOLD DECORATION |**| GOLD WEAPONS & TOOLS |**
+//********************************************************************************************
+
+//**| SILVER |**| SILVER WEAPONS & TOOLS |**| SILVER CLOTHING & ACCESSORIES |**| SILVER DECORATION |**
+//****************************************************************************************************
+
+//**| TIN |**| TIN CANS |**
+//*************************
+
+//**| COPPER |**| COPPER WEAPONS & TOOLS |**| COPPER PROJECTILES & BULLETS, GRENADES |**| COPPER MACHINERY & ELECTRONICS |**| COPPER ARMOR, CLOTHING & ACCESSORIES |**
+//********************************************************************************************************************************************************************
+
+//**| STEEL |**| STEEL WEAPONS & TOOLS |**| STEEL SIEGE WEAPONS |**| STEEL FLOORS & CONSTRUCTIONS |**| STEEL VEHICLE PARTS |**| STEEL PRODUCTION & ECONOMY |**| STEEL STORAGE |**
+//***************************************************************************************************************************************************************************
+//**| STEEL ELECTRICAL & COMMUNICATION|**| STEEL PROJECTILES|**| STEEL DECORATION|*******************************************************************************************
+//***************************************************************************************************************************************************************************
+
+//**| BRONZE |**| BRONZE WEAPONS & TOOLS |**| BRONZE PROJECTILES |**| BRONZE ARMOR |**| BRONZE HEALTHCARE |**| BRONZE CLOTHING & ACCESSORIES |**| BRONZE DECORATION & MONUMENTS |**
+//*********************************************************************************************************************************************************************************
+
+//**| WOOD |**| WOOD VEHICLES & LOCOMOTIVES |**| WOOD PRODUCTION & ECONOMY |**| WOOD CONSTRUCTIONS |**| WOOD BARRICADES |**| WOOD HYGIENE |**| WOOD WEAPONS |**| WOOD PROJECTILES & SHAFTS |*******
+//*************************************************************************************************************************************************************************************************
+//**| WOOD TOOLS |**| WOOD FURNITURE |**| WOOD DECORATION & MONUMENTS |**| WOOD CLOTHING |**| WOOD ARMOR |**| WOOD KITCHEN |**| WOOD ENTERTAINMENT |**| WOOD RESEARCH & PAPER |********************
+//*************************************************************************************************************************************************************************************************
+//**| WOOD SIEGE WEAPONS |**| WOOD HEALTHCARE |**| WOOD PAINTINGS |**| WOOD PUNISHMENTS |**********************************************************************************************************
+//*************************************************************************************************************************************************************************************************
+
+/**| BAMBOO |**| BAMBOO DECORATION & RELIGION | BAMBOO CONSTRUCTIONS |**| BAMBOO RESEARCH & PAPER |**| BAMBOO CLOTHING |**| BAMBOO WEAPONS |
+
+//**| IRON |**| IRON LOCOMOTIVES & TRACKS |**| IRON TOOLS |**| IRON FURNITURE |**| IRON PRODUCTION & ECONOMY |**| IRON WEAPONS |**| IRON CONSTRUCTIONS |**| IRON PROJECTILES & BULLETS |**
+//****************************************************************************************************************************************************************************************
+//**| IRON CLOTHING & ACCESSORIES |**| IRON HEALTHCARE |**| IRON FIREARMS |***************************************************************************************************************
+//****************************************************************************************************************************************************************************************
+
+//**| SANDSTONE |**| SANDSTONE CONSTRUCTIONS |**| SANDSTONE DECORATIONS & MONUMENTS |**| SANDSTONE STRUCTURES, PRODUCTION & ECONOMY |**| SANDSTONE FORTIFICATIONS |**| SANDSTONE PROJECTILES |**
+//**********************************************************************************************************************************************************************************************
+
+//**|OBSIDIAN|**|OBSIDIAN CONSTRUCTIONS|**
+
+//*************************************************************
+//*********************| CLAY |********************************
+//*************************************************************
+
+//*****************| CLAY ROOFING |****************************
+
+RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,0.5,25,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired black clay roofing,/obj/item/weapon/clay/roofing/kerawa,0.5,25,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,0.75,20,0,1,none,103,0,0,8,null
+
+//*****************| CLAY KITCHEN OBJECTS |***************************
+
+RECIPE: /material/clay/,unfired clay vase,/obj/item/weapon/clay/vase,3,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay wine cup,/obj/item/weapon/clay/winecup,1,30,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay bowl,/obj/item/weapon/clay/claybowl,1,30,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay jug,/obj/item/weapon/clay/clayjug,2,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay cup,/obj/item/weapon/clay/claycup,1,30,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay cooking pot,/obj/item/weapon/clay/cookingpot,2,20,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired very small clay pot,/obj/item/weapon/clay/verysmallclaypot,1,20,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired small clay pot,/obj/item/weapon/clay/smallclaypot,1,30,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired large clay pot,/obj/item/weapon/clay/bigclaypot,3,60,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
+
+//*****************| CLAY BUILDING MATERIALS, FLOORS & STRUCTURES |***************************
+
+RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5,50,0,1,none,0,0,0,8,null
+
+RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
+RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
+
+RECIPE: /material/clay/,unfired ingot mold,/obj/item/weapon/clay/mold,1.5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired axehead mold,/obj/item/weapon/clay/mold/axehead,1.5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired sword mold,/obj/item/weapon/clay/mold/sword,5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired knife mold,/obj/item/weapon/clay/mold/knife,1,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired spearhead mold,/obj/item/weapon/clay/mold/spearhead,1.5,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired pickaxe mold,/obj/item/weapon/clay/mold/pickaxe,3,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired shovel mold,/obj/item/weapon/clay/mold/shovel,3,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired arrowhead mold,/obj/item/weapon/clay/mold/arrowhead,1,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired blacksmith clay pot,/obj/item/weapon/clay/mold/claypot,2,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,unfired blacksmith clay jug,/obj/item/weapon/clay/mold/clayjug,5,40,0,1,molds,0,0,0,8,null
+
+//*****************| CLAY STUCCO |***************************
+
+//*****************| CLAY PLANT POTS |***************************
+
+RECIPE: /material/clay/,light clay plant pot,/obj/structure/plant_pot/clay/light,4,25,1,1,plant pots & decoration,18,0,0,8,null
+RECIPE: /material/clay/,medium sized yellow clay planter,/obj/structure/plant_pot/medium_planter/clay/yellow,4,25,1,1,plant pots & decoration,18,0,0,8,null
+
+//**************************************************************
+//*********************| LEATHER |******************************
+//**************************************************************
+
+RECIPE: /material/leather/,custom flag maker,/obj/item/flagmaker,4,100,0,1,none,0,0,0,8,null
+
+//*****************| LEATHER WEAPONS & TOOLS |***************************
+
+RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
+RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,0,1,weapons,0,38,0,8,null
+
+//*****************| LEATHER FURNITURE |***************************
+
+RECIPE: /material/leather/,leather curtain,/obj/structure/curtain/leather,1,80,1,1,furniture,0,0,0,8,null
+RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null
+RECIPE: /material/leather/,foldable canopy,/obj/item/weapon/tent,5,75,0,1,furniture,0,0,0,8,null
+RECIPE: /material/leather/,comfy chair,/obj/structure/bed/chair/comfy/brown,6,100,1,1,furniture,25,0,25,8,null
+
+//*****************| LEATHER STORAGE |***************************
+
+RECIPE: /material/leather/,ore collector,/obj/item/weapon/storage/ore_collector,5,100,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,seed collector,/obj/item/weapon/storage/seed_collector,5,100,0,1,storage,0,0,0,8,null
+
+RECIPE: /material/leather/,quiver,/obj/item/weapon/storage/backpack/quiver,3,60,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,leather belt satchel,/obj/item/weapon/storage/belt/leather,3,60,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,leather backpack,/obj/item/weapon/storage/backpack,6,100,0,1,storage,18,0,0,8,null
+RECIPE: /material/leather/,leather waterskin,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin,3,90,0,1,storage,0,0,0,8,null
+
+//*****************| LEATHER HEALTHCARE |***************************
+
+RECIPE: /material/leather/,leather bandages,/obj/item/stack/medical/bruise_pack/bint/leather,1,75,0,1,medical,0,0,0,8,null
+
+//*****************| LEATHER UNIFORMS & JACKETS |***************************
+
+RECIPE: /material/leather/,leather loincloth,/obj/item/clothing/under/loinleather,2,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,aztec loincloth,/obj/item/clothing/under/aztec_loincloth,2,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,small customizable loincloth,/obj/item/clothing/under/custom/spartan,3,50,0,1,clothing,0,0,0,8,null
+
+RECIPE: /material/leather/,short leather loincloth,/obj/item/clothing/under/indian1,3,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,long leather loincloth,/obj/item/clothing/under/indian2,3,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,covering leather loincloth,/obj/item/clothing/under/indian3,3,50,0,1,clothing,0,0,0,8,null
+
+RECIPE: /material/leather/,indian chief clothing,/obj/item/clothing/under/indianchief,5,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,big leopard pelt,/obj/item/clothing/under/indianhuge,8,100,0,1,clothing,0,0,0,8,null
+
+//*****************| LEATHER HATS |***************************
+
+RECIPE: /material/leather/,chief hat,/obj/item/clothing/head/chief_hat,5,70,0,1,hats,0,0,0,8,null
+
+//*****************| LEATHER SHOES |***************************
+
+//*****************| LEATHER ARMOR |***************************
+
+RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,0,0,8,null
+RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,armor,0,0,0,8,null
+
+//*****************| LEATHER ACCESSORIES |***************************
+
+RECIPE: /material/leather/,coin pouch,/obj/item/clothing/accessory/storage/coinpouch,2,60,0,1,accessories,18,0,0,8,null
+RECIPE: /material/leather/,wallet,/obj/item/clothing/accessory/storage/coinpouch/wallet,2,60,0,1,accessories,87,0,0,8,null
+
+RECIPE: /material/leather/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
+
+//*****************| LEATHER WEAPON ACCESSORIES |***************************
+
+RECIPE: /material/leather/,sword sheath,/obj/item/clothing/accessory/storage/sheath,3,80,0,1,weapon accessories,0,54,0,8,null
+RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/storage/sheath/longer,3,80,0,1,weapon accessories,0,54,0,8,null
+RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,4,80,0,1,weapon accessories,0,54,0,8,null
+RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,3,80,0,1,weapon accessories,0,54,0,8,null
+RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,6,80,0,1,weapon accessories,0,54,0,8,null
+
+//**************************************************************
+//*********************| ELECTRONICS ***************************
+//**************************************************************
+
+//*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
+
+//*****************| ELECTRONICS CAMERAS |***************************
+
+//*****************| ELECTRONICS FURNITURE |***************************
+
+//**************************************************************
+//*********************| WOOLCLOTH |****************************
+//**************************************************************
+
+RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
+RECIPE: /material/woolcloth/,wool primitive coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,150,0,1,jackets & vests,0,0,20,8,null
+
+RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
+RECIPE: /material/woolcloth/,steppe wool shoes,/obj/item/clothing/shoes/steppe_shoes,3,80,0,1,foot wear,0,0,0,8,null
+
+//*****************| WOOLCLOTH HATS |***************************
+
+RECIPE: /material/woolcloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,0,8,null
+RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,0,8,null
+RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/customhood,2,40,0,1,hats,0,0,0,8,null
+RECIPE: /material/woolcloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,0,8,null
+RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,0,8,null
+
+//*****************| WOOLCLOTH MASKS & EYEWEAR |***************************
+
+//*****************| WOOLCLOTH UNIFORMS |***************************
+
+RECIPE: /material/woolcloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,0,8,null
+RECIPE: /material/woolcloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,0,8,null
+RECIPE: /material/woolcloth/,steppe wool tunic,/obj/item/clothing/under/medieval/steppe_tunic,3,100,0,1,clothing,0,0,0,8,null
+RECIPE: /material/woolcloth/,indian shaman clothing,/obj/item/clothing/under/indianshaman,4,100,0,1,clothing,0,0,0,8,null
+
+//*****************| WOOLCLOTH SUITS & COATS |***************************
+
+RECIPE: /material/woolcloth/,steppe shaman wool coat,/obj/item/clothing/suit/storage/jacket/steppe_shaman,6,140,0,1,jackets & vests,0,0,0,8,null
+
+//*****************| WOOLCLOTH ACCESSORIES |***************************
+
+RECIPE: /material/woolcloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/woolcloth/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/woolcloth/,customizable cape,/obj/item/clothing/accessory/custom/cape,2,30,0,1,accessories,0,0,0,3,null
+RECIPE: /material/woolcloth/,customizable tabard,/obj/item/clothing/accessory/custom/tabard,2,30,0,1,accessories,0,0,0,3,null
+RECIPE: /material/woolcloth/,customizable apron,/obj/item/clothing/accessory/custom/apron,2,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/woolcloth/,customizable priest band,/obj/item/clothing/accessory/custom/priest_band,1.5,50,0,1,accessories,0,0,28,8,null
+RECIPE: /material/woolcloth/,customizable scarf,/obj/item/clothing/accessory/custom/scarf,2,30,0,1,accessories,0,0,70,8,null
+
+//*****************| WOOLCLOTH BEDSHEETS |***************************
+
+RECIPE: /material/woolcloth/,white bedsheet,/obj/item/weapon/bedsheet,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,medical bedsheet,/obj/item/weapon/bedsheet/medical,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,brown bedsheet,/obj/item/weapon/bedsheet/brown,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
+
+//**************************************************************
+//*********************| CLOTH |********************************
+//**************************************************************
+
+RECIPE: /material/cloth/,small sail,/obj/item/sail,15,125,0,1,none,0,0,22,8,null
+
+//*****************| CLOTH ACCESSORIES |***************************
+
+RECIPE: /material/cloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/cloth/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/cloth/,customizable cape,/obj/item/clothing/accessory/custom/cape,2,30,0,1,accessories,0,0,0,3,null
+RECIPE: /material/cloth/,customizable tabard,/obj/item/clothing/accessory/custom/tabard,2,30,0,1,accessories,0,0,0,3,null
+RECIPE: /material/cloth/,customizable apron,/obj/item/clothing/accessory/custom/apron,2,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/cloth/,customizable priest band,/obj/item/clothing/accessory/custom/priest_band,1.5,50,0,1,accessories,0,0,28,8,null
+RECIPE: /material/cloth/,customizable scarf,/obj/item/clothing/accessory/custom/scarf,2,30,0,1,accessories,0,0,70,8,null
+
+//*****************| CLOTH BEDSHEETS |***************************
+
+RECIPE: /material/cloth/,white bedsheet,/obj/item/weapon/bedsheet,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/cloth/,medical bedsheet,/obj/item/weapon/bedsheet/medical,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/cloth/,brown bedsheet,/obj/item/weapon/bedsheet/brown,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/cloth/,blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/cloth/,yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/cloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
+
+//*****************| CLOTH BANNERS & FLAGS |***************************
+
+RECIPE: /material/cloth/,custom flag maker,/obj/item/flagmaker,4,100,0,1,banners & flags,0,0,21,8,null
+RECIPE: /material/cloth/,faction banner (square),/obj/structure/banner/faction/banner_a,3,65,1,1,banners & flags,0,0,21,8,null
+RECIPE: /material/cloth/,faction banner (gonfalon),/obj/structure/banner/faction/banner_b,3,65,1,1,banners & flags,0,0,21,8,null
+RECIPE: /material/cloth/,religious banner,/obj/structure/banner/religious,3,65,1,1,banners & flags,0,0,21,8,null
+
+//*****************| CLOTH HEALTHCARE |***************************
+
+RECIPE: /material/cloth/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,75,0,1,healthcare,0,0,19,8,null
+RECIPE: /material/cloth/,surgery kit,/obj/item/weapon/storage/firstaid/surgery_empty,6,90,0,1,healthcare,18,0,26,8,null
+RECIPE: /material/cloth/,burn kit,/obj/item/stack/medical/advanced/ointment,1,90,0,1,healthcare,0,0,43,8,null
+RECIPE: /material/cloth/,trauma kit,/obj/item/stack/medical/advanced/bruise_pack,2,105,0,1,healthcare,0,0,56,8,null
+
+//*****************| CLOTH CARPETS |***************************
+
+RECIPE: /material/cloth/,pink carpet,/obj/covers/carpet/pinkcarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,red carpet,/obj/covers/carpet/redcarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,orange carpet,/obj/covers/carpet/orangecarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,purple carpet,/obj/covers/carpet/purplecarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,blue carpet,/obj/covers/carpet/bluecarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,teal carpet,/obj/covers/carpet/tealcarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,green carpet,/obj/covers/carpet/greencarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,black carpet,/obj/covers/carpet/blackcarpet,1,20,0,1,carpeting,45,0,0,8,null
+RECIPE: /material/cloth/,white carpet,/obj/covers/carpet/whitecarpet,1,20,0,1,carpeting,45,0,0,8,null
+
+//*****************| CLOTH FURNITURE |***************************
+
+RECIPE: /material/cloth/,cloth curtain,/obj/structure/curtain,1,80,1,1,furniture,0,0,0,8,null
+RECIPE: /material/cloth/,foldable canopy,/obj/item/weapon/tent,4,75,0,1,furniture,0,0,19,8,null
+RECIPE: /material/cloth/,sofa (left),/obj/structure/bed/sofa/left,8,140,1,1,furniture,0,0,93,8,null
+RECIPE: /material/cloth/,sofa (centre),/obj/structure/bed/sofa,8,140,1,1,furniture,0,0,93,8,null
+RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,furniture,0,0,93,8,null
+
+***************************| CLOTH SUITS, VESTS, COATS, JACKETS |***************************
+
+RECIPE: /material/cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
+
+//*****************| CLOTH ARMOR |***************************
+
+//*****************| CLOTH HATS |***************************
+
+RECIPE: /material/cloth/,fiendish headdress,/obj/item/clothing/head/fiendish,4,55,0,1,hats,0,0,0,8,null
+RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats,0,0,0,8,null
+RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,0,8,null
+RECIPE: /material/cloth/,hooded cape,/obj/item/clothing/head/hooded_cape,6,100,0,1,hats,0,0,0,8,null
+RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,0,8,null
+RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,0,8,null
+RECIPE: /material/cloth/,grand turban,/obj/item/clothing/head/turban/sultan,5,110,0,1,hats,0,0,0,8,null
+
+//*****************| CLOTH MASKS & EYEWEAR |***************************
+
+RECIPE: /material/cloth/,eyepatch,/obj/item/clothing/glasses/eyepatch,2,55,0,1,masks & eyewear,0,0,18,8,null
+RECIPE: /material/cloth/,blindfold,/obj/item/clothing/glasses/sunglasses/blindfold,2,55,0,1,masks & eyewear,0,0,18,8,null
+
+//*****************| CLOTH UNIFORMS |***************************
+
+RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,8,null
+RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,12,8,null
+RECIPE: /material/cloth/,customizable tribal robe,/obj/item/clothing/under/customtribalrobe,3,100,0,1,clothing,0,0,18,8,null
+RECIPE: /material/cloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,0,8,null
+RECIPE: /material/cloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,0,8,null
+
+RECIPE: /material/cloth/,indian shaman clothing,/obj/item/clothing/under/indianshaman,4,100,0,1,clothing,0,0,0,8,null
+
+//*****************| CLOTH MILITARY & LAW ENFORCMENT UNIFORMS |***************************
+
+//**************************************************************
+//*********************| BARBWIRE |*****************************
+//**************************************************************
+
+//**************************************************************
+//***********************| LEAD |*******************************
+//**************************************************************
+
+//**************************************************************
+//*********************| PLASTIC |******************************
+//**************************************************************
+
+//*****************| PLASTIC STORAGE |***************************
+
+//*****************| PLASTIC GAS MASKS |***************************
+
+//*****************| PLASTIC FACE MASKS |***************************
+
+//*****************| PLASTIC SIGNS |***************************
+
+//*****************| PLASTIC DRINKS |***************************
+
+//*****************| PLASTIC CLOTHING & ARMOR |***************************
+
+//**************************************************************
+//**********************| KEVLAR |******************************
+//**************************************************************
+
+//**************************************************************
+//*********************| CHITIN |*******************************
+//**************************************************************
+
+//**************************************************************
+//*********************| BEARPELT |*****************************
+//**************************************************************
+//*****************| BROWN BEARPELT CLOTHES|***************************
+
+RECIPE: /material/bearpelt/brown/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/brown/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/brown/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/brown/,bear pelt headcover,/obj/item/clothing/head/bearpelt/brown,4,150,0,1,none,0,0,0,8,null
+
+//*****************| BROWN BEARPELT ARMOR|***************************
+
+//*****************| WHITE BEARPELT CLOTHES |***************************
+
+RECIPE: /material/bearpelt/white/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,bear pelt headcover,/obj/item/clothing/head/bearpelt/white,4,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
+
+//*****************| WHITE BEARPELT ARMOR|***************************
+
+//*****************| BLACK BEARPELT CLOTHES |***************************
+
+RECIPE: /material/bearpelt/black/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/black,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,bear pelt headcover,/obj/item/clothing/head/bearpelt/black,4,150,0,1,none,0,0,0,8,null
+
+//*****************| BLACK BEARPELT ARMOR|***************************
+
+//**************************************************************
+//*********************| WOLFPELT |*****************************
+//**************************************************************
+
+RECIPE: /material/wolfpelt/,primative pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/grey,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/wolfpelt/,fur boots,/obj/item/clothing/shoes/fur/grey,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/wolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/grey,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/wolfpelt/,wolf pelt headcover,/obj/item/clothing/head/wolfpelt,4,150,0,1,none,0,0,0,8,null
+RECIPE: /material/wolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,12,220,0,1,none,0,0,38,8,null
+
+//**************************************************************
+//*********************| CATPELT |******************************
+//**************************************************************
+
+RECIPE: /material/catpelt/,pelt coat,/obj/item/clothing/suit/prehistoricfurcoat,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/catpelt/,fur boots,/obj/item/clothing/shoes/fur,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/catpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,none,0,0,0,8,null
+
+//*****************| PANTHERPELT |***************************
+
+RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pantherpelt,3,150,0,1,none,0,0,0,8,null
+
+//*****************| LIONPELT |***************************
+
+RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt,3,150,0,1,none,0,0,0,8,null
+
+//***************************************************************
+//*********************| LIZARDPELT |***************************
+//***************************************************************
+
+RECIPE: /material/lizardpelt/,lizard pelt headcover,/obj/item/clothing/head/lizardpelt,3,150,0,1,none,0,0,0,8,null
+
+//*********************| GATORPELT |****************************
+
+RECIPE: /material/gatorpelt/,alligator pelt headcover,/obj/item/clothing/head/gatorpelt,3,150,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| SHEEPPELT |***************************
+//**************************************************************
+
+RECIPE: /material/sheeppelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/sheeppelt/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/sheeppelt/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/sheeppelt/,sheep pelt headcover,/obj/item/clothing/head/sheeppelt,3,150,0,1,none,0,0,0,8,null
+RECIPE: /material/sheeppelt/,raw wool,/obj/item/stack/material/wool,1,20,0,0,none,0,0,0,8,null
+
+//*********************| GOATPELT |***************************
+
+RECIPE: /material/goatpelt/,goat pelt headcover,/obj/item/clothing/head/goatpelt,3,150,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| COWPELT |***************************
+//**************************************************************
+
+RECIPE: /material/cowpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/cowpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+
+//*********************| BISONPELT |*************************
+
+RECIPE: /material/bisonpelt/,bison pelt headcover,/obj/item/clothing/head/bisonpelt,3,150,0,1,none,0,0,0,8,null
+
+RECIPE: /material/bisonpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/bisonpelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bisonpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| MONKEYPELT |***************************
+//**************************************************************
+
+RECIPE: /material/monkeypelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/monkeypelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/monkeypelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| ORCPELT |******************************
+//**************************************************************
+
+RECIPE: /material/orcpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/orc,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/orcpelt/,fur boots,/obj/item/clothing/shoes/fur/orc,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/orcpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/orc,3,80,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| GORILLAPELT |**************************
+//**************************************************************
+
+RECIPE: /material/gorillapelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/black,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/gorillapelt/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/gorillapelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| HUMANPELT |****************************
+//**************************************************************
+
+RECIPE: /material/humanpelt/,skin coat,/obj/item/clothing/suit/storage/coat/fur/pink,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/humanpelt/,skin boots,/obj/item/clothing/shoes/fur/pink,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/humanpelt/,skin gloves,/obj/item/clothing/gloves/thick/leather/pink,3,80,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| FOXPELT |******************************
+//**************************************************************
+
+RECIPE: /material/foxpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,8,null
+RECIPE: /material/foxpelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/foxpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/foxpelt/,fox pelt headcover,/obj/item/clothing/head/foxpelt,3,150,0,1,none,0,0,0,8,null
+
+//*****************| WHITE FOXPELT |***************************
+
+RECIPE: /material/whitefoxpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/whitefoxpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/whitefoxpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/whitefoxpelt/,white fox pelt headcover,/obj/item/clothing/head/foxpelt/white,3,150,0,1,none,0,0,0,8,null
+RECIPE: /material/whitefoxpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
+
+//**************************************************************
+//*********************| TOBACCO |******************************
+//**************************************************************
+
+RECIPE: /material/tobacco/,cigar,/obj/item/clothing/mask/smokable/cigarette/cigar,3,75,0,1,none,0,0,23,8,null
+
+//**************************************************************
+//*********************| COCAINE |******************************
+//**************************************************************
+
+//**************************************************************
+//*********************| POPPY |********************************
+//**************************************************************
+
+RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,50,0,1,none,0,0,29,8,null
+
+//*************************************************************
+//*********************| BONE |********************************
+//*************************************************************
+
+RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,primitive bone hair-pipe armor,/obj/item/clothing/suit/hairbonearmor,6,100,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,bone hatchet,/obj/item/weapon/material/hatchet/tribal/bone,2,35,0,1,none,0,0,0,8,bone
+RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,8,bone
+RECIPE: /material/bone/,tribal bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,8,bone
+RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/material/pickaxe/bone,2,50,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,bone shovel,/obj/item/weapon/material/shovel/bone,2,50,0,1,none,0,0,0,8,bone
+RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
+RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/thrown/tomahawk,4,30,0,1,none,0,0,0,8,bone
+
+//*********************| FOSSILS |***********************
+
+RECIPE: /material/fossil/,bones (10x),/obj/item/stack/material/bone,1,10,0,1,none,0,0,0,8,null
+RECIPE: /material/fossil/,stone (8x),/obj/item/stack/material/stone,1,10,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| STONE |********************************
+//**************************************************************
+
+RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
+
+//*****************| STONE SUPPORTS & ROOFING |***************************
+
+RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,aztec column,/obj/structure/mine_support/stone/aztec,2.5,130,1,1,construction,0,0,0,8,null
+
+RECIPE: /material/stone/,mayan roof builder,/obj/item/weapon/roofbuilder/mayan,1,20,0,1,construction,0,0,0,8,null
+
+//*************| STONE RESEARCH & TOOLS |***************
+
+RECIPE: /material/stone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,none,0,0,0,8,null
+RECIPE: /material/stone/,scientific rock slate,/obj/item/weapon/book/research,4,110,0,1,none,0,0,0,0,null
+
+RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,stone
+RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/material/pickaxe/stone,2,50,0,1,tools,0,0,0,8,null
+RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,stone
+
+//*************| STONE FLOORS |***************
+
+RECIPE: /material/stone/,slate floor,/obj/covers/slatefloor,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,stone decorative slab floor,/obj/covers/stone/slab/decorative,1,25,1,1,floors,0,0,0,8,null
+
+//*************| (STONE) RAW MARBLE FLOORS |***************
+
+//*************| (STONE) MARBLE FLOORS |***************
+
+//*************| (STONE) DECORATIVE MARBLE FLOORS #1 |***************
+
+//*************| (STONE) DECORATIVE MARBLE FLOORS #2 |***************
+
+//*************| STONE CONSTRUCTIONS & DECORATIONS |***************
+
+RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
+
+RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,religious & decoration,28,0,0,8,null
+
+RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,aztec statue,/obj/structure/religious/aztec_statue,8,140,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,large stone head,/obj/structure/religious/olmec_head,12,190,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,moai,/obj/structure/religious/moai,20,250,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,0,0,0,8,null
+
+//*************| STONE MONUMENTS |***************
+
+RECIPE: /material/stone/,monumental stone megalith,/obj/structure/religious/monument/megalith,45,300,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,monumental statue of a giant ape,/obj/structure/religious/monument/shaman/ape,45,300,1,1,religious & decoration,0,0,0,8,null
+
+//*************| STONE ROADS |***************
+
+//*************| STONE 'STATUE' & WINDOWS |***************
+
+RECIPE: /material/stone/,stone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,stone
+RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/stone/,full stone window,/obj/structure/window_frame/stonefull,5,140,1,1,construction,18,0,0,8,null
+
+//*************| STONE PRODUCTION BUILDINGS & ECONOMY |***************
+
+RECIPE: /material/stone/,stone kiln,/obj/structure/furnace/kiln/stone,10,150,1,1,production,26,0,0,8,null
+RECIPE: /material/stone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,null
+RECIPE: /material/stone/,stone anvil,/obj/structure/anvil/stone,25,150,1,1,production,0,16,0,8,null
+
+//*************| STONE WEAPONS & PROJECTILES |***************
+
+RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
+RECIPE: /material/stone/,stone arrowhead (x4),/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
+RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
+
+//*************| STONE BRICKS & CONSTRUCTIONS |***************
+
+//*************| STONE WALL, DOORWAYS & FORTIFICATION CONSTRUCTIONS |***************
+
+RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,8,null
+
+RECIPE: /material/stone/,stone block archway,/obj/covers/stone_wall/classic/archway,8,140,1,1,doorways and other buildings,0,0,0,8,null
+
+RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/barrier/rock,3,70,1,1,fortifications,0,0,0,8,null
+
+RECIPE: /material/stone/,stone shingled wall (vertical center),/obj/structure/barricade/jap_v,4,80,1,1,fortifications,29,0,0,8,null
+RECIPE: /material/stone/,stone shingled wall (vertical top),/obj/structure/barricade/jap_v_t,4,80,1,1,fortifications,29,0,0,8,null
+RECIPE: /material/stone/,stone shingled wall (vertical bottom),/obj/structure/barricade/jap_v_b,4,80,1,1,fortifications,29,0,0,8,null
+RECIPE: /material/stone/,stone shingled wall (horizontal center),/obj/structure/barricade/jap_h,4,80,1,1,fortifications,29,0,0,8,null
+RECIPE: /material/stone/,stone shingled wall (horizontal left),/obj/structure/barricade/jap_h_l,4,80,1,1,fortifications,29,0,0,8,null
+RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/barricade/jap_h_r,4,80,1,1,fortifications,29,0,0,8,null
+
+//*******************************************************
+//*********************| RAGS |**************************
+//*******************************************************
+
+RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
+
+//*************************************************************
+//*********************| HEMP |********************************
+//*************************************************************
+
+RECIPE: /material/hemp/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
+
+//*************************************************************
+//*********************| FLAX |********************************
+//*************************************************************
+
+RECIPE: /material/flax/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
+
+//*************************************************************
+//*********************| ROPE |********************************
+//*************************************************************
+
+RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
+RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,leash,/obj/item/weapon/leash,1,20,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
+
+//*************************************************************
+//*********************| GLASS |*******************************
+//*************************************************************
+
+RECIPE: /material/glass/,fermentation jar,/obj/item/weapon/starterjar,3,50,0,1,none,0,0,0,8,null
+RECIPE: /material/glass/,vial arrowhead (x4),/obj/item/stack/arrowhead/vial,1,10,0,1,none,0,26,26,8,null
+
+//*************| GLASS DRINKS |***************
+
+RECIPE: /material/glass/,tribal pot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot,2,40,0,1,drinks,0,0,0,3,null
+
+//*************| GLASS ELECTRICAL |***************
+
+//*************| GLASS CHEMISTRY |***************
+
+//*************| GLASS FURNITURE |***************
+
+//*************| GLASS EYEWEAR |***************
+
+//**************************************************************
+//************************ROBERTS CARTS*************************
+//**************************************************************
+
+//COPPER AGE WOODEN CART//
+RECIPE: /material/wood/,wooden cart,/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,8,null
+//COPPER AGE WOODEN CART//
+
+//RENAISSANCE AGE COPPER CART//
+RECIPE: /material/copper/,copper cart,/obj/structure/closet/crate/cart/copper,30,190,1,1,logistics,80,0,0,3,null
+//RENAISSANCE AGE COPPER CART//
+
+//**************************************************************
+//************************ROBERTS CARTS*************************
+//**************************************************************
+//
+//**************************************************************
+//************************ROBERTS FACTORIES*********************
+//***********************COINSMELTER****************************
+
+//**************************************************************
+//*************************ROBERTS BATHTUBS*********************
+//**************************************************************
+
+//  STONE AGE //
+RECIPE: /material/wood/,bathtub,/obj/structure/shower/bathtub/wooden,50,190,1,1,hygiene,10,0,5,0,null
+//STONE AGE //
+
+// EARLY COPPER AGE //
+RECIPE: /material/stone/,stone bathtub,/obj/structure/shower/bathtub/stone,50,220,1,1,hygiene,15,0,10,1,null
+//EARLY COPPER AGE //
+
+// LATE COPPER AGE //
+RECIPE: /material/copper/,copper bathtub,/obj/structure/shower/bathtub/copper,50,280,1,1,hygiene,25,0,15,2,null
+//LATE COPPER AGE //
+
+// LATE BRONZE AGE //
+RECIPE: /material/bronze/,bronze bathtub,/obj/structure/shower/bathtub/bronze,50,320,1,1,hygiene,30,0,20,4,null
+//LATE BRONZE AGE //
+
+//**************************************************************
+//************************PUBLIC BATHTUBS***********************
+//**************************************************************
+
+//DARK AGES//
+RECIPE: /material/wood/,wooden public bathtub,/obj/structure/shower/bathtub/big/wooden,100,440,1,1,hygiene,45,0,30,1,null
+//DARK AGES//
+
+//MIDDLE AGES//
+RECIPE: /material/stone/,stone public bathtub,/obj/structure/shower/bathtub/big/stone,50,450,1,1,hygiene,55,0,40,2,null
+//MIDDLE AGES//
+
+//RENAISSANCE AGES//
+RECIPE: /material/copper/,copper public bathtub,/obj/structure/shower/bathtub/big/copper,50,500,1,1,hygiene,70,0,50,3,null
+//RENAISSANCE AGES//
+
+//************************************************************
+//*********************| GOLD |*******************************
+//************************************************************
+
+RECIPE: /material/gold/,gold coins,/obj/item/stack/money/goldcoin,1,35,0,1,none,0,0,0,8,null
+
+//*****************| GOLD CLOTHING & ACCESSORIES |***************************
+
+RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,25,0,0,8,null
+RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
+
+RECIPE: /material/gold/,gold indian accessories,/obj/item/clothing/accessory/armband/indian2,4,95,0,1,none,0,0,0,8,null
+
+//*****************| GOLD DECORATION |***************************
+
+RECIPE: /material/gold/,gold statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,gold
+RECIPE: /material/gold/,gold sarcophagus,/obj/structure/closet/coffin/sarcophagus/gold,15,350,1,1,none,0,0,0,1,gold
+
+//*****************| GOLD WEAPONS & TOOLS |***************************
+
+RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none,0,0,0,8,null
+
+//************************************************************
+//*********************| SILVER |*****************************
+//************************************************************
+
+RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
+
+//*****************| SILVER WEAPONS & TOOLS |***************************
+
+//*****************| SILVER CLOTHING & ACCESSORIES |***************************
+
+RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,3,135,0,1,none,0,0,0,8,null
+RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,2,95,0,1,none,0,0,0,8,null
+
+//*****************| SILVER DECORATION |***************************
+
+RECIPE: /material/silver/,silver statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,silver
+
+//*********************************************************
+//*********************| TIN |*****************************
+//*********************************************************
+
+RECIPE: /material/tin/,small tin pot,/obj/item/weapon/reagent_containers/glass/small_pot,3,120,0,1,none,0,0,0,8,null
+RECIPE: /material/tin/,dummy armor,/obj/item/weapon/dummy_armor,4,120,1,1,none,18,0,0,8,null
+
+//*****************| TIN CANS |***************************
+
+RECIPE: /material/tin/,small tin can (x3),/obj/item/weapon/can/small,1,50,0,1,none,95,0,0,8,null
+RECIPE: /material/tin/,tin can (x2),/obj/item/weapon/can,1,50,0,1,none,95,0,0,8,null
+RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95,0,0,8,null
+
+//*********************************************************
+//*********************| COPPER |**************************
+//*********************************************************
+
+RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
+RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,0,1,none,0,0,0,8,null
+RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,0,1,none,0,0,0,8,null
+RECIPE: /material/copper/,handbell,/obj/item/weapon/handbell,2,50,0,1,none,40,0,0,8,null
+
+//*****************| COPPER WEAPONS & TOOLS |***************************
+
+//*****************| COPPER PROJECTILES & BULLETS, GRENADES |***************************
+
+//*****************| COPPER MACHINERY & ELECTRONICS |***************************
+
+//*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
+
+RECIPE: /material/copper/,aztec harness,/obj/item/clothing/suit/armor/ancient/aztec_harness,4,80,0,1,armor,0,19,0,3,null
+RECIPE: /material/copper/,copper arm bangles,/obj/item/clothing/accessory/armband/armbangle/copper,2,95,0,1,none,0,0,0,8,null
+
+//********************************************************
+//*********************| STEEL |**************************
+//********************************************************
+
+//*********************| STEEL WEAPONS & TOOLS |**************************
+
+//*********************| STEEL SIEGE WEAPONS |**************************
+
+//*********************| STEEL FLOORS & CONSTRUCTIONS |**************************
+
+//*********************| STEEL VEHICLE PARTS |**************************
+
+//*********************| STEEL PRODUCTION & ECONOMY |**************************
+
+//*********************| STEEL STORAGE |**************************
+
+//*********************| STEEL ELECTRICAL & COMMUNICATION|**************************
+
+//*********************| STEEL PROJECTILES|**************************
+
+//*********************| STEEL DECORATION|**************************
+
+RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
+RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole,6,95,0,1,none,0,0,0,8,null
+
+//********************************************************
+//*********************| BRONZE |*************************
+//********************************************************
+
+//*********************| BRONZE WEAPONS & TOOLS |*************************
+
+RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+
+//*********************| BRONZE PROJECTILES |*************************
+
+//*********************| BRONZE ARMOR |*************************
+
+RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,8,bronze
+
+//*********************| BRONZE HEALTHCARE |*************************
+
+RECIPE: /material/bronze/,bronze retractor,/obj/item/weapon/surgery/retractor/bronze,2,50,0,1,healthcare,18,0,26,8,null
+RECIPE: /material/bronze/,bronze hemostat,/obj/item/weapon/surgery/hemostat/bronze,2,50,0,1,healthcare,18,0,26,8,null
+RECIPE: /material/bronze/,bronze cautery,/obj/item/weapon/surgery/cautery/bronze,2,50,0,1,healthcare,18,0,26,8,null
+RECIPE: /material/bronze/,bronze bone saw,/obj/item/weapon/surgery/bone_saw/bronze,2,50,0,1,healthcare,18,0,26,8,null
+RECIPE: /material/bronze/,bronze bone setter,/obj/item/weapon/surgery/bonesetter/bronze,2,50,0,1,healthcare,18,0,26,8,null
+RECIPE: /material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze,2,50,0,1,healthcare,18,0,26,8,null
+
+//*********************| BRONZE CLOTHING & ACCESSORIES |*************************
+
+RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,0,1,none,0,0,0,8,null
+
+//*********************| BRONZE DECORATION & MONUMENTS |*************************
+
+RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,10,250,1,1,religious & decoration,10,0,0,8,bronze
+RECIPE: /material/bronze/,bronze sarcophagus,/obj/structure/closet/coffin/sarcophagus,25,350,1,1,religious & decoration,0,0,0,1,bronze
+
+//*******************************************************
+//*********************| WOOD |**************************
+//*******************************************************
+
+RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,null
+
+//*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
+
+RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
+
+RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
+
+//*********************| WOOD PRODUCTION & ECONOMY |**************************
+
+RECIPE: /material/wood/,research desk,/obj/structure/researchdesk,8,250,1,1,economy & production,0,0,0,8,null
+
+RECIPE: /material/wood/,tanning rack,/obj/structure/converter/tanning,8,80,1,1,economy & production,16,0,0,8,null
+RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
+
+RECIPE: /material/wood/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
+
+//*********************| WOOD CONSTRUCTIONS |**************************
+
+RECIPE: /material/wood/,roof support,/obj/structure/roof_support,2,30,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,mine support,/obj/structure/mine_support,2,30,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,nordic roof support,/obj/structure/roof_support/nordic,2,30,1,1,construction,47,0,0,8,null
+
+RECIPE: /material/wood/,wood roof builder,/obj/item/weapon/roofbuilder,1,20,0,1,construction,0,0,0,8,null
+
+RECIPE: /material/wood/,door,/obj/structure/simple_door/key_door/anyone/wood,5,50,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/,aztec door,/obj/structure/simple_door/key_door/anyone/aztec,5,50,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/,rustic door,/obj/structure/simple_door/key_door/anyone/rustic,4,40,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/,nordic door,/obj/structure/simple_door/key_door/anyone/nordic,5,50,1,1,construction,35,0,0,8,null
+
+RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,split thatch floor,/obj/covers/thatch2,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wood floor,/obj/covers/wood,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/,wood stairs,/obj/covers/wood/stairs,2,35,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/,fancy wood floor,/obj/covers/fancywood,1.5,25,1,1,construction,42,0,0,8,null
+
+RECIPE: /material/wood/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
+
+RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,6,90,1,1,construction,25,0,0,8,null
+RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,6,90,1,1,construction,25,0,0,8,null
+RECIPE: /material/wood/,wood wall,/obj/covers/wood_wall/adjustable,7,130,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/,aztec wall,/obj/covers/wood_wall/aztec,8,170,1,1,construction,35,0,0,8,null
+
+RECIPE: /material/wood/,custom rustic sign,/obj/structure/sign/custom,2.5,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,custom wood sign,/obj/structure/sign/custom/plaque,3,40,1,1,construction,25,0,0,8,null
+
+RECIPE: /material/wood/,signpost,/obj/structure/sign/signpost,4,40,1,1,construction,0,0,0,8,null
+
+RECIPE: /material/wood/,wood jail bars,/obj/covers/jail/woodjail,8,30,1,1,construction,55,0,0,8,null
+RECIPE: /material/wood/,locked wood jail door,/obj/structure/simple_door/key_door/custom/jail/woodjail,12,30,1,1,construction,55,0,0,8,null
+
+//*********************| WOOD BARRICADES |**************************
+
+RECIPE: /material/wood/,horizontal wood barrier,/obj/structure/barricade/horizontal,5,35,1,1,barricades,0,0,0,8,null
+RECIPE: /material/wood/,vertical wood barrier,/obj/structure/barricade/vertical,5,35,1,1,barricades,0,0,0,8,null
+RECIPE: /material/wood/,wood palisade,/obj/structure/grille/logfence,6,80,1,1,barricades,0,0,0,8,null
+RECIPE: /material/wood/,primitive wood fence,/obj/structure/grille/fence,3,60,1,1,barricades,10,0,0,2,null
+RECIPE: /material/wood/,primitive wood fence door,/obj/structure/simple_door/fence,3,60,1,1,barricades,10,0,0,2,null
+RECIPE: /material/wood/,picket wood fence,/obj/structure/grille/fence/picket,3,60,1,1,barricades,30,0,0,8,null
+RECIPE: /material/wood/,picket wood fence door,/obj/structure/simple_door/fence/picket,3,60,1,1,barricades,30,0,0,8,null
+RECIPE: /material/wood/,wood structure,/obj/structure/barricade,5,35,1,1,barricades,0,0,0,8,null
+
+//*********************| WOOD HYGIENE |**************************
+
+RECIPE: /material/wood/,outhouse,/obj/structure/toilet/outhouse,35,600,1,1,hygiene,0,0,45,8,null
+RECIPE: /material/wood/,male outhouse,/obj/structure/toilet/outhouse/male,35,600,1,1,hygiene,0,0,45,8,null
+RECIPE: /material/wood/,female outhouse,/obj/structure/toilet/outhouse/female,35,600,1,1,hygiene,0,0,45,8,null
+
+//*********************| WOOD WEAPONS |**************************
+
+RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
+
+RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
+RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,8,wood
+RECIPE: /material/wood/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,8,wood
+RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,8,null
+
+RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,8,null
+RECIPE: /material/wood/,chimalli,/obj/item/weapon/shield/chimalli,6,180,0,1,weapons,0,19,0,8,null
+
+RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,8,null
+
+//*********************| WOOD PROJECTILES & SHAFTS |**************************
+
+RECIPE: /material/wood/,arrow shaft (x3),/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
+RECIPE: /material/wood/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1,weapons,0,45,0,8,null
+
+//*********************| WOOD TOOLS |**************************
+
+RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
+RECIPE: /material/wood/,wood cane,/obj/item/weapon/cane,2,35,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/,berries gatherer,/obj/item/weapon/berriesgatherer,4,80,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/,fishing pole,/obj/item/weapon/fishing,3,120,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/,mop,/obj/item/weapon/mop,2,55,0,1,tools,22,0,0,8,null
+RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
+
+RECIPE: /material/wood/,bucket,/obj/item/weapon/reagent_containers/glass/bucket,2,60,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5,100,0,1,tools,0,0,0,8,null
+
+RECIPE: /material/wood/,fishing cage,/obj/structure/fishing_cage,12,200,1,1,tools,12,0,12,8,null
+
+RECIPE: /material/wood/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
+
+//*********************| WOOD FURNITURE |**************************
+
+RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0,8,null
+RECIPE: /material/wood/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null
+RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,_one_per_turf = 1,1,furniture,0,0,0,8,null
+RECIPE: /material/wood/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
+RECIPE: /material/wood/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
+RECIPE: /material/wood/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,14,0,0,8,null
+RECIPE: /material/wood/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,furniture,14,0,0,8,null
+RECIPE: /material/wood/,practice dummy,/obj/structure/practice_dummy,8,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,large barrel,/obj/structure/reagent_dispensers/largebarrel,16,100,1,1,furniture,19,0,0,8,null
+RECIPE: /material/wood/,practice target,/obj/structure/practice_dummy/target,6,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,wood mailbox,/obj/structure/closet/crate/wall_mailbox/wood_mailbox,3,65,1,1,furniture,40,0,0,8,null
+RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,41,0,0,8,null
+RECIPE: /material/wood/,wardrobe,/obj/structure/closet/cabinet,5,80,1,1,furniture,41,0,0,8,null
+RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,furniture,41,0,0,8,null
+
+//*********************| WOOD DECORATION & MONUMENTS |**************************
+
+RECIPE: /material/wood/,wood altar,/obj/structure/altar/wood,20,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/wood/,decorative wood mask,/obj/structure/religious/tribalmask,2,50,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/wood/,impaled skull,/obj/structure/religious/impaledskull,2,50,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/wood/,tiki statue,/obj/structure/religious/tiki_statue,10,150,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/wood/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/wood/,wood totem pole,/obj/structure/religious/totem_pole,10,250,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/wood/,cross,/obj/structure/religious/woodcross2,4,80,1,1,religious & decoration,47,0,0,8,null
+RECIPE: /material/wood/,small cross,/obj/structure/religious/woodcross1,2,50,1,1,religious & decoration,47,0,0,8,null
+
+//*********************| WOOD CLOTHING |**************************
+
+RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes & clothing,0,0,0,8,null
+
+RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,8,null
+RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,8,null
+
+//*********************| WOOD ARMOR |**************************
+
+RECIPE: /material/wood/,primitive wood armor,/obj/item/clothing/suit/woodarmor,15,150,0,1,none,0,0,0,8,null
+
+//*********************| WOOD KITCHEN |**************************
+
+RECIPE: /material/wood/,wood mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,40,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/wood/,campfire,/obj/structure/oven/fireplace,4,140,1,1,kitchen,0,0,0,8,null
+RECIPE: /material/wood/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/wood/,wood bowl,/obj/item/kitchen/wood_bowl,1,40,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,1,kitchen,19,0,0,8,null
+RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel/empty,5,75,1,1,kitchen,19,0,0,8,null
+RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,kitchen,20,0,0,8,null
+
+//*********************| WOOD ENTERTAINMENT |**************************
+
+RECIPE: /material/wood/,gong,/obj/structure/gong,5,100,1,1,entertainment & other,26,0,0,8,null
+RECIPE: /material/wood/,gong mallet,/obj/item/weapon/gongmallet,3,50,0,1,entertainment & other,26,0,0,8,null
+
+RECIPE: /material/wood/,bell stand,/obj/structure/bell_stand,3,100,0,1,entertainment & other,40,0,0,8,null
+
+RECIPE: /material/wood/,cigar case,/obj/item/weapon/storage/fancy/cigar,2,80,1,1,entertainment & other,65,0,0,8,null
+
+//*********************| WOOD RESEARCH & PAPER |**************************
+
+RECIPE: /material/wood/,research kit,/obj/item/weapon/researchkit,10,190,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/,scientific literature,/obj/item/weapon/book/research,4,110,0,1,paper & printing,0,0,0,8,null
+
+RECIPE: /material/wood/,holy book,/obj/item/weapon/book/holybook,15,240,1,1,paper & printing,0,0,0,8,null
+
+RECIPE: /material/wood/,official faction paper,/obj/item/weapon/paper/official,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,envelope,/obj/item/weapon/storage/envelope,2,35,0,1,paper & printing,40,0,0,8,null
+RECIPE: /material/wood/,wax seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
+
+RECIPE: /material/wood/,religious poster,/obj/item/weapon/poster/religious,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,military propaganda poster (flag),/obj/item/weapon/poster/faction/mil1,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,military propaganda poster (armed),/obj/item/weapon/poster/faction/mil2,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,work propaganda poster,/obj/item/weapon/poster/faction/work,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,leader propaganda poster,/obj/item/weapon/poster/faction/lead,1,25,0,1,paper & printing,19,0,0,8,null
+
+//*********************| WOOD SIEGE WEAPONS |**************************
+
+RECIPE: /material/wood/,siege ladder,/obj/item/weapon/siegeladder,8,100,0,1,siege weapons,24,33,0,8,null
+
+//*********************| WOOD HEALTHCARE |**************************
+
+RECIPE: /material/wood/,wooden foot,/obj/item/weapon/prosthesis/woodfoot,3,80,0,1,medical,0,0,18,8,null
+RECIPE: /material/wood/,wooden pegleg,/obj/item/weapon/prosthesis/pegleg,5,110,0,1,medical,0,0,18,8,null
+RECIPE: /material/wood/,doctor handbook,/obj/item/weapon/doctor_handbook,12,210,0,1,medical,33,0,48,8,null
+
+//*********************| WOOD PAINTINGS |**************************
+
+//*********************| WOOD PUNISHMENTS |**************************
+
+RECIPE: /material/wood/,gallows,/obj/structure/gallows,3,60,1,1,punishments,0,15,0,8,null
+RECIPE: /material/wood/,pillory,/obj/structure/pillory,8,60,1,1,punishments,0,32,0,8,null
+
+//*******************************************************
+//*********************| BAMBOO |************************
+//*******************************************************
+
+//*********************| BAMBOO DECORATION & RELIGION |**************************
+
+RECIPE: /material/bamboo/,bamboo altar,obj/structure/altar/material/bamboo,20,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/bamboo/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/bamboo/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,none,0,0,0,8,null
+
+//*********************| BAMBOO CONSTRUCTIONS |**************************
+
+RECIPE: /material/bamboo/,roof support,/obj/structure/roof_support/bamboo,2,30,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,horizontal tatami floor,/obj/covers/tatami,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,vertical tatami floor,/obj/covers/tatami_vertical,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,horizontal dark tatami floor,/obj/covers/tatami_dark,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,vertical dark tatami floor,/obj/covers/tatami_dark_vertical,0.75,20,1,1,construction,0,0,0,8,null
+
+//*********************| BAMBOO RESEARCH & PAPER |**************************
+
+RECIPE: /material/bamboo/,research kit,/obj/item/weapon/researchkit,10,190,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/bamboo/,scientific literature,/obj/item/weapon/book/research,4,110,0,1,paper & printing,0,0,0,8,null
+
+//*********************| BAMBOO CLOTHING |**************************
+
+//*********************| BAMBOO WEAPONS |**************************
+
+RECIPE: /material/bamboo/,training sword,/obj/item/weapon/material/sword/training/bamboo,8,80,0,1,none,0,21,0,3,bamboo
+RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,none,0,0,0,3,bamboo
+
+//*******************************************************
+//*********************| IRON |**************************
+//*******************************************************
+
+RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
+
+RECIPE: /material/iron/,ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,24,120,0,8,iron
+
+//*********************| IRON LOCOMOTIVES & TRACKS |**************************
+
+//*********************| IRON PRODUCTION & ECONOMY |**************************
+
+RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
+
+RECIPE: /material/iron/,large drying rack,/obj/structure/drying_rack,8,120,1,1,production,0,0,16,8,null
+
+//*********************| IRON TOOLS |**************************
+
+RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
+RECIPE: /material/iron/,trench shovel,/obj/item/weapon/material/shovel/trench,2,50,0,1,tools,14,0,0,8,null
+RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
+RECIPE: /material/iron/,planting trowel,/obj/item/weapon/material/trowel,3,35,0,1,tools,20,0,0,8,iron
+RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing/modern,5,60,0,1,tools,120,0,0,8,null
+
+//*********************| IRON FURNITURE, DECORATION & RELIGION |**************************
+
+RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
+
+RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
+
+RECIPE: /material/iron/,brazier,/obj/structure/brazier,4,90,1,1,production,33,0,0,8,null
+
+RECIPE: /material/iron/,iron altar,/obj/structure/altar/iron,12,200,1,1,furniture,0,0,0,8,null
+
+//*********************| IRON WEAPONS |**************************
+
+//*********************| IRON CONSTRUCTIONS |**************************
+
+RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,5,50,1,1,construction,28,0,0,8,null
+
+//*********************| IRON PROJECTILES & BULLETS |**************************
+
+//*********************| IRON CLOTHING & ACCESSORIES |**************************
+
+RECIPE: /material/iron/,iron arm bangles,/obj/item/clothing/accessory/armband/armbangle,2,95,0,1,none,0,0,0,8,null
+
+//*********************| IRON HEALTHCARE |**************************
+
+RECIPE: /material/iron/,splints,/obj/item/stack/medical/splint,2,75,0,1,healthcare,35,0,44,8,null
+RECIPE: /material/iron/,retractor,/obj/item/weapon/surgery/retractor,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,bone saw,/obj/item/weapon/surgery/bone_saw,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,bone setter,/obj/item/weapon/surgery/bonesetter,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,scalpel,/obj/item/weapon/surgery/scalpel,2,50,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,syringe,/obj/item/weapon/reagent_containers/syringe,1,25,0,1,healthcare,35,0,55,8,null
+RECIPE: /material/iron/,hemostat,/obj/item/weapon/surgery/hemostat,2,50,0,1,healthcare,35,0,67,8,null
+RECIPE: /material/iron/,cautery,/obj/item/weapon/surgery/cautery,2,50,0,1,healthcare,35,0,67,8,null
+RECIPE: /material/iron/,surgical drill,/obj/item/weapon/surgery/surgicaldrill,2,50,0,1,healthcare,35,0,110,8,null
+
+//*********************| IRON FIREARMS |**************************
+
+//*******************************************************
+//*********************| SANDSTONE |*********************
+//*******************************************************
+
+RECIPE: /material/sandstone/,smooth sandstone road,/obj/covers/roads/sandstone,1,0,1,1,roads,0,0,0,8,null
+
+//*********************| SANDSTONE CONSTRUCTIONS |**************************
+
+RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,125,1,1,construction,0,0,0,8,null
+
+RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
+
+RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
+
+RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone brick floor,/obj/covers/sandstone/brick,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone slab floor,/obj/covers/sandstone/slab,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/sandstone/,red sandstone slab floor,/obj/covers/sandstone/slab/red,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone tile,/obj/covers/sandstone/tile,2,30,1,1,floors,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone decorative tile,/obj/covers/sandstone/tile/decorative,2.5,35,1,1,floors,0,0,0,8,null
+RECIPE: /material/sandstone/,red sandstone decorative tile,/obj/covers/sandstone/tile/decorative/red,2.5,35,1,1,floors,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
+
+RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone/sandstone,2,130,1,1,construction,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,aztec column,/obj/structure/mine_support/stone/aztec/sandstone,2.5,130,1,1,construction,32,0,0,8,null
+
+RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/sandstonefull,5,140,1,1,construction,18,0,0,8,null
+
+RECIPE: /material/sandstone/,sandstone roof builder,/obj/item/weapon/roofbuilder/sandstone,1,20,0,1,construction,0,0,0,8,null
+
+//*********************| SANDSTONE DECORATIONS & MONUMENTS |**************************
+
+RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,15,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/sandstone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,26,0,0,8,sandstone
+
+//*********************| SANDSTONE STRUCTURES, PRODUCTION & ECONOMY |**************************
+
+RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null
+RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,3,100,1,1,structures,0,0,0,8,null
+
+RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
+RECIPE: /material/sandstone/,sandstone kiln,/obj/structure/furnace/kiln/sandstone,10,150,1,1,structures,26,0,0,8,null
+
+//*********************| SANDSTONE FORTIFICATIONS |**************************
+
+RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/barrier/sandstone,3,70,1,1,fortifications,0,0,0,8,null
+
+//*********************| SANDSTONE TOOLS & RESEARCH |**************************
+
+RECIPE: /material/sandstone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,scientific slate,/obj/item/weapon/book/research,4,110,0,1,tools,0,0,0,0,sandstone
+
+RECIPE: /material/sandstone/,sandstone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,pickaxe,/obj/item/weapon/material/pickaxe/stone,2,50,0,1,tools,0,0,0,8,sandstone
+
+//*********************| SANDSTONE PROJECTILES |**************************
+
+RECIPE: /material/sandstone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,sandstone
+RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/sandstone,1,10,0,1,projectiles,0,14,0,8,sandstone
+
+RECIPE: /material/sandstone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,8,sandstone
+
+//******************************************************
+//*********************| OBISIDAN |*********************
+//******************************************************
+
+RECIPE: /material/obsidian/,obsidian brazier,/obj/structure/brazier/obsidian,3,100,1,1,none,0,0,0,8,null
+
+//*********************| OBSIDIAN CONSTRUCTIONS |**************************
+
+RECIPE: /material/obsidian/,pillar,/obj/structure/mine_support/stone/obsidian,2,130,1,1,construction,0,0,0,8,obsidian
+RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec/obsidian,2.5,130,1,1,construction,32,0,0,8,obsidian
+
+//*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
+
+RECIPE: /material/obsidian/,obsidian altar,/obj/structure/altar/obsidian,15,200,1,1,religious & decoration,0,0,0,8,null

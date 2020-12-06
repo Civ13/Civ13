@@ -46,20 +46,29 @@
 
 /obj/structure/closet/examine(mob/user)
 	if (..(user, TRUE) && !opened)
-		var/content_size = FALSE
-		for (var/obj/item/I in contents)
-			if (!I.anchored)
-				content_size += ceil(I.w_class/2)
-		if (!content_size)
-			user << "It is empty."
-		else if (storage_capacity > content_size*4)
-			user << "It is barely filled."
-		else if (storage_capacity > content_size*2)
-			user << "It is less than half full."
-		else if (storage_capacity > content_size)
-			user << "There is still some free space."
+		if(istype(src, /obj/structure/closet/crate/wall_mailbox))
+			var/obj/structure/closet/crate/wall_mailbox/WM = src
+			if (WM.contents_stored == 0)
+				user << "It is empty."
+			else if  (WM.contents_stored <= 4 && WM.contents_stored != 0)
+				user << "There is something inside."
+			else if  (WM.contents_stored == 5)
+				user << "It is full."
 		else
-			user << "It is full."
+			var/content_size = FALSE
+			for (var/obj/item/I in contents)
+				if (!I.anchored)
+					content_size += ceil(I.w_class/2)
+			if (!content_size)
+				user << "It is empty."
+			else if (storage_capacity > content_size*4)
+				user << "It is barely filled."
+			else if (storage_capacity > content_size*2)
+				user << "It is less than half full."
+			else if (storage_capacity > content_size)
+				user << "There is still some free space."
+			else
+				user << "It is full."
 
 /obj/structure/closet/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (!istype(mover, /obj/item/projectile))
