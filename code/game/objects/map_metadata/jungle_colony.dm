@@ -38,19 +38,21 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 		if (J.is_nomad == TRUE)
 			. = FALSE
-		if (J.is_cowboy == TRUE)
+		else if (J.is_cowboy == TRUE)
 			. = FALSE
-		if (J.is_civilizations == TRUE)
+		else if (J.is_civilizations == TRUE)
 			. = FALSE
-		if (J.is_rcw == TRUE)
+		else if (J.is_rcw == TRUE)
 			. = FALSE
-		if (J.is_pioneer == TRUE)
+		else if (J.is_pioneer == TRUE)
 			. = FALSE
-		if (J.is_deal == TRUE)
+		else if (J.is_deal == TRUE)
 			. = FALSE
-		if (J.is_prison == TRUE)
+		else if (J.is_prison == TRUE)
 			. = FALSE
-		if (J.is_civil_war == TRUE)
+		else if (J.is_civil_war == TRUE)
+			. = FALSE
+		else if (J.is_football == TRUE)
 			. = FALSE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
@@ -80,4 +82,18 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/jungle_colony/cross_message(faction)
 	return ""
 
-
+/obj/map_metadata/jungle_colony/New()
+	..()
+	spawn(500)
+		if (season == "SPRING") //fixes game setting the season as spring
+			season = "Wet Season"
+	spawn(500)
+		for (var/i = 1, i <= 65, i++)
+			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/sea/sea))
+			new/obj/structure/fish(areaspawn)
+	spawn(500)
+		for (var/i = 1, i <= 30, i++)
+			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
+			new/obj/structure/piranha(areaspawn)
+	spawn(18000)
+		seasons()

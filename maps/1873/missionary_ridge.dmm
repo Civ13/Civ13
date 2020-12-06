@@ -207,7 +207,7 @@
 "dY" = (/obj/map_metadata/missionary_ridge,/turf/floor/grass,/area/caribbean)
 "dZ" = (/obj/structure/grille/fence{icon_state = "1"; dir = 4},/turf/floor/dirt,/area/caribbean)
 "ea" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean)
-"eb" = (/obj/roof/wood,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/turf/floor/trench,/area/caribbean)
+"eb" = (/obj/roof/wood,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/turf/floor/trench,/area/caribbean)
 "ec" = (/obj/item/weapon/wrench,/turf/floor/trench,/area/caribbean)
 "ed" = (/obj/structure/flag/us,/turf/floor/dirt,/area/caribbean)
 "ee" = (/obj/structure/flag/us,/turf/floor/dirt/burned,/area/caribbean)

@@ -957,10 +957,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 	if (owner)
 		playsound(owner, "trauma", 75, FALSE)
-		//owner.visible_message(\
-		//	"\red You hear a loud cracking sound coming from \the [owner].",\
-		//	"\red <b>Something feels like it shattered in your [name]!</b>",\
-		//	"You hear a sickening crack.")
 		if (owner.species && !(owner.species.flags & NO_PAIN))
 			owner.emote("painscream")
 

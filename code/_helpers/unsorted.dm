@@ -904,7 +904,7 @@ proc/is_hot(obj/item/W as obj)
 		istype(W, /obj/item/weapon/flame/lighter/zippo)			  || \
 		istype(W, /obj/item/weapon/flame/match)					  || \
 		istype(W, /obj/item/clothing/mask/smokable/cigarette) 			  || \
-		istype(W, /obj/item/weapon/shovel) \
+		istype(W, /obj/item/weapon/material/shovel) \
 	)
 
 /proc/is_surgery_tool(obj/item/W as obj)

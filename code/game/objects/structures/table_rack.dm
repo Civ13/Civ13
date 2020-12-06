@@ -29,3 +29,17 @@
 	flipped = -1
 	low = TRUE
 	fixedsprite = TRUE
+
+/obj/structure/table/rack/shelf
+	name = "shelf"
+	desc = "A store shelf."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "shelf0"
+
+/obj/structure/table/rack/coatrack
+	name = "coat rack"
+	desc = "A convenient place to hang your hat."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "coatrack"
+	flammable = TRUE
+	not_movable = FALSE

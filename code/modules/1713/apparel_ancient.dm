@@ -1212,6 +1212,32 @@
 	restricts_view = 1
 	heat_protection = FACE|EYES
 
+/obj/item/clothing/mask/stone
+	name = "stone mask"
+	desc = "A stone mask with a masculine apperance with fangs."
+	icon_state = "stone_mask"
+	item_state = "stone_mask"
+	flags_inv = HIDEFACE
+	body_parts_covered = FACE
+	w_class = 2
+	armor = list(melee = 5, arrow = 10, gun = FALSE, energy = 12, bomb = 45, bio = FALSE, rad = FALSE) //modest, weaker than japanese facemask
+	blocks_scope = TRUE
+	restricts_view = 1
+	heat_protection = FACE|EYES
+
+/obj/item/clothing/mask/stone_jewelled
+	name = "jewelled stone mask"
+	desc = "A jewelled stone mask, possibly sometype of honorific attire?"
+	icon_state = "stone_mask_jeweled"
+	item_state = "stone_mask_jeweled"
+	flags_inv = HIDEFACE
+	body_parts_covered = FACE
+	w_class = 2
+	armor = list(melee = 20, arrow = 20, gun = FALSE, energy = 8, bomb = 67, bio = FALSE, rad = FALSE) //modest, weaker than japanese facemask
+	blocks_scope = TRUE
+	restricts_view = 1
+	heat_protection = FACE|EYES
+
 /obj/item/clothing/suit/armor/god_pharoah //copied broadly from /obj/item/clothing/suit/armor/sauronarmor
 	name = "pharoahic armor of the gods"
 	desc = "The armor of the divine gods of the desert"

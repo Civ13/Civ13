@@ -516,8 +516,8 @@
 	value = 2
 
 /obj/item/stack/material/pelt/cowpelt
-	name = "cow pelt"
-	desc = "A pelt from a skinned cow."
+	name = "cattle pelt"
+	desc = "A pelt from skinned cattle."
 	icon_state = "sheet-cowpelt"
 	default_type = "cowpelt"
 	w_class = 2.0
@@ -622,7 +622,7 @@
 			qdel(src)
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
 	var/mob/living/human/U = user
-	recipes = material.get_recipes_civs(U.original_job_title, U)
+	recipes = material.get_recipes_civs(U)
 	..()
 
 /obj/item/stack/material/fossil

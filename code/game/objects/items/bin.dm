@@ -1,7 +1,7 @@
 /obj/item/weapon/paper_bin
 	name = "paper bin"
 	icon = 'icons/obj/bureaucracy.dmi'
-	icon_state = "paper_bin0"
+	icon_state = "paper_bin1"
 	item_state = "sheet-metal"
 	throwforce = TRUE
 	w_class = 3
@@ -95,3 +95,7 @@
 		icon_state = "paper_bin0"
 	else
 		icon_state = "paper_bin1"
+
+/obj/item/weapon/paper_bin/empty
+	icon_state = "paper_bin0"
+	amount = 0					//How much paper is in the bin.

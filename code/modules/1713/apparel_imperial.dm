@@ -272,6 +272,18 @@
 	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	health = 32
 
+/obj/item/clothing/head/helmet/imperial/cabasset
+	name = "cabasset helmet"
+	desc = "A protective and hardy morion helmet without the narrow ridge dent covering."
+	icon_state = "morion_helmet"
+	item_state = "morion_helmet"
+	worn_state = "morion_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 32, gun = 8, energy = 15, bomb = 41, bio = 21, rad = FALSE)
+	health = 34
+
+
 /* Colonial Boots*/
 
 /obj/item/clothing/shoes/blackboots1

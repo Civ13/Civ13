@@ -90,10 +90,7 @@
 	var/last_fire = -1
 
 /obj/item/weapon/gun/projectile/flintlock/attack_self(mob/user)
-	var/mob/living/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
-		return FALSE
+//	var/mob/living/human/H = user
 	if (!check_cocked)//Keeps people from spamming the bolt
 		check_cocked++
 		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
@@ -113,10 +110,7 @@
 	check_cocked--
 
 /obj/item/weapon/gun/projectile/flintlock/special_check(mob/user)
-	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS"))
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
-		return FALSE
+//	var/mob/living/human/H = user
 	if (!cocked)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
@@ -126,10 +120,7 @@
 	return ..()
 
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)
-	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS"))
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
-		return FALSE
+//	var/mob/living/human/H = user
 	if (cocked)
 		return
 	..()
@@ -167,7 +158,7 @@
 	effectiveness_mod = 0.98
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "mosquete1752"
 
 /obj/item/weapon/gun/projectile/flintlock/jezail
@@ -179,7 +170,7 @@
 	effectiveness_mod = 0.97
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "jezail"
 
 /obj/item/weapon/gun/projectile/flintlock/kabyle
@@ -191,7 +182,7 @@
 	effectiveness_mod = 0.93
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "moukalla"
 
 /obj/item/weapon/gun/projectile/flintlock/brownbess
@@ -215,7 +206,7 @@
 	effectiveness_mod = 0.98
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "charleville_mousquet"
 
 /obj/item/weapon/gun/projectile/flintlock/plexico

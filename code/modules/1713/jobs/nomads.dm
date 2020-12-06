@@ -6,20 +6,20 @@
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel/bone(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
 		else if (map.ordinal_age == 1)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel/bone(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
 		else if (map.ordinal_age == 2)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
 		else if (map.ordinal_age >= 3)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/shovel(src), slot_belt)
+			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
 	if (!map.chad_mode)
 
 //knives and other tools/////////////////////////////////////////////////
@@ -172,6 +172,9 @@
 			if (map.ordinal_age < 4)
 				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 				if (map.ordinal_age == 0)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/prehistoricfurcoat(src), slot_wear_suit)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+				if (map.ordinal_age == 1)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
 			else if (map.ordinal_age == 4)
 				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
@@ -396,6 +399,26 @@
 						real_name = name
 						add_note("Known Languages", "Greek")
 						return
+		else if (map.ID == MAP_NATIONSRP)
+			spawn(5)
+				//west
+				if (x<75)
+					add_language("Japanese",TRUE)
+					for (var/datum/language/japanese/A in languages)
+						default_language = A
+					name = species.get_random_japanese_name(gender)
+					real_name = name
+					add_note("Known Languages", "Japanese and English")
+					return
+				//EAST
+				else
+					add_language("Spanish",TRUE)
+					for (var/datum/language/spanish/A in languages)
+						default_language = A
+					name = species.get_random_spanish_name(gender)
+					real_name = name
+					add_note("Known Languages", "Spanish and English")
+					return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////

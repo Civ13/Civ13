@@ -24,3 +24,11 @@
 	for (var/mob/M in job2players[J.title])
 		if (M.mind && M.client && M.mind.assigned_role == J.title && M.client.inactivity <= 10 * 60 * 10)
 			++.
+
+/process/job_data/proc/get_active_positions_name(var/J)
+	. = 0
+	if (!job2players[J] || !islist(job2players[J]))
+		return .
+	for (var/mob/M in job2players[J])
+		if (M.mind && M.client && M.mind.assigned_role == J && M.client.inactivity <= 10 * 60 * 10)
+			++.

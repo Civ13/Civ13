@@ -30,6 +30,8 @@
 
 /obj/map_metadata/hunt/New()
 	..()
+	spawn(200)
+		load_new_recipes()
 	spawn(1200)
 		for (var/i = 1, i <= 50, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/island/river))
@@ -56,5 +58,3 @@ obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/hunt/cross_message(faction)
 	return "The gracewall is now removed."
-
-

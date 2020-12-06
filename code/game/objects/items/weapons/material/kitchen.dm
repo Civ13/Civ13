@@ -339,6 +339,7 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.1
+	default_material = "bone"
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone/New()
 	..()

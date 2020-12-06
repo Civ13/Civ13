@@ -223,7 +223,7 @@
 "eo" = (/obj/item/weapon/material/hatchet,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
 "ep" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/tallgrass2,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
 "eq" = (/obj/covers/sandstone,/turf/floor/dirt/dust,/area/caribbean/crusader/sand)
-"er" = (/obj/structure/wild/tallgrass2,/obj/item/weapon/pickaxe,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
+"er" = (/obj/structure/wild/tallgrass2,/obj/item/weapon/material/pickaxe,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
 "es" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
 "et" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
 "eu" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/sand,/area/caribbean/arab/sand)

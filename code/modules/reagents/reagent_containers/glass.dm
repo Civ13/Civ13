@@ -25,12 +25,13 @@
 		/obj/structure/sink,
 		/obj/structure/engine,
 		/obj/item/weapon/storage,
-		/mob/living/simple_animal/cow,
+		/mob/living/simple_animal/cattle/cow,
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
 		/mob/living/simple_animal/pig_gilt,
 		/obj/structure/oil_spring,
 		/obj/structure/refinery,
+		/obj/structure/distillery,
 		/obj/structure/oilwell,
 		/obj/structure/heatsource,
 		/obj/item/flashlight/lantern,
@@ -39,6 +40,7 @@
 		/obj/structure/fuelpump,
 		/obj/item/stack/ore,
 		/turf/floor/dirt/underground,
+		/turf/floor/trench,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -389,6 +391,19 @@
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
 	volume = 160
+	on_stove = FALSE
+	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/small_pot/clay
+	desc = "A primitive clay pot, used for boiling water and cooking."
+	name = "clay cooking pot"
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "cookingpot"
+	item_state = "bucket"
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 40
 	on_stove = FALSE
 	flags = OPENCONTAINER
 

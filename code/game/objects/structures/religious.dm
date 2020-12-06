@@ -533,7 +533,7 @@ obj/structure/religious/monument
 	not_disassemblable = TRUE
 	not_movable = TRUE
 /obj/structure/religious/grave/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/shovel) && open)
+	if (istype(W, /obj/item/weapon/material/shovel) && open)
 		visible_message("[user] starts filling up \the [src]...","You start filling up \the [src]...")
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
@@ -572,7 +572,7 @@ obj/structure/religious/monument
 					CF.forceMove(src)
 		else
 			return
-	else if (istype(W, /obj/item/weapon/shovel) && !open)
+	else if (istype(W, /obj/item/weapon/material/shovel) && !open)
 		visible_message("[user] starts digging up \the [src]...","You start digging up \the [src]...")
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
