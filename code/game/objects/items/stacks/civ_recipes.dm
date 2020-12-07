@@ -34,54 +34,54 @@
 			faction = "crustacean"
 		else if (user.wolfman && ("wolf" in global.craftlist_lists))
 			faction = "wolf"
-	if (map && map.civilizations)
-		var/civ = user.original_job_title
-		var/list/current_res = list(0,0,0)
-		if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
-			if (user.civilization == "none")
-				current_res = list(map.default_research,map.default_research,map.default_research)
+		if (map && map.civilizations)
+			var/civ = user.original_job_title
+			var/list/current_res = list(0,0,0)
+			if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
+				if (user.civilization == "none")
+					current_res = list(map.default_research,map.default_research,map.default_research)
+				else
+					current_res = map.custom_civs[user.civilization]
 			else
-				current_res = map.custom_civs[user.civilization]
+				if (civ == "Civilization A Citizen")
+					current_res = map.civa_research
+				else if (civ == "Civilization B Citizen")
+					current_res = map.civb_research
+				else if (civ == "Civilization C Citizen")
+					current_res = map.civc_research
+				else if (civ == "Civilization D Citizen")
+					current_res = map.civd_research
+				else if (civ == "Civilization E Citizen")
+					current_res = map.cive_research
+				else if (civ == "Civilization F Citizen")
+					current_res = map.civf_research
+			generate_recipes_civs(current_res,faction)
 		else
-			if (civ == "Civilization A Citizen")
-				current_res = map.civa_research
-			else if (civ == "Civilization B Citizen")
-				current_res = map.civb_research
-			else if (civ == "Civilization C Citizen")
-				current_res = map.civc_research
-			else if (civ == "Civilization D Citizen")
-				current_res = map.civd_research
-			else if (civ == "Civilization E Citizen")
-				current_res = map.cive_research
-			else if (civ == "Civilization F Citizen")
-				current_res = map.civf_research
-		generate_recipes_civs(current_res,faction)
-	else
-		var/list/current_res = list(0,0,0)
-		if (map)
-			if (user.civilization == "none")
-				switch (map.ordinal_age)
-					if (0)
-						current_res = list(0,0,0)
-					if (1)
-						current_res = list(35,35,35)
-					if (2)
-						current_res = list(60,60,60)
-					if (3)
-						current_res = list(85,85,85)
-					if (4)
-						current_res = list(105,105,105)
-					if (5)
-						current_res = list(125,125,125)
-					if (6)
-						current_res = list(152,152,152)
-					if (7)
-						current_res = list(185,185,185)
-					if (8)
-						current_res = list(210,210,210)
-			else
-				current_res = map.custom_civs[user.civilization]
-		generate_recipes_civs(current_res,faction)
+			var/list/current_res = list(0,0,0)
+			if (map)
+				if (user.civilization == "none")
+					switch (map.ordinal_age)
+						if (0)
+							current_res = list(0,0,0)
+						if (1)
+							current_res = list(35,35,35)
+						if (2)
+							current_res = list(60,60,60)
+						if (3)
+							current_res = list(85,85,85)
+						if (4)
+							current_res = list(105,105,105)
+						if (5)
+							current_res = list(125,125,125)
+						if (6)
+							current_res = list(152,152,152)
+						if (7)
+							current_res = list(185,185,185)
+						if (8)
+							current_res = list(210,210,210)
+				else
+					current_res = map.custom_civs[user.civilization]
+			generate_recipes_civs(current_res,faction)
 	return recipes
 
 /material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global")
