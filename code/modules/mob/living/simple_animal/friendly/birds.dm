@@ -51,7 +51,7 @@
 	..()
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
-	chicken_count+=1
+	chicken_count |= src
 
 /mob/living/simple_animal/chick/Life()
 	. =..()
@@ -64,14 +64,12 @@
 			qdel(src)
 
 /mob/living/simple_animal/chick/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		chicken_count -= 1
+
+	chicken_count &= src
 	..()
 /mob/living/simple_animal/chick/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		chicken_count -= 1
+
+	chicken_count &= src
 	..()
 /mob/living/simple_animal/chicken
 	name = "\improper chicken"
@@ -112,17 +110,15 @@
 	icon_dead = "[body_color]hen_dead"
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
-	chicken_count += 1
+	chicken_count |= src
 
 /mob/living/simple_animal/chicken/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		chicken_count -= 1
+
+	chicken_count &= src
 	..()
 /mob/living/simple_animal/chicken/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		chicken_count -= 1
+
+	chicken_count &= src
 	..()
 /mob/living/simple_animal/chicken/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (stat == CONSCIOUS && istype(O, /obj/item/stack/farming/seeds))
@@ -177,7 +173,7 @@
 			grow()
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/proc/grow()
-	if (isturf(loc) && chicken_count < 50)
+	if (isturf(loc) && chicken_count.len < 50)
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
@@ -238,17 +234,15 @@
 	icon_dead = "[body_color]rooster_dead"
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
-	chicken_count += 1
+	chicken_count |= src
 
 /mob/living/simple_animal/rooster/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		chicken_count -= 1
+
+	chicken_count &= src
 	..()
 /mob/living/simple_animal/rooster/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		chicken_count -= 1
+
+	chicken_count &= src
 	..()
 ////////////////////////////////////////TURKEYS//////////////////////
 /mob/living/simple_animal/turkey_f
@@ -446,7 +440,7 @@
 	..()
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
-	turkey_count += 1
+	turkey_count |= src
 
 /mob/living/simple_animal/turkeychick/Life()
 	. =..()
@@ -463,41 +457,35 @@
 
 /mob/living/simple_animal/turkey_m/New()
 	..()
-	turkey_count += 1
+	turkey_count |= src
 
 /mob/living/simple_animal/turkey_m/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		turkey_count -= 1
+
+	turkey_count &= src
 	..()
 /mob/living/simple_animal/turkey_m/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		turkey_count -= 1
+
+	turkey_count &= src
 	..()
 /mob/living/simple_animal/turkey_f/New()
 	..()
-	turkey_count += 1
+	turkey_count |= src
 
 /mob/living/simple_animal/turkey_f/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		turkey_count -= 1
+
+	turkey_count &= src
 	..()
 /mob/living/simple_animal/turkey_f/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		turkey_count -= 1
+
+	turkey_count &= src
 	..()
 /mob/living/simple_animal/turkeychick/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		turkey_count -= 1
+
+	turkey_count &= src
 	..()
 /mob/living/simple_animal/turkeychick/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		turkey_count -= 1
+
+	turkey_count &= src
 	..()
 /mob/living/simple_animal/turkey_f/Life()
 	. =..()
@@ -515,7 +503,7 @@
 				E.pixel_y = rand(-6,6)
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/proc/grow()
-	if (isturf(loc) && turkey_count < 35)
+	if (isturf(loc) && turkey_count.len < 35)
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")

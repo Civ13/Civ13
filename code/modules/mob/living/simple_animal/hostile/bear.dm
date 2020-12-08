@@ -45,21 +45,19 @@
 	female = TRUE
 
 /mob/living/simple_animal/hostile/bear/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		bear_count -= 1
+
+	bear_count &= src
 	..()
 /mob/living/simple_animal/hostile/bear/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		bear_count -= 1
+
+	bear_count &= src
 	..()
 /mob/living/simple_animal/hostile/bear/Life()
 	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && bear_count < 12)
+	if (!pregnant && bear_count.len < 12)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/hostile/bear/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !M.female)
@@ -95,7 +93,7 @@
 	..()
 
 /mob/living/simple_animal/hostile/bear/boar/New()
-	bear_count += 1
+	bear_count |= src
 	..()
 	spawn(1)
 		if (cub)
