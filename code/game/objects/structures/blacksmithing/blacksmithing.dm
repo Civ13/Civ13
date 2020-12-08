@@ -449,13 +449,13 @@
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
 											ML.update_icon()
-										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
 								else
@@ -514,13 +514,13 @@
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
 											ML.update_icon()
-										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
 								else
@@ -575,13 +575,13 @@
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
 											ML.update_icon()
-										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
 								else
