@@ -50,9 +50,10 @@
 			in_use = TRUE
 			update_icon()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-			if (do_after(user,15*P.amount,src))
+			var/initial_amount = P.amount //no more speedhack
+			if (do_after(user,15*initial_amount,src) && P.amount == initial_amount)
 				user << "<span class='notice'>You smite the pig into steel.</span>"
-				if (P && P.amount)
+				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
 					var/obj/item/stack/material/steel/I = new/obj/item/stack/material/steel(loc)
@@ -67,9 +68,10 @@
 			in_use = TRUE
 			update_icon()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-			if (do_after(user,15*P.amount,src))
+			var/initial_amount = P.amount //no more speedhack
+			if (do_after(user,15*initial_amount,src) && P.amount == initial_amount)
 				user << "<span class='notice'>You smite the sponge iron into wrought iron.</span>"
-				if (P && P.amount)
+				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
 					var/obj/item/stack/material/iron/I = new/obj/item/stack/material/iron(loc)
