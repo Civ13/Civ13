@@ -50,9 +50,10 @@
 			in_use = TRUE
 			update_icon()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-			if (do_after(user,15*P.amount,src))
+			var/initial_amount = P.amount //no more speedhack
+			if (do_after(user,15*initial_amount,src) && P.amount == initial_amount)
 				user << "<span class='notice'>You smite the pig into steel.</span>"
-				if (P && P.amount)
+				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
 					var/obj/item/stack/material/steel/I = new/obj/item/stack/material/steel(loc)
@@ -67,9 +68,10 @@
 			in_use = TRUE
 			update_icon()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-			if (do_after(user,15*P.amount,src))
+			var/initial_amount = P.amount //no more speedhack
+			if (do_after(user,15*initial_amount,src) && P.amount == initial_amount)
 				user << "<span class='notice'>You smite the sponge iron into wrought iron.</span>"
-				if (P && P.amount)
+				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
 					var/obj/item/stack/material/iron/I = new/obj/item/stack/material/iron(loc)
@@ -449,13 +451,13 @@
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
 											ML.update_icon()
-										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
 								else
@@ -514,13 +516,13 @@
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
 											ML.update_icon()
-										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
 								else
@@ -575,13 +577,13 @@
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
 											ML.update_icon()
-										user << "You finish crafting \the [parsed_choice2[1]]."
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
 
 									in_use = FALSE
 								else

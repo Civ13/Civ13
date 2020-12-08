@@ -50,17 +50,15 @@
 	female = TRUE
 
 /mob/living/simple_animal/deer/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		deer_count -= 1
+
+	deer_count &= src
 	..()
 /mob/living/simple_animal/deer/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		deer_count -= 1
+
+	deer_count &= src
 	..()
 /mob/living/simple_animal/deer/New()
-	deer_count += 1
+	deer_count |= src
 	..()
 	spawn(1)
 		if (babydeer)
@@ -91,7 +89,7 @@
 			overpopulationCountdown--
 			return
 
-		if (!pregnant && deer_count < 30)
+		if (!pregnant && deer_count.len < 30)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
 			for(var/mob/living/simple_animal/deer/male/M in nearbyObjects)
 				if (M.stat == CONSCIOUS)
@@ -214,7 +212,7 @@
 	female = TRUE
 
 /mob/living/simple_animal/deer/dikdik/New()
-	deer_count += 1
+	deer_count |= src
 	..()
 	spawn(1)
 		if (babydeer)
@@ -245,7 +243,7 @@
 			overpopulationCountdown--
 			return
 
-		if (!pregnant && deer_count < 30)
+		if (!pregnant && deer_count.len < 30)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
 			for(var/mob/living/simple_animal/deer/dikdik/male/M in nearbyObjects)
 				if (M.stat == CONSCIOUS)
