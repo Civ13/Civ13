@@ -152,7 +152,7 @@
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	var/oldclimate = CURRENTAREA.climate
 
-	if (CURRENTAREA.location == AREA_OUTSIDE)
+	if (CURRENTAREA.type)
 		current_area_type = CURRENTAREA.type
 		switch(oldclimate)
 			if ("tundra")
