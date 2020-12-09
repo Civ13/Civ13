@@ -85,7 +85,7 @@ t1 = time.time()
 
 os.system("{}/bin/dm.exe {}civ13-git/civ13.dme".format(byonddir,mdir))
 
-os.system("python3 {}{}scripts/copyconfigfiles.py".format(mdir,cdir))
+os.system("python3 {}{}scripts/windows/copyconfigfiles.py".format(mdir,cdir))
 
 t2 = time.time() - t1
 

@@ -34,7 +34,7 @@ os.system("cd")
 
 print("Copying configuration settings...")
 
-os.system("python3 {}{}scripts/copyconfigfiles.py".format(mdir,cdir))
+os.system("python3 {}{}scripts/windows/copyconfigfiles.py".format(mdir,cdir))
 
 print("Copying binaries...")
 
