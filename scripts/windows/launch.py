@@ -28,23 +28,23 @@ os.system("git reset --hard origin/master")
 
 print("Rebuilding binaries...")
 
-os.system("{}/bin/dm.exe civ13.dme".format(byonddir))
+os.system("\"{}/bin/dm.exe\" civ13.dme".format(byonddir))
 
 os.system("cd")
 
 print("Copying configuration settings...")
 
-os.system("python3 {}{}scripts/windows/copyconfigfiles.py".format(mdir,cdir))
+os.system("python3 \"{}{}scripts/windows/copyconfigfiles.py\"".format(mdir,cdir))
 
 print("Copying binaries...")
 
-dmb = os.path.join(mdir,'civ13-git/civ13.dmb')
-rsc = os.path.join(mdir,'civ13-git/civ13.rsc')
+dmb = os.path.join(mdir,'\"civ13-git/civ13.dmb\"')
+rsc = os.path.join(mdir,'\"civ13-git/civ13.rsc\"')
 
-shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir,cdir))
+shutil.copyfile(dmb, '\"{}{}civ13.dmb\"'.format(mdir,cdir))
 
 
-shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir))
+shutil.copyfile(rsc, '\"{}{}civ13.rsc\"'.format(mdir,cdir))
 
 t2 = time.time() - t1
 
