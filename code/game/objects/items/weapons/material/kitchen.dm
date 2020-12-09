@@ -14,6 +14,7 @@
 	thrown_force_divisor = 0.25 // 5 when thrown with weight 20 (steel)
 	var/loaded	  //Descriptive string for currently loaded food object.
 	var/scoop_food = TRUE
+	var/shiv = 0
 
 /obj/item/weapon/material/kitchen/utensil/New()
 	..()
@@ -78,7 +79,6 @@
 	edge = FALSE
 	sharp = FALSE
 	force_divisor = 0 //no dmg. no more memes
-
 /*
  * Knives
  */
