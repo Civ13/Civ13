@@ -83,9 +83,9 @@ DME.close()
 
 t1 = time.time()
 
-os.system("\"{}/bin/dm.exe\" \"{}civ13-git/civ13.dme\"".format(byonddir,mdir))
+os.system('"{}/bin/dm.exe" "{}civ13-git/civ13.dme"'.format(byonddir,mdir))
 
-os.system("python3 \"{}{}scripts/copyconfigfiles.py\"".format(mdir,cdir))
+os.system('python3 "{}{}scripts/copyconfigfiles.py"'.format(mdir,cdir))
 
 t2 = time.time() - t1
 
@@ -93,7 +93,7 @@ time.sleep(30)
 os.system("taskkill /f /im dreamdaemon.exe")
 dmb = os.path.join('{}civ13-git/civ13.dmb'.format(mdir))
 rsc = os.path.join('{}civ13-git/civ13.rsc'.format(mdir))
-shutil.copyfile(dmb, '\"{}{}civ13.dmb\"'.format(mdir,cdir))
-shutil.copyfile(rsc, '\"{}{}civ13.rsc\"'.format(mdir,cdir))
+shutil.copyfile(dmb, '"{}{}civ13.dmb"'.format(mdir,cdir))
+shutil.copyfile(rsc, '"{}{}civ13.rsc"'.format(mdir,cdir))
 time.sleep(8)
-os.system('\"{}/bin/dreamdaemon.exe\" \"{}{}civ13.dmb\" {} -trusted -webclient -logself'.format(byonddir,mdir,cdir,port))
+os.system('"{}/bin/dreamdaemon.exe" "{}{}civ13.dmb" {} -trusted -webclient -logself'.format(byonddir,mdir,cdir,port))
