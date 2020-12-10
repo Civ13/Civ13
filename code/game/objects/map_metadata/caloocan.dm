@@ -36,7 +36,17 @@
 /obj/map_metadata/caloocan/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/caloocan/short_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 600
+	else
+		return 3000 // 5 minutes
 
+/obj/map_metadata/caloocan/long_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 600
+	else
+		return 3000 // 5 minutes
 /obj/map_metadata/caloocan/roundend_condition_def2name(define)
 	..()
 	switch (define)

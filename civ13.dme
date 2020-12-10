@@ -312,6 +312,7 @@
 #include "code\game\objects\map_metadata\sammirhayeed.dm"
 #include "code\game\objects\map_metadata\santo_tomas.dm"
 #include "code\game\objects\map_metadata\save_awards.dm"
+#include "code\game\objects\map_metadata\sekigahara.dm"
 #include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\stalingrad.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
@@ -518,6 +519,7 @@
 #include "code\modules\1713\jobs\portuguese.dm"
 #include "code\modules\1713\jobs\prison.dm"
 #include "code\modules\1713\jobs\russian.dm"
+#include "code\modules\1713\jobs\samurai.dm"
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
@@ -969,5 +971,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\hunt.dmm"
+#include "maps\1013\sekigahara.dmm"
 // END_INCLUDE
