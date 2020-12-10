@@ -11,12 +11,12 @@ cdir = all_lines[2]
 cdir = cdir.replace("\n", "")
 cdir = cdir.replace("cdir:", "")
 
-with open(os.path.join(mdir,cdir,"scripts/copiedconfigpaths.txt")) as lines:
+with open(os.path.join(mdir,cdir,"scripts/windows/copiedconfigpaths.txt")) as lines:
 	for line in lines:
 		path = line.replace("\n", "")
 		shutil.copyfile(os.path.join(mdir,"civ13-git",path), os.path.join(mdir,cdir,path))
 
-with open(os.path.join(mdir,cdir,'scripts/copiedfolderpaths.txt')) as lines:
+with open(os.path.join(mdir,cdir,'scripts/windows/copiedfolderpaths.txt')) as lines:
 	for line in lines:
 		path = line.replace("\n", "")
 		shutil.rmtree(os.path.join(mdir,cdir,path))
