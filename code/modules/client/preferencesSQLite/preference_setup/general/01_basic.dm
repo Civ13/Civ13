@@ -58,11 +58,10 @@
 		. += "(<a href='?src=\ref[src];random_name=1'>Randomize Name</a>)<br><br>"
 		. += "<b>Always Randomize Name:</b> <a href='?src=\ref[src];always_random_name=1'>[pref.be_random_name ? "Yes" : "No"]</a><br><br>"
 		. += "<b>Traits: ([check_trait_points(pref.traits)])</b><br>"
-		. += "<i>(The sum of trait values has to be <b>0</b>)</i><br>"
+		. += "<i>(The sum of trait values has to be less or equal to <b>0</b>)</i><br>"
 		. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a><br><br>"
 		if (pref.traits.len)
 			for (var/i=1, i<=pref.traits.len, i++)
-				//if (pref.traits[i] != "Cancel")
 				if (i == pref.traits.len)
 					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
 				else if (pref.traits.len)
