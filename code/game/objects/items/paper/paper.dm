@@ -484,12 +484,13 @@
 		if ((!in_range(src, usr) && loc != user && !( istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
 			return
 		playsound(src,'sound/effects/Stamp.ogg',40,1)
-		stamps += "<img src=large_[P.icon_state].png>"
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
 		stampoverlay.pixel_x = rand(-2, 2)
 		stampoverlay.pixel_y = rand(-3, 2)
 		stampoverlay.icon_state = "paper_[P.icon_state]"
-
+		var/image/stampoverlay_paper = image('icons/obj/bureaucracy_large.dmi')
+		stampoverlay.icon_state = P.icon_state
+		stamps += "<img src='\ref[stampoverlay_paper.icon]'>"
 		if(!stamped)
 			stamped = new
 		stamped += P.type
