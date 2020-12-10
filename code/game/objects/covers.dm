@@ -1413,6 +1413,19 @@
 	hardness = 100
 	buildstack = /obj/item/stack/material/sandstone
 
+/obj/covers/sandstone_brick_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+		if (I.shiv < 10)
+			I.shiv++
+			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
+			if (I.shiv >= 10)
+				U.drop_from_inventory(I)
+				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
+				U.put_in_hands(SHK)
+				U << "\The [I] turns into a shank."
+				qdel(I)
+	..()
+
 /obj/covers/dirt_wall
 	name = "dirt wall"
 	desc = "A dirt wall."
@@ -1793,6 +1806,19 @@
 	adjusts = TRUE
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
+/obj/covers/cement_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+		if (I.shiv < 10)
+			I.shiv++
+			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
+			if (I.shiv >= 10)
+				U.drop_from_inventory(I)
+				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
+				U.put_in_hands(SHK)
+				U << "\The [I] turns into a shank."
+				qdel(I)
+	..()
+
 /obj/covers/vault
 	name = "vault wall"
 	desc = "A very strong wall of concrete wall."
@@ -1925,6 +1951,20 @@
 	explosion_resistance = 100
 	material = "Wood"
 	hardness = 15
+
+/obj/covers/jail/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+		if (I.shiv < 10)
+			I.shiv++
+			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
+			if (I.shiv >= 10)
+				U.drop_from_inventory(I)
+				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
+				U.put_in_hands(SHK)
+				U << "\The [I] turns into a shank."
+				qdel(I)
+	..()
+
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -2315,6 +2355,19 @@
 	icon_state = "nordic0"
 	base_icon_state = "nordic"
 	adjusts = TRUE
+
+/obj/covers/stone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+		if (I.shiv < 10)
+			I.shiv++
+			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
+			if (I.shiv >= 10)
+				U.drop_from_inventory(I)
+				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
+				U.put_in_hands(SHK)
+				U << "\The [I] turns into a shank."
+				qdel(I)
+	..()
 
 /obj/covers/stone_wall/roman
 	name = "roman stone wall"

@@ -30,6 +30,17 @@
 	var/collection_mode = TRUE;  //0 = pick one at a time, TRUE = pick all on tile
 	var/use_sound = "rustle"	//sound played when used. null for no sound.
 	var/base_icon = ""
+/obj/item/weapon/storage/verb/name_storage()
+	set category = null
+	set name = "Name"
+	set desc = "Name this."
+
+	set src in view(1)
+	var/yn = input(usr, "Give this [src] a name?") in list("Yes", "No")
+	if (yn == "Yes")
+		var/_name = input(usr, "What name?") as text
+		name = sanitize(_name, 20)
+	return
 
 /obj/item/weapon/storage/Destroy()
 	close_all()
