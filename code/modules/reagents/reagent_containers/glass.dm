@@ -238,6 +238,9 @@
 	name = "beaker"
 	desc = "A beaker."
 	icon = 'icons/obj/chemical.dmi'
+
+	unacidable = TRUE
+
 	icon_state = "beaker"
 	item_state = "beaker"
 
