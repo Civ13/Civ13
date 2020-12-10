@@ -357,6 +357,7 @@
 	value = 1
 	weight = 0.15
 	max_amount = 5
+	w_class = 3
 
 /obj/item/stack/ammopart/musketball
 	name = "musketball projectiles"

@@ -1,7 +1,7 @@
-/obj/map_metadata/alleyway
-	ID = MAP_ALLEYWAY
-	title = "Alleyway"
-	lobby_icon_state = "taotd"
+/obj/map_metadata/sekigahara
+	ID = MAP_SEKIGAHARA
+	title = "Sekigahara"
+	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 	no_winner ="The fighting for the street is still going on."
@@ -11,41 +11,41 @@
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/colonies/british
 		)
-	age = "1989"
-	ordinal_age = 8
+	age = "1600"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(JAPANESE = 1)
-	battle_name = "Yama-ichi gang fight"
-	mission_start_message = "<font size=4>The <b>Yamaguchi-Gumi Clan</b> and <b>Ichiwa-Kai Clan</b> are facing each other the streets of Kobe! It will start in <b>2 minutes</b></font>"
+	battle_name = "Sekigahara"
+	mission_start_message = "<font size=4>The <b>Eastern Army</b> and <b>Western Army</b> are facing each other outside of Sekigahara! It will start in <b>2 minutes</b></font>"
 	faction1 = JAPANESE
 	songs = list(
-		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
 	is_singlefaction = TRUE
 	scores = list(
-		"Yamaguchi-Gumi" = 0,
-		"Ichiwa-Kai" = 0,
+		"Eastern Army" = 0,
+		"Western Army" = 0,
 	)
 	New()
 		..()
 		spawn(600)
 			points_check()
-/obj/map_metadata/alleyway/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/sekigahara/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if ((J.is_yakuza == TRUE && J.is_yama == TRUE) || (J.is_yakuza == TRUE && J.is_ichi == TRUE))
+	if ((J.is_samurai == TRUE && J.is_western == TRUE) || (J.is_samurai == TRUE && J.is_eastern == TRUE))
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/alleyway/faction1_can_cross_blocks()
+/obj/map_metadata/sekigahara/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 
-/obj/map_metadata/alleyway/proc/points_check()
+/obj/map_metadata/sekigahara/proc/points_check()
 	world << "<big><b>Current Points:</big></b>"
-	world << "<big>Yamaguchi-Gumi: [scores["Yamaguchi-Gumi"]]</big>"
-	world << "<big>Ichiwa-Kai: [scores["Ichiwa-Kai"]]</big>"
+	world << "<big>Eastern Army: [scores["Eastern Army"]]</big>"
+	world << "<big>Western Army: [scores["Western Army"]]</big>"
 	spawn(300)
 		points_check()
 
-/obj/map_metadata/alleyway/update_win_condition()
+/obj/map_metadata/sekigahara/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
 	if (processes.ticker.playtime_elapsed >= 18000 || world.time >= next_win && next_win != -1)
@@ -54,13 +54,13 @@
 		ticker.finished = TRUE
 		var/message = ""
 		message = "The round has ended!"
-		if (scores["Ichiwa-Kai"] > scores["Yamaguchi-Gumi"])
-			message = "The battle is over! The <b>Ichiwa-Kai</b> were victorious over the <b>Yamaguchi-Gumi</b>!"
+		if (scores["Western Army"] > scores["Eastern Army"])
+			message = "The battle is over! The <b>Western Army</b> were victorious over the <b>Eastern Army</b>!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
-		else if (scores["Yamaguchi-Gumi"] > scores["Ichiwa-Kai"])
-			message = "The battle is over! The <b>Yamaguchi-Gumi</b> were victorious over the <b>Ichiwa-Kai</b>!"
+		else if (scores["Eastern Army"] > scores["Western Army"])
+			message = "The battle is over! The <b>Eastern Army</b> were victorious over the <b>Western Army</b>!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -72,11 +72,11 @@
 		last_win_condition = win_condition.hash
 		return TRUE
 
-/obj/map_metadata/alleyway/faction1_can_cross_blocks()
+/obj/map_metadata/sekigahara/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/alleyway/cross_message(faction)
+/obj/map_metadata/sekigahara/cross_message(faction)
 	return "<font size = 4>The grace wall is lifted!</font>"
 
-/obj/map_metadata/alleyway/reverse_cross_message(faction)
+/obj/map_metadata/sekigahara/reverse_cross_message(faction)
 	return ""

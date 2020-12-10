@@ -1446,6 +1446,10 @@
 						holder2.icon_state = "yamaguchi"
 					else if (original_job.is_yakuza && original_job.is_ichi)
 						holder2.icon_state = "ichiwa"
+					else if (original_job.is_samurai && original_job.is_eastern)
+						holder2.icon_state = "eastern"
+					else if (original_job.is_samurai && original_job.is_western)
+						holder2.icon_state = "western"
 					else
 						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
