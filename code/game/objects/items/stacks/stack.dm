@@ -139,7 +139,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 /obj/item/stack/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
-		var/obj/item/stack/F = split(1)
+		var/obj/item/stack/F = split(min(1, src.amount))
 		if (F)
 			F.update_icon()
 			src.update_icon()
@@ -2110,7 +2110,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 	if (href_list["make"])
 
-		if (amount < 1)
+		if (amount <= 0)
 			qdel(src)
 			return
 
