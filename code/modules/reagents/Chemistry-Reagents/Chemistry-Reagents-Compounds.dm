@@ -224,8 +224,8 @@
 		return
 
 /datum/reagent/acid/touch_obj(var/obj/O)
-//	if (O.unacidable)
-	//	return
+	if (O.unacidable)
+		return
 	if (istype(O, /obj/item))
 		var/obj/effect/decal/cleanable/molten_item/I = new/obj/effect/decal/cleanable/molten_item(O.loc)
 		I.desc = "Looks like this was \an [O] some time ago."

@@ -378,6 +378,10 @@ var/global/redirect_all_players = null
 
 	if (href_list["late_join"])
 
+		if (check_trait_points(client.prefs.traits) > 0)
+			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+			return FALSE
+
 		if (client && client.quickBan_isbanned("Playing"))
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
