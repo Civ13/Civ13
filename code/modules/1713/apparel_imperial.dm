@@ -343,7 +343,10 @@
 	slot = "utility"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing)
+		hold.can_hold = list(
+			/obj/item/ammo_casing,
+			/obj/item/stack/ammopart/stoneball
+			)
 
 /obj/item/clothing/accessory/storage/coinpouch
 	name = "coin pouch"

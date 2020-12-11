@@ -378,6 +378,10 @@ var/global/redirect_all_players = null
 
 	if (href_list["late_join"])
 
+		if (check_trait_points(client.prefs.traits) > 0)
+			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+			return FALSE
+
 		if (client && client.quickBan_isbanned("Playing"))
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
@@ -635,6 +639,23 @@ var/global/redirect_all_players = null
 			if (yy_nr > yi_nr)
 				WWalert(usr,"Too many people playing as Yamaguchi: [yi_nr] Ichiwa, [yy_nr] Yamaguchi","Error")
 				return FALSE
+	if (job.is_samurai)
+		var/yy_nr = processes.job_data.get_active_positions_name("Tobu-Ashigaru", "Tobu Enkyori Ashigaru")
+		var/yi_nr = processes.job_data.get_active_positions_name("Sei-Ashigaru", "Sei Enkyori Ashigaru")
+		for (var/datum/job/joby in job_master.occupations)
+			if (istype(joby, /datum/job/japanese/ashigaru))
+				yy_nr = joby.current_positions
+			else if(istype(joby, /datum/job/japanese/ashigaru_western))
+				yi_nr = joby.current_positions
+		if (istype(job, /datum/job/japanese/ashigaru_western) || istype(job, /datum/job/japanese/ashigaru_ranged_western))
+			if (yi_nr > yy_nr)
+				WWalert(usr,"Too many people playing as Western: [yi_nr] Western, [yy_nr] Eastern","Error")
+				return FALSE
+		else if(istype(job, /datum/job/japanese/ashigaru)|| istype(job, /datum/job/japanese/ashigaru_ranged))
+			if (yy_nr > yi_nr)
+				WWalert(usr,"Too many people playing as Eastern: [yi_nr] Western, [yy_nr] Eastern","Error")
+				return FALSE
+
 
 //		else if(istype(job, /datum/job/civilian/policeofficer))
 //			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > y_nr)
