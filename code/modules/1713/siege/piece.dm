@@ -319,7 +319,23 @@
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new/obj/item/weapon/type89_mortar, prioritize_active_hand = TRUE)
 		visible_message("<span class = 'warning'>[user] gets their type 89 from the ground.</span>")
-
+/obj/structure/cannon/mortar/type89/attackby(obj/item/W as obj, mob/M as mob)
+	if (istype(W, /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91))
+		if (loaded)
+			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+			return
+		// load first and only slot
+		if (do_after(M, 45, src, can_move = TRUE))
+			if (M && (locate(M) in range(1,src)))
+				M.remove_from_mob(W)
+				W.loc = src
+				loaded = W
+				if (M == user)
+					do_html(M)
+	else if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
 	icon = 'icons/obj/cannon_ball.dmi'

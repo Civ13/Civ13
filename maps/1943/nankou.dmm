@@ -73,6 +73,7 @@
 "bu" = (/obj/structure/pot,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "bv" = (/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command)
 "bw" = (/obj/structure/bed/chair/wood/red,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command)
+"bx" = (/obj/structure/bed/bedroll,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/effect/landmark{name = "JoinLateRU"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "by" = (/obj/structure/table/iron,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/roofed)
 "bz" = (/obj/structure/table/modern/table,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "bA" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command)
@@ -213,8 +214,8 @@
 "ef" = (/obj/structure/table/modern/table,/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "eg" = (/obj/item/weapon/clay/advclaybricks/fired,/obj/structure/barricade,/turf/floor/dirt/burned,/area/caribbean)
 "eh" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
-"ei" = (/obj/structure/bed/bedroll,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
-"ej" = (/obj/structure/bed/bedroll,/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
+"ei" = (/obj/structure/bed/bedroll,/obj/effect/landmark{name = "JoinLateRU"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
+"ej" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/obj/structure/lamp/lamp_big/alwayson,/obj/effect/landmark{name = "JoinLateRUCap"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "ek" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_big/alwayson,/obj/item/weapon/gun_cleaning_kit,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "el" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_big/alwayson,/obj/item/weapon/matchbox,/obj/item/weapon/storage/fancy/cigarettes/randompack,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "em" = (/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/tiled/dark,/area/caribbean)
@@ -482,8 +483,6 @@
 "jo" = (/obj/item/ammo_magazine/gewehr98box,/obj/item/ammo_magazine/gewehr98box,/obj/item/ammo_magazine/gewehr98box,/obj/item/ammo_magazine/gewehr98box,/obj/item/ammo_magazine/gewehr98box,/obj/structure/closet/crate/ww2,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "jp" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/cannon/mortar/type89{icon_state = "type89"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "jq" = (/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/item/cannon_ball/mortar_shell/type89,/obj/structure/closet/crate/ww2,/turf/floor/plating/road,/area/caribbean)
-"jr" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/obj/structure/lamp/lamp_big/alwayson,/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
-"js" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/obj/structure/lamp/lamp_big/alwayson,/obj/effect/landmark{name = "JoinLateRNBoatswain"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside)
 "jt" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "ju" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/road,/area/caribbean)
 "jv" = (/obj/item/mine/at/armed,/turf/floor/dirt,/area/caribbean)
@@ -525,10 +524,10 @@ ahaSbNbNbibibibibibkbkbkbkbkbkbkbibibibibibibibibibibibibibibiaSahacaTaTaTbOaTaT
 ahaSbibibibibibibibibibibibibibibibibibibibibibibibibibibibibiaSahacaTambvbvbvbYckbXbvbvipiqbYirbXbvbvaTalalalalalalalalalalalalalapbsahahahawawawahdDananaYanananaYanananaYanananaYananbParararbyarbRan
 ahaSjljmbibibibijnjobibibibibicdcecgdxbibibibidxcgdxbibibibicgaSaheeaTbvbvbvbvisisbvbvbvbvisisisbvbvbvaTalalalalalalitiualalitiualanezahahahawawawahahanaZbTbVbWbZcabVbWbZcabVbWbZcabVbWbWbWbWbMbWbWbWan
 ahaSaSchcicichaSaSaSaSchcjcjchaSaSaSaSchcjcjchaSaSaSchcjcjchaSaSaheeaTivclcmcncscwiwcmcmixcxbvcGclcnivaTalalalalalalitiyiziziAiualiBezahahahawawawahahancNarbRbWardbarbWardbarbWardbarbWdjdldmardndpdran
-ahaSdudvbibidvduaSbjbibibibibibibjaSeibibibibieiaSeibibibibieiaSaheeaTaTaTaTaTaTaTaTiNiNaTaTbOaTaTaTaTaTalalalalalalaliCiCiCiCalaliBezahahahawawawahahandBdBdBbWbMbWbWbWbMbWbWbWbMbWbWbWbPararardCdKdLan
+ahaSdudvbibidvduaSbjbibibibibibibjaSbxbibibibibxaSbxbibibibibxaSaheeaTaTaTaTaTaTaTaTiNiNaTaTbOaTaTaTaTaTalalalalalalaliCiCiCiCalaliBezahahahawawawahahandBdBdBbWbMbWbWbWbMbWbWbWbMbWbWbWbPararardCdKdLan
 ahaSdOdRbibidVdOaSbibidXbhbibzbibiaSdYbibibibidYaSdYbibibibidZaSahjFanalalalalalalalalalalalalalalalalalalalalalalalalalalalalalaliBezahahahawawawahahanararebecarararedarararedararbZbWarararbRbWbWbWan
-ahaSjGbibibibijGaSbibibzefehbzbibiaSejbibibibiejaSejbibibibiejaSahjFiDalalalalalalalalalitiyiziAiualalalitiyiziAiualalalalalalalaliBezahahahawawawahahancNararbMarararararararararararbMarararardCdpdran
-ahaSjrbibibibijsaSbSbibibibibibibSaSekbibibibielaSenbibibibielaSahjFiDalalalaliEalalalalaliCiCiCiEalalaliEiCiCiCalalalalalalaliEaliBezahahahawawawahahancNararbMarararararararararararbMardbararbWdKdLan
+ahaSjGbibibibijGaSbibibzefehbzbibiaSeibibibibieiaSeibibibibieiaSahjFiDalalalalalalalalalitiyiziAiualalalitiyiziAiualalalalalalalaliBezahahahawawawahahancNararbMarararararararararararbMarararardCdpdran
+ahaSejbibibibiejaSbSbibibibibibibSaSekbibibibielaSenbibibibielaSahjFiDalalalaliEalalalalaliCiCiCiEalalaliEiCiCiCalalalalalalaliEaliBezahahahawawawahahancNararbMarararararararararararbMardbararbWdKdLan
 ahaSaSaSeoeoaSaSaSaSchcjaSaScjchaSaSaSaSeoeoaSaSaSaSaSeoeoaSaSaSahjFaniFiFiFiFaniFiFiFiFanalalalanizizizanalalalaniFiFiFaniFiFaniFanezahahahawawawahahanararebecararardbararardbararepbWbWbWeqbMbWbWbWan
 ahahahahahcbccahahahahahahahahahahahahcbccahahahahahahahahahahahahacjHjIjIjIjIjIjIjIjIjHjHauauaucfcfcfcfcfauauaujHjHjIjIjIjJjIjIjIjHacahahahawawawahahandBdBdBbWbMbWbWbWbMbWbWbWbMbWbWbWeresesareseseran
 ahahahahahcbccahahahahahahahahahahahahcbccahahahahahahahahahahahahacaaaaaaaaaaavaaaaaaaaacauauauauauauauauauauauacaaavaaaaaaaaaaaaaaacahahcbeQaweLccahancNarbRbWaredarbWaredarbWaredarbWeDarararararaZan
