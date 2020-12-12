@@ -385,18 +385,28 @@
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
-obj/structure/vending/japweapons_ww2
+/obj/structure/vending/japweapons_ww2
 	name = "Japanese Weapon rack"
 	desc = "A rack of war equipment."
 	icon_state = "equipment_japan"
-	products = list(
-		/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
-		/obj/item/weapon/gun/projectile/boltaction/arisaka99 = 5,
-		/obj/item/ammo_magazine/arisakabox = 5,
-		/obj/item/ammo_magazine/arisaka = 50,
-		/obj/item/ammo_magazine/arisaka99 = 40,
-		/obj/item/weapon/attachment/bayonet/military = 15,
-	)
+/obj/structure/vending/japweapons_ww2/New()
+	..()
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
+		products = list(
+			/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
+			/obj/item/ammo_magazine/arisakabox = 5,
+			/obj/item/ammo_magazine/arisaka = 50,
+			/obj/item/weapon/attachment/bayonet/military = 15,
+		)
+	else
+		products = list(
+			/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
+			/obj/item/weapon/gun/projectile/boltaction/arisaka99 = 5,
+			/obj/item/ammo_magazine/arisakabox = 5,
+			/obj/item/ammo_magazine/arisaka = 50,
+			/obj/item/ammo_magazine/arisaka99 = 40,
+			/obj/item/weapon/attachment/bayonet/military = 15,
+		)
 
 /obj/structure/vending/yakuza
 	name = "yakuza equipment rack"
