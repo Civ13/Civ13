@@ -58,15 +58,14 @@
 		. += "(<a href='?src=\ref[src];random_name=1'>Randomize Name</a>)<br><br>"
 		. += "<b>Always Randomize Name:</b> <a href='?src=\ref[src];always_random_name=1'>[pref.be_random_name ? "Yes" : "No"]</a><br><br>"
 		. += "<b>Traits: ([check_trait_points(pref.traits)])</b><br>"
-		. += "<i>(The sum of trait values has to be <b>0</b>)</i><br>"
+		. += "<i>(The sum of trait values has to be less or equal to <b>0</b>)</i><br>"
 		. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a><br><br>"
 		if (pref.traits.len)
 			for (var/i=1, i<=pref.traits.len, i++)
-				if (pref.traits[i] != "Cancel")
-					if (i == pref.traits.len)
-						. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
-					else if (pref.traits.len)
-						. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
+				if (i == pref.traits.len)
+					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
+				else if (pref.traits.len)
+					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
 
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
@@ -115,40 +114,32 @@
 	else if (href_list["add_traits"])
 		var/list/possible = list("Cancel")
 		for(var/i=1, i<= trait_list.len, i++)
-			if (!(i in pref.traits))
+			var/check_repeat = trait_list[i]
+			if (!(check_repeat in pref.traits)) //Checks if the trait was already choosen and leave it out of the options
 				possible += "[trait_list[i]] ([trait_list[trait_list[i]][1]])"
 		var/add = WWinput(usr, "Add Trait:", "Traits", "Cancel", possible)
 		if (add == "Cancel")
-			pref.save_preferences()
 			return TOPIC_REFRESH
-		if (!findtext(add,"Cancel"))
+		else
 			var/list/padd = splittext(add," (")
 			switch(alert(usr,"[trait_list[padd[1]][3]]","[padd[1]]","Add","Cancel"))
 				if ("Add")
 					pref.traits += padd[1]
 				if ("Cancel")
-					pref.save_preferences()
 					return TOPIC_REFRESH
-		if ("Cancel" in pref.traits)
+		if ("Cancel" in pref.traits) //Failsafe, since it works with strings
 			pref.traits -= "Cancel"
 		pref.save_preferences()
 		return TOPIC_REFRESH
 
 	else if (href_list["remove_traits"])
-		var/list/possible = pref.traits
-		possible += "Cancel"
-		for(var/tt in possible)
-			if (!findtext(tt,"Cancel"))
-				possible -= tt
-				tt = "[tt] ([trait_list[tt][1]])"
-				possible += tt
-		var/remove = WWinput(usr, "Remove Trait:", "Traits", "Cancel", possible)
+		var/remove = WWinput(usr, "Remove Trait:", "Traits", "Cancel", pref.traits + "Cancel")
 		if (remove == "Cancel")
-			pref.save_preferences()
 			return TOPIC_REFRESH
-		for(var/i in pref.traits)
-			if (findtext(remove, i))
-				pref.traits -= i
+		else
+			for(var/i in pref.traits)
+				if (findtext(remove, i))
+					pref.traits -= i
 		pref.save_preferences()
 		return TOPIC_REFRESH
 	return ..()

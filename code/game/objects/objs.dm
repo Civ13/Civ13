@@ -24,6 +24,8 @@
 	var/obj/structure/cable/powersource = null
 	var/powered = FALSE
 	var/quality = 0
+	var/unacidable = FALSE	//For acids interactions, called at Chemistry-Reagents-Compounds.dm
+
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)

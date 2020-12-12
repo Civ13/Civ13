@@ -510,6 +510,13 @@
 	taste_description = "creamy milk"
 	color = "#DFD7AF"
 
+/datum/reagent/drink/kiraspecial
+	name = "Kira Special"
+	description = "Long live the guy who everyone had mistaken for a girl. Baka!"
+	taste_description = "fruity sweetness"
+	color = "#cccc99"
+	adj_temp = -5
+
 /datum/reagent/drink/tea
 	name = "Tea"
 	id = "tea"
@@ -573,6 +580,13 @@
 /datum/reagent/drink/coffee/overdose(var/mob/living/human/M, var/alien)
 	M.make_jittery(5)
 	M.add_chemical_effect(CE_PULSE, 2)
+
+/datum/reagent/drink/coffee/cafe_latte
+	name = "Cafe Latte"
+	description = "A nice, strong and tasty beverage while you are reading."
+	taste_description = "bitter creamy coffee"
+	color = "#c65905"
+	adj_temp = 5
 
 /datum/reagent/drink/hot_coco
 	name = "Hot Chocolate"
