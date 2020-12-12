@@ -13,7 +13,7 @@
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		list(CHINESE) = /area/caribbean/russian/land/inside/command,
 		)
-	age = "1939"
+	age = "1937"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(JAPANESE = 0.5, CHINESE = 0.5)
 	battle_name = "battle of Nankou"

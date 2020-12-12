@@ -4,7 +4,7 @@
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-	no_winner ="The fighting for the street is still going on."
+	no_winner ="The fighting for sekigahara is still going on."
 	faction_organization = list(
 		JAPANESE,)
 
