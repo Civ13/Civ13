@@ -326,6 +326,7 @@
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\structures\appliances.dm"
 #include "code\game\objects\structures\barricades.dm"
+#include "code\game\objects\structures\bearcave.dm"
 #include "code\game\objects\structures\bedsheet_bin.dm"
 #include "code\game\objects\structures\bells.dm"
 #include "code\game\objects\structures\berries.dm"
