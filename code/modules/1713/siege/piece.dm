@@ -293,10 +293,33 @@
 	spritemod = FALSE //if true, uses 32x64
 	explosion = TRUE
 	reagent_payload = "none"
-	maxrange = 23
+	maxrange = 40
 	maxsway = 7
 	firedelay = 12
 	w_class = 8
+/obj/structure/cannon/mortar/type89
+	name = "Type 89 Mortar"
+	icon_state = "type89"
+	anchored = TRUE
+	ammotype = /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91
+	explosion = TRUE
+	maxrange = 30
+	maxsway = 15
+	firedelay = 8
+	w_class = 6
+/obj/structure/cannon/mortar/type89/verb/Get()
+	set src in oview(1, usr)
+	set category = null
+	if (usr.l_hand && usr.r_hand)
+		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
+		return
+	usr.face_atom(src)
+	visible_message("<span class = 'warning'>[usr] starts to get their type 89 from the ground.</span>")
+	if (do_after(usr, 10, get_turf(usr)))
+		qdel(src)
+		usr.put_in_any_hand_if_possible(new/obj/item/weapon/type89_mortar, prioritize_active_hand = TRUE)
+		visible_message("<span class = 'warning'>[user] gets their type 89 from the ground.</span>")
+
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -388,6 +411,9 @@
 	if (!anchored)
 		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
 		user = null
+	else if (!anchored && istype(src, /obj/structure/cannon/mortar/type89))
+		user = m
+		do_html(user)
 	if (user && user != m)
 		if (user.client)
 			return
