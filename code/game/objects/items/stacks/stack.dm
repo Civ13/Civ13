@@ -139,7 +139,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 /obj/item/stack/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
-		var/obj/item/stack/F = split(1)
+		var/obj/item/stack/F = split(min(1, src.amount))
 		if (F)
 			F.update_icon()
 			src.update_icon()
@@ -453,7 +453,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
 		if (customname == "" || customname == null)
 			customname = ""
-		customcolor1 = input(user, "Choose a main color:", "Tin Can Main Color" , "#000000")
+		customcolor1 = WWinput(user, "Choose a main color:", "Tin Can Main Color" , "#000000", "color")
 		if (customcolor1 == null || customcolor1 == "")
 			customcolor1 = "#000000"
 
@@ -465,7 +465,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
 			customname = "cigarette pack"
-		customcolor = input(user, "Choose a color:", "Cigarette Pack Color" , "#000000")
+		customcolor = WWinput(user, "Choose a color:", "Cigarette Pack Color" , "#000000", "color")
 		if (customcolor == null || customcolor == "")
 			return
 
@@ -532,7 +532,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a name for this pump:", "Fuel Pump Name" , "fuel pump")
 		if (customname == "" || customname == null)
 			customname = "fuel pump"
-		customcolor = input(user, "Fuel Pump - Choose a color:", "Fuel Pump Color" , "#FFFFFF")
+		customcolor = WWinput(user, "Fuel Pump - Choose a color:", "Fuel Pump Color" , "#FFFFFF", "color")
 		if (customcolor == null || customcolor == "")
 			return
 
@@ -1905,12 +1905,46 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			C.name = customname
 			C.do_color()
 		else if (istype(O, /obj/item/weapon/can))
-			var/obj/item/weapon/can/C = O
-			C.customcolor1 = customcolor1
-			C.customcolor2 = customcolor2
-			C.brand = "[customname] "
-			C.name = "empty [C.brand]can"
-			C.do_color()
+			if (istype(O, /obj/item/weapon/can/small))
+				var/obj/item/weapon/can/small/C = O
+				C.customcolor1 = customcolor1
+				C.customcolor2 = customcolor2
+				C.brand = "[customname] "
+				C.name = "empty [C.brand]can"
+				C.do_color()
+				var/obj/item/weapon/can/C1 = new/obj/item/weapon/can/small(get_turf(O))
+				C1.customcolor1 = customcolor1
+				C1.customcolor2 = customcolor2
+				C1.brand = "[customname] "
+				C1.name = "empty [C1.brand]can"
+				C1.do_color()
+				var/obj/item/weapon/can/small/C2 = new/obj/item/weapon/can/small(get_turf(O))
+				C2.customcolor1 = customcolor1
+				C2.customcolor2 = customcolor2
+				C2.brand = "[customname] "
+				C2.name = "empty [C2.brand]can"
+				C2.do_color()
+			else if (istype(O, /obj/item/weapon/can/large))
+				var/obj/item/weapon/can/large/C = O
+				C.customcolor1 = customcolor1
+				C.customcolor2 = customcolor2
+				C.brand = "[customname] "
+				C.name = "empty [C.brand]can"
+				C.do_color()
+			else
+				var/obj/item/weapon/can/C = O
+				C.customcolor1 = customcolor1
+				C.customcolor2 = customcolor2
+				C.brand = "[customname] "
+				C.name = "empty [C.brand]can"
+				C.do_color()
+				var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
+				C1.customcolor1 = customcolor1
+				C1.customcolor2 = customcolor2
+				C1.brand = "[customname] "
+				C1.name = "empty [C1.brand]can"
+				C1.do_color()
+
 		else if (istype(O, /obj/item/weapon/paper/official))
 			var/obj/item/weapon/paper/official/C = O
 			C.faction = H.civilization
@@ -2058,26 +2092,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			new/obj/item/ammo_casing/bolt(get_turf(O))
 			new/obj/item/ammo_casing/bolt(get_turf(O))
 			new/obj/item/ammo_casing/bolt(get_turf(O))
-		else if (istype(O, /obj/item/weapon/can))
-			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
-			C1.customcolor1 = customcolor1
-			C1.customcolor2 = customcolor2
-			C1.brand = "[customname] "
-			C1.name = "empty [C1.brand]can"
-			C1.do_color()
-		else if (istype(O, /obj/item/weapon/can/small))
-			var/obj/item/weapon/can/small/C1 = new/obj/item/weapon/can/small(get_turf(O))
-			C1.customcolor1 = customcolor1
-			C1.customcolor2 = customcolor2
-			C1.brand = "[customname] "
-			C1.name = "empty [C1.brand]can"
-			C1.do_color()
-			var/obj/item/weapon/can/small/C2 = new/obj/item/weapon/can/small(get_turf(O))
-			C2.customcolor1 = customcolor1
-			C2.customcolor2 = customcolor2
-			C2.brand = "[customname] "
-			C2.name = "empty [C2.brand]can"
-			C2.do_color()
 		else if (istype(O, /obj/item/clothing/accessory/storage/passport))
 			var/obj/item/clothing/accessory/storage/passport/PP = O
 			PP.owner = H
@@ -2096,7 +2110,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 	if (href_list["make"])
 
-		if (amount < 1)
+		if (amount <= 0)
 			qdel(src)
 			return
 
