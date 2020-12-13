@@ -244,7 +244,7 @@
 
 /datum/job/japanese/samurai_western
 	title = "Sei no Samurai"
-	en_meaning = "Eastern Samurai"
+	en_meaning = "Western Samurai"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRN"
 	whitelisted = TRUE
@@ -254,7 +254,7 @@
 	is_samurai = TRUE
 	min_positions = 1
 	max_positions = 2
-	is_eastern = TRUE
+	is_western = TRUE
 
 /datum/job/japanese/samurai_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -299,7 +299,7 @@
 	min_positions = 12
 	max_positions = 24
 	is_samurai = TRUE
-	is_eastern = TRUE
+	is_western = TRUE
 /datum/job/japanese/ashigaru_ranged_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -348,7 +348,7 @@
 	min_positions = 12
 	max_positions = 48
 	is_samurai = TRUE
-	is_eastern = TRUE
+	is_western = TRUE
 /datum/job/japanese/ashigaru_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes

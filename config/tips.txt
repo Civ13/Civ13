@@ -1,16 +1,16 @@
 Drag yourself to a ladder to look up or down it.
-Over hunting can lead to extinction  consider taking up Animal Husbandry to ensure a long lasting supply of food and leather for your civilization.
+Over hunting can lead to extinction. Consider taking up Animal Husbandry to ensure a long lasting supply of food and leather for your civilization.
 Cannibalism is a feature, but eating other people might make you valid.
-Trees provide good cover, but they go down very quickly.
 You can build locked doors in the same way as regular doors. You have to have a key in one hand and metal/wood in the other (active) hand.
-Use the *surrender emote to surrender.
 You can use rope to build nooses, rope handcuffs, and leashes.
 Everyone dies eventually; don't get too salty about it.
-You are twice as likely to hit someone if you shoot them from behind.
 If you are a sharpshooter, aim for the head. Otherwise, aim for the chest to kill and the feet to cripple.
 Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout, but does less damage. Slash will easily make your enemy bleed. Stabbing gives an higher probability of internal bleeding.
 You can switch between Parry mode and Dodge mode in the HUD. Parry takes your skill with the weapon and the weapon's stats into account, and will increase your skill. Dodge takes dexterity into account and will increase it.
-Plant seeds can be very rare, always keep some spare seeds encase you suffer from a bad harvest.
 Weather and season changes can threaten your civilization's survival. Be sure to have a shelter stocked vital supplies like food and water to survive the storms to come.
-If you defeat an enemy, consider making them a vassal or demanding a tribute of resources instead of committing genocide.
 Water hole went dry? Fill up your cups with cow or goat milk or make sap wine from extracting it from a palm tree with a knife.
+In tdm its a good idea to strip dead enemies/comrades and tear up their uniforms to make bandages. To do this, press c while holding clothing and itll tear into rags, then just craft the rags into bandages.
+A fast way to train medical is to perform surgeries on a fresh corpse. Butchering animals also works.
+If you are bleeding you can use the grab intent, aim at the injured body part, and then click on yourself to apply pressure and stop the bleeding.
+Entrenching tool fits in your backpack slot and is always worth taking in TDM.
+When using an lmg, it is best to prone for the most effective accuracy, take cover behind incomplete sandbags so you can still fire while behind cover (sandbags must be incomplete).
