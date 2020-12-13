@@ -244,7 +244,7 @@
 
 /datum/job/japanese/samurai_western
 	title = "Sei no Samurai"
-	en_meaning = "Eastern Samurai"
+	en_meaning = "Western Samurai"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRN"
 	whitelisted = TRUE

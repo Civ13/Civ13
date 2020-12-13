@@ -28,7 +28,7 @@
 	..()
 	if (J.is_ww2 == TRUE || J.is_navy == TRUE)
 		. = TRUE
-	else if (J.is_tanker == TRUE || J.is_prison == TRUE || J.is_yakuza || istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker) || istype(J, /datum/job/american/soldier_ww2_filipino))
+	else if (J.is_tanker == TRUE || J.is_prison == TRUE || J.is_yakuza || istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker) || istype(J, /datum/job/american/soldier_ww2_filipino) || J.is_samurai == TRUE)
 		. = FALSE
 	else
 		. = FALSE
