@@ -155,7 +155,7 @@
 /obj/structure/bed/chair/drivers/tank
 	name = "tank driver's seat"
 	icon_state = "driver_tank"
-
+	flammable = FALSE
 /obj/structure/bed/chair/drivers/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (M)
@@ -246,6 +246,7 @@
 	desc = "a seat next to the gun trigger."
 	icon_state = "officechair_white"
 	anchored = FALSE
+	flammable = FALSE
 /obj/structure/bed/chair/gunner/update_icon()
 	return
 /obj/structure/bed/chair/loader
@@ -253,6 +254,7 @@
 	desc = "A seat at the gun loader's position."
 	icon_state = "officechair_white"
 	anchored = FALSE
+	flammable = FALSE
 /obj/structure/bed/chair/loader/update_icon()
 	return
 //////////COMMANDER CHAIR/////////////
@@ -262,6 +264,7 @@
 	anchored = FALSE
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "commanders_seat"
+	flammable = FALSE
 	var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/periscope = null
 	New()
 		..()

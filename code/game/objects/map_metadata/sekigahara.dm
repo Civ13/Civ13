@@ -4,7 +4,7 @@
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-	no_winner ="The fighting for the street is still going on."
+	no_winner ="The fighting for sekigahara is still going on."
 	faction_organization = list(
 		JAPANESE,)
 
@@ -48,7 +48,7 @@
 /obj/map_metadata/sekigahara/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (processes.ticker.playtime_elapsed >= 18000 || world.time >= next_win && next_win != -1)
+	if (processes.ticker.playtime_elapsed >= 12000 || world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE

@@ -52,6 +52,28 @@
 	force_divisor = 0.25
 	thrown_force_divisor = 0.15
 
+/obj/item/weapon/type89_mortar
+	name = "Type 89 Mortar"
+	desc = "A light-weight portable mortar"
+	icon_state = "type89"
+	force = 12.0
+	throwforce = 6.0
+	item_state = "type89"
+	w_class = 6.0
+	attack_verb = list("bashed", "bludgeoned")
+	sharp = FALSE
+	edge = TRUE
+	slot_flags = SLOT_BACK|SLOT_BELT
+/obj/item/weapon/type89_mortar/attack_self(var/mob/user as mob)
+	var/target = get_step(user, user.dir)
+	if (target)
+		visible_message("<span class = 'warning'>[user] starts to deploy a type 89 mortar.</span>")
+		if (do_after(user, 10, get_turf(user)))
+			visible_message("<span class = 'warning'>[user] deploys a type 89 mortar.</span>")
+			user.remove_from_mob(src)
+			qdel(src)
+			var/atom/A = new/obj/structure/cannon/mortar/type89(get_turf(user))
+			A.dir = user.dir
 /obj/item/weapon/material/shovel/bone
 	name = "bone shovel"
 	icon_state = "shovel_bone"
