@@ -122,7 +122,7 @@
 
 			visible_message("<span class='notice'>[user] starts to clean the [src.name]...</span>")
 			if (do_after(user, 100, src))
-				health = M.maxhealth*0.8
+				health = src.maxhealth*0.8
 				visible_message("<span class='notice'>[user] finishes cleaning the [src.name].</span>")
 				return
 			else
