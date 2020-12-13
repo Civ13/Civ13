@@ -708,3 +708,29 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
 	)
+
+//craftable rifle rack
+/obj/structure/vending/craftable
+	var/product_type = /obj/item/weapon/gun/projectile
+	var/max_products = 5
+
+/obj/structure/vending/craftable/stock(obj/item/W, var/datum/data/vending_product/R, var/mob/user)
+	if (!user.unEquip(W))
+		return
+
+	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
+	W.forceMove(src)
+	product_records.Add(R)
+	nanomanager.update_uis(src)
+
+/obj/structure/vending/craftable/rifles
+	name = "rifle rack"
+	desc = "A rack that can store up to 5 rifles."
+	icon_state = "rack_base"
+	products = list(
+	)
+
+/obj/structure/vending/craftable/rifles/wood
+	name = "rifle rack"
+	icon_state = "rack_base_wood"
+	flammable = TRUE

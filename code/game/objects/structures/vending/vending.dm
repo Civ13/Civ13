@@ -133,11 +133,21 @@
 		return
 
 	else
-
-		for (var/datum/data/vending_product/R in product_records)
-			if (istype(W, R.product_path))
-				stock(W, R, user)
+		if (istype(src, /obj/structure/vending/craftable))
+			var/obj/structure/vending/craftable/CTB = src
+			if (product_records.len >= CTB.max_products)
+				user << "<span class='notice'>\The [src] is full!</span>"
+				return FALSE
+			else
+				var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
+				product.price = 0
+				stock(W,product,user)
 				return TRUE
+		else
+			for (var/datum/data/vending_product/R in product_records)
+				if (istype(W, R.product_path))
+					stock(W, R, user)
+					return TRUE
 		..()
 
 
@@ -225,6 +235,8 @@
 		status_error = FALSE
 		vend_ready = TRUE
 		currently_vending = null
+		if (istype(src, /obj/structure/vending/craftable))
+			product_records -= R
 		nanomanager.update_uis(src)
 
 /**
