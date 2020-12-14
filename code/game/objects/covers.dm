@@ -1,5 +1,4 @@
 /obj/covers
-
 	name = "floor covers"
 	desc = ""
 	icon = 'icons/turf/floors.dmi'
@@ -1413,7 +1412,7 @@
 	hardness = 100
 	buildstack = /obj/item/stack/material/sandstone
 
-/obj/covers/sandstone_brick_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
+/obj/covers/brick_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
 		if (I.shiv < 10)
 			I.shiv++
@@ -1952,19 +1951,6 @@
 	material = "Wood"
 	hardness = 15
 
-/obj/covers/jail/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
-				qdel(I)
-	..()
-
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -2013,7 +1999,19 @@
 	opacity = 0
 	material = "Steel"
 
-/obj/covers/jail/attackby(obj/item/W as obj, mob/user as mob)
+/obj/covers/jail/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if (istype(W,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(W,/obj/item/weapon/material/kitchen/utensil/fork))
+		var/obj/item/weapon/material/kitchen/utensil/I = W
+		if (I.shiv < 10)
+			I.shiv++
+			visible_message("<span class='warning'>[user] sharpens \the [I] on \the [src]!</span>")
+			if (I.shiv >= 10)
+				user.drop_from_inventory(I)
+				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(user,I.material.name)
+				user.put_in_hands(SHK)
+				user << "\The [I] turns into a shank."
+				qdel(I)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker
 	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
