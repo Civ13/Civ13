@@ -1,8 +1,8 @@
 /* File reserved for custom types other than the default metal door that starts locked on /obj/structure/simple_door/key_door/custom */
 
 /obj/structure/simple_door/key_door/custom/doubledoor
-	material = null
 	name = "large double"
+	material = "wood"
 	desc = "A large set of improper doors, it has a lock. if you can see this, report this to a developer."
 	unique_door_name = "doubledoor"
 	icon = 'icons/obj/doors/material_doors_fwoosh.dmi'
@@ -72,14 +72,23 @@
 	material = "gold"
 	desc = "A large set of glimmering gold doors, it has a lock."
 
-/obj/structure/simple_door/key_door/custom/privacy/New(var/newloc,var/material_name)
+/obj/structure/simple_door/key_door/custom/singledoor/New(var/newloc,var/material_name)
 	..(newloc, "wood")
-	name = "wooden privacy door"
+	name = "improper single door"
 	icon = 'icons/obj/doors/material_doors_fwoosh.dmi'
 	basic_icon = "private"
 	icon_state = "private"
+	desc = "If you can see this door please report it to a developer"
+	override_material = TRUE
+
+/obj/structure/simple_door/key_door/custom/singledoor/privacy/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	name = "wooden privacy door"
 	desc = "A wood paneled privacy door, it has a locking mechanism"
 	health = 250
+	override_material = FALSE
+	override_opacity = TRUE
+	opacity = FALSE
 
 #undef ANYONE_CODE
 

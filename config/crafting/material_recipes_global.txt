@@ -91,6 +91,13 @@
 //**| STONE WEAPONS & PROJECTILES |**| STONE BRICKS & CONSTRUCTIONS |**| STONE WALL, DOORWAYS & FORTIFICATION CONSTRUCTIONS |*********************************************************************
 //************************************************************************************************************************************************************************************************
 
+//**| MARBLE |**| MARBLE SUPPORTS |**| MARBLE RESEARCH |**| RAW MARBLE FLOORS |**| MARBLE FLOORS |**| DECORATIVE MARBLE FLOORS #1 |**| DECORATIVE MARBLE FLOORS #2 |*****************
+//***********************************************************************************************************************************************************************************
+//**| MARBLE CONSTRUCTIONS & DECORATIONS |**| MARBLE MONUMENTS |**| MARBLE 'STATUE' & WINDOWS |**| MARBLE PRODUCTION BUILDINGS & ECONOMY |**| MARBLE WALL & DOORWAY CONSTRUCTIONS |**
+//***********************************************************************************************************************************************************************************
+//**| MARBLE WALL & DOORWAY CONSTRUCTIONS |********************************************************************************************************************************************
+//***********************************************************************************************************************************************************************************
+
 //**| RAGS |**
 //************
 
@@ -155,6 +162,8 @@
 //*****************| CLAY ROOFING |****************************
 
 RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,0.5,25,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing/blue,0.5,25,0,1,none,18,0,0,8,null
+RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing/black,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black clay roofing,/obj/item/weapon/clay/roofing/kerawa,0.5,25,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,0.75,20,0,1,none,103,0,0,8,null
 
@@ -835,7 +844,6 @@ RECIPE: /material/barbedwire/,barbwire,/obj/structure/barbwire,1,20,0,1,none,0,0
 RECIPE: /material/lead/,lead safe,/obj/structure/closet/crate/lead,3,100,1,1,none,0,0,65,8,null
 
 RECIPE: /material/lead/,large lead double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/lead,5,100,1,1,none,18,0,0,1,null
-RECIPE: /material/lead/,locked large lead double doors,/obj/structure/simple_door/key_door/custom/doubledoor/lead,10,150,1,1,none,28,0,0,8,null
 
 //**************************************************************
 //*********************| PLASTIC |******************************
@@ -1192,9 +1200,9 @@ RECIPE: /material/stone/,ashtray,/obj/item/weapon/material/ashtray/stone,3,30,0,
 //*****************| STONE SUPPORTS & ROOFING |***************************
 
 RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,construction,0,0,0,8,null
-RECIPE: /material/stone/,ionic column,/obj/structure/mine_support/stone/ionic,2.5,130,1,1,construction,22,0,0,8,null
-RECIPE: /material/stone/,solomonic column,/obj/structure/mine_support/stone/solomonic,2.5,130,1,1,construction,22,0,0,8,null
-RECIPE: /material/stone/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/stone/,stone ionic column,/obj/structure/mine_support/stone/ionic/rock,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/stone/,stone solomonic column,/obj/structure/mine_support/stone/solomonic/rock,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/stone/,stone thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/rock,2.5,130,1,1,construction,22,0,0,8,null
 RECIPE: /material/stone/,aztec column,/obj/structure/mine_support/stone/aztec,2.5,130,1,1,construction,32,0,0,8,null
 
 RECIPE: /material/stone/,mayan roof builder,/obj/item/weapon/roofbuilder/mayan,1,20,0,1,construction,0,0,0,3,null
@@ -1217,41 +1225,11 @@ RECIPE: /material/stone/,stone decorative slab floor,/obj/covers/stone/slab/deco
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,floors,100,0,0,8,null
 RECIPE: /material/stone/,sidewalk,/obj/covers/sidewalk,1,25,1,1,floors,100,0,0,8,null
 
-//*************| (STONE) RAW MARBLE FLOORS |***************
-
-RECIPE: /material/stone/,raw marble floor,/obj/covers/raw_marblefloor,1,25,1,1,marble floors,20,0,0,8,null
-RECIPE: /material/stone/,raw black marble floor,/obj/covers/raw_marblefloor/black,1,25,1,1,marble floors,20,0,0,8,null
-RECIPE: /material/stone/,raw pink marble floor,/obj/covers/raw_marblefloor/pink,1,25,1,1,marble floors,20,0,0,8,null
-
-//*************| (STONE) MARBLE FLOORS |***************
-
-RECIPE: /material/stone/,marble floor,/obj/covers/marblefloor,1,25,1,1,marble floors,25,0,0,8,null
-RECIPE: /material/stone/,marble tiles,/obj/covers/marbletile,1,25,1,1,marble floors,25,0,0,8,null
-RECIPE: /material/stone/,black marble tiles,/obj/covers/marbletile/black,1,25,1,1,marble floors,25,0,0,8,null
-RECIPE: /material/stone/,pink marble tiles,/obj/covers/marbletile/pink,1,25,1,1,marble floors,25,0,0,8,null
-
-//*************| (STONE) DECORATIVE MARBLE FLOORS #1 |***************
-
-RECIPE: /material/stone/,ornate marble tile,/obj/covers/ornatemarblefloor,1,25,1,1,marble floors,32,0,0,8,null
-RECIPE: /material/stone/,ornate black marble tile,/obj/covers/ornatemarblefloor/black,1,25,1,1,marble floors,32,0,0,8,null
-RECIPE: /material/stone/,decorative marble tile,/obj/covers/decorative_marbletile,1,25,1,1,marble floors,32,0,0,8,null
-RECIPE: /material/stone/,decorative black marble tile,/obj/covers/decorative_marbletile/black,1,25,1,1,marble floors,32,0,0,8,null
-RECIPE: /material/stone/,decorative pink marble tile,/obj/covers/decorative_marbletile/pink,1,25,1,1,marble floors,32,0,0,8,null
-
-//*************| (STONE) DECORATIVE MARBLE FLOORS #2 |***************
-
-RECIPE: /material/stone/,marble grid tile floor,/obj/covers/marble_grid,1,25,1,1,marble floors,45,0,0,8,null
-RECIPE: /material/stone/,marble checkerboard floor,/obj/covers/marble_checkerboard,1,25,1,1,marble floors,45,0,0,8,null
-RECIPE: /material/stone/,reverse marble checkerboard floor,/obj/covers/marble_checkerboard/reverse,1,25,1,1,marble floors,45,0,0,8,null
-RECIPE: /material/stone/,pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink,1,25,1,1,marble floors,45,0,0,8,null
-RECIPE: /material/stone/,reverse pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink/reverse,1,25,1,1,marble floors,45,0,0,8,null
-
 //*************| STONE CONSTRUCTIONS & DECORATIONS |***************
 
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
 
 RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
-RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,religious & decoration,28,0,0,8,null
 
 RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,aztec statue,/obj/structure/religious/aztec_statue,8,140,1,1,religious & decoration,0,0,0,8,null
@@ -1273,7 +1251,6 @@ RECIPE: /material/stone/,monumental ominous statue of the outsider,/obj/structur
 RECIPE: /material/stone/,monumental ominous statue of the ruler,/obj/structure/religious/monument/cultist/sauron,45,300,1,1,religious & decoration,32,0,0,8,null
 RECIPE: /material/stone/,monumental stone buddha,/obj/structure/religious/monument/monk/quangshi,45,300,1,1,religious & decoration,32,0,0,8,null
 RECIPE: /material/stone/,monumental saint statue,/obj/structure/religious/monument/priesthood/saint,45,300,1,1,religious & decoration,32,0,0,8,null
-RECIPE: /material/stone/,monumental marble statue of venus,/obj/structure/religious/monument/venus,45,300,1,1,religious & decoration,62,0,0,8,null
 
 //*************| STONE ROADS |***************
 
@@ -1317,6 +1294,7 @@ RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1
 RECIPE: /material/stone/,roman stone wall,/obj/covers/stone_wall/roman,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,fortress wall,/obj/covers/stone_wall/fortress,8,190,1,1,construction,45,35,0,3,null
+RECIPE: /material/stone/,tiled white brick wall,/obj/covers/stone_wall/roman/modern,6,70,1,1,construction,115,0,0,8,null
 
 RECIPE: /material/stone/,stone block archway,/obj/covers/stone_wall/classic/archway,8,140,1,1,doorways and other buildings,0,0,0,2,null
 RECIPE: /material/stone/,fortress archway,/obj/covers/stone_wall/fortress/archway,16,190,1,1,doorways and other buildings,0,0,0,2,null
@@ -1326,7 +1304,6 @@ RECIPE: /material/stone/,castle gate control,/obj/structure/gatecontrol,5,100,1,
 RECIPE: /material/stone/,roman door,/obj/structure/simple_door/key_door/anyone/roman,5,50,1,1,construction,28,0,0,8,null
 
 RECIPE: /material/stone/,large stone double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/stone,10,100,1,1,none,18,0,0,8,null
-RECIPE: /material/stone/,locked large stone double doors,/obj/structure/simple_door/key_door/custom/doubledoor/stone,20,200,1,1,none,28,0,0,8,null
 
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/barrier/rock,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/stone/,fortified wall (horizontal),/obj/structure/barricade/stone_h,5,80,1,1,fortifications,29,0,0,8,null
@@ -1340,6 +1317,92 @@ RECIPE: /material/stone/,stone shingled wall (horizontal center),/obj/structure/
 RECIPE: /material/stone/,stone shingled wall (horizontal left),/obj/structure/barricade/jap_h_l,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/barricade/jap_h_r,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,jersey barrier,/obj/structure/window/barrier/jersey,3,70,1,1,fortifications,215,0,0,8,null
+
+//**************************************************************
+//*********************| MARBLE |*******************************
+//**************************************************************
+
+RECIPE: /material/marble/,reclaim stone from marble,/obj/item/stack/material/stone,2,15,0,1,none,0,0,0,8,null
+RECIPE: /material/marble/,marble brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
+RECIPE: /material/marble/,well,/obj/structure/sink/well/marble,7,250,1,1,none,21,0,0,8,null
+RECIPE: /material/marble/,ashtray,/obj/item/weapon/material/ashtray/marble,3,30,0,1,none,14,0,0,8,null
+
+//*****************| MARBLE SUPPORTS & ROOFING |***************************
+
+RECIPE: /material/marble/,marble pillar,/obj/structure/mine_support/stone/marble,2,130,1,1,construction,0,0,0,8,null
+RECIPE: /material/marble/,ionic column,/obj/structure/mine_support/stone/ionic,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/marble/,solomonic column,/obj/structure/mine_support/stone/solomonic,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/marble/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/marble/,marble aztec column,/obj/structure/mine_support/stone/aztec/marble,2.5,130,1,1,construction,32,0,0,8,null
+
+//*************| MARBLE RESEARCH |***************
+
+RECIPE: /material/marble/,research kit,/obj/item/weapon/researchkit,10,190,0,1,none,0,0,0,8,null
+
+//*************| RAW MARBLE FLOORS |***************
+
+RECIPE: /material/marble/,raw marble floor,/obj/covers/raw_marblefloor,1,25,1,1,floors,20,0,0,8,null
+RECIPE: /material/marble/,raw black marble floor,/obj/covers/raw_marblefloor/black,1,25,1,1,floors,20,0,0,8,null
+RECIPE: /material/marble/,raw pink marble floor,/obj/covers/raw_marblefloor/pink,1,25,1,1,floors,20,0,0,8,null
+
+//*************| MARBLE FLOORS |***************
+
+RECIPE: /material/marble/,marble floor,/obj/covers/marblefloor,1,25,1,1,floors,25,0,0,8,null
+RECIPE: /material/marble/,marble tiles,/obj/covers/marbletile,1,25,1,1,floors,25,0,0,8,null
+RECIPE: /material/marble/,black marble tiles,/obj/covers/marbletile/black,1,25,1,1,floors,25,0,0,8,null
+RECIPE: /material/marble/,pink marble tiles,/obj/covers/marbletile/pink,1,25,1,1,floors,25,0,0,8,null
+
+//*************| DECORATIVE MARBLE FLOORS #1 |***************
+
+RECIPE: /material/marble/,ornate marble tile,/obj/covers/ornatemarblefloor,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,ornate black marble tile,/obj/covers/ornatemarblefloor/black,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,decorative marble tile,/obj/covers/decorative_marbletile,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,decorative black marble tile,/obj/covers/decorative_marbletile/black,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,decorative pink marble tile,/obj/covers/decorative_marbletile/pink,1,25,1,1,floors,32,0,0,8,null
+
+//*************| DECORATIVE MARBLE FLOORS #2 |***************
+
+RECIPE: /material/marble/,marble grid tile floor,/obj/covers/marble_grid,1,25,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,marble checkerboard floor,/obj/covers/marble_checkerboard,1,25,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,reverse marble checkerboard floor,/obj/covers/marble_checkerboard/reverse,1,25,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink,1,25,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,reverse pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink/reverse,1,25,1,1,floors,45,0,0,8,null
+
+//*************| MARBLE DECORATIONS |***************
+
+RECIPE: /material/marble/,marble statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,marble
+
+RECIPE: /material/marble/,marble altar,/obj/structure/altar/marble,20,200,1,1,religious & decoration,28,0,0,8,null
+
+//*************| MARBLE MONUMENTS |***************
+
+RECIPE: /material/marble/,monumental marble statue of venus,/obj/structure/religious/monument/venus,45,300,1,1,religious & decoration,62,0,0,8,null
+
+//*************| MARBLE PRODUCTION BUILDINGS |***************
+
+RECIPE: /material/marble/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,none,25,0,0,8,null
+
+//*************| MARBLE WEAPONS |***************
+
+RECIPE: /material/marble/,marble bust,/obj/item/weapon/material/bust,3,10,0,0,none,20,0,0,8,marble
+RECIPE: /material/marble/,marble bust of hippocrates,/obj/item/weapon/material/hippocratic,3,10,0,0,none,20,0,0,8,marble
+
+//*************| MARBLE WALL & DOORWAY CONSTRUCTIONS |***************
+
+RECIPE: /material/marble/,marble wall,/obj/covers/marble_wall,8,140,1,1,construction,0,0,0,2,null
+RECIPE: /material/marble/,marble block wall,/obj/covers/marble_wall/classic,8,140,1,1,construction,0,0,0,2,null
+RECIPE: /material/marble/,grecian marble wall,/obj/covers/marble_wall/grecian,6,70,1,1,construction,22,0,0,2,null
+
+RECIPE: /material/marble/,marble block archway,/obj/covers/stone_wall/classic/archway,8,140,1,1,construction,0,0,0,2,null
+RECIPE: /material/marble/,grecian archway,/obj/covers/marble_wall/grecian/archway,8,140,1,1,construction,0,0,0,1,null
+RECIPE: /material/marble/,grand marble archway,/obj/covers/marble_wall/grecian/archway/modern,8,140,1,1,construction,65,0,0,8,null
+
+RECIPE: /material/marble/,roman door,/obj/structure/simple_door/key_door/anyone/roman,5,50,1,1,construction,28,0,0,8,null
+
+RECIPE: /material/marble/,large marble double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/marble,10,100,1,1,none,18,0,0,8,null
+
+RECIPE: /material/marble/,marble window,/obj/structure/window_frame/marble,5,140,1,1,construction,20,0,0,8,null
+RECIPE: /material/marble/,full stone window,/obj/structure/window_frame/marblefull,5,140,1,1,construction,20,0,0,8,null
 
 //*******************************************************
 //*********************| RAGS |**************************
@@ -1521,7 +1584,6 @@ RECIPE: /material/steel/,steel public bathtub,/obj/structure/shower/bathtub/big/
 RECIPE: /material/gold/,gold coins,/obj/item/stack/money/goldcoin,1,35,0,1,none,0,0,0,8,null
 
 RECIPE: /material/gold/,large gold double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/gold,5,100,1,1,none,18,0,0,8,null
-RECIPE: /material/gold/,locked large gold double doors,/obj/structure/simple_door/key_door/custom/doubledoor/gold,10,150,1,1,none,28,0,0,8,null
 
 //*****************| GOLD CLOTHING & ACCESSORIES |***************************
 
@@ -1546,7 +1608,6 @@ RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 
 RECIPE: /material/silver/,large silver double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/silver,5,100,1,1,none,18,0,0,8,null
-RECIPE: /material/silver/,locked large silver double doors,/obj/structure/simple_door/key_door/custom/doubledoor/silver,10,150,1,1,none,28,0,0,8,null
 
 //*****************| SILVER WEAPONS & TOOLS |***************************
 
@@ -1569,7 +1630,6 @@ RECIPE: /material/tin/,dummy armor,/obj/item/weapon/dummy_armor,4,120,1,1,none,1
 RECIPE: /material/tin/,messtin,/obj/item/weapon/storage/ww2,8,180,0,1,none,115,110,0,8,null
 
 RECIPE: /material/tin/,large tin double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/tin,5,100,1,1,none,18,0,0,8,null
-RECIPE: /material/tin/,locked large tin double doors,/obj/structure/simple_door/key_door/custom/doubledoor/tin,8,150,1,1,none,28,0,0,8,null
 
 //*****************| TIN CANS |***************************
 
@@ -1589,7 +1649,6 @@ RECIPE: /material/copper/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,nu
 RECIPE: /material/copper/,handbell,/obj/item/weapon/handbell,2,50,0,1,none,40,0,0,8,null
 
 RECIPE: /material/copper/,large copper double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/copper,5,100,1,1,none,18,0,0,8,null
-RECIPE: /material/copper/,locked large copper double doors,/obj/structure/simple_door/key_door/custom/doubledoor/copper,10,150,1,1,none,28,0,0,8,null
 
 //*****************| COPPER WEAPONS & TOOLS |***************************
 
@@ -1662,7 +1721,6 @@ RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,sie
 //*********************| STEEL FLOORS & CONSTRUCTIONS |**************************
 
 RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,none,62,0,0,8,null
-RECIPE: /material/steel/,locked reinforced large steel double doors,/obj/structure/simple_door/key_door/custom/doubledoor/steel,20,250,1,1,none,62,0,0,8,null
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,construction,75,0,0,8,null
 
@@ -1709,7 +1767,7 @@ RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,produ
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
 
 RECIPE: /material/steel/,bakelizer,/obj/structure/bakelizer,18,300,1,1,production,90,0,0,8,null
-RECIPE: /material/steel/,industrial acidic bath,/obj/structure/converter/acid_bath,12,200,1,1,jackets & vests,175,0,180,8,null
+RECIPE: /material/steel/,industrial acidic bath,/obj/structure/converter/acid_bath,12,200,1,1,production,175,0,180,8,null
 
 RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,production,110,0,0,8,null
 RECIPE: /material/steel/,biofuel refinery,/obj/structure/refinery/biofuel,18,200,1,1,production,115,0,0,8,null
@@ -1732,6 +1790,7 @@ RECIPE: /material/steel/,footlocker,/obj/structure/closet/crate/footlocker,1.5,5
 RECIPE: /material/steel/,metal crate,/obj/structure/closet/crate,3,80,1,1,storage,115,0,0,8,null
 RECIPE: /material/steel/,cash register,/obj/structure/closet/crate/cash_register,3,60,1,1,storage,135,0,0,8,null
 RECIPE: /material/steel/,fridge,/obj/structure/closet/fridge,15,230,1,1,storage,150,0,178,8,null
+
 RECIPE: /material/steel/,/obj/structure/vending/craftable/rifles,5,80,1,1,storage,0,95,0,8,null
 
 RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,storage,105,0,0,8,null
@@ -1765,7 +1824,6 @@ RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4
 RECIPE: /material/bronze/,ashtray,/obj/item/weapon/material/ashtray/bronze,3,30,0,1,none,20,0,0,8,null
 
 RECIPE: /material/bronze/,large bronze double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/bronze,8,100,1,1,none,18,0,0,8,null
-RECIPE: /material/bronze/,locked bronze double doors,/obj/structure/simple_door/key_door/custom/doubledoor/bronze,13,150,1,1,none,28,0,0,8,null
 
 //*********************| BRONZE WEAPONS & TOOLS |*************************
 
@@ -1862,9 +1920,8 @@ RECIPE: /material/wood/,large wood double doors,/obj/structure/simple_door/key_d
 RECIPE: /material/wood/,aztec door,/obj/structure/simple_door/key_door/anyone/aztec,5,50,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,rustic door,/obj/structure/simple_door/key_door/anyone/rustic,4,40,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,nordic door,/obj/structure/simple_door/key_door/anyone/nordic,5,50,1,1,construction,35,0,0,8,null
-RECIPE: /material/wood/,unlocked wooden privacy door,/obj/structure/simple_door/key_door/anyone/privacy,10,100,1,1,construction,47,0,0,8,null
-RECIPE: /material/wood/,lockable wooden privacy door,/obj/structure/simple_door/key_door/custom/privacy,15,180,1,1,construction,47,0,0,8,null
-RECIPE: /material/wood/,wooden house door,/obj/structure/simple_door/key_door/anyone/housedoor,5,50,1,1,construction,82,0,0,8,null
+RECIPE: /material/wood/,wooden privacy door,/obj/structure/simple_door/key_door/anyone/singledoor/privacy,10,100,1,1,construction,47,0,0,8,null
+RECIPE: /material/wood/,wooden house door,/obj/structure/simple_door/key_door/anyone/singledoor/housedoor,5,50,1,1,construction,82,0,0,8,null
 
 RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
@@ -2242,7 +2299,6 @@ RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/a
 RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,15,180,1,1,construction,28,0,0,8,null
 
 RECIPE: /material/iron/,unlocked large iron double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/iron,10,100,1,1,construction,28,0,0,8,null
-RECIPE: /material/iron/,locked large iron double doors,/obj/structure/simple_door/key_door/custom/doubledoor/iron,15,180,1,1,construction,28,0,0,8,null
 
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 
@@ -2297,25 +2353,25 @@ RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firel
 //*******************************************************
 
 RECIPE: /material/sandstone/,smooth sandstone road,/obj/covers/roads/sandstone,1,0,1,1,roads,0,0,0,8,null
+RECIPE: /material/sandstone/,stone bricks,/obj/item/stack/material/stonebrick,3,50,0,1,none,35,0,0,8,null
 
 //*********************| SANDSTONE CONSTRUCTIONS |**************************
 
-RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,125,1,1,construction,0,0,0,8,null
-RECIPE: /material/sandstone/,egyptian wall,/obj/covers/stone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
-RECIPE: /material/sandstone/,sandstone block wall,/obj/covers/sandstone_block_wall,8,125,1,1,construction,0,0,0,8,null
-RECIPE: /material/sandstone/,red sandstone block wall,/obj/covers/sandstone_block_wall/red,8,125,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,smooth sandstone wall,/obj/covers/sandstone_smooth_wall/plain,8,125,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,egyptian wall,/obj/covers/sandstone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
+RECIPE: /material/sandstone/,sandstone block wall,/obj/covers/sandstone_wall/classic,8,125,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,red sandstone block wall,/obj/covers/sandstone_wall/classic/red,8,125,1,1,construction,0,0,0,8,null
 
-RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone fortress wall,/obj/covers/stone_wall/fortress/sandstone,8,190,1,1,construction,45,35,0,3,null
 
 RECIPE: /material/sandstone/,castle gate,/obj/structure/gate/sandstone,15,210,1,1,construction,30,30,0,8,null
 RECIPE: /material/sandstone/,castle gate control,/obj/structure/gatecontrol/sandstone,5,100,1,1,construction,30,30,0,8,null
 RECIPE: /material/sandstone/,large sandstone double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/sandstone,10,100,1,1,none,18,0,0,1,null
-RECIPE: /material/sandstone/,locked large sandstone double doors,/obj/structure/simple_door/key_door/custom/doubledoor/sandstone,20,200,1,1,none,28,0,0,8,null
 
-RECIPE: /material/sandstone/,sandstone block archway,/obj/covers/sandstone_block_wall/archway,6,125,1,1,construction,0,0,0,8,null
-RECIPE: /material/sandstone/,red sandstone block archway,/obj/covers/sandstone_block_wall/archway,6,125,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone block archway,/obj/covers/sandstone_wall/classic/archway,6,125,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,red sandstone block archway,/obj/covers/sandstone_wall/classic/archway/red,6,125,1,1,construction,0,0,0,8,null
 
-RECIPE: /material/sandstone/,egyptian archway,/obj/covers/stone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
+RECIPE: /material/sandstone/,egyptian archway,/obj/covers/sandstone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
 
 RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,1,25,1,1,floors,0,0,0,8,null
@@ -2336,6 +2392,8 @@ RECIPE: /material/sandstone/,aztec column,/obj/structure/mine_support/stone/azte
 
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/sandstonefull,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/sandstone/,red sandstone window,/obj/structure/window_frame/redsandstone,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/sandstone/,red full sandstone window,/obj/structure/window_frame/redsandstonefull,5,140,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone roof builder,/obj/item/weapon/roofbuilder/sandstone,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone doors,/obj/structure/simple_door/sandstone,5,50,1,1,construction,5,0,0,8,null

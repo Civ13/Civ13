@@ -452,6 +452,7 @@ var/list/name_to_material
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	stack_type = /obj/item/stack/material/bone
 
+/*
 /material/stone/marble
 	name = "marble"
 	icon_colour = "#fffcf0" // marble - white
@@ -459,6 +460,20 @@ var/list/name_to_material
 	integrity = 201 //hack to stop kitchen benches being flippable, todo: refactor into weight system
 	hardness = 100
 	door_icon_base = "stone"
+	stack_type = /obj/item/stack/material/marble
+*/
+
+/material/marble
+	name = "marble"
+	icon_base = "new_stonebrick"
+	icon_colour = "#fffcf0" // marble - white
+	hardness = 45
+	integrity = 500
+	weight = 22
+	shard_type = SHARD_STONE_PIECE
+	door_icon_base = "stone"
+	sheet_singular_name = "block"
+	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/marble
 
 /material/steel
