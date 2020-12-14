@@ -714,6 +714,22 @@ obj/structure/vending/hezammo
 	var/product_type = /obj/item/weapon/gun/projectile
 	var/max_products = 5
 
+/obj/structure/vending/craftable/update_icon()
+	overlays.Cut()
+	var/ct1 = 0
+	for(var/datum/data/vending_product/VP in product_records)
+		if (VP.product_image)
+			var/image/NI = VP.product_image
+			NI.layer = layer+0.01
+			var/matrix/M = matrix()
+			NI.pixel_x = -5+ct1
+			NI.pixel_y = 3
+			M.Scale(0.7)
+			M.Turn(315)
+			NI.transform = M
+			overlays += NI
+			ct1+=4
+
 /obj/structure/vending/craftable/stock(obj/item/W, var/datum/data/vending_product/R, var/mob/user)
 	if (!user.unEquip(W))
 		return
@@ -722,6 +738,7 @@ obj/structure/vending/hezammo
 	W.forceMove(src)
 	product_records.Add(R)
 	nanomanager.update_uis(src)
+	update_icon()
 
 /obj/structure/vending/craftable/rifles
 	name = "rifle rack"

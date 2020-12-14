@@ -238,6 +238,7 @@
 		if (istype(src, /obj/structure/vending/craftable))
 			product_records -= R
 		nanomanager.update_uis(src)
+		update_icon()
 
 /**
  * Add item to the machine
@@ -254,6 +255,7 @@
 	qdel(W)
 
 	nanomanager.update_uis(src)
+	update_icon()
 
 /obj/structure/vending/process()
 
