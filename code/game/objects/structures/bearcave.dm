@@ -3,14 +3,11 @@
 	icon = 'icons/obj/bearcave.dmi'
 	icon_state = "cave_den"
 	desc = "Thats a bearcave. You probably want to stay away from it. "
-	var/struc_health = 1000
 	var/females = 0
 	var/males = 0
 	var/cubs = 0
 	var/cub_growing = FALSE
 	var/total_population = 0
-	var/overpopulation = FALSE
-	var/copulating = FALSE
 	var/ticking = FALSE
 	var/bear_climate = null
 	var/aggroed = FALSE
