@@ -2000,7 +2000,7 @@
 	material = "Steel"
 
 /obj/covers/jail/attackby(obj/item/W as obj, mob/living/human/user as mob)
-	setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if (istype(W,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(W,/obj/item/weapon/material/kitchen/utensil/fork))
 		var/obj/item/weapon/material/kitchen/utensil/I = W
 		if (I.shiv < 10)
