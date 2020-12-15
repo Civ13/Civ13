@@ -101,3 +101,6 @@ var/global/list/ashtray_cache = list()
 
 /obj/item/weapon/material/ashtray/stone/New(var/newloc)
 	..(newloc, "stone")
+
+/obj/item/weapon/material/ashtray/marble/New(var/newloc)
+	..(newloc, "marble")

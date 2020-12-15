@@ -77,7 +77,7 @@
 	material = "bone"
 	desc = "A large set of bone doors."
 
-/obj/structure/simple_door/key_door/anyone/doubledoor/marble //psuedo-material
+/obj/structure/simple_door/key_door/anyone/doubledoor/marble
 	name = "large marble double"
 	material = "marble"
 	desc = "A large set of marble doors."
@@ -136,25 +136,33 @@
 	material = "gold"
 	desc = "A large set of glimmering gold doors."
 
-/obj/structure/simple_door/key_door/anyone/privacy/New(var/newloc,var/material_name)
+/obj/structure/simple_door/key_door/anyone/singledoor/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	name = "improper single door"
+	desc = "If you can see this door please report it to a developer"
+	health = 250
+
+/obj/structure/simple_door/key_door/anyone/singledoor/privacy/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	name = "wooden privacy door"
 	icon = 'icons/obj/doors/material_doors_fwoosh.dmi'
 	basic_icon = "private"
 	icon_state = "private"
 	desc = "A wood paneled privacy door."
-	health = 250
+	override_material = FALSE
+	override_opacity = TRUE
+	opacity = FALSE
 
-/obj/structure/simple_door/key_door/anyone/housedoor/New(var/newloc,var/material_name)
+/obj/structure/simple_door/key_door/anyone/singledoor/housedoor/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	name = "wooden house door"
 	icon = 'icons/obj/doors/material_doors_fwoosh.dmi'
 	basic_icon = "housedoor"
 	icon_state = "housedoor"
 	desc = "A wood paneled house door with seethrough windows."
+	override_material = FALSE
 	override_opacity = TRUE
 	opacity = FALSE
-	health = 250
 
 #undef ANYONE_CODE
 

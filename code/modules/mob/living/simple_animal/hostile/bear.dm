@@ -28,6 +28,7 @@
 	scavenger = 1
 
 	var/cub = FALSE
+	var/growing = FALSE
 
 	var/btype = "black"
 	var/female = FALSE
@@ -45,39 +46,48 @@
 	female = TRUE
 
 /mob/living/simple_animal/hostile/bear/death()
-
-	bear_count &= src
+	bear_count--
 	..()
+
 /mob/living/simple_animal/hostile/bear/Destroy()
-
-	bear_count &= src
+	bear_count--
 	..()
+
 /mob/living/simple_animal/hostile/bear/Life()
-	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
-		overpopulationCountdown--
-		return
+	..()
+	if(src.cub && !src.growing)
+		growing = TRUE //No need to set it all again if its already growing
+		icon_state = "[btype]bear_cub"
+		icon_living = "[btype]bear_cub"
+		icon_dead = "[btype]bear_cub_dead"
+		meat_amount = 1
+		mob_size = MOB_LARGE
+		if (female)
+			name = "female [btype] bear cub"
+		else
+			name = "male [btype] bear cub"
+		spawn(4500)
+			cub = FALSE
+			growing = FALSE
+			icon_state = "[btype]bear"
+			icon_living = "[btype]bear"
+			icon_dead = "[btype]bear_dead"
+			mob_size = MOB_LARGE
+			if (female)
+				name = "[btype] bear sow"
+			else
+				name = "[btype] bear boar"
 
-	if (!pregnant && bear_count.len < 12)
-		var/nearbyObjects = range(1,src) //3x3 area around animal
-		for(var/mob/living/simple_animal/hostile/bear/M in nearbyObjects)
-			if (M.stat == CONSCIOUS && !M.female)
-				pregnant = TRUE
-				birthCountdown = 750 // life ticks once per 2 seconds, 300 == 10 minutes
-				break
-
-		if (pregnant)
-			nearbyObjects = range(7,src) //15x15 area around animal
-
-			var/bearCount = 0
-			for(var/mob/living/simple_animal/hostile/bear/M in nearbyObjects)
-				if (M.stat == CONSCIOUS)
-					bearCount++
-
-
-			if (bearCount > 4) // max 5 cows/bulls in a 15x15 area around
-				overpopulationCountdown = 450 // 5 minutes
-				pregnant = FALSE
-	else if (pregnant)
+	if(!src.following_mob)
+		src.do_behaviour()
+	if (src.female && !src.pregnant)
+		if(!src.cub) //Cubs cant get pregnant
+			var/nearbyObjects = range(1,src) //3x3 area around animal
+			for(var/mob/living/simple_animal/hostile/bear/boar/M in nearbyObjects)
+				if (M.stat == CONSCIOUS && !M.female) //Failsafe, no misscheck for self-reproduction
+					pregnant = TRUE
+					birthCountdown = 1500 // life ticks once per 2 seconds, 300 == 10 minutes
+	else if (src.female && src.pregnant)
 		birthCountdown--
 		if (birthCountdown <= 0)
 			pregnant = FALSE
@@ -90,38 +100,14 @@
 				B.cub = TRUE
 				B.btype = btype
 			visible_message("A bear cub has been born!")
-	..()
 
 /mob/living/simple_animal/hostile/bear/boar/New()
-	bear_count |= src
+	bear_count++
+	if (female)
+		name = "[btype] bear sow"
+	else
+		name = "[btype] bear boar"
 	..()
-	spawn(1)
-		if (cub)
-			icon_state = "[btype]bear_cub"
-			icon_living = "[btype]bear_cub"
-			icon_dead = "[btype]bear_cub_dead"
-			meat_amount = 1
-			mob_size = MOB_LARGE
-			if (female)
-				name = "female [btype] bear cub"
-			else
-				name = "male [btype] bear cub"
-			spawn(4500)
-				cub = FALSE
-				icon_state = "[btype]bear"
-				icon_living = "[btype]bear"
-				icon_dead = "[btype]bear_dead"
-				mob_size = MOB_LARGE
-				if (female)
-					name = "[btype] bear sow"
-				else
-					name = "[btype] bear boar"
-		else
-			if (female)
-				name = "[btype] bear sow"
-			else
-				name = "[btype] bear boar"
-			icon_state = "[btype]bear"
 
 /mob/living/simple_animal/hostile/bear/boar/black
 	name = "black bear boar"

@@ -46,7 +46,7 @@
 	. = ..()
 
 /datum/data/vending_product/proc/get_product(var/product_location, var/p_amount=1, var/mob/user)
-	if (istype(vending_machine, /obj/structure/vending/sales))
+	if (istype(vending_machine, /obj/structure/vending/sales) || istype(vending_machine, /obj/structure/vending/craftable))
 		if (amount <= 0 || amount < p_amount || !product_location)
 			return
 		if (is_stack)
