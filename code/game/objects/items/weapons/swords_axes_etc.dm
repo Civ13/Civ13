@@ -63,8 +63,8 @@
 	flammable = TRUE
 
 /obj/item/weapon/melee/nightbaton/sandman
-    name = "Heavy Duty"
-    desc = "A Heavy baton held by the camp commander."
+    name = "Heavy duty"
+    desc = "A baton held by the camp commander nicknamed the sandman by prisoners because of how hard it hits."
     icon = 'icons/obj/weapons.dmi'
     icon_state = "nightbaton"
     item_state = "nightbaton"
