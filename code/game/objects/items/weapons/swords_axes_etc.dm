@@ -66,7 +66,7 @@
     name = "Heavy duty"
     desc = "A baton held by the camp commander nicknamed the sandman by prisoners because of how hard it hits."
     icon = 'icons/obj/weapons.dmi'
-    icon_state = "nightbaton"
+    icon_state = "kombaton"
     item_state = "nightbaton"
     slot_flags = SLOT_BELT
     force = WEAPON_FORCE_WEAK+2
