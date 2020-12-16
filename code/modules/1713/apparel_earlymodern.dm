@@ -11,7 +11,37 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	var/colorn = 1
+/obj/item/clothing/under/abashiri
+	name = "Abashiri Guard Uniform"
+	desc = "A standard uniform for the guards of Abashiri Prison."
+	icon_state = "abashiri_guard"
+	item_state = "abashiri_guard"
+	worn_state = "abashiri_guard"
+	var/rolled = FALSE
 
+/obj/item/clothing/under/abashiri/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/abashiri)
+		return
+	else
+		if (rolled)
+			item_state = "abashiri_guard"
+			worn_state = "abashiri_guard"
+			item_state_slots["w_uniform"] = "abashiri_guard"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "abashiri_guard_rolled"
+			worn_state = "abashiri_guard_rolled"
+			item_state_slots["w_uniform"] = "abashiri_guard_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 /obj/item/clothing/under/japuni
 	name = "Japanese Army Uniform"
 	desc = "A standard imperial japanese army uniform."
