@@ -62,6 +62,28 @@
 	weakens = 6
 	flammable = TRUE
 
+/obj/item/weapon/melee/nightbaton/sandman
+    name = "Heavy duty"
+    desc = "A baton held by the camp commander nicknamed the sandman by prisoners because of how hard it hits."
+    icon = 'icons/obj/weapons.dmi'
+    icon_state = "kombaton"
+    item_state = "nightbaton"
+    slot_flags = SLOT_BELT
+    force = WEAPON_FORCE_WEAK+2
+    weakens = 0
+    flammable = TRUE
+    var/cooldown = FALSE
+
+/obj/item/weapon/melee/nightbaton/sandman/attack(mob/M as mob, mob/living/user as mob)
+    if(!cooldown)
+        M.SetWeakened(50)
+        src.cooldown = TRUE
+        spawn(100)
+            src.cooldown = FALSE
+    else
+        user << "<span class='notice'>You have used this batton not long ago. Chill out!</span>"
+    ..()
+
 /obj/item/weapon/melee/classic_baton/club
 	name = "wood club"
 	desc = "One of the oldest weapons in the world. Good for when you need to knock people down."

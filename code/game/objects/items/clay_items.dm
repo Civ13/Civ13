@@ -19,10 +19,21 @@
 	icon_state = "unfired_clayroofing"
 	result = /obj/item/weapon/roofbuilder/clay
 
-/obj/item/weapon/clay/roofing/kerawa
+/obj/item/weapon/clay/roofing/blue
+	name = "unfired blue clay roof tiles"
+	icon_state = "unfired_clayroofing"
+	result = /obj/item/weapon/roofbuilder/clay/blue
+
+/obj/item/weapon/clay/roofing/black
 	name = "unfired black clay roof tiles"
 	icon_state = "unfired_clayroofing"
+	result = /obj/item/weapon/roofbuilder/clay/black
+
+/obj/item/weapon/clay/roofing/kerawa
+	name = "unfired black kerawa roof tiles"
+	icon_state = "unfired_clayroofing"
 	result = /obj/item/weapon/roofbuilder/clay/kerawa
+
 /obj/item/weapon/clay/vase
 	name = "unfired clay vase"
 	icon_state = "unfired_clayvase"

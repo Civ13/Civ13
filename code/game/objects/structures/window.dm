@@ -118,10 +118,18 @@
 			new/obj/structure/window_frame/stone(loc)
 		else if (istype(src, /obj/structure/window/classic/stonefull))
 			new/obj/structure/window_frame/stonefull(loc)
+		else if (istype(src, /obj/structure/window/classic/marble))
+			new/obj/structure/window_frame/marble(loc)
+		else if (istype(src, /obj/structure/window/classic/marblefull))
+			new/obj/structure/window_frame/marblefull(loc)
 		else if (istype(src, /obj/structure/window/classic/sandstone))
 			new/obj/structure/window_frame/sandstone(loc)
 		else if (istype(src, /obj/structure/window/classic/sandstonefull))
 			new/obj/structure/window_frame/sandstonefull(loc)
+		else if (istype(src, /obj/structure/window/classic/redsandstone))
+			new/obj/structure/window_frame/redsandstone(loc)
+		else if (istype(src, /obj/structure/window/classic/redsandstonefull))
+			new/obj/structure/window_frame/redsandstonefull(loc)
 		else if (istype(src, /obj/structure/window/classic/sumerian))
 			new/obj/structure/window_frame/sumerian(loc)
 		else
@@ -540,6 +548,22 @@
 	flammable = FALSE
 	stucco_window = TRUE
 
+/obj/structure/window_frame/marble
+	icon_state = "marble_windownew_frame"
+	name = "marble window frame"
+	desc = "marble carved to support a few panes of glass."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/marblefull
+	icon_state = "marble_windownew_fullframe"
+	name = "full stone window frame"
+	desc = "Marble carved to support a large window's worth of glass."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
 /obj/structure/window_frame/sandstone
 	icon_state = "sandstone_windownew_frame"
 	name = "sandstone window frame"
@@ -552,6 +576,22 @@
 	icon_state = "sandstone_windownew_fullframe"
 	name = "sandstone window frame"
 	desc = "Sandstone carved to support a large window's worth of glass.."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/redsandstone
+	icon_state = "redsandstone_windownew_frame"
+	name = "red sandstone window frame"
+	desc = "Red sandstone carved to support some glass.."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/redsandstonefull
+	icon_state = "redsandstone_windownew_fullframe"
+	name = "red sandstone window frame"
+	desc = "Red sandstone carved to support a large window's worth of glass.."
 	health = 250
 	flammable = FALSE
 	stucco_window = FALSE
@@ -621,10 +661,18 @@
 					new/obj/structure/window/classic/stone(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/stonefull))
 					new/obj/structure/window/classic/stonefull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/marble))
+					new/obj/structure/window/classic/marble(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/marblefull))
+					new/obj/structure/window/classic/marblefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstone))
 					new/obj/structure/window/classic/sandstone(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstonefull))
 					new/obj/structure/window/classic/sandstonefull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/redsandstone))
+					new/obj/structure/window/classic/redsandstone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/redsandstonefull))
+					new/obj/structure/window/classic/redsandstonefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sumerian))
 					new/obj/structure/window/classic/sumerian(get_turf(src))
 				else
@@ -785,6 +833,24 @@
 	health = 250
 	flammable = FALSE
 
+/obj/structure/window/classic/marble
+	icon_state = "marble_windownew"
+	name = "marble window"
+	desc = "A marble window with glass-covered holes."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window/classic/marblefull
+	icon_state = "marble_windownew_full"
+	name = "full marble window"
+	desc = "A marble window with large glass-covered holes."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
 /obj/structure/window/classic/sandstone
 	icon_state = "sandstone_windownew"
 	name = "sandstone window"
@@ -798,6 +864,24 @@
 	icon_state = "sandstone_windownew_full"
 	name = "full sandstone window"
 	desc = "Sandstone with large glass windows."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window/classic/redsandstone
+	icon_state = "redsandstone_windownew"
+	name = "redsandstone window"
+	desc = "Red sandstone with glass windows."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window/classic/redsandstonefull
+	icon_state = "redsandstone_windownew_full"
+	name = "full red sandstone window"
+	desc = "Red sandstone with large glass windows."
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
 	health = 250

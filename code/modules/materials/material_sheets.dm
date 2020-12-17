@@ -165,7 +165,7 @@
 	value = 5
 
 /obj/item/stack/material/marble
-	name = "marble brick"
+	name = "marble block"
 	icon_state = "sheet-marble"
 	default_type = "marble"
 	value = 3
