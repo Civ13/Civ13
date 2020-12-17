@@ -11,7 +11,83 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	var/colorn = 1
+////////////////////////////////////ABASHIRI//////////////////////////////////////////////////////////////////////////////////////
+/obj/item/clothing/under/abashiri
+	name = "Abashiri Guard Uniform"
+	desc = "A standard uniform for the guards of Abashiri Prison."
+	icon_state = "abashiri_guard"
+	item_state = "abashiri_guard"
+	worn_state = "abashiri_guard"
+	var/rolled = FALSE
 
+/obj/item/clothing/under/abashiri/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/abashiri)
+		return
+	else
+		if (rolled)
+			item_state = "abashiri_guard"
+			worn_state = "abashiri_guard"
+			item_state_slots["w_uniform"] = "abashiri_guard"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "abashiri_guard_rolled"
+			worn_state = "abashiri_guard_rolled"
+			item_state_slots["w_uniform"] = "abashiri_guard_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/abashiri_prisoner
+	name = "Abashiri Prison Uniform"
+	desc = "A standard yukata for the guards of Abashiri Prison."
+	icon_state = "abashiri_prisoner"
+	item_state = "abashiri_prisoner"
+	worn_state = "abashiri_prisoner"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/abashiri_prisoner/verb/roll_suit()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/abashiri_prisoner)
+		return
+	else
+		if (rolled)
+			item_state = "abashiri_prisoner"
+			worn_state = "abashiri_prisoner"
+			item_state_slots["w_uniform"] = "abashiri_prisoner"
+			usr << "<span class = 'danger'>You roll down your suit.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "abashiri_prisoner_down"
+			worn_state = "abashiri_prisoner_down"
+			item_state_slots["w_uniform"] = "abashiri_prisoner_down"
+			usr << "<span class = 'danger'>You roll up your suit.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+/obj/item/clothing/head/abashiri_guard
+	name = "Abashiri Guard Cap"
+	desc = "A cap worn by Abashiri Guards."
+	icon_state = "abashiri_guard"
+	item_state = "abashiri_guard"
+/obj/item/clothing/head/abashiri_guard/head_guard
+	name = "Abashiri Head Guard Cap"
+	desc = "A cap worn by the Abashiri Head Guard."
+	icon_state = "abashiri_guard_head"
+	item_state = "abashiri_guard_head"
+	flags_inv = BLOCKHAIR|HIDEFACE
+	restricts_view = 2
+////////////////////////////////////////////RUSSO-JAP///////////////////////////////////////////////
 /obj/item/clothing/under/japuni
 	name = "Japanese Army Uniform"
 	desc = "A standard imperial japanese army uniform."
