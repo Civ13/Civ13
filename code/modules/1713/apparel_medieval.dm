@@ -168,7 +168,7 @@
 	icon_state = "black_cape"
 	item_state = "black_cape"
 	worn_state = "black_cape"
-	body_parts_covered = HEAD|FACE
+	body_parts_covered = HEAD
 	flags_inv = BLOCKHAIR|HIDEFACE
 
 /obj/item/clothing/head/plaguedoctor

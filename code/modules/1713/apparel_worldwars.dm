@@ -1708,6 +1708,28 @@ obj/item/clothing/head/ww2/chicap2
 		item_state = "ushanka"
 		user << "You lower the ear flaps on the ushanka."
 
+/obj/item/clothing/head/ww2/sov_ushanka/nomads
+	name = "ushanka"
+	desc = "A warm ushanka, often used by citizens & soldiers in cold climates."
+	icon_state = "ushanka_plain_up"
+	item_state = "ushanka_plain_up"
+	cold_protection = HEAD|FACE
+
+/obj/item/clothing/head/ww2/sov_ushanka/nomads/down
+	icon_state = "ushanka_plain"
+	item_state = "ushanka_plain"
+	worn_state = "ushanka_plain"
+
+/obj/item/clothing/head/ww2/sov_ushanka/nomads/attack_self(mob/user as mob)
+	if (icon_state == "ushanka")
+		icon_state = "ushanka_plain_up"
+		item_state = "ushanka_plain_up"
+		user << "You raise the ear flaps on the ushanka."
+	else
+		icon_state = "ushanka_plain"
+		item_state = "ushanka_plain"
+		user << "You lower the ear flaps on the ushanka."
+
 /obj/item/clothing/head/ww2/nkvd_cap
 	name = "NKVD cap"
 	desc = "A cap and worn by NKVD."
