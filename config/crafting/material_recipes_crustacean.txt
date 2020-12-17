@@ -1,4 +1,4 @@
-//************| MATERIAL_RECIPIES GENERAL INDEX |**********************************************************************************
+//************| MATERIAL_RECIPIES CRUSTACEAN GENERAL INDEX |***********************************************************************
 //********| Follow the lines to find subcategories |*******************************************************************************
 //**| Using 'find' command in the 'edit' menu is recommended |*********************************************************************
 //**| No two subtitles will be the same other than in index, and single titles are easy to locate |********************************
@@ -164,7 +164,7 @@
 RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,0.5,25,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired blue clay roofing,/obj/item/weapon/clay/roofing/blue,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black clay roofing,/obj/item/weapon/clay/roofing/black,0.5,25,0,1,none,18,0,0,8,null
-RECIPE: /material/clay/,unfired black kerawa roofing,/obj/item/weapon/clay/roofing/kerawa,0.5,25,0,1,none,0,0,0,8,null
+//RECIPE: /material/clay/,unfired black kerawa roofing,/obj/item/weapon/clay/roofing/kerawa,0.5,25,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,0.75,20,0,1,none,103,0,0,8,null
 
 //*****************| CLAY KITCHEN OBJECTS |***************************
@@ -256,11 +256,11 @@ RECIPE: /material/leather/,leather bandages,/obj/item/stack/medical/bruise_pack/
 
 //*****************| LEATHER UNIFORMS & JACKETS |***************************
 
-RECIPE: /material/leather/,leather loincloth,/obj/item/clothing/under/loinleather,2,50,0,1,clothing,0,0,0,0,null
-RECIPE: /material/leather/,aztec loincloth,/obj/item/clothing/under/aztec_loincloth,2,50,0,1,clothing,0,0,0,3,null
-RECIPE: /material/leather/,small customizable loincloth,/obj/item/clothing/under/custom/spartan,3,50,0,1,clothing,0,0,0,1,null
-RECIPE: /material/leather/,long celtic braccae,/obj/item/clothing/under/celtic_long_braccae,3,55,0,1,clothing,0,19,0,1,null
-RECIPE: /material/leather/,short celtic braccae,/obj/item/clothing/under/celtic_short_braccae,2,55,0,1,clothing,0,19,0,1,null
+RECIPE: /material/leather/,leather loincloth,/obj/item/clothing/under/loinleather,2,50,0,1,clothing,0,0,0,2,null
+//RECIPE: /material/leather/,aztec loincloth,/obj/item/clothing/under/aztec_loincloth,2,50,0,1,clothing,0,0,0,3,null
+RECIPE: /material/leather/,small customizable loincloth,/obj/item/clothing/under/custom/spartan,3,50,0,1,clothing,0,0,0,2,null
+//RECIPE: /material/leather/,long celtic braccae,/obj/item/clothing/under/celtic_long_braccae,3,55,0,1,clothing,0,19,0,1,null
+//RECIPE: /material/leather/,short celtic braccae,/obj/item/clothing/under/celtic_short_braccae,2,55,0,1,clothing,0,19,0,1,null
 
 RECIPE: /material/leather/,leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat1,6,120,0,1,jackets & vests,0,0,89,8,null
 RECIPE: /material/leather/,black leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,0,1,jackets & vests,0,0,89,8,null
@@ -276,11 +276,11 @@ RECIPE: /material/leather/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,
 
 //*****************| LEATHER SHOES |***************************
 
-RECIPE: /material/leather/,roman-style sandals,/obj/item/clothing/shoes/roman,2,60,0,1,foot wear,0,19,0,1,null
-RECIPE: /material/leather/,aztec-style sandals,/obj/item/clothing/shoes/aztec_sandals,2,60,0,1,foot wear,0,19,0,3,null
+RECIPE: /material/leather/,roman-style sandals,/obj/item/clothing/shoes/roman,2,60,0,1,foot wear,0,19,0,8,null
+//RECIPE: /material/leather/,aztec-style sandals,/obj/item/clothing/shoes/aztec_sandals,2,60,0,1,foot wear,0,19,0,3,null
 RECIPE: /material/leather/,medieval shoes,/obj/item/clothing/shoes/medieval,3,80,0,1,foot wear,0,39,0,2,null
-RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
-RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
+//RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
+//RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,black leather shoes,/obj/item/clothing/shoes/soldiershoes,2,60,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots1,3,80,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,leather boots,/obj/item/clothing/shoes/leatherboots1,3,80,0,1,foot wear,55,0,25,8,null
@@ -296,23 +296,23 @@ RECIPE: /material/leather/,punk boots,/obj/item/clothing/shoes/punk,4,110,0,1,fo
 RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,16,21,3,null
 RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,armor,0,16,21,3,null
 
-RECIPE: /material/leather/,hatchigane headband,/obj/item/clothing/head/helmet/hatchigane,3,90,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,hatchigane headband,/obj/item/clothing/head/helmet/hatchigane,3,90,0,1,armor,0,16,21,3,null
 
-RECIPE: /material/leather/,leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard,7,90,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,red leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,90,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,blue leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,90,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,black leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,90,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard,7,90,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,red leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,90,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,blue leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,90,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,black leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,90,0,1,armor,0,16,21,3,null
 
-RECIPE: /material/leather/,leather samurai armor,/obj/item/clothing/suit/armor/samurai,10,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,red leather samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,blue leather samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,black leather samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,130,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,leather samurai armor,/obj/item/clothing/suit/armor/samurai,10,130,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,red leather samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,130,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,blue leather samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,130,0,1,armor,0,16,21,3,null
+//RECIPE: /material/leather/,black leather samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,130,0,1,armor,0,16,21,3,null
 
-RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,16,22,2,null
+//RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,16,22,2,null
 
 RECIPE: /material/leather/,leather skullcap helmet,/obj/item/clothing/head/helmet/leather_skullcap,3,100,0,1,armor,0,27,27,3,null
 
-RECIPE: /material/leather/,steppe leather armor,/obj/item/clothing/suit/armor/medieval/steppe_leather,5,140,0,1,armor,0,33,28,3,null
+//RECIPE: /material/leather/,steppe leather armor,/obj/item/clothing/suit/armor/medieval/steppe_leather,5,140,0,1,armor,0,33,28,3,null
 RECIPE: /material/leather/,leather roundcap,/obj/item/clothing/head/roundcap,2,100,0,1,hats & masks,65,0,0,4,null
 
 RECIPE: /material/leather/,leather infantry cap,/obj/item/clothing/head/helmet/leather_infantry,3,90,0,1,armor,0,88,92,4,null
@@ -394,22 +394,22 @@ RECIPE: /material/woolcloth/,oven mittens,/obj/item/clothing/gloves/oven,3,80,0,
 RECIPE: /material/woolcloth/,motorist gloves,/obj/item/clothing/gloves/motorist,3,80,0,1,gloves,0,0,180,8,null
 
 RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
-RECIPE: /material/woolcloth/,steppe wool shoes,/obj/item/clothing/shoes/steppe_shoes,3,80,0,1,foot wear,0,0,33,3,null
+//RECIPE: /material/woolcloth/,steppe wool shoes,/obj/item/clothing/shoes/steppe_shoes,3,80,0,1,foot wear,0,0,33,3,null
 RECIPE: /material/woolcloth/,courier sneakers,/obj/item/clothing/shoes/sneakers/courier,3,80,0,1,foot wear,0,0,180,8,null
 
 //*****************| WOOLCLOTH HATS |***************************
 
-RECIPE: /material/woolcloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,18,8,null
-RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,18,0,8,null
+//RECIPE: /material/woolcloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,18,8,null
+//RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,18,0,8,null
 RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/customhood,2,40,0,1,hats,0,0,26,8,null
-RECIPE: /material/woolcloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
-RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,33,3,null
+//RECIPE: /material/woolcloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
+//RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,33,3,null
 RECIPE: /material/woolcloth/,nun hood,/obj/item/clothing/head/nun_hood,4,65,0,1,hats,0,0,35,8,null
 RECIPE: /material/woolcloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,hats,0,0,35,8,null
-RECIPE: /material/woolcloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/woolcloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/woolcloth/,custom hennin,/obj/item/clothing/head/custom_hennin,2,40,0,1,hats,0,0,38,3,null
+RECIPE: /material/woolcloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,35,2,null
+RECIPE: /material/woolcloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,35,2,null
+RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,35,2,null
+RECIPE: /material/woolcloth/,custom hennin,/obj/item/clothing/head/custom_hennin,2,40,0,1,hats,0,0,35,3,null
 RECIPE: /material/woolcloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats,0,0,52,3,null
 RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats,0,0,62,8,null
 RECIPE: /material/woolcloth/,custom beret,/obj/item/clothing/head/custom/customberet,2,55,0,1,hats,0,0,62,8,null
@@ -420,50 +420,49 @@ RECIPE: /material/woolcloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,
 RECIPE: /material/woolcloth/,custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats,0,0,109,8,null
 RECIPE: /material/woolcloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats,0,0,109,8,null
 RECIPE: /material/woolcloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats,0,0,109,8,null
-
+RECIPE: /material/woolcloth/,ushanka,/obj/item/clothing/head/ww2/sov_ushanka/nomads,4,95,0,1,hats,0,0,110,8,null
 
 //*****************| WOOLCLOTH MASKS & EYEWEAR |***************************
 
-RECIPE: /material/woolcloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,masks & eyewear,0,0,33,8,null
+//RECIPE: /material/woolcloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,masks & eyewear,0,0,33,8,null
 RECIPE: /material/woolcloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,masks & eyewear,0,0,62,3,null
 RECIPE: /material/woolcloth/,red kerchief,/obj/item/clothing/mask/shemagh/redkerchief,2,45,0,1,masks & eyewear,0,0,98,8,null
 RECIPE: /material/woolcloth/,grey kerchief,/obj/item/clothing/mask/shemagh/greykerchief,2,45,0,1,masks & eyewear,0,0,98,8,null
 
 //*****************| WOOLCLOTH UNIFORMS |***************************
 
-RECIPE: /material/woolcloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,28,5,null
-RECIPE: /material/woolcloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,28,5,null
-RECIPE: /material/woolcloth/,steppe wool tunic,/obj/item/clothing/under/medieval/steppe_tunic,3,100,0,1,clothing,0,0,33,3,null
-RECIPE: /material/woolcloth/,kilt,/obj/item/clothing/under/medieval/kilt,2,100,0,1,clothing,0,0,38,8,null
+//RECIPE: /material/woolcloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,28,5,null
+//RECIPE: /material/woolcloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,28,5,null
+//RECIPE: /material/woolcloth/,steppe wool tunic,/obj/item/clothing/under/medieval/steppe_tunic,3,100,0,1,clothing,0,0,33,3,null
+//RECIPE: /material/woolcloth/,kilt,/obj/item/clothing/under/medieval/kilt,2,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,0,0,38,8,null
-RECIPE: /material/woolcloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/woolcloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/woolcloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/woolcloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
-RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
-RECIPE: /material/woolcloth/,dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,38,3,null
-RECIPE: /material/woolcloth/,light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,38,3,null
+//RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
+//RECIPE: /material/woolcloth/,dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,38,3,null
+//RECIPE: /material/woolcloth/,light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,38,3,null
 RECIPE: /material/woolcloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/woolcloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/woolcloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
-RECIPE: /material/woolcloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/woolcloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
+RECIPE: /material/woolcloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,pilgrim uniform,/obj/item/clothing/under/pilgrim,4,75,0,1,clothing,0,0,80,4,null
 RECIPE: /material/woolcloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,80,8,null
 RECIPE: /material/woolcloth/,custom victorian uniform,/obj/item/clothing/under/customvicuniform,3,75,0,1,clothing,0,0,98,8,null
-RECIPE: /material/woolcloth/,waistcoat,/obj/item/clothing/under/waistcoat,5,110,0,1,clothing,0,0,105,8,null
 RECIPE: /material/woolcloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/woolcloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/woolcloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/woolcloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/woolcloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/woolcloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
 RECIPE: /material/woolcloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
 
+RECIPE: /material/woolcloth/,waistcoat,/obj/item/clothing/under/waistcoat,5,110,0,1,clothing,0,0,105,8,null
 RECIPE: /material/woolcloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,feminine clothing,0,0,38,8,null
@@ -473,7 +472,7 @@ RECIPE: /material/woolcloth/,proper black dress,/obj/item/clothing/under/victori
 
 //*****************| WOOLCLOTH SUITS & COATS |***************************
 
-RECIPE: /material/woolcloth/,steppe shaman wool coat,/obj/item/clothing/suit/storage/jacket/steppe_shaman,6,140,0,1,jackets & vests,0,0,33,3,null
+//RECIPE: /material/woolcloth/,steppe shaman wool coat,/obj/item/clothing/suit/storage/jacket/steppe_shaman,6,140,0,1,jackets & vests,0,0,33,3,null
 RECIPE: /material/woolcloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/woolcloth/,fancy brown jacket,/obj/item/clothing/suit/storage/jacket/piratejacket2,10,180,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/woolcloth/,fancy red jacket,/obj/item/clothing/suit/storage/jacket/piratejacket5,10,180,0,1,jackets & vests,0,0,57,3,null
@@ -591,9 +590,9 @@ RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,fu
 
 ***************************| CLOTH SUITS, VESTS, COATS, JACKETS |***************************
 
-RECIPE: /material/cloth/,plague doctor suit,/obj/item/clothing/suit/storage/jacket/plaguedoctor,5,120,0,1,jackets & vests,0,0,38,3,null
-RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
-RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+RECIPE: /material/cloth/,plague doctor suit,/obj/item/clothing/suit/storage/jacket/plaguedoctor,5,120,0,1,jackets & vests,0,0,35,3,null
+//RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+//RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,custom colonial jacket,/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,custom colonial coat,/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,4,null
@@ -607,8 +606,6 @@ RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/blueve
 RECIPE: /material/cloth/,olive vest,/obj/item/clothing/suit/storage/jacket/olivevest,4,80,0,1,jackets & vests,0,0,89,8,null
 RECIPE: /material/cloth/,brown winter coat,/obj/item/clothing/suit/storage/coat/japcoat2/brown,10,200,0,1,jackets & vests,0,0,99,8,null
 RECIPE: /material/cloth/,grey winter coat,/obj/item/clothing/suit/storage/coat/ruscoat/grey,10,200,0,1,jackets & vests,0,0,99,8,null
-RECIPE: /material/cloth/,chest length apron,/obj/item/clothing/suit/storage/closechest_apron_f,4,100,0,1,jackets & vests,0,0,105,8,null
-RECIPE: /material/cloth/,waist length apron,/obj/item/clothing/suit/storage/openchest_apron_f,4,100,0,1,jackets & vests,0,0,105,8,null
 RECIPE: /material/cloth/,charcoal suit,/obj/item/clothing/suit/storage/jacket/charcoal_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,black suit,/obj/item/clothing/suit/storage/jacket/black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,dark black suit,/obj/item/clothing/suit/storage/jacket/really_black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
@@ -627,54 +624,56 @@ RECIPE: /material/cloth/,orange hawaiian shirt,/obj/item/clothing/suit/hawaiian/
 RECIPE: /material/cloth/,purple hawaiian shirt,/obj/item/clothing/suit/hawaiian/purple,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,green hawaiian shirt,/obj/item/clothing/suit/hawaiian/green,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,motorist jacket,/obj/item/clothing/under/motorist,6,110,0,1,jackets & vests,0,0,180,8,null
+RECIPE: /material/cloth/,chest length apron,/obj/item/clothing/suit/storage/closechest_apron_f,4,100,0,1,jackets & vests,0,0,105,8,null
+RECIPE: /material/cloth/,waist length apron,/obj/item/clothing/suit/storage/openchest_apron_f,4,100,0,1,jackets & vests,0,0,105,8,null
 
 //*****************| CLOTH ARMOR |***************************
 
-RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,3,null
+//RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,3,null
 
-RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,green arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab3,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,blue arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab4,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,emirate turban,/obj/item/clothing/head/helmet/medieval/emirate,7,90,0,1,armor,0,0,38,3,null
+//RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,armor,0,0,38,3,null
+//RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,armor,0,0,38,3,null
+//RECIPE: /material/cloth/,green arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab3,5,75,0,1,armor,0,0,38,3,null
+//RECIPE: /material/cloth/,blue arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab4,5,75,0,1,armor,0,0,38,3,null
+//RECIPE: /material/cloth/,emirate turban,/obj/item/clothing/head/helmet/medieval/emirate,7,90,0,1,armor,0,0,38,3,null
 
 //*****************| CLOTH HATS |***************************
 
 RECIPE: /material/cloth/,fiendish headdress,/obj/item/clothing/head/fiendish,4,55,0,1,hats,0,0,18,4,null
-RECIPE: /material/cloth/,semitic cap,/obj/item/clothing/head/semitic_cap,4,55,0,1,hats,0,0,18,3,null
-RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats,0,0,18,3,null
-RECIPE: /material/cloth/,pharoah headdress,/obj/item/clothing/head/pharoah,6,55,0,1,hats,0,0,18,1,null
-RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,hats,0,0,18,1,null
-RECIPE: /material/cloth/,black egyptian headdress,/obj/item/clothing/head/egyptian_headdress_black,4,55,0,1,hats,0,0,18,1,null
-RECIPE: /material/cloth/,blue egyptian headdress,/obj/item/clothing/head/egyptian_headdress_blue,4,55,0,1,hats,0,0,18,1,null
-RECIPE: /material/cloth/,red egyptian headdress,/obj/item/clothing/head/egyptian_headdress_red,4,55,0,1,hats,0,0,18,1,null
-RECIPE: /material/cloth/,hedjet crown,/obj/item/clothing/head/hedjet,5,65,0,1,hats,0,0,18,1,null
-RECIPE: /material/cloth/,deshret crown,/obj/item/clothing/head/deshret,5,65,0,1,hats,0,0,18,1,null
+//RECIPE: /material/cloth/,semitic cap,/obj/item/clothing/head/semitic_cap,4,55,0,1,hats,0,0,18,3,null
+//RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats,0,0,18,3,null
+//RECIPE: /material/cloth/,pharoah headdress,/obj/item/clothing/head/pharoah,6,55,0,1,hats,0,0,18,1,null
+//RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,hats,0,0,18,1,null
+//RECIPE: /material/cloth/,black egyptian headdress,/obj/item/clothing/head/egyptian_headdress_black,4,55,0,1,hats,0,0,18,1,null
+//RECIPE: /material/cloth/,blue egyptian headdress,/obj/item/clothing/head/egyptian_headdress_blue,4,55,0,1,hats,0,0,18,1,null
+//RECIPE: /material/cloth/,red egyptian headdress,/obj/item/clothing/head/egyptian_headdress_red,4,55,0,1,hats,0,0,18,1,null
+//RECIPE: /material/cloth/,hedjet crown,/obj/item/clothing/head/hedjet,5,65,0,1,hats,0,0,18,1,null
+//RECIPE: /material/cloth/,deshret crown,/obj/item/clothing/head/deshret,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats,0,0,18,8,null
-RECIPE: /material/cloth/,pschent crown,/obj/item/clothing/head/pschent,5,65,0,1,hats,0,0,24,1,null
-RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
-RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/cloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/cloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
+//RECIPE: /material/cloth/,pschent crown,/obj/item/clothing/head/pschent,5,65,0,1,hats,0,0,24,1,null
+//RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
+RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,35,2,null
+RECIPE: /material/cloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,35,2,null
+RECIPE: /material/cloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,35,2,null
 RECIPE: /material/cloth/,hooded cape,/obj/item/clothing/head/hooded_cape,6,100,0,1,hats,0,0,35,3,null
 RECIPE: /material/cloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,hats,0,0,35,8,null
-RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,38,8,null
-RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,38,8,null
-RECIPE: /material/cloth/,grand turban,/obj/item/clothing/head/turban/sultan,5,110,0,1,hats,0,0,38,8,null
-RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh,2,55,0,1,hats,0,0,38,8,null
-RECIPE: /material/cloth/,phrigian hat,/obj/item/clothing/head/phrigian_hat,4,55,0,1,hats,0,0,38,2,null
-RECIPE: /material/cloth/,red phrigian hat,/obj/item/clothing/head/phrigian_hat/red,4,55,0,1,hats,0,0,38,2,null
-RECIPE: /material/cloth/,blue phrigian hat,/obj/item/clothing/head/phrigian_hat/blue,4,55,0,1,hats,0,0,38,2,null
-RECIPE: /material/cloth/,doge hat,/obj/item/clothing/head/phrigian_hat/doge,4,104,0,1,hats,0,0,38,3,null
-RECIPE: /material/cloth/,plague doctor hat,/obj/item/clothing/head/plaguedoctor,4,65,0,1,hats,0,0,38,3,null
-RECIPE: /material/cloth/,nun hood,/obj/item/clothing/head/nun_hood,4,65,0,1,hats,0,0,38,8,null
-RECIPE: /material/cloth/,customizable hennin,/obj/item/clothing/head/custom_hennin,2,55,0,1,hats,0,0,38,3,null
-RECIPE: /material/cloth/,custom noble hat,/obj/item/clothing/head/custom/customnoblehat,4,55,0,1,hats,0,0,38,3,null
+//RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,35,8,null
+//RECIPE: /material/cloth/,grand turban,/obj/item/clothing/head/turban/sultan,5,110,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh,2,55,0,1,hats,0,0,35,8,null
+RECIPE: /material/cloth/,phrigian hat,/obj/item/clothing/head/phrigian_hat,4,55,0,1,hats,0,0,35,2,null
+RECIPE: /material/cloth/,red phrigian hat,/obj/item/clothing/head/phrigian_hat/red,4,55,0,1,hats,0,0,35,2,null
+RECIPE: /material/cloth/,blue phrigian hat,/obj/item/clothing/head/phrigian_hat/blue,4,55,0,1,hats,0,0,35,2,null
+RECIPE: /material/cloth/,doge hat,/obj/item/clothing/head/phrigian_hat/doge,4,104,0,1,hats,0,0,35,3,null
+RECIPE: /material/cloth/,plague doctor hat,/obj/item/clothing/head/plaguedoctor,4,65,0,1,hats,0,0,35,3,null
+RECIPE: /material/cloth/,nun hood,/obj/item/clothing/head/nun_hood,4,65,0,1,hats,0,0,35,8,null
+RECIPE: /material/cloth/,customizable hennin,/obj/item/clothing/head/custom_hennin,2,55,0,1,hats,0,0,35,3,null
+RECIPE: /material/cloth/,custom noble hat,/obj/item/clothing/head/custom/customnoblehat,4,55,0,1,hats,0,0,35,3,null
 RECIPE: /material/cloth/,feathered hat,/obj/item/clothing/head/feathered_hat,3,55,0,1,hats,0,0,52,8,null
 RECIPE: /material/cloth/,custom feather cap,/obj/item/clothing/head/custom_feathered_hat,4,55,0,1,hats,0,0,52,8,null
-RECIPE: /material/cloth/,kasa hat,/obj/item/clothing/head/helmet/kasa,3,75,0,1,hats,0,0,40,8,null
-RECIPE: /material/cloth/,jingasa hat,/obj/item/clothing/head/helmet/jingasa,5,75,0,1,hats,0,0,40,8,null
-RECIPE: /material/cloth/,gat hat,/obj/item/clothing/head/gat,2,55,0,1,hats,0,0,52,8,null
+//RECIPE: /material/cloth/,kasa hat,/obj/item/clothing/head/helmet/kasa,3,75,0,1,hats,0,0,40,8,null
+//RECIPE: /material/cloth/,jingasa hat,/obj/item/clothing/head/helmet/jingasa,5,75,0,1,hats,0,0,40,8,null
+//RECIPE: /material/cloth/,gat hat,/obj/item/clothing/head/gat,2,55,0,1,hats,0,0,52,8,null
 RECIPE: /material/cloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats,0,0,52,3,null
 RECIPE: /material/cloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats,0,0,62,8,null
 RECIPE: /material/cloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats,0,0,62,8,null
@@ -705,9 +704,9 @@ RECIPE: /material/cloth/,police cap,/obj/item/clothing/head/traffic_police,4,75,
 
 RECIPE: /material/cloth/,eyepatch,/obj/item/clothing/glasses/eyepatch,2,55,0,1,masks & eyewear,0,0,18,8,null
 RECIPE: /material/cloth/,blindfold,/obj/item/clothing/glasses/sunglasses/blindfold,2,55,0,1,masks & eyewear,0,0,18,8,null
-RECIPE: /material/cloth/,plague doctor mask,/obj/item/clothing/mask/plaguedoctor,4,90,0,1,masks & eyewear,0,0,38,3,null
-RECIPE: /material/cloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,masks & eyewear,0,0,38,8,null
-RECIPE: /material/cloth/,kerchief,/obj/item/clothing/head/kerchief,2,75,0,1,masks & eyewear,0,0,38,8,null
+RECIPE: /material/cloth/,plague doctor mask,/obj/item/clothing/mask/plaguedoctor,4,90,0,1,masks & eyewear,0,0,35,3,null
+//RECIPE: /material/cloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,masks & eyewear,0,0,38,8,null
+RECIPE: /material/cloth/,kerchief,/obj/item/clothing/head/kerchief,2,75,0,1,masks & eyewear,0,0,35,8,null
 RECIPE: /material/cloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,masks & eyewear,0,0,52,8,null
 RECIPE: /material/cloth/,custom bandana,/obj/item/clothing/head/custom/custombandana,2,55,0,1,masks & eyewear,0,0,52,8,null
 RECIPE: /material/cloth/,red kerchief,/obj/item/clothing/mask/shemagh/redkerchief,2,45,0,1,masks & eyewear,0,0,98,8,null
@@ -716,48 +715,46 @@ RECIPE: /material/cloth/,sterile mask,/obj/item/clothing/mask/sterile,2,130,0,1,
 
 //*****************| CLOTH UNIFORMS |***************************
 
-RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
-RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,6,3,null
+RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,3,null
+//RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,6,3,null
 RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,12,8,null
-RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,0,0,18,4,null
-RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,0,0,18,4,null
-RECIPE: /material/cloth/,white kimono,/obj/item/clothing/under/kimono,4,85,0,1,clothing,0,0,18,8,null
+//RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,0,0,18,4,null
+//RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,0,0,18,4,null
+//RECIPE: /material/cloth/,white kimono,/obj/item/clothing/under/kimono,4,85,0,1,clothing,0,0,18,8,null
 RECIPE: /material/cloth/,customizable long tunic,/obj/item/clothing/under/custom/roman,4,85,0,1,clothing,0,0,18,8,null
-RECIPE: /material/cloth/,customizable toga,/obj/item/clothing/under/custom/toga,3,65,0,1,clothing,0,0,18,2,null
-RECIPE: /material/cloth/,customizable shendyt,/obj/item/clothing/under/custom/shendyt,2,45,0,1,clothing,0,0,18,2,null
-RECIPE: /material/cloth/,customizable celtic trousers,/obj/item/clothing/under/custom/celtic,2,55,0,1,clothing,0,0,18,1,null
-RECIPE: /material/cloth/,customizable tribal robe,/obj/item/clothing/under/customtribalrobe,3,100,0,1,clothing,0,0,18,3,null
-RECIPE: /material/cloth/,fancy shendyt,/obj/item/clothing/under/pharaoh,8,145,0,1,clothing,0,0,21,2,null
-RECIPE: /material/cloth/,great shendyt,/obj/item/clothing/under/pharaoh2,10,185,0,1,clothing,0,0,21,2,null
-RECIPE: /material/cloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,28,5,null
-RECIPE: /material/cloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,28,5,null
-RECIPE: /material/cloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,black priest outfit,/obj/item/clothing/under/christian_priest,4,85,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
+RECIPE: /material/cloth/,customizable toga,/obj/item/clothing/under/custom/toga,3,65,0,1,clothing,0,0,18,8,null
+//RECIPE: /material/cloth/,customizable shendyt,/obj/item/clothing/under/custom/shendyt,2,45,0,1,clothing,0,0,18,2,null
+//RECIPE: /material/cloth/,customizable celtic trousers,/obj/item/clothing/under/custom/celtic,2,55,0,1,clothing,0,0,18,1,null
+//RECIPE: /material/cloth/,customizable tribal robe,/obj/item/clothing/under/customtribalrobe,3,100,0,1,clothing,0,0,18,3,null
+//RECIPE: /material/cloth/,fancy shendyt,/obj/item/clothing/under/pharaoh,8,145,0,1,clothing,0,0,21,2,null
+//RECIPE: /material/cloth/,great shendyt,/obj/item/clothing/under/pharaoh2,10,185,0,1,clothing,0,0,21,2,null
+//RECIPE: /material/cloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,28,5,null
+//RECIPE: /material/cloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,28,5,null
 RECIPE: /material/cloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
+RECIPE: /material/cloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,0,0,35,8,null
+RECIPE: /material/cloth/,black priest outfit,/obj/item/clothing/under/christian_priest,4,85,0,1,clothing,0,0,35,8,null
+//RECIPE: /material/cloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,8,null
+//RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,0,0,38,8,null
+//RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,8,null
+//RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/tunic,4,85,0,1,clothing,0,0,38,5,null
 RECIPE: /material/cloth/,customizable crinoline dress,/obj/item/clothing/under/crinoline_dress,4,85,0,1,clothing,0,0,38,5,null
 RECIPE: /material/cloth/,customizable arabic tunic,/obj/item/clothing/under/custom/arabictunic,4,85,0,1,clothing,0,0,38,5,null
-RECIPE: /material/cloth/,light brown arabic tunic,/obj/item/clothing/under/medieval/arab1,3,85,0,1,clothing,0,0,38,5,null
-RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medieval/arab2,3,85,0,1,clothing,0,0,38,5,null
-RECIPE: /material/cloth/,emirate tunic,/obj/item/clothing/under/medieval/emirate,4,85,0,1,clothing,0,0,38,5,null
-RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/cloth/,doge outfit,/obj/item/clothing/under/renaissance/doge,8,147,0,1,clothing,0,0,38,3,null
+RECIPE: /material/cloth/,light brown arabic tunic,/obj/item/clothing/under/medieval/arab1,3,85,0,1,clothing,0,0,35,5,null
+RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medieval/arab2,3,85,0,1,clothing,0,0,35,5,null
+//RECIPE: /material/cloth/,emirate tunic,/obj/item/clothing/under/medieval/emirate,4,85,0,1,clothing,0,0,38,5,null
+//RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
+//RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/cloth/,doge outfit,/obj/item/clothing/under/renaissance/doge,8,147,0,1,clothing,0,0,35,3,null
 RECIPE: /material/cloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/cloth/,customizable pontifical clothing,/obj/item/clothing/under/custompontifical,6,105,0,1,clothing,0,0,59,8,null
 RECIPE: /material/cloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/cloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/cloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,59,3,null
-RECIPE: /material/cloth/,dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,59,3,null
-RECIPE: /material/cloth/,light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,59,3,null
-RECIPE: /material/cloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
-RECIPE: /material/cloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
+//RECIPE: /material/cloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,59,3,null
+//RECIPE: /material/cloth/,dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,59,3,null
+//RECIPE: /material/cloth/,light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,59,3,null
+RECIPE: /material/cloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
 RECIPE: /material/cloth/,blue colonial clothing,/obj/item/clothing/under/civ1,3,75,0,1,clothing,0,0,78,4,null
 RECIPE: /material/cloth/,white colonial clothing,/obj/item/clothing/under/civ2,3,75,0,1,clothing,0,0,78,4,null
 RECIPE: /material/cloth/,short-sleeved colonial clothing,/obj/item/clothing/under/civ3,2,55,0,1,clothing,0,0,78,4,null
@@ -790,15 +787,17 @@ RECIPE: /material/cloth/,red victorian shirt and black vest,/obj/item/clothing/u
 RECIPE: /material/cloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/cloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/cloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/cloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
+RECIPE: /material/cloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/cloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
 RECIPE: /material/cloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
 
-RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
-RECIPE: /material/cloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
-RECIPE: /material/cloth/,blue sari,/obj/item/clothing/under/sari/blue,4,85,0,1,feminine clothing,0,0,38,8,null
-RECIPE: /material/cloth/,red sari,/obj/item/clothing/under/sari/red,4,85,0,1,feminine clothing,0,0,38,8,null
-RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,feminine clothing,0,0,38,8,null
-RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,35,8,null
+RECIPE: /material/cloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,35,6,null
+//RECIPE: /material/cloth/,blue sari,/obj/item/clothing/under/sari/blue,4,85,0,1,feminine clothing,0,0,38,8,null
+//RECIPE: /material/cloth/,red sari,/obj/item/clothing/under/sari/red,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,feminine clothing,0,0,35,8,null
+RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,feminine clothing,0,0,35,8,null
 RECIPE: /material/cloth/,dark dress,/obj/item/clothing/under/civf1,3,75,0,1,feminine clothing,0,0,78,4,null
 RECIPE: /material/cloth/,blue dress,/obj/item/clothing/under/civf2,3,75,0,1,feminine clothing,0,0,78,4,null
 RECIPE: /material/cloth/,brown dress,/obj/item/clothing/under/civf3,3,75,0,1,feminine clothing,0,0,78,4,null
@@ -811,7 +810,7 @@ RECIPE: /material/cloth/,red debutante gown,/obj/item/clothing/under/debutante/r
 RECIPE: /material/cloth/,yellow debutante gown,/obj/item/clothing/under/debutante/yellow,8,130,0,1,feminine clothing,0,0,80,8,null
 RECIPE: /material/cloth/,nightingale dress,/obj/item/clothing/under/nightingale,4,90,0,1,feminine clothing,0,0,88,5,null
 RECIPE: /material/cloth/,saloon dress outfit,/obj/item/clothing/under/saloondress,4,75,0,1,feminine clothing,0,0,98,6,null
-RECIPE: /material/cloth/,cheongsam dress,/obj/item/clothing/under/cheongsam,5,100,0,1,feminine clothing,0,0,98,8,null
+//RECIPE: /material/cloth/,cheongsam dress,/obj/item/clothing/under/cheongsam,5,100,0,1,feminine clothing,0,0,98,8,null
 RECIPE: /material/cloth/,short black dress,/obj/item/clothing/under/blackdress/short,4,75,0,1,feminine clothing,0,0,98,6,null
 RECIPE: /material/cloth/,wedding dress,/obj/item/clothing/under/wedding,10,160,0,1,feminine clothing,0,0,98,8,null
 RECIPE: /material/cloth/,victorian black dress,/obj/item/clothing/under/victorian_dress,5,75,0,1,feminine clothing,0,0,112,6,null
@@ -934,9 +933,12 @@ RECIPE: /material/kevlar/,USSR 6B3 body armor,/obj/item/clothing/suit/b3,12,260,
 //*********************| CHITIN |*******************************
 //**************************************************************
 
-RECIPE: /material/chitin/,chitin mask,/obj/item/clothing/mask/chitinmask,4,65,0,1,none,0,0,0,0,null
-RECIPE: /material/chitin/,chitin helmet,/obj/item/clothing/head/helmet/chitin,7,115,0,1,none,0,0,0,0,null
-RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,180,0,1,none,0,0,0,0,null
+RECIPE: /material/chitin/,chitin mask,/obj/item/clothing/mask/chitinmask,4,65,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin helmet,/obj/item/clothing/head/helmet/chitin,7,115,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,180,0,1,none,0,0,0,8,null
+
+RECIPE: /material/chitin/,chitin buckler,/obj/item/weapon/shield/chitin,7,180,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin shield,/obj/item/weapon/shield/chitin/large,10,180,0,1,none,0,0,0,8,null
 
 //**************************************************************
 //*********************| BEARPELT |*****************************
@@ -965,7 +967,7 @@ RECIPE: /material/bearpelt/white/,fur gloves,/obj/item/clothing/gloves/thick/lea
 RECIPE: /material/bearpelt/white/,bear pelt headcover,/obj/item/clothing/head/bearpelt/white,4,150,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/white/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/white/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
-RECIPE: /material/bearpelt/white/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
+RECIPE: /material/bearpelt/white/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,35,8,null
 
 //*****************| WHITE BEARPELT ARMOR|***************************
 
@@ -997,7 +999,7 @@ RECIPE: /material/wolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/g
 RECIPE: /material/wolfpelt/,wolf pelt headcover,/obj/item/clothing/head/wolfpelt,4,150,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/wolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
-RECIPE: /material/wolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,12,220,0,1,none,0,0,38,8,null
+RECIPE: /material/wolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,12,220,0,1,none,0,0,35,8,null
 
 //**************************************************************
 //*********************| CATPELT |******************************
@@ -1014,15 +1016,15 @@ RECIPE: /material/catpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,
 
 RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pantherpelt,3,150,0,1,none,0,0,0,8,null
 
-RECIPE: /material/pantherpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
-RECIPE: /material/pantherpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
+//RECIPE: /material/pantherpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
+//RECIPE: /material/pantherpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
 
 //*****************| LIONPELT |***************************
 
 RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt,3,150,0,1,none,0,0,0,8,null
 
-RECIPE: /material/lionpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
-RECIPE: /material/lionpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
+//RECIPE: /material/lionpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
+//RECIPE: /material/lionpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
 
 //***************************************************************
 //*********************| LIZARDPELT |***************************
@@ -1070,8 +1072,8 @@ RECIPE: /material/goatpelt/,goat pelt headcover,/obj/item/clothing/head/goatpelt
 //*********************| COWPELT |***************************
 //**************************************************************
 
-RECIPE: /material/cowpelt/,slene cattlefur loincloth,/obj/item/clothing/under/zulu_slene,2,80,0,1,none,0,0,0,3,null
-RECIPE: /material/cowpelt/,nguni shield,/obj/item/weapon/shield/nguni_shield,6,160,0,1,none,0,0,0,3,null
+//RECIPE: /material/cowpelt/,slene cattlefur loincloth,/obj/item/clothing/under/zulu_slene,2,80,0,1,none,0,0,0,3,null
+//RECIPE: /material/cowpelt/,nguni shield,/obj/item/weapon/shield/nguni_shield,6,160,0,1,none,0,0,0,3,null
 
 RECIPE: /material/cowpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/cowpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
@@ -1147,7 +1149,7 @@ RECIPE: /material/whitefoxpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fu
 RECIPE: /material/whitefoxpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/whitefoxpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/whitefoxpelt/,white fox pelt headcover,/obj/item/clothing/head/foxpelt/white,3,150,0,1,none,0,0,0,8,null
-RECIPE: /material/whitefoxpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
+RECIPE: /material/whitefoxpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,35,8,null
 RECIPE: /material/whitefoxpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/whitefoxpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 
@@ -1327,92 +1329,94 @@ RECIPE: /material/stone/,jersey barrier,/obj/structure/window/barrier/jersey,3,7
 //*********************| MARBLE |*******************************
 //**************************************************************
 
-RECIPE: /material/marble/,reclaim stone from marble,/obj/item/stack/material/stone,2,15,0,1,none,0,0,0,8,null
-RECIPE: /material/marble/,marble brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
-RECIPE: /material/marble/,well,/obj/structure/sink/well/marble,7,250,1,1,none,21,0,0,8,null
-RECIPE: /material/marble/,ashtray,/obj/item/weapon/material/ashtray/marble,3,30,0,1,none,14,0,0,8,null
+RECIPE: /material/marble/,reclaim stone from marble,/obj/item/stack/material/stone,0.5,15,0,1,none,0,0,0,8,null
+RECIPE: /material/marble/,marble brazier,/obj/structure/brazier/stone,1.5,30,1,1,none,0,0,0,8,null
+RECIPE: /material/marble/,well,/obj/structure/sink/well/marble,4.5,120,1,1,none,21,0,0,8,null
+RECIPE: /material/marble/,ashtray,/obj/item/weapon/material/ashtray/marble,1.5,30,0,1,none,14,0,0,8,null
 
 //*****************| MARBLE SUPPORTS & ROOFING |***************************
 
-RECIPE: /material/marble/,marble pillar,/obj/structure/mine_support/stone/marble,2,130,1,1,construction,0,0,0,8,null
-RECIPE: /material/marble/,ionic column,/obj/structure/mine_support/stone/ionic,2.5,130,1,1,construction,22,0,0,8,null
-RECIPE: /material/marble/,solomonic column,/obj/structure/mine_support/stone/solomonic,2.5,130,1,1,construction,22,0,0,8,null
-RECIPE: /material/marble/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick,2.5,130,1,1,construction,22,0,0,8,null
-RECIPE: /material/marble/,marble aztec column,/obj/structure/mine_support/stone/aztec/marble,2.5,130,1,1,construction,32,0,0,8,null
+RECIPE: /material/marble/,marble pillar,/obj/structure/mine_support/stone/marble,1,70,1,1,construction,0,0,0,8,null
+RECIPE: /material/marble/,ionic column,/obj/structure/mine_support/stone/ionic,1,70,1,1,construction,22,0,0,8,null
+RECIPE: /material/marble/,solomonic column,/obj/structure/mine_support/stone/solomonic,1,70,1,1,construction,22,0,0,8,null
+RECIPE: /material/marble/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick,1,70,1,1,construction,22,0,0,8,null
+//RECIPE: /material/marble/,marble aztec column,/obj/structure/mine_support/stone/aztec/marble,2.5,130,1,1,construction,32,0,0,8,null
 
 //*************| MARBLE RESEARCH |***************
 
-RECIPE: /material/marble/,research kit,/obj/item/weapon/researchkit,10,190,0,1,none,0,0,0,8,null
+RECIPE: /material/marble/,research kit,/obj/item/weapon/researchkit,5,120,0,1,none,0,0,0,8,null
 
 //*************| RAW MARBLE FLOORS |***************
 
-RECIPE: /material/marble/,raw marble floor,/obj/covers/raw_marblefloor,1,25,1,1,floors,20,0,0,8,null
-RECIPE: /material/marble/,raw black marble floor,/obj/covers/raw_marblefloor/black,1,25,1,1,floors,20,0,0,8,null
-RECIPE: /material/marble/,raw pink marble floor,/obj/covers/raw_marblefloor/pink,1,25,1,1,floors,20,0,0,8,null
+RECIPE: /material/marble/,raw marble floor,/obj/covers/raw_marblefloor,0.5,10,1,1,floors,20,0,0,8,null
+RECIPE: /material/marble/,raw black marble floor,/obj/covers/raw_marblefloor/black,0.5,10,1,1,floors,20,0,0,8,null
+RECIPE: /material/marble/,raw pink marble floor,/obj/covers/raw_marblefloor/pink,0.5,10,1,1,floors,20,0,0,8,null
 
 //*************| MARBLE FLOORS |***************
 
-RECIPE: /material/marble/,marble floor,/obj/covers/marblefloor,1,25,1,1,floors,25,0,0,8,null
-RECIPE: /material/marble/,marble tiles,/obj/covers/marbletile,1,25,1,1,floors,25,0,0,8,null
-RECIPE: /material/marble/,black marble tiles,/obj/covers/marbletile/black,1,25,1,1,floors,25,0,0,8,null
-RECIPE: /material/marble/,pink marble tiles,/obj/covers/marbletile/pink,1,25,1,1,floors,25,0,0,8,null
+RECIPE: /material/marble/,marble floor,/obj/covers/marblefloor,0.5,10,1,1,floors,25,0,0,8,null
+RECIPE: /material/marble/,marble tiles,/obj/covers/marbletile,0.5,10,1,1,floors,25,0,0,8,null
+RECIPE: /material/marble/,black marble tiles,/obj/covers/marbletile/black,0.5,10,1,1,floors,25,0,0,8,null
+RECIPE: /material/marble/,pink marble tiles,/obj/covers/marbletile/pink,0.5,10,1,1,floors,25,0,0,8,null
 
 //*************| DECORATIVE MARBLE FLOORS #1 |***************
 
-RECIPE: /material/marble/,ornate marble tile,/obj/covers/ornatemarblefloor,1,25,1,1,floors,32,0,0,8,null
-RECIPE: /material/marble/,ornate black marble tile,/obj/covers/ornatemarblefloor/black,1,25,1,1,floors,32,0,0,8,null
-RECIPE: /material/marble/,decorative marble tile,/obj/covers/decorative_marbletile,1,25,1,1,floors,32,0,0,8,null
-RECIPE: /material/marble/,decorative black marble tile,/obj/covers/decorative_marbletile/black,1,25,1,1,floors,32,0,0,8,null
-RECIPE: /material/marble/,decorative pink marble tile,/obj/covers/decorative_marbletile/pink,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,ornate marble tile,/obj/covers/ornatemarblefloor,0.5,10,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,ornate black marble tile,/obj/covers/ornatemarblefloor/black,0.5,10,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,decorative marble tile,/obj/covers/decorative_marbletile,0.5,10,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,decorative black marble tile,/obj/covers/decorative_marbletile/black,0.5,10,1,1,floors,32,0,0,8,null
+RECIPE: /material/marble/,decorative pink marble tile,/obj/covers/decorative_marbletile/pink,0.5,10,1,1,floors,32,0,0,8,null
 
 //*************| DECORATIVE MARBLE FLOORS #2 |***************
 
-RECIPE: /material/marble/,marble grid tile floor,/obj/covers/marble_grid,1,25,1,1,floors,45,0,0,8,null
-RECIPE: /material/marble/,marble checkerboard floor,/obj/covers/marble_checkerboard,1,25,1,1,floors,45,0,0,8,null
-RECIPE: /material/marble/,reverse marble checkerboard floor,/obj/covers/marble_checkerboard/reverse,1,25,1,1,floors,45,0,0,8,null
-RECIPE: /material/marble/,pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink,1,25,1,1,floors,45,0,0,8,null
-RECIPE: /material/marble/,reverse pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink/reverse,1,25,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,marble grid tile floor,/obj/covers/marble_grid,0.5,10,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,marble checkerboard floor,/obj/covers/marble_checkerboard,0.5,10,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,reverse marble checkerboard floor,/obj/covers/marble_checkerboard/reverse,0.5,10,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink,0.5,10,1,1,floors,45,0,0,8,null
+RECIPE: /material/marble/,reverse pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink/reverse,0.5,10,1,1,floors,45,0,0,8,null
 
 //*************| MARBLE DECORATIONS |***************
 
-RECIPE: /material/marble/,marble statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,marble
+RECIPE: /material/marble/,marble statue,/obj/structure/religious/statue,10,150,1,1,religious & decoration,10,0,0,8,marble
 
-RECIPE: /material/marble/,marble altar,/obj/structure/altar/marble,20,200,1,1,religious & decoration,28,0,0,8,null
+RECIPE: /material/marble/,marble altar,/obj/structure/altar/marble,10,100,1,1,religious & decoration,28,0,0,8,null
 
 //*************| MARBLE MONUMENTS |***************
 
-RECIPE: /material/marble/,monumental marble statue of venus,/obj/structure/religious/monument/venus,45,300,1,1,religious & decoration,62,0,0,8,null
+RECIPE: /material/marble/,monumental marble statue of venus,/obj/structure/religious/monument/venus,22.5,200,1,1,religious & decoration,62,0,0,8,null
 
 //*************| MARBLE PRODUCTION BUILDINGS |***************
 
-RECIPE: /material/marble/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,none,25,0,0,8,null
+RECIPE: /material/marble/,grindstone,/obj/structure/repair/grindstone,9,90,1,1,none,25,0,0,8,null
 
 //*************| MARBLE WEAPONS |***************
 
-RECIPE: /material/marble/,marble bust,/obj/item/weapon/material/bust,3,10,0,0,none,20,0,0,8,marble
-RECIPE: /material/marble/,marble bust of hippocrates,/obj/item/weapon/material/hippocratic,3,10,0,0,none,20,0,0,8,marble
+RECIPE: /material/marble/,marble bust,/obj/item/weapon/material/bust,1.5,10,0,0,none,20,0,0,8,marble
+RECIPE: /material/marble/,marble bust of hippocrates,/obj/item/weapon/material/hippocratic,1.5,10,0,0,none,20,0,0,8,marble
 
 //*************| MARBLE WALL & DOORWAY CONSTRUCTIONS |***************
 
-RECIPE: /material/marble/,marble wall,/obj/covers/marble_wall,8,140,1,1,construction,0,0,0,2,null
-RECIPE: /material/marble/,marble block wall,/obj/covers/marble_wall/classic,8,140,1,1,construction,0,0,0,2,null
-RECIPE: /material/marble/,grecian marble wall,/obj/covers/marble_wall/grecian,6,70,1,1,construction,22,0,0,2,null
+RECIPE: /material/marble/,marble wall,/obj/covers/marble_wall,4,70,1,1,construction,0,0,0,8,null
+RECIPE: /material/marble/,marble block wall,/obj/covers/marble_wall/classic,4,70,1,1,construction,0,0,0,8,null
+RECIPE: /material/marble/,grecian marble wall,/obj/covers/marble_wall/grecian,4,70,1,1,construction,22,0,0,8,null
 
-RECIPE: /material/marble/,marble block archway,/obj/covers/stone_wall/classic/archway,8,140,1,1,construction,0,0,0,2,null
-RECIPE: /material/marble/,grecian archway,/obj/covers/marble_wall/grecian/archway,8,140,1,1,construction,0,0,0,1,null
-RECIPE: /material/marble/,grand marble archway,/obj/covers/marble_wall/grecian/archway/modern,8,140,1,1,construction,65,0,0,8,null
+RECIPE: /material/marble/,marble block archway,/obj/covers/stone_wall/classic/archway,4,70,1,1,construction,0,0,0,8,null
+RECIPE: /material/marble/,grecian archway,/obj/covers/marble_wall/grecian/archway,4,70,1,1,construction,0,0,0,8,null
+RECIPE: /material/marble/,grand marble archway,/obj/covers/marble_wall/grecian/archway/modern,4,70,1,1,construction,65,0,0,8,null
 
-RECIPE: /material/marble/,large marble double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/marble,10,100,1,1,none,18,0,0,8,null
+RECIPE: /material/marble/,roman door,/obj/structure/simple_door/key_door/anyone/roman,2.5,50,1,1,construction,28,0,0,8,null
 
-RECIPE: /material/marble/,marble window,/obj/structure/window_frame/marble,5,140,1,1,construction,20,0,0,8,null
-RECIPE: /material/marble/,full stone window,/obj/structure/window_frame/marblefull,5,140,1,1,construction,20,0,0,8,null
+RECIPE: /material/marble/,large marble double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/marble,7,100,1,1,none,18,0,0,8,null
+
+RECIPE: /material/marble/,marble window,/obj/structure/window_frame/marble,2.5,70,1,1,construction,20,0,0,8,null
+RECIPE: /material/marble/,full stone window,/obj/structure/window_frame/marblefull,2.5,70,1,1,construction,20,0,0,8,null
 
 //*******************************************************
 //*********************| RAGS |**************************
 //*******************************************************
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
-RECIPE: /material/rags/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,4,80,0,1,none,0,39,0,2,null
+RECIPE: /material/rags/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,4,80,0,1,none,0,35,0,2,null
 
 //*************************************************************
 //*********************| HEMP |********************************
@@ -1482,10 +1486,15 @@ RECIPE: /material/glass/,ashtray,/obj/item/weapon/material/ashtray/glass,3,120,0
 
 //*************| GLASS EYEWEAR |***************
 
-RECIPE: /material/glass/,green glasses,/obj/item/clothing/glasses/gglasses,6,120,0,1,eyewear,110,120,0,8,null
-RECIPE: /material/glass/,corrective glasses,/obj/item/clothing/glasses/regular,6,120,0,1,eyewear,110,120,0,8,null
 RECIPE: /material/glass/,sunglasses,/obj/item/clothing/glasses/sunglasses,2,90,1,1,eyewear,140,0,0,8,null
 RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/large,2,90,1,1,eyewear,165,0,0,8,null
+RECIPE: /material/glass/,green glasses,/obj/item/clothing/glasses/gglasses,6,120,0,1,eyewear,110,120,0,8,null
+RECIPE: /material/glass/,corrective glasses,/obj/item/clothing/glasses/regular,6,120,0,1,eyewear,110,120,0,8,null
+
+//*************| GLASS EYEWEAR |***************
+
+RECIPE: /material/glass/,sunglasses,/obj/item/clothing/glasses/sunglasses,2,90,1,1,none,140,0,0,8,null
+RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/large,2,90,1,1,none,165,0,0,8,null
 
 //**************************************************************
 //************************ROBERTS CARTS*************************
@@ -1680,7 +1689,7 @@ RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,
 
 //*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
 
-RECIPE: /material/copper/,aztec harness,/obj/item/clothing/suit/armor/ancient/aztec_harness,4,80,0,1,armor,0,19,0,3,null
+//RECIPE: /material/copper/,aztec harness,/obj/item/clothing/suit/armor/ancient/aztec_harness,4,80,0,1,armor,0,19,0,3,null
 RECIPE: /material/copper/,copper arm bangles,/obj/item/clothing/accessory/armband/armbangle/copper,2,95,0,1,none,0,0,0,8,null
 
 //********************************************************
@@ -1759,7 +1768,7 @@ RECIPE: /material/steel/,450u huge fuel tank,/obj/item/weapon/reagent_containers
 
 //*********************| STEEL PRODUCTION & ECONOMY |**************************
 
-RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,production,35,0,0,8,null
+RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,production,80,0,0,8,null
 
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
 
@@ -1912,7 +1921,7 @@ RECIPE: /material/wood/,wall frame,/obj/structure/wallframe,1,150,1,1,constructi
 
 RECIPE: /material/wood/,door,/obj/structure/simple_door/key_door/anyone/wood,5,50,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,large wood double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/wood,5,50,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/,aztec door,/obj/structure/simple_door/key_door/anyone/aztec,5,50,1,1,construction,35,0,0,8,null
+//RECIPE: /material/wood/,aztec door,/obj/structure/simple_door/key_door/anyone/aztec,5,50,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,rustic door,/obj/structure/simple_door/key_door/anyone/rustic,4,40,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,nordic door,/obj/structure/simple_door/key_door/anyone/nordic,5,50,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,wooden privacy door,/obj/structure/simple_door/key_door/anyone/singledoor/privacy,10,100,1,1,construction,47,0,0,8,null
@@ -1931,8 +1940,8 @@ RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,
 RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,6,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,6,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,wood wall,/obj/covers/wood_wall/adjustable,7,130,1,1,construction,35,0,0,8,null
-RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,construction,35,0,0,8,null
-RECIPE: /material/wood/,aztec wall,/obj/covers/wood_wall/aztec,8,170,1,1,construction,35,0,0,8,null
+//RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,construction,35,0,0,8,null
+//RECIPE: /material/wood/,aztec wall,/obj/covers/wood_wall/aztec,8,170,1,1,construction,35,0,0,8,null
 
 RECIPE: /material/wood/,custom rustic sign,/obj/structure/sign/custom,2.5,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,custom wood sign,/obj/structure/sign/custom/plaque,3,40,1,1,construction,25,0,0,8,null
@@ -1967,16 +1976,16 @@ RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
-RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,4,50,0,1,weapons,0,0,0,3,wood
+//RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,4,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,6,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,8,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,2,wood
-RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null
+//RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0,1,weapons,0,95,0,8,null
 
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,3,null
-RECIPE: /material/wood/,chimalli,/obj/item/weapon/shield/chimalli,6,180,0,1,weapons,0,19,0,3,null
+//RECIPE: /material/wood/,chimalli,/obj/item/weapon/shield/chimalli,6,180,0,1,weapons,0,19,0,3,null
 
 RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,2,null
 RECIPE: /material/wood/,shortbow,/obj/item/weapon/gun/projectile/bow/shortbow,8,140,0,1,weapons,0,30,0,7,null
@@ -2039,20 +2048,20 @@ RECIPE: /material/wood/,standing clock,/obj/structure/wallclock,6,150,1,1,furnit
 //*********************| WOOD DECORATION & MONUMENTS |**************************
 
 RECIPE: /material/wood/,wood altar,/obj/structure/altar/wood,20,200,1,1,religious & decoration,0,0,0,8,null
-RECIPE: /material/wood/,decorative wood mask,/obj/structure/religious/tribalmask,2,50,1,1,religious & decoration,0,0,0,2,null
+//RECIPE: /material/wood/,decorative wood mask,/obj/structure/religious/tribalmask,2,50,1,1,religious & decoration,0,0,0,2,null
 RECIPE: /material/wood/,impaled skull,/obj/structure/religious/impaledskull,2,50,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,tiki statue,/obj/structure/religious/tiki_statue,10,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
-RECIPE: /material/wood/,wood totem pole,/obj/structure/religious/totem_pole,10,250,1,1,religious & decoration,0,0,0,2,null
-RECIPE: /material/wood/,cross,/obj/structure/religious/woodcross2,4,80,1,1,religious & decoration,47,0,0,8,null
-RECIPE: /material/wood/,small cross,/obj/structure/religious/woodcross1,2,50,1,1,religious & decoration,47,0,0,8,null
+//RECIPE: /material/wood/,wood totem pole,/obj/structure/religious/totem_pole,10,250,1,1,religious & decoration,0,0,0,2,null
+//RECIPE: /material/wood/,cross,/obj/structure/religious/woodcross2,4,80,1,1,religious & decoration,47,0,0,8,null
+//RECIPE: /material/wood/,small cross,/obj/structure/religious/woodcross1,2,50,1,1,religious & decoration,47,0,0,8,null
 
-RECIPE: /material/wood/,monumental crucero cross,/obj/structure/religious/monument/crucero,45,300,1,1,religious & decoration,32,0,0,8,null
+//RECIPE: /material/wood/,monumental crucero cross,/obj/structure/religious/monument/crucero,45,300,1,1,religious & decoration,32,0,0,8,null
 
 //*********************| WOOD CLOTHING |**************************
 
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes & clothing,0,0,0,8,null
-RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoes & clothing,24,0,38,8,null
+//RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoes & clothing,24,0,38,8,null
 
 RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
@@ -2137,7 +2146,7 @@ RECIPE: /material/wood/,siege ladder,/obj/item/weapon/siegeladder,8,100,0,1,sieg
 
 RECIPE: /material/wood/,wooden foot,/obj/item/weapon/prosthesis/woodfoot,3,80,0,1,medical,0,0,18,8,null
 RECIPE: /material/wood/,wooden pegleg,/obj/item/weapon/prosthesis/pegleg,5,110,0,1,medical,0,0,18,8,null
-RECIPE: /material/wood/,doctor handbook,/obj/item/weapon/doctor_handbook,12,210,0,1,medical,33,0,48,8,null
+RECIPE: /material/wood/,doctor handbook,/obj/item/weapon/doctor_handbook,12,210,0,1,medical,33,0,35,8,null
 
 //*********************| WOOD PAINTINGS |**************************
 
@@ -2174,11 +2183,11 @@ RECIPE: /material/bamboo/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,no
 RECIPE: /material/bamboo/,large bamboo double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/bamboo,5,50,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/bamboo/,roof support,/obj/structure/roof_support/bamboo,2,30,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,bamboo wall frame,/obj/structure/wallframe/bamboo,1,150,1,1,construction,10,0,0,8,null
-RECIPE: /material/bamboo/,horizontal tatami floor,/obj/covers/tatami,0.75,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,vertical tatami floor,/obj/covers/tatami_vertical,0.75,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,horizontal dark tatami floor,/obj/covers/tatami_dark,0.75,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,vertical dark tatami floor,/obj/covers/tatami_dark_vertical,0.75,20,1,1,construction,0,0,0,8,null
+//RECIPE: /material/bamboo/,bamboo wall frame,/obj/structure/wallframe/bamboo,1,150,1,1,construction,10,0,0,8,null
+//RECIPE: /material/bamboo/,horizontal tatami floor,/obj/covers/tatami,0.75,20,1,1,construction,0,0,0,8,null
+//RECIPE: /material/bamboo/,vertical tatami floor,/obj/covers/tatami_vertical,0.75,20,1,1,construction,0,0,0,8,null
+//RECIPE: /material/bamboo/,horizontal dark tatami floor,/obj/covers/tatami_dark,0.75,20,1,1,construction,0,0,0,8,null
+//RECIPE: /material/bamboo/,vertical dark tatami floor,/obj/covers/tatami_dark_vertical,0.75,20,1,1,construction,0,0,0,8,null
 
 //*********************| BAMBOO RESEARCH & PAPER |**************************
 
@@ -2189,12 +2198,12 @@ RECIPE: /material/bamboo/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & pr
 
 //*********************| BAMBOO CLOTHING |**************************
 
-RECIPE: /material/bamboo/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,none,0,0,38,8,null
+//RECIPE: /material/bamboo/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,none,0,0,38,8,null
 
 //*********************| BAMBOO WEAPONS |**************************
 
-RECIPE: /material/bamboo/,training sword,/obj/item/weapon/material/sword/training/bamboo,8,80,0,1,none,0,21,0,3,bamboo
-RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,none,0,0,0,3,bamboo
+//RECIPE: /material/bamboo/,training sword,/obj/item/weapon/material/sword/training/bamboo,8,80,0,1,none,0,21,0,3,bamboo
+//RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,none,0,0,0,3,bamboo
 
 //*******************************************************
 //*********************| IRON |**************************
@@ -2232,7 +2241,6 @@ RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools
 
 RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,25,220,1,1,production,0,55,0,8,null
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
-
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 
@@ -2275,8 +2283,8 @@ RECIPE: /material/iron/,locker,/obj/structure/closet,4,80,1,1,furniture,105,0,0,
 //*********************| IRON WEAPONS |**************************
 
 RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weapons,0,32,0,8,null
-RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
-RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
+//RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
+//RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
 
 RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
 
@@ -2345,7 +2353,7 @@ RECIPE: /material/sandstone/,stone bricks,/obj/item/stack/material/stonebrick,3,
 //*********************| SANDSTONE CONSTRUCTIONS |**************************
 
 RECIPE: /material/sandstone/,smooth sandstone wall,/obj/covers/sandstone_smooth_wall/plain,8,125,1,1,construction,0,0,0,8,null
-RECIPE: /material/sandstone/,egyptian wall,/obj/covers/sandstone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
+//RECIPE: /material/sandstone/,egyptian wall,/obj/covers/sandstone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone block wall,/obj/covers/sandstone_wall/classic,8,125,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,red sandstone block wall,/obj/covers/sandstone_wall/classic/red,8,125,1,1,construction,0,0,0,8,null
 
@@ -2358,7 +2366,7 @@ RECIPE: /material/sandstone/,large sandstone double doors,/obj/structure/simple_
 RECIPE: /material/sandstone/,sandstone block archway,/obj/covers/sandstone_wall/classic/archway,6,125,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,red sandstone block archway,/obj/covers/sandstone_wall/classic/archway/red,6,125,1,1,construction,0,0,0,8,null
 
-RECIPE: /material/sandstone/,egyptian archway,/obj/covers/sandstone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
+//RECIPE: /material/sandstone/,egyptian archway,/obj/covers/sandstone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
 
 RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,1,25,1,1,floors,0,0,0,8,null
@@ -2371,11 +2379,11 @@ RECIPE: /material/sandstone/,red sandstone decorative tile,/obj/covers/sandstone
 RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
 
 RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone/sandstone,2,130,1,1,construction,0,0,0,8,sandstone
-RECIPE: /material/sandstone/,egyptian column,/obj/structure/mine_support/stone/egyptian,2.5,130,1,1,construction,22,0,0,8,null
+//RECIPE: /material/sandstone/,egyptian column,/obj/structure/mine_support/stone/egyptian,2.5,130,1,1,construction,22,0,0,8,null
 RECIPE: /material/sandstone/,ionic column,/obj/structure/mine_support/stone/ionic/sandstone,2.5,130,1,1,construction,22,0,0,8,null
 RECIPE: /material/sandstone/,solomonic column,/obj/structure/mine_support/stone/solomonic/sandstone,2.5,130,1,1,construction,22,0,0,8,null
 RECIPE: /material/sandstone/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/sandstone,2.5,130,1,1,construction,22,0,0,8,null
-RECIPE: /material/sandstone/,aztec column,/obj/structure/mine_support/stone/aztec/sandstone,2.5,130,1,1,construction,32,0,0,8,null
+//RECIPE: /material/sandstone/,aztec column,/obj/structure/mine_support/stone/aztec/sandstone,2.5,130,1,1,construction,32,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/sandstonefull,5,140,1,1,construction,18,0,0,8,null
@@ -2388,7 +2396,7 @@ RECIPE: /material/sandstone/,sandstone roof builder,/obj/item/weapon/roofbuilder
 
 RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,15,200,1,1,religious & decoration,0,0,0,8,null
-RECIPE: /material/sandstone/,monumental sandstone obelisk,/obj/structure/religious/monument/obelisk,45,300,1,1,religious & decoration,22,0,0,2,null
+//RECIPE: /material/sandstone/,monumental sandstone obelisk,/obj/structure/religious/monument/obelisk,45,300,1,1,religious & decoration,22,0,0,2,null
 RECIPE: /material/sandstone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,26,0,0,8,sandstone
 
 //*********************| SANDSTONE STRUCTURES, PRODUCTION & ECONOMY |**************************
@@ -2434,7 +2442,7 @@ RECIPE: /material/obsidian/,pillar,/obj/structure/mine_support/stone/obsidian,2,
 RECIPE: /material/obsidian/,ionic column,/obj/structure/mine_support/stone/ionic/obsidian,2.5,130,1,1,construction,22,0,0,8,obsidian
 RECIPE: /material/obsidian/,solomonic column,/obj/structure/mine_support/stone/solomonic/obsidian,2.5,130,1,1,construction,22,0,0,8,obsidian
 RECIPE: /material/obsidian/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/obsidian,2.5,130,1,1,construction,22,0,0,8,obsidian
-RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec/obsidian,2.5,130,1,1,construction,32,0,0,8,obsidian
+//RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec/obsidian,2.5,130,1,1,construction,32,0,0,8,obsidian
 
 //*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
 
