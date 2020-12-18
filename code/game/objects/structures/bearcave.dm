@@ -3,6 +3,7 @@
 	icon = 'icons/obj/bearcave.dmi'
 	icon_state = "cave_den"
 	desc = "Thats a bearcave. You probably want to stay away from it. "
+	anchored = TRUE
 	var/females = 0
 	var/males = 0
 	var/cubs = 0
@@ -53,7 +54,6 @@
 				procreate_cooldown = FALSE
 
 /obj/structure/bearcave/proc/Tick()
-	set background = 1
 	spawn while(1)
 		for(var/obj/structure/bearcave/B in world)
 			B.total_population = B.males + B.females + B.cubs
