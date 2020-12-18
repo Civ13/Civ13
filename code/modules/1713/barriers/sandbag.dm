@@ -340,6 +340,15 @@
 	climbable = FALSE
 	maxhealth = 10000000
 
+/obj/structure/window/barrier/railing/brick
+	name = "Brick Wall"
+	icon = 'icons/obj/railing.dmi'
+	icon_state = "brick"
+	layer = MOB_LAYER + 0.01 //just above mobs
+	anchored = TRUE
+	climbable = FALSE
+	maxhealth = 10000000
+
 /obj/structure/window/barrier/railing/New()
 	..()
 	//invisibility = 101

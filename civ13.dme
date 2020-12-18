@@ -980,5 +980,6 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
+#include "maps\1903\abashiri.dmm"
 #include "maps\nomads\nomads_pangea.dmm"
 // END_INCLUDE

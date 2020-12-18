@@ -39,7 +39,10 @@
 	..(newloc,"straw")
 /turf/wall/wood/soft/New(var/newloc)
 	..(newloc,"wood")
-
+/turf/wall/wood/abashiri
+	icon_state = "abashiri0"
+	ref_state = "abashiri"
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 /* Stone Walls */
 
 /turf/wall/old_stone
