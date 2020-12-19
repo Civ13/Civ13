@@ -39,6 +39,13 @@ RECIPE: /material/wolfpelt/,fur boots,/obj/item/clothing/shoes/fur/grey,3,80,0,1
 RECIPE: /material/wolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/grey,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,wolf pelt headcover,/obj/item/clothing/head/wolfpelt,4,150,0,1,none,0,0,0,8,null
 
+RECIPE: /material/whitewolfpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,20,8,null
+RECIPE: /material/whitewolfpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,white wolf pelt headcover,/obj/item/clothing/head/wolfpelt/white,3,150,0,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/whitewolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+
 RECIPE: /material/catpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/catpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/catpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur,6,150,0,1,none,0,0,0,8,null
