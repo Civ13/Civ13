@@ -428,6 +428,15 @@
 	flammable = TRUE
 	value = 3
 
+/obj/item/stack/material/pelt/wolfpelt/white
+	name = "white wolf pelt"
+	desc = "A pelt from a skinned white wolf."
+	icon_state = "sheet-whitewolfpelt"
+	default_type = "whitewolfpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+
 /obj/item/stack/material/pelt/catpelt
 	name = "cat pelt"
 	desc = "A pelt from a skinned cat."

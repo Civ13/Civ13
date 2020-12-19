@@ -757,6 +757,14 @@
 	cold_protection = HEAD
 	var/colortype = "grey"
 
+/obj/item/clothing/head/wolfpelt/white
+	name = "white wolfpelt headcover"
+	desc = "A wolf pelt turned into a headcover."
+	icon_state = "whitewolfpelt"
+	item_state = "whitewolfpelt"
+	worn_state = "whitewolfpelt"
+	colortype = "white"
+
 /obj/item/clothing/head/pantherpelt
 	name = "pantherpelt headcover"
 	desc = "A panther pelt turned into a headcover."

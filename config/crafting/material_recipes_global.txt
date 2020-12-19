@@ -42,8 +42,8 @@
 //**| BEARPELT |**| BROWN BEARPELT |**| WHITE BEARPELT |**| BLACK BEARPELT |**
 //****************************************************************************
 
-//**| WOLFPELT |**
-//****************
+//**| WOLFPELT |**| WHITE WOLFPELT |**
+//************************************
 
 //**| CATPELT |**| PANTHERPELT |**| LIONPELT |**
 //**********************************************
@@ -990,14 +990,24 @@ RECIPE: /material/bearpelt/black/,black napoleonic bearskin hat,/obj/item/clothi
 //*********************| WOLFPELT |*****************************
 //**************************************************************
 
-RECIPE: /material/wolfpelt/,primative pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/grey,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/wolfpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/grey,6,125,0,1,none,0,0,0,0,null
 RECIPE: /material/wolfpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/grey,6,150,0,1,none,0,0,20,8,null
 RECIPE: /material/wolfpelt/,fur boots,/obj/item/clothing/shoes/fur/grey,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/grey,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,wolf pelt headcover,/obj/item/clothing/head/wolfpelt,4,150,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/wolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
-RECIPE: /material/wolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,12,220,0,1,none,0,0,38,8,null
+
+//*****************| WHITE WOLFPELT |***************************
+
+RECIPE: /material/whitewolfpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/white,6,125,0,1,none,0,0,0,0,null
+RECIPE: /material/whitewolfpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,none,0,0,20,8,null
+RECIPE: /material/whitewolfpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,white wolf pelt headcover,/obj/item/clothing/head/wolfpelt/white,3,150,0,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
+RECIPE: /material/whitewolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/whitewolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 
 //**************************************************************
 //*********************| CATPELT |******************************
