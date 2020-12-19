@@ -184,6 +184,8 @@
 			src.aggro()
 	..()
 
+/obj/structure/animalspawner/bearcave/full
+
 /obj/structure/animalspawner/bearcave/full/New()
 	src.males = 5
 	src.females = 5
