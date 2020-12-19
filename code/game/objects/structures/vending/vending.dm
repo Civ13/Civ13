@@ -132,6 +132,13 @@
 			anchored = !anchored
 		return
 
+	if (istype(W, /obj/item/weapon/hammer))
+		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
+		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+		if (do_after(user,50,src))
+			visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
+			qdel(src)
+			return
 	else
 		if (istype(src, /obj/structure/vending/craftable))
 			var/obj/structure/vending/craftable/CTB = src
