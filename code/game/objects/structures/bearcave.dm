@@ -63,13 +63,15 @@
 /obj/structure/bearcave/proc/Ticker()
 //################## Description Ticker Settings Output #################
 	src.desc = "Thats a bearcave. You probably want to stay away from it. "
+	var/number_flavor = 0
 	if(src.total_population > 0)
 		if(prob(35))
-			src.desc += "You can see [src.total_population+pick(1, 2)]"
+			number_flavor = src.total_population + pick(1, 2)
 		else if(prob(35))
-			src.desc += "You can see [src.total_population-pick(1, 2)]"
-		else
-			src.desc += "You can see [src.total_population]"
+			number_flavor = src.total_population - pick(1, 2)
+		if(number_flavor <= 0)
+			number_flavor = src.total_population
+		src.desc = "You can see [number_flavor] eyes"
 		src.desc += " staring at you in the darkness."
 	else
 		src.desc += pick("You maybe have seen one pair of eyes, but it looks empty.", "You dont see anything inside it.")
