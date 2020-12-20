@@ -449,6 +449,29 @@
 	keyslot_type = /datum/keyslot/japanese
 	unique_door_name = "Japanese locked"
 #undef JP_CODE
+#define JPABA_CODE 994 * 6
+/datum/keyslot/abashiri
+	code = JPABA_CODE
+
+/obj/item/weapon/key/abashiri
+	code = JPABA_CODE
+	name = "Abashiri Guard key"
+
+/obj/structure/simple_door/key_door/abashiri
+	keyslot_type = /datum/keyslot/abashiri
+	unique_door_name = "Abashiri locked"
+	health = 900000
+
+/obj/item/weapon/key/abashiri/head
+	code = JPABA_CODE + 2
+	name = "Abashiri Head Guard key"
+/datum/keyslot/abashiri/head
+	code = JPABA_CODE + 2
+/obj/structure/simple_door/key_door/abashiri/head
+	keyslot_type = /datum/keyslot/abashiri/head
+	unique_door_name = "Abashiri locked"
+	health = 900000
+#undef JPABA_CODE
 
 /obj/item/weapon/key/japanese/german////yeah ik i'm just lazy and already mapped so stfu bish
 	name = "German Officer key"

@@ -39,7 +39,19 @@
 	..(newloc,"straw")
 /turf/wall/wood/soft/New(var/newloc)
 	..(newloc,"wood")
-
+/turf/wall/abashiri
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "abashiri0"
+	ref_state = "abashiri"
+/turf/wall/abashiri/update_icon()
+	..()
+	check_relatives(1,1)
+/turf/wall/abashiri/New()
+	..()
+	check_relatives(1,1)
+/turf/wall/abashiri/Destroy()
+	check_relatives(0,1)
+	..()
 /* Stone Walls */
 
 /turf/wall/old_stone

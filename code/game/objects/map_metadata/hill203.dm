@@ -33,7 +33,7 @@
 /obj/map_metadata/hill203/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/japanese))
-		if (J.is_coldwar || J.is_ww2 || J.is_yakuza || J.is_samurai)
+		if (J.is_coldwar || J.is_ww2 || J.is_yakuza || J.is_samurai == TRUE)
 			. = FALSE
 		else
 			. = TRUE

@@ -1805,6 +1805,35 @@
 	armor = list(melee = 5, arrow = 3, gun = FALSE, energy = 5, bomb = 5, bio = 5, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
+	var/obj/item/weapon/handcuffs/chained = null
+
+/obj/item/clothing/shoes/geta/proc/attach_cuffs(var/obj/item/weapon/handcuffs/cuffs, mob/user as mob)
+	if (chained) return
+
+	user.drop_item()
+	cuffs.loc = src
+	chained = cuffs
+	slowdown = 15
+	icon_state = "geta"
+
+/obj/item/clothing/shoes/geta/proc/remove_cuffs(mob/user as mob)
+	if (!chained) return
+
+	user.put_in_hands(chained)
+	chained.add_fingerprint(user)
+
+	slowdown = initial(slowdown)
+	icon_state = "geta"
+	chained = null
+
+/obj/item/clothing/shoes/geta/attack_self(mob/user as mob)
+	..()
+	remove_cuffs(user)
+
+/obj/item/clothing/shoes/geta/attackby(H as obj, mob/user as mob)
+	..()
+	if (istype(H, /obj/item/weapon/handcuffs))
+		attach_cuffs(H, user)
 
 /obj/item/clothing/shoes/tsuranuki
 	name = "tsuranuki"

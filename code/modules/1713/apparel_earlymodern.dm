@@ -85,6 +85,11 @@
 	desc = "A cap worn by the Abashiri Head Guard."
 	icon_state = "abashiri_guard_head"
 	item_state = "abashiri_guard_head"
+/obj/item/clothing/head/abashiri_prisoner
+	name = "Kasa"
+	desc = "A straw hat that obscures inmate's view, as well as their faces."
+	icon_state = "abashiri_kasa"
+	item_state = "abashiri_kasa"
 	flags_inv = BLOCKHAIR|HIDEFACE
 	restricts_view = 2
 ////////////////////////////////////////////RUSSO-JAP///////////////////////////////////////////////
