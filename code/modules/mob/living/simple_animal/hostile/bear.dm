@@ -1,7 +1,7 @@
 /mob/living/simple_animal/hostile/bear
 	name = "black bear"
 	desc = "Rawr Rawr!!"
-	icon = 'icons/mob/animal_64.dmi'
+	icon = 'icons/mob/animal.dmi'
 	icon_state = "blackbear"
 	icon_living = "blackbear"
 	icon_dead = "blackbear_dead"
@@ -46,22 +46,23 @@
 	female = TRUE
 
 /mob/living/simple_animal/hostile/bear/death()
-	bear_count--
+	bear_count &= src
 	..()
 
 /mob/living/simple_animal/hostile/bear/Destroy()
-	bear_count--
+	bear_count &= src
 	..()
 
 /mob/living/simple_animal/hostile/bear/Life()
 	..()
 	if(src.cub && !src.growing)
 		growing = TRUE //No need to set it all again if its already growing
+		icon = 'icons/mob/animal_64.dmi'
 		icon_state = "[btype]bear_cub"
 		icon_living = "[btype]bear_cub"
 		icon_dead = "[btype]bear_cub_dead"
 		meat_amount = 1
-		mob_size = MOB_LARGE
+		mob_size = MOB_MEDIUM
 		if (female)
 			name = "female [btype] bear cub"
 		else
@@ -102,7 +103,7 @@
 			visible_message("A bear cub has been born!")
 
 /mob/living/simple_animal/hostile/bear/boar/New()
-	bear_count++
+	bear_count |= src
 	if (female)
 		name = "[btype] bear sow"
 	else
@@ -111,6 +112,7 @@
 
 /mob/living/simple_animal/hostile/bear/boar/black
 	name = "black bear boar"
+	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "blackbear"
 	icon_living = "blackbear"
 	icon_dead = "blackbear_dead"
@@ -120,6 +122,7 @@
 
 /mob/living/simple_animal/hostile/bear/sow/black
 	name = "black bear sow"
+	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "blackbear"
 	icon_living = "blackbear"
 	icon_dead = "blackbear_dead"
@@ -129,6 +132,7 @@
 
 /mob/living/simple_animal/hostile/bear/boar/brown
 	name = "brown bear boar"
+	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "brownbear"
 	icon_living = "brownbear"
 	icon_dead = "brownbear_dead"
@@ -137,6 +141,7 @@
 
 /mob/living/simple_animal/hostile/bear/sow/brown
 	name = "brown bear sow"
+	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "brownbear"
 	icon_living = "brownbear"
 	icon_dead = "brownbear_dead"
@@ -146,6 +151,7 @@
 
 /mob/living/simple_animal/hostile/bear/boar/polar
 	name = "polar bear boar"
+	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "polarbear"
 	icon_living = "polarbear"
 	icon_dead = "polarbear_dead"
@@ -154,6 +160,7 @@
 
 /mob/living/simple_animal/hostile/bear/sow/polar
 	name = "polar bear sow"
+	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "polarbear"
 	icon_living = "polarbear"
 	icon_dead = "polarbear_dead"
