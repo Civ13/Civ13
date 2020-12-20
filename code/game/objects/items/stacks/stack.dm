@@ -2133,7 +2133,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 	if (href_list["make"])
 
-		if (amount <= 0)
+		if (amount < 0)
 			qdel(src)
 			return
 
