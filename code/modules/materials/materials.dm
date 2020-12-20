@@ -702,7 +702,7 @@ var/list/name_to_material
 /material/bearpelt/white
 	name = "whitebearpelt"
 	use_name = "white bear"
-	icon_colour = "#8C7E6E"
+	icon_colour = "#e8e8e8" // "white smoke"
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
@@ -725,6 +725,15 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/wolfpelt
+
+/material/whitewolfpelt
+	name = "white wolfpelt"
+	use_name = "wolf"
+	icon_colour = "#e8e8e8" // "white smoke"
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/wolfpelt/white
 
 /material/catpelt
 	name = "catpelt"
@@ -792,7 +801,7 @@ var/list/name_to_material
 /material/whitefoxpelt
 	name = "whitefoxpelt"
 	use_name = "white fox"
-	icon_colour = "#8C7E6E"
+	icon_colour = "#e8e8e8" // "white smoke"
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"

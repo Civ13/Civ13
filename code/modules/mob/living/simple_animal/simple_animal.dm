@@ -621,6 +621,9 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
 					var/obj/item/stack/material/pelt/wolfpelt/NP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
 					NP.amount = 4
+				else if (istype(src, /mob/living/simple_animal/hostile/wolf/white))
+					var/obj/item/stack/material/pelt/wolfpelt/white/NP = new/obj/item/stack/material/pelt/wolfpelt/white(get_turf(src))
+					NP.amount = 4
 				else if (istype(src, /mob/living/simple_animal/monkey))
 					var/obj/item/stack/material/pelt/monkeypelt/NP = new/obj/item/stack/material/pelt/monkeypelt(get_turf(src))
 					NP.amount = 3

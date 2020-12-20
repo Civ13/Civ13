@@ -264,7 +264,8 @@
 		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
 			user << "<span class = 'warning'>You this surface is too rough to chisel upon.</span>"
 			return
-
+	else
+		..()
 /obj/covers/stone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
 		if (I.shiv < 10)
@@ -376,7 +377,8 @@
 		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
 			user << "<span class = 'warning'>You this surface is too rough to chisel upon.</span>"
 			return
-
+	else
+		..()
 /obj/covers/marble_wall/plain
 	name = "smooth marble wall"
 	desc = "A smooth marble wall."
