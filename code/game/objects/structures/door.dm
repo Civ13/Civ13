@@ -412,6 +412,11 @@
 	basic_icon = "woodcell"
 	icon_state = "woodcell"
 
+/obj/structure/simple_door/key_door/custom/jail/woodjail/abashiri/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	basic_icon = "abashiricell"
+	icon_state = "abashiricell"
+
 /obj/structure/simple_door/key_door/custom/jail/steeljail/New(var/newloc,var/material_name)
 	..(newloc, "steel")
 	basic_icon = "cell"

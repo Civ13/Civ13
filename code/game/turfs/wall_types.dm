@@ -40,9 +40,13 @@
 /turf/wall/wood/soft/New(var/newloc)
 	..(newloc,"wood")
 /turf/wall/wood/abashiri
+	icon = 'icons/turf/walls.dmi'
 	icon_state = "abashiri0"
 	ref_state = "abashiri"
-	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+	flags = TURF_HAS_EDGES
+/turf/wall/wood/abashiri/update_icon()
+	..()
+	check_relatives(1,1)
 /* Stone Walls */
 
 /turf/wall/old_stone
