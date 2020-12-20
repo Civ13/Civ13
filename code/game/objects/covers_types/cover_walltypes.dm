@@ -15,6 +15,22 @@
 					junction |= get_dir(src,CV)
 			if (update_others)
 				CV.check_relatives(1,0)
+		for(var/obj/structure/window/classic/abashiri/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+		for(var/obj/structure/window_frame/abashiri/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
 	if (!isnull(junction))
 		icon_state = "[base_icon_state][junction]"
 	return
@@ -88,6 +104,12 @@
 	base_icon_state = "woodwall"
 	adjusts = TRUE
 
+/obj/covers/wood_wall/abashiri
+	icon_state = "abashiri0"
+	base_icon_state = "abashiri"
+	adjusts = TRUE
+	health = 250
+	explosion_resistance = 6
 /obj/covers/wood_wall/medieval
 	name = "medieval wall"
 	desc = "A dark-ages wall."

@@ -467,7 +467,7 @@ var/adjusts = TRUE
 					junction |= get_dir(src,CV)
 			if (update_others)
 				CV.check_relatives(1,0)
-		for(var/turf/wall/wood/abashiri/CV in T)
+		for(var/turf/wall/abashiri/CV in T)
 			if (!can_join_with(CV))
 				continue
 			if (update_self)

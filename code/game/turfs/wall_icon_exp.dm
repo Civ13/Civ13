@@ -144,7 +144,7 @@
 					junction |= get_dir(src,CV)
 			if (update_others)
 				CV.check_relatives(1,0)
-		for(var/turf/wall/wood/abashiri/CV in T)
+		for(var/turf/wall/abashiri/CV in T)
 			if (!can_join_with(CV))
 				continue
 			if (update_self)
@@ -171,7 +171,7 @@
 	if (!isnull(junction))
 		set_wall_state("[material.icon_base][junction]")
 	return
-/turf/wall/proc/can_join_with(var/turf/wall, var/turf/wall/wood/abashiri, var/obj/structure/window_frame/abashiri, var/obj/structure/window/classic/abashiri, W)
+/turf/wall/proc/can_join_with(var/turf/wall/W)
 	if (istype(W,src))
 		return TRUE
 	return FALSE
