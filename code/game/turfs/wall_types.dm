@@ -52,6 +52,13 @@
 /turf/wall/abashiri/Destroy()
 	check_relatives(0,1)
 	..()
+/turf/wall/abashiri/can_join_with(var/atom/W)
+	var/list/mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
 /* Stone Walls */
 
 /turf/wall/old_stone

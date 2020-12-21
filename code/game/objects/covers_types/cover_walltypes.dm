@@ -1,5 +1,5 @@
 ///////////////////////////////COVER WALL BORDERS//////////////////////////////
-/obj/covers/proc/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+/obj/covers/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	if (!adjusts)
 		return
 	var/junction
@@ -7,23 +7,7 @@
 		junction = FALSE
 	for (var/checkdir in cardinal)
 		var/turf/T = get_step(src, checkdir)
-		for(var/obj/covers/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-		for(var/obj/structure/window/classic/abashiri/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-		for(var/obj/structure/window_frame/abashiri/CV in T)
+		for(var/atom/CV in T)
 			if (!can_join_with(CV))
 				continue
 			if (update_self)
@@ -35,7 +19,7 @@
 		icon_state = "[base_icon_state][junction]"
 	return
 
-/obj/covers/proc/can_join_with(var/obj/covers/W)
+/obj/covers/can_join_with(var/atom/W)
 	if (istype(W,src))
 		return TRUE
 	return FALSE
@@ -110,6 +94,13 @@
 	adjusts = TRUE
 	health = 250
 	explosion_resistance = 6
+/obj/covers/wood_wall/abashiri/can_join_with(var/atom/W)
+	var/list/mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
 /obj/covers/wood_wall/medieval
 	name = "medieval wall"
 	desc = "A dark-ages wall."
