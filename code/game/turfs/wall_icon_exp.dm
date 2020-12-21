@@ -126,7 +126,7 @@
 		damage_overlays[i] = img
 
 //Smoothwall code. update_self for relativewall(), not for relativewall_neighbors()
-/turf/wall/proc/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+/turf/wall/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	if (!material)
 		return
 	var/junction
@@ -136,31 +136,7 @@
 		var/turf/wall/T = get_step(src, checkdir)
 		if (!istype(T) || !T.material)
 			continue
-		for(var/turf/wall/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-		for(var/turf/wall/abashiri/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-		for(var/obj/structure/window/classic/abashiri/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-		for(var/obj/structure/window_frame/abashiri/CV in T)
+		for(var/atom/CV in T)
 			if (!can_join_with(CV))
 				continue
 			if (update_self)
@@ -171,7 +147,7 @@
 	if (!isnull(junction))
 		set_wall_state("[material.icon_base][junction]")
 	return
-/turf/wall/proc/can_join_with(var/turf/wall/W)
+/turf/wall/can_join_with(var/atom/W)
 	if (istype(W,src))
 		return TRUE
 	return FALSE
