@@ -43,6 +43,8 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "abashiri0"
 	ref_state = "abashiri"
+	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
+
 /turf/wall/abashiri/update_icon()
 	..()
 	check_relatives(1,1)
@@ -53,7 +55,6 @@
 	check_relatives(0,1)
 	..()
 /turf/wall/abashiri/can_join_with(var/atom/W)
-	var/list/mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 	if (istype(W,src))
 		return TRUE
 	for (var/i in mergewith)

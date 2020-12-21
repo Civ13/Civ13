@@ -449,8 +449,9 @@
 	icon = 'icons/obj/windows.dmi'
 /obj/structure/window_frame/abashiri
 	icon_state = "abashiri0"
-var/base_icon_state = "abashiri"
-var/adjusts = TRUE
+	var/base_icon_state = "abashiri"
+	var/adjusts = TRUE
+	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/structure/window_frame/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	if (!adjusts)
 		return
@@ -471,7 +472,6 @@ var/adjusts = TRUE
 		icon_state = "[base_icon_state][junction]"
 	return
 /obj/structure/window_frame/abashiri/can_join_with(var/atom/W)
-	var/list/mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 	if (istype(W,src))
 		return TRUE
 	for (var/i in mergewith)
@@ -945,6 +945,9 @@ var/adjusts = TRUE
 	damage_per_fire_tick = 1.0
 	health = 200
 	flammable = FALSE
+	var/base_icon_state = "abashiri"
+	var/adjusts = TRUE
+	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/structure/window/classic/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	if (!adjusts)
 		return
@@ -966,7 +969,6 @@ var/adjusts = TRUE
 	return
 
 /obj/structure/window/classic/abashiri/can_join_with(var/atom/W)
-	var/list/mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 	if (istype(W,src))
 		return TRUE
 	for (var/i in mergewith)

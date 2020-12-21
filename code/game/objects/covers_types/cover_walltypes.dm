@@ -94,8 +94,8 @@
 	adjusts = TRUE
 	health = 250
 	explosion_resistance = 6
+	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/covers/wood_wall/abashiri/can_join_with(var/atom/W)
-	var/list/mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 	if (istype(W,src))
 		return TRUE
 	for (var/i in mergewith)

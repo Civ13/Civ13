@@ -41,6 +41,7 @@
 
 	var/radiation = 0
 
+	var/list/mergewith = list()
 /atom/Destroy()
 	if (reagents)
 		qdel(reagents)
@@ -51,6 +52,7 @@
 	return FALSE
 /atom/proc/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	return FALSE
+
 /atom/proc/CanPass(atom/movable/mover, turf/target, height=1.5, air_group = FALSE)
 	//Purpose: Determines if the object (or airflow) can pass this atom.
 	//Called by: Movement, airflow.
