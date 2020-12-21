@@ -51,6 +51,17 @@
 	weakens = 3
 	flammable = TRUE
 
+/obj/item/weapon/melee/classic_baton/guard
+	name = "guard baton"
+	desc = "A wooden truncheon for beating criminal scum."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "baton"
+	item_state = "classic_baton"
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_WEAK
+	weakens = 5
+	flammable = TRUE
+
 /obj/item/weapon/melee/nightbaton
 	name = "police baton"
 	desc = "A stick used by police officers."

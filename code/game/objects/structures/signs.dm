@@ -117,6 +117,26 @@
 	desc = "Armory this way."
 	icon_state = "armory1"
 
+/obj/structure/sign/abashiri
+	name = "Shisetsu"
+	desc = "Shisetsu (Farming Facility)."
+	icon_state = "farming"
+/obj/structure/sign/abashiri/wing1
+	name = "Ichi Tsubasa"
+	desc = "Ichi Tsubasa (Wing 1)."
+	icon_state = "wing1"
+/obj/structure/sign/abashiri/wing2
+	name = "Ni Tsubasa"
+	desc = "Ni Tsubasa (Wing 2)."
+	icon_state = "wing2"
+/obj/structure/sign/abashiri/wing3
+	name = "San Tsubasa"
+	desc = "San Tsubasa (Wing 3)."
+	icon_state = "wing3"
+/obj/structure/sign/abashiri/solitary
+	name = "Kodoku"
+	desc = "Kodoku (Solitary)."
+	icon_state = "wing3"
 /obj/structure/sign/exit
 	name = "Exit"
 	desc = "Points to the exit."
