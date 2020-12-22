@@ -967,6 +967,7 @@
 		else if (map && map.ID == MAP_NOMADS_AFRICA)
 			var/area/A = get_area(loc)
 			if (A.climate == "jungle")
+				mosquito_limit = 2
 				mosquito_proc()
 		else if (map && map.ID == MAP_NOMADS_NEW_WORLD)
 			if (src.x < 256)
