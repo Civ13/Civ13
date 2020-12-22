@@ -89,6 +89,3 @@
 	override_material = FALSE
 	override_opacity = TRUE
 	opacity = FALSE
-
-#undef ANYONE_CODE
-
