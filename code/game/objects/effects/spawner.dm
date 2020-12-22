@@ -286,7 +286,33 @@
 	create_path = /mob/living/simple_animal/monkey
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/gorilla
+	name = "gorilla spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla
+	timer = 5000
 
+/obj/effect/spawner/mobspawner/gorilla/gigantopithecus
+	name = "gigantopithecus spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla/gigantopithecus
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/gorilla/gigantopithecus/bigfoot
+	name = "bigfoot spawner"
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla/gigantopithecus/bigfoot
+	timer = 7200
+
+/obj/effect/spawner/mobspawner/gorilla/gigantopithecus/yeti
+	name = "gigantopithecus spawner"
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla/gigantopithecus/yeti
+	timer = 7200
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
