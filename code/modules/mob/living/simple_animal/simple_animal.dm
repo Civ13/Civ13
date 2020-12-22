@@ -627,6 +627,12 @@
 				else if (istype(src, /mob/living/simple_animal/monkey))
 					var/obj/item/stack/material/pelt/monkeypelt/NP = new/obj/item/stack/material/pelt/monkeypelt(get_turf(src))
 					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/gorilla))
+					var/obj/item/stack/material/pelt/gorillapelt/NP = new/obj/item/stack/material/pelt/gorillapelt(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/gorilla/gigantopithecus))
+					var/obj/item/stack/material/pelt/gorillapelt/NP = new/obj/item/stack/material/pelt/gorillapelt(get_turf(src))
+					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/fox/arctic))
 					var/obj/item/stack/material/pelt/foxpelt/white/NP = new/obj/item/stack/material/pelt/foxpelt/white(get_turf(src))
 					NP.amount = 3
