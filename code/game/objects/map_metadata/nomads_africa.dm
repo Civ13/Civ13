@@ -77,5 +77,5 @@
 /obj/map_metadata/nomads_africa/volcano_eruption()
 	for(var/turf/wall/rockwall/lavaspawner/L in world)
 		L.start_lava_flow()
-		world << "<font color='red'><big><b>The volcano erupts, with lava flowing down the mountain!</b></big></font>"
-		return TRUE
+	world << "<font color='red'><big><b>The volcano erupts, with lava flowing down the mountain!</b></big></font>"
+	return TRUE

@@ -961,12 +961,16 @@
 
 /obj/structure/sink/New()
 	..()
-
-	if (map && map.ID == MAP_HUNT)
-		mosquito_proc()
-	if (map && map.ID == MAP_NOMADS_NEW_WORLD)
-		if (src.x < 256)
+	spawn(5)
+		if (map && map.ID == MAP_HUNT)
 			mosquito_proc()
+		else if (map && map.ID == MAP_NOMADS_AFRICA)
+			var/area/A = get_area(loc)
+			if (A.climate == "jungle")
+				mosquito_proc()
+		else if (map && map.ID == MAP_NOMADS_NEW_WORLD)
+			if (src.x < 256)
+				mosquito_proc()
 
 	spawn(2000)
 		if (map.chad_mode)
