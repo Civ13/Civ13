@@ -187,6 +187,14 @@
 	create_path = /mob/living/simple_animal/hostile/panther
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/lion
+	name = "lion spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/hostile/sabertooth/lion
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/fox
 	name = "fox spawner"
 	hostile = TRUE
@@ -277,6 +285,8 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/monkey
 	timer = 3000
+
+
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
@@ -372,6 +382,21 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/deer/female
 	timer = 3000
+
+/obj/effect/spawner/mobspawner/dikdik_m
+	name = "dik-dik stag spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/deer/dikdik/male
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/dikdik_f
+	name = "dik-dik doe spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/deer/dikdik/female
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/elk_m
 	name = "elk stag spawner"
 	max_number = 2
