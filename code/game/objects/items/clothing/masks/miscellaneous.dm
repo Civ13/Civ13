@@ -158,3 +158,14 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	w_class = 1
 	blocks_scope = TRUE
 	restricts_view = 1
+
+/obj/item/clothing/mask/gorilla
+	name = "gorilla mask"
+	desc = "A plastic mask in the form of a gorilla. 'Oook ook!'"
+	icon_state = "gorilla"
+	item_state = "gorilla"
+	flags_inv = HIDEEARS|HIDEFACE|BLOCKHEADHAIR
+	body_parts_covered = FACE
+	w_class = 1
+	blocks_scope = TRUE
+	restricts_view = 1

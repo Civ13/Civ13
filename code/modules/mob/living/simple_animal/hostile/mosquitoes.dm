@@ -42,9 +42,10 @@
 		if (prob(70))
 			var/done = FALSE
 			for (var/mob/living/human/H in range(6, src))
-				if (done == FALSE)
-					walk_towards(src, H, 3)
-					done = TRUE
+				if (map && ((map.ID == MAP_NOMADS_AFRICA && H.s_tone > -175) || map.ID != MAP_NOMADS_AFRICA))
+					if (done == FALSE)
+						walk_towards(src, H, 3)
+						done = TRUE
 			if (done == FALSE)
 				walk_rand(src,4)
 		else if (prob(15))
@@ -59,15 +60,16 @@
 			walk_rand(src,4)
 		if (prob(10))
 			for (var/mob/living/human/TG in range(1,src))
-				visible_message("<span class = 'danger'>\The [src] bite [TG]!")
-				var/dmod = 1
-				if (TG.find_trait("Weak Immune System"))
-					dmod = 2
-				TG.adjustBruteLoss(1,2)
-				if (prob(20*dmod) && TG.disease == 0)
-					TG.disease_progression = 0
-					TG.disease_type ="malaria"
-					TG.disease = 1
+				if (map && ((map.ID == MAP_NOMADS_AFRICA && TG.s_tone > -175) || map.ID != MAP_NOMADS_AFRICA))
+					visible_message("<span class = 'danger'>\The [src] bite [TG]!")
+					var/dmod = 1
+					if (TG.find_trait("Weak Immune System"))
+						dmod = 2
+					TG.adjustBruteLoss(1,2)
+					if (prob(20*dmod) && TG.disease == 0)
+						TG.disease_progression = 0
+						TG.disease_type ="malaria"
+						TG.disease = 1
 /mob/living/simple_animal/mosquito/bullet_act(var/obj/item/projectile/Proj)
 	return
 
