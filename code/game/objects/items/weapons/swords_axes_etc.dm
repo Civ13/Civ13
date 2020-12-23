@@ -290,8 +290,8 @@
     default_material="gold"
     name = "Brass Knuckles"
     desc = "Brass Knuckles used on your fist for hard hits used in gangs"
-    icon_state = "knuckles"
-    item_state = "knuckles"
+    icon_state = "brass"
+    item_state = "brass"
     throw_speed = 7
     throw_range = 9
     force_divisor = 0.8 // 45 when wielded with hardnes 60 (steel)
