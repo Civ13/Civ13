@@ -175,6 +175,12 @@
 	icon_state = "ironshank"
 	force_divisor = 0.4
 	default_material = "iron"
+/obj/item/weapon/material/kitchen/utensil/knife/shank/wood
+	name = "shank"
+	icon_state = "woodshank"
+	applies_material_colour = FALSE
+	force_divisor = 0.35
+	default_material = "wood"
 
 /obj/item/weapon/material/kitchen/utensil/knife/bowie
 	name = "bowie knife"

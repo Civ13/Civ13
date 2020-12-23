@@ -6,6 +6,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3600
 	has_hunger = TRUE
+	force_mapgen = TRUE
 
 	faction_organization = list(
 		JAPANESE,
@@ -123,7 +124,7 @@
 			i[2]=0
 	for (var/mob/living/human/H in player_list)
 		if (H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/abashiri/prisoner))
-			var/datum/job/civilian/prisoner/PJ = H.original_job
+			var/datum/job/civilian/abashiri/prisoner/PJ = H.original_job
 			var/curval = 0
 			var/area/A = get_area(H)
 			if (istype(A, /area/caribbean/nomads/ice/target))
@@ -136,7 +137,7 @@
 				curval += R.amount
 			if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/storage))
 				var/obj/item/clothing/suit/storage/ST = H.wear_suit
-				for(var/obj/item/stack/money/rubles/R in ST.pockets)
+				for(var/obj/item/stack/money/yen/R in ST.pockets)
 					curval += R.amount
 			for(var/i in points)
 				if (i[1]==PJ.nationality)
@@ -151,7 +152,7 @@
 			world << "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></span></font>"
 		var/donecheck = FALSE
 		for(var/mob/living/human/H in player_list)
-			if(H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner) && !donecheck)
+			if(H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/abashiri/prisoner) && !donecheck)
 				var/area/A = get_area(H)
 				if (istype(A, /area/caribbean/nomads/ice/target))
 					world << "<br><font size = 3><span class = 'warning'>There are prisoners currently escaping!</span></font>"

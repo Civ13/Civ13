@@ -239,7 +239,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
 		user << "<b><span class='info'>Detained for:</b> [document_details[5]]</span>"
 		user << "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>"
-		user << "<b><span class='info'>Assigned Job:</b> [document_details[9]]</span>"
+		user << "<b><span class='info'>Assigned:</b> [document_details[9]]</span>"
 	user << "<span class='info'>*---------*</span>"
 	if (guardnotes.len)
 		for(var/i in guardnotes)
