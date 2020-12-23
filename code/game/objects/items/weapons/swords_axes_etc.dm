@@ -285,3 +285,22 @@
 		update_icon()
 
 		return FALSE
+
+/obj/item/weapon/material/brassknuckles/gold
+    default_material="gold"
+    name = "Brass Knuckles"
+    desc = "Brass Knuckles used on your fist for hard hits used in gangs"
+    icon_state = "knuckles"
+    item_state = "knuckles"
+    throw_speed = 7
+    throw_range = 9
+    force_divisor = 0.8 // 45 when wielded with hardnes 60 (steel)
+    thrown_force_divisor = 0.4 // 10 when thrown with weight 20 (steel)
+    slot_flags = SLOT_BELT | SLOT_BACK
+    block_chance = 0
+    attack_verb = list("thwacked", "hit", "bruised")
+    cooldownw = 8
+    value = 60
+
+/obj/item/weapon/material/sword/brassknuckles/gold
+	default_material = "gold"
