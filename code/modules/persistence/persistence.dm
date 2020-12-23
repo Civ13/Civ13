@@ -18,7 +18,7 @@
 	world << "<big><b>The current round has been set as a Persistent Round.</b></big>"
 	return
 
-	/datum/admins/proc/persistent_chad()
+/datum/admins/proc/persistent_chad()
 	set category = "Server"
 	set desc="Set the current round as persistent Chad Mode +"
 	set name="Persistence Chad Mode+"
@@ -29,7 +29,7 @@
 		map.autoresearch = FALSE
 		map.chad_mode = TRUE
 		map.chad_mode_plus = TRUE
-		resourceresearch = TRUE
+		map.resourceresearch = TRUE
 		map.default_research = 0
 		map.gamemode = "Persistent Chad Mode+"
 		config.allow_vote_restart = FALSE
