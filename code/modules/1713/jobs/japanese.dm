@@ -542,7 +542,7 @@
 	rank_abbreviation = "2lt."
 
 
-	spawn_location = "JoinLateJPLT"
+	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
@@ -608,7 +608,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	if (map.ID == MAP_NANKOU || MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -700,12 +700,12 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_med(H), slot_head)
 //back
-	if (map.ID == MAP_NANKOU || MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
+		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
-
-	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
 //other
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
@@ -752,7 +752,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
 	var/randweap = rand(1,2)
-	if (map.ID == MAP_NANKOU || MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -898,7 +898,7 @@
 	else if (randhead == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
-	if (map.ID == MAP_NANKOU || MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -953,7 +953,7 @@
 	else if (randhead == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
-	if (map.ID == MAP_NANKOU || MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38/sniper(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -1000,7 +1000,7 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	if (map.ID == MAP_NANKOU || MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -1323,7 +1323,7 @@
 	rank_abbreviation = ""
 
 
-	spawn_location = "JoinLateJPLT"
+	spawn_location = "JoinLateJPCAP"
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_officer = TRUE

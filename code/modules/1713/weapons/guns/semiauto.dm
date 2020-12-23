@@ -311,7 +311,7 @@
 	force = 10
 	throwforce = 20
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	effectiveness_mod = 1.01
+	effectiveness_mod = 0.95
 
 /obj/item/weapon/gun/projectile/semiautomatic/ar15
 	name = "Bushmaster XM-15"

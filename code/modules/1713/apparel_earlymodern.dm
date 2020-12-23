@@ -85,6 +85,9 @@
 	desc = "A cap worn by the Abashiri Head Guard."
 	icon_state = "abashiri_guard_head"
 	item_state = "abashiri_guard_head"
+/obj/item/clothing/head/abashiri_guard/head_guard/warden
+	name = "Abashiri Warden Cap"
+	desc = "A cap worn by the Abashiri Warden."
 /obj/item/clothing/head/abashiri_prisoner
 	name = "Kasa"
 	desc = "A straw hat that obscures inmate's view, as well as their faces."
@@ -267,7 +270,9 @@
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
-
+/obj/item/clothing/suit/storage/coat/japcoat/abashiri
+	name = "Abashiri Guard Coat"
+	desc = "An Abashiri Prison Guard coat."
 /obj/item/clothing/suit/storage/coat/priest
 	name = "priest sleev"
 	desc = "A holy coat worn by a priest."
@@ -540,6 +545,15 @@
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
+/obj/item/weapon/storage/belt/jap/abashiri_guard
+/obj/item/weapon/storage/belt/jap/abashiri_guard/New()
+	..()
+	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/flashlight/flashlight(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard_SS
 /obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
