@@ -41,3 +41,37 @@
 	desc = "A brightly patterned and gaudy hawaiian shirt. It has a green hue"
 	icon_state = "hawaiian_green"
 	item_state = "hawaiian_green"
+
+/obj/item/clothing/suit/gorillasuit
+	name = "full body gorilla outfit"
+	desc = "A lifelike full body gorilla suit-outfit, ideal for costume parties and pranksters."
+	icon_state = "gorilla_suit"
+	item_state = "gorilla_suit"
+	worn_state = "gorilla_suit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS
+	cold_protection = LOWER_TORSO|LEGS|ARMS|FEET
+	var/adjusted = FALSE
+
+/obj/item/clothing/suit/gorillasuit/verb/toggle_hood()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/suit/gorillasuit)
+		return
+	else
+		if (adjusted)
+			item_state = "gorilla_suit"
+			icon_state = "gorilla_suit"
+			worn_state = "gorilla_suit"
+			item_state_slots["slot_w_uniform"] = "gorilla_suit"
+			usr << "<span class = 'danger'>You take down your body suit's hood.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "gorilla_suit_h"
+			icon_state = "gorilla_suit_h"
+			worn_state = "gorilla_suit_h"
+			item_state_slots["slot_w_uniform"] = "gorilla_suit_h"
+			usr << "<span class = 'danger'>You put up your body suit's hood.</span>"
+			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HEAD
+			flags_inv = BLOCKHEADHAIR
+			adjusted = TRUE
+	update_clothing_icon()

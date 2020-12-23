@@ -155,6 +155,7 @@ var/no_loop_o = FALSE
 /////////////////MICROMAHA///////////
 /obj/map_metadata/omaha/micromaha
 	title = "Micro Omaha Beach"
+	ID = MAP_MICROMAHA
 	respawn_delay = 600
 	victory_time = 15000
 	faction_distribution_coeffs = list(GERMAN = 0.4, AMERICAN = 0.6)

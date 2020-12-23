@@ -187,6 +187,14 @@
 	create_path = /mob/living/simple_animal/hostile/panther
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/lion
+	name = "lion spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/hostile/sabertooth/lion
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/fox
 	name = "fox spawner"
 	hostile = TRUE
@@ -277,6 +285,34 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/monkey
 	timer = 3000
+
+/obj/effect/spawner/mobspawner/gorilla
+	name = "gorilla spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/gorilla/gigantopithecus
+	name = "gigantopithecus spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla/gigantopithecus
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/gorilla/gigantopithecus/bigfoot
+	name = "bigfoot spawner"
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla/gigantopithecus/bigfoot
+	timer = 7200
+
+/obj/effect/spawner/mobspawner/gorilla/gigantopithecus/yeti
+	name = "gigantopithecus spawner"
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/gorilla/gigantopithecus/yeti
+	timer = 7200
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
@@ -372,6 +408,21 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/deer/female
 	timer = 3000
+
+/obj/effect/spawner/mobspawner/dikdik_m
+	name = "dik-dik stag spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/deer/dikdik/male
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/dikdik_f
+	name = "dik-dik doe spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/deer/dikdik/female
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/elk_m
 	name = "elk stag spawner"
 	max_number = 2
