@@ -280,7 +280,7 @@
 	else
 		..()
 /obj/covers/stone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		if (I.shiv < 10)
 			I.shiv++
 			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
@@ -448,7 +448,7 @@
 	..()
 
 /obj/covers/marble_wall/plain/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		if (I.shiv < 10)
 			I.shiv++
 			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
@@ -481,7 +481,7 @@
 	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		if (I.shiv < 10)
 			I.shiv++
 			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
@@ -514,7 +514,7 @@
 	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone_smooth_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		if (I.shiv < 10)
 			I.shiv++
 			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")

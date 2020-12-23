@@ -252,7 +252,7 @@
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired
 
 /obj/covers/brick_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		if (I.shiv < 10)
 			I.shiv++
 			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
@@ -287,7 +287,7 @@
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/cement_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork))
+	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		if (I.shiv < 10)
 			I.shiv++
 			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")

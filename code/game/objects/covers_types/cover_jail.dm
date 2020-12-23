@@ -17,7 +17,7 @@
 
 /obj/covers/jail/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if (istype(W,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(W,/obj/item/weapon/material/kitchen/utensil/fork))
+	if (istype(W,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(W,/obj/item/weapon/material/kitchen/utensil/fork) || istype(W,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		var/obj/item/weapon/material/kitchen/utensil/I = W
 		if (I.shiv < 10)
 			I.shiv++

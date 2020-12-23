@@ -69,8 +69,7 @@
 	desc = "It's pair of chopsticks. Wan' sum rice muhda fukka?"
 	icon_state = "chopsticks"
 	material = "wood"
-	color = null
-
+	applies_material_colour = FALSE
 /obj/item/weapon/material/kitchen/utensil/spoon
 	name = "spoon"
 	desc = "It's a spoon. You can see your own upside-down face in it."

@@ -78,7 +78,39 @@
 	icon_state = "ruble" //Damn jerry rig
 	amount = 1
 	value = 1
-
+/obj/item/stack/money/yen
+	name = "yen"
+	desc = "A japanese 1 yen coin."
+	singular_name = "yen"
+	icon_state = "silvercoin_pile" //Damn jerry rig
+	amount = 1
+	value = 0.01
+/obj/item/stack/money/yen/update_icon()
+	if(novariants)
+		return ..()
+	if(amount == 2)
+		icon_state = "yen_2"
+	if(amount == 3)
+		icon_state = "yen_3"
+	if(amount == 4)
+		icon_state = "yen_4"
+	if(amount == 5)
+		icon_state = "yen_5"
+	if(amount == 6)
+		icon_state = "yen_6"
+	if(amount >= 7)
+		icon_state = "yen_7"
+	if(amount >= 10)
+		icon_state = "yen_10"
+	if(amount >= 50)
+		icon_state = "yen_50"
+	if(amount >= 100)
+		icon_state = "yen_100"
+	if(amount == 500)
+		icon_state = "yen_500"
+	if(amount > 500)
+		icon_state = "yen_500+"
+	..()
 /obj/item/stack/money/dollar
 	name = "spanish dollars"
 	desc = "A silver coin, also called piece of eight, worth 8 reales."
