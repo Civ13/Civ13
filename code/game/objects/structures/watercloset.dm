@@ -974,7 +974,7 @@
 				mosquito_proc()
 
 	spawn(2000)
-		if (map.chad_mode)
+		if (map.chad_mode && map.ID != MAP_NOMADS_AFRICA)
 			mosquito_limit = 1
 			mosquito_proc()
 
