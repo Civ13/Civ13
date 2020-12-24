@@ -85,6 +85,7 @@
 	icon_state = "yen" //Damn jerry rig
 	amount = 1
 	value = 0.01
+	max_amount = 2500
 /obj/item/stack/money/yen/New()
 	if(amount == 2)
 		icon_state = "yen_2"

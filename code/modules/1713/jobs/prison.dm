@@ -677,7 +677,7 @@
 
 /datum/job/japanese/abashiri/guard/head
 	title = "Abashiri Shocho Keimu-kan"
-	en_meaning = "Abashiri Warden"
+	en_meaning = "Abashiri Head Guard"
 	rank_abbreviation = "Sho."
 
 	is_abashiri = TRUE
