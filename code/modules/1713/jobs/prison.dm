@@ -253,14 +253,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri_prisoner(H), slot_w_uniform)
-//head
-	if (prob(30))
-		if (prob(50))
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_prisoner(H), slot_head)
-		else
-			return
-	if (nationality == "Ainu")
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_wear_id)
 	var/obj/item/stack/money/yen/RUB = new /obj/item/stack/money/yen(H)
 	RUB.amount = 50
@@ -270,6 +262,12 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank(H), slot_r_store)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank/glass(H), slot_r_store)
+//head
+	if (prob(30))
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_prisoner(H), slot_head)
+	if (nationality == "Ainu")
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -354,6 +352,9 @@
 		switch(randpick)
 			if (1)
 				if (PJ.nationality == "none")
+					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
+					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
 					add_language("Russian", TRUE)
 					add_note("Known Languages", "Russian")
 					remove_language("English")
@@ -361,13 +362,14 @@
 					real_name = name
 					add_note("Group", "You are a Russian prisoner. You are part of the <b>Russian</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "Russian"
-					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
-					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
 
 			if (2)
 				if (PJ.nationality == "none")
-					set_default_language("Ainu")
+					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
+					PJ.original_facial = PJ.original_hair
+					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard", "Hipster Beard")
+					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
 					add_language("Ainu", TRUE)
 					add_note("Known Languages", "Japanese")
 					remove_language("English")
@@ -375,14 +377,14 @@
 					real_name = name
 					add_note("Group", "You are an Ainu Prisoner. You are part of the <b>Ainu</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "Ainu"
-					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
-					PJ.original_facial = PJ.original_hair
-					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard", "Hipster Beard")
-					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
 
 			if (3)
 				if (PJ.nationality == "none")
+					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
+					PJ.original_facial = PJ.original_hair
+					h_style = pick("Bald","Short Hair","Cut Hair","Skinhead")
+					f_style = pick("Shaved","Chinstrap","Medium Beard", "Hipster Beard")
+					PJ.original_eyes = pick("Black","Dark Brown")
 					add_language("Japanese", TRUE)
 					add_note("Known Languages", "Japanese")
 					remove_language("English")
@@ -390,11 +392,6 @@
 					real_name = name
 					add_note("Group", "You are a Japanese Prisoner. You are part of the <b>Japanese</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "Japanese"
-					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
-					PJ.original_facial = PJ.original_hair
-					h_style = pick("Bald","Short Hair","Cut Hair","Skinhead")
-					f_style = pick("Shaved","Chinstrap","Medium Beard", "Hipster Beard")
-					PJ.original_eyes = pick("Black","Dark Brown")
 		var/hex_hair = hair_colors[PJ.original_hair]
 		var/red = hex2num(copytext(hex_hair, 2, 4))
 		var/green = hex2num(copytext(hex_hair, 4, 6))
@@ -564,51 +561,65 @@
 /datum/job/civilian/abashiri/prisoner/wing1
 	title = "Wing1 Prisoner"
 	en_meaning = ""
+
+
 	spawn_location = "JoinLateCivB"
 	is_abashiri = TRUE
+
 	min_positions = 10
 	max_positions = 10
 	equip(var/mob/living/human/H)
 		..()
 		randrole = "Wing 1"
 		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
-
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing1(H), slot_wear_suit)
 /datum/job/civilian/abashiri/prisoner/wing2
 	title = "Wing2 Prisoner"
 	en_meaning = ""
+
+
 	spawn_location = "JoinLateCivC"
 	is_abashiri = TRUE
+
 	min_positions = 10
 	max_positions = 10
 	equip(var/mob/living/human/H)
 		..()
 		randrole = "Wing 2"
 		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
-
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing2(H), slot_wear_suit)
 /datum/job/civilian/abashiri/prisoner/wing3
 	title = "Wing3 Prisoner"
 	en_meaning = ""
+
+
 	spawn_location = "JoinLateCivA"
+
 	min_positions = 8
 	max_positions = 8
 	equip(var/mob/living/human/H)
 		..()
 		randrole = "Wing 3"
 		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
-
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3(H), slot_wear_suit)
 /datum/job/civilian/abashiri/prisoner/wing3_danger
 	title = "Maximum Security Inmate"
 	en_meaning = ""
+
+
 	spawn_location = "JoinLateCiv"
 	is_abashiri = TRUE
+
+
 	min_positions = 2
 	max_positions = 2
 	equip(var/mob/living/human/H)
 		..()
 		randrole = "Wing 3"
 		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
-		H.setStat("strength", STAT_VERY_HIGH)
+		H.setStat("strength", STAT_VERY_VERY_HIGH)
 		H.setStat("dexterity", STAT_VERY_HIGH)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3(H), slot_wear_suit)
 ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////ABASHIRI///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
