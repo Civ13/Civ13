@@ -95,6 +95,35 @@
 	item_state = "abashiri_kasa"
 	flags_inv = BLOCKHAIR|HIDEFACE
 	restricts_view = 2
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit."
+	icon_state = "haori_jacket"
+	item_state = "haori_jacket"
+	worn_state = "haori_jacket"
+	body_parts_covered = UPPER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 75
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing1
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit. This one is designated with Wing1 on its back."
+	icon_state = "haori_jacket1"
+	item_state = "haori_jacket1"
+	worn_state = "haori_jacket1"
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing2
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit. This one is designated with Wing 2 on its back."
+	icon_state = "haori_jacket2"
+	item_state = "haori_jacket2"
+	worn_state = "haori_jacket2"
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit. This one is designated with Wing 3 on its back."
+	icon_state = "haori_jacket3"
+	item_state = "haori_jacket3"
+	worn_state = "haori_jacket3"
+
 ////////////////////////////////////////////RUSSO-JAP///////////////////////////////////////////////
 /obj/item/clothing/under/japuni
 	name = "Japanese Army Uniform"

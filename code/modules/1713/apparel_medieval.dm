@@ -1814,7 +1814,9 @@
 	cuffs.loc = src
 	chained = cuffs
 	slowdown = 15
-	icon_state = "geta"
+	icon_state = "geta1"
+	worn_state = "geta1"
+	update_icon()
 
 /obj/item/clothing/shoes/geta/proc/remove_cuffs(mob/user as mob)
 	if (!chained) return
@@ -1824,7 +1826,9 @@
 
 	slowdown = initial(slowdown)
 	icon_state = "geta"
+	worn_state = "geta"
 	chained = null
+	update_icon()
 
 /obj/item/clothing/shoes/geta/attack_self(mob/user as mob)
 	..()

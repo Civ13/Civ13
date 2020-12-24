@@ -133,7 +133,7 @@
 						i[3]+=4
 					else if (i[1]!="Guards")
 						i[3]+=2
-			for(var/obj/item/stack/money/rubles/R in H)
+			for(var/obj/item/stack/money/yen/R in H)
 				curval += R.amount
 			if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/storage))
 				var/obj/item/clothing/suit/storage/ST = H.wear_suit
