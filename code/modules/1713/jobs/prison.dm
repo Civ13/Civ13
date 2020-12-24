@@ -346,7 +346,7 @@
 		f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
 		update_body()
 ///////////////////////////////////////ABASHIRI/////////////////////////////////////////////////////////////////////////////////////////////
-	if (istype(original_job, /datum/job/civilian/abashiri/prisoner))
+	else if (istype(original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))
 		var/datum/job/civilian/abashiri/prisoner/PJ = original_job
 		var/randpick = rand(1,3)
 		switch(randpick)
