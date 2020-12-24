@@ -349,7 +349,7 @@
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
 			M << "<span class='notice'>Your mind feels stable... a little stable.</span>"
-	M.mood += removed*20
+	M.mood += removed*40
 
 /datum/reagent/paroxetine
 	name = "Paroxetine"

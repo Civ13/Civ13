@@ -414,6 +414,7 @@
 
 /obj/structure/simple_door/key_door/custom/jail/woodjail/abashiri/New(var/newloc,var/material_name)
 	..(newloc, "wood")
+	icon = 'icons/obj/doors/material_doors_leonister.dmi'
 	basic_icon = "abashiricell"
 	icon_state = "abashiricell"
 
