@@ -351,7 +351,7 @@
 		var/randpick = rand(1,3)
 		switch(randpick)
 			if (1)
-				if (PJ.nationality == "none")
+				if (PJ.nationality)
 					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
 					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
 					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
@@ -364,7 +364,7 @@
 					PJ.nationality = "Russian"
 
 			if (2)
-				if (PJ.nationality == "none")
+				if (PJ.nationality)
 					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
 					PJ.original_facial = PJ.original_hair
 					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
@@ -379,7 +379,7 @@
 					PJ.nationality = "Ainu"
 
 			if (3)
-				if (PJ.nationality == "none")
+				if (PJ.nationality)
 					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
 					PJ.original_facial = PJ.original_hair
 					h_style = pick("Bald","Short Hair","Cut Hair","Skinhead")
