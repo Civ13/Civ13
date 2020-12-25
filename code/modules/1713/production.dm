@@ -399,6 +399,8 @@
 		/obj/item/stack/ore,
 		/obj/item/stack/material/stone,
 		/obj/item/stack/material/sandstone,
+		/obj/item/stack/material/obsidian,
+		/obj/item/stack/material/marble,
 		)
 	flammable = TRUE
 
@@ -918,12 +920,6 @@
 		compost()
 		qdel(W)
 		return
-	else if (istype(W, /obj/item/weapon/leaves))
-		current+=0.25
-		H << "You place \the [W] in \the [src], composting it."
-		compost()
-		qdel(W)
-		return
 	else if (istype(W, /obj/item/stack/farming/seeds))
 		if (current >= max)
 			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
@@ -933,7 +929,7 @@
 			H << "You place \the [W] in \the [src], composting it."
 			compost()
 			qdel(W)
-	else if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca))
+	else if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca) || istype(W, /obj/item/stack/material/leaf))
 		if (current >= max)
 			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
 			return
