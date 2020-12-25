@@ -260,7 +260,7 @@ var/list/name_to_material
 
 /material/hemp
 	name = "hemp"
-	icon_colour = "#FFFFFE"
+	icon_colour = "#32cd32" //lime green
 	hardness = 10
 	cut_delay = 5
 	shard_type = null
@@ -272,7 +272,7 @@ var/list/name_to_material
 
 /material/flax
 	name = "flax"
-	icon_colour = "#5f9ea0"
+	icon_colour = "#5f9ea0" //desaturated dark cyan.
 	hardness = 10
 	cut_delay = 5
 	shard_type = null
@@ -282,6 +282,28 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/flax
 	flags = MATERIAL_UNMELTABLE
 
+/material/leaf
+	name = "leaf"
+	icon_colour = "#556b2f" // dark olive-green
+	hardness = 10
+	cut_delay = 5
+	shard_type = null
+	tableslam_noise = null
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+	stack_type = /obj/item/stack/material/leaf
+	flags = MATERIAL_UNMELTABLE
+
+/material/leaf/palm
+	name = "palm"
+	icon_colour = "#adff2f" //green yellow
+	stack_type = /obj/item/stack/material/leaf/palm
+
+/material/leaf/fern
+	name = "fern"
+	icon_colour = "#006400" //dark green
+	stack_type = /obj/item/stack/material/leaf/fern
+
 /material/coca
 	name = "coca"
 	icon_colour = "#faeff1"
@@ -289,7 +311,7 @@ var/list/name_to_material
 	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	sheet_singular_name = "leave"
+	sheet_singular_name = "leaf"
 	sheet_plural_name = "leaves"
 	stack_type = /obj/item/stack/material/coca
 	flags = MATERIAL_UNMELTABLE
