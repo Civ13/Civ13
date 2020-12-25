@@ -60,7 +60,7 @@
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/weapon/leaves))
+			else if (istype(I, /obj/item/stack/material/leaf))
 				fuel += I.amount+0.5
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
@@ -206,7 +206,7 @@
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/weapon/leaves))
+			else if (istype(I, /obj/item/stack/material/leaf))
 				fuel += I.amount+0.5
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
@@ -312,7 +312,7 @@
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/weapon/leaves))
+			else if (istype(I, /obj/item/stack/material/leaf))
 				fuel += I.amount+0.5
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
