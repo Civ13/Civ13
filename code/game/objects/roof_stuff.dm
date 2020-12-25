@@ -98,7 +98,7 @@
 
 /obj/roof/thatch
 	name = "thatch roof"
-	desc = "A tatch roof."
+	desc = "A thatch roof."
 	overlay_state = "thatch"
 	icon_state = "thatch_dm"
 
