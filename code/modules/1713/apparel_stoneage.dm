@@ -152,7 +152,7 @@
 
 /obj/item/clothing/accessory/armband/indian2
 	name = "indian accessories"
-	desc = "Gold indian necklaces."
+	desc = "gold indian necklaces."
 	icon_state = "indian2"
 	item_state = "indian2"
 
@@ -259,14 +259,13 @@
 	item_state = "woodenmask"
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 15, arrow = 10, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
+	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/mask/wooden/expressive
 	name = "expressive wooden mask"
 	desc = "A tribal wooden mask. This one has a grin transfixed on its face"
 	icon_state = "bumba"
 	item_state = "bumba"
-	body_parts_covered = FACE|EYES
-	armor = list(melee = 15, arrow = 10, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
 
 /* Zulu*/
 
@@ -290,6 +289,56 @@
 	icon_state = "zulu_umghele"
 	item_state = "zulu_umghele"
 	worn_state = "zulu_umghele"
+
+/* Pygmy */
+
+/obj/item/clothing/under/indianchief/pygmy
+	name = "pygmy chief clothing"
+	desc = "An elaborate wrap of leather cloth, worn by tribal chiefs."
+	icon_state = "indianchef"
+	item_state = "indianchef"
+	worn_state = "indiancgef"
+
+/obj/item/clothing/under/indianshaman/pygmy
+	name = "pygmy shaman clothing"
+	desc = "A white cloth, worn around the waist, painted with religious symbols."
+	icon_state = "indianshaman"
+	item_state = "indianshaman"
+	worn_state = "indianshaman"
+
+/obj/item/clothing/accessory/armband/indian2/pygmy
+	name = "indian accessories"
+	desc = "gold indian necklaces."
+	icon_state = "indian2"
+	item_state = "indian2"
+
+/obj/item/clothing/head/leaves
+	name = "leaf head covering"
+	desc = "A simple batch of leaves dampened down as rudimentary headwear."
+	icon_state = "leaf_hat"
+	item_state = "leaf_hat"
+	worn_state = "leaf_hat"
+
+/obj/item/clothing/head/leaves/crown
+	name = "leaf crown"
+	desc = "A crown assembled out of leaves, fastened with a leather strap."
+	icon_state = "leaf_crown"
+	item_state = "leaf_crown"
+	worn_state = "leaf_crown"
+
+/obj/item/clothing/head/leaves/star_platinum // jojo meme
+	name = "star platinum headband"
+	desc = "A spiritually infused headband that lets your hair flow wildly in the wind, you feel as if you could punch endlessly."
+	icon_state = "star_platinum"
+	item_state = "star_platinum"
+	worn_state = "star_platinum"
+
+/obj/item/clothing/mask/wooden/african
+	name = "black african wooden mask"
+	desc = "A african tribal wooden mask. Often used for ceremonial purposes"
+	icon_state = "african1"
+	item_state = "african1"
+	flags_inv = BLOCKHAIR|BLOCKHEADHAIR
 
 /* Miscallaneous*/
 
@@ -379,3 +428,15 @@
 	new /obj/item/ammo_casing/bolt/iron(src)
 	new /obj/item/ammo_casing/bolt/iron(src)
 	new /obj/item/ammo_casing/bolt/iron(src)
+
+/obj/item/clothing/under/leaves_skirt/au_naturel
+	name = "au naturel leaf covering"
+	desc = "leaves arranged on the body to preserve modesty"
+	icon_state = "adam"
+	item_state = "adam"
+	worn_state = "adam"
+
+/obj/item/clothing/under/leaves_skirt/au_naturel/eve
+	icon_state = "eve"
+	item_state = "eve"
+	worn_state = "eve"
