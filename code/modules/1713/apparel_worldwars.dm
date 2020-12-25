@@ -289,7 +289,7 @@
 
 /obj/item/clothing/head/helmet/ww/mk2brodieog/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww/mk2brodiegnet(user.loc)
@@ -298,7 +298,7 @@
 
 /obj/item/clothing/head/helmet/ww/mk2brodiegnet/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww/mk2brodiegreennetf(user.loc)
@@ -307,7 +307,7 @@
 
 /obj/item/clothing/head/helmet/ww/mk2brodietnet/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww/mk2brodietannetf(user.loc)
@@ -1919,7 +1919,7 @@ obj/item/clothing/head/ww2/chicap2
 
 /obj/item/clothing/head/helmet/ww2/usgreennet/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww2/usm1camogreen(user.loc)
