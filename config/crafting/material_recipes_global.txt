@@ -5,6 +5,15 @@
 //**| Search "index", in find command to jump back to the top |********************************************************************
 //**| Index was made by @FantasticFwoosh, ping me if there's a problem other than the list content, unless caused by this index |**
 
+//**| LEAVES |**| LEAF CLOTHING |**
+//*********************************
+
+//**| PALM LEAVES |**| PALM LEAVES CLOTHING |**
+//*********************************************
+
+//**| FERN LEAVES |**| FERN LEAVES CLOTHING |**
+//*********************************************
+
 //**| CLAY |**| CLAY ROOFING |**| CLAY KITCHEN OBJECTS |**| CLAY BUILDING MATERIALS, FLOORS & STRUCTURES |**| CLAY STUCCO |**| CLAY PLANT POTS |**
 //************************************************************************************************************************************************
 
@@ -154,6 +163,47 @@
 //**********************************************************************************************************************************************************************************************
 
 //**|OBSIDIAN|**|OBSIDIAN CONSTRUCTIONS|**
+
+//*************************************************************
+//*********************| LEAVES |******************************
+//*************************************************************
+
+RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+
+//*****************| LEAVES CLOTHING |**************************
+
+RECIPE: /material/leaf/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,0,leaf
+
+RECIPE: /material/leaf/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,leaf
+RECIPE: /material/leaf/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,gold
+
+RECIPE: /material/leaf/,imitation laurel crown,/obj/item/clothing/head/laurelcrown,8,150,0,1,none,0,0,82,8,leaf
+
+RECIPE: /material/leaf/,masculine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel,2,20,0,1,none,0,0,0,2,leaf
+RECIPE: /material/leaf/,feminine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel/eve,2,20,0,1,none,0,0,0,2,leaf
+
+//*********************| PALM LEAVES |******************************
+
+RECIPE: /material/leaf/palm/,palm leaf roofing,/obj/item/weapon/roofbuilder/palm,1,45,0,1,none,0,0,0,8,null
+
+//*****************| PALM LEAVES CLOTHING |**************************
+
+RECIPE: /material/leaf/palm/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,2,leather
+
+RECIPE: /material/leaf/palm/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,2,palm
+RECIPE: /material/leaf/palm/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,2,palm
+
+//*********************| FERN LEAVES |******************************
+
+RECIPE: material/leaves/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+
+//*****************| FERN LEAVES CLOTHING |**************************
+
+RECIPE: /material/leaf/fern/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,2,fern
+RECIPE: /material/leaf/fern/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,2,leather
+
+RECIPE: /material/leaf/fern/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,2,fern
+RECIPE: /material/leaf/fern/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,2,fern
 
 //*************************************************************
 //*********************| CLAY |********************************
@@ -1598,7 +1648,6 @@ RECIPE: /material/gold/,large gold double doors,/obj/structure/simple_door/key_d
 //*****************| GOLD CLOTHING & ACCESSORIES |***************************
 
 RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,25,0,0,8,null
-RECIPE: /material/gold/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,2,110,0,1,none,25,0,0,8,null
 RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold watch,/obj/item/clothing/gloves/watch/goldwatch,6,200,0,1,none,110,60,0,8,null
 
@@ -2068,6 +2117,7 @@ RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoe
 
 RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
+RECIPE: /material/wood/,black african wood mask,/obj/item/clothing/mask/wooden/african,3,50,0,1,shoes & clothing,0,0,0,2,null
 
 //*********************| WOOD ARMOR |**************************
 
