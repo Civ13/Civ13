@@ -29,7 +29,7 @@
 			var/list/impturfs = splittext(tmpturfs, "\n")
 			for (var/i in impturfs)
 				var/list/impturfs2 = splittext(i, ";")
-				if (impturfs2[1] == "TURF")
+				if (impturfs2.len && impturfs2[1] == "TURF")
 					var/resultp = text2path(impturfs2[5])
 					world.log << "[impturfs2[5]]"
 					var/turf/T
