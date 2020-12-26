@@ -1,4 +1,4 @@
-//************| MATERIAL_RECIPIES_PYGMY GENERAL INDEX |**********************************************************************************
+//************| MATERIAL_RECIPIES_GORILLA GENERAL INDEX |**************************************************************************
 //********| Follow the lines to find subcategories |*******************************************************************************
 //**| Using 'find' command in the 'edit' menu is recommended |*********************************************************************
 //**| No two subtitles will be the same other than in index, and single titles are easy to locate |********************************
@@ -170,42 +170,46 @@
 
 RECIPE: /material/leaves/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
 
+RECIPE: /material/leaves/,leaf salad,/obj/item/weapon/reagent_containers/food/snacks/leaf_salad,6,40,0,1,none,0,0,0,8,null
+
 //*****************| LEAVES CLOTHING |**************************
 
-RECIPE: /material/leaves/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,3,leaf
+RECIPE: /material/leaves/,daubed leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,8,null
 
-//RECIPE: /material/leaves/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,leaf
-//RECIPE: /material/leaves/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,gold
+//RECIPE: /material/leaves/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,null
+//RECIPE: /material/leaves/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,null
 
-//RECIPE: /material/leaves/,imitation laurel crown,/obj/item/clothing/head/laurelcrown,8,150,0,1,none,0,0,82,8,leaf
+//RECIPE: /material/leaves/,imitation laurel crown,/obj/item/clothing/head/laurelcrown,8,150,0,1,none,0,0,82,8,null
 
-RECIPE: /material/leaves/,masculine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel,2,20,0,1,none,0,0,0,3,leaf
-RECIPE: /material/leaves/,feminine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel/eve,2,20,0,1,none,0,0,0,3,leaf
+RECIPE: /material/leaves/,masculine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel,2,20,0,1,none,0,0,0,8,null
+RECIPE: /material/leaves/,feminine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel/eve,2,20,0,1,none,0,0,0,8,null
 
 //*********************| PALM LEAVES |******************************
 
 RECIPE: /material/leaves/palm/,palm leaf roofing,/obj/item/weapon/roofbuilder/palm,1,45,0,1,none,0,0,0,8,null
 
+RECIPE: /material/leaves/palm/,leaf salad,/obj/item/weapon/reagent_containers/food/snacks/leaf_salad,6,40,0,1,none,0,0,0,8,null
+
 //*****************| PALM LEAVES CLOTHING |**************************
 
-RECIPE: /material/leaves/palm/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,3,leather
-RECIPE: /material/leaves/palm/,ceremonial leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,10,8,leather
+RECIPE: /material/leaves/palm/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,8,null
 
-RECIPE: /material/leaves/palm/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,palm
-RECIPE: /material/leaves/palm/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,palm
+RECIPE: /material/leaves/palm/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,8,null
+RECIPE: /material/leaves/palm/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,8,null
 
 //*********************| FERN LEAVES |******************************
 
-RECIPE: material/leaves/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+RECIPE: /material/leaves/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+
+RECIPE: /material/leaves/fern/,leaf salad,/obj/item/weapon/reagent_containers/food/snacks/leaf_salad,6,40,0,1,none,0,0,0,8,null
 
 //*****************| FERN LEAVES CLOTHING |**************************
 
-RECIPE: /material/leaves/fern/,daubed leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,3,fern
-RECIPE: /material/leaves/fern/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,3,leather
-RECIPE: /material/leaves/palm/,ceremonial leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,102,8,leather
+RECIPE: /material/leaves/fern/,daubed leaf head covering,/obj/item/clothing/head/gatorpelt,3,60,0,1,none,0,0,0,8,null
+RECIPE: /material/leaves/fern/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,8,null
 
-RECIPE: /material/leaves/fern/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,fern
-RECIPE: /material/leaves/fern/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,fern
+RECIPE: /material/leaves/fern/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,8,null
+RECIPE: /material/leaves/fern/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,8,null
 
 //*************************************************************
 //*********************| CLAY |********************************
@@ -265,8 +269,8 @@ RECIPE: /material/clay/,unfired blacksmith clay jug,/obj/item/weapon/clay/mold/c
 
 //*****************| CLAY PLANT POTS |***************************
 
-//RECIPE: /material/clay/,light clay plant pot,/obj/structure/plant_pot/clay/light,4,25,1,1,plant pots & decoration,18,0,0,8,null
-//RECIPE: /material/clay/,medium sized yellow clay planter,/obj/structure/plant_pot/medium_planter/clay/yellow,4,25,1,1,plant pots & decoration,18,0,0,8,null
+RECIPE: /material/clay/,light clay plant pot,/obj/structure/plant_pot/clay/light,4,25,1,1,plant pots & decoration,18,0,0,8,null
+RECIPE: /material/clay/,medium sized yellow clay planter,/obj/structure/plant_pot/medium_planter/clay/yellow,4,25,1,1,plant pots & decoration,18,0,0,8,null
 
 //**************************************************************
 //*********************| LEATHER |******************************
@@ -309,19 +313,17 @@ RECIPE: /material/leather/,leather bandages,/obj/item/stack/medical/bruise_pack/
 //*****************| LEATHER UNIFORMS & JACKETS |***************************
 
 RECIPE: /material/leather/,leather loincloth,/obj/item/clothing/under/loinleather,2,50,0,1,clothing,0,0,0,3,null
-//RECIPE: /material/leather/,aztec loincloth,/obj/item/clothing/under/aztec_loincloth,2,50,0,1,clothing,0,0,0,3,null
+RECIPE: /material/leather/,aztec loincloth,/obj/item/clothing/under/aztec_loincloth,2,50,0,1,clothing,0,0,0,3,null
 RECIPE: /material/leather/,small customizable loincloth,/obj/item/clothing/under/custom/spartan,3,50,0,1,clothing,0,0,0,3,null
 //RECIPE: /material/leather/,long celtic braccae,/obj/item/clothing/under/celtic_long_braccae,3,55,0,1,clothing,0,19,0,1,null
 //RECIPE: /material/leather/,short celtic braccae,/obj/item/clothing/under/celtic_short_braccae,2,55,0,1,clothing,0,19,0,1,null
 
-RECIPE: /material/leather/,short leather loincloth,/obj/item/clothing/under/indian1,3,50,0,1,clothing,0,0,0,3,null
-RECIPE: /material/leather/,long leather loincloth,/obj/item/clothing/under/indian2,3,50,0,1,clothing,0,0,0,3,null
-RECIPE: /material/leather/,covering leather loincloth,/obj/item/clothing/under/indian3,3,50,0,1,clothing,0,0,0,3,null
-RECIPE: /material/leather/,ceremonial pygmy leather loincloth,/obj/item/clothing/under/indian3,3,50,0,1,clothing,0,0,0,3,null
+RECIPE: /material/leather/,short leather loincloth,/obj/item/clothing/under/indian1,3,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,long leather loincloth,/obj/item/clothing/under/indian2,3,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,covering leather loincloth,/obj/item/clothing/under/indian3,3,50,0,1,clothing,0,0,0,8,null
 
-RECIPE: /material/leather/,pygmy chief clothing,/obj/item/clothing/under/indianchief/pygmy,5,50,0,1,clothing,0,0,0,3,null
-RECIPE: /material/leather/,big leopard pelt,/obj/item/clothing/under/pygmyhuge,8,100,0,1,clothing,0,0,0,3,null
-RECIPE: /material/leather/,ceremonial pygmy chief clothing,/obj/item/clothing/under/indianchief/pygmy,5,50,0,1,clothing,0,0,102,8,null
+RECIPE: /material/leather/,pygmy chief clothing,/obj/item/clothing/under/indianchief/pygmy,5,50,0,1,clothing,0,0,0,8,null
+RECIPE: /material/leather/,big leopard pelt,/obj/item/clothing/under/pygmyhuge,8,100,0,1,clothing,0,0,0,8,null
 
 RECIPE: /material/leather/,leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat1,6,120,0,1,jackets & vests,0,0,102,8,null
 RECIPE: /material/leather/,black leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,0,1,jackets & vests,0,0,102,8,null
@@ -338,7 +340,7 @@ RECIPE: /material/leather/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,
 //*****************| LEATHER SHOES |***************************
 
 //RECIPE: /material/leather/,roman-style sandals,/obj/item/clothing/shoes/roman,2,60,0,1,foot wear,0,19,0,1,null
-//RECIPE: /material/leather/,aztec-style sandals,/obj/item/clothing/shoes/aztec_sandals,2,60,0,1,foot wear,0,19,0,3,null
+RECIPE: /material/leather/,aztec-style sandals,/obj/item/clothing/shoes/aztec_sandals,2,60,0,1,foot wear,0,19,0,3,null
 //RECIPE: /material/leather/,medieval shoes,/obj/item/clothing/shoes/medieval,3,80,0,1,foot wear,0,39,0,2,null
 //RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
 //RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
@@ -780,10 +782,10 @@ RECIPE: /material/cloth/,sterile mask,/obj/item/clothing/mask/sterile,2,130,0,1,
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,3,null
 RECIPE: /material/cloth/,pygmy shaman clothing,/obj/item/clothing/under/indianshaman/pygmy,4,100,0,1,clothing,0,0,0,3,null
-//RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,6,3,null
+RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,6,3,null
 RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,12,8,null
-//RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,0,0,18,4,null
-//RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,0,0,18,4,null
+RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,0,0,18,4,null
+RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,0,0,18,4,null
 //RECIPE: /material/cloth/,white kimono,/obj/item/clothing/under/kimono,4,85,0,1,clothing,0,0,18,8,null
 //RECIPE: /material/cloth/,customizable long tunic,/obj/item/clothing/under/custom/roman,4,85,0,1,clothing,0,0,18,8,null
 //RECIPE: /material/cloth/,customizable toga,/obj/item/clothing/under/custom/toga,3,65,0,1,clothing,0,0,18,2,null
@@ -1089,15 +1091,15 @@ RECIPE: /material/catpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,
 
 RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pantherpelt,3,150,0,1,none,0,0,0,8,null
 
-RECIPE: /material/pantherpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
-RECIPE: /material/pantherpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
+RECIPE: /material/pantherpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,8,null
+RECIPE: /material/pantherpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,8,null
 
 //*****************| LIONPELT |***************************
 
 RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt,3,150,0,1,none,0,0,0,8,null
 
-RECIPE: /material/lionpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
-RECIPE: /material/lionpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
+RECIPE: /material/lionpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,8,null
+RECIPE: /material/lionpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,8,null
 
 //***************************************************************
 //*********************| LIZARDPELT |***************************
@@ -1284,9 +1286,9 @@ RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,
 RECIPE: /material/stone/,stone ionic column,/obj/structure/mine_support/stone/ionic/rock,2.5,130,1,1,construction,102,0,0,8,null
 RECIPE: /material/stone/,stone solomonic column,/obj/structure/mine_support/stone/solomonic/rock,2.5,130,1,1,construction,102,0,0,8,null
 RECIPE: /material/stone/,stone thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/rock,2.5,130,1,1,construction,102,0,0,8,null
-//RECIPE: /material/stone/,aztec column,/obj/structure/mine_support/stone/aztec,2.5,130,1,1,construction,32,0,0,8,null
+RECIPE: /material/stone/,aztec column,/obj/structure/mine_support/stone/aztec,2.5,130,1,1,construction,32,0,0,8,null
 
-//RECIPE: /material/stone/,mayan roof builder,/obj/item/weapon/roofbuilder/mayan,1,20,0,1,construction,0,0,0,3,null
+RECIPE: /material/stone/,mayan roof builder,/obj/item/weapon/roofbuilder/mayan,1,20,0,1,construction,0,0,0,3,null
 
 //*************| STONE RESEARCH & TOOLS |***************
 
@@ -1313,13 +1315,13 @@ RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,co
 RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
 
 RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,religious & decoration,0,0,0,8,null
-//RECIPE: /material/stone/,aztec statue,/obj/structure/religious/aztec_statue,8,140,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,aztec statue,/obj/structure/religious/aztec_statue,8,140,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,large stone head,/obj/structure/religious/olmec_head,12,190,1,1,religious & decoration,0,0,0,8,null
-//RECIPE: /material/stone/,moai,/obj/structure/religious/moai,20,250,1,1,religious & decoration,0,0,0,8,null
-//RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,moai,/obj/structure/religious/moai,20,250,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,26,0,0,8,null
-//RECIPE: /material/stone/,gargoyle statue,/obj/structure/religious/gargoyle,12,190,1,1,religious & decoration,32,0,0,8,null
-//RECIPE: /material/stone/,angel statue,/obj/structure/religious/angel,12,190,1,1,religious & decoration,32,0,0,8,null
+RECIPE: /material/stone/,gargoyle statue,/obj/structure/religious/gargoyle,12,190,1,1,religious & decoration,102,0,0,8,null
+RECIPE: /material/stone/,angel statue,/obj/structure/religious/angel,12,190,1,1,religious & decoration,102,0,0,8,null
 
 //*************| STONE MONUMENTS |***************
 
@@ -1373,7 +1375,7 @@ RECIPE: /material/stonebrick/,stone brick archway,/obj/covers/stone_wall/brick/a
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,8,null
 //RECIPE: /material/stone/,roman stone wall,/obj/covers/stone_wall/roman,6,70,1,1,construction,28,0,0,2,null
-//RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,2,null
+RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,3,null
 //RECIPE: /material/stone/,fortress wall,/obj/covers/stone_wall/fortress,8,190,1,1,construction,45,35,0,3,null
 RECIPE: /material/stone/,tiled white brick wall,/obj/covers/stone_wall/roman/modern,6,70,1,1,construction,115,0,0,8,null
 
@@ -1414,7 +1416,7 @@ RECIPE: /material/marble/,marble pillar,/obj/structure/mine_support/stone/marble
 RECIPE: /material/marble/,ionic column,/obj/structure/mine_support/stone/ionic,2.5,130,1,1,construction,102,0,0,8,null
 RECIPE: /material/marble/,solomonic column,/obj/structure/mine_support/stone/solomonic,2.5,130,1,1,construction,102,0,0,8,null
 RECIPE: /material/marble/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick,2.5,130,1,1,construction,102,0,0,8,null
-//RECIPE: /material/marble/,marble aztec column,/obj/structure/mine_support/stone/aztec/marble,2.5,130,1,1,construction,32,0,0,8,null
+RECIPE: /material/marble/,marble aztec column,/obj/structure/mine_support/stone/aztec/marble,2.5,130,1,1,construction,32,0,0,8,null
 
 //*************| MARBLE RESEARCH |***************
 
@@ -2050,11 +2052,11 @@ RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,6,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,8,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,2,wood
-//RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null
+RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0,1,weapons,0,95,0,8,null
 
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,3,null
-//RECIPE: /material/wood/,chimalli,/obj/item/weapon/shield/chimalli,6,180,0,1,weapons,0,19,0,3,null
+RECIPE: /material/wood/,chimalli,/obj/item/weapon/shield/chimalli,6,180,0,1,weapons,0,19,0,3,null
 
 RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,2,null
 RECIPE: /material/wood/,shortbow,/obj/item/weapon/gun/projectile/bow/shortbow,8,140,0,1,weapons,0,30,0,7,null
@@ -2171,8 +2173,8 @@ RECIPE: /material/wood/,violin,/obj/item/violin,10,135,0,1,entertainment & other
 RECIPE: /material/wood/,research kit,/obj/item/weapon/researchkit,10,190,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,scientific literature,/obj/item/weapon/book/research,4,110,0,1,paper & printing,0,0,0,8,null
 
-RECIPE: /material/wood/,language book,/obj/item/weapon/book/language_book,10,160,0,1,paper & printing,102,102,102,8,null
-RECIPE: /material/wood/,holy book,/obj/item/weapon/book/holybook,15,240,1,1,paper & printing,102,102,102,8,null
+RECIPE: /material/wood/,language book,/obj/item/weapon/book/language_book,10,160,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/,holy book,/obj/item/weapon/book/holybook,15,240,1,1,paper & printing,0,0,0,8,null
 
 RECIPE: /material/wood/,visa (empty),/obj/item/weapon/visa,1,40,0,1,paper & printing,102,0,0,8,null
 RECIPE: /material/wood/,passport,/obj/item/clothing/accessory/storage/passport,3,150,0,1,paper & printing,102,0,0,8,null
@@ -2269,7 +2271,7 @@ RECIPE: /material/bamboo/,scientific literature,/obj/item/weapon/book/research,4
 
 //*********************| BAMBOO CLOTHING |**************************
 
-//RECIPE: /material/bamboo/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,none,0,0,38,8,null
+RECIPE: /material/bamboo/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,none,0,0,102,8,null
 
 //*********************| BAMBOO WEAPONS |**************************
 
@@ -2455,7 +2457,7 @@ RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone/sandstone,
 RECIPE: /material/sandstone/,ionic column,/obj/structure/mine_support/stone/ionic/sandstone,2.5,130,1,1,construction,102,0,0,8,null
 RECIPE: /material/sandstone/,solomonic column,/obj/structure/mine_support/stone/solomonic/sandstone,2.5,130,1,1,construction,102,0,0,8,null
 RECIPE: /material/sandstone/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/sandstone,2.5,130,1,1,construction,102,0,0,8,null
-//RECIPE: /material/sandstone/,aztec column,/obj/structure/mine_support/stone/aztec/sandstone,2.5,130,1,1,construction,32,0,0,8,null
+RECIPE: /material/sandstone/,aztec column,/obj/structure/mine_support/stone/aztec/sandstone,2.5,130,1,1,construction,32,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/sandstonefull,5,140,1,1,construction,18,0,0,8,null
@@ -2514,7 +2516,7 @@ RECIPE: /material/obsidian/,pillar,/obj/structure/mine_support/stone/obsidian,2,
 RECIPE: /material/obsidian/,ionic column,/obj/structure/mine_support/stone/ionic/obsidian,2.5,130,1,1,construction,102,0,0,8,obsidian
 RECIPE: /material/obsidian/,solomonic column,/obj/structure/mine_support/stone/solomonic/obsidian,2.5,130,1,1,construction,102,0,0,8,obsidian
 RECIPE: /material/obsidian/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/obsidian,2.5,130,1,1,construction,102,0,0,8,obsidian
-//RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec/obsidian,2.5,130,1,1,construction,32,0,0,8,obsidian
+RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec/obsidian,2.5,130,1,1,construction,32,0,0,8,obsidian
 
 //*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
 

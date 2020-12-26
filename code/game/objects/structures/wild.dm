@@ -279,7 +279,9 @@
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
 		if (leaves>0)
-			new/obj/item/weapon/leaves(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
 		qdel(src)
 		return
 
@@ -290,7 +292,6 @@
 		dropwood.amount = rand(4,7)
 		qdel(src)
 		return
-
 
 /obj/structure/wild/tree/live_tree/pine
 	name = "pinetree"
@@ -442,8 +443,9 @@
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 3
-		new/obj/item/weapon/leaves/palm_leaves(get_turf(src))
-		new/obj/item/weapon/leaves/palm_leaves(get_turf(src))
+		new/obj/item/stack/material/leaf/palm(get_turf(src))
+		new/obj/item/stack/material/leaf/palm(get_turf(src))
+		new/obj/item/stack/material/leaf/palm(get_turf(src))
 		qdel(src)
 		return
 /obj/structure/wild/palm/New()
@@ -496,6 +498,9 @@
 	density = FALSE
 	health = 60
 	maxhealth = 60
+	edible = TRUE
+	leaves = 2
+	max_leaves = 2
 	var/healthamount = 1
 
 /obj/structure/wild/junglebush/fire_act(temperature)
@@ -636,7 +641,7 @@
 	deadicon = 'icons/obj/flora/dead_jungleflora.dmi'
 	deadicon_state = "[rand(1,30)]"
 
-/obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob, var/mob/living/human/H = user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		user.do_attack_animation(src)
@@ -650,7 +655,32 @@
 				healthamount = 0
 		else
 			user << "There are no leaves to harvest here."
-	..()
+			return
+
+	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
+		H << "You start foraging for fern leaves..."
+		if (do_after(user, 80, src))
+			if (src && leaves >= 1)
+				H << "You collect some fern leaves."
+				new /obj/item/stack/material/leaf/fern(get_turf(src))
+				new /obj/item/stack/material/leaf/fern(get_turf(src))
+				leaves--
+			else
+				user << "You couldn't find any good leaves in this plant."
+		else if (H.gorillaman)
+			H << "You start foraging for some edible fern leaves..."
+			if (do_after(user, 80, src))
+				if (src && leaves >= 1)
+					H << "You collect some edible fern leaves."
+					new /obj/item/stack/material/leaf/fern(get_turf(src))
+					new /obj/item/stack/material/leaf/fern(get_turf(src))
+					leaves--
+				else
+					user << "You couldn't find any good leaves in this plant."
+		else
+			user << "You stop foraging."
+	else
+		..()
 
 /obj/structure/wild/burnedtree/New()
 	..()
@@ -747,6 +777,7 @@
 	..()
 	icon_state = "med_pine_dead"
 	deadicon_state = "med_pine_dead"
+
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
 		if (stored_unit)
@@ -755,9 +786,13 @@
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
 		if (leaves>0)
-			new/obj/item/weapon/leaves(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
 		if (leaves>=3) //give extra leaves
-			new/obj/item/weapon/leaves(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
+			new/obj/item/stack/material/leaf(get_turf(src))
 		qdel(src)
 		return
 
@@ -771,6 +806,7 @@
 		try_destroy()
 	else
 		..()
+
 /obj/structure/wild/largejungle
 	name = "large jungle bush"
 	icon = 'icons/obj/flora/largejungleflora.dmi'
@@ -780,8 +816,34 @@
 	opacity = FALSE
 	density = FALSE
 	edible = TRUE
-	leaves = 1
-	max_leaves = 1
+	leaves = 4
+	max_leaves = 4
+
+/obj/structure/wild/largejungle/attackby(obj/item/W as obj, mob/user as mob, var/mob/living/human/H = user)
+	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
+		H << "You start foraging for fern leaves..."
+		if (do_after(user, 80, src))
+			if (src && leaves >= 1)
+				H << "You collect some fern leaves."
+				new /obj/item/stack/material/leaf/fern(get_turf(src))
+				new /obj/item/stack/material/leaf/fern(get_turf(src))
+				leaves--
+			else
+				user << "You couldn't find any good leaves in this plant."
+		else if (H.gorillaman)
+			H << "You start foraging for some edible fern leaves..."
+			if (do_after(user, 80, src))
+				if (src && leaves >= 1)
+					H << "You collect some edible fern leaves."
+					new /obj/item/stack/material/leaf/fern(get_turf(src))
+					new /obj/item/stack/material/leaf/fern(get_turf(src))
+					leaves--
+				else
+					user << "You couldn't find any good leaves in this plant."
+		else
+			user << "You stop foraging."
+	else
+		..()
 
 /obj/structure/wild/largejungle/New()
 	..()
@@ -838,7 +900,8 @@
 			if (do_after(user, 80, src))
 				if (src && leaves >= 1)
 					H << "You collect some edible leaves."
-					new /obj/item/weapon/leaves(get_turf(src))
+					new /obj/item/stack/material/leaf(get_turf(src))
+					new /obj/item/stack/material/leaf(get_turf(src))
 					leaves--
 					if (leaves <= 0 && istype(src,/obj/structure/wild/tree/live_tree))
 						icon = 'icons/obj/flora/deadtrees.dmi'
