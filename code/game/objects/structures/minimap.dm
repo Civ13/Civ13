@@ -144,3 +144,9 @@
 /obj/item/weapon/map/examine(mob/user)
 	update_icon()
 	user << browse("<img src=abashiri_map.png></img>","window=popup;size=630x630")
+/obj/item/weapon/map/abashiri/update_icon()
+	..()
+	img.overlays.Cut()
+	playerloc.pixel_x = min(600,ceil(get_turf(src).x*2.72))
+	playerloc.pixel_y = min(600,ceil(get_turf(src).y*2.72))
+	img.overlays += playerloc
