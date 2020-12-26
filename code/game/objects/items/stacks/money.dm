@@ -117,6 +117,36 @@
 		icon_state = "yen_500+"
 	update_icon()
 	return ..()
+/obj/item/stack/money/yen/update_icon()
+	if(amount == 2)
+		icon_state = "yen_2"
+	if(amount == 3)
+		icon_state = "yen_3"
+	if(amount == 4)
+		icon_state = "yen_4"
+	if(amount == 5)
+		desc = "A japanese 5 yen coin"
+		icon_state = "yen_5"
+	if(amount == 6)
+		icon_state = "yen_6"
+	if(amount >= 7)
+		icon_state = "yen_7"
+	if(amount >= 10)
+		desc = "A japanese 10 yen coin"
+		icon_state = "yen_10"
+	if(amount >= 50)
+		desc = "A japanese 50 yen coin"
+		icon_state = "yen_50"
+	if(amount >= 100)
+		desc = "A japanese 100 yen coin"
+		icon_state = "yen_100"
+	if(amount == 500)
+		desc = "A japanese 500 yen coin"
+		icon_state = "yen_500"
+	if(amount > 500)
+		desc = "A japanese 500 yen coin with some other Yen coins."
+		icon_state = "yen_500+"
+	..()
 /obj/item/stack/money/dollar
 	name = "spanish dollars"
 	desc = "A silver coin, also called piece of eight, worth 8 reales."

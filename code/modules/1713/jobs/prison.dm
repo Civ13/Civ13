@@ -630,7 +630,7 @@
 	rank_abbreviation = "Kan."
 
 
-	spawn_location = "JoinLateJPCap"
+	spawn_location = "JoinLateCivD"
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE

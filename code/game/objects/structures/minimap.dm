@@ -136,25 +136,11 @@
 	update_icon()
 	examine(user)
 
-/obj/item/weapon/map_abashiri
+/obj/item/weapon/map/abashiri
 	desc = "A portable map of Abashiri Prison."
 	name = "abashiri prison map"
-	icon = 'icons/obj/decals.dmi'
-	icon_state = "portable_areamap"
-	var/image/img
-	var/image/playerloc
-	throwforce = WEAPON_FORCE_HARMLESS
-	force = WEAPON_FORCE_HARMLESS
-	w_class = 1.0
-/obj/item/weapon/map_abashiri/New()
+/obj/item/weapon/map/abashiri/New()
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "abashiri_map")
-/obj/item/weapon/map_abashiri/update_icon()
-	..()
-	img.overlays.Cut()
-	playerloc.pixel_x = min(600,ceil(get_turf(src).x*2.72))
-	playerloc.pixel_y = min(600,ceil(get_turf(src).y*2.72))
-	img.overlays += playerloc
-
-/obj/item/weapon/map_abashiri/attack_self(mob/user)
+/obj/item/weapon/map/examine(mob/user)
 	update_icon()
-	examine(user)
+	user << browse("<img src=abashiri_map.png></img>","window=popup;size=630x630")
