@@ -165,6 +165,10 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+	else
+		if (s_tone <= -175)
+			equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
+
 //coats/////////////////////////////////////////////////
 	spawn(5)
 		var/area/mob_area = get_area(src)
@@ -219,7 +223,6 @@
 				traits += "Cold Tolerance"
 			if (!f_sens)
 				traits += "Heat Sensitivity"
-
 
 ///////////////LANGUAGE PROC/////////////////////////
 

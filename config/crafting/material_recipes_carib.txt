@@ -5,6 +5,15 @@
 //**| Search "index", in find command to jump back to the top |********************************************************************
 //**| Index was made by @FantasticFwoosh, ping me if there's a problem other than the list content, unless caused by this index |**
 
+//**| LEAVES |**| LEAF CLOTHING |**
+//*********************************
+
+//**| PALM LEAVES |**| PALM LEAVES CLOTHING |**
+//*********************************************
+
+//**| FERN LEAVES |**| FERN LEAVES CLOTHING |**
+//*********************************************
+
 //**| CLAY |**| CLAY ROOFING |**| CLAY KITCHEN OBJECTS |**| CLAY BUILDING MATERIALS, FLOORS & STRUCTURES |**| CLAY STUCCO |**| CLAY PLANT POTS |**
 //************************************************************************************************************************************************
 
@@ -154,6 +163,46 @@
 //**********************************************************************************************************************************************************************************************
 
 //**|OBSIDIAN|**|OBSIDIAN CONSTRUCTIONS|**
+
+//*************************************************************
+//*********************| LEAVES |******************************
+//*************************************************************
+
+RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+
+//*****************| LEAVES CLOTHING |**************************
+
+RECIPE: /material/leaf/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,3,leaf
+
+//RECIPE: /material/leaf/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,leaf
+//RECIPE: /material/leaf/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,gold
+
+//RECIPE: /material/leaf/,imitation laurel crown,/obj/item/clothing/head/laurelcrown,8,150,0,1,none,0,0,82,8,leaf
+
+RECIPE: /material/leaf/,masculine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel,2,20,0,1,none,0,0,0,3,leaf
+RECIPE: /material/leaf/,feminine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel,2,20,0,1,none,0,0,0,3,leaf
+
+//*********************| PALM LEAVES |******************************
+
+RECIPE: /material/leaf/palm/,palm leaf roofing,/obj/item/weapon/roofbuilder/palm,1,45,0,1,none,0,0,0,8,null
+
+//*****************| PALM LEAVES CLOTHING |**************************
+
+RECIPE: /material/leaf/palm/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,palm
+RECIPE: /material/leaf/palm/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,palm
+
+//*********************| FERN LEAVES |******************************
+
+RECIPE: material/leaves/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+
+//*****************| FERN LEAVES CLOTHING |**************************
+
+RECIPE: /material/leaf/fern/,leaf head covering,/obj/item/clothing/head/gatorpelt,3,60,0,1,none,0,0,0,3,fern
+RECIPE: /material/leaf/fern/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,3,leather
+RECIPE: /material/leaf/fern/,ceremonial leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,102,8,leather
+
+RECIPE: /material/leaf/fern/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,fern
+RECIPE: /material/leaf/fern/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,fern
 
 //*************************************************************
 //*********************| CLAY |********************************
@@ -913,6 +962,7 @@ RECIPE: /material/plastic/,jackal mask,/obj/item/clothing/mask/jackal,3,55,0,1,f
 RECIPE: /material/plastic/,frog mask,/obj/item/clothing/mask/frog,3,55,0,1,face masks,0,0,165,8,null
 RECIPE: /material/plastic/,cow mask,/obj/item/clothing/mask/cow,3,55,0,1,face masks,0,0,165,8,null
 RECIPE: /material/plastic/,pig mask,/obj/item/clothing/mask/pig,3,55,0,1,face masks,0,0,165,8,null
+RECIPE: /material/plastic/,gorilla mask,/obj/item/clothing/mask/gorilla,3,55,0,1,face masks,0,0,165,8,null
 RECIPE: /material/plastic/,joy mask,/obj/item/clothing/mask/joy,3,55,0,1,face masks,0,0,210,8,null
 
 //*****************| PLASTIC SIGNS |***************************
@@ -1144,6 +1194,7 @@ RECIPE: /material/gorillapelt/,fur boots,/obj/item/clothing/shoes/fur/black,3,80
 RECIPE: /material/gorillapelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/gorillapelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,102,8,null
 RECIPE: /material/gorillapelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,102,8,null
+RECIPE: /material/gorillapelt/,full body gorilla suit,/obj/item/clothing/suit/gorillasuit,12,150,0,1,none,0,0,112,8,null
 
 //**************************************************************
 //*********************| HUMANPELT |****************************
@@ -2083,6 +2134,7 @@ RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes &
 
 RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,3,null
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,3,null
+//RECIPE: /material/wood/,black african wood mask,/obj/item/clothing/mask/wooden/african,3,50,0,1,shoes & clothing,0,0,0,2,null
 
 //*********************| WOOD ARMOR |**************************
 

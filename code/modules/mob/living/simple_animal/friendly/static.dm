@@ -112,6 +112,8 @@
 		return
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
+		if (H.s_tone <= -175)
+			return
 		if (H.driver_vehicle)
 			return
 		if (H.riding && H.riding_mob)

@@ -231,7 +231,54 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.give_nationality()
 	return TRUE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////ABASHIRI PRISONERS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/civilian/abashiri/prisoner
+	is_abashiri = TRUE
+	is_prison = TRUE
+	spawn_location = "JoinLateCiv"
 
+	rank_abbreviation = ""
+	title = "DO NOT USE"
+	var/nationality = "none"
+	default_language = "Japanese"
+	var/randrole = "none"
+	var/original_eyes = "Black"
+	var/original_facial = "Shaved"
+	var/original_hair = "Short Hair"
+/datum/job/civilian/abashiri/prisoner/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri_prisoner(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_wear_id)
+	var/obj/item/stack/money/yen/RUB = new /obj/item/stack/money/yen(H)
+	RUB.amount = 50
+	H.equip_to_slot_or_del(RUB, slot_r_store)
+	if (prob(5))
+		if (prob(70))
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank(H), slot_r_store)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank/glass(H), slot_r_store)
+//head
+	if (prob(30))
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_prisoner(H), slot_head)
+	if (nationality == "Ainu")
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.give_nationality()
+	return TRUE
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /mob/living/human/proc/give_nationality()
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
@@ -298,6 +345,72 @@
 		h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
 		f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
 		update_body()
+///////////////////////////////////////ABASHIRI/////////////////////////////////////////////////////////////////////////////////////////////
+	else if (istype(original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))
+		var/datum/job/civilian/abashiri/prisoner/PJ = original_job
+		var/randpick = rand(1,3)
+		switch(randpick)
+			if (1)
+				if (PJ.nationality)
+					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
+					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
+					add_language("Russian", TRUE)
+					add_note("Known Languages", "Russian")
+					remove_language("English")
+					name = species.get_random_russian_name(gender)
+					real_name = name
+					add_note("Group", "You are a Russian prisoner. You are part of the <b>Russian</b> faction. Try to escape and/or keep your faction powerful!")
+					PJ.nationality = "Russian"
+
+			if (2)
+				if (PJ.nationality)
+					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
+					PJ.original_facial = PJ.original_hair
+					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard", "Hipster Beard")
+					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
+					add_language("Ainu", TRUE)
+					add_note("Known Languages", "Japanese")
+					remove_language("English")
+					name = species.get_random_ainu_name(gender)
+					real_name = name
+					add_note("Group", "You are an Ainu Prisoner. You are part of the <b>Ainu</b> faction. Try to escape and/or keep your faction powerful!")
+					PJ.nationality = "Ainu"
+
+			if (3)
+				if (PJ.nationality)
+					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
+					PJ.original_facial = PJ.original_hair
+					h_style = pick("Bald","Short Hair","Cut Hair","Skinhead")
+					f_style = pick("Shaved","Chinstrap","Medium Beard", "Hipster Beard")
+					PJ.original_eyes = pick("Black","Dark Brown")
+					add_language("Japanese", TRUE)
+					add_note("Known Languages", "Japanese")
+					remove_language("English")
+					name = species.get_random_japanese_name(gender)
+					real_name = name
+					add_note("Group", "You are a Japanese Prisoner. You are part of the <b>Japanese</b> faction. Try to escape and/or keep your faction powerful!")
+					PJ.nationality = "Japanese"
+		var/hex_hair = hair_colors[PJ.original_hair]
+		var/red = hex2num(copytext(hex_hair, 2, 4))
+		var/green = hex2num(copytext(hex_hair, 4, 6))
+		var/blue = hex2num(copytext(hex_hair, 6, 8))
+		r_hair = red
+		g_hair = green
+		b_hair = blue
+		r_facial = red
+		g_facial = green
+		b_facial = blue
+		var/hex_eyes = eye_colors[PJ.original_eyes]
+		red = hex2num(copytext(hex_eyes, 2, 4))
+		green = hex2num(copytext(hex_eyes, 4, 6))
+		blue = hex2num(copytext(hex_eyes, 6, 8))
+		r_eyes = red
+		g_eyes = green
+		b_eyes = blue
+		update_body()
+
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
 	en_meaning = ""
@@ -443,3 +556,257 @@
 		armband.name = "[randrole] armband"
 		uniform.attackby(armband, H)
 		H.add_note("Primary Role", "You are a <b>Collaborator</b>. Your job is to get information and pass it to the guards. Be careful, your fellow prisoners might not like it if they find it out... Try to act like your assigned role, <b>[randrole]</b>.")
+
+////////////////////////////////////////////////////ABASHIRI PRISONERS////////////////////////////////////////////
+/datum/job/civilian/abashiri/prisoner/wing1
+	title = "Wing1 Prisoner"
+	en_meaning = ""
+
+
+	spawn_location = "JoinLateCivB"
+	is_abashiri = TRUE
+
+	min_positions = 10
+	max_positions = 10
+	equip(var/mob/living/human/H)
+		..()
+		randrole = "Wing 1"
+		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing1(H), slot_wear_suit)
+/datum/job/civilian/abashiri/prisoner/wing2
+	title = "Wing2 Prisoner"
+	en_meaning = ""
+
+
+	spawn_location = "JoinLateCivC"
+	is_abashiri = TRUE
+
+	min_positions = 10
+	max_positions = 10
+	equip(var/mob/living/human/H)
+		..()
+		randrole = "Wing 2"
+		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing2(H), slot_wear_suit)
+/datum/job/civilian/abashiri/prisoner/wing3
+	title = "Wing3 Prisoner"
+	en_meaning = ""
+
+
+	spawn_location = "JoinLateCivA"
+
+	min_positions = 8
+	max_positions = 8
+	equip(var/mob/living/human/H)
+		..()
+		randrole = "Wing 3"
+		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3(H), slot_wear_suit)
+/datum/job/civilian/abashiri/prisoner/wing3_danger
+	title = "Maximum Security Inmate"
+	en_meaning = ""
+
+
+	spawn_location = "JoinLateCiv"
+	is_abashiri = TRUE
+
+
+	min_positions = 2
+	max_positions = 2
+	equip(var/mob/living/human/H)
+		..()
+		randrole = "Wing 3"
+		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
+		H.setStat("strength", STAT_VERY_VERY_HIGH)
+		H.setStat("dexterity", STAT_VERY_HIGH)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3(H), slot_wear_suit)
+///////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////ABASHIRI///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/japanese/abashiri/guard/warden
+	title = "Abashiri Kanshi-in"
+	en_meaning = "Abashiri Warden"
+	rank_abbreviation = "Kan."
+
+
+	spawn_location = "JoinLateJPCap"
+	is_officer = TRUE
+	whitelisted = TRUE
+	is_commander = TRUE
+	is_abashiri = TRUE
+	is_prison = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/japanese/abashiri/guard/warden/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard/head_guard/warden(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/t26_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c9mm_jap_revolver(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/abashiri/G1 = new/obj/item/weapon/key/abashiri(null)
+	var/obj/item/weapon/key/abashiri/head/G2 = new/obj/item/weapon/key/abashiri/head(null)
+	KC.attackby(G1,H)
+	KC.attackby(G2,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the Warden of <b>Abashiri Prison</b>. Organize your guards and make sure all the prisoners are kept in their place!")
+	H.setStat("strength", STAT_VERY_VERY_HIGH )
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_VERY_VERY_HIGH )
+	H.setStat("dexterity", STAT_VERY_VERY_HIGH )
+	H.setStat("swords", STAT_VERY_VERY_HIGH )
+	H.setStat("pistol", STAT_VERY_VERY_HIGH )
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_VERY_HIGH )
+	H.verbs += /mob/living/human/proc/Sound_Alarm
+	H.verbs += /mob/living/human/proc/Stop_Alarm
+	return TRUE
+
+/datum/job/japanese/abashiri/guard/head
+	title = "Abashiri Shocho Keimu-kan"
+	en_meaning = "Abashiri Head Guard"
+	rank_abbreviation = "Sho."
+
+	is_abashiri = TRUE
+	spawn_location = "JoinLateJPCap"
+	is_officer = TRUE
+	whitelisted = TRUE
+	is_prison = TRUE
+	is_abashiri = TRUE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/japanese/abashiri/guard/head/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard/head_guard(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/t26_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c9mm_jap_revolver(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/abashiri/G1 = new/obj/item/weapon/key/abashiri(null)
+	var/obj/item/weapon/key/abashiri/head/G2 = new/obj/item/weapon/key/abashiri/head(null)
+	KC.attackby(G1,H)
+	KC.attackby(G2,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the Head Guard of <b>Abashiri Prison</b>. Organize your guards and make sure all the prisoners are kept in their place!")
+	H.setStat("strength", STAT_VERY_VERY_HIGH )
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_VERY_VERY_HIGH )
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.verbs += /mob/living/human/proc/Sound_Alarm
+	H.verbs += /mob/living/human/proc/Stop_Alarm
+	return TRUE
+
+/datum/job/japanese/abashiri/guard/medic
+	title = "Abashiri Ishi"
+	en_meaning = "Abashiri Prison Doctor"
+	rank_abbreviation = "Ishi."
+	is_abashiri = TRUE
+	spawn_location = "JoinLateJPDoc"
+	whitelisted = TRUE
+	is_abashiri = TRUE
+	is_medic = TRUE
+	is_prison = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/japanese/abashiri/guard/medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/abashiri/G1 = new/obj/item/weapon/key/abashiri(null)
+	KC.attackby(G1,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the Prison Doctor of <b>Abashiri Prison</b>. Make sure all the guards and prisoners live!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
+
+/datum/job/japanese/abashiri/guard
+	title = "Abashiri Keimu-kan"
+	en_meaning = "Abashiri Prison Guard"
+	rank_abbreviation = ""
+	is_abashiri = TRUE
+	spawn_location = "JoinLateJP"
+	whitelisted = TRUE
+	is_prison = TRUE
+
+	min_positions = 8
+	max_positions = 10
+
+/datum/job/japanese/abashiri/guard/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/weapon/key/abashiri/G1 = new/obj/item/weapon/key/abashiri(null)
+	KC.attackby(G1,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the main enforcer of <b>Abashiri Prison</b>. Make sure all the Prisoners do their work detail while supervised!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	return TRUE

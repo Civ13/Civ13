@@ -23,7 +23,9 @@
 		H << "You start picking the leaves from the branch..."
 		if (do_after(H, 60, src))
 			if (src && leaves)
-				new /obj/item/weapon/leaves(get_turf(src))
+				new /obj/item/stack/material/leaf(get_turf(src))
+				new /obj/item/stack/material/leaf(get_turf(src))
+				new /obj/item/stack/material/leaf(get_turf(src))
 				H << "You pick up some leaves from the branch."
 				name = "cleared branch"
 				desc = "A tree branch with all the leaves picked out."
