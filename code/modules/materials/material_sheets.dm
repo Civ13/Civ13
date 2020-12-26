@@ -205,6 +205,69 @@
 	value = 2
 	flammable = TRUE
 
+/obj/item/stack/material/leaf
+	name = "Leaf"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "leaves1"
+	default_type = "leaf"
+	value = 0
+	flammable = TRUE
+	var/decay = 0
+	var/decaytimer = 0
+
+/obj/item/stack/material/leaf/New()
+		..()
+		food_decay()
+
+/obj/item/stack/material/leaf/proc/food_decay()
+	spawn(600)
+		if (decay == 0)
+			return
+		if (istype(loc, /obj/structure/vending))
+			food_decay()
+			return
+
+		if (istype(loc, /obj/structure/closet/fridge))
+			var/obj/structure/closet/fridge/F = loc
+			if (F.powersource && F.powersource.powered)
+				decaytimer += 100 //much slower
+			else
+				decaytimer += 300
+		else if (isturf(loc) && !findtext(src.name, "canned")) //if on the floor (i.e. not stored inside something), decay faster
+			decaytimer += 600
+		else if (!istype(loc, /obj/item/weapon/can) && !findtext(src.name, "canned")) //if not canned, since canned food doesn't spoil
+			decaytimer += 300
+		if (istype(loc, /obj/item/weapon/can))
+			var/obj/item/weapon/can/C = loc
+			if (C.open)
+				decaytimer += 300
+		if (decaytimer >= decay)
+			qdel(src)
+			return
+		else
+			food_decay()
+			return
+
+/obj/item/stack/material/leaf/palm
+	name = "Palm"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "palm"
+	default_type = "palm"
+	value = 0
+	flammable = TRUE
+
+/obj/item/stack/material/leaf/fern
+	name = "Fern"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "fernleaf1"
+	default_type = "fern"
+	value = 0
+	flammable = TRUE
+
+/obj/item/stack/material/leaves/fern/New()
+		..()
+		icon_state = pick("fernleaves1","fernleaves2")
+
 /obj/item/stack/material/tobacco
 	name = "tobacco leaves"
 	icon_state = "tobacco"

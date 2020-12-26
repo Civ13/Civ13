@@ -1732,93 +1732,14 @@
 	nutriment_amt = 3
 	decay = 27*600
 
-/obj/item/weapon/leaves
-	name = "tree leaves"
-	icon = 'icons/obj/items.dmi'
-	desc = "A bunch of tree leaves."
-	icon_state = "leaves1"
-	throwforce = 0
-	force = 0
-	w_class = 1
-	throw_speed = 3
-	throw_range = 7
-	var/decay = 15*600
-	var/decaytimer = 0
-
-	New()
-		..()
-		icon_state = pick("leaves1","leaves2","leaves3")
-		food_decay()
-
-/obj/item/weapon/leaves/attack_self(mob/living/user)
-	if (ishuman(user))
-		user << "You start arranging the leaves into a thatch roofing..."
-		if (do_after(user, 70, src))
-			user << "You finish the thatch roofing."
-			var/obj/item/weapon/roofbuilder/leaves/RB = new/obj/item/weapon/roofbuilder/leaves(loc)
-			user.drop_from_inventory(src)
-			user.put_in_hands(RB)
-			qdel(src)
-			return
-/obj/item/weapon/leaves/proc/food_decay()
-	spawn(600)
-		if (decay == 0)
-			return
-		if (istype(loc, /obj/structure/vending))
-			food_decay()
-			return
-
-		if (istype(loc, /obj/structure/closet/fridge))
-			var/obj/structure/closet/fridge/F = loc
-			if (F.powersource && F.powersource.powered)
-				decaytimer += 100 //much slower
-			else
-				decaytimer += 300
-		else if (isturf(loc) && !findtext(src.name, "canned")) //if on the floor (i.e. not stored inside something), decay faster
-			decaytimer += 600
-		else if (!istype(loc, /obj/item/weapon/can) && !findtext(src.name, "canned")) //if not canned, since canned food doesn't spoil
-			decaytimer += 300
-		if (istype(loc, /obj/item/weapon/can))
-			var/obj/item/weapon/can/C = loc
-			if (C.open)
-				decaytimer += 300
-		if (decaytimer >= decay)
-			qdel(src)
-			return
-		else
-			food_decay()
-			return
-
-/obj/item/weapon/leaves/attack(mob/living/human/M as mob, mob/living/human/user as mob)
-	if (!M || !ishuman(M) || !M.gorillaman)
-		return
-	playsound(M.loc,'sound/items/eatfood.ogg', rand(10,50), TRUE)
-
-	if (M != user)
-		visible_message("[user] feeds [M] the leaves.","You feed [M] the leaves.")
-	else
-		M << "You eat the leaves."
-	M.nutrition = min(M.nutrition+40, M.max_nutrition)
-	qdel(src)
-
-/obj/item/weapon/leaves/palm_leaves
-	name = "palm leaves"
-	desc = "A bunch of palm leaves."
-	icon_state = "palm_leaves"
-	throwforce = 0
-	force = 0
-	w_class = 3
-	decay = 35*600
-	New()
-		..()
-		icon_state = "palm_leaves"
-/obj/item/weapon/leaves/palm_leaves/attack_self(mob/living/user)
-	if (ishuman(user))
-		user << "You start arranging the leaves into a palm roofing..."
-		if (do_after(user, 70, src))
-			user << "You finish the palm roofing."
-			var/obj/item/weapon/roofbuilder/palm/RB = new/obj/item/weapon/roofbuilder/palm(loc)
-			user.drop_from_inventory(src)
-			user.put_in_hands(RB)
-			qdel(src)
-			return
+/obj/item/weapon/reagent_containers/food/snacks/leaf_salad
+	name = "leaf salad"
+	desc = "Leaf salad, best selection of leaves straight from the tree and into the mouth."
+	icon = 'icons/obj/food/food_ingredients.dmi'
+	icon_state = "leafsalad"
+	bitesize = 3
+	satisfaction = 2
+	center_of_mass = list("x"=16, "y"=12)
+	nutriment_desc = list("leaves" = 3)
+	nutriment_amt = 3
+	decay = 27*600

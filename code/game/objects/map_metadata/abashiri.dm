@@ -176,9 +176,6 @@
 			return (!faction1_can_cross_blocks() || !faction2_can_cross_blocks())
 	return FALSE
 
-/obj/item/weapon/prisoner_passport/secondary_attack_self(mob/living/human/user)
-	showoff(user)
-	return
 /obj/map_metadata/abashiri/proc/alarm_proc()
 	if (siren)
 		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
