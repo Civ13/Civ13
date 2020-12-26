@@ -410,6 +410,9 @@
 	unique_door_name = "GULAG locked"
 	locked = TRUE
 	custom_code = RU_CODE
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/max
+	unique_door_name = "Maximum Security locked"
+	custom_code = RU_CODE+2
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard/open
 	starts_open = TRUE
