@@ -768,7 +768,7 @@ var/global/FREQP = rand(81,100)
 	var/obj/structure/radio/SR = null
 	if (istype(original, /obj/item/weapon/radio))
 		R = original
-	else if (istype(original, /obj/item/weapon/radio))
+	else if (istype(original, /obj/structure/radio))
 		SR = original
 	else
 		return FALSE
