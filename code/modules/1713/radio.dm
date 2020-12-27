@@ -389,15 +389,15 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
-			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
-				if (radio.receiver_on)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+			for (var/obj/item/weapon/radio/radio in view(2,hearer))
+				if (isturf(radio.loc) && radio.receiver_on)
 					radios |= radio
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
@@ -405,11 +405,11 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 	// let observers hear it
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
-		O.hear_radio(msg, speaker.default_language, speaker, src)
+		O.hear_radio(msg, speaker.default_language, speaker, src, src)
 
 //broadcasts an announcement on the Police/Emergency frequency
 /proc/global_broadcast(var/tfreq, var/msg)
@@ -451,13 +451,14 @@ var/global/FREQP = rand(81,100)
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio_broadcast(msg, null)
 
-/mob/proc/hear_radio_broadcast(var/message, var/obj/origin = null)
+/mob/proc/hear_radio_broadcast(var/message, var/obj/origin = null, var/obj/destination = null)
 
 	if (!client || !message)
 		return
 
 	message = capitalize(message)
-
+	if (origin && !destination)
+		destination = origin
 	if (sleeping || stat==1) //If unconscious or sleeping
 		hear_sleep(message)
 		return
@@ -468,15 +469,18 @@ var/global/FREQP = rand(81,100)
 	else
 		var/fontsize = 2
 		var/full_message = ""
-		if (istype(origin, /obj/structure/radio))
-			var/obj/structure/radio/RD = origin
-			if (RD)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
+		if (origin)
+			if (istype(origin, /obj/structure/radio))
+				var/obj/structure/radio/RD = origin
+				if (RD)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
+			else
+				var/obj/item/weapon/radio/RD = origin
+				if (RD)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
 		else
-			var/obj/item/weapon/radio/RD = origin
-			if (RD)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
-		on_hear_obj(origin, full_message)
+			full_message = "<font size = [fontsize] color=#FFAE19><b>Radio:</font></b><font size = [fontsize]>\"[message]\"</font>"
+		on_hear_obj(destination, full_message)
 
 ////////////////PORTABLE RADIOS//////////////////
 /obj/item/weapon/radio
@@ -656,7 +660,15 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+			for (var/obj/item/weapon/radio/radio in view(2,hearer))
+				if (isturf(radio.loc) && radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (check_freq(radio) && radio.receiver_on)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
@@ -664,10 +676,10 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
-		O.hear_radio(msg, speaker.default_language, speaker, src)
+		O.hear_radio(msg, speaker.default_language, speaker, src, src)
 
 //////////////"POUCH SLOT" RADIOS///////////////////////////
 //For modern radios worn on your chest
@@ -756,7 +768,7 @@ var/global/FREQP = rand(81,100)
 	var/obj/structure/radio/SR = null
 	if (istype(original, /obj/item/weapon/radio))
 		R = original
-	else if (istype(original, /obj/item/weapon/radio))
+	else if (istype(original, /obj/structure/radio))
 		SR = original
 	else
 		return FALSE
@@ -782,7 +794,7 @@ var/global/FREQP = rand(81,100)
 	var/obj/structure/radio/SR = null
 	if (istype(original, /obj/item/weapon/radio))
 		R = original
-	else if (istype(original, /obj/item/weapon/radio))
+	else if (istype(original, /obj/structure/radio))
 		SR = original
 	else
 		return FALSE
