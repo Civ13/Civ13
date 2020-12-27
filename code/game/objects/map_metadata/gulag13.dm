@@ -303,7 +303,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
 		usr << "You cannot use this in this map."
 		return
-	if (!original_job || !(istype(original_job, /datum/job/russian)) || !(istype(original_job, /datum/job/japanese/abashiri/guard)))
+	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard))))
 		usr << "You cannot use this."
 		return
 	if (istype(map, /obj/map_metadata/gulag13))
