@@ -110,12 +110,12 @@
 			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
 				play_tts(message2,speaker)
 
-/mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/destination, var/obj/origin)
+/mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/destination=null, var/obj/origin=null)
 
 	if (!client || !message)
 		return
 
-	if (!destination)
+	if (!destination && origin)
 		destination = origin
 	message = capitalize(message)
 
@@ -163,21 +163,26 @@
 	else
 		var/fontsize = 2
 		var/full_message = ""
-		if (istype(origin, /obj/structure/radio))
-			var/obj/structure/radio/RD = origin
-			if (RD)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-				if (track)
-					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+		if (origin)
+			if (istype(origin, /obj/structure/radio))
+				var/obj/structure/radio/RD = origin
+				if (RD)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+					if (track)
+						full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			else
+				var/obj/item/weapon/radio/RD = origin
+				if (RD)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+					if (track)
+						full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		else
-			var/obj/item/weapon/radio/RD = origin
-			if (RD)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-				if (track)
-					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			full_message = "<font size = [fontsize] color=#FFAE19><b>Radio:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			if (track)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>Radio:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 
 
-		on_hear_obj(origin, full_message)
+		on_hear_obj(destination, full_message)
 
 /mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/origin, var/obj/item/weapon/telephone/destination)
 
@@ -185,7 +190,7 @@
 		return
 
 	if (!destination)
-		return
+		destination = origin
 
 	message = capitalize(message)
 
@@ -237,7 +242,7 @@
 		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([destination.phonenumber]):</font></b><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		if (track)
 			full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([destination.phonenumber]):</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-		on_hear_obj(origin, full_message)
+		on_hear_obj(destination, full_message)
 
 
 /proc/say_timestamp()
