@@ -25,6 +25,7 @@
 	var/itemtype2 = null
 	var/itemtype3 = null
 	var/itemtype4 = null
+	var/itemtype5 = null
 	var/actiontext = "repair" //Plural, flavortext
 	not_movable = TRUE
 	not_disassemblable = FALSE
