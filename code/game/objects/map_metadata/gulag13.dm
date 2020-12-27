@@ -348,26 +348,24 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/structure/camp_exportbook/attackby(var/obj/item/stack/S, var/mob/living/human/H)
 	var/obj/map_metadata/gulag13/G = null
-	if (!istype(map, /obj/map_metadata/gulag13))
-		return
-	else
-		G = map
-	if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
-		for(var/i in G.points)
-			if (i[1]=="Guards")
-				i[2]+=S.amount*S.value
-				H << "You export \the [S]."
-				qdel(S)
-				return
 	var/obj/map_metadata/abashiri/AB = null
-	if (!istype(map, /obj/map_metadata/abashiri))
-		return
-	else
+	if (istype(map, /obj/map_metadata/gulag13))
+		G = map
+		if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
+			for(var/i in G.points)
+				if (i[1]=="Guards")
+					i[2]+=S.amount*S.value
+					H << "You export \the [S]."
+					qdel(S)
+					return
+	else if (istype(map, /obj/map_metadata/abashiri))
 		AB = map
-	if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
-		for(var/i in AB.points)
-			if (i[1]=="Guards")
-				i[2]+=S.amount*S.value
-				H << "You export \the [S]."
-				qdel(S)
-				return
+		if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
+			for(var/i in AB.points)
+				if (i[1]=="Guards")
+					i[2]+=S.amount*S.value
+					H << "You export \the [S]."
+					qdel(S)
+					return
+	else
+		return

@@ -389,7 +389,7 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in view(2,hearer))
 				if (isturf(radio.loc) && radio.receiver_on)
 					radios |= radio
@@ -397,7 +397,7 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
@@ -405,7 +405,7 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 	// let observers hear it
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
@@ -660,7 +660,7 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in view(2,hearer))
 				if (isturf(radio.loc) && radio.receiver_on)
 					radios |= radio
@@ -668,7 +668,7 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
@@ -676,7 +676,7 @@ var/global/FREQP = rand(81,100)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
+					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, speaker.default_language, speaker, src, src)
