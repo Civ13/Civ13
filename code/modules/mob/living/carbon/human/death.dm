@@ -58,6 +58,13 @@
 			for(var/i in GD.points)
 				if (i[1]==PJ.nationality)
 					i[3]-=50
+	else if (map && map.ID == MAP_ABASHIRI && client)
+		var/obj/map_metadata/abashiri/GD = map
+		if (original_job && istype(original_job, /datum/job/civilian/abashiri))
+			var/datum/job/civilian/abashiri/PJ = original_job
+			for(var/i in GD.points)
+				if (i[1]==PJ.nationality)
+					i[3]-=50
 	else if (map && map.ID == MAP_ALLEYWAY)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Yamaguchi-Gumi")

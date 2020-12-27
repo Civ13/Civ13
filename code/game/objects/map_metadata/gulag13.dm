@@ -267,10 +267,10 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 /mob/living/human/proc/Sound_Alarm()
 	set name = "Sound the Siren"
 	set category = "Officer"
-	if (!map || map.ID != MAP_GULAG13 || map.ID != MAP_ABASHIRI)
+	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
 		usr << "You cannot use this in this map."
 		return
-	if (!original_job || !(istype(original_job, /datum/job/russian)) || !(istype(original_job, /datum/job/japanese/abashiri/guard)))
+	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard))))
 		usr << "You cannot use this."
 		return
 	if (istype(map, /obj/map_metadata/gulag13))
@@ -300,7 +300,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 /mob/living/human/proc/Stop_Alarm()
 	set name = "Stop the Siren"
 	set category = "Officer"
-	if (!map || map.ID != MAP_GULAG13 || map.ID != MAP_ABASHIRI)
+	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
 		usr << "You cannot use this in this map."
 		return
 	if (!original_job || !(istype(original_job, /datum/job/russian)) || !(istype(original_job, /datum/job/japanese/abashiri/guard)))
