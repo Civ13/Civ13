@@ -9,6 +9,18 @@
 		verbs += /mob/living/human/proc/create_company
 		verbs += /mob/living/human/proc/transfer_company_stock
 
+/mob/living/human/proc/make_nation()
+	if (map.civilizations)
+		verbs += /mob/living/human/proc/create_faction
+		verbs += /mob/living/human/proc/abandon_faction
+		verbs += /mob/living/human/proc/transfer_faction
+		verbs += /mob/living/human/proc/become_leader
+		verbs += /mob/proc/religion_list
+		verbs += /mob/living/human/proc/create_religion
+		verbs += /mob/living/human/proc/abandon_religion
+		verbs += /mob/living/human/proc/create_company
+		verbs += /mob/living/human/proc/transfer_company_stock
+
 /mob/living/human/proc/make_tribesman()
 	verbs += /mob/living/human/proc/transfer_faction
 	verbs += /mob/living/human/proc/become_leader
@@ -40,7 +52,7 @@
 	else
 		return
 
-	if (map.nomads == TRUE)
+	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP)
 		if (U.civilization != "none")
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return
@@ -100,7 +112,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE)
+	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -140,7 +152,7 @@
 		U = src
 	else
 		return
-	if (map.civilizations == TRUE)
+	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -185,7 +197,7 @@
 		U = src
 	else
 		return
-	if (map.civilizations == TRUE)
+	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return

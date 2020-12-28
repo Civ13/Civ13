@@ -604,7 +604,7 @@ var/filipino_forceEnabled = FALSE
 	var/msg_factions = ""
 	var/relpf = ""
 	var/relpf_max = 0
-	if (map && map.civilizations)
+	if (map && map.civilizations && map.ID != MAP_NATIONSRP)
 		map.facl = list()
 		for (var/i=1,i<=map.custom_faction_nr.len,i++)
 			var/nu = 0
