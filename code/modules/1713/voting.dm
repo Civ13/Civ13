@@ -23,7 +23,12 @@
 		spawn(10)
 			nation = civname_a
 			name = "[nation] ballot box"
-
+	attack_hand(var/mob/living/human/user as mob)
+		if (user.original_job_title == "Civilization A Citizen")
+			..()
+		else
+			user << "You are not part of this Nation."
+			return
 /obj/structure/voting/civb
 	name = "ballot box"
 	icon_state = "bet_box_green"
@@ -32,6 +37,12 @@
 		spawn(10)
 			nation = civname_b
 			name = "[nation] ballot box"
+	attack_hand(var/mob/living/human/user as mob)
+		if (user.original_job_title == "Civilization B Citizen")
+			..()
+		else
+			user << "You are not part of this Nation."
+			return
 /obj/structure/voting/examine(mob/user)
 	..()
 	if (in_election)
