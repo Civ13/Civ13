@@ -329,15 +329,15 @@
 			if (map.ID == MAP_NATIONSRP)
 				if (H.original_job_title == original_job_title)
 					if (original_job_title == "Civilization A Citizen")
-						msg += "<br><i>You recognize [T.him] as a member of your nation, [civname_a].</i>"
+						msg += "<br><i><font color='green'>You recognize [T.him] as a citizen of your nation, <b>[civname_a]</b>.</i></font>"
 					else
-						msg += "<br><i>You recognize [T.him] as a member of your nation, [civname_b].</i>"
+						msg += "<br><i><font color='green'>You recognize [T.him] as a citizen of your nation, <b>[civname_b]</b>.</i></font>"
 
 				else
 					if (original_job_title == "Civilization A Citizen")
-						msg += "<br><i>[T.He] is a member of the [civname_a].</i>"
+						msg += "<br><font color='red'><i>[T.He] is a citizen of the <b>[civname_a]</b>.</font></i>"
 					else
-						msg += "<br><i>[T.He] is a member of the [civname_b].</i>"
+						msg += "<br><font color='red'><i>[T.He] is a citizen of the <b>[civname_b]</b>.</font></i>"
 			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")
 				msg += "<br><i>You recognize [T.him] as an ordained <b>Cultist</b> of your cult, <b>[religion]</b>.</i>"
 			else if (H.religion == religion && religion_style == "Cultists" && religious_clergy != "Cultists")
