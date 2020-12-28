@@ -492,6 +492,7 @@
 #include "code\modules\1713\trains.dm"
 #include "code\modules\1713\trench.dm"
 #include "code\modules\1713\vending.dm"
+#include "code\modules\1713\voting.dm"
 #include "code\modules\1713\weather.dm"
 #include "code\modules\1713\barriers\cover.dm"
 #include "code\modules\1713\barriers\sandbag.dm"
