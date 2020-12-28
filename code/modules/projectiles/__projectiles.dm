@@ -448,7 +448,7 @@
 	armor_penetration = 24
 
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
-	damage = DAMAGE_LOW - 12
+	damage = DAMAGE_LOW + 2
 	penetrating = 1
 	armor_penetration = 3
 
@@ -459,7 +459,7 @@
 
 
 /obj/item/projectile/bullet/pistol/c8mmnambu
-	damage = DAMAGE_LOW - 9
+	damage = DAMAGE_LOW + 1
 	penetrating = 1
 	armor_penetration = 5
 
