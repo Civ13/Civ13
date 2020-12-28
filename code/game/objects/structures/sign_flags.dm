@@ -252,6 +252,11 @@
 	desc = "The star-spangled banner."
 	icon_state = "flag_usa"
 
+/obj/structure/sign/flag/usa_union
+	name = "Union flag"
+	desc = "The red, white and blue flag flying above ranks of blue-clad troops."
+	icon_state = "flag_union"
+
 /obj/structure/sign/flag/sov
 	name = "Soviet Union flag"
 	desc = "The red flag of the Soviet Union."
