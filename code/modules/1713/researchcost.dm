@@ -15,7 +15,7 @@
 	not_disassemblable = TRUE
 
 /obj/structure/researchdesk/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (!map.civilizations || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES)
+	if (!map.civilizations || map.ID == MAP_NATIONSRP || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES)
 		return
 
 	if (!W)
