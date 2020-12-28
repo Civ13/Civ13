@@ -809,31 +809,32 @@
 		var/list/possible_e_list = list("Black")
 		var/list/possible_s_list = list(-10,-60)
 		spawn(5)
+			//east
+			if (x>75)
+				add_language("Russian",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/russian/A in languages)
+					default_language = A
+				name = species.get_random_russian_name(gender)
+				real_name = name
+				add_note("Known Languages", "Russian")
+				possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-10,-28)
 			//west
-			if (x<75)
-				add_language("Japanese",TRUE)
-				remove_note("Known Languages","English")
-				for (var/datum/language/japanese/A in languages)
-					default_language = A
-				name = species.get_random_japanese_name(gender)
-				real_name = name
-				add_note("Known Languages", "Japanese and English")
-				possible_h_list = list("Light Brown","Dark Brown")
-				possible_e_list = list("Green","Brown","Black")
-				possible_s_list = list(-35,-60)
-			//EAST
 			else
-				add_language("Spanish",TRUE)
+				add_language("German",TRUE)
+				remove_language("English")
 				remove_note("Known Languages","English")
-				for (var/datum/language/spanish/A in languages)
+				for (var/datum/language/german/A in languages)
 					default_language = A
-				name = species.get_random_spanish_name(gender)
+				name = species.get_random_german_name(gender)
 				real_name = name
-				add_note("Known Languages", "Spanish and English")
-				possible_h_list = list("Light Brown","Dark Brown")
-				possible_e_list = list("Green","Brown","Black")
-				possible_s_list = list(-45,-65)
-				return
+				add_note("Known Languages", "German")
+				possible_h_list = list("Light Brown","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-15,-30)
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)
 		s_tone = rand(possible_s_list[2],possible_s_list[1])

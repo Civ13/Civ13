@@ -492,6 +492,7 @@
 #include "code\modules\1713\trains.dm"
 #include "code\modules\1713\trench.dm"
 #include "code\modules\1713\vending.dm"
+#include "code\modules\1713\voting.dm"
 #include "code\modules\1713\weather.dm"
 #include "code\modules\1713\barriers\cover.dm"
 #include "code\modules\1713\barriers\sandbag.dm"
@@ -985,5 +986,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1903\abashiri.dmm"
+#include "maps\1873\nationsrp.dmm"
 // END_INCLUDE
