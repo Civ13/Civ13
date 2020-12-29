@@ -251,7 +251,7 @@
 /obj/item/stack/material/leaf/palm
 	name = "Palm"
 	icon = 'icons/obj/items.dmi'
-	icon_state = "palm"
+	icon_state = "palm_leaves"
 	default_type = "palm"
 	value = 0
 	flammable = TRUE

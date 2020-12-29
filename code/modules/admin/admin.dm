@@ -1075,6 +1075,7 @@ var/list/atom_types = null
 		current_list = replacetext(current_list,".txt","")
 		if (fexists(F3) && findtext(i,"material_recipes"))
 			var/list/craftlist_temp = file2list(F3,"\n")
+			craftlist_lists[current_list] = list()
 			for (var/j in craftlist_temp)
 				if (findtext(j, ",") && findtext(j,"RECIPE: "))
 					var/tmpj = replacetext(j, "RECIPE: ", "")

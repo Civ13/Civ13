@@ -54,11 +54,11 @@
 /obj/structure/voting/attack_hand(var/mob/living/human/user as mob)
 	if (in_election)
 		if (!(user in voted))
-			voted += user
 			total_votes += 1
 			var/choice = WWinput(user, "[election_desc]", "Electoral System","Null",vote_options+"Null")
 			if (choice != "Null" && !(user in voted))
 				votes[choice] += 1
+				voted += user
 				return
 
 		else
@@ -94,10 +94,22 @@
 /obj/structure/voting/proc/start_timer(var/time = 1800)
 	spawn(time)
 		in_election = FALSE
-
+		if (total_votes == 0)
+			visible_message("<big><font color='yellow'><b>The election ended with no votes!</b></big></font>")
 		var/winner = "none"
-		visible_message("<big><font color='yellow'><b><i>[winner]</i></b> is the most voted choice!</big></font>")
+		var/sum = 0
+		for(var/j in votes)
+			if (votes[j] > sum)
+				sum = votes[j]
+				winner = j
+			else if (votes[j] == sum && sum != 0)
+				winner = "tie"
+		if (winner != "tie")
+			visible_message("<big><font color='yellow'><b><i>[winner]</i></b> is the most voted choice!</big></font>")
+		else
+			visible_message("<big><font color='yellow'>The vote ended in a <b><i>tie</i></b>!</big></font>")
 		visible_message("<font color='yellow'><b>Results:</b></font>")
 		for(var/i in votes)
 			visible_message("<font color='yellow'><b><i>[i]</i> - [(votes[i]/total_votes)*100]% ([votes[i]] votes)</b></font>")
+		total_votes = 0
 	return
