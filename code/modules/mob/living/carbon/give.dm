@@ -64,7 +64,7 @@
 		user << "You cannot recruit yourself."
 		return
 
-	if (user.original_job_title != "Nomad")
+	if (user.original_job_title != "Nomad" && !findtext(user.original_job_title,"Civilization"))
 		user << "You can't recruit in this map."
 		return
 
