@@ -1323,7 +1323,7 @@ RECIPE: /material/stone/,monumental saint statue,/obj/structure/religious/monume
 
 RECIPE: /material/stone/,smooth roman road,/obj/covers/roads/roman,1,0,1,1,roads,20,0,0,8,null
 RECIPE: /material/stone/,smooth cobble road,/obj/covers/roads/cobble,1,0,1,1,roads,32,0,0,8,null
-RECIPE: /material/stone/,smooth modern road,obj/covers/roads/modern,1,0,1,1,roads,100,0,0,8,null
+RECIPE: /material/stone/,smooth modern road,/obj/covers/roads/modern,1,0,1,1,roads,100,0,0,8,null
 
 //*************| STONE 'STATUE' & WINDOWS |***************
 
