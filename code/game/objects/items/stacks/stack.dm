@@ -1214,6 +1214,30 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need a stack of at least 2 bone in one your hands in order to make this.</span>"
 					return
 
+	else if (findtext(recipe.title, "black african mask") || findtext(recipe.title, "ceremonial black african mask"))
+		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+			user << "<span class = 'warning'>You need a stack of at least 3 wood in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/pelt/cowpelt))
+				var/obj/item/stack/material/pelt/cowpelt/NB = H.l_hand
+				if (NB.amount >= 2)
+					NB.amount -= 2
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 2 cowpelts in one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/pelt/cowpelt))
+				var/obj/item/stack/material/pelt/cowpelt/NB = H.r_hand
+				if (NB.amount >= 2)
+					NB.amount -= 2
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 2 cowpelts in one of your hands in order to make this.</span>"
+					return
+/*
 	else if (findtext(recipe.title, "armorbench"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			user << "<span class = 'warning'>You need a stack of at least 10 wood in one of your hands in order to make this.</span>"
@@ -1237,6 +1261,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
 					return
+*/
 	else if (findtext(recipe.title, "fortress wall"))
 		if (!istype(H.l_hand, /obj/item/stack/material/stone) && !istype(H.r_hand, /obj/item/stack/material/stone))
 			user << "<span class = 'warning'>You need a stack of at least 8 stone in one of your hands in order to make this.</span>"
