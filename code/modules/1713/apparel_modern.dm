@@ -894,6 +894,21 @@
 	item_state = "high_vis_jacket_yellow"
 	worn_state = "high_vis_jacket_yellow"
 
+/obj/item/clothing/suit/storage/jacket/jensencoat
+	name = "Elite police jacket"
+	desc = "A Trench coat worn by the most badass cops."
+	icon_state = "jensencoat"
+	item_state = "jensencoat"
+	worn_state = "jensencoat"
+
+/obj/item/clothing/under/jensenshirt
+	name = "Elite police uniform"
+	desc = "A tactical outfit worn by the most badass cops."
+	icon_state = "jensen"
+	item_state = "jensen"
+	worn_state = "jensen"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
 /obj/item/clothing/suit/storage/jacket/highvis/paramedic
 	name = "paramedic jacket"
 	icon_state = "paramedic_jacket"
@@ -907,7 +922,7 @@
 	desc = "A belt that can hold the standard issue gear of police officers."
 	icon_state = "gerbelt"
 	item_state = "gerbelt"
-	storage_slots = 10
+	storage_slots = 11
 	max_w_class = 3
 	max_storage_space = 24
 	can_hold = list(
@@ -927,13 +942,14 @@
 		/obj/item/weapon/pen,
 		/obj/item/stack/money,
 		/obj/item/weapon/key,
+		/obj/item/weapon/reagent_containers/spray/pepper.
 		)
 /obj/item/weapon/storage/belt/police/New()
 	..()
 	new /obj/item/weapon/melee/nightbaton(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/reagent_containers/spray/pepper(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/whistle(src)

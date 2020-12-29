@@ -378,6 +378,9 @@
 		/obj/item/weapon/storage/backpack/civbag = 15,
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
+		/obj/item/clothing/under/jensenshirt = 15,
+		/obj/item/clothing/glasses/jensenglasses = 15,
+		/obj/item/clothing/suit/storage/jacket/jensencoat = 15,
 	)
 	attack_hand(mob/user as mob)
 		if (user.original_job_title == "Police Officer")
