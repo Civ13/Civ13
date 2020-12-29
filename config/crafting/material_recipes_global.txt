@@ -2069,7 +2069,7 @@ RECIPE: /material/wood/,fishing cage,/obj/structure/fishing_cage,12,200,1,1,tool
 RECIPE: /material/wood/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 
 //*********************| WOOD FURNITURE |**************************
-
+RECIPE: /material/wood/,ballot box,/obj/structure/voting,8,50,1,1,furniture,25,0,0,8,null
 RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,_one_per_turf = 1,1,furniture,0,0,0,8,null
