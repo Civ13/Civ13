@@ -6,7 +6,7 @@
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
-	opacity = TRUE
+	opacity = FALSE
 	amount = 1
 	layer = 3
 	health = 100000

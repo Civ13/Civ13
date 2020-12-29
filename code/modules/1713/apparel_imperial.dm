@@ -186,12 +186,16 @@
 	desc = "A hat made of fur."
 	icon_state = "furhat_hat"
 	item_state = "furhat_hat"
-
+	cold_protection = HEAD
+	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
+	
 /obj/item/clothing/head/furcap
 	name = "fur cap"
 	desc = "A cap made of fur."
 	icon_state = "furcap_hat"
 	item_state = "furcap_hat"
+	cold_protection = HEAD
+	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
 
 /obj/item/clothing/head/roundcap
 	name = "roundcap"
