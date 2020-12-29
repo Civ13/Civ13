@@ -36,9 +36,9 @@
 "aN" = (/turf/floor/dirt/ploughed,/area/caribbean/nomads/forest)
 "aO" = (/turf/wall/indestructable/black,/area/caribbean/void/caves)
 "aR" = (/obj/covers/roads/cobble,/turf/floor/grass,/area/caribbean/nomads/forest)
-"aS" = (/obj/structure/window/classic,/obj/covers/jail,/obj/roof/clay,/obj/covers/wood,/obj/structure/curtain/open/red,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"aS" = (/obj/structure/window/classic,/obj/covers/jail/woodjail,/obj/roof/clay,/obj/covers/wood,/obj/structure/curtain/open/red,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "aT" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/temperate)
-"aU" = (/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"aU" = (/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "aV" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "aW" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "aX" = (/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/temperate)
@@ -91,13 +91,13 @@
 "bU" = (/obj/structure/wild/jungle/medpine,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bW" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "bX" = (/mob/living/simple_animal/hostile/fox,/turf/floor/grass,/area/caribbean/nomads/forest)
-"bY" = (/obj/structure/filingcabinet/filingcabinet,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"bZ" = (/obj/structure/bed/chair/wood/red,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ca" = (/obj/structure/table/wood,/obj/roof/clay,/obj/covers/wood,/obj/structure/voting/civa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cb" = (/obj/structure/table/wood,/obj/item/weapon/globe,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"bY" = (/obj/structure/filingcabinet/filingcabinet,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"bZ" = (/obj/structure/bed/chair/wood/red,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ca" = (/obj/structure/table/wood,/obj/roof/clay,/obj/covers/wood,/obj/structure/voting/civa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cb" = (/obj/structure/table/wood,/obj/item/weapon/globe,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cc" = (/turf/floor/dirt/underground,/area/caribbean/nomads/forest)
-"cd" = (/obj/structure/roof_support/nordic,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ce" = (/obj/roof/clay,/obj/structure/bed/chair/wood,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"cd" = (/obj/structure/roof_support/nordic,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ce" = (/obj/roof/clay,/obj/structure/bed/chair/wood,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cf" = (/turf/floor/beach/sand,/area/caribbean/forest/dirt)
 "cg" = (/mob/living/simple_animal/goat,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "ch" = (/obj/covers/roads/cobble,/turf/floor/dirt,/area/caribbean/nomads/forest)
@@ -105,141 +105,140 @@
 "cj" = (/mob/living/simple_animal/hostile/wolf,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ck" = (/mob/living/simple_animal/hostile/wolf/female,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cn" = (/turf/floor/beach/water/deep,/area/caribbean/nomads/forest)
-"co" = (/obj/structure/closet/crate/empty,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cp" = (/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
+"co" = (/obj/structure/closet/crate/empty,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cp" = (/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cq" = (/obj/roof/clay,/obj/structure/closet/crate/wall_mailbox,/obj/covers/wood,/obj/covers/wood_wall/nordic,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"cr" = (/obj/structure/closet/crate/empty,/obj/item/stack/ore/coal{amount = 30},/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cs" = (/obj/structure/bed/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ct" = (/obj/covers/wood,/obj/roof/clay,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCivA"},/turf/floor/wood,/area/caribbean/nomads/forest)
+"cr" = (/obj/structure/closet/crate/empty,/obj/item/stack/ore/coal{amount = 30},/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cs" = (/obj/structure/bed/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ct" = (/obj/covers/wood,/obj/roof/clay,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCivA"},/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cu" = (/obj/structure/wild/burnedbush,/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/forest/dirt)
 "cv" = (/obj/covers/roads/cobble,/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
-"cw" = (/obj/structure/oven,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
+"cw" = (/obj/structure/oven,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cx" = (/mob/living/simple_animal/cattle/cow,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"cz" = (/obj/structure/closet/crate/glass,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cA" = (/obj/covers/wood_wall/nordic,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"cz" = (/obj/structure/closet/crate/glass,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cA" = (/obj/covers/wood_wall/nordic,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cB" = (/turf/wall/rockwall,/area/caribbean/nomads/forest)
-"cC" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen/fancy,/obj/roof/clay,/obj/item/weapon/paper_bin,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cD" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cE" = (/obj/covers/wood_wall/nordic,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cG" = (/obj/structure/oven,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cH" = (/obj/structure/table/wood,/obj/structure/sink/kitchen,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cI" = (/obj/structure/pot,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cJ" = (/obj/structure/cutting_board,/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cK" = (/obj/structure/drying_rack,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cL" = (/obj/roof/clay,/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cM" = (/obj/structure/furnace/kiln,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
+"cC" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen/fancy,/obj/roof/clay,/obj/item/weapon/paper_bin,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cD" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cE" = (/obj/covers/wood_wall/nordic,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cG" = (/obj/structure/oven,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cH" = (/obj/structure/table/wood,/obj/structure/sink/kitchen,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cI" = (/obj/structure/pot,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cJ" = (/obj/structure/cutting_board,/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cK" = (/obj/structure/drying_rack,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cL" = (/obj/roof/clay,/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cM" = (/obj/structure/furnace/kiln,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cN" = (/mob/living/simple_animal/chicken,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"cO" = (/obj/structure/filingcabinet/filingcabinet,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cQ" = (/obj/structure/closet/crate/rations/biscuits,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cR" = (/obj/structure/closet/crate/rations/beer,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cS" = (/obj/structure/closet/crate/empty,/obj/item/stack/ore/coal{amount = 30},/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cT" = (/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"cO" = (/obj/structure/filingcabinet/filingcabinet,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cQ" = (/obj/structure/closet/crate/rations/biscuits,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cR" = (/obj/structure/closet/crate/rations/beer,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cS" = (/obj/structure/closet/crate/empty,/obj/item/stack/ore/coal{amount = 30},/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cT" = (/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "cU" = (/mob/living/simple_animal/chicken,/turf/floor/dirt/ploughed,/area/caribbean/nomads/forest)
-"cV" = (/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cW" = (/obj/structure/mill,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cX" = (/obj/structure/roof_support/nordic,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cY" = (/obj/structure/furnace,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"cZ" = (/obj/structure/simple_door/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"da" = (/obj/structure/bed/chair/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"db" = (/obj/structure/dehydrator,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dc" = (/obj/structure/anvil,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
+"cV" = (/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cW" = (/obj/structure/mill,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cX" = (/obj/structure/roof_support/nordic,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cY" = (/obj/structure/furnace,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"cZ" = (/obj/structure/simple_door/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"da" = (/obj/structure/bed/chair/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"db" = (/obj/structure/dehydrator,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dc" = (/obj/structure/anvil,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "dd" = (/obj/structure/wild/berrybush/narco,/turf/floor/grass,/area/caribbean/nomads/forest)
-"de" = (/obj/structure/roof_support,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
+"de" = (/obj/structure/roof_support,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "df" = (/obj/effect/spawner/mobspawner/alligator,/turf/floor/dirt,/area/caribbean/forest/dirt)
 "dg" = (/mob/living/simple_animal/cattle/bull,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"dh" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
+"dh" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "di" = (/mob/living/simple_animal/cattle/cow,/turf/floor/dirt/ploughed,/area/caribbean/nomads/forest)
-"dj" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dk" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dl" = (/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/clay/mold/axehead/fired,/obj/item/weapon/clay/mold/claypot/fired,/obj/item/weapon/clay/mold/knife/fired,/obj/item/weapon/clay/mold/pickaxe/fired,/obj/item/weapon/clay/mold/shovel/fired,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dm" = (/obj/structure/table/wood,/obj/roof/clay,/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dn" = (/obj/structure/table/wood,/obj/roof/clay,/obj/item/weapon/pen,/obj/item/weapon/paper_bin,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"do" = (/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dp" = (/obj/structure/brazier,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dq" = (/obj/structure/bed/chair/wood/red,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dr" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen/fancy,/obj/roof/clay/kerawa,/obj/item/weapon/paper_bin,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ds" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dt" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"du" = (/obj/structure/simple_door,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dv" = (/obj/structure/table/wood,/obj/item/weapon/globe,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dx" = (/obj/structure/window/classic,/obj/covers/jail,/obj/covers/wood,/obj/roof/clay/kerawa,/obj/structure/curtain/open/green,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"dy" = (/obj/structure/closet/crate/glass,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dz" = (/obj/structure/closet/crate/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dA" = (/obj/covers/wood,/obj/roof/clay/kerawa,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCivB"},/turf/floor/wood,/area/caribbean/nomads/forest)
-"dB" = (/obj/structure/bed/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dC" = (/obj/structure/closet/crate/brick,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dD" = (/obj/structure/closet/crate/steel,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dE" = (/obj/structure/closet/anchored,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dF" = (/obj/structure/closet/crate/stone,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dG" = (/obj/structure/closet/crate/iron,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dH" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dI" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dJ" = (/obj/structure/closet/crate/empty,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"dj" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dk" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dl" = (/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/clay/mold/axehead/fired,/obj/item/weapon/clay/mold/claypot/fired,/obj/item/weapon/clay/mold/knife/fired,/obj/item/weapon/clay/mold/pickaxe/fired,/obj/item/weapon/clay/mold/shovel/fired,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dm" = (/obj/structure/table/wood,/obj/roof/clay,/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dn" = (/obj/structure/table/wood,/obj/roof/clay,/obj/item/weapon/pen,/obj/item/weapon/paper_bin,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"do" = (/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dp" = (/obj/structure/brazier,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dq" = (/obj/structure/bed/chair/wood/red,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dr" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen/fancy,/obj/roof/clay/kerawa,/obj/item/weapon/paper_bin,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ds" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dt" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"du" = (/obj/structure/simple_door,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dv" = (/obj/structure/table/wood,/obj/item/weapon/globe,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dx" = (/obj/structure/window/classic,/obj/covers/jail/woodjail,/obj/covers/wood,/obj/roof/clay/kerawa,/obj/structure/curtain/open/green,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dy" = (/obj/structure/closet/crate/glass,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dz" = (/obj/structure/closet/crate/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dA" = (/obj/covers/wood,/obj/roof/clay/kerawa,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCivB"},/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dB" = (/obj/structure/bed/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dC" = (/obj/structure/closet/crate/brick,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dD" = (/obj/structure/closet/crate/steel,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dE" = (/obj/structure/closet/anchored,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dF" = (/obj/structure/closet/crate/stone,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dG" = (/obj/structure/closet/crate/iron,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dH" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dI" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dJ" = (/obj/structure/closet/crate/empty,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "dK" = (/obj/roof/clay,/obj/covers/wood,/obj/covers/wood_wall/nordic,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"dM" = (/obj/structure/filingcabinet/chestdrawer,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"dM" = (/obj/structure/filingcabinet/chestdrawer,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "dN" = (/obj/structure/wild/berrybush/azul,/turf/floor/grass,/area/caribbean/nomads/forest)
-"dO" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dP" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dQ" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dR" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"dO" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dP" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dQ" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dR" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "dS" = (/obj/structure/wild/berrybush/marron,/turf/floor/beach/sand,/area/caribbean/nomads/forest)
-"dT" = (/obj/structure/filingcabinet/chestdrawer,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dU" = (/obj/structure/table/wood,/obj/structure/sink/kitchen,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dV" = (/obj/structure/pot,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dW" = (/obj/structure/closet/cabinet,/obj/roof/clay,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"dZ" = (/obj/structure/cutting_board,/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ea" = (/obj/structure/drying_rack,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
+"dT" = (/obj/structure/filingcabinet/chestdrawer,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dU" = (/obj/structure/table/wood,/obj/structure/sink/kitchen,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dV" = (/obj/structure/pot,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dW" = (/obj/structure/closet/cabinet,/obj/roof/clay,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"dZ" = (/obj/structure/cutting_board,/obj/structure/table/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ea" = (/obj/structure/drying_rack,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "eb" = (/turf/floor/grass/jungle,/area/caribbean/nomads/forest)
-"ed" = (/obj/structure/mill,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ee" = (/obj/covers/wood,/obj/roof/clay/kerawa,/obj/structure/roof_support,/turf/floor/wood,/area/caribbean/nomads/forest)
+"ed" = (/obj/structure/mill,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ee" = (/obj/covers/wood,/obj/roof/clay/kerawa,/obj/structure/roof_support,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "eg" = (/obj/covers/roads/cobble,/mob/living/simple_animal/chicken,/turf/floor/grass,/area/caribbean/nomads/forest)
-"ei" = (/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"ei" = (/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "ek" = (/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "el" = (/turf/floor/beach/water,/area/caribbean/void/caves)
-"em" = (/obj/structure/table/wood,/obj/roof/clay/kerawa,/obj/covers/wood,/obj/structure/voting/civb,/turf/floor/wood,/area/caribbean/nomads/forest)
+"em" = (/obj/structure/table/wood,/obj/roof/clay/kerawa,/obj/covers/wood,/obj/structure/voting/civb,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "en" = (/mob/living/simple_animal/rooster,/turf/floor/grass,/area/caribbean/nomads/forest)
-"ep" = (/obj/structure/roof_support,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"ep" = (/obj/structure/roof_support,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "er" = (/mob/living/simple_animal/turkey_m,/turf/floor/beach/sand,/area/caribbean/nomads/forest)
-"es" = (/obj/structure/bed/chair/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"et" = (/obj/structure/closet/crate/rations/biscuits,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"eu" = (/obj/structure/closet/crate/rations/ale,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ew" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ex" = (/obj/structure/table/wood,/obj/roof/clay/kerawa,/obj/item/weapon/pen,/obj/item/weapon/paper_bin,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"ey" = (/obj/structure/closet/cabinet,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"eA" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"eB" = (/obj/structure/dehydrator,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"eC" = (/obj/structure/table/wood,/obj/roof/clay/kerawa,/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"es" = (/obj/structure/bed/chair/wood,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"et" = (/obj/structure/closet/crate/rations/biscuits,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"eu" = (/obj/structure/closet/crate/rations/ale,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ew" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ex" = (/obj/structure/table/wood,/obj/roof/clay/kerawa,/obj/item/weapon/pen,/obj/item/weapon/paper_bin,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"ey" = (/obj/structure/closet/cabinet,/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"eA" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/obj/roof/clay/kerawa,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"eB" = (/obj/structure/dehydrator,/obj/covers/wood,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"eC" = (/obj/structure/table/wood,/obj/roof/clay/kerawa,/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "eF" = (/obj/map_metadata/nationsrp,/turf/floor/dirt/underground,/area/caribbean/void/caves)
-"gA" = (/obj/roof/clay/kerawa,/obj/structure/bed/chair/wood,/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
+"gA" = (/obj/roof/clay/kerawa,/obj/structure/bed/chair/wood,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "iG" = (/mob/living/simple_animal/boar_gilt,/turf/floor/beach/sand,/area/caribbean/nomads/forest)
 "lu" = (/obj/covers/wood_wall/adjustable,/obj/roof/clay/kerawa,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "ov" = (/obj/structure/fish/salmon,/turf/floor/beach/water/deep,/area/caribbean/nomads/forest)
 "px" = (/obj/structure/fish/salmon,/turf/floor/beach/water/deep,/area/caribbean/forest/dirt)
-"pT" = (/obj/roof/clay/kerawa,/obj/covers/wood,/obj/structure/roof_support,/turf/floor/wood,/area/caribbean/nomads/forest)
-"vI" = (/obj/structure/furnace,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"wW" = (/obj/roof/clay/kerawa,/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/obj/covers/wood,/turf/floor/wood,/area/caribbean/nomads/forest)
-"zl" = (/obj/covers/wood_wall/adjustable,/obj/roof/clay/kerawa,/turf/floor/wood,/area/caribbean/nomads/forest)
-"zx" = (/obj/structure/brazier,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"zB" = (/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/clay/mold/axehead/fired,/obj/item/weapon/clay/mold/claypot/fired,/obj/item/weapon/clay/mold/knife/fired,/obj/item/weapon/clay/mold/pickaxe/fired,/obj/item/weapon/clay/mold/shovel/fired,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"pT" = (/obj/roof/clay/kerawa,/obj/covers/wood,/obj/structure/roof_support,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"vI" = (/obj/structure/furnace,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"wW" = (/obj/roof/clay/kerawa,/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/obj/covers/wood,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"zx" = (/obj/structure/brazier,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"zB" = (/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/clay/mold/axehead/fired,/obj/item/weapon/clay/mold/claypot/fired,/obj/item/weapon/clay/mold/knife/fired,/obj/item/weapon/clay/mold/pickaxe/fired,/obj/item/weapon/clay/mold/shovel/fired,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "AF" = (/obj/structure/wild/tallgrass2,/turf/floor/grass,/area/caribbean/nomads/forest)
-"De" = (/obj/structure/closet/crate/stone,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"Dz" = (/obj/structure/closet/crate/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"De" = (/obj/structure/closet/crate/stone,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"Dz" = (/obj/structure/closet/crate/wood,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Ey" = (/mob/living/simple_animal/hostile/wolf/female,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Ie" = (/mob/living/simple_animal/frog,/turf/floor/beach/sand,/area/caribbean/forest/dirt)
 "Jo" = (/obj/structure/wild/palm,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Mf" = (/obj/effect/spawner/objspawner/tree,/turf/floor/dirt,/area/caribbean/forest/dirt)
-"MN" = (/obj/structure/anvil,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"MN" = (/obj/structure/anvil,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Oy" = (/mob/living/simple_animal/frog,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "OD" = (/turf/floor/beach/water/deep,/area/caribbean/forest/dirt)
 "QZ" = (/mob/living/simple_animal/hostile/wolf,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"UI" = (/obj/structure/furnace/kiln,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"UI" = (/obj/structure/furnace/kiln,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "UN" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"VN" = (/obj/structure/closet/crate/brick,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"VN" = (/obj/structure/closet/crate/brick,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "VY" = (/turf/floor/beach/water,/area/caribbean/forest/dirt)
-"Xg" = (/obj/structure/closet/crate/steel,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"Xg" = (/obj/structure/closet/crate/steel,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Xi" = (/obj/structure/wild/tree/live_tree,/obj/effect/spawner/mobspawner/wolves,/turf/floor/grass,/area/caribbean/nomads/forest)
-"XQ" = (/obj/structure/closet/anchored,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
-"Yt" = (/obj/structure/closet/crate/iron,/obj/covers/wood,/obj/roof/clay,/turf/floor/wood,/area/caribbean/nomads/forest)
+"XQ" = (/obj/structure/closet/anchored,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"Yt" = (/obj/structure/closet/crate/iron,/obj/covers/wood,/obj/roof/clay,/turf/floor/dirt,/area/caribbean/nomads/forest)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazaaaMaMaMaMaMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -458,37 +457,37 @@ abaSaUdHdmaUdmcDaUaSaRaRaRaRaRcEcEaScEcEcGcHcIcJcKcEabababayababapababababababab
 abdKaUaUaUcdaUaUaUdKaRaRaRaRaRcEcQcRcScEcTcTcTcTcTcEababakabababapababababababababababababakabaGabababababababababababababababababababafaGabababababaGabababababababababababaeabababababababaGaGaebqbqacaccncncncncnaoaTaTaTaocncncncncnacacbqbqabbIababababbUapaqapaJabababababbIaGababababababababaGabaGabababbxabababababababaGaGabababababababaGababababababababaGababababababafapapapcNapapapcgapapapababababaGababababaGaGabababaGabababababababab
 abdKbYdTaUdWaUdTbYdKaRaRaRaRaRcEcTcTcTcEcTcTcVcWcTcEabababababafapababababababakababababababababababababababaiababakababaeabababaGabababababababababababaeabababababababababafababababababababaGafabbqacaccncncncncnaoaTaTaTaocncncncncnacacbqabababababapapapapaqaqapabacacabacacabababababababababaGaGabababababababababababababaGabaeaeababafabababaGabababaeapapapapapababababajapchchchchchchchchchchchaGabababababababaGagabababababababababababab
 abcAcAdKdudKdudKdKdKaRaRaRaRaRcEcTcXcTcZcTcTcXcTcTcEababababababapababapapababababababababaeababaeabababaeabababababababababababababaeababababababababababaGababaGababababababaGababababaGabababababbqacacaccncncncnaoaTaTaTaocncncncncnacacbqbqababababaJaqaqapapaqaqababacacacacababababababababababaGababalabababababababababaGaGabababababbxaeababaGabababafapapaCapapapapbUapapapchchchchchaRchchchchchabababakabaGabababababababababababaGabababab
-abaSceceaUceaUcececqaRaRaRaRaRcEcTcTcTcEcTdadadacTcEababababaGabapapccccapapapabababagabababababaGabababababababababaeabababababaeababababafabaeaeababafababababaGaGababaeabababababababababaeabababbqacaccncncncncnaoaTaTaTaocncncncncnaZacbqabababababapapapapapapababababacaeabababababababababababababababababababababababababaGabababababababababaGababababababapapaAapapapapapapchchchchchchchchchchchzlzlzlzlzlzlzlzlzlzlzlababababababaGabababab
-abdKaUcdaUaUaUcdaUduaRaRaRaRaRcEcTcTcTcEdbcVcVcVcTcEababakapababapccccccccccccapapapababababababababababaGabababababababaGaGabababaeabaeabbxabababababbxaeababababaGabababaGabababababababababaGbqbqbqacaccncncncncnaoaTaTaTaocncncncnacacacbqbqababababapapapapapababaeaeaeaeaeababandNabababababababababababaGababababafaeababababaGababalabababababababaeabababababababapaBapaqapapchchchchchchchchchchchzlcocpcozlcrcwcMcYdczlababababababababababab
-abaScLcLcLcLcLaUaUcAaRaRaRaRaRcEaScZaScEcEaScEaScEcEababababakabapccccccccccccccapapapabababababababababababababbRababababababababafabafabababababababababababababababafabababaGabaeaeababafabababbqbqaccncncncncncnaoaTaTaTaocncncncncnacacacbqabakababapapapapapabababababababababababababababaGabababababababababababababababababababababababababababababaGabababababddabababapapapchchchchchchchchchchchzlcocpcozlcpcpdecpcpzlababababababababababab
-abcAcAcAcAcAcAcAcAcAaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRayabababababababccccccccccccccccapapabababakabababababakabababababababababababababababababaGababalabababababababababbxaeababababababababbxaeabbqbqbqaccncncncncncnaoaTaTaTaocncncncncncnacacbqabaeabaGapapapbUabababababaeababababababababababaGaGaGabandNabababababababaeababababababababaGabababababafabababababababababababapapapdgapapbHapcNchchchchchzldhdecozlcpcpcpcpcpzlababaGabaiabababababab
-abababababaGababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababafababaGabapapccccccccccccccapabababababababababababababababababaeabababaGabababababababababababababababababababababababababababababababbqbqbqacaccncncncncnaoaTaTaTaocncncncncnacacacbqababababapaGababababababaeabaeababababababababaGabaGaGaGababababababaGabababababaeabababababababababababbxaeababababbIababababababapaNaNdiaNaNcUapchchchchchzldjcpdkzldldocpcpdpzlababababababaGabababab
-abababaGababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababbiababababapapapapccccccccccccapabababababababababaGababababahababababababaGabaGabaGabababababaGababababababaGababababababaGababalabababababbqbqaccncncncncncnaoaTaTaTaocncncncncnacacacbqbqabababababababababababababaeaeababaeababafabababababaGababababababaGaGababaeababababandNababababababababababababababababababababapaNaNaNaNaNaNapchchchchchzldscpcozlzlzldtzlzlzlzldxzlzlababababaeabab
-ababababababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaeababababababababababababccccccccabababaGabababababababababababababababababababababababababababababababababababaGaGababababababababababababababbqbqacaccncncncncnaoaTaTaTaocncncncncnacacbqbqbqakabaGaeababababababahababaGaeababaGababababaGababababababababaGabaGabababafafabababababababababaGababababababaGababababaebIababapaNaNaNaNaNaNapchchchchchzldycpdzzldAdAcpdAdAzlcpcpdBzlababababababab
-ababababababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababacapapapapapapapapapapapccccababababababaGabababababababababababaiaGabababababababababandNabababababababababaGabababababababababaGababababbqbqacaccncncncncnaoaTaTaTaocncncncncnacacbqbqababababababbIababababababababababbIababababaeaeabaeabaeababafababababababababbxaeababababababababaGaGabababababdNabbIababababababapaNaNaNaNaNaNapchchchchchzldCcpdzzlcpcpcpcpcpzlcpcpdBzlababababababab
-abababaGabcEcEaScEcEaSaScZaSaScEcEcEcEcEaRaRaRaRaRaGabacacapaNaNaNaNaNaNaNaNaNapababababababaeabababababaGababababababaeababababaGababababababababababababaGabababababababababababababababababababbqbqacacaccncncncnaoaTaTaTaocncncncncnacacbqbqababaeabaLabakababababababababababakababababaGaeabababafabababaGabababaGababababababababababababababaGaGababababababababaGabababbIapaNaNaNaNaNaNapchchchchchzlcpdecpdtcpcpdecpcpdtcpdedBzlababababababab
-abaeabababcEcscTcTcEctcTcTcTctcEczcTDzcEaRaRaRaRaRababacabapaNaNaNaNaNaNaNaNaNapabababababababababababababaiababaeababababababababababababababababababababaGaGababababababababababandNabababababababbqacaccncncncncnaoaTaTaTaocncncncncnacacbqababababababababababaGababababbIabababaGababababaGababababababaeaeabaeabaeabaeababababababababaeababababababababababababababababababapapapapapapapapchchchchchzldDcpdEzldAcpcpcpdAzlcpcpdBzlabaiabaGababab
-abababababcEcscTcTcEctcTcTcTctcEXQcTDzcEaRaRaRaRaRabacacabapboaNaNaNaNaNaNaNaNapababababaGababababakabababababababababababababaeababababababababababababababaGababaGabababaGabaGabababababababaGababbqbqaccncncncncnaoaTaTaTaocncncncncnacacbqbqababababababababababababababababababababababaeaeabaeababababaGaeabababaeabababababababaeababababandNababababababababababababababababababababababbichchchchchzldFcpdGzldAcpcpcpdAzlcpcpdBzlababababababab
-aGababababcEcscXcTcZcTcTcXcTcTcZcTcXcTcEaRaRaRaRaRabacababapaNaNaNbraNaNaNaNaNapabaGabababaGabababababaGabababababalababababababababababapapapabapapabababababababaGaGababaGaGababababababababaGaGabbqacaccncncncncnaoaTaTaTaocncncncncnacacbqbqabaGabababbIababaeabababahababaeaeabababababaGaeababababafaeababababaeabababaeabababababaGabababababababababaGababafababbIababckabbIababababbIababchchchchchzlzlzlzlzldxdxdIdxdxzlzldxzlzlababababababab
-abababababcEcscTcTcEcTcTcTcTcTcEXgcTVNcEaRaRaRaRaRabababbwapaNaNaNaNaNaNaNaNaNapabaGabababababababababababababaeabababababababaGabababababababapapapababababababababaGabababaGabababababababababaGbqbqacacaccncncncnaoaTaTaTaocncncncncnacacbqbqabababababababababbIabababaeaGabababababafaeababababaeabababababababafabababafababababbRababababababababababaGaGababababababababababababababababbIchchchchchchchchchchchchchchchchchabababababababaGabab
-abababababcEcscTcTcEctctcTctctcEDecTYtcEaRaRaRaRaRababababapaNaNboaNaNaNaNaNaNapabababababababababababababakababababababaGababababababababababababababababababakapapapabababababababaGabapapababababbqacacaccncncncnaoaTaTaTaocncncncnacacbqbqababababalabababababababaKababababababababababababababafabababaGababababababababababababaeabababababababababababaGabababababcjabababababababaGabababchchchchchchchchchchchchchchchchchabababababababaGabab
+abaSceceaUceaUcececqaRaRaRaRaRcEcTcTcTcEcTdadadacTcEababababaGabapapccccapapapabababagabababababaGabababababababababaeabababababaeababababafabaeaeababafababababaGaGababaeabababababababababaeabababbqacaccncncncncnaoaTaTaTaocncncncncnaZacbqabababababapapapapapapababababacaeabababababababababababababababababababababababababaGabababababababababaGababababababapapaAapapapapapapchchchchchchchchchchchlululululululululululuababababababaGabababab
+abdKaUcdaUaUaUcdaUduaRaRaRaRaRcEcTcTcTcEdbcVcVcVcTcEababakapababapccccccccccccapapapababababababababababaGabababababababaGaGabababaeabaeabbxabababababbxaeababababaGabababaGabababababababababaGbqbqbqacaccncncncncnaoaTaTaTaocncncncnacacacbqbqababababapapapapapababaeaeaeaeaeababandNabababababababababababaGababababafaeababababaGababalabababababababaeabababababababapaBapaqapapchchchchchchchchchchchlucocpcolucrcwcMcYdcluababababababababababab
+abaScLcLcLcLcLaUaUcAaRaRaRaRaRcEaScZaScEcEaScEaScEcEababababakabapccccccccccccccapapapabababababababababababababbRababababababababafabafabababababababababababababababafabababaGabaeaeababafabababbqbqaccncncncncncnaoaTaTaTaocncncncncnacacacbqabakababapapapapapabababababababababababababababaGabababababababababababababababababababababababababababababaGabababababddabababapapapchchchchchchchchchchchlucocpcolucpcpdecpcpluababababababababababab
+abcAcAcAcAcAcAcAcAcAaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRayabababababababccccccccccccccccapapabababakabababababakabababababababababababababababababaGababalabababababababababbxaeababababababababbxaeabbqbqbqaccncncncncncnaoaTaTaTaocncncncncncnacacbqabaeabaGapapapbUabababababaeababababababababababaGaGaGabandNabababababababaeababababababababaGabababababafabababababababababababapapapdgapapbHapcNchchchchchludhdecolucpcpcpcpcpluababaGabaiabababababab
+abababababaGababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababafababaGabapapccccccccccccccapabababababababababababababababababaeabababaGabababababababababababababababababababababababababababababababbqbqbqacaccncncncncnaoaTaTaTaocncncncncnacacacbqababababapaGababababababaeabaeababababababababaGabaGaGaGababababababaGabababababaeabababababababababababbxaeababababbIababababababapaNaNdiaNaNcUapchchchchchludjcpdkludldocpcpdpluababababababaGabababab
+abababaGababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababbiababababapapapapccccccccccccapabababababababababaGababababahababababababaGabaGabaGabababababaGababababababaGababababababaGababalabababababbqbqaccncncncncncnaoaTaTaTaocncncncncnacacacbqbqabababababababababababababaeaeababaeababafabababababaGababababababaGaGababaeababababandNababababababababababababababababababababapaNaNaNaNaNaNapchchchchchludscpcolululudtlulululudxluluababababaeabab
+ababababababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaeababababababababababababccccccccabababaGabababababababababababababababababababababababababababababababababababaGaGababababababababababababababbqbqacaccncncncncnaoaTaTaTaocncncncncnacacbqbqbqakabaGaeababababababahababaGaeababaGababababaGababababababababaGabaGabababafafabababababababababaGababababababaGababababaebIababapaNaNaNaNaNaNapchchchchchludycpdzludAdAdAdAdAlucpcpdBluababababababab
+ababababababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababacapapapapapapapapapapapccccababababababaGabababababababababababaiaGabababababababababandNabababababababababaGabababababababababaGababababbqbqacaccncncncncnaoaTaTaTaocncncncncnacacbqbqababababababbIababababababababababbIababababaeaeabaeabaeababafababababababababbxaeababababababababaGaGabababababdNabbIababababababapaNaNaNaNaNaNapchchchchchludCcpdzludAdAdAdAdAlucpcpdBluababababababab
+abababaGabcEcEaScEcEaSaScZaSaScEcEcEcEcEaRaRaRaRaRaGabacacapaNaNaNaNaNaNaNaNaNapababababababaeabababababaGababababababaeababababaGababababababababababababaGabababababababababababababababababababbqbqacacaccncncncnaoaTaTaTaocncncncncnacacbqbqababaeabaLabakababababababababababakababababaGaeabababafabababaGabababaGababababababababababababababaGaGababababababababaGabababbIapaNaNaNaNaNaNapchchchchchlucpdecpdtdAdAdedAdAdtcpdedBluababababababab
+abaeabababcEcscTcTcEctctctctctcEczcTDzcEaRaRaRaRaRababacabapaNaNaNaNaNaNaNaNaNapabababababababababababababaiababaeababababababababababababababababababababaGaGababababababababababandNabababababababbqacaccncncncncnaoaTaTaTaocncncncncnacacbqababababababababababaGababababbIabababaGababababaGababababababaeaeabaeabaeabaeababababababababaeababababababababababababababababababapapapapapapapapchchchchchludDcpdEludAdAdAdAdAlucpcpdBluabaiabaGababab
+abababababcEcscTcTcEctctctctctcEXQcTDzcEaRaRaRaRaRabacacabapboaNaNaNaNaNaNaNaNapababababaGababababakabababababababababababababaeababababababababababababababaGababaGabababaGabaGabababababababaGababbqbqaccncncncncnaoaTaTaTaocncncncncnacacbqbqababababababababababababababababababababababaeaeabaeababababaGaeabababaeabababababababaeababababandNababababababababababababababababababababababbichchchchchludFcpdGludAdAdAdAdAlucpcpdBluababababababab
+aGababababcEcscXcTcZctctcXctctcZcTcXcTcEaRaRaRaRaRabacababapaNaNaNbraNaNaNaNaNapabaGabababaGabababababaGabababababalababababababababababapapapabapapabababababababaGaGababaGaGababababababababaGaGabbqacaccncncncncnaoaTaTaTaocncncncncnacacbqbqabaGabababbIababaeabababahababaeaeabababababaGaeababababafaeababababaeabababaeabababababaGabababababababababaGababafababbIababckabbIababababbIababchchchchchlululululudxdxdIdxdxluludxluluababababababab
+abababababcEcscTcTcEctctctctctcEXgcTVNcEaRaRaRaRaRabababbwapaNaNaNaNaNaNaNaNaNapabaGabababababababababababababaeabababababababaGabababababababapapapababababababababaGabababaGabababababababababaGbqbqacacaccncncncnaoaTaTaTaocncncncncnacacbqbqabababababababababbIabababaeaGabababababafaeababababaeabababababababafabababafababababbRababababababababababaGaGababababababababababababababababbIchchchchchchchchchchchchchchchchchabababababababaGabab
+abababababcEcscTcTcEctctctctctcEDecTYtcEaRaRaRaRaRababababapaNaNboaNaNaNaNaNaNapabababababababababababababakababababababaGababababababababababababababababababakapapapabababababababaGabapapababababbqacacaccncncncnaoaTaTaTaocncncncnacacbqbqababababalabababababababaKababababababababababababababafabababaGababababababababababababaeabababababababababababaGabababababcjabababababababaGabababchchchchchchchchchchchchchchchchchabababababababaGabab
 abababababcEcEaScEcEcEcEcZcEcEcEdJcTdOcEaRaRaRaRaRabaGababapapapapapapapapapapapabababababakabaGababababababababababababababababababaGabapapababababababakapapapapabapabababababababaGaGapapababababbqacacaccncncncnaoaTaTaTaocncncncnacbqbqbqabababababababbqabakabababaLabalabababababababaGabababababababababaeabababaeababababaGabababababababababaeaeabaeababababababababababababababccabababchchchchchchchchchchchchchchchchchababaGabababaGababab
 ababaGababababababcEzxcTcTcVzBcEdJcTdPcEaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaGababababababababababababaiababakababaeabababaGaGaGaGapapabababababababababababapapababababababababaGabababababbqbqacaccncncncncnaoaTaTaTaocncncncnacacbqbqabababababaGabbqbqababbqbJbJbqbqbqababafabababababaeababababababababaGabababaGabababaGaGabababaGababababaGaeababababafaGababaeabababaGababccccccaiabchchchchchchchchchchchchchchchchchabababababababababab
 abababababababaeebcEcTcTcTcTcTcEdJcXdJcEaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababababaeababaeabababaeababababababababababababaGabaGabababababababababaGababababababababababababbRababababaGabbqbqacaccncncncncnaoaTaTaTaocncncncnacacbqababaeababababbqbqbqbqbqbqbqbqbqbqbqbqababababababababaGababaeababafabaGababababaGabababaGababababababafaeababababaeabababababababaGabababccccccccabaGchchchchchchchchchchchchchchchchchabababababababaGabab
-ababaYababababababcEcTcTcXcTcTcEdJcTdQcEaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababababababaGabababababababababaeabababababaeapapapabababababababababababababababababaGabababababababababababbqbqacacaccncncncnaoaTaTaTaocncncncnacbqbqabababandNababbqbqbqbqbNbqbqbqbqbqbqbqbqabaeaeababafabababababababbxaeababababaeaeabaeababababababaGabababababababafababababababababababccccccddccccababzlzldxzldxzlzldxdtdxzlchchchchchabababababaGabaGabab
-abababababababababcEMNUIvIcGcScEdJcTdRcEaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababahababababababababaGabababababababaGaGabababababababababababababababababababababababababababababababababababbqbqacaZcncncncncnaoaTaTaTaocncncncnacbqbqbqababababababbqbqbqbqbqbqdSbqbqbqbqbNbqabababababbxaeababababababababababababaGaeababababababababababababaGababababababaGabababababababccccccababccccabzlcwdUdVdZeazlcpcpcpzlchchchchchluzldxludxludxluluab
-abakaeababababababcEcEcEcEcEcEcEcEcEcEcEegaRaRcvaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababababababababababababababababababababababababababababaGabababababababababababaeababababababababababababababbqbqacaccncncncncncnaoaTaTaTaocncncncnacbqbqbqbqbqabababababbqbqbqbqbqbqbqbJbqbqbqbqabababababababababababalabababababafaeababababaeabababababababababababaeabababababababababababababccccccccccccabzlcpcpcpcpcpzlcpcpcpzlchchchchchlucOeieidqeieicOluab
-abababababbfababababababaGabababababahabapapcxapapapcNapapapapababaGababakabababababccccccababababababababababababaGabababababababababababababababababababaGababababababababababababababababbqbqbqacaccncncncncncncnaoaTaTaTaocncncncnacacacbqacbqbqabahabakbqbqbqbqbJbqbqbqbqbqbqbqabababalabababababababababababaGabababababababafababaGabababababababababaGabababababababaGabababababccccccccccaizlcpeddocpcpdtcpeecpzlchchchchchlueieidremdveieiluab
-ababaGabababababahababababababababababenapaNaNaNaNbHaNaNaNaNapababababababababababccccccccabababababaeabababaGabababababababababahaeababababababababababababababababababaGabaeabababababaGbqbqbqacaccncncncncncncncnaoaTaTaTaocncncncncnacacacacbqbqbqabbRababbqbqbqbqbqbMbqbqbqbqbMabababababababababaGababaGababababababaGababababababaGaGababaeaeababafabababababababababababddabaGababccccccababzlcpcpeecpcpzlcpcpcpzlchchchchchdxeieweCepeCeAeidxab
-abababababababababababakabababababakababapaNaNaNcUapaNaNaNaNapaiababakabababccccccccccccabababakaeababbRababababababababbfabababababababababababababababababababababababababaGabababababababbqbqacaccncncncncncncncnaoaTaTaTaocncncncncncncncnacacacbqababaebqbqbqbqbqbqbObqbqbqerabababababaGababababaGabababababababababababaeabababababaGababababababbxaeababababababaGababaeababababababababababzlcpesesescpzlcreteuzlchchchchchdxeiewexeiexeAeidxab
-abakabababababakababababababababababababapaNaNaNaNapaNaNaNaNapababababaGabccccccccccccababababababababababababababaYababababababababababaGabaeabababaeaeabababababaGabababababababababaeabbqbqbqacacaccncncncncncncnaoaTaTaTaocncncncncncncncncnacbqbqababababbqbqbObqbqbqbqbqbNabababababababababababandNabababababababababababaGababababababababababababababababaGababababababababaeababababababaizleBdododocpzlzldxzlzlchchchchchdxeieweCeieCeAeidxab
-ababababababbLababababababababababaGababapaNaNaNaNapaNaNaNaNapacacacabababccccccccabababababababaGabababababahabababaeabaeababaGababababababaGababababababababababababababaeababababababagbqbqbqacaccncncncncncncncnaoaTaTaTaocncncncncncncncncnacbqabaGaeababbqbqbqbqbqbJbqbqababababandNabababababababababababababaeaeababafabababababababaGaGababalabababababbRabababababababababababababababahabzlzldxzldxzlzlababababchchchchchlueieieiepeieieiluab
+ababaYababababababcEcTcTcXcTcTcEdJcTdQcEaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababababababaGabababababababababaeabababababaeapapapabababababababababababababababababaGabababababababababababbqbqacacaccncncncnaoaTaTaTaocncncncnacbqbqabababandNababbqbqbqbqbNbqbqbqbqbqbqbqbqabaeaeababafabababababababbxaeababababaeaeabaeababababababaGabababababababafababababababababababccccccddccccababluludxludxluludxdtdxluchchchchchabababababaGabaGabab
+abababababababababcEMNUIvIcGcScEdJcTdRcEaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababahababababababababaGabababababababaGaGabababababababababababababababababababababababababababababababababababbqbqacaZcncncncncnaoaTaTaTaocncncncnacbqbqbqababababababbqbqbqbqbqbqdSbqbqbqbqbNbqabababababbxaeababababababababababababaGaeababababababababababababaGababababababaGabababababababccccccababccccablucwdUdVdZealucpcpcpluchchchchchluludxludxludxluluab
+abakaeababababababcEcEcEcEcEcEcEcEcEcEcEegaRaRcvaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababababababababababababababababababababababababababababaGabababababababababababaeababababababababababababababbqbqacaccncncncncncnaoaTaTaTaocncncncnacbqbqbqbqbqabababababbqbqbqbqbqbqbqbJbqbqbqbqabababababababababababalabababababafaeababababaeabababababababababababaeabababababababababababababccccccccccccablucpcpcpcpcplucpcpcpluchchchchchlucOeieidqeieicOluab
+abababababbfababababababaGabababababahabapapcxapapapcNapapapapababaGababakabababababccccccababababababababababababaGabababababababababababababababababababaGababababababababababababababababbqbqbqacaccncncncncncncnaoaTaTaTaocncncncnacacacbqacbqbqabahabakbqbqbqbqbJbqbqbqbqbqbqbqabababalabababababababababababaGabababababababafababaGabababababababababaGabababababababaGabababababccccccccccailucpeddocpcpdtcpeecpluchchchchchlueieidremdveieiluab
+ababaGabababababahababababababababababenapaNaNaNaNbHaNaNaNaNapababababababababababccccccccabababababaeabababaGabababababababababahaeababababababababababababababababababaGabaeabababababaGbqbqbqacaccncncncncncncncnaoaTaTaTaocncncncncnacacacacbqbqbqabbRababbqbqbqbqbqbMbqbqbqbqbMabababababababababaGababaGababababababaGababababababaGaGababaeaeababafabababababababababababddabaGababccccccabablucpcpeecpcplucpcpcpluchchchchchdxeieweCepeCeAeidxab
+abababababababababababakabababababakababapaNaNaNcUapaNaNaNaNapaiababakabababccccccccccccabababakaeababbRababababababababbfabababababababababababababababababababababababababaGabababababababbqbqacaccncncncncncncncnaoaTaTaTaocncncncncncncncnacacacbqababaebqbqbqbqbqbqbObqbqbqerabababababaGababababaGabababababababababababaeabababababaGababababababbxaeababababababaGababaeabababababababababablucpesesescplucreteuluchchchchchdxeiewexeiexeAeidxab
+abakabababababakababababababababababababapaNaNaNaNapaNaNaNaNapababababaGabccccccccccccababababababababababababababaYababababababababababaGabaeabababaeaeabababababaGabababababababababaeabbqbqbqacacaccncncncncncncnaoaTaTaTaocncncncncncncncncnacbqbqababababbqbqbObqbqbqbqbqbNabababababababababababandNabababababababababababaGababababababababababababababababaGababababababababaeababababababailueBdododocpluludxluluchchchchchdxeieweCeieCeAeidxab
+ababababababbLababababababababababaGababapaNaNaNaNapaNaNaNaNapacacacabababccccccccabababababababaGabababababahabababaeabaeababaGababababababaGababababababababababababababaeababababababagbqbqbqacaccncncncncncncncnaoaTaTaTaocncncncncncncncncnacbqabaGaeababbqbqbqbqbqbJbqbqababababandNabababababababababababababaeaeababafabababababababaGaGababalabababababbRabababababababababababababababahabluludxludxluluababababchchchchchlueieieiepeieieiluab
 abababababababaGababaGabababababababababapaNaNaNaNapaNaNaNaNapabacacacabaeabababababaGabababckababababababababababababababababababaGababababababababababababaGabababababababagabakabababababbqacacaccncncncncncncncnaoaTaTaTaocncncncncncncncnacacbqababababababbqbqbqbqbqababababbKabababababababaGababababaGababababaGabababaeababaeabababaGababababababababababababababbXababababababababababababababababababaGaGakababchchchchchlucOdMeieyeidMcOluab
-aGababababababababababababaGababababababapaNaNaNaNapaNaNaNaNapabacacacababababababababaiabababakabababababakababababababaYababababababababaeabababababababababababalababababababababaGababbqbqbqaccncncncncncncncncnaoaTaTaTaocncncncncncncncncnacbqbqbqbqabababbqbqbqababababababababababababababaGaGabababababababaeaeabaeababababafababababababababaGababababababaGabababaGaGaGabababababaGabababababababababahababaGaichchchchchzlzlludtludtlululuab
+aGababababababababababababaGababababababapaNaNaNaNapaNaNaNaNapabacacacababababababababaiabababakabababababakababababababaYababababababababaeabababababababababababalababababababababaGababbqbqbqaccncncncncncncncncnaoaTaTaTaocncncncncncncncncnacbqbqbqbqabababbqbqbqababababababababababababababaGaGabababababababaeaeabaeababababafababababababababaGababababababaGabababaGaGaGabababababaGabababababababababahababaGaichchchchchlululudtludtlululuab
 abababaGabababababababaeabababababaGababapaNaNaNaNapaNaNaNaNapababacacababababakabababababababababababababababababababababaeababababababababagabakakabaGababababaeabababaGabababababababbqbqacacaccncncncncncncncncnaoaTaTaTaocnaccncncncncncncnacacacacbqbqabababababababaeababababababababababababaGabaGaeababababaGaeabababababababaGababababababababababababababaGaGabaGaGaGabababababababababababababaeabaGaGabababaechchchchchlugAgAeigAeigAgAdxab
 abaeabababababaGababababababababababaiabapaNaNaNaNapaNaNaNaNapabababacaGabababababaGabcjabababababababababaGababababahababababababalababababababababababababababababbxabababababababababbqacaccncncncnaccnacaccnacaccnaXaXaXcnacacaccncncncnaccnacacacacacbqbqabaGapababakaiababababafaeababababaeabababababababafaeababababaeababababaeabaeababandNabababababababababaGaGaGaGaGaGaGababababababagababababababaGabababababchchchchchdteipTeieieipTeiluab
-ababababababababaiabababababakabababababapapapapapapapapapapapabakababababababababababababaeaGabababababababababababababababababababababaGabababababababababababababababababababababababbqacacacacacacacacbqacbtacaccnaXaXaXcnacacacaccnbtacacacacacbtacbqbqbqababapapabababababaGabababababababafababaeababaGabababababababafababababaeababababababababababaGabababababaGababababababaGabababababababababababaGaGababababchchchchchzleieiwWwWwWwWwWdxab
-ababbBabakabababababaGabababababaGabababababalababababababababababababababababababababakabababababaGababababababbiababababaiaGabababbxabababababababababababababababaiabababababababababbqbqaFacacacacacacbqbqacaccncnaXaXaXcncnbtbqacacacacacacacacacbqbqbqababakapabababababaeababababaGababababababafaGabababababaGabababababababababababaeabababababababaGaGaeaGababababaGabababababababababababababababababababaGabaeaRaRaRaRaRzlzlzlzlzlzlzlzlzlab
+ababababababababaiabababababakabababababapapapapapapapapapapapabakababababababababababababaeaGabababababababababababababababababababababaGabababababababababababababababababababababababbqacacacacacacacacbqacbtacaccnaXaXaXcnacacacaccnbtacacacacacbtacbqbqbqababapapabababababaGabababababababafababaeababaGabababababababafababababaeababababababababababaGabababababaGababababababaGabababababababababababaGaGababababchchchchchlueieiwWwWwWwWwWdxab
+ababbBabakabababababaGabababababaGabababababalababababababababababababababababababababakabababababaGababababababbiababababaiaGabababbxabababababababababababababababaiabababababababababbqbqaFacacacacacacbqbqacaccncnaXaXaXcncnbtbqacacacacacacacacacbqbqbqababakapabababababaeababababaGababababababafaGabababababaGabababababababababababaeabababababababaGaGaeaGababababaGabababababababababababababababababababaGabaeaRaRaRaRaRlululululululululuab
 aGabababababaGabababababababababababababaeabababababababaGababababababakabaGabababababababababaeabababababaGababababababaeabababababababababababababababababaGababababababababaGabaGabbqbqacbqacacacbqbqacacacaccncncnaXaXaXcncnacacbqbqacacacacbqbqacbqbqbqabababapababaGababababaGababababaGabababababababababababababaeabababababababababafababababababababaGafababababaeaeabaeababababafababababababababababababababaGababababababaGabababababababag
 abababababababbRabababababababaLababakababababababaGabababababababapapabababababababababaiabababababababababaiababaeababababababababaiababababababababababababababababababaGabababababbqbqbqbqacacacacbqaFacaccncncncnaXaXaXcncncnacacacacacacbqbqacacacbqbqaGababapabddabababababababababaeaeabaeabaeababababababababababaGababaGababababababaGababababaGababababababababaGaeabababaGabababababaeaeabababababaGababababababababaGabababababalababababab
 ababababababababakabakabaGabababaKababaGababababababababababababakapapaeababaeabababaeabababababababakabababababababababababababaeababababababaGabababaGabababababababababababababababbqbqbqbqbqacbtacacbqacacaccncncnaXaXaXcncncnbtacacacacbtacacacacbqbqbqbqababababababababababababababaGaeababababababafabaeaeababafababababaGaGababaeabababababababababaeababababafaeababababaeababbxababababababababababababababaeabababababababababaeabababaGabab
