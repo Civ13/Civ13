@@ -71,8 +71,8 @@
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
-//	spawn(15000)
-//		spawn_disks(TRUE)
+	spawn(15000)
+		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
 		assign_precursors()
@@ -97,7 +97,7 @@
 				comps = pick("GBSA-1994 chip","McGT S5R1 chip","RDKV S-445 chip")
 			if ("mail@blu.ug")
 				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
-		var/pay = nr*rand(500,700)
+		var/pay = nr*rand(500,1100)
 		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay,i)) //x,y,product,amount,payment,faction
 		delivery_orders += tlist
 		var/needed = "[nr] [comps]s at the [tloc[4]] [tloc[1]] postbox ([tloc[2]],[tloc[3]])"
@@ -329,8 +329,11 @@
 		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
 		/obj/item/ammo_magazine/m1911 = 20,
 		/obj/item/ammo_magazine/c32 = 10,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 5,
 	)
 	prices = list(
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 1000,
+
 		/obj/item/weapon/gun/projectile/pistol/colthammerless = 300,
 		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 300,
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 400,
@@ -561,7 +564,6 @@
 	showoff(user)
 
 /mob/living/human/var/gun_permit = FALSE
-
 /////////////////////////delivery points//////////////////////
 /turf/floor/delivery
 	name = "delivery area"
