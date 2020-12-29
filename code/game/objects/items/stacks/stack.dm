@@ -1214,7 +1214,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need a stack of at least 2 bone in one your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "black african mask" || findtext(recipe.title, "ceremonial black african mask"))
+	else if (findtext(recipe.title, "black african mask") || findtext(recipe.title, "ceremonial black african mask"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			user << "<span class = 'warning'>You need a stack of at least 3 wood in one of your hands in order to make this.</span>"
 			return
