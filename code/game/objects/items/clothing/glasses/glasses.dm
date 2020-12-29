@@ -135,10 +135,3 @@
 	icon_state = "tactical_goggles"
 	item_state = "tactical_goggles"
 	body_parts_covered = FALSE
-
-/obj/item/clothing/glasses/jensenglasses
-	name = "Elite sunglasess"
-	desc = "Sun glasses worn by the most badass cops has an orange tint."
-	icon_state = "jensenshades"
-	item_state = "jensenshades"
-	body_parts_covered = FALSE
