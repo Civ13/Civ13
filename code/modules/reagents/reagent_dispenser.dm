@@ -152,3 +152,15 @@
 	desc = "A large barrel with high capacity."
 	icon_state = "beer_barrel"
 	max_capacity = 1000
+
+/obj/structure/reagent_dispensers/peppertank
+	name = "Pepper Spray Refiller"
+	desc = "Refill pepper spray canisters."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "peppertank"
+	anchored = TRUE
+	density = FALSE
+	amount_per_transfer_from_this = 45
+	New()
+		..()
+		reagents.add_reagent("condensedcapsaicin",1000)
