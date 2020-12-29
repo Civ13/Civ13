@@ -2062,8 +2062,21 @@
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
-
 /datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = replacetext(title," CEO", "")
+	H.name = H.species.get_random_hebrew_name(H.gender)
+	H.real_name = H.name
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessyellow(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/armband/spanish/armband = new /obj/item/clothing/accessory/armband/spanish(null)
+	uniform1.attackby(armband, H)
+	..()
+	return TRUE
+/datum/job/civilian/businessman/yellow/CEO/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
 	H.name = H.species.get_random_hebrew_name(H.gender)
@@ -2106,6 +2119,23 @@
 	uniform1.attackby(armband, H)
 	..()
 	return TRUE
+/datum/job/civilian/businessman/green/CEO/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = replacetext(title," CEO", "")
+	H.name = H.species.get_random_japanese_name(H.gender)
+	H.real_name = H.name
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessgreen(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factiongreen(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
+	uniform1.attackby(daishoh, H)
+	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
+	daishoh.attackby(new/obj/item/weapon/material/sword/wakazashi, H)
+	uniform1.attackby(daishoh, H)
+	..()
+	return TRUE
 
 /datum/job/civilian/businessman/blue
 	title = "Giovanni Blu Stocks"
@@ -2121,7 +2151,6 @@
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
-
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
@@ -2150,7 +2179,6 @@
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
-
 /datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")

@@ -150,17 +150,23 @@
 	..()
 	reagents.add_reagent("water", 10)
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////SPRAYER///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/reagent_containers/spray/chemsprayer
 	name = "chem sprayer"
 	desc = "A utility used to spray large amounts of reagent in a given area."
-	icon = 'icons/obj/guns/gun.dmi'
-	icon_state = "m2_flamethrower"
-	item_state = "m2_flamethrower"
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "chemsprayer"
+	item_state = "chemsprayer"
+	var/base_icon = "chemsprayer"
 	throwforce = 3
 	w_class = 3.0
 	possible_transfer_amounts = null
 	volume = 600
-//	origin_tech = list(TECH_COMBAT = 3, TECH_MATERIAL = 3, TECH_ENGINEERING = 3)
+	var/active = FALSE
+//    origin_tech = list(TECH_COMBAT = 3, TECH_MATERIAL = 3, TECH_ENGINEERING = 3)
 
 /obj/item/weapon/reagent_containers/spray/chemsprayer/Spray_at(atom/A as mob|obj)
 	var/direction = get_dir(src, A)
@@ -181,3 +187,7 @@
 			D.set_color()
 			D.set_up(my_target, rand(6, 8), 2)
 	return
+
+/obj/item/weapon/reagent_containers/spray/chemsprayer/filled/New()
+	..()
+	reagents.add_reagent("cleaner",600)
