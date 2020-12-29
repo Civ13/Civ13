@@ -2121,7 +2121,6 @@
 	return TRUE
 /datum/job/civilian/businessman/green/CEO/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	var/gun_permit = TRUE
 	H.civilization = replacetext(title," CEO", "")
 	H.name = H.species.get_random_japanese_name(H.gender)
 	H.real_name = H.name
