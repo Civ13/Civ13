@@ -222,3 +222,16 @@
 		chambered = AC
 
 	update_icon()
+
+
+/obj/item/weapon/gun/projectile/shotgun/semiautomatic/spas
+	name = "spas12"
+	icon_state = "spas12"
+	item_state = "spas12"
+	max_shells = 6 //match the ammo box capacity, also it can hold a round in the chamber anyways, for a total of 8.
+	ammo_type = /obj/item/ammo_casing/shotgun
+	caliber = "12gauge"
+	force = 15
+	throwforce = 30
+	weight = 3.4
+
