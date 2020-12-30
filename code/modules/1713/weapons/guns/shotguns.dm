@@ -222,3 +222,17 @@
 		chambered = AC
 
 	update_icon()
+
+
+/obj/item/weapon/gun/projectile/shotgun/semiautomatic/spas
+	name = "Spas-12"
+	icon_state = "spas12"
+	item_state = "spas12"
+	desc = "A dual mode shotgun designed in Italy by the Franchi Firearms Company with an 8 round capacity."
+	max_shells = 8 //match the ammo box capacity, also it can hold a round in the chamber anyways, for a total of 8.
+	ammo_type = /obj/item/ammo_casing/shotgun
+	caliber = "12gauge"
+	force = 15
+	throwforce = 30
+	weight = 3.4
+
