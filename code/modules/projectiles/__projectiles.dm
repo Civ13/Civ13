@@ -522,7 +522,7 @@ obj/item/projectile/bullet/rifle/a556x45
 	penetrating = 1
 	armor_penetration = 1
 
-/obj/item/projectile/bullet/shotgun/buckshot
+/obj/item/projectile/bullet/pellet/buckshot
 	name = "buckshot"
 	damage = DAMAGE_VERY_HIGH + 35
 	armor_penetration = 33
