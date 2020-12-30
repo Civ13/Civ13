@@ -168,7 +168,7 @@
 //*********************| LEAVES |******************************
 //*************************************************************
 
-RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 
 //*****************| LEAVES CLOTHING |**************************
 
@@ -193,7 +193,7 @@ RECIPE: /material/leaf/palm/,long leaf skirt,/obj/item/clothing/under/leaves_ski
 
 //*********************| FERN LEAVES |******************************
 
-RECIPE: material/leaves/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+RECIPE: material/leaf/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 
 //*****************| FERN LEAVES CLOTHING |**************************
 
