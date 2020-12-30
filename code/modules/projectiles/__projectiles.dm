@@ -526,6 +526,7 @@ obj/item/projectile/bullet/rifle/a556x45
 	name = "buckshot"
 	damage = DAMAGE_VERY_HIGH + 35
 	armor_penetration = 33
+	icon_state = "buckshot"
 
 /obj/item/projectile/bullet/shotgun/slug
 	name = "shotgun slug"
