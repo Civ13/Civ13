@@ -168,7 +168,7 @@
 //*********************| LEAVES |******************************
 //*************************************************************
 
-RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 
 //*****************| LEAVES CLOTHING |**************************
 
@@ -195,7 +195,7 @@ RECIPE: /material/leaf/palm/,long leaf skirt,/obj/item/clothing/under/leaves_ski
 
 //*********************| FERN LEAVES |******************************
 
-RECIPE: material/leaves/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+RECIPE: material/leaf/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 
 //*****************| FERN LEAVES CLOTHING |**************************
 
@@ -2087,7 +2087,7 @@ RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,4
 RECIPE: /material/wood/,wardrobe,/obj/structure/closet/cabinet,5,80,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,grandfather clock,/obj/structure/TV/grandfather,9,160,1,1,furniture,42,0,0,8,null
-RECIPE: /material/wood/,wooden rifle rack, /obj/structure/vending/craftable/rifles/wood,8,80,1,1,storage,0,75,0,8,null
+RECIPE: /material/wood/,wooden rifle rack,/obj/structure/vending/craftable/rifles/wood,8,80,1,1,storage,0,75,0,8,null
 RECIPE: /material/wood/,poker table,/obj/structure/table/wood/poker,7,50,1,1,furniture,95,0,0,8,null
 RECIPE: /material/wood/,modern table,/obj/structure/table/modern/table,7,50,1,1,furniture,95,0,0,8,null
 RECIPE: /material/wood/,fancy table,/obj/structure/table/fancy,7,50,1,1,furniture,95,0,0,8,null

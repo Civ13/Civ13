@@ -168,44 +168,44 @@
 //*********************| LEAVES |******************************
 //*************************************************************
 
-RECIPE: /material/leaves/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 
 //*****************| LEAVES CLOTHING |**************************
 
-RECIPE: /material/leaves/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,3,leaf
+RECIPE: /material/leaf/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,3,leaf
 
-//RECIPE: /material/leaves/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,leaf
-//RECIPE: /material/leaves/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,gold
+//RECIPE: /material/leaf/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,leaf
+//RECIPE: /material/leaf/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,gold
 
-//RECIPE: /material/leaves/,imitation laurel crown,/obj/item/clothing/head/laurelcrown,8,150,0,1,none,0,0,82,8,leaf
+//RECIPE: /material/leaf/,imitation laurel crown,/obj/item/clothing/head/laurelcrown,8,150,0,1,none,0,0,82,8,leaf
 
-RECIPE: /material/leaves/,masculine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel,2,20,0,1,none,0,0,0,3,leaf
-RECIPE: /material/leaves/,feminine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel/eve,2,20,0,1,none,0,0,0,3,leaf
+RECIPE: /material/leaf/,masculine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel,2,20,0,1,none,0,0,0,3,leaf
+RECIPE: /material/leaf/,feminine modesty preserving leaf,/obj/item/clothing/under/leaves_skirt/au_naturel/eve,2,20,0,1,none,0,0,0,3,leaf
 
 //*********************| PALM LEAVES |******************************
 
-RECIPE: /material/leaves/palm/,palm leaf roofing,/obj/item/weapon/roofbuilder/palm,1,45,0,1,none,0,0,0,8,null
+RECIPE: /material/leaf/palm/,palm leaf roofing,/obj/item/weapon/roofbuilder/palm,1,45,0,1,none,0,0,0,8,null
 
 //*****************| PALM LEAVES CLOTHING |**************************
 
-RECIPE: /material/leaves/palm/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,3,leather
-RECIPE: /material/leaves/palm/,ceremonial leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,10,8,leather
+RECIPE: /material/leaf/palm/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,3,leather
+RECIPE: /material/leaf/palm/,ceremonial leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,10,8,leather
 
-RECIPE: /material/leaves/palm/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,palm
-RECIPE: /material/leaves/palm/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,palm
+RECIPE: /material/leaf/palm/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,palm
+RECIPE: /material/leaf/palm/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,palm
 
 //*********************| FERN LEAVES |******************************
 
-RECIPE: material/leaves/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,1,45,0,1,none,0,0,0,8,null
+RECIPE: material/leaf/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 
 //*****************| FERN LEAVES CLOTHING |**************************
 
-RECIPE: /material/leaves/fern/,daubed leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,3,fern
-RECIPE: /material/leaves/fern/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,3,leather
-RECIPE: /material/leaves/palm/,ceremonial leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,102,8,leather
+RECIPE: /material/leaf/fern/,daubed leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,3,fern
+RECIPE: /material/leaf/fern/,leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,0,3,leather
+RECIPE: /material/leaf/palm/,ceremonial leaf crown,/obj/item/clothing/head/leaves/crown,5,120,0,1,none,0,0,102,8,leather
 
-RECIPE: /material/leaves/fern/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,fern
-RECIPE: /material/leaves/fern/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,fern
+RECIPE: /material/leaf/fern/,leaf skirt,/obj/item/clothing/under/leaves_skirt,4,100,0,1,none,0,0,0,3,fern
+RECIPE: /material/leaf/fern/,long leaf skirt,/obj/item/clothing/under/leaves_skirt/long,6,140,0,1,none,0,0,0,3,fern
 
 //*************************************************************
 //*********************| CLAY |********************************

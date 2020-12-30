@@ -920,6 +920,15 @@
 		compost()
 		qdel(W)
 		return
+	else if (istype(W, /obj/item/stack/material/leaf))
+		if (current >= max)
+			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
+			return
+		else
+			current+=W.amount/18 	//divides (using /) by eighteenth's from each plant input of 1, 0.05(5555555555556) gain per leaf
+			H << "You place \the [W] in \the [src], composting it."
+			compost()
+			qdel(W)
 	else if (istype(W, /obj/item/stack/farming/seeds))
 		if (current >= max)
 			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
@@ -929,7 +938,7 @@
 			H << "You place \the [W] in \the [src], composting it."
 			compost()
 			qdel(W)
-	else if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca) || istype(W, /obj/item/stack/material/leaf))
+	else if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca))
 		if (current >= max)
 			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
 			return
