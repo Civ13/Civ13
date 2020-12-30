@@ -743,7 +743,7 @@
 				if (watertype == "irradiated_water")
 					H.rad_act(5)
 				else
-					if (!istype(src, /obj/structure/sink/well))
+					if (istype(src, /obj/structure/sink/puddle))
 						var/dmod = 1
 						if (H.find_trait("Weak Immune System"))
 							dmod = 2
