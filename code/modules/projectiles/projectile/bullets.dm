@@ -151,12 +151,13 @@
 
 //Should do about 80 damage at 1 tile distance (adjacent), and 50 damage at 3 tiles distance.
 //Overall less damage than slugs in exchange for more damage at very close range and more embedding
-/obj/item/projectile/bullet/pellet/shotgun
+/obj/item/projectile/bullet/pellet/buckshot
 	name = "shrapnel"
-	damage = 13
+	damage = 10
 	pellets = 6
-	range_step = TRUE
 	spread_step = 10
+	base_spread = 19
+	range_step = 3
 
 /* "Rifle" rounds */
 
