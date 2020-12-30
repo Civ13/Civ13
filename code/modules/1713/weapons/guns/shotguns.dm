@@ -229,7 +229,7 @@
 	icon_state = "spas12"
 	item_state = "spas12"
 	desc = "A dual mode shotgun designed in Italy by the Franchi Firearms Company with an 8 round capacity."
-	max_shells = 9 //match the ammo box capacity, also it can hold a round in the chamber anyways, for a total of 8.
+	max_shells = 8 //match the ammo box capacity, also it can hold a round in the chamber anyways, for a total of 8.
 	ammo_type = /obj/item/ammo_casing/shotgun
 	caliber = "12gauge"
 	force = 15
