@@ -400,7 +400,7 @@
 		/obj/item/stack/material/stone,
 		/obj/item/stack/material/sandstone,
 		/obj/item/stack/material/obsidian,
-		/obj/item/stack/material/marble,
+		/obj/item/stack/material/marble
 		)
 	flammable = TRUE
 
