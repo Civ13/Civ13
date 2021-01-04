@@ -943,7 +943,7 @@
 	caliber = "a57x28"
 	value = 2
 
-/obj/item/ammo_casing/buckshot
+/obj/item/ammo_casing/shotgun
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot."
 	icon_state = "shell-bullet"
