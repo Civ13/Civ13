@@ -371,12 +371,12 @@
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/type95/lb
 	w_back = list("type95_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "type95_back_left"
 	icon_state = "frame_steel_corner_lb_type95"
 /obj/structure/vehicleparts/frame/car/type95/rb
 	w_back = list("type95_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "type95_back_right"
 	icon_state = "frame_steel_corner_rb_type95"
 /obj/structure/vehicleparts/frame/car/type95/lc

@@ -322,8 +322,6 @@ var/list/coefflist = list()
 /mob/living/human/proc/get_visible_name()
 	if ((wear_mask && (wear_mask.flags_inv&HIDEFACE)) || (head && (head.flags_inv&HIDEFACE)) || (werewolf && body_build.name != "Default"))	//Wearing a mask which hides our face, use id-name if possible	//Likewise for hats
 		return "Unknown"
-	if (original_job && original_job.is_prison && istype(original_job, /datum/job/civilian))
-		return "Unknown"
 	if (title && title != "")
 		if (religious_title && religious_title != "")
 			return "[title] [religious_title] [real_name]"

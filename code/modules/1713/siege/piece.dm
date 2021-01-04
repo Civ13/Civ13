@@ -338,7 +338,7 @@
 		anchored = !anchored
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
-	icon = 'icons/obj/cannon_ball.dmi'
+	icon = 'icons/obj/cannon.dmi'
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "m29_davy_crockett_empty"

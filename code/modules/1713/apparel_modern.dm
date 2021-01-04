@@ -842,9 +842,9 @@
 /obj/item/clothing/accessory/armband/punk
 	name = "spiked bracers"
 	desc = "A pair of punkish spiked bracers."
-	icon_state = "spiked_bracer"
-	item_state = "spiked_bracer"
-	worn_state = "spiked_bracer"
+	icon_state = "spiked_bracers"
+	item_state = "spiked_bracers"
+	worn_state = "spiked_bracers"
 
 /obj/item/clothing/shoes/punk
 	name = "punk boots"

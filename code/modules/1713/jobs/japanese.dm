@@ -493,7 +493,7 @@
 	rank_abbreviation = "1lt."
 
 
-	spawn_location = "JoinLateJPLT"
+	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
@@ -1376,7 +1376,7 @@
 	rank_abbreviation = ""
 
 
-	spawn_location = "JoinLateJPLT"
+	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
@@ -1832,7 +1832,7 @@
 	rank_abbreviation = "Slt."
 
 
-	spawn_location = "JoinLateJPLT"
+	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
@@ -1880,7 +1880,7 @@
 	rank_abbreviation = "En."
 
 
-	spawn_location = "JoinLateJPLT"
+	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_officer = TRUE

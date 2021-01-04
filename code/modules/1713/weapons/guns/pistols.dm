@@ -73,7 +73,7 @@
 /obj/item/weapon/gun/projectile/pistol/nambu
 	name = "Type A Nambu"
 	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
-	icon_state = "nambu_ww2"
+	icon_state = "nambu"
 	w_class = 2
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
@@ -87,9 +87,9 @@
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "nambu_ww2"
+		icon_state = "nambu"
 	else
-		icon_state = "nambu_ww20"
+		icon_state = "nambu"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu

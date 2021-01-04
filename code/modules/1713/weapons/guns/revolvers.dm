@@ -472,6 +472,25 @@
 	cocked = FALSE
 	pocket = FALSE
 	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/revolver/snw10
+	name = "Smith & Wesson M.10"
+	desc = "A Smith 'n Wesson revolver model 10, chambered in .38 S&W."
+	icon_state = "snw10"
+	base_icon = "snw10"
+	w_class = 1
+	caliber = "a38"
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c38
+	ammo_type = /obj/item/ammo_casing/a38
+	weight = 1.6
+	equiptimer = 3
+	single_action = FALSE
+	blackpowder = FALSE
+	cocked = FALSE
+	pocket = FALSE
+	effectiveness_mod = 0.9
 
 /obj/item/weapon/gun/projectile/revolver/t26_revolver
 	name = "Type 26 revolver"
