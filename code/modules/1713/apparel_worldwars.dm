@@ -1615,9 +1615,9 @@ obj/item/clothing/head/ww2/chicap2
 /obj/item/clothing/head/helmet/ww2/us_mp
 	name = "us mp helmet"
 	desc = "A typical rounded steel helmet. This one has the markings of MP on it."
-	icon_state = "ushelmet_mp"
-	item_state = "ushelmet_mp"
-	worn_state = "ushelmet_mp"
+	icon_state = "m1_mp_white"
+	item_state = "m1_mp_white"
+	worn_state = "m1_mp_white"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
