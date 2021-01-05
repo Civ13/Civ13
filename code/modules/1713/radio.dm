@@ -21,6 +21,7 @@
 	var/multifreq = FALSE
 	var/list/multifreqlist = list(150)
 	var/list/multifreqlist_selectable = list(150)
+	anchored = TRUE
 /obj/structure/radio/transmitter
 	name = "radio transmitter"
 	icon_state = "radio_transmitter"
