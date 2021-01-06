@@ -515,7 +515,7 @@
 	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
 	icon_state = "boar_boar"
 	icon_living = "boar_boar"
-	icon_dead = ""
+	icon_dead = "boar_dead"
 	speak = list("Gweeeeiiirrr!","Ghhhhhhh!","Oeerrrrhhh!")
 	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
 	speak_chance = 1
