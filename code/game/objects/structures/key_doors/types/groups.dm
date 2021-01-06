@@ -1,8 +1,7 @@
-/var/global/REDCODE = rand(1000,1999)
-/var/global/BLUECODE = rand(2000,2999)
-/var/global/YELLOWCODE = rand(3000,3999)
-/var/global/GREENCODE = rand(4000,4999)
-
+/var/global/REDCODE = 1000
+/var/global/BLUECODE = 2000
+/var/global/YELLOWCODE = 3000
+/var/global/GREENCODE = 4000
 /////////313 stuff//////////
 
 #define AN_CODE 1000
