@@ -2024,6 +2024,8 @@ RECIPE: /material/wood/,female outhouse,/obj/structure/toilet/outhouse/female,35
 
 //*********************| WOOD WEAPONS |**************************
 
+RECIPE: /material/wood/,empty dynamite stick,/obj/item/weapon/grenade/dynamite,1,30,0,1,weapons,0,92,0,8,null
+
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
