@@ -433,6 +433,7 @@
 "iq" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "ir" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "is" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/russian/land/inside)
+"it" = (/obj/structure/wild/tallgrass,/obj/effects/premadevehicles/kurogane/type95,/turf/floor/dirt/dust,/area/caribbean/forest)
 "iu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean)
 "iv" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{icon_state = "maxim_ww2"; dir = 8},/turf/floor/dirt,/area/caribbean/russian/land/outside)
@@ -587,7 +588,7 @@ aVaVaWhghghghghghgbfbDbEbEbEbDbDbDbEbEbEbDbmaVaVaZaVaVaVaZaVaVaVaVaVaVaVaVaVaVaV
 aVhghghgaVaWaWhghghgaWaWaWaWaWbmaWaWaWaWaWaVaWaVaVaVaVbaaVaVaVaXaVaVaVaVaVaVaXaVaVaVaVaVaVbaaVaVaVaVaVaVaVaVaZaVhgaVaWbdbdacaaaaaaaaaaaaaaaaaaaaaaaabJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 hghghgaVaWbdbdaVaVhghgaXaVaWbcaVaVaWaVaVaWaVbbaVaVaVaVaVaVaVaVaVaVaWaWaVaVbaaVaVaVaZaVaVaVaVaVaVaVaVbHaVaVaVaXaXhgaWaVaWaWaaaaaaagaaaaaeaaaaaaaaaaaaaaaaagaaaaaaaaaaaaaaaaaabKaaaaaa
 hgaVaVaVaWbdbdaWaVhghghghghgaWaVaVaVdxaVaVaVaVaVaVaWaVaVaVaVaVaVaWbdbdaWaVaVaVaVaVaYaVaXaVaVaVaVaVaVaVaVaVaVaVaVhghgaVaVaVaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaabJaaaaaeaaaaaaaaaaaaaaaa
-aVaVaVaVaWaWaWaWaVaVaVhghghghgaVaWaVaVaWaZaVaVaVaVaXaVaZaVaVaVaVaWbdbdaWaVaVaVaVaVaVaVaVaVaVbaaVaXaVaVaVaVaVaZaVhkhghghgaWbJanacaaaabJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeXaaaaaaaaaaaa
+aVaVaVaVaWaWaWaWaVaVaVhghghghgaVaWaVaVaWaZaVaVaVaVaXaVaZaVaVaVaVaWbdbdaWaVaVaVaVaVaVaVaVaVaVbaaVaXaVaVaVaVaVaZaVithghghgaWbJanacaaaabJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeXaaaaaaaaaaaa
 aVaVaXaVaVaVaVaVaVaVaVaWhghghghghgaVaVaVaVaVaVaZaVaVaVaVaVaVgzaVaVaWaWaVaVaVbaaVaVaVaVaVaVaVaVaVaVaVaZaVaVaVaVgzaVaVhghgaVaaaaaaaaaaaaaaaaaaaabJaaeXaaaaaaaaagaaaaaaaaaaaaaaaaaaaaaa
 aVaVaVaVaVaXaVaVaVaVbaaVaWbmaWhghghgaVaVaVbIaVaVaVaVaVaVaVaVaVaVaVaVbgaVaVaXaVgzaVgzaVaVaVaVaVaWaWaVaWaVaVaVaVgzgzaZaVhgaVaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeXaaaabJaaaaaaaaaa
 aVaWaVaVaVaVaVaVaVaWaWaWaWaWaVaVhghghgaVaVaVaVaVaVaVaVaVaVaXaVgzaVaVaVaVaVaVaVgzgzgzaZaVaVaVaZhghghgaWhghgaZaVaVaVaVhghgaVaaanaabJacaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOaaaa

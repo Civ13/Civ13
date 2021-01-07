@@ -456,7 +456,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = list(1=6,2=4.5,3=3,4=2.5,5=1.5)
+	speedlist = list(1=5,2=4,3=2.5,4=1.5,5=1)
 	turntimer = 4
 
 /obj/structure/vehicleparts/axis/car/falcon/police
