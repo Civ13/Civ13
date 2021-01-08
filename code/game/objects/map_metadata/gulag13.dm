@@ -51,7 +51,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 	else
-		if (J.is_prison && J.title != "DO NOT USE")
+		if (J.is_prison && J.title != "DO NOT USE" && J.is_abashiri != TRUE)
 			. = TRUE
 		else
 			. = FALSE
