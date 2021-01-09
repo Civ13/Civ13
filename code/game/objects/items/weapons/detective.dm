@@ -8,7 +8,7 @@
 	var/track_blood = FALSE
 
 /obj/item/weapon/reagent_containers/glass/rag
-	name = "rag"
+	name = "cleaning rag"
 	desc = "For cleaning up messes, you suppose."
 	w_class = 1
 	icon = 'icons/obj/trash.dmi'
