@@ -441,7 +441,39 @@
 				SR.forceMove(src)
 				user << "You collect the stone."
 
-
+		for (var/obj/item/stack/material/sandstone/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/sandstone/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the sandstone."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the sandstone."
+		for (var/obj/item/stack/material/obsidian/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/obsidian/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the obsidian."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the obsidian."
+		for (var/obj/item/stack/material/marble/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/marble/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the marble."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the marble."
 /////////PRODUCE BASKET (PRODUCE COLLECTOR)////////////
 /obj/item/weapon/storage/produce_basket
 	name = "produce basket"
