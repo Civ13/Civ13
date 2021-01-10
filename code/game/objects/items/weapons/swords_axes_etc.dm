@@ -296,3 +296,49 @@
 		update_icon()
 
 		return FALSE
+
+
+
+
+
+/obj/item/weapon/melee/telebaton
+	name = "telescopic baton"
+	desc = "A compact yet rebalanced personal defense weapon. Can be concealed when folded."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "telebaton_0"
+	item_state = "telebaton_0"
+	slot_flags = SLOT_BELT
+	var/on = 0
+
+
+/obj/item/weapon/melee/telebaton/attack_self(mob/user as mob)
+	on = !on
+	if(on)
+		user.visible_message("<span class='warning'>With a flick of their wrist, [user] extends their telescopic baton.</span>",\
+		"<span class='warning'>You extend the baton.</span>",\
+		"You hear an ominous click.")
+		force = 15//quite robust
+		attack_verb = list("smacked", "struck", "slapped")
+	else
+		user.visible_message("<span class='notice'>\The [user] collapses their telescopic baton.</span>",\
+		"<span class='notice'>You collapse the baton.</span>",\
+		"You hear a click.")
+		force = 3//not so robust now
+		attack_verb = list("hit", "punched")
+
+	playsound(src.loc, 'sound/weapons/empty.ogg', 50, 1)
+	add_fingerprint(user)
+	update_icon()
+	update_held_icon()
+
+/obj/item/weapon/melee/telebaton/update_icon()
+	if(on)
+		icon_state = "telebaton_1"
+		item_state = "telebaton_1"
+	else
+		icon_state = "telebaton_0"
+		item_state = "telebaton_0"
+	if(length(blood_DNA))
+		generate_blood_overlay(TRUE) // Force recheck.
+		overlays.Cut()
+		overlays += blood_overlay
