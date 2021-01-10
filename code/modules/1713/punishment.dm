@@ -497,8 +497,8 @@
 	not_disassemblable = FALSE
 	New()
 		..()
-		poverlay = image(icon=src.icon, icon_state="post_execution",layer=MOB_LAYER+1)
-		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope")
+		poverlay = image(icon=src.icon, icon_state="post_execution", layer=MOB_LAYER+0.11)
+		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope", layer=MOB_LAYER-0.11)
 /obj/structure/post_execution/New()
 	..()
 	processing_objects |= src
@@ -546,7 +546,7 @@
 			visible_message("<span class = 'danger'>[hangman] ties [target == hangman ? "themselves" : target] to the post!</span>")
 			hanging = target
 			target.loc = get_turf(src)
-			target.dir = SOUTH
+			target.dir = NORTH
 			spawn(10)
 				target.update_icons()
 				target.anchored = 1

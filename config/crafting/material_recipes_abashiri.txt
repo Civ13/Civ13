@@ -122,6 +122,8 @@ RECIPE: /material/iron/,iron shank,/obj/item/weapon/material/kitchen/utensil/kni
 
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 
+RECIPE: /material/wood/,chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,1,20,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/wood/,wood mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,40,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/wood/,mine support,/obj/structure/mine_support,2,100,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,6,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,6,90,1,1,construction,25,0,0,8,null

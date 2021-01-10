@@ -861,9 +861,9 @@
 /turf/proc/extracting_proc(var/mob/living/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
 	if (!H || !src || !E)
 		return
-	var/list/elements = list("hydrogen", "helium", "lithium", "nitrogen", "oxygen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine")
+	var/list/elements = list("hydrogen","oxygen","helium", "lithium", "nitrogen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine")
 	var/list/elements1 = list("nitrogen", "phosphorus", "chlorine", "potassium", "iodine")
-	var/list/elements2 = list("hydrogen", "helium", "lithium", "oxygen", "fluorine", "magnesium", "aluminum", "silicon", "calcium", "arsenic", "tungsten", "radium", "thorium", "bromine")
+	var/list/elements2 = list("lithium", "fluorine", "magnesium", "aluminum", "calcium", "arsenic", "tungsten", "bromine")
 
 	var/randreg = pick(elements)
 	if (prob(70))

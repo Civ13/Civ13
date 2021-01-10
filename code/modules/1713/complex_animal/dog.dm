@@ -4,8 +4,8 @@
 #define COMMAND_LEVEL_4 1
 
 /mob/living/simple_animal/complex_animal/dog
-	icon_state = null
-	resting_state = null
+	icon_state = "corgi"
+	resting_state = "corgi-lying"
 	wander = FALSE
 	can_be_tamed = TRUE
 
@@ -148,6 +148,7 @@
 	faction = RUSSIAN
 	tamed = 200
 	name = "Samoyed guard dog"
+	starves = FALSE
 
 
 /mob/living/simple_animal/complex_animal/dog/wolf

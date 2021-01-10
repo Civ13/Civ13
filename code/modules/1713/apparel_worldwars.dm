@@ -824,6 +824,31 @@ obj/item/clothing/head/ww2/jap_mp
 	icon_state = "japcap_mp"
 	item_state = "japcap_mp"
 	worn_state = "japcap_mp"
+
+/obj/item/clothing/head/ww2/japwinter
+	name = "japanese winter cap"
+	desc = "A japanese winter cap, used by soldiers in the imperial army."
+	icon_state = "japwinter_up"
+	item_state = "japwinter_up"
+	worn_state = "japwinter_up"
+	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
+
+/obj/item/clothing/head/ww2/japwinter/down
+	icon_state = "japwinter"
+	item_state = "japwinter"
+	worn_state = "japwinter"
+
+/obj/item/clothing/head/ww2/japwinter/attack_self(mob/user as mob)
+	if (icon_state == "japwinter")
+		icon_state = "japwinter_up"
+		item_state = "japwinter_up"
+		user << "You raise the ear flaps on the fur cap."
+	else
+		icon_state = "japwinter"
+		item_state = "japwinter"
+		user << "You lower the ear flaps on the fur cap."
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////BRITISH////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1615,9 +1640,9 @@ obj/item/clothing/head/ww2/chicap2
 /obj/item/clothing/head/helmet/ww2/us_mp
 	name = "us mp helmet"
 	desc = "A typical rounded steel helmet. This one has the markings of MP on it."
-	icon_state = "ushelmet_mp"
-	item_state = "ushelmet_mp"
-	worn_state = "ushelmet_mp"
+	icon_state = "m1_mp_white"
+	item_state = "m1_mp_white"
+	worn_state = "m1_mp_white"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)

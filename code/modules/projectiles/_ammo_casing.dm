@@ -942,16 +942,16 @@
 	projectile_type = /obj/item/projectile/bullet/pistol/a57x28
 	caliber = "a57x28"
 	value = 2
-
-/obj/item/ammo_casing/buckshot
+/obj/item/ammo_casing/shotgun
+	caliber = "12gauge"
+	weight = 0.12
+	value = 2
+/obj/item/ammo_casing/shotgun/buckshot
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot."
 	icon_state = "shell-bullet"
 	spent_icon = "shell-casing"
-	weight = 0.12
 	projectile_type = /obj/item/projectile/bullet/pellet/buckshot
-	caliber = "12gauge"
-	value = 2
 
 /obj/item/ammo_casing/shotgun/slug
 	name = "shotgun slug"

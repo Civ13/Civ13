@@ -371,12 +371,12 @@
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/type95/lb
 	w_back = list("type95_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "type95_back_left"
 	icon_state = "frame_steel_corner_lb_type95"
 /obj/structure/vehicleparts/frame/car/type95/rb
 	w_back = list("type95_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "type95_back_right"
 	icon_state = "frame_steel_corner_rb_type95"
 /obj/structure/vehicleparts/frame/car/type95/lc
@@ -456,7 +456,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = list(1=6,2=4.5,3=3,4=2.5,5=1.5)
+	speedlist = list(1=5,2=4,3=2.5,4=1.5,5=1)
 	turntimer = 4
 
 /obj/structure/vehicleparts/axis/car/falcon/police

@@ -37,7 +37,33 @@
 			fluid_image = image('icons/obj/drinks.dmi', "fluid-[glass_type]")
 		fluid_image.color = reagents.get_color()
 		overlays += fluid_image
-	return
+	if (reagents.has_reagent("beer", 1) && istype(src, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug))
+		var/image/filling = image('icons/obj/reagentfillings.dmi', src, "[icon_state]-10")
+		if (reagents.total_volume > 1)		filling.icon_state = "[icon_state]--10"
+		if (reagents.total_volume > 10) 	filling.icon_state = "[icon_state]-10"
+		if (reagents.total_volume > 20)	filling.icon_state = "[icon_state]-20"
+		if (reagents.total_volume > 30)	filling.icon_state = "[icon_state]-30"
+		if (reagents.total_volume == 40)
+			filling.icon_state = "[icon_state]-40"
+			var/image/froth = image('icons/obj/reagentfillings.dmi', src, "beermug_overlay", layer + 0.1)
+			overlays += froth
+		filling.color = reagents.get_color()
+		overlays += filling
+		return
+	if (reagents.has_reagent("beer", 1) && istype(src, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug_fancy))
+		var/image/filling = image('icons/obj/reagentfillings.dmi', src, "[icon_state]-10")
+		if (reagents.total_volume > 1)		filling.icon_state = "[icon_state]--10"
+		if (reagents.total_volume > 10) 	filling.icon_state = "[icon_state]-10"
+		if (reagents.total_volume > 20)	filling.icon_state = "[icon_state]-20"
+		if (reagents.total_volume > 30)	filling.icon_state = "[icon_state]-30"
+		if (reagents.total_volume > 40)	filling.icon_state = "[icon_state]-40"
+		if (reagents.total_volume == 50)
+			filling.icon_state = "[icon_state]-50"
+			var/image/froth = image('icons/obj/reagentfillings.dmi', src, "beermug_fancy_overlay", layer + 0.1)
+			overlays += froth
+		filling.color = reagents.get_color()
+		overlays += filling
+		return
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/cocktail_stuff))
@@ -115,8 +141,13 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug
 	name = "beer mug"
-	icon_state = "glass-beermug"
+	icon_state = "beermug"
 	glass_type = "beermug"
+	volume = 40
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug_fancy
+	name = "fancy beer mug"
+	icon_state = "beermug_fancy"
+	glass_type = "beermug_fancy"
 	volume = 50
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine
