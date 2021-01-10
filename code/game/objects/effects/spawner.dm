@@ -356,6 +356,12 @@
 	create_path = /mob/living/simple_animal/mouse/gray
 	timer = 3600
 
+/obj/effect/spawner/mobspawner/mouse/sm
+	name = "small mouse spawner"
+	max_number = 1
+	max_range = 1
+	create_path = /mob/living/simple_animal/mouse/gray
+	timer = 3600
 /obj/effect/spawner/mobspawner/snake
 	name = "snake spawner"
 	hostile = TRUE

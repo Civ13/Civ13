@@ -58,3 +58,24 @@
 
 /obj/map_metadata/nationsrp/cross_message(faction)
 	return "<big><b>THE GRACE PERIOD HAS ENDED!</b></big>"
+
+/obj/map_metadata/nationsrp/med
+	ID = MAP_NATIONSRPMED
+	title = "Nations RP Mediterranean"
+	mission_start_message = "<big>Two imperial nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	default_research = 88
+	ordinal_age = 3
+	age4_done = FALSE
+
+/obj/map_metadata/nationsrp/med/New()
+	..()
+	civname_a = "Greek Nation"
+	civname_b = "Turkish Nation"
+	var/newnamea = list("Greek Nation" = list(default_research,default_research,default_research,null,0,"saltire","#D4AF37","#660000"))
+	var/newnameb = list("Turkish Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
+	custom_civs += newnamea
+	custom_civs += newnameb
+	civa_research = list(default_research,default_research,default_research,null)
+	civb_research = list(default_research,default_research,default_research,null)
+	spawn(18000)
+		seasons()
