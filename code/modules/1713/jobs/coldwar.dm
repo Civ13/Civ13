@@ -236,6 +236,7 @@
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("stamina", STAT_VERY_HIGH)
 
 	return TRUE
 
