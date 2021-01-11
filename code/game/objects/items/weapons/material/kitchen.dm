@@ -15,6 +15,7 @@
 	var/loaded	  //Descriptive string for currently loaded food object.
 	var/scoop_food = TRUE
 	var/shiv = 0
+	var/usespeed = 0.2
 
 /obj/item/weapon/material/kitchen/utensil/New()
 	..()
