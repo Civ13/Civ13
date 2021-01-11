@@ -3,7 +3,7 @@
 	title = "Forest"
 	lobby_icon_state = "ww2"
 	no_winner ="The battle for the city is still going on."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 
 
@@ -75,3 +75,25 @@
 				else
 					return FALSE
 		return FALSE
+/obj/map_metadata/forest/roundend_condition_def2name(define)
+	..()
+	switch (define)
+		if (GERMAN)
+			return "German"
+		if (RUSSIAN)
+			return "Soviet"
+/obj/map_metadata/forest/roundend_condition_def2army(define)
+	..()
+	switch (define)
+		if (GERMAN)
+			return "Germans"
+		if (RUSSIAN)
+			return "Soviets"
+
+/obj/map_metadata/forest/army2name(army)
+	..()
+	switch (army)
+		if ("Germans")
+			return "German"
+		if ("Soviets")
+			return "Soviet"

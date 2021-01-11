@@ -442,6 +442,12 @@
 	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
+/obj/item/clothing/head/nva_hat
+	name = "NVA cap"
+	desc = "A field cap with the markings of an NVA officer."
+	icon_state = "nva_off_cap"
+	item_state = "nva_off_cap"
+	body_parts_covered = HEAD
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -544,6 +550,13 @@
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	var/colorn = 1
 
+/obj/item/clothing/under/nva
+	name = "NVA uniform"
+	desc = "A khaki uniform of the North Vietnamese Army."
+	icon_state = "NVAuni"
+	item_state = "NVAuni"
+	worn_state = "NVAuni"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 /* Cold War Armor*/
 
 /obj/item/clothing/accessory/armor //again im confused why this is the case. It should be moved somewhere higher up into armor.dm or/and tagged into /modern especially @fantasticfwoosh

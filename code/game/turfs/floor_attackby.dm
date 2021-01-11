@@ -147,7 +147,7 @@
 		C.reagents.del_reagent("cholera")
 		return
 
-	else if (istype(C, /obj/item/weapon/material/shovel))
+	else if (istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		var/obj/item/weapon/material/shovel/SH = C
@@ -248,7 +248,7 @@
 			user.drop_from_inventory(C)
 			qdel(C)
 			return
-	else if (istype(C, /obj/item/weapon/material/pickaxe))
+	else if (istype(C, /obj/item/weapon/material/pickaxe) || istype(C, /obj/item/weapon/material/kitchen/utensil))
 		var/obj/item/weapon/material/pickaxe/SH = C
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
