@@ -31,14 +31,6 @@
 "E" = (/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/turf/floor/dirt,/area/caribbean)
 "F" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean)
 "G" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt,/area/caribbean)
-"H" = (/obj/item/ammo_casing/chemdart/bone,/obj/item/ammo_casing/chemdart/bone,/turf/floor/dirt,/area/caribbean)
-"I" = (/obj/item/ammo_casing/chemdart,/obj/item/ammo_casing/chemdart,/obj/item/ammo_casing/chemdart,/turf/floor/dirt,/area/caribbean)
-"J" = (/obj/item/ammo_magazine/chemdart,/obj/item/ammo_magazine/chemdart,/turf/floor/dirt,/area/caribbean)
-"K" = (/obj/item/ammo_magazine/chemdart/mag,/obj/item/ammo_magazine/chemdart/mag,/turf/floor/dirt,/area/caribbean)
-"L" = (/obj/item/weapon/gun/projectile/dartgun/blowgun,/turf/floor/dirt,/area/caribbean)
-"M" = (/obj/item/weapon/gun/projectile/dartgun/bolt,/turf/floor/dirt,/area/caribbean)
-"N" = (/obj/item/weapon/gun/projectile/dartgun/dartgun,/turf/floor/dirt,/area/caribbean)
-"O" = (/obj/item/weapon/gun/projectile/dartgun/mag,/turf/floor/dirt,/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -87,8 +79,8 @@ hfbbbgahfbbbgahfbbbgahfCzDgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgaaa
 imnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaaa
 avjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaaa
 aEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaa
-aaaaaGaHIJKaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaa
-aaaaaaaLMNOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 paaaaaaaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqaaaaaaaaaaaaaaaaaaaaa
 "}
