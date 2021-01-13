@@ -30,7 +30,7 @@
 
 obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_coldwar == TRUE && !J.is_specops && !J.is_modernday)
+	if (J.is_coldwar == TRUE && !J.is_specops && !J.is_modernday && !J.is_nva)
 		. = TRUE
 	else
 		. = FALSE

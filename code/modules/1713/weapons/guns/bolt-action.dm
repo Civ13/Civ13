@@ -197,6 +197,9 @@
 			icon_state = "[base_icon]_open"
 	update_held_icon()
 	return
+/obj/item/weapon/gun/projectile/boltaction/New()
+	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
+	spawn_add_attachment(A, src)
 /obj/item/weapon/gun/projectile/boltaction/singleshot
 	name = "Sharps Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .45-70 cartridges."

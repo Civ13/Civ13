@@ -269,6 +269,10 @@ Current Defines (_defines/attachment.dm)
 	name = "iron sights"
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT + 5
+/obj/item/weapon/attachment/scope/iron_sights/mg/type99
+	name = "telescopic sights"
+	attachment_type = ATTACH_IRONSIGHTS
+	zoom_amt = ZOOM_CONSTANT + 5
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope
 	name = "sniper scope"

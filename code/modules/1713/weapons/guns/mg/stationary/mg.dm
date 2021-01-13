@@ -66,7 +66,9 @@
 		icon_state = "[base_icon][0]"
 	update_held_icon()
 	return
-
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/New()
+	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights/mg(src)
+	spawn_add_attachment(A, src)
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim
 	name = "Maxim 1895"
 	desc = "Russian version of the original Maxim machinegun, on cart mount. Uses Russian 7.62x54mm rounds."

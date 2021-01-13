@@ -258,6 +258,14 @@
 /datum/job/filipino/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_filipino_name(H.gender)
 	H.real_name = H.name
+	var/new_hair = "Black"
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 /datum/job/filipino/captain
 	title = " Kapitan"
 	en_meaning = "captain"
