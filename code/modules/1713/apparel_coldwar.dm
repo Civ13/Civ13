@@ -557,6 +557,12 @@
 	item_state = "NVAuni"
 	worn_state = "NVAuni"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+/obj/item/clothing/under/nva/officer
+	name = "NVA officer uniform"
+	desc = "A khaki uniform of the North Vietnamese Army. This one bearing the ranks of an officer"
+	icon_state = "NVAuni_off"
+	item_state = "NVAuni_off"
+	worn_state = "NVAuni_off"
 /* Cold War Armor*/
 
 /obj/item/clothing/accessory/armor //again im confused why this is the case. It should be moved somewhere higher up into armor.dm or/and tagged into /modern especially @fantasticfwoosh

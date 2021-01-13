@@ -29,8 +29,10 @@
 
 obj/map_metadata/road_to_dak_to/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_coldwar == TRUE && !J.is_specops && !J.is_modernday)
+	if (J.is_coldwar == TRUE && !J.is_specops && !J.is_modernday && !J.is_nva)
 		. = TRUE
+	if (J.is_nva)
+		. = FALSE
 	else
 		. = FALSE
 
