@@ -62,7 +62,9 @@
 	KD_chance = KD_CHANCE_MEDIUM
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
-
+/obj/item/weapon/gun/projectile/pistol/New()
+	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights(src)
+	spawn_add_attachment(A, src)
 /obj/item/weapon/gun/projectile/pistol/attackby(obj/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/attachment/bayonet))
 		user << "<span class = 'danger'>That won't fit on there.</span>"

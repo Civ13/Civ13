@@ -76,7 +76,9 @@
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
 	load_delay = 6
-
+/obj/item/weapon/gun/projectile/revolver/New()
+	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights(src)
+	spawn_add_attachment(A, src)
 /obj/item/weapon/gun/projectile/revolver/update_icon()
 	..()
 	if (base_icon)
