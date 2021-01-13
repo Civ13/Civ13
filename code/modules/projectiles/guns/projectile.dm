@@ -41,7 +41,7 @@
 	var/infinite_ammo = FALSE
 
 	var/serial = ""
-/obj/item/weapon/gun/projectile/New(var/obj/item/weapon/gun/projectile/P, var/obj/item/weapon/gun/projectile/automatic/type99/T, var/obj/item/weapon/gun/projectile/automatic/stationary/modern/M)
+/obj/item/weapon/gun/projectile/New()
 	serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
 	..()
 	if (map && map.civilizations)
@@ -58,6 +58,10 @@
 			ammo_magazine = new magazine_type(src)
 
 	update_icon()
+
+	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
+	spawn_add_attachment(A, src)
+
 /obj/item/weapon/gun/projectile/proc/cock_gun(mob/user)
 	set waitfor = FALSE
 	if (cocked_sound)

@@ -56,9 +56,7 @@
 	stat = "rifle"
 
 	gtype = "shotgun"
-/obj/item/weapon/gun/projectile/shotgun/New()
-	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
+
 /obj/item/weapon/gun/projectile/shotgun/pump
 	name = "Pump-Action Shotgun"
 	desc = "A placeholder shotgun chambered in 12 gauge rounds."

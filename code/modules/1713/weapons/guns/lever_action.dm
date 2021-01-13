@@ -166,9 +166,6 @@
 		chambered = AC
 
 	update_icon()
-/obj/item/weapon/gun/projectile/leveraction/New()
-	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
 /*
 /obj/item/weapon/gun/projectile/leveraction/unload_ammo(var/mob/living/human/user, allow_dump=0)
 	if (loaded.len)

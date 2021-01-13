@@ -80,10 +80,8 @@ obj/item/weapon/gun/projectile/ancient
 
 	load_delay = 200
 	aim_miss_chance_divider = 3.00
-/obj/item/weapon/gun/projectile/ancient/New()
-	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
-/obj/item/weapon/gun/projectile/ancient/firelance
+
+obj/item/weapon/gun/projectile/ancient/firelance
 	name = "fire lance"
 	desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 	icon_state = "firelance0"

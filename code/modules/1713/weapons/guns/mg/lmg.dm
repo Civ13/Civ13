@@ -90,9 +90,7 @@
 		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
 		return FALSE
 	return TRUE
-/obj/item/weapon/gun/projectile/automatic/New()
-	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
+
 /obj/item/weapon/gun/projectile/automatic/madsen
 	name = "Madsen light machine gun"
 	desc = "The Madsen Machine Gun, is a light machine gun (LMG) designed in Denmark in the 1896. Many countries ordered models of it in different calibers. This one is 7.62x54mmR, mosin rounds."
@@ -119,9 +117,7 @@
 	throwforce = 30
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
-/obj/item/weapon/gun/projectile/automatic/type99/New()
-	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights/mg/type99(src)
-	spawn_add_attachment(A, src)
+
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"
 	desc = "The DP-28 light machinegun. This one is in 7.62x54mmR."

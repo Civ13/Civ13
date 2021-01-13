@@ -112,9 +112,7 @@
 		jamcheck = 0
 
 	last_fire = world.time
-/obj/item/weapon/gun/projectile/semiautomatic/New()
-	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
+
 /obj/item/weapon/gun/projectile/semiautomatic/svt
 	name = "SVT-40"
 	desc = "Soviet semi-automatic rifle chambered in 7.62x54mmR."

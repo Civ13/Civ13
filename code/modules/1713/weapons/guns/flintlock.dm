@@ -138,9 +138,7 @@
 	cocked = FALSE
 	spawn (1)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
-/obj/item/weapon/gun/projectile/flintlock/New()
-	var/obj/item/weapon/attachment/A = new/obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
+
 /obj/item/weapon/gun/projectile/flintlock/musket
 	name = "flintlock musket"
 	desc = "A simple flintlock musket of the early XVIII century."
