@@ -87,6 +87,13 @@
 	icon_state = "fortress_brickwall"
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 
+/turf/wall/stone/marble
+	name = "marble block wall"
+	desc = "A marble block wall."
+	icon_state = "marble_block_wall0"
+	icon = 'icons/turf/walls.dmi'
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+
 /turf/wall/indestructable
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "black" // so we look better on the map

@@ -262,6 +262,7 @@
 #include "code\game\objects\map_metadata\bohemia.dm"
 #include "code\game\objects\map_metadata\caloocan.dm"
 #include "code\game\objects\map_metadata\camp.dm"
+#include "code\game\objects\map_metadata\capitol_hill.dm"
 #include "code\game\objects\map_metadata\chad_jungle.dm"
 #include "code\game\objects\map_metadata\civilizations.dm"
 #include "code\game\objects\map_metadata\colony.dm"
@@ -512,6 +513,7 @@
 #include "code\modules\1713\jobs\american.dm"
 #include "code\modules\1713\jobs\ancient.dm"
 #include "code\modules\1713\jobs\british.dm"
+#include "code\modules\1713\jobs\capitol.dm"
 #include "code\modules\1713\jobs\chinese.dm"
 #include "code\modules\1713\jobs\civ_factions.dm"
 #include "code\modules\1713\jobs\civil_war.dm"
@@ -988,5 +990,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\forest.dmm"
+#include "maps\WIP\capitol_hill.dmm"
 // END_INCLUDE
