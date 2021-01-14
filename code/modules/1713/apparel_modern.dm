@@ -1006,7 +1006,38 @@
 	icon_state = "tacticool_hawaiian_purple"
 	item_state = "tacticool_hawaiian_purple"
 	worn_state = "tacticool_hawaiian_purple"
+
+/obj/item/clothing/head/cap
+	name = "cap"
+	desc = "A generic visored cap."
+	icon_state = "maga"
+	item_state = "maga"
+	worn_state = "maga"
+	var/base_state = "maga"
+	var/flipped = FALSE
+
+/obj/item/clothing/head/cap/verb/flip()
+	set category = null
+	set src in usr
+
+	flipped = !flipped
+	update_icon()
 	/* IOG armor*/
+
+/obj/item/clothing/head/cap/update_icon()
+	..()
+	if (flipped)
+		icon_state = "[base_state]_flipped"
+	else
+		icon_state = base_state
+
+/obj/item/clothing/head/cap/maga
+	name = "MAGA hat"
+	desc = "A red hat with \"Make America Great Again\" on the front."
+	icon_state = "maga"
+	item_state = "maga"
+	worn_state = "maga"
+	base_state = "maga"
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
 	name = "IOG heavy vest B-7"

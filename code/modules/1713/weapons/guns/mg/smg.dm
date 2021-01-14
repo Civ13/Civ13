@@ -565,7 +565,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.8)),
 		)
 	effectiveness_mod = 1.07
@@ -580,7 +580,7 @@
 	icon_state = "m16a4"
 	full_auto = FALSE
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		)
 /obj/item/weapon/gun/projectile/submachinegun/ar10
 	name = "AR-10"
@@ -620,7 +620,7 @@
 	equiptimer = 9
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.8)),
 		)
 	effectiveness_mod = 1.08
@@ -634,7 +634,7 @@
 	desc = "A modernized version of the M16, with a railed upper receiver and handguard."
 	full_auto = FALSE
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
 		)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
