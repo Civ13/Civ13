@@ -199,8 +199,6 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new/obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
-
 	var/randjack = rand(1,4)
 	if (randjack == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/tacticool_hawaiian(H), slot_w_uniform)
