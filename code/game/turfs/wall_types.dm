@@ -91,7 +91,6 @@
 	name = "marble block wall"
 	desc = "A marble block wall."
 	icon_state = "marble_block_wall0"
-	base_icon_state = "marble_block_wall"
 	icon = 'icons/turf/walls.dmi'
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 

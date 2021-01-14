@@ -409,6 +409,13 @@
 	item_state = "lwh_black"
 	worn_state = "lwh_black"
 
+/obj/item/clothing/head/helmet/modern/ach
+	name = "OCP ACH helmet"
+	desc = "A typical US Army Advanced Combat Helmet. This one is in OCP cammo."
+	icon_state = "ach_ocp"
+	item_state = "ach_ocp"
+	worn_state = "ach_ocp"
+
 	/* US Army Clothing*/
 
 /obj/item/clothing/under/us_uni/us_camo_dcu
