@@ -23,6 +23,7 @@
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
+	is_singlefaction = TRUE
 
 /obj/map_metadata/nankou/job_enabled_specialcheck(var/datum/job/J)
 	..()
