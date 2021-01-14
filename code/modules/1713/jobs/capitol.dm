@@ -203,16 +203,16 @@
 
 	var/randjack = rand(1,4)
 	if (randjack == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/hawaiian(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tacticool_hawaiian(H), slot_w_uniform)
 	else if (randjack == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/hawaiian/purple(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tacticool_hawaiian/purple(H), slot_w_uniform)
 	else if (randjack == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/hawaiian/orange(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tacticool_hawaiian/orange(H), slot_w_uniform)
 	else if (randjack == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/hawaiian/green(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tacticool_hawaiian/green(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randjack = rand(1,4)
+	var/randarm = rand(1,4)
 	if (randarm == 1)
 		var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp/ocp_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp(null)
 		uniform.attackby(ocp_armor, H)
