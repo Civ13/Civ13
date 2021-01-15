@@ -37,7 +37,7 @@
 		if (map && map.civilizations)
 			var/civ = user.original_job_title
 			var/list/current_res = list(0,0,0)
-			if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
+			if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
 				if (user.civilization == "none")
 					current_res = list(map.default_research,map.default_research,map.default_research)
 				else

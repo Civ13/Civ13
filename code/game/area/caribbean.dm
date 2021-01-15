@@ -308,7 +308,12 @@
 	name = "Sea"
 	base_turf = /turf/floor/beach/water/deep
 	icon_state = "blue2"
-
+/area/caribbean/no_mans_land/sky
+	name = "No Man's Sky"
+	icon_state = "purple1"
+	base_turf = /turf/floor/broken_floor/sky
+	var/corresponding_area_type = null
+	var/corresponding_area_allow_subtypes = FALSE
 /area/caribbean/no_mans_land
 	name = "No Man's Land"
 	icon_state = "purple1"

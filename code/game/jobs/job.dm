@@ -20,7 +20,26 @@
 	var/total_positions = FALSE			   // How many players can be this job
 	var/current_positions = FALSE			 // How many players have this job
 	var/selection_color = "#404040"	   // Selection screen color
+/*
+	var/uniform = null
+	var/shoes = null
+	var/hat = null
+	var/suit = null
+	var/gloves = null
+	var/mask = null
+	var/belt = null
+	var/ear = null
+	var/hand = null
+	var/glasses = null
+	var/suit_store = null
 
+	var/list/backpacks = list(
+		/obj/item/weapon/storage/backpack
+		)
+
+	//This will be put in backpack. List ordered by priority!
+	var/list/put_in_backpack = list()
+*/
 	var/spawn_location = null
 
 	var/enabled = TRUE
@@ -35,6 +54,21 @@
 
 /datum/job/proc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
+/*
+	if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack))
+		var/list/slots = list( slot_belt, slot_r_store, slot_l_store, slot_r_hand, slot_l_hand, slot_s_store )
+		for ( var/path in put_in_backpack )
+			if ( !slots.len ) break
+			var/obj/item/I = new path(H)
+			for ( var/slot in slots )
+				if ( H.equip_to_slot_if_possible(I, slot, FALSE, TRUE, FALSE) )
+					slots -= slot
+					break
+			if (istype(H.r_hand,/obj/item/weapon/storage))
+				new path(H.r_hand)
+			else if (istype(H.l_hand, /obj/item/weapon/storage))
+				new path(H.l_hand)
+*/
 	update_character(H)
 	return TRUE
 

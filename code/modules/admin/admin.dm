@@ -508,7 +508,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Activates or Deactivates research."
 	set name="Toggle Research"
-	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES)
+	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES || MAP_FOUR_KINGDOMS)
 		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	if (!(map.research_active))
@@ -562,7 +562,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the research."
 	set name="Set Custom Research"
-	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES)
+	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS)
 		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	else
@@ -588,7 +588,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the starting age."
 	set name="Set Custom Age"
-	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES)
+	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS)
 		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	else
