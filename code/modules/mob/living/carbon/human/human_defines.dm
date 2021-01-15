@@ -193,6 +193,6 @@
 	var/mob/living/simple_animal/riding_mob = null
 /*
 /mob/living/human/New()
-	if(map.ID == MAP_TRIBES)
+	if(map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
 		stats.Add("magic" = list(0,100))
 	..()*/

@@ -108,10 +108,17 @@
 	worn_state = "germanpack"
 	base_icon = "germanpack"
 	max_storage_space = 24
-/*
-/obj/item/weapon/storage/backpack/german/paratrooper
+
+/obj/item/weapon/storage/backpack/ww2/german/paratrooper
 	desc = "A German paratrooper's backpack. Parachute built in."
-*/
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full(src)
+
 /obj/item/weapon/storage/backpack/ww2/german/sapper
 	New()
 		..()

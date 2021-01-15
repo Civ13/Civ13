@@ -96,10 +96,6 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (map.ID == MAP_CIVILIZATIONS)
@@ -124,6 +120,58 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+			if(map && map.ID == MAP_FOUR_KINGDOMS)
+				if (orc)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
+					spawn(10)
+						C.uncolored = FALSE
+					C.shirtcolor = "#000000"
+					C.pantscolor = "#688463"
+					var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_decoration")
+					pants.color = C.pantscolor
+					var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robe")
+					shirt.color = C.shirtcolor
+					var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robebelt")
+					overlays += pants
+					overlays += shirt
+					overlays += belt
+					equip_to_slot_or_del(C, slot_w_uniform)
+					update_icons(1)
+				else if (gorillaman)
+					equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
+				else if (ant)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(src), slot_w_uniform)
+				else if (lizard)
+					if(prob(80))
+						equip_to_slot_or_del(new /obj/item/clothing/under/halfhuipil(src), slot_w_uniform)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/under/huipil(src), slot_w_uniform)
+				else if (wolfman)
+					equip_to_slot_or_del(new /obj/item/clothing/under/loincotton(src), slot_w_uniform)
+				else if (crab)
+					if (prob(30))
+						equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kasa(src), slot_head)
+						equip_to_slot_or_del(new /obj/item/clothing/under/haori(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(src), slot_shoes)
+					if (prob(30))
+						equip_to_slot_or_del(new /obj/item/clothing/head/helmet/jingasa(src), slot_head)
+						equip_to_slot_or_del(new /obj/item/clothing/under/haori/blue(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(src), slot_shoes)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(src), slot_head)
+						equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(src), slot_shoes)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+				if (prob(20))
+					equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(src), slot_head)
 		else if (map.ordinal_age == 4)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
@@ -513,6 +561,86 @@
 					orc = 1
 					civilization = "Orc Horde"
 					religion = "Followers of Morgoth"
+					add_language("Black Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/blackspeech/A in languages)
+						default_language = A
+					name = species.get_random_orc_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Ant tribesman")
+					ant = 1
+					civilization = "Ant Colony"
+					religion = "Followers of the Hive Mother"
+					add_language("Antspeak",TRUE)
+					remove_language("English")
+					for (var/datum/language/ant/A in languages)
+						default_language = A
+					name = species.get_random_ant_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Gorilla tribesman")
+					gorillaman = 1
+					civilization = "Gorilla Tribe"
+					religion = "Order of the Great Tree"
+					add_language("Ape Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/ape/A in languages)
+						default_language = A
+					name = species.get_random_gorilla_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Wolf tribesman")
+					wolfman = 1
+					civilization = "Wolfpack"
+					religion = "Moon Worshippers"
+					add_language("Wolf Howling",TRUE)
+					remove_language("English")
+					for (var/datum/language/wolf/A in languages)
+						default_language = A
+					name = species.get_random_wolf_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Lizard tribesman")
+					lizard = 1
+					civilization = "Lizard Clan"
+					religion = "The Great Serpent"
+					add_language("Lizard Hissing",TRUE)
+					remove_language("English")
+					for (var/datum/language/lizard/A in languages)
+						default_language = A
+					name = species.get_random_lizard_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Crustacean tribesman")
+					crab = 1
+					civilization = "Crustacean Union"
+					religion = "Cthulhu"
+					add_language("Clack Tongue",TRUE)
+					remove_language("English")
+					for (var/datum/language/crab/A in languages)
+						default_language = A
+					name = species.get_random_crab_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else
+					civilization = "Human Kingdom"
+					religion = "Father in the Sky"
+					name = species.get_random_english_name(gender)
+					real_name = name
+					give_clothes()
+		else if (map && map.ID == MAP_FOUR_KINGDOMS)
+			spawn(5)
+				if (original_job_title == "Orc tribesman")
+					orc = 1
+					civilization = "Orc Horde"
+					religion = "Code of Malacath"
 					add_language("Black Speech",TRUE)
 					remove_language("English")
 					for (var/datum/language/blackspeech/A in languages)
