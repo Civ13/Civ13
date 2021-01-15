@@ -266,7 +266,7 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	if (map && map.ID == MAP_CAPITOL_HILL)
 		var/obj/map_metadata/capitol_hill/CP = map
-		CP |= H
+		CP.HVT_list |= H
 	return TRUE
 
 ////////////MILITIAS/////////////
