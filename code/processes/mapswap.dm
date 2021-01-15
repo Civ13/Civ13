@@ -593,4 +593,6 @@
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Area Capture"
+		var/obj/map_metadata/capitol_hill/CP = map
+		CP.points_check()
 		return
