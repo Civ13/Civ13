@@ -178,6 +178,12 @@
 	magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
 
 
+/obj/item/weapon/gun/projectile/pistol/glock17/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
 	..()
 	if (ammo_magazine)

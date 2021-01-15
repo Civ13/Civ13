@@ -5,6 +5,7 @@
 	icon = 'icons/obj/guns/rifles.dmi'
 	// 15% more accurate than SMGs
 	equiptimer = 17
+	magazine_type = /obj/item/ammo_magazine/shellbox
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet

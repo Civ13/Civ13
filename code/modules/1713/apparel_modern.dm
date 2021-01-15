@@ -774,6 +774,8 @@
 	w_class = 4
 	weight = 3.6
 
+/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under //for TDM maps, showing under the clothing
+
 /obj/item/clothing/head/helmet/kevlarhelmet
 	name = "black kevlar helmet"
 	desc = "A standard bulletproof helmet, made of kevlar."
@@ -1007,6 +1009,34 @@
 	item_state = "tacticool_hawaiian_purple"
 	worn_state = "tacticool_hawaiian_purple"
 
+/obj/item/clothing/under/boomerwaffen1
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen1"
+	item_state = "boomerwaffen1"
+	worn_state = "boomerwaffen1"
+
+/obj/item/clothing/under/boomerwaffen2
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen2"
+	item_state = "boomerwaffen2"
+	worn_state = "boomerwaffen2"
+
+/obj/item/clothing/under/boomerwaffen3
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen3"
+	item_state = "boomerwaffen3"
+	worn_state = "boomerwaffen3"
+
+/obj/item/clothing/under/modern_shaman
+	name = "modern shaman outfit"
+	desc = "A modern shaman outfit."
+	icon_state = "modern_shaman"
+	item_state = "modern_shaman"
+	worn_state = "modern_shaman"
+
 /obj/item/clothing/head/cap
 	name = "cap"
 	desc = "A generic visored cap."
@@ -1028,8 +1058,12 @@
 	..()
 	if (flipped)
 		icon_state = "[base_state]_flipped"
+		item_state = icon_state
+		worn_state = icon_state
 	else
 		icon_state = base_state
+		item_state = icon_state
+		worn_state = icon_state
 
 /obj/item/clothing/head/cap/maga
 	name = "MAGA hat"
@@ -1038,6 +1072,15 @@
 	item_state = "maga"
 	worn_state = "maga"
 	base_state = "maga"
+
+/obj/item/clothing/head/cap/fbi
+	name = "FBI hat"
+	desc = "A black hat with FBI in white letters in the front."
+	icon_state = "fbi"
+	item_state = "fbi"
+	worn_state = "fbi"
+	base_state = "fbi"
+
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
 	name = "IOG heavy vest B-7"

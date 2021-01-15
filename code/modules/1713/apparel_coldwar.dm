@@ -680,6 +680,14 @@
 	new /obj/item/ammo_magazine/gewehr98(src)
 	new /obj/item/ammo_magazine/gewehr98(src)
 
+/obj/item/weapon/storage/belt/smallpouches/us_stanag
+/obj/item/weapon/storage/belt/smallpouches/us_stanag/New()
+	..()
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
 /* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava

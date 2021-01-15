@@ -294,3 +294,20 @@ var/global/list/valid_coordinates = list()
 					LS1.fire_stacks += rand(2,4)
 					LS1.IgniteMob()
 				new/obj/effect/fire(O)
+
+////FBI COMMAND TO FIND HVT
+
+/mob/living/human/proc/find_hvt()
+	set category = "Officer"
+	set name = "Locate HVT"
+	set desc="Check where the HVT is."
+
+	var/count = 0
+	for (var/mob/living/human/H in player_list)
+		if (H.original_job_title == "HVT")
+			var/tdist = get_dist(src,H)
+			var/tdir = dir2text(get_dir(src,H))
+			count++
+			src << "<big><font color='yellow'>The <b>HVT</b> (<i>[H.name]</i>) is [tdist] meters [tdir] from you.</font></big>"
+	if (count <= 0)
+		src << "<big><font color='yellow'>No <b>HVT</b>s found!</font></big>"
