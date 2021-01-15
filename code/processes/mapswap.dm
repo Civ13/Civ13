@@ -553,6 +553,7 @@
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
+	/// TDM MODES ///
 	else if (vote.voted_gamemode == "Normal")
 		world << "<font color='green'><big>Normal Mode</big><br>No respawn delays.</big></font>"
 		config.disable_fov = TRUE
@@ -573,4 +574,23 @@
 		config.no_respawn_delays = FALSE
 		map.gamemode = "Hardcore"
 		global_damage_modifier = 1.30
+		return
+	/// CAPITOL MODES // 
+	else if (vote.voted_gamemode == "Siege")
+		world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Siege"
+		return
+	else if (vote.voted_gamemode == "Protect the VIP")
+		world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Protect the VIP"
+		return
+	else if (vote.voted_gamemode == "Area Capture")
+		world << "<font color='yellow'><big>Area Capture</big><br>Capture the <b>Congress</b> and the <b>Senate</b> to gain points. First team to <b>40 points</b> wins!</big></font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Area Capture"
 		return

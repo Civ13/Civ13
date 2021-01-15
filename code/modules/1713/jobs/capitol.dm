@@ -211,7 +211,7 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
 	uniform.attackby(armor, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>FBI officer</b> Keep the High Value Target safe at all costs!")
+	H.add_note("Role", "You are a <b>FBI officer</b>.<br> Keep the High Value Target safe at all costs!<br><i>You can use the \"Find HVT\" command under the \"Officer\" tab to locate the HVT(s).</i>")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_VERY_HIGH)
@@ -264,6 +264,9 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
+	if (map && map.ID == MAP_CAPITOL_HILL)
+		var/obj/map_metadata/capitol_hill/CP = map
+		CP |= H
 	return TRUE
 
 ////////////MILITIAS/////////////

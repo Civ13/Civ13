@@ -58,6 +58,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			return
 		if (map.persistence)
 			return
+		if (map.ID == MAP_CAPITOL_HILL)
+			initiate_vote("gamemode_cap","the server", TRUE)
+			return
 		if (!map.is_RP && autogamemode_triggered == FALSE)
 			initiate_vote("gamemode","the server", TRUE)
 			log_debug("The server has called a gamemode vote.")
@@ -226,6 +229,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						options = list("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
 						if (!default)
 							default = "Classic (Stone Age Start)"
+					choices.Add(options)
+				if ("gamemode_cap")
+					var/list/options = list("Protect the VIP", "Siege", "Area Capture")
+					if (!default)
+						default = "Siege"
 					choices.Add(options)
 				else
 					return FALSE
