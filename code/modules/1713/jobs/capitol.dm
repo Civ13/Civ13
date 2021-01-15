@@ -184,7 +184,7 @@
 
 /datum/job/civilian/us_militia
 	title = "Boogaloo Boy"
-	en_meaning = ""
+	en_meaning = "Assault Infantry"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCiv"
 	min_positions = 10
@@ -248,13 +248,58 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/civilian/us_patriot
+	title = "American Patriot"
+	en_meaning = "Support Infantry"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateCiv"
+	min_positions = 10
+	max_positions = 150
+	is_capitol = TRUE
+
+/datum/job/civilian/us_patriot/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+
+//clothes
+	var/randjack = rand(1,3)
+	if (randjack == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/boomerwaffen1(H), slot_w_uniform)
+	else if (randjack == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/boomerwaffen2(H), slot_w_uniform)
+	else if (randjack == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/boomerwaffen3(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+//head
+	if (prob(75))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/maga(H), slot_head)
+//eyewear
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+//gunz
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/remington870(H), slot_shoulder)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
+	H.add_note("Role", "You are a <b>[title]</b>, insurging against the U.S. Government's tyranny. You've trained for this all your life, so go for it!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_HIGH)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	if (prob(25))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
-	else
-		return
 	return TRUE

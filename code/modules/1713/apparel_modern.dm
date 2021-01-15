@@ -1007,6 +1007,26 @@
 	item_state = "tacticool_hawaiian_purple"
 	worn_state = "tacticool_hawaiian_purple"
 
+/obj/item/clothing/under/boomerwaffen1
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen1"
+	item_state = "boomerwaffen1"
+	worn_state = "boomerwaffen1"
+
+/obj/item/clothing/under/boomerwaffen2
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen2"
+	item_state = "boomerwaffen2"
+	worn_state = "boomerwaffen2"
+
+/obj/item/clothing/under/boomerwaffen3
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen3"
+	item_state = "boomerwaffen3"
+	worn_state = "boomerwaffen3"
 /obj/item/clothing/head/cap
 	name = "cap"
 	desc = "A generic visored cap."

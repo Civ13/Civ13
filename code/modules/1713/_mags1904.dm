@@ -571,7 +571,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	icon_state = "shellbox"
 	mag_type = MAGAZINE
 	caliber = "12guage"
-	w_class = 3
+	w_class = 2
 
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	max_ammo = 12
