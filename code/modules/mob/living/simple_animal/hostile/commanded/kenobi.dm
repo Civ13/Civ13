@@ -51,8 +51,10 @@
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 		target_mob = M
+		icon_state = "monkey_kenobi_hostile"
 	else if (behaviour == "scared")
 		do_behaviour("scared")
+		icon_state = "monkey_kenobi"
 
 	switch(M.a_intent)
 
@@ -71,6 +73,7 @@
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
+				icon_state = "monkey_kenobi_hostile"
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
 			M.do_attack_animation(src)
 			playsound(get_turf(M), 'sound/weapons/punchmiss.ogg', 50, TRUE, -1)
@@ -81,6 +84,7 @@
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
+				icon_state = "monkey_kenobi_hostile"
 			if (M == src)
 				return
 			if (!(status_flags & CANPUSH))
@@ -102,6 +106,8 @@
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
+				icon_state = "monkey_kenobi_hostile"
+				update_icons()
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
 			M.visible_message("<span class = 'red'>[M] [response_harm] \the [src].</span>")
 			M.do_attack_animation(src)
