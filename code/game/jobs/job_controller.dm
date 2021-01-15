@@ -102,6 +102,9 @@ var/global/datum/controller/occupations/job_master
 	map.availablefactions_run = FALSE
 	return
 
+/datum/controller/occupations/proc/set_factions3(var/autobalance_nr = 0)
+	map.availablefactions = list("Human tribesman", "Orc tribesman", "Crustacean tribesman", "Lizard tribesman")
+
 /datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0)
 
 	if (map)
@@ -123,7 +126,7 @@ var/global/datum/controller/occupations/job_master
 
 	var/autobalance_for_players = round(max(_clients, clients.len))
 
-	if (map && map.civilizations && map.ID != MAP_TRIBES)
+	if (map && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS)
 		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP)
 			set_factions2(15)
 		else
@@ -131,7 +134,8 @@ var/global/datum/controller/occupations/job_master
 	spawn(10)
 		if (map && map.ID == MAP_TRIBES)
 			set_factions(autobalance_for_players)
-
+		if (map &&  map.ID == MAP_FOUR_KINGDOMS)
+			set_factions3(autobalance_for_players)
 	for (var/datum/job/J in occupations)
 		if (J.title != "N/A" && J.title != "generic job")
 			var/positions = J.max_positions
@@ -212,7 +216,7 @@ var/global/datum/controller/occupations/job_master
 
 	if (!spawn_location && H.original_job)
 		spawn_location = H.original_job.spawn_location
-	if (map.ID == MAP_TRIBES)
+	if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
 		if (H.original_job_title in map.availablefactions)
 			if (H.original_job_title == map.availablefactions[1])
 				spawn_location = "JoinLateIND1"
