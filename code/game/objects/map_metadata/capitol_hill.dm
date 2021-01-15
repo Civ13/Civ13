@@ -34,6 +34,15 @@
 	var/a1_control = "none"
 	var/a2_control = "none"
 
+/obj/map_metadata/capitol_hill/New()
+	..()
+	spawn(2500)
+		if (gamemode == "Siege")
+			for (var/area/caribbean/no_mans_land/capturable/one/O in world)
+				new /area/caribbean/british/land/inside/objective(O)
+			for (var/area/caribbean/no_mans_land/capturable/two/O in world)
+				new /area/caribbean/british/land/inside/objective(O)
+				
 /obj/map_metadata/capitol_hill/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_capitol == TRUE)
