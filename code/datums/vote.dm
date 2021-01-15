@@ -59,7 +59,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		if (map.persistence)
 			return
 		if (map.ID == MAP_CAPITOL_HILL)
-			initiate_vote("gamemode_cap","the server", TRUE)
+			initiate_vote("gamemode","the server", TRUE)
 			return
 		if (!map.is_RP && autogamemode_triggered == FALSE)
 			initiate_vote("gamemode","the server", TRUE)
@@ -221,7 +221,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("No")
 				if ("gamemode")
 					var/list/options = list()
-					if (!map.is_RP && !map.nomads && !map.civilizations)
+					if (map.ID == MAP_CAPITOL_HILL)
+						options = list("Protect the VIP", "Siege", "Area Capture")
+						if (!default)
+							default = "Siege"
+					else if (!map.is_RP && !map.nomads && !map.civilizations)
 						options = list("Normal", "Competitive", "Hardcore")
 						if (!default)
 							default = "Normal"
@@ -230,11 +234,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						if (!default)
 							default = "Classic (Stone Age Start)"
 					choices.Add(options)
-				if ("gamemode_cap")
-					var/list/options = list("Protect the VIP", "Siege", "Area Capture")
-					if (!default)
-						default = "Siege"
-					choices.Add(options)
+
 				else
 					return FALSE
 			mode = vote_type
