@@ -656,7 +656,8 @@ var/global/list/damage_icon_parts = list()
 				var/image/NI = A.get_mob_overlay()
 				if (istype(A, /obj/item/clothing/accessory/custom))
 					NI.color = A.color
-				standing.overlays |= NI
+				if (!istype(A,/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under))
+					standing.overlays |= NI
 		if (under.shit_overlay)
 			var/shit = image("icon" = 'icons/mob/human_races/masks/sickness.dmi', "icon_state"="shit")
 			standing.overlays += shit
@@ -664,6 +665,8 @@ var/global/list/damage_icon_parts = list()
 			var/piss = image("icon" = 'icons/mob/human_races/masks/sickness.dmi', "icon_state"="piss")
 			standing.overlays += piss
 		overlays_standing[UNIFORM_LAYER]	= standing
+
+
 	else
 		overlays_standing[UNIFORM_LAYER]	= null
 

@@ -36,7 +36,7 @@
 	H.add_note("Role", "You are a <b>Elder</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_LOW)
@@ -79,7 +79,7 @@
 	H.add_note("Role", "You are a <b>Shaman</b>, the healer and religious leader of your tribe. Keep your fellow tribesmen healthy and motivated!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
@@ -128,7 +128,7 @@
 	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
@@ -171,7 +171,7 @@
 	H.add_note("Tribe", "You are a member of the <b>Red Goose</b> tribe. You should wear red clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
@@ -212,7 +212,7 @@ datum/job/indians/tribes/blue
 	H.add_note("Tribe", "You are a member of the <b>Blue Turkey</b> tribe. You should wear blue clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
@@ -253,7 +253,7 @@ datum/job/indians/tribes/green
 	H.add_note("Tribe", "You are a member of the <b>Green Monkey</b> tribe. You should wear green clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
@@ -294,7 +294,7 @@ datum/job/indians/tribes/yellow
 	H.add_note("Tribe", "You are a member of the <b>Yellow Mouse</b> tribe. You should wear yellow clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
@@ -337,7 +337,7 @@ datum/job/indians/tribes/white
 	H.add_note("Tribe", "You are a member of the <b>White Wolf</b> tribe. You should wear white clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
@@ -378,7 +378,7 @@ datum/job/indians/tribes/black
 	H.add_note("Tribe", "You are a member of the <b>Black Bear</b> tribe. You should wear black clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)

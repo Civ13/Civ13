@@ -142,11 +142,11 @@
 	H.add_note("Role", "You are a <b>[title]</b>, a Ranged Ashigaru of the Eastern Army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH) //muskets
+	H.setStat("rifle", STAT_VERY_HIGH)
 	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH) //not used
+	H.setStat("swords", STAT_MEDIUM_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
 
@@ -186,11 +186,11 @@
 	H.add_note("Role", "You are a <b>[title]</b>, a foot soldier of the western army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH) //muskets
+	H.setStat("rifle", STAT_VERY_HIGH)
 	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH) //not used
+	H.setStat("swords", STAT_MEDIUM_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
 /////////////////////////////////////////////////////////////////////////ICHI/////////////////////////////////////////////////////
@@ -332,11 +332,11 @@
 	H.add_note("Role", "You are a <b>[title]</b>, a Ranged Ashigaru of the Western Army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH) //muskets
+	H.setStat("rifle", STAT_VERY_HIGH)
 	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH) //not used
+	H.setStat("swords", STAT_MEDIUM_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
 
@@ -374,10 +374,10 @@
 	H.add_note("Role", "You are a <b>[title]</b>, a foot soldier of the western army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH) //muskets
+	H.setStat("rifle", STAT_VERY_HIGH)
 	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH) //not used
+	H.setStat("swords", STAT_MEDIUM_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE

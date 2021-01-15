@@ -442,6 +442,11 @@ var/global/redirect_all_players = null
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 //prevent boss spawns if there are enemies in the building
+		if (map && map.ID == MAP_CAPITOL_HILL)
+			var/obj/map_metadata/capitol_hill/CP = map
+			if (isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "HVT"))
+				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
+				return
 		if (map && map.ID == MAP_ALLEYWAY)
 			if (actual_job && actual_job.title == "Yama Wakagashira")
 				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_two))
@@ -673,6 +678,8 @@ var/global/redirect_all_players = null
 	//squads
 	if (ishuman(character))
 		var/mob/living/human/H = character
+		if (H.original_job_title == "FBI officer")
+			H.verbs += /mob/living/human/proc/find_hvt
 		if (H.original_job.uses_squads)
 			H.verbs += /mob/living/human/proc/find_nco
 			if (H.original_job.is_squad_leader)
