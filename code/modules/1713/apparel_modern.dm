@@ -1029,6 +1029,14 @@
 	icon_state = "boomerwaffen3"
 	item_state = "boomerwaffen3"
 	worn_state = "boomerwaffen3"
+
+/obj/item/clothing/under/modern_shaman
+	name = "modern shaman outfit"
+	desc = "A modern shaman outfit."
+	icon_state = "modern_shaman"
+	item_state = "modern_shaman"
+	worn_state = "modern_shaman"
+
 /obj/item/clothing/head/cap
 	name = "cap"
 	desc = "A generic visored cap."
