@@ -372,6 +372,55 @@
 	icon_state = "concrete6"
 	interior = FALSE
 
+/turf/floor/plating/marble
+	name = "raw marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "raw_marble0"
+	interior = FALSE
+
+/turf/floor/plating/marble/ornate
+	name = "ornate marble floor"
+	icon_state = "ornate_marble"
+
+/turf/floor/plating/marble/grid
+	name = "marble grid floor"
+	icon_state = "marble_grid"
+
+/turf/floor/plating/marble/raw
+	name = "raw marble floor"
+	icon_state = "raw_marble0"
+	New()
+		..()
+		icon_state = "raw_marble[rand(0,2)]"
+
+/turf/floor/plating/marble/pink
+	name = "pink marble floor"
+	icon_state = "pink_marble0"
+	New()
+		..()
+		icon_state = "pink_marble[rand(0,2)]"
+
+/turf/floor/plating/marble/black
+	name = "black marble floor"
+	icon_state = "black_marble0"
+	New()
+		..()
+		icon_state = "black_marble[rand(0,3)]"
+
+/turf/floor/plating/marble/tile
+	name = "marble tile floor"
+	icon_state = "marble_tile0"
+	New()
+		..()
+		icon_state = "marble_tile[rand(0,3)]"
+
+/turf/floor/plating/marble/decorative_tile
+	name = "decorative marble tile floor"
+	icon_state = "decorative_marble_tile0"
+	New()
+		..()
+		icon_state = "decorative_marble_tile[rand(0,3)]"
+
 /turf/floor/plating/metro
 	name = "Metro floor"
 	icon = 'icons/turf/floors.dmi'

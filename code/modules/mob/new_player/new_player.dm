@@ -444,7 +444,7 @@ var/global/redirect_all_players = null
 //prevent boss spawns if there are enemies in the building
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			var/obj/map_metadata/capitol_hill/CP = map
-			if (isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "HVT"))
+			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "HVT"))
 				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
 				return
 		if (map && map.ID == MAP_ALLEYWAY)
