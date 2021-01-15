@@ -774,6 +774,8 @@
 	w_class = 4
 	weight = 3.6
 
+/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under //for TDM maps, showing under the clothing
+
 /obj/item/clothing/head/helmet/kevlarhelmet
 	name = "black kevlar helmet"
 	desc = "A standard bulletproof helmet, made of kevlar."
@@ -1048,8 +1050,12 @@
 	..()
 	if (flipped)
 		icon_state = "[base_state]_flipped"
+		item_state = icon_state
+		worn_state = icon_state
 	else
 		icon_state = base_state
+		item_state = icon_state
+		worn_state = icon_state
 
 /obj/item/clothing/head/cap/maga
 	name = "MAGA hat"
@@ -1058,6 +1064,15 @@
 	item_state = "maga"
 	worn_state = "maga"
 	base_state = "maga"
+
+/obj/item/clothing/head/cap/fbi
+	name = "FBI hat"
+	desc = "A black hat with FBI in white letters in the front."
+	icon_state = "fbi"
+	item_state = "fbi"
+	worn_state = "fbi"
+	base_state = "fbi"
+
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
 	name = "IOG heavy vest B-7"
