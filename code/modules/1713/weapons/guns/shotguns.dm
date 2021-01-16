@@ -70,7 +70,7 @@
 	slot_flags = SLOT_SHOULDER
 	caliber = "12gauge"
 	load_method = SINGLE_CASING
-	ammo_type = /obj/item/ammo_casing/shotgun
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	handle_casings = HOLD_CASINGS
 	stat = "rifle"
 	move_delay = 4
@@ -114,7 +114,7 @@
 	slot_flags = SLOT_SHOULDER
 	caliber = "12gauge"
 	load_method = SINGLE_CASING
-	ammo_type = /obj/item/ammo_casing/shotgun
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	handle_casings = HOLD_CASINGS
 	stat = "rifle"
 	move_delay = 4
@@ -192,7 +192,7 @@
 	slot_flags = SLOT_SHOULDER
 	caliber = "12gauge"
 	load_method = SINGLE_CASING
-	ammo_type = /obj/item/ammo_casing/shotgun
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	handle_casings = HOLD_CASINGS
 	stat = "rifle"
 	move_delay = 4
@@ -234,7 +234,7 @@
 	max_shells = 8 //match the ammo box capacity, also it can hold a round in the chamber anyways, for a total of 8.
 	caliber = "12gauge"
 	load_method = SINGLE_CASING
-	ammo_type = /obj/item/ammo_casing/shotgun
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	handle_casings = HOLD_CASINGS
 	force = 15
 	throwforce = 30

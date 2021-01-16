@@ -62,17 +62,19 @@
 
 	if (!istype(usr, /mob/living))
 		return
-	flipped = !flipped
-	if (flipped)
-		visible_message("<span class='warning'>[usr] flips the table!</span>")
-		if (istype(usr, /mob/living))
-			var/mob/living/L = usr
-			dir = L.dir
-	else
-		visible_message("[usr] puts the table back up.")
-		layer = 2.8
+	usr << "You start flipping the table..."
+	if (do_after(usr, 50, src))
+		flipped = !flipped
+		if (flipped)
+			visible_message("<span class='warning'>[usr] flips the table!</span>")
+			if (istype(usr, /mob/living))
+				var/mob/living/L = usr
+				dir = L.dir
+		else
+			visible_message("[usr] puts the table back up.")
+			layer = 2.8
 
-	update_icon()
+		update_icon()
 
 /obj/structure/table/verb/Rotate()
 	set category = null
@@ -242,12 +244,10 @@
 	if (severity == 3)
 		if (prob(25))
 			table_destroy(1)
-/*
-/obj/structure/table/attack_tk() // no telehulk sorry
-	return*/
 
-/obj/structure/table/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (air_group || (height==0)) return TRUE
+/obj/structure/table/bullet_act(var/obj/item/projectile/P)
+	return
+/obj/structure/table/CanPass(atom/movable/mover, turf/target)
 	if (istype(mover,/obj/item/projectile))
 		return (check_cover(mover,target))
 	if (flipped == TRUE)
@@ -272,26 +272,26 @@
 		return TRUE
 	if (get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
 		return TRUE
-	if (get_turf(P.original) == cover)
-		var/chance = 20
-		if (ismob(P.original))
-			var/mob/M = P.original
-			if (M.lying)
-				chance += 20				//Lying down lets you catch less bullets
-		if (flipped==1)
-			if (get_dir(loc, from) == dir)	//Flipped tables catch mroe bullets
-				chance += 20
-			else
-				return TRUE					//But only from one side
-		if (prob(chance))
-			health -= P.damage/2
-			if (health > 0)
-				visible_message("<span class='warning'>[P] hits \the [src]!</span>")
-				return FALSE
-			else
-				visible_message("<span class='warning'>[src] breaks down!</span>")
-				break_to_parts()
-				return TRUE
+	var/chance = 20
+	if (ismob(P.original))
+		var/mob/M = P.original
+		if (M.lying)
+			chance += 10				//Lying down lets you catch less bullets
+	if (flipped==1)
+		if (get_dir(loc, from) == OPPOSITE_DIR(dir))	//Flipped tables catch mroe bullets
+			chance += 20
+		else
+			return TRUE	//But only from one side
+
+	if (prob(chance))
+		health -= P.damage/2
+		if (health > 0)
+			visible_message("<span class='warning'>[P] hits \the [src]!</span>")
+			return FALSE
+		else
+			visible_message("<span class='warning'>[src] breaks down!</span>")
+			break_to_parts()
+			return TRUE
 	return TRUE
 
 /obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf)
@@ -474,11 +474,27 @@
 	buildstack = /obj/item/stack/material/wood
 	flammable = TRUE
 	flipped_icon = "wood_table-flipped"
+
+/obj/structure/table/wood/flipped
+	icon_state = "wood_table-flipped" 
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
+
 /obj/structure/table/wood/poker //No specialties, Just a mapping object.
 	name = "gambling table"
 	desc = "A seedy table for seedy dealings in seedy places."
 	icon_state = "pokertable"
 	flipped_icon = "pokertable-flipped"
+
+/obj/structure/table/wood/poker/flipped
+	icon_state = "pokertable-flipped" 
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
+
 /obj/structure/table/modern/table
 	name = "wooden table"
 	desc = "Do not apply fire to this. Rumour says it burns easily."
@@ -488,6 +504,13 @@
 	framestack = /obj/item/stack/material/wood
 	buildstack = /obj/item/stack/material/wood
 	flammable = TRUE
+
+/obj/structure/table/modern/flipped
+	icon_state = "woodtable-flipped" 
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
 
 /obj/structure/table/modern/retable
 	name = "reinforced table"

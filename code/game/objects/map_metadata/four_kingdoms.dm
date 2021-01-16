@@ -17,7 +17,7 @@
 	age = "the lost time"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the four tribes"
+	battle_name = "the four kingdoms"
 	mission_start_message = "<big>Several tribes are settling in this land. Will they be able to get along?.</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN

@@ -12,6 +12,7 @@
 	emote_see = list("walks around", "takes a stance", "bows", "adjusts their cap")
 	speak_chance = TRUE
 	move_to_delay = 3
+	stance = HOSTILE_STANCE_IDLE
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 150
 	health = 150
@@ -38,7 +39,8 @@
 		messages["backup"] =list( "!!Engun ga hitsuyodesu!","!!Ore o kaba shite!")
 		messages["enemy_sighted"] = list("!!AMERICA-JIN DESU!","!!KOROSHITE MIYO!")
 		messages["grenade"] = list("!!TEKIDAN!!!", "!!Tekidan, Hayaku!!")
-
+		behaviour = "wander"
+		faction = CIVILIAN
 		gun = new/obj/item/weapon/gun/projectile/pistol/ww2/nambu(src)
 		if (!(behaviour = "defends") || !(behaviour = "hostile"))
 			icon_state = "monkey_kenobi"
@@ -46,7 +48,6 @@
 			icon_state = "monkey_kenobi_hostile"
 /mob/living/simple_animal/hostile/human/kenobi/attack_hand(mob/living/human/M as mob)
 	..()
-
 	if (behaviour == "hostile")
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
@@ -103,6 +104,7 @@
 
 		if (I_HARM)
 			if (behaviour == "wander")
+				behaviour = "defends"
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
@@ -294,10 +296,10 @@
 		target_mob = user
 		..()
 	else
-		if (behaviour == "scared" || (behaviour == "wander" && mob_size < user.mob_size))
+		if (behaviour == "scared" && mob_size < user.mob_size)
 			do_behaviour("defends")
-		else if (behaviour == "wander")
-			do_behaviour("defends")
+		else if (behaviour == "hostile")
+			do_behaviour("wander")
 		..()
 
 /mob/living/simple_animal/hostile/human/kenobi/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)

@@ -202,6 +202,7 @@
 		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
 				MAP_TRIBES = 0,
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
@@ -238,7 +239,7 @@
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
 				MAP_THE_ART_OF_THE_DEAL = 10,
-//				MAP_FOUR_KINDGOMS = 16
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Battle Royale")
 			maps = list(
@@ -575,12 +576,16 @@
 		map.gamemode = "Hardcore"
 		global_damage_modifier = 1.30
 		return
-	/// CAPITOL MODES // 
+	/// CAPITOL MODES //
 	else if (vote.voted_gamemode == "Siege")
 		world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Siege"
+		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
+			new /area/caribbean/british/land/inside/objective(T)
+		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
+			new /area/caribbean/british/land/inside/objective(T)
 		return
 	else if (vote.voted_gamemode == "Protect the VIP")
 		world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"

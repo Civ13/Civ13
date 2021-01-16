@@ -324,7 +324,7 @@
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		if (3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 //eyewear
@@ -372,7 +372,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 //head
-	if (prob(75))
+	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/maga(H), slot_head)

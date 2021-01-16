@@ -1735,11 +1735,11 @@
 /obj/item/weapon/reagent_containers/food/snacks/leaf_salad
 	name = "leaf salad"
 	desc = "Leaf salad, best selection of leaves straight from the tree and into the mouth."
-	icon = 'icons/obj/food/food_ingredients.dmi'
-	icon_state = "leafsalad"
+	icon_state = "leaf_salad"
 	bitesize = 3
 	satisfaction = 2
 	center_of_mass = list("x"=16, "y"=12)
 	nutriment_desc = list("leaves" = 3)
 	nutriment_amt = 3
 	decay = 27*600
+

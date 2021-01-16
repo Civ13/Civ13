@@ -34,6 +34,15 @@
 	var/a1_control = "none"
 	var/a2_control = "none"
 
+/obj/map_metadata/capitol_hill/New()
+	..()
+	spawn(2500)
+		if (gamemode == "Siege")
+			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
+				new /area/caribbean/british/land/inside/objective(T)
+			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
+				new /area/caribbean/british/land/inside/objective(T)
+				
 /obj/map_metadata/capitol_hill/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_capitol == TRUE)
@@ -275,3 +284,19 @@ var/no_loop_capitol = FALSE
 	world << "<big>Militias: [sov_points]</big>"
 	spawn(300)
 		points_check()
+
+/obj/map_metadata/capitol_hill/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction2 && gamemode != "Protect the VIP")
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	
+	return FALSE
