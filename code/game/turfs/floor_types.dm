@@ -64,6 +64,7 @@
 /turf/floor/carpet
 	name = "Carpet"
 	icon_state = "carpet"
+	icon = 'icons/turf/flooring/carpet.dmi'
 	New()
 		if (!icon_state)
 			icon_state = "carpet"
@@ -412,14 +413,14 @@
 	icon_state = "marble_tile0"
 	New()
 		..()
-		icon_state = "marble_tile[rand(0,3)]"
+		icon_state = "marble_tile[rand(0,2)]"
 
 /turf/floor/plating/marble/decorative_tile
 	name = "decorative marble tile floor"
 	icon_state = "decorative_marble_tile0"
 	New()
 		..()
-		icon_state = "decorative_marble_tile[rand(0,3)]"
+		icon_state = "decorative_marble_tile[rand(0,2)]"
 
 /turf/floor/plating/metro
 	name = "Metro floor"
