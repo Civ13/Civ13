@@ -522,7 +522,7 @@
 	if (hanging)
 		hanging.forceMove(loc)
 		hanging.lying = 0
-		hanging.dir = SOUTH
+		hanging.dir = NORTH
 
 	else
 		overlays.Cut()

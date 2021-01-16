@@ -69,6 +69,7 @@
 					charge(H.get_objective())
 
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
+					following_mob = null
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
 					do_movement(H)
@@ -80,25 +81,30 @@
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Following!"), language)
 					do_movement(H)
+					following_mob = (H)
 
 				else if (findtext(message, "stop") || findtext(message, "hold"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Stopping, Sir!"), language)
 					walk(src,0)
 					do_movement(loc)
+					following_mob = null
 
 				else if (findtext(message, "retreat") || findtext(message, "fall back"))
 					if (prob(30))
 						say(pick("!!Falling back!","!!Retreating!"), language)
+					following_mob = null
 					retreat()
 
 				else if (findtext(message, "take cover") || findtext(message, "hide"))
 					if (prob(35))
 						say(pick("!!Taking cover!"), language)
+					following_mob = null
 					take_cover(H)
 
 
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
+					following_mob = null
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Moving out!"), language)
 //					if (prob(33))
