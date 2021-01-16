@@ -117,6 +117,7 @@
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
 				MAP_ALLEYWAY = 0,
+				MAP_CAPITOL_HILL = 0,
 			)
 		else if (epoch == "Cold War Era (1949-1984)")
 	// 1969 - TDM
