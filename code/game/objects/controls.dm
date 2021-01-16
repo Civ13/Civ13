@@ -139,8 +139,8 @@
 	icon_state = "blast0"
 	anchored = TRUE
 	density = TRUE
-	var/health = 1200
-	var/maxhealth = 1200
+	health = 1200
+	maxhealth = 1200
 	not_movable = TRUE
 	not_disassemblable = TRUE
 /obj/structure/gate/blast/open
