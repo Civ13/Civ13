@@ -66,7 +66,16 @@
 	worn_state = "jappack"
 	base_icon = "jappack"
 	max_storage_space = 24
-
+/obj/item/weapon/storage/backpack/ww2/jap/full
+	New()
+		..()
+		new /obj/item/weapon/bedroll(src)
+		new /obj/item/weapon/reagent_containers/glass/small_pot/hangou(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/clothing/suit/storage/coat/ww2/japcoat(src)
+		new /obj/item/clothing/head/helmet/ww2/japhelm(src)
+		new /obj/item/weapon/grenade/ww2/type97(src)
+		new /obj/item/weapon/grenade/ww2/type97(src)
 /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate
 	name = "japanese ammo crate"
 	desc = "It's a crate equipped with straps for carrying, often used by assistant gunners."
