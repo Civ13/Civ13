@@ -581,10 +581,10 @@
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Siege"
-		for (var/area/caribbean/no_mans_land/capturable/one/O in world)
-			new /area/caribbean/british/land/inside/objective(O)
-		for (var/area/caribbean/no_mans_land/capturable/two/O in world)
-			new /area/caribbean/british/land/inside/objective(O)
+		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
+			new /area/caribbean/british/land/inside/objective(T)
+		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
+			new /area/caribbean/british/land/inside/objective(T)
 		return
 	else if (vote.voted_gamemode == "Protect the VIP")
 		world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
