@@ -35,6 +35,9 @@
 	if (map.ID == MAP_TRIBES && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
 		user << "You don't know how to use this."
 		return
+	if (map.ID == MAP_FOUR_KINGDOMS && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
+		user << "You don't know how to use this."
+		return
 	else
 		if (istype(P, /obj/item/stack/material))
 			var/obj/item/stack/material/MTR = P
