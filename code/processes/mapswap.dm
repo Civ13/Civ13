@@ -202,6 +202,7 @@
 		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
 				MAP_TRIBES = 0,
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
@@ -238,7 +239,7 @@
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
 				MAP_THE_ART_OF_THE_DEAL = 10,
-				MAP_FOUR_KINDGOMS = 0,
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Battle Royale")
 			maps = list(
