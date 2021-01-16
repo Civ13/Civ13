@@ -705,9 +705,7 @@
 	name = "small can"
 	desc = "a small, 35 unit can."
 	volume = 35
-	shatter_duration = TRUE
 	flags = FALSE //starts closed
-	rag_underlay = "rag_small"
 	icon_state = "monster"
 	item_state = "beer"
 	var/base_icon = "monster"
