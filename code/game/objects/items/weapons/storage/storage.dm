@@ -418,6 +418,14 @@
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
 		if (istype(W, /obj/item/weapon/bedroll) && istype(src,/obj/item/weapon/storage/backpack))
 			icon_state = "[base_icon]1"
+/*		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou)) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]2"
+		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou) && istype(W, /obj/item/weapon/material/shovel/trench)) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]3"
+		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou) && istype(W, /obj/item/weapon/material/shovel/trench) && (istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat) || istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat_rain))) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]4"
+		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou) && istype(W, /obj/item/weapon/material/shovel/trench) && istype(W, /obj/item/clothing/head/helmet/ww2/japhelm) && (istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat) || istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat_rain))) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]5" */
 		orient2hud(usr)
 		if (usr.s_active)
 			usr.s_active.show_to(usr)

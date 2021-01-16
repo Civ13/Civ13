@@ -163,10 +163,11 @@
 						equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(src), slot_head)
 						equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(src), slot_w_uniform)
 						equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(src), slot_shoes)
-				else
+				else if (civilization == "Human Kingdom")
 					if (gender == "male")
 						if (prob(20))
 							equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(src), slot_head)
+							equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
 					else
