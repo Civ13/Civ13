@@ -991,5 +991,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\capitol_hill.dmm"
+#include "maps\5000bc\four_kindgoms.dmm"
 // END_INCLUDE

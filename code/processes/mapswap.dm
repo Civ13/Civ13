@@ -202,6 +202,7 @@
 		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
 				MAP_TRIBES = 0,
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
@@ -238,7 +239,7 @@
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
 				MAP_THE_ART_OF_THE_DEAL = 10,
-//				MAP_FOUR_KINDGOMS = 16
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Battle Royale")
 			maps = list(
@@ -575,7 +576,7 @@
 		map.gamemode = "Hardcore"
 		global_damage_modifier = 1.30
 		return
-	/// CAPITOL MODES // 
+	/// CAPITOL MODES //
 	else if (vote.voted_gamemode == "Siege")
 		world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
 		config.disable_fov = TRUE
