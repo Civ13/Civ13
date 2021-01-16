@@ -1486,7 +1486,7 @@
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
-					if (original_job_title == "Civilization A Citizen")
+					else if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"
 					else if (original_job_title == "Civilization B Citizen")
 						holder2.icon_state = "civ2"
