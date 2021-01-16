@@ -1484,6 +1484,8 @@
 				if (CHINESE)
 					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
+					if (map.ID == MAP_CAPITOL_HILL)
+						holder2.icon_state = "civ1"
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"
 					else if (original_job_title == "Civilization B Citizen")
