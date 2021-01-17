@@ -311,13 +311,11 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 //head
-	var/randhead = rand(1,3)
+	var/randhead = rand(1,2)
 	switch(randhead)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/lwh/black(H), slot_head)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
-		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
 //eyewear
 	if (prob(50))
