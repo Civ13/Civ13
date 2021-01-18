@@ -15,7 +15,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_NATIONSRP || map.ID == MAP_FOUR_KINGDOMS)
+	if (map.nomads == TRUE || (map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.ID == MAP_NATIONSRP || map.ID == MAP_FOUR_KINGDOMS)
 		if (U.religion != "none")
 			usr << "<span class='danger'>You are already member of a religion. Abandon it first.</span>"
 			return
