@@ -112,7 +112,7 @@ var/global/redirect_all_players = null
 	if (!ticker || ticker.current_state <= GAME_STATE_PREGAME)
 		output += "<p><a href='byond://?src=\ref[src];ready=0'>The game has not started yet.</a></p>"
 	else
-		if (map.ID == MAP_TRIBES || MAP_THREE_TRIBES || MAP_FOUR_KINGDOMS)
+		if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
 		else if (map.civilizations == TRUE && map.nomads == FALSE)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
@@ -281,7 +281,7 @@ var/global/redirect_all_players = null
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
-		if (map && (map.ID == MAP_TRIBES || MAP_THREE_TRIBES || MAP_FOUR_KINGDOMS))
+		if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS))
 			close_spawn_windows()
 			AttemptLateSpawn(pick(map.availablefactions))
 		else
@@ -530,7 +530,7 @@ var/global/redirect_all_players = null
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
 		if (!nomsg)
 			WWalert(usr,"The round is either not ready, or has already finished.","Error")
-			if ((map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"The round is either not ready, or has already finished.", "Error")
@@ -538,7 +538,7 @@ var/global/redirect_all_players = null
 	if (!config.enter_allowed)
 		if (!nomsg)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
-			if ((map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"There is an administrative lock on entering the game!", "Error")
@@ -546,7 +546,7 @@ var/global/redirect_all_players = null
 	if (jobBanned(rank))
 		if (!nomsg)
 			WWalert(usr,"You're banned from this role!", "Error")
-			if ((map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"You're banned from this role!", "Error")
@@ -555,8 +555,7 @@ var/global/redirect_all_players = null
 	if (!IsJobAvailable(rank))
 		if (!nomsg)
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
-			if ((
-			map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
 				abandon_mob()
 				spawn(10)
 					WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
@@ -567,7 +566,7 @@ var/global/redirect_all_players = null
 	if (factionBanned(job.base_type_flag(1)))
 		if (!nomsg)
 			WWalert(usr,"You're banned from this faction!","Error")
-			if ((map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"You're banned from this faction!","Error")
@@ -577,7 +576,7 @@ var/global/redirect_all_players = null
 		if (job.blacklisted == FALSE)
 			if (!nomsg)
 				WWalert(usr,"You're under a Penal ban, you can only play as that role!","Error")
-			if ((map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"You're under a Penal ban, you can only play as that role!","Error")
@@ -587,7 +586,7 @@ var/global/redirect_all_players = null
 		if (job.blacklisted == TRUE)
 			if (!nomsg)
 				WWalert(usr,"This job is reserved as a punishment for those who break server rules.","Error")
-			if ((map.ID == MAP_TRIBES || MAP_THREE_TRIBES) || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations == TRUE || map.ID == MAP_FOUR_KINGDOMS)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"This job is reserved as a punishment for those who break server rules.","Error")

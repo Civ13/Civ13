@@ -220,7 +220,7 @@ var/global/datum/controller/occupations/job_master
 
 	if (!spawn_location && H.original_job)
 		spawn_location = H.original_job.spawn_location
-	if (map.ID == MAP_TRIBES || MAP_FOUR_KINGDOMS || MAP_THREE_TRIBES)
+	if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		if (H.original_job_title in map.availablefactions)
 			if (H.original_job_title == map.availablefactions[1])
 				spawn_location = "JoinLateIND1"
