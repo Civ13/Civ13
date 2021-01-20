@@ -98,6 +98,13 @@
 	default_type = "barbedwire"
 	value = 2
 
+/obj/item/stack/material/barbwire/ten
+	name = "Barbwire"
+	icon_state = "barbwire_stack"
+	default_type = "barbedwire"
+	value = 2
+	amount = 10
+	
 /obj/item/stack/material/bronze
 	name = "bronze"
 	icon_state = "sheet-bronze"

@@ -1040,10 +1040,10 @@
 /obj/item/clothing/head/cap
 	name = "cap"
 	desc = "A generic visored cap."
-	icon_state = "maga"
-	item_state = "maga"
-	worn_state = "maga"
-	var/base_state = "maga"
+	icon_state = "blackcap"
+	item_state = "blackcap"
+	worn_state = "blackcap"
+	var/base_state = "blackcap"
 	var/flipped = FALSE
 
 /obj/item/clothing/head/cap/verb/flip()
