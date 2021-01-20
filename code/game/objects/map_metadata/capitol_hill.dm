@@ -1,7 +1,7 @@
 /obj/map_metadata/capitol_hill
 	ID = MAP_CAPITOL_HILL
 	title = "Capitol Hill"
-	lobby_icon_state = "modern"
+	lobby_icon_state = "capitol"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -26,7 +26,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
+		"To Arms in Dixie:1" = 'sound/music/to_arms_in_dixie.ogg',)
 	artillery_count = 0
 	valid_artillery = list()
 	var/ger_points = 0

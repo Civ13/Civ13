@@ -50,7 +50,7 @@
 		return "MOB;[A.x];[A.y];[A.z];[A.type];[A.stat]"
 
 /obj/map_metadata/proc/savegame()
-	spawn(27000)
+	spawn(72000) //2 hours
 		do_export()
 		savegame()
 

@@ -397,6 +397,9 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/steel
 	default_material = "steel"
+
+/obj/item/weapon/material/kitchen/utensil/knife/wood
+	default_material = "wood"
 /*
  * Rolling Pins
  */

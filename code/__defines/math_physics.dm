@@ -58,7 +58,7 @@
 
 #define IsEven(x) (!(x & 0x1))
 
-#define IsOdd(x) (!isEven(x))
+#define IsOdd(x) (!IsEven(x))
 
 // Performs a linear interpolation between a and b.
 // Note: weight=0 returns a, weight=1 returns b, and weight=0.5 returns the mean of a and b.

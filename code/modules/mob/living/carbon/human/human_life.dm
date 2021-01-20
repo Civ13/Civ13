@@ -117,7 +117,7 @@
 		if (stats["stamina"][1] > 0)
 			stats["stamina"][1]-=3
 
-	#define HUNGER_THIRST_MULTIPLIER 0.64 //was 0.32, doubled due to demand
+	#define HUNGER_THIRST_MULTIPLIER 0.32 //was 0.32, doubled due to demand - reverted 20/01
 	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
