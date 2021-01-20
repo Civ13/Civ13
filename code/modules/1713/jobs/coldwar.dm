@@ -20,7 +20,7 @@
 	rank_abbreviation = "Si Quan"
 
 	spawn_location = "JoinLateJPCap"
-
+	is_vietcong = TRUE
 	is_coldwar = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -95,6 +95,7 @@
 
 	is_medic = TRUE
 	is_coldwar = TRUE
+	is_vietcong = TRUE
 
 	min_positions = 3
 	max_positions = 18
@@ -172,6 +173,7 @@
 	is_coldwar = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
+	is_vietcong = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -251,6 +253,7 @@
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
+	is_vietcong = TRUE
 
 	min_positions = 20
 	max_positions = 200
@@ -1248,7 +1251,7 @@
 				nlfsmallpouches.attackby(new/obj/item/ammo_magazine/luger, H)
 				nlfsmallpouches.attackby(new/obj/item/ammo_magazine/luger, H)
 	else if (pickgun == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
 		if (prob(70))
 			var/obj/item/clothing/accessory/storage/webbing/nlfchestrig = new /obj/item/clothing/accessory/storage/webbing/nlfchestrig(null)
 			uniform.attackby(nlfchestrig, H)

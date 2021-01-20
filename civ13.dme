@@ -538,6 +538,7 @@
 #include "code\modules\1713\jobs\samurai.dm"
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
+#include "code\modules\1713\jobs\UPA.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
 #include "code\modules\1713\jobs\yakuza.dm"
 #include "code\modules\1713\machinery\cables.dm"

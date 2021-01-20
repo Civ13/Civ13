@@ -35,6 +35,7 @@
 	dropsound = 'sound/effects/drop_default.ogg'
 	name = "Japanese Canteen"
 	icon_state = "canteen_jap"
+	icon_override = 'icons/mob/pouch.dmi'
 	volume = 200
 	w_class = 3 // fits in webbing unlike w_class = 4
 	desc = "A very large canteen for storing water."
