@@ -1250,6 +1250,8 @@ RECIPE: /material/bone/,bone shovel,/obj/item/weapon/material/shovel/bone,2,50,0
 RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,4,null
 RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
 RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/thrown/tomahawk,4,30,0,1,none,25,0,0,4,bone
+RECIPE: /material/bone/,bone dart,/obj/item/ammo_casing/chemdart/bone,2,30,0,1,none,9,14,12,5,bone
+
 
 //*********************| FOSSILS |***********************
 
@@ -1921,6 +1923,8 @@ RECIPE: /material/bronze/,globe,/obj/item/weapon/globe,8,90,0,1,religious & deco
 //*********************| WOOD |**************************
 //*******************************************************
 
+RECIPE: /material/wood/,wooden knife,/obj/item/weapon/material/kitchen/utensil/knife/wood,2,60,0,1,none,0,0,0,8,null
+
 RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,null
 
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
@@ -1948,7 +1952,7 @@ RECIPE: /material/wood/,altar of chad,/obj/structure/researchdesk/chad,8,100,1,1
 RECIPE: /material/wood/,tanning rack,/obj/structure/converter/tanning,8,80,1,1,economy & production,16,0,0,8,null
 RECIPE: /material/wood/,salting container,/obj/structure/salting_container,6,100,1,1,economy & production,0,0,18,8,null
 RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,economy & production,19,0,0,8,null
-RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,4,0,0,8,null
 RECIPE: /material/wood/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
@@ -2046,6 +2050,7 @@ RECIPE: /material/wood/,shortbow,/obj/item/weapon/gun/projectile/bow/shortbow,8,
 RECIPE: /material/wood/,longbow,/obj/item/weapon/gun/projectile/bow/longbow,12,160,0,1,weapons,0,35,0,7,null
 RECIPE: /material/wood/,crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,12,160,0,1,weapons,0,45,0,8,null
 RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoundbow,8,170,0,1,weapons,0,175,0,8,null
+RECIPE: /material/wood/,blow gun,/obj/item/weapon/gun/projectile/dartgun/blowgun,8,170,0,1,weapons,9,14,12,5,null
 
 //*********************| WOOD PROJECTILES & SHAFTS |**************************
 
