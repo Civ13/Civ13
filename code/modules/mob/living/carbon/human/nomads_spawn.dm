@@ -664,31 +664,17 @@
 					add_language("Arabic",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
-					for (var/datum/language/arab/A in languages)
+					for (var/datum/language/spanish/A in languages)
 						default_language = A
-					name = species.get_random_arab_name(gender)
+					name = species.get_random_spanish_name(gender)
 					real_name = name
-					add_note("Known Languages", "Arabic")
-					possible_h_list = list("Dark Brown","Black")
-					possible_e_list = list("Brown","Black")
-					possible_s_list = list(-75,-100)
+					add_note("Known Languages", "Spanish")
+					possible_h_list = list("Light Brown","Dark Brown")
+					possible_e_list = list("Green","Brown","Black")
+					possible_s_list = list(-35,-60)
 					return
 				//SOUTH-EAST
 				else
-					add_language("Hebrew",TRUE)
-					remove_language("English")
-					remove_note("Known Languages","English")
-					for (var/datum/language/hebrew/A in languages)
-						default_language = A
-					name = species.get_random_hebrew_name(gender)
-					real_name = name
-					add_note("Known Languages", "Hebrew")
-					possible_h_list = list("Dark Brown","Black")
-					possible_e_list = list("Brown","Black")
-					possible_s_list = list(-75,-95)
-				//NORTH-WEST
-			else
-				if (x<100)
 					add_language("Latin",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
@@ -700,19 +686,33 @@
 					possible_h_list = list("Light Brown","Dark Brown")
 					possible_e_list = list("Green","Brown","Black")
 					possible_s_list = list(-35,-60)
+				//NORTH-WEST
+			else
+				if (x<100)
+					add_language("French",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","French")
+					for (var/datum/language/french/A in languages)
+						default_language = A
+					name = species.get_random_french_name(gender)
+					real_name = name
+					add_note("Known Languages", "French")
+					possible_h_list = list("Light Brown")
+					possible_e_list = list("Blue","Green","Brown")
+					possible_s_list = list(-20,-45)
 				//NORTH-EAST
 				else
-					add_language("Greek",TRUE)
+					add_language("German",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
-					for (var/datum/language/greek/A in languages)
+					for (var/datum/language/german/A in languages)
 						default_language = A
-					name = species.get_random_greek_name(gender)
+					name = species.get_random_german_name(gender)
 					real_name = name
-					add_note("Known Languages", "Greek")
-					possible_h_list = list("Light Brown","Dark Brown")
-					possible_e_list = list("Green","Brown","Black")
-					possible_s_list = list(-45,-65)
+					add_note("Known Languages", "German")
+					possible_h_list = list("Light Brown","Blond","Dirty Blond")
+					possible_e_list = list("Blue","Green")
+					possible_s_list = list(-15,-30)
 					return
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)
