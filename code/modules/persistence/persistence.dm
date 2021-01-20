@@ -33,6 +33,5 @@
 		map.default_research = 0
 		map.gamemode = "Persistent Chad Mode+"
 		config.allow_vote_restart = FALSE
-		map.savegame()
 	world << "<big><b>The current round has been set as a Persistent Chad Mode+ Round.</b></big>"
 	return
