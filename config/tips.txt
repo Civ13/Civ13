@@ -14,3 +14,4 @@ A fast way to train medical is to perform surgeries on a fresh corpse. Butcherin
 If you are bleeding you can use the grab intent, aim at the injured body part, and then click on yourself to apply pressure and stop the bleeding.
 Entrenching tool fits in your backpack slot and is always worth taking in TDM.
 When using an lmg, it is best to prone for the most effective accuracy, take cover behind incomplete sandbags so you can still fire while behind cover (sandbags must be incomplete).
+Use the numpad to quickly change your aim between body parts.
