@@ -233,7 +233,7 @@
 /obj/covers/proc/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-		if (flammable == TRUE)
+		if (material == "Wood")
 			new /obj/item/stack/material/wood(get_turf(usr))
 		qdel(src)
 		return
