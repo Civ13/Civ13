@@ -48,4 +48,3 @@ obj/map_metadata/road_to_dak_to/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/road_to_dak_to/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
