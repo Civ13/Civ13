@@ -2072,7 +2072,71 @@ obj/item/clothing/head/ww2/chicap2
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+/////////////////////////////////////////UPA////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/item/clothing/under/ww2/upa
+	name = "UPA uniform"
+	desc = "A Ukrayins'ka Povstans'ka Armiya uniform."
+	icon_state = "upa_uni"
+	item_state = "upa_uni"
+	worn_state = "upa_uni"
+	var/base_state = "upa_uni"
+	var/rolled = FALSE
+/obj/item/clothing/under/ww2/upa/off
+	name = "UPA officer uniform"
+	desc = "A Ukrayins'ka Povstans'ka Armiya officer uniform."
+	icon_state = "upa_off"
+	item_state = "upa_off"
+	worn_state = "upa_off"
+	base_state = "upa_off"
+	rolled = FALSE
+/obj/item/clothing/under/ww2/upa/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (rolled)
+		item_state = "[base_state]"
+		worn_state = "[base_state]"
+		icon_state = "[base_state]"
+		item_state_slots["w_uniform"] = "[base_state]"
+		usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+		rolled = FALSE
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		update_clothing_icon()
+	else if (!rolled)
+		item_state = "[base_state]_rolled"
+		worn_state = "[base_state]_rolled"
+		icon_state = "[base_state]_rolled"
+		item_state_slots["w_uniform"] = "[base_state]_rolled"
+		usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+		rolled = TRUE
+		heat_protection = ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+		update_clothing_icon()
 
+/obj/item/clothing/head/ww2/upa_cap
+	name = "UPA field cap"
+	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya."
+	icon_state = "upa_cap"
+	item_state = "upa_cap"
+	worn_state = "upa_cap"
+/obj/item/clothing/head/ww2/upa_pilotka
+	name = "UPA pilotka"
+	desc = "A pilotka and worn by the Ukrayins'ka Povstans'ka Armiya."
+	icon_state = "upapilotka"
+	item_state = "upapilotka"
+	worn_state = "upapilotka"
+/obj/item/clothing/head/ww2/upa_cap_off
+	name = "UPA officer cap"
+	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya NCO's."
+	icon_state = "upa_off"
+	item_state = "upa_off"
+	worn_state = "upa_off"
+/obj/item/clothing/head/ww2/upa_cap_commander
+	name = "UPA officer cap"
+	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya Officers."
+	icon_state = "upa_commander"
+	item_state = "upa_commander"
+	worn_state = "upa_commander"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/armband/redcross
 	name = "red cross armband"
 	desc = "A white armband with the red cross in it."

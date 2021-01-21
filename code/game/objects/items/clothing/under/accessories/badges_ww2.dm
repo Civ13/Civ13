@@ -409,7 +409,19 @@
 	name = "Knight's Colonial Order of the Star of Italy Medal"
 	desc = "Given to members of the Italian millitary who have served in the colonies of the Kingdom of Italy, showing the rank of Knight ."
 
+/obj/item/clothing/accessory/rank/upa_lt
+	icon_state = "upa_lt"
+	item_state = "upa_lt"
+	worn_state = "upa_lt"
+	name = "Khorunzhyj rank patches"
+	desc = "the rank of Khorunzhyj, 2nd Lieutenant."
 
+/obj/item/clothing/accessory/rank/upa_sgt
+	icon_state = "upa_sgt"
+	item_state = "upa_sgt"
+	worn_state = "upa_sgt"
+	name = "Vistun rank patch"
+	desc = "the rank of Vistun, Sergeant, sleeve patches."
 // Political Party and Union Pins ----------------------------------------
 
 /obj/item/clothing/accessory/medal/pin/communist

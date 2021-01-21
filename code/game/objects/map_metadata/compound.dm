@@ -30,10 +30,17 @@
 
 obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_coldwar == TRUE && !J.is_specops && !J.is_modernday && !J.is_nva)
-		. = TRUE
-	else
-		. = FALSE
+	if (istype(J, /datum/job/vietnamese))
+		if (J.is_nva)
+			. = FALSE
+		else
+			. = TRUE
+	if (istype(J, /datum/job/american))
+		if (J.is_coldwar && !J.is_specops && !J.is_modernday)
+			. = TRUE
+		else
+			. = FALSE
+
 
 /obj/map_metadata/compound/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"

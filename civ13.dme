@@ -538,6 +538,7 @@
 #include "code\modules\1713\jobs\samurai.dm"
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
+#include "code\modules\1713\jobs\UPA.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
 #include "code\modules\1713\jobs\yakuza.dm"
 #include "code\modules\1713\machinery\cables.dm"
@@ -991,5 +992,6 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
+#include "maps\2013\capitol_hill.dmm"
 #include "maps\nomads\nomads_mediterranean.dmm"
 // END_INCLUDE
