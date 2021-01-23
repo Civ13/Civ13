@@ -851,7 +851,7 @@
 	value = 2
 
 /obj/item/ammo_casing/l762x25
-	name = "7.62x25mm wooden TT cartridge"
+	name = "7.62x25mm rubber cartridge"
 	desc = "A wooden casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"

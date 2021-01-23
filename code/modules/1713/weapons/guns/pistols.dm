@@ -468,7 +468,7 @@
 
 obj/item/weapon/gun/projectile/pistol/tt30ll
 	name = "TT-33"
-	desc = "The pistol of the Soviet Union. this one has been modfied to fire wooden bullets."
+	desc = "The pistol of the Soviet Union. this one has been modfied to fire rubber bullets."
 	icon_state = "tt30"
 	w_class = 2
 	caliber = "l762x25"
