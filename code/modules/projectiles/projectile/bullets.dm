@@ -144,10 +144,12 @@
 /obj/item/projectile/bullet/pistol/rubber //"rubber" bullets
 	name = "rubber bullet"
 	check_armor = "melee"
-	damage = 5
+	damage = 2
 	agony = 25
 	embed = FALSE
 	sharp = FALSE
+	eyeblur = 5
+	drowsy = 3
 
 //Should do about 80 damage at 1 tile distance (adjacent), and 50 damage at 3 tiles distance.
 //Overall less damage than slugs in exchange for more damage at very close range and more embedding
