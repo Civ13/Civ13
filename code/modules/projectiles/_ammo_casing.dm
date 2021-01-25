@@ -850,6 +850,16 @@
 	caliber = "a762x25"
 	value = 2
 
+/obj/item/ammo_casing/l762x25
+	name = "7.62x25mm rubber cartridge"
+	desc = "A wooden casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/rubber
+	caliber = "l762x25"
+	value = 2
+
 /obj/item/ammo_casing/a792x33
 	name = "7.92x33mm cartridge"
 	desc = "A brass casing."

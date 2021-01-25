@@ -471,6 +471,22 @@
 	effectiveness_mod = 0.98
 	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 
+
+obj/item/weapon/gun/projectile/pistol/tt30ll
+	name = "TT-33"
+	desc = "The pistol of the Soviet Union. this one has been modfied to fire rubber bullets."
+	icon_state = "tt30"
+	w_class = 2
+	caliber = "l762x25"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
+	magazine_type = /obj/item/projectile/bullet/pistol/rubber
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/l762x25
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.98
+	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
+
 /obj/item/weapon/gun/projectile/pistol/m9beretta
 	name = "Beretta M9"
 	desc = "The standard issue pistol of US Armed Forces from 1985 to 2017. Chambered in 9mm Luger."
