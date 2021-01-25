@@ -502,7 +502,7 @@
 			icon_state = "japhelm_bandana"
 			worn_state = "japhelm_bandana"
 			item_state_slots["slot_w_uniform"] = "japhelm_bandana"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = FALSE
 			update_clothing_icon()
 		else if (!toggled)
@@ -510,7 +510,7 @@
 			icon_state = "japhelm_bandana_extended"
 			worn_state = "japhelm_bandana_extended"
 			item_state_slots["slot_w_uniform"] = "japhelm_bandana_extended"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
 			update_clothing_icon()
 
@@ -533,7 +533,7 @@
 			icon_state = "ww2_japcap"
 			worn_state = "ww2_japcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = FALSE
 			update_clothing_icon()
 		else if (!toggled)
@@ -541,7 +541,7 @@
 			icon_state = "ww2_japcap_extended"
 			worn_state = "ww2_japcap_extended"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_extended"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
 			update_clothing_icon()
 

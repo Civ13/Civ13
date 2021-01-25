@@ -114,12 +114,12 @@
 		if (!check_rights(R_SPAWN))	return
 
 		var/mob/M = locate(href_list["mob"])
-
+		var/M_area = get_area(M)
 		if (!istype(M))
 			usr << "This can only be used on instances of type /mob"
 			return
 
-
+		var/orig_client = M.client
 		var/delmob = FALSE
 		if (href_list["simplemake"] != "gorilla" && href_list["simplemake"] != "werewolf" && href_list["simplemake"] != "default" && href_list["simplemake"] != "orc"&& href_list["simplemake"] != "lizard" && href_list["simplemake"] != "ant" && href_list["simplemake"] != "crab" && href_list["simplemake"] != "wolfman")
 			switch(WWinput(usr, "Delete old mob?", "Delete Mob", "Yes", list("Yes","No","Cancel")))
@@ -129,8 +129,12 @@
 		log_admin("[key_name(usr)] has used rudimentary transformation on [key_name(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]")
 		message_admins("<span class = 'notice'>[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]</span>", TRUE)
 
+		var/usr_client = usr.client
+
+		var/mob/New = null
 		switch(href_list["simplemake"])
 			if ("observer")			M.change_mob_type( /mob/observer/ghost , null, null, delmob )
+			if ("human")			New = M.change_mob_type( /mob/living/human , null, null, FALSE, href_list["species"])
 			if ("monkey")			M.change_mob_type( /mob/living/simple_animal/monkey , null, null, delmob )
 			if ("cat")				M.change_mob_type( /mob/living/simple_animal/cat , null, null, delmob )
 			if ("parrot")			M.change_mob_type( /mob/living/simple_animal/parrot , null, null, delmob )
@@ -251,6 +255,96 @@
 					HM.orc = 0
 					HM.wolfman = 1
 					HM.crab = 0
+		if (New)
+			if (New.type == /mob/living/human)
+				var/mob/living/human/H = New
+				var/H_oloc = H.loc
+				var/H_jobloc = null
+				H.loc = null
+				if (H.client)
+					H.client.eye = H_oloc
+					H.client.perspective = EYE_PERSPECTIVE
+				if ((input(usr_client, "Assign [H] a new job?") in list("Yes", "No")) == "Yes")
+
+					var/list/job_master_occupation_names = list()
+					for (var/datum/job/J in job_master.occupations)
+						if (J.title)
+							if (job2mobtype(J.title) == /mob/living/human)
+								job_master_occupation_names[J.title] = J
+
+					var/datum/job/J = input(usr_client, "Which job?") in (list("Cancel") | job_master_occupation_names)
+
+					if (J != "Cancel")
+						job_master.EquipRank(H, J)
+						H.original_job = job_master_occupation_names[J]
+						H_jobloc = H.loc
+						H.loc = null
+						var/msg = "[key_name(usr)] assigned the new mob [H] the job '[J]'."
+						message_admins(msg)
+						log_admin(msg)
+						spawn (0.1)
+							H.loc = null // fixes a bug where H is relocated even after we set H.loc = null
+							if (H.client)
+								H.client.eye = H_oloc
+								H.client.perspective = EYE_PERSPECTIVE
+							var/send2spawn = (M_area && istype(M_area, /area/caribbean/admin)) ? "No" : input(usr_client, "Send [H] to their spawnpoint?") in list("Yes", "No")
+							switch (send2spawn)
+								if ("Yes")
+									H.loc = H_jobloc
+								if ("No")
+									H.loc = H_oloc
+
+							if (H.client)
+								H.client.eye = H
+								H.client.perspective = MOB_PERSPECTIVE
+
+							var/client/client = (H.client ? H.client : orig_client)
+
+							if (client)
+								switch (H.original_job.default_language)
+									if ("German")
+										H.name = H.species.get_random_german_name(H.gender)
+										H.real_name = H.name
+									if ("Russian")
+										H.name = H.species.get_random_russian_name(H.gender)
+										H.real_name = H.name
+									if ("Ukrainian")
+										H.name = H.species.get_random_ukrainian_name(H.gender)
+										H.real_name = H.name
+									if ("Japanese")
+										H.name = H.species.get_random_japanese_name(H.gender)
+										H.real_name = H.name
+									if ("Chinese")
+										H.name = H.species.get_random_chinese_name(H.gender)
+										H.real_name = H.name
+									if ("Korean")
+										H.name = H.species.get_random_korean_name(H.gender)
+										H.real_name = H.name
+									if ("Vietnamese")
+										H.name = H.species.get_random_vietnamese_name(H.gender)
+										H.real_name = H.name
+									if ("French")
+										H.name = H.species.get_random_french_name(H.gender)
+										H.real_name = H.name
+									if ("Spanish")
+										H.name = H.species.get_random_spanish_name(H.gender)
+										H.real_name = H.name
+									if ("Filipino")
+										H.name = H.species.get_random_filipino_name(H.gender)
+										H.real_name = H.name
+									if ("English")
+										H.name = H.species.get_random_name(H.gender)
+										H.real_name = H.name
+				else
+					H.loc = H_oloc
+					if (H.client)
+						H.client.eye = H
+						H.client.perspective = MOB_PERSPECTIVE
+
+				var/client/client = (H.client ? H.client : orig_client)
+				if (client.mob && istype(client.mob, /mob/observer/ghost))
+					var/mob/observer/ghost/G = client.mob
+					G.reenter_corpse()
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])
 

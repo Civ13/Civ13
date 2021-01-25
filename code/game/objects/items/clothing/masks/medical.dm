@@ -48,3 +48,27 @@
 	body_parts_covered = FACE
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = FALSE)
 	w_class = 1
+	var/toggled = FALSE
+/obj/item/clothing/mask/sterile/verb/toggle()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/mask/sterile)
+		return
+	else
+		if (toggled)
+			item_state = "sterile"
+			icon_state = "sterile"
+			worn_state = "sterile"
+			item_state_slots["slot_mask"] = "sterile"
+			usr << "<span class = 'danger'>You put up your mask.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			body_parts_covered = null
+			item_state = "sterile_down"
+			icon_state = "sterile_down"
+			worn_state = "sterile_down"
+			item_state_slots["slot_mask"] = "sterile_down"
+			usr << "<span class = 'danger'>You put down your mask flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
