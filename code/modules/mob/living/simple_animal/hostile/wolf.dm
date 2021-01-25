@@ -12,7 +12,7 @@
 	emote_see = list("stares ferociously", "sniffs the ground")
 	speak_chance = TRUE
 	move_to_delay = 3
-	see_in_dark = 6
+	see_in_dark = 1
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
@@ -20,8 +20,8 @@
 	stop_automated_movement_when_pulled = FALSE
 	maxHealth = 80
 	health = 80
-	melee_damage_lower = 12
-	melee_damage_upper = 23
+	melee_damage_lower = 6
+	melee_damage_upper = 12
 	mob_size = MOB_MEDIUM
 	predatory_carnivore = 1
 	carnivore = 1

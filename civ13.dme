@@ -278,6 +278,7 @@
 #include "code\game\objects\map_metadata\heraclea.dm"
 #include "code\game\objects\map_metadata\hill203.dm"
 #include "code\game\objects\map_metadata\hostages.dm"
+#include "code\game\objects\map_metadata\hue.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\intramuros.dm"
 #include "code\game\objects\map_metadata\island.dm"
@@ -992,5 +993,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\nomads\nomads_mediterranean.dmm"
+#include "maps\1969\hue.dmm"
 // END_INCLUDE

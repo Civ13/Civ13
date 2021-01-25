@@ -124,6 +124,7 @@
 			maps = list(
 				MAP_COMPOUND = 0,
 				MAP_ROAD_TO_DAK_TO = 0,
+				MAP_HUE = 0,
 				MAP_RETREAT = 0,
 			)
 		else if (epoch == "World War II (1931-1948)")
