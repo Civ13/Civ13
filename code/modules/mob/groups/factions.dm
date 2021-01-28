@@ -52,7 +52,7 @@
 	else
 		return
 
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP)
+	if (map.ID == MAP_NATIONSRP || map.nomads == TRUE)
 		if (U.civilization != "none")
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return

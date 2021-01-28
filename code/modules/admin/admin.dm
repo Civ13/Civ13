@@ -572,8 +572,8 @@ proc/admin_notice(var/message, var/rights)
 			return
 		if (customresearch <= 0)
 			customresearch = 0
-		if (customresearch >= 100)
-			customresearch = 100
+		if (customresearch >= 280)
+			customresearch = 280
 
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)

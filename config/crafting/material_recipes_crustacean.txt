@@ -1937,7 +1937,7 @@ RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,n
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 
 RECIPE: /material/wood/,communications pole,/obj/structure/phoneline,2,50,1,1,none,100,0,0,8,null
-RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
+RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,0,0,3,vehicle parts,22,0,0,8,null
 
 RECIPE: /material/wood/,wood vehicle frame,/obj/structure/vehicleparts/frame/wood,2,40,0,1,vehicle parts,126,0,0,8,null
 
@@ -1945,7 +1945,7 @@ RECIPE: /material/wood/,wood ship frame,/obj/structure/vehicleparts/frame/ship,4
 RECIPE: /material/wood/,ship rudder axis (2500 weight),/obj/structure/vehicleparts/axis/ship/heavy,45,300,0,1,vehicle parts,55,0,0,8,null
 RECIPE: /material/wood/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
-RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,15,140,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,35,35,0,3,vehicle parts,35,0,0,8,null
 
 //*********************| WOOD PRODUCTION & ECONOMY |**************************
 

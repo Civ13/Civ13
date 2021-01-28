@@ -113,14 +113,7 @@
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			else
-				if (gender == "male")
-					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
-				else
-					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-			if(map && map.ID == MAP_FOUR_KINGDOMS)
+			else if(map.ID == MAP_FOUR_KINGDOMS)
 				if (orc)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
@@ -173,6 +166,13 @@
 					else
 						equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 						equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 //coats/////////////////////////////////////////////////
 	spawn(5)
@@ -662,7 +662,7 @@
 					remove_language("English")
 					for (var/datum/language/crab/A in languages)
 						default_language = A
-					name = species.get_random_crab_name(gender)
+					name = species.get_random_japanese_name(gender)
 					real_name = name
 					give_clothes()
 					return
