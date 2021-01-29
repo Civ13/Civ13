@@ -810,7 +810,7 @@
 		var/list/possible_s_list = list(-10,-60)
 		spawn(5)
 			//east
-			if (x>75)
+			if (original_job_title == "Civilization B Citizen")
 				add_language("Russian",TRUE)
 				remove_language("English")
 				remove_note("Known Languages","English")
@@ -823,7 +823,7 @@
 				possible_e_list = list("Blue","Green")
 				possible_s_list = list(-10,-28)
 			//west
-			else
+			else if (original_job_title == "Civilization A Citizen")
 				add_language("German",TRUE)
 				remove_language("English")
 				remove_note("Known Languages","English")
