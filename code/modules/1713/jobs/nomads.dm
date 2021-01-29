@@ -173,6 +173,24 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+		else if (map.ordinal_age == 6)
+			if (map.ID == MAP_NATIONSRP)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				spawn(5)
+					if (gender == "male")
+						if (original_job_title == "Civilization A Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern2(src), slot_w_uniform)
+							update_icons(1)
+						else if (original_job_title == "Civilization B Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern3(src), slot_w_uniform)
+							update_icons(1)
+					else
+						if (original_job_title == "Civilization A Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
+							update_icons(1)
+						else if (original_job_title == "Civilization B Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
+							update_icons(1)
 
 //coats/////////////////////////////////////////////////
 	spawn(5)
@@ -451,21 +469,25 @@
 			spawn(5)
 				//west
 				if (x<75)
-					add_language("Japanese",TRUE)
-					for (var/datum/language/japanese/A in languages)
+					add_language("German",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/german/A in languages)
 						default_language = A
-					name = species.get_random_japanese_name(gender)
+					name = species.get_random_german_name(gender)
 					real_name = name
-					add_note("Known Languages", "Japanese and English")
+					add_note("Known Languages", "German")
 					return
 				//EAST
 				else
-					add_language("Spanish",TRUE)
-					for (var/datum/language/spanish/A in languages)
+					add_language("Russian",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/russian/A in languages)
 						default_language = A
-					name = species.get_random_spanish_name(gender)
+					name = species.get_random_russian_name(gender)
 					real_name = name
-					add_note("Known Languages", "Spanish and English")
+					add_note("Known Languages", "Russian")
 					return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
