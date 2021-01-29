@@ -13,7 +13,7 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "1873"
+	age = "1943"
 	no_winner = "The round is proceeding normally."
 	is_RP = TRUE
 	civilizations = TRUE
@@ -27,13 +27,15 @@
 	availablefactions_run = FALSE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
-	default_research = 105
+	default_research = 170
 	gamemode = "Nations RP"
-	ordinal_age = 4
+	ordinal_age = 6
 	age1_done = TRUE
 	age2_done = TRUE
 	age3_done = TRUE
 	age4_done = TRUE
+	age5_done = TRUE
+	age6_done = TRUE
 	research_active = FALSE
 	is_singlefaction = TRUE
 
@@ -41,7 +43,7 @@
 	..()
 	civname_a = "German Nation"
 	civname_b = "Russian Nation"
-	var/newnamea = list("German Nation" = list(default_research,default_research,default_research,null,0,"saltire","#D4AF37","#660000"))
+	var/newnamea = list("German Nation" = list(default_research,default_research,default_research,null,0,"cross","#D4AF37","#660000"))
 	var/newnameb = list("Russian Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
 	custom_civs += newnamea
 	custom_civs += newnameb
