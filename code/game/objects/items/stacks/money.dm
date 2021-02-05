@@ -498,3 +498,5 @@
 	amount = 10
 /obj/item/stack/money/doubloon/ten
 	amount = 10
+/obj/item/stack/money/dollar/onehundy
+	amount = 100
