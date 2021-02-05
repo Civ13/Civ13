@@ -231,6 +231,7 @@
 /obj/structure/simple_door/key_door/civ/businessred
 	keyslot_type = /datum/keyslot/civ/businessred
 	unique_door_name = "Headquarters"
+	health = 45000
 
 /datum/keyslot/civ/businessblue/New()
 	..()
@@ -244,6 +245,7 @@
 /obj/structure/simple_door/key_door/civ/businessblue
 	keyslot_type = /datum/keyslot/civ/businessblue
 	unique_door_name = "Headquarters"
+	health = 45000
 
 /datum/keyslot/civ/businessgreen/New()
 	..()
@@ -257,6 +259,7 @@
 /obj/structure/simple_door/key_door/civ/businessgreen
 	keyslot_type = /datum/keyslot/civ/businessgreen
 	unique_door_name = "Headquarters"
+	health = 45000
 
 /datum/keyslot/civ/businessyellow/New()
 	..()
@@ -270,7 +273,7 @@
 /obj/structure/simple_door/key_door/civ/businessyellow
 	keyslot_type = /datum/keyslot/civ/businessyellow
 	unique_door_name = "Headquarters"
-
+	health = 45000
 #define CV_BANK 82111
 /datum/keyslot/civ/bank
 	code = CV_BANK
@@ -575,14 +578,22 @@
 	name = "Police Officer key"
 	health = 90000
 
+/obj/item/weapon/key/civ/police/chief
+	code = 13444
+	name = "Police Chief key"
+
 /datum/keyslot/police
 	code = 13443
+
+/datum/keyslot/police/chief
+	code = 13444
 
 /obj/structure/simple_door/key_door/civ/police
 	keyslot_type = /datum/keyslot/police
 	unique_door_name = "Police Station"
 	locked = TRUE
 	health = 90000
+
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/police
 	unique_door_name = "jail cell"
