@@ -851,12 +851,22 @@
 	desc = "An olive drab coloured NBC hood, made protect against biological, chemical and nuclear threats."
 	icon_state = "nbc2"
 
+/obj/item/clothing/head/nbc/olive/fire
+	name = "firefighting hood"
+	desc = "A suit primarily intended to protect against fire."
+	armor = list(melee = 40, arrow = FALSE, gun = FALSE, energy = 80, bomb = 25, bio = 60, rad = 40)
+
 /obj/item/clothing/suit/nbc/olive
 	name = "olive drab NBC suit"
 	desc = "An olive drab coloured NBC suit, made protect against biological, chemical and nuclear threats."
 	icon_state = "nbc2"
 	item_state = "nbc2"
 	worn_state = "nbc2"
+
+/obj/item/clothing/suit/nbc/olive/fire
+	name = "firefighting suit"
+	desc = "A suit primarily intended to protect against fire."
+	armor = list(melee = 40, arrow = FALSE, gun = FALSE, energy = 80, bomb = 25, bio = 60, rad = 40)
 
 /obj/item/clothing/suit/hazmat
 	name = "hazmat suit"

@@ -123,7 +123,8 @@
 		/obj/item/weapon/material/sword/arabsword,
 		/obj/item/weapon/material/sword/arabsword2,
 		/obj/item/weapon/material/sword/bolo,
-		/obj/item/weapon/material/sword/kukri)
+		/obj/item/weapon/material/sword/kukri,
+		/obj/item/weapon/material/sword/shashka)
 
 /obj/item/clothing/accessory/storage/sheath/knife
 	name = "knife sheath"
