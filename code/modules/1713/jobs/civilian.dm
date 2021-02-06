@@ -2456,6 +2456,7 @@
 	H.civilization = "Legitimate Buisiness"
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/onehundy(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/telephone/mobile(H), slot_r_store)
 	H.add_note("Role", "You are a legitimate buisiness person. Find a buisiness to invest in or start your own.")
 
 
@@ -2485,6 +2486,7 @@
 			uniform.attackby(ysuspenders, H)
 
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
+
 //hats
 	var/randhat = pick(1,2,3)
 	if (randhat == 1)
