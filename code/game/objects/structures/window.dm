@@ -757,6 +757,14 @@
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
 
+
+/obj/structure/window/clean/reinforced
+	flammable = FALSE
+	reinf = TRUE
+	maxhealth = 200.0
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/window/classic/shoji
 	icon_state = "shoji_windownew"
 	basestate = "shoji_windownew"
