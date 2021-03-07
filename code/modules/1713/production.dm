@@ -399,6 +399,8 @@
 		/obj/item/stack/ore,
 		/obj/item/stack/material/stone,
 		/obj/item/stack/material/sandstone,
+		/obj/item/stack/material/obsidian,
+		/obj/item/stack/material/marble
 		)
 	flammable = TRUE
 
@@ -439,7 +441,39 @@
 				SR.forceMove(src)
 				user << "You collect the stone."
 
-
+		for (var/obj/item/stack/material/sandstone/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/sandstone/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the sandstone."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the sandstone."
+		for (var/obj/item/stack/material/obsidian/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/obsidian/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the obsidian."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the obsidian."
+		for (var/obj/item/stack/material/marble/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/marble/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the marble."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the marble."
 /////////PRODUCE BASKET (PRODUCE COLLECTOR)////////////
 /obj/item/weapon/storage/produce_basket
 	name = "produce basket"
@@ -918,12 +952,15 @@
 		compost()
 		qdel(W)
 		return
-	else if (istype(W, /obj/item/weapon/leaves))
-		current+=0.25
-		H << "You place \the [W] in \the [src], composting it."
-		compost()
-		qdel(W)
-		return
+	else if (istype(W, /obj/item/stack/material/leaf))
+		if (current >= max)
+			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
+			return
+		else
+			current+=W.amount/18 	//divides (using /) by eighteenth's from each plant input of 1, 0.05(5555555555556) gain per leaf
+			H << "You place \the [W] in \the [src], composting it."
+			compost()
+			qdel(W)
 	else if (istype(W, /obj/item/stack/farming/seeds))
 		if (current >= max)
 			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"

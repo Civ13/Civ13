@@ -25,6 +25,42 @@
 
 	)
 
+/obj/structure/vending/muskets/english
+	name = "English musket rack"
+	desc = "A rack of war muskets."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/brownbess = 15,
+
+	)
+
+/obj/structure/vending/muskets/french
+	name = "French musket rack"
+	desc = "A rack of smoothbore charleville muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/charleville = 15,
+
+	)
+
+/obj/structure/vending/muskets/spanish
+	name = "Spanish musket rack"
+	desc = "A rack of smoothbore M1752 muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
+
+	)
+
+/obj/structure/vending/muskets/portuguese
+	name = "Portuguese musket rack"
+	desc = "A rack of smoothbore Portuguese muskets ."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
+
+	)
+
 /obj/structure/vending/flintlock
 	name = "Flintlock weapon rack"
 	desc = "An assorted rack of flintlock weapons."
@@ -284,7 +320,7 @@
 		/obj/item/clothing/head/helmet/ww2/usm1 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 	)
 
@@ -330,7 +366,7 @@
 		/obj/item/clothing/head/ww2/jap_headband = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
 
@@ -349,18 +385,28 @@
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
-obj/structure/vending/japweapons_ww2
+/obj/structure/vending/japweapons_ww2
 	name = "Japanese Weapon rack"
 	desc = "A rack of war equipment."
 	icon_state = "equipment_japan"
-	products = list(
-		/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
-		/obj/item/weapon/gun/projectile/boltaction/arisaka99 = 5,
-		/obj/item/ammo_magazine/arisakabox = 5,
-		/obj/item/ammo_magazine/arisaka = 50,
-		/obj/item/ammo_magazine/arisaka99 = 40,
-		/obj/item/weapon/attachment/bayonet/military = 15,
-	)
+/obj/structure/vending/japweapons_ww2/New()
+	..()
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
+		products = list(
+			/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
+			/obj/item/ammo_magazine/arisakabox = 5,
+			/obj/item/ammo_magazine/arisaka = 50,
+			/obj/item/weapon/attachment/bayonet/military = 15,
+		)
+	else
+		products = list(
+			/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
+			/obj/item/weapon/gun/projectile/boltaction/arisaka99 = 5,
+			/obj/item/ammo_magazine/arisakabox = 5,
+			/obj/item/ammo_magazine/arisaka = 50,
+			/obj/item/ammo_magazine/arisaka99 = 40,
+			/obj/item/weapon/attachment/bayonet/military = 15,
+		)
 
 /obj/structure/vending/yakuza
 	name = "yakuza equipment rack"
@@ -662,3 +708,46 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
 	)
+
+//craftable rifle rack
+/obj/structure/vending/craftable
+	var/product_type = /obj/item/weapon/gun/projectile
+	var/max_products = 5
+
+/obj/structure/vending/craftable/update_icon()
+	overlays.Cut()
+	var/ct1 = 0
+	for(var/datum/data/vending_product/VP in product_records)
+		if (VP.product_image)
+			var/image/NI = VP.product_image
+			NI.layer = layer+0.01
+			var/matrix/M = matrix()
+			NI.pixel_x = -5+ct1
+			NI.pixel_y = 3
+			M.Scale(0.7)
+			M.Turn(315)
+			NI.transform = M
+			overlays += NI
+			ct1+=4
+
+/obj/structure/vending/craftable/stock(obj/item/W, var/datum/data/vending_product/R, var/mob/user)
+	if (!user.unEquip(W))
+		return
+
+	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
+	W.forceMove(src)
+	product_records.Add(R)
+	nanomanager.update_uis(src)
+	update_icon()
+
+/obj/structure/vending/craftable/rifles
+	name = "rifle rack"
+	desc = "A rack that can store up to 5 rifles."
+	icon_state = "rack_base"
+	products = list(
+	)
+
+/obj/structure/vending/craftable/rifles/wood
+	name = "rifle rack"
+	icon_state = "rack_base_wood"
+	flammable = TRUE

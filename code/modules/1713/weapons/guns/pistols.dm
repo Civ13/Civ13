@@ -73,7 +73,7 @@
 /obj/item/weapon/gun/projectile/pistol/nambu
 	name = "Type A Nambu"
 	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
-	icon_state = "nambu_ww2"
+	icon_state = "nambu"
 	w_class = 2
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
@@ -87,9 +87,9 @@
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "nambu_ww2"
+		icon_state = "nambu"
 	else
-		icon_state = "nambu_ww20"
+		icon_state = "nambu"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu
@@ -177,6 +177,12 @@
 /obj/item/weapon/gun/projectile/pistol/glock17/standardized
 	magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
 
+
+/obj/item/weapon/gun/projectile/pistol/glock17/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
 	..()
@@ -460,6 +466,22 @@
 	magazine_type = /obj/item/ammo_magazine/tt30
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a762x25
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.98
+	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
+
+
+obj/item/weapon/gun/projectile/pistol/tt30ll
+	name = "TT-33"
+	desc = "The pistol of the Soviet Union. this one has been modfied to fire rubber bullets."
+	icon_state = "tt30"
+	w_class = 2
+	caliber = "l762x25"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
+	magazine_type = /obj/item/projectile/bullet/pistol/rubber
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/l762x25
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.98

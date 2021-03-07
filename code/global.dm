@@ -3,6 +3,8 @@
 #warn This compiler is out of date. You may experience issues with projectile animations.
 #endif
 
+var/bearcave_ticking = FALSE
+var/wolfcave_ticking = FALSE
 
 				//For single Mayor/Governor maps
 var/global_export_tax = 0	//Global Export Tax
@@ -30,17 +32,17 @@ var/datum/nanomanager/nanomanager		= new() // NanoManager, the manager for Nano 
 var/season = "SPRING"
 var/game_hour = 0
 
-var/chicken_count = 0
-var/turkey_count = 0
-var/cow_count = 0
-var/bison_count = 0
-var/goat_count = 0
-var/sheep_count = 0
-var/pig_count = 0
-var/deer_count = 0
-var/wolf_count = 0
-var/bear_count = 0
-
+var/list/chicken_count = list()
+var/list/turkey_count = list()
+var/list/cow_count = list()
+var/list/bison_count = list()
+var/list/goat_count = list()
+var/list/sheep_count = list()
+var/list/pig_count = list()
+var/list/deer_count = list()
+var/list/wolf_count = list()
+var/list/bear_count = list()
+var/list/boar_count = list()
 /proc/get_season()
 	return capitalize(lowertext(season))
 

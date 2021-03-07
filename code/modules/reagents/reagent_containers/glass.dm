@@ -25,7 +25,7 @@
 		/obj/structure/sink,
 		/obj/structure/engine,
 		/obj/item/weapon/storage,
-		/mob/living/simple_animal/cow,
+		/mob/living/simple_animal/cattle/cow,
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
 		/mob/living/simple_animal/pig_gilt,
@@ -40,6 +40,7 @@
 		/obj/structure/fuelpump,
 		/obj/item/stack/ore,
 		/turf/floor/dirt/underground,
+		/turf/floor/trench,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -237,6 +238,9 @@
 	name = "beaker"
 	desc = "A beaker."
 	icon = 'icons/obj/chemical.dmi'
+
+	unacidable = TRUE
+
 	icon_state = "beaker"
 	item_state = "beaker"
 

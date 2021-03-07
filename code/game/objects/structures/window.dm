@@ -118,12 +118,22 @@
 			new/obj/structure/window_frame/stone(loc)
 		else if (istype(src, /obj/structure/window/classic/stonefull))
 			new/obj/structure/window_frame/stonefull(loc)
+		else if (istype(src, /obj/structure/window/classic/marble))
+			new/obj/structure/window_frame/marble(loc)
+		else if (istype(src, /obj/structure/window/classic/marblefull))
+			new/obj/structure/window_frame/marblefull(loc)
 		else if (istype(src, /obj/structure/window/classic/sandstone))
 			new/obj/structure/window_frame/sandstone(loc)
 		else if (istype(src, /obj/structure/window/classic/sandstonefull))
 			new/obj/structure/window_frame/sandstonefull(loc)
+		else if (istype(src, /obj/structure/window/classic/redsandstone))
+			new/obj/structure/window_frame/redsandstone(loc)
+		else if (istype(src, /obj/structure/window/classic/redsandstonefull))
+			new/obj/structure/window_frame/redsandstonefull(loc)
 		else if (istype(src, /obj/structure/window/classic/sumerian))
 			new/obj/structure/window_frame/sumerian(loc)
+		else if (istype(src, /obj/structure/window/classic/abashiri))
+			new/obj/structure/window_frame/abashiri(loc)
 		else
 			new/obj/structure/window_frame(loc)
 	qdel(src)
@@ -437,7 +447,46 @@
 	var/windowglass
 	var/stucco_window = TRUE
 	icon = 'icons/obj/windows.dmi'
+/obj/structure/window_frame/abashiri
+	icon_state = "abashiri0"
+	var/base_icon_state = "abashiri"
+	var/adjusts = TRUE
+	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
+/obj/structure/window_frame/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+	if (!adjusts)
+		return
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/T = get_step(src, checkdir)
+		for(var/atom/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+	if (!isnull(junction))
+		icon_state = "[base_icon_state][junction]"
+	return
+/obj/structure/window_frame/abashiri/can_join_with(var/atom/W)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
+/obj/structure/window_frame/abashiri/update_icon()
+	..()
+	check_relatives(1,1)
+/obj/structure/window_frame/abashiri/New()
+	..()
+	check_relatives(1,1)
 
+/obj/structure/window_frame/abashiri/Destroy()
+	check_relatives(0,1)
+	..()
 /obj/structure/window_frame/shoji
 	icon_state = "shoji_windownew_frame"
 	name = "shoji window frame"
@@ -540,6 +589,22 @@
 	flammable = FALSE
 	stucco_window = TRUE
 
+/obj/structure/window_frame/marble
+	icon_state = "marble_windownew_frame"
+	name = "marble window frame"
+	desc = "marble carved to support a few panes of glass."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/marblefull
+	icon_state = "marble_windownew_fullframe"
+	name = "full stone window frame"
+	desc = "Marble carved to support a large window's worth of glass."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
 /obj/structure/window_frame/sandstone
 	icon_state = "sandstone_windownew_frame"
 	name = "sandstone window frame"
@@ -552,6 +617,22 @@
 	icon_state = "sandstone_windownew_fullframe"
 	name = "sandstone window frame"
 	desc = "Sandstone carved to support a large window's worth of glass.."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/redsandstone
+	icon_state = "redsandstone_windownew_frame"
+	name = "red sandstone window frame"
+	desc = "Red sandstone carved to support some glass.."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/redsandstonefull
+	icon_state = "redsandstone_windownew_fullframe"
+	name = "red sandstone window frame"
+	desc = "Red sandstone carved to support a large window's worth of glass.."
 	health = 250
 	flammable = FALSE
 	stucco_window = FALSE
@@ -621,10 +702,18 @@
 					new/obj/structure/window/classic/stone(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/stonefull))
 					new/obj/structure/window/classic/stonefull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/marble))
+					new/obj/structure/window/classic/marble(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/marblefull))
+					new/obj/structure/window/classic/marblefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstone))
 					new/obj/structure/window/classic/sandstone(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstonefull))
 					new/obj/structure/window/classic/sandstonefull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/redsandstone))
+					new/obj/structure/window/classic/redsandstone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/redsandstonefull))
+					new/obj/structure/window/classic/redsandstonefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sumerian))
 					new/obj/structure/window/classic/sumerian(get_turf(src))
 				else
@@ -667,6 +756,14 @@
 	layer = MOB_LAYER + 0.02
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
+
+
+/obj/structure/window/clean/reinforced
+	flammable = FALSE
+	reinf = TRUE
+	maxhealth = 200.0
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/window/classic/shoji
 	icon_state = "shoji_windownew"
@@ -785,6 +882,24 @@
 	health = 250
 	flammable = FALSE
 
+/obj/structure/window/classic/marble
+	icon_state = "marble_windownew"
+	name = "marble window"
+	desc = "A marble window with glass-covered holes."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window/classic/marblefull
+	icon_state = "marble_windownew_full"
+	name = "full marble window"
+	desc = "A marble window with large glass-covered holes."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
 /obj/structure/window/classic/sandstone
 	icon_state = "sandstone_windownew"
 	name = "sandstone window"
@@ -803,6 +918,24 @@
 	health = 250
 	flammable = FALSE
 
+/obj/structure/window/classic/redsandstone
+	icon_state = "redsandstone_windownew"
+	name = "redsandstone window"
+	desc = "Red sandstone with glass windows."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window/classic/redsandstonefull
+	icon_state = "redsandstone_windownew_full"
+	name = "full red sandstone window"
+	desc = "Red sandstone with large glass windows."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
 /obj/structure/window/classic/sumerian
 	icon_state = "sumerian_windownew"
 	name = "sumerian window"
@@ -812,6 +945,54 @@
 	damage_per_fire_tick = 1.0
 	maxhealth = 200.0
 
+/obj/structure/window/classic/abashiri
+	icon_state = "abashiri0"
+	name = "window"
+	desc = "A window set inside a wall."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 200
+	flammable = FALSE
+	var/base_icon_state = "abashiri"
+	var/adjusts = TRUE
+	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
+/obj/structure/window/classic/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+	if (!adjusts)
+		return
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/T = get_step(src, checkdir)
+		for(var/atom/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+	if (!isnull(junction))
+		icon_state = "[base_icon_state][junction]"
+	return
+
+/obj/structure/window/classic/abashiri/can_join_with(var/atom/W)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
+	return FALSE
+/obj/structure/window/classic/abashiri/update_icon()
+	..()
+	check_relatives(1,1)
+/obj/structure/window/classic/abashiri/New()
+	..()
+	check_relatives(1,1)
+
+/obj/structure/window/classic/abashiri/Destroy()
+	check_relatives(0,1)
+	..()
 /obj/structure/window/classic/reinforced
 	reinf = TRUE
 

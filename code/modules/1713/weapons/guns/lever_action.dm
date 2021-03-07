@@ -107,10 +107,7 @@
 		cocked = TRUE
 */
 /obj/item/weapon/gun/projectile/leveraction/special_check(mob/user)
-	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS"))
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
-		return FALSE
+//	var/mob/living/human/H = user
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE

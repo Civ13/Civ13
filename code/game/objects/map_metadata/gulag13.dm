@@ -43,13 +43,15 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	if (J.is_civil_war == TRUE)
 		. = FALSE
+	if (J.is_abashiri)
+		. = FALSE
 	if (istype(J, /datum/job/russian))
 		if (J.is_prison)
 			. = TRUE
 		else
 			. = FALSE
 	else
-		if (J.is_prison && J.title != "DO NOT USE")
+		if (J.is_prison && J.title != "DO NOT USE" && J.is_abashiri != TRUE)
 			. = TRUE
 		else
 			. = FALSE
@@ -107,16 +109,16 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		check_points_msg()
 		config.no_respawn_delays = FALSE
 
-/obj/map_metadata/gulag13/proc/load_new_recipes()
-	var/F3 = file("config/material_recipes_camp.txt")
+/obj/map_metadata/gulag13/load_new_recipes()
+	var/F3 = file("config/crafting/material_recipes_camp.txt")
 	if (fexists(F3))
-		craftlist_list = list()
 		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_lists["global"] = list()
 		for (var/i in craftlist_temp)
 			if (findtext(i, ","))
 				var/tmpi = replacetext(i, "RECIPE: ", "")
 				var/list/current = splittext(tmpi, ",")
-				craftlist_list += list(current)
+				craftlist_lists["global"] += list(current)
 				if (current.len != 13)
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 /obj/map_metadata/gulag13/proc/check_points()
@@ -219,6 +221,16 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 							crimereason = "Fighting for the Armia Krajowa in [pick("Grodno","Wroclaw", "Lodz", "Lvov")]."
 
 					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
+				else if (istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))
+					var/datum/job/civilian/abashiri/prisoner/P = H.original_job
+					switch(P.nationality)
+						if ("Japanese")
+							crimereason = pick("Attempted murder.","Damage to people's property.","Theft of private property.","Crimes against the Imperial Japanese Empire")
+						if ("Russian")
+							crimereason = pick("Fought for the Imperial Russian Army in the Russo-Japanese War.", "Tresspassing into Japan", "Spreading Anti-Imperialist Propaganda")
+						if ("Ainu")
+							crimereason = pick("Insubordination in the Imperial Japanese Army during the [pick("Russo-Japanese War", "Sino-Japanese War")].", "Murder", "Resisting Assimilation to Japanese Society")
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
 /obj/item/weapon/prisoner_passport/examine(mob/user)
 	user << "<span class='info'>*---------*</span>"
 	..(user)
@@ -229,7 +241,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
 		user << "<b><span class='info'>Detained for:</b> [document_details[5]]</span>"
 		user << "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>"
-		user << "<b><span class='info'>Assigned Job:</b> [document_details[9]]</span>"
+		user << "<b><span class='info'>Assigned:</b> [document_details[9]]</span>"
 	user << "<span class='info'>*---------*</span>"
 	if (guardnotes.len)
 		for(var/i in guardnotes)
@@ -239,7 +251,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 /obj/item/weapon/prisoner_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
 		return
-	if (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian))
+	if ((istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian)) || (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/japanese/abashiri/guard)))
 		var/confirm = WWinput(H, "Do you want to add a note to these documents?", "Prisoner Documents", "No", list("No","Yes"))
 		if (confirm == "No")
 			return
@@ -257,10 +269,10 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 /mob/living/human/proc/Sound_Alarm()
 	set name = "Sound the Siren"
 	set category = "Officer"
-	if (!map || map.ID != MAP_GULAG13)
+	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
 		usr << "You cannot use this in this map."
 		return
-	if (!original_job || !(istype(original_job, /datum/job/russian)))
+	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard))))
 		usr << "You cannot use this."
 		return
 	if (istype(map, /obj/map_metadata/gulag13))
@@ -275,13 +287,25 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 				if (G13.siren)
 					G13.alarm_proc()
 				return
+	if (istype(map, /obj/map_metadata/abashiri))
+		var/obj/map_metadata/abashiri/ABA = map
+		if (!ABA.siren)
+			world << "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>"
+			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			for (var/mob/M in player_list)
+				M.client << warning_sound
+			ABA.siren = TRUE
+			spawn(285)
+				if (ABA.siren)
+					ABA.alarm_proc()
+				return
 /mob/living/human/proc/Stop_Alarm()
 	set name = "Stop the Siren"
 	set category = "Officer"
-	if (!map || map.ID != MAP_GULAG13)
+	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
 		usr << "You cannot use this in this map."
 		return
-	if (!original_job || !(istype(original_job, /datum/job/russian)))
+	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard))))
 		usr << "You cannot use this."
 		return
 	if (istype(map, /obj/map_metadata/gulag13))
@@ -292,6 +316,14 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			G13.siren = FALSE
+	if (istype(map, /obj/map_metadata/abashiri))
+		var/obj/map_metadata/abashiri/ABA = map
+		if (ABA.siren)
+			world << "<font size=3 color='green'><center><b>ALARM LIFTED</b><br>The siren has been stopped, prisoners can get back up.</center></font>"
+			var/warning_sound = sound(null, channel = 777)
+			for (var/mob/M in player_list)
+				M.client << warning_sound
+			ABA.siren = FALSE
 
 /obj/map_metadata/gulag13/proc/alarm_proc()
 	if (siren)
@@ -318,14 +350,24 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/structure/camp_exportbook/attackby(var/obj/item/stack/S, var/mob/living/human/H)
 	var/obj/map_metadata/gulag13/G = null
-	if (!istype(map, /obj/map_metadata/gulag13))
-		return
-	else
+	var/obj/map_metadata/abashiri/AB = null
+	if (istype(map, /obj/map_metadata/gulag13))
 		G = map
-	if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
-		for(var/i in G.points)
-			if (i[1]=="Guards")
-				i[2]+=S.amount*S.value
-				H << "You export \the [S]."
-				qdel(S)
-				return
+		if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
+			for(var/i in G.points)
+				if (i[1]=="Guards")
+					i[2]+=S.amount*S.value
+					H << "You export \the [S]."
+					qdel(S)
+					return
+	else if (istype(map, /obj/map_metadata/abashiri))
+		AB = map
+		if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
+			for(var/i in AB.points)
+				if (i[1]=="Guards")
+					i[2]+=S.amount*S.value
+					H << "You export \the [S]."
+					qdel(S)
+					return
+	else
+		return

@@ -11,19 +11,42 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
-/obj/structure/blastcontrol
+/obj/structure/gatecontrol/blastcontrol
 	name = "blast control"
-	desc = "Controls nearby gates."
+	desc = "Controls nearby blastdoors."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "blast_control"
 	anchored = TRUE
-	var/open = FALSE
-	var/cooldown = 3
-	var/distance = 5
+	open = FALSE
+	cooldown = 3
+	distance = 5
 	density = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-
+/obj/structure/gatecontrol/blastcontrol/attack_hand(var/mob/user as mob)
+	if (cooldown <= world.time - 60)
+		if (open)
+			visible_message("[user] closes the blast doors!")
+			open = FALSE
+			cooldown = world.time
+			for (var/obj/structure/gate/G in range(distance,src.loc))
+				playsound(loc, 'sound/machines/steam_starting.ogg', 100)
+				G.icon_state = "blast_closing"
+				spawn(30)
+					G.icon_state = "blast0"
+					G.density = TRUE
+			return
+		else
+			visible_message("[user] opens the blast doors!")
+			open = TRUE
+			cooldown = world.time
+			for (var/obj/structure/gate/G in range(distance,src.loc))
+				playsound(loc, 'sound/machines/steam_starting.ogg', 100)
+				G.icon_state = "blast_opening"
+				spawn(30)
+					G.icon_state = "blast1"
+					G.density = FALSE
+			return
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
 
@@ -109,18 +132,32 @@
 			return
 	else
 		..()
-/obj/structure/blast
+/obj/structure/gate/blast
 	name = "blast door"
 	desc = "An thick steel blast door."
 	icon = 'icons/obj/doors/material_doors.dmi'
 	icon_state = "blast0"
 	anchored = TRUE
 	density = TRUE
-	var/health = 1200
-	var/maxhealth = 1200
+	health = 1200
+	maxhealth = 1200
 	not_movable = TRUE
 	not_disassemblable = TRUE
-
+/obj/structure/gate/blast/open
+	name = "blast door"
+	desc = "An thick steel blast door."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "blast0"
+	anchored = TRUE
+	density = FALSE
+	health = 1200
+	maxhealth = 1200
+	not_movable = TRUE
+	not_disassemblable = TRUE
+/obj/structure/gate/blast/open/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+		..()
 /obj/structure/gate/open
 	name = "gate"
 	desc = "An iron gate."

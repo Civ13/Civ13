@@ -122,7 +122,6 @@
 	New()
 		..()
 		reagents.remove_reagent("food_poisoning",1)
-		reagents.add_reagent("sodiumchloride",1)
 	satisfaction = 4
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))

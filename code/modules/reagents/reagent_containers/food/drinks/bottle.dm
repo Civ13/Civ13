@@ -699,3 +699,39 @@
 	New()
 		..()
 		reagents.add_reagent("cola", 60)
+
+////////Cans///////////
+/obj/item/weapon/reagent_containers/food/drinks/can
+	name = "small can"
+	desc = "a small, 35 unit can."
+	volume = 35
+	flags = FALSE //starts closed
+	icon_state = "monster"
+	item_state = "beer"
+	var/base_icon = "monster"
+
+/obj/item/weapon/reagent_containers/food/drinks/can/update_icon()
+	if (reagents.reagent_list.len)
+		icon_state = base_icon
+	else
+		icon_state = "[base_icon]_empty"
+
+/obj/item/weapon/reagent_containers/food/drinks/can/monster
+	icon_state = "monster"
+	base_icon = "monster"
+	name = "energy drink"
+	desc = "A can of an energy drink."
+	New()
+		..()
+		reagents.add_reagent("sugar", 5)
+		reagents.add_reagent("coffee", 20)
+		reagents.add_reagent("cola", 10)
+/obj/item/weapon/reagent_containers/food/drinks/can/lite
+	name = "lite beer"
+	desc = "A can of lite beer."
+	icon_state = "bud"
+	base_icon = "bud"
+	New()
+		..()
+		reagents.add_reagent("beer", 25)
+		reagents.add_reagent("water", 10)

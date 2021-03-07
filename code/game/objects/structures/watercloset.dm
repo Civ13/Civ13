@@ -743,7 +743,7 @@
 				if (watertype == "irradiated_water")
 					H.rad_act(5)
 				else
-					if (!istype(src, /obj/structure/sink/well))
+					if (istype(src, /obj/structure/sink/puddle))
 						var/dmod = 1
 						if (H.find_trait("Weak Immune System"))
 							dmod = 2
@@ -910,6 +910,13 @@
 	max_volume = 750
 	volume = 750
 
+/obj/structure/sink/well/marble
+	name = "marble well"
+	icon_state = "marble_well1"
+	sound = 'sound/effects/watersplash.ogg'
+	max_volume = 750
+	volume = 750
+
 /obj/structure/sink/well/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/wrench))
 		return
@@ -941,6 +948,11 @@
 			icon_state = "sandstone_well_dry"
 		else
 			icon_state = "sandstone_well1"
+	else if  (istype(src, /obj/structure/sink/well/marble))
+		if (dry || volume <= 0)
+			icon_state = "marble_well_dry"
+		else
+			icon_state = "marble_well1"
 	else if  (istype(src, /obj/structure/sink/well))
 		if (dry || volume <= 0)
 			icon_state = "well_dry"
@@ -949,15 +961,20 @@
 
 /obj/structure/sink/New()
 	..()
-
-	if (map && map.ID == MAP_HUNT)
-		mosquito_proc()
-	if (map && map.ID == MAP_NOMADS_NEW_WORLD)
-		if (src.x < 256)
+	spawn(5)
+		if (map && map.ID == MAP_HUNT)
 			mosquito_proc()
+		else if (map && map.ID == MAP_NOMADS_AFRICA)
+			var/area/A = get_area(loc)
+			if (A.climate == "jungle")
+				mosquito_limit = 2
+				mosquito_proc()
+		else if (map && map.ID == MAP_NOMADS_NEW_WORLD)
+			if (src.x < 256)
+				mosquito_proc()
 
 	spawn(2000)
-		if (map.chad_mode)
+		if (map.chad_mode && map.ID != MAP_NOMADS_AFRICA)
 			mosquito_limit = 1
 			mosquito_proc()
 

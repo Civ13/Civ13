@@ -186,12 +186,16 @@
 	desc = "A hat made of fur."
 	icon_state = "furhat_hat"
 	item_state = "furhat_hat"
-
+	cold_protection = HEAD
+	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
+	
 /obj/item/clothing/head/furcap
 	name = "fur cap"
 	desc = "A cap made of fur."
 	icon_state = "furcap_hat"
 	item_state = "furcap_hat"
+	cold_protection = HEAD
+	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
 
 /obj/item/clothing/head/roundcap
 	name = "roundcap"
@@ -272,6 +276,18 @@
 	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	health = 32
 
+/obj/item/clothing/head/helmet/imperial/cabasset
+	name = "cabasset helmet"
+	desc = "A protective and hardy morion helmet without the narrow ridge dent covering."
+	icon_state = "morion_helmet"
+	item_state = "morion_helmet"
+	worn_state = "morion_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 32, gun = 8, energy = 15, bomb = 41, bio = 21, rad = FALSE)
+	health = 34
+
+
 /* Colonial Boots*/
 
 /obj/item/clothing/shoes/blackboots1
@@ -331,7 +347,10 @@
 	slot = "utility"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing)
+		hold.can_hold = list(
+			/obj/item/ammo_casing,
+			/obj/item/stack/ammopart/stoneball
+			)
 
 /obj/item/clothing/accessory/storage/coinpouch
 	name = "coin pouch"

@@ -780,6 +780,14 @@
 	worn_state = "custom_beanie"
 	cold_protection = HEAD
 
+/obj/item/clothing/head/custom/drill_hat
+    name = "Drill hat"
+    desc = "The hat of a drill sergeant sir yes sir!!"
+    icon_state = "drill_hat"
+    item_state = "drill_hat"
+    worn_state = "drill_hat"
+    heat_protection = HEAD
+
 /obj/item/clothing/head/custom_keffiyeh
 	name = "keffiyeh"
 	desc = "A headdress fashioned from a scarf with a checkered pattern."

@@ -253,7 +253,7 @@
 /obj/item/weapon/book/research/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/researchkit))
 
-		if (user.original_job_title == "Nomad" && map.civilizations && map.ID != MAP_TRIBES)
+		if (user.original_job_title == "Nomad" && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
 			if (map.age1_done == FALSE)
 				if (world.time < 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
 					user << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
@@ -274,7 +274,7 @@
 				if (world.time < map.age5_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age4_top*3))
 					user << "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600] minutes."
 					return
-		if (!map.civilizations || map.ID == MAP_TRIBES)
+		if (!map.civilizations || (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES))
 			return
 		else if(!completed)
 			user << "The book is blank."

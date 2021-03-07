@@ -3,7 +3,8 @@ var/global/list/ashtray_cache = list()
 /obj/item/weapon/material/ashtray
 	name = "ashtray"
 	icon = 'icons/obj/objects.dmi'
-	icon_state = "blank"
+	icon_state = "ashtray"
+	var/base_icon = "ashtray"
 	force_divisor = 0.1
 	thrown_force_divisor = 0.1
 	var/image/base_image
@@ -97,3 +98,9 @@ var/global/list/ashtray_cache = list()
 
 /obj/item/weapon/material/ashtray/glass/New(var/newloc)
 	..(newloc, "glass")
+
+/obj/item/weapon/material/ashtray/stone/New(var/newloc)
+	..(newloc, "stone")
+
+/obj/item/weapon/material/ashtray/marble/New(var/newloc)
+	..(newloc, "marble")

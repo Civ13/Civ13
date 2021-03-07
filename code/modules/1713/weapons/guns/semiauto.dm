@@ -7,17 +7,17 @@
 
 		// small body parts: head, hand, feet
 		"small" = list(
-			SHORT_RANGE_STILL = 73,
-			SHORT_RANGE_MOVING = 48,
+			SHORT_RANGE_STILL = 63,
+			SHORT_RANGE_MOVING = 38,
 
-			MEDIUM_RANGE_STILL = 63,
-			MEDIUM_RANGE_MOVING = 42,
+			MEDIUM_RANGE_STILL = 53,
+			MEDIUM_RANGE_MOVING = 32,
 
-			LONG_RANGE_STILL = 53,
-			LONG_RANGE_MOVING = 35,
+			LONG_RANGE_STILL = 43,
+			LONG_RANGE_MOVING = 25,
 
-			VERY_LONG_RANGE_STILL = 43,
-			VERY_LONG_RANGE_MOVING = 28),
+			VERY_LONG_RANGE_STILL = 33,
+			VERY_LONG_RANGE_MOVING = 18),
 
 		// medium body parts: limbs
 		"medium" = list(
@@ -311,7 +311,7 @@
 	force = 10
 	throwforce = 20
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	effectiveness_mod = 1.01
+	effectiveness_mod = 0.95
 
 /obj/item/weapon/gun/projectile/semiautomatic/ar15
 	name = "Bushmaster XM-15"

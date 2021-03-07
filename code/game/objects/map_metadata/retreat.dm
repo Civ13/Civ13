@@ -11,7 +11,7 @@
 
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/japanese/land,
-		list(CHINESE) = /area/caribbean/russian/land,
+		list(CHINESE) = /area/caribbean/japanese/land,
 		)
 	age = "1950"
 	ordinal_age = 7

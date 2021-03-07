@@ -487,8 +487,8 @@
 			user << "Not enough steel!"
 		return
 
-	using_wood -= bpsource.cost_wood
-	using_steel -= bpsource.cost_steel
+	using_wood = bpsource.cost_wood
+	using_steel = bpsource.cost_steel
 	user << "You begin crafting the [bpsource.custom_name]..."
 	playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
 	if (do_after(user,200,src))
@@ -502,6 +502,10 @@
 			if (user)
 				user << "Not enough steel!"
 			return
+		wood_amt -= using_wood
+		steel_amt -= using_steel
+		using_wood = 0
+		using_steel = 0
 		var/obj/item/weapon/gun/projectile/custom/NEWGUN = new/obj/item/weapon/gun/projectile/custom(src.loc)
 		NEWGUN.name = bpsource.custom_name
 		NEWGUN.caliber = bpsource.caliber

@@ -517,7 +517,13 @@
 
 				var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 				if (O == original)
-					if (isstructure(O) && !istype(O, /obj/structure/lamp))
+					if (istype(O, /obj/structure/table))
+						if (do_bullet_act(O))
+							bumped = TRUE
+							loc = null
+							qdel(src)
+							return FALSE
+					else if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
 					else if (!isitem(O) && isnonstructureobj(O))
 						if (!istype(O, /obj/covers/jail))
@@ -582,7 +588,7 @@
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
 					if (!(istype(O, /obj/structure/vehicleparts/frame) && O.loc == src.loc))
-						if (O.density || istype(O, /obj/structure/window/classic)) // hack
+						if (O.density || istype(O, /obj/structure/window/classic) || istype(O, /obj/structure/table)) // hack
 							O.pre_bullet_act(src)
 							if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
 								if (O && !O.gcDestroyed)
@@ -600,7 +606,6 @@
 										var/obj/structure/S = O
 										if (!S.CanPass(src, original))
 											passthrough = FALSE
-							//				log_debug("ignored [S] (1)")
 										else if (S.density)
 											if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
 												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
@@ -638,9 +643,6 @@
 
 /obj/item/projectile/ex_act()
 	return //explosions probably shouldn't delete projectiles
-/*
-/obj/item/projectile/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	return TRUE*/
 
 /obj/item/projectile/process()
 	//plot the initial trajectory

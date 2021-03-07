@@ -30,6 +30,17 @@
 	var/collection_mode = TRUE;  //0 = pick one at a time, TRUE = pick all on tile
 	var/use_sound = "rustle"	//sound played when used. null for no sound.
 	var/base_icon = ""
+/obj/item/weapon/storage/verb/name_storage()
+	set category = null
+	set name = "Name"
+	set desc = "Name this."
+
+	set src in view(1)
+	var/yn = input(usr, "Give this [src] a name?") in list("Yes", "No")
+	if (yn == "Yes")
+		var/_name = input(usr, "What name?") as text
+		name = sanitize(_name, 20)
+	return
 
 /obj/item/weapon/storage/Destroy()
 	close_all()
@@ -407,6 +418,14 @@
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
 		if (istype(W, /obj/item/weapon/bedroll) && istype(src,/obj/item/weapon/storage/backpack))
 			icon_state = "[base_icon]1"
+/*		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou)) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]2"
+		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou) && istype(W, /obj/item/weapon/material/shovel/trench)) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]3"
+		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou) && istype(W, /obj/item/weapon/material/shovel/trench) && (istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat) || istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat_rain))) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]4"
+		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou) && istype(W, /obj/item/weapon/material/shovel/trench) && istype(W, /obj/item/clothing/head/helmet/ww2/japhelm) && (istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat) || istype(W, /obj/item/clothing/suit/storage/coat/ww2/japcoat_rain))) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
+			icon_state = "[base_icon]5" */
 		orient2hud(usr)
 		if (usr.s_active)
 			usr.s_active.show_to(usr)

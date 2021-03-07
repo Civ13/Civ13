@@ -69,7 +69,10 @@
 	if (health <= 0)
 		visible_message("<span class='warning'>\The [src] breaks down!</span>")
 		playsound(loc, 'sound/effects/grillehit.ogg', 50, TRUE)
-		new /obj/item/stack/rods(get_turf(usr))
+		if (flammable == TRUE)
+			new /obj/item/stack/material/wood(get_turf(usr))
+		else
+			new /obj/item/stack/rods(get_turf(usr))
 		qdel(src)
 
 /obj/structure/railing/proc/NeighborsCheck(var/UpdateNeighbors = TRUE)
@@ -170,8 +173,12 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		if (do_after(user, 20, src))
 			user.visible_message("<span class='notice'>\The [user] dismantles \the [src].</span>", "<span class='notice'>You dismantle \the [src].</span>")
-			new /obj/item/stack/material/steel(get_turf(usr))
-			new /obj/item/stack/material/steel(get_turf(usr))
+			if (flammable == TRUE)
+				new /obj/item/stack/material/wood(get_turf(usr))
+				new /obj/item/stack/material/wood(get_turf(usr))
+			else
+				new /obj/item/stack/rods(get_turf(usr))
+				new /obj/item/stack/rods(get_turf(usr))
 			qdel(src)
 			return
 

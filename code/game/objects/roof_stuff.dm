@@ -68,6 +68,20 @@
 	overlay_state = "clay"
 	icon_state = "clay_dm"
 
+/obj/roof/clay/blue
+	name = "clay roof"
+	desc = "A black clay tile roof."
+	flammable = FALSE
+	overlay_state = "blueclay"
+	icon_state = "blueclay_dm"
+
+/obj/roof/clay/black
+	name = "black clay roof"
+	desc = "A black clay tile roof."
+	flammable = FALSE
+	overlay_state = "blackclay"
+	icon_state = "blackclay_dm"
+
 /obj/roof/clay/kerawa
 	name = "kerawa roof"
 	desc = "A clay tile roof."
@@ -84,7 +98,7 @@
 
 /obj/roof/thatch
 	name = "thatch roof"
-	desc = "A tatch roof."
+	desc = "A thatch roof."
 	overlay_state = "thatch"
 	icon_state = "thatch_dm"
 
@@ -152,7 +166,7 @@
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	var/oldclimate = CURRENTAREA.climate
 
-	if (CURRENTAREA.location == AREA_OUTSIDE)
+	if (CURRENTAREA.type)
 		current_area_type = CURRENTAREA.type
 		switch(oldclimate)
 			if ("tundra")
@@ -265,6 +279,16 @@
 	icon_state = "clay_roof_builder"
 	flammable = FALSE
 	target_type = /obj/roof/clay
+
+/obj/item/weapon/roofbuilder/clay/blue
+	name = "blue clay roofing"
+	icon_state = "blueclay_roof_builder"
+	target_type = /obj/roof/clay/blue
+
+/obj/item/weapon/roofbuilder/clay/black
+	name = "black clay roofing"
+	icon_state = "blackclay_roof_builder"
+	target_type = /obj/roof/clay/black
 
 /obj/item/weapon/roofbuilder/clay/kerawa
 	name = "black clay roofing"
@@ -436,6 +460,11 @@
 
 /* Stone Pillar Subtypes*/
 
+/obj/structure/mine_support/stone/marble
+	name = "marble pillar"
+	desc = "A marble pillar that can support roofs and mine shafts."
+	icon_state = "marble_support_st1"
+
 /obj/structure/mine_support/stone/sandstone
 	name = "sandstone pillar"
 	desc = "A sandstone pillar that can support roofs and mine shafts."
@@ -450,8 +479,13 @@
 
 /obj/structure/mine_support/stone/ionic
 	name = "ionic column"
-	desc = "An ionic-style column that can support roofs and mine shafts."
+	desc = "An marble ionic-style column that can support roofs and mine shafts."
 	icon_state = "column_ionic"
+
+/obj/structure/mine_support/stone/ionic/rock
+	name = "stone ionic column"
+	desc = "An stone ionic-style column that can support roofs and mine shafts."
+	icon_state = "stone_column_ionic"
 
 /obj/structure/mine_support/stone/ionic/sandstone
 	name = "sandstone ionic column"
@@ -470,6 +504,11 @@
 	desc = "An solomonic-style column that can support roofs and mine shafts."
 	icon_state = "column_solomonic1"
 
+/obj/structure/mine_support/stone/solomonic/rock
+	name = "stone solomonic column"
+	desc = "An stone solomonic-style column that can support roofs and mine shafts."
+	icon_state = "stone_column_solomonic1"
+
 /obj/structure/mine_support/stone/solomonic/sandstone
 	name = "sandstone solomonic column"
 	desc = "An sandstone solomonic-style column that can support roofs and mine shafts."
@@ -484,6 +523,11 @@
 	name = "solomonic column"
 	desc = "An solomonic-style column that can support roofs and mine shafts."
 	icon_state = "column_solomonic2"
+
+/obj/structure/mine_support/stone/solomonic/thick/rock
+	name = "stone solomonic column"
+	desc = "An stone solomonic-style column that can support roofs and mine shafts."
+	icon_state = "stone_column_solomonic2"
 
 /obj/structure/mine_support/stone/solomonic/thick/sandstone
 	name = "sandstone solomonic column"
@@ -501,6 +545,11 @@
 	name = "aztec column"
 	desc = "An aztec-style column that can support roofs and mine shafts."
 	icon_state = "aztec_pillar"
+
+/obj/structure/mine_support/stone/aztec/marble
+	name = "marble aztec column"
+	desc = "An marble aztec-style column that can support roofs and mine shafts."
+	icon_state = "marble_aztec_pillar"
 
 /obj/structure/mine_support/stone/aztec/sandstone
 	name = "sandstone aztec column"

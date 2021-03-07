@@ -11,7 +11,120 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	var/colorn = 1
+////////////////////////////////////ABASHIRI//////////////////////////////////////////////////////////////////////////////////////
+/obj/item/clothing/under/abashiri
+	name = "Abashiri Guard Uniform"
+	desc = "A standard uniform for the guards of Abashiri Prison."
+	icon_state = "abashiri_guard"
+	item_state = "abashiri_guard"
+	worn_state = "abashiri_guard"
+	var/rolled = FALSE
 
+/obj/item/clothing/under/abashiri/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/abashiri)
+		return
+	else
+		if (rolled)
+			item_state = "abashiri_guard"
+			worn_state = "abashiri_guard"
+			item_state_slots["w_uniform"] = "abashiri_guard"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "abashiri_guard_rolled"
+			worn_state = "abashiri_guard_rolled"
+			item_state_slots["w_uniform"] = "abashiri_guard_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/abashiri_prisoner
+	name = "Abashiri Prison Uniform"
+	desc = "A standard yukata for the guards of Abashiri Prison."
+	icon_state = "abashiri_prisoner"
+	item_state = "abashiri_prisoner"
+	worn_state = "abashiri_prisoner"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/abashiri_prisoner/verb/roll_suit()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/abashiri_prisoner)
+		return
+	else
+		if (rolled)
+			item_state = "abashiri_prisoner"
+			worn_state = "abashiri_prisoner"
+			item_state_slots["w_uniform"] = "abashiri_prisoner"
+			usr << "<span class = 'danger'>You roll down your suit.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "abashiri_prisoner_down"
+			worn_state = "abashiri_prisoner_down"
+			item_state_slots["w_uniform"] = "abashiri_prisoner_down"
+			usr << "<span class = 'danger'>You roll up your suit.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+/obj/item/clothing/head/abashiri_guard
+	name = "Abashiri Guard Cap"
+	desc = "A cap worn by Abashiri Guards."
+	icon_state = "abashiri_guard"
+	item_state = "abashiri_guard"
+/obj/item/clothing/head/abashiri_guard/head_guard
+	name = "Abashiri Head Guard Cap"
+	desc = "A cap worn by the Abashiri Head Guard."
+	icon_state = "abashiri_guard_head"
+	item_state = "abashiri_guard_head"
+/obj/item/clothing/head/abashiri_guard/head_guard/warden
+	name = "Abashiri Warden Cap"
+	desc = "A cap worn by the Abashiri Warden."
+/obj/item/clothing/head/abashiri_prisoner
+	name = "Kasa"
+	desc = "A straw hat that obscures inmate's view, as well as their faces."
+	icon_state = "abashiri_kasa"
+	item_state = "abashiri_kasa"
+	flags_inv = BLOCKHAIR|HIDEFACE
+	restricts_view = 2
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit."
+	icon_state = "haori_jacket"
+	item_state = "haori_jacket"
+	worn_state = "haori_jacket"
+	body_parts_covered = UPPER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 75
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing1
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit. This one is designated with Wing1 on its back."
+	icon_state = "haori_jacket1"
+	item_state = "haori_jacket1"
+	worn_state = "haori_jacket1"
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing2
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit. This one is designated with Wing 2 on its back."
+	icon_state = "haori_jacket2"
+	item_state = "haori_jacket2"
+	worn_state = "haori_jacket2"
+/obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3
+	name = "Abashiri Haori"
+	desc = "A simple haori jacket usually worn over a haori outfit. This one is designated with Wing 3 on its back."
+	icon_state = "haori_jacket3"
+	item_state = "haori_jacket3"
+	worn_state = "haori_jacket3"
+
+////////////////////////////////////////////RUSSO-JAP///////////////////////////////////////////////
 /obj/item/clothing/under/japuni
 	name = "Japanese Army Uniform"
 	desc = "A standard imperial japanese army uniform."
@@ -186,7 +299,9 @@
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
-
+/obj/item/clothing/suit/storage/coat/japcoat/abashiri
+	name = "Abashiri Guard Coat"
+	desc = "An Abashiri Prison Guard coat."
 /obj/item/clothing/suit/storage/coat/priest
 	name = "priest sleev"
 	desc = "A holy coat worn by a priest."
@@ -402,7 +517,8 @@
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
 		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
-		/obj/item/weapon/melee/classic_baton
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/flashlight
 		)
 /obj/item/weapon/storage/belt/jap/soldier
 /obj/item/weapon/storage/belt/jap/soldier/New()
@@ -459,6 +575,15 @@
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
+/obj/item/weapon/storage/belt/jap/abashiri_guard
+/obj/item/weapon/storage/belt/jap/abashiri_guard/New()
+	..()
+	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/flashlight/flashlight(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard_SS
 /obj/item/weapon/storage/belt/jap/camp_guard_SS/New()

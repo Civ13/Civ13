@@ -210,6 +210,28 @@ mob/living/human/corpse/british_sailor
 		invisibility = 0
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
+
+/mob/living/human/corpse/chinese_ww2
+	gender = MALE
+
+/mob/living/human/corpse/chinese_ww2/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Erdeng Bing")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Chinese Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
 /mob/living/human/corpse/russian
 	gender = MALE
 
@@ -570,6 +592,28 @@ mob/living/human/corpse/russian_soviet_tanker
 		dir = pick(NORTH,SOUTH,EAST,WEST)
 		adjustBruteLoss(rand(30,45))
 		name = "Beggar"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+/mob/living/human/corpse/nva
+	gender = MALE
+
+/mob/living/human/corpse/nva/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "NVA Binh Ni")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "NVA soldier"
 		invisibility = 0
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()

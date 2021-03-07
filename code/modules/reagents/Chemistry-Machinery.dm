@@ -286,7 +286,11 @@
 		spawn(150)
 			var/largest = reagents.get_master_reagent_id()
 			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
-			collector.reagents.add_reagent(largest,voltotransf)
+			if (largest == "water")
+				var/topick = pick("hydrogen","oxygen")
+				collector.reagents.add_reagent(topick,voltotransf/10)
+			else
+				collector.reagents.add_reagent(largest,voltotransf)
 			reagents.remove_reagent(largest,voltotransf)
 			on = FALSE
 			update_icon()

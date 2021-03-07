@@ -5,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3000
 	is_singlefaction = TRUE
+	has_hunger = TRUE
 	no_winner ="The fighting is still going."
 	songs = list(
 		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
@@ -71,8 +72,8 @@
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
-//	spawn(15000)
-//		spawn_disks(TRUE)
+	spawn(15000)
+		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
 		assign_precursors()
@@ -97,7 +98,7 @@
 				comps = pick("GBSA-1994 chip","McGT S5R1 chip","RDKV S-445 chip")
 			if ("mail@blu.ug")
 				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
-		var/pay = nr*rand(500,700)
+		var/pay = nr*rand(500,1100)
 		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay,i)) //x,y,product,amount,payment,faction
 		delivery_orders += tlist
 		var/needed = "[nr] [comps]s at the [tloc[4]] [tloc[1]] postbox ([tloc[2]],[tloc[3]])"
@@ -135,16 +136,16 @@
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
-/obj/map_metadata/the_art_of_the_deal/proc/load_new_recipes() //bow ungas BTFO
-	var/F3 = file("config/material_recipes_camp.txt")
+/obj/map_metadata/the_art_of_the_deal/load_new_recipes() //bow ungas BTFO
+	var/F3 = file("config/crafting/material_recipes_camp.txt")
 	if (fexists(F3))
-		craftlist_list = list()
 		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_lists["global"] = list()
 		for (var/i in craftlist_temp)
 			if (findtext(i, ","))
 				var/tmpi = replacetext(i, "RECIPE: ", "")
 				var/list/current = splittext(tmpi, ",")
-				craftlist_list += list(current)
+				craftlist_lists["global"] += list(current)
 				if (current.len != 13)
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 
@@ -283,6 +284,7 @@
 		/obj/item/flashlight/flashlight = 10,
 		/obj/item/ammo_magazine/emptyspeedloader = 20,
 		/obj/item/weapon/handcuffs/rope = 50,
+		/obj/item/weapon/material/kitchen/utensil/knife/shank/iron = 10,
 	)
 /obj/structure/vending/undercover_apparel
 	name = "undercover apparel"
@@ -306,6 +308,7 @@
 		/obj/item/weapon/storage/briefcase = 10,
 		/obj/item/clothing/accessory/holster/armpit = 10,
 		/obj/item/clothing/accessory/holster/chest = 10,
+		/obj/item/weapon/material/kitchen/utensil/knife/shank/iron = 10,
 	)
 	attack_hand(mob/user as mob)
 		if (user.original_job_title == "Police Officer")
@@ -329,8 +332,11 @@
 		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
 		/obj/item/ammo_magazine/m1911 = 20,
 		/obj/item/ammo_magazine/c32 = 10,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 5,
 	)
 	prices = list(
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 1000,
+
 		/obj/item/weapon/gun/projectile/pistol/colthammerless = 300,
 		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 300,
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 400,
@@ -372,12 +378,14 @@
 		/obj/item/clothing/head/helmet/swat = 15,
 		/obj/item/clothing/mask/gas/swat = 15,
 		/obj/item/clothing/suit/police = 15,
+		/obj/item/clothing/suit/storage/jacket/highvis = 15,
 		/obj/item/clothing/head/helmet/constable = 15,
 		/obj/item/clothing/under/constable = 15,
 		/obj/item/clothing/shoes/swat = 15,
 		/obj/item/weapon/storage/backpack/civbag = 15,
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 15,
 	)
 	attack_hand(mob/user as mob)
 		if (user.original_job_title == "Police Officer")
@@ -387,19 +395,18 @@
 		 return
 
 /obj/structure/vending/police_weapons
-	name = "police weapons"
+	name = "lethal police weapons"
 	desc = "When the baton is not enough."
 	icon_state = "weapons_sof"
 	products = list(
 	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
-	/obj/item/ammo_magazine/shellbox/rubber = 10,
+	/obj/item/ammo_magazine/shellbox/slug = 10,
 	/obj/item/ammo_magazine/shellbox = 10,
 	/obj/item/weapon/gun/projectile/pistol/glock17 = 20,
 	/obj/item/ammo_magazine/glock17 = 50,
-	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,
-	/obj/item/ammo_casing/grenade_l/teargas = 20,
-	/obj/item/weapon/grenade/flashbang = 20,
-
+	/obj/item/weapon/gun/projectile/boltaction/m24 = 10,
+	/obj/item/ammo_magazine/m24 = 20,
+	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
 	)
 	attack_hand(mob/user as mob)
 		if (user.original_job_title == "Police Officer")
@@ -408,6 +415,32 @@
 		 user << "You do not have access to this."
 		 return
 
+/obj/structure/vending/police_weapons/ltl
+	name = "less than lethal police weapons"
+	desc = "Baton +."
+	icon_state = "equipment_usa"
+	products = list(
+	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
+	/obj/item/ammo_magazine/shellbox/rubber = 10,
+	/obj/item/ammo_magazine/shellbox/beanbag = 10,
+	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,
+	/obj/item/ammo_casing/grenade_l/teargas = 20,
+	/obj/item/weapon/grenade/flashbang = 20,
+	/obj/item/weapon/grenade/chemical/xylyl_bromide = 10,
+	/obj/item/weapon/grenade/smokebomb/m18smoke = 10,
+	/obj/item/weapon/reagent_containers/spray/pepper = 10,
+	/obj/item/weapon/gun/projectile/dartgun/mag = 10,
+	/obj/item/ammo_magazine/chemdart/mag = 20,
+	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
+	/obj/item/weapon/gun/projectile/pistol/tt30ll = 20,
+	/obj/item/ammo_magazine/tt30ll = 50,
+	)
+	attack_hand(mob/user as mob)
+		if (user.original_job_title == "Police Officer")
+			..()
+		else
+		 user << "You do not have access to this."
+		 return
 /obj/item/weapon/package
 	name = "package"
 	desc = "Some kind of package."
@@ -561,7 +594,6 @@
 	showoff(user)
 
 /mob/living/human/var/gun_permit = FALSE
-
 /////////////////////////delivery points//////////////////////
 /turf/floor/delivery
 	name = "delivery area"

@@ -12,16 +12,16 @@
 	emote_see = list("stares ferociously", "sniffs the ground")
 	speak_chance = TRUE
 	move_to_delay = 3
-	see_in_dark = 6
+	see_in_dark = 1
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "pokes"
 	stop_automated_movement_when_pulled = FALSE
-	maxHealth = 45
-	health = 45
-	melee_damage_lower = 12
-	melee_damage_upper = 23
+	maxHealth = 80
+	health = 80
+	melee_damage_lower = 6
+	melee_damage_upper = 12
 	mob_size = MOB_MEDIUM
 	predatory_carnivore = 1
 	carnivore = 1
@@ -29,6 +29,7 @@
 
 	var/btype = "grey"
 	var/cub = FALSE
+	var/growing = FALSE
 	var/female = FALSE
 	faction = "neutral"
 	var/pregnant = FALSE
@@ -36,75 +37,60 @@
 	var/overpopulationCountdown = 0
 
 /mob/living/simple_animal/hostile/wolf/female
-	name = "female wolf"
+	name = "grey she-wolf"
 	female = TRUE
 
 /mob/living/simple_animal/hostile/wolf/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		wolf_count -= 1
+
+	wolf_count &= src
 	..()
 /mob/living/simple_animal/hostile/wolf/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		wolf_count -= 1
+
+	wolf_count &= src
 	..()
 /mob/living/simple_animal/hostile/wolf/New()
-	wolf_count += 1
+	wolf_count |= src
+	if (female)
+		name = "[btype] wolf"
+	else
+		name = "[btype] she-wolf"
 	..()
-	spawn(1)
-		if (cub)
-			icon_state = "[btype]wolf_cub"
-			icon_living = "[btype]wolf_cub"
-			icon_dead = "[btype]wolf_cub_dead"
-			meat_amount = 1
-			mob_size = MOB_SMALL
-			if (female)
-				name = "female [btype] wolf cub"
-			else
-				name = "male [btype] wolf cub"
-			spawn(3000)
-				cub = FALSE
-				icon_state = "[btype]wolf"
-				icon_living = "[btype]wolf"
-				icon_dead = "[btype]wolf_dead"
-				mob_size = MOB_MEDIUM
-				if (female)
-					name = "female [btype] wolf"
-				else
-					name = "male [btype] wolf"
-		else
-			if (female)
-				name = "female [btype] wolf"
-			else
-				name = "male [btype] wolf"
 
 /mob/living/simple_animal/hostile/wolf/Life()
-	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
-		overpopulationCountdown--
-		return
+	..()
+	if(src.cub && !src.growing)
+		growing = TRUE //No need to set it all again if its already growing
+		icon_state = "[btype]wolf_cub"
+		icon_living = "[btype]wolf_cub"
+		icon_dead = "[btype]wolf_dead"
+		meat_amount = 1
+		mob_size = MOB_SMALL
+		if (female)
+			name = "female [btype] wolf cub"
+		else
+			name = "male [btype] wolf cub"
+		spawn(4500)
+			cub = FALSE
+			growing = FALSE
+			icon_state = "[btype]wolf"
+			icon_living = "[btype]wolf"
+			icon_dead = "[btype]wolf_dead"
+			mob_size = MOB_MEDIUM
+			if (female)
+				name = "[btype] she-wolf"
+			else
+				name = "[btype] she-wolf"
 
-	if (!pregnant && wolf_count < 12)
-		var/nearbyObjects = range(1,src) //3x3 area around animal
-		for(var/mob/living/simple_animal/hostile/wolf/M in nearbyObjects)
-			if (M.stat == CONSCIOUS && !M.female)
-				pregnant = TRUE
-				birthCountdown = 600 // life ticks once per 2 seconds, 300 == 10 minutes
-				break
-
-		if (pregnant)
-			nearbyObjects = range(7,src) //15x15 area around animal
-
-			var/wolfCount = 0
+	if(!src.following_mob)
+		src.do_behaviour()
+	if (src.female && !src.pregnant)
+		if(!src.cub) //Cubs cant get pregnant
+			var/nearbyObjects = range(1,src) //3x3 area around animal
 			for(var/mob/living/simple_animal/hostile/wolf/M in nearbyObjects)
-				if (M.stat == CONSCIOUS)
-					wolfCount++
-
-
-			if (wolfCount > 4) // max 5 in a 15x15 area around
-				overpopulationCountdown = 300 // 5 minutes
-				pregnant = FALSE
-	else if (pregnant)
+				if (M.stat == CONSCIOUS && !M.female) //Failsafe, no misscheck for self-reproduction
+					pregnant = TRUE
+					birthCountdown = 600 // life ticks once per 2 seconds, 300 == 10 minutes
+	else if (src.female && src.pregnant)
 		birthCountdown--
 		if (birthCountdown <= 0)
 			pregnant = FALSE
@@ -117,7 +103,6 @@
 				B.cub = TRUE
 				B.btype = btype
 			visible_message("A wolf cub has been born!")
-	..()
 
 /mob/living/simple_animal/hostile/wolf/white
 	name = "white wolf"
@@ -126,3 +111,7 @@
 	icon_dead = "whitewolf_dead"
 	icon_gib = "whitewolf_gib"
 	btype = "white"
+
+/mob/living/simple_animal/hostile/wolf/white/female
+	name = "white she-wolf"
+	female = TRUE

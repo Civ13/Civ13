@@ -132,12 +132,29 @@
 			anchored = !anchored
 		return
 
+	if (istype(W, /obj/item/weapon/hammer))
+		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
+		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+		if (do_after(user,50,src))
+			visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
+			qdel(src)
+			return
 	else
-
-		for (var/datum/data/vending_product/R in product_records)
-			if (istype(W, R.product_path))
-				stock(W, R, user)
+		if (istype(src, /obj/structure/vending/craftable))
+			var/obj/structure/vending/craftable/CTB = src
+			if (product_records.len >= CTB.max_products)
+				user << "<span class='notice'>\The [src] is full!</span>"
+				return FALSE
+			else
+				var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
+				product.price = 0
+				stock(W,product,user)
 				return TRUE
+		else
+			for (var/datum/data/vending_product/R in product_records)
+				if (istype(W, R.product_path))
+					stock(W, R, user)
+					return TRUE
 		..()
 
 
@@ -225,7 +242,10 @@
 		status_error = FALSE
 		vend_ready = TRUE
 		currently_vending = null
+		if (istype(src, /obj/structure/vending/craftable))
+			product_records -= R
 		nanomanager.update_uis(src)
+		update_icon()
 
 /**
  * Add item to the machine
@@ -242,6 +262,7 @@
 	qdel(W)
 
 	nanomanager.update_uis(src)
+	update_icon()
 
 /obj/structure/vending/process()
 

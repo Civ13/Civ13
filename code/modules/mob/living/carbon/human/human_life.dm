@@ -76,14 +76,18 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 	if (map && map.nomads)
-		if (find_trait("Gigantism"))
-			size_multiplier = 1.3
-		else if (find_trait("Dwarfism"))
-			size_multiplier = 0.8
-		else if (find_trait("Short"))
-			size_multiplier = 0.9
-		else if (find_trait("Tall"))
-			size_multiplier = 1.1
+		if (map && map.ID == MAP_NOMADS_AFRICA)
+			if (s_tone <= -175)
+				size_multiplier = 0.85
+		else
+			if (find_trait("Gigantism"))
+				size_multiplier = 1.3
+			else if (find_trait("Dwarfism"))
+				size_multiplier = 0.8
+			else if (find_trait("Short"))
+				size_multiplier = 0.9
+			else if (find_trait("Tall"))
+				size_multiplier = 1.1
 	if (riding && riding_mob)
 		if (!(riding_mob in range(1,src)))
 			riding = FALSE
@@ -113,7 +117,7 @@
 		if (stats["stamina"][1] > 0)
 			stats["stamina"][1]-=3
 
-	#define HUNGER_THIRST_MULTIPLIER 0.64 //was 0.32, doubled due to demand
+	#define HUNGER_THIRST_MULTIPLIER 0.32 //was 0.32, doubled due to demand - reverted 20/01
 	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
@@ -1446,6 +1450,10 @@
 						holder2.icon_state = "yamaguchi"
 					else if (original_job.is_yakuza && original_job.is_ichi)
 						holder2.icon_state = "ichiwa"
+					else if (original_job.is_samurai && original_job.is_eastern)
+						holder2.icon_state = "eastern"
+					else if (original_job.is_samurai && original_job.is_western)
+						holder2.icon_state = "western"
 					else
 						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
@@ -1476,7 +1484,9 @@
 				if (CHINESE)
 					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
-					if (original_job_title == "Civilization A Citizen")
+					if (map.ID == MAP_CAPITOL_HILL)
+						holder2.icon_state = "civ1"
+					else if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"
 					else if (original_job_title == "Civilization B Citizen")
 						holder2.icon_state = "civ2"

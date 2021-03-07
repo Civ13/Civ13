@@ -1,6 +1,6 @@
 /turf/floor/carpet
 	name = "carpet"
-	icon = 'icons/turf/floors.dmi'
+	icon = 'icons/turf/flooring/carpet.dmi'
 	icon_state = "carpet"
 	initial_flooring = /decl/flooring/carpet
 

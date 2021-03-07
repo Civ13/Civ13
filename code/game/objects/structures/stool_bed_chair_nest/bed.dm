@@ -164,7 +164,7 @@
 		padding_material.place_sheet(get_turf(src))
 
 /obj/structure/bed/psych
-	name = "psychiatrist's couch"
+	name = "divan"
 	desc = "For prime comfort during psychiatric evaluations."
 	icon_state = "psychbed"
 	base_icon = "psychbed"

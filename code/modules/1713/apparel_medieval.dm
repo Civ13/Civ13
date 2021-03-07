@@ -155,13 +155,20 @@
 	item_state = "phrigian_hat_blue"
 	worn_state = "phrigian_hat_blue"
 
+/obj/item/clothing/head/phrigian_hat/doge
+	name = "doge hat"
+	desc = "a ornate knob ended hat banded in gold of the ancient phrigian design. Often worn by republic rulers over many petty merchantile aristocrats."
+	icon_state = "doge"
+	item_state = "doge"
+	worn_state = "doge"
+
 /obj/item/clothing/head/hooded_cape
 	name = "long black hooded cape"
 	desc = "A long black hooded cape. Often worn those wishing to conceal themselves in the shadows."
 	icon_state = "black_cape"
 	item_state = "black_cape"
 	worn_state = "black_cape"
-	body_parts_covered = HEAD|FACE
+	body_parts_covered = HEAD
 	flags_inv = BLOCKHAIR|HIDEFACE
 
 /obj/item/clothing/head/plaguedoctor
@@ -259,6 +266,14 @@
 	worn_state = "fancy_fur_coat"
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/suit/storage/jacket/regal
+	name = "regal ermine cape"
+	desc = "A large cape finely decked in stylized fur pattern often used to denote the most prominent members amongst noble circles."
+	icon_state = "regal_cape"
+	item_state = "regal_cape"
+	worn_state = "regal_cape"
+	cold_protection = UPPER_TORSO|ARMS
+
 /* Medieval Uniforms*/
 
 /obj/item/clothing/under/medieval
@@ -281,6 +296,13 @@
 	icon_state = "renaissance"
 	item_state = "renaissance"
 	worn_state = "renaissance"
+
+/obj/item/clothing/under/renaissance/doge
+	name = "doge outfit"
+	desc = "A gold embroidered baggy renaissance-style outfit. Often worn by republic rulers over many petty merchantile aristocrats."
+	icon_state = "doge"
+	item_state = "doge"
+	worn_state = "doge"
 
 /obj/item/clothing/under/renaissance_pontifical
 	name = "pontifical renaissance clothing"
@@ -1783,6 +1805,39 @@
 	armor = list(melee = 5, arrow = 3, gun = FALSE, energy = 5, bomb = 5, bio = 5, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
+	var/obj/item/weapon/handcuffs/chained = null
+
+/obj/item/clothing/shoes/geta/proc/attach_cuffs(var/obj/item/weapon/handcuffs/cuffs, mob/user as mob)
+	if (chained) return
+
+	user.drop_item()
+	cuffs.loc = src
+	chained = cuffs
+	slowdown = 15
+	icon_state = "geta1"
+	worn_state = "geta1"
+	update_icon()
+
+/obj/item/clothing/shoes/geta/proc/remove_cuffs(mob/user as mob)
+	if (!chained) return
+
+	user.put_in_hands(chained)
+	chained.add_fingerprint(user)
+
+	slowdown = initial(slowdown)
+	icon_state = "geta"
+	worn_state = "geta"
+	chained = null
+	update_icon()
+
+/obj/item/clothing/shoes/geta/attack_self(mob/user as mob)
+	..()
+	remove_cuffs(user)
+
+/obj/item/clothing/shoes/geta/attackby(H as obj, mob/user as mob)
+	..()
+	if (istype(H, /obj/item/weapon/handcuffs))
+		attach_cuffs(H, user)
 
 /obj/item/clothing/shoes/tsuranuki
 	name = "tsuranuki"

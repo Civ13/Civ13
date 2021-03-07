@@ -409,6 +409,13 @@
 	item_state = "lwh_black"
 	worn_state = "lwh_black"
 
+/obj/item/clothing/head/helmet/modern/ach
+	name = "OCP ACH helmet"
+	desc = "A typical US Army Advanced Combat Helmet. This one is in OCP cammo."
+	icon_state = "ach_ocp"
+	item_state = "ach_ocp"
+	worn_state = "ach_ocp"
+
 	/* US Army Clothing*/
 
 /obj/item/clothing/under/us_uni/us_camo_dcu
@@ -767,6 +774,8 @@
 	w_class = 4
 	weight = 3.6
 
+/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under //for TDM maps, showing under the clothing
+
 /obj/item/clothing/head/helmet/kevlarhelmet
 	name = "black kevlar helmet"
 	desc = "A standard bulletproof helmet, made of kevlar."
@@ -842,9 +851,9 @@
 /obj/item/clothing/accessory/armband/punk
 	name = "spiked bracers"
 	desc = "A pair of punkish spiked bracers."
-	icon_state = "spiked_bracer"
-	item_state = "spiked_bracer"
-	worn_state = "spiked_bracer"
+	icon_state = "spiked_bracers"
+	item_state = "spiked_bracers"
+	worn_state = "spiked_bracers"
 
 /obj/item/clothing/shoes/punk
 	name = "punk boots"
@@ -979,7 +988,99 @@
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
+/obj/item/clothing/under/tacticool_hawaiian
+	name = "tacticool hawaiian outfit"
+	desc = "Assorted surplus cammo trousers with a nice hawaiian shirt for all your operating needs."
+	icon_state = "tacticool_hawaiian_blue"
+	item_state = "tacticool_hawaiian_blue"
+	worn_state = "tacticool_hawaiian_blue"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/tacticool_hawaiian/green
+	icon_state = "tacticool_hawaiian_green"
+	item_state = "tacticool_hawaiian_green"
+	worn_state = "tacticool_hawaiian_green"
+/obj/item/clothing/under/tacticool_hawaiian/orange
+	icon_state = "tacticool_hawaiian_orange"
+	item_state = "tacticool_hawaiian_orange"
+	worn_state = "tacticool_hawaiian_orange"
+/obj/item/clothing/under/tacticool_hawaiian/purple
+	icon_state = "tacticool_hawaiian_purple"
+	item_state = "tacticool_hawaiian_purple"
+	worn_state = "tacticool_hawaiian_purple"
+
+/obj/item/clothing/under/boomerwaffen1
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen1"
+	item_state = "boomerwaffen1"
+	worn_state = "boomerwaffen1"
+
+/obj/item/clothing/under/boomerwaffen2
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen2"
+	item_state = "boomerwaffen2"
+	worn_state = "boomerwaffen2"
+
+/obj/item/clothing/under/boomerwaffen3
+	name = "patriot outfit"
+	desc = "A uniform used by patriotic American militias."
+	icon_state = "boomerwaffen3"
+	item_state = "boomerwaffen3"
+	worn_state = "boomerwaffen3"
+
+/obj/item/clothing/under/modern_shaman
+	name = "modern shaman outfit"
+	desc = "A modern shaman outfit."
+	icon_state = "modern_shaman"
+	item_state = "modern_shaman"
+	worn_state = "modern_shaman"
+
+/obj/item/clothing/head/cap
+	name = "cap"
+	desc = "A generic visored cap."
+	icon_state = "blackcap"
+	item_state = "blackcap"
+	worn_state = "blackcap"
+	var/base_state = "blackcap"
+	var/flipped = FALSE
+
+/obj/item/clothing/head/cap/verb/flip()
+	set category = null
+	set src in usr
+
+	flipped = !flipped
+	update_icon()
 	/* IOG armor*/
+
+/obj/item/clothing/head/cap/update_icon()
+	..()
+	if (flipped)
+		icon_state = "[base_state]_flipped"
+		item_state = icon_state
+		worn_state = icon_state
+	else
+		icon_state = base_state
+		item_state = icon_state
+		worn_state = icon_state
+
+/obj/item/clothing/head/cap/maga
+	name = "MAGA hat"
+	desc = "A red hat with \"Make America Great Again\" on the front."
+	icon_state = "maga"
+	item_state = "maga"
+	worn_state = "maga"
+	base_state = "maga"
+
+/obj/item/clothing/head/cap/fbi
+	name = "FBI hat"
+	desc = "A black hat with FBI in white letters in the front."
+	icon_state = "fbi"
+	item_state = "fbi"
+	worn_state = "fbi"
+	base_state = "fbi"
+
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
 	name = "IOG heavy vest B-7"

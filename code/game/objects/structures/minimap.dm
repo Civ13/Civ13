@@ -135,3 +135,21 @@
 /obj/item/weapon/map/attack_self(mob/user)
 	update_icon()
 	examine(user)
+
+/obj/item/weapon/map_abashiri
+	desc = "A portable map of Abashiri Prison."
+	name = "abashiri prison map"
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "portable_areamap"
+	throwforce = WEAPON_FORCE_HARMLESS
+	force = WEAPON_FORCE_HARMLESS
+	w_class = 1.0
+
+/obj/item/weapon/map_abashiri/examine(mob/user)
+	update_icon()
+	user << browse("<img src=abashiri_map.png></img>","window=popup;size=630x630")
+
+/obj/item/weapon/map_abashiri/attack_self(mob/user)
+	update_icon()
+	examine(user)
+

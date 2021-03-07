@@ -117,29 +117,35 @@
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
 				MAP_ALLEYWAY = 0,
+				MAP_CAPITOL_HILL = 10,
+				MAP_FOOTBALL = 4,
 			)
 		else if (epoch == "Cold War Era (1949-1984)")
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
 				MAP_ROAD_TO_DAK_TO = 0,
-				MAP_RETREAT = 0,
+				MAP_HUE = 0,
+				MAP_RETREAT = 8,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
-				MAP_OMAHA = 10,
+				MAP_MICROMAHA = 0,
+				MAP_OMAHA = 30,
 				MAP_KURSK = 10,
-//				MAP_GULAG13 = 15,
+				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
 				MAP_SMALLINGRAD = 0,
 				MAP_NANJING = 20,
 //				MAP_IWO_JIMA = 70,
 				MAP_RIZAL_STADIUM = 0,
 				MAP_INTRAMUROS = 25,
-				MAP_WAKE_ISLAND = 20,
+				MAP_WAKE_ISLAND = 15,
+				MAP_NANKOU = 0,
+				MAP_FOREST = 15,
 			)
 
 		else if (epoch == "Early Modern Era (1896-1930)")
@@ -157,6 +163,7 @@
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK_TDM = 0,
+//				MAP_NATIONSRP = 0,
 				MAP_MISSIONARY_RIDGE = 20,
 			)
 		else if (epoch == "Imperial Age (1650-1780)")
@@ -193,10 +200,12 @@
 				MAP_CAMP = 0,
 				MAP_KARAK = 0,
 				MAP_SAMMIRHAYEED = 20,
+				MAP_SEKIGAHARA = 0,
 			)
 		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
 				MAP_TRIBES = 0,
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
@@ -212,7 +221,7 @@
 				MAP_NOMADS_WASTELAND_2 = 0,
 				MAP_NOMADS_NEW_WORLD = 10,
 				MAP_NOMADS_MEDITERRANEAN = 10,
-				MAP_NOMADS_ISLAND = 0,
+//				MAP_NOMADS_ISLAND = 0,
 				MAP_NOMADS_KARAFUTO = 0,
 			)
 		else if (epoch == "Civilization 13 (Colony & Pioneers)")
@@ -233,7 +242,7 @@
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
 				MAP_THE_ART_OF_THE_DEAL = 10,
-//				MAP_FOUR_KINDGOMS = 16
+				MAP_FOUR_KINGDOMS = 0,
 			)
 		else if (epoch == "Battle Royale")
 			maps = list(
@@ -548,6 +557,7 @@
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
+	/// TDM MODES ///
 	else if (vote.voted_gamemode == "Normal")
 		world << "<font color='green'><big>Normal Mode</big><br>No respawn delays.</big></font>"
 		config.disable_fov = TRUE
@@ -568,4 +578,29 @@
 		config.no_respawn_delays = FALSE
 		map.gamemode = "Hardcore"
 		global_damage_modifier = 1.30
+		return
+	/// CAPITOL MODES //
+	else if (vote.voted_gamemode == "Siege")
+		world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Siege"
+		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
+			new /area/caribbean/british/land/inside/objective(T)
+		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
+			new /area/caribbean/british/land/inside/objective(T)
+		return
+	else if (vote.voted_gamemode == "Protect the VIP")
+		world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Protect the VIP"
+		return
+	else if (vote.voted_gamemode == "Area Capture")
+		world << "<font color='yellow'><big>Area Capture</big><br>Capture the <b>Congress</b> and the <b>Senate</b> to gain points. First team to <b>40 points</b> wins!</big></font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Area Capture"
+		var/obj/map_metadata/capitol_hill/CP = map
+		CP.points_check()
 		return

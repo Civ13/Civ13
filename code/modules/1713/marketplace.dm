@@ -149,7 +149,7 @@
 							if (M.amount*M.value >= ord_price)
 								var/tma = M.amount*M.value
 								var/tmb = ord_price
-								var/tmc = (tma - tmb)/0.4
+								var/tmc = (tma - tmb)/4
 								qdel(M)
 								var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 								GC.amount = tmc

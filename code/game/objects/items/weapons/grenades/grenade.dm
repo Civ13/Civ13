@@ -139,6 +139,8 @@
 
 	if(explosion_size)
 		explosion(O,0,2,4,2,sound=explosion_sound)
+		for (var/turf/floor/dirt/underground/U in range(2,src))
+			U.mining_proc()
 		qdel(src)
 
 /obj/item/weapon/grenade/dynamite/attack_self(mob/user as mob)

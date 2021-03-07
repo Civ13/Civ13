@@ -29,7 +29,7 @@
 			var/list/impturfs = splittext(tmpturfs, "\n")
 			for (var/i in impturfs)
 				var/list/impturfs2 = splittext(i, ";")
-				if (impturfs2[1] == "TURF")
+				if (impturfs2.len && impturfs2[1] == "TURF")
 					var/resultp = text2path(impturfs2[5])
 					world.log << "[impturfs2[5]]"
 					var/turf/T
@@ -73,7 +73,7 @@
 					var/obj/tmpobj = new resultp(locate(text2num(impobjs2[2]),text2num(impobjs2[3]),text2num(impobjs2[4])))
 					if (impobjs2[1] == "OBJECT")
 						for (var/j=6, j<=impobjs2.len, j++)
-							var/list/tempvars = splittext(impobjs2[j], "=")
+							var/list/tempvars = splittext(impobjs2[j], "===")
 							if (tempvars.len == 2)
 								if (tempvars[1] == "name")
 									tmpobj.name = tempvars[2]
@@ -83,6 +83,9 @@
 									tmpobj.dir = text2num(tempvars[2])
 								else if (tempvars[1] == "icon_state")
 									tmpobj.icon_state = tempvars[2]
+								else
+									if (tmpobj.vars[tempvars[1]] && tempvars[1] != "loc" && tempvars[1] != "locs" && tempvars[1] != "verbs")
+										tmpobj.vars[tempvars[1]] = tempvars[2]
 /*
 				else if (impobjs2[1] == "OBJECT")
 					if (!findtext(impobjs2[5],"/obj/map_metadata"))

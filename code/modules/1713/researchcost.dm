@@ -15,7 +15,7 @@
 	not_disassemblable = TRUE
 
 /obj/structure/researchdesk/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (!map.civilizations || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES)
+	if (!map.civilizations || map.ID == MAP_NATIONSRP || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		return
 
 	if (!W)
@@ -48,7 +48,7 @@
 		if (world.time < map.age5_timer && map.custom_civs[H.civilization][1]+map.custom_civs[H.civilization][2]+map.custom_civs[H.civilization][3] >= (map.age4_top*3))
 			H << "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600/60] hours."
 			return
-	if (!map.civilizations || map.ID == MAP_TRIBES)
+	if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		return
 	if (done == FALSE)
 		if (istype(W, /obj/item/stack))

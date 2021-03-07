@@ -134,7 +134,7 @@
 
 /obj/item/weapon/grab/proc/apply_pinning(mob/target, mob/attacker)
 	force_down = TRUE
-	target.Weaken(3)
+	target.Weaken(20)
 	target.lying = TRUE
 	step_to(attacker, target)
 	attacker.set_dir(EAST) //face the victim

@@ -17,6 +17,7 @@
 	desc = "A square piece of metal standing on four metal legs. It can not move."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "table"
+	var/flipped_icon = "table-flipped"
 	density = TRUE
 	anchored = TRUE
 	layer = 2.8
@@ -55,8 +56,53 @@
 			T.update_icon()
 	..()
 
+/obj/structure/table/verb/Flip()
+	set category = null
+	set src in view(1)
+
+	if (!istype(usr, /mob/living))
+		return
+	usr << "You start flipping the table..."
+	if (do_after(usr, 50, src))
+		flipped = !flipped
+		if (flipped)
+			visible_message("<span class='warning'>[usr] flips the table!</span>")
+			if (istype(usr, /mob/living))
+				var/mob/living/L = usr
+				dir = L.dir
+		else
+			visible_message("[usr] puts the table back up.")
+			layer = 2.8
+
+		update_icon()
+
+/obj/structure/table/verb/Rotate()
+	set category = null
+	set src in view(1)
+
+	if (!istype(usr, /mob/living))
+		return
+	//rotates clockwise
+	if (flipped)
+		visible_message("[usr] rotates the table.")
+		switch(dir)
+			if (NORTH)
+				dir = EAST
+			if (SOUTH)
+				dir = WEST
+			if (WEST)
+				dir = NORTH
+			if (EAST)
+				dir = SOUTH
+		update_icon()
 /obj/structure/table/update_icon()
-	if(!fixedsprite)
+	if (flipped)
+		icon_state = flipped_icon
+		if (dir == SOUTH)
+			layer = 5
+		else
+			layer = 2.8
+	else if(!fixedsprite)
 		spawn(2) //So it properly updates when deleting
 			var/dir_sum = FALSE
 			for (var/direction in list(1,2,4,8,5,6,9,10))
@@ -198,12 +244,10 @@
 	if (severity == 3)
 		if (prob(25))
 			table_destroy(1)
-/*
-/obj/structure/table/attack_tk() // no telehulk sorry
-	return*/
 
-/obj/structure/table/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (air_group || (height==0)) return TRUE
+/obj/structure/table/bullet_act(var/obj/item/projectile/P)
+	return
+/obj/structure/table/CanPass(atom/movable/mover, turf/target)
 	if (istype(mover,/obj/item/projectile))
 		return (check_cover(mover,target))
 	if (flipped == TRUE)
@@ -228,26 +272,26 @@
 		return TRUE
 	if (get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
 		return TRUE
-	if (get_turf(P.original) == cover)
-		var/chance = 20
-		if (ismob(P.original))
-			var/mob/M = P.original
-			if (M.lying)
-				chance += 20				//Lying down lets you catch less bullets
-		if (flipped==1)
-			if (get_dir(loc, from) == dir)	//Flipped tables catch mroe bullets
-				chance += 20
-			else
-				return TRUE					//But only from one side
-		if (prob(chance))
-			health -= P.damage/2
-			if (health > 0)
-				visible_message("<span class='warning'>[P] hits \the [src]!</span>")
-				return FALSE
-			else
-				visible_message("<span class='warning'>[src] breaks down!</span>")
-				break_to_parts()
-				return TRUE
+	var/chance = 20
+	if (ismob(P.original))
+		var/mob/M = P.original
+		if (M.lying)
+			chance += 10				//Lying down lets you catch less bullets
+	if (flipped==1)
+		if (get_dir(loc, from) == OPPOSITE_DIR(dir))	//Flipped tables catch mroe bullets
+			chance += 20
+		else
+			return TRUE	//But only from one side
+
+	if (prob(chance))
+		health -= P.damage/2
+		if (health > 0)
+			visible_message("<span class='warning'>[P] hits \the [src]!</span>")
+			return FALSE
+		else
+			visible_message("<span class='warning'>[src] breaks down!</span>")
+			break_to_parts()
+			return TRUE
 	return TRUE
 
 /obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf)
@@ -376,6 +420,7 @@
 	name = "glass table"
 	desc = "What did I say about leaning on the glass tables? Now you need surgery."
 	icon_state = "glass_table"
+	flipped_icon = "glass_table-flipped"
 	buildstack = /obj/item/stack/material/glass
 
 /obj/structure/table/glass/tablepush(obj/item/I, mob/user)
@@ -407,7 +452,7 @@
 	frame = /obj/structure/table_frame
 	framestack = /obj/item/stack/material/iron
 	buildstack = /obj/item/stack/material/iron
-
+	flipped_icon = "table-flipped"
 /obj/structure/table/marble
 	name = "marble table"
 	desc = "A very hard table."
@@ -415,7 +460,7 @@
 	frame = /obj/structure/table_frame
 	framestack = /obj/item/stack/material/marble
 	buildstack = /obj/item/stack/material/marble
-
+	flipped_icon = "table-flipped"
 /*
  * Wooden tables
  */
@@ -428,25 +473,52 @@
 	framestack = /obj/item/stack/material/wood
 	buildstack = /obj/item/stack/material/wood
 	flammable = TRUE
+	flipped_icon = "wood_table-flipped"
+
+/obj/structure/table/wood/flipped
+	icon_state = "wood_table-flipped" 
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
 
 /obj/structure/table/wood/poker //No specialties, Just a mapping object.
 	name = "gambling table"
 	desc = "A seedy table for seedy dealings in seedy places."
 	icon_state = "pokertable"
+	flipped_icon = "pokertable-flipped"
+
+/obj/structure/table/wood/poker/flipped
+	icon_state = "pokertable-flipped" 
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
 
 /obj/structure/table/modern/table
 	name = "wooden table"
 	desc = "Do not apply fire to this. Rumour says it burns easily."
 	icon_state = "woodtable"
+	flipped_icon = "woodtable-flipped"
 	frame = /obj/structure/table_frame/wood
 	framestack = /obj/item/stack/material/wood
 	buildstack = /obj/item/stack/material/wood
 	flammable = TRUE
 
+/obj/structure/table/modern/flipped
+	icon_state = "woodtable-flipped" 
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
+
 /obj/structure/table/modern/retable
 	name = "reinforced table"
 	desc = "A very hard table."
 	icon_state = "reinftable"
+	flipped_icon = "table-flipped"
+	health = 350
+	not_movable = TRUE
 	frame = /obj/structure/table_frame
 	framestack = /obj/item/stack/material/steel
 	buildstack = /obj/item/stack/material/steel

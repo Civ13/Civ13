@@ -66,7 +66,7 @@
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			else if(map && map.ID == MAP_TRIBES)
+			else if(map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES))
 				if (orc)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
@@ -96,10 +96,6 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (map.ID == MAP_CIVILIZATIONS)
@@ -117,6 +113,59 @@
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else if(map.ID == MAP_FOUR_KINGDOMS)
+				if (orc)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
+					spawn(10)
+						C.uncolored = FALSE
+					C.shirtcolor = "#000000"
+					C.pantscolor = "#688463"
+					var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_decoration")
+					pants.color = C.pantscolor
+					var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robe")
+					shirt.color = C.shirtcolor
+					var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robebelt")
+					overlays += pants
+					overlays += shirt
+					overlays += belt
+					equip_to_slot_or_del(C, slot_w_uniform)
+					update_icons(1)
+				else if (gorillaman)
+					equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
+				else if (ant)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(src), slot_w_uniform)
+				else if (lizard)
+					if(prob(80))
+						equip_to_slot_or_del(new /obj/item/clothing/under/halfhuipil(src), slot_w_uniform)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/under/huipil(src), slot_w_uniform)
+				else if (wolfman)
+					equip_to_slot_or_del(new /obj/item/clothing/under/loincotton(src), slot_w_uniform)
+				else if (crab)
+					if (prob(30))
+						equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kasa(src), slot_head)
+						equip_to_slot_or_del(new /obj/item/clothing/under/haori(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(src), slot_shoes)
+					if (prob(30))
+						equip_to_slot_or_del(new /obj/item/clothing/head/helmet/jingasa(src), slot_head)
+						equip_to_slot_or_del(new /obj/item/clothing/under/haori/blue(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(src), slot_shoes)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(src), slot_head)
+						equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(src), slot_shoes)
+				else if (civilization == "Human Kingdom")
+					if (gender == "male")
+						if (prob(20))
+							equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(src), slot_head)
+							equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			else
 				if (gender == "male")
 					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
@@ -124,47 +173,25 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-		else if (map.ordinal_age == 4)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(src), slot_w_uniform)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-		else if (map.ordinal_age == 5)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 		else if (map.ordinal_age == 6)
-			if (gender == "male")
+			if (map.ID == MAP_NATIONSRP)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-		else if (map.ordinal_age == 7)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-		else if (map.ordinal_age == 8)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/modern7(src), slot_w_uniform)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+				spawn(5)
+					if (gender == "male")
+						if (original_job_title == "Civilization A Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern2(src), slot_w_uniform)
+							update_icons(1)
+						else if (original_job_title == "Civilization B Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern3(src), slot_w_uniform)
+							update_icons(1)
+					else
+						if (original_job_title == "Civilization A Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
+							update_icons(1)
+						else if (original_job_title == "Civilization B Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
+							update_icons(1)
+
 //coats/////////////////////////////////////////////////
 	spawn(5)
 		var/area/mob_area = get_area(src)
@@ -172,6 +199,9 @@
 			if (map.ordinal_age < 4)
 				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 				if (map.ordinal_age == 0)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/prehistoricfurcoat(src), slot_wear_suit)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+				if (map.ordinal_age == 1)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
 			else if (map.ordinal_age == 4)
 				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
@@ -216,7 +246,6 @@
 				traits += "Cold Tolerance"
 			if (!f_sens)
 				traits += "Heat Sensitivity"
-
 
 ///////////////LANGUAGE PROC/////////////////////////
 
@@ -351,6 +380,46 @@
 						real_name = name
 						add_note("Known Languages", "Latin")
 						return
+		else if (map.ID == MAP_NOMADS_AFRICA)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("semiarid")
+						add_language("Arabic",TRUE)
+						remove_language("English")
+						for (var/datum/language/arab/A in languages)
+							default_language = A
+						name = species.get_random_arab_name(gender)
+						real_name = name
+						add_note("Known Languages", "Arabic")
+						return
+					if ("jungle")
+						add_language("Swahili",TRUE)
+						remove_language("English")
+						for (var/datum/language/swahili/A in languages)
+							default_language = A
+						name = species.get_random_swahili_name(gender)
+						real_name = name
+						add_note("Known Languages", "Swahili")
+						return
+					if ("desert")
+						add_language("Egyptian",TRUE)
+						remove_language("English")
+						for (var/datum/language/egyptian/A in languages)
+							default_language = A
+						name = species.get_random_egyptian_name(gender)
+						real_name = name
+						add_note("Known Languages", "Egyptian")
+						return
+					if ("temperate")
+						add_language("Zulu",TRUE)
+						remove_language("English")
+						for (var/datum/language/zulu/A in languages)
+							default_language = A
+						name = species.get_random_zulu_name(gender)
+						real_name = name
+						add_note("Known Languages", "Zulu")
+						return
 		else if (map.ID == MAP_NOMADS_MEDITERRANEAN)
 			spawn(5)
 				//SOUTH
@@ -396,6 +465,30 @@
 						real_name = name
 						add_note("Known Languages", "Greek")
 						return
+		else if (map.ID == MAP_NATIONSRP)
+			spawn(5)
+				//west
+				if (x<75)
+					add_language("German",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/german/A in languages)
+						default_language = A
+					name = species.get_random_german_name(gender)
+					real_name = name
+					add_note("Known Languages", "German")
+					return
+				//EAST
+				else
+					add_language("Russian",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/russian/A in languages)
+						default_language = A
+					name = species.get_random_russian_name(gender)
+					real_name = name
+					add_note("Known Languages", "Russian")
+					return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
@@ -441,7 +534,7 @@
 							real_name = name
 							add_note("Known Languages", "Ainu")
 							return
-		else if (map && map.ID == MAP_TRIBES)
+		else if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES))
 			spawn(5)
 				if (original_job_title == "Orc tribesman")
 					orc = 1
@@ -521,6 +614,86 @@
 					name = species.get_random_english_name(gender)
 					real_name = name
 					give_clothes()
+		else if (map && map.ID == MAP_FOUR_KINGDOMS)
+			spawn(5)
+				if (original_job_title == "Orc tribesman")
+					orc = 1
+					civilization = "Orc Horde"
+					religion = "Code of Malacath"
+					add_language("Black Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/blackspeech/A in languages)
+						default_language = A
+					name = species.get_random_orc_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Ant tribesman")
+					ant = 1
+					civilization = "Ant Colony"
+					religion = "Followers of the Hive Mother"
+					add_language("Antspeak",TRUE)
+					remove_language("English")
+					for (var/datum/language/ant/A in languages)
+						default_language = A
+					name = species.get_random_ant_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Gorilla tribesman")
+					gorillaman = 1
+					civilization = "Gorilla Tribe"
+					religion = "Order of the Great Tree"
+					add_language("Ape Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/ape/A in languages)
+						default_language = A
+					name = species.get_random_gorilla_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Wolf tribesman")
+					wolfman = 1
+					civilization = "Wolfpack"
+					religion = "Moon Worshippers"
+					add_language("Wolf Howling",TRUE)
+					remove_language("English")
+					for (var/datum/language/wolf/A in languages)
+						default_language = A
+					name = species.get_random_wolf_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Lizard tribesman")
+					lizard = 1
+					civilization = "Lizard Clan"
+					religion = "The Great Serpent"
+					add_language("Lizard Hissing",TRUE)
+					remove_language("English")
+					for (var/datum/language/lizard/A in languages)
+						default_language = A
+					name = species.get_random_lizard_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Crustacean tribesman")
+					crab = 1
+					civilization = "Crustacean Union"
+					religion = "Cthulhu"
+					add_language("Clack Tongue",TRUE)
+					remove_language("English")
+					for (var/datum/language/crab/A in languages)
+						default_language = A
+					name = species.get_random_japanese_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else
+					civilization = "Human Kingdom"
+					religion = "Father in the Sky"
+					name = species.get_random_english_name(gender)
+					real_name = name
+					give_clothes()
 		spawn(10)
 			if (map.ID == MAP_NOMADS_CONTINENTAL || MAP_NOMADS_PANGEA)
 				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
@@ -560,9 +733,9 @@
 
 /datum/job/civilian/civa/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = civname_a
+	//H.civilization = civname_a
 	H.give_clothes()
-	H.make_nomad()
+	H.make_nation()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
@@ -594,9 +767,9 @@
 
 /datum/job/civilian/civb/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = civname_b
+	//H.civilization = civname_b
 	H.give_clothes()
-	H.make_nomad()
+	H.make_nation()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")

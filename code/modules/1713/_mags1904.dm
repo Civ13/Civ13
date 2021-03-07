@@ -383,6 +383,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c9mm
+	name = "bullet pouch (9x19mm)"
+	desc = "a pouch of 30 9x19mm Parabellum bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 30
+	weight = 1.1
+	multiple_sprites = TRUE
+
+	pouch = TRUE
+
 /obj/item/ammo_magazine/c38
 	name = "bullet pouch (.38 long)"
 	desc = "a pouch of 26 .38 bullets."
@@ -571,9 +583,9 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	icon_state = "shellbox"
 	mag_type = MAGAZINE
 	caliber = "12guage"
-	w_class = 3
+	w_class = 2
 
-	ammo_type = /obj/item/ammo_casing/shotgun
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	max_ammo = 12
 	multiple_sprites = TRUE
 	is_box = TRUE

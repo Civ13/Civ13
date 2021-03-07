@@ -39,7 +39,27 @@
 	..(newloc,"straw")
 /turf/wall/wood/soft/New(var/newloc)
 	..(newloc,"wood")
+/turf/wall/abashiri
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "abashiri0"
+	ref_state = "abashiri"
+	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 
+/turf/wall/abashiri/update_icon()
+	..()
+	check_relatives(1,1)
+/turf/wall/abashiri/New()
+	..()
+	check_relatives(1,1)
+/turf/wall/abashiri/Destroy()
+	check_relatives(0,1)
+	..()
+/turf/wall/abashiri/can_join_with(var/atom/W)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
 /* Stone Walls */
 
 /turf/wall/old_stone
@@ -67,6 +87,14 @@
 	icon_state = "fortress_brickwall"
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 
+/turf/wall/stone/marble
+	name = "marble block wall"
+	desc = "A marble block wall."
+	icon_state = "marble_block_wall0"
+	icon = 'icons/turf/walls.dmi'
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+/turf/wall/stone/marble/New(var/newloc)
+	..(newloc,"marble")
 /turf/wall/indestructable
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "black" // so we look better on the map

@@ -1,14 +1,14 @@
 /mob/living/simple_animal/pachy
-	icon = 'icons/mob/animal_64.dmi'
+	icon = 'icons/mob/animal_big.dmi'
 	name = "Pachycephalosaurus"
 	desc = "Pachy for short. Looks friendly"
 	icon_state = "pachycephalosaurus"
 	icon_living = "pachycephalosaurus"
 	icon_dead = "pachycephalosaurus_dead"
 	icon_gib = "pachycephalosaurus_dead"
-	speak = list("skreee!","skrrrrr!","krrrr")
-	speak_emote = list("rawr", "hiss")
-	emote_hear = list("rawrs","hisses")
+	speak = list("breuuuuu!","Burrrrrr!","krrrr")
+	speak_emote = list("rawr", "bur")
+	emote_hear = list("rawrs","burs")
 	emote_see = list("stares ferociously", "grunts")
 	speak_chance = TRUE
 	move_to_delay = 8
@@ -20,11 +20,12 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 140
-	mob_size = MOB_LARGE
+	mob_size = MOB_MEDIUM
 	layer = 3.99
 	a_intent = I_HARM
-	can_ride = TRUE
+	herbivore = 1 //if it eats grass of the floor (i.e. goats, cows)
+	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	behaviour = "defends"
 
-	melee_damage_lower = 10
-	melee_damage_upper = 16
+	melee_damage_lower = 20
+	melee_damage_upper = 36

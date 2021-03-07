@@ -14,6 +14,8 @@
 	thrown_force_divisor = 0.25 // 5 when thrown with weight 20 (steel)
 	var/loaded	  //Descriptive string for currently loaded food object.
 	var/scoop_food = TRUE
+	var/shiv = 0
+	var/usespeed = 0.2
 
 /obj/item/weapon/material/kitchen/utensil/New()
 	..()
@@ -68,8 +70,7 @@
 	desc = "It's pair of chopsticks. Wan' sum rice muhda fukka?"
 	icon_state = "chopsticks"
 	material = "wood"
-	color = null
-
+	applies_material_colour = FALSE
 /obj/item/weapon/material/kitchen/utensil/spoon
 	name = "spoon"
 	desc = "It's a spoon. You can see your own upside-down face in it."
@@ -78,7 +79,6 @@
 	edge = FALSE
 	sharp = FALSE
 	force_divisor = 0 //no dmg. no more memes
-
 /*
  * Knives
  */
@@ -176,6 +176,12 @@
 	icon_state = "ironshank"
 	force_divisor = 0.4
 	default_material = "iron"
+/obj/item/weapon/material/kitchen/utensil/knife/shank/wood
+	name = "shank"
+	icon_state = "woodshank"
+	applies_material_colour = FALSE
+	force_divisor = 0.35
+	default_material = "wood"
 
 /obj/item/weapon/material/kitchen/utensil/knife/bowie
 	name = "bowie knife"
@@ -391,6 +397,9 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/steel
 	default_material = "steel"
+
+/obj/item/weapon/material/kitchen/utensil/knife/wood
+	default_material = "wood"
 /*
  * Rolling Pins
  */

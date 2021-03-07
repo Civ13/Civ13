@@ -15,7 +15,8 @@
    13 - NBC &  Hazmat Suits
    14 - Miscallaneous
    14a - John Toughguy - Jungle Commando
-   14b - Swinging Sixties*/
+   14b - Swinging Sixties
+   14c - Other Miscallaneous */
 
 /* Coldwar Coats*/
 
@@ -29,17 +30,6 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 75
-
-/obj/item/clothing/suit/storage/coat/bizarre_coat
-	name = "bizarre dark blue coat"
-	desc = "A very stylish coat."
-	icon_state = "bizarre_coat"
-	item_state = "bizarre_coat"
-	worn_state = "bizarre_coat"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
-	value = 150
 
 /obj/item/clothing/suit/storage/coat/oldyjacket
 	name = "red jacket"
@@ -135,14 +125,6 @@
 	icon_state = "traffic_cop"
 	item_state = "traffic_cop"
 	worn_state = "traffic_cop"
-
-/obj/item/clothing/head/bizarre_hat
-	name = "bizarre dark blue hat"
-	desc = "A dark blue hat worn by troublemakers."
-	icon_state = "bizarre_hat"
-	item_state = "bizarre_hat"
-	worn_state = "bizarre_hat"
-
 
 /* US Army Clothes*/
 
@@ -460,6 +442,12 @@
 	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
+/obj/item/clothing/head/nva_hat
+	name = "NVA cap"
+	desc = "A field cap with the markings of an NVA officer."
+	icon_state = "nva_off_cap"
+	item_state = "nva_off_cap"
+	body_parts_covered = HEAD
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -562,6 +550,19 @@
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	var/colorn = 1
 
+/obj/item/clothing/under/nva
+	name = "NVA uniform"
+	desc = "A khaki uniform of the North Vietnamese Army."
+	icon_state = "NVAuni"
+	item_state = "NVAuni"
+	worn_state = "NVAuni"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+/obj/item/clothing/under/nva/officer
+	name = "NVA officer uniform"
+	desc = "A khaki uniform of the North Vietnamese Army. This one bearing the ranks of an officer"
+	icon_state = "NVAuni_off"
+	item_state = "NVAuni_off"
+	worn_state = "NVAuni_off"
 /* Cold War Armor*/
 
 /obj/item/clothing/accessory/armor //again im confused why this is the case. It should be moved somewhere higher up into armor.dm or/and tagged into /modern especially @fantasticfwoosh
@@ -678,6 +679,14 @@
 	new /obj/item/ammo_magazine/gewehr98(src)
 	new /obj/item/ammo_magazine/gewehr98(src)
 	new /obj/item/ammo_magazine/gewehr98(src)
+
+/obj/item/weapon/storage/belt/smallpouches/us_stanag
+/obj/item/weapon/storage/belt/smallpouches/us_stanag/New()
+	..()
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/
 
@@ -842,12 +851,22 @@
 	desc = "An olive drab coloured NBC hood, made protect against biological, chemical and nuclear threats."
 	icon_state = "nbc2"
 
+/obj/item/clothing/head/nbc/olive/fire
+	name = "firefighting hood"
+	desc = "A suit primarily intended to protect against fire."
+	armor = list(melee = 40, arrow = FALSE, gun = FALSE, energy = 80, bomb = 25, bio = 60, rad = 40)
+
 /obj/item/clothing/suit/nbc/olive
 	name = "olive drab NBC suit"
 	desc = "An olive drab coloured NBC suit, made protect against biological, chemical and nuclear threats."
 	icon_state = "nbc2"
 	item_state = "nbc2"
 	worn_state = "nbc2"
+
+/obj/item/clothing/suit/nbc/olive/fire
+	name = "firefighting suit"
+	desc = "A suit primarily intended to protect against fire."
+	armor = list(melee = 40, arrow = FALSE, gun = FALSE, energy = 80, bomb = 25, bio = 60, rad = 40)
 
 /obj/item/clothing/suit/hazmat
 	name = "hazmat suit"
@@ -946,6 +965,8 @@
 	worn_state = "gator_pants"
 	body_parts_covered = LOWER_TORSO|LEGS
 
+	/* Other Miscallaneous */
+
 /obj/item/clothing/suit/bx //is this futuristic?
 	name = "carbon black suit"
 	desc = "A high tech suit made of comprssed carbon materials."
@@ -1021,3 +1042,23 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
+
+//yare yare daze.
+
+/obj/item/clothing/head/bizarre_hat
+	name = "bizarre dark blue hat"
+	desc = "A dark blue hat worn by troublemakers."
+	icon_state = "bizarre_hat"
+	item_state = "bizarre_hat"
+	worn_state = "bizarre_hat"
+
+/obj/item/clothing/suit/storage/coat/bizarre_coat
+	name = "bizarre dark blue coat"
+	desc = "A very stylish coat."
+	icon_state = "bizarre_coat"
+	item_state = "bizarre_coat"
+	worn_state = "bizarre_coat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 150

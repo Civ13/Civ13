@@ -29,10 +29,16 @@
 
 obj/map_metadata/road_to_dak_to/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_coldwar == TRUE && !J.is_specops && !J.is_modernday)
-		. = TRUE
-	else
-		. = FALSE
+	if (istype(J, /datum/job/vietnamese))
+		if (J.is_nva)
+			. = FALSE
+		else
+			. = TRUE
+	if (istype(J, /datum/job/american))
+		if (J.is_coldwar && !J.is_specops && !J.is_modernday)
+			. = TRUE
+		else
+			. = FALSE
 
 /obj/map_metadata/road_to_dak_to/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
@@ -42,4 +48,3 @@ obj/map_metadata/road_to_dak_to/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/road_to_dak_to/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-

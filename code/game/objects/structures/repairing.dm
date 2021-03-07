@@ -25,6 +25,7 @@
 	var/itemtype2 = null
 	var/itemtype3 = null
 	var/itemtype4 = null
+	var/itemtype5 = null
 	var/actiontext = "repair" //Plural, flavortext
 	not_movable = TRUE
 	not_disassemblable = FALSE
@@ -88,6 +89,8 @@
 	itemtype1 = /obj/item/clothing/suit/armor
 	itemtype2 = /obj/item/clothing/head/helmet
 	itemtype3 = /obj/item/weapon/shield
+	itemtype4 = /obj/item/clothing/shoes/tsuranuki
+	itemtype5 = /obj/item/clothing/gloves/gauntlets
 	repairamount = 5 //0 is full repair, any other number adds until it hits max.
 	damageamount = 1 //How much max durability to take away.
 	noise = 'sound/effects/clang.ogg'
@@ -122,7 +125,7 @@
 
 			visible_message("<span class='notice'>[user] starts to clean the [src.name]...</span>")
 			if (do_after(user, 100, src))
-				health = M.maxhealth*0.8
+				health = src.maxhealth*0.8
 				visible_message("<span class='notice'>[user] finishes cleaning the [src.name].</span>")
 				return
 			else

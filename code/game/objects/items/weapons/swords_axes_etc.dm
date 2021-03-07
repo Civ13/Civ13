@@ -51,6 +51,17 @@
 	weakens = 3
 	flammable = TRUE
 
+/obj/item/weapon/melee/classic_baton/guard
+	name = "guard baton"
+	desc = "A wooden truncheon for beating criminal scum."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "baton"
+	item_state = "classic_baton"
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_WEAK
+	weakens = 5
+	flammable = TRUE
+
 /obj/item/weapon/melee/nightbaton
 	name = "police baton"
 	desc = "A stick used by police officers."
@@ -61,6 +72,28 @@
 	force = WEAPON_FORCE_WEAK+2
 	weakens = 6
 	flammable = TRUE
+
+/obj/item/weapon/melee/nightbaton/sandman
+    name = "Heavy duty"
+    desc = "A baton held by the camp commander nicknamed the sandman by prisoners because of how hard it hits."
+    icon = 'icons/obj/weapons.dmi'
+    icon_state = "kombaton"
+    item_state = "nightbaton"
+    slot_flags = SLOT_BELT
+    force = WEAPON_FORCE_WEAK+2
+    weakens = 0
+    flammable = TRUE
+    var/cooldown = FALSE
+
+/obj/item/weapon/melee/nightbaton/sandman/attack(mob/M as mob, mob/living/user as mob)
+    if(!cooldown)
+        M.SetWeakened(50)
+        src.cooldown = TRUE
+        spawn(100)
+            src.cooldown = FALSE
+    else
+        user << "<span class='notice'>You have used this batton not long ago. Chill out!</span>"
+    ..()
 
 /obj/item/weapon/melee/classic_baton/club
 	name = "wood club"
@@ -253,7 +286,7 @@
 				target.forcesay(list("-hrk!", "-hrgh!", "-urgh!", "-kh!", "-hrnk!"))
 
 		if (garroting) //Only do oxyloss if in agreesive grab to prevent passive grab choking or something.
-			target.adjustOxyLoss(3) //Stack the chokes with additional oxyloss for quicker death
+			target.adjustOxyLoss(6) //Stack the chokes with additional oxyloss for quicker death
 			if(prob(40))
 				target.stuttering = max(target.stuttering, 3) //It will hamper your voice, being choked and all.
 				target.losebreath = max(target.losebreath, 3)
@@ -263,3 +296,49 @@
 		update_icon()
 
 		return FALSE
+
+
+
+
+
+/obj/item/weapon/melee/telebaton
+	name = "telescopic baton"
+	desc = "A compact yet rebalanced personal defense weapon. Can be concealed when folded."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "telebaton_0"
+	item_state = "telebaton_0"
+	slot_flags = SLOT_BELT
+	var/on = 0
+
+
+/obj/item/weapon/melee/telebaton/attack_self(mob/user as mob)
+	on = !on
+	if(on)
+		user.visible_message("<span class='warning'>With a flick of their wrist, [user] extends their telescopic baton.</span>",\
+		"<span class='warning'>You extend the baton.</span>",\
+		"You hear an ominous click.")
+		force = 15//quite robust
+		attack_verb = list("smacked", "struck", "slapped")
+	else
+		user.visible_message("<span class='notice'>\The [user] collapses their telescopic baton.</span>",\
+		"<span class='notice'>You collapse the baton.</span>",\
+		"You hear a click.")
+		force = 3//not so robust now
+		attack_verb = list("hit", "punched")
+
+	playsound(src.loc, 'sound/weapons/empty.ogg', 50, 1)
+	add_fingerprint(user)
+	update_icon()
+	update_held_icon()
+
+/obj/item/weapon/melee/telebaton/update_icon()
+	if(on)
+		icon_state = "telebaton_1"
+		item_state = "telebaton_1"
+	else
+		icon_state = "telebaton_0"
+		item_state = "telebaton_0"
+	if(length(blood_DNA))
+		generate_blood_overlay(TRUE) // Force recheck.
+		overlays.Cut()
+		overlays += blood_overlay

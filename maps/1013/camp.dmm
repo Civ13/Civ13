@@ -260,7 +260,7 @@
 "fh" = (/obj/covers/wood,/obj/structure/railing,/turf/floor/beach/water,/area/caribbean/forest)
 "fi" = (/turf/wall/stone,/area/caribbean/forest)
 "fk" = (/obj/structure/wild/tallgrass2,/turf/floor/grass,/area/caribbean/forest)
-"fl" = (/obj/structure/wild/tallgrass2,/mob/living/simple_animal/cow,/turf/floor/grass,/area/caribbean/forest)
+"fl" = (/obj/structure/wild/tallgrass2,/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/forest)
 "fm" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/obj/structure/wild/tallgrass2,/turf/floor/grass,/area/caribbean/forest)
 "fn" = (/obj/structure/window/barrier/rock,/obj/structure/wild/tallgrass2,/turf/floor/grass,/area/caribbean/forest)
 "fo" = (/obj/structure/barricade/stone_h/crenelated,/obj/structure/boiling_oil/north,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})

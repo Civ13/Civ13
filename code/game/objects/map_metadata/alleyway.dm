@@ -34,7 +34,7 @@
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/fields/faction1_can_cross_blocks()
+/obj/map_metadata/alleyway/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 
@@ -48,7 +48,7 @@
 /obj/map_metadata/alleyway/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (processes.ticker.playtime_elapsed >= 18000 || world.time >= next_win && next_win != -1)
+	if (processes.ticker.playtime_elapsed >= 12000 || world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE

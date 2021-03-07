@@ -33,6 +33,8 @@ obj/map_metadata/river_kwai/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/japanese))
 		if (J.is_prison)
 			. = TRUE
+		if (J.is_abashiri)
+			. = FALSE
 		else
 			. = FALSE
 	else if (istype(J, /datum/job/british))
@@ -92,15 +94,15 @@ obj/map_metadata/river_kwai/job_enabled_specialcheck(var/datum/job/J)
 	spawn(100)
 		load_new_recipes()
 
-/obj/map_metadata/river_kwai/proc/load_new_recipes()
-	var/F3 = file("config/material_recipes_kwai.txt")
+/obj/map_metadata/river_kwai/load_new_recipes()
+	var/F3 = file("config/crafting/material_recipes_kwai.txt")
 	if (fexists(F3))
-		craftlist_list = list()
 		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_lists["global"] = list()
 		for (var/i in craftlist_temp)
 			if (findtext(i, ","))
 				var/tmpi = replacetext(i, "RECIPE: ", "")
 				var/list/current = splittext(tmpi, ",")
-				craftlist_list += list(current)
+				craftlist_lists["global"] += list(current)
 				if (current.len != 13)
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."

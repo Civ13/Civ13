@@ -32,7 +32,7 @@ var/list/nonbreaking_types = list(
 	else
 		keyslot = new()
 
-	health = 300
+	health = 300 //same as iron double doors and vice versa
 	initial_health = health
 
 	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
@@ -230,6 +230,36 @@ var/list/nonbreaking_types = list(
 	if (health <= 0)
 		if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 			visible_message("<span class = 'danger'>The shoji door is torn apart!</span>")
+		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/wood || /obj/structure/simple_door/key_door/anyone/nordic || /obj/structure/simple_door/key_door/anyone/wood || /obj/structure/simple_door/key_door/anyone/rustic || /obj/structure/simple_door/key_door/anyone/aztec|| /obj/structure/simple_door/key_door/anyone/singledoor/privacy || /obj/structure/simple_door/key_door/anyone/singledoor/housedoor))
+			visible_message("<span class = 'danger'>[src] collapses into a pile of wood splinters!</span>")
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			qdel(src)
+		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/bamboo))
+			visible_message("<span class = 'danger'>[src] collapses into a pile of bamboo splinters!</span>")
+			new /obj/item/stack/material/bamboo(loc)
+			new /obj/item/stack/material/bamboo(loc)
+			qdel(src)
+		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/stone || /obj/structure/simple_door/key_door/anyone/doubledoor/marble || /obj/structure/simple_door/key_door/anyone/roman))
+			visible_message("<span class = 'danger'>[src] collapses into a pile of stone rubble!</span>")
+			new /obj/item/stack/material/stone(loc)
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/sandstone))
+			visible_message("<span class = 'danger'>[src] collapses into a pile of sandstone rubble!</span>")
+			new /obj/item/stack/material/sandstone(loc)
+			new /obj/item/stack/material/sandstone(loc)
+			qdel(src)
+		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/marble))
+			visible_message("<span class = 'danger'>[src] collapses into a pile of marble rubble!</span>")
+			new /obj/item/stack/material/marble(loc)
+			new /obj/item/stack/material/marble(loc)
+			qdel(src)
+		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/bone))
+			visible_message("<span class = 'danger'>[src] collapses into a pile of bones!</span>")
+			new /obj/item/stack/material/bone(loc)
+			new /obj/item/stack/material/bone(loc)
+			qdel(src)
 		else
 			visible_message("<span class = 'danger'>[src] collapses into a pile of scrap metal!</span>")
 		qdel(src)

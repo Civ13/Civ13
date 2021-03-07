@@ -289,7 +289,7 @@
 
 /obj/item/clothing/head/helmet/ww/mk2brodieog/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww/mk2brodiegnet(user.loc)
@@ -298,7 +298,7 @@
 
 /obj/item/clothing/head/helmet/ww/mk2brodiegnet/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww/mk2brodiegreennetf(user.loc)
@@ -307,7 +307,7 @@
 
 /obj/item/clothing/head/helmet/ww/mk2brodietnet/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww/mk2brodietannetf(user.loc)
@@ -502,7 +502,7 @@
 			icon_state = "japhelm_bandana"
 			worn_state = "japhelm_bandana"
 			item_state_slots["slot_w_uniform"] = "japhelm_bandana"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = FALSE
 			update_clothing_icon()
 		else if (!toggled)
@@ -510,7 +510,7 @@
 			icon_state = "japhelm_bandana_extended"
 			worn_state = "japhelm_bandana_extended"
 			item_state_slots["slot_w_uniform"] = "japhelm_bandana_extended"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
 			update_clothing_icon()
 
@@ -533,7 +533,7 @@
 			icon_state = "ww2_japcap"
 			worn_state = "ww2_japcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = FALSE
 			update_clothing_icon()
 		else if (!toggled)
@@ -541,7 +541,7 @@
 			icon_state = "ww2_japcap_extended"
 			worn_state = "ww2_japcap_extended"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_extended"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
 			update_clothing_icon()
 
@@ -824,6 +824,31 @@ obj/item/clothing/head/ww2/jap_mp
 	icon_state = "japcap_mp"
 	item_state = "japcap_mp"
 	worn_state = "japcap_mp"
+
+/obj/item/clothing/head/ww2/japwinter
+	name = "japanese winter cap"
+	desc = "A japanese winter cap, used by soldiers in the imperial army."
+	icon_state = "japwinter_up"
+	item_state = "japwinter_up"
+	worn_state = "japwinter_up"
+	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
+
+/obj/item/clothing/head/ww2/japwinter/down
+	icon_state = "japwinter"
+	item_state = "japwinter"
+	worn_state = "japwinter"
+
+/obj/item/clothing/head/ww2/japwinter/attack_self(mob/user as mob)
+	if (icon_state == "japwinter")
+		icon_state = "japwinter_up"
+		item_state = "japwinter_up"
+		user << "You raise the ear flaps on the fur cap."
+	else
+		icon_state = "japwinter"
+		item_state = "japwinter"
+		user << "You lower the ear flaps on the fur cap."
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////BRITISH////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1615,9 +1640,9 @@ obj/item/clothing/head/ww2/chicap2
 /obj/item/clothing/head/helmet/ww2/us_mp
 	name = "us mp helmet"
 	desc = "A typical rounded steel helmet. This one has the markings of MP on it."
-	icon_state = "ushelmet_mp"
-	item_state = "ushelmet_mp"
-	worn_state = "ushelmet_mp"
+	icon_state = "m1_mp_white"
+	item_state = "m1_mp_white"
+	worn_state = "m1_mp_white"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -1706,6 +1731,28 @@ obj/item/clothing/head/ww2/chicap2
 	else
 		icon_state = "ushanka"
 		item_state = "ushanka"
+		user << "You lower the ear flaps on the ushanka."
+
+/obj/item/clothing/head/ww2/sov_ushanka/nomads
+	name = "ushanka"
+	desc = "A warm ushanka, often used by citizens & soldiers in cold climates."
+	icon_state = "ushanka_plain_up"
+	item_state = "ushanka_plain_up"
+	cold_protection = HEAD|FACE
+
+/obj/item/clothing/head/ww2/sov_ushanka/nomads/down
+	icon_state = "ushanka_plain"
+	item_state = "ushanka_plain"
+	worn_state = "ushanka_plain"
+
+/obj/item/clothing/head/ww2/sov_ushanka/nomads/attack_self(mob/user as mob)
+	if (icon_state == "ushanka")
+		icon_state = "ushanka_plain_up"
+		item_state = "ushanka_plain_up"
+		user << "You raise the ear flaps on the ushanka."
+	else
+		icon_state = "ushanka_plain"
+		item_state = "ushanka_plain"
 		user << "You lower the ear flaps on the ushanka."
 
 /obj/item/clothing/head/ww2/nkvd_cap
@@ -1897,7 +1944,7 @@ obj/item/clothing/head/ww2/chicap2
 
 /obj/item/clothing/head/helmet/ww2/usgreennet/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/hemp))
+	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww2/usm1camogreen(user.loc)
@@ -2025,7 +2072,71 @@ obj/item/clothing/head/ww2/chicap2
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+/////////////////////////////////////////UPA////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/item/clothing/under/ww2/upa
+	name = "UPA uniform"
+	desc = "A Ukrayins'ka Povstans'ka Armiya uniform."
+	icon_state = "upa_uni"
+	item_state = "upa_uni"
+	worn_state = "upa_uni"
+	var/base_state = "upa_uni"
+	var/rolled = FALSE
+/obj/item/clothing/under/ww2/upa/off
+	name = "UPA officer uniform"
+	desc = "A Ukrayins'ka Povstans'ka Armiya officer uniform."
+	icon_state = "upa_off"
+	item_state = "upa_off"
+	worn_state = "upa_off"
+	base_state = "upa_off"
+	rolled = FALSE
+/obj/item/clothing/under/ww2/upa/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (rolled)
+		item_state = "[base_state]"
+		worn_state = "[base_state]"
+		icon_state = "[base_state]"
+		item_state_slots["w_uniform"] = "[base_state]"
+		usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+		rolled = FALSE
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		update_clothing_icon()
+	else if (!rolled)
+		item_state = "[base_state]_rolled"
+		worn_state = "[base_state]_rolled"
+		icon_state = "[base_state]_rolled"
+		item_state_slots["w_uniform"] = "[base_state]_rolled"
+		usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+		rolled = TRUE
+		heat_protection = ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+		update_clothing_icon()
 
+/obj/item/clothing/head/ww2/upa_cap
+	name = "UPA field cap"
+	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya."
+	icon_state = "upa_cap"
+	item_state = "upa_cap"
+	worn_state = "upa_cap"
+/obj/item/clothing/head/ww2/upa_pilotka
+	name = "UPA pilotka"
+	desc = "A pilotka and worn by the Ukrayins'ka Povstans'ka Armiya."
+	icon_state = "upapilotka"
+	item_state = "upapilotka"
+	worn_state = "upapilotka"
+/obj/item/clothing/head/ww2/upa_cap_off
+	name = "UPA officer cap"
+	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya NCO's."
+	icon_state = "upa_off"
+	item_state = "upa_off"
+	worn_state = "upa_off"
+/obj/item/clothing/head/ww2/upa_cap_commander
+	name = "UPA officer cap"
+	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya Officers."
+	icon_state = "upa_commander"
+	item_state = "upa_commander"
+	worn_state = "upa_commander"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/armband/redcross
 	name = "red cross armband"
 	desc = "A white armband with the red cross in it."

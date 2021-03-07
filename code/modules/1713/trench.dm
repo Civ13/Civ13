@@ -178,6 +178,9 @@ var/list/global/floor_cache = list()
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
+	for (var/obj/OB in src)
+		if (OB.density == 1 && !(istype(OB, /obj/structure/window/barrier)))
+			return 0
 	if (isliving(O) && !ishuman(O))
 		return ..()
 	if(isliving(O))
@@ -552,7 +555,7 @@ var/list/global/floor_cache = list()
 			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0_flooded", layer = src.layer += 0.01)
 			check_relatives(1,1,irrigation_type)
 
-/turf/floor/proc/check_relatives(var/update_self = FALSE, var/update_others = FALSE, watertype = "empty")
+/turf/floor/check_relatives(var/update_self = FALSE, var/update_others = FALSE, watertype = "empty")
 	var/junction
 	if (update_self)
 		junction = FALSE

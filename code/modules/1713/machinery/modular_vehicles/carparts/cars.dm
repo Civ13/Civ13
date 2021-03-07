@@ -27,7 +27,14 @@
 	icon_state = "carseat_left"
 /obj/structure/bed/chair/carseat/right
 	icon_state = "carseat_right"
-
+/obj/structure/bed/chair/carseat/left/type95
+	icon_state = "carseat_left_type95"
+	applies_material_colour = FALSE
+	material = null
+/obj/structure/bed/chair/carseat/right/type95
+	icon_state = "carseat_right_type95"
+	applies_material_colour = FALSE
+	material = null
 /obj/structure/bed/chair/drivers/car/lion
 	material = "lionpelt"
 /obj/structure/bed/chair/carseat/left/lion
@@ -36,7 +43,8 @@
 	material = "lionpelt"
 /obj/structure/bed/chair/carseat/lion
 	material = "lionpelt"
-
+/obj/structure/bed/chair/drivers/car/type95
+	icon_state = "carseat_driver_right_type95"
 /obj/structure/bed/chair/drivers/car/dark
 	material = "darkleather"
 /obj/structure/bed/chair/carseat/left/dark
@@ -348,6 +356,39 @@
 	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "carwindshield2door_right"
+/////////////////////TYPE95 Kurogane////////////
+/obj/structure/vehicleparts/frame/car/type95/lf
+	w_front = list("type95front_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "type95front_left"
+	icon_state = "frame_steel_corner_lf_type95"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/type95/rf
+	w_front = list("type95front_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "type95front_right"
+	icon_state = "frame_steel_corner_rf_type95"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/type95/lb
+	w_back = list("type95_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "type95_back_left"
+	icon_state = "frame_steel_corner_lb_type95"
+/obj/structure/vehicleparts/frame/car/type95/rb
+	w_back = list("type95_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "type95_back_right"
+	icon_state = "frame_steel_corner_rb_type95"
+/obj/structure/vehicleparts/frame/car/type95/lc
+	w_front = list("type95windshielddoor_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "type95windshielddoor_left"
+	icon_state = "frame_steel_corner_clf_type95"
+/obj/structure/vehicleparts/frame/car/type95/rc
+	w_front = list("type95windshielddoor_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "type95windshielddoor_right"
+	icon_state = "frame_steel_corner_crf_type95"
 ///////////////axis///////////////
 /obj/structure/vehicleparts/axis/car/piccolino
 	name = "ASNO Piccolino"
@@ -408,6 +449,15 @@
 	maxpower = 800
 	speedlist = list(1=6,2=5,3=4,4=2.5)
 	turntimer = 5
+/obj/structure/vehicleparts/axis/car/type95
+	name = "Kurogane Type 95"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=5,2=4,3=2.5,4=1.5,5=1)
+	turntimer = 4
 
 /obj/structure/vehicleparts/axis/car/falcon/police
 	name = "SMC Falcon Police Interceptor"
@@ -469,6 +519,8 @@
 	enginesize = 7000
 
 /obj/structure/engine/internal/gasoline/premade/kazoku
+	enginesize = 3800
+/obj/structure/engine/internal/gasoline/premade/type95
 	enginesize = 3800
 
 /obj/structure/emergency_lights

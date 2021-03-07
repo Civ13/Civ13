@@ -244,7 +244,7 @@
 "kM" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle{icon_state = "red4"; name = "S Jungle"})
 "kR" = (/mob/living/simple_animal/complex_animal/dog/pug,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle{icon_state = "red1"; name = "W Jungle"})
 "kT" = (/mob/living/simple_animal/horse,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle{icon_state = "red4"; name = "S Jungle"})
-"kY" = (/mob/living/simple_animal/hostile/bear,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"kY" = (/mob/living/simple_animal/hostile/bear/boar/black,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "kZ" = (/obj/effect/spawner/mobspawner/mouse,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle{name = "Central Jungle"})
 "lc" = (/obj/effect/spawner/mobspawner/panthers,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle{name = "Central Jungle"})
 "lk" = (/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle{name = "Central Jungle"})

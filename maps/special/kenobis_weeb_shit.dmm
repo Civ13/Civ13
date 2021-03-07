@@ -294,7 +294,7 @@
 "fH" = (/obj/structure/barbwire,/turf/floor/plating/road,/area/caribbean)
 "fI" = (/obj/structure/barbwire,/mob/living/human/corpse/japanese_ww2,/turf/floor/plating/road,/area/caribbean)
 "fJ" = (/mob/living/human/corpse/japanese_ww2,/turf/floor/grass,/area/caribbean)
-"fK" = (/mob/living/human/corpse/japanese_ww2_sgt,/turf/floor/grass,/area/caribbean)
+"fK" = (/mob/living/human/corpse/japanese_ww2,/turf/floor/grass,/area/caribbean)
 "fL" = (/mob/living/human/corpse/russian_soviet_sgt,/turf/floor/dirt,/area/caribbean)
 "fM" = (/mob/living/human/corpse/russian_soviet,/turf/floor/grass,/area/caribbean)
 "fN" = (/mob/living/human/corpse/russian_soviet,/turf/floor/dirt,/area/caribbean)

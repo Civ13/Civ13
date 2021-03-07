@@ -96,6 +96,7 @@ proc/admin_notice(var/message, var/rights)
 			body += {"<br><br>
 				<b>Rudimentary transformation:</b><font size=2><br>These transformations only create a new mob type and copy stuff over. They do not take into account MMIs and similar mob-specific things. The buttons in 'Transformations' are preferred, when possible.</font><br>
 				<A href='?src=\ref[src];simplemake=observer;mob=\ref[M]'>Observer</A> |
+				\[ Default: <A href='?src=\ref[src];simplemake=human;mob=\ref[M]'>Human</A> |
 				<A href='?src=\ref[src];simplemake=monkey;mob=\ref[M]'>Monkey</A> |
 				<A href='?src=\ref[src];simplemake=cat;mob=\ref[M]'>Cat</A> |
 				<A href='?src=\ref[src];simplemake=parrot;mob=\ref[M]'>Parrot</A> |
@@ -508,7 +509,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Activates or Deactivates research."
 	set name="Toggle Research"
-	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES)
+	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	if (!(map.research_active))
@@ -562,7 +563,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the research."
 	set name="Set Custom Research"
-	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES)
+	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	else
@@ -571,8 +572,8 @@ proc/admin_notice(var/message, var/rights)
 			return
 		if (customresearch <= 0)
 			customresearch = 0
-		if (customresearch >= 100)
-			customresearch = 100
+		if (customresearch >= 280)
+			customresearch = 280
 
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
@@ -588,7 +589,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the starting age."
 	set name="Set Custom Age"
-	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES)
+	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS)
 		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	else
@@ -1067,19 +1068,27 @@ var/list/atom_types = null
 	load_recipes()
 
 /proc/load_recipes()
-	var/F3 = file("config/material_recipes.txt")
-	if (fexists(F3))
-		var/list/craftlist_temp = file2list(F3,"\n")
-		craftlist_list = list()
-		for (var/i in craftlist_temp)
-			if (findtext(i, ",") && findtext(i,"RECIPE: "))
-				var/tmpi = replacetext(i, "RECIPE: ", "")
-				var/list/current = splittext(tmpi, ",")
-				craftlist_list += list(current)
-				if (current.len != 13)
-					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
-	else
-		admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+	var/all_craft_lists = flist("config/crafting/")
+	for (var/i in all_craft_lists)
+		var/current_list = "global"
+		var/F3 = file("config/crafting/[i]")
+		current_list = replacetext(i,"material_recipes_","")
+		current_list = replacetext(current_list,".txt","")
+		if (fexists(F3) && findtext(i,"material_recipes"))
+			var/list/craftlist_temp = file2list(F3,"\n")
+			craftlist_lists[current_list] = list()
+			for (var/j in craftlist_temp)
+				if (findtext(j, ",") && findtext(j,"RECIPE: "))
+					var/tmpj = replacetext(j, "RECIPE: ", "")
+					var/list/current = splittext(tmpj, ",")
+					craftlist_lists[current_list] += list(current)
+					world.log << "LOADED: [current_list]"
+					if (current.len != 13)
+						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+		else
+			admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+	if (map)
+		map.load_new_recipes()
 	world.log << "Finished loading recipes."
 /datum/admins/proc/toggle_ores()
 	set category = "Special"
@@ -1135,15 +1144,15 @@ var/list/atom_types = null
 	src << "World Variables:"
 	src << "Radiation: [get_global_radiation()]"
 	src << "Pollution: [get_global_pollution()]"
-	src << "Chickens: [chicken_count]"
-	src << "Turkeys: [turkey_count]"
-	src << "Cows: [cow_count]"
-	src << "Goats: [goat_count]"
-	src << "Sheep: [sheep_count]"
-	src << "Pigs: [pig_count]"
-	src << "Deer: [deer_count]"
-	src << "Wolves: [wolf_count]"
-	src << "Bears: [bear_count]"
+	src << "Chickens: [chicken_count.len]"
+	src << "Turkeys: [turkey_count.len]"
+	src << "Cows: [cow_count.len]"
+	src << "Goats: [goat_count.len]"
+	src << "Sheep: [sheep_count.len]"
+	src << "Pigs: [pig_count.len]"
+	src << "Deer: [deer_count.len]"
+	src << "Wolves: [wolf_count.len]"
+	src << "Bears: [bear_count.len]"
 
 /datum/admins/proc/set_world_radiation()
 	set category = "Debug"

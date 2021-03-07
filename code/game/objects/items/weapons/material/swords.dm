@@ -359,8 +359,8 @@ obj/item/weapon/material/sword/cutlass/iron
 /obj/item/weapon/material/sword/scimitar
 	name = "scimitar"
 	desc = "A medium-sized, curved sword, preferred by arabs."
-	icon_state = "cutlass"
-	item_state = "cutlass"
+	icon_state = "scimitar"
+	item_state = "sabre"
 	throw_speed = 2
 	throw_range = 4
 	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
@@ -479,36 +479,6 @@ obj/item/weapon/material/sword/longsword/diamond
 obj/item/weapon/material/sword/rapier/iron
 	default_material = "iron"
 
-/obj/item/weapon/material/sword/gladius
-	name = "gladius"
-	desc = "A relatively small sword, used by Roman soldiers."
-	icon_state = "gladius"
-	item_state = "gladius"
-	default_material = "iron"
-	throw_speed = 2
-	throw_range = 6
-	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
-	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
-	slot_flags = SLOT_BELT | SLOT_BACK
-	block_chance = 25
-	cooldownw = 6
-	value = 35
-
-/obj/item/weapon/material/sword/xiphos
-	name = "xiphos"
-	desc = "A small sword, used by hellenic soldiers."
-	icon_state = "xiphos"
-	item_state = "gladius"
-	default_material = "iron"
-	throw_speed = 2
-	throw_range = 4
-	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
-	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
-	slot_flags = SLOT_BELT | SLOT_BACK
-	block_chance = 28
-	cooldownw = 7
-	value = 40
-
 /obj/item/weapon/material/sword/broadsword
 	name = "broadsword"
 	desc = "A sword with a long thick blade. Commonly used in the medieval era."
@@ -522,3 +492,86 @@ obj/item/weapon/material/sword/rapier/iron
 	block_chance = 20
 	cooldownw = 15
 	value = 60
+
+/* Ancient Multi Material Swords */
+// Created as per template then subtypes for spawning into TDM & admin debug access.
+
+/obj/item/weapon/material/sword/gladius
+	name = "gladius"
+	desc = "A relatively small sword, used by Roman soldiers."
+	icon_state = "gladius"
+	item_state = "gladius"
+	throw_speed = 2
+	throw_range = 6
+	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 25
+	cooldownw = 6
+	value = 35
+
+/obj/item/weapon/material/sword/gladius/bronze
+	default_material = "bronze"
+
+/obj/item/weapon/material/sword/gladius/iron
+	default_material = "iron"
+
+/obj/item/weapon/material/sword/gaelic
+	name = "gaelic shortsword"
+	desc = "A relatively small sword with a dramatic hilt, used by Gaelic warriors."
+	icon_state = "gaelic_short"
+	item_state = "gaelic_short"
+	throw_speed = 2
+	throw_range = 6
+	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 25
+	cooldownw = 6
+	value = 35
+
+/obj/item/weapon/material/sword/gaelic/bronze
+	default_material = "bronze"
+
+/obj/item/weapon/material/sword/gaelic/iron
+	default_material = "iron"
+
+/obj/item/weapon/material/sword/khopesh //template for multi-material crafting
+	name = "khopesh"
+	desc = "A curved sword, used by soldiers of egyptian dynasties & desert warriors."
+	icon_state = "khopesh"
+	item_state = "khopesh"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 28
+	cooldownw = 7
+	value = 40
+
+/obj/item/weapon/material/sword/khopesh/bronze
+	default_material = "bronze"
+
+/obj/item/weapon/material/sword/khopesh/iron
+	default_material = "iron"
+
+/obj/item/weapon/material/sword/xiphos //template for multi-material crafting
+	name = "xiphos"
+	desc = "A small sword, used by hellenic soldiers."
+	icon_state = "xiphos"
+	item_state = "gladius"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 28
+	cooldownw = 7
+	value = 40
+
+/obj/item/weapon/material/sword/xiphos/bronze
+	default_material = "bronze"
+
+/obj/item/weapon/material/sword/xiphos/iron
+	default_material = "iron"

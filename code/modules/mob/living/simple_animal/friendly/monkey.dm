@@ -21,7 +21,7 @@
 	mob_size = MOB_MEDIUM
 	possession_candidate = TRUE
 	granivore = 1
-	behaviour = "wanders"
+	behaviour = "scared"
 
 /mob/living/simple_animal/monkey/kostas
 	name = "Kostas the Monkey"

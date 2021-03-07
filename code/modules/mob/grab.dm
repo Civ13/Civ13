@@ -135,7 +135,7 @@
 			if (affecting.loc != assailant.loc)
 				force_down = FALSE
 			else
-				affecting.Weaken(2)
+				affecting.Weaken(20)
 
 	if (state >= GRAB_NECK && affecting)
 		affecting.Stun(2)

@@ -1,6 +1,6 @@
 /mob/living/simple_animal/hostile/buffalo
 	name = "buffalo"
-	desc =  "A Large member of the Bovine Family, They are grazers and will be hostile if harmed."
+	desc =  "A large member of the bovine Family, they are grazers and will be hostile if harmed."
 	icon = 'icons/mob/animal_64.dmi'
 	icon_state = "buffalo"
 	icon_living = "buffalo"
@@ -82,27 +82,23 @@
 	behaviour = "wander"
 
 /mob/living/simple_animal/bison/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		bison_count -= 1
+
+	bison_count &= src
 	..()
 /mob/living/simple_animal/bison/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		bison_count -= 1
+
+	bison_count &= src
 	..()
 /mob/living/simple_animal/bisonbull/death()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		bison_count -= 1
+
+	bison_count &= src
 	..()
 /mob/living/simple_animal/bisonbull/Destroy()
-	if (!removed_from_list)
-		removed_from_list=TRUE
-		bison_count -= 1
+
+	bison_count &= src
 	..()
 /mob/living/simple_animal/bisonbull/New()
-	bison_count += 1
+	bison_count |= src
 	..()
 	spawn(1)
 		if (calf)
@@ -119,7 +115,7 @@
 				mob_size = MOB_LARGE
 
 /mob/living/simple_animal/bison/New()
-	bison_count += 1
+	bison_count |= src
 	udder = new(50)
 	udder.my_atom = src
 	..()
@@ -162,7 +158,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && bison_count < 30)
+	if (!pregnant && bison_count.len < 30)
 		var/nearbyObjects = range(1,src) //3x3 area around cow
 		for(var/mob/living/simple_animal/bisonbull/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)

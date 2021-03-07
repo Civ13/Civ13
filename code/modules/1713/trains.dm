@@ -500,7 +500,7 @@
 	max_storage = 15
 	New()
 		..()
-		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood, /obj/item/weapon/branch)
+		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/branch)
 
 /obj/structure/trains/storage/closed
 	name = "transport wagon"

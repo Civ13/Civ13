@@ -69,7 +69,7 @@
 			user << "You refuel the [src]."
 			qdel(W)
 			return
-		else if (istype(W, /obj/item/weapon/leaves))
+		else if (istype(W, /obj/item/stack/material/leaf))
 			fuel += (60)*W.amount
 			user << "You refuel the [src]."
 			qdel(W)
@@ -154,6 +154,11 @@
 	desc = "Where you keep warm or light arrows on fire."
 	icon_state = "obsidian_brazier0"
 
+/obj/structure/brazier/marble
+	name = "marble brazier"
+	desc = "Where you keep warm or light arrows on fire."
+	icon_state = "marble_brazier0"
+
 /obj/structure/brazier/sandstone/do_light()
 	if (on)
 		fuel = (fuel-1)
@@ -171,6 +176,16 @@
 			on = FALSE
 			set_light(0)
 			icon_state = "obsidian_brazier0"
+	spawn(10)
+		do_light()
+
+/obj/structure/brazier/marble/do_light()
+	if (on)
+		fuel = (fuel-1)
+		if (fuel <= 0)
+			on = FALSE
+			set_light(0)
+			icon_state = "marble_brazier0"
 	spawn(10)
 		do_light()
 
@@ -224,4 +239,18 @@
 		on = FALSE
 		set_light(0)
 		icon_state = "obsidian_brazier0"
+		return
+
+/obj/structure/brazier/marble/attack_hand(mob/user as mob)
+	if (!on && fuel > 0)
+		user << "You light the marble brazier."
+		on = TRUE
+		set_light(5)
+		icon_state = "marble_brazier1"
+		return
+	else
+		user << "You put out the marble brazier."
+		on = FALSE
+		set_light(0)
+		icon_state = "marble_brazier0"
 		return

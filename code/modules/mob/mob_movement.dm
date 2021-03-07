@@ -782,6 +782,8 @@
 			t_movement_speed_multiplier *= 1.15
 		else if (mob.find_trait("Agile"))
 			t_movement_speed_multiplier /= 1.15
+		else if (mob.original_job_title == "Tuy Phai")
+			t_movement_speed_multiplier /= 1.25
 		if (mob.find_trait("Gigantism"))
 			t_movement_speed_multiplier *= 1.25
 		if (move_delay > world.time)

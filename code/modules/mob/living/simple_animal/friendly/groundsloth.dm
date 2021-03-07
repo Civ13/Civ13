@@ -19,6 +19,6 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	attacktext = "kicked"
-	health = 250
+	health = 450
 	mob_size = MOB_HUGE
 	behaviour = "defends"

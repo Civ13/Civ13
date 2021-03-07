@@ -16,61 +16,84 @@
 ///////////////////////////////////////////////////////
 */
 
-/material/proc/get_recipes_civs(var/civ = "none", var/mob/living/human/user, var/forced=FALSE)
-	if (map && map.civilizations)
-		var/list/current_res = list(0,0,0)
-		if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
-			if (user.civilization == "none")
-				current_res = list(map.default_research,map.default_research,map.default_research)
+/material/proc/get_recipes_civs(var/mob/living/human/user=null, var/forced=FALSE)
+	var/faction = "global"
+	if (user)
+		if (user.faction_text in global.craftlist_lists)
+			faction = user.faction_text
+
+		if (user.orc && ("orc" in global.craftlist_lists))
+			faction = "orc"
+		else if (user.ant && ("ant" in global.craftlist_lists))
+			faction = "ant"
+		else if (user.lizard && ("lizard" in global.craftlist_lists))
+			faction = "lizard"
+		else if (user.gorillaman && ("gorilla" in global.craftlist_lists))
+			faction = "gorilla"
+		else if (user.crab && ("crustacean" in global.craftlist_lists))
+			faction = "crustacean"
+		else if (user.wolfman && ("wolf" in global.craftlist_lists))
+			faction = "wolf"
+		if (map && map.civilizations)
+			var/civ = user.original_job_title
+			var/list/current_res = list(0,0,0)
+			if ((civ == "Nomad" || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES || map.ID == MAP_PIONEERS_WASTELAND_2) && user)
+				if (user.civilization == "none")
+					current_res = list(map.default_research,map.default_research,map.default_research)
+				else
+					current_res = map.custom_civs[user.civilization]
 			else
-				current_res = map.custom_civs[user.civilization]
+				if (civ == "Civilization A Citizen")
+					current_res = map.civa_research
+				else if (civ == "Civilization B Citizen")
+					current_res = map.civb_research
+				else if (civ == "Civilization C Citizen")
+					current_res = map.civc_research
+				else if (civ == "Civilization D Citizen")
+					current_res = map.civd_research
+				else if (civ == "Civilization E Citizen")
+					current_res = map.cive_research
+				else if (civ == "Civilization F Citizen")
+					current_res = map.civf_research
+			if (user.s_tone <= -175 && map.ID == MAP_NOMADS_AFRICA)
+				faction = "pygmy"
+			generate_recipes_civs(current_res,faction)
 		else
-			if (civ == "Civilization A Citizen")
-				current_res = map.civa_research
-			else if (civ == "Civilization B Citizen")
-				current_res = map.civb_research
-			else if (civ == "Civilization C Citizen")
-				current_res = map.civc_research
-			else if (civ == "Civilization D Citizen")
-				current_res = map.civd_research
-			else if (civ == "Civilization E Citizen")
-				current_res = map.cive_research
-			else if (civ == "Civilization F Citizen")
-				current_res = map.civf_research
-		generate_recipes_civs(current_res)
-	else
-		if (!recipes || forced)
 			var/list/current_res = list(0,0,0)
 			if (map)
-				switch (map.ordinal_age)
-					if (0)
-						current_res = list(0,0,0)
-					if (1)
-						current_res = list(35,35,35)
-					if (2)
-						current_res = list(60,60,60)
-					if (3)
-						current_res = list(85,85,85)
-					if (4)
-						current_res = list(105,105,105)
-					if (5)
-						current_res = list(125,125,125)
-					if (6)
-						current_res = list(152,152,152)
-					if (7)
-						current_res = list(185,185,185)
-					if (8)
-						current_res = list(210,210,210)
-			generate_recipes_civs(current_res)
+				if (user.civilization == "none")
+					switch (map.ordinal_age)
+						if (0)
+							current_res = list(0,0,0)
+						if (1)
+							current_res = list(35,35,35)
+						if (2)
+							current_res = list(60,60,60)
+						if (3)
+							current_res = list(85,85,85)
+						if (4)
+							current_res = list(105,105,105)
+						if (5)
+							current_res = list(125,125,125)
+						if (6)
+							current_res = list(152,152,152)
+						if (7)
+							current_res = list(185,185,185)
+						if (8)
+							current_res = list(210,210,210)
+				else
+					current_res = map.custom_civs[user.civilization]
+			generate_recipes_civs(current_res,faction)
 	return recipes
 
-/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0))
+/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global")
 
 	recipes = list()
+	var chosen_list = craftlist_lists[faction]
 	if (hardness>=40 && current_res[1] > 8 && (map && map.ID != MAP_GULAG13))
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] spoon", /obj/item/weapon/material/kitchen/utensil/spoon, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
-	for(var/i in craftlist_list)
+	for(var/i in chosen_list)
 		if(i[1]== "[type]/" && current_res[1]>=text2num(i[9]) && current_res[2]>=text2num(i[10]) && current_res[3]>=text2num(i[11]) && map && map.ordinal_age <= text2num(i[12]))
 			var/supmat = i[13]
 			if (supmat == "null")
@@ -96,7 +119,7 @@ datum/admins/proc/print_crafting_recipes()
 	var/choice = WWinput(usr, "Which format to export?", "Crafting Recipe Export", "Plaintext", list("Plaintext", "Wiki"))
 	if (choice == "Wiki")
 		var/list/matlist = list()
-		for (var/k in craftlist_list)
+		for (var/k in craftlist_lists["global"])
 			var/matname = replacetext(k[1], "/material/", "")
 			matname = replacetext(matname, "/", "")
 			matlist |= matname
@@ -106,7 +129,7 @@ datum/admins/proc/print_crafting_recipes()
 			recipe_list <<"\n"
 			recipe_list <<"| Item | Cost| Material | Category | Research Needed | Available Until |"
 			recipe_list <<"| -------- | ---- | ---------- | -------- | ------------------------- | ------------------------------- |"
-			for (var/i in craftlist_list)
+			for (var/i in craftlist_lists["global"])
 				var/matname = replacetext(i[1], "/material/", "")
 				matname = replacetext(matname, "/", "")
 				if (matname == m)
@@ -154,7 +177,7 @@ datum/admins/proc/print_crafting_recipes()
 			recipe_list <<"\n"
 		world.log << "Finished saving all crafting recipes into \"recipes.txt\" with Wiki format."
 	else
-		for (var/i in craftlist_list)
+		for (var/i in craftlist_lists["global"])
 			var/matname = replacetext(i[1], "/material/", "")
 			matname = replacetext(matname, "/", "")
 			var/subcategory = ""

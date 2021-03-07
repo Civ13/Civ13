@@ -237,3 +237,19 @@
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rc),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/kazoku/lc),
 	)
+//Kurogane Type 95
+/obj/effects/premadevehicles/kurogane/type95
+	name = "Kurogane type 95"
+	icon_state = "3x3"
+	custom_color = "#736953"
+	axis = /obj/structure/vehicleparts/axis/car/type95
+	tocreate = list(
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/type95/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/type95/lf,/obj/structure/engine/internal/gasoline/premade/type95,/obj/structure/vehicleparts/movement),
+
+	"1,3" = list(/obj/structure/bed/chair/carseat/right/type95,/obj/structure/vehicleparts/frame/car/type95/rb,/obj/structure/vehicleparts/movement/reversed),
+	"2,3" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lb,/obj/structure/vehicleparts/movement/reversed),
+
+	"1,2" = list(/obj/structure/bed/chair/drivers/car/type95,/obj/structure/vehicleparts/frame/car/type95/rc),
+	"2,2" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lc),
+	)

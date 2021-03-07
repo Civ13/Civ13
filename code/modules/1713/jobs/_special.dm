@@ -51,6 +51,15 @@
 /datum/job/var/is_yama = FALSE
 /datum/job/var/is_ichi = FALSE
 /datum/job/var/is_football = FALSE
+/datum/job/var/is_samurai = FALSE
+/datum/job/var/is_eastern = FALSE
+/datum/job/var/is_western = FALSE
+/datum/job/var/is_abashiri = FALSE
+/datum/job/var/is_nva = FALSE
+/datum/job/var/is_capitol = FALSE
+/datum/job/var/is_paratrooper = FALSE
+/datum/job/var/is_vietcong = FALSE
+/datum/job/var/is_upa = FALSE
 
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE

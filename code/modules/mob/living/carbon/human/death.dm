@@ -58,6 +58,13 @@
 			for(var/i in GD.points)
 				if (i[1]==PJ.nationality)
 					i[3]-=50
+	else if (map && map.ID == MAP_ABASHIRI && client)
+		var/obj/map_metadata/abashiri/GD = map
+		if (original_job && istype(original_job, /datum/job/civilian/abashiri))
+			var/datum/job/civilian/abashiri/PJ = original_job
+			for(var/i in GD.points)
+				if (i[1]==PJ.nationality)
+					i[3]-=50
 	else if (map && map.ID == MAP_ALLEYWAY)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Yamaguchi-Gumi")
@@ -72,6 +79,25 @@
 					world << "<font color='red' size=3>The <b>Ichiwa-Kai</b> underboss has been killed!</font>"
 				else
 					map.scores["Yamaguchi-Gumi"] += 1
+	else if (map && map.ID == MAP_SEKIGAHARA)
+		if (civilization && civilization in map.scores)
+			if (civilization == "Eastern Army")
+				if (original_job && original_job.title == "Azuma no Daimyo")
+					map.scores["Western Army"] += 10
+					world << "<font color='red' size=3>The <b>Eastern Army</b> daimyo has been killed!</font>"
+				else if (original_job && original_job.title == "Tobu no Samurai")
+					map.scores["Western Army"] += 5
+				else
+					map.scores["Western Army"] += 1
+			else
+				if (original_job && original_job.title == "Sei no Daimyo")
+					map.scores["Eastern Army"] += 10
+					world << "<font color='red' size=3>The <b>Western Army</b> daimyo has been killed!</font>"
+				else if (original_job && original_job.title == "Sei no Samurai")
+					map.scores["Eastern Army"] += 5
+				else
+					map.scores["Eastern Army"] += 1
+
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")

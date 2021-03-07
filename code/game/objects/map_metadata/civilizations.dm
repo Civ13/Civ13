@@ -7,15 +7,13 @@
 	has_hunger = TRUE
 
 
-	faction_organization = list(
-		CIVILIAN,)
+	faction_organization = list(CIVILIAN,)
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
 	age = "1013"
 	no_winner = "The round is proceeding normally."
 	civilizations = TRUE
-	var/tribes_nr = 2
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the kingdoms"
 	mission_start_message = "<big>Two medieval kingdoms rule this land. They have <b>24 hours</b> to fortify and build a military. Who will win?</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"

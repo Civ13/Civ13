@@ -13,21 +13,21 @@
 //used for persistence variable saving. Ignores default values.
 /proc/list2text_assoc(var/atom/A)
 	. = list()
-	if (istype(A, /obj/structure/wild) || (!istype(A, /obj/item) && !istype(A, /obj/structure) && !istype(A, /obj/map_metadata)&& !istype(A, /obj/covers)))
+	if (istype(A, /obj/structure/wild) || (!istype(A, /obj/item) && !istype(A, /obj/structure) && !istype(A, /obj/map_metadata) && !istype(A, /obj/covers)))
 		return "SIMPLE_OBJ;[A.x];[A.y];[A.z];[A.type]"
 	else
 		for (var/key in A.vars)
 			if (A.vars[key] != initial(A.vars[key]))
 				if (islist(A.vars[key]))
 					if (isemptylist(A.vars[key]))
-						. += "[key]=EMPTYLIST"
+						. += "[key]===EMPTYLIST"
 					else
-						. += "[key]={{"
+						. += "[key]==={{"
 						for(var/i in A.vars[key])
 							. += "[i]|"
 						. += "}}"
 				else
-					. += "[key]=[A.vars[key]]"
+					. += "[key]===[A.vars[key]]"
 		return "OBJECT;[A.x];[A.y];[A.z];[A.type];[list2text(.)]"
 
 /proc/list2text_assoc_mob(var/mob/A)
@@ -50,7 +50,7 @@
 		return "MOB;[A.x];[A.y];[A.z];[A.type];[A.stat]"
 
 /obj/map_metadata/proc/savegame()
-	spawn(27000)
+	spawn(72000) //2 hours
 		do_export()
 		savegame()
 

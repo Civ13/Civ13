@@ -144,19 +144,23 @@
 /obj/item/projectile/bullet/pistol/rubber //"rubber" bullets
 	name = "rubber bullet"
 	check_armor = "melee"
-	damage = 5
+	damage = 3
 	agony = 25
 	embed = FALSE
 	sharp = FALSE
+	eyeblur = 5
+	drowsy = 3
+	stutter = 20
 
 //Should do about 80 damage at 1 tile distance (adjacent), and 50 damage at 3 tiles distance.
 //Overall less damage than slugs in exchange for more damage at very close range and more embedding
-/obj/item/projectile/bullet/pellet/shotgun
-	name = "shrapnel"
-	damage = 13
-	pellets = 6
-	range_step = TRUE
-	spread_step = 10
+/obj/item/projectile/bullet/pellet/buckshot
+	name = "buckshot pellet"
+	damage = 10
+	pellets = 18
+	spread_step = 1
+	base_spread = 19
+	range_step = 3
 
 /* "Rifle" rounds */
 

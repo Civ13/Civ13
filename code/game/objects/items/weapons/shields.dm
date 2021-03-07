@@ -334,6 +334,8 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	health = 20 // hardness of wood
 	slowdown = 0.22
 
+/* Tribes Shields */
+
 /obj/item/weapon/shield/iron/orc
 	name = "uruk-hai shield"
 	icon_state = "orc_shield"
@@ -343,3 +345,39 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	w_class = 3.0
 	base_block_chance = 40
 	slowdown = 0.3
+
+/obj/item/weapon/shield/chitin
+	name = "chitin buckler"
+	desc = "a rounded shield made out of fused chitinous plates."
+	icon_state = "chitin_buckler"
+	item_state = "chitin_buckler"
+	material = "chitin"
+	health = 20
+	w_class = 3.0
+	base_block_chance = 25
+	slowdown = 0.2
+
+/obj/item/weapon/shield/chitin/large
+	name = "chitin shield"
+	desc = "a large shield made out of fused chitinous plates."
+	icon_state = "chitin_shield"
+	item_state = "chitin_shield"
+	material = "chitin"
+	health = 25
+	w_class = 3.0
+	base_block_chance = 37
+	slowdown = 0.35
+
+/* Tribes Shields -End*/
+
+
+/obj/item/weapon/shield/metal_riot
+	name = "Riot shield"
+	desc = "A riot sheild designed to be excellent in blocking during prisoner uprisings"
+	icon_state = "metal_riot"
+	item_state = "metal_riot"
+	material = "iron"
+	health = 90
+	w_class = 2
+	base_block_chance = 65
+	slowdown = 0.35

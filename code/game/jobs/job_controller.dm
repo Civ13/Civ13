@@ -53,7 +53,7 @@ var/global/datum/controller/occupations/job_master
 	var/list/job_debug = list()
 
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
-	map.availablefactions = list("Human tribesman", "Gorilla tribesman", "Crustacean tribesman")
+	map.availablefactions = list("Human tribesman", "Crustacean tribesman", "Orc tribesman", "Lizard tribesman")
 /*
 //	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
 //	var/randomfaction_spawn = "Red Goose Tribesman"
@@ -102,6 +102,11 @@ var/global/datum/controller/occupations/job_master
 	map.availablefactions_run = FALSE
 	return
 
+/datum/controller/occupations/proc/set_factions3(var/autobalance_nr = 0)
+	map.availablefactions = list("Human tribesman", "Gorilla tribesman", "Crustacean tribesman")
+	map.availablefactions_run = FALSE
+	return
+
 /datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0)
 
 	if (map)
@@ -123,15 +128,18 @@ var/global/datum/controller/occupations/job_master
 
 	var/autobalance_for_players = round(max(_clients, clients.len))
 
-	if (map && map.civilizations && map.ID != MAP_TRIBES)
-		if (map.ID == MAP_CIVILIZATIONS)
+	if (map && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
+		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP)
 			set_factions2(15)
 		else
 			set_factions2(autobalance_for_players)
 	spawn(10)
 		if (map && map.ID == MAP_TRIBES)
 			set_factions(autobalance_for_players)
-
+		if (map &&  map.ID == MAP_FOUR_KINGDOMS)
+			set_factions(autobalance_for_players)
+		if (map && map.ID == MAP_THREE_TRIBES)
+			set_factions3(autobalance_for_players)
 	for (var/datum/job/J in occupations)
 		if (J.title != "N/A" && J.title != "generic job")
 			var/positions = J.max_positions
@@ -150,6 +158,9 @@ var/global/datum/controller/occupations/job_master
 		pirates_toggled = FALSE
 		spanish_toggled = FALSE
 		civilians_forceEnabled = TRUE
+	if (map && map.faction_organization.Find(CIVILIAN) && (map.ID == MAP_FOREST))
+		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>UPA</b> start enabled by default. Admins can enable the UPA.</i></span></font>"
+		civilians_toggled = FALSE
 	if (map.civilizations)
 		civilians_forceEnabled = TRUE
 
@@ -212,7 +223,7 @@ var/global/datum/controller/occupations/job_master
 
 	if (!spawn_location && H.original_job)
 		spawn_location = H.original_job.spawn_location
-	if (map.ID == MAP_TRIBES)
+	if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		if (H.original_job_title in map.availablefactions)
 			if (H.original_job_title == map.availablefactions[1])
 				spawn_location = "JoinLateIND1"

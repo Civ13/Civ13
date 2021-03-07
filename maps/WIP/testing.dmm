@@ -28,6 +28,9 @@
 "B" = (/obj/structure/vehicleparts/frame,/obj/structure/vehicleparts/axis/heavy,/turf/floor/plating/road,/area/caribbean)
 "C" = (/obj/structure/vehicleparts/frame,/obj/structure/engine/internal/gasoline{enginesize = 5000},/turf/floor/plating/road,/area/caribbean)
 "D" = (/obj/structure/vehicleparts/frame,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/plating/road,/area/caribbean)
+"E" = (/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/turf/floor/dirt,/area/caribbean)
+"F" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean)
+"G" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt,/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -75,8 +78,8 @@ tfbbbgatfbbbgatfbbbgatfzBzgatfbbbgatfbbbgatfbbbgatfbbbgatfbbbgaaa
 hfbbbgahfbbbgahfbbbgahfCzDgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgaaa
 imnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaaa
 avjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaaa
-aawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaEwxyFaaa
+aaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaaaaaGaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 paaaaaaaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqaaaaaaaaaaaaaaaaaaaaa
