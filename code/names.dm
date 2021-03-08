@@ -77,6 +77,7 @@ var/list/first_names_male_arab = file2list("config/names/first_male_arab.txt")
 var/list/first_names_female_arab = file2list("config/names/first_female_arab.txt")
 
 var/list/first_names_male_roman = file2list("config/names/first_male_roman.txt")
+var/list/first_names_female_roman = file2list("config/names/first_female_roman.txt")
 var/list/middle_names_roman = file2list("config/names/middle_roman.txt")
 var/list/last_names_roman = file2list("config/names/last_roman.txt")
 
