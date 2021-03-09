@@ -843,6 +843,7 @@ RECIPE: /material/cloth/,custom short modern outfit,/obj/item/clothing/under/cus
 RECIPE: /material/cloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
 RECIPE: /material/cloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
 
+RECIPE: /material/cloth/,customizable roman dress,/obj/item/clothing/under/custom/stola,4,85,0,1,feminine clothing,0,0,18,8,null
 RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/cloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
 RECIPE: /material/cloth/,blue sari,/obj/item/clothing/under/sari/blue,4,85,0,1,feminine clothing,0,0,38,8,null
