@@ -401,8 +401,12 @@
 
 /datum/species/proc/get_random_roman_name(var/gender)
 	if (!name_language)
-		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_roman)) + " " + capitalize(pick(last_names_roman))
+		else
+			return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 							//some useless code removed
+
 /datum/species/proc/get_random_ancient_name(var/gender)
 	if (!name_language)
 
