@@ -2444,7 +2444,7 @@
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
 /datum/job/civilian/businessman/legitimate
-	title = "Legitimate Buisiness"
+	title = "Legitimate Business"
 	selection_color = "#6f4e37"
 	spawn_location = "JoinLateCivI"
 	min_positions = 3
@@ -2453,11 +2453,10 @@
 
 /datum/job/civilian/businessman/legitimate/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Legitimate Buisiness"
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/onehundy(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/telephone/mobile(H), slot_r_store)
-	H.add_note("Role", "You are a legitimate buisiness person. Find a buisiness to invest in or start your own.")
+	H.add_note("Role", "You are a legitimate business person. Find a business to invest in or start your own.")
 
 
 
