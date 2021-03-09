@@ -165,8 +165,8 @@
 						new/obj/item/weapon/disk/blue(SF.loc)
 						new/obj/item/weapon/disk/blue/fake(SF.loc)
 					else
-						new/obj/item/weapon/disk/red(SF)
-						new/obj/item/weapon/disk/red/fake(SF)
+						new/obj/item/weapon/disk/blue(SF)
+						new/obj/item/weapon/disk/blue/fake(SF)
 				if ("Kogama Kraftsmen")
 					if (SF.opened)
 						new/obj/item/weapon/disk/green(SF.loc)
