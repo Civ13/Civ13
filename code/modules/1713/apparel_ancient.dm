@@ -244,7 +244,7 @@
 	ripable = FALSE
 
 /obj/item/clothing/suit/armor/ancient/scale
-	name = "Segmented armor"
+	name = "segmented armor"
 	desc = "A thick, expensive segmented iron armor, covering the torso."
 	icon_state = "scale_armor"
 	item_state = "scale_armor"
@@ -256,7 +256,7 @@
 	health = 47
 
 /obj/item/clothing/suit/armor/ancient/chainmail
-	name = "Early Chainmail"
+	name = "early Chainmail"
 	desc = "Wearable armor made of several small interlinked chains."
 	icon_state = "early_chainmail"
 	item_state = "early_chainmail"
@@ -305,7 +305,7 @@
 
 
 /obj/item/clothing/suit/armor/ancient/scaled
-	name = "Scaled armor"
+	name = "scaled armor"
 	desc = "An armor made of serveral scales made of bronze."
 	icon_state = "scaled_armor"
 	item_state = "scaled_armor"
