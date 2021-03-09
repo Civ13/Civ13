@@ -475,7 +475,7 @@
 	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/clothing/head/ww2/jap_headband))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You place the heabdand on the helmet.</span>"
+		user << "<span class='notice'>You place the headband on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww2/japhelm_bandana(user.loc)
 		qdel(src)
 		qdel(W)
@@ -1423,16 +1423,21 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "sovuni"
 	item_state = "sovuni"
 	worn_state = "sovuni"
-
 	var/rolled = FALSE
-
+/obj/item/clothing/under/ww2/soviet/update_icon()
+	if (ishuman(loc))
+		var/mob/living/human/H = loc
+		if (H.gender == "female")
+			worn_state = "sovuni_f"
+		else
+			worn_state = "sovuni"
 /obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/under/ww2/soviet)
 		return
 	else
-		if (rolled)
+		if (rolled && usr.gender == "male")
 			item_state = "sovuni"
 			worn_state = "sovuni"
 			icon_state = "sovuni"
@@ -1441,9 +1446,28 @@ obj/item/clothing/head/ww2/chicap2
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
-		else if (!rolled)
+		else if (!rolled && usr.gender == "male")
 			item_state = "sovuni_rolled"
 			worn_state = "sovuni_rolled"
+			icon_state = "sovuni_rolled"
+			item_state_slots["w_uniform"] = "sovuni_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+		if (rolled && usr.gender == "female")
+			item_state = "sovuni"
+			worn_state = "sovuni_f"
+			icon_state = "sovuni"
+			item_state_slots["w_uniform"] = "sovuni"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled && usr.gender == "female")
+			item_state = "sovuni_rolled"
+			worn_state = "sovuni_rolled_f"
 			icon_state = "sovuni_rolled"
 			item_state_slots["w_uniform"] = "sovuni_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
@@ -2078,9 +2102,17 @@ obj/item/clothing/head/ww2/chicap2
 	desc = "A Ukrayins'ka Povstans'ka Armiya uniform."
 	icon_state = "upa_uni"
 	item_state = "upa_uni"
-	worn_state = "upa_uni"
 	var/base_state = "upa_uni"
 	var/rolled = FALSE
+/obj/item/clothing/under/ww2/upa/update_icon()
+	if (ishuman(loc))
+		var/mob/living/human/H = loc
+		if (H.gender == "female")
+			worn_state = "upa_uni_f"
+			H.update_inv_w_uniform()
+		else
+			worn_state = "upa_uni"
+			H.update_inv_w_uniform()
 /obj/item/clothing/under/ww2/upa/off
 	name = "UPA officer uniform"
 	desc = "A Ukrayins'ka Povstans'ka Armiya officer uniform."
@@ -2092,7 +2124,7 @@ obj/item/clothing/head/ww2/chicap2
 /obj/item/clothing/under/ww2/upa/verb/roll_sleeves()
 	set category = null
 	set src in usr
-	if (rolled)
+	if (rolled && usr.gender == "male")
 		item_state = "[base_state]"
 		worn_state = "[base_state]"
 		icon_state = "[base_state]"
@@ -2101,9 +2133,28 @@ obj/item/clothing/head/ww2/chicap2
 		rolled = FALSE
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		update_clothing_icon()
-	else if (!rolled)
+	else if (!rolled && usr.gender == "male")
 		item_state = "[base_state]_rolled"
 		worn_state = "[base_state]_rolled"
+		icon_state = "[base_state]_rolled"
+		item_state_slots["w_uniform"] = "[base_state]_rolled"
+		usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+		rolled = TRUE
+		heat_protection = ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+		update_clothing_icon()
+	if (rolled && usr.gender == "female")
+		item_state = "[base_state]"
+		worn_state = "upa_uni_f"
+		icon_state = "[base_state]"
+		item_state_slots["w_uniform"] = "[base_state]"
+		usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+		rolled = FALSE
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		update_clothing_icon()
+	else if (!rolled && usr.gender == "female")
+		item_state = "[base_state]_rolled"
+		worn_state = "upa_uni_rolled_f"
 		icon_state = "[base_state]_rolled"
 		item_state_slots["w_uniform"] = "[base_state]_rolled"
 		usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"

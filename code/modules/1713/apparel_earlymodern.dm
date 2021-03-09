@@ -1083,7 +1083,7 @@
 		if (rolled)
 			item_state = "coveralls"
 			worn_state = "coveralls"
-			item_state_slots["w_uniform"] = "coveralls"
+			item_state_slots["w_suit"] = "coveralls"
 			usr << "<span class = 'danger'>You roll down your coveralls.</span>"
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -1092,7 +1092,7 @@
 		else if (!rolled)
 			item_state = "coveralls_down"
 			worn_state = "coveralls_down"
-			item_state_slots["w_uniform"] = "coveralls_down"
+			item_state_slots["w_suit"] = "coveralls_down"
 			usr << "<span class = 'danger'>You roll up your coveralls.</span>"
 			rolled = TRUE
 			heat_protection = UPPER_TORSO|ARMS

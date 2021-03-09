@@ -14,7 +14,7 @@
 	max_positions = 1
 	is_yakuza = TRUE
 	is_yama = TRUE
-
+	can_be_female = TRUE
 /datum/job/japanese/yakuza_underboss/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -68,7 +68,7 @@
 	min_positions = 1
 	max_positions = 2
 	is_yama = TRUE
-
+	can_be_female = TRUE
 /datum/job/japanese/yakuza_underboss_deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -118,6 +118,7 @@
 	max_positions = 48
 	is_yakuza = TRUE
 	is_yama = TRUE
+	can_be_female = TRUE
 /datum/job/japanese/yakuza/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -172,6 +173,7 @@
 	max_positions = 1
 	is_yakuza = TRUE
 	is_ichi = TRUE
+	can_be_female = TRUE
 /datum/job/japanese/yakuza_underboss_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -224,6 +226,7 @@
 	max_positions = 2
 	is_yakuza = TRUE
 	is_ichi = TRUE
+	can_be_female = TRUE
 /datum/job/japanese/yakuza_underboss_deputy_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -271,6 +274,7 @@
 	max_positions = 48
 	is_yakuza = TRUE
 	is_ichi = TRUE
+	can_be_female = TRUE
 /datum/job/japanese/yakuza_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes

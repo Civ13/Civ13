@@ -685,6 +685,71 @@
 								in_use = FALSE
 							update_icon()
 							return
+					if ("keys")
+						var/list/newlist = list("Cancel")
+						var/mat = 0
+						for(var/i in anvil_recipes)
+							if (anvil_recipes[i])
+								mat = 0
+								if (ML.current_material == "bronze")
+									mat = anvil_recipes[i][7]
+								if (ML.current_material == "copper")
+									mat = anvil_recipes[i][7]*1.2
+								if (ML.current_material == "tin")
+									mat = anvil_recipes[i][7]*1.4
+								if (ML.current_material == "gold")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "silver")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "lead")
+									mat = anvil_recipes[i][5]
+								if (ML.current_material == "iron")
+									mat = anvil_recipes[i][6]
+								if (ML.current_material == "steel")
+									mat = anvil_recipes[i][5]
+								if (anvil_recipes[i][2] == "keys" && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
+						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+						if (choice2 == "Cancel")
+							return
+						var/list/parsed_choice2 = splittext(choice2," - ")
+						if (anvil_recipes[parsed_choice2[1]])
+							if (ML.current_material == "bronze")
+								mat = anvil_recipes[parsed_choice2[1]][7]
+							if (ML.current_material == "copper")
+								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
+							if (ML.current_material == "tin")
+								mat = anvil_recipes[parsed_choice2[1]][7]*1.4
+							if (ML.current_material == "gold")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "silver")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "lead")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.current_material == "iron")
+								mat = anvil_recipes[parsed_choice2[1]][6]
+							if (ML.current_material == "steel")
+								mat = anvil_recipes[parsed_choice2[1]][5]
+							if (ML.capacity >= mat)
+								user << "You begin crafting \the [parsed_choice2[1]]..."
+								in_use = TRUE
+								update_icon()
+								if (do_after(user,10*mat,src,can_move=FALSE))
+									if (ML.capacity >= mat)
+										ML.capacity -= mat
+										user << "You finish crafting \the [parsed_choice2[1]]."
+										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
+										new rtype (loc,ML.current_material)
+										if (ML.capacity < 1)
+											ML.current_material = null
+											ML.capacity = 0
+											ML.update_icon()
+
+									in_use = FALSE
+								else
+									in_use = FALSE
+								update_icon()
+								return
 /obj/structure/anvil/steel
 	name = "steel anvil"
 	desc = "An advanced steel anvil. The blacksmith's main work tool."

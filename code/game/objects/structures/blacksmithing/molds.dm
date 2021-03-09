@@ -228,6 +228,11 @@
 	base_icon = "clay_jug"
 	result = /obj/item/weapon/clay/mold/clayjug/fired
 
+/obj/item/weapon/clay/mold/key
+	name = "unfired clay guard key mold"
+	icon_state = "key_mold_raw"
+	base_icon = "key_mold"
+	result = /obj/item/weapon/clay/mold/key/fired
 //////FIRED MOLDS/////////
 /obj/item/weapon/clay/mold/fired
 	name = "ingot mold"
@@ -309,3 +314,11 @@
 	base_icon = "clay_jug"
 	fired = TRUE
 	max_capacity = 70
+
+/obj/item/weapon/clay/mold/key/fired
+	name = "key mold"
+	icon_state = "key_mold_empty"
+	base_icon = "key_mold"
+	fired = TRUE
+	craftable_classes = "keys"
+	max_capacity = 3

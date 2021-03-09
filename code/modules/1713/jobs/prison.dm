@@ -189,7 +189,6 @@
 
 	rank_abbreviation = ""
 	title = "DO NOT USE"
-	var/nationality = "none"
 	default_language = "Russian"
 	var/randrole = "none"
 	var/original_eyes = "Black"
@@ -197,6 +196,7 @@
 	var/original_hair = "Short Hair"
 /datum/job/civilian/prisoner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
+	H.give_nationality()
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
@@ -229,13 +229,18 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.give_nationality()
+	if (H.nationality == "Russian")
+		H.add_language("Russian", TRUE)
+	if (H.nationality == "German")
+		H.add_language("German", TRUE)
+	if (H.nationality == "Ukrainian")
+		H.add_language("Ukrainian", TRUE)
+	if (H.nationality == "Polish")
+		H.add_language("Polish", TRUE)
 	return TRUE
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////ABASHIRI PRISONERS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/datum/job/civilian/abashiri
-	var/nationality = "none"
 /datum/job/civilian/abashiri/prisoner
 	is_abashiri = TRUE
 	is_prison = TRUE
@@ -250,6 +255,7 @@
 	var/original_hair = "Short Hair"
 /datum/job/civilian/abashiri/prisoner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
+	H.give_nationality()
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(H), slot_shoes)
 //clothes
@@ -267,7 +273,7 @@
 	if (prob(30))
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_prisoner(H), slot_head)
-	if (nationality == "Ainu")
+	if (H.nationality == "Ainu")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
@@ -277,74 +283,73 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.give_nationality()
 	return TRUE
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/mob/living/human/proc/give_nationality()
+/mob/living/human/proc/give_nationality(var/mob/living/human)
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
 		var/randpick = rand(1,4)
 		switch(randpick)
 			if (1)
-				if (PJ.nationality == "none")
-					add_language("Polish",FALSE)
-					add_note("Known Languages", "Polish")
-					remove_language("English")
-					name = species.get_random_polish_name(gender)
-					real_name = name
-					add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
-					PJ.nationality = "Polish"
+				if (src.nationality == "none")
+					src.add_note("Known Languages", "Polish")
+					src.remove_language("English")
+					src.name = species.get_random_polish_name(gender)
+					src.real_name = name
+					src.add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
+					src.nationality = "Polish"
+					src.add_language("Polish",FALSE)
 
 			if (2)
-				if (PJ.nationality == "none")
-					add_language("Ukrainian",FALSE)
-					add_note("Known Languages", "Ukrainian")
-					remove_language("English")
-					name = species.get_random_ukrainian_name(gender)
-					real_name = name
-					add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
-					PJ.nationality = "Ukrainian"
+				if (src.nationality == "none")
+					src.add_note("Known Languages", "Ukrainian")
+					src.remove_language("English")
+					src.name = species.get_random_ukrainian_name(gender)
+					src.real_name = name
+					src.add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
+					src.nationality = "Ukrainian"
+					src.add_language("Ukrainian",FALSE)
 
 			if (3)
-				if (PJ.nationality == "none")
-					remove_language("English")
-					name = species.get_random_russian_name(gender)
-					real_name = name
-					add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
-					PJ.nationality = "Vory"
+				if (src.nationality == "none")
+					src.remove_language("English")
+					src.name = species.get_random_russian_name(gender)
+					src.real_name = name
+					src.add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
+					src.nationality = "Vory"
 
 			if (4)
-				if (PJ.nationality == "none")
-					add_language("German",FALSE)
-					add_note("Known Languages", "German")
-					remove_language("English")
-					name = species.get_random_german_name(gender)
-					real_name = name
-					add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
-					PJ.nationality = "German"
+				if (src.nationality == "none")
+					src.add_note("Known Languages", "German")
+					src.remove_language("English")
+					src.name = species.get_random_german_name(gender)
+					src.real_name = name
+					src.add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
+					src.nationality = "German"
+					src.add_language("German",FALSE)
 		PJ.original_hair = pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
 		PJ.original_facial = PJ.original_hair
 		var/hex_hair = hair_colors[PJ.original_hair]
 		var/red = hex2num(copytext(hex_hair, 2, 4))
 		var/green = hex2num(copytext(hex_hair, 4, 6))
 		var/blue = hex2num(copytext(hex_hair, 6, 8))
-		r_hair = red
-		g_hair = green
-		b_hair = blue
-		r_facial = red
-		g_facial = green
-		b_facial = blue
+		src.r_hair = red
+		src.g_hair = green
+		src.b_hair = blue
+		src.r_facial = red
+		src.g_facial = green
+		src.b_facial = blue
 		PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
 		var/hex_eyes = eye_colors[PJ.original_eyes]
 		red = hex2num(copytext(hex_eyes, 2, 4))
 		green = hex2num(copytext(hex_eyes, 4, 6))
 		blue = hex2num(copytext(hex_eyes, 6, 8))
-		r_eyes = red
-		g_eyes = green
-		b_eyes = blue
+		src.r_eyes = red
+		src.g_eyes = green
+		src.b_eyes = blue
 
-		h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-		f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
+		src.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+		src.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
 		update_body()
 ///////////////////////////////////////ABASHIRI/////////////////////////////////////////////////////////////////////////////////////////////
 	else if (istype(original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))
@@ -352,64 +357,64 @@
 		var/randpick = rand(1,3)
 		switch(randpick)
 			if (1)
-				if (PJ.nationality)
-					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
+				if (src.nationality == "none")
+					src.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+					src.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
 					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
-					add_language("Russian", TRUE)
-					add_note("Known Languages", "Russian")
-					remove_language("English")
-					name = species.get_random_russian_name(gender)
-					real_name = name
-					add_note("Group", "You are a Russian prisoner. You are part of the <b>Russian</b> faction. Try to escape and/or keep your faction powerful!")
-					PJ.nationality = "Russian"
+					src.add_note("Known Languages", "Russian")
+					src.remove_language("English")
+					src.name = species.get_random_russian_name(gender)
+					src.real_name = name
+					src.add_note("Group", "You are a Russian prisoner. You are part of the <b>Russian</b> faction. Try to escape and/or keep your faction powerful!")
+					src.nationality = "Russian"
+					src.add_language("Russian", TRUE)
 
 			if (2)
-				if (PJ.nationality)
+				if (src.nationality == "none")
 					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
 					PJ.original_facial = PJ.original_hair
-					h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-					f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard", "Hipster Beard")
+					src.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+					src.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard", "Hipster Beard")
 					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
-					add_language("Ainu", TRUE)
-					add_note("Known Languages", "Japanese")
-					remove_language("English")
-					name = species.get_random_ainu_name(gender)
-					real_name = name
-					add_note("Group", "You are an Ainu Prisoner. You are part of the <b>Ainu</b> faction. Try to escape and/or keep your faction powerful!")
-					PJ.nationality = "Ainu"
+					src.add_language("Ainu", TRUE)
+					src.add_note("Known Languages", "Japanese")
+					src.remove_language("English")
+					src.name = species.get_random_ainu_name(gender)
+					src.real_name = name
+					src.add_note("Group", "You are an Ainu Prisoner. You are part of the <b>Ainu</b> faction. Try to escape and/or keep your faction powerful!")
+					src.nationality = "Ainu"
 
 			if (3)
-				if (PJ.nationality)
+				if (src.nationality == "none")
 					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
 					PJ.original_facial = PJ.original_hair
-					h_style = pick("Bald","Short Hair","Cut Hair","Skinhead")
-					f_style = pick("Shaved","Chinstrap","Medium Beard", "Hipster Beard")
+					src.h_style = pick("Bald","Short Hair","Cut Hair","Skinhead")
+					src.f_style = pick("Shaved","Chinstrap","Medium Beard", "Hipster Beard")
 					PJ.original_eyes = pick("Black","Dark Brown")
-					add_language("Japanese", TRUE)
-					add_note("Known Languages", "Japanese")
-					remove_language("English")
-					name = species.get_random_japanese_name(gender)
-					real_name = name
-					add_note("Group", "You are a Japanese Prisoner. You are part of the <b>Japanese</b> faction. Try to escape and/or keep your faction powerful!")
-					PJ.nationality = "Japanese"
+					src.add_language("Japanese", TRUE)
+					src.add_note("Known Languages", "Japanese")
+					src.remove_language("English")
+					src.name = species.get_random_japanese_name(gender)
+					src.real_name = name
+					src.add_note("Group", "You are a Japanese Prisoner. You are part of the <b>Japanese</b> faction. Try to escape and/or keep your faction powerful!")
+					src.nationality = "Japanese"
 		var/hex_hair = hair_colors[PJ.original_hair]
 		var/red = hex2num(copytext(hex_hair, 2, 4))
 		var/green = hex2num(copytext(hex_hair, 4, 6))
 		var/blue = hex2num(copytext(hex_hair, 6, 8))
-		r_hair = red
-		g_hair = green
-		b_hair = blue
-		r_facial = red
-		g_facial = green
-		b_facial = blue
+		src.r_hair = red
+		src.g_hair = green
+		src.b_hair = blue
+		src.r_facial = red
+		src.g_facial = green
+		src.b_facial = blue
 		var/hex_eyes = eye_colors[PJ.original_eyes]
 		red = hex2num(copytext(hex_eyes, 2, 4))
 		green = hex2num(copytext(hex_eyes, 4, 6))
 		blue = hex2num(copytext(hex_eyes, 6, 8))
-		r_eyes = red
-		g_eyes = green
-		b_eyes = blue
+		src.r_eyes = red
+		src.g_eyes = green
+		src.b_eyes = blue
 		update_body()
 
 /datum/job/civilian/prisoner/janitor
@@ -428,6 +433,14 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
+		if (H.nationality == "Russian")
+			H.add_language("Russian", TRUE)
+		if (H.nationality == "German")
+			H.add_language("German", TRUE)
+		if (H.nationality == "Ukrainian")
+			H.add_language("Ukrainian", TRUE)
+		if (H.nationality == "Polish")
+			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are a <b>Janitor</b>. Your job is to keep the camp area clean. Make sure its spotless or you'll get beaten!")
 		randrole = title
 
@@ -447,6 +460,14 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
+		if (H.nationality == "Russian")
+			H.add_language("Russian", TRUE)
+		if (H.nationality == "German")
+			H.add_language("German", TRUE)
+		if (H.nationality == "Ukrainian")
+			H.add_language("Ukrainian", TRUE)
+		if (H.nationality == "Polish")
+			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are a <b>Miner</b>. Your job is to get to the mines and collect minerals for the guards.")
 		randrole = title
 /*
@@ -504,6 +525,14 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
+		if (H.nationality == "Russian")
+			H.add_language("Russian", TRUE)
+		if (H.nationality == "German")
+			H.add_language("German", TRUE)
+		if (H.nationality == "Ukrainian")
+			H.add_language("Ukrainian", TRUE)
+		if (H.nationality == "Polish")
+			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are a <b>Nurse Helper</b>. Keep other prisoners alive with the sparse supplies you have...")
 		randrole = title
 
@@ -523,6 +552,14 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
+		if (H.nationality == "Russian")
+			H.add_language("Russian", TRUE)
+		if (H.nationality == "German")
+			H.add_language("German", TRUE)
+		if (H.nationality == "Ukrainian")
+			H.add_language("Ukrainian", TRUE)
+		if (H.nationality == "Polish")
+			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are on <b>Kitchen Duty</b>. Your job is to manage the prisoner's stock of food (if the guards actually deliver it...) and keep everyone fed.")
 		randrole = title
 
@@ -556,6 +593,14 @@
 		armband.uncolored = FALSE
 		armband.name = "[randrole] armband"
 		uniform.attackby(armband, H)
+		if (H.nationality == "Russian")
+			H.add_language("Russian", TRUE)
+		if (H.nationality == "German")
+			H.add_language("German", TRUE)
+		if (H.nationality == "Ukrainian")
+			H.add_language("Ukrainian", TRUE)
+		if (H.nationality == "Polish")
+			H.add_language("Polish", TRUE)
 		H.add_note("Primary Role", "You are a <b>Collaborator</b>. Your job is to get information and pass it to the guards. Be careful, your fellow prisoners might not like it if they find it out... Try to act like your assigned role, <b>[randrole]</b>.")
 
 ////////////////////////////////////////////////////ABASHIRI PRISONERS////////////////////////////////////////////
@@ -574,7 +619,7 @@
 		randrole = "Wing 1"
 		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing1(H), slot_wear_suit)
-		if (nationality == "Ainu")
+		if (H.nationality == "Ainu")
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
 		world << "A <b>Wing 1</b> Prisoner has arrived"
 /datum/job/civilian/abashiri/prisoner/wing2
@@ -592,7 +637,7 @@
 		randrole = "Wing 2"
 		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing2(H), slot_wear_suit)
-		if (nationality == "Ainu")
+		if (H.nationality == "Ainu")
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
 		world << "A <b>Wing 2</b> Prisoner has arrived"
 /datum/job/civilian/abashiri/prisoner/wing3
@@ -609,7 +654,7 @@
 		randrole = "Wing 3"
 		H.add_note("Role", "You are a <b>Prisoner</b>. Your job is to get to serve your time and do the labour given to you. Maybe one day you find your way out of this hell")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3(H), slot_wear_suit)
-		if (nationality == "Ainu")
+		if (H.nationality == "Ainu")
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
 		world << "A <b>Wing 3</b> Prisoner has arrived"
 /datum/job/civilian/abashiri/prisoner/wing3_danger
@@ -630,7 +675,7 @@
 		H.setStat("strength", STAT_VERY_VERY_HIGH)
 		H.setStat("dexterity", STAT_VERY_HIGH)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/haori_jacket/abashiri/wing3(H), slot_wear_suit)
-		if (nationality == "Ainu")
+		if (H.nationality == "Ainu")
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
 		world << "A <b>Wing 3</b> Prisoner has arrived"
 ///////////////////////////////////////////////

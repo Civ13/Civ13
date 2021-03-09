@@ -54,16 +54,16 @@
 	else if (map && map.ID == MAP_GULAG13 && client)
 		var/obj/map_metadata/gulag13/GD = map
 		if (original_job && istype(original_job, /datum/job/civilian/prisoner))
-			var/datum/job/civilian/prisoner/PJ = original_job
+			var/mob/living/human/H = client
 			for(var/i in GD.points)
-				if (i[1]==PJ.nationality)
+				if (i[1]==H.nationality)
 					i[3]-=50
 	else if (map && map.ID == MAP_ABASHIRI && client)
 		var/obj/map_metadata/abashiri/GD = map
 		if (original_job && istype(original_job, /datum/job/civilian/abashiri))
-			var/datum/job/civilian/abashiri/PJ = original_job
+			var/mob/living/human/H = src
 			for(var/i in GD.points)
-				if (i[1]==PJ.nationality)
+				if (i[1]==H.nationality)
 					i[3]-=50
 	else if (map && map.ID == MAP_ALLEYWAY)
 		if (civilization && civilization in map.scores)
