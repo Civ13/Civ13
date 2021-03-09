@@ -235,7 +235,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Penicillin"
 	id = "penicillin"
 	result = "penicillin"
-	required_reagents = list("yeast" = 10, "acetone" = 1)
+	required_reagents = list("enzyme" = 10, "acetone" = 1)
 	result_amount = 5
 
 /datum/chemical_reaction/tramadol
