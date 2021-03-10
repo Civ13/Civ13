@@ -118,7 +118,6 @@
 /datum/reagent/tramadol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 80)
 	M.mood += removed*6
-
 /datum/reagent/tramadol/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.hallucination = max(M.hallucination, 2)
