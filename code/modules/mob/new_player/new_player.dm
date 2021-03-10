@@ -603,7 +603,7 @@ var/global/redirect_all_players = null
 		if (client && client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
-	if (!job.can_be_female || !job.is_medic)
+	if (!job.can_be_female || !job.is_medic || !job.is_deal || (!job.is_rp && !job.is_medieval) || !job.is_civilizations)
 		if (client && client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this.","Error")
 			return FALSE

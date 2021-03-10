@@ -309,7 +309,7 @@
 			var/mob/living/human/H = user
 			if (istype(H.original_job, /datum/job/civilian/prisoner) && istype(original_job, /datum/job/civilian/prisoner))
 				msg += "<br><i>You recognize [T.him] as a prisoner named <b>[real_name]</b>.</i>"
-				if (H.nationality == H.nationality)
+				if (H.nationality == nationality)
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[H.nationality]</b>!</i>"
 				if (H.original_job_title == "Collaborator" && original_job_title == H.original_job_title)
 					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"

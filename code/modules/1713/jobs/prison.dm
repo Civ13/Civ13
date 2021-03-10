@@ -8,7 +8,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-
+	can_be_female = TRUE
 	is_prison = TRUE
 
 	min_positions = 1
@@ -57,7 +57,7 @@
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-
+	can_be_female = TRUE
 	is_prison = TRUE
 
 	min_positions = 2
@@ -106,7 +106,7 @@
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
-
+	can_be_female = TRUE
 	is_medic = TRUE
 	is_prison = TRUE
 
@@ -145,7 +145,7 @@
 	title = "GULAG Karaulnyi"
 	en_meaning = "NKVD GULAG Guard"
 	rank_abbreviation = "NKVD"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
 	is_prison = TRUE
@@ -186,7 +186,7 @@
 
 	is_prison = TRUE
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	rank_abbreviation = ""
 	title = "DO NOT USE"
 	default_language = "Russian"
@@ -229,15 +229,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	if (H.nationality == "Russian")
-		H.add_language("Russian", TRUE)
-	if (H.nationality == "German")
-		H.add_language("German", TRUE)
-	if (H.nationality == "Ukrainian")
-		H.add_language("Ukrainian", TRUE)
-	if (H.nationality == "Polish")
-		H.add_language("Polish", TRUE)
-	return TRUE
+	H.give_languages()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////ABASHIRI PRISONERS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,6 +280,24 @@
 /mob/living/human/proc/give_nationality(var/mob/living/human)
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
+		if (src.client.ckey == "kanohashinobi")
+			src.add_note("Known Languages", "German")
+			src.remove_language("English")
+			src.name = "Takao Hitori"
+			src.real_name = name
+			src.add_note("Group", "You are a Japanese prisoner of war. You are apart of <b>no</b> faction. Try to escape and/or stay alive. You're on your own.")
+			src.nationality = "Japanese"
+			src.add_language("Japanese",FALSE)
+			src.h_style = "Short Hair"
+			src.f_style = "Hipster Beard"
+			src.r_hair = 22
+			src.g_hair = 22
+			src.b_hair = 22
+			src.r_facial = 22
+			src.g_facial = 22
+			src.b_facial = 22
+			update_body()
+			return
 		var/randpick = rand(1,4)
 		switch(randpick)
 			if (1)
@@ -299,7 +309,6 @@
 					src.add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
 					src.nationality = "Polish"
 					src.add_language("Polish",FALSE)
-
 			if (2)
 				if (src.nationality == "none")
 					src.add_note("Known Languages", "Ukrainian")
@@ -309,7 +318,6 @@
 					src.add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
 					src.nationality = "Ukrainian"
 					src.add_language("Ukrainian",FALSE)
-
 			if (3)
 				if (src.nationality == "none")
 					src.remove_language("English")
@@ -317,7 +325,6 @@
 					src.real_name = name
 					src.add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
 					src.nationality = "Vory"
-
 			if (4)
 				if (src.nationality == "none")
 					src.add_note("Known Languages", "German")
@@ -327,6 +334,7 @@
 					src.add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
 					src.nationality = "German"
 					src.add_language("German",FALSE)
+
 		PJ.original_hair = pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
 		PJ.original_facial = PJ.original_hair
 		var/hex_hair = hair_colors[PJ.original_hair]
@@ -416,7 +424,34 @@
 		src.g_eyes = green
 		src.b_eyes = blue
 		update_body()
-
+/mob/living/human/proc/gulag_languages(var/mob/living/human)
+///////////////////////////////PRISONS////////////////////////////////////////
+	if (map && map.ID == MAP_GULAG13)
+		spawn(5)
+			if (src.nationality == "Russian")
+				src.add_language("Russian",TRUE)
+				src.remove_language("English")
+				return
+			if (src.nationality == "German")
+				src.add_language("German",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
+			if (src.nationality == "Polish")
+				src.add_language("Polish",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
+			if (src.nationality == "Ukrainian")
+				src.add_language("Ukrainian",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
+			if (src.nationality == "Japanese")
+				src.add_language("Japanese",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
 	en_meaning = ""
@@ -433,16 +468,9 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
-		if (H.nationality == "Russian")
-			H.add_language("Russian", TRUE)
-		if (H.nationality == "German")
-			H.add_language("German", TRUE)
-		if (H.nationality == "Ukrainian")
-			H.add_language("Ukrainian", TRUE)
-		if (H.nationality == "Polish")
-			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are a <b>Janitor</b>. Your job is to keep the camp area clean. Make sure its spotless or you'll get beaten!")
 		randrole = title
+		H.gulag_languages()
 
 /datum/job/civilian/prisoner/miner
 	title = "Miner"
@@ -460,16 +488,9 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
-		if (H.nationality == "Russian")
-			H.add_language("Russian", TRUE)
-		if (H.nationality == "German")
-			H.add_language("German", TRUE)
-		if (H.nationality == "Ukrainian")
-			H.add_language("Ukrainian", TRUE)
-		if (H.nationality == "Polish")
-			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are a <b>Miner</b>. Your job is to get to the mines and collect minerals for the guards.")
 		randrole = title
+		H.gulag_languages()
 /*
 /datum/job/civilian/prisoner/logger
 	title = "Logger"
@@ -525,16 +546,9 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
-		if (H.nationality == "Russian")
-			H.add_language("Russian", TRUE)
-		if (H.nationality == "German")
-			H.add_language("German", TRUE)
-		if (H.nationality == "Ukrainian")
-			H.add_language("Ukrainian", TRUE)
-		if (H.nationality == "Polish")
-			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are a <b>Nurse Helper</b>. Keep other prisoners alive with the sparse supplies you have...")
 		randrole = title
+		H.gulag_languages()
 
 /datum/job/civilian/prisoner/kitchen
 	title = "Kitchen Duty"
@@ -552,16 +566,9 @@
 		armband.uncolored = FALSE
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
-		if (H.nationality == "Russian")
-			H.add_language("Russian", TRUE)
-		if (H.nationality == "German")
-			H.add_language("German", TRUE)
-		if (H.nationality == "Ukrainian")
-			H.add_language("Ukrainian", TRUE)
-		if (H.nationality == "Polish")
-			H.add_language("Polish", TRUE)
 		H.add_note("Role", "You are on <b>Kitchen Duty</b>. Your job is to manage the prisoner's stock of food (if the guards actually deliver it...) and keep everyone fed.")
 		randrole = title
+		H.gulag_languages()
 
 /datum/job/civilian/prisoner/collaborator
 	title = "Collaborator"
@@ -593,14 +600,7 @@
 		armband.uncolored = FALSE
 		armband.name = "[randrole] armband"
 		uniform.attackby(armband, H)
-		if (H.nationality == "Russian")
-			H.add_language("Russian", TRUE)
-		if (H.nationality == "German")
-			H.add_language("German", TRUE)
-		if (H.nationality == "Ukrainian")
-			H.add_language("Ukrainian", TRUE)
-		if (H.nationality == "Polish")
-			H.add_language("Polish", TRUE)
+		H.gulag_languages()
 		H.add_note("Primary Role", "You are a <b>Collaborator</b>. Your job is to get information and pass it to the guards. Be careful, your fellow prisoners might not like it if they find it out... Try to act like your assigned role, <b>[randrole]</b>.")
 
 ////////////////////////////////////////////////////ABASHIRI PRISONERS////////////////////////////////////////////
