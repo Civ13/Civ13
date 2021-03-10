@@ -65,6 +65,14 @@
 	item_state = "customtoga"
 	worn_state = "customtoga"
 
+/obj/item/clothing/under/custom/stola
+	name = "stola"
+	desc = "A simple cloth stola, roman clothing for women."
+	icon_state = "fem_roman"
+	item_state = "fem_roman"
+	worn_state = "fem_roman"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+
 /obj/item/clothing/under/custom/roman
 	name = "long tunic"
 	desc = "A simple cloth tunic, with a brass and leather belt."

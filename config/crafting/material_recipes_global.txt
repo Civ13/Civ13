@@ -843,6 +843,7 @@ RECIPE: /material/cloth/,custom short modern outfit,/obj/item/clothing/under/cus
 RECIPE: /material/cloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
 RECIPE: /material/cloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
 
+RECIPE: /material/cloth/,customizable roman dress,/obj/item/clothing/under/custom/stola,4,85,0,1,feminine clothing,0,0,18,8,null
 RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/cloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
 RECIPE: /material/cloth/,blue sari,/obj/item/clothing/under/sari/blue,4,85,0,1,feminine clothing,0,0,38,8,null
@@ -1894,6 +1895,7 @@ RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,
 //*********************| BRONZE ARMOR |*************************
 
 RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,1,bronze
+RECIPE: /material/bronze/,bronze montefortino helmet,/obj/item/clothing/head/helmet/montefortino,4,100,0,1,armor,21,16,0,1,bronze
 RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,2,bronze
 RECIPE: /material/bronze/,bronze dragoon helmet,/obj/item/clothing/head/helmet/napoleonic/dragoon,7,100,0,1,armor,0,88,92,3,null
 
