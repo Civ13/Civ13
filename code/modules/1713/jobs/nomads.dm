@@ -723,7 +723,7 @@
 /datum/job/civilian/civa
 	title = "Civilization A Citizen"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivA"
 
 	is_civilizations = TRUE
@@ -759,7 +759,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCivB"
-
+	can_be_female = TRUE
 	is_civilizations = TRUE
 
 	min_positions = 9999
@@ -793,7 +793,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCivC"
-
+	can_be_female = TRUE
 	is_civilizations = TRUE
 
 	min_positions = 9999
@@ -824,7 +824,7 @@
 /datum/job/civilian/civd
 	title = "Civilization D Citizen"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivD"
 
 	is_civilizations = TRUE
@@ -859,7 +859,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCivE"
-
+	can_be_female = TRUE
 	is_civilizations = TRUE
 
 	min_positions = 9999
@@ -890,7 +890,7 @@
 /datum/job/civilian/civf
 	title = "Civilization F Citizen"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivF"
 
 	is_civilizations = TRUE
@@ -923,7 +923,7 @@
 /datum/job/civilian/civnomad
 	title = "Nomad"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_nomad = TRUE
@@ -957,7 +957,7 @@
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND1"
 
 
@@ -991,7 +991,7 @@
 /datum/job/civilian/fantasy/ant
 	title = "Ant tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND2"
 
 
@@ -1026,7 +1026,7 @@
 /datum/job/civilian/fantasy/gorilla
 	title = "Gorilla tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND3"
 
 
@@ -1060,7 +1060,7 @@
 /datum/job/civilian/fantasy/human
 	title = "Human tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND4"
 
 
@@ -1093,7 +1093,7 @@
 /datum/job/civilian/fantasy/wolf
 	title = "Wolf tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND5"
 
 
@@ -1127,7 +1127,7 @@
 /datum/job/civilian/fantasy/lizard
 	title = "Lizard tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND6"
 
 
@@ -1159,7 +1159,7 @@
 /datum/job/civilian/fantasy/crab
 	title = "Crustacean tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND7"
 
 

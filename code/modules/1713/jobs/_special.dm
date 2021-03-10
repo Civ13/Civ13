@@ -60,7 +60,7 @@
 /datum/job/var/is_paratrooper = FALSE
 /datum/job/var/is_vietcong = FALSE
 /datum/job/var/is_upa = FALSE
-
+/datum/job/var/can_be_female = FALSE
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE
 

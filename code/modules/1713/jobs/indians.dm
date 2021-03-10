@@ -13,7 +13,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateIND"
-
+	can_be_female = TRUE
 	is_officer = TRUE
 
 
@@ -52,7 +52,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateIND"
-
+	can_be_female = TRUE
 
 
 	min_positions = 2
@@ -95,7 +95,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateIND"
-
+	can_be_female = TRUE
 
 
 	min_positions = 20
@@ -146,7 +146,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateIND1"
-
+	can_be_female = TRUE
 
 
 	min_positions = 60
@@ -185,7 +185,7 @@ datum/job/indians/tribes/blue
 	title = "Blue Turkey Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND2"
 
 
@@ -226,7 +226,7 @@ datum/job/indians/tribes/green
 	title = "Green Monkey Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND3"
 
 
@@ -267,7 +267,7 @@ datum/job/indians/tribes/yellow
 	title = "Yellow Mouse Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND4"
 
 
@@ -308,7 +308,7 @@ datum/job/indians/tribes/white
 	title = "White Wolf Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND5"
 
 
@@ -351,7 +351,7 @@ datum/job/indians/tribes/black
 	title = "Black Bear Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND6"
 
 

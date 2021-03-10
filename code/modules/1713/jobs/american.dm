@@ -181,7 +181,7 @@
 
 	is_medic = TRUE
 	is_ww2 = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 4
 
@@ -502,7 +502,7 @@
 	is_pacific = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-
+	can_be_female = TRUE
 	min_positions = 4
 	max_positions = 24
 	default_language = "Filipino"
@@ -786,7 +786,7 @@
 
 	is_medic = TRUE
 	is_korean_war = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 4
 

@@ -186,7 +186,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePT"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -224,7 +224,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -367,7 +367,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -400,7 +400,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -512,7 +512,7 @@
 /datum/job/civilian/townpriest
 	title = "Town Priest"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -550,7 +550,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -607,7 +607,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePirate"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 	min_positions = 6
@@ -687,7 +687,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 	min_positions = 2
@@ -766,7 +766,7 @@
 /datum/job/civilian/outlaw2
 	title = "East Side Gang"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE

@@ -167,7 +167,7 @@
 	title = "Teller"
 	en_meaning = "Bank Teller"
 	rank_abbreviation = "Teller"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
 
@@ -400,7 +400,7 @@
 
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
-
+	can_be_female = TRUE
 	whitelisted = TRUE
 	is_1713 = TRUE
 
@@ -457,7 +457,7 @@
 	title = "Priest"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_religious = TRUE
@@ -498,7 +498,7 @@
 	title = "Prospector"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -556,7 +556,7 @@
 	title = "Farmer"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -616,7 +616,7 @@
 	title = "Carpenter"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -694,7 +694,7 @@
 
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
-
+	can_be_female = TRUE
 	is_1713 = TRUE
 
 
@@ -766,7 +766,7 @@
 	title = "Inkeeper"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivD"
 
 	is_1713 = TRUE
@@ -841,7 +841,7 @@
 	title = "Bar Keep/Bar Maiden"
 	en_meaning = "Colony Taverner"
 	rank_abbreviation = "Waiter"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -918,7 +918,7 @@
 	title = "Colonist"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -994,7 +994,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_1713 = TRUE
 
 
@@ -1191,7 +1191,7 @@
 
 	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
-
+	can_be_female = TRUE
 	whitelisted = TRUE
 	is_pioneer = TRUE
 
@@ -1451,7 +1451,7 @@
 
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
-
+	can_be_female = TRUE
 	whitelisted = TRUE
 	is_pioneer = TRUE
 
@@ -1508,7 +1508,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_religious = TRUE
 	is_pioneer = TRUE
 
@@ -1551,7 +1551,7 @@
 	spawn_location = "JoinLateCiv"
 	is_pioneer = TRUE
 
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 40
 	default_language = "Chinese"
@@ -1614,7 +1614,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_pioneer = TRUE
 
 
@@ -1673,7 +1673,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_pioneer = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 3
 	max_positions = 50
@@ -1746,7 +1746,7 @@
 	whitelisted = TRUE
 
 	is_pioneer = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 3
@@ -1819,7 +1819,7 @@
 	spawn_location = "JoinLateCivD"
 
 	is_pioneer = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -1874,7 +1874,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_pioneer = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -1927,7 +1927,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_pioneer = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 10
 	max_positions = 150
@@ -1996,7 +1996,7 @@
 	spawn_location = "JoinLateCivA"
 
 	is_deal = TRUE
-
+	can_be_female = TRUE
 	min_positions = 0
 	max_positions = 0
 
@@ -2249,7 +2249,7 @@
 	spawn_location = "JoinLateCiv"
 	rank_abbreviation = "Officer"
 	selection_color = "#4845eb"
-
+	can_be_female = TRUE
 	is_deal = TRUE
 
 	min_positions = 5
@@ -2309,7 +2309,7 @@
 	spawn_location = "JoinLateCivE"
 	selection_color = "#777777"
 	is_deal = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -2347,7 +2347,7 @@
 	spawn_location = "JoinLateCivF"
 	selection_color = "#cd853f"
 	is_deal = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 15
 
@@ -2380,7 +2380,7 @@
 	spawn_location = "JoinLateCivG"
 	selection_color = "#8b4513	"
 	is_deal = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 15
 
@@ -2412,7 +2412,7 @@
 	spawn_location = "JoinLateCivH"
 	selection_color = "#880000"
 	is_deal = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 15
 
@@ -2450,6 +2450,7 @@
 	min_positions = 3
 	max_positions = 15
 	whitelisted = TRUE
+	can_be_female = TRUE
 
 /datum/job/civilian/businessman/legitimate/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

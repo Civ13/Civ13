@@ -90,7 +90,7 @@
 	title = "Bac Si"
 	en_meaning = "Vietcong Medic"
 	rank_abbreviation = "Bac Si"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
 
 	is_medic = TRUE
@@ -248,7 +248,7 @@
 	title = "Binh Ni"
 	en_meaning = "Vietcong Soldier"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
 
 	is_coldwar = TRUE
@@ -720,7 +720,7 @@
 /datum/job/american/specops_leader
 	title = "SOF Team Leader"
 	rank_abbreviation = "Lt."
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -763,7 +763,7 @@
 /datum/job/american/specops_doctor
 	title = "SOF Medic"
 	rank_abbreviation = "Sfc."
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -800,7 +800,7 @@
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRN"
-
+	can_be_female = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
 
@@ -1061,7 +1061,7 @@
 	rank_abbreviation = "Bac Si"
 
 	spawn_location = "JoinLateJP"
-
+	can_be_female = TRUE
 	is_medic = TRUE
 	is_coldwar = TRUE
 	is_nva = TRUE

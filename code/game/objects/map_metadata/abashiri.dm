@@ -123,12 +123,11 @@
 			i[2]=0
 	for (var/mob/living/human/H in player_list)
 		if (H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/abashiri/prisoner))
-			var/datum/job/civilian/abashiri/prisoner/PJ = H.original_job
 			var/curval = 0
 			var/area/A = get_area(H)
 			if (istype(A, /area/caribbean/nomads/ice/target))
 				for(var/i in points)
-					if (i[1]==PJ.nationality)
+					if (i[1]==H.nationality)
 						i[3]+=4
 					else if (i[1]!="Guards")
 						i[3]+=2
@@ -139,7 +138,7 @@
 				for(var/obj/item/stack/money/yen/R in ST.pockets)
 					curval += R.amount
 			for(var/i in points)
-				if (i[1]==PJ.nationality)
+				if (i[1]==H.nationality)
 					i[2]+=curval
 	return
 

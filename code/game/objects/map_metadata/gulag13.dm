@@ -127,12 +127,11 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			i[2]=0
 	for (var/mob/living/human/H in player_list)
 		if (H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner))
-			var/datum/job/civilian/prisoner/PJ = H.original_job
 			var/curval = 0
 			var/area/A = get_area(H)
 			if (istype(A, /area/caribbean/nomads/ice/target))
 				for(var/i in points)
-					if (i[1]==PJ.nationality)
+					if (i[1]==H.nationality)
 						i[3]+=4
 					else if (i[1]!="Guards")
 						i[3]+=2
@@ -143,7 +142,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 				for(var/obj/item/stack/money/rubles/R in ST.pockets)
 					curval += R.amount
 			for(var/i in points)
-				if (i[1]==PJ.nationality)
+				if (i[1]==H.nationality)
 					i[2]+=curval
 	return
 
@@ -210,7 +209,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 				var/crimereason = "Criminal Behaviour"
 				if (istype(H.original_job, /datum/job/civilian/prisoner))
 					var/datum/job/civilian/prisoner/P = H.original_job
-					switch(P.nationality)
+					switch(H.nationality)
 						if ("Vory")
 							crimereason = pick("Attempted murder.","Damage to people's property.","Theft of communal goods.")
 						if ("German")
@@ -223,7 +222,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
 				else if (istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))
 					var/datum/job/civilian/abashiri/prisoner/P = H.original_job
-					switch(P.nationality)
+					switch(H.nationality)
 						if ("Japanese")
 							crimereason = pick("Attempted murder.","Damage to people's property.","Theft of private property.","Crimes against the Imperial Japanese Empire")
 						if ("Russian")

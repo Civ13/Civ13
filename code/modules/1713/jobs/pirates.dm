@@ -16,7 +16,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-
+	can_be_female = TRUE
 
 
 	min_positions = 1
@@ -58,7 +58,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-
+	can_be_female = TRUE
 
 
 	min_positions = 1
@@ -98,7 +98,7 @@
 
 	spawn_location = "JoinLatePirateBoatswain"
 	whitelisted = TRUE
-
+	can_be_female = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -140,7 +140,7 @@
 
 	spawn_location = "JoinLatePirateMidshipman"
 	is_officer = TRUE
-
+	can_be_female = TRUE
 
 
 	min_positions = 1
@@ -174,7 +174,7 @@
 	title = "Pirate Surgeon"
 	en_meaning = "Medic"
 	rank_abbreviation = "Surgeon"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLatePirateSurgeon"
 
 	is_medic = TRUE
@@ -214,7 +214,7 @@
 	rank_abbreviation = "Carpenter"
 
 	spawn_location = "JoinLatePirateCarpenter"
-
+	can_be_female = TRUE
 
 
 	min_positions = 1
@@ -266,7 +266,7 @@
 	rank_abbreviation = "Cook"
 
 	spawn_location = "JoinLatePirateCook"
-
+	can_be_female = TRUE
 
 
 	min_positions = 1
@@ -322,7 +322,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePirate"
-
+	can_be_female = TRUE
 
 
 	min_positions = 6
@@ -395,7 +395,7 @@
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 0
 	max_positions = 0
@@ -472,7 +472,7 @@
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
-
+	can_be_female = TRUE
 	min_positions = 0
 	max_positions = 0
 	total_positions = 0
@@ -526,7 +526,7 @@
 	title = "Battle Royale Fighter"
 	en_meaning = ""
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
@@ -602,7 +602,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_marooned = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 60
 	max_positions = 300

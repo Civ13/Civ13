@@ -371,6 +371,7 @@
 	is_ww2 = FALSE
 	is_officer = TRUE
 	is_ph_us_war = TRUE
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -415,6 +416,7 @@
 	is_ww2 = FALSE
 	uses_squads = TRUE
 	is_ph_us_war = TRUE
+	can_be_female = TRUE
 
 	min_positions = 8
 	max_positions = 100
@@ -473,6 +475,7 @@
 	is_ph_us_war = TRUE
 	is_medic = TRUE
 	is_ww2 = FALSE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 4
@@ -522,6 +525,7 @@
 	uses_squads = TRUE
 	is_ph_us_war = TRUE
 	whitelisted = TRUE
+	can_be_female = TRUE
 
 	min_positions = 8
 	max_positions = 100

@@ -151,7 +151,6 @@
 	additional_languages = list("Latin" = 100)
 	male_tts_voice = "Giorgio" //italian
 	female_tts_voice = "Bianca" //italian
-
 /datum/job/npc
 	default_language = "English"
 
