@@ -400,6 +400,15 @@
 	New()
 		..()
 		update_icon()
+
+//moneycounter by robert//
+/obj/structure/vending/sales/food/hot/moneycounter
+	name = "Currency Counter"
+	desc = "A currency counter, it's useful for easily merging piles of money into one clean stack."
+	icon_state = "CurrencyCounter"
+	products = list()
+	prices = list()
+
 /obj/structure/vending/sales/market_stall
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
