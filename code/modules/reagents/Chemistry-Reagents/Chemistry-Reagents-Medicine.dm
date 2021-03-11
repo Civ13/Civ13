@@ -272,7 +272,7 @@
 	description = "Saline is a mixture of sodium chloride in water."
 	taste_description = "sweetness and salt"
 	reagent_state = LIQUID
-	color = "#dfdfdf8c"
+	color = "#b4b4b4"
 	metabolism = REM * 0.75
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
