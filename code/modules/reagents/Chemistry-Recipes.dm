@@ -245,6 +245,13 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("opium" = 1, "ethanol" = 1, "acetone" = 1)
 	result_amount = 3
 
+/datum/chemical_reaction/paracetamol
+	name = "Paracetamol"
+	id = "paracetamol"
+	result = "paracetamol"
+	required_reagents = list("Tramadol" = 1, "sugar" = 1, "water" = 1)
+	result_amount = 3
+
 /datum/chemical_reaction/oxycodone
 	name = "Oxycodone"
 	id = "oxycodone"
