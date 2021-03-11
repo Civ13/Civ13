@@ -269,7 +269,7 @@
 /datum/reagent/saline_glucose
 	name = "Saline Glucose solution"
 	id = "saline_glucose"
-	description = "Saline is a mixture of sodium chloride in water and has a number of uses in medicine."
+	description = "Saline is a mixture of sodium chloride in water."
 	taste_description = "sweetness and salt"
 	reagent_state = LIQUID
 	color = "#dfdfdf8c"
