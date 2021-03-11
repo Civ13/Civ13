@@ -249,7 +249,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Paracetamol"
 	id = "paracetamol"
 	result = "paracetamol"
-	required_reagents = list("Tramadol" = 1, "sugar" = 1, "water" = 1)
+	required_reagents = list("tramadol" = 1, "sugar" = 1, "water" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/oxycodone
