@@ -281,7 +281,7 @@
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
 		if (src.client.ckey == "kanohashinobi")
-			src.add_note("Known Languages", "German")
+			src.add_note("Known Languages", "Japanese")
 			src.remove_language("English")
 			src.name = "Takao Hitori"
 			src.real_name = name

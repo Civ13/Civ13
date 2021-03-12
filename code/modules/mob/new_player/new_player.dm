@@ -603,10 +603,20 @@ var/global/redirect_all_players = null
 		if (client && client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
-	if (!job.can_be_female || !job.is_medic || !job.is_deal || (!job.is_rp && !job.is_medieval) || !job.is_civilizations)
-		if (client && client.prefs.gender == FEMALE)
-			WWalert(usr,"You must be male to play as this.","Error")
+	if (!job.is_medic || !job.is_deal || !job.is_rp)
+		if (client && client.prefs.gender == FEMALE && !job.can_be_female)
+			WWalert(usr,"You must be male to play as this role.","Error")
 			return FALSE
+		else if (client && client.prefs.gender == FEMALE && job.can_be_female)
+			spawning = TRUE
+			close_spawn_windows()
+			job_master.AssignRole(src, rank, TRUE)
+			var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
+			if (!character)
+				return FALSE
+
+			character = job_master.EquipRank(character, rank, TRUE)
+			return
 	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian) && map.ID != MAP_BOHEMIA)
 		if (client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
