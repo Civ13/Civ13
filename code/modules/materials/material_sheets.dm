@@ -171,8 +171,16 @@
 			user << "<span class='notice'>You make the clay into a mold of the key.</span>"
 			new/obj/item/weapon/clay/mold/key(user.loc)
 			qdel(src)
-	else
-		return
+	if (istype(W, type))
+		var/obj/item/stack/S = W
+		merge(S)
+		S.update_icon()
+		src.update_icon()
+		spawn(0) //give the stacks a chance to delete themselves if necessary
+		if (S && usr.using_object == S)
+			S.interact(usr)
+		if (src && usr.using_object == src)
+			interact(usr)
 
 /obj/item/stack/material/electronics
 	name = "electronic circuits"
