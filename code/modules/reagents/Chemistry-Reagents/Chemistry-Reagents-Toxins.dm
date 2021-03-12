@@ -450,7 +450,7 @@
 		M.emote("drool")
 
 /datum/reagent/mindbreaker
-	name = "Mindbreaker Toxin"
+	name = "Lysergic acid diethylamide"
 	id = "mindbreaker"
 	description = "A powerful hallucinogen, it can cause fatal effects in users."
 	taste_description = "sourness"

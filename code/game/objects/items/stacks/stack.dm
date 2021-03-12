@@ -287,6 +287,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	var/mob/living/human/H = user
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
+	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
 	var/obj/item/weapon/key/civ/build_override_key = null
 	var/obj/item/stack/money/coppercoin/build_override_coins_copper = null
 	var/obj/item/stack/money/silvercoin/build_override_coins_silver = null
@@ -412,6 +413,22 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		indesc = input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>South:</b> [indesc]"
+
+	else if (findtext(recipe.title, "faction") && findtext(recipe.title, "door"))
+		if (H.getStatCoeff("crafting") < 1)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
+		if (!ishuman(user))
+			return
+		if(H.civilization == "none")
+			H << "You must be part of a faction to craft this door"
+			return
+		else
+			faction_override_door = new /obj/structure/simple_door/key_door/faction_door
+			faction_override_door.faction = H.civilization
+			faction_override_door.name = "[H.civilization]'s Door"
+
 	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -1928,6 +1945,12 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			build_override_door.loc = get_turf(O)
 			build_override_door.set_dir(user.dir)
 			build_override_door.add_fingerprint(user)
+			qdel(O)
+			return
+		if (faction_override_door)
+			faction_override_door.loc = get_turf(O)
+			faction_override_door.set_dir(user.dir)
+			faction_override_door.add_fingerprint(user)
 			qdel(O)
 			return
 		if (customname != "")
