@@ -800,6 +800,7 @@ var/global/list/damage_icon_parts = list()
 	var/image/band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
 	var/image/cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
 	var/image/symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
+	var/image/helmet = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "montefortino")
 	if (head)
 
 		head.screen_loc = find_inv_position(slot_head)
@@ -858,6 +859,13 @@ var/global/list/damage_icon_parts = list()
 			var/obj/item/clothing/head/custom_keffiyeh/CU = head
 			var/image/pattern = image("icon" = 'icons/mob/head.dmi', "icon_state" = "keffiyeh_custom_color")
 			pattern.color = CU.patterncolor
+			standing.overlays += pattern
+		else if (istype(head, /obj/item/clothing/head/helmet/montefortino))
+			var/obj/item/clothing/head/helmet/montefortino/CU = head
+			var/image/pattern = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "montefortino_color")
+			pattern.color = CU.patterncolor
+			helmet = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "montefortino")
+			standing.overlays += helmet
 			standing.overlays += pattern
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
 			var/obj/item/clothing/head/custom/fieldcap/CU = head

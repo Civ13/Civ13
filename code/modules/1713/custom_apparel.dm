@@ -825,6 +825,41 @@
 	else
 		..()
 
+//Helmets
+
+/obj/item/clothing/head/helmet/montefortino
+	name = "bronze montefortino helmet"
+	desc = "A conical bronce helmet with cheekplates."
+	icon_override = "code/modules/1713/clothing/head.dmi"
+	icon_state = "montefortino"
+	item_state = "montefortino"
+	worn_state = "montefortino"
+	body_parts_covered = HEAD
+	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	health = 30
+	var/uncolored1 = TRUE
+	var/patterncolor = 0
+
+/obj/item/clothing/head/helmet/montefortino/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!patterncolor)
+			var/input = WWinput(user, "Pattern - Choose a color:", "Cap Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				patterncolor = input
+	//			user << "Color: [color]"
+
+		if (patterncolor)
+			uncolored1 = FALSE
+			var/image/pattern = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "montefortino_color")
+			pattern.color = patterncolor
+			overlays += pattern
+			return
+	else
+		..()
+
+
 /obj/item/clothing/head/custom_feathered_hat
 	name = "feathered cap"
 	desc = "A feathered cap."

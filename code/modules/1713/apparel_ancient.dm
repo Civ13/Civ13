@@ -520,15 +520,6 @@
 	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	health = 30
 
-/obj/item/clothing/head/helmet/montefortino
-	name = "bronze montefortino helmet"
-	desc = "A conical bronce helmet with cheekplates."
-	icon_state = "montefortino"
-	item_state = "montefortino"
-	worn_state = "montefortino"
-	body_parts_covered = HEAD
-	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
-	health = 30
 
 /obj/item/clothing/head/helmet/leather
 	name = "leather helmet"
