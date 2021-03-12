@@ -860,6 +860,8 @@
 		..()
 
 
+
+
 /obj/item/clothing/head/custom_feathered_hat
 	name = "feathered cap"
 	desc = "A feathered cap."
