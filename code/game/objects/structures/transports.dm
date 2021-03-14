@@ -30,6 +30,8 @@
 
 	mouse_drop_zone = TRUE
 
+	var/animal_propelled = FALSE
+
 /obj/structure/vehicle/proc/check_sails()
 	return
 /obj/structure/vehicle/proc/updatepassdir()
@@ -152,7 +154,7 @@
 				update_overlay()
 				update_icon()
 				return
-	else if (istype(A, /obj))
+	else if (istype(A, /obj) && storagecapacity >= 1)
 		if (src == A)
 			return
 		var/obj/structure/O = A
@@ -472,34 +474,35 @@
 			currentcap.anchored = FALSE
 			currentcap = null
 	if (ontop_o.len > 0)
-		for(var/obj/structure/OB in ontop_o)
-			switch (dir)
-				if (SOUTH, NORTH)
-					if (istype(OB, /obj/structure/cannon))
-						OB.pixel_x = pixel_x
-						if (dir == SOUTH)
-							OB.pixel_y = pixel_y-32
-							OB.dir = dir
+		if(storagecapacity >= 1)
+			for(var/obj/structure/OB in ontop_o)
+				switch (dir)
+					if (SOUTH, NORTH)
+						if (istype(OB, /obj/structure/cannon))
+							OB.pixel_x = pixel_x
+							if (dir == SOUTH)
+								OB.pixel_y = pixel_y-32
+								OB.dir = dir
+							else
+								OB.pixel_y = pixel_y+32
+								OB.dir = dir
 						else
-							OB.pixel_y = pixel_y+32
+							OB.pixel_x = pixel_x+16
+							OB.pixel_y = pixel_y+20
 							OB.dir = dir
-					else
-						OB.pixel_x = pixel_x+16
-						OB.pixel_y = pixel_y+20
-						OB.dir = dir
-				if (EAST, WEST)
-					if (istype(OB, /obj/structure/cannon))
-						OB.pixel_y = pixel_y
-						if (dir == WEST)
-							OB.pixel_x = pixel_x-32
-							OB.dir = dir
+					if (EAST, WEST)
+						if (istype(OB, /obj/structure/cannon))
+							OB.pixel_y = pixel_y
+							if (dir == WEST)
+								OB.pixel_x = pixel_x-32
+								OB.dir = dir
+							else
+								OB.pixel_x = pixel_x+32
+								OB.dir = dir
 						else
 							OB.pixel_x = pixel_x+32
+							OB.pixel_y = pixel_y+10
 							OB.dir = dir
-					else
-						OB.pixel_x = pixel_x+32
-						OB.pixel_y = pixel_y+10
-						OB.dir = dir
 
 /obj/structure/vehicle/boat/sailboat/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
@@ -975,3 +978,635 @@
 		var/image/colorov = image("icon" = icon, "icon_state" = "[icon_state]_mask1")
 		colorov.color = customcolor
 		overlays += colorov
+
+/obj/structure/vehicle/carriage
+	name = "Carriage"
+	icon = 'icons/obj/vehicles/vehicles96x96.dmi'
+	icon_state = "simple_carriage"
+	anchored = FALSE
+	density = FALSE
+	opacity = FALSE
+	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	vehicle_m_delay = 12
+	layer = 2.95
+	health = 90
+	axis =  new/obj/structure/vehicleparts/axis/carriage
+	wheeled = TRUE
+	dwheel = new/obj/item/vehicleparts/wheel/rope
+	var/image/cover_overlay = null
+	var/image/cover_overlay_c = null
+	var/maxcapacity = 0 //besides the driver
+	var/mob/living/human/currentcap = null
+	bound_width = 96
+	bound_height = 96
+	mobcapacity = 7
+	storagecapacity = null //This is rekting my crates pixel location
+	var/max_animal_propulsion = 2
+	var/buckled_animal_propulsion = 0
+	var/mob/living/simple_animal/pulling1 = null
+	var/mob/living/simple_animal/pulling2 = null
+	var/bucklepoint1 = null
+	var/bucklepoint2 = null
+	var/bucklepoint3 = null
+	var/bucklepoint4 = null
+	var/bucklepoint5 = null
+	var/total_cargo = 5
+	var/current_cargo = 0
+	pixel_x = -18
+	pixel_y = -10
+
+/obj/structure/vehicle/carriage/MouseDrop_T(atom/A, mob/living/human/user)
+	if(A in ontop)
+		if (istype(A, /mob/living/human))
+			var/mob/living/human/M = A
+			if(A == user && M == driver) //The driver shouldnt unbuckle himself like this
+				return
+			visible_message("<div class='notice'>[user] start to remove [M] from the [src]...</div>")
+			if (do_after(user, 30, src))
+				if(bucklepoint1 == M)
+					bucklepoint1 = null
+				else if(bucklepoint2 == M)
+					bucklepoint2 = null
+				else if(bucklepoint3 == M)
+					bucklepoint3 = null
+				else if(bucklepoint4 == M)
+					bucklepoint4 = null
+				else if(bucklepoint5 == M)
+					bucklepoint5 = null
+				visible_message("<div class='notice'>[user] sucessfully removes [M] from the [src].</div>")
+				ontop -= M
+				M.pixel_x = 0
+				M.pixel_y = 0
+				unbuckle_mob()
+				buckled_mob = null
+				M.buckled = null
+				current_cargo -= 1
+	if(A in ontop_o)
+		if(istype(A, /obj/structure))
+			var/obj/structure/M = A
+			if (do_after(user, 30, src))
+				if(bucklepoint1 == M)
+					bucklepoint1 = null
+				else if(bucklepoint2 == M)
+					bucklepoint2 = null
+				else if(bucklepoint3 == M)
+					bucklepoint3 = null
+				else if(bucklepoint4 == M)
+					bucklepoint4 = null
+				else if(bucklepoint5 == M)
+					bucklepoint5 = null
+				M.anchored = FALSE
+				ontop_o -= M
+				M.pixel_x = 0
+				M.pixel_y = 0
+				visible_message("[user] takes \the [M] from \the [src].","You take \the [M] from \the [src].")
+				current_cargo -= 1
+	else if (istype(A, /mob/living/human))// && !(A in ontop))
+		var/mob/living/human/M = A
+		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop) && ontop.len < mobcapacity)
+			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			if (do_after(M, 40, src))
+				visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+				M.forceMove(get_turf(src))
+				if (!driver && A == user)
+					if (wheeled)
+						if (M.put_in_active_hand(dwheel) == FALSE)
+							M << "Your hands are full!"
+							return
+
+					M.driver = TRUE
+					M.driver_vehicle = src
+					driver = M
+					buckle_mob(driver)
+					ontop += M
+					M.pixel_x = pixel_x
+					M.pixel_y = pixel_y
+					switch (dir) //Adjusts driver's pixel deviation to fit the carriage
+						if (SOUTH)
+							M.pixel_x += 18
+							M.pixel_y += 10
+						if (NORTH)
+							M.pixel_x += 18
+							M.pixel_y += 68
+						if (EAST)
+							M.pixel_x += 60
+							M.pixel_y += 50
+						if (WEST)
+							M.pixel_x += 0
+							M.pixel_y += 52
+				ontop += M
+				return
+	else if(istype(A, /mob/living/simple_animal/cattle) && (buckled_animal_propulsion < max_animal_propulsion))
+	//else if(buckled_animal_propulsion < max_animal_propulsion)
+		if(istype(A, /mob/living/simple_animal/cattle)) //delete this
+			var/mob/living/simple_animal/cattle/M = A
+			if(pulling1 == null || pulling2 == null)
+				buckle_mob(M)
+				ontop += M
+				M.buckled = 1
+				user.visible_message("[user] ties the [M] to the [src].")
+				if(!pulling1)
+					pulling1 = M
+				else if(!pulling2)
+					pulling2 = M
+				buckled_animal_propulsion += 1
+				updatepassdir()
+				M.forceMove(get_turf(src))
+	else if((current_cargo < total_cargo) && (!(A in ontop) || !(A in ontop_o)))
+		var/seat = null
+		if(A != driver && (A != pulling1 && A != pulling2))
+			if(!bucklepoint1)
+				if(istype(A, /mob/living))
+					var/mob/living/M = A
+					if (do_after(user, 30, src))
+						buckle_mob(M)
+						ontop += M
+						M.buckled = 1
+						bucklepoint1 = M
+						current_cargo += 1
+						seat = 1
+				else if(istype(A, /obj/structure))
+					var/obj/structure/M = A
+					if (M.anchored == FALSE && !(M in ontop_o) && ontop_o.len < total_cargo && M != src)
+						if (do_after(user, 30, src))
+							ontop_o += M
+							M.anchored = TRUE
+							M.dir = dir
+							bucklepoint1 = M
+							current_cargo += 1
+							seat = 1
+			else if(!bucklepoint2)
+				if(istype(A, /mob/living))
+					var/mob/living/M = A
+					if (do_after(user, 30, src))
+						buckle_mob(M)
+						ontop += M
+						M.buckled = 1
+						bucklepoint2 = M
+						current_cargo += 1
+						seat = 2
+				else if(istype(A, /obj/structure))
+					var/obj/structure/M = A
+					if (M.anchored == FALSE && !(M in ontop_o) && ontop_o.len < total_cargo && M != src)
+						if (do_after(user, 30, src))
+							ontop_o += M
+							M.anchored = TRUE
+							M.dir = dir
+							bucklepoint2 = M
+							current_cargo += 1
+							seat = 2
+			else if(!bucklepoint3)
+				if(istype(A, /mob/living))
+					if (do_after(user, 30, src))
+						var/mob/living/M = A
+						buckle_mob(M)
+						ontop += M
+						M.buckled = 1
+						bucklepoint3 = M
+						current_cargo += 1
+						seat = 3
+				else if(istype(A, /obj/structure))
+					var/obj/structure/M = A
+					if (M.anchored == FALSE && !(M in ontop_o) && ontop_o.len < total_cargo && M != src)
+						if (do_after(user, 30, src))
+							ontop_o += M
+							M.anchored = TRUE
+							M.dir = dir
+							bucklepoint3 = M
+							current_cargo += 1
+							seat = 3
+			else if(!bucklepoint4)
+				if(istype(A, /mob/living))
+					if (do_after(user, 30, src))
+						var/mob/living/M = A
+						buckle_mob(M)
+						ontop += M
+						M.buckled = 1
+						bucklepoint4 = M
+						current_cargo += 1
+						seat = 4
+				else if(istype(A, /obj/structure))
+					var/obj/structure/M = A
+					if (M.anchored == FALSE && !(M in ontop_o) && ontop_o.len < total_cargo && M != src)
+						if (do_after(user, 30, src))
+							ontop_o += M
+							M.anchored = TRUE
+							M.dir = dir
+							bucklepoint4 = M
+							current_cargo += 1
+							seat = 4
+			else if(!bucklepoint5)
+				if(istype(A, /mob/living))
+					if (do_after(user, 30, src))
+						var/mob/living/M = A
+						buckle_mob(M)
+						ontop += M
+						M.buckled = 1
+						bucklepoint5 = M
+						current_cargo += 1
+						seat = 5
+				else if(istype(A, /obj/structure))
+					var/obj/structure/M = A
+					if (M.anchored == FALSE && !(M in ontop_o) && ontop_o.len < total_cargo && M != src)
+						if (do_after(user, 30, src))
+							ontop_o += M
+							M.anchored = TRUE
+							M.dir = dir
+							bucklepoint5 = M
+							current_cargo += 1
+							seat = 5
+		if(seat)	//Updates the mob/obj pixel deviation
+			if(istype(A, /obj/structure))	//Moves obj or mob to carriage's turf location so the pixel deviation can be precise
+				var/obj/structure/M = A
+				M.forceMove(get_turf(src))
+			else if(istype(A, /mob/living))
+				var/mob/living/M = A
+				M.forceMove(get_turf(src))
+			switch(seat)
+				if(1)
+					switch (dir)
+						if (SOUTH)
+							A.pixel_x = 27
+							A.pixel_y = 0
+							A.dir = SOUTH
+						if (NORTH)
+							A.pixel_x = 25
+							A.pixel_y = 58
+							A.dir = NORTH
+						if (EAST)
+							A.pixel_x = 42
+							A.pixel_y = 18
+							A.dir = EAST
+						if (WEST)
+							A.pixel_x = -18
+							A.pixel_y = 16
+							A.dir = WEST
+				if(2)
+					switch (dir)
+						if (SOUTH)
+							A.pixel_x = 27
+							A.pixel_y = 28
+							A.dir = SOUTH
+						if (NORTH)
+							A.pixel_x = 25
+							A.pixel_y = 26
+							A.dir = NORTH
+						if (EAST)
+							A.pixel_x = 13
+							A.pixel_y = 18
+							A.dir = EAST
+						if (WEST)
+							A.pixel_x = 18
+							A.pixel_y = 16
+							A.dir = WEST
+				if(3)
+					switch (dir)
+						if (SOUTH)
+							A.pixel_x = 3
+							A.pixel_y = 28
+							A.dir = SOUTH
+						if (NORTH)
+							A.pixel_x = 0
+							A.pixel_y = 26
+							A.dir = NORTH
+						if (EAST)
+							A.pixel_x = 13
+							A.pixel_y = 42
+							A.dir = EAST
+						if (WEST)
+							A.pixel_x = 18
+							A.pixel_y = 40
+							A.dir = WEST
+				if(4)
+					switch (dir)
+						if (SOUTH)
+							A.pixel_x = 3
+							A.pixel_y = 58
+							A.dir = SOUTH
+						if (NORTH)
+							A.pixel_x = 0
+							A.pixel_y = 0
+							A.dir = NORTH
+						if (EAST)
+							A.pixel_x = -15
+							A.pixel_y = 42
+							A.dir = EAST
+						if (WEST)
+							A.pixel_x = 46
+							A.pixel_y = 40
+							A.dir = WEST
+				if(5)
+					switch (dir)
+						if (SOUTH)
+							A.pixel_x = 27
+							A.pixel_y = 58
+							A.dir = SOUTH
+						if (NORTH)
+							A.pixel_x = 26
+							A.pixel_y = 0
+							A.dir = NORTH
+						if (EAST)
+							A.pixel_x = -15
+							A.pixel_y = 18
+							A.dir = EAST
+						if (WEST)
+							A.pixel_x = 46
+							A.pixel_y = 16
+							A.dir = WEST
+			seat = null
+
+/*	else if(A in ontop)
+		if (istype(A, /mob/living/human))
+			var/mob/living/human/M = A
+			if(A == user && M == driver) //The driver shouldnt unbuckle himself like this
+				return
+			visible_message("<div class='notice'>[user] start to remove [M] from the [src]...</div>")
+			if (do_after(user, 30, src))
+				if(bucklepoint1 == M)
+					bucklepoint1 = null
+				else if(bucklepoint2 == M)
+					bucklepoint2 = null
+				else if(bucklepoint3 == M)
+					bucklepoint3 = null
+				else if(bucklepoint4 == M)
+					bucklepoint4 = null
+				else if(bucklepoint5 == M)
+					bucklepoint5 = null
+				visible_message("<div class='notice'>[user] sucessfully removes [M] from the [src].</div>")
+				ontop -= M
+				M.pixel_x = 0
+				M.pixel_y = 0
+				unbuckle_mob()
+				buckled_mob = null
+				M.buckled = null
+				current_cargo -= 1
+	else if(A in ontop_o)
+		if(istype(A, /obj/structure))
+			var/obj/structure/M = A
+			if (do_after(user, 30, src))
+				if(bucklepoint1 == M)
+					bucklepoint1 = null
+				else if(bucklepoint2 == M)
+					bucklepoint2 = null
+				else if(bucklepoint3 == M)
+					bucklepoint3 = null
+				else if(bucklepoint4 == M)
+					bucklepoint4 = null
+				else if(bucklepoint5 == M)
+					bucklepoint5 = null
+				M.anchored = FALSE
+				ontop_o -= M
+				M.pixel_x = 0
+				M.pixel_y = 0
+				visible_message("[user] takes \the [M] from \the [src].","You take \the [M] from \the [src].")
+				current_cargo -= 1*/
+	update_overlay()
+	update_icon()
+
+/obj/structure/vehicle/carriage/updatepassdir()
+	if (driver)
+		driver.pixel_x = pixel_x
+		driver.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				driver.pixel_x += 18
+				driver.pixel_y += 10
+			if (NORTH)
+				driver.pixel_x += 18
+				driver.pixel_y += 68
+			if (EAST)
+				driver.pixel_x += 60
+				driver.pixel_y += 50
+			if (WEST)
+				driver.pixel_x += 0
+				driver.pixel_y += 52
+		if (!(driver in range(1,src)))
+			ontop -= driver
+			driver.anchored = FALSE
+			driver.driver = FALSE
+			unbuckle_mob()
+			driver.driver_vehicle = null
+			if (wheeled)
+				if (driver.l_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.l_hand = null
+				else if (driver.r_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.r_hand = null
+				driver.update_icons()
+				driver = null
+	if(pulling1)
+		var/mob/living/simple_animal/cattle/M = pulling1
+		M.pixel_x = pixel_x
+		M.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 0
+				M.pixel_y = -32
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 0
+				M.pixel_y = 88
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = 75
+				M.pixel_y = 42
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = -47
+				M.pixel_y = 43
+				M.dir = WEST
+	if(pulling2)
+		var/mob/living/simple_animal/cattle/M = pulling2
+		M.pixel_x = pixel_x
+		M.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 28
+				M.pixel_y = -32
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 26
+				M.pixel_y = 88
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = 75
+				M.pixel_y = 15
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = -47
+				M.pixel_y = 15
+				M.dir = WEST
+	if(bucklepoint1)
+		var/atom/M = bucklepoint1
+		M.pixel_x = 0
+		M.pixel_y = 0
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 27
+				M.pixel_y = 0
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 25
+				M.pixel_y = 58
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = 42
+				M.pixel_y = 18
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = -18
+				M.pixel_y = 16
+				M.dir = WEST
+
+	if(bucklepoint2)
+		var/atom/M = bucklepoint2
+		M.pixel_x = 0
+		M.pixel_y = 0
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 27
+				M.pixel_y = 28
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 25
+				M.pixel_y = 26
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = 13
+				M.pixel_y = 18
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = 18
+				M.pixel_y = 16
+				M.dir = WEST
+
+	if(bucklepoint3)
+		var/atom/M = bucklepoint3
+		M.pixel_x = 0
+		M.pixel_y = 0
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 3
+				M.pixel_y = 28
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 0
+				M.pixel_y = 26
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = 13
+				M.pixel_y = 42
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = 18
+				M.pixel_y = 40
+				M.dir = WEST
+
+	if(bucklepoint4)
+		var/atom/M = bucklepoint4
+		M.pixel_x = 0
+		M.pixel_y = 0
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 3
+				M.pixel_y = 58
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 0
+				M.pixel_y = 0
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = -15
+				M.pixel_y = 42
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = 46
+				M.pixel_y = 40
+				M.dir = WEST
+
+	if(bucklepoint5)
+		var/atom/M = bucklepoint5
+		M.pixel_x = 0
+		M.pixel_y = 0
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 27
+				M.pixel_y = 58
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 26
+				M.pixel_y = 0
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = -15
+				M.pixel_y = 18
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = 46
+				M.pixel_y = 16
+				M.dir = WEST
+	if (currentcap)
+		currentcap.pixel_x = pixel_x
+		currentcap.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				currentcap.pixel_x += 10
+				currentcap.pixel_y += 33
+			if (NORTH)
+				currentcap.pixel_x += 25
+				currentcap.pixel_y += 11
+			if (EAST)
+				currentcap.pixel_x += 5
+				currentcap.pixel_y += 19
+			if (WEST)
+				currentcap.pixel_x += 31
+				currentcap.pixel_y += 19
+		if (!(currentcap in range(1,src)))
+			ontop -= currentcap
+			currentcap.anchored = FALSE
+			currentcap = null
+
+/obj/structure/vehicle/carriage/attack_hand(mob/living/human/user as mob)
+	if ((user in ontop))
+		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		if (do_after(user, 30, src))
+			if(bucklepoint1 == user)
+				bucklepoint1 = null
+			else if(bucklepoint2 == user)
+				bucklepoint2 = null
+			else if(bucklepoint3 == user)
+				bucklepoint3 = null
+			else if(bucklepoint4 == user)
+				bucklepoint4 = null
+			else if(bucklepoint5 == user)
+				bucklepoint5 = null
+			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+			if (user == driver)
+				user.driver = FALSE
+				user.driver_vehicle = null
+				driver = null
+				if (wheeled)
+					if (user.l_hand == dwheel)
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
+						user.l_hand = null
+					else if (user.r_hand == dwheel)
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
+						user.r_hand = null
+						user.update_icons()
+						ontop -= user
+			user.pixel_x = 0
+			user.pixel_y = 0
+			user.buckled = null
+			unbuckle_mob()
+			buckled_mob = null
+			update_overlay()
+			update_icon()
+			ontop -= user
+			return
