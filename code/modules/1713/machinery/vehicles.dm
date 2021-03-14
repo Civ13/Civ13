@@ -53,7 +53,7 @@
 	currentspeed = 0
 	speeds = 3
 	maxpower = 10
-	speedlist = list(1=3,2=2,3=1)
+	speedlist = null
 	reg_number = ""
 	turntimer = 5
 
@@ -213,6 +213,15 @@
 	icon_state = "leash"
 
 /obj/item/vehicleparts/wheel/rope/attack_self(mob/living/human/H)
+	if(istype(H.driver_vehicle, /obj/structure/vehicle/carriage))
+		var/obj/structure/vehicle/carriage/M = H.driver_vehicle
+		if(M.buckled_animal_propulsion <= 0)
+			H << "You need animals to move the [H.driver_vehicle.name]."
+		else if(M.buckled_animal_propulsion == 1)
+			H.driver_vehicle.axis.speedlist = list(1=1,2=1)
+		else if(M.buckled_animal_propulsion == 2)
+			H.driver_vehicle.axis.speedlist = list(1=2,2=2,3=1)
+		return
 	if (H.driver_vehicle.axis.currentspeed <= 0)
 		H.driver_vehicle.axis.currentspeed = 1
 		var/spd = H.driver_vehicle.axis.get_speed()
