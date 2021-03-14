@@ -1018,9 +1018,9 @@
 	pixel_y = -10
 
 /obj/structure/vehicle/carriage/MouseDrop_T(atom/A, mob/living/human/user)
-	if(A in ontop)
-		if (istype(A, /mob/living/human))
-			var/mob/living/human/M = A
+	if(A in ontop)	//Removing a passenger/mob-cargo or pulling animal?
+		if (istype(A, /mob/living) && (A != pulling1 && A != pulling2))
+			var/mob/living/M = A
 			if(A == user && M == driver) //The driver shouldnt unbuckle himself like this
 				return
 			visible_message("<div class='notice'>[user] start to remove [M] from the [src]...</div>")
@@ -1043,7 +1043,25 @@
 				buckled_mob = null
 				M.buckled = null
 				current_cargo -= 1
-	if(A in ontop_o)
+				return
+		else if(A == pulling1 || A == pulling2) //Removing a pulling animal?
+			if(istype(A, /mob/living/simple_animal))
+				var/mob/living/simple_animal/cattle/M = A
+				visible_message("<div class='notice'>[user] tries to untie the [A] from the [src]...</div>")
+				if (do_after(user, 40, src))
+					if(M == pulling1)
+						pulling1 = null
+						ontop -= pulling1
+					else if(M == pulling2)
+						pulling2 = null
+						ontop -= pulling2
+					visible_message("<div class='notice'>[user]  unties the [A] from the [src]...</div>")
+					ontop -= M
+					buckled_animal_propulsion -= 1
+					M.buckled = null
+					M.pixel_y = 0
+					M.pixel_x = 0
+	else if(A in ontop_o)	//Removing a cargo object?
 		if(istype(A, /obj/structure))
 			var/obj/structure/M = A
 			if (do_after(user, 30, src))
@@ -1063,7 +1081,8 @@
 				M.pixel_y = 0
 				visible_message("[user] takes \the [M] from \the [src].","You take \the [M] from \the [src].")
 				current_cargo -= 1
-	else if (istype(A, /mob/living/human))// && !(A in ontop))
+				return
+	else if (istype(A, /mob/living/human) && A == user) //Placing yourself in the carriage.
 		var/mob/living/human/M = A
 		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop) && ontop.len < mobcapacity)
 			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
@@ -1080,7 +1099,6 @@
 					M.driver_vehicle = src
 					driver = M
 					buckle_mob(driver)
-					ontop += M
 					M.pixel_x = pixel_x
 					M.pixel_y = pixel_y
 					switch (dir) //Adjusts driver's pixel deviation to fit the carriage
@@ -1098,25 +1116,28 @@
 							M.pixel_y += 52
 				ontop += M
 				return
-	else if(istype(A, /mob/living/simple_animal/cattle) && (buckled_animal_propulsion < max_animal_propulsion))
-	//else if(buckled_animal_propulsion < max_animal_propulsion)
+	else if(istype(A, /mob/living/simple_animal/cattle) && (buckled_animal_propulsion < max_animal_propulsion)) //Attaching a pulling animal?
 		if(istype(A, /mob/living/simple_animal/cattle)) //delete this
 			var/mob/living/simple_animal/cattle/M = A
 			if(pulling1 == null || pulling2 == null)
-				buckle_mob(M)
-				ontop += M
-				M.buckled = 1
-				user.visible_message("[user] ties the [M] to the [src].")
-				if(!pulling1)
-					pulling1 = M
-				else if(!pulling2)
-					pulling2 = M
-				buckled_animal_propulsion += 1
-				updatepassdir()
-				M.forceMove(get_turf(src))
-	else if((current_cargo < total_cargo) && (!(A in ontop) || !(A in ontop_o)))
+				user.visible_message("[user] tries to tie the [M] to the [src].")
+				if(do_after(user, 30, src))
+					buckle_mob(M)
+					ontop += M
+					M.buckled = 1
+					user.visible_message("[user] ties the [M] to the [src].")
+					if(!pulling1)
+						pulling1 = M
+					else if(!pulling2)
+						pulling2 = M
+					buckled_animal_propulsion += 1
+					updatepassdir()
+					M.forceMove(get_turf(src))
+					return
+	else if((current_cargo < total_cargo) && (!(A in ontop) || !(A in ontop_o))) //Placing a cargo object or human passenger?
 		var/seat = null
 		if(A != driver && (A != pulling1 && A != pulling2))
+			visible_message("<div class='notice'>[user] tries to place [A] over the carriage...</div>")
 			if(!bucklepoint1)
 				if(istype(A, /mob/living))
 					var/mob/living/M = A
@@ -1224,6 +1245,7 @@
 			else if(istype(A, /mob/living))
 				var/mob/living/M = A
 				M.forceMove(get_turf(src))
+			visible_message("<div class='notice'>[user] sucessfully places [A] over the carriage...</div>")
 			switch(seat)
 				if(1)
 					switch (dir)
@@ -1316,54 +1338,9 @@
 							A.pixel_y = 16
 							A.dir = WEST
 			seat = null
-
-/*	else if(A in ontop)
-		if (istype(A, /mob/living/human))
-			var/mob/living/human/M = A
-			if(A == user && M == driver) //The driver shouldnt unbuckle himself like this
-				return
-			visible_message("<div class='notice'>[user] start to remove [M] from the [src]...</div>")
-			if (do_after(user, 30, src))
-				if(bucklepoint1 == M)
-					bucklepoint1 = null
-				else if(bucklepoint2 == M)
-					bucklepoint2 = null
-				else if(bucklepoint3 == M)
-					bucklepoint3 = null
-				else if(bucklepoint4 == M)
-					bucklepoint4 = null
-				else if(bucklepoint5 == M)
-					bucklepoint5 = null
-				visible_message("<div class='notice'>[user] sucessfully removes [M] from the [src].</div>")
-				ontop -= M
-				M.pixel_x = 0
-				M.pixel_y = 0
-				unbuckle_mob()
-				buckled_mob = null
-				M.buckled = null
-				current_cargo -= 1
-	else if(A in ontop_o)
-		if(istype(A, /obj/structure))
-			var/obj/structure/M = A
-			if (do_after(user, 30, src))
-				if(bucklepoint1 == M)
-					bucklepoint1 = null
-				else if(bucklepoint2 == M)
-					bucklepoint2 = null
-				else if(bucklepoint3 == M)
-					bucklepoint3 = null
-				else if(bucklepoint4 == M)
-					bucklepoint4 = null
-				else if(bucklepoint5 == M)
-					bucklepoint5 = null
-				M.anchored = FALSE
-				ontop_o -= M
-				M.pixel_x = 0
-				M.pixel_y = 0
-				visible_message("[user] takes \the [M] from \the [src].","You take \the [M] from \the [src].")
-				current_cargo -= 1*/
 	update_overlay()
 	update_icon()
+	return
 
 /obj/structure/vehicle/carriage/updatepassdir()
 	if (driver)
