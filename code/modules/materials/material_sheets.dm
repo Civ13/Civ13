@@ -238,6 +238,7 @@
 	flammable = TRUE
 	var/decay = 0
 	var/decaytimer = 0
+	decay = 80*600
 
 /obj/item/stack/material/leaf/New()
 		..()
@@ -279,6 +280,7 @@
 	default_type = "palm"
 	value = 0
 	flammable = TRUE
+	decay = 80*600
 
 /obj/item/stack/material/leaf/fern
 	name = "Fern"
