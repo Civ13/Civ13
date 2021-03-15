@@ -597,6 +597,17 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += top
 				standing.overlays += underc
 				standing.overlays += over
+
+		else if (istype(w_uniform, /obj/item/clothing/under/customdress2))
+			var/obj/item/clothing/under/customdress/CD = w_uniform
+			if (!CD.uncolored)
+				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_bottom")
+				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_lines")
+				top.color = CD.topcolor
+				underc.color = CD.undercolor
+				standing.overlays += top
+				standing.overlays += underc
+
 		else if (istype(w_uniform, /obj/item/clothing/under/customren))
 			var/obj/item/clothing/under/customren/CD = w_uniform
 			if (!CD.uncolored)
