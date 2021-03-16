@@ -696,6 +696,30 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 					qdelHandReturn(H.r_hand, H)
 
+	if (findtext(recipe.title, "carriage"))
+		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
+			user << "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/rope))
+				var/obj/item/stack/material/rope/NR = H.l_hand
+				if (NR.amount >= 20)
+					NR.amount -= 20
+					if (NR.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/rope))
+				var/obj/item/stack/material/rope/NR = H.r_hand
+				if (NR.amount >= 20)
+					NR.amount -= 20
+					if (NR.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>"
+					return
+			
 	if (findtext(recipe.title, "raft"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
 			user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
