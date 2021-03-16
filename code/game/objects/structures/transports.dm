@@ -1000,7 +1000,7 @@
 	var/image/cover_overlay_c = null
 	var/maxcapacity = 0 //besides the driver
 	var/mob/living/human/currentcap = null
-	bound_width = 96
+	bound_width = 64
 	bound_height = 96
 	mobcapacity = 7
 	storagecapacity = null //This is rekting my crates pixel location

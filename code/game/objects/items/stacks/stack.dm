@@ -414,6 +414,11 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>South:</b> [indesc]"
 
+	else if (findtext(recipe.title, "carriage"))
+		if (H.getStatCoeff("crafting") < 1.7)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
 	else if (findtext(recipe.title, "faction") && findtext(recipe.title, "door"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
