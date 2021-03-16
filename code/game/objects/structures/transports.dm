@@ -1756,3 +1756,23 @@
 		moving = FALSE
 		stopmovementloop()
 		return FALSE
+
+/obj/structure/vehicle/carriage/movementloop() //Makes the pulling animals hungry
+	if(pulling1 || pulling2)
+		if(pulling1)
+			if(pulling1.fireloss + pulling1.oxyloss + pulling1.toxloss + pulling1.bruteloss >= pulling1.health) //Is it dead?
+				axis.currentspeed = 0
+				stopmovementloop()
+				visible_message("<span class='warning'>The dead [pulling1.name] stops the [src] from moving!</span>")
+				return
+			else
+				pulling1.simplehunger -= 1 //Each step -1 hunger. Basically doubles it's food comsuption while carrying the carriage
+		if(pulling2)
+			if(pulling2.fireloss + pulling2.oxyloss + pulling2.toxloss + pulling2.bruteloss >= pulling2.health) //Is it dead?
+				axis.currentspeed = 0
+				stopmovementloop()
+				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
+				return
+			else
+				pulling2.simplehunger -= 1
+	..()
