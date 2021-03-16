@@ -984,14 +984,14 @@
 	name = "Carriage"
 	icon = 'icons/obj/vehicles/vehicles96x96.dmi'
 	icon_state = "simple_carriage"
-	anchored = FALSE
+	anchored = TRUE
 	density = TRUE
 	opacity = FALSE
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
 	vehicle_m_delay = 12
-	layer = 3.99
+	layer = 3.9
 	health = 150
 	axis =  new/obj/structure/vehicleparts/axis/carriage
 	wheeled = TRUE
@@ -1019,6 +1019,8 @@
 	pixel_y = -10
 
 /obj/structure/vehicle/carriage/MouseDrop_T(atom/A, mob/living/human/user)
+	if(istype(A, /turf) || istype(A, /area)) //failsafe
+		return
 	if(A in ontop)	//Removing a passenger/mob-cargo or pulling animal?
 		if (istype(A, /mob/living) && (A != pulling1 && A != pulling2))
 			var/mob/living/M = A
@@ -1082,67 +1084,68 @@
 				M.pixel_y = 0
 				visible_message("[user] takes \the [M] from \the [src].","You take \the [M] from \the [src].")
 				current_cargo -= 1
+				M.layer -= src.layer
 				return
-	else if (istype(A, /mob/living/human) && A == user) //Placing yourself in the carriage.
+	else if (istype(A, /mob/living/human) && A == user && !driver) //Placing yourself as driver
 		var/mob/living/human/M = A
-		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop) && ontop.len < mobcapacity)
-			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		if(!(M in ontop) && M.driver == FALSE)
 			if (do_after(M, 40, src))
-				visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+				visible_message("<div class='notice'>[M] starts getting on \the driver seat of the [src]...</div>")
+				if (wheeled)
+					if (M.put_in_active_hand(dwheel) == FALSE)
+						M << "Your hands are full!"
+						return
 				M.forceMove(get_turf(src))
-				if (!driver && A == user)
-					if (wheeled)
-						if (M.put_in_active_hand(dwheel) == FALSE)
-							M << "Your hands are full!"
-							return
-
-					M.driver = TRUE
-					M.driver_vehicle = src
-					driver = M
-					buckle_mob(driver)
-					M.pixel_x = 0
-					M.pixel_y = 0
-					switch (dir)
-						if (SOUTH)
-							M.pixel_x = 27
-							M.pixel_y = 0
-							M.dir = SOUTH
-						if (NORTH)
-							M.pixel_x = 25
-							M.pixel_y = 58
-							M.dir = NORTH
-						if (EAST)
-							M.pixel_x = 42
-							M.pixel_y = 18
-							M.dir = EAST
-						if (WEST)
-							M.pixel_x = -18
-							M.pixel_y = 16
-							M.dir = WEST
+				M.driver = TRUE
+				M.driver_vehicle = src
+				driver = M
+				buckle_mob(driver)
+				M.pixel_x = 0
+				M.pixel_y = 0
 				ontop += M
-				return
+				switch (dir)
+					if (SOUTH)
+						M.pixel_x = 27
+						M.pixel_y = 0
+						M.dir = SOUTH
+					if (NORTH)
+						M.pixel_x = 25
+						M.pixel_y = 58
+						M.dir = NORTH
+					if (EAST)
+						M.pixel_x = 42
+						M.pixel_y = 18
+						M.dir = EAST
+					if (WEST)
+						M.pixel_x = -18
+						M.pixel_y = 16
+						M.dir = WEST
+				visible_message("<div class='notice'>[M] sucessfully climbs into the [src]'s driver seat.</div>")
+		return
 	else if(istype(A, /mob/living/simple_animal/cattle) && (buckled_animal_propulsion < max_animal_propulsion)) //Attaching a pulling animal?
-		if(istype(A, /mob/living/simple_animal/cattle)) //delete this
-			var/mob/living/simple_animal/cattle/M = A
-			if(pulling1 == null || pulling2 == null)
-				user.visible_message("[user] tries to tie the [M] to the [src].")
-				if(do_after(user, 30, src))
-					buckle_mob(M)
-					ontop += M
-					M.buckled = 1
-					user.visible_message("[user] ties the [M] to the [src].")
-					if(!pulling1)
-						pulling1 = M
-					else if(!pulling2)
-						pulling2 = M
-					buckled_animal_propulsion += 1
-					updatepassdir()
-					M.forceMove(get_turf(src))
-					return
+		var/mob/living/simple_animal/cattle/M = A
+		if(pulling1 == null || pulling2 == null)
+			user.visible_message("[user] tries to tie the [M] to the [src].")
+			if(do_after(user, 30, src))
+				buckle_mob(M)
+				ontop += M
+				M.buckled = 1
+				user.visible_message("[user] ties the [M] to the [src].")
+				if(!pulling1)
+					pulling1 = M
+				else if(!pulling2)
+					pulling2 = M
+				buckled_animal_propulsion += 1
+				updatepassdir()
+				M.forceMove(get_turf(src))
+				return
 	else if((current_cargo < total_cargo) && (!(A in ontop) || !(A in ontop_o))) //Placing a cargo object or human passenger?
 		var/seat = null
 		if(A != driver && (A != pulling1 && A != pulling2))
-			visible_message("<div class='notice'>[user] tries to place [A] over the carriage...</div>")
+			if(A == user) //Passenger climbing by himself
+				visible_message("<div class='notice'>[user] starts climbing on the [src] as a passenger...</div>")
+			else
+				visible_message("<div class='notice'>[user] tries to place [A] over the carriage...</div>")
 			if(!bucklepoint1)
 				if(istype(A, /mob/living))
 					var/mob/living/M = A
@@ -1246,6 +1249,7 @@
 		if(seat)	//Updates the mob/obj pixel deviation
 			if(istype(A, /obj/structure))	//Moves obj or mob to carriage's turf location so the pixel deviation can be precise
 				var/obj/structure/M = A
+				M.layer += src.layer
 				M.forceMove(get_turf(src))
 			else if(istype(A, /mob/living))
 				var/mob/living/M = A
@@ -1589,6 +1593,8 @@
 						user.r_hand = null
 						user.update_icons()
 						ontop -= user
+			else
+				current_cargo -= 1 //The driver doesnt counts as cargo. Just passengers
 			user.pixel_x = 0
 			user.pixel_y = 0
 			user.buckled = null
@@ -1681,8 +1687,7 @@
 	if (blocked)
 		moving = FALSE
 		health -= rand(3,4)*axis.currentspeed
-		driver.adjustBruteLoss(rand(3,4)*axis.currentspeed)
-		if (axis.currentspeed >= 3 || (axis.currentspeed == 2 && prob(50)))
+		if (axis.currentspeed >= 3 || (axis.currentspeed == 2 && prob(30)))
 			visible_message("<span class='warning'>[driver] falls from \the [src]!</span>","<span class='warning'>You fall from \the [src]!</span>")
 			stopmovementloop()
 			driver.SpinAnimation(5,1)
@@ -1693,14 +1698,11 @@
 				driver.forceMove(locate(x+1,y,z))
 			else
 				driver.forceMove(locate(x,y,z))
-			driver.Weaken(5)
-			driver.adjustBruteLoss(rand(8,19))
-			if (!driver.head)
+			driver.Weaken(3)
+			driver.adjustBruteLoss(rand(0,8))
+			if (prob(10)) //10% chance to hit the head hard, inside the 30% chance
 				driver << "<span class='warning'>Your head hits the ground!</span>"
-				driver.adjustBrainLoss(rand(5,8))
-			if (driver.head && !istype(driver.head, /obj/item/clothing/head/helmet))
-				driver << "<span class='warning'>Your head hits the ground!</span>"
-				driver.adjustBrainLoss(rand(3,6))
+				driver.adjustBrainLoss(rand(0,5))
 			if (driver.l_hand == dwheel)
 				driver.remove_from_mob(dwheel)
 				dwheel.forceMove(src)

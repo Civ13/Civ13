@@ -219,9 +219,9 @@
 			H << "You need animals to move the [H.driver_vehicle.name]."
 			return
 		else if(M.buckled_animal_propulsion == 1)
-			H.driver_vehicle.axis.speedlist = list(1=10,2=5)
+			H.driver_vehicle.axis.speedlist = list(1=25,2=20)
 		else if(M.buckled_animal_propulsion == 2)
-			H.driver_vehicle.axis.speedlist = list(1=2,2=2,3=1)
+			H.driver_vehicle.axis.speedlist = list(1=20,2=15,3=10)
 	if (H.driver_vehicle.axis.currentspeed <= 0)
 		H.driver_vehicle.axis.currentspeed = 1
 		var/spd = H.driver_vehicle.axis.get_speed()
