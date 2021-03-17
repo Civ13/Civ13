@@ -367,6 +367,7 @@
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
+	fat_extra = 3
 
 /mob/living/simple_animal/pig_gilt
 	name = "pig gilt"
@@ -397,6 +398,7 @@
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
+	fat_extra = 3
 
 /mob/living/simple_animal/pig_gilt/death()
 
