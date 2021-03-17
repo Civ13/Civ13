@@ -14,7 +14,7 @@
 			qdel(src)
 
 /obj/item/wood_ash/attackby(obj/item/weapon/reagent_containers/glass/C as obj, mob/user as  mob )
-	C.reagents.add_reagent("ash", 5)
+	C.reagents.add_reagent("ash", 1)
 	user << "You collect ash into the [C.name]."
 	qdel(src)
 	return
