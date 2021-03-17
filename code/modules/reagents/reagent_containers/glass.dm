@@ -171,7 +171,7 @@
 				user << "<span class='notice'>[src] is full.</span>"
 				return
 			user << "You smash the olives, producing olive oil."
-			reagents.add_reagent("fat_oil_unfiltered", 10)
+			reagents.add_reagent("lard", 10)
 			qdel(W)
 			return
 
