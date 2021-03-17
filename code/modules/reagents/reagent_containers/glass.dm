@@ -106,6 +106,8 @@
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			else if (reagents.has_reagent("olive_oil", 15))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			else if (reagents.has_reagent("fat_oil", 15))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			reagents.splash(target, reagents.total_volume)
 			return
 
@@ -157,6 +159,19 @@
 
 			user << "You smash the olives, producing olive oil."
 			reagents.add_reagent("olive_oil", 6)
+			qdel(W)
+			return
+
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/animalfat))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+			user << "You smash the olives, producing olive oil."
+			reagents.add_reagent("fat_oil_unfiltered", 10)
 			qdel(W)
 			return
 
@@ -710,6 +725,18 @@
 	New()
 		..()
 		reagents.add_reagent("olive_oil",200)
+
+/obj/item/weapon/reagent_containers/glass/barrel/fat_oil
+	name = "fat oil barrel"
+	desc = "A barrel filled with fat oil."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("fat_oil",200)
 
 
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder

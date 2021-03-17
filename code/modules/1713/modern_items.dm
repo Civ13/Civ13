@@ -610,6 +610,22 @@
 					if (volume_di+volume_et > maxvolume)
 						volume_et = maxvolume-volume_di
 					return
+			else if (C.reagents.has_reagent("fat_oil",1))
+				var/barrelamt = C.reagents.get_reagent_amount("fat_oil")
+				if (barrelamt < (maxvolume-volume_di))
+					C.reagents.remove_reagent("fat_oil",barrelamt)
+					volume_di += barrelamt
+					visible_message("[H] pours \the [W] into \the [src].","You pour [barrelamt] units of olive oil from \the [W] into \the [src].")
+					if (volume_di+volume_et > maxvolume)
+						volume_di = maxvolume-volume_et
+					return
+				else
+					C.reagents.remove_reagent("fat_oil",(maxvolume-volume_di))
+					volume_di += (maxvolume-volume_di)
+					visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of olive oil from \the [W] into \the [src].")
+					if (volume_di+volume_et > maxvolume)
+						volume_di = maxvolume-volume_et
+					return
 			else
 				H << "<span class = 'notice'>This [W] has no biofuel percursors in it!</span>"
 				return
