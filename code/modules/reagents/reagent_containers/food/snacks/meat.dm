@@ -243,6 +243,6 @@
 	decay = 15*600
 	New()
 		..()
-		reagents.add_reagent("fat_oil_unfiltered", 10)
+		reagents.add_reagent("lard", 10)
 		bitesize = 3
 	satisfaction = -7 //Its disgusting raw,

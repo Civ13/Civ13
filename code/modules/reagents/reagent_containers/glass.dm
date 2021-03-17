@@ -170,7 +170,7 @@
 			if (!reagents.get_free_space())
 				user << "<span class='notice'>[src] is full.</span>"
 				return
-			user << "You smash the olives, producing olive oil."
+			user << "You smash the animal fat inside the container, creating lard."
 			reagents.add_reagent("lard", 10)
 			qdel(W)
 			return
