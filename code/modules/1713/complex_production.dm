@@ -1,4 +1,26 @@
 /////////////////////////////////////////////////
+////////////////////PEMMICAN/////////////////////
+/////////////////////////////////////////////////
+/obj/item/weapon/reagent_containers/food/snacks/pemmican
+	name = "Pemmican"
+	desc = "A paste of dried meat mixed with melted fat."
+	icon = 'icons/obj/complex_foods.dmi'
+	icon_state = "pemmican"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 3
+	nutriment_desc = list("salt" = 3, "animal fat" = 2, "meat" = 2)
+	non_vegetarian = TRUE
+	decay = 180*900 //50% more than the dried meat
+	satisfaction = 4 //double than the dried meat
+	New()
+		..()
+		pixel_x = rand(-8, 8)
+		pixel_y = rand(-8, 8)
+		bitesize = 2
+
+
+
+/////////////////////////////////////////////////
 //////////////////////JAM�N//////////////////////
 /////////////////////////////////////////////////
 
