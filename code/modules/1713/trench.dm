@@ -242,6 +242,8 @@ var/list/global/floor_cache = list()
 	return ..()
 
 /turf/floor/trench/Exit(atom/movable/O, atom/newloc)
+	if(locate(/obj/structure/vehicleparts/frame/ship) in newloc.contents)
+		return ..()
 	if (isliving(O) && !ishuman(O))
 		return ..()
 	if(isliving(O))
