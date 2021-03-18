@@ -775,7 +775,7 @@
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
 				user << "You begin to mince the [input]."
 				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
-				if(do_after(user, 90))
+				if(do_after(user, 180))
 					playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
 					input = null
 					icon_state = "cutting_board_dirty"
