@@ -321,11 +321,18 @@
 	var/timer = 15
 	if (!masts.len || !moving)
 		return
-	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water) && !istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
-		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
-		moving = FALSE
-		stopmovementloop()
-		return
+	if(reverse)
+		if (!istype(get_turf(get_step(src,OPPOSITE_DIR(dir))), /turf/floor/beach/water) && !istype(get_turf(get_step(src,OPPOSITE_DIR(dir))), /turf/floor/trench/flooded))
+			visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
+			moving = FALSE
+			stopmovementloop()
+			return
+	else
+		if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water) && !istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
+			visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
+			moving = FALSE
+			stopmovementloop()
+			return
 	var/found = FALSE
 	for(var/obj/structure/vehicleparts/movement/sails/SL in masts)
 		found = TRUE
