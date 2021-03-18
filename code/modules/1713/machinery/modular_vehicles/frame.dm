@@ -354,9 +354,25 @@
 				H << "This key does not match this lock!"
 				return
 		else
-			doorcode = K.code
-			H << "You assign this key to the lock."
-			return
+			if(istype(src, /obj/structure/vehicleparts/frame/ship )) //adds routines to lock the boat
+				if(src.w_right[1] == "boat_port2")
+					src.w_right[6] = TRUE
+				else if(src.w_left[1] == "boat_port2")
+					src.w_left[6] = TRUE
+				else if(src.w_back[1] == "boat_port2")
+					src.w_back[6] = TRUE
+				else if(src.w_front[1] == "boat_port2")
+					src.w_front[6] = TRUE
+				else
+					H << "This is not a door."
+					return
+				doorcode = K.code
+				H << "You assign this key to the lock."
+				return
+			else
+				doorcode = K.code		//Leave it as before if its not a boat
+				H << "You assign this key to the lock."
+				return
 	else
 		..()
 /obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/proj)
