@@ -7,7 +7,7 @@
 	icon = 'icons/obj/complex_foods.dmi'
 	icon_state = "pemmican"
 	center_of_mass = list("x"=17, "y"=18)
-	nutriment_amt = 3
+	nutriment_amt = 6
 	nutriment_desc = list("salt" = 3, "animal fat" = 2, "meat" = 2)
 	non_vegetarian = TRUE
 	decay = 180*900 //50% more than the dried meat
