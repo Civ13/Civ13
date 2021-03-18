@@ -19,6 +19,7 @@
 	faction = list("hostile")
 	density = TRUE
 	mob_size = MOB_HUGE
+	fat_extra = 20
 
 	stop_automated_movement_when_pulled = FALSE
 	wander = FALSE
