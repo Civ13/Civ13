@@ -229,3 +229,20 @@
 		reagents.add_reagent("protein", 3)
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 3
+
+/obj/item/weapon/reagent_containers/food/snacks/animalfat
+	name = "animal"
+	desc = "Its a fresh and raw animal fat."
+	icon_state = "animalfat"
+	health = 100
+	filling_color = "#FFF783"
+	raw = TRUE
+	rotten_icon_state = "rottenanimalfat"
+	rots = TRUE
+	non_vegetarian = TRUE
+	decay = 15*600
+	New()
+		..()
+		reagents.add_reagent("lard", 10)
+		bitesize = 3
+	satisfaction = -7 //Its disgusting raw,
