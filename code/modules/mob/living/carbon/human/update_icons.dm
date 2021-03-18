@@ -597,6 +597,17 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += top
 				standing.overlays += underc
 				standing.overlays += over
+
+		else if (istype(w_uniform, /obj/item/clothing/under/customdress2))
+			var/obj/item/clothing/under/customdress/CD = w_uniform
+			if (!CD.uncolored)
+				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_bottom")
+				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_lines")
+				top.color = CD.topcolor
+				underc.color = CD.undercolor
+				standing.overlays += top
+				standing.overlays += underc
+
 		else if (istype(w_uniform, /obj/item/clothing/under/customren))
 			var/obj/item/clothing/under/customren/CD = w_uniform
 			if (!CD.uncolored)
@@ -800,6 +811,7 @@ var/global/list/damage_icon_parts = list()
 	var/image/band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
 	var/image/cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
 	var/image/symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
+	var/image/helmet = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "montefortino")
 	if (head)
 
 		head.screen_loc = find_inv_position(slot_head)
@@ -859,6 +871,29 @@ var/global/list/damage_icon_parts = list()
 			var/image/pattern = image("icon" = 'icons/mob/head.dmi', "icon_state" = "keffiyeh_custom_color")
 			pattern.color = CU.patterncolor
 			standing.overlays += pattern
+//roman helmets
+		else if (istype(head, /obj/item/clothing/head/helmet/montefortino))
+			var/obj/item/clothing/head/helmet/montefortino/CU = head
+			var/image/pattern = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "montefortino_color")
+			pattern.color = CU.patterncolor
+			helmet = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "montefortino")
+			standing.overlays += helmet
+			standing.overlays += pattern
+		else if (istype(head, /obj/item/clothing/head/helmet/roman_decurion/nomads))
+			var/obj/item/clothing/head/helmet/roman_decurion/nomads/CU = head
+			var/image/pattern = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "roman_d_color")
+			pattern.color = CU.patterncolor
+			helmet = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "roman_d")
+			standing.overlays += helmet
+			standing.overlays += pattern
+		else if (istype(head, /obj/item/clothing/head/helmet/roman_centurion/nomads))
+			var/obj/item/clothing/head/helmet/roman_centurion/nomads/CU = head
+			var/image/pattern = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "roman_c_color")
+			pattern.color = CU.patterncolor
+			helmet = image("icon" = 'code/modules/1713/clothing/head.dmi', "icon_state" = "roman_c")
+			standing.overlays += helmet
+			standing.overlays += pattern
+//
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
 			var/obj/item/clothing/head/custom/fieldcap/CU = head
 			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom", layer = layer+0.01)
