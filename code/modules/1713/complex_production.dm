@@ -23,6 +23,22 @@
 	icon = 'icons/obj/complex_foods.dmi'
 	icon_state = "minced_driedmeat"
 
+/obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat/attack_self(mob/user)
+	if (istype(user.l_hand, /obj/item/weapon/reagent_containers/glass) || istype(user.r_hand, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/G
+		if(istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
+			G  = user.l_hand
+		else
+			G  = user.r_hand
+		if (G.reagents.get_reagent_amount("fat_oil") >= 5)
+			if(do_after(user, 90))
+				visible_message("[user.name] pours the [src.name] into the [G.name], mixing it.")
+				G.reagents.remove_reagent("fat_oil", 5)
+				new/obj/item/weapon/reagent_containers/food/snacks/pemmican(user.loc)
+				qdel(src)
+				return
+	else
+		return ..()
 
 /////////////////////////////////////////////////
 //////////////////////JAM�N//////////////////////
