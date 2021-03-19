@@ -8,7 +8,7 @@
 	var/list/options = list()
 	options["Warden - CQC"] = list(/obj/item/weapon/gun/projectile/shotgun/spas,/obj/item/clothing/under/pmc)
 	options["Scout - Long range"] = list(/obj/item/clothing/under/tactical1,/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/attachment/scope/adjustable/binoculars,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911)
-	options["Enforcer - Tactical"] = list(/obj/item/clothing/under/tactical1,/obj/item/clothing/suit/swat,/obj/item/weapon/melee/nightbaton/sandman,obj/item/weapon/shield/metal_riot)
+	options["Enforcer - Tactical"] = list(/obj/item/clothing/under/tactical1,/obj/item/clothing/suit/swat,/obj/item/weapon/melee/nightbaton/sandman,/obj/item/weapon/shield/metal_riot)
 	var/choice = input(user,"What type of equipment?") as null|anything in options
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
