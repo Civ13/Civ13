@@ -672,7 +672,6 @@
 					possible_h_list = list("Light Brown","Dark Brown")
 					possible_e_list = list("Green","Brown","Black")
 					possible_s_list = list(-35,-60)
-					return
 				//SOUTH-EAST
 				else
 					add_language("Latin",TRUE)
@@ -713,7 +712,6 @@
 					possible_h_list = list("Light Brown","Blond","Dirty Blond")
 					possible_e_list = list("Blue","Green")
 					possible_s_list = list(-15,-30)
-					return
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)
 		s_tone = rand(possible_s_list[2],possible_s_list[1])
@@ -750,7 +748,6 @@
 				possible_h_list = list("Black")
 				possible_e_list = list("Brown")
 				possible_s_list = list(-175,-200)
-				return
 			//EAST (DESERT)
 			else
 				add_language("Arabic",TRUE)
