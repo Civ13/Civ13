@@ -27,8 +27,7 @@
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	research_active = TRUE
 	nomads = TRUE
-	gamemode = "Chadmode +"
-	chad_mode_plus = TRUE
+	gamemode = "Classic (Stone Age Start)"
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
 /obj/map_metadata/nomads_pangea/New()
