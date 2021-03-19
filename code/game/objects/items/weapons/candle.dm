@@ -11,6 +11,8 @@
 
 /obj/item/weapon/flame/candle/New()
 	wax = rand(900, 1050) //30-40 minutes on average.
+	pixel_x = rand(-8, 8)
+	pixel_y = rand(-8, 8)
 	..()
 
 /obj/item/weapon/flame/candle/on

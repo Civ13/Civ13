@@ -857,3 +857,20 @@
 			for(var/i=1 to RG.reagents.reagent_list.len)
 				user << "<font color='yellow'><i><b>[RG.reagents.reagent_list[i].name]: </b>[RG.reagents.reagent_list[i].volume] units</i></font>"
 		..()
+
+/obj/item/weapon/reagent_containers/glass/attackby(obj/item/weapon/W as obj, mob/user as mob) //Lard candle making
+	if(istype(W, /obj/item/stack/material/rope))
+		if (reagents.get_reagent_amount("lard") >= 5)
+			var/obj/item/stack/material/rope/R = W
+			visible_message("[user] starts to dip the [R.name] into the [src.name], shaping a candle.")
+			if(do_after(user, 40, user))
+				reagents.remove_reagent("lard", 5)
+				new/obj/item/weapon/flame/candle/lard(user.loc)
+				if(R.amount == 1)
+					qdel(R)
+				else
+					R.amount -= 1
+				return
+	else
+		return ..()
+
