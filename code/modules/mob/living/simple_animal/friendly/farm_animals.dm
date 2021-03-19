@@ -5,7 +5,7 @@
 	var/plough_road = FALSE
 	var/cattle_gender = null			//Nice info to have about the cattle. Will make it easier to work with
 	var/calf = FALSE  //Each gender was taking this var
-	fat_extra = 3
+	fat_penalty = 1 //For ballance reasons
 /mob/living/simple_animal/cattle/cow
 	name = "cow"
 	cattle_gender = "female"
@@ -368,7 +368,7 @@
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
-	fat_extra = 3
+	fat_extra = 2
 
 /mob/living/simple_animal/pig_gilt
 	name = "pig gilt"
@@ -399,7 +399,7 @@
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
-	fat_extra = 3
+	fat_extra = 2
 
 /mob/living/simple_animal/pig_gilt/death()
 
@@ -545,7 +545,7 @@
 	predatory_carnivore = 1
 	behaviour = "defends"
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
-	fat_extra = 3
+	fat_extra = 2
 
 /mob/living/simple_animal/boar_gilt
 	name = "boar gilt"
@@ -577,7 +577,7 @@
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	behaviour = "defends"
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
-	fat_extra = 3
+	fat_extra = 2
 
 /mob/living/simple_animal/boar_gilt/death()
 
@@ -1053,7 +1053,7 @@
 	var/content_size = 0
 	var/list/packed_items = list()
 	herbivore = 1
-	fat_extra = 5
+	fat_extra = 3
 
 /mob/living/simple_animal/camel/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (!stat && user.a_intent == I_HELP && icon_state != icon_dead && !istype(O, /obj/item/weapon/leash))

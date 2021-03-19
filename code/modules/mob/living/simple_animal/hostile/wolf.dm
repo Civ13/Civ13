@@ -25,7 +25,7 @@
 	mob_size = MOB_MEDIUM
 	predatory_carnivore = 1
 	carnivore = 1
-	fat_penalty = 2
+	fat_penalty = 1
 
 
 	var/btype = "grey"
