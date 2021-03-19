@@ -379,6 +379,32 @@
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
 	flammable = TRUE
+	var/onfire = FALSE
+	var/ash_production = FALSE
+
+/obj/item/stack/material/wood/proc/start_fire()
+	var/burn_time = amount * 1
+	var/old_amount = amount
+	if (onfire)
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
+		spawn(burn_time)
+			for(var/i = 0, i < old_amount, i++)
+				new/obj/item/wood_ash(src.loc)
+			qdel(NF)
+			qdel(src)
+
+/obj/item/stack/material/wood/attackby(obj/item/flashlight/T as obj, mob/user as mob)
+	if(user.a_intent == "harm" && T.on && !onfire)
+		visible_message("<span class = 'red'>[user.name] tries to set the [src] on fire.</span>")
+		if(prob(30))
+			ash_production = 1
+			src.onfire = 1
+			start_fire()
+			visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
+			return
+	else
+		return ..()
+
 
 /obj/item/stack/material/bamboo
 	name = "bamboo bundle"

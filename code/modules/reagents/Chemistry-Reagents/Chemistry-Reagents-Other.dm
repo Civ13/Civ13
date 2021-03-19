@@ -373,3 +373,19 @@
 	taste_description = "acid"
 	reagent_state = LIQUID
 	color = "#FFFFFF"
+
+/datum/reagent/ash
+	name = "Ash"
+	id = "ash"
+	description = "Grey and blackish powder."
+	taste_description = "ashy"
+	reagent_state = SOLID
+	color = "#BEBAA7"
+
+/datum/reagent/lye
+	name = "Lye"
+	id = "lye"
+	description = "A white granulated solid, which is highly soluble in water producing caustic basic solutions."
+	taste_description = "bitter"
+	reagent_state = SOLID
+	color = "#7F6B5D"

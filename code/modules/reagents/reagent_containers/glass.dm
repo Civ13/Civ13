@@ -94,8 +94,6 @@
 		if (istype(target, /turf/floor/beach/water))
 			return
 		if (reagents && reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
-			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
-			user << "<span class='notice'>You splash the solution onto [target].</span>"
 			if (reagents.has_reagent("petroleum", 5))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			else if (reagents.has_reagent("gasoline", 5))
@@ -108,7 +106,12 @@
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			else if (reagents.has_reagent("fat_oil", 15))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+
+      var/previous_total_volume = reagents.total_volume
 			reagents.splash(target, reagents.total_volume)
+			if(reagents.total_volume != previous_total_volume) //really splashed
+				playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
+				user << "<span class='notice'>You splash the solution onto [target].</span>"
 			return
 
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
