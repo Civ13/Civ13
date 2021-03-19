@@ -178,6 +178,8 @@ var/list/global/floor_cache = list()
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
+	if(locate(/obj/structure/vehicleparts/frame/ship) in contents)
+		return ..()
 	for (var/obj/OB in src)
 		if (OB.density == 1 && !(istype(OB, /obj/structure/window/barrier)))
 			return 0
@@ -240,6 +242,8 @@ var/list/global/floor_cache = list()
 	return ..()
 
 /turf/floor/trench/Exit(atom/movable/O, atom/newloc)
+	if(locate(/obj/structure/vehicleparts/frame/ship) in newloc.contents)
+		return ..()
 	if (isliving(O) && !ishuman(O))
 		return ..()
 	if(isliving(O))
