@@ -74,6 +74,12 @@
 			fuel += (regamt*120)
 			user << "You refuel the lantern with olive oil."
 			return
+		else if (W.reagents.has_reagent("fat_oil", 1))
+			var/regamt = W.reagents.get_reagent_amount("fat_oil")
+			W.reagents.remove_reagent("fat_oil", regamt)
+			fuel += (regamt*120)
+			user << "You refuel the lantern with fat oil."
+			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)
 	if (loc != user && anchored)
 		if (on)

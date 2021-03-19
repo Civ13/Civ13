@@ -144,7 +144,7 @@
 	maxpower = 66
 	torque = 1.1
 	fuelefficiency = 0.5
-	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil") //basically everything
+	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil", "fat_oil") //basically everything
 
 /obj/structure/engine/internal/gasoline
 	name = "four-stroke gasoline engine"
@@ -224,7 +224,7 @@
 	maxpower = 136
 	torque = 0.88
 	fuelefficiency = 0.4
-	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil")
+	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil", "fat_oil")
 
 	starting_snd = 'sound/machines/turbine_starting.ogg'
 	running_snd = 'sound/machines/turbine_loop.ogg'

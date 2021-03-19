@@ -26,6 +26,7 @@
 	predatory_carnivore = 1
 	carnivore = 1
 	scavenger = 1
+	fat_extra = 4
 
 	var/cub = FALSE
 	var/growing = FALSE
