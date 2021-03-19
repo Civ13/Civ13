@@ -29,6 +29,7 @@
 	can_bite_limbs_off = TRUE
 	faction = "neutral"
 	hostilesounds = list('sound/animals/alligator/alligator_grunt.ogg')
+	has_fat = FALSE
 
 
 /mob/living/simple_animal/hostile/mirelurk

@@ -24,6 +24,7 @@
 	var/meat_amount = FALSE
 	var/meat_type
 	var/fat_extra = 0
+	var/fat_penalty = 0
 	var/has_fat = TRUE //Does this animal drops fat?
 	var/stop_automated_movement = FALSE //Use this to temporarely stop random movement or to if you write special movement code for animals.
 	var/wander = TRUE	// Does the mob wander around when idle?
@@ -503,9 +504,11 @@
 						namt = 1
 					if (!istype(src, /mob/living/simple_animal/crab))
 						if(src.has_fat)
-							for (var/i=0, i<=namt+fat_extra, i++) //Fat drop
-								var/obj/item/weapon/reagent_containers/food/snacks/animalfat/fat = new/obj/item/weapon/reagent_containers/food/snacks/animalfat(get_turf(src))
-								fat.name = "[name] fat"
+							var/fat_calc = (namt + fat_extra) - fat_penalty
+							if(!fat_calc <= 0)
+								for (var/i=0, i<=fat_calc, i++) //Fat drop
+									var/obj/item/weapon/reagent_containers/food/snacks/animalfat/fat = new/obj/item/weapon/reagent_containers/food/snacks/animalfat(get_turf(src))
+									fat.name = "[name] fat"
 						if (istype(src, /mob/living/simple_animal/hostile/zombie))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
