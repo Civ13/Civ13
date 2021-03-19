@@ -142,7 +142,7 @@
 					if (I.reagents.get_reagent_amount("lard") > 0)
 						var/lard_amnt = I.reagents.get_reagent_amount("lard")
 						I.reagents.del_reagent("lard")
-						I.reagents.add_reagent("fat_oil", lard_amnt/5)
+						I.reagents.add_reagent("fat_oil", lard_amnt/2)
 			if (fuel <= 0 && consume_itself == TRUE)
 				visible_message("<span class = 'warning'>\The [src] burns out.</span>")
 				new/obj/item/stack/ore/charcoal(loc)
