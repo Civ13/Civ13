@@ -20,6 +20,11 @@
 	desc = "A deluxe brand bar of soap. Smells of [pick("lavender", "vanilla", "strawberry")]."
 	..()
 
+/obj/item/weapon/soap/New()
+	pixel_x = rand(-8, 8)
+	pixel_y = rand(-8, 8)
+	..()
+
 /obj/item/weapon/soap/lard
 	name = "lard soap"
 	desc = "A bit stinky and oily poorly shaped lard soap."
@@ -39,11 +44,28 @@
 	if(istype(W, /obj/item/weapon/soap))
 		var/obj/item/weapon/soap/S = W
 		if( src.is_nude())
+			var/keep_going = FALSE
+			var/turf/T = get_turf(src)
 			if(istype(user.loc, /turf/floor/beach/water))
+				keep_going = TRUE
+			else if(locate(/obj/structure/shower) in T.contents)
+				for (var/obj/A in T.contents) //Checking if the shower is on(bathtub open or shower on)
+					if(istype(A, /obj/structure/shower))
+						var/obj/structure/shower/Y = A
+						if(Y.on)
+							keep_going = TRUE
+						else keep_going = FALSE
+						break
+			else if(locate(/obj/structure/sink) in T.contents)
+				keep_going = TRUE
+			else
+				keep_going = FALSE
+
+			if(keep_going)
 				if(S.washing) //No spam
 					return
 				if(src == user)
-					user.visible_message("<span class='noti	ce'>[user] starts to wash himself with \the [W.name]</span>", "<span class = 'notice'>You start to wash yourself with \the [W.name].</span>")
+					user.visible_message("<span class='notice'>[user] starts to wash himself with \the [W.name]</span>", "<span class = 'notice'>You start to wash yourself with \the [W.name].</span>")
 				else
 					user.visible_message("<span class='notice'>[user] start to wash [src.name] with \the [W.name]</span>", "<span class = 'notice'>You start to wash [src.name] with \the [W.name].</span>")
 				S.washing = TRUE
@@ -62,8 +84,8 @@
 						src.soap_cooldown = world.time
 					else
 						src << "You dont really enjoy bathing with the [W.name], you did that not long ago."
-
-
+			else
+				return
 	else
 		return ..()
 
