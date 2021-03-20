@@ -1,14 +1,14 @@
 /obj/item/gunbox
 	name = "equipment kit"
-	desc = "A secure box containing your equipment."
+	desc = "A secure box containing your sidearm."
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "ammo_can" //temp
 
 /obj/item/gunbox/attack_self(mob/living/user)
 	var/list/options = list()
-	options["Warden - CQC"] = list(/obj/item/weapon/gun/projectile/shotgun/spas,/obj/item/clothing/under/pmc)
-	options["Scout - Long range"] = list(/obj/item/clothing/under/tactical1,/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/attachment/scope/adjustable/binoculars,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911)
-	options["Enforcer - Tactical"] = list(/obj/item/clothing/under/tactical1,/obj/item/clothing/suit/swat,/obj/item/weapon/melee/nightbaton/sandman,/obj/item/weapon/shield/metal_riot)
+	options["Colt Police - revolver"] = list(/obj/item/weapon/gun/projectile/revolver/coltpolicepositive,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32)
+	options["Glock 17 - pistol"] = list(/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17)
+	options["Beretta m9 - Pistol"] = list(/obj/item/weapon/gun/projectile/pistol/m9beretta,/obj/item/ammo_magazine/m9beretta,/obj/item/ammo_magazine/m9beretta,/obj/item/ammo_magazine/m9beretta)
 	var/choice = input(user,"What type of equipment?") as null|anything in options
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
