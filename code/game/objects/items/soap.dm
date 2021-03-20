@@ -84,6 +84,8 @@
 						src.soap_cooldown = world.time
 					else
 						src << "You dont really enjoy bathing with the [W.name], you did that not long ago."
+				else
+					S.washing = FALSE //Moved before finishing the do_after
 			else
 				return
 	else
