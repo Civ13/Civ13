@@ -434,7 +434,6 @@
 	/obj/item/weapon/gun/projectile/dartgun/mag = 10,
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
-	/obj/item/weapon/gun/projectile/pistol/tt30ll = 20,
 	/obj/item/ammo_magazine/tt30ll = 50,
 	)
 	attack_hand(mob/user as mob)
