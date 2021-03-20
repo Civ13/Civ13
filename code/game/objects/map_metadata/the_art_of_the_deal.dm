@@ -405,6 +405,7 @@
 	/obj/item/ammo_magazine/glock17 = 50,
 	/obj/item/ammo_magazine/m9beretta = 50,
 	/obj/item/ammo_magazine/c32 = 50,
+	/obj/item/ammo_magazine/c44 = 50,
 	/obj/item/weapon/gun/projectile/boltaction/m24 = 10,
 	/obj/item/ammo_magazine/m24 = 20,
 	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
