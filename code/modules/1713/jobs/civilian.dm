@@ -2311,7 +2311,7 @@
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 3
-	max_positions = 50
+	max_positions = 15
 
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2349,7 +2349,7 @@
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 1
-	max_positions = 15
+	max_positions = 4
 
 /datum/job/civilian/mechanic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2378,11 +2378,11 @@
 	rank_abbreviation = ""
 	whitelisted = FALSE
 	spawn_location = "JoinLateCivG"
-	selection_color = "#8b4513	"
+	selection_color = "#8b4513"
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 1
-	max_positions = 15
+	max_positions = 3
 
 /datum/job/civilian/hobo/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2403,7 +2403,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-
+/*
 /datum/job/civilian/fireperson
 	title = "Fire Response"
 	en_meaning = ""
@@ -2442,7 +2442,7 @@
 	H.setStat("medical", STAT_HIGH)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
-
+*/
 /datum/job/civilian/businessman/legitimate
 	title = "Legitimate Business"
 	selection_color = "#6f4e37"

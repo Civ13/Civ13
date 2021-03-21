@@ -82,7 +82,7 @@
 				roof_turret = image(icon='icons/obj/vehicles/vehicles96x96.dmi',loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
 			else
 				roof_turret = image(icon='icons/obj/vehicles/vehicles96x96.dmi',loc=src, icon_state="", layer=11.1, dir=C.dir)
-			if (roof_turret)
+			if (roof_turret && axis && axis.color)
 				roof_turret.color = axis.color
 			if (C.dir == NORTH)
 				if (dir == NORTH)
@@ -159,7 +159,8 @@
 		if (override_color)
 			roof.color = override_color
 		else
-			roof.color = axis.color
+			if (axis && axis.color && roof)
+				roof.color = axis.color
 
 	switch (dir)
 		if (NORTH)

@@ -2126,9 +2126,9 @@ RECIPE: /material/wood/,monumental crucero cross,/obj/structure/religious/monume
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes & clothing,0,0,0,8,null
 RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoes & clothing,24,0,38,8,null
 
-RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,black african wood mask,/obj/item/clothing/mask/wooden/african,3,50,0,1,shoes & clothing,0,0,0,2,null
+RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 
 //*********************| WOOD ARMOR |**************************
 

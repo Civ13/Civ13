@@ -79,7 +79,8 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top.icon_state = null
+		if (top)
+			top.icon_state = null
 		update_icon()
 
 /obj/structure/religious/monument/obelisk

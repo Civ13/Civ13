@@ -247,15 +247,15 @@ var/civmax_research = list(230,230,230)
 */
 	// makes win condition helper datum
 	win_condition = new
-
-	for (var/list/i in berryeffects)
-		i[2] = pick("neutral", "poisonous", "drug", "healing", "tasty", "disgusting")
-		if (i[2] == "poisonous")
-			i[3] = pick("amatoxin","cyanide", "food_poisoning", "solanine")
-		else if (i[2] == "drug")
-			i[3] = pick("peyote", "psilocybin","mindbreaker")
-		else if (i[2] == "healing")
-			i[3] = pick("paracetamol", "penicillin", "opium", "cocaine", "sal_acid")
+	if (berryeffects.len)
+		for (var/list/i in berryeffects)
+			i[2] = pick("neutral", "poisonous", "drug", "healing", "tasty", "disgusting")
+			if (i[2] == "poisonous")
+				i[3] = pick("amatoxin","cyanide", "food_poisoning", "solanine")
+			else if (i[2] == "drug")
+				i[3] = pick("peyote", "psilocybin","mindbreaker")
+			else if (i[2] == "healing")
+				i[3] = pick("paracetamol", "penicillin", "opium", "cocaine", "sal_acid")
 	spawn(5000)
 		pollution()
 	spawn(2400)
@@ -265,46 +265,47 @@ var/civmax_research = list(230,230,230)
 
 	if (nomads || civilizations || ID==MAP_COLONY || ID==MAP_FOUR_COLONIES || ID==MAP_PIONEERS)
 		var/amt_to_create = (world.maxx*world.maxy)/5000
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/tinto(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/azul(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/amar(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/majo(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/narco(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/zelenyy(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/marron(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/corcairghorm(G)
-				v++
+		if (grass_turf_list.len)
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/tinto(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/azul(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/amar(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/majo(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/narco(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/zelenyy(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/marron(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/corcairghorm(G)
+					v++
 
 /obj/map_metadata/proc/religious_timer()
 	if (map.custom_religions.len > 0)

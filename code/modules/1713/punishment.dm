@@ -279,7 +279,7 @@
 	not_disassemblable = FALSE
 	New()
 		..()
-		crossoverlay = image(icon=src.icon, icon_state="[base_icon]_used",layer=MOB_LAYER+0.8)
+		crossoverlay = image(icon=src.icon, icon_state="[base_icon]_used")
 
 /obj/structure/cross/tau
 	name = "tau cross"
@@ -381,7 +381,7 @@
 	not_disassemblable = FALSE
 	New()
 		..()
-		poverlay = image(icon=src.icon, icon_state="pillory_lower0",layer=MOB_LAYER+1)
+		poverlay = image(icon=src.icon, icon_state="pillory_lower0")
 		hoverlay = icon(icon=src.icon, icon_state="pillory_handoverlay")
 /obj/structure/pillory/New()
 	..()
@@ -497,8 +497,8 @@
 	not_disassemblable = FALSE
 	New()
 		..()
-		poverlay = image(icon=src.icon, icon_state="post_execution", layer=MOB_LAYER+0.11)
-		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope", layer=MOB_LAYER-0.11)
+		poverlay = image(icon=src.icon, icon_state="post_execution")
+		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope")
 /obj/structure/post_execution/New()
 	..()
 	processing_objects |= src

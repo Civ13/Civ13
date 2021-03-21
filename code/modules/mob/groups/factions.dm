@@ -362,6 +362,8 @@
 /obj/structure/banner/faction/team/proc/assign_team(new_team = null)
 	if (!new_team)
 		new_team = src.team
+	if (!new_team)
+		return
 	if (map && map.ID == MAP_FOOTBALL)
 		var/obj/map_metadata/football/FM = map
 		if (FM.team1 == src.team)
