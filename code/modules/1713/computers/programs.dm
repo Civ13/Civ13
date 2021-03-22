@@ -1767,7 +1767,7 @@
 		if (user.original_job_title == "Legitimate Business")
 			mainmenu += "<a href='?src=\ref[src];bank=2'>Buy Stocks</a>&nbsp;<a href='?src=\ref[src];bank=3'>Sell Stocks</a>&nbsp;<a href='?src=\ref[src];bank=4'>Account</a><br>"
 		else
-			mainmenu += "<font color='red'><b>ACCESS DENIED</b></font><br>"
+			mainbody = "<font color='red'><b>ACCESS DENIED</b></font><br>"
 	..()
 
 /datum/program/junglebank/Topic(href, href_list, hsrc)
@@ -1779,7 +1779,7 @@
 			var/cost = (map.globalmarketplace[tcode][4])
 			if (map.marketplaceaccounts[user.name])
 				if (map.marketplaceaccounts[user.name] < cost)
-					mainbody += "<b>You don't have enough money in your account! <br>You have [map.marketplaceaccounts[user.name]/4] dollars and need [cost/4] dollars.</b>"
+					mainbody += "<b>You don't have enough money in your account!<br>You have [map.marketplaceaccounts[user.name]/4] dollars and need [cost/4] dollars.</b>"
 					sleep(0.5)
 					do_html(user)
 					return
@@ -1830,14 +1830,14 @@
 				var/accmoney = map.marketplaceaccounts[user.name]
 				if (map.marketplaceaccounts[user.name])
 					if (accmoney <= 0)
-						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a>"
+						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a><br>"
 						mainbody += "<b>Your account is empty!</b>"
 						map.marketplaceaccounts[user.name] = 0
 					else
-						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a>"
+						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a><br>"
 						mainbody += "You have [accmoney/4] dollars in your bank account.<br>"
 				else
-					mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a>"
+					mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a><br>"
 					mainbody += "<b>Your account is empty!</b>"
 			if ("5") //withdraw
 				var/accmoney = map.marketplaceaccounts[user.name]
