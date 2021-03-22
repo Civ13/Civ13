@@ -1745,7 +1745,7 @@
 "xbN" = (/obj/covers/carpet/blackcarpet,/obj/item/weapon/cigbutt,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "xcL" = (/obj/structure/bed,/turf/floor/plating/tiled/woodh,/area/caribbean/roofed/temperate)
 "xda" = (/obj/covers/carpet/bluecarpet,/obj/structure/window/clean,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"xdb" = (/obj/structure/table,/obj/structure/closet/crate/cash_register{dir = 4; icon_state = "cash_register"},/turf/floor/plating/white,/area/caribbean/roofed/temperate)
+"xdb" = (/obj/structure/table,/obj/structure/computer/nopower/aotd/civilian{dir = 1},/turf/floor/plating/white,/area/caribbean/roofed/temperate)
 "xdA" = (/obj/structure/vending/sales/business_weapons,/turf/floor/plating/tiled/woodh,/area/caribbean/roofed/temperate)
 "xet" = (/obj/structure/bookcase{icon_state = "book-3"},/turf/floor/wood,/area/caribbean/roofed)
 "xeY" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/turf/floor/plating/tiled/dark,/area/caribbean/roofed/temperate)
