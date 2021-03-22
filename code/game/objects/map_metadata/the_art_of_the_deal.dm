@@ -216,7 +216,8 @@
 			var/pt = chosen1[1]
 			var/obj/item/ST = new pt(locate(1,1,1))
 			if (istype(ST, /obj/item/weapon/gun/projectile))
-				ST.serial = ""
+				var/obj/item/weapon/gun/projectile/PJ = ST
+				PJ.serial = ""
 			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 	var/num = rand(1,2) //equipment
