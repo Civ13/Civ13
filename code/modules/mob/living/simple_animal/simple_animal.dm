@@ -971,7 +971,10 @@
 					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 500
 				adjustBruteLoss(-4)
-				qdel(SD)
+				if(SD.amount >= 2)
+					SD.amount -= 1
+				else
+					qdel(SD)
 				return
 		for(var/obj/structure/farming/plant/PL in range(2,src))
 			if (prob(15))
