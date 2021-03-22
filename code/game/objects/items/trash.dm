@@ -50,6 +50,12 @@
 	icon_state = "candle4"
 	flammable = TRUE
 
+/obj/item/trash/candle/lard
+	name = "lard candle"
+	icon = 'icons/obj/candle.dmi'
+	icon_state = "candle4_lard"
+	flammable = TRUE
+
 /obj/item/trash/money
 	name = "Money"
 	desc = "A pile of banknotes."
