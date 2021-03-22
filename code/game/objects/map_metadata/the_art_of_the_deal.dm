@@ -82,7 +82,7 @@
 		send_buy_orders()
 								//id = seller, obj, amt, price, type, id, active
 		map.globalmarketplace += list("red1" = list("Rednikov Industries",null,1,1000,"bank","red1",1))
-		map.globalmarketplace += list("blue1" = list("Giovanni Blu",null,1,1000,"bank","blue1",1))
+		map.globalmarketplace += list("blue1" = list("Giovanni Blu Stocks",null,1,1000,"bank","blue1",1))
 		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000,"bank","green1",1))
 		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000,"bank","yellow1",1))
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
@@ -214,8 +214,9 @@
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
-			var/obj/item/weapon/gun/projectile/ST = new pt(locate(1,1,1))
-			ST.serial = ""
+			var/obj/item/ST = new pt(locate(1,1,1))
+			if (istype(ST, /obj/item/weapon/gun/projectile))
+				ST.serial = ""
 			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 	var/num = rand(1,2) //equipment

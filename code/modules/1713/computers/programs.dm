@@ -1763,8 +1763,11 @@
 /datum/program/junglebank/do_html(mob/living/human/user)
 	if (mainmenu == "---")
 		mainmenu = "<h2>JUNGLE Bank</h2><br>"
-		mainmenu += "<b>For all your financial needs.</i></b><br>"
-		mainmenu += "<a href='?src=\ref[src];bank=2'>Buy Stocks</a>&nbsp;<a href='?src=\ref[src];bank=3'>Sell Stocks</a>&nbsp;<a href='?src=\ref[src];bank=4'>Account</a><br>"
+		mainmenu += "<b><i>For all your financial needs.</i></b><br>"
+		if (user.original_job_title == "Legitimate Business")
+			mainmenu += "<a href='?src=\ref[src];bank=2'>Buy Stocks</a>&nbsp;<a href='?src=\ref[src];bank=3'>Sell Stocks</a>&nbsp;<a href='?src=\ref[src];bank=4'>Account</a><br>"
+		else
+			mainmenu += "<font color='red'><b>ACCESS DENIED</b></font><br>"
 	..()
 
 /datum/program/junglebank/Topic(href, href_list, hsrc)
@@ -1824,15 +1827,17 @@
 					mainbody += "<a href='?src=\ref[src];bank=s[k[1]]'>[k[2]]</a><br>"
 			if ("4") //account
 				mainbody += "<big>Account: <b>[user]</b></big><br><br>"
-				var/accmoney = map.marketplaceaccounts[user]
-				if (map.marketplaceaccounts[user])
+				var/accmoney = map.marketplaceaccounts[user.name]
+				if (map.marketplaceaccounts[user.name])
 					if (accmoney <= 0)
-						mainbody += "<b>Your account is empty!</b>"
-						map.marketplaceaccounts[user] = 0
-					else
-						mainbody += "You have [accmoney/4] dollars in your bank account.<br>"
 						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a>"
+						mainbody += "<b>Your account is empty!</b>"
+						map.marketplaceaccounts[user.name] = 0
+					else
+						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a>"
+						mainbody += "You have [accmoney/4] dollars in your bank account.<br>"
 				else
+					mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a>"
 					mainbody += "<b>Your account is empty!</b>"
 			if ("5") //withdraw
 				var/accmoney = map.marketplaceaccounts[user.name]
@@ -1840,7 +1845,7 @@
 					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(origin))
 					SC.amount = accmoney/20
 					accmoney = 0
-					map.marketplaceaccounts[user] = 0
+					map.marketplaceaccounts[user.name] = 0
 					do_html(user)
 			if ("6") //deposit
 				if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
