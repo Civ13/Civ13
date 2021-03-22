@@ -2,7 +2,7 @@
 	ID = MAP_ALLEYWAY
 	title = "Alleyway"
 	lobby_icon_state = "taotd"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="The fighting for the street is still going on."
 	faction_organization = list(
@@ -15,7 +15,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(JAPANESE = 1)
 	battle_name = "Yama-ichi gang fight"
-	mission_start_message = "<font size=4>The <b>Yamaguchi-Gumi Clan</b> and <b>Ichiwa-Kai Clan</b> are facing each other the streets of Kobe! It will start in <b>2 minutes</b></font>"
+	mission_start_message = "<font size=4>The <b>Yamaguchi-Gumi Clan</b> and <b>Ichiwa-Kai Clan</b> are facing each other the streets of Kobe!</font>"
 	faction1 = JAPANESE
 	songs = list(
 		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
@@ -37,6 +37,21 @@
 /obj/map_metadata/alleyway/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/alleyway/faction2_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/alleyway/check_caribbean_block(var/mob/living/human/H, var/turf/T, var/datum/job/J)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (caribbean_blocking_area_types.Find(A.type))
+		if (J.is_yama == TRUE)
+			return !faction1_can_cross_blocks()
+		else if (J.is_ichi == TRUE)
+			return !faction2_can_cross_blocks()
+		else
+			return FALSE
+	return FALSE
 
 /obj/map_metadata/alleyway/proc/points_check()
 	world << "<big><b>Current Points:</big></b>"
@@ -71,9 +86,6 @@
 			return FALSE
 		last_win_condition = win_condition.hash
 		return TRUE
-
-/obj/map_metadata/alleyway/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/alleyway/cross_message(faction)
 	return "<font size = 4>The grace wall is lifted!</font>"
