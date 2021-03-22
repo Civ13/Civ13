@@ -805,7 +805,7 @@
 			if ("Police")
 				mdomain = "police.gov"
 		var/cname = "mail@[mdomain]"
-		if (tmp_comp_vars["mail_snd"]=="Sender")
+		if (tmp_comp_vars["mail_snd"] == "Sender")
 			tmp_comp_vars["mail_snd"] = cname
 		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 		if (islist(map.emails[cname]) && map.emails[cname].len>=1)
@@ -1749,5 +1749,117 @@
 			else
 				mainbody = "<b>We are currently out of stock. Please visit soon!</b>"
 
+	sleep(0.5)
+	do_html(user)
+
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////////JUNGLE BANK////////////////////////////////
+///////For legitimate businessmen to deposit money and buy stocks////////
+/datum/program/junglebank
+	name = "JUNGLE Bank"
+	description = "The oldest bank in the area. Established 313 B.C."
+	compatible_os = list("unga OS 94","unga OS")
+
+/datum/program/junglebank/do_html(mob/living/human/user)
+	if (mainmenu == "---")
+		mainmenu = "<h2>JUNGLE Bank</h2><br>"
+		mainmenu += "<b>For all your financial needs.</i></b><br>"
+		mainmenu += "<a href='?src=\ref[src];bank=2'>Buy Stocks</a>&nbsp;<a href='?src=\ref[src];bank=3'>Sell Stocks</a>&nbsp;<a href='?src=\ref[src];bank=4'>Account</a><br>"
+	..()
+
+/datum/program/junglebank/Topic(href, href_list, hsrc)
+	..()
+	mainbody = ""
+	if (href_list["bank"])
+		if (findtext(href_list["bank"],"b"))
+			var/tcode = replacetext(href_list["bank"],"b","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			if (map.marketplaceaccounts[user.name])
+				if (map.marketplaceaccounts[user.name] < cost)
+					mainbody += "<b>You don't have enough money in your account! <br>You have [map.marketplaceaccounts[user.name]/4] dollars and need [cost/4] dollars.</b>"
+					sleep(0.5)
+					do_html(user)
+					return
+				else
+					map.globalmarketplace[tcode][7] = 0
+					map.globalmarketplace[tcode][2] = user
+					mainbody += "You buy the [map.globalmarketplace[tcode][1]] stocks."
+					map.marketplaceaccounts[user.name] -= cost
+					sleep(0.5)
+					do_html(user)
+		if (findtext(href_list["bank"],"s"))
+			var/tcode = replacetext(href_list["bank"],"s","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			var/choice1 = WWinput("Are you sure you want to sell [map.globalmarketplace[tcode][1]] stocks for [map.globalmarketplace[tcode][4]/4] dollars?","Selling Stocks","No", list("Yes","No"))
+			if (choice1 == "No")
+				sleep(0.5)
+				do_html(user)
+				return
+			else
+				map.globalmarketplace[tcode][7] = 1
+				map.globalmarketplace[tcode][2] = null
+				mainbody += "You sell the [map.globalmarketplace[tcode][1]] stocks."
+				map.marketplaceaccounts[user.name] += cost
+				sleep(0.5)
+				do_html(user)
+				return
+		switch(href_list["bank"])
+			if ("2") //buy
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="bank" && map.globalmarketplace[i][2]==null)
+						currlist += list(list(map.globalmarketplace[i][6],"<b>[map.globalmarketplace[i][1]]</b>, for [map.globalmarketplace[i][4]/4] dollars"))
+				if (isemptylist(currlist))
+					mainbody += "<b>There are no stocks available to buy!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];bank=b[k[1]]'>[k[2]]</a><br>"
+			if ("3") //sell
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==0 && map.globalmarketplace[i][5]=="bank" && map.globalmarketplace[i][2]==user)
+						currlist += list(list(map.globalmarketplace[i][6],"<b>[map.globalmarketplace[i][1]]</b>, for [map.globalmarketplace[i][4]/4] dollars"))
+				if (isemptylist(currlist))
+					mainbody += "<b>There are no stocks available to sell!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];bank=s[k[1]]'>[k[2]]</a><br>"
+			if ("4") //account
+				mainbody += "<big>Account: <b>[user]</b></big><br><br>"
+				var/accmoney = map.marketplaceaccounts[user]
+				if (map.marketplaceaccounts[user])
+					if (accmoney <= 0)
+						mainbody += "<b>Your account is empty!</b>"
+						map.marketplaceaccounts[user] = 0
+					else
+						mainbody += "You have [accmoney/4] dollars in your bank account.<br>"
+						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a>"
+				else
+					mainbody += "<b>Your account is empty!</b>"
+			if ("5") //withdraw
+				var/accmoney = map.marketplaceaccounts[user.name]
+				if (accmoney > 0)
+					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(origin))
+					SC.amount = accmoney/20
+					accmoney = 0
+					map.marketplaceaccounts[user] = 0
+					do_html(user)
+			if ("6") //deposit
+				if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
+					mainbody += "<b>You need to have money in one of your hands!</b>"
+					sleep(0.5)
+					do_html(user)
+					return
+				else
+					var/obj/item/stack/money/mstack = null
+					if (istype(user.l_hand, /obj/item/stack/money))
+						mstack = user.l_hand
+					else
+						mstack = user.r_hand
+					var/deposited = mstack.value*mstack.amount
+					qdel(mstack)
+					mainbody += "You deposit [deposited/4] dollars into your account.<br>"
+					map.marketplaceaccounts[user.name] += deposited
+					sleep(0.5)
+					do_html(user)
+					return
 	sleep(0.5)
 	do_html(user)

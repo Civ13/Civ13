@@ -8,6 +8,13 @@
 	display = "<b>unga OS</b>"
 	operatingsystem = "unga OS 94"
 
+/obj/structure/computer/nopower/aotd/civilian/New()
+	..()
+	programs += new/datum/program/monkeysoftmail
+	programs += new/datum/program/deepnet
+	programs += new/datum/program/orion_trail
+	programs += new/datum/program/junglebank
+
 /obj/structure/computer/nopower/aotd/green/New()
 	..()
 	programs += new/datum/program/monkeysoftmail/green

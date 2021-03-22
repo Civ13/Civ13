@@ -80,6 +80,11 @@
 	spawn(150)
 		assign_delivery_zones()
 		send_buy_orders()
+								//id = seller, obj, amt, price, type, id, active
+		map.globalmarketplace += list("red1" = list("Rednikov Industries",null,1,1000,"bank","red1",1))
+		map.globalmarketplace += list("blue1" = list("Giovanni Blu",null,1,1000,"bank","blue1",1))
+		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000,"bank","green1",1))
+		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000,"bank","yellow1",1))
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
 	for(var/turf/floor/delivery/D in turfs)
 		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
