@@ -394,14 +394,16 @@
 			qdel(src)
 
 /obj/item/stack/material/wood/attackby(obj/item/flashlight/T as obj, mob/user as mob)
-	if(user.a_intent == "harm" && T.on && !onfire)
-		visible_message("<span class = 'red'>[user.name] tries to set the [src] on fire.</span>")
-		if(prob(30))
-			ash_production = 1
-			src.onfire = 1
-			start_fire()
-			visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
-			return
+	if(istype(T, /obj/item/flashlight))
+		if(user.a_intent == "harm" && T.on && !onfire)
+			visible_message("<span class = 'red'>[user.name] tries to set the [src] on fire.</span>")
+			if(prob(30))
+				ash_production = 1
+				src.onfire = 1
+				start_fire()
+				visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
+				return
+		return
 	else
 		return ..()
 
