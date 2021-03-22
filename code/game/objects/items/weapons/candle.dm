@@ -92,3 +92,14 @@
 		i = 2
 	else i = 3
 	icon_state = "candle[i][lit ? "_lit" : ""]_lard"
+
+/obj/item/weapon/flame/candle/lard/process()
+	if (!lit)
+		return
+	wax--
+	if (!wax)
+		new/obj/item/trash/candle/lard(loc)
+		if (istype(loc, /mob))
+			dropped()
+		qdel(src)
+	update_icon()

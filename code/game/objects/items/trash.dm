@@ -50,6 +50,27 @@
 	icon_state = "candle4"
 	flammable = TRUE
 
+/obj/item/trash/candle/lard
+	name = "lard candle"
+	icon = 'icons/obj/candle.dmi'
+	icon_state = "candle4_lard"
+	flammable = TRUE
+	attackby(obj/item/W as obj, mob/user as mob)
+		if(istype(W, /obj/item/weapon/reagent_containers/glass))
+			var/obj/item/weapon/reagent_containers/glass/G = W
+			if(!G.is_open_container())
+				user << "<span class='notice'>\The [G.name] is closed.</span>"
+				return
+			if(!G.reagents.get_free_space())
+				user << "<span class='notice'>[G.name] is full.</span>"
+				return
+			user << "You smash the [src.name] inside the [G.name], creating lard."
+			G.reagents.add_reagent("lard", 1)
+			qdel(src)
+			return
+		else
+			return ..()
+
 /obj/item/trash/money
 	name = "Money"
 	desc = "A pile of banknotes."
