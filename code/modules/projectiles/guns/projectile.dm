@@ -60,10 +60,10 @@
 
 	update_icon()
 	var/obj/item/weapon/gun/projectile/G
-	if (is_hmg == TRUE && has_telescopic = FALSE)
+	if (is_hmg == TRUE && has_telescopic == FALSE)
 		var/obj/item/weapon/attachment/scope/iron_sights/mg/A = new /obj/item/weapon/attachment/scope/iron_sights/mg(src)
 		spawn_add_attachment(A, src)
-	else if (has_telescopic = TRUE)
+	else if (has_telescopic == TRUE)
 		var/obj/item/weapon/attachment/scope/iron_sights/mg/type99/A = new /obj/item/weapon/attachment/scope/iron_sights/mg/type99(src)
 		spawn_add_attachment(A, src)
 	else
