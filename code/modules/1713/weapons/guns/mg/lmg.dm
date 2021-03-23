@@ -117,6 +117,7 @@
 	throwforce = 30
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
+	has_telescopic = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"

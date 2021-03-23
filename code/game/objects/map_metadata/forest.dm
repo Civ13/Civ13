@@ -27,7 +27,7 @@
 	var/gracedown1 = TRUE
 /obj/map_metadata/forest/New()
 	..()
-	spawn(1)
+	spawn(15)
 		if (clients.len>20)
 			civilians_toggled = TRUE
 		else

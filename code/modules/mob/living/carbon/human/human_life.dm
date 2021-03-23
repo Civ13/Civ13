@@ -1500,6 +1500,8 @@
 						holder2.icon_state = "civ6"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
+					else if (original_job.is_upa && map.ID != MAP_OCCUPATION)
+						holder2.icon_state = "upa_basic"
 //					else if (original_job_title == "Outlaw")
 //						holder2.icon_state = "civ1"
 //					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )
@@ -1510,11 +1512,20 @@
 						holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
 			if (original_job.uses_squads && squad > 0)
-				holder2.overlays += icon(holder2.icon,"squad_[squad]")
+				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
+					holder2.icon_state = ""
+				else
+					holder2.overlays += icon(holder2.icon,"squad_[squad]")
 			if (original_job.is_commander)
-				holder2.overlays += icon(holder2.icon,"commander")
+				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
+					holder2.icon_state = ""
+				else
+					holder2.overlays += icon(holder2.icon,"commander")
 			else if (original_job.is_officer || original_job.is_squad_leader)
-				holder2.overlays += icon(holder2.icon,"officer")
+				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
+					holder2.icon_state = ""
+				else
+					holder2.overlays += icon(holder2.icon,"officer")
 			else if (original_job.is_medic)
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2

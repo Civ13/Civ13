@@ -22,6 +22,7 @@
 		)
 	full_auto = TRUE
 	fire_delay = 3
+	is_hmg = TRUE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/rotate_to(mob/user, atom/A)
 	var/shot_dir = get_carginal_dir(src, A)
 	dir = shot_dir
@@ -79,6 +80,7 @@
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	is_hmg = TRUE
 
 obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	name = "Maxim"
@@ -92,6 +94,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08
 	name = "Maschinengewehr 08"
@@ -105,6 +108,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
+	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm
 	name = "PKM machine gun"
@@ -117,6 +121,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		list(name="full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
 	name = "Vickers machine gun"
@@ -130,6 +135,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a303/weak
+	is_hmg = TRUE
 
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/hotchkiss1914
@@ -140,6 +146,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a8x50_weak"
 	magazine_type = /obj/item/ammo_magazine/hotchkiss
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
+	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type3
 	name = "Type 3 machine gun"
@@ -149,6 +156,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a65x50_weak"
 	magazine_type = /obj/item/ammo_magazine/type3
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
+	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98
 	name = "Type 92 machine gun"
@@ -162,6 +170,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		list(name="full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a77x58
+	is_hmg = TRUE
 	attachment_slots = ATTACH_SCOPE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "-empty"]"
@@ -178,6 +187,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a3006
+	is_hmg = TRUE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
 	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "-empty"]"
 
@@ -193,3 +203,4 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		list(name="full auto", burst=4, burst_delay=1, fire_delay=1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
+	is_hmg = TRUE

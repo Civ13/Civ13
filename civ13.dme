@@ -312,6 +312,7 @@
 #include "code\game\objects\map_metadata\nomads_new_world.dm"
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
+#include "code\game\objects\map_metadata\occupation.dm"
 #include "code\game\objects\map_metadata\omaha.dm"
 #include "code\game\objects\map_metadata\pioneers.dm"
 #include "code\game\objects\map_metadata\port_arthur.dm"
@@ -533,6 +534,7 @@
 #include "code\modules\1713\jobs\modern.dm"
 #include "code\modules\1713\jobs\nomads.dm"
 #include "code\modules\1713\jobs\npc.dm"
+#include "code\modules\1713\jobs\occupation.dm"
 #include "code\modules\1713\jobs\ph_us_war.dm"
 #include "code\modules\1713\jobs\pirates.dm"
 #include "code\modules\1713\jobs\portuguese.dm"
@@ -995,5 +997,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\the_art_of_the_deal.dmm"
+#include "maps\1943\occupation.dmm"
 // END_INCLUDE

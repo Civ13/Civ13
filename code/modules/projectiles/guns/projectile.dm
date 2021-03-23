@@ -8,7 +8,8 @@
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled
 	var/load_method = SINGLE_CASING|SPEEDLOADER //1 = Single shells, 2 = box or quick loader, 3 = magazine
 	var/obj/item/ammo_casing/chambered = null
-
+	var/is_hmg = FALSE
+	var/has_telescopic = FALSE
 	//gunporn stuff
 	var/unload_sound 	= 'sound/weapons/guns/interact/pistol_magout.ogg'
 	var/reload_sound 	= 'sound/weapons/guns/interact/pistol_magin.ogg'
@@ -58,9 +59,15 @@
 			ammo_magazine = new magazine_type(src)
 
 	update_icon()
-
-	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
+	if (is_hmg == TRUE && has_telescopic == FALSE)
+		var/obj/item/weapon/attachment/scope/iron_sights/mg/A = new /obj/item/weapon/attachment/scope/iron_sights/mg(src)
+		spawn_add_attachment(A, src)
+	else if (has_telescopic == TRUE)
+		var/obj/item/weapon/attachment/scope/iron_sights/mg/type99/A = new /obj/item/weapon/attachment/scope/iron_sights/mg/type99(src)
+		spawn_add_attachment(A, src)
+	else
+		var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
+		spawn_add_attachment(A, src)
 
 /obj/item/weapon/gun/projectile/proc/cock_gun(mob/user)
 	set waitfor = FALSE

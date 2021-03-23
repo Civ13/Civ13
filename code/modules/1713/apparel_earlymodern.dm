@@ -466,7 +466,7 @@
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"
 /obj/item/weapon/storage/belt/russian
-	name = "RussianSoldier belt"
+	name = "Russian Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
 	icon_state = "japbelt"
 	item_state = "japbelt"
@@ -586,10 +586,12 @@
 	new /obj/item/flashlight/flashlight(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard_SS
+	name = "SS guard belt"
 /obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
 	..()
-	new /obj/item/weapon/key/german(src)
-	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 

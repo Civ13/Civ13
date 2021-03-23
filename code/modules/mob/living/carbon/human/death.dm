@@ -61,7 +61,7 @@
 	else if (map && map.ID == MAP_ABASHIRI && client)
 		var/obj/map_metadata/abashiri/GD = map
 		if (original_job && istype(original_job, /datum/job/civilian/abashiri))
-			var/mob/living/human/H = src
+			var/mob/living/human/H = client
 			for(var/i in GD.points)
 				if (i[1]==H.nationality)
 					i[3]-=50
@@ -126,6 +126,51 @@
 										HMN.gun_permit = FALSE
 			else
 				map.scores[civilization] -= 200
+	else if (map && map.ID == MAP_OCCUPATION && client)
+		var/obj/map_metadata/occupation/GD = map
+		var/mob/living/human/H = client
+		if (original_job && istype(original_job, /datum/job/civilian/occupation))
+			for(var/i in GD.points)
+				if (i[1]==H.nationality)
+					i[3]-=50
+		if (civilization)
+			var/datum/job/J
+			if (H.civilization == "SS")
+				for(var/i in GD.points)
+					if (H.faction_text == GERMAN && J.is_squad_leader == TRUE)
+						if (i[1]=="UPA")
+							i[2]+= 15
+					else if (H.faction_text == GERMAN && J.is_officer == TRUE)
+						if (i[1]=="UPA")
+							i[2]+= 50
+					else if (H.faction_text == GERMAN)
+						if (i[1]=="UPA")
+							i[2]+=  5
+					else
+						if (i[1]=="UPA")
+							i[2]-= 50
+			else
+				for(var/i in GD.points)
+					if (H.civilization == "UPA" && J.is_squad_leader == TRUE)
+						if (i[1]=="SS")
+							i[2]+= 20
+					else if (H.civilization == "UPA" && J.is_officer == TRUE)
+						if (i[1]=="SS")
+							i[2]+= 50
+					else if (H.civilization == "UPA")
+						if (i[1]=="SS")
+							i[2]+= 5
+					else if (H.nationality == "Polish")
+						if (i[1]=="UPA")
+							i[2]+= 5
+					else if (H.original_job == "Auxillary Police")
+						if (i[1]=="UPA")
+							i[2]+= 5
+						if (i[1]=="SS")
+							i[2]-= 0
+					else
+						if (i[1]=="SS")
+							i[2]-= 50
 	handle_piss()
 	handle_shit()
 	if (squad > 0 && original_job && original_job.uses_squads)

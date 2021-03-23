@@ -218,6 +218,8 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 							crimereason = "Supporting the Banderovitsi in [pick("Lvov","Tarnopol", "Lutsk", "Chelm")]."
 						if ("Polish")
 							crimereason = "Fighting for the Armia Krajowa in [pick("Grodno","Wroclaw", "Lodz", "Lvov")]."
+						if ("Japanese")
+							crimereason = "Fighting for the Imperial Japanese Army in [pick("Khalkhyn Gol", "Mongolia", "the Krillin Islands", "Sakhalinsk")]."
 
 					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
 				else if (istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))

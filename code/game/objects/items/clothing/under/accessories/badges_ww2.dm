@@ -287,13 +287,6 @@
 	name = "Schutze rank patch"
 	desc = "the rank of 2nd class soldier, to be sewn into the collar of a uniform."
 
-/obj/item/clothing/accessory/rank/germ_schutze
-	icon_state = "germ_schtz"
-	item_state = "germ_schtz"
-	worn_state = "germ_schtz"
-	name = "Schutze rank patch"
-	desc = "the rank of 2nd class soldier, to be sewn into the collar of a uniform."
-
 /obj/item/clothing/accessory/rank/germ_oberschutze
 	icon_state = "germ_obrschtz"
 	item_state = "germ_obrschtz"
@@ -342,6 +335,34 @@
 	worn_state = "germ_hptmn"
 	name = "Hauptmann rank patch"
 	desc = "the rank of Captain, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/SS_unterscharfuhrer
+	icon_state = "germ_2lt"
+	item_state = "germ_2lt"
+	worn_state = "germ_2lt"
+	name = "Untersturmfuhrer rank patch"
+	desc = "the rank of SS 2nd Lieutenant, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/SS_scharfuhrer
+	icon_state = "germ_grppnfher"
+	item_state = "germ_grppnfher"
+	worn_state = "germ_grppnfher"
+	name = "Scharfuhrer rank patch"
+	desc = "the rank of SS Sergeant, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/SS_oberscharfuhrer
+	icon_state = "germ_1lt"
+	item_state = "germ_1lt"
+	worn_state = "germ_1lt"
+	name = "Obersturmfuhrer rank patch"
+	desc = "the rank of SS 1st Lieutenant, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/SS_hauptsturmfuhrer
+	icon_state = "germ_hptmn"
+	item_state = "germ_hptmn"
+	worn_state = "germ_hptmn"
+	name = "Hauptsturmfuhrer rank patch"
+	desc = "the rank of SS Captain, to be sewn into the collar of a uniform."
 
 /obj/item/clothing/accessory/medal/soviet/ww2/delegate_supreme_soviet
 	icon_state = "delegate_supreme_soviet"
