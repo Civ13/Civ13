@@ -1107,3 +1107,10 @@ var/civmax_research = list(230,230,230)
 				craftlist_lists["INDIANS"] += list(current)
 				if (current.len != 13)
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+/obj/map_metadata/proc/give_stock_points(tfaction = "", value = 0)
+	if (value == 0)
+		return
+	for (var/i in map.globalmarketplace)
+		if (map.globalmarketplace[i][7]==0 && map.globalmarketplace[i][5]=="bank" && map.globalmarketplace[i][2] && map.globalmarketplace[i][1]==tfaction)
+			if (istype(map.globalmarketplace[i][2],/mob/living/human))
+				map.marketplaceaccounts[map.globalmarketplace[i][2].name] += value/2.5
