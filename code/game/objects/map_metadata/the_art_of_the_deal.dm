@@ -85,12 +85,12 @@
 		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
 		delivery_locations += tlist
 /obj/map_metadata/art_of_the_deal/proc/send_buy_orders()
-	for(var/i in list("mail@greene.ug","mail@rednikov.ug","mail@goldstein.ug","mail@blu.ug"))
+	for(var/i in list("mail@kogama.ug","mail@rednikov.ug","mail@goldstein.ug","mail@blu.ug"))
 		var/list/tloc = pick(delivery_locations)
 		var/nr = pick(3,7)
 		var/comps = ""
 		switch(i)
-			if ("mail@greene.ug")
+			if ("mail@kogama.ug")
 				comps = pick("GBSA-1994 chip","RDKV S-445 chip","GS-IC-M3 chip")
 			if ("mail@rednikov.ug")
 				comps = pick("GBSA-1994 chip","McGT S5R1 chip","GS-IC-M3 chip")
@@ -634,7 +634,7 @@
 				//x,y,product,amount,payment,factionmail
 				var/faction
 				switch(i[6])
-					if ("mail@greene.ug")
+					if ("mail@kogama.ug")
 						faction = "Kogama Kraftsmen"
 					if ("mail@rednikov.ug")
 						faction = "Rednikov Industries"

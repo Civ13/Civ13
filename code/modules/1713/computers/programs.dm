@@ -764,7 +764,7 @@
 	tmp_comp_vars["mail_snd"]="mail@goldstein.ug"
 /datum/program/monkeysoftmail/green/New()
 	..()
-	tmp_comp_vars["mail_snd"]="mail@greene.ug"
+	tmp_comp_vars["mail_snd"]="mail@kogama.ug"
 /datum/program/monkeysoftmail/police/New()
 	..()
 	tmp_comp_vars["mail_snd"]="mail@police.gov"
@@ -799,7 +799,7 @@
 			if ("Giovanni Blu Stocks")
 				mdomain = "blu.ug"
 			if ("Kogama Kraftsmen")
-				mdomain = "greene.ug"
+				mdomain = "kogama.ug"
 			if ("Goldstein Solutions")
 				mdomain = "goldstein.ug"
 			if ("Police")
@@ -828,7 +828,7 @@
 		if ("Giovanni Blu Stocks")
 			mdomain = "blu.ug"
 		if ("Kogama Kraftsmen")
-			mdomain = "greene.ug"
+			mdomain = "kogama.ug"
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
 		if ("Police")
@@ -873,8 +873,7 @@
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
-//				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
-				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@greene.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
+				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@kogama.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
 			if ("3")
 				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?","e-mail",tmp_comp_vars["mail_subj"]) as text
 			if ("4")
@@ -929,6 +928,8 @@
 /datum/program/deepnet/Topic(href, href_list, hsrc)
 	..()
 	mainbody = ""
+	var/u_account = user.civilization
+	if ()
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
