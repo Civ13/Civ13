@@ -35,7 +35,17 @@
 							crimereason = "Ukrainian civilian. Original city inhabitant."
 						if ("Polish")
 							crimereason = "Polish civilian. Original city inhabitant."
-					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
+					document_details = list(H.h_style, H.f_style, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
+				if (istype(H.original_job, /datum/job/civilian/ukrainian/occupation))
+					var/datum/job/civilian/ukrainian/occupation/P = H.original_job
+					switch(H.nationality)
+						if ("German")
+							crimereason = "German civilian relocated to lebensraum."
+						if ("Ukrainian")
+							crimereason = "Ukrainian civilian. Original city inhabitant."
+						if ("Polish")
+							crimereason = "Polish civilian. Original city inhabitant."
+					document_details = list(H.h_style, H.f_style, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
 /obj/item/weapon/civilian_passport/examine(mob/user)
 	user << "<span class='info'>*---------*</span>"
 	..(user)
@@ -45,12 +55,12 @@
 			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
 		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
 		user << "<b><span class='info'>Extra Info:</b> [document_details[5]]</span>"
-		user << "<b><span class='info'>Assigned:</b> [document_details[9]]</span>"
+		user << "<b><span class='info'>Job:</b> [document_details[9]]</span>"
 	user << "<span class='info'>*---------*</span>"
 	if (guardnotes.len)
 		for(var/i in guardnotes)
 			user << "NOTE: [i]"
-	user << "<span class='info'>*---------*</span>"
+		user << "<span class='info'>*---------*</span>"
 
 /obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
@@ -70,6 +80,11 @@
 	showoff(user)
 	return
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/civilian/ukrainian/occupation
+	var/randrole = "none"
+	var/original_eyes = "Black"
+	var/original_facial = "Shaved"
+	var/original_hair = "Black"
 /datum/job/civilian/ukrainian/occupation/upa_officer
 	title = " UPA Khorunzhyj"
 	en_meaning = " UPA 2nd Lieutenant"
@@ -87,7 +102,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/ukrainian/upa_officer_occupation/equip(var/mob/living/human/H)
+/datum/job/civilian/ukrainian/occupation/upa_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "UPA"
 	H.nationality = "Ukrainian"
@@ -105,6 +120,9 @@
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
+	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
+	RUB.amount = 75
+	H.equip_to_slot_or_del(RUB, slot_r_store)
 
 //head
 //back
@@ -121,6 +139,29 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
+	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
+	P.randrole = "Civilian/Unemployed"
+	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
+		P.original_hair = "Black"
+	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
+		P.original_hair = "Light Brown"
+	else if (H.r_hair == "3B" && H.g_hair == "30" && H.b_hair == "24")
+		P.original_hair = "Dark Brown"
+	else if (H.r_hair == "B5" && H.g_hair == "52" && H.b_hair == "39")
+		P.original_hair = "Red"
+	else if (H.r_hair == "91" && H.g_hair == "55" && H.b_hair == "3D")
+		P.original_hair = "Orange"
+	else if (H.r_hair == "E6" && H.g_hair == "CE" && H.b_hair == "A8")
+		P.original_hair = "Light Blond"
+	else if (H.r_hair == "E5" && H.g_hair == "C8" && H.b_hair == "A8")
+		P.original_hair = "Blond"
+	else if (H.r_hair == "B8" && H.g_hair == "97" && H.b_hair == "78")
+		P.original_hair = "Dirty Blond"
+	else if (H.r_hair == "d3" && H.g_hair == "d3" && H.b_hair == "d3")
+		P.original_hair = "Light Grey"
+	else if (H.r_hair == "80" && H.g_hair == "80" && H.b_hair == "80")
+		P.original_hair = "Grey"
+	P.original_facial = P.original_hair
 	return TRUE
 
 /datum/job/civilian/ukrainian/occupation/upa_doctor
@@ -158,6 +199,9 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
 	else if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
+	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
+	RUB.amount = 75
+	H.equip_to_slot_or_del(RUB, slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
@@ -172,6 +216,29 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MAX)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
+	P.randrole = "Civilian/Unemployed"
+	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
+		P.original_hair = "Black"
+	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
+		P.original_hair = "Light Brown"
+	else if (H.r_hair == "3B" && H.g_hair == "30" && H.b_hair == "24")
+		P.original_hair = "Dark Brown"
+	else if (H.r_hair == "B5" && H.g_hair == "52" && H.b_hair == "39")
+		P.original_hair = "Red"
+	else if (H.r_hair == "91" && H.g_hair == "55" && H.b_hair == "3D")
+		P.original_hair = "Orange"
+	else if (H.r_hair == "E6" && H.g_hair == "CE" && H.b_hair == "A8")
+		P.original_hair = "Light Blond"
+	else if (H.r_hair == "E5" && H.g_hair == "C8" && H.b_hair == "A8")
+		P.original_hair = "Blond"
+	else if (H.r_hair == "B8" && H.g_hair == "97" && H.b_hair == "78")
+		P.original_hair = "Dirty Blond"
+	else if (H.r_hair == "d3" && H.g_hair == "d3" && H.b_hair == "d3")
+		P.original_hair = "Light Grey"
+	else if (H.r_hair == "80" && H.g_hair == "80" && H.b_hair == "80")
+		P.original_hair = "Grey"
+	P.original_facial = P.original_hair
 	return TRUE
 
 /datum/job/civilian/ukrainian/occupation/sergeant_upa
@@ -210,6 +277,9 @@
 
 	else if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
+	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
+	RUB.amount = 75
+	H.equip_to_slot_or_del(RUB, slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
@@ -226,7 +296,29 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	H.setStat("stamina", STAT_VERY_HIGH)
-
+	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
+	P.randrole = "Civilian/Unemployed"
+	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
+		P.original_hair = "Black"
+	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
+		P.original_hair = "Light Brown"
+	else if (H.r_hair == "3B" && H.g_hair == "30" && H.b_hair == "24")
+		P.original_hair = "Dark Brown"
+	else if (H.r_hair == "B5" && H.g_hair == "52" && H.b_hair == "39")
+		P.original_hair = "Red"
+	else if (H.r_hair == "91" && H.g_hair == "55" && H.b_hair == "3D")
+		P.original_hair = "Orange"
+	else if (H.r_hair == "E6" && H.g_hair == "CE" && H.b_hair == "A8")
+		P.original_hair = "Light Blond"
+	else if (H.r_hair == "E5" && H.g_hair == "C8" && H.b_hair == "A8")
+		P.original_hair = "Blond"
+	else if (H.r_hair == "B8" && H.g_hair == "97" && H.b_hair == "78")
+		P.original_hair = "Dirty Blond"
+	else if (H.r_hair == "d3" && H.g_hair == "d3" && H.b_hair == "d3")
+		P.original_hair = "Light Grey"
+	else if (H.r_hair == "80" && H.g_hair == "80" && H.b_hair == "80")
+		P.original_hair = "Grey"
+	P.original_facial = P.original_hair
 	return TRUE
 
 /datum/job/civilian/ukrainian/occupation/upa_infantry
@@ -264,6 +356,9 @@
 
 	else if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
+	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
+	RUB.amount = 50
+	H.equip_to_slot_or_del(RUB, slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 //back
 	give_random_name(H)
@@ -279,7 +374,29 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
-
+	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
+	P.randrole = "Civilian/Unemployed"
+	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
+		P.original_hair = "Black"
+	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
+		P.original_hair = "Light Brown"
+	else if (H.r_hair == "3B" && H.g_hair == "30" && H.b_hair == "24")
+		P.original_hair = "Dark Brown"
+	else if (H.r_hair == "B5" && H.g_hair == "52" && H.b_hair == "39")
+		P.original_hair = "Red"
+	else if (H.r_hair == "91" && H.g_hair == "55" && H.b_hair == "3D")
+		P.original_hair = "Orange"
+	else if (H.r_hair == "E6" && H.g_hair == "CE" && H.b_hair == "A8")
+		P.original_hair = "Light Blond"
+	else if (H.r_hair == "E5" && H.g_hair == "C8" && H.b_hair == "A8")
+		P.original_hair = "Blond"
+	else if (H.r_hair == "B8" && H.g_hair == "97" && H.b_hair == "78")
+		P.original_hair = "Dirty Blond"
+	else if (H.r_hair == "d3" && H.g_hair == "d3" && H.b_hair == "d3")
+		P.original_hair = "Light Grey"
+	else if (H.r_hair == "80" && H.g_hair == "80" && H.b_hair == "80")
+		P.original_hair = "Grey"
+	P.original_facial = P.original_hair
 	return TRUE
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////GERMAN/////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +424,7 @@
 /datum/job/german/occupation/hauptsturmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
-	H.nationality = "SS"
+	H.nationality = "German"
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -674,7 +791,7 @@
 	var/randrole = "none"
 	var/original_eyes = "Black"
 	var/original_facial = "Shaved"
-	var/original_hair = "Short Hair"
+	var/original_hair = "Black"
 	can_be_female = TRUE
 /datum/job/civilian/occupation/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -796,10 +913,35 @@
 
 	min_positions = 2
 	max_positions = 5
-	equip(var/mob/living/human/H)
-		..()
-		randrole = title
-		H.add_note("Primary Role", "You are an <b>Auxillary Police</b>. Your job is to get information and pass it to the SS. Be careful, the civilians might not like your presence.")
+/datum/job/civilian/occupation/collaborator/equip(var/mob/living/human/H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/nsdap = new /obj/item/clothing/accessory/armband/nsdap(null)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(nsdap, H)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/revolver/nagant_revolver, H)
+	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
+	RUB.amount = 75
+	H.equip_to_slot_or_del(RUB, slot_r_store)
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
+	H.give_languages()
+	randrole = title
+	H.add_note("Primary Role", "You are an <b>Auxillary Police</b>. Your job is to get information and pass it to the SS. Be careful, the civilians might not like your presence.")
+	return TRUE
 
 /datum/job/civilian/occupation/basic
 	title = "Basic Civilian"
@@ -811,4 +953,4 @@
 	equip(var/mob/living/human/H)
 		..()
 		H.add_note("Role", "You are a <b>Basic Civilian</b>. Your job is to find a job. Maybe the SS have work for you.")
-		randrole = title
+		randrole = "Civilian/Unemployed"

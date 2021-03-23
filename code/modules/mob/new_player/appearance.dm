@@ -638,7 +638,7 @@
 		growth = 1
 
 	hip
-		name = "Hipster Beard"
+		name = "Short Facial Hair"
 		icon_state = "facial_hip"
 		growth = 2
 

@@ -53,7 +53,7 @@
 		else
 			. = FALSE
 /obj/map_metadata/occupation/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 00 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/occupation/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 300000 || admin_ended_all_grace_periods)
@@ -105,7 +105,7 @@
 	if (caribbean_blocking_area_types.Find(A.type))
 		if (H.faction_text == faction2 || H.faction_text == faction1)
 			return !faction1_can_cross_blocks()
-		else if (H.civilization == "UPA")
+		else if (H.original_job.is_upa == TRUE)
 			return !faction2_can_cross_blocks()
 		else
 			return FALSE
@@ -128,13 +128,12 @@
 	for (var/mob/living/human/H in player_list)
 		if (H.stat!=DEAD && H.faction_text == CIVILIAN)
 			var/curval = 0
-			var/area/A = get_area(H)
-			if (istype(A, /area/caribbean/nomads/ice/target))
-				for(var/i in points)
-					if (i[1]==H.nationality)
-						i[3]+=4
-					else if (i[1]!="SS")
-						i[3]+=2
+			if (H.stat!=DEAD && H.original_job.is_upa == TRUE)
+				var/area/A = get_area(H)
+				if (istype(A, /area/caribbean/german/inside/objective))
+					for(var/i in points)
+						if (i[1]=="SS")
+							i[2]+= 15
 			for(var/obj/item/stack/money/rubles/R in H)
 				curval += R.amount
 			if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/storage))
