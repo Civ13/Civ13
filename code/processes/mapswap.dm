@@ -484,7 +484,7 @@
 		map.age3_done = TRUE
 		map.age4_done = TRUE
 		map.research_active = FALSE
-		var/customresearch = 104
+		var/customresearch = 105
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)

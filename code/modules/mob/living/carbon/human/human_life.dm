@@ -76,7 +76,7 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 	if (map && map.nomads)
-		if (map && map.ID == MAP_NOMADS_AFRICA)
+		if (map && map.ID == MAP_NOMADS_AFRICA || map.ID == MAP_NOMADS_DIVIDE)
 			if (s_tone <= -175)
 				size_multiplier = 0.85
 		else

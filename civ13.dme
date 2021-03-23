@@ -164,6 +164,7 @@
 #include "code\game\objects\items\clay_items.dm"
 #include "code\game\objects\items\clipboard.dm"
 #include "code\game\objects\items\glassjar.dm"
+#include "code\game\objects\items\misc.dm"
 #include "code\game\objects\items\pen.dm"
 #include "code\game\objects\items\soap.dm"
 #include "code\game\objects\items\stamp.dm"
@@ -463,6 +464,7 @@
 #include "code\modules\1713\crates.dm"
 #include "code\modules\1713\custom_apparel.dm"
 #include "code\modules\1713\doctor_handbook.dm"
+#include "code\modules\1713\equip_box.dm"
 #include "code\modules\1713\helmet.dm"
 #include "code\modules\1713\language_book.dm"
 #include "code\modules\1713\lantern.dm"
@@ -993,5 +995,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\gulag13.dmm"
+#include "maps\special\the_art_of_the_deal.dmm"
 // END_INCLUDE

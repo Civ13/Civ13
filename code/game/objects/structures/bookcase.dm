@@ -75,6 +75,48 @@
 			icon_state = "books-0"
 
 //for civ mode
+
+/obj/structure/bookcase/proc/anti_abuse(var/mob/living/user, var/tech1, var/tech2, var/tech3, var/sum1, var/sum2, var/sum3)
+	. = TRUE
+	var/check1 = tech1 + sum1
+	var/check2 = tech2 + sum2
+	var/check3 = tech3 + sum3
+	var/sum = check1+check2+check3
+	var/msg = "This holds too much information, you feel tired and cant figure it out. Maybe you should try small bits."
+	if (map.age1_done == FALSE)
+		if (world.time < 36000 && sum >= 57)
+			user << msg
+			return
+	else if (map.age1_done == TRUE && map.age2_done == FALSE)
+		if (world.time < map.age2_timer && sum >= (map.age1_top*3))
+			user << msg
+			return
+	if (map.age2_done == TRUE && map.age3_done == FALSE)
+		if (world.time < map.age3_timer && sum >= (map.age2_top*3))
+			user << msg
+			return
+	if (map.age3_done == TRUE && map.age4_done == FALSE)
+		if (world.time < map.age4_timer && sum >= (map.age3_top*3))
+			user << msg
+			return
+	if (map.age4_done == TRUE && map.age5_done == FALSE)
+		if (world.time < map.age5_timer && sum >= (map.age4_top*3))
+			user << msg
+			return
+	if (map.age5_done == TRUE && map.age6_done == FALSE)
+		if (world.time < map.age6_timer && sum >= (map.age5_top*3))
+			user << msg
+			return
+	if (map.age6_done == TRUE && map.age7_done == FALSE)
+		if (world.time < map.age7_timer && sum >= (map.age6_top*3))
+			user << msg
+			return
+	if (map.age7_done == TRUE && map.age8_done == FALSE)
+		if (world.time < map.age8_timer && sum >= (map.age7_top*3))
+			user << msg
+			return
+	return FALSE
+
 /obj/structure/bookcase/proc/check_research()
 	if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		return
@@ -116,7 +158,7 @@
 	else if (istype(O, /obj/item/weapon/researchkit))
 		if (user.original_job_title == "Nomad")
 			if (map.age1_done == FALSE)
-				if (world.time < 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
+				if (world.time < 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= 57)
 					user << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
 					return
 			else if (map.age1_done == TRUE && map.age2_done == FALSE)
@@ -171,38 +213,80 @@
 				modif += 0.3
 			user << "Studying these documents... This will take [displaytime] to finish."
 			if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
-				user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 				user.adaptStat("philosophy", 1*current_research)
 				if (user.civilization == civname_a)
-					map.civa_research[1] += sum_i
-					map.civa_research[2] += sum_m
-					map.civa_research[3] += sum_h
+					if(anti_abuse(user, map.civa_research[1], map.civa_research[2], map.civa_research[3], sum_i, sum_m, sum_h))
+						sum_i = 0  //Throwing the unused sum away
+						sum_m = 0
+						sum_h = 0
+						return
+					else
+						map.civa_research[1] += sum_i
+						map.civa_research[2] += sum_m
+						map.civa_research[3] += sum_h
 				else if (user.civilization == civname_b)
-					map.civb_research[1] += sum_i
-					map.civb_research[2] += sum_m
-					map.civb_research[3] += sum_h
+					if(anti_abuse(user, map.civb_research[1], map.civb_research[2], map.civb_research[3], sum_i, sum_m, sum_h))
+						sum_i = 0  //Throwing the unused sum away
+						sum_m = 0
+						sum_h = 0
+						return
+					else
+						map.civb_research[1] += sum_i
+						map.civb_research[2] += sum_m
+						map.civb_research[3] += sum_h
 				else if (user.civilization == civname_c)
-					map.civc_research[1] += sum_i
-					map.civc_research[2] += sum_m
-					map.civc_research[3] += sum_h
+					if(anti_abuse(user, map.civc_research[1], map.civc_research[2], map.civc_research[3], sum_i, sum_m, sum_h))
+						sum_i = 0  //Throwing the unused sum away
+						sum_m = 0
+						sum_h = 0
+						return
+					else
+						map.civc_research[1] += sum_i
+						map.civc_research[2] += sum_m
+						map.civc_research[3] += sum_h
 				else if (user.civilization == civname_d)
-					map.civd_research[1] += sum_i
-					map.civd_research[2] += sum_m
-					map.civd_research[3] += sum_h
+					if(anti_abuse(user, map.civd_research[1], map.civd_research[2], map.civd_research[3], sum_i, sum_m, sum_h))
+						sum_i = 0  //Throwing the unused sum away
+						sum_m = 0
+						sum_h = 0
+						return
+					else
+						map.civd_research[1] += sum_i
+						map.civd_research[2] += sum_m
+						map.civd_research[3] += sum_h
 				else if (user.civilization == civname_e)
-					map.cive_research[1] += sum_i
-					map.cive_research[2] += sum_m
-					map.cive_research[3] += sum_h
+					if(anti_abuse(user, map.cive_research[1], map.cive_research[2], map.cive_research[3], sum_i, sum_m, sum_h))
+						sum_i = 0  //Throwing the unused sum away
+						sum_m = 0
+						sum_h = 0
+						return
+					else
+						map.cive_research[1] += sum_i
+						map.cive_research[2] += sum_m
+						map.cive_research[3] += sum_h
 				else if (user.civilization == civname_f)
-					map.civf_research[1] += sum_i
-					map.civf_research[2] += sum_m
-					map.civf_research[3] += sum_h
+					if(anti_abuse(user, map.civf_research[1], map.civf_research[2], map.civf_research[3], sum_i, sum_m, sum_h))
+						sum_i = 0  //Throwing the unused sum away
+						sum_m = 0
+						sum_h = 0
+						return
+					else
+						map.civf_research[1] += sum_i
+						map.civf_research[2] += sum_m
+						map.civf_research[3] += sum_h
 				else if (user.civilization != "none" && user.civilization != null)
-					map.custom_civs[user.civilization][1] += sum_i
-					map.custom_civs[user.civilization][2] += sum_m
-					map.custom_civs[user.civilization][3] += sum_h
+					if(anti_abuse(user, map.custom_civs[user.civilization][1], map.custom_civs[user.civilization][2], map.custom_civs[user.civilization][3], sum_i, sum_m, sum_h))
+						sum_i = 0  //Throwing the unused sum away
+						sum_m = 0
+						sum_h = 0
+						return
+					else
+						map.custom_civs[user.civilization][1] += sum_i
+						map.custom_civs[user.civilization][2] += sum_m
+						map.custom_civs[user.civilization][3] += sum_h
 				else
 					..()
+				user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 		sum_i = null
 		sum_m = null
 		sum_h = null

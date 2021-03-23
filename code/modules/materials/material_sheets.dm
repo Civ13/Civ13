@@ -238,6 +238,7 @@
 	flammable = TRUE
 	var/decay = 0
 	var/decaytimer = 0
+	decay = 80*600
 
 /obj/item/stack/material/leaf/New()
 		..()
@@ -279,6 +280,7 @@
 	default_type = "palm"
 	value = 0
 	flammable = TRUE
+	decay = 80*600
 
 /obj/item/stack/material/leaf/fern
 	name = "Fern"
@@ -377,6 +379,36 @@
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
 	flammable = TRUE
+	var/onfire = FALSE
+	var/ash_production = FALSE
+
+/obj/item/stack/material/wood/proc/start_fire()
+	var/burn_time = amount * 1
+	var/old_amount = amount
+	if (onfire)
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
+		spawn(burn_time)
+			for(var/i = 0, i < old_amount, i++)
+				new/obj/item/wood_ash(src.loc)
+			qdel(NF)
+			qdel(src)
+
+
+/obj/item/stack/material/wood/attackby(obj/item/T as obj, mob/user as mob)
+	if (istype(T, /obj/item/flashlight))
+		var/obj/item/flashlight/F = T
+		if(user.a_intent == "harm" && F.on && !onfire)
+
+			visible_message("<span class = 'red'>[user.name] tries to set the [src] on fire.</span>")
+			if(prob(30))
+				ash_production = 1
+				src.onfire = 1
+				start_fire()
+				visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
+				return
+
+	return ..()
+
 
 /obj/item/stack/material/bamboo
 	name = "bamboo bundle"

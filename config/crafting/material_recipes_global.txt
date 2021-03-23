@@ -1935,6 +1935,8 @@ RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,n
 
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 
+RECIPE: /material/wood/,carriage,/obj/structure/vehicle/carriage,50,180,1,1,vehicle parts,22,0,0,8,null
+
 RECIPE: /material/wood/,communications pole,/obj/structure/phoneline,2,50,1,1,none,100,0,0,8,null
 RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
 
@@ -2124,9 +2126,9 @@ RECIPE: /material/wood/,monumental crucero cross,/obj/structure/religious/monume
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes & clothing,0,0,0,8,null
 RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoes & clothing,24,0,38,8,null
 
-RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,black african wood mask,/obj/item/clothing/mask/wooden/african,3,50,0,1,shoes & clothing,0,0,0,2,null
+RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 
 //*********************| WOOD ARMOR |**************************
 

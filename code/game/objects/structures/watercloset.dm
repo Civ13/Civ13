@@ -992,3 +992,66 @@
 					mosquito_proc()
 	else
 		return
+
+/obj/structure/shower/bathtub/big/attack_hand(var/mob/living/M)
+	var/turf/t1
+	var/turf/t2
+	var/turf/t3
+	on = !on
+	update_icon()
+	if (on)
+		if (M.loc == loc)
+			wash(M)
+			process_heat(M)
+		t1 = get_turf(locate(x+1, y, z))
+		t2 = get_turf(locate(x, y+1, z))
+		t3 = get_turf(locate(x+1, y+1, z))
+		for (var/mob/living/human/P in t1.contents)
+			wash(P)
+			process_heat(P)
+		for (var/mob/living/human/P in t2.contents)
+			wash(P)
+			process_heat(P)
+		for (var/mob/living/human/P in t3.contents)
+			wash(P)
+			process_heat(P)
+		for (var/atom/movable/G in loc)
+			G.clean_blood()
+
+/obj/structure/shower/bathtub/big/process()
+	if (!on) return
+
+	var/turf/t1 = locate(x+1,y,z)
+	var/turf/t2 = locate(x, y+1, z)
+	var/turf/t3 = locate(x+1, y+1, z)
+
+	for (var/thing in loc)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	for (var/thing in t1)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	for (var/thing in t2)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	for (var/thing in t3)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	wash_floor()
+	reagents.add_reagent("water", reagents.get_free_space())
