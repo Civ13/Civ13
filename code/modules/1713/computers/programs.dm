@@ -922,7 +922,8 @@
 	..()
 	mainbody = ""
 	var/u_account = user.civilization
-	if ()
+	if (user.original_job_title == "Legitimate Business")
+		u_account = user.name
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
@@ -1010,7 +1011,7 @@
 								else
 									//owner, object, amount, price, sale/buy, fulfilled
 									var/idx = rand(1,999999)
-									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"deepnet","[idx]",1))
+									map.globalmarketplace += list("[idx]" = list(u_account,ST,ST.amount,price*4,"deepnet","[idx]",1))
 									user.drop_from_inventory(ST)
 									ST.forceMove(locate(0,0,0))
 									mainbody += "You place \the [ST] for sale in the <b>DEEPNET</b>."
@@ -1038,7 +1039,7 @@
 				if (href_list["deepnet"] == "7") //change
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (map.globalmarketplace[i][1] == u_account)
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
@@ -1050,7 +1051,7 @@
 				if (href_list["deepnet"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (map.globalmarketplace[i][1] == u_account)
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
@@ -1061,24 +1062,24 @@
 						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a><br>"
 
 			if ("4") //account
-				mainbody += "<big>Account: <b>[user.civilization]</b></big><br><br>"
-				var/accmoney = map.marketplaceaccounts[user.civilization]
-				if (map.marketplaceaccounts[user.civilization])
+				mainbody += "<big>Account: <b>[u_account]</b></big><br><br>"
+				var/accmoney = map.marketplaceaccounts[u_account]
+				if (map.marketplaceaccounts[u_account])
 					if (accmoney <= 0)
 						mainbody += "<b>Your account is empty!</b>"
-						map.marketplaceaccounts[user.civilization] = 0
+						map.marketplaceaccounts[u_account] = 0
 					else
-						mainbody += "You have [accmoney/4] dollars in your company's account.<br>"
+						mainbody += "You have [accmoney/4] dollars in your account.<br>"
 						mainbody += "<a href='?src=\ref[src];deepnet=5'>Withdraw</a>"
 				else
 					mainbody += "<b>Your account is empty!</b>"
 			if ("5") //withdraw
-				var/accmoney = map.marketplaceaccounts[user.civilization]
+				var/accmoney = map.marketplaceaccounts[u_account]
 				if (accmoney > 0)
 					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(origin))
 					SC.amount = accmoney/20
 					accmoney = 0
-					map.marketplaceaccounts[user.civilization] = 0
+					map.marketplaceaccounts[u_account] = 0
 					do_html(user)
 	sleep(0.5)
 	do_html(user)
