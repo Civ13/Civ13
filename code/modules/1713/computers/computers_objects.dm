@@ -8,6 +8,13 @@
 	display = "<b>unga OS</b>"
 	operatingsystem = "unga OS 94"
 
+/obj/structure/computer/nopower/aotd/civilian/New()
+	..()
+	programs += new/datum/program/monkeysoftmail
+	programs += new/datum/program/deepnet
+	programs += new/datum/program/orion_trail
+	programs += new/datum/program/junglebank
+
 /obj/structure/computer/nopower/aotd/green/New()
 	..()
 	programs += new/datum/program/monkeysoftmail/green
@@ -88,6 +95,7 @@
 							WWalert(H,"This is a fake inactive disk! You lose 100 points.", "Fake Disk")
 					else
 						map.scores[H.civilization] += 100
+						map.give_stock_points(H.civilization,100)
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 40
 						DLR.update_icon()
@@ -114,6 +122,7 @@
 
 					else
 						map.scores[H.civilization] += 200
+						map.give_stock_points(H.civilization,200)
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 40
 						DLR.update_icon()
@@ -125,6 +134,7 @@
 				if (2)
 					if (!D.fake)
 						map.scores[H.civilization] += 400
+						map.give_stock_points(H.civilization,400)
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 80
 						DLR.update_icon()
