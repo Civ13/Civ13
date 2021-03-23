@@ -59,7 +59,6 @@
 			ammo_magazine = new magazine_type(src)
 
 	update_icon()
-	var/obj/item/weapon/gun/projectile/G
 	if (is_hmg == TRUE && has_telescopic == FALSE)
 		var/obj/item/weapon/attachment/scope/iron_sights/mg/A = new /obj/item/weapon/attachment/scope/iron_sights/mg(src)
 		spawn_add_attachment(A, src)
