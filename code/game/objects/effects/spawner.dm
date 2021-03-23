@@ -187,12 +187,27 @@
 	create_path = /mob/living/simple_animal/hostile/panther
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/leech
+	name = "leech spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/leech
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/lion
 	name = "lion spawner"
 	hostile = TRUE
 	max_number = 2
 	max_range = 13
 	create_path = /mob/living/simple_animal/hostile/sabertooth/lion
+	timer = 3000
+
+
+/obj/effect/spawner/mobspawner/lizard
+	name = "lizard spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/lizard
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/fox
@@ -394,6 +409,20 @@
 	create_path = /mob/living/simple_animal/hostile/poison/snake/constrictor/python
 	timer = 7000
 
+/obj/effect/spawner/mobspawner/chicken
+	name = "chicken spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/chicken
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/chicken/rooster
+	name = "rooster spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/rooster
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/crab
 	name = "crab spawner"
 	max_number = 2
@@ -554,7 +583,12 @@
 	max_range = 13
 	create_path = /mob/living/simple_animal/penguin
 	timer = 3000
-
+/obj/effect/spawner/mobspawner/parrot
+	name = "parrot spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/parrot
+	timer = 3000
 /obj/effect/spawner/mobspawner/rabbits
 	name = "rabbit spawner"
 	max_number = 2
@@ -696,6 +730,11 @@
 	name = "jungle tree spawner"
 	max_number = 26
 	create_path = /obj/structure/wild/jungle
+
+/obj/effect/spawner/objspawner/bamboo
+	name = "bamboo spawner"
+	max_number = 16
+	create_path = /obj/structure/wild/bamboo
 
 /obj/effect/spawner/objspawner/acacia
 	name = "acacia tree spawner"

@@ -398,6 +398,7 @@
 /obj/item/clothing/head/helmet/roman
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -409,6 +410,7 @@
 /obj/item/clothing/head/helmet/roman_decurion
 	name = "roman decurion helmet"
 	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman_d"
 	item_state = "roman_d"
 	worn_state = "roman_d"
@@ -420,6 +422,7 @@
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "roman centurion helmet"
 	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"
@@ -520,15 +523,6 @@
 	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	health = 30
 
-/obj/item/clothing/head/helmet/montefortino
-	name = "bronze montefortino helmet"
-	desc = "A conical bronce helmet with cheekplates."
-	icon_state = "montefortino"
-	item_state = "montefortino"
-	worn_state = "montefortino"
-	body_parts_covered = HEAD
-	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
-	health = 30
 
 /obj/item/clothing/head/helmet/leather
 	name = "leather helmet"
@@ -644,6 +638,7 @@
 /obj/item/clothing/head/helmet/roman/nomads
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -651,28 +646,6 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE) //nerfed
 	health = 30
-
-/obj/item/clothing/head/helmet/roman_decurion/nomads
-	name = "roman decurion helmet"
-	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
-	icon_state = "roman_d"
-	item_state = "roman_d"
-	worn_state = "roman_d"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-	health = 40
-
-/obj/item/clothing/head/helmet/roman_centurion/nomads
-	name = "roman centurion helmet"
-	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
-	icon_state = "roman_c"
-	item_state = "roman_c"
-	worn_state = "roman_c"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-	health = 40
 
 /obj/item/clothing/head/helmet/chinese_warrior
 	name = "chinese warrior helmet"

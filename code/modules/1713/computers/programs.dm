@@ -764,7 +764,7 @@
 	tmp_comp_vars["mail_snd"]="mail@goldstein.ug"
 /datum/program/monkeysoftmail/green/New()
 	..()
-	tmp_comp_vars["mail_snd"]="mail@greene.ug"
+	tmp_comp_vars["mail_snd"]="mail@kogama.ug"
 /datum/program/monkeysoftmail/police/New()
 	..()
 	tmp_comp_vars["mail_snd"]="mail@police.gov"
@@ -799,13 +799,17 @@
 			if ("Giovanni Blu Stocks")
 				mdomain = "blu.ug"
 			if ("Kogama Kraftsmen")
-				mdomain = "greene.ug"
+				mdomain = "kogama.ug"
 			if ("Goldstein Solutions")
 				mdomain = "goldstein.ug"
 			if ("Police")
 				mdomain = "police.gov"
 		var/cname = "mail@[mdomain]"
-		if (tmp_comp_vars["mail_snd"]=="Sender")
+		if (user.original_job_title == "Legitimate Business")
+			var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
+			uname = replacetext(uname,"'","")
+			cname = uname
+		if (tmp_comp_vars["mail_snd"] == "Sender")
 			tmp_comp_vars["mail_snd"] = cname
 		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 		if (islist(map.emails[cname]) && map.emails[cname].len>=1)
@@ -828,26 +832,21 @@
 		if ("Giovanni Blu Stocks")
 			mdomain = "blu.ug"
 		if ("Kogama Kraftsmen")
-			mdomain = "greene.ug"
+			mdomain = "kogama.ug"
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
 		if ("Police")
 			mdomain = "police.gov"
-	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
 	var/cname = "mail@[mdomain]"
+	if (user.original_job_title == "Legitimate Business")
+		var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
+		uname = replacetext(uname,"'","")
+		cname = uname
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = cname
 	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
-			if (islist(map.emails[uname]) && map.emails[uname].len>=1)
-				for(var/i = map.emails[uname].len, i > 0, i--)
-					if (istype(map.emails[uname][i], /datum/email))
-						var/datum/email/em =  map.emails[uname][i]
-						if (em.read)
-							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
-						else
-							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 			if (islist(map.emails[cname]) && map.emails[cname].len>=1)
 				for(var/i = map.emails[cname].len, i > 0, i--)
 					if (istype(map.emails[cname][i], /datum/email))
@@ -858,29 +857,22 @@
 							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 
 		else
-			if (findtext(href_list["mail"],"c"))
-				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
-				var/datum/email/chosen = map.emails[cname][tcode]
-				chosen.read = TRUE
-				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
-			else
-				var/tcode = text2num(href_list["mail"])
-				var/datum/email/chosen = map.emails[uname][tcode]
-				chosen.read = TRUE
-				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
+			var/tcode = text2num(replacetext(href_list["mail"],"c",""))
+			var/datum/email/chosen = map.emails[cname][tcode]
+			chosen.read = TRUE
+			mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+			mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
+
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
-//				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
-				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@greene.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
+				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@kogama.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
 			if ("3")
 				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?","e-mail",tmp_comp_vars["mail_subj"]) as text
 			if ("4")
 				tmp_comp_vars["mail_msg"] = input(user, "What is the message?","e-mail",tmp_comp_vars["mail_msg"]) as message
 			if ("5")
-				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
+				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(cname))
 
 //		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
@@ -929,6 +921,9 @@
 /datum/program/deepnet/Topic(href, href_list, hsrc)
 	..()
 	mainbody = ""
+	var/u_account = user.civilization
+	if (user.original_job_title == "Legitimate Business")
+		u_account = user.name
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
@@ -1016,7 +1011,7 @@
 								else
 									//owner, object, amount, price, sale/buy, fulfilled
 									var/idx = rand(1,999999)
-									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"deepnet","[idx]",1))
+									map.globalmarketplace += list("[idx]" = list(u_account,ST,ST.amount,price*4,"deepnet","[idx]",1))
 									user.drop_from_inventory(ST)
 									ST.forceMove(locate(0,0,0))
 									mainbody += "You place \the [ST] for sale in the <b>DEEPNET</b>."
@@ -1044,7 +1039,7 @@
 				if (href_list["deepnet"] == "7") //change
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (map.globalmarketplace[i][1] == u_account)
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
@@ -1056,7 +1051,7 @@
 				if (href_list["deepnet"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (map.globalmarketplace[i][1] == u_account)
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
@@ -1067,24 +1062,24 @@
 						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a><br>"
 
 			if ("4") //account
-				mainbody += "<big>Account: <b>[user.civilization]</b></big><br><br>"
-				var/accmoney = map.marketplaceaccounts[user.civilization]
-				if (map.marketplaceaccounts[user.civilization])
+				mainbody += "<big>Account: <b>[u_account]</b></big><br><br>"
+				var/accmoney = map.marketplaceaccounts[u_account]
+				if (map.marketplaceaccounts[u_account])
 					if (accmoney <= 0)
 						mainbody += "<b>Your account is empty!</b>"
-						map.marketplaceaccounts[user.civilization] = 0
+						map.marketplaceaccounts[u_account] = 0
 					else
-						mainbody += "You have [accmoney/4] dollars in your company's account.<br>"
+						mainbody += "You have [accmoney/4] dollars in your account.<br>"
 						mainbody += "<a href='?src=\ref[src];deepnet=5'>Withdraw</a>"
 				else
 					mainbody += "<b>Your account is empty!</b>"
 			if ("5") //withdraw
-				var/accmoney = map.marketplaceaccounts[user.civilization]
+				var/accmoney = map.marketplaceaccounts[u_account]
 				if (accmoney > 0)
 					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(origin))
 					SC.amount = accmoney/20
 					accmoney = 0
-					map.marketplaceaccounts[user.civilization] = 0
+					map.marketplaceaccounts[u_account] = 0
 					do_html(user)
 	sleep(0.5)
 	do_html(user)
@@ -1749,5 +1744,122 @@
 			else
 				mainbody = "<b>We are currently out of stock. Please visit soon!</b>"
 
+	sleep(0.5)
+	do_html(user)
+
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////////JUNGLE BANK////////////////////////////////
+///////For legitimate businessmen to deposit money and buy stocks////////
+/datum/program/junglebank
+	name = "JUNGLE Bank"
+	description = "The oldest bank in the area. Established 313 B.C."
+	compatible_os = list("unga OS 94","unga OS")
+
+/datum/program/junglebank/do_html(mob/living/human/user)
+	if (mainmenu == "---")
+		mainmenu = "<h2>JUNGLE Bank</h2><br>"
+		mainmenu += "<b><i>For all your financial needs.</i></b><br>"
+		if (user.original_job_title == "Legitimate Business")
+			mainmenu += "<a href='?src=\ref[src];bank=2'>Buy Stocks</a>&nbsp;<a href='?src=\ref[src];bank=3'>Sell Stocks</a>&nbsp;<a href='?src=\ref[src];bank=4'>Account</a><br>"
+		else
+			mainbody = "<font color='red'><b>ACCESS DENIED</b></font><br>"
+	..()
+
+/datum/program/junglebank/Topic(href, href_list, hsrc)
+	..()
+	mainbody = ""
+	if (href_list["bank"])
+		if (findtext(href_list["bank"],"b"))
+			var/tcode = replacetext(href_list["bank"],"b","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			if (map.marketplaceaccounts[user.name])
+				if (map.marketplaceaccounts[user.name] < cost)
+					mainbody += "<b>You don't have enough money in your account!<br>You have [map.marketplaceaccounts[user.name]/4] dollars and need [cost/4] dollars.</b>"
+					sleep(0.5)
+					do_html(user)
+					return
+				else
+					map.globalmarketplace[tcode][7] = 0
+					map.globalmarketplace[tcode][2] = user
+					mainbody += "You buy the [map.globalmarketplace[tcode][1]] stocks."
+					map.marketplaceaccounts[user.name] -= cost
+					sleep(0.5)
+					do_html(user)
+		if (findtext(href_list["bank"],"s"))
+			var/tcode = replacetext(href_list["bank"],"s","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			var/choice1 = WWinput("Are you sure you want to sell [map.globalmarketplace[tcode][1]] stocks for [map.globalmarketplace[tcode][4]/4] dollars?","Selling Stocks","No", list("Yes","No"))
+			if (choice1 == "No")
+				sleep(0.5)
+				do_html(user)
+				return
+			else
+				map.globalmarketplace[tcode][7] = 1
+				map.globalmarketplace[tcode][2] = null
+				mainbody += "You sell the [map.globalmarketplace[tcode][1]] stocks."
+				map.marketplaceaccounts[user.name] += cost
+				sleep(0.5)
+				do_html(user)
+				return
+		switch(href_list["bank"])
+			if ("2") //buy
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="bank" && map.globalmarketplace[i][2]==null)
+						currlist += list(list(map.globalmarketplace[i][6],"<b>[map.globalmarketplace[i][1]]</b>, for [map.globalmarketplace[i][4]/4] dollars"))
+				if (isemptylist(currlist))
+					mainbody += "<b>There are no stocks available to buy!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];bank=b[k[1]]'>[k[2]]</a><br>"
+			if ("3") //sell
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==0 && map.globalmarketplace[i][5]=="bank" && map.globalmarketplace[i][2]==user)
+						currlist += list(list(map.globalmarketplace[i][6],"<b>[map.globalmarketplace[i][1]]</b>, for [map.globalmarketplace[i][4]/4] dollars"))
+				if (isemptylist(currlist))
+					mainbody += "<b>There are no stocks available to sell!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];bank=s[k[1]]'>[k[2]]</a><br>"
+			if ("4") //account
+				mainbody += "<big>Account: <b>[user]</b></big><br><br>"
+				var/accmoney = map.marketplaceaccounts[user.name]
+				if (map.marketplaceaccounts[user.name])
+					if (accmoney <= 0)
+						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a><br>"
+						mainbody += "<b>Your account is empty!</b>"
+						map.marketplaceaccounts[user.name] = 0
+					else
+						mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a><br>"
+						mainbody += "You have [accmoney/4] dollars in your bank account.<br>"
+				else
+					mainbody += "<a href='?src=\ref[src];bank=5'>Withdraw</a>&nbsp;<a href='?src=\ref[src];bank=6'>Deposit</a><br>"
+					mainbody += "<b>Your account is empty!</b>"
+			if ("5") //withdraw
+				var/accmoney = map.marketplaceaccounts[user.name]
+				if (accmoney > 0)
+					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(origin))
+					SC.amount = accmoney/20
+					accmoney = 0
+					map.marketplaceaccounts[user.name] = 0
+					do_html(user)
+			if ("6") //deposit
+				if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
+					mainbody += "<b>You need to have money in one of your hands!</b>"
+					sleep(0.5)
+					do_html(user)
+					return
+				else
+					var/obj/item/stack/money/mstack = null
+					if (istype(user.l_hand, /obj/item/stack/money))
+						mstack = user.l_hand
+					else
+						mstack = user.r_hand
+					var/deposited = mstack.value*mstack.amount
+					qdel(mstack)
+					mainbody += "You deposit [deposited/4] dollars into your account.<br>"
+					map.marketplaceaccounts[user.name] += deposited
+					sleep(0.5)
+					do_html(user)
+					return
 	sleep(0.5)
 	do_html(user)

@@ -115,16 +115,17 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				text = "<b>Vote Tied Between:</b>\n"
 				for (var/option in winners)
 					text += "\t[option]\n"
-			. = pick(winners)
+			var/newwinner = pick(winners)
+			. = newwinner
 
 			for (var/key in current_votes)
-				if (choices[current_votes[key]] == .)
+				if (choices[current_votes[key]] == newwinner)
 					round_voters += key // Keep track of who voted for the winning round.
-			text += "<b>Vote Result: <span class = 'ping'>[.]</span></b><br>"
+			text += "<b>Vote Result: <span class = 'ping'>[newwinner]</span></b><br>"
 			text += "<b>The vote has ended. </b>"
 			if (callback)
 				if (callback.len == 2)
-					call(callback[1], callback[2])(.)
+					call(callback[1], callback[2])(newwinner)
 				callback = null
 		else
 			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (75% is needed)</b>"

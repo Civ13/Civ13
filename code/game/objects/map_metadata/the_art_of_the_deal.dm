@@ -80,17 +80,22 @@
 	spawn(150)
 		assign_delivery_zones()
 		send_buy_orders()
+								//id = seller, obj, amt, price, type, id, active
+		map.globalmarketplace += list("red1" = list("Rednikov Industries",null,1,1000,"bank","red1",1))
+		map.globalmarketplace += list("blue1" = list("Giovanni Blu Stocks",null,1,1000,"bank","blue1",1))
+		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000,"bank","green1",1))
+		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000,"bank","yellow1",1))
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
 	for(var/turf/floor/delivery/D in turfs)
 		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
 		delivery_locations += tlist
 /obj/map_metadata/art_of_the_deal/proc/send_buy_orders()
-	for(var/i in list("mail@greene.ug","mail@rednikov.ug","mail@goldstein.ug","mail@blu.ug"))
+	for(var/i in list("mail@kogama.ug","mail@rednikov.ug","mail@goldstein.ug","mail@blu.ug"))
 		var/list/tloc = pick(delivery_locations)
 		var/nr = pick(3,7)
 		var/comps = ""
 		switch(i)
-			if ("mail@greene.ug")
+			if ("mail@kogama.ug")
 				comps = pick("GBSA-1994 chip","RDKV S-445 chip","GS-IC-M3 chip")
 			if ("mail@rednikov.ug")
 				comps = pick("GBSA-1994 chip","McGT S5R1 chip","GS-IC-M3 chip")
@@ -124,6 +129,12 @@
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
+		if (clients.len <= 15)
+			if (J.title == "Paramedic" || J.title == "Legitimate Business")
+				. = FALSE
+		if (clients.len <= 25)
+			if (J.title == "Mechanic" || J.title == "Homeless Man")
+				. = FALSE
 	else
 		. = FALSE
 
@@ -203,8 +214,10 @@
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
-			var/obj/item/weapon/gun/projectile/ST = new pt(locate(1,1,1))
-			ST.serial = ""
+			var/obj/item/ST = new pt(locate(1,1,1))
+			if (istype(ST, /obj/item/weapon/gun/projectile))
+				var/obj/item/weapon/gun/projectile/PJ = ST
+				PJ.serial = ""
 			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 	var/num = rand(1,2) //equipment
@@ -402,8 +415,10 @@
 	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
 	/obj/item/ammo_magazine/shellbox/slug = 10,
 	/obj/item/ammo_magazine/shellbox = 10,
-	/obj/item/weapon/gun/projectile/pistol/glock17 = 20,
 	/obj/item/ammo_magazine/glock17 = 50,
+	/obj/item/ammo_magazine/m9beretta = 50,
+	/obj/item/ammo_magazine/c32 = 50,
+	/obj/item/ammo_magazine/c44 = 50,
 	/obj/item/weapon/gun/projectile/boltaction/m24 = 10,
 	/obj/item/ammo_magazine/m24 = 20,
 	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
@@ -432,7 +447,6 @@
 	/obj/item/weapon/gun/projectile/dartgun/mag = 10,
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
-	/obj/item/weapon/gun/projectile/pistol/tt30ll = 20,
 	/obj/item/ammo_magazine/tt30ll = 50,
 	)
 	attack_hand(mob/user as mob)
@@ -627,7 +641,7 @@
 				//x,y,product,amount,payment,factionmail
 				var/faction
 				switch(i[6])
-					if ("mail@greene.ug")
+					if ("mail@kogama.ug")
 						faction = "Kogama Kraftsmen"
 					if ("mail@rednikov.ug")
 						faction = "Rednikov Industries"

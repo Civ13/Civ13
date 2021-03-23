@@ -222,6 +222,8 @@
 
 	for(var/obj/structure/vehicleparts/frame/F in src.loc)
 		var/found = FALSE
+		if(istype(F, /obj/structure/vehicleparts/frame/ship))
+			continue
 		for(var/obj/structure/vehicleparts/frame/FR in get_turf(A))
 			if (FR.axis != F.axis && FR != F)
 				if (!F.CanPass(src, get_turf(A)) || !F.CheckExit(src, get_turf(A)))

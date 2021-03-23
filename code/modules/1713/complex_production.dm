@@ -1,4 +1,46 @@
 /////////////////////////////////////////////////
+////////////////////PEMMICAN/////////////////////
+/////////////////////////////////////////////////
+/obj/item/weapon/reagent_containers/food/snacks/pemmican
+	name = "Pemmican"
+	desc = "A paste of dried meat mixed with melted fat."
+	icon = 'icons/obj/complex_foods.dmi'
+	icon_state = "pemmican"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 6
+	nutriment_desc = list("salt" = 3, "animal fat" = 2, "meat" = 2)
+	non_vegetarian = TRUE
+	decay = 180*900 //50% more than the dried meat
+	satisfaction = 4 //double than the dried meat
+	New()
+		..()
+		pixel_x = rand(-8, 8)
+		pixel_y = rand(-8, 8)
+		bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat //Dried meat, basically
+	name = "minced dried meat"
+	icon = 'icons/obj/complex_foods.dmi'
+	icon_state = "minced_driedmeat"
+
+/obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat/attack_self(mob/user)
+	if (istype(user.l_hand, /obj/item/weapon/reagent_containers/glass) || istype(user.r_hand, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/G
+		if(istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
+			G  = user.l_hand
+		else
+			G  = user.r_hand
+		if (G.reagents.get_reagent_amount("fat_oil") >= 5)
+			if(do_after(user, 90))
+				visible_message("[user.name] pours the [src.name] into the [G.name], mixing it.")
+				G.reagents.remove_reagent("fat_oil", 5)
+				new/obj/item/weapon/reagent_containers/food/snacks/pemmican(user.loc)
+				qdel(src)
+				return
+	else
+		return ..()
+
+/////////////////////////////////////////////////
 //////////////////////JAM�N//////////////////////
 /////////////////////////////////////////////////
 
@@ -714,7 +756,7 @@
 				else
 					user << "You stop mincing"
 					return
-			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
 				user << "You begin to mince the [input]."
 				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
 				if(do_after(user, 180))
@@ -727,7 +769,7 @@
 				else
 					user << "You stop mincing"
 					return
-			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
+			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
 				playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
 				if(do_after(user, 10))
 					playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
@@ -739,13 +781,22 @@
 				else
 					user << "You stop forming the [input]"
 					return
-			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meatball))
+			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meatball))
 				user << "You smash the [input] into a patty!"
 				playsound(loc, 'sound/effects/squishy.ogg', 5, TRUE)
 				input = null
 				icon_state = "cutting_board_dirty"
 				new /obj/item/weapon/reagent_containers/food/snacks/patty(src.loc)
 				return
+			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
+				user << "You begin to mince the [input]."
+				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+				if(do_after(user, 180))
+					playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+					input = null
+					icon_state = "cutting_board_dirty"
+					new /obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat(src.loc)
+					return
 			else
 				user << "You need to put something on the cutting board!"
 				return
@@ -756,34 +807,40 @@
 			icon_state = "cutting_board_cutlet"
 			qdel(W)
 			return
-		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
+		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
 			input = W
 			user << "You place the [W] on the cutting board."
 			icon_state = "cutting_board_mince"
 			qdel(W)
 			return
-		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
+		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
 			input = W
 			user << "You place the [W] on the cutting board."
 			icon_state = "cutting_board_mince"
 			qdel(W)
 			return
-		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
+		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
 			input = W
 			user << "You place the [W] on the cutting board."
 			icon_state = "cutting_board_steak"
 			qdel(W)
 			return
-		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
 			input = W
 			user << "You place the [W] on the cutting board."
 			icon_state = "cutting_board_fish"
 			qdel(W)
 			return
-		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meatball))
+		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meatball))
 			input = W
 			user << "You place the [W] on the cutting board."
 			icon_state = "cutting_board_meatball"
+			qdel(W)
+			return
+		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_driedmeat"
 			qdel(W)
 			return
 		else

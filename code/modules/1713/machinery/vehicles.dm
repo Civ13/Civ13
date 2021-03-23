@@ -48,6 +48,15 @@
 	reg_number = ""
 	turntimer = 5
 
+/obj/structure/vehicleparts/axis/carriage
+	name = "carriage axis"
+	currentspeed = 0
+	speeds = 3
+	maxpower = 10
+	speedlist = null
+	reg_number = ""
+	turntimer = 5
+
 /obj/structure/vehicleparts/axis/boat
 	name = "boat rudder control"
 	currentspeed = 0
@@ -196,6 +205,64 @@
 	w_class = 5
 	secondary_action = TRUE
 	var/obj/structure/vehicle/origin = null
+
+/obj/item/vehicleparts/wheel/rope
+	name = "Rope leash handles"
+	desc = "Used to control animal propulsion vehicles."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "leash"
+
+/obj/item/vehicleparts/wheel/rope/attack_self(mob/living/human/H)
+	if(istype(H.driver_vehicle, /obj/structure/vehicle/carriage))
+		var/obj/structure/vehicle/carriage/M = H.driver_vehicle
+		if(M.buckled_animal_propulsion <= 0)
+			H << "You need animals to move the [H.driver_vehicle.name]."
+			return
+		else if(M.buckled_animal_propulsion == 1)
+			H.driver_vehicle.axis.speedlist = list(1=25,2=20)
+		else if(M.buckled_animal_propulsion == 2)
+			H.driver_vehicle.axis.speedlist = list(1=20,2=15,3=10)
+	if (H.driver_vehicle.axis.currentspeed <= 0)
+		H.driver_vehicle.axis.currentspeed = 1
+		var/spd = H.driver_vehicle.axis.get_speed()
+		if (spd <= 0)
+			return
+		else
+			H.driver_vehicle.vehicle_m_delay = spd
+		spawn(1)
+			if (H.driver_vehicle.axis.currentspeed == 1)
+				H.driver_vehicle.moving = TRUE
+				H.driver_vehicle.startmovementloop()
+				H << "You hit the animal to move."
+		return
+	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
+		H.driver_vehicle.axis.currentspeed++
+		if (H.driver_vehicle.axis.currentspeed>H.driver_vehicle.axis.speedlist.len)
+			H.driver_vehicle.axis.currentspeed = H.driver_vehicle.axis.speedlist.len
+		var/spd = H.driver_vehicle.axis.get_speed()
+		if (spd <= 0)
+			return
+		else
+			H.driver_vehicle.vehicle_m_delay = spd
+			H << "You hit the animal harder."
+			return
+	else
+		return
+
+/obj/item/vehicleparts/wheel/rope/secondary_attack_self(mob/living/human/user)
+	if (user && user.driver_vehicle && user.driver_vehicle.axis && user.driver_vehicle.axis.currentspeed <= 0)
+		return
+	else
+		user.driver_vehicle.axis.currentspeed--
+		var/spd = user.driver_vehicle.axis.get_speed()
+		if (spd <= 0 || user.driver_vehicle.axis.currentspeed == 0)
+			user.driver_vehicle.moving = FALSE
+			user << "You stop \the [user.driver_vehicle]."
+			return
+		else
+			user.driver_vehicle.vehicle_m_delay = spd
+			user << "You pull the rope to reduce the speed."
+			return
 
 /obj/item/vehicleparts/wheel/handle
 	name = "motorcycle handles"

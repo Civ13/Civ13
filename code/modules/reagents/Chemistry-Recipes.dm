@@ -1078,3 +1078,16 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("honey" = 2, "water" = 2)
 	result_amount = 2
 
+//Soap making
+/datum/chemical_reaction/lard_soap
+	name = "Lard Soap"
+	id = "lard_soap"
+	result = null
+	required_reagents = list("lard" = 20, "lye" = 2)
+	result_amount = TRUE
+
+/datum/chemical_reaction/lard_soap/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/location = get_turf(holder.my_atom)
+	for (var/i = TRUE, i <= created_volume, i++)
+		new /obj/item/weapon/soap/lard(location)
+	return

@@ -636,7 +636,7 @@ proc/admin_notice(var/message, var/rights)
 			map.age2_done = TRUE
 			map.age3_done = TRUE
 			map.age4_done = TRUE
-			map.default_research = 104
+			map.default_research = 105
 			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return

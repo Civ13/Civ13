@@ -414,6 +414,32 @@
 		M << "<span class = 'warning'>You feel sick...</span>"
 		M.vomit()
 
+/datum/reagent/drink/lard
+	name = "lard"
+	id = "lard"
+	description = "A thick and smelling lard, with meat and bones fragments. Doesnt looks good."
+	taste_description = "greasy"
+	color = "#F6EFE2"
+
+/datum/reagent/drink/lard/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	..()
+	if (prob(10))
+		M << "<span class = 'warning'>You feel disgusted and sick...</span>"
+		M.vomit()
+
+/datum/reagent/drink/fat_oil
+	name = "Fat Oil"
+	id = "fat_oil"
+	description = "A thick and smelling oil. Good for seasoning and lamps."
+	taste_description = "greasy"
+	color = "##9B7653"
+
+/datum/reagent/drink/fat_oil/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	..()
+	if (prob(10))
+		M << "<span class = 'warning'>You feel sick...</span>"
+		M.vomit()
+
 /datum/reagent/drink/grapejuice
 	name = "Grape Juice"
 	id = "grapejuice"

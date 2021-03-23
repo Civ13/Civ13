@@ -155,7 +155,7 @@
 	amount = 1
 	value = 8
 /obj/item/stack/money/dollar/New()
-	if (map.ordinal_age >= 4)
+	if (map && map.ordinal_age >= 4)
 		name = "5 Dollar Bills"
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "5 Dollar Bill"

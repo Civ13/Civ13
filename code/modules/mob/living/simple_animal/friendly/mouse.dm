@@ -52,14 +52,14 @@
 	desc = "It's a small [body_color] rodent, often seen hiding in the ship's hull and making a nuisance of itself."
 
 	if(body_color == "black")
-		if(map && map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
+		if(map && (map.ordinal_age == 2 || map.ordinal_age == 3)) //Approx epochs where black plague was a thing.
 			if(prob(50))
 				plaguemouse = TRUE
 		else
 			if(prob(25))
 				plaguemouse = TRUE
 	else
-		if(map && map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
+		if(map && (map.ordinal_age == 2 || map.ordinal_age == 3)) //Approx epochs where black plague was a thing.
 			if(prob(10))
 				plaguemouse = TRUE
 		else

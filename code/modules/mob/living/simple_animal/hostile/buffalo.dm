@@ -20,6 +20,7 @@
 	mob_size = MOB_LARGE
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	behaviour = "defends"
+	fat_extra = 3
 
 /mob/living/simple_animal/bison
 	name = "bison cow"
@@ -52,6 +53,7 @@
 	wandersounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_2.ogg')
 	hostilesounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_3.ogg')
 	behaviour = "wander"
+	fat_extra = 3
 
 /mob/living/simple_animal/bisonbull
 	name = "bison bull"
@@ -80,6 +82,7 @@
 	wandersounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_2.ogg')
 	hostilesounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_3.ogg')
 	behaviour = "wander"
+	fat_extra = 3
 
 /mob/living/simple_animal/bison/death()
 

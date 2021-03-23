@@ -15,12 +15,17 @@
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "ash"
 	anchored = TRUE
-	decay_timer = 32000
+	decay_timer = 16000
+	New()
+		..()
+		pixel_x = rand(-8, 8)
+		pixel_y = rand(-8, 8)
 
-/obj/effect/decal/cleanable/ash/New()
-	..()
-	pixel_x = rand(-8, 8)
-	pixel_y = rand(-8, 8)
+/obj/effect/decal/cleanable/ash/attackby(obj/item/weapon/reagent_containers/glass/C as obj, mob/user as  mob )
+	C.reagents.add_reagent("ash", 1)
+	user << "You collect ash into the [C.name]."
+	qdel(src)
+	return
 
 /obj/effect/decal/cleanable/ash/attack_hand(mob/user as mob)
 	user << "<span class='notice'>[src] sifts through your fingers.</span>"

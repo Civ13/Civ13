@@ -46,6 +46,7 @@
 	mob_size = MOB_MINISCULE
 	granivore = 1
 	behaviour = "wander"
+	has_fat =  FALSE
 
 /mob/living/simple_animal/chick/New()
 	..()
