@@ -805,6 +805,10 @@
 			if ("Police")
 				mdomain = "police.gov"
 		var/cname = "mail@[mdomain]"
+		if (user.original_job_title == "Legitimate Business")
+			var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
+			uname = replacetext(uname,"'","")
+			cname = uname
 		if (tmp_comp_vars["mail_snd"] == "Sender")
 			tmp_comp_vars["mail_snd"] = cname
 		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
@@ -833,21 +837,16 @@
 			mdomain = "goldstein.ug"
 		if ("Police")
 			mdomain = "police.gov"
-	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
 	var/cname = "mail@[mdomain]"
+	if (user.original_job_title == "Legitimate Business")
+		var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
+		uname = replacetext(uname,"'","")
+		cname = uname
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = cname
 	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
-			if (islist(map.emails[uname]) && map.emails[uname].len>=1)
-				for(var/i = map.emails[uname].len, i > 0, i--)
-					if (istype(map.emails[uname][i], /datum/email))
-						var/datum/email/em =  map.emails[uname][i]
-						if (em.read)
-							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
-						else
-							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 			if (islist(map.emails[cname]) && map.emails[cname].len>=1)
 				for(var/i = map.emails[cname].len, i > 0, i--)
 					if (istype(map.emails[cname][i], /datum/email))
@@ -858,29 +857,22 @@
 							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 
 		else
-			if (findtext(href_list["mail"],"c"))
-				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
-				var/datum/email/chosen = map.emails[cname][tcode]
-				chosen.read = TRUE
-				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
-			else
-				var/tcode = text2num(href_list["mail"])
-				var/datum/email/chosen = map.emails[uname][tcode]
-				chosen.read = TRUE
-				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
+			var/tcode = text2num(replacetext(href_list["mail"],"c",""))
+			var/datum/email/chosen = map.emails[cname][tcode]
+			chosen.read = TRUE
+			mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+			mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
+
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
-//				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
 				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@greene.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
 			if ("3")
 				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?","e-mail",tmp_comp_vars["mail_subj"]) as text
 			if ("4")
 				tmp_comp_vars["mail_msg"] = input(user, "What is the message?","e-mail",tmp_comp_vars["mail_msg"]) as message
 			if ("5")
-				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
+				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(cname))
 
 //		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
