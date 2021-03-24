@@ -128,7 +128,7 @@
 				map.scores[civilization] -= 200
 	else if (map && map.ID == MAP_OCCUPATION && client)
 		var/obj/map_metadata/occupation/GD = map
-		var/mob/living/human/H = client
+		var/mob/living/human/H = src
 		if (original_job && istype(original_job, /datum/job/civilian/occupation))
 			for(var/i in GD.points)
 				if (i[1]==H.nationality)
