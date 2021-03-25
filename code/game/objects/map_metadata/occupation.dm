@@ -4,7 +4,7 @@
 	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 3600
+	respawn_delay = 4000
 	has_hunger = TRUE
 
 	faction_organization = list(
@@ -17,7 +17,7 @@
 		)
 	age = "1942"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(GERMAN = 0.35, CIVILIAN = 0.65)
+	faction_distribution_coeffs = list(GERMAN = 0.40, CIVILIAN = 0.70)
 	battle_name = "Occupation"
 	mission_start_message = "<font size=4>The <b>SS</b> have to find and imprison or kill all the UPA partisans hidden within the populace while maintaining peace and order. The <b>UPA</b> must rid the city of the oppressors and kill enemy troops and officers. The civilians want the most money in their pockets for their nationality. <b>The faction with the most points wins!</b></font>"
 	faction1 = CIVILIAN
@@ -103,9 +103,9 @@
 		return FALSE
 	var/area/A = get_area(T)
 	if (caribbean_blocking_area_types.Find(A.type))
-		if (H.faction_text == faction2 || H.faction_text == faction1)
+		if (H.faction_text == faction2 || H.faction_text == faction1 && !H.original_job.is_upa)
 			return !faction1_can_cross_blocks()
-		else if (H.original_job.is_upa == TRUE)
+		else if (H.original_job.is_upa)
 			return !faction2_can_cross_blocks()
 		else
 			return FALSE
@@ -116,8 +116,6 @@
 	var/newnamef = list("SS" = list(175,175,175,null,0,"cross","#000000","#FFFFFF",0,0))
 	custom_civs += newnamee
 	custom_civs += newnamef
-	spawn(100)
-		load_new_recipes()
 	spawn(2600)
 		check_points_msg()
 		config.no_respawn_delays = FALSE
@@ -131,9 +129,18 @@
 			if (H.stat!=DEAD && H.original_job.is_upa == TRUE)
 				var/area/A = get_area(H)
 				if (istype(A, /area/caribbean/german/inside/objective))
-					for(var/i in points)
-						if (i[1]=="SS")
-							i[2]+= 15
+					if (H.stat!=DEAD && H.original_job.is_upa == TRUE && H.original_job.is_squad_leader == TRUE)
+						for(var/i in points)
+							if (i[1]=="SS")
+								i[2]+= 150
+					else if (H.stat!=DEAD && H.original_job.is_upa == TRUE && (H.original_job.is_officer == TRUE && !H.original_job.is_squad_leader == TRUE))
+						for(var/i in points)
+							if (i[1]=="SS")
+								i[2]+= 250
+					else
+						for(var/i in points)
+							if (i[1]=="SS")
+								i[2]+= 75
 			for(var/obj/item/stack/money/rubles/R in H)
 				curval += R.amount
 			if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/storage))

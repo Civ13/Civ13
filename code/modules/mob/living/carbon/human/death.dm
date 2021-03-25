@@ -134,13 +134,12 @@
 				if (i[1]==H.nationality)
 					i[3]-=50
 		if (civilization)
-			var/datum/job/J
 			if (H.civilization == "SS")
 				for(var/i in GD.points)
-					if (H.faction_text == GERMAN && J.is_squad_leader == TRUE)
+					if (H.faction_text == GERMAN && H.original_job.is_squad_leader == TRUE)
 						if (i[1]=="UPA")
 							i[2]+= 15
-					else if (H.faction_text == GERMAN && J.is_officer == TRUE)
+					else if (H.faction_text == GERMAN && H.original_job.is_officer == TRUE)
 						if (i[1]=="UPA")
 							i[2]+= 50
 					else if (H.faction_text == GERMAN)
@@ -151,10 +150,10 @@
 							i[2]-= 50
 			else
 				for(var/i in GD.points)
-					if (H.civilization == "UPA" && J.is_squad_leader == TRUE)
+					if (H.civilization == "UPA" && H.original_job.is_squad_leader == TRUE)
 						if (i[1]=="SS")
 							i[2]+= 20
-					else if (H.civilization == "UPA" && J.is_officer == TRUE)
+					else if (H.civilization == "UPA" && H.original_job.is_officer == TRUE)
 						if (i[1]=="SS")
 							i[2]+= 50
 					else if (H.civilization == "UPA")
@@ -170,6 +169,8 @@
 							i[2]-= 0
 					else
 						if (i[1]=="SS")
+							i[2]-= 50
+						if (i[1]=="UPA")
 							i[2]-= 50
 	handle_piss()
 	handle_shit()

@@ -49,13 +49,13 @@
 /obj/item/weapon/civilian_passport/examine(mob/user)
 	user << "<span class='info'>*---------*</span>"
 	..(user)
-	if (document_details.len >= 9)
-		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
-		if (document_details[6] == "male")
-			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
-		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
-		user << "<b><span class='info'>Extra Info:</b> [document_details[5]]</span>"
-		user << "<b><span class='info'>Job:</b> [document_details[9]]</span>"
+	if (document_details.len >= 7)
+		user << "<b><span class='info'>Hair:</b> [document_details[1]]</span>"
+		if (document_details[4] == "male")
+			user << "<b><span class='info'>Face:</b> [document_details[2]]</span>"
+		user << "<b><span class='info'>Eyes:</b> [document_details[6]]</span>"
+		user << "<b><span class='info'>Extra Info:</b> [document_details[3]]</span>"
+		user << "<b><span class='info'>Job:</b> [document_details[7]]</span>"
 	user << "<span class='info'>*---------*</span>"
 	if (guardnotes.len)
 		for(var/i in guardnotes)
@@ -914,6 +914,10 @@
 	min_positions = 2
 	max_positions = 5
 /datum/job/civilian/occupation/collaborator/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+	H.nationality = "none"
+	H.give_nationality_occupation()
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
