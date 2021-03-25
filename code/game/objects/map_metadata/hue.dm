@@ -2,7 +2,7 @@
 	ID = MAP_HUE
 	title = "Hue"
 	lobby_icon_state = "coldwar"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 300
 	no_winner ="No base has been captured."
 

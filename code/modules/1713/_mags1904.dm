@@ -582,7 +582,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "shotgun buckshot box (.12 gauge)"
 	icon_state = "shellbox"
 	mag_type = MAGAZINE
-	caliber = "12guage"
+	caliber = "12gauge"
 	w_class = 2
 
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot

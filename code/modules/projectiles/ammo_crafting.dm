@@ -295,88 +295,151 @@
 		user << "<span class = 'notice'>The casing is not complete yet.</span>"
 		return
 /obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
-	if (gunpowder >= gunpowder_max && bulletn >= amount)
-		var/list/listing = list("Cancel")
-		if (map.ordinal_age == 4)
-			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
-		else if (map.ordinal_age == 5)
-			listing = list("9mm pistol",".45 pistol", "Cancel")
-		else if (map.ordinal_age >= 6)
-			listing = list("9mm pistol",".45 pistol", "Cancel")
-		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-		if (input == "Cancel")
-			return
-		else if (input == ".41 Short")
-			resultpath = /obj/item/ammo_casing/a41
-		else if (input == ".45 Colt")
-			resultpath = /obj/item/ammo_casing/a45
-		else if (input == ".44-40 Winchester")
-			resultpath = /obj/item/ammo_casing/a44
-		else if (input == ".45 pistol")
-			resultpath = /obj/item/ammo_casing/a45
-		else if (input == "9mm pistol")
-			resultpath = /obj/item/ammo_casing/a9x19
-		if (resultpath != null)
-			for(var/i=1;i<=amount;i++)
-				new resultpath(user.loc)
-			qdel(src)
-			return
+	if (map.ID == MAP_OCCUPATION)
+		if (gunpowder >= gunpowder_max && bulletn >= amount)
+			var/list/listing = list("Cancel")
+			if (map.ordinal_age == 4)
+				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
+			else if (map.ordinal_age == 5)
+				listing = list("9mm pistol",".45 pistol", "Cancel")
+			else if (map.ordinal_age >= 6)
+				listing = list("9x19 Parabellum", "7.62x25mm", "7.62x38mmR", "Cancel")
+			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+			if (input == "Cancel")
+				return
+			else if (input == "9x19 Parabellum")
+				resultpath = /obj/item/ammo_casing/a9x19
+			else if (input == "7.62x25mm")
+				resultpath = /obj/item/ammo_casing/a762x25
+			else if (input == "7.62x38mmR")
+				resultpath = /obj/item/ammo_casing/a762x38
+			if (resultpath != null)
+				for(var/i=1;i<=amount;i++)
+					new resultpath(user.loc)
+				qdel(src)
+				return
+			else
+				return
 		else
+			user << "<span class = 'notice'>The casing is not complete yet.</span>"
 			return
 	else
-		user << "<span class = 'notice'>The casing is not complete yet.</span>"
-		return
+		if (gunpowder >= gunpowder_max && bulletn >= amount)
+			var/list/listing = list("Cancel")
+			if (map.ordinal_age == 4)
+				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
+			else if (map.ordinal_age == 5)
+				listing = list("9mm pistol",".45 pistol", "Cancel")
+			else if (map.ordinal_age >= 6)
+				listing = list("9mm pistol",".45 pistol", "Cancel")
+			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+			if (input == "Cancel")
+				return
+			else if (input == ".41 Short")
+				resultpath = /obj/item/ammo_casing/a41
+			else if (input == ".45 Colt")
+				resultpath = /obj/item/ammo_casing/a45
+			else if (input == ".44-40 Winchester")
+				resultpath = /obj/item/ammo_casing/a44
+			else if (input == ".45 pistol")
+				resultpath = /obj/item/ammo_casing/a45
+			else if (input == "9mm pistol")
+				resultpath = /obj/item/ammo_casing/a9x19
+			if (resultpath != null)
+				for(var/i=1;i<=amount;i++)
+					new resultpath(user.loc)
+				qdel(src)
+				return
+			else
+				return
+		else
+			user << "<span class = 'notice'>The casing is not complete yet.</span>"
+			return
 
 /obj/item/stack/ammopart/casing/rifle/attack_self(mob/user)
-	if (gunpowder >= gunpowder_max && bulletn >= amount)
-		var/list/listing = list("Cancel")
-		if (map.ordinal_age == 4)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
-		else if (map.ordinal_age == 5)
-			listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "Cancel")
-		else if (map.ordinal_age >= 6)
-			listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+	if (map.ID == MAP_OCCUPATION)
+		if (gunpowder >= gunpowder_max && bulletn >= amount)
+			var/list/listing = list("Cancel")
+			if (map.ordinal_age >= 6)
+				listing = list("7.92x57mm mauser","7.62x54mm mosin","7.92x57mm MG", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
 
-		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-		if (input == "Cancel")
-			return
-		else if (input == ".44-70 Government")
-			resultpath = /obj/item/ammo_casing/a4570
-		else if (input == ".577/450 Martini-Henry")
-			resultpath = /obj/item/ammo_casing/a577
-		else if (input == "12 Gauge (Buckshot)")
-			resultpath = /obj/item/ammo_casing/shotgun
-		else if (input == "12 Gauge (Slugshot)")
-			resultpath = /obj/item/ammo_casing/shotgun/slug
-		else if (input == "12 Gauge (Beanbag)")
-			resultpath = /obj/item/ammo_casing/shotgun/beanbag
-		else if (input == "7.65x53 Mauser")
-			resultpath = /obj/item/ammo_casing/a765x53
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "7.92x57mm large rifle")
-			resultpath = /obj/item/ammo_casing/a792x57
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "6.5x50mm small rifle")
-			resultpath = /obj/item/ammo_casing/a65x50
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "7.62x39mm intermediate rifle")
-			resultpath = /obj/item/ammo_casing/a762x39
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "5.56x45mm intermediate rifle")
-			resultpath = /obj/item/ammo_casing/a556x45
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
-			for(var/i=1;i<=amount;i++)
-				var/obj/item/ammo_casing/NC = new resultpath(user.loc)
-				NC.btype = inputbtype
-				NC.checktype()
-			qdel(src)
-			return
+			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+			if (input == "Cancel")
+				return
+			else if (input == "12 Gauge (Buckshot)")
+				resultpath = /obj/item/ammo_casing/shotgun
+			else if (input == "12 Gauge (Slugshot)")
+				resultpath = /obj/item/ammo_casing/shotgun/slug
+			else if (input == "12 Gauge (Beanbag)")
+				resultpath = /obj/item/ammo_casing/shotgun/beanbag
+			else if (input == "7.92x57mm mauser")
+				resultpath = /obj/item/ammo_casing/a792x57
+			else if (input == "7.62x54mm mosin")
+				resultpath = /obj/item/ammo_casing/a762x54
+			else if (input == "7.92x57mm MG")
+				resultpath = /obj/item/ammo_casing/a792x57/weak
+			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
+				for(var/i=1;i<=amount;i++)
+					var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+					NC.btype = inputbtype
+					NC.checktype()
+				qdel(src)
+				return
+			else
+				return
 		else
+			user << "<span class = 'notice'>The casing is not complete yet.</span>"
 			return
 	else
-		user << "<span class = 'notice'>The casing is not complete yet.</span>"
-		return
+		if (gunpowder >= gunpowder_max && bulletn >= amount)
+			var/list/listing = list("Cancel")
+			if (map.ordinal_age == 4)
+				listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
+			else if (map.ordinal_age == 5)
+				listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "Cancel")
+			else if (map.ordinal_age >= 6)
+				listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+
+			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+			if (input == "Cancel")
+				return
+			else if (input == ".44-70 Government")
+				resultpath = /obj/item/ammo_casing/a4570
+			else if (input == ".577/450 Martini-Henry")
+				resultpath = /obj/item/ammo_casing/a577
+			else if (input == "12 Gauge (Buckshot)")
+				resultpath = /obj/item/ammo_casing/shotgun
+			else if (input == "12 Gauge (Slugshot)")
+				resultpath = /obj/item/ammo_casing/shotgun/slug
+			else if (input == "12 Gauge (Beanbag)")
+				resultpath = /obj/item/ammo_casing/shotgun/beanbag
+			else if (input == "7.65x53 Mauser")
+				resultpath = /obj/item/ammo_casing/a765x53
+				inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+			else if (input == "7.92x57mm large rifle")
+				resultpath = /obj/item/ammo_casing/a792x57
+				inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+			else if (input == "6.5x50mm small rifle")
+				resultpath = /obj/item/ammo_casing/a65x50
+				inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+			else if (input == "7.62x39mm intermediate rifle")
+				resultpath = /obj/item/ammo_casing/a762x39
+				inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+			else if (input == "5.56x45mm intermediate rifle")
+				resultpath = /obj/item/ammo_casing/a556x45
+				inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
+				for(var/i=1;i<=amount;i++)
+					var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+					NC.btype = inputbtype
+					NC.checktype()
+				qdel(src)
+				return
+			else
+				return
+		else
+			user << "<span class = 'notice'>The casing is not complete yet.</span>"
+			return
 /obj/item/stack/ammopart/attack_self(mob/user)
 	if (istype(src, /obj/item/stack/ammopart/bullet) || istype(src, /obj/item/stack/ammopart/casing/pistol) || istype(src, /obj/item/stack/ammopart/casing/rifle))
 		return

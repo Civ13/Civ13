@@ -40,14 +40,14 @@
 /obj/map_metadata/alleyway/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/alleyway/check_caribbean_block(var/mob/living/human/H, var/turf/T, var/datum/job/J)
+/obj/map_metadata/alleyway/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
 	if (caribbean_blocking_area_types.Find(A.type))
-		if (J.is_yama == TRUE)
+		if (H.original_job.is_yama == TRUE && !H.original_job.is_ichi == TRUE)
 			return !faction1_can_cross_blocks()
-		else if (J.is_ichi == TRUE)
+		else if (H.original_job.is_ichi == TRUE && !H.original_job.is_yama == TRUE)
 			return !faction2_can_cross_blocks()
 		else
 			return FALSE
