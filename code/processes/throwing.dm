@@ -30,10 +30,6 @@
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE
-										else if (istype(AM, /obj/item/weapon/reagent_containers/food/drinks/bottle))
-											var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = AM
-											if (B.rag)
-												B.rag.on_fire = FALSE
 										thrown_list -= AM
 										continue
 

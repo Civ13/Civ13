@@ -289,7 +289,7 @@
 			src.nationality = "Japanese"
 			src.add_language("Japanese",FALSE)
 			src.h_style = "Short Hair"
-			src.f_style = "Hipster Beard"
+			src.f_style = "Short Facial Hair"
 			src.r_hair = 22
 			src.g_hair = 22
 			src.b_hair = 22
@@ -382,7 +382,7 @@
 					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
 					PJ.original_facial = PJ.original_hair
 					src.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-					src.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard", "Hipster Beard")
+					src.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard", "Short Facial Hair")
 					PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
 					src.add_language("Ainu", TRUE)
 					src.add_note("Known Languages", "Japanese")
@@ -397,7 +397,7 @@
 					PJ.original_hair = pick("Black", "Dark Brown", "Grey")
 					PJ.original_facial = PJ.original_hair
 					src.h_style = pick("Bald","Short Hair","Cut Hair","Skinhead")
-					src.f_style = pick("Shaved","Chinstrap","Medium Beard", "Hipster Beard")
+					src.f_style = pick("Shaved","Chinstrap","Medium Beard", "Short Facial Hair")
 					PJ.original_eyes = pick("Black","Dark Brown")
 					src.add_language("Japanese", TRUE)
 					src.add_note("Known Languages", "Japanese")
@@ -427,6 +427,32 @@
 /mob/living/human/proc/gulag_languages(var/mob/living/human)
 ///////////////////////////////PRISONS////////////////////////////////////////
 	if (map && map.ID == MAP_GULAG13)
+		spawn(5)
+			if (src.nationality == "Russian")
+				src.add_language("Russian",TRUE)
+				src.remove_language("English")
+				return
+			if (src.nationality == "German")
+				src.add_language("German",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
+			if (src.nationality == "Polish")
+				src.add_language("Polish",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
+			if (src.nationality == "Ukrainian")
+				src.add_language("Ukrainian",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
+			if (src.nationality == "Japanese")
+				src.add_language("Japanese",TRUE)
+				src.remove_language("English")
+				src.remove_note("Known Languages","English")
+				return
+	if (map && map.ID == MAP_OCCUPATION)
 		spawn(5)
 			if (src.nationality == "Russian")
 				src.add_language("Russian",TRUE)
