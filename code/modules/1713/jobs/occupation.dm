@@ -140,7 +140,14 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
 	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
-	P.randrole = "Civilian/Unemployed"
+	if (prob(40))
+		P.randrole = "Civilian/Unemployed"
+	else if (prob(60))
+		P.randrole = "Factory Worker"
+	else if (prob(40))
+		P.randrole = "Inn Worker"
+	else
+		P.randrole = "Farmer"
 	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
 		P.original_hair = "Black"
 	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
@@ -175,7 +182,7 @@
 	is_ww2 = TRUE
 	is_upa = TRUE
 	is_occupation = TRUE
-
+	whitelisted = TRUE
 	min_positions = 1
 	max_positions = 1
 
@@ -217,7 +224,14 @@
 	H.setStat("medical", STAT_MAX)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
-	P.randrole = "Civilian/Unemployed"
+	if (prob(40))
+		P.randrole = "Civilian/Unemployed"
+	else if (prob(60))
+		P.randrole = "Factory Worker"
+	else if (prob(40))
+		P.randrole = "Inn Worker"
+	else
+		P.randrole = "Farmer"
 	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
 		P.original_hair = "Black"
 	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
@@ -244,7 +258,7 @@
 /datum/job/civilian/ukrainian/occupation/sergeant_upa
 	title = " UPA Vistun"
 	en_meaning = " UPA Sergeant"
-	rank_abbreviation = "Vtn."
+	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
@@ -253,7 +267,7 @@
 	is_squad_leader = TRUE
 	is_upa = TRUE
 	is_occupation = TRUE
-
+	whitelisted = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -297,7 +311,14 @@
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	H.setStat("stamina", STAT_VERY_HIGH)
 	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
-	P.randrole = "Civilian/Unemployed"
+	if (prob(40))
+		P.randrole = "Civilian/Unemployed"
+	else if (prob(60))
+		P.randrole = "Factory Worker"
+	else if (prob(40))
+		P.randrole = "Inn Worker"
+	else
+		P.randrole = "Farmer"
 	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
 		P.original_hair = "Black"
 	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
@@ -332,7 +353,7 @@
 	uses_squads = TRUE
 	is_upa = TRUE
 	is_occupation = TRUE
-
+	whitelisted = TRUE
 	min_positions = 3
 	max_positions = 6
 
@@ -375,7 +396,14 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
-	P.randrole = "Civilian/Unemployed"
+	if (prob(40))
+		P.randrole = "Civilian/Unemployed"
+	else if (prob(60))
+		P.randrole = "Factory Worker"
+	else if (prob(40))
+		P.randrole = "Inn Worker"
+	else
+		P.randrole = "Farmer"
 	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
 		P.original_hair = "Black"
 	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
@@ -885,7 +913,7 @@
 		randrole = title
 
 /datum/job/civilian/occupation/farmer
-	title = "Farmer"
+	title = "Civilian Farmer"
 	spawn_location = "JoinLateCivC"
 	en_meaning = ""
 	min_positions = 1
@@ -893,10 +921,10 @@
 	equip(var/mob/living/human/H)
 		..()
 		H.add_note("Role", "You are a <b>Factory Worker</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
-		randrole = title
+		randrole = "Farmer"
 
 /datum/job/civilian/occupation/doctor
-	title = "Doctor"
+	title = "Civilian Doctor"
 	spawn_location = "JoinLateCivD"
 	en_meaning = ""
 	min_positions = 2
@@ -904,7 +932,7 @@
 	equip(var/mob/living/human/H)
 		..()
 		H.add_note("Role", "You are a <b>Factory Worker</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
-		randrole = title
+		randrole = "Doctor"
 
 /datum/job/civilian/occupation/collaborator
 	title = "Auxillary Police"
