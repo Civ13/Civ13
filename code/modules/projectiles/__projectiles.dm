@@ -542,3 +542,19 @@ obj/item/projectile/bullet/rifle/a556x45
 	agony = 60
 	embed = FALSE
 	sharp = FALSE
+
+
+obj/item/projectile/bullet/shotgun/incendiary
+	name = "incendiary slug"
+	damage = DAMAGE_LOW
+	armor_penetration = 10
+
+
+/obj/item/projectile/bullet/shotgun/incendiary/fire/on_impact(mob/living/human/M as mob)
+	if (prob(10))
+		M.fire_stacks += 1
+	if (M)
+		M.IgniteMob()
+	spawn (0.01)
+		qdel(src)
+	..()
