@@ -542,12 +542,3 @@ obj/item/projectile/bullet/rifle/a556x45
 	agony = 60
 	embed = FALSE
 	sharp = FALSE
-
-/obj/item/projectile/bullet/shotgun/rubber
-	name = "rubber shell"
-	check_armor = "melee"
-	armor_penetration = 0
-	damage = 10
-	agony = 100
-	embed = FALSE
-	sharp = FALSE
