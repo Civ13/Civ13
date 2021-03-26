@@ -453,6 +453,7 @@
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "German"
+	H.make_commander()
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -517,6 +518,7 @@
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
+	H.make_commander()
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -576,6 +578,7 @@
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
+	H.make_commander()
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -711,11 +714,13 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/german/G1 = new/obj/item/weapon/key/german(null)
+	var/obj/item/clothing/accessory/medal/german/ww2/ss_sadler = new /obj/item/clothing/accessory/medal/german/ww2/ss_sadler(null)
 	KC.attackby(G1,H)
 	H.equip_to_slot_or_del(KC, slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(webbing, H)
+	uniform.attackby(ss_sadler, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the SS Occupying forces. Follow your <b>Scharfuhrer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -723,7 +728,7 @@
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
@@ -745,7 +750,7 @@
 			src.nationality = "Ukrainian"
 			src.add_language("German",FALSE)
 			src.h_style = "Short Hair"
-			src.f_style = "Hipster Beard"
+			src.f_style = "Short Facial Hair"
 			src.r_hair = 22
 			src.g_hair = 22
 			src.b_hair = 22
@@ -850,7 +855,7 @@
 		H.setStat("medical", STAT_MEDIUM_HIGH)
 		H.setStat("machinegun", STAT_MEDIUM_HIGH)
 		H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
-		H.give_languages()
+		H.gulag_languages()
 		return TRUE
 	else
 //shoes
@@ -881,7 +886,7 @@
 		H.setStat("bows", STAT_NORMAL)
 		H.setStat("medical", STAT_MEDIUM_LOW)
 		H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
-		H.give_languages()
+		H.gulag_languages()
 
 /datum/job/civilian/occupation/worker
 	title = "Factory Worker"
@@ -929,11 +934,40 @@
 	en_meaning = ""
 	min_positions = 2
 	max_positions = 4
-	equip(var/mob/living/human/H)
-		..()
-		H.add_note("Role", "You are a <b>Factory Worker</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
-		randrole = "Doctor"
+/datum/job/civilian/occupation/doctor/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.nationality = "none"
+	H.give_nationality_occupation()
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+//head
+	if (prob(30))
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
 
+	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
+	RUB.amount = 50
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>Doctor</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
+	randrole = "Doctor"
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_VERY_HIGH)
+	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
+	H.gulag_languages()
 /datum/job/civilian/occupation/collaborator
 	title = "Auxillary Police"
 	en_meaning = ""
@@ -970,7 +1004,7 @@
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
-	H.give_languages()
+	H.gulag_languages()
 	randrole = title
 	H.add_note("Primary Role", "You are an <b>Auxillary Police</b>. Your job is to get information and pass it to the SS. Be careful, the civilians might not like your presence.")
 	return TRUE
