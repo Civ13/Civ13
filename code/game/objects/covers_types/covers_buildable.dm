@@ -236,7 +236,7 @@
 	icon_state = "new_brick0"
 	base_icon_state = "new_brick"
 	adjusts = TRUE
-	passable = TRUE
+	passable = FALSE
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
@@ -270,7 +270,7 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "cement_wall0"
 	base_icon_state = "cement_wall"
-	passable = TRUE
+	passable = FALSE
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE

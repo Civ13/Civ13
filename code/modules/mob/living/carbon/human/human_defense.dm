@@ -70,6 +70,17 @@ bullet_act
 						drop_from_inventory(I)
 					crush()
 					qdel(src)
+	else if (map.ID == MAP_OCCUPATION)
+		var/mob/living/human/H = user
+		if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && istype(W))
+			if (src.stat != DEAD && (H.civilization != "SS" || H.civilization != "UPA"))
+				if (H.civilization == "SS")
+					return ..(W, user)
+				else if (H.civilization == "UPA")
+					return ..(W, user)
+				else
+					last_harmed = H
+					H.civilization = "Killer"
 	else
 		return ..(W, user)
 
@@ -124,6 +135,13 @@ bullet_act
 						done = TRUE
 				if (!done)
 					Huser.awards["kills"]+=list(list(src.name,min(P.damage,100),0))
+
+		else if (map.ID == MAP_OCCUPATION)
+			var/mob/living/human/Huser = P.firer
+			if (src.stat != DEAD && (Huser.civilization != "SS" || Huser.civilization != "UPA"))
+				if (Huser.civilization != "SS" && Huser.civilization != "UPA")
+					last_harmed = Huser
+					Huser.civilization = "Killer"
 	if (istype(P, /obj/item/projectile/shell))
 		visible_message("<span class = 'danger'>[src] gets blown up by \the [P]!</span>")
 		gib()

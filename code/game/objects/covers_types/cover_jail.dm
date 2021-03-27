@@ -79,6 +79,7 @@
 	buildstack = /obj/item/stack/material/wood
 	opacity = 0
 	material = "Wood"
+	passable = FALSE
 
 /obj/covers/jail/steeljail
 	name = "steel jail bars"
@@ -98,6 +99,6 @@
 	buildstack = /obj/item/stack/rods
 	opacity = 0
 	material = "Steel"
-
+	passable = FALSE
 
 

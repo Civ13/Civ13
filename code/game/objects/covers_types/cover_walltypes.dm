@@ -66,7 +66,7 @@
 	desc = "A wood wall."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "b_wood_wall"
-	passable = TRUE
+	passable = FALSE
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
@@ -232,7 +232,7 @@
 	desc = "A log wall."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "log_wall"
-	passable = TRUE
+	passable = FALSE
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
@@ -247,6 +247,7 @@
 /obj/covers/wood_wall/log/corner
 	icon_state = "log_wall_corner"
 	material = "Wood"
+	passable = FALSE
 
 /* Wood Walls - End*/
 
@@ -255,7 +256,7 @@
 	desc = "A rough stone wall."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "b_stone_wall"
-	passable = TRUE
+	passable = FALSE
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
