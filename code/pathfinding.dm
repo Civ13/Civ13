@@ -135,6 +135,10 @@
 				var/obj/structure/simple_door/D = O
 				if (D.locked)
 					return 0 // a blocked door is a blocking door
+			if (istype(O, /obj/covers))
+				var/obj/covers/W = O
+				if (W.passable == FALSE)
+					return 0 // walls specificed as not passable shouldn't be passable now
 			if (ismob(O))
 				var/mob/M = O
 				if (M.anchored)

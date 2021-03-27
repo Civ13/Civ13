@@ -159,19 +159,26 @@
 					else if (H.civilization == "UPA")
 						if (i[1]=="SS")
 							i[2]+= 5
-					else if (H.nationality == "Polish")
+					else if (H.civilization == "Killer")
+						if (i[1]=="SS")
+							i[2]+= 5
 						if (i[1]=="UPA")
 							i[2]+= 5
-					else if (H.original_job == "Auxillary Police")
-						if (i[1]=="UPA")
-							i[2]+= 5
-						if (i[1]=="SS")
-							i[2]-= 0
-					else
-						if (i[1]=="SS")
-							i[2]-= 50
-						if (i[1]=="UPA")
-							i[2]-= 50
+		for(var/i in GD.points)
+			if (H.nationality == "Polish")
+				if (i[1]=="UPA")
+					i[2]+= 5
+			else if (H.original_job == "Auxillary Police")
+				if (i[1]=="UPA")
+					i[2]+= 5
+				if (i[1]=="SS")
+					i[2]-= 0
+			else
+				if (i[1]=="SS")
+					i[2]-= 10
+				if (i[1]=="UPA")
+					i[2]-= 10
+
 	handle_piss()
 	handle_shit()
 	if (squad > 0 && original_job && original_job.uses_squads)

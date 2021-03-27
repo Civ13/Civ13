@@ -224,14 +224,7 @@
 	H.setStat("medical", STAT_MAX)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	var/datum/job/civilian/ukrainian/occupation/P = H.original_job
-	if (prob(40))
-		P.randrole = "Civilian/Unemployed"
-	else if (prob(60))
-		P.randrole = "Factory Worker"
-	else if (prob(40))
-		P.randrole = "Inn Worker"
-	else
-		P.randrole = "Farmer"
+	P.randrole = "Doctor"
 	if (H.r_hair == "09" && H.g_hair == "08" && H.b_hair == "06")
 		P.original_hair = "Black"
 	else if (H.r_hair == "6A" && H.g_hair == "4E" && H.b_hair == "42")
@@ -498,9 +491,9 @@
 	return TRUE
 
 /datum/job/german/oberscharfuhrer
-	title = "SS Oberscharfuhrer"
+	title = "SS Obersturmmfuhrer"
 	en_meaning = "SS First Lieutenant"
-	rank_abbreviation = "Obschfhr."
+	rank_abbreviation = "Obstmfhr."
 
 
 	spawn_location = "JoinLateGECap"
@@ -559,9 +552,9 @@
 	return TRUE
 
 /datum/job/german/unterscharfuhrer
-	title = "SS Unterscharfuhrer"
+	title = "SS Untersturmmfuhrer"
 	en_meaning = "SS Second Lieutenant"
-	rank_abbreviation = "Untschfhr."
+	rank_abbreviation = "Untstmfhr."
 
 
 	spawn_location = "JoinLateGECap"
@@ -940,21 +933,23 @@
 	H.give_nationality_occupation()
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
-//head
-	if (prob(30))
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	if (prob(40))
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
-	else if (prob(50))
+	else if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
-
 	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
-	RUB.amount = 50
+	RUB.amount = 75
+	H.equip_to_slot_or_del(RUB, slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Doctor</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
 	randrole = "Doctor"

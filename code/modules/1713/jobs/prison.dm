@@ -296,6 +296,7 @@
 			src.r_facial = 22
 			src.g_facial = 22
 			src.b_facial = 22
+			PJ.original_hair = "Black"
 			update_body()
 			return
 		var/randpick = rand(1,4)
@@ -517,6 +518,9 @@
 		H.add_note("Role", "You are a <b>Miner</b>. Your job is to get to the mines and collect minerals for the guards.")
 		randrole = title
 		H.gulag_languages()
+		H.setStat("strength", STAT_MEDIUM_HIGH)
+		if (H.client.ckey == "kanohashinobi")
+			H.setStat("crafting", STAT_VERY_VERY_HIGH)
 /*
 /datum/job/civilian/prisoner/logger
 	title = "Logger"
@@ -575,6 +579,7 @@
 		H.add_note("Role", "You are a <b>Nurse Helper</b>. Keep other prisoners alive with the sparse supplies you have...")
 		randrole = title
 		H.gulag_languages()
+		H.setStat("medical", STAT_VERY_VERY_HIGH)
 
 /datum/job/civilian/prisoner/kitchen
 	title = "Kitchen Duty"
@@ -595,6 +600,8 @@
 		H.add_note("Role", "You are on <b>Kitchen Duty</b>. Your job is to manage the prisoner's stock of food (if the guards actually deliver it...) and keep everyone fed.")
 		randrole = title
 		H.gulag_languages()
+		H.setStat("dexterity", STAT_HIGH)
+		H.setStat("swords", STAT_MEDIUM_HIGH)
 
 /datum/job/civilian/prisoner/collaborator
 	title = "Collaborator"
@@ -628,6 +635,10 @@
 		uniform.attackby(armband, H)
 		H.gulag_languages()
 		H.add_note("Primary Role", "You are a <b>Collaborator</b>. Your job is to get information and pass it to the guards. Be careful, your fellow prisoners might not like it if they find it out... Try to act like your assigned role, <b>[randrole]</b>.")
+		H.setStat("strength", STAT_VERY_HIGH)
+		H.setStat("rifle", STAT_VERY_HIGH)
+		H.setStat("dexterity", STAT_VERY_VERY_HIGH)
+		H.setStat("pistol", STAT_VERY_VERY_HIGH)
 
 ////////////////////////////////////////////////////ABASHIRI PRISONERS////////////////////////////////////////////
 /datum/job/civilian/abashiri/prisoner/wing1

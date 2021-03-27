@@ -40,6 +40,10 @@
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
 										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
+											continue
+										canMove = FALSE
 									if (canMove)
 										AM.forceMove_nondenseturf(step)
 
@@ -62,6 +66,10 @@
 										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
+											continue
+										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
 									if (canMove)
@@ -93,6 +101,10 @@
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
 										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
+											continue
+										canMove = FALSE
 									if (canMove)
 										AM.forceMove_nondenseturf(step)
 									AM.hit_check(AM.speed)
@@ -114,6 +126,10 @@
 										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
+											continue
+										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
 									if (canMove)
