@@ -162,6 +162,16 @@
 	base_spread = 19
 	range_step = 3
 
+/obj/item/projectile/bullet/pellet/rubber
+	name = "rubbershot"
+	damage = 2
+	pellets = 10
+	range_step = 1
+	spread_step = 10
+	agony = 8.5
+	embed = 0
+	icon_state = "buckshot"
+
 /* "Rifle" rounds */
 
 /obj/item/projectile/bullet/rifle
