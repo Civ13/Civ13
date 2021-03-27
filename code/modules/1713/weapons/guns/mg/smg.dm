@@ -578,6 +578,7 @@
 	desc = "A civilian market version of ArmaLite's AR-15, single-fire only. Has railings for several attachments."
 	base_icon = "ar15"
 	icon_state = "ar15"
+	item_state = "ar15"
 	full_auto = FALSE
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
