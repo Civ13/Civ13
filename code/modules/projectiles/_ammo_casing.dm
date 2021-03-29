@@ -990,5 +990,5 @@
 	desc = "A 12 gauge incendiary slug."
 	icon_state = "slshell"
 	spent_icon = "slshell_casing"
-	projectile_type = /obj/item/projectile/bullet/shotgun/slug
+	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
 

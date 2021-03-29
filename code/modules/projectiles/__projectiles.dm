@@ -544,7 +544,7 @@ obj/item/projectile/bullet/rifle/a556x45
 	sharp = FALSE
 
 
-obj/item/projectile/bullet/shotgun/incendiary
+/obj/item/projectile/bullet/shotgun/incendiary
 	name = "incendiary slug"
 	damage = DAMAGE_LOW
 	armor_penetration = 10
