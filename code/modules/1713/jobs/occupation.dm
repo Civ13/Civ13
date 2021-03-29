@@ -176,7 +176,7 @@
 	en_meaning = " UPA Doctor"
 	rank_abbreviation = ""
 	can_be_female = TRUE
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivD"
 
 	is_medic = TRUE
 	is_ww2 = TRUE
@@ -346,7 +346,6 @@
 	uses_squads = TRUE
 	is_upa = TRUE
 	is_occupation = TRUE
-	whitelisted = TRUE
 	min_positions = 3
 	max_positions = 6
 
@@ -447,6 +446,7 @@
 	H.civilization = "SS"
 	H.nationality = "German"
 	H.make_commander()
+	H.faction_perms = list(0,0,0,1)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -490,7 +490,7 @@
 
 	return TRUE
 
-/datum/job/german/oberscharfuhrer
+/datum/job/german/obersturmmfuhrer
 	title = "SS Obersturmmfuhrer"
 	en_meaning = "SS First Lieutenant"
 	rank_abbreviation = "Obstmfhr."
@@ -507,11 +507,12 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/oberscharfuhrer/equip(var/mob/living/human/H)
+/datum/job/german/obersturmmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
 	H.make_commander()
+	H.faction_perms = list(0,0,0,1)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -551,7 +552,7 @@
 
 	return TRUE
 
-/datum/job/german/unterscharfuhrer
+/datum/job/german/untersturmmfuhrer
 	title = "SS Untersturmmfuhrer"
 	en_meaning = "SS Second Lieutenant"
 	rank_abbreviation = "Untstmfhr."
@@ -567,11 +568,12 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/unterscharfuhrer/equip(var/mob/living/human/H)
+/datum/job/german/untersturmmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
 	H.make_commander()
+	H.faction_perms = list(0,0,0,1)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -631,6 +633,7 @@
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
+	H.faction_perms = list(0,0,0,1)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes

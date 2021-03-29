@@ -222,6 +222,12 @@
 			H.driver_vehicle.axis.speedlist = list(1=25,2=20)
 		else if(M.buckled_animal_propulsion == 2)
 			H.driver_vehicle.axis.speedlist = list(1=20,2=15,3=10)
+		else if(M.buckled_animal_propulsion == 4)
+			H.driver_vehicle.axis.speedlist = list(1=10,2=4,3=1.6)
+		else if(M.buckled_animal_propulsion == 6)
+			H.driver_vehicle.axis.speedlist = list(1=9,2=3,3=1.4)
+		else if(M.buckled_animal_propulsion == 8)
+			H.driver_vehicle.axis.speedlist = list(1=8,2=2.8,3=1.2)
 	if (H.driver_vehicle.axis.currentspeed <= 0)
 		H.driver_vehicle.axis.currentspeed = 1
 		var/spd = H.driver_vehicle.axis.get_speed()

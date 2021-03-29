@@ -39,6 +39,8 @@
 		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
+	else if (J.is_occupation == TRUE)
+		. = FALSE
 	else if (J.is_tanker == TRUE)
 		. = FALSE
 	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)

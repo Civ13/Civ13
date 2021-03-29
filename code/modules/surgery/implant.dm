@@ -68,7 +68,7 @@
 		"<span class = 'notice'>You make some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].</span>" )
 
 /datum/surgery_step/cavity/close_space
-	priority = 2
+	priority = TRUE
 	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/cautery",100),
 		2 = list("/obj/item/weapon/surgery/cautery/bronze",85),
@@ -82,7 +82,7 @@
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			return affected && affected.cavity
+			return affected && affected.cavity && affected.open == TRUE
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)

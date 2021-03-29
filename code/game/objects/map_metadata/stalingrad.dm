@@ -43,6 +43,8 @@
 		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
+	else if (J.is_occupation == TRUE)
+		. = FALSE
 	else if (J.is_tanker == TRUE)
 		. = FALSE
 	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
@@ -225,6 +227,8 @@
 	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = FALSE
 	else if (J.is_ss_panzer == TRUE)
+		. = FALSE
+	else if (J.is_occupation == TRUE)
 		. = FALSE
 	else if (J.is_tanker == TRUE)
 		. = FALSE
