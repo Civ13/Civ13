@@ -415,6 +415,8 @@
 	icon_state = "ach_ocp"
 	item_state = "ach_ocp"
 	worn_state = "ach_ocp"
+	body_parts_covered = HEAD
+	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 
 	/* US Army Clothing*/
 
