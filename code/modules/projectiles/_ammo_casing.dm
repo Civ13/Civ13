@@ -983,3 +983,12 @@
 	icon_state = "rubber"
 	spent_icon = "rubber_casing"
 	projectile_type = /obj/item/projectile/bullet/pellet/rubber
+
+
+/obj/item/ammo_casing/shotgun/incendiary
+	name = "shotgun slug"
+	desc = "A 12 gauge incendiary slug."
+	icon_state = "slshell"
+	spent_icon = "slshell_casing"
+	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
+
