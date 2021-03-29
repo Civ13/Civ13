@@ -164,6 +164,19 @@
 							i[2]+= 5
 						if (i[1]=="UPA")
 							i[2]+= 5
+					else if (H.faction_text == GERMAN && H.original_job.is_squad_leader == TRUE)
+						if (i[1]=="UPA")
+							i[2]+= 15
+					else if (H.faction_text == GERMAN && H.original_job.is_officer == TRUE)
+						if (i[1]=="UPA")
+							i[2]+= 50
+					else if (H.faction_text == GERMAN)
+						if (i[1]=="UPA")
+							i[2]+=  5
+					else
+						if (i[1]=="UPA")
+							i[2]-= 50
+
 		for(var/i in GD.points)
 			if (H.nationality == "Polish")
 				if (i[1]=="UPA")

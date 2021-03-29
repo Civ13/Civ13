@@ -571,14 +571,24 @@ bullet_act
 		var/mob/living/human/Hsrc = src
 		var/mob/living/human/Huser = user
 		if (Hsrc.stat != DEAD && Hsrc.faction_text != Huser.faction_text)
-			Hsrc.awards["wounded"]+=min(effective_force,100)
-			var/done = FALSE
-			for (var/list/i in Huser.awards["kills"])
-				if (i[1]==Hsrc.name)
-					i[2]+= min(effective_force,100)
-					done = TRUE
-			if (!done)
-				Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
+			if (istype(I, /obj/item/weapon/material/sword/katana))
+				Hsrc.awards["wounded"]+=min(effective_force,100)
+				var/done = FALSE
+				for (var/list/i in Huser.awards["melee_kills"])
+					if (i[1]==Hsrc.name)
+						i[2]+= min(effective_force,100)
+						done = TRUE
+				if (!done)
+					Huser.awards["melee_kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
+			else
+				Hsrc.awards["wounded"]+=min(effective_force,100)
+				var/done = FALSE
+				for (var/list/i in Huser.awards["kills"])
+					if (i[1]==Hsrc.name)
+						i[2]+= min(effective_force,100)
+						done = TRUE
+				if (!done)
+					Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
 	return blocked
 
 /mob/living/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)

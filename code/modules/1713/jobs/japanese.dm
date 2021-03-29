@@ -1009,7 +1009,7 @@
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-
+	whitelisted = TRUE
 	min_positions = 1
 	max_positions = 3
 
@@ -1062,9 +1062,9 @@
 	is_tanker = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-
-	min_positions = 5
-	max_positions = 30
+	whitelisted = TRUE
+	min_positions = 4
+	max_positions = 8
 
 /datum/job/japanese/ija_ww2_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

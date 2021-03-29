@@ -1004,10 +1004,12 @@
 	bound_height = 96
 	mobcapacity = 7
 	storagecapacity = null //This is rekting my crates pixel location
-	var/max_animal_propulsion = 2
+	var/max_animal_propulsion = 8
 	var/buckled_animal_propulsion = 0
 	var/mob/living/simple_animal/pulling1 = null
 	var/mob/living/simple_animal/pulling2 = null
+	var/mob/living/simple_animal/pulling3 = null
+	var/mob/living/simple_animal/pulling4 = null
 	var/bucklepoint1 = null
 	var/bucklepoint2 = null
 	var/bucklepoint3 = null
@@ -1022,7 +1024,7 @@
 	if(istype(A, /turf) || istype(A, /area)) //failsafe
 		return
 	if(A in ontop)	//Removing a passenger/mob-cargo or pulling animal?
-		if (istype(A, /mob/living) && (A != pulling1 && A != pulling2))
+		if (istype(A, /mob/living) && (A != pulling1 && A != pulling2 && A != pulling3 && A != pulling4))
 			var/mob/living/M = A
 			if(A == user && M == driver) //The driver shouldnt unbuckle himself like this
 				return
@@ -1047,8 +1049,8 @@
 				M.buckled = null
 				current_cargo -= 1
 				return
-		else if(A == pulling1 || A == pulling2) //Removing a pulling animal?
-			if(istype(A, /mob/living/simple_animal))
+		else if(A == pulling1 || A == pulling2 || A == pulling3 || A == pulling4) //Removing a pulling animal?
+			if(istype(A, /mob/living/simple_animal/cattle))
 				var/mob/living/simple_animal/cattle/M = A
 				visible_message("<div class='notice'>[user] tries to untie the [A] from the [src]...</div>")
 				if (do_after(user, 40, src))
@@ -1058,9 +1060,37 @@
 					else if(M == pulling2)
 						pulling2 = null
 						ontop -= pulling2
+					else if(M == pulling3)
+						pulling3 = null
+						ontop -= pulling3
+					else if(M == pulling4)
+						pulling4 = null
+						ontop -= pulling4
 					visible_message("<div class='notice'>[user]  unties the [A] from the [src]...</div>")
 					ontop -= M
 					buckled_animal_propulsion -= 1
+					M.buckled = null
+					M.pixel_y = 0
+					M.pixel_x = 0
+			else if(istype(A, /mob/living/simple_animal/horse))
+				var/mob/living/simple_animal/horse/M = A
+				visible_message("<div class='notice'>[user] tries to untie the [A] from the [src]...</div>")
+				if (do_after(user, 40, src))
+					if(M == pulling1)
+						pulling1 = null
+						ontop -= pulling1
+					else if(M == pulling2)
+						pulling2 = null
+						ontop -= pulling2
+					else if(M == pulling3)
+						pulling3 = null
+						ontop -= pulling3
+					else if(M == pulling4)
+						pulling4 = null
+						ontop -= pulling4
+					visible_message("<div class='notice'>[user]  unties the [A] from the [src]...</div>")
+					ontop -= M
+					buckled_animal_propulsion -= 2
 					M.buckled = null
 					M.pixel_y = 0
 					M.pixel_x = 0
@@ -1124,7 +1154,7 @@
 		return
 	else if(istype(A, /mob/living/simple_animal/cattle) && (buckled_animal_propulsion < max_animal_propulsion)) //Attaching a pulling animal?
 		var/mob/living/simple_animal/cattle/M = A
-		if(pulling1 == null || pulling2 == null)
+		if(pulling1 == null || pulling2 == null || pulling3 == null || pulling4 == null)
 			user.visible_message("[user] tries to tie the [M] to the [src].")
 			if(do_after(user, 30, src))
 				buckle_mob(M)
@@ -1135,13 +1165,38 @@
 					pulling1 = M
 				else if(!pulling2)
 					pulling2 = M
+				else if(!pulling3)
+					pulling3 = M
+				else if(!pulling4)
+					pulling4 = M
 				buckled_animal_propulsion += 1
+				updatepassdir()
+				M.forceMove(get_turf(src))
+				return
+	else if(istype(A, /mob/living/simple_animal/horse) && (buckled_animal_propulsion < max_animal_propulsion)) //Attaching a pulling animal?
+		var/mob/living/simple_animal/horse/M = A
+		if(pulling1 == null || pulling2 == null || pulling3 == null || pulling4 == null)
+			user.visible_message("[user] tries to tie the [M] to the [src].")
+			if(do_after(user, 30, src))
+				buckle_mob(M)
+				ontop += M
+				M.buckled = 1
+				user.visible_message("[user] ties the [M] to the [src].")
+				if(!pulling1)
+					pulling1 = M
+				else if(!pulling2)
+					pulling2 = M
+				else if(!pulling3)
+					pulling3 = M
+				else if(!pulling4)
+					pulling4 = M
+				buckled_animal_propulsion += 2
 				updatepassdir()
 				M.forceMove(get_turf(src))
 				return
 	else if((current_cargo < total_cargo) && (!(A in ontop) || !(A in ontop_o))) //Placing a cargo object or human passenger?
 		var/seat = null
-		if(A != driver && (A != pulling1 && A != pulling2))
+		if(A != driver && (A != pulling1 && A != pulling2 && A != pulling3 && A != pulling4))
 			if(A == user) //Passenger climbing by himself
 				visible_message("<div class='notice'>[user] starts climbing on the [src] as a passenger...</div>")
 			else
@@ -1412,6 +1467,26 @@
 				M.pixel_x = -47
 				M.pixel_y = 43
 				M.dir = WEST
+		var/mob/living/simple_animal/horse/H = pulling1
+		H.pixel_x = pixel_x
+		H.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				H.pixel_x = 16
+				H.pixel_y = -57
+				H.dir = SOUTH
+			if (NORTH)
+				H.pixel_x = 16
+				H.pixel_y = 88
+				H.dir = NORTH
+			if (EAST)
+				H.pixel_x = 68
+				H.pixel_y = 22
+				H.dir = EAST
+			if (WEST)
+				H.pixel_x = -68
+				H.pixel_y = 22
+				H.dir = WEST
 	if(pulling2)
 		var/mob/living/simple_animal/cattle/M = pulling2
 		M.pixel_x = pixel_x
@@ -1426,13 +1501,115 @@
 				M.pixel_y = 88
 				M.dir = NORTH
 			if (EAST)
-				M.pixel_x = 75
+				M.pixel_x = 55
+				M.pixel_y = 32
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = -62
+				M.pixel_y = 32
+				M.dir = WEST
+		var/mob/living/simple_animal/horse/H = pulling2
+		H.pixel_x = pixel_x
+		H.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				H.pixel_x = -12
+				H.pixel_y = -57
+				H.dir = SOUTH
+			if (NORTH)
+				H.pixel_x = -16
+				H.pixel_y = 88
+				H.dir = NORTH
+			if (EAST)
+				H.pixel_x = 68
+				H.pixel_y = 2
+				H.dir = EAST
+			if (WEST)
+				H.pixel_x = -68
+				H.pixel_y = 2
+				H.dir = WEST
+	if(pulling3)
+		var/mob/living/simple_animal/cattle/M = pulling3
+		M.pixel_x = pixel_x
+		M.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 0
+				M.pixel_y = -62
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 0
+				M.pixel_y = 118
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = 95
+				M.pixel_y = 42
+				M.dir = EAST
+			if (WEST)
+				M.pixel_x = -77
+				M.pixel_y = 43
+				M.dir = WEST
+		var/mob/living/simple_animal/horse/H = pulling3
+		H.pixel_x = pixel_x
+		H.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				H.pixel_x = 16
+				H.pixel_y = -88
+				H.dir = SOUTH
+			if (NORTH)
+				H.pixel_x = 16
+				H.pixel_y = 132
+				H.dir = NORTH
+			if (EAST)
+				H.pixel_x = 125
+				H.pixel_y = 22
+				H.dir = EAST
+			if (WEST)
+				H.pixel_x = -117
+				H.pixel_y = 22
+				H.dir = WEST
+	if(pulling4)
+		var/mob/living/simple_animal/cattle/M = pulling4
+		M.pixel_x = pixel_x
+		M.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				M.pixel_x = 38
+				M.pixel_y = -62
+				M.dir = SOUTH
+			if (NORTH)
+				M.pixel_x = 26
+				M.pixel_y = 118
+				M.dir = NORTH
+			if (EAST)
+				M.pixel_x = 95
 				M.pixel_y = 15
 				M.dir = EAST
 			if (WEST)
-				M.pixel_x = -47
+				M.pixel_x = -77
 				M.pixel_y = 15
 				M.dir = WEST
+		var/mob/living/simple_animal/horse/H = pulling4
+		H.pixel_x = pixel_x
+		H.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				H.pixel_x = -12
+				H.pixel_y = -88
+				H.dir = SOUTH
+			if (NORTH)
+				H.pixel_x = -16
+				H.pixel_y = 132
+				H.dir = NORTH
+			if (EAST)
+				H.pixel_x = 125
+				H.pixel_y = 2
+				H.dir = EAST
+			if (WEST)
+				H.pixel_x = -117
+				H.pixel_y = 2
+				H.dir = WEST
 	if(bucklepoint1)
 		var/atom/M = bucklepoint1
 		M.pixel_x = pixel_x
@@ -1758,7 +1935,7 @@
 		return FALSE
 
 /obj/structure/vehicle/carriage/movementloop() //Makes the pulling animals hungry
-	if(pulling1 || pulling2)
+	if(pulling1 || pulling2 || pulling3 || pulling4)
 		if(pulling1)
 			if(pulling1.fireloss + pulling1.oxyloss + pulling1.toxloss + pulling1.bruteloss >= pulling1.health) //Is it dead?
 				axis.currentspeed = 0
@@ -1775,4 +1952,20 @@
 				return
 			else
 				pulling2.simplehunger -= 1
+		if(pulling3)
+			if(pulling3.fireloss + pulling3.oxyloss + pulling3.toxloss + pulling3.bruteloss >= pulling3.health) //Is it dead?
+				axis.currentspeed = 0
+				stopmovementloop()
+				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
+				return
+			else
+				pulling3.simplehunger -= 1
+		if(pulling4)
+			if(pulling4.fireloss + pulling4.oxyloss + pulling4.toxloss + pulling4.bruteloss >= pulling4.health) //Is it dead?
+				axis.currentspeed = 0
+				stopmovementloop()
+				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
+				return
+			else
+				pulling4.simplehunger -= 1
 	..()
