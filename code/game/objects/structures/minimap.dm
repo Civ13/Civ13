@@ -111,6 +111,7 @@
 	name = "folding map"
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "portable_areamap"
+	item_state = "map"
 	var/image/img
 	var/image/playerloc
 	throwforce = WEAPON_FORCE_HARMLESS
