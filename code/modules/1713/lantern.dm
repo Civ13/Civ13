@@ -214,6 +214,7 @@
 	name = "flashlight"
 	desc = "an electrical flashlight."
 	icon_state = "flashlight_off"
+	item_state = "modern_flashlight"
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
 	slot_flags = SLOT_BELT|SLOT_MASK
@@ -223,6 +224,7 @@
 	name = "flashlight"
 	desc = "an electrical flashlight."
 	icon_state = "modernlight_off"
+	item_state = "modern_flashlight"
 	on_state = "modernlight_on"
 	off_state = "modernlight_off"
 	slot_flags = SLOT_BELT|SLOT_MASK
