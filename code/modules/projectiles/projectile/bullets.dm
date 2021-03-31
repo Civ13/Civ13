@@ -172,6 +172,17 @@
 	embed = 0
 	icon_state = "buckshot"
 
+/obj/item/projectile/bullet/pellet/rubberball
+	name = "rubber ball"
+	damage = 5
+	icon_state = "bullet"
+	pellets = 12
+	range_step = 2
+	base_spread = 90
+	spread_step = 10
+	move_tiles = 7
+	agony = 10
+
 /* "Rifle" rounds */
 
 /obj/item/projectile/bullet/rifle
