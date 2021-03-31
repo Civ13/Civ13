@@ -427,8 +427,6 @@ var/list/global/phone_numbers = list()
 		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
 			if (F != src)
 				contacts += list(list(F.name,F.phonenumber))
-
-
 //ROBERTS CELLPHONES//
 /obj/item/weapon/telephone/mobile/mobilefaction/
 	name = "Corporate cellphone"
