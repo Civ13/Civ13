@@ -9,7 +9,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 110
+	health = 550
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -67,7 +67,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 150
+	health = 750
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -149,7 +149,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 150
+	health = 750
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -242,7 +242,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 450
+	health = 2250
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -276,11 +276,11 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 650 //until there are stronger alternatives.
+	health = 3250 //until there are stronger alternatives.
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 8
+	explosion_resistance = 13
 	material = "Stone"
 	hardness = 95
 	adjusts = TRUE

@@ -72,7 +72,7 @@
 	opacity = TRUE
 	amount = 4
 	layer = 3
-	health = 150
+	health = 300
 	wall = TRUE
 	explosion_resistance = 5
 	material = "Wood"
@@ -92,7 +92,7 @@
 	icon_state = "abashiri0"
 	base_icon_state = "abashiri"
 	adjusts = TRUE
-	health = 250
+	health = 400
 	explosion_resistance = 6
 	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/covers/wood_wall/abashiri/can_join_with(var/atom/W)
@@ -106,28 +106,28 @@
 	desc = "A dark-ages wall."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "medieval_wall"
-	health = 180
+	health = 330
 
 /obj/covers/wood_wall/medieval/x
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an x shaped support."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "medieval_wall_x"
-	health = 185
+	health = 335
 
 /obj/covers/wood_wall/medieval/y/r
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "medieval_wall_y1"
-	health = 185
+	health = 335
 
 /obj/covers/wood_wall/medieval/y/l
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "medieval_wall_y2"
-	health = 185
+	health = 335
 
 /* Asia-Themed Walls - End*/
 
@@ -136,13 +136,13 @@
 	desc = "A east-oriental style wall."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "oriental"
-	health = 180
+	health = 330
 
 /obj/covers/wood_wall/oriental/b
 	name = "braced oriental wall"
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "orientalb"
-	health = 185
+	health = 335
 
 /obj/covers/wood_wall/oriental/doorway
 	name = "oriental doorway"
@@ -151,31 +151,31 @@
 	icon_state = "oriental-door"
 	density = FALSE
 	opacity = FALSE
-	health = 180
+	health = 335
 
 /obj/covers/wood_wall/oriental/twop
 	name = "two panelled oriental wall"
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "oriental_twop"
-	health = 180
+	health = 330
 
 /obj/covers/wood_wall/oriental/twop/b
 	name = "two panelled braced oriental wall"
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "oriental_twopb"
-	health = 185
+	health = 335
 
 /obj/covers/wood_wall/oriental/threep
 	name = "three panelled oriental wall"
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "oriental_threep"
-	health = 180
+	health = 330
 
 /obj/covers/wood_wall/oriental/threep/b
 	name = "three panelled braced oriental wall"
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "oriental_threepb"
-	health = 185
+	health = 335
 
 /obj/covers/wood_wall/shoji
 	name = "shoji wall"
@@ -216,7 +216,7 @@
 	desc = "A wall made from bamboo."
 	icon = 'icons/obj/bamboostuff.dmi'
 	icon_state = "bamboo"
-	health = 80
+	health = 230
 	amount = 3
 	layer = 3
 	health = 70
@@ -238,7 +238,7 @@
 	opacity = TRUE
 	amount = 4
 	layer = 3
-	health = 180
+	health = 330
 	wall = TRUE
 	explosion_resistance = 7
 	material = "Wood"
@@ -261,7 +261,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 400
+	health = 2000
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -374,7 +374,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 400
+	health = 2000
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -471,7 +471,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 400
+	health = 2000
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -504,7 +504,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 400
+	health = 2000
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -599,7 +599,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 400
+	health = 2000
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -622,7 +622,7 @@
 	icon_state = "sandstone_fortress0"
 	base_icon_state = "sandstone_fortress"
 	adjusts = TRUE
-	health = 650
+	health = 3250
 	explosion_resistance = 7
 	buildstack = /obj/item/stack/material/stonebrick
 
@@ -665,7 +665,7 @@
 
 /obj/covers/vault
 	name = "vault wall"
-	desc = "A very strong wall of concrete wall."
+	desc = "A very strong wall of concrete."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "vault"
 	passable = TRUE
@@ -674,11 +674,11 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 800
+	health = 4000
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 10
+	explosion_resistance = 100
 	material = "Stone"
 	hardness = 100
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
@@ -761,7 +761,7 @@
 	icon_state = "new_stonebrick0"
 	base_icon_state = "new_stonebrick"
 	adjusts = TRUE
-	health = 550
+	health = 2750
 	buildstack = /obj/item/stack/material/stonebrick
 
 /obj/covers/stone_wall/fortress
@@ -770,6 +770,6 @@
 	icon_state = "fortress_brickwall0"
 	base_icon_state = "fortress_brickwall"
 	adjusts = TRUE
-	health = 650
+	health = 3250
 	explosion_resistance = 7
 	buildstack = /obj/item/stack/material/stonebrick
