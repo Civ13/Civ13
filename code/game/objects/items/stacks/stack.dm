@@ -397,6 +397,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		for(var/obj/structure/gatecontrol/GC in range(6, user.loc))
 			user << "<span class = 'danger'>You cannot build a control so close to another one!</span>"
 			return
+	else if (findtext(recipe.title, "blast door control"))
+		for(var/obj/structure/gatecontrol/blastcontrol/GC in range(10, user.loc))
+			user << "<span class = 'danger'>You cannot build a control so close to another one!</span>"
+			return
 	else if (findtext(recipe.title, "signpost"))
 		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
@@ -724,7 +728,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>"
 					return
-			
 	if (findtext(recipe.title, "raft"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
 			user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"

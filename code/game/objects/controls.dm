@@ -12,7 +12,7 @@
 	not_disassemblable = TRUE
 
 /obj/structure/gatecontrol/blastcontrol
-	name = "blast control"
+	name = "blast door control"
 	desc = "Controls nearby blastdoors."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "blast_control"
@@ -20,32 +20,37 @@
 	open = FALSE
 	cooldown = 3
 	distance = 5
-	density = TRUE
+	density = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+
 /obj/structure/gatecontrol/blastcontrol/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 60)
+	if (cooldown <= world.time - 30)
 		if (open)
 			visible_message("[user] closes the blast doors!")
 			open = FALSE
 			cooldown = world.time
 			for (var/obj/structure/gate/G in range(distance,src.loc))
-				playsound(loc, 'sound/machines/steam_starting.ogg', 100)
+				playsound(loc, 'sound/effects/rollermove.ogg', 100)
 				G.icon_state = "blast_closing"
-				spawn(30)
+				spawn(10)
+					playsound(loc, 'sound/effects/lever.ogg', 100)
 					G.icon_state = "blast0"
 					G.density = TRUE
+					G.opacity = TRUE
 			return
 		else
 			visible_message("[user] opens the blast doors!")
 			open = TRUE
 			cooldown = world.time
 			for (var/obj/structure/gate/G in range(distance,src.loc))
-				playsound(loc, 'sound/machines/steam_starting.ogg', 100)
+				playsound(loc, 'sound/effects/lever.ogg', 100)
 				G.icon_state = "blast_opening"
-				spawn(30)
+				spawn(10)
+					playsound(loc, 'sound/effects/rollermove.ogg', 100)
 					G.icon_state = "blast1"
 					G.density = FALSE
+					G.opacity = FALSE
 			return
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
@@ -138,6 +143,7 @@
 	icon = 'icons/obj/doors/material_doors.dmi'
 	icon_state = "blast0"
 	anchored = TRUE
+	opacity = TRUE
 	density = TRUE
 	health = 1200
 	maxhealth = 1200
@@ -147,7 +153,8 @@
 	name = "blast door"
 	desc = "An thick steel blast door."
 	icon = 'icons/obj/doors/material_doors.dmi'
-	icon_state = "blast0"
+	icon_state = "blast1"
+	opacity = FALSE
 	anchored = TRUE
 	density = FALSE
 	health = 1200
