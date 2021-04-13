@@ -196,7 +196,7 @@ RECIPE: /material/wood/,practice target,/obj/structure/practice_dummy/target,18,
 RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,13,50,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,small cross,/obj/structure/religious/woodcross1,7,50,1,1,religious & decoration,47,0,0,8,null
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,4,40,0,1,shoes & clothing,0,0,0,8,null
-RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes &
+RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,7,50,0,1,kitchen,20,0,0,8,null
 RECIPE: /material/wood/,deck of cards,/obj/item/weapon/deck/cards,12,80,1,1,entertainment & other,65,0,0,8,null
 RECIPE: /material/wood/,matches (x10),/obj/item/weapon/matchbox,13,80,1,1,entertainment & other,67,0,0,8,null
