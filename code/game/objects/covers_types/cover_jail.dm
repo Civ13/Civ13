@@ -39,16 +39,31 @@
 				user.put_in_hands(SHK)
 				user << "\The [I] turns into a shank."
 				qdel(I)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker
+
+	else if (istype(W,/obj/item/weapon/weldingtool))//if it is a welding tool
+		if (material != "Steel")
+			user << "This is the wrong tool."
+		else
+			user << "<span class='notice'>You start disassembling the [src]...</span>"
+			playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
+			if (do_after(user, 30, target = src))
+				for (var/i = TRUE, i <= buildstackamount, i++)
+					new buildstack(get_turf(src))
+				qdel(src)
+				return
 	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
-		user << "<span class='notice'>You start disassembling the [src]...</span>"
-		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
-		if (do_after(user, 30, target = src))
-			for (var/i = TRUE, i <= buildstackamount, i++)
-				new buildstack(get_turf(src))
-			qdel(src)
-			return
+		if (material != "Wood")
+			user << "This is the wrong tool."
+		else
+			user << "<span class='notice'>You start disassembling the [src]...</span>"
+			playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+			if (do_after(user, 30, target = src))
+				for (var/i = TRUE, i <= buildstackamount, i++)
+					new buildstack(get_turf(src))
+				qdel(src)
+				return
 	return TRUE
 
 /obj/covers/jail/bullet_act(var/obj/item/projectile/P)
