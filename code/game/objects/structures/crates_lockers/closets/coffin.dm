@@ -5,6 +5,7 @@
 	icon_closed = "coffin"
 	icon_opened = "coffin_open"
 	throwpass = TRUE
+	health = 300
 
 /obj/structure/closet/coffin/anchored
 	anchored = TRUE
@@ -22,6 +23,7 @@
 	icon_closed = "bronze_sarcophagus_closed"
 	icon_opened = "sarcophagus_open"
 	throwpass = TRUE
+	health = 1100
 
 /obj/structure/closet/coffin/sarcophagus/anchored
 	anchored = TRUE
@@ -33,3 +35,4 @@
 	icon_closed = "gold_sarcophagus_closed"
 	icon_opened = "sarcophagus_open"
 	throwpass = TRUE
+	health = 700

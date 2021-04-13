@@ -8,6 +8,7 @@
 	powerneeded = 5
 	not_movable = FALSE
 	anchored = TRUE
+	health = 3000
 
 /obj/structure/closet/fridge/update_icon()
 	if (!opened)

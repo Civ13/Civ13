@@ -100,6 +100,7 @@
 	icon_closed = "footlocker"
 	storagecap = 5
 	density = FALSE
+	health = 3000
 
 /obj/structure/closet/crate/bin
 	name = "large bin"
@@ -116,7 +117,7 @@
 	icon_state = "largemetal"
 	icon_opened = "largemetalopen"
 	icon_closed = "largemetal"
-
+	health = 8000
 /obj/structure/closet/crate/large/close()
 	. = ..()
 	if (.)//we can hold up to one large item
@@ -134,6 +135,9 @@
 	icon_state = "largermetal"
 	icon_opened = "largermetal"
 	icon_closed = "largermetal"
+	health = 999999
+	anchored = TRUE
+
 
 	//ROBERT'S CARTS//
 /obj/structure/closet/crate/cart
