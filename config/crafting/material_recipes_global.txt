@@ -1779,8 +1779,9 @@ RECIPE: /material/steel/,artillery cannon,/obj/structure/cannon/modern,40,600,1,
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,siege weapons,24,33,0,8,steel
 
 //*********************| STEEL FLOORS & CONSTRUCTIONS |**************************
-
-RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,none,62,0,0,8,null
+RECIPE: /material/steel/,blast door,/obj/structure/gate/blast,40,400,1,1,construction,110,125,0,8,null
+RECIPE: /material/steel/,blast door control,/obj/structure/gatecontrol/blastcontrol,15,250,1,1,construction,110,125,0,8,null
+RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,construction,62,0,0,8,null
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,construction,75,0,0,8,null
 

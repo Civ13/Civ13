@@ -331,7 +331,7 @@
 	desc = "A common sea bird."
 	icon_state = "pelican-filled"
 	icon_living = "pelican-filled"
-	icon_dead = "pelican-dead"
+	icon_dead = "pelican_dead"
 	speak = list("GRUNT!","KRRR KRRR!")
 	speak_emote = list("gruntss","hisses")
 	emote_hear = list("grunts")
