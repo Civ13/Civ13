@@ -67,6 +67,10 @@
 	armor = list(melee = 80, arrow = 15, gun = 15, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	siemens_coefficient = FALSE
 
+/obj/item/clothing/gloves/thick/swat/officer
+	name = "Officer gloves"
+	desc = "Shiny black gloves used by officers to keep their hands clean."
+
 /obj/item/clothing/gloves/thick/salamon //Combined effect of SWAT gloves and insulated gloves
 	name = "gold plated gloves"
 	desc = "Gold plated gloves. These look expensive."
