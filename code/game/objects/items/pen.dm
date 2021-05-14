@@ -92,7 +92,7 @@
 
 /obj/item/weapon/pen/reagent
 	flags = OPENCONTAINER
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT | SLOT_EARS
 
 /obj/item/weapon/pen/reagent/New()
 	..()

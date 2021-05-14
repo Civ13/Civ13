@@ -751,3 +751,67 @@ obj/structure/vending/hezammo
 	name = "rifle rack"
 	icon_state = "rack_base_wood"
 	flammable = TRUE
+
+/obj/structure/vending/yeltsinapparel
+	name = "Soviet apparel rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/soldiershoes = 15,
+		/obj/item/clothing/under/milrus2 = 15,
+		/obj/item/clothing/suit/storage/coat/modern_winter = 15,
+		/obj/item/clothing/head/ww2/sov_ushanka = 10,
+		/obj/item/clothing/mask/sovietbala = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 15,
+		/obj/item/clothing/suit/heavyvest1 = 15,
+		/obj/item/clothing/gloves/thick/combat = 15,
+		/obj/item/clothing/glasses/nvg = 10,
+		/obj/item/clothing/glasses/thermal = 10,
+		/obj/item/clothing/accessory/armor/legguards = 15,
+		/obj/item/clothing/accessory/armor/armguards = 15,
+		/obj/item/clothing/accessory/storage/webbing/russian = 15,
+		/obj/item/clothing/accessory/holster/armpit = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/flashlight = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+	)
+
+/obj/structure/vending/yeltsinweapons
+	name = "Soviet weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 8,
+		/obj/item/weapon/gun/projectile/automatic/pkm = 8,
+		/obj/item/weapon/gun/projectile/semiautomatic/svd = 4,
+		/obj/item/weapon/gun/projectile/pistol/tt30  = 15,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/grenade/smokebomb = 15,
+		/obj/item/weapon/grenade/flashbang = 15,
+		/obj/item/weapon/grenade/ww2/rgd33 = 15,
+		/obj/item/weapon/grenade/antitank/rpg40 = 15,
+		/obj/item/weapon/plastique/c4 = 6,
+		/obj/item/weapon/shield/metal_riot = 15,
+		/obj/item/weapon/material/machete = 15,
+		/obj/item/weapon/melee/nightbaton = 15,
+	)
+
+/obj/structure/vending/yeltsinammo
+	name = "Soviet ammo crate"
+	desc = "A large crate of ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak74 = 50,
+		/obj/item/ammo_magazine/pkm/c100 = 25,
+		/obj/item/ammo_magazine/svd = 15,
+		/obj/item/ammo_magazine/tt30 = 15,
+		/obj/item/ammo_magazine/pkm = 8,
+		/obj/item/ammo_magazine/maxim = 8,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 15,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
+		/obj/item/weapon/attachment/under/foregrip = 15,
+	)

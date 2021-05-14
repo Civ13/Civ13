@@ -372,7 +372,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 
 
 /obj/item/weapon/shield/metal_riot
-	name = "Riot shield"
+	name = "riot shield"
 	desc = "A riot sheild designed to be excellent in blocking during prisoner uprisings"
 	icon_state = "metal_riot"
 	item_state = "metal_riot"
@@ -381,3 +381,14 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	w_class = 2
 	base_block_chance = 65
 	slowdown = 0.35
+
+/obj/item/weapon/shield/balistic
+	name = "balistic shield"
+	desc = "A sheild designed to be excellent in blocking projectiles."
+	icon_state = "metal_riot"
+	item_state = "metal_riot"
+	material = "steel"
+	health = 90
+	w_class = 4
+	base_block_chance = 85
+	slowdown = 0.55

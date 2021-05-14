@@ -581,7 +581,10 @@
 		return
 	/// CAPITOL MODES //
 	else if (vote.voted_gamemode == "Siege")
-		world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
+		if (map && map.ID == MAP_CAPITOL_HILL)
+			world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
+		else if (map && map.ID == MAP_YELTSIN)
+			world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Central Processing</b> and the <b>Parliamental Hall</b></big> for <b>40 minutes</b>!</font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Siege"
@@ -591,7 +594,10 @@
 			new /area/caribbean/british/land/inside/objective(T)
 		return
 	else if (vote.voted_gamemode == "Protect the VIP")
-		world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
+		if (map && map.ID == MAP_CAPITOL_HILL)
+			world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
+		else if (map && map.ID == MAP_YELTSIN)
+			world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>KGB</b> inside the Militia-controlled Capitol. The Soviet Army must find them!<br>They have <b>25 minutes to do it!</b></big></font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Protect the VIP"
@@ -603,4 +609,17 @@
 		map.gamemode = "Area Capture"
 		var/obj/map_metadata/capitol_hill/CP = map
 		CP.points_check()
+		return
+	else if (vote.voted_gamemode == "Kills")
+		if (map && map.ID == MAP_CAPITOL_HILL)
+			world << "<font color='yellow'><big>Kills</big><br>The <b>American Militia</b> storms the  <b>National Guard</b>-controlled Capitol!</b></big></font>"
+			var/obj/map_metadata/capitol_hill/CP = map
+			CP.points_check()
+		else if (map && map.ID == MAP_YELTSIN)
+			world << "<font color='yellow'><big>Kills</big><br>The <b>Soviet Army</b> storms the <b>Militia</b>-controlled Capitol!</b></big></font>"
+			var/obj/map_metadata/yeltsin/CP = map
+			CP.points_check()
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Kills"
 		return
