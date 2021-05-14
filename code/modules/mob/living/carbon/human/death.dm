@@ -79,6 +79,28 @@
 					world << "<font color='red' size=3>The <b>Ichiwa-Kai</b> underboss has been killed!</font>"
 				else
 					map.scores["Yamaguchi-Gumi"] += 1
+
+	else if (map && map.ID == MAP_YELTSIN)
+		if (civilization && civilization in map.scores)
+			if (civilization == "Soviet Army")
+				if (original_job && original_job.title == "Soviet Army Sergeant")
+					map.scores["Militia"] += 5
+					world << "<font color='red' size=3>The <b>Soviet Army</b> Sergeant has been killed!</font>"
+				else if (original_job && original_job.title == "Soviet Army Lieutenant")
+					map.scores["Militia"] += 10
+					world << "<font color='red' size=3>The <b>Soviet Army</b> Lieutenant has been killed!</font>"
+				else
+					map.scores["Militia"] += 1
+			else
+				map.scores["Soviet Army"] += 1
+
+	else if (map && map.ID == MAP_CAPITOL_HILL)
+		if (civilization && civilization in map.scores)
+			if (civilization == "National Guard")
+				map.scores["Militia"] += 1
+			else
+				map.scores["National Guard"] += 1
+
 	else if (map && map.ID == MAP_SEKIGAHARA)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Eastern Army")

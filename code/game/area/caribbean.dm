@@ -1045,6 +1045,7 @@
 	icon_state = "red1"
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "jungle"
 
 /area/caribbean/roman
 	name = "Roman Camp"

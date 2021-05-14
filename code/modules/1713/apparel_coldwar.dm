@@ -202,6 +202,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
+
 /* US Army Armor & Helmets*/
 
 /obj/item/clothing/head //why is this HERE? @fantasticfwoosh
@@ -448,6 +449,14 @@
 	icon_state = "nva_off_cap"
 	item_state = "nva_off_cap"
 	body_parts_covered = HEAD
+
+/obj/item/clothing/head/ww2/nkvd_cap/kgb
+	name = "KGB cap"
+	desc = "A cap and worn by KGB."
+	icon_state = "nkvd_cap"
+	item_state = "nkvd_cap"
+	worn_state = "nkvd_cap"
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -686,6 +695,33 @@
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74/New()
+	..()
+	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_swat
+/obj/item/weapon/storage/belt/smallpouches/green/sov_swat/New()
+	storage_slots = 6
+	..()
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/ammo_magazine/tt30(src)
+	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_spz
+/obj/item/weapon/storage/belt/smallpouches/green/sov_spz/New()
+	..()
+	new /obj/item/weapon/grenade/antitank/rpg40(src)
+	new /obj/item/weapon/grenade/antitank/rpg40(src)
+	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/
@@ -1062,3 +1098,10 @@
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 150
+
+/obj/item/clothing/under/ww2/soviet_nkvd/kgb
+	name = "KGB uniform"
+	desc = "A Russian KGB uniform, used by KGB."
+	icon_state = "nkvd_uni"
+	item_state = "nkvd_uni"
+	worn_state = "nkvd_uni"

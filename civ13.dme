@@ -337,6 +337,7 @@
 #include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\map_metadata\wake_island.dm"
+#include "code\game\objects\map_metadata\yeltsin.dm"
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\structures\appliances.dm"
 #include "code\game\objects\structures\barricades.dm"
@@ -546,6 +547,7 @@
 #include "code\modules\1713\jobs\UPA.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
 #include "code\modules\1713\jobs\yakuza.dm"
+#include "code\modules\1713\jobs\yeltsin.dm"
 #include "code\modules\1713\machinery\cables.dm"
 #include "code\modules\1713\machinery\cables_types.dm"
 #include "code\modules\1713\machinery\vehicles.dm"
@@ -997,5 +999,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\nanjing.dmm"
+#include "maps\2013\capitol_hill.dmm"
 // END_INCLUDE

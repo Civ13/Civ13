@@ -64,6 +64,9 @@
 /datum/job/var/is_occupation = FALSE
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE
+/datum/job/var/is_yeltsin = FALSE
+/datum/job/var/is_whitehouse = FALSE
+/datum/job/var/is_kremlin = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov

@@ -30,7 +30,7 @@
 
 /obj/item/ammo_magazine/ak47/makeshift
 	name = "Makeshift AK-47 magazine (7.62x39mm)"
-	icon_state = "makeshiftak-47"
+	icon_state = "ak74"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
 	ammo_type = /obj/item/ammo_casing/a762x39

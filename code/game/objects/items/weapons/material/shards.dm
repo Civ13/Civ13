@@ -85,6 +85,7 @@
 /obj/item/weapon/material/shard/shrapnel/New(loc)
 	..(loc, "steel")
 
+/obj/item/weapon/material/shard/glass
 /obj/item/weapon/material/shard/glass/New(loc) //why doesn't this exist before?
 	..(loc, "glass")
 

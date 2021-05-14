@@ -471,6 +471,12 @@
 	effectiveness_mod = 0.98
 	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 
+/obj/item/weapon/gun/projectile/pistol/tt30/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
+
 
 obj/item/weapon/gun/projectile/pistol/tt30ll
 	name = "TT-33"
