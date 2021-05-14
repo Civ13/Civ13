@@ -602,10 +602,10 @@
 	name = "Labour Worker's Union Pin"
 	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further Labourer's rights."
 
-/obj/item/clothing/accessory/medal/pin/worker/office
+/obj/item/clothing/accessory/medal/pin/worker/medic
 	icon_state = "medics_guild_pin"
 	worn_state = "medics_guild_pin"
-	name = "Medical Worker's Union Pin"
+	name = "Medical Worker's Guild Pin"
 	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further Medical Worker's rights."
 
 /obj/item/clothing/accessory/medal/pin/worker/office
