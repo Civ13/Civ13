@@ -575,48 +575,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	specific = TRUE
 	colorn = 2
 
-/obj/item/clothing/suit/storage/coat/monk_robes
-	name = "monk robes"
-	desc = "Robes commonly worn by monks, warm in the winters."
-	icon_state = "kozhanka"
-	item_state = "kozhanka"
-	worn_state = "kozhanka"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
-	value = 65
-	flags_inv = BLOCKHEADHAIR
-/obj/item/clothing/suit/storage/coat/monk_robes/verb/toggle_hood()
-	set category = null
-	set src in usr
-	set name = "Toggle Hood"
-	if (hood)
-		icon_state = "monk_robes"
-		item_state = "monk_robes"
-		worn_state = "monk_robes"
-		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-		item_state_slots["slot_wear_suit"] = "monk_robes"
-		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
-		update_icon()
-		hood = FALSE
-		usr.update_inv_head(1)
-		usr.update_inv_wear_suit(1)
-		return
-	else if (!hood)
-		icon_state = "monk_robes_hood"
-		item_state = "monk_robes_hood"
-		worn_state = "monk_robes_hood"
-		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
-		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
-		item_state_slots["slot_wear_suit"] = "monk_robes_hood"
-		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
-		update_icon()
-		hood = TRUE
-		usr.update_inv_head(1)
-		usr.update_inv_wear_suit(1)
-		return
-
 /* Miscallaneous*/
 
 /obj/item/clothing/suit/storage/jacket/kool_kids_klub 	//24 December 1865
