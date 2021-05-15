@@ -320,7 +320,7 @@
 /////////KGBS & SSMs//////////////
 
 /datum/job/civilian/russian/hvt
-	title = "HVT"
+	title = "Soviet HVT"
 	en_meaning = "Soviet Supreme Member"
 	rank_abbreviation = "Ssm."
 	spawn_location = "JoinLatessm"

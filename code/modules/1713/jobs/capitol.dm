@@ -232,7 +232,7 @@
 	return TRUE
 
 /datum/job/american/hvt
-	title = "HVT"
+	title = "US HVT"
 	en_meaning = "High Value Target"
 	rank_abbreviation = "Mr."
 
