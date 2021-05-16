@@ -764,7 +764,6 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/mask/sovietbala = 15,
 		/obj/item/clothing/mask/gas/russia = 15,
 		/obj/item/clothing/head/helmet/modern/ssh_68 = 15,
-		/obj/item/clothing/suit/heavyvest1 = 15,
 		/obj/item/clothing/gloves/thick/combat = 15,
 		/obj/item/clothing/glasses/nvg = 10,
 		/obj/item/clothing/glasses/thermal = 10,

@@ -61,10 +61,10 @@
 		. = FALSE
 
 /obj/map_metadata/yeltsin/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/yeltsin/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/yeltsin/roundend_condition_def2name(define)
@@ -109,7 +109,7 @@
 	var/message = ""
 	switch(gamemode)
 		if ("Protect the VIP")
-			if (processes.ticker.playtime_elapsed >= 18000)
+			if (processes.ticker.playtime_elapsed >= 24000)
 				if (win_condition_spam_check)
 					return FALSE
 				ticker.finished = TRUE
