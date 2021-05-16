@@ -172,7 +172,7 @@
 	uses_squads = TRUE
 
 	min_positions = 10
-	max_positions = 100
+	max_positions = 50
 
 /datum/job/russian/sa_swat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -185,8 +185,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/platecarrierblack/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarrierblack(null)
 	uniform.attackby(armour, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
-	uniform.attackby(armor, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat(H), slot_gloves)
@@ -199,7 +197,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_swat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/balistic(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/swat(H), slot_wear_suit)
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, Special Weapons and Tactics Response Team. Use your superior training and gear to control the miltia!")
@@ -275,8 +272,8 @@
 
 	uses_squads = TRUE
 
-	min_positions = 10
-	max_positions = 20
+	min_positions = 1
+	max_positions = 10
 
 /datum/job/russian/spetznaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

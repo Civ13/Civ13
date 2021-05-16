@@ -391,4 +391,4 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	health = 90
 	w_class = 4
 	base_block_chance = 85
-	slowdown = 0.55
+	slowdown = 2.85
