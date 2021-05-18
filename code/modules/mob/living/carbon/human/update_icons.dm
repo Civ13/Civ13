@@ -318,6 +318,12 @@ var/global/list/damage_icon_parts = list()
 				overlays_standing[HAIR_LAYER]	= null
 				if (update_icons)   update_icons()
 				return
+		else if(istype(wear_suit, /obj/item/clothing/suit/storage/coat/monk_robes))
+			var/obj/item/clothing/suit/storage/coat/monk_robes/M = wear_suit
+			if(M.hood == TRUE)
+				overlays_standing[HAIR_LAYER] = null
+				if (update_icons)   update_icons()
+				return
 		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/kool_kids_klub))
 			overlays_standing[HAIR_LAYER]	= null
 			if (update_icons)   update_icons()
@@ -338,6 +344,21 @@ var/global/list/damage_icon_parts = list()
 		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
 			var/obj/item/clothing/suit/storage/coat/fur/C = wear_suit
 			if ( C.hood == FALSE)
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
+					var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
+					if (hair_style.do_colouration)
+						hair_s.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
+
+					face_standing.Blend(hair_s, ICON_OVERLAY)
+			else
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "bald_s")
+				face_standing.Blend(hair_s, ICON_OVERLAY)
+
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/monk_robes))
+			var/obj/item/clothing/suit/storage/coat/monk_robes/M = wear_suit
+			if (M.hood == FALSE)
 				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
 				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
 					var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
@@ -1035,6 +1056,12 @@ var/global/list/damage_icon_parts = list()
 		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
 			var/obj/item/clothing/suit/storage/coat/fur/WS = wear_suit
 			if (WS.hood == TRUE)
+				update_hair(1)
+			else
+				update_hair(1)
+		else if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/monk_robes))
+			var/obj/item/clothing/suit/storage/coat/monk_robes/WS = wear_suit
+			if(WS.hood == TRUE)
 				update_hair(1)
 			else
 				update_hair(1)

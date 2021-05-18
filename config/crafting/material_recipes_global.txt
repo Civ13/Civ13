@@ -492,6 +492,7 @@ RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,
 RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/woolcloth/,monk robes,/obj/item/clothing/suit/storage/coat/monk_robes,6,100,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
@@ -644,6 +645,7 @@ RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,fu
 RECIPE: /material/cloth/,plague doctor suit,/obj/item/clothing/suit/storage/jacket/plaguedoctor,5,120,0,1,jackets & vests,0,0,38,3,null
 RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+RECIPE: /material/cloth/,monk robes,/obj/item/clothing/suit/storage/coat/monk_robes,6,100,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,custom colonial jacket,/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,custom colonial coat,/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,4,null
