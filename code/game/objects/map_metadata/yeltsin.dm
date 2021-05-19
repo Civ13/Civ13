@@ -18,7 +18,7 @@
 		)
 	age = "1990"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(RUSSIAN = 0.2, CIVILIAN = 0.8)
+	faction_distribution_coeffs = list(RUSSIAN = 0.3, CIVILIAN = 0.7)
 	battle_name = "Battle for the Russian Parliament."
 	mission_start_message = ""
 	faction1 = CIVILIAN
@@ -333,5 +333,4 @@
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
-
 	return FALSE
