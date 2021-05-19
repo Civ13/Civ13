@@ -682,11 +682,24 @@
 	var/randarmw = rand(1,3)
 	switch(randarmw)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+			if (prob(75))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47(H), slot_l_hand)
+			if (prob(25))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/remington870(H), slot_l_hand)
+			else
+				if (prob(60))
+					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_l_hand)
+				else
+					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_l_hand)
 		if (3)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt(H), slot_l_hand)
+			if (prob(75))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_l_hand)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_l_hand)
 
 //vodka
 	if (prob(15))
