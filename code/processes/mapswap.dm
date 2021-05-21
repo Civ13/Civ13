@@ -215,6 +215,7 @@
 				MAP_JUNGLE_COLONY = 4,
 				MAP_PIONEERS = 5,
 				MAP_PIONEERS_WASTELAND_2 = 0,
+				MAP_BOHEMIA = 10,
 				MAP_FOUR_COLONIES = 20,
 			)
 		else if (epoch == "Civilization 13 (Others)")
@@ -225,7 +226,7 @@
 				MAP_THE_ART_OF_THE_DEAL = 10,
 				MAP_FOUR_KINGDOMS = 0,
 				MAP_GULAG13 = 0,
-				MAP_ABASHIRI = 5,
+				MAP_ABASHIRI = 6,
 				MAP_RIVER_KWAI = 0,
 				MAP_OCCUPATION = 10,
 			)
