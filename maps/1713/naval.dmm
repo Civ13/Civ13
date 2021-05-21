@@ -13,7 +13,7 @@
 "am" = (/obj/effect/landmark{name = "JoinLatePirate"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
 "an" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/pirates/ship/main_deck)
 "ao" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall)
-"ap" = (/obj/structure/cannon,/turf/wall/wood{opacity = 0},/area/caribbean/pirates/ship/main_deck)
+"ap" = (/turf/wall/wood,/area/caribbean/no_mans_land/invisible_wall)
 "aq" = (/turf/wall/wood,/area/caribbean/british/ship/main_deck)
 "ar" = (/turf/wall/wood{opacity = 0},/area/caribbean/british/ship/main_deck)
 "as" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
@@ -223,9 +223,9 @@
 "eo" = (/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "ep" = (/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/smallsword,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "eq" = (/obj/item/weapon/material/sword/spadroon,/obj/item/weapon/material/sword/spadroon,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
-"er" = (/obj/structure/flag/pirates,/turf/wall/wood{opacity = 0},/area/caribbean/pirates/ship/main_deck)
+"er" = (/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
 "es" = (/obj/item/weapon/grenade/bomb,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
-"et" = (/obj/structure/flag/french,/turf/wall/wood{opacity = 0},/area/caribbean/british/ship/main_deck)
+"et" = (/obj/structure/flag/pirates,/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
 "eu" = (/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "ev" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
 "ew" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
@@ -270,6 +270,10 @@
 "fj" = (/obj/item/weapon/shield,/obj/item/weapon/shield,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "fk" = (/obj/item/stack/material/rope{amount = 10},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
 "fl" = (/obj/item/stack/material/rope{amount = 10},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fm" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall)
+"fn" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/sea/sea)
+"fo" = (/obj/structure/cannon,/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
+"fp" = (/obj/structure/flag/french,/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -551,14 +555,14 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahehamaRamaRahedaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahejamaRaRaRafaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeekekekaeaeaeaeaeaeaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahelaRaRamaRahagaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabiahaieTaUaUaiahaeaeemenaeaeanagaeaDaDagaeaeaeaeaeaeaeaDaDaeaeaeagaoacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahahahacacaceracacaoacacacaceraeaOaganaeaeaeaeagaOaeaeacaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahaaaaaaaaaaaaaaaoaaaaaaaaacapacacaoacapaceracacapacacaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaabFaaaaaaaoaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaoaaaaaabFaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaaaaaoaaaaaaaaaaaaaaaaaoaaaaaaaaaaararararaoaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVetaraoarararararetararaoararararareteeeeauasaqaqeueoepeqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahapaperereretereraoererereretaeaOaganaeaeaeaeagaOaeaeacaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaafmfmfmfmfmfmfmapapapapapaaaaaaaaaaaaaafnaaaaaaaaerfoereraoerfoeretererfoereraofmfmfmfmfmfmfmfmfmfmfmfmfmfmfmaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafnaaaaaaaabFaaaaaafnaaaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaafnaaaaaabFaaaaaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaafmfmfmfmfmfmfmfmapapapapapapapapapfmaafnaaaaaaaaaaaaaaaafnaaaaaaaaaaererereraoapapapapapapapfmfmfmfmfmfmfmfmaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVfperaoerererererfpereraoerererererfpeeeeauasaqaqeueoepeqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeyaVaWaXaWbmaYaYaYaZaVeeeeasauavauataPauavauasatauavauaPatatatatataqaqatatatateNaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbabbaWaWaWaWaWaWaVatatatatatatatatatatatatatatatatatatatatatataqatbwatbwatatfaaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWeKaWaWaWaWaWaWbdatatatatatatatatatatatbxatatatatatatatatatatbEatatatatatatatfbaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
