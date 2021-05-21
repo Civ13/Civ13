@@ -27,6 +27,8 @@
 /datum/job/var/is_gladiator = FALSE
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 /datum/job/var/is_cowboy = FALSE
+/datum/job/var/is_law = FALSE
+/datum/job/var/is_outlaw = FALSE
 /datum/job/var/is_ww1 = FALSE
 /datum/job/var/is_ww2 = FALSE
 /datum/job/var/is_reichstag = FALSE
