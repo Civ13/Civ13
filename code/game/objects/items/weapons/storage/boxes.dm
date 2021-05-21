@@ -284,6 +284,18 @@
 		new /obj/item/cocktail_stuff/maraschino_cherry(src)
 		new /obj/item/cocktail_stuff/maraschino_cherry(src)
 
+/obj/item/weapon/storage/box/occinn
+	name = "box of spare Inn keys"
+	desc = "It has a keychain on it."
+	New()
+		..()
+		new /obj/item/weapon/key/civ/inn(src)
+		new /obj/item/weapon/key/civ/room1(src)
+		new /obj/item/weapon/key/civ/room2(src)
+		new /obj/item/weapon/key/civ/room3(src)
+		new /obj/item/weapon/key/civ/room4(src)
+		new /obj/item/weapon/storage/belt/keychain(src)
+
 /obj/item/weapon/matchbox
 	name = "matchbox"
 	desc = "A small box of premium matches."

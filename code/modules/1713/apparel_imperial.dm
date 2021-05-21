@@ -366,6 +366,27 @@
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "wallet"
 
+
+/obj/item/clothing/accessory/storage/coinpouch/wallet/occinn
+	name = "Inn keyset"
+	desc = "A full set of keys for the Inn."
+	slot_flags = SLOT_ID | SLOT_BELT | SLOT_POCKET
+	New()
+		..()
+		hold.can_hold = list(
+		/obj/item/weapon/key
+		)
+/obj/item/clothing/accessory/storage/coinpouch/wallet/occinn/New()
+	..()
+	new /obj/item/weapon/key/civ/inn(src)
+	new /obj/item/weapon/key/civ/room1(src)
+	new /obj/item/weapon/key/civ/room2(src)
+	new /obj/item/weapon/key/civ/room3(src)
+	new /obj/item/weapon/key/civ/room4(src)
+
+
+
+
 /obj/item/clothing/accessory/storage/coinpouch/gator_wallet
 	name = "alligator scale wallet"
 	desc = "A exotic personal wallet decorated in alligator scale, where you can carry your coins and small objects."

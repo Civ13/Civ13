@@ -901,6 +901,9 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
 		H.add_note("Role", "You are a <b>Factory Worker</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
 		randrole = title
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/medal/pin/worker/factory = new /obj/item/clothing/accessory/medal/pin/worker/factory(null)
+		uniform.attackby(factory, H)
 
 /datum/job/civilian/occupation/inn
 	title = "Inn Worker"
@@ -910,8 +913,13 @@
 	max_positions = 4
 	equip(var/mob/living/human/H)
 		..()
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/leather/occinn(H), slot_belt)
 		H.add_note("Role", "You are an <b>Inn Keeper</b>. Your job is to man the inn and provide food and shelter to those paying for it.")
 		randrole = title
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/medal/pin/worker/aristocrat = new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(null)
+		uniform.attackby(aristocrat, H)
+		H.setStat("medical", STAT_NORMAL)
 
 /datum/job/civilian/occupation/farmer
 	title = "Civilian Farmer"
@@ -923,6 +931,9 @@
 		..()
 		H.add_note("Role", "You are a <b>Farmer</b>. Your job is to work for the german occupiers in either the fields or the woods. Misbehaviour can be met with severe punishment.")
 		randrole = "Farmer"
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/medal/pin/worker/farmer = new /obj/item/clothing/accessory/medal/pin/worker/farmer(null)
+		uniform.attackby(farmer, H)
 
 /datum/job/civilian/occupation/doctor
 	title = "Civilian Doctor"
@@ -942,6 +953,12 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/roller_holder(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/medal/pin/worker/medic = new /obj/item/clothing/accessory/medal/pin/worker/medic(null)
+	uniform.attackby(medic, H)
 	if (prob(40))
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
@@ -966,6 +983,7 @@
 	H.setStat("medical", STAT_VERY_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	H.gulag_languages()
+
 /datum/job/civilian/occupation/collaborator
 	title = "Auxillary Police"
 	en_meaning = ""

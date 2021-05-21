@@ -6,11 +6,13 @@
  *		TODO: Cigarette boxes should be ported to this standard
  *
  * Contains:
- *		Donut Box
- *		Egg Box
+ *		Donut Box <-- removed at some point before this -siro
+ *		Egg Box<-- removed at some point before this -siro
  *		Candle Box
- *		Crayon Box
+ *		Crayon Box<-- removed at some point before this -siro
  *		Cigarette Box
+ *		Medal Box
+ *		Pickle Jar
  */
 
 /obj/item/weapon/storage/fancy/
@@ -195,7 +197,7 @@
 	icon_state = "[initial(icon_state)][contents.len]"
 	return
 /obj/item/weapon/storage/fancy/medal/german_full
-	name = "german medal case"
+	name = "German medal case"
 /obj/item/weapon/storage/fancy/medal/german_full/New()
 	..()
 	new /obj/item/clothing/accessory/medal/german/ww2/eastern_front(src)
@@ -212,6 +214,121 @@
 	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
 	new	/obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
 	new	/obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
+
+/obj/item/weapon/storage/fancy/medal/german_iron
+	name = "German Iron Cross case"
+/obj/item/weapon/storage/fancy/medal/german_iron/New()
+	..()
+	new /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_gold_oak(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_gold_oak(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_oak(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_oak(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
+
+/obj/item/weapon/storage/fancy/medal/occupation/german_party
+	name = "German Party Pin case"
+/obj/item/weapon/storage/fancy/medal/occupation/german_party/New()
+	..()
+	new /obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+
+/obj/item/weapon/storage/fancy/medal/occupation/minefarm
+	name = "A case with miner and farmer union pins."
+/obj/item/weapon/storage/fancy/medal/occupation/minefarm/New()
+	..()
+	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+
+/obj/item/weapon/storage/fancy/medal/occupation/factolabo
+	name = "A case with labourer and factory worker union pins."
+/obj/item/weapon/storage/fancy/medal/occupation/factolabo/New()
+	..()
+	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+
+/obj/item/weapon/storage/fancy/medal/occupation/hospimedi
+	name = "A case with labourer and factory worker union pins."
+/obj/item/weapon/storage/fancy/medal/occupation/hospimedi/New()
+	..()
+	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
+	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
+
+
+/obj/item/weapon/storage/fancy/medal/german_action
+	name = "German Action Medals case"
+/obj/item/weapon/storage/fancy/medal/german_action/New()
+	..()
+	new /obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/wound(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/wound(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
 
 /obj/item/weapon/storage/fancy/medal/japanese_pacific_full
 	name = "japanese medal case"

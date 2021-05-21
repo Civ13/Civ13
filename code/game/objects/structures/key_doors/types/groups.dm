@@ -212,11 +212,26 @@
 
 /obj/item/weapon/key/civ/inn
 	code = CV_INN
-	name = "staff only area"
+	name = "Private Inn Key"
 
 /obj/structure/simple_door/key_door/civ/inn
 	keyslot_type = /datum/keyslot/civ/inn
-	unique_door_name = "Private Inn Key"
+	unique_door_name = "staff only area"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/inn
+	unique_door_name = "Locked Staff Only"
+	locked = TRUE
+	custom_code = CV_INN
+
+/obj/structure/closet/crate/cash_register/inn
+	name = "Inn till"
+	custom_code = CV_INN
+	locked = TRUE
+/obj/structure/closet/cabinet/ceiling/liquer
+	name = "Liquer cabinet"
+	custom_code = CV_INN
+	locked = TRUE
+
 #undef CV_INN
 
 /datum/keyslot/civ/businessred/New()
@@ -505,6 +520,16 @@
 /obj/structure/simple_door/key_door/german
 	keyslot_type = /datum/keyslot/german
 	unique_door_name = "German locked"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/german
+	unique_door_name = "German locked"
+	locked = TRUE
+	custom_code = DE_CODE
+
+/obj/structure/closet/crate/cash_register/germ
+	custom_code = DE_CODE
+	locked = TRUE
+
 #undef DE_CODE
 
 #define DE_CODE_OFF 995 * 1
@@ -611,7 +636,7 @@
 
 /obj/structure/simple_door/key_door/civ/paramedics
 	keyslot_type = /datum/keyslot/paramedics
-	unique_door_name = "Hospital Key"
+	unique_door_name = "Hospital Door"
 	locked = TRUE
 	health = 90000
 
@@ -625,6 +650,6 @@
 
 /obj/structure/simple_door/key_door/civ/mechanic
 	keyslot_type = /datum/keyslot/mechanic
-	unique_door_name = "Mechanic Key"
+	unique_door_name = "Mechanic Door"
 	locked = TRUE
 	health = 90000

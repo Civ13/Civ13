@@ -110,8 +110,8 @@
 	desc = "An oak knight iron cross"
 
 /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_gold_oak
-	icon_state = "Knight_EK_gold_oaken"
-	worn_state = "Knight_EK_gold_oaken"
+	icon_state = "knight_EK_gold_oaken"
+	worn_state = "knight_EK_gold_oaken"
 	name = "Knight Iron Cross"
 	desc = "A gold oak knight iron cross"
 
@@ -594,7 +594,7 @@
 	icon_state = "factory_workers_union_pin"
 	worn_state = "factory_workers_union_pin"
 	name = "Factory Worker's Union Pin"
-	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further miner's rights."
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further worker's rights."
 
 /obj/item/clothing/accessory/medal/pin/worker/labour
 	icon_state = "workers_union_pin"
@@ -614,13 +614,13 @@
 	name = "Office Worker's Union Pin"
 	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further Office Worker's rights."
 
-/obj/item/clothing/accessory/medal/pin/aristocrat
+/obj/item/clothing/accessory/medal/pin/worker/aristocrat
 	icon_state = "aristocratic_league_pin"
 	worn_state = "aristocratic_league_pin"
-	name = "Aristocrat Party Pin"
-	desc = "A Political pin signifying that the wearer supports the beliefs of working to protect and further Aristocrat's rights."
+	name = "Hospitality Pin"
+	desc = "A Political pin signifying that the wearer supports the beliefs of Hospitality Worker's rights."
 
-/obj/item/clothing/accessory/medal/pin/lumberjack
+/obj/item/clothing/accessory/medal/pin/worker/lumberjack
 	icon_state = "lumberjacks_union_pin"
 	worn_state = "lumberjacks_union_pin"
 	name = "Lumberjack's Union Pin"
