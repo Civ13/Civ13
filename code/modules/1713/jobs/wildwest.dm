@@ -9,6 +9,7 @@
 	whitelisted = TRUE
 
 	is_cowboy = TRUE
+	is_law = TRUE
 
 
 	min_positions = 1
@@ -71,7 +72,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_cowboy = TRUE
-
+	is_law = TRUE
 
 	min_positions = 3
 	max_positions = 16
@@ -130,7 +131,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_cowboy = TRUE
-
+	is_law = TRUE
 
 	min_positions = 6
 	max_positions = 100
@@ -609,6 +610,7 @@
 	spawn_location = "JoinLatePirate"
 	can_be_female = TRUE
 	is_cowboy = TRUE
+	is_outlaw = TRUE
 
 	min_positions = 6
 	max_positions = 100
@@ -689,6 +691,7 @@
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
 	is_cowboy = TRUE
+	is_outlaw = TRUE
 
 	min_positions = 2
 	max_positions = 9
@@ -749,8 +752,7 @@
 			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
-	if (prob(20))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -770,6 +772,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
+	is_outlaw = TRUE
 
 	min_positions = 2
 	max_positions = 9
@@ -830,8 +833,7 @@
 			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
-	if (prob(20))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

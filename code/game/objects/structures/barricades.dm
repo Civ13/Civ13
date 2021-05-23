@@ -180,6 +180,11 @@
 /obj/structure/barricade/steel
 	material = "steel"
 	material_name = "steel"
+	name = "steel barrier"
+	desc = "A sturdy steel construction."
+	flammable = FALSE
+	protection_chance = 90
+
 /obj/structure/barricade/steel/New(_loc)
 	..(_loc)
 

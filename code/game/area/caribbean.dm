@@ -308,6 +308,13 @@
 	name = "Sea"
 	base_turf = /turf/floor/beach/water/deep
 	icon_state = "blue2"
+
+/area/caribbean/sea/sea/ins
+	name = "Sea"
+	base_turf = /turf/floor/beach/water/deep
+	icon_state = "blue2"
+	location = AREA_INSIDE
+
 /area/caribbean/no_mans_land/sky
 	name = "No Man's Sky"
 	icon_state = "purple1"
@@ -457,14 +464,26 @@
 	name = "grace wall"
 
 /area/caribbean/no_mans_land/invisible_wall/tundra
+	name = "grace wall"
 	climate = "tundra"
 	base_turf = /turf/floor/dirt/winter
+	icon_state = "purple1"
+
+/area/caribbean/no_mans_land/invisible_wall/tundra/one
+	name = "grace wall 1"
 
 /area/caribbean/no_mans_land/invisible_wall/tundra/two
+	name = "grace wall 2"
 
 /area/caribbean/no_mans_land/invisible_wall/taiga
 	climate = "taiga"
 	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/invisible_wall/taiga/one
+	icon_state = "green1"
+	name = "I grace wall"
+/area/caribbean/no_mans_land/invisible_wall/taiga/two
+	icon_state = "green1"
+	name = "II grace wall"
 /area/caribbean/no_mans_land/invisible_wall/temperate
 	climate = "temperate"
 	base_turf = /turf/floor/dirt

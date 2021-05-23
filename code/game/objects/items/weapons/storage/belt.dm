@@ -110,6 +110,18 @@
 	storage_slots = 9
 	max_w_class = 2
 
+/obj/item/weapon/storage/belt/leather/occinn
+
+/obj/item/weapon/storage/belt/leather/occinn/New()
+	..()
+	new /obj/item/weapon/key/civ/inn(src)
+	new /obj/item/weapon/key/civ/room1(src)
+	new /obj/item/weapon/key/civ/room2(src)
+	new /obj/item/weapon/key/civ/room3(src)
+	new /obj/item/weapon/key/civ/room4(src)
+	new /obj/item/weapon/storage/belt/keychain(src)
+
+
 /obj/item/weapon/storage/belt/leather/farmer/New()
 	..()
 	new /obj/item/stack/farming/seeds/tomato(src)

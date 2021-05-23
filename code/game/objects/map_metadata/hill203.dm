@@ -2,7 +2,7 @@
 	ID = MAP_HILL_203
 	title = "Hill 203"
 	lobby_icon_state = "ww1"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 
 
@@ -38,7 +38,7 @@
 		else
 			. = TRUE
 	if (istype(J, /datum/job/russian))
-		if (J.is_ww2 || J.is_rcw || J.is_prison)
+		if (J.is_ww2 || J.is_rcw || J.is_prison || J.is_yeltsin)
 			. = FALSE
 		else
 			. = TRUE
@@ -155,3 +155,17 @@
 	last_win_condition = win_condition.hash
 	return TRUE
 
+/obj/map_metadata/hill203/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE

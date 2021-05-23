@@ -27,11 +27,12 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/samurai/lord/red(H), slot_head)
 //weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
-	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	daishoh.attackby(new/obj/item/weapon/material/sword/wakazashi, H)
+	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	uniform.attackby(daishoh, H)
 	H.civilization = "Eastern Army"
 	give_random_name(H)
@@ -80,8 +81,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
-	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	daishoh.attackby(new/obj/item/weapon/material/sword/wakazashi, H)
+	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	uniform.attackby(daishoh, H)
 	H.civilization = "Eastern Army"
 	give_random_name(H)
@@ -225,8 +226,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
-	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	daishoh.attackby(new/obj/item/weapon/material/sword/wakazashi, H)
+	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	uniform.attackby(daishoh, H)
 	H.civilization = "Western Army"
 	give_random_name(H)
@@ -274,8 +275,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
-	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	daishoh.attackby(new/obj/item/weapon/material/sword/wakazashi, H)
+	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	uniform.attackby(daishoh, H)
 	H.civilization = "Western Army"
 	give_random_name(H)

@@ -21,7 +21,77 @@
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
 
+/obj/item/weapon/storage/box/wineglasses
+	name = "box of wine glasses"
+	desc = "It has a picture of wine glasses on it."
+
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
+
+
+
+/obj/item/weapon/storage/box/beermug
+	name = "box of beer mugs"
+	desc = "It has a picture of beer mugs on it."
+
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+
+/obj/item/weapon/storage/box/specialtyglass
+	name = "box of specialty glasses"
+	desc = "It has a picture of different drinking glasses on it."
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
+
+/obj/item/weapon/storage/box/shotglass
+	name = "box of shot glasses"
+	desc = "It has a picture of shot glasses on it."
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
 /obj/item/weapon/storage/box/condimentbottles
 	name = "box of condiment bottles"
 	desc = "It has a large ketchup smear on it."
@@ -49,6 +119,24 @@
 		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
 		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
 		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
+
+/obj/item/weapon/storage/box/cutlery
+	name = "box of cutlery"
+	desc = "It has pictures of assorted flatware on the front."
+	New()
+		..()
+		new /obj/item/weapon/material/kitchen/utensil/fork( src )
+		new /obj/item/weapon/material/kitchen/utensil/fork( src )
+		new /obj/item/weapon/material/kitchen/utensil/fork( src )
+		new /obj/item/weapon/material/kitchen/utensil/fork( src )
+		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
+		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
+		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
+		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
+		new /obj/item/weapon/material/kitchen/utensil/knife( src )
+		new /obj/item/weapon/material/kitchen/utensil/knife( src )
+		new /obj/item/weapon/material/kitchen/utensil/knife( src )
+		new /obj/item/weapon/material/kitchen/utensil/knife( src )
 
 /obj/item/weapon/storage/box/handcuffs
 	name = "box of spare handcuffs"
@@ -79,6 +167,134 @@
 		new /obj/item/weapon/storage/pill_bottle( src )
 		new /obj/item/weapon/storage/pill_bottle( src )
 
+/obj/item/weapon/storage/box/bowls
+	name = "box of bowls"
+	desc = "It has a picture of bowls on it."
+	New()
+		..()
+		new /obj/item/kitchen/wood_bowl(src)
+		new /obj/item/kitchen/wood_bowl(src)
+		new /obj/item/kitchen/wood_bowl(src)
+		new /obj/item/kitchen/wood_bowl(src)
+		new /obj/item/kitchen/wood_bowl(src)
+		new /obj/item/kitchen/wood_bowl(src)
+		new /obj/item/kitchen/wood_bowl(src)
+		new /obj/item/kitchen/wood_bowl(src)
+
+/obj/item/weapon/storage/box/nood
+	name = "box of noodles"
+	desc = "It has a picture of dry noodles."
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+
+/obj/item/weapon/storage/box/waffle
+	name = "box of waffles"
+	desc = "It has a picture of waffles."
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+
+/obj/item/weapon/storage/box/canned
+	name = "box of canned food"
+	desc = "It has a picture of assorted can food brands."
+	New()
+		..()
+		new /obj/item/weapon/can/filled(src)
+		new /obj/item/weapon/can/filled(src)
+		new /obj/item/weapon/can/filled(src)
+		new /obj/item/weapon/can/filled(src)
+		new /obj/item/weapon/can/filled(src)
+		new /obj/item/weapon/can/filled(src)
+		new /obj/item/weapon/can/filled(src)
+		new /obj/item/weapon/can/filled(src)
+
+/obj/item/weapon/storage/box/wheat
+	name = "box of unmilled wheat"
+	desc = "It has a picture of a field of wheat."
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+
+/obj/item/weapon/storage/box/stermask
+	name = "box of sterile masks"
+	desc = "It has a picture of a blue sterile mask."
+	New()
+		..()
+		new /obj/item/clothing/mask/sterile(src)
+		new /obj/item/clothing/mask/sterile(src)
+		new /obj/item/clothing/mask/sterile(src)
+		new /obj/item/clothing/mask/sterile(src)
+		new /obj/item/clothing/mask/sterile(src)
+		new /obj/item/clothing/mask/sterile(src)
+		new /obj/item/clothing/mask/sterile(src)
+		new /obj/item/clothing/mask/sterile(src)
+
+/obj/item/weapon/storage/box/sterglove
+	name = "box of sterile gloves"
+	desc = "It has a picture of a white sterile gloves."
+	New()
+		..()
+		new /obj/item/clothing/gloves/color/white(src)
+		new /obj/item/clothing/gloves/color/white(src)
+		new /obj/item/clothing/gloves/color/white(src)
+		new /obj/item/clothing/gloves/color/white(src)
+		new /obj/item/clothing/gloves/color/white(src)
+		new /obj/item/clothing/gloves/color/white(src)
+		new /obj/item/clothing/gloves/color/white(src)
+		new /obj/item/clothing/gloves/color/white(src)
+
+/obj/item/weapon/storage/box/ctail
+	name = "box of cocktail garnishes"
+	desc = "It has a celery, cocktail olives, and maraschino cherries."
+	New()
+		..()
+		new /obj/item/cocktail_stuff/celery(src)
+		new /obj/item/cocktail_stuff/celery(src)
+		new /obj/item/cocktail_stuff/celery(src)
+		new /obj/item/cocktail_stuff/celery(src)
+		new /obj/item/cocktail_stuff/cocktail_olive(src)
+		new /obj/item/cocktail_stuff/cocktail_olive(src)
+		new /obj/item/cocktail_stuff/cocktail_olive(src)
+		new /obj/item/cocktail_stuff/cocktail_olive(src)
+		new /obj/item/cocktail_stuff/maraschino_cherry(src)
+		new /obj/item/cocktail_stuff/maraschino_cherry(src)
+		new /obj/item/cocktail_stuff/maraschino_cherry(src)
+		new /obj/item/cocktail_stuff/maraschino_cherry(src)
+
+/obj/item/weapon/storage/box/occinn
+	name = "box of spare Inn keys"
+	desc = "It has a keychain on it."
+	New()
+		..()
+		new /obj/item/weapon/key/civ/inn(src)
+		new /obj/item/weapon/key/civ/room1(src)
+		new /obj/item/weapon/key/civ/room2(src)
+		new /obj/item/weapon/key/civ/room3(src)
+		new /obj/item/weapon/key/civ/room4(src)
+		new /obj/item/weapon/storage/belt/keychain(src)
 
 /obj/item/weapon/matchbox
 	name = "matchbox"

@@ -2,7 +2,7 @@
 	ID = MAP_SEKIGAHARA
 	title = "Sekigahara"
 	lobby_icon_state = "medieval"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="The fighting for sekigahara is still going on."
 	faction_organization = list(
@@ -80,3 +80,16 @@
 
 /obj/map_metadata/sekigahara/reverse_cross_message(faction)
 	return ""
+
+/obj/map_metadata/sekigahara/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (caribbean_blocking_area_types.Find(A.type))
+		if (H.original_job.is_western == TRUE && !H.original_job.is_eastern == TRUE)
+			return !faction1_can_cross_blocks()
+		else if (H.original_job.is_eastern == TRUE && !H.original_job.is_western == TRUE)
+			return !faction2_can_cross_blocks()
+		else
+			return FALSE
+	return FALSE

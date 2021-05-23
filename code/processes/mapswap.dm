@@ -4,19 +4,23 @@
 	var/list/epochs = list(
 		//"Stone Age (?-3000 B.C.)" = 0,
 		"Chad Mode" = 0,
-		"Bronze Age (500 B.C.-400 A.D.)" = 0,
+		"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
+		//"Bronze Age (3000 B.C.-400 A.D.)" = 0,
 		//"Dark Ages (400-700)" = 0,
-		"Middle Ages (700-1450)" = 0,
+		//"Middle Ages (700-1450)" = 0,
 		//"Renaissance (1450-1650)" = 0,
-		"Imperial Age (1650-1780)" = 0,
-		"Industrial Age (1850-1895)" = 0,
-		"Early Modern Era (1896-1930)" = 0,
+		//"Imperial Age (1650-1780)" = 0,
+		//"Industrial Age (1850-1895)" = 0,
+		//"Early Modern Era (1896-1930)" = 0,
+		"Early Fire Arms (1650-1930)" = 0,
 		"World War II (1931-1948)" = 0,
-		"Cold War Era (1949-1984)" = 0,
-		"Modern Era (1985-2020)" = 0,
+		//"Cold War Era (1949-1984)" = 0,
+		//"Modern Era (1985-2020)" = 0,
+		"Modern Fire Arms (1949-2021)" = 0,
+		"HRP TDM (Gulag, AOTD, Football, etc)" = 10,
 		"Civilization 13 (Nomads)" = 0,
 		"Civilization 13 (Colony & Pioneers)" = 0,
-		"Civilization 13 (Prison Camps)" = 15,
+		//"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
 		"Battle Royale" = 0,
 	)
@@ -38,26 +42,20 @@
 		map.save_awards()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
-				//Stone Age (?-3000 B.C.)" = 0,
-				"Bronze Age (500 B.C.-400 A.D.)" = 0,
-				//"Dark Ages (400-700)" = 0,
-				"Middle Ages (700-1450)" = 0,
-				//"Renaissance (1450-1650)" = 0,
-				"Imperial Age (1650-1780)" = 0,
-				"Industrial Age (1850-1895)" = 0,
-				"Early Modern Era (1896-1930)" = 0,
+				"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
+				"Early Fire Arms (1650-1930)" = 0,
 				"World War II (1931-1948)" = 0,
-				"Cold War Era (1949-1984)" = 0,
-				"Modern Era (1985-2020)" = 0,
+				"Modern Fire Arms (1949-2021)" = 0,
+				"HRP TDM (Gulag, AOTD, Football, etc)" = 10,
 //				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
-				"The Art of the Deal" = 10,
+				//"The Art of the Deal" = 10,
 				"Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 0,
-				"Civilization 13 (Prison Camps)" = 15,
+				//"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
 		else if (config.allowedgamemodes == "PERSISTENCE")
 			epochs = list(
@@ -110,45 +108,40 @@
 	if (is_ready())
 		ready = FALSE
 		epoch = vote.voted_epoch
-		if (epoch == "Modern Era (1985-2020)")
+		if (epoch == "Modern Fire Arms (1949-2021)")
 	// 2013 - TDM
 			maps = list(
+				MAP_CAPITOL_HILL = 6,
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
+				MAP_YELTSIN = 0,
 				MAP_ALLEYWAY = 0,
-				MAP_CAPITOL_HILL = 10,
-				MAP_FOOTBALL = 4,
-			)
-		else if (epoch == "Cold War Era (1949-1984)")
-	// 1969 - TDM
-			maps = list(
 				MAP_COMPOUND = 0,
 				MAP_ROAD_TO_DAK_TO = 0,
 				MAP_HUE = 0,
-				MAP_RETREAT = 8,
+				MAP_RETREAT = 6,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
-				MAP_KHALKHYN_GOL = 0,
+				MAP_KHALKHYN_GOL = 6,
 				MAP_MICROMAHA = 0,
-				MAP_OMAHA = 30,
+				MAP_OMAHA = 15,
 				MAP_KURSK = 10,
-				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
 				MAP_SMALLINGRAD = 0,
 				MAP_NANJING = 20,
 //				MAP_IWO_JIMA = 70,
 				MAP_RIZAL_STADIUM = 0,
-				MAP_INTRAMUROS = 25,
+				MAP_INTRAMUROS = 15,
 				MAP_WAKE_ISLAND = 15,
 				MAP_NANKOU = 0,
 				MAP_FOREST = 15,
 			)
 
-		else if (epoch == "Early Modern Era (1896-1930)")
+		else if (epoch == "Early Fire Arms (1650-1930)")
 	// 1903 - TDM
 			maps = list(
 				MAP_HILL_203 = 0,
@@ -157,18 +150,8 @@
 				MAP_PORT_ARTHUR = 10,
 				MAP_SANTO_TOMAS = 0,
 				MAP_CALOOCAN = 0,
-			)
-
-		else if (epoch == "Industrial Age (1850-1895)")
-	// 1873 - TDM
-			maps = list(
 				MAP_LITTLE_CREEK_TDM = 0,
-//				MAP_NATIONSRP = 0,
-				MAP_MISSIONARY_RIDGE = 20,
-			)
-		else if (epoch == "Imperial Age (1650-1780)")
-		//1713 - TDM
-			maps = list(
+				MAP_MISSIONARY_RIDGE = 10,
 //				MAP_CURSED_ISLAND = 0,
 				MAP_NAVAL = 0,
 				MAP_ISLAND = 0,
@@ -177,35 +160,36 @@
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
+				MAP_SEKIGAHARA = 0,
 			)
-		else if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
-	// 313bc - TDM
+		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
-				MAP_HERACLEA = 0,
-				MAP_SIEGE = 0,
-				MAP_GLADIATORS = 0,
+				MAP_FOUR_KINGDOMS = 0,
+				MAP_TRIBES = 0,
 			)
 		else if (epoch == "Chad Mode")
 	// chad mode group for TDM
 			maps = list(
 				MAP_JUNGLE_OF_THE_CHADS = 0,
 			)
-		else if (epoch == "The Art of the Deal")
-			maps = list(
-				MAP_THE_ART_OF_THE_DEAL = 10,
-			)
-		else if (epoch == "Middle Ages (700-1450)")
+		else if (epoch == "Pre-Firearms (3000 B.C-1650 A.D.)")
 	//	1013 - TDM
 			maps = list(
-				MAP_CAMP = 0,
 				MAP_KARAK = 0,
+				MAP_CAMP = 0,
 				MAP_SAMMIRHAYEED = 20,
-				MAP_SEKIGAHARA = 0,
+				MAP_HERACLEA = 0,
+				MAP_SIEGE = 0,
+				MAP_GLADIATORS = 0
 			)
-		else if (epoch == "Stone Age (?-3000 B.C.)")
+		else if (epoch == "HRP TDM (Gulag, AOTD, Football, etc)")
 			maps = list(
-				MAP_TRIBES = 0,
-				MAP_FOUR_KINGDOMS = 0,
+				MAP_FOOTBALL = 8,
+				MAP_GULAG13 = 0,
+				MAP_THE_ART_OF_THE_DEAL = 20,
+				MAP_ABASHIRI = 5,
+				MAP_RIVER_KWAI = 0,
+				MAP_OCCUPATION = 10,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
@@ -215,26 +199,24 @@
 				MAP_NOMADS_ICE_AGE = 0,
 				MAP_NOMADS_JUNGLE = 0,
 				MAP_NOMADS_DIVIDE = 10,
-				MAP_NOMADS_CONTINENTAL = 20,
+				MAP_NOMADS_CONTINENTAL = 10,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
 				MAP_NOMADS_WASTELAND_2 = 0,
-				MAP_NOMADS_NEW_WORLD = 10,
-				MAP_NOMADS_MEDITERRANEAN = 10,
+				MAP_NOMADS_NEW_WORLD = 5,
+				MAP_NOMADS_MEDITERRANEAN = 0,
 //				MAP_NOMADS_ISLAND = 0,
 				MAP_NOMADS_KARAFUTO = 0,
+				MAP_NOMADS_EUROPE = 10,
 			)
 		else if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(
 				MAP_COLONY = 0,
 				MAP_JUNGLE_COLONY = 4,
-				MAP_PIONEERS = 10,
-				MAP_PIONEERS_WASTELAND_2 = 10,
-				MAP_FOUR_COLONIES = 30,
-			)
-		else if (epoch == "Civilization 13 (Prison Camps)")
-			maps = list(
-				MAP_GULAG13 = 15,
+				MAP_PIONEERS = 5,
+				MAP_PIONEERS_WASTELAND_2 = 0,
+				MAP_BOHEMIA = 10,
+				MAP_FOUR_COLONIES = 20,
 			)
 		else if (epoch == "Civilization 13 (Others)")
 			maps = list(
@@ -243,6 +225,10 @@
 				MAP_LITTLE_CREEK = 10,
 				MAP_THE_ART_OF_THE_DEAL = 10,
 				MAP_FOUR_KINGDOMS = 0,
+				MAP_GULAG13 = 0,
+				MAP_ABASHIRI = 6,
+				MAP_RIVER_KWAI = 0,
+				MAP_OCCUPATION = 10,
 			)
 		else if (epoch == "Battle Royale")
 			maps = list(
