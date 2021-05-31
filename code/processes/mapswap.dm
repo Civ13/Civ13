@@ -187,8 +187,8 @@
 				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 0,
 				MAP_THE_ART_OF_THE_DEAL = 20,
-				MAP_ABASHIRI = 5,
-				MAP_RIVER_KWAI = 0,
+//				MAP_ABASHIRI = 5,
+//				MAP_RIVER_KWAI = 0,
 				MAP_OCCUPATION = 10,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
@@ -226,8 +226,8 @@
 				MAP_THE_ART_OF_THE_DEAL = 10,
 				MAP_FOUR_KINGDOMS = 0,
 				MAP_GULAG13 = 0,
-				MAP_ABASHIRI = 6,
-				MAP_RIVER_KWAI = 0,
+//				MAP_ABASHIRI = 6,
+//				MAP_RIVER_KWAI = 0,
 				MAP_OCCUPATION = 10,
 			)
 		else if (epoch == "Battle Royale")
