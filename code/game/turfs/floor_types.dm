@@ -13,6 +13,10 @@
 	icon_state = "wood_ship"
 	stepsound = "wood"
 
+/turf/floor/wood/fancywood
+	name = "floor"
+	icon_state = "fancywood"
+
 
 /* when this is a subtype of /turf/floor/wood, it doesn't get the right icon.
  * not sure why right now - kachnov */

@@ -50,13 +50,7 @@
 /obj/map_metadata/yeltsin/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_yeltsin == TRUE)
-		if (gamemode != "Protect the VIP")
-			if (J.is_kremlin == TRUE)
-				. = FALSE
-			else
-				. = TRUE
-		else
-			. = TRUE
+		. = TRUE
 	else
 		. = FALSE
 
