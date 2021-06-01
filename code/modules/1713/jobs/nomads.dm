@@ -66,7 +66,7 @@
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			else if(map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES))
+			else if(map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES|| map.is_fantrace))
 				if (orc)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
@@ -534,7 +534,7 @@
 							real_name = name
 							add_note("Known Languages", "Ainu")
 							return
-		else if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES))
+		else if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.is_fantrace))
 			spawn(5)
 				if (original_job_title == "Orc tribesman")
 					orc = 1

@@ -107,6 +107,8 @@ var/list/admin_verbs_fun = list(
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
 	/client/proc/radiation_emission,
+	/datum/admins/proc/fantasy_races,
+	/datum/admins/proc/zombiemechanic,
 	/client/proc/nuke,
 	/client/proc/make_sound,
 	/client/proc/editappear,
