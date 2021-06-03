@@ -1148,7 +1148,6 @@
 	KC.attackby(G2,H)
 	H.equip_to_slot_or_del(KC, slot_l_store)
 	give_random_name(H)
-	make_commander(H)
 	world << "<b><big>[H.real_name] is the Camp Director of the Japanese Forces!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the guards and organize the POWs.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
