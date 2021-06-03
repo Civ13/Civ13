@@ -806,6 +806,7 @@
 /area/caribbean/russian/land/inside
 	location = AREA_INSIDE
 	icon_state = "red2"
+	base_turf = /turf/floor/plating
 
 /area/caribbean/russian/land/inside/command
 	location = AREA_INSIDE

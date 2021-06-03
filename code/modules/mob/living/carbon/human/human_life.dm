@@ -1594,7 +1594,7 @@
 		return
 
 /mob/living/human/proc/do_rotting()
-	if (map && !map.civilizations && !istype(src, /mob/living/human/corpse))
+	if (map && !map.civilizations && !map.is_zombie && !istype(src, /mob/living/human/corpse))
 		return
 	spawn(600)
 		if (stat == DEAD)
@@ -1614,7 +1614,7 @@
 									for (var/obj/item/organ/external/head/H in organs)
 										found = TRUE
 										break
-									if ((map.ID == MAP_NOMADS_WASTELAND_2 || map.ID == MAP_PIONEERS_WASTELAND_2) && found)
+									if ((map.is_zombie) && found)
 										var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
 										playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
 										//transferring vars.

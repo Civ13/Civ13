@@ -627,6 +627,15 @@
 		..()
 		reagents.add_reagent("biodiesel",350)
 
+/obj/item/weapon/reagent_containers/glass/barrel/modern/sterilizine
+	name = "sterilizine barrel"
+	desc = "A steel barrel, filled with sterilizine."
+	volume = 350
+	New()
+		..()
+		reagents.add_reagent("sterilizine", volume * 0.66)
+		reagents.add_reagent("cleaner", volume * 0.34)
+
 /obj/item/weapon/reagent_containers/glass/barrel/ethanol
 	name = "ethanol barrel"
 	desc = "A steel barrel, filled with ethanol."
