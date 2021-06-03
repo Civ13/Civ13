@@ -19,6 +19,7 @@
 	w_class = 3 // fits in webbing unlike w_class = 4
 	slot_flags = SLOT_BELT|SLOT_ID
 	desc = "A very large canteen for storing water."
+	isGlass = FALSE
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/New()
 	..()
