@@ -1106,9 +1106,9 @@
 ////////////////////////////////////////////////////WW2 JAPANESE PRISON//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/japanese/ija_camp_director
-	title = "Horyoshuyojo-cho"
+	title = "Horyoshuyojo-Cho"
 	en_meaning = "POW Camp Director"
-	rank_abbreviation = "Ho-cho"
+	rank_abbreviation = "Cho."
 
 
 	spawn_location = "JoinLateJPCap"
@@ -1134,14 +1134,21 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_officer(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/rank/jap_taiih = new /obj/item/clothing/accessory/rank/jap_taii(null)
 	uniform.attackby(jap_taiih, H)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
+	var/obj/item/weapon/key/japanese_officer/G2 = new/obj/item/weapon/key/japanese_officer(null)
+	KC.attackby(G1,H)
+	KC.attackby(G2,H)
+	H.equip_to_slot_or_del(KC, slot_l_store)
 	give_random_name(H)
+	make_commander(H)
 	world << "<b><big>[H.real_name] is the Camp Director of the Japanese Forces!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the guards and organize the POWs.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1189,6 +1196,11 @@
 	uniform.attackby(fullh, H)
 	var/obj/item/clothing/accessory/rank/jap_gunsoh = new /obj/item/clothing/accessory/rank/jap_gunso(null)
 	uniform.attackby(jap_gunsoh, H)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
+	var/obj/item/weapon/key/japanese_officer/G2 = new/obj/item/weapon/key/japanese_officer(null)
+	KC.attackby(G1,H)
+	KC.attackby(G2,H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad of guards. Organize your group according to the <b>Camp director's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1234,6 +1246,9 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/rank/jap_jotoheih = new /obj/item/clothing/accessory/rank/jap_jotohei(null)
 	uniform.attackby(jap_jotoheih, H)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
+	KC.attackby(G1,H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a medic, and you are in charge of keeping the guardss and POWs healthy.")
@@ -1274,6 +1289,10 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
 	uniform.attackby(jap_ittoheih, H)
+
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
+	KC.attackby(G1,H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple POW camp guard. Keep the POWs docile and alive, follow your <b>Officer's</b> orders!")
