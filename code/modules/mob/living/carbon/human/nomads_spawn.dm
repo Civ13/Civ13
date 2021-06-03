@@ -1,8 +1,8 @@
 /mob/living/human/proc/nomads_spawn()
-	if (map && map.ID == MAP_NOMADS_WASTELAND_2)
+	if (map && map.is_zombie)
 		add_note("Map Mechanics", "- Zombies will spawn in some areas <b>at night</b>.<br><br>- Bodies will turn into zombies after a while! To prevent this, <b>remove the head from the body</b>.<br><br>- Getting bit or scratched by an zombie will not automatically turn you into one. However, theres a small chance you get <b>infected with the zombie virus</b>. You will get high fevers and massive headaches. This can be prevented by taking <b>Potassium Iodide</b>, as it will kill the virus, even after symptoms have started.")
 
-	if (map && (/*map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || */map.ID == MAP_NOMADS_NEW_WORLD))
+	if (map && (/*map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_NEW_WORLD*/map.is_fantrace))
 		var/area/mob_area = get_area(src)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -12,20 +12,80 @@
 			if (choice_race == "Randomize")
 				choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla","Wolf")
 			switch(choice_race)
+
 				if ("Gorilla")
 					gorillaman = 1
+					civilization = "Gorilla Tribe"
+					religion = "Order of the Great Tree"
+					add_language("Ape Speech",TRUE)
+					for (var/datum/language/ape/A in languages)
+						default_language = A
+					name = species.get_random_gorilla_name(gender)
+					real_name = name
+					give_clothes()
+
 				if ("Orc")
 					orc = 1
+					civilization = "Orc Horde"
+					religion = "Followers of Morgoth"
+					add_language("Black Speech",TRUE)
+					for (var/datum/language/blackspeech/A in languages)
+						default_language = A
+					name = species.get_random_orc_name(gender)
+					real_name = name
+					give_clothes()
+
 				if ("Ant")
 					ant = 1
+					civilization = "Ant Colony"
+					religion = "Followers of the Hive Mother"
+					add_language("Antspeak",TRUE)
+					for (var/datum/language/ant/A in languages)
+						default_language = A
+					name = species.get_random_ant_name(gender)
+					real_name = name
+					give_clothes()
+
 				if ("Lizard")
 					lizard = 1
+					civilization = "Lizard Clan"
+					religion = "The Great Serpent"
+					add_language("Lizard Hissing",TRUE)
+					for (var/datum/language/lizard/A in languages)
+						default_language = A
+					name = species.get_random_lizard_name(gender)
+					real_name = name
+					give_clothes()
+
 				if ("Wolf")
 					wolfman = 1
+					civilization = "Wolfpack"
+					religion = "Moon Worshippers"
+					add_language("Wolf Howling",TRUE)
+					for (var/datum/language/wolf/A in languages)
+						default_language = A
+					name = species.get_random_wolf_name(gender)
+					real_name = name
+					give_clothes()
+
 				if ("Crustacean")
 					crab = 1
+					civilization = "Crustacean Union"
+					religion = "Cthulhu"
+					add_language("Clack Tongue",TRUE)
+					for (var/datum/language/crab/A in languages)
+						default_language = A
+					name = species.get_random_crab_name(gender)
+					real_name = name
+					give_clothes()
+
 			var/choice1 = "English"
 			if (choice_race == "Human")
+				civilization = "Human Kingdom"
+				religion = "Father in the Sky"
+				name = species.get_random_english_name(gender)
+				real_name = name
+				give_clothes()
 				choice1 = "English"
 				//choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
 			if (choice1 == "Randomize")
@@ -252,7 +312,7 @@
 			var/sec_lang = pick(sec_lang_list)
 			add_language(sec_lang,FALSE)
 			add_note("Known Languages", sec_lang)
-
+/*
 		else
 			var/list/possible_h_list = list("Black")
 			var/list/possible_e_list = list("Black")
@@ -404,7 +464,7 @@
 			var/sec_lang = pick(sec_lang_list)
 			add_language(sec_lang,FALSE)
 			add_note("Known Languages", sec_lang)
-
+*/
 		var/hex_hair = hair_colors[new_hair]
 		r_hair = hex2num(copytext(hex_hair, 2, 4))
 		g_hair = hex2num(copytext(hex_hair, 4, 6))

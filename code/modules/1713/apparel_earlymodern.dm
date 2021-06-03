@@ -518,7 +518,8 @@
 		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		/obj/item/weapon/melee/classic_baton,
-		/obj/item/flashlight
+		/obj/item/flashlight,
+		/obj/item/weapon/whistle
 		)
 /obj/item/weapon/storage/belt/jap/soldier
 /obj/item/weapon/storage/belt/jap/soldier/New()

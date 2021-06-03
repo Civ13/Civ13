@@ -139,6 +139,27 @@
 	update_held_icon()
 
 	return
+/obj/item/weapon/gun/projectile/submachinegun/spas
+	name = "Spas-12"
+	icon_state = "spas12"
+	item_state = "spas12"
+	base_icon = "spas12"
+	desc = "A dual mode shotgun designed in Italy by the Franchi Firearms Company with an 8 round capacity."
+	max_shells = 8 //match the ammo box capacity, also it can hold a round in the chamber anyways, for a total of 8.
+	caliber = "12gauge"
+	handle_casings = EJECT_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
+	force = 15
+	throwforce = 30
+	weight = 3.4
+	firemodes = list(
+		list(name="semi auto",    burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",    burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		)
+
+/obj/item/weapon/gun/projectile/submachinegun/spas/secondary_attack_self(mob/living/human/user)
+	switch_firemodes(user)
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40
 	name = "MP40"
@@ -531,6 +552,28 @@
 	update_held_icon()
 
 	return
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb
+	folded = TRUE
+	weight = 2.6
+	effectiveness_mod = 1.07
+	damage_modifier = 0.98
+	equiptimer = 10
+
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb/New()
+	..()
+
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+	SP.attached(null,src,TRUE)
+
+
+	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+	FP.attached(null,src,TRUE)
+
+	var/obj/item/weapon/attachment/silencer/SL = new/obj/item/weapon/attachment/silencer(src)
+	SL.attached(null,src,TRUE)
+
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/fold()
 	set name = "Toggle Stock"

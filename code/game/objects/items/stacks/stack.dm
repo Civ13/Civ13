@@ -397,6 +397,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		for(var/obj/structure/gatecontrol/GC in range(6, user.loc))
 			user << "<span class = 'danger'>You cannot build a control so close to another one!</span>"
 			return
+	else if (findtext(recipe.title, "blast door control"))
+		for(var/obj/structure/gatecontrol/blastcontrol/GC in range(10, user.loc))
+			user << "<span class = 'danger'>You cannot build a control so close to another one!</span>"
+			return
 	else if (findtext(recipe.title, "signpost"))
 		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")

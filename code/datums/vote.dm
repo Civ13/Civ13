@@ -58,7 +58,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			return
 		if (map.persistence)
 			return
-		if (map.ID == MAP_CAPITOL_HILL)
+		if (map.ID == MAP_CAPITOL_HILL || map.ID == MAP_YELTSIN)
 			initiate_vote("gamemode","the server", TRUE)
 			return
 		if (!map.is_RP && autogamemode_triggered == FALSE)
@@ -222,8 +222,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("No")
 				if ("gamemode")
 					var/list/options = list()
-					if (map.ID == MAP_CAPITOL_HILL)
-						options = list("Protect the VIP", "Siege", "Area Capture")
+					if (map.ID == MAP_CAPITOL_HILL || map.ID == MAP_YELTSIN)
+						options = list("Protect the VIP", "Siege",/* "Area Capture",*/ "Kills")
 						if (!default)
 							default = "Siege"
 					else if (!map.is_RP && !map.nomads && !map.civilizations)

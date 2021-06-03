@@ -59,6 +59,10 @@
 	heat_protection = FEET
 	max_heat_protection_temperature = SHOE_MAX_HEAT_PROTECTION_TEMPERATURE
 
+/obj/item/clothing/shoes/iogboots/black
+	name = "combat boots"
+	desc = "Sturdy military footwear."
+
 /obj/item/clothing/shoes/sandal
 	desc = "A pair of rather plain, wooden sandals."
 	name = "sandals"
@@ -111,8 +115,8 @@
 /obj/item/clothing/shoes/gator_laceup
 	name = "alligator scale laceup shoes"
 	desc = "The height of luxurious footwear, and they're pre-polished!"
-	icon_state = "gator_laceups"
-	item_state = "gator_laceups"
+	icon_state = "gator_laceup"
+	item_state = "gator_laceup"
 	worn_state = "gator_laceups"
 	body_parts_covered = FEET
 

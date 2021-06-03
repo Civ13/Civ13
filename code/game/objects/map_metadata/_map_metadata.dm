@@ -141,6 +141,8 @@ var/civmax_research = list(230,230,230)
 	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
+	var/is_zombie = FALSE
+	var/is_fantrace = FALSE
 
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active

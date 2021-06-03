@@ -451,7 +451,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
@@ -517,7 +517,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
@@ -578,7 +578,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
@@ -781,7 +781,7 @@
 					src.remove_language("English")
 					src.name = species.get_random_german_name(gender)
 					src.real_name = name
-					src.add_note("Group", "You are a german civilian who has been relocated to occupied territories. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
+					src.add_note("Group", "You are a German civilian who has been relocated to occupied territories. You are part of the <b>German</b> faction. Keep your faction powerful!")
 					src.nationality = "German"
 					src.add_language("German",FALSE)
 
@@ -901,6 +901,9 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
 		H.add_note("Role", "You are a <b>Factory Worker</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
 		randrole = title
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/medal/pin/worker/factory = new /obj/item/clothing/accessory/medal/pin/worker/factory(null)
+		uniform.attackby(factory, H)
 
 /datum/job/civilian/occupation/inn
 	title = "Inn Worker"
@@ -910,8 +913,13 @@
 	max_positions = 4
 	equip(var/mob/living/human/H)
 		..()
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/leather/occinn(H), slot_belt)
 		H.add_note("Role", "You are an <b>Inn Keeper</b>. Your job is to man the inn and provide food and shelter to those paying for it.")
 		randrole = title
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/medal/pin/worker/aristocrat = new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(null)
+		uniform.attackby(aristocrat, H)
+		H.setStat("medical", STAT_NORMAL)
 
 /datum/job/civilian/occupation/farmer
 	title = "Civilian Farmer"
@@ -921,8 +929,11 @@
 	max_positions = 3
 	equip(var/mob/living/human/H)
 		..()
-		H.add_note("Role", "You are a <b>Factory Worker</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
+		H.add_note("Role", "You are a <b>Farmer</b>. Your job is to work for the german occupiers in either the fields or the woods. Misbehaviour can be met with severe punishment.")
 		randrole = "Farmer"
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/medal/pin/worker/farmer = new /obj/item/clothing/accessory/medal/pin/worker/farmer(null)
+		uniform.attackby(farmer, H)
 
 /datum/job/civilian/occupation/doctor
 	title = "Civilian Doctor"
@@ -937,11 +948,17 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/roller_holder(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/medal/pin/worker/medic = new /obj/item/clothing/accessory/medal/pin/worker/medic(null)
+	uniform.attackby(medic, H)
 	if (prob(40))
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
@@ -954,7 +971,7 @@
 	H.equip_to_slot_or_del(RUB, slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>Doctor</b>. Your job is to work for the german occupiers in either the munitions factory or the motorcycle assembly plant. Misbehaviour can be met with severe punishment.")
+	H.add_note("Role", "You are a <b>Doctor</b>. Your job is to to heal the sick and advise the healthy on staying that way. Misbehaviour can be met with severe punishment.")
 	randrole = "Doctor"
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -966,6 +983,7 @@
 	H.setStat("medical", STAT_VERY_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	H.gulag_languages()
+
 /datum/job/civilian/occupation/collaborator
 	title = "Auxillary Police"
 	en_meaning = ""
@@ -1016,5 +1034,5 @@
 	max_positions = 30
 	equip(var/mob/living/human/H)
 		..()
-		H.add_note("Role", "You are a <b>Basic Civilian</b>. Your job is to find a job. Maybe the SS have work for you.")
+		H.add_note("Role", "You are a <b>Basic Civilian</b>. Your job is to find a job. Maybe the SS have work for you. Misbehaviour will be met with severe punishment.")
 		randrole = "Civilian/Unemployed"

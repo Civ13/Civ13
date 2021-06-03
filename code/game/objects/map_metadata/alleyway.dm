@@ -37,20 +37,19 @@
 /obj/map_metadata/alleyway/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/alleyway/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
 /obj/map_metadata/alleyway/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
-	if (caribbean_blocking_area_types.Find(A.type))
-		if (H.original_job.is_yama == TRUE && !H.original_job.is_ichi == TRUE)
-			return !faction1_can_cross_blocks()
-		else if (H.original_job.is_ichi == TRUE && !H.original_job.is_yama == TRUE)
-			return !faction2_can_cross_blocks()
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.original_job.is_yama == TRUE && !H.original_job.is_ichi == TRUE)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.original_job.is_ichi == TRUE && !H.original_job.is_yama == TRUE)
+				return TRUE
 		else
-			return FALSE
+			return !faction1_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/alleyway/proc/points_check()

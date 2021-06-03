@@ -11,3 +11,16 @@
 	w_class = 4
 	max_w_class = 3
 	max_storage_space = 16
+
+/obj/item/weapon/storage/briefcase/kgb
+
+/obj/item/weapon/storage/briefcase/kgb/New()
+	..()
+	new /obj/item/weapon/attachment/silencer/pistol(src)
+	new /obj/item/clothing/mask/gas/military(src)
+	new /obj/item/clothing/mask/gas/military(src)
+	new /obj/item/clothing/glasses/thermal(src)
+	new /obj/item/weapon/grenade/chemical/chlorine(src)
+	new /obj/item/weapon/grenade/antitank/rpg40(src)
+	new /obj/item/ammo_magazine/tt30(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)

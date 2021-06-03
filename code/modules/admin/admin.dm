@@ -1175,3 +1175,23 @@ var/list/atom_types = null
 		return
 	set_global_pollution(num)
 	world.log << "[usr] set the worlds pollution to [num]."
+
+/datum/admins/proc/zombiemechanic()
+	set category = "Fun"
+	set desc="Enable zombie mechanic in the current round."
+	set name="Zombie mechanic"
+
+	if (map)
+		map.is_zombie = TRUE
+	world << "<big><b>Zombie mechanics have been enabled in the current round.</b></big>"
+	return
+
+/datum/admins/proc/fantasy_races()
+	set category = "Fun"
+	set desc="Enable fantasy race selection in the current round."
+	set name="Fantasy race selection"
+
+	if (map)
+		map.is_fantrace = TRUE
+	world << "<big><b>Fantasy race selection has been enabled in the current round.</b></big>"
+	return
