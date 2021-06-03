@@ -692,6 +692,7 @@
 			gun_type = GUN_TYPE_PISTOL
 			single_action = FALSE
 			equiptimer -= 1
+			slot_flags = SLOT_HOLSTER
 			accuracy_list = list(
 				// small body parts: head, hand, feet
 				"small" = list(
@@ -750,6 +751,7 @@
 			fire_delay = 3
 			equiptimer -= 1
 			gun_type = GUN_TYPE_PISTOL
+			slot_flags = SLOT_HOLSTER
 			accuracy_list = list(
 				// small body parts: head, hand, feet
 				"small" = list(
