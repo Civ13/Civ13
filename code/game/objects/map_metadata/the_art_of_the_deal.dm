@@ -568,14 +568,14 @@
 	if (findtext(name, "Officer"))
 		real_name = replacetext(real_name, "Officer ", "")
 		hidden_name = real_name
-		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Irish"))
+		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Japanese"))
 		switch(chosen_name)
 			if ("Cancel")
 				return
 			if ("Russian")
 				chosen_name =  species.get_random_russian_name(gender)
-			if ("Irish")
-				chosen_name =  species.get_random_gaelic_name(gender)
+			if ("Japanese")
+				chosen_name =  species.get_random_japanese_name(gender)
 			if ("Italian")
 				chosen_name =  species.get_random_italian_name(gender)
 			if ("Jewish")
