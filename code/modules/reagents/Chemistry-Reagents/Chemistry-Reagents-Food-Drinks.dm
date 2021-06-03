@@ -74,7 +74,7 @@
 	description = "A golden yellow syrup, loaded with sugary sweetness."
 	taste_description = "sweetness"
 	nutriment_factor = 10
-	color = "#EB96605B3"
+	color = "#eb9605"
 
 /datum/reagent/nutriment/flour
 	name = "flour"
@@ -1235,7 +1235,7 @@
 	description = "A Viking's drink, though a cheap one."
 	taste_description = "sweet, sweet alcohol"
 	reagent_state = LIQUID
-	color = "#EB9660566"
+	color = "#eb9605d9"
 	strength = 30
 	nutriment_factor = TRUE
 
