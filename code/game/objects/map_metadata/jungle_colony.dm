@@ -54,6 +54,14 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		else if (J.is_football == TRUE)
 			. = FALSE
+		if (J.is_capitol == TRUE)
+			. = FALSE
+		if (J.is_occupation == TRUE)
+			. = FALSE
+		if (J.is_upa == TRUE)
+			. = FALSE
+		if (J.is_yeltsin == TRUE)
+			. = FALSE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
 	else if (J.is_medieval == TRUE)
