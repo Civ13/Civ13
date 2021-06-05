@@ -12,6 +12,7 @@
 "al" = (/obj/structure/multiz/ladder/ww2/stairsup,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
 "am" = (/obj/covers/carpet/redcarpet,/obj/structure/wallclock,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
 "an" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land)
+"ao" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
 "ap" = (/obj/structure/wild/tallgrass,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land)
 "aq" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/no_mans_land)
 "ar" = (/turf/floor/plating/road,/area/caribbean/no_mans_land)
@@ -110,6 +111,7 @@
 "cg" = (/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "ch" = (/turf/floor/grass,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "ci" = (/obj/structure/window/barrier/rock,/turf/floor/plating/concrete,/area/caribbean/no_mans_land)
+"cj" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "ck" = (/turf/floor/dirt,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "cl" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "cm" = (/turf/floor/plating/road,/area/caribbean/russian/land/outside{name = "Soviet Base"})
@@ -141,7 +143,7 @@
 "cM" = (/obj/structure/barbwire,/turf/floor/plating/concrete,/area/caribbean/no_mans_land)
 "cN" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "cO" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/obj/structure/window/barrier/railing/stone,/turf/floor/plating/concrete,/area/caribbean/no_mans_land)
-"cP" = (/obj/covers/cobblestone/stairs{icon_state = "rampdark"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/outside{name = "Soviet Base"})
+"cP" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
 "cQ" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/dirt,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "cR" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "cS" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/outside{name = "Soviet Base"})
@@ -684,6 +686,15 @@
 "nj" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRUCap"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "nk" = (/obj/structure/filingcabinet/filingcabinet,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean/german/reichstag/second)
 "nl" = (/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/structure/closet/crate/ww2,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/outside{name = "Soviet Base"})
+"nm" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one)
+"nn" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"no" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"np" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"nq" = (/obj/covers/cobblestone/stairs{icon_state = "rampdark"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
+"nr" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"ns" = (/turf/wall/stone,/area/caribbean/no_mans_land/invisible_wall/two)
+"nt" = (/turf/floor/plating/steel,/area/caribbean/no_mans_land/invisible_wall/two)
+"nu" = (/turf/wall/stone{opacity = 0},/area/caribbean/no_mans_land/invisible_wall/two)
 
 (1,1,1) = {"
 aaabaaaaaaaaaaanaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaeaaaaaaaaaaaaaaaaaaaaaa
@@ -741,7 +752,7 @@ chcHchchcfcmcmcfcncscpcfcfcfcfcfcfbobtaaaaaYaYaOaPaHaHaHaHaHaHaHaHaHaHaHaHaHaHaH
 cqchcNchcfcmcmcfcncscpcfcfcfcfcfcfcfbobxbtaabbaOaPaHcIcMcMcIaHaHaHcIcMcMcIcMcMcIaHaHaHaHaHaHaHaHaHaVaWaYaacJdebucfcfcfcfcfcfcfchchchchchchcfcfcmcmcmcm
 chcHcHcHcfcmcmcfcncscpcfcfcfcfcfcfcfcfcfbobtaaaOcOaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHcIcMcMcMcIaHaHaHbCaWaacJbucfcfcfcfcfcfcfcfcfchcrcqcHchcfcfcmcmcmcmcm
 chcrchchcfcmcmcfcncscpcfcfcfcfcfcfcfcfcfcfbobxbxbybybybybybybydgbEbEbEdgbybybybybybybybybybybybybybydhdhbucfcfcfcfcfcfcfcfcfcfchchchchcfcfcmcmcmcmcmcf
-cNchchchcfcmcmcfcncscpcfcfcfcfcfcfcfcfcfcfcfcfcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcPcfcfcfcfcfcfcfcfcfcfcfcfchcqchcfcfcmcmcmcmcmcfcf
+aocjcjcjcPnmnmcPnnnonpcPcPcPcPcPcPcPcPcPcPcPcPnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqcPcPcPcPcPcPcPcPcPcPcPcPcjnrcjcPcPnmnmnmnmnmcPcP
 chchcHchcfcmcmcfcncscpcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfchchcfcfcmcmcmcmcmcfcfch
 chchchcfcfcmcmcfcncscQcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfchcfcfcmcmcmcmcmcfcfchch
 bobobobobomimibomjmkmlbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobomimimimimibobommmmmm
@@ -938,13 +949,13 @@ dxdxdxdxdxdxdxdxdxdxdxdxkJlvkLkLkLkLkLkLkLkLkLkLkLkLkLkVkVkVkVkVkVkVkVkVkVkVkVkV
 dxdxdxdxdxdxdxdxdxdxdxdxkJlvlvlykLkLkLlzkLkLkLlakLkLkLkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVlAkLkLkLkLkLkLkLkLkLkLkLkLkLkJdxdxdxdxdxdxdxdxdxdxdxdxdxdx
 dxdxdxdxdxdxdxdxdxdxdxdxkJkLkLkLkLkLkLlBkLkLkLkLkLkLkLkLkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVlClDkLkLkLkLkLkLkLkLkLkLkLkLkLkJdxdxdxdxdxdxdxdxdxdxdxdxdxdx
 dxdxdxdxdxdxdxdxdxdxdxdxkJldldldldlEkLkLkLkLkLlxkLkLkLkLlFkVkVkVkVkVkVkVkVkVkVkVkVkVkVkVldldlOkLkLkLkLkWkLkLlPkLkLkLkLkLkJdxdxdxdxdxdxdxdxdxdxdxdxdxdx
-dxdxdxdxdxdxdxdxdxdxdxdxkJlQlQlQlRkVlRkLkLkLkLkLkLkLkZkLlFkLkVkVkVkVkVkVkVkVkVkVkVkVkVlflflllSkLkLkLkLlTlUlVkVkVkVkLkLkLkJdxdxdxdxdxdxdxdxdxdxdxdxdxdx
-dxdxdxdxdxdxdxdxdxdxdxkJkJkLlWkLkVkVkVkLkLkLkLkLkLkLkLkLlFkLlXkVkVkVkVkVkVkVkVkVkVkVlYkLkLljlqkLkLkLkLkLlPmdkVkVkVmtkLkLkJkJdxdxdxdxdxdxdxdxdxdxdxdxdx
-dxdxdxdxdxdxdxdxdxdxdxkJkJmukLkLkVkVlRkLkLmvkLkLkLkLlqkLmwmxmymzkVmAkVkVmAkVkVkVkVmBmymCkLmDlqkLkLkLkLmEmFmGkVkVkVmtmHmHkJkJdxdxdxdxdxdxdxdxdxdxdxdxdx
-dxdxdxdxdxdxdxdxdxdxdxkJkJmumImImJmKmLkLkLkLkLkLkLkLlqkLmMmMmymymNmOmPmQmRmUlXlXmymymymCmykLkLkLkLkLkLkLkLmVmtmtmtmtmHmHkJkJdxdxdxdxdxdxdxdxdxdxdxdxdx
-dxdxdxdxdxdxdxdxdxdxdxkJkJmumImImWkLljkLljkLkLkLmXmXlqkLnamMmymymymynbmynbmymymymymymymCmylllqkWkLkLkLkLkLkLkLkLmHmHmHmHkJkJdxdxdxdxdxdxdxdxdxdxdxdxdx
-dxdxdxdxdxdxdxdxdxdxdxkJkJkLkLkLkLkLkLkLljkLmXmXmXmXkLkLnfngmymymymymymymymymymymymymymymyljlqkLkLkLkLkLkLkLkLkLmHmHmHmHkJkJdxdxdxdxdxdxdxdxdxdxdxdxdx
-dxdxdxdxdxdxdxdxdxdxdxkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJdxdxdxdxdxdxdxdxdxdxdxdxdx
+dxdxdxdxdxdxdxdxdxdxdxdxkJlQlQlQlRkVlRkLkLkLkLkLkLkLkZkLlFkLkVkVkVkVkVkVkVkVkVkVkVkVkVlflflllSkLkLkLkLlTlUlVnsnsnsntntntnudxdxdxdxdxdxdxdxdxdxdxdxdxdx
+dxdxdxdxdxdxdxdxdxdxdxkJkJkLlWkLkVkVkVkLkLkLkLkLkLkLkLkLlFkLlXkVkVkVkVkVkVkVkVkVkVkVlYkLkLljlqkLkLkLkLkLlPmdnskVkVmtkLkLnukJdxdxdxdxdxdxdxdxdxdxdxdxdx
+dxdxdxdxdxdxdxdxdxdxdxkJkJmukLkLkVkVlRkLkLmvkLkLkLkLlqkLmwmxmymzkVmAkVkVmAkVkVkVkVmBmymCkLmDlqkLkLkLkLmEmFmGnskVkVmtmHmHnukJdxdxdxdxdxdxdxdxdxdxdxdxdx
+dxdxdxdxdxdxdxdxdxdxdxkJkJmumImImJmKmLkLkLkLkLkLkLkLlqkLmMmMmymymNmOmPmQmRmUlXlXmymymymCmykLkLkLkLkLkLkLkLmVntmtmtmtmHmHnukJdxdxdxdxdxdxdxdxdxdxdxdxdx
+dxdxdxdxdxdxdxdxdxdxdxkJkJmumImImWkLljkLljkLkLkLmXmXlqkLnamMmymymymynbmynbmymymymymymymCmylllqkWkLkLkLkLkLkLntmtmHmHmHmHnukJdxdxdxdxdxdxdxdxdxdxdxdxdx
+dxdxdxdxdxdxdxdxdxdxdxkJkJkLkLkLkLkLkLkLljkLmXmXmXmXkLkLnfngmymymymymymymymymymymymymymymyljlqkLkLkLkLkLkLkLntkLmHmHmHmHnukJdxdxdxdxdxdxdxdxdxdxdxdxdx
+dxdxdxdxdxdxdxdxdxdxdxkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJkJnununununununukJdxdxdxdxdxdxdxdxdxdxdxdxdx
 dxdxdxdxdxdxdxdxdxdxdxkIkJkJkJkJkJkJdxdxdxdxdxdxdxdxdxdxkJkIkJkIkJkIkJkIkJkIkJkIkJkIkJkIkJdxdxdxdxdxdxdxdxdxdxkJkJkJkJkJkJkIdxdxdxdxdxdxdxdxdxdxdxdxdx
 dxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdx
 dxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdxdx

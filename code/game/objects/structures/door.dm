@@ -311,13 +311,16 @@
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker
 	else if (istype(W,/obj/item/weapon/wrench) || istype(W,/obj/item/weapon/hammer))//if it is a wrench
-		user << "<span class='notice'>You start disassembling the [src]...</span>"
-		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
-		if (do_after(user, 30, target = src))
-			for (var/i = TRUE, i <= buildstackamount, i++)
-				new buildstack(get_turf(src))
-			qdel(src)
-			return
+		if (state == 0)
+			user << "You need to open the door first."
+		else
+			user << "<span class='notice'>You start disassembling the [src]...</span>"
+			playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+			if (do_after(user, 30, target = src))
+				for (var/i = TRUE, i <= buildstackamount, i++)
+					new buildstack(get_turf(src))
+				qdel(src)
+				return
 	else
 		attack_hand(user)//keys!
 	return TRUE // for key_doors
@@ -350,16 +353,19 @@
 					return
 		if (W.code != custom_code)
 			user << "None of the keys match this lock!"
-	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
+	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker
-	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
-		user << "<span class='notice'>You start disassembling the [src]...</span>"
-		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
-		if (do_after(user, 30, target = src))
-			for (var/i = TRUE, i <= buildstackamount, i++)
-				new buildstack(get_turf(src))
-			qdel(src)
-			return
+	else if (istype(W,/obj/item/weapon/weldingtool))//if it is a welding tool
+		if (state == 0)
+			user << "You need to open the door first."
+		else
+			user << "<span class='notice'>You start disassembling the [src]...</span>"
+			playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
+			if (do_after(user, 30, target = src))
+				for (var/i = TRUE, i <= buildstackamount, i++)
+					new buildstack(get_turf(src))
+				qdel(src)
+				return
 	else
 		attack_hand(user)//keys!
 	return TRUE // for key_doors

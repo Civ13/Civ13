@@ -3,7 +3,7 @@
 	ID = MAP_COMPOUND
 	title = "Compound"
 	lobby_icon_state = "coldwar"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="No base has been captured."
 
@@ -51,3 +51,17 @@ obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/compound/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/compound/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE

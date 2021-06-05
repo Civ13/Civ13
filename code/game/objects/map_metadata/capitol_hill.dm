@@ -29,6 +29,10 @@
 		"To Arms in Dixie:1" = 'sound/music/to_arms_in_dixie.ogg',)
 	artillery_count = 0
 	valid_artillery = list()
+	scores = list(
+		"Militia" = 0,
+		"National Guard" = 0,
+	)
 	var/ger_points = 0
 	var/sov_points = 0
 	var/a1_control = "none"
@@ -42,12 +46,12 @@
 				new /area/caribbean/british/land/inside/objective(T)
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
 				new /area/caribbean/british/land/inside/objective(T)
-				
+
 /obj/map_metadata/capitol_hill/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_capitol == TRUE)
 		if (gamemode != "Protect the VIP")
-			if (J.title == "HVT" || J.title == "FBI officer")
+			if (J.is_whitehouse == TRUE)
 				. = FALSE
 			else
 				. = TRUE
@@ -122,7 +126,7 @@ var/no_loop_capitol = FALSE
 				if (!win_condition_spam_check)
 					var/count = 0
 					for (var/mob/living/human/H in HVT_list)
-						if (H.original_job_title == "HVT" && H.stat != DEAD)
+						if (H.original_job_title == "US HVT" && H.stat != DEAD)
 							count++
 					if (count == 0)
 						message = "The battle is over! All the <b>HVT</b>s are dead!"
@@ -280,10 +284,13 @@ var/no_loop_capitol = FALSE
 			else
 				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Senate</b>!</big>"
 	world << "<big><b>Current Points:</big></b>"
-	world << "<big>National Guard: [ger_points]</big>"
-	world << "<big>Militias: [sov_points]</big>"
+	world << "<big>National Guard: [scores["National Guard"]]</big>"
+	world << "<big>Militia: [scores["Militia"]]</big>"
+//	world << "<big>Militia: [ger_points]</big>"
+//	world << "<big>Soviet Army: [sov_points]</big>"
 	spawn(300)
 		points_check()
+
 
 /obj/map_metadata/capitol_hill/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
@@ -298,5 +305,4 @@ var/no_loop_capitol = FALSE
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
-	
 	return FALSE

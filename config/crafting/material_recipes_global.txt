@@ -492,6 +492,7 @@ RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,
 RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/woolcloth/,monk robes,/obj/item/clothing/suit/storage/coat/monk_robes,6,100,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
@@ -644,6 +645,7 @@ RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,fu
 RECIPE: /material/cloth/,plague doctor suit,/obj/item/clothing/suit/storage/jacket/plaguedoctor,5,120,0,1,jackets & vests,0,0,38,3,null
 RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+RECIPE: /material/cloth/,monk robes,/obj/item/clothing/suit/storage/coat/monk_robes,6,100,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,custom colonial jacket,/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,custom colonial coat,/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,4,null
@@ -843,6 +845,7 @@ RECIPE: /material/cloth/,custom short modern outfit,/obj/item/clothing/under/cus
 RECIPE: /material/cloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
 RECIPE: /material/cloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
 
+RECIPE: /material/cloth/,customizable roman dress,/obj/item/clothing/under/custom/stola,4,85,0,1,feminine clothing,0,0,18,8,null
 RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/cloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
 RECIPE: /material/cloth/,blue sari,/obj/item/clothing/under/sari/blue,4,85,0,1,feminine clothing,0,0,38,8,null
@@ -1778,8 +1781,9 @@ RECIPE: /material/steel/,artillery cannon,/obj/structure/cannon/modern,40,600,1,
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,siege weapons,24,33,0,8,steel
 
 //*********************| STEEL FLOORS & CONSTRUCTIONS |**************************
-
-RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,none,62,0,0,8,null
+RECIPE: /material/steel/,blast door,/obj/structure/gate/blast,40,400,1,1,construction,110,125,0,8,null
+RECIPE: /material/steel/,blast door control,/obj/structure/gatecontrol/blastcontrol,15,250,1,1,construction,110,125,0,8,null
+RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,construction,62,0,0,8,null
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,construction,75,0,0,8,null
 
@@ -1894,6 +1898,7 @@ RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,
 //*********************| BRONZE ARMOR |*************************
 
 RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,1,bronze
+RECIPE: /material/bronze/,bronze montefortino helmet,/obj/item/clothing/head/helmet/montefortino,4,100,0,1,armor,21,16,0,1,bronze
 RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,2,bronze
 RECIPE: /material/bronze/,bronze dragoon helmet,/obj/item/clothing/head/helmet/napoleonic/dragoon,7,100,0,1,armor,0,88,92,3,null
 
@@ -1932,6 +1937,8 @@ RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,n
 //RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
+
+RECIPE: /material/wood/,carriage,/obj/structure/vehicle/carriage,50,180,1,1,vehicle parts,22,0,0,8,null
 
 RECIPE: /material/wood/,communications pole,/obj/structure/phoneline,2,50,1,1,none,100,0,0,8,null
 RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
@@ -2122,9 +2129,9 @@ RECIPE: /material/wood/,monumental crucero cross,/obj/structure/religious/monume
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes & clothing,0,0,0,8,null
 RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoes & clothing,24,0,38,8,null
 
-RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,black african wood mask,/obj/item/clothing/mask/wooden/african,3,50,0,1,shoes & clothing,0,0,0,2,null
+RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,shoes & clothing,0,0,0,2,null
 
 //*********************| WOOD ARMOR |**************************
 
@@ -2299,7 +2306,7 @@ RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,18
 
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
 
-RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,25,220,1,1,production,0,55,0,8,null
+RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,25,220,1,1,production,0,45,0,8,null
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
 
 
@@ -2353,6 +2360,7 @@ RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,wea
 
 RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/anyone,10,100,1,1,construction,28,0,0,8,null
 RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,15,180,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,faction door,/obj/structure/simple_door/key_door/faction_door,15,180,1,1,construction,28,0,0,8,null
 
 RECIPE: /material/iron/,unlocked large iron double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/iron,10,100,1,1,construction,28,0,0,8,null
 

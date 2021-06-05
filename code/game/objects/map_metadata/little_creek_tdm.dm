@@ -4,7 +4,7 @@
 	title = "Big Trouble in Little Creek (TDM)"
 	lobby_icon_state = "wildwest"
 	no_winner ="The fighting for the town is still going on."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 
 
@@ -65,3 +65,19 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return TRUE
+
+/obj/map_metadata/little_creek_tdm/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+
+			if (H.original_job.is_outlaw == TRUE && !H.original_job.is_law == TRUE)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.original_job.is_law == TRUE && !H.original_job.is_outlaw == TRUE)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE

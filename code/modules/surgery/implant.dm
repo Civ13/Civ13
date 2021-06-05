@@ -10,7 +10,7 @@
 		if(!hasorgans(target))
 			return FALSE
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && affected.open == (affected.encased ? 3 : 2) && !(affected.status & ORGAN_BLEEDING)
+		return affected && affected.open == 2 && !(affected.status & ORGAN_BLEEDING)
 
 	proc/get_max_wclass(var/obj/item/organ/external/affected)
 		switch (affected.name)
@@ -40,9 +40,10 @@
 
 /datum/surgery_step/cavity/make_space
 	allowed_tools = list(
-		1 = list("/obj/item/weapon/surgery/surgicaldrill",100),
-		2 = list("/obj/item/weapon/pen",75),
-		3 = list("/obj/item/weapon/material/handle",50),
+		1 = list("/obj/item/weapon/surgery/scalpel",100),
+		2 = list("/obj/item/weapon/surgery/scalpel/bronze",100),
+		3 = list("/obj/item/weapon/pen",75),
+		4 = list("/obj/item/weapon/material/handle",50),
 	)
 
 	min_duration = 60
@@ -67,7 +68,7 @@
 		"<span class = 'notice'>You make some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].</span>" )
 
 /datum/surgery_step/cavity/close_space
-	priority = 2
+	priority = TRUE
 	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/cautery",100),
 		2 = list("/obj/item/weapon/surgery/cautery/bronze",85),
@@ -81,7 +82,7 @@
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			return affected && affected.cavity
+			return affected && affected.cavity && affected.open == TRUE
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)

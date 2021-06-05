@@ -4,7 +4,7 @@
 	name = "red earthern bordered wall"
 	desc = "A red earthen bordered wall."
 	icon_state = "red_earth_smooth_b"
-	health = 210
+	health = 1050
 	explosion_resistance = 7
 
 /* Additional red-earth types seperately defined for mapping/spawning purposes*/

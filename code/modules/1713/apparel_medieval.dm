@@ -274,6 +274,49 @@
 	worn_state = "regal_cape"
 	cold_protection = UPPER_TORSO|ARMS
 
+/obj/item/clothing/suit/storage/coat/monk_robes
+	name = "monk robes"
+	desc = "Robes commonly worn by monks, warm in the winters."
+	icon_state = "monk_robes"
+	item_state = "monk_robes"
+	worn_state = "monk_robes"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/suit/storage/coat/monk_robes/verb/toggle_hood()
+	set category = null
+	set src in usr
+	set name = "Toggle Hood"
+	if (hood)
+		icon_state = "monk_robes"
+		item_state = "monk_robes"
+		worn_state = "monk_robes"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+		item_state_slots["slot_wear_suit"] = "monk_robes"
+		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
+		update_icon()
+		hood = FALSE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
+	else if (!hood)
+		icon_state = "monk_robes_hood"
+		item_state = "monk_robes_hood"
+		worn_state = "monk_robes_hood"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
+		item_state_slots["slot_wear_suit"] = "monk_robes_hood"
+		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
+		update_icon()
+		hood = TRUE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
+
 /* Medieval Uniforms*/
 
 /obj/item/clothing/under/medieval
@@ -2255,3 +2298,101 @@ obj/item/clothing/head/helmet/samurai/black
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	health = 40
 */
+///////////////////////////////////////////////SKYRIM////////////////////////////////////////////////////////
+/obj/item/clothing/head/helmet/medieval/tes13/dwemmer
+	name = "dwemmer helmet"
+	desc = "The thick helmet of elite dwemmer warriors."
+	icon_state = "dwelmet"
+	item_state = "dwelmet"
+	worn_state = "dwelmet"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 80
+	slowdown = 0.10
+
+/obj/item/clothing/gloves/gauntlets/tes13/dwemmer
+	name = "dwemmer gauntlets"
+	desc = "A pair of armored dwemmer bracer guards of dwemmer origin."
+	icon_state = "dwoves"
+	item_state = "dwoves"
+	worn_state = "dwoves"
+	body_parts_covered = HANDS|ARM_RIGHT|ARM_LEFT
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 70, arrow = 40, gun = 7, energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	cold_protection = HANDS|ARM_RIGHT|ARM_LEFT
+	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 50
+
+/obj/item/clothing/shoes/tes13/dwemmer
+	name = "dwemmer boots"
+	desc = "A pair of plated boots made of dwemmer metal."
+	icon_state = "dwoots"
+	item_state = "dwoots"
+	worn_state = "dwoots"
+	body_parts_covered = FEET|LEG_RIGHT|LEG_LEFT
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 70, arrow = 50, gun = 7, energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	cold_protection = FEET|LEG_RIGHT|LEG_LEFT
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	health = 50
+	item_flags = NOSLIP
+
+/obj/item/clothing/suit/armor/tes13/dwemmer
+	name = "dwemmer armor"
+	desc = "A thick, expensive armor of dwemmer metal."
+	icon_state = "dwarmor"
+	item_state = "dwarmor"
+	worn_state = "dwarmor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 85, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 80
+////////whiterun/stormcloaks/////////
+/obj/item/clothing/under/tes13/stormcloak
+	name = "stormcloak curass"
+	desc = "A blue tabard over some leather armor with chainmail underneath."
+	icon_state = "stormcloak"
+	item_state = "stormcloak"
+	worn_state = "stormcloak"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 60
+
+/obj/item/clothing/under/tes13/stormcloak/female
+	desc = "A blue tabard over some leather armor with chainmail underneath. This one is fitted for women."
+	icon_state = "stormcloak_f"
+	item_state = "stormcloak_f"
+	worn_state = "stormcloak_f"
+
+/obj/item/clothing/under/tes13/whiterun
+	name = "whiterun guard curass"
+	desc = "An orange tabard over some leather armor with chainmail underneath."
+	icon_state = "whiterun"
+	item_state = "whiterun"
+	worn_state = "whiterun"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 60
+
+/obj/item/clothing/under/tes13/whiterun/female
+	desc = "An orange tabard over some leather armor with chainmail underneath. This one is fitted for women."
+	icon_state = "whiterun_f"
+	item_state = "whiterun_f"
+	worn_state = "whiterun_f"
+
+/obj/item/clothing/head/helmet/medieval/tes13/guard
+	name = "guard helmet"
+	desc = "The thick helmet of steel worn often by soldiers or guards."
+	icon_state = "tes13"
+	item_state = "tes13"
+	worn_state = "tes13"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 50, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 60
+	slowdown = 0.05

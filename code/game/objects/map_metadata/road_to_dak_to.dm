@@ -3,7 +3,7 @@
 	ID = MAP_ROAD_TO_DAK_TO
 	title = "Road to Dak To"
 	lobby_icon_state = "coldwar"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 
 
@@ -48,3 +48,18 @@ obj/map_metadata/road_to_dak_to/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/road_to_dak_to/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/road_to_dak_to/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE

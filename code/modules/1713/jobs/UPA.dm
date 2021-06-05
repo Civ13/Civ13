@@ -62,7 +62,7 @@
 	title = "UPA Likar"
 	en_meaning = "UPA Doctor"
 	rank_abbreviation = "Buj."
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
@@ -114,7 +114,7 @@
 	title = "UPA Vistun"
 	en_meaning = "UPA Sergeant"
 	rank_abbreviation = "Vtn."
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_ww2 = TRUE
@@ -170,7 +170,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_upa = TRUE

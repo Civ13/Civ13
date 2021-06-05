@@ -290,14 +290,16 @@ var/global/list/anvil_recipes = list(
 			/*Classical*/
 	"Egyptian Lamellar Armor" = list("Egyptian Lamellar Armor","armor",1,1,0,0,8,0,/obj/item/clothing/suit/armor/ancient/bronze_lamellar),
 	"Chinese Lamellar Armor" = list("Chinese Lamellar Armor","armor",1,1,0,0,8,0,/obj/item/clothing/suit/armor/ancient/bronze_lamellar/chinese),
+	"Scaled Armor" = list("Scaled Armor","armor",1,1,0,0,8,0,/obj/item/clothing/suit/armor/ancient/scaled),
 
 	///*Iron Armor*///
 			/*Classical*/
-	"Scale Armor" = list("Scale Armor","armor",1,1,0,14,0,0,/obj/item/clothing/suit/armor/ancient/scale),
+	"Early Chainmail" = list("Early Chainmail","armor",1,1,0,10,0,0,/obj/item/clothing/suit/armor/ancient/chainmail),
+	"Segmented Armor" = list("Segmented Armor","armor",1,1,0,14,0,0,/obj/item/clothing/suit/armor/ancient/scale),
 
 			/*Medieval*/
 	"Chainmail" = list("Chainmail","armor",2,2,0,10,0,0,/obj/item/clothing/suit/armor/medieval/chainmail),
-	"Iron Chestplate" = list("Chainmail","armor",2,2,0,12,0,0,/obj/item/clothing/suit/armor/medieval/iron_chestplate),
+	"Iron Chestplate" = list("Iron Chestplate","armor",2,2,0,12,0,0,/obj/item/clothing/suit/armor/medieval/iron_chestplate),
 	"Hauberk" = list("Hauberk","armor",2,2,0,12,0,0,/obj/item/clothing/suit/armor/medieval/hauberk),
 	"Emirate Armor" = list("Emirate Armor","armor",2,2,0,14,0,0,/obj/item/clothing/suit/armor/medieval/emirate),
 	"Plated Armor" = list("Plated Armor","armor",2,2,0,16,0,0,/obj/item/clothing/suit/armor/medieval),
@@ -359,6 +361,8 @@ var/global/list/anvil_recipes = list(
 
 			/*Modern*/
 	"SWAT Heavy Vest" = list("SWAT Heavy Vest","helmets",8,8,0,0,0,16,/obj/item/clothing/suit/swat),
+	/*gulag*/
+	"Guard Key" = list("Guard Key","keys",6,6,3,3,3,0,/obj/item/weapon/key/soviet/guard),
 )
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

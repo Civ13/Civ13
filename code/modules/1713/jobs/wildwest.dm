@@ -9,6 +9,7 @@
 	whitelisted = TRUE
 
 	is_cowboy = TRUE
+	is_law = TRUE
 
 
 	min_positions = 1
@@ -71,7 +72,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_cowboy = TRUE
-
+	is_law = TRUE
 
 	min_positions = 3
 	max_positions = 16
@@ -108,7 +109,7 @@
 	uniform.attackby(deputy_a, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
@@ -130,7 +131,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_cowboy = TRUE
-
+	is_law = TRUE
 
 	min_positions = 6
 	max_positions = 100
@@ -167,7 +168,7 @@
 	uniform.attackby(deputy_a, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_NORMAL)
@@ -186,7 +187,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePT"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -224,7 +225,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -367,7 +368,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -400,7 +401,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -512,7 +513,7 @@
 /datum/job/civilian/townpriest
 	title = "Town Priest"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -550,7 +551,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
 
 
@@ -607,8 +608,9 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePirate"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
+	is_outlaw = TRUE
 
 	min_positions = 6
 	max_positions = 100
@@ -669,7 +671,7 @@
 			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -687,8 +689,9 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	can_be_female = TRUE
 	is_cowboy = TRUE
+	is_outlaw = TRUE
 
 	min_positions = 2
 	max_positions = 9
@@ -749,8 +752,7 @@
 			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
-	if (prob(20))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -766,10 +768,11 @@
 /datum/job/civilian/outlaw2
 	title = "East Side Gang"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
+	is_outlaw = TRUE
 
 	min_positions = 2
 	max_positions = 9
@@ -830,8 +833,7 @@
 			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
-	if (prob(20))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

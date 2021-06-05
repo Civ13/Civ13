@@ -53,6 +53,7 @@ obj/structure/closet/crate/chest
 	icon_state = "wood_chest"
 	icon_opened = "wood_chest_opened"
 	icon_closed = "wood_chest"
+	health = 2000
 	storage_capacity = 5 * MOB_MEDIUM
 
 obj/structure/closet/crate/treasurechest
@@ -196,6 +197,7 @@ obj/structure/closet/crate/empty
 	density = FALSE
 	storagecap = 6
 	anchored = TRUE
+	health = 5000
 
 /obj/structure/closet/crate/bayonets
 	name = "bayonets crate"

@@ -380,6 +380,25 @@
 		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 12,
 		/obj/item/weapon/reagent_containers/food/drinks/tea = 8,
 	)
+
+//ROBERTS VENDING MACHINES//
+/obj/structure/vending/sales/food/hot/drinks
+	name = "Hot drinks vending machine"
+	desc = "Basic food products."
+	icon_state = "coffee"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/coffee = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/tea = 20,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/coffee = 12,
+		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 12,
+		/obj/item/weapon/reagent_containers/food/drinks/tea = 8,
+	)
+
 /obj/structure/vending/sales/market_stall/prepared
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
@@ -400,6 +419,15 @@
 	New()
 		..()
 		update_icon()
+
+//moneycounter by robert//
+/obj/structure/vending/sales/food/hot/moneycounter
+	name = "Currency Counter"
+	desc = "A currency counter, it's useful for easily merging piles of money into one clean stack."
+	icon_state = "CurrencyCounter"
+	products = list()
+	prices = list()
+
 /obj/structure/vending/sales/market_stall
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."

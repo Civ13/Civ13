@@ -185,6 +185,13 @@ obj/structure/boiling_oil/attackby(obj/item/weapon/oilbarrel/W as obj, mob/user 
 			icon_state = "oil_pot1"
 			boil()
 			return
+		else if (W.reagents.has_reagent("fat_oil", 50))
+			W.reagents.remove_reagent("fat_oil", 50)
+			timer = 1
+			visible_message("[user] fills the pot with oil and starts heating it!")
+			icon_state = "oil_pot1"
+			boil()
+			return
 		else
 			user << "This barrel has no olive oil inside!"
 			return

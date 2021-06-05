@@ -212,11 +212,26 @@
 
 /obj/item/weapon/key/civ/inn
 	code = CV_INN
-	name = "staff only area"
+	name = "Private Inn Key"
 
 /obj/structure/simple_door/key_door/civ/inn
 	keyslot_type = /datum/keyslot/civ/inn
-	unique_door_name = "Private Inn Key"
+	unique_door_name = "staff only area"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/inn
+	unique_door_name = "Locked Staff Only"
+	locked = TRUE
+	custom_code = CV_INN
+
+/obj/structure/closet/crate/cash_register/inn
+	name = "Inn till"
+	custom_code = CV_INN
+	locked = TRUE
+/obj/structure/closet/cabinet/ceiling/liquer
+	name = "Liquer cabinet"
+	custom_code = CV_INN
+	locked = TRUE
+
 #undef CV_INN
 
 /datum/keyslot/civ/businessred/New()
@@ -231,6 +246,7 @@
 /obj/structure/simple_door/key_door/civ/businessred
 	keyslot_type = /datum/keyslot/civ/businessred
 	unique_door_name = "Headquarters"
+	health = 45000
 
 /datum/keyslot/civ/businessblue/New()
 	..()
@@ -244,6 +260,7 @@
 /obj/structure/simple_door/key_door/civ/businessblue
 	keyslot_type = /datum/keyslot/civ/businessblue
 	unique_door_name = "Headquarters"
+	health = 45000
 
 /datum/keyslot/civ/businessgreen/New()
 	..()
@@ -257,6 +274,7 @@
 /obj/structure/simple_door/key_door/civ/businessgreen
 	keyslot_type = /datum/keyslot/civ/businessgreen
 	unique_door_name = "Headquarters"
+	health = 45000
 
 /datum/keyslot/civ/businessyellow/New()
 	..()
@@ -270,7 +288,7 @@
 /obj/structure/simple_door/key_door/civ/businessyellow
 	keyslot_type = /datum/keyslot/civ/businessyellow
 	unique_door_name = "Headquarters"
-
+	health = 45000
 #define CV_BANK 82111
 /datum/keyslot/civ/bank
 	code = CV_BANK
@@ -502,6 +520,16 @@
 /obj/structure/simple_door/key_door/german
 	keyslot_type = /datum/keyslot/german
 	unique_door_name = "German locked"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/german
+	unique_door_name = "German locked"
+	locked = TRUE
+	custom_code = DE_CODE
+
+/obj/structure/closet/crate/cash_register/germ
+	custom_code = DE_CODE
+	locked = TRUE
+
 #undef DE_CODE
 
 #define DE_CODE_OFF 995 * 1
@@ -575,14 +603,22 @@
 	name = "Police Officer key"
 	health = 90000
 
+/obj/item/weapon/key/civ/police/chief
+	code = 13444
+	name = "Police Chief key"
+
 /datum/keyslot/police
 	code = 13443
+
+/datum/keyslot/police/chief
+	code = 13444
 
 /obj/structure/simple_door/key_door/civ/police
 	keyslot_type = /datum/keyslot/police
 	unique_door_name = "Police Station"
 	locked = TRUE
 	health = 90000
+
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/police
 	unique_door_name = "jail cell"
@@ -600,7 +636,7 @@
 
 /obj/structure/simple_door/key_door/civ/paramedics
 	keyslot_type = /datum/keyslot/paramedics
-	unique_door_name = "Hospital Key"
+	unique_door_name = "Hospital Door"
 	locked = TRUE
 	health = 90000
 
@@ -614,6 +650,6 @@
 
 /obj/structure/simple_door/key_door/civ/mechanic
 	keyslot_type = /datum/keyslot/mechanic
-	unique_door_name = "Mechanic Key"
+	unique_door_name = "Mechanic Door"
 	locked = TRUE
 	health = 90000

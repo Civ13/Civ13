@@ -70,6 +70,17 @@ bullet_act
 						drop_from_inventory(I)
 					crush()
 					qdel(src)
+	else if (map.ID == MAP_OCCUPATION)
+		var/mob/living/human/H = user
+		if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && istype(W))
+			if (src.stat != DEAD && (H.civilization != "SS" || H.civilization != "UPA"))
+				if (H.civilization == "SS")
+					return ..(W, user)
+				else if (H.civilization == "UPA")
+					return ..(W, user)
+				else
+					last_harmed = H
+					H.civilization = "Killer"
 	else
 		return ..(W, user)
 
@@ -124,6 +135,13 @@ bullet_act
 						done = TRUE
 				if (!done)
 					Huser.awards["kills"]+=list(list(src.name,min(P.damage,100),0))
+
+		else if (map.ID == MAP_OCCUPATION)
+			var/mob/living/human/Huser = P.firer
+			if (src.stat != DEAD && (Huser.civilization != "SS" || Huser.civilization != "UPA"))
+				if (Huser.civilization != "SS" && Huser.civilization != "UPA")
+					last_harmed = Huser
+					Huser.civilization = "Killer"
 	if (istype(P, /obj/item/projectile/shell))
 		visible_message("<span class = 'danger'>[src] gets blown up by \the [P]!</span>")
 		gib()
@@ -553,14 +571,24 @@ bullet_act
 		var/mob/living/human/Hsrc = src
 		var/mob/living/human/Huser = user
 		if (Hsrc.stat != DEAD && Hsrc.faction_text != Huser.faction_text)
-			Hsrc.awards["wounded"]+=min(effective_force,100)
-			var/done = FALSE
-			for (var/list/i in Huser.awards["kills"])
-				if (i[1]==Hsrc.name)
-					i[2]+= min(effective_force,100)
-					done = TRUE
-			if (!done)
-				Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
+			if (istype(I, /obj/item/weapon/material/sword/katana))
+				Hsrc.awards["wounded"]+=min(effective_force,100)
+				var/done = FALSE
+				for (var/list/i in Huser.awards["melee_kills"])
+					if (i[1]==Hsrc.name)
+						i[2]+= min(effective_force,100)
+						done = TRUE
+				if (!done)
+					Huser.awards["melee_kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
+			else
+				Hsrc.awards["wounded"]+=min(effective_force,100)
+				var/done = FALSE
+				for (var/list/i in Huser.awards["kills"])
+					if (i[1]==Hsrc.name)
+						i[2]+= min(effective_force,100)
+						done = TRUE
+				if (!done)
+					Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
 	return blocked
 
 /mob/living/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)

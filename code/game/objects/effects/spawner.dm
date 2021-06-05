@@ -187,12 +187,27 @@
 	create_path = /mob/living/simple_animal/hostile/panther
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/leech
+	name = "leech spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/leech
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/lion
 	name = "lion spawner"
 	hostile = TRUE
 	max_number = 2
 	max_range = 13
 	create_path = /mob/living/simple_animal/hostile/sabertooth/lion
+	timer = 3000
+
+
+/obj/effect/spawner/mobspawner/lizard
+	name = "lizard spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/lizard
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/fox
@@ -213,6 +228,30 @@
 	max_number = 1
 	max_range = 12
 	create_path = /mob/living/simple_animal/hostile/panther/jaguar
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/bat
+	name = "bat spawner"
+	max_number = 4
+	max_range = 5
+	create_path = /mob/living/simple_animal/blackbat
+	timer = 5000
+
+
+/obj/effect/spawner/mobspawner/bison
+	name = "bison cow spawner"
+	hostile = TRUE
+	max_number = 3
+	max_range = 10
+	create_path = /mob/living/simple_animal/bison
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/bison/bull
+	name = "bison bull spawner"
+	hostile = TRUE
+	max_number = 3
+	max_range = 10
+	create_path = /mob/living/simple_animal/bisonbull
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/buffalo
@@ -394,11 +433,32 @@
 	create_path = /mob/living/simple_animal/hostile/poison/snake/constrictor/python
 	timer = 7000
 
+/obj/effect/spawner/mobspawner/chicken
+	name = "chicken spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/chicken
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/chicken/rooster
+	name = "rooster spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/rooster
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/crab
 	name = "crab spawner"
 	max_number = 2
 	max_range = 5
 	create_path = /mob/living/simple_animal/crab/small
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/crab/trill
+	name = "Trilobite spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/crab/small/trilobite
 	timer = 5000
 
 /obj/effect/spawner/mobspawner/deer_m
@@ -514,6 +574,20 @@
 	create_path = /mob/living/simple_animal/cattle/bull
 	timer = 5000
 
+/obj/effect/spawner/mobspawner/pig
+	name = "pig boar spawner"
+	max_number = 2
+	max_range = 8
+	create_path = /mob/living/simple_animal/pig_boar
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/pig/gilt
+	name = "pig gilt spawner"
+	max_number = 2
+	max_range = 8
+	create_path = /mob/living/simple_animal/pig_gilt
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/wolves
 	name = "wolf spawner"
 	hostile = TRUE
@@ -554,7 +628,18 @@
 	max_range = 13
 	create_path = /mob/living/simple_animal/penguin
 	timer = 3000
-
+/obj/effect/spawner/mobspawner/seagull
+	name = "seagul spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/seagull
+	timer = 3000
+/obj/effect/spawner/mobspawner/parrot
+	name = "parrot spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/parrot
+	timer = 3000
 /obj/effect/spawner/mobspawner/rabbits
 	name = "rabbit spawner"
 	max_number = 2
@@ -683,6 +768,11 @@
 	name = "tree spawner"
 	create_path = /obj/structure/wild/tree/live_tree
 
+/obj/effect/spawner/objspawner/tree/snow
+	name = "snow tree spawner"
+	create_path = /obj/structure/wild/tree/live_tree/snow
+
+
 /obj/effect/spawner/objspawner/pine
 	name = "pinetree spawner"
 	create_path = /obj/structure/wild/tree/live_tree/pine
@@ -697,6 +787,11 @@
 	max_number = 26
 	create_path = /obj/structure/wild/jungle
 
+/obj/effect/spawner/objspawner/bamboo
+	name = "bamboo spawner"
+	max_number = 16
+	create_path = /obj/structure/wild/bamboo
+
 /obj/effect/spawner/objspawner/acacia
 	name = "acacia tree spawner"
 	max_number = 10
@@ -709,6 +804,13 @@
 	max_number = 18
 	max_range = 13
 	create_path = /obj/structure/wild/jungle/medpine
+	timer = 6000
+
+/obj/effect/spawner/objspawner/chinchona
+	name = "chinchona spawner"
+	max_number = 3
+	max_range = 14
+	create_path = /obj/structure/wild/junglebush/chinchona
 	timer = 6000
 
 //ore spanwers for extended games

@@ -199,6 +199,10 @@
 		if (!NS.flammable)
 			return
 		else
+			if(istype(NS, /obj/item/stack/material/wood))
+				var/obj/item/stack/material/wood/W = NS
+				if(W.ash_production) //Needed to not break the ash production from wood
+					return
 			if (prob(27))
 				visible_message("<span class = 'warning'>\The [NS] is burned away.</span>")
 				if (prob(3))

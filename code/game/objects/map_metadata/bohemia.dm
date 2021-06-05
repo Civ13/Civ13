@@ -43,6 +43,8 @@
 			. = TRUE
 		if (J.is_tanker == TRUE)
 			. = FALSE
+		if (J.is_occupation == TRUE)
+			. = FALSE
 		if (J.is_reichstag == TRUE)
 			. = FALSE
 		if (J.is_ww2 == TRUE)

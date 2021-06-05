@@ -244,8 +244,8 @@
 	ripable = FALSE
 
 /obj/item/clothing/suit/armor/ancient/scale
-	name = "scale armor"
-	desc = "A thick, expensive scaled iron armor, covering the torso."
+	name = "segmented armor"
+	desc = "A thick, expensive segmented iron armor, covering the torso."
 	icon_state = "scale_armor"
 	item_state = "scale_armor"
 	worn_state = "scale_armor"
@@ -254,6 +254,18 @@
 	value = 40
 	slowdown = 0.8
 	health = 47
+
+/obj/item/clothing/suit/armor/ancient/chainmail
+	name = "early Chainmail"
+	desc = "Wearable armor made of several small interlinked chains."
+	icon_state = "early_chainmail"
+	item_state = "early_chainmail"
+	worn_state = "early_chainmail"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	value = 30
+	slowdown = 0.6
+	health = 50
 
 /obj/item/clothing/suit/armor/ancient/linen
 	name = "linothorax armor"
@@ -290,6 +302,20 @@
 	value = 25
 	slowdown = 0.7
 	health = 48
+
+
+/obj/item/clothing/suit/armor/ancient/scaled
+	name = "scaled armor"
+	desc = "An armor made of serveral scales made of bronze."
+	icon_state = "scaled_armor"
+	item_state = "scaled_armor"
+	worn_state = "scaled_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	value = 25
+	slowdown = 0.7
+	health = 48
+
 
 /obj/item/clothing/suit/armor/ancient/aztec_harness
 	name = "aztec harness"
@@ -372,6 +398,7 @@
 /obj/item/clothing/head/helmet/roman
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -383,6 +410,7 @@
 /obj/item/clothing/head/helmet/roman_decurion
 	name = "roman decurion helmet"
 	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman_d"
 	item_state = "roman_d"
 	worn_state = "roman_d"
@@ -394,6 +422,7 @@
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "roman centurion helmet"
 	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"
@@ -493,6 +522,7 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	health = 30
+
 
 /obj/item/clothing/head/helmet/leather
 	name = "leather helmet"
@@ -608,6 +638,7 @@
 /obj/item/clothing/head/helmet/roman/nomads
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -615,28 +646,6 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE) //nerfed
 	health = 30
-
-/obj/item/clothing/head/helmet/roman_decurion/nomads
-	name = "roman decurion helmet"
-	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
-	icon_state = "roman_d"
-	item_state = "roman_d"
-	worn_state = "roman_d"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-	health = 40
-
-/obj/item/clothing/head/helmet/roman_centurion/nomads
-	name = "roman centurion helmet"
-	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
-	icon_state = "roman_c"
-	item_state = "roman_c"
-	worn_state = "roman_c"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-	health = 40
 
 /obj/item/clothing/head/helmet/chinese_warrior
 	name = "chinese warrior helmet"

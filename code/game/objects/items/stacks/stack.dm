@@ -287,6 +287,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	var/mob/living/human/H = user
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
+	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
 	var/obj/item/weapon/key/civ/build_override_key = null
 	var/obj/item/stack/money/coppercoin/build_override_coins_copper = null
 	var/obj/item/stack/money/silvercoin/build_override_coins_silver = null
@@ -396,6 +397,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		for(var/obj/structure/gatecontrol/GC in range(6, user.loc))
 			user << "<span class = 'danger'>You cannot build a control so close to another one!</span>"
 			return
+	else if (findtext(recipe.title, "blast door control"))
+		for(var/obj/structure/gatecontrol/blastcontrol/GC in range(10, user.loc))
+			user << "<span class = 'danger'>You cannot build a control so close to another one!</span>"
+			return
 	else if (findtext(recipe.title, "signpost"))
 		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
@@ -412,6 +417,27 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		indesc = input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>South:</b> [indesc]"
+
+	else if (findtext(recipe.title, "carriage"))
+		if (H.getStatCoeff("crafting") < 1.7)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
+	else if (findtext(recipe.title, "faction") && findtext(recipe.title, "door"))
+		if (H.getStatCoeff("crafting") < 1)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
+		if (!ishuman(user))
+			return
+		if(H.civilization == "none")
+			H << "You must be part of a faction to craft this door"
+			return
+		else
+			faction_override_door = new /obj/structure/simple_door/key_door/faction_door
+			faction_override_door.faction = H.civilization
+			faction_override_door.name = "[H.civilization]'s Door"
+
 	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -678,6 +704,30 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					qdelHandReturn(H.l_hand, H)
 				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 					qdelHandReturn(H.r_hand, H)
+
+	if (findtext(recipe.title, "carriage"))
+		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
+			user << "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/rope))
+				var/obj/item/stack/material/rope/NR = H.l_hand
+				if (NR.amount >= 20)
+					NR.amount -= 20
+					if (NR.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/rope))
+				var/obj/item/stack/material/rope/NR = H.r_hand
+				if (NR.amount >= 20)
+					NR.amount -= 20
+					if (NR.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>"
+					return
 
 	if (findtext(recipe.title, "raft"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
@@ -1802,7 +1852,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		produced = 4
 	else if (recipe.result_type == /obj/item/stack/arrowhead/vial)
 		produced = 4
-	if (recipe.result_type == /obj/structure/sink/well || recipe.result_type == /obj/structure/sink/well/sandstone)
+	if (recipe.result_type == /obj/structure/sink/well || recipe.result_type == /obj/structure/sink/well/sandstone || recipe.result_type == /obj/structure/sink/well/marble)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
 	var/inpt = 50
@@ -1928,6 +1978,12 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			build_override_door.loc = get_turf(O)
 			build_override_door.set_dir(user.dir)
 			build_override_door.add_fingerprint(user)
+			qdel(O)
+			return
+		if (faction_override_door)
+			faction_override_door.loc = get_turf(O)
+			faction_override_door.set_dir(user.dir)
+			faction_override_door.add_fingerprint(user)
 			qdel(O)
 			return
 		if (customname != "")

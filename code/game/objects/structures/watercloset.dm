@@ -325,7 +325,7 @@
 	desc = "A crude wooden bathtub. It stinks."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
-	cleanliness = 100
+	cleanliness = 130
 
 				//STONE AGE WOODEN BATHTUB//
 
@@ -335,7 +335,7 @@
 	desc = "A rudimentary stone bathtub, covered in moss."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "s_bathtub"
-	cleanliness = 130
+	cleanliness = 160
 			// EARLY COPPER AGE
 			// LATE COPPER AGE
 /obj/structure/shower/bathtub/copper
@@ -343,22 +343,22 @@
 	desc = "An acceptable copper bathtub. It's a little flimsy."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "c_bathtub"
-	cleanliness = 160
+	cleanliness = 190
 			// LATE COPPER AGE
 			// LATE BRONZE  AGE
 /obj/structure/shower/bathtub/bronze
 	name = "bronze bathtub"
-	desc = "A fine copper bathtub. It's comfortable."
+	desc = "A fine bronze bathtub. It's comfortable."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "b_bathtub"
-	cleanliness = 190
+	cleanliness = 220
 			// LATE BRONZE AGE
 
 
 			//BIG BATHTUB FRAMEWORK 1
 /obj/structure/shower/bathtub/big
 	name = "wooden public bathtub"
-	desc = "A crude wooden bathtub. It's huge and stinky."
+	desc = "A crude wooden bathtub."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "w_bathtub_b"
 	cleanliness = 80
@@ -395,10 +395,10 @@
 			// LATE DARK AGE
 /obj/structure/shower/bathtub/big/wooden
 	name = "wooden public bathtub"
-	desc = "A crude wooden bathtub. It's huge and stinky"
+	desc = "A crude wooden bathtub. It's huge and stinky and it has green mold all over it"
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "w_bathtub_b"
-	cleanliness = 100
+	cleanliness = 130
 			// LATE DARK  AGE
 			// LATE MIDDLE AGE
 /obj/structure/shower/bathtub/big/stone
@@ -406,7 +406,7 @@
 	desc = "A rudimentary stone bathtub, covered in moss."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "s_bathtub_b"
-	cleanliness = 130
+	cleanliness = 160
 			// LATE MIDDLE  AGE
 			// LATE RENAISSANCE AGE
 /obj/structure/shower/bathtub/big/copper
@@ -414,7 +414,7 @@
 	desc = "An acceptable copper bathtub. It's comfortable."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "c_bathtub_b"
-	cleanliness = 160
+	cleanliness = 190
 			// LATE RENAISSANCE  AGE
 			// LATE IMPERIAL AGE
 /obj/structure/shower/bathtub/big/bronze
@@ -422,7 +422,7 @@
 	desc = "A fine bronze bathtub, comfortable and clean."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "b_bathtub_b"
-	cleanliness = 190
+	cleanliness = 320
 			// LATE IMPERIAL  AGE
 			// LATE MODERN AGE
 /obj/structure/shower/bathtub/steel
@@ -430,7 +430,7 @@
 	desc = "A modern steel bathtub, comfortable, clean and cool."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "st_bathtub"
-	cleanliness = 230
+	cleanliness = 250
 			// LATE MODERN  AGE
 			// LATE COLDWAR  AGE
 /obj/structure/shower/bathtub/big/steel
@@ -992,3 +992,66 @@
 					mosquito_proc()
 	else
 		return
+
+/obj/structure/shower/bathtub/big/attack_hand(var/mob/living/M)
+	var/turf/t1
+	var/turf/t2
+	var/turf/t3
+	on = !on
+	update_icon()
+	if (on)
+		if (M.loc == loc)
+			wash(M)
+			process_heat(M)
+		t1 = get_turf(locate(x+1, y, z))
+		t2 = get_turf(locate(x, y+1, z))
+		t3 = get_turf(locate(x+1, y+1, z))
+		for (var/mob/living/human/P in t1.contents)
+			wash(P)
+			process_heat(P)
+		for (var/mob/living/human/P in t2.contents)
+			wash(P)
+			process_heat(P)
+		for (var/mob/living/human/P in t3.contents)
+			wash(P)
+			process_heat(P)
+		for (var/atom/movable/G in loc)
+			G.clean_blood()
+
+/obj/structure/shower/bathtub/big/process()
+	if (!on) return
+
+	var/turf/t1 = locate(x+1,y,z)
+	var/turf/t2 = locate(x, y+1, z)
+	var/turf/t3 = locate(x+1, y+1, z)
+
+	for (var/thing in loc)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	for (var/thing in t1)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	for (var/thing in t2)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	for (var/thing in t3)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
+	wash_floor()
+	reagents.add_reagent("water", reagents.get_free_space())

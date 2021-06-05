@@ -2,7 +2,7 @@
 /mob/living/human/whisper(message as text)
 	var/alt_name = ""
 	if (werewolf || gorillaman)
-		if (map && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_NOMADS_NEW_WORLD)
+		if (map && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_NOMADS_NEW_WORLD && !map.is_fantrace)
 			usr << "<span class = 'red'>You can't whisper.</span>"
 			return
 	if (say_disabled)	//This is here to try to identify lag problems

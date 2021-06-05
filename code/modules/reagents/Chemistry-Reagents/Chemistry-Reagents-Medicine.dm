@@ -82,6 +82,28 @@
 	..()
 	M.hallucination = max(M.hallucination, 2)
 
+/datum/reagent/aspirin
+	name = "Aspirin"
+	id = "aspirin"
+	description = "Aspirin, also known as acetylsalicylic acid, is a medication used to reduce pain, fever, or inflammation."
+	taste_description = "sickness"
+	reagent_state = LIQUID
+	color = "#988f9c"
+	overdose = 60
+	scannable = TRUE
+	metabolism = 0.02
+
+/datum/reagent/aspirin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	M.add_chemical_effect(CE_PAINKILLER, 40)
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/HH = M
+		if (HH.disease == 1 && HH.disease_type == "flu")
+			HH.disease_treatment = TRUE
+
+/datum/reagent/aspirin/overdose(var/mob/living/human/M, var/alien)
+	..()
+	M.hallucination = max(M.hallucination, 2)
+
 /datum/reagent/tramadol
 	name = "Tramadol"
 	id = "tramadol"
@@ -244,6 +266,20 @@
 		if (HH.disease == 1 && HH.disease_type == "typhus")
 			HH.disease_treatment = TRUE
 
+/datum/reagent/saline_glucose
+	name = "Saline Glucose solution"
+	id = "saline_glucose"
+	description = "Saline is a mixture of sodium chloride in water."
+	taste_description = "sweetness and salt"
+	reagent_state = LIQUID
+	color = "#b4b4b4"
+	metabolism = REM * 0.75
+	overdose = REAGENTS_OVERDOSE
+	scannable = TRUE
+    
+/datum/reagent/saline_glucose/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+    M.add_chemical_effect(CE_BLOODRESTORE, 4 * removed)
+
 /datum/reagent/prontosil
 	name = "Prontosil"
 	id = "prontosil"
@@ -264,7 +300,7 @@
 	T.germ_level -= min(volume*20, T.germ_level)
 
 /datum/reagent/hydrogen_peroxide
-	name = "Hidrogen Peroxide"
+	name = "Hydrogen Peroxide"
 	id = "hydrogen_peroxide"
 	description = "Sterilizes wounds in preparation for surgery and thoroughly removes blood."
 	taste_description = "water"

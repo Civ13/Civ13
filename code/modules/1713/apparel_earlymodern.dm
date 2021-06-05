@@ -466,7 +466,7 @@
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"
 /obj/item/weapon/storage/belt/russian
-	name = "RussianSoldier belt"
+	name = "Russian Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
 	icon_state = "japbelt"
 	item_state = "japbelt"
@@ -518,7 +518,8 @@
 		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		/obj/item/weapon/melee/classic_baton,
-		/obj/item/flashlight
+		/obj/item/flashlight,
+		/obj/item/weapon/whistle
 		)
 /obj/item/weapon/storage/belt/jap/soldier
 /obj/item/weapon/storage/belt/jap/soldier/New()
@@ -566,7 +567,6 @@
 /obj/item/weapon/storage/belt/jap/camp_guard
 /obj/item/weapon/storage/belt/jap/camp_guard/New()
 	..()
-	new /obj/item/weapon/key/japanese(src)
 	new /obj/item/weapon/melee/classic_baton(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -586,18 +586,18 @@
 	new /obj/item/flashlight/flashlight(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard_SS
+	name = "SS guard belt"
 /obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
 	..()
-	new /obj/item/weapon/key/german(src)
-	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 
 /obj/item/weapon/storage/belt/jap/camp_officer
 /obj/item/weapon/storage/belt/jap/camp_officer/New()
 	..()
-	new /obj/item/weapon/key/japanese(src)
-	new /obj/item/weapon/key/japanese_officer(src)
 	new /obj/item/weapon/melee/classic_baton(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -1083,7 +1083,7 @@
 		if (rolled)
 			item_state = "coveralls"
 			worn_state = "coveralls"
-			item_state_slots["w_uniform"] = "coveralls"
+			item_state_slots["w_suit"] = "coveralls"
 			usr << "<span class = 'danger'>You roll down your coveralls.</span>"
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -1092,7 +1092,7 @@
 		else if (!rolled)
 			item_state = "coveralls_down"
 			worn_state = "coveralls_down"
-			item_state_slots["w_uniform"] = "coveralls_down"
+			item_state_slots["w_suit"] = "coveralls_down"
 			usr << "<span class = 'danger'>You roll up your coveralls.</span>"
 			rolled = TRUE
 			heat_protection = UPPER_TORSO|ARMS

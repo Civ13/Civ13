@@ -66,7 +66,7 @@
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			else if(map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES))
+			else if(map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES|| map.is_fantrace))
 				if (orc)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
@@ -113,14 +113,7 @@
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			else
-				if (gender == "male")
-					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
-				else
-					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-			if(map && map.ID == MAP_FOUR_KINGDOMS)
+			else if(map.ID == MAP_FOUR_KINGDOMS)
 				if (orc)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
@@ -173,6 +166,31 @@
 					else
 						equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 						equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+		else if (map.ordinal_age == 6)
+			if (map.ID == MAP_NATIONSRP)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				spawn(5)
+					if (gender == "male")
+						if (original_job_title == "Civilization A Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern2(src), slot_w_uniform)
+							update_icons(1)
+						else if (original_job_title == "Civilization B Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern3(src), slot_w_uniform)
+							update_icons(1)
+					else
+						if (original_job_title == "Civilization A Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
+							update_icons(1)
+						else if (original_job_title == "Civilization B Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
+							update_icons(1)
 
 //coats/////////////////////////////////////////////////
 	spawn(5)
@@ -451,21 +469,25 @@
 			spawn(5)
 				//west
 				if (x<75)
-					add_language("Japanese",TRUE)
-					for (var/datum/language/japanese/A in languages)
+					add_language("German",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/german/A in languages)
 						default_language = A
-					name = species.get_random_japanese_name(gender)
+					name = species.get_random_german_name(gender)
 					real_name = name
-					add_note("Known Languages", "Japanese and English")
+					add_note("Known Languages", "German")
 					return
 				//EAST
 				else
-					add_language("Spanish",TRUE)
-					for (var/datum/language/spanish/A in languages)
+					add_language("Russian",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/russian/A in languages)
 						default_language = A
-					name = species.get_random_spanish_name(gender)
+					name = species.get_random_russian_name(gender)
 					real_name = name
-					add_note("Known Languages", "Spanish and English")
+					add_note("Known Languages", "Russian")
 					return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
@@ -512,7 +534,7 @@
 							real_name = name
 							add_note("Known Languages", "Ainu")
 							return
-		else if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES))
+		else if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.is_fantrace))
 			spawn(5)
 				if (original_job_title == "Orc tribesman")
 					orc = 1
@@ -662,7 +684,7 @@
 					remove_language("English")
 					for (var/datum/language/crab/A in languages)
 						default_language = A
-					name = species.get_random_crab_name(gender)
+					name = species.get_random_japanese_name(gender)
 					real_name = name
 					give_clothes()
 					return
@@ -701,7 +723,7 @@
 /datum/job/civilian/civa
 	title = "Civilization A Citizen"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivA"
 
 	is_civilizations = TRUE
@@ -737,7 +759,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCivB"
-
+	can_be_female = TRUE
 	is_civilizations = TRUE
 
 	min_positions = 9999
@@ -771,7 +793,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCivC"
-
+	can_be_female = TRUE
 	is_civilizations = TRUE
 
 	min_positions = 9999
@@ -802,7 +824,7 @@
 /datum/job/civilian/civd
 	title = "Civilization D Citizen"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivD"
 
 	is_civilizations = TRUE
@@ -837,7 +859,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCivE"
-
+	can_be_female = TRUE
 	is_civilizations = TRUE
 
 	min_positions = 9999
@@ -868,7 +890,7 @@
 /datum/job/civilian/civf
 	title = "Civilization F Citizen"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivF"
 
 	is_civilizations = TRUE
@@ -901,7 +923,7 @@
 /datum/job/civilian/civnomad
 	title = "Nomad"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_nomad = TRUE
@@ -935,7 +957,7 @@
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND1"
 
 
@@ -969,7 +991,7 @@
 /datum/job/civilian/fantasy/ant
 	title = "Ant tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND2"
 
 
@@ -1004,7 +1026,7 @@
 /datum/job/civilian/fantasy/gorilla
 	title = "Gorilla tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND3"
 
 
@@ -1038,7 +1060,7 @@
 /datum/job/civilian/fantasy/human
 	title = "Human tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND4"
 
 
@@ -1071,7 +1093,7 @@
 /datum/job/civilian/fantasy/wolf
 	title = "Wolf tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND5"
 
 
@@ -1105,7 +1127,7 @@
 /datum/job/civilian/fantasy/lizard
 	title = "Lizard tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND6"
 
 
@@ -1137,7 +1159,7 @@
 /datum/job/civilian/fantasy/crab
 	title = "Crustacean tribesman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateIND7"
 
 

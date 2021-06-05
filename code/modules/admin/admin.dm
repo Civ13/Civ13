@@ -572,8 +572,8 @@ proc/admin_notice(var/message, var/rights)
 			return
 		if (customresearch <= 0)
 			customresearch = 0
-		if (customresearch >= 100)
-			customresearch = 100
+		if (customresearch >= 280)
+			customresearch = 280
 
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
@@ -636,7 +636,7 @@ proc/admin_notice(var/message, var/rights)
 			map.age2_done = TRUE
 			map.age3_done = TRUE
 			map.age4_done = TRUE
-			map.default_research = 104
+			map.default_research = 105
 			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
@@ -1175,3 +1175,23 @@ var/list/atom_types = null
 		return
 	set_global_pollution(num)
 	world.log << "[usr] set the worlds pollution to [num]."
+
+/datum/admins/proc/zombiemechanic()
+	set category = "Fun"
+	set desc="Enable zombie mechanic in the current round."
+	set name="Zombie mechanic"
+
+	if (map)
+		map.is_zombie = TRUE
+	world << "<big><b>Zombie mechanics have been enabled in the current round.</b></big>"
+	return
+
+/datum/admins/proc/fantasy_races()
+	set category = "Fun"
+	set desc="Enable fantasy race selection in the current round."
+	set name="Fantasy race selection"
+
+	if (map)
+		map.is_fantrace = TRUE
+	world << "<big><b>Fantasy race selection has been enabled in the current round.</b></big>"
+	return

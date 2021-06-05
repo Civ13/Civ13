@@ -141,6 +141,8 @@ var/civmax_research = list(230,230,230)
 	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
+	var/is_zombie = FALSE
+	var/is_fantrace = FALSE
 
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active
@@ -247,15 +249,15 @@ var/civmax_research = list(230,230,230)
 */
 	// makes win condition helper datum
 	win_condition = new
-
-	for (var/list/i in berryeffects)
-		i[2] = pick("neutral", "poisonous", "drug", "healing", "tasty", "disgusting")
-		if (i[2] == "poisonous")
-			i[3] = pick("amatoxin","cyanide", "food_poisoning", "solanine")
-		else if (i[2] == "drug")
-			i[3] = pick("peyote", "psilocybin","mindbreaker")
-		else if (i[2] == "healing")
-			i[3] = pick("paracetamol", "penicillin", "opium", "cocaine", "sal_acid")
+	if (berryeffects.len)
+		for (var/list/i in berryeffects)
+			i[2] = pick("neutral", "poisonous", "drug", "healing", "tasty", "disgusting")
+			if (i[2] == "poisonous")
+				i[3] = pick("amatoxin","cyanide", "food_poisoning", "solanine")
+			else if (i[2] == "drug")
+				i[3] = pick("peyote", "psilocybin","mindbreaker")
+			else if (i[2] == "healing")
+				i[3] = pick("paracetamol", "penicillin", "opium", "cocaine", "sal_acid")
 	spawn(5000)
 		pollution()
 	spawn(2400)
@@ -265,46 +267,47 @@ var/civmax_research = list(230,230,230)
 
 	if (nomads || civilizations || ID==MAP_COLONY || ID==MAP_FOUR_COLONIES || ID==MAP_PIONEERS)
 		var/amt_to_create = (world.maxx*world.maxy)/5000
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/tinto(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/azul(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/amar(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/majo(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/narco(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/zelenyy(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/marron(G)
-				v++
-		for (var/v=1, v<=amt_to_create)
-			var/turf/floor/grass/G = pick(grass_turf_list)
-			if (G.isemptyfloor())
-				new/obj/structure/wild/berrybush/corcairghorm(G)
-				v++
+		if (grass_turf_list.len)
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/tinto(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/azul(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/amar(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/majo(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/narco(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/zelenyy(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/marron(G)
+					v++
+			for (var/v=1, v<=amt_to_create)
+				var/turf/floor/grass/G = pick(grass_turf_list)
+				if (G.isemptyfloor())
+					new/obj/structure/wild/berrybush/corcairghorm(G)
+					v++
 
 /obj/map_metadata/proc/religious_timer()
 	if (map.custom_religions.len > 0)
@@ -1106,3 +1109,10 @@ var/civmax_research = list(230,230,230)
 				craftlist_lists["INDIANS"] += list(current)
 				if (current.len != 13)
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+/obj/map_metadata/proc/give_stock_points(tfaction = "", value = 0)
+	if (value == 0)
+		return
+	for (var/i in map.globalmarketplace)
+		if (map.globalmarketplace[i][7]==0 && map.globalmarketplace[i][5]=="bank" && map.globalmarketplace[i][2] && map.globalmarketplace[i][1]==tfaction)
+			if (istype(map.globalmarketplace[i][2],/mob/living/human))
+				map.marketplaceaccounts[map.globalmarketplace[i][2].name] += value/2.5

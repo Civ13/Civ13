@@ -978,8 +978,17 @@
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
 
 /obj/item/ammo_casing/shotgun/rubber
-	name = "rubber shell"
-	desc = "A rubber shell."
+	name = "rubber shot"
+	desc = "A rubber shell ."
 	icon_state = "rubber"
 	spent_icon = "rubber_casing"
-	projectile_type = /obj/item/projectile/bullet/shotgun/rubber
+	projectile_type = /obj/item/projectile/bullet/pellet/rubber
+
+
+/obj/item/ammo_casing/shotgun/incendiary
+	name = "shotgun slug"
+	desc = "A 12 gauge incendiary slug."
+	icon_state = "slshell"
+	spent_icon = "slshell_casing"
+	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
+

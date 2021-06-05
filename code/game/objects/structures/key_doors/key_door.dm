@@ -21,6 +21,42 @@ var/list/nonbreaking_types = list(
 	material = "iron"
 	icon = 'icons/obj/doors/material_doors_leonister.dmi'
 
+/obj/structure/simple_door/key_door/faction_door
+	var/faction = null
+	locked = 1
+
+/obj/structure/simple_door/key_door/faction_door/attack_hand(mob/user as mob)
+	if(istype(user, /mob/living/human))
+		var/mob/living/human/H = user
+
+		if(H.civilization == faction)
+			if(!state)
+				Open()
+			else
+				Close()
+		else
+			user.visible_message("<span class = 'notice'>[H] knocks at the door.</span>")
+			playsound(get_turf(src), "doorknock", 75, TRUE)
+
+/obj/structure/simple_door/key_door/faction_door/Bumped(atom/user)
+	if(istype(user, /mob/living/human))
+		var/mob/living/human/H = user
+
+		if(H.civilization == faction)
+			if(!state)
+				Open()
+		else
+			user.visible_message("<span class = 'notice'>[H] knocks at the door.</span>")
+			playsound(get_turf(src), "doorknock", 75, TRUE)
+
+/obj/structure/simple_door/key_door/faction_door/Crossed(atom/user)
+	if(istype(user, /mob/living/human))
+		var/mob/living/human/H = user
+		if(H.civilization == faction)
+			if(state)
+				spawn(10)
+					Close()
+
 /obj/structure/simple_door/key_door/New(_loc, _material = null)
 
 	var/map_door_name = name

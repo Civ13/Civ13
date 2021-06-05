@@ -2,7 +2,7 @@
 	ID = MAP_OMAHA
 	title = "Omaha Beach"
 	lobby_icon_state = "ww2"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	var/victory_time = 24000
 
@@ -27,7 +27,7 @@
 	gamemode = "Siege"
 /obj/map_metadata/omaha/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
+	if (J.is_tanker == TRUE || J.is_occupation == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
 		. = FALSE
 	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
 		. = TRUE
@@ -151,6 +151,20 @@ var/no_loop_o = FALSE
 	last_win_condition = win_condition.hash
 	return TRUE
 
+/obj/map_metadata/omaha/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE
 
 /////////////////MICROMAHA///////////
 /obj/map_metadata/omaha/micromaha

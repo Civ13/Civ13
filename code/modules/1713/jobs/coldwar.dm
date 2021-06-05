@@ -70,8 +70,8 @@
 	uniform.attackby(rscarf, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Viet Cong in the fight against the imperialists!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
@@ -90,7 +90,7 @@
 	title = "Bac Si"
 	en_meaning = "Vietcong Medic"
 	rank_abbreviation = "Bac Si"
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
 
 	is_medic = TRUE
@@ -147,8 +147,8 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
@@ -226,8 +226,8 @@
 		uniform.attackby(blue, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the communications and also acting as a courier for ammunition, grenades, and so on. Keep the squads up to date and supplied!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
@@ -248,7 +248,7 @@
 	title = "Binh Ni"
 	en_meaning = "Vietcong Soldier"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
 
 	is_coldwar = TRUE
@@ -319,8 +319,8 @@
 		uniform.attackby(blue, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
 	H.add_note("Role", "You are a <b>[title]</b>, fighting guerilla warfare against the imperialists!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
@@ -720,7 +720,7 @@
 /datum/job/american/specops_leader
 	title = "SOF Team Leader"
 	rank_abbreviation = "Lt."
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -763,7 +763,7 @@
 /datum/job/american/specops_doctor
 	title = "SOF Medic"
 	rank_abbreviation = "Sfc."
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -800,7 +800,7 @@
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRN"
-
+	can_be_female = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
 
@@ -1040,8 +1040,8 @@
 	uniform.attackby(rscarf, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 	H.add_note("Role", "You are a <b>[title]</b>, lead the NVA in the fight against the imperialists!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1061,7 +1061,7 @@
 	rank_abbreviation = "Bac Si"
 
 	spawn_location = "JoinLateJP"
-
+	can_be_female = TRUE
 	is_medic = TRUE
 	is_coldwar = TRUE
 	is_nva = TRUE
@@ -1106,8 +1106,8 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
@@ -1169,8 +1169,8 @@
 		uniform.attackby(blue, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the communications and also acting as a squad officer. Keep the squads organized and efficient!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
@@ -1288,8 +1288,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style == "Full Beard" && H.f_style == "Medium Beard" && H.f_style == "Long Beard" && H.f_style == "Very Long Beard" && H.f_style == "Dwarf Beard" && H.f_style == "Volaju" && H.f_style == "Abraham Lincoln Beard" && H.f_style == "Van Dyke Mustache" && H.f_style == "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
 	H.add_note("Role", "You are a <b>[title]</b>, fighting a war against the imperialists!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")

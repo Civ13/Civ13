@@ -371,6 +371,10 @@
 	desc = "This space is blocked off by frozen earth and rocks. Can be mined."
 	New()
 		..()
+
+/turf/floor/dirt/underground/icy/rock
+	name = "icy rock"
+
 /turf/floor/dirt/underground/icy/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/chisel))
 		user << "The frozen rock is too hard to carve!"

@@ -37,7 +37,7 @@ var/list/time_of_day2ticks = list(
 	return "Midday"
 	#else
 	// chance of midday: ~52%. Chance of afternoon: ~27%. Chance of any other: ~21%
-	if (map && map.ID == MAP_NOMADS_WASTELAND_2 || MAP_PIONEERS_WASTELAND_2)
+	if (map && map.is_zombie)
 		return "Morning"
 	else
 		if (prob(50))

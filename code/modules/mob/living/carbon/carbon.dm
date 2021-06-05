@@ -297,7 +297,9 @@
 				var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = item
 				if (B.rag && B.rag.on_fire)
 					var/nothrow = FALSE
-					if (map && !map.faction1_can_cross_blocks() && H.faction_text == map.faction1)
+					if (map.ID == MAP_OCCUPATION)
+						return
+					else if (map && !map.faction1_can_cross_blocks() && H.faction_text == map.faction1)
 						nothrow = TRUE
 					else if (map && !map.faction2_can_cross_blocks() && H.faction_text == map.faction2)
 						nothrow = TRUE

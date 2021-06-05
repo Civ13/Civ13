@@ -442,13 +442,18 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 //prevent boss spawns if there are enemies in the building
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			var/obj/map_metadata/capitol_hill/CP = map
-			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "HVT"))
+			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "US HVT"))
+				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
+				return
+		if (map && map.ID == MAP_YELTSIN)
+			var/obj/map_metadata/yeltsin/CP = map
+			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet HVT"))
 				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
 				return
 		if (map && map.ID == MAP_ALLEYWAY)
@@ -599,13 +604,24 @@ var/global/redirect_all_players = null
 		if (client && client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
-	if (client && client.prefs.gender == FEMALE && (istype(job, /datum/job/american) || istype(job, /datum/job/arab)))
-		WWalert(usr,"You must be male to play as this faction.","Error")
-		return FALSE
 	if (job.is_ww1)
 		if (client && client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
+	if (!job.is_medic || !job.is_deal || !job.is_rp)
+		if (client && client.prefs.gender == FEMALE && !job.can_be_female)
+			WWalert(usr,"You must be male to play as this role.","Error")
+			return FALSE
+		else if (client && client.prefs.gender == FEMALE && job.can_be_female)
+			spawning = TRUE
+			close_spawn_windows()
+			job_master.AssignRole(src, rank, TRUE)
+			var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
+			if (!character)
+				return FALSE
+
+			character = job_master.EquipRank(character, rank, TRUE)
+			return
 	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian) && map.ID != MAP_BOHEMIA)
 		if (client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
@@ -682,7 +698,7 @@ var/global/redirect_all_players = null
 	//squads
 	if (ishuman(character))
 		var/mob/living/human/H = character
-		if (H.original_job_title == "FBI officer")
+		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
 		if (H.original_job.uses_squads)
 			H.verbs += /mob/living/human/proc/find_nco

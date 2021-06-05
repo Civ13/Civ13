@@ -52,7 +52,7 @@
 	else
 		return
 
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP)
+	if (map.ID == MAP_NATIONSRP || map.nomads == TRUE)
 		if (U.civilization != "none")
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return
@@ -362,6 +362,8 @@
 /obj/structure/banner/faction/team/proc/assign_team(new_team = null)
 	if (!new_team)
 		new_team = src.team
+	if (!new_team)
+		return
 	if (map && map.ID == MAP_FOOTBALL)
 		var/obj/map_metadata/football/FM = map
 		if (FM.team1 == src.team)

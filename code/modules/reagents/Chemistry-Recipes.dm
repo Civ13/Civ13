@@ -235,7 +235,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Penicillin"
 	id = "penicillin"
 	result = "penicillin"
-	required_reagents = list("yeast" = 10, "acetone" = 1)
+	required_reagents = list("enzyme" = 10, "acetone" = 1)
 	result_amount = 5
 
 /datum/chemical_reaction/tramadol
@@ -245,6 +245,13 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("opium" = 1, "ethanol" = 1, "acetone" = 1)
 	result_amount = 3
 
+/datum/chemical_reaction/paracetamol
+	name = "Paracetamol"
+	id = "paracetamol"
+	result = "paracetamol"
+	required_reagents = list("tramadol" = 1, "sugar" = 1, "water" = 1)
+	result_amount = 3
+
 /datum/chemical_reaction/oxycodone
 	name = "Oxycodone"
 	id = "oxycodone"
@@ -252,6 +259,13 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("ethanol" = 1, "tramadol" = 1)
 	catalysts = list("tungsten" = 5)
 	result_amount = TRUE
+
+/datum/chemical_reaction/adrenaline
+	name = "Adrenaline"
+	id = "adrenaline"
+	result = "adrenaline"
+	required_reagents = list("acetone" = 1, "sugar" = 1, "diethylamine" = 1, "potassium_chloride" = 1)
+	result_amount = 5
 
 /datum/chemical_reaction/soporific
 	name = "Soporific"
@@ -339,6 +353,13 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("hydrogen" = 1, "chlorine" = 1)
 	result_amount = 1
 
+/datum/chemical_reaction/hydrogen_peroxide
+	name = "Hydrogen Peroxide"
+	id = "hydrogen_peroxide"
+	result = "hydrogen_peroxide"
+	required_reagents = list("chlorine" = 1, "water" = 1, "oxygen" = 1)
+	result_amount = 3
+
 /datum/chemical_reaction/water
 	name = "Water"
 	id = "water"
@@ -372,7 +393,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Aspirin"
 	id = "aspirin"
 	result = "aspirin"
-	required_reagents = list("carbon" =5, "hydrogen" = 4, "oxygen" = 2 )
+	required_reagents = list("carbon" = 5, "water" = 4, "oxygen" = 2 )
 	result_amount = 5
 
 /datum/chemical_reaction/calcium_carbonate
@@ -401,7 +422,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Saline Glucose solution"
 	id = "saline_glucose"
 	result = "saline_glucose"
-	required_reagents = list("sodium_clorhide" =1, "water" = 1, "sugar" = 1 )
+	required_reagents = list("sodiumchloride" = 1, "water" = 1, "sugar" = 1 )
 	result_amount = 2
 
 /datum/chemical_reaction/aqua_regia
@@ -483,6 +504,12 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("mindbreaker" = 1, "acetone" = 1)
 	result_amount = 3
 
+/datum/chemical_reaction/mindbreaker
+	name = "Lysergic acid diethylamide"
+	id = "mindbreaker"
+	result = "mindbreaker"
+	required_reagents = list("enzyme" = 1, "diethylamine" = 1)
+	result_amount = 2
 /* Grenade reactions */
 
 /datum/chemical_reaction/explosion_potassium
@@ -1051,3 +1078,16 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("honey" = 2, "water" = 2)
 	result_amount = 2
 
+//Soap making
+/datum/chemical_reaction/lard_soap
+	name = "Lard Soap"
+	id = "lard_soap"
+	result = null
+	required_reagents = list("lard" = 20, "lye" = 2)
+	result_amount = TRUE
+
+/datum/chemical_reaction/lard_soap/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/location = get_turf(holder.my_atom)
+	for (var/i = TRUE, i <= created_volume, i++)
+		new /obj/item/weapon/soap/lard(location)
+	return

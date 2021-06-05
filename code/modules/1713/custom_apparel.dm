@@ -65,6 +65,14 @@
 	item_state = "customtoga"
 	worn_state = "customtoga"
 
+/obj/item/clothing/under/custom/stola
+	name = "stola"
+	desc = "A simple cloth stola, roman clothing for women."
+	icon_state = "fem_roman"
+	item_state = "fem_roman"
+	worn_state = "fem_roman"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+
 /obj/item/clothing/under/custom/roman
 	name = "long tunic"
 	desc = "A simple cloth tunic, with a brass and leather belt."
@@ -811,6 +819,107 @@
 		if (patterncolor)
 			uncolored1 = FALSE
 			var/image/pattern = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "keffiyeh_custom_color")
+			pattern.color = patterncolor
+			overlays += pattern
+			return
+	else
+		..()
+
+//Helmets
+
+/obj/item/clothing/head/helmet/montefortino
+	name = "bronze montefortino helmet"
+	desc = "A conical bronce helmet with cheekplates."
+	icon_override = "code/modules/1713/clothing/head.dmi"
+	icon_state = "montefortino"
+	item_state = "montefortino"
+	worn_state = "montefortino"
+	body_parts_covered = HEAD
+	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	health = 30
+	var/uncolored1 = TRUE
+	var/patterncolor = 0
+
+/obj/item/clothing/head/helmet/montefortino/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!patterncolor)
+			var/input = WWinput(user, "Pattern - Choose a color:", "Cap Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				patterncolor = input
+	//			user << "Color: [color]"
+
+		if (patterncolor)
+			uncolored1 = FALSE
+			var/image/pattern = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "montefortino_color")
+			pattern.color = patterncolor
+			overlays += pattern
+			return
+	else
+		..()
+
+
+/obj/item/clothing/head/helmet/roman_decurion/nomads
+	name = "roman decurion helmet"
+	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
+	icon_override = "code/modules/1713/clothing/head.dmi"
+	icon_state = "roman_d"
+	item_state = "roman_d"
+	worn_state = "roman_d"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
+	var/uncolored1 = TRUE
+	var/patterncolor = 0
+
+/obj/item/clothing/head/helmet/roman_decurion/nomads/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!patterncolor)
+			var/input = WWinput(user, "Pattern - Choose a color:", "Cap Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				patterncolor = input
+	//			user << "Color: [color]"
+
+		if (patterncolor)
+			uncolored1 = FALSE
+			var/image/pattern = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "roman_d_color")
+			pattern.color = patterncolor
+			overlays += pattern
+			return
+	else
+		..()
+
+/obj/item/clothing/head/helmet/roman_centurion/nomads
+	name = "roman centurion helmet"
+	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
+	icon_override = "code/modules/1713/clothing/head.dmi"
+	icon_state = "roman_c"
+	item_state = "roman_c"
+	worn_state = "roman_c"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
+	var/uncolored1 = TRUE
+	var/patterncolor = 0
+
+/obj/item/clothing/head/helmet/roman_centurion/nomads/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!patterncolor)
+			var/input = WWinput(user, "Pattern - Choose a color:", "Cap Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				patterncolor = input
+	//			user << "Color: [color]"
+
+		if (patterncolor)
+			uncolored1 = FALSE
+			var/image/pattern = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "roman_c_color")
 			pattern.color = patterncolor
 			overlays += pattern
 			return

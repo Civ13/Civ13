@@ -158,6 +158,9 @@
 					visible_message("<span class = 'warning'>The bolt falls to the ground!</span>")
 				else
 					visible_message("<span class = 'warning'>The bolt shatters!</span>")
+	else
+		spawn (0.01)
+		qdel(proj)
 	return
 
 //Checks the dummy health, if it drops to 0 or below, turns it into a wreckage.

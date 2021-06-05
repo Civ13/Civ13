@@ -30,10 +30,6 @@
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE
-										else if (istype(AM, /obj/item/weapon/reagent_containers/food/drinks/bottle))
-											var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = AM
-											if (B.rag)
-												B.rag.on_fire = FALSE
 										thrown_list -= AM
 										continue
 
@@ -42,6 +38,10 @@
 										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
+											continue
+										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
 									if (canMove)
@@ -66,6 +66,10 @@
 										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
+											continue
+										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
 									if (canMove)
@@ -97,6 +101,10 @@
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
 										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
+											continue
+										canMove = FALSE
 									if (canMove)
 										AM.forceMove_nondenseturf(step)
 									AM.hit_check(AM.speed)
@@ -118,6 +126,10 @@
 										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
+											continue
+										canMove = FALSE
+									for (var/obj/covers/C in step)
+										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
 									if (canMove)

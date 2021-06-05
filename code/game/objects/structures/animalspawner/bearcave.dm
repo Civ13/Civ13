@@ -191,7 +191,6 @@
 	src.females = 5
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
 	empty = FALSE
-	src.set_cavetype()
 	if(!bearcave_ticking) //Checks if the bearcave tick havent been started yet
 		bearcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
 		Tick()

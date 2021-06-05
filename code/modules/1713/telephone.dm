@@ -399,10 +399,57 @@ var/list/global/phone_numbers = list()
 	name = "Yellow phone"
 	phonenumber = 4444
 
-/obj/item/weapon/telephone/mobile/faction/New()
+/obj/item/weapon/telephone/mobile/faction/red/New()
 	..()
 	contacts += list(list("Emergency",911))
 	spawn(100)
 		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
 			if (F != src)
 				contacts += list(list(F.name,F.phonenumber))
+/obj/item/weapon/telephone/mobile/faction/blue/New()
+	..()
+	contacts += list(list("Emergency",911))
+	spawn(100)
+		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
+			if (F != src)
+				contacts += list(list(F.name,F.phonenumber))
+/obj/item/weapon/telephone/mobile/faction/green/New()
+	..()
+	contacts += list(list("Emergency",911))
+	spawn(100)
+		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
+			if (F != src)
+				contacts += list(list(F.name,F.phonenumber))
+/obj/item/weapon/telephone/mobile/faction/yellow/New()
+	..()
+	contacts += list(list("Emergency",911))
+	spawn(100)
+		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
+			if (F != src)
+				contacts += list(list(F.name,F.phonenumber))
+
+//ROBERTS CELLPHONES//
+/obj/item/weapon/telephone/mobile/mobilefaction/
+	name = "Corporate cellphone"
+	desc = "Used to communicate with other telephones."
+
+/obj/item/weapon/telephone/mobile/mobilefaction/blue
+	name = "Corporate cellphone"
+	desc = "Used to communicate with other telephones, intended for CEOs. Number: 2229."
+	phonenumber = 2229
+	color = "#0000FF"
+
+/obj/item/weapon/telephone/mobile/mobilefaction/green
+	desc = "Used to communicate with other telephones, intended for CEOs. Number: 3339."
+	phonenumber = 3339
+	color = "#00FF00"
+
+/obj/item/weapon/telephone/mobile/mobilefaction/red
+	desc = "Used to communicate with other telephones, intended for CEOs. Number: 1119."
+	phonenumber = 1119
+	color = "#FF0000"
+
+/obj/item/weapon/telephone/mobile/mobilefaction/yellow
+	desc = "Used to communicate with other telephones, intended for CEOs. Number: 4449."
+	phonenumber = 4449
+	color = "#FFFF00"

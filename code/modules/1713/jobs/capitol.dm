@@ -30,6 +30,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
+	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_VERY_HIGH)
@@ -52,7 +53,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
-	
+
 	can_get_coordinates = TRUE
 
 	min_positions = 2
@@ -78,6 +79,7 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp/ocp_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp(null)
 	uniform.attackby(ocp_armor, H)
 	give_random_name(H)
+	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Insurgents!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -98,7 +100,7 @@
 
 	is_medic = TRUE
 	is_capitol = TRUE
-	
+
 	min_positions = 2
 	max_positions = 8
 
@@ -126,6 +128,7 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp/ocp_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp(null)
 	uniform.attackby(ocp_armor, H)
 	give_random_name(H)
+	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -145,7 +148,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_capitol = TRUE
-	
+
 	uses_squads = TRUE
 
 	min_positions = 10
@@ -170,6 +173,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat(H), slot_wear_mask)
 	give_random_name(H)
+	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -189,6 +193,7 @@
 
 	spawn_location = "JoinLateFeds"
 
+	is_whitehouse = TRUE
 	is_capitol = TRUE
 	whitelisted = TRUE
 
@@ -227,12 +232,12 @@
 	return TRUE
 
 /datum/job/american/hvt
-	title = "HVT"
+	title = "US HVT"
 	en_meaning = "High Value Target"
 	rank_abbreviation = "Mr."
 
 	spawn_location = "JoinLateFeds"
-
+	is_whitehouse = TRUE
 	is_capitol = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -326,6 +331,7 @@
 //gunz
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/ar15(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
+	H.civilization = "Militia"
 	H.add_note("Role", "You are a <b>[title]</b>, insurging against the U.S. Government's tyranny. You've trained for this all your life, so go for it!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -374,6 +380,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/remington870(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
+	H.civilization = "Militia"
 	H.add_note("Role", "You are a <b>[title]</b>, insurging against the U.S. Government's tyranny. You've trained for this all your life, so go for it!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -394,7 +401,7 @@
 
 	is_medic = TRUE
 	is_capitol = TRUE
-	
+
 	min_positions = 3
 	max_positions = 10
 
@@ -419,6 +426,7 @@
 
 	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard")
 		H.f_style = pick("Full Beard","Medium Beard","Long Beard")
+	H.civilization = "Militia"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow patriots healthy and motivated!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

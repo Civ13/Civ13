@@ -27,7 +27,7 @@
 	var/gracedown1 = TRUE
 /obj/map_metadata/forest/New()
 	..()
-	spawn(1)
+	spawn(15)
 		if (clients.len>20)
 			civilians_toggled = TRUE
 		else
@@ -38,6 +38,8 @@
 	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
+		. = FALSE
+	else if (J.is_occupation == TRUE)
 		. = FALSE
 	else if (J.is_tanker == TRUE)
 		. = FALSE

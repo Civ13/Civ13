@@ -4,7 +4,7 @@
 	title = "Stalingrad"
 	lobby_icon_state = "ww2"
 	no_winner ="The battle for the city is still going on."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
 	respawn_delay = 0
 
 	faction_organization = list(
@@ -42,6 +42,8 @@
 	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
+		. = FALSE
+	else if (J.is_occupation == TRUE)
 		. = FALSE
 	else if (J.is_tanker == TRUE)
 		. = FALSE
@@ -207,6 +209,21 @@
 			return FALSE
 	return TRUE
 
+/obj/map_metadata/stalingrad/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/two))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/one))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE
+
 ///////////////////////////////////////////////////////////
 ////////////////////////////////MINIGRAD///////////////////
 ///////////////////////////////////////////////////////////
@@ -214,7 +231,7 @@
 /obj/map_metadata/stalingrad/minigrad
 	ID = MAP_SMALLINGRAD
 	title = "Central Stalingrad"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra, /area/caribbean/no_mans_land/invisible_wall/tundra/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one, /area/caribbean/no_mans_land/invisible_wall/tundra/two)
 
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
@@ -225,6 +242,8 @@
 	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = FALSE
 	else if (J.is_ss_panzer == TRUE)
+		. = FALSE
+	else if (J.is_occupation == TRUE)
 		. = FALSE
 	else if (J.is_tanker == TRUE)
 		. = FALSE
@@ -341,3 +360,18 @@
 	world << "<big>Soviets: [sov_points]</big>"
 	spawn(300)
 		points_check()
+
+/obj/map_metadata/stalingrad/minigrad/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/two))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE

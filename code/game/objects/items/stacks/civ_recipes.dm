@@ -61,7 +61,7 @@
 		else
 			var/list/current_res = list(0,0,0)
 			if (map)
-				if (user.civilization == "none")
+				if (user && user.civilization == "none")
 					switch (map.ordinal_age)
 						if (0)
 							current_res = list(0,0,0)
