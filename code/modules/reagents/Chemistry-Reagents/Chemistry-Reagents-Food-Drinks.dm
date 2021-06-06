@@ -875,7 +875,7 @@
 	id = "wine"
 	description = "An alchoholic beverage made from distilled grape juice."
 	taste_description = "bitter sweetness"
-	color = "#6C0F1CD9" // rgb: 126, 64, 67
+	color = "#6C0F1CD9"
 	strength = 45
 	nutriment_factor = 1
 
