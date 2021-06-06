@@ -570,7 +570,7 @@
 	name = "Quinine"
 	id = "quinine"
 	description = "Bitter, from the chinchona plant."
-	taste_description = "very strong biterness"
+	taste_description = "very strong bitterness"
 	color = "#f4f4f4"
 
 /datum/reagent/drink/quinine/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
@@ -701,7 +701,7 @@
 	name = "Absinthe"
 	id = "absinthe"
 	description = "Watch out that the Green Fairy doesn't come for you!"
-	taste_description = "death and licorice"
+	taste_description = "licorice and herbs"
 	taste_mult = 1.5
 	color = "#33EE00"
 	strength = 40
@@ -790,7 +790,7 @@
 	name = "Kahlua"
 	id = "kahlua"
 	description = "A widely known, Mexican coffee-flavoured liqueur. In production since 1936!"
-	taste_description = "richness,bitterness and a hint of creaminess"
+	taste_description = "richness, bitterness and a hint of creaminess"
 	taste_mult = 1.1
 	color = "#562E00D9"
 	strength = 15
@@ -807,7 +807,7 @@
 	name = "Rum"
 	id = "rum"
 	description = "Yohoho and all that."
-	taste_description = "smooth alcohol,richness and sweetness"
+	taste_description = "smooth alcohol, richness and sweetness"
 	taste_mult = 1.1
 	color = "#E832008C"
 	strength = 30
@@ -866,7 +866,7 @@
 	name = "Whiskey"
 	id = "whiskey"
 	description = "A superb and well-aged single-malt whiskey. Damn."
-	taste_description = "richness,molasses and a hint of smoke"
+	taste_description = "richness, molasses and a hint of smoke"
 	color = "#AB3C05D9"
 	strength = 25
 
@@ -1122,7 +1122,7 @@
 	name = "Gin and Tonic"
 	id = "gintonic"
 	description = "An all time classic, mild cocktail."
-	taste_description = "gin,tartness and bitterness"
+	taste_description = "gin, tartness and bitterness"
 	color = "#ffffff80"
 	strength = 50
 
@@ -1159,7 +1159,7 @@
 	id = "iced_beer"
 	description = "A beer which is so cold the air around it freezes."
 	taste_description = "refreshingly cold"
-	color = "#664300"
+	color = "#E68500E6"
 	strength = 50
 	adj_temp = -20
 	targ_temp = 270
