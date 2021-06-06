@@ -1,14 +1,15 @@
 //Staves and Special Weapons
 /obj/item/weapon/material/sword/magic
-	name = "Magic Sword"
-	desc = "Shiny"
+	name = "Hypothetical Magic Sword"
+	desc = "This is a place holder for code don't use it as an item."
 	icon = 'icons/obj/magicweapons.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand_magic.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_magic.dmi',
 		)
-	icon_state = "ark_of_disease"
-	item_state = "ark_of_disease"
+	icon_state = "energy_blade"
+	item_state = "energy_blade"
+	var/base_icon = "energy_blade"
 	slot_flags = SLOT_BELT
 	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
@@ -21,7 +22,8 @@
 	drawsound = 'sound/items/unholster_sword01.ogg'
 	sharpness = 50
 	stat = "swords"
-	default_material = null
+	default_material = "diamond"
+	applies_material_colour = FALSE
 	cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
 	//ability vars
 	var/weakens = 0
@@ -44,10 +46,8 @@
 	var/reagent1amount = 0
 	var/reagent2amount = 0
 	var/cooloff = 0
+	unbreakable = TRUE
 
-/obj/item/weapon/material/sword/magic/New()
-	..()
-	default_material = null
 
 /obj/item/weapon/material/sword/magic/attack(mob/living/human/M as mob, mob/living/user as mob)
 	..()
@@ -95,49 +95,119 @@
 	name = "Ark of Disease"
 	icon_state = "ark_of_disease"
 	item_state = "ark_of_disease"
+	base_icon = "ark_of_disease"
 	desc = "It pulses ominously, you feel sick just by looking at it."
-	force_divisor = 0.50 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	sharpness = 25
 	block_chance = 35
-	toxics = 25
-	toxicpower = 15
-	reagent1 = "food_poisoning"
-	reagent2 = "cholera"
-	reagent1amount = 10
+	toxics = 100
+	toxicpower = 100
+	reagent1 = "cholera"
+	reagent2 = "plague"
+	reagent1amount = 15
 	reagent2amount = 5
+
+/obj/item/weapon/material/sword/magic/arkofdisease/lesser
+	name = "Curve of Infection"
+	toxics = 40
+	toxicpower = 15
+	reagent1 = "toxin"
+	reagent2 = "typhus"
+	reagent1amount = 15
+	reagent2amount = 5
+	default_material = "iron"
+	unbreakable = FALSE
 
 
 /obj/item/weapon/material/sword/magic/crimsonedge
 	name = "Crimson Edge"
 	icon_state = "crimson_edge"
 	item_state = "crimson_edge"
+	base_icon = "crimson_edge"
 	desc = "It looks like it is bleeding.."
-	force_divisor = 0.60 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.5
 	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
 	sharpness = 35
 	block_chance = 38
-	leechs = 20
-	leechpower = 20
+	leechs = 100
+	leechpower = 100
+
+/obj/item/weapon/material/sword/magic/crimsonedge/lesser
+	name = "Red Razer"
+	default_material = "iron"
+	leechs = 40
+	leechpower = 15
+	unbreakable = FALSE
 
 /obj/item/weapon/material/sword/magic/swordsmansflame
 	name = "Swordsman's Flame"
 	icon_state = "swordsmans_flame"
-	item_state = "swordsmans_flame"
+	item_state = "cultblade"
+	base_icon = "cultblade"
 	desc = "The blade feels cool but looks like it's red hot."
-	force_divisor = 0.65 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
 	sharpness = 40
 	block_chance = 40
-	flames = 35
-	flamepower = 50
+	flames = 100
+	flamepower = 100
+
+/obj/item/weapon/material/sword/magic/swordsmansflame/lesser
+	name = "Soldier's Ember"
+	default_material = "iron"
+	flames = 40
+	flamepower = 15
+	unbreakable = FALSE
+
+/obj/item/weapon/material/sword/magic/ice
+	name = "Greater Icicle"
+	icon_state = "sord"
+	item_state = "sord"
+	base_icon = "sord"
+	desc = "Your breath mists as it nears the blade."
+	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
+	sharpness = 40
+	block_chance = 40
+	ices = 100
+	icepower = 100
+
+/obj/item/weapon/material/sword/magic/ice/lesser
+	name = "Lesser Icicle"
+	default_material = "iron"
+	ices = 40
+	icepower = 15
+	unbreakable = FALSE
+
+/obj/item/weapon/material/sword/magic/elec
+	name = "Sheet Lightning"
+	icon_state = "elec"
+	item_state = "elec"
+	base_icon = "elec"
+	desc = "Holding this blade makes your small hairs stand on end."
+	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
+	sharpness = 40
+	block_chance = 40
+	shocks = 100
+	shockpower = 100
+
+/obj/item/weapon/material/sword/magic/elec/lesser
+	name = "Sparking Blade"
+	default_material = "iron"
+	shocks = 45
+	shockpower = 15
+	unbreakable = FALSE
 
 /obj/item/weapon/material/sword/magic/onoff
 	name = "Beam Blade"
 	icon_state = "beamblade_off"
 	item_state = "beamblade_off"
-	desc = "A blade made of pure energy"
+	base_icon = "beamblade_off"
 
+	desc = "A blade made of pure energy"
+	atk_mode = STAB
 	force_divisor = 0.10
 	thrown_force_divisor = 0.10
 	sharpness = 0
@@ -151,7 +221,7 @@
 	var/old_sharpness = 0
 	var/old_block_chance = 25
 
-	var/new_force_divisor = 0.25 // 42 when wielded with hardnes 60 (steel)
+	var/new_force_divisor = 10
 	var/new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
 	var/new_block_chance = 95
 	var/new_sharpness = 100
@@ -171,6 +241,7 @@
 	var/off_state = "beamblade_off"
 	var/off_state_item = ""
 
+
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
 	if(state == "OFF")
 		icon_state = on_state
@@ -183,6 +254,9 @@
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
+		sharp = 1
+		edge = 1
+		atk_mode = SLASH
 	else
 		icon_state = off_state
 		item_state = off_state_item
@@ -194,6 +268,9 @@
 		hitsound = hitsound_off
 		drawsound = drawsound_off
 		state = "OFF"
+		sharp = FALSE
+		edge = FALSE
+		atk_mode = BASH
 	..()
 
 //WANDS
