@@ -10,18 +10,12 @@
 	icon_state = "energy_blade"
 	item_state = "energy_blade"
 	var/base_icon = "energy_blade"
-	slot_flags = SLOT_BELT
 	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
-	sharp = 1
-	edge = 1
-	atk_mode = SLASH
-	block_chance = 35
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	drawsound = 'sound/items/unholster_sword01.ogg'
 	sharpness = 50
-	stat = "swords"
 	default_material = "diamond"
 	applies_material_colour = FALSE
 	cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
@@ -64,6 +58,7 @@
 	if(prob(ices))
 		M.adjustFireLoss(icepower)
 		playsound(loc, 'sound/effects/bubbles.ogg', 75, TRUE)
+		M.bodytemperature -= (icepower)
 	if(prob(toxics))
 		M.reagents.add_reagent(reagent1, (prob(toxicpower) + reagent1amount))
 		M.reagents.add_reagent(reagent2, (prob(toxicpower) + reagent2amount))
@@ -103,21 +98,23 @@
 	block_chance = 35
 	toxics = 100
 	toxicpower = 100
-	reagent1 = "cholera"
+	reagent1 = "lexorin"
 	reagent2 = "plague"
-	reagent1amount = 15
+	reagent1amount = 25
 	reagent2amount = 5
 
 /obj/item/weapon/material/sword/magic/arkofdisease/lesser
 	name = "Curve of Infection"
 	toxics = 40
 	toxicpower = 15
-	reagent1 = "toxin"
+	reagent1 = "cryptobiolin"
 	reagent2 = "typhus"
 	reagent1amount = 15
 	reagent2amount = 5
 	default_material = "iron"
-	unbreakable = FALSE
+	material = "iron"
+	applies_material_colour = TRUE
+
 
 
 /obj/item/weapon/material/sword/magic/crimsonedge
@@ -135,10 +132,10 @@
 
 /obj/item/weapon/material/sword/magic/crimsonedge/lesser
 	name = "Red Razer"
-	default_material = "iron"
 	leechs = 40
 	leechpower = 15
-	unbreakable = FALSE
+	default_material = "iron"
+	applies_material_colour = TRUE
 
 /obj/item/weapon/material/sword/magic/swordsmansflame
 	name = "Swordsman's Flame"
@@ -152,13 +149,16 @@
 	block_chance = 40
 	flames = 100
 	flamepower = 100
+	light_color = "#da0205"
+	light_range = 2
+
 
 /obj/item/weapon/material/sword/magic/swordsmansflame/lesser
 	name = "Soldier's Ember"
 	default_material = "iron"
 	flames = 40
 	flamepower = 15
-	unbreakable = FALSE
+	applies_material_colour = TRUE
 
 /obj/item/weapon/material/sword/magic/ice
 	name = "Greater Icicle"
@@ -171,14 +171,14 @@
 	sharpness = 40
 	block_chance = 40
 	ices = 100
-	icepower = 100
+	icepower = 60
 
 /obj/item/weapon/material/sword/magic/ice/lesser
 	name = "Lesser Icicle"
 	default_material = "iron"
 	ices = 40
 	icepower = 15
-	unbreakable = FALSE
+	applies_material_colour = TRUE
 
 /obj/item/weapon/material/sword/magic/elec
 	name = "Sheet Lightning"
@@ -191,23 +191,23 @@
 	sharpness = 40
 	block_chance = 40
 	shocks = 100
-	shockpower = 100
+	shockpower = 150
 
 /obj/item/weapon/material/sword/magic/elec/lesser
 	name = "Sparking Blade"
 	default_material = "iron"
 	shocks = 45
 	shockpower = 15
-	unbreakable = FALSE
+	applies_material_colour = TRUE
 
 /obj/item/weapon/material/sword/magic/onoff
 	name = "Beam Blade"
 	icon_state = "beamblade_off"
 	item_state = "beamblade_off"
 	base_icon = "beamblade_off"
-
+	cooldownw = DEFAULT_QUICK_COOLDOWN
 	desc = "A blade made of pure energy"
-	atk_mode = STAB
+	atk_mode = BASH
 	force_divisor = 0.10
 	thrown_force_divisor = 0.10
 	sharpness = 0
@@ -240,8 +240,6 @@
 	var/on_state_item = "beamblade"
 	var/off_state = "beamblade_off"
 	var/off_state_item = ""
-
-
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
 	if(state == "OFF")
 		icon_state = on_state
