@@ -126,6 +126,30 @@
 	metabolism = REM
 
 /datum/reagent/toxin/cholera/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if(H.disease_type != "cholera") //force cholera.
+			H.disease_type = "cholera"
+			H.disease = 1
+	return
+
+/datum/reagent/toxin/typhus
+	name = "Typhus"
+	id = "typhus"
+	description = "A transmissable bacteria."
+	taste_mult = FALSE
+	reagent_state = LIQUID
+	color = "#CF3600"
+	strength = 0
+	taste_description = "body odour"
+	metabolism = REM
+
+/datum/reagent/toxin/typhus/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if(H.disease_type != "typhus") //force typhus.
+			H.disease_type = "typhus"
+			H.disease = 1
 	return
 
 /datum/reagent/toxin/plague
