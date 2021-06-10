@@ -123,38 +123,6 @@
 	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 
-/obj/map_metadata/nomads_wasteland/two/New()
-	..()
-	spawn(18000)
-		seasons()
-		supplydrop_proc2()
-
-/obj/map_metadata/nomads_wasteland/two/proc/supplydrop_proc2()
-	var/droptype = pick("supplies","food","weapons","medicine")
-	var/turf/locationt = pick(supplydrop_turfs)
-	switch(droptype)
-		if("supplies")
-			world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Supplies have been airdropped in the area!</center></font>"
-			new/obj/structure/closet/crate/airdrops/supplies(locationt)
-
-		if("food")
-			world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food has been airdropped in the area!</center></font>"
-			new/obj/structure/closet/crate/airdrops/food(locationt)
-			new/obj/item/weapon/reagent_containers/glass/barrel/modern/water(locationt)
-
-		if("weapons")
-			world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Weapons and ammunition have been airdropped in the area!</center></font>"
-			new/obj/structure/closet/crate/airdrops/weapons(locationt)
-
-		if("military")
-			world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>military equipment have been airdropped in the area!</center></font>"
-			new/obj/structure/closet/crate/airdrops/military(locationt)
-
-		if("medicine")
-			world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>"
-			new/obj/structure/closet/crate/airdrops/medicine(locationt)
-	spawn(rand(27000, 72000))
-		supplydrop_proc2()
 
 /obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
