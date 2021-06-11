@@ -29,7 +29,8 @@
    * - 12 Miscallenous Medieval Extra-Cultural Clothes
    * - 13 Fantasy Medieval Clothes
    * - 13a Fantasy Crusader Helmets
-   * - 13b Dark Souls Armor*/
+   * - 13b Dark Souls Armor
+   * - 14 skryim*/
 
 /* Medieval Shoes & Boots*/
 
@@ -2386,7 +2387,7 @@ obj/item/clothing/head/helmet/samurai/black
 
 /obj/item/clothing/head/helmet/medieval/tes13/guard
 	name = "guard helmet"
-	desc = "The thick helmet of steel worn often by soldiers or guards."
+	desc = "A thick helmet of steel worn often by soldiers or guards."
 	icon_state = "tes13"
 	item_state = "tes13"
 	worn_state = "tes13"
@@ -2395,4 +2396,29 @@ obj/item/clothing/head/helmet/samurai/black
 	armor = list(melee = 50, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	restricts_view = 2
 	health = 60
+	slowdown = 0.05
+
+/obj/item/clothing/suit/armor/tes13/stormcloak
+	name = "stormcloak officer armor"
+	desc = "A thick, leather armor of hide with a bearpelt draped over it."
+	icon_state = "stormcloak"
+	item_state = "stormcloak"
+	worn_state = "stormcloak"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.4
+	health = 80
+
+/obj/item/clothing/head/helmet/medieval/tes13/stormcloak
+	name = "stormcloak officer helmet"
+	desc = "A bear pelt helmet with an armored lining."
+	icon_state = "stormcloak"
+	item_state = "stormcloak"
+	worn_state = "stormcloak"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 60, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 80
 	slowdown = 0.05

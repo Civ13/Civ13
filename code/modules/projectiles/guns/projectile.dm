@@ -23,7 +23,8 @@
 
 	//For MAGAZINE guns
 	var/magazine_type = null	//the type of magazine that the gun comes preloaded with
-	var/list/bad_magazine_types = list() // list of magazine types that we can't use
+	var/list/good_mags = list() //List of extra compatible mags
+	var/list/bad_magazine_types = list(/obj/item/ammo_magazine) // list of magazine types that we can't use
 	var/obj/item/ammo_magazine/ammo_magazine = null //stored magazine
 	var/auto_eject = FALSE			//if the magazine should automatically eject itself when empty.
 	var/auto_eject_sound = null
@@ -186,8 +187,9 @@
 
 		if (!(load_method & AM.mag_type) || caliber != AM.caliber)
 			return // incompatible
-
 		if (bad_magazine_types.Find(AM.type))
+			return //incompatible
+		if (!good_mags.Find(AM.type))
 			return // incompatible
 
 		switch(AM.mag_type)
@@ -277,7 +279,10 @@
 /obj/item/weapon/gun/projectile/attackby(var/obj/item/A as obj, mob/user)
 	..()
 	if (istype(A, /obj/item/ammo_magazine) || istype(A, /obj/item/ammo_casing))
-		load_ammo(A, user)
+		if (istype(A, /obj/item/ammo_magazine) && !magazine_type)
+			return
+		else
+			load_ammo(A, user)
 
 /obj/item/weapon/gun/projectile/attack_self(mob/user as mob)
 	if (firemodes.len > 1)

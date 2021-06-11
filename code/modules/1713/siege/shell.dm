@@ -332,6 +332,23 @@
 	new /obj/item/cannon_ball/shell/tank/HE75(storage)
 	update_icon()
 
+/obj/structure/shellrack/full85/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE85(storage)
+	new /obj/item/cannon_ball/shell/tank/HE85(storage)
+	new /obj/item/cannon_ball/shell/tank/HE85(storage)
+	new /obj/item/cannon_ball/shell/tank/HE85(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP85(storage)
+	new /obj/item/cannon_ball/shell/tank/AP85(storage)
+	new /obj/item/cannon_ball/shell/tank/AP85(storage)
+	new /obj/item/cannon_ball/shell/tank/AP85(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR85(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR85(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR85(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR85(storage)
+
 /obj/structure/shellrack/full88/New()
 	..()
 	new /obj/item/cannon_ball/shell/tank/HE88(storage)

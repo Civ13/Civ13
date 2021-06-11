@@ -1,0 +1,152 @@
+"aa" = (/turf/floor/dirt,/area/caribbean)
+"ab" = (/turf/floor/grass,/area/caribbean)
+"ac" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"ad" = (/obj/structure/vehicleparts/frame/t34/back,/obj/structure/shellrack/full76,/turf/floor/grass,/area/caribbean)
+"ae" = (/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/grass,/area/caribbean)
+"af" = (/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/gasoline{enginesize = 12000},/obj/structure/vehicleparts/frame/panzeriv/rb,/turf/floor/dirt,/area/caribbean)
+"ag" = (/obj/structure/shellrack/full75,/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/obj/structure/vehicleparts/frame/panzeriv/back,/turf/floor/dirt,/area/caribbean)
+"ah" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/frame/panzeriv/lb,/turf/floor/dirt,/area/caribbean)
+"ai" = (/obj/structure/vehicleparts/frame/t34/right/door,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean)
+"aj" = (/obj/structure/vehicleparts/frame/t34,/obj/structure/bed/chair/loader,/turf/floor/grass,/area/caribbean)
+"ak" = (/obj/structure/vehicleparts/frame/t34/left/door,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/grass,/area/caribbean)
+"al" = (/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/gasoline{enginesize = 25000},/obj/structure/vehicleparts/frame/panzervi/rb,/turf/floor/dirt,/area/caribbean)
+"am" = (/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/obj/structure/vehicleparts/frame/panzervi/back/door,/turf/floor/dirt,/area/caribbean)
+"an" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/frame/panzervi/lb,/turf/floor/dirt,/area/caribbean)
+"ao" = (/obj/structure/vehicleparts/frame/t34/right,/obj/structure/bed/chair/commander,/turf/floor/grass,/area/caribbean)
+"ap" = (/obj/structure/vehicleparts/frame/t34,/obj/structure/cannon/modern/tank/russian76{anchored = 1},/turf/floor/grass,/area/caribbean)
+"aq" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/grass,/area/caribbean)
+"ar" = (/obj/structure/vehicleparts/frame/i_go/rb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98{icon_state = "type98hmg"; dir = 1},/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/grass,/area/caribbean)
+"as" = (/obj/structure/cannon/modern/tank/russian85,/obj/structure/vehicleparts/frame/kv1,/turf/floor/dirt,/area/caribbean)
+"at" = (/obj/structure/vehicleparts/frame/i_go/back,/obj/structure/shellrack/full57,/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/grass,/area/caribbean)
+"au" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/turf/floor/grass,/area/caribbean)
+"av" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34,/turf/floor/grass,/area/caribbean)
+"aw" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/turf/floor/grass,/area/caribbean)
+"ax" = (/obj/structure/vehicleparts/frame/i_go/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/turf/floor/grass,/area/caribbean)
+"ay" = (/obj/structure/vehicleparts/axis/heavy/kv1a,/obj/structure/vehicleparts/frame/kv1/front,/turf/floor/dirt,/area/caribbean)
+"az" = (/obj/structure/vehicleparts/frame/chi_ha/rb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98{icon_state = "type92hmg"; dir = 1},/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/plating/tiled/woodh,/area/caribbean)
+"aA" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{icon_state = "maxim_ww2"; dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1; icon_state = "tracks_end"; invisibility = 0},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/structure/vehicleparts/frame/t34/lf{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aB" = (/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/obj/structure/vehicleparts/axis/heavy/t34{dir = 1},/obj/structure/vehicleparts/frame/t34/front{dir = 1},/turf/floor/dirt,/area/caribbean)
+"aC" = (/obj/structure/bed/chair/drivers/tank{icon_state = "driver_tank"; dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1; icon_state = "tracks_end"; invisibility = 0},/obj/structure/vehicleparts/frame/t34/rf{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aD" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 4},/obj/structure/vehicleparts/frame/t34/left{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aE" = (/obj/structure/cannon/modern/tank/russian76{anchored = 1; dir = 1; icon_state = "tank_cannon"},/obj/structure/vehicleparts/frame/t34{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aF" = (/obj/structure/bed/chair/commander{icon_state = "commanders_seat"; dir = 1},/obj/structure/vehicleparts/frame/t34/right{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aG" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/t34/left/door{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aH" = (/obj/structure/bed/chair/loader{icon_state = "officechair_white"; dir = 1},/obj/structure/vehicleparts/frame/t34{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aI" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/t34/right/door{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aJ" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
+"aK" = (/obj/structure/shellrack/full76,/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/frame/t34/back{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
+"aL" = (/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/frame/t34/rb{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"aM" = (/obj/structure/vehicleparts/frame/chi_ha/back,/obj/structure/shellrack/full57,/obj/structure/lamp/lamp_small/tank{icon_state = "bulb"; dir = 1},/turf/floor/plating/tiled/woodh,/area/caribbean)
+"aN" = (/obj/structure/vehicleparts/frame/chi_ha/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/turf/floor/plating/tiled/woodh,/area/caribbean)
+"aO" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/panzeriv/right/door,/turf/floor/dirt,/area/caribbean)
+"aP" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/panzeriv,/turf/floor/dirt,/area/caribbean)
+"aQ" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/panzeriv/left/door,/turf/floor/dirt,/area/caribbean)
+"aR" = (/obj/structure/vehicleparts/frame/panzervi/right,/obj/structure/shellrack/full88,/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean)
+"aS" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/panzervi,/turf/floor/dirt,/area/caribbean)
+"aT" = (/obj/structure/vehicleparts/frame/panzervi/left,/turf/floor/dirt,/area/caribbean)
+"aU" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/i_go/right/door,/turf/floor/grass,/area/caribbean)
+"aV" = (/obj/structure/vehicleparts/frame/i_go,/obj/structure/bed/chair/loader,/turf/floor/grass,/area/caribbean)
+"aW" = (/obj/structure/vehicleparts/frame/i_go/left/door,/turf/floor/grass,/area/caribbean)
+"aX" = (/obj/structure/vehicleparts/frame/chi_ha/right/door,/obj/effect/autoassembler,/turf/floor/plating/tiled/woodh,/area/caribbean)
+"aY" = (/obj/structure/vehicleparts/frame/chi_ha,/obj/structure/bed/chair/loader{anchored = 1},/turf/floor/plating/tiled/woodh,/area/caribbean)
+"aZ" = (/obj/structure/vehicleparts/frame/chi_ha/left/door,/turf/floor/plating/tiled/woodh,/area/caribbean)
+"ba" = (/obj/structure/bed/chair/commander,/obj/structure/vehicleparts/frame/panzeriv/right,/turf/floor/dirt,/area/caribbean)
+"bb" = (/obj/structure/cannon/modern/tank/german75{anchored = 1},/obj/structure/vehicleparts/frame/panzeriv,/turf/floor/dirt,/area/caribbean)
+"bc" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/obj/structure/vehicleparts/frame/panzeriv/left,/turf/floor/dirt,/area/caribbean)
+"bd" = (/obj/structure/vehicleparts/frame/panzervi/right,/obj/structure/bed/chair/commander,/turf/floor/dirt,/area/caribbean)
+"be" = (/obj/structure/cannon/modern/tank/german88{anchored = 1},/obj/structure/vehicleparts/frame/panzervi,/turf/floor/dirt,/area/caribbean)
+"bf" = (/obj/structure/vehicleparts/frame/panzervi/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean)
+"bg" = (/obj/structure/bed/chair/commander,/obj/structure/vehicleparts/frame/i_go/right,/turf/floor/grass,/area/caribbean)
+"bh" = (/obj/structure/vehicleparts/frame/i_go,/obj/structure/cannon/modern/tank/japanese57{anchored = 1},/turf/floor/grass,/area/caribbean)
+"bi" = (/obj/structure/bed/chair/gunner{anchored = 1; dir = 8; icon_state = "officechair_white"},/obj/structure/vehicleparts/frame/i_go/left,/turf/floor/grass,/area/caribbean)
+"bj" = (/obj/structure/vehicleparts/frame/chi_ha/right,/obj/structure/bed/chair/commander{anchored = 1},/turf/floor/plating/tiled/woodh,/area/caribbean)
+"bk" = (/obj/structure/vehicleparts/frame/chi_ha,/obj/structure/cannon/modern/tank/japanese57{anchored = 1},/turf/floor/plating/tiled/woodh,/area/caribbean)
+"bl" = (/obj/structure/vehicleparts/frame/chi_ha/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8; anchored = 1},/turf/floor/plating/tiled/woodh,/area/caribbean)
+"bm" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 0; layer = 4},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/structure/vehicleparts/frame/panzeriv/rf,/turf/floor/dirt,/area/caribbean)
+"bn" = (/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/axis/heavy/panzeriv,/obj/structure/vehicleparts/frame/panzeriv/front,/turf/floor/dirt,/area/caribbean)
+"bo" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzeriv/lf,/turf/floor/dirt,/area/caribbean)
+"bp" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/panzervi/rf,/turf/floor/dirt,/area/caribbean)
+"bq" = (/obj/structure/vehicleparts/frame/panzervi/front,/obj/structure/vehicleparts/axis/heavy/panzervi,/turf/floor/dirt,/area/caribbean)
+"br" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 0; layer = 4},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/structure/vehicleparts/frame/panzervi/lf,/turf/floor/dirt,/area/caribbean)
+"bs" = (/obj/structure/vehicleparts/frame/i_go/rf,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/grass,/area/caribbean)
+"bt" = (/obj/structure/vehicleparts/axis/heavy/i_go,/obj/structure/vehicleparts/frame/i_go/front,/obj/item/weapon/storage/toolbox/emergency,/obj/structure/lamp/lamp_small/tank/red,/turf/floor/grass,/area/caribbean)
+"bu" = (/obj/structure/vehicleparts/frame/i_go/lf,/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers,/turf/floor/grass,/area/caribbean)
+"bv" = (/obj/structure/vehicleparts/frame/chi_ha/rf,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/plating/tiled/woodh,/area/caribbean)
+"bw" = (/obj/structure/vehicleparts/axis/heavy/chi_ha,/obj/structure/vehicleparts/frame/chi_ha/front,/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/firstaid/advsmall,/obj/item/weapon/storage/firstaid/combat,/obj/structure/lamp/lamp_small/tank,/turf/floor/plating/tiled/woodh,/area/caribbean)
+"bx" = (/obj/structure/vehicleparts/frame/chi_ha/lf,/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers/tank{anchored = 1},/turf/floor/plating/tiled/woodh,/area/caribbean)
+"by" = (/mob/living/simple_animal/hostile/panther/jaguar,/turf/floor/dirt,/area/caribbean)
+"bz" = (/obj/structure/vehicleparts/frame/kv1/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"bA" = (/obj/structure/vehicleparts/frame/kv1/back,/obj/structure/shellrack/full85,/turf/floor/dirt,/area/caribbean)
+"bB" = (/obj/structure/vehicleparts/frame/kv1/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"bC" = (/obj/structure/vehicleparts/frame/kv1/right/door,/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean)
+"bD" = (/obj/structure/vehicleparts/frame/kv1,/obj/structure/bed/chair/loader,/turf/floor/dirt,/area/caribbean)
+"bE" = (/obj/structure/vehicleparts/frame/kv1/left/door,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt,/area/caribbean)
+"bF" = (/obj/structure/vehicleparts/frame/kv1/right,/obj/structure/bed/chair/commander,/turf/floor/dirt,/area/caribbean)
+"bG" = (/obj/structure/vehicleparts/frame/kv1/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean)
+"bH" = (/obj/structure/vehicleparts/frame/kv1/rf,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/structure/bed/chair/gunner,/turf/floor/dirt,/area/caribbean)
+"bI" = (/obj/structure/vehicleparts/frame/kv1/lf,/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers/tank,/turf/floor/dirt,/area/caribbean)
+"bJ" = (/obj/structure/vehicleparts/frame/m4/lf{dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1},/obj/structure/bed/chair/drivers/tank{anchored = 1; dir = 1; icon_state = "driver_tank"},/turf/floor/plating/road,/area/caribbean)
+"bK" = (/obj/structure/vehicleparts/frame/m4/front{dir = 1},/obj/structure/vehicleparts/axis/heavy/m4{dir = 1},/turf/floor/plating/road,/area/caribbean)
+"bL" = (/obj/structure/vehicleparts/frame/m4/rf{dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 1},/turf/floor/plating/road,/area/caribbean)
+"bM" = (/obj/structure/vehicleparts/frame/m4/left{dir = 1},/obj/structure/bed/chair/gunner{anchored = 1; dir = 4; icon_state = "officechair_white"},/turf/floor/plating/road,/area/caribbean)
+"bN" = (/obj/structure/vehicleparts/frame/m4{dir = 1},/obj/structure/cannon/modern/tank/american75{anchored = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"bO" = (/obj/structure/vehicleparts/frame/m4/right{dir = 1},/obj/structure/bed/chair/commander{anchored = 1; dir = 1; icon_state = "commanders_seat"},/turf/floor/plating/road,/area/caribbean)
+"bP" = (/obj/structure/vehicleparts/frame/m4/left/door{dir = 1},/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean)
+"bQ" = (/obj/structure/vehicleparts/frame/m4{dir = 1},/obj/structure/bed/chair/loader{anchored = 1; dir = 1; icon_state = "officechair_white"},/turf/floor/plating/road,/area/caribbean)
+"bR" = (/obj/structure/vehicleparts/frame/m4/right/door{dir = 1},/obj/effect/autoassembler,/turf/floor/plating/road,/area/caribbean)
+"bS" = (/obj/structure/vehicleparts/frame/m4/lb{dir = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/plating/road,/area/caribbean)
+"bT" = (/obj/structure/vehicleparts/frame/m4/back{dir = 1},/obj/structure/shellrack/full75/american{icon_state = "shellrack12"},/turf/floor/plating/road,/area/caribbean)
+"bU" = (/obj/structure/vehicleparts/frame/m4/rb{dir = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/gasoline{enginesize = 25000},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning,/turf/floor/plating/road,/area/caribbean)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaafagahaaaaaaaaaaaaaaaaaaalamanaaaaaaaaaaaaaaaaaaaaaaabaaaaaaarataxaaaaaaaaaaaaaaaaaaaaaaazaMaNaa
+aaaaaOaPaQaaaaaaaaaaaaaaaaaaaRaSaTaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaUaVaWaaaaaaaaaaaaaaaaaaaaaaaXaYaZaa
+aaaababbbcaaaaaaaaaaaaaaaaaabdbebfaaaaaaaaaaaaaaaaaaaaaaabaaaaaabgbhbiaaaaaaaaaaaaaaaaaaaaaabjbkblaa
+aaaabmbnboaaaaaaaaaaaaaaaaaabpbqbraaaaaaaaaaaaaaaaaaaaaaabaaaaaabsbtbuaaaaaaaaaaaaaaaaaaaaaabvbwbxaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaabababaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaababaaaaaaaaabaaaaaaaaabababbyaaabaaaaaaaaaaaaaaaaaaaaabaaabaaabaaabaaabaaaaaaaaaaaaabababaaababab
+aaabaaabaaaaababaaaaaaaaaaabaaaaababaaaaaaaaaaaaaaaaaaaaabaaabababaaaaababaaaaaaaaaaabaaaaabaaaaaaab
+aaababaaaaababababaaaaaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaabaaabaaabaaaaaaabaaaaaaaaaaaaabababaaaaabaa
+aaabaaaaaaaaaaabaaaaaaaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaabaaabababaaabababaaaaaaaaaaaaaaaaabaaaaabaa
+aaabaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababaaaaabaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abababababababababababababababababababababababababababababababababababababababababababababababababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaabababaaaaaaaaabababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaabaaaaaaabaaaaabaaaaaaabaaaaabaaabababaaaaaaaaaaaaaaaaaaaaaaababababaaaaababaaaaabababaaaaaa
+aaaaaaaaabaaaaaaaaaaaaabababababaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaabaaaaabaaabaaaaabaaaa
+aaaaaaaaabaaabababaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaabaaaaabaaabababaaaaaa
+aaaaaaaaabaaaaaaabaaaaabaaaaaaabaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaabaaaaaaabababaaabaaaaaaaaaa
+aaaaaaaaaaabababaaaaaaaaabababaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaabaaabaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaabababaaaaaaaaababaaaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaabaaaaabaaaaabababaaaaaaabaaaaaaaaaaaa
+aaaaaaaaabaaaaaaaaaaaaabaaaaabaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaabaaaaabaaabaaaaaaaaaaabaaabaaaaaaaaaa
+aaaaaaaaaaababaaaaaaaaabaaaaabaaaaaaabaaabaaaaaaaaaaaaaaaaaaaaabaaaaabaaaaababaaaaaaabababaaaaaaaaaa
+aaaaaaaaaaaaaaabaaaaaaabaaaaabaaaaaaabaaabaaaaaaaaaaaaaaaaaaaaabaaaaabaaaaaaaaabaaabaaaaaaabaaaaaaaa
+aaaaaaaaabababaaaaaaaaaaababaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaababaaaaabababaaaaabaaaaaaabaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abababababababababababababababababababababababababababababababababababababababababababababababababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+acadaeaaaaaaaaaaaaaaaaaaaaaaaabzbAbBaaaaaaaaaaabaaabaaaaaaabaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aiajakaaaaaaaaaaaaaaaaaaaaaaaabCbDbEaaaaaaaaaaabaaababaaababaaababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aoapaqaaaaaaaaaaaaaaaaaaaaaaaabFasbGaaaaaaaaaaabaaabaaabaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+auavawaaaaaaaaaaaaaaaaaaaaaaaabHaybIaaaaaaaaaaabaaabaaaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abababaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaabaaaaaaabaaababaaaaaaabaaaaabaaabaaaaaaabaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaabaaaaabaaababababaaaaabaaabaaaaabaaaaaaabaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaabaaaaaaabaaaaabaaaaaaababaaaaaaaaabaaabaaaaabaaaaaaaabJbKbLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aAaBaCaaabaaaaaaabaaaaaaabaaabaaaaaaabaaabaaaaabaaaaaaaabMbNbOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aDaEaFaaaaaaaaaaaaaaaaaaabaaaaabaaaaaaabaaaaaaabaaaaaaaabPbQbRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aGaHaIaaaaaaaaaaaaaaaaaaabaaaaabaaaaaaabaaaaaaabaaaaaaaabSbTbUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aJaKaLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}

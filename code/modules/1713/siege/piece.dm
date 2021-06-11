@@ -144,6 +144,8 @@
 	maxrange = 33
 	caliber = 85
 
+/obj/structure/cannon/modern/tank/russian85/kv1
+
 /obj/structure/cannon/modern/tank/russian85/field
 	name = "85 mm M1939 52-K cannon"
 	desc = "a 85 mm russian anti-air cannon converted for anti-tank use."

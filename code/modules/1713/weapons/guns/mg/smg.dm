@@ -97,6 +97,7 @@
 	fire_sound = 'sound/weapons/guns/fire/stg.ogg'
 	reload_sound = 'sound/weapons/guns/interact/stg_reload.ogg'
 	magazine_type = /obj/item/ammo_magazine/stg
+	good_mags = list(/obj/item/ammo_magazine/stg)
 	weight = 4.6
 	load_delay = 8
 	equiptimer = 15
@@ -171,6 +172,7 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp40
+	good_mags = list(/obj/item/ammo_magazine/mp40)
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
@@ -190,6 +192,7 @@
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/M3A1.ogg'
 	magazine_type = /obj/item/ammo_magazine/greasegun
+	good_mags = list(/obj/item/ammo_magazine/greasegun)
 	full_auto = TRUE
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 7
@@ -210,6 +213,7 @@
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/Thompson.ogg'
 	magazine_type = /obj/item/ammo_magazine/thompson
+	good_mags = list(/obj/item/ammo_magazine/thompson, /obj/item/ammo_magazine/tommy)
 	full_auto = TRUE
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
@@ -230,6 +234,7 @@
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/Thompson.ogg'
 	magazine_type = /obj/item/ammo_magazine/tommy
+	good_mags = list(/obj/item/ammo_magazine/thompson, /obj/item/ammo_magazine/tommy)
 	full_auto = TRUE
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
@@ -251,6 +256,7 @@
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Type100.ogg'
 	magazine_type = /obj/item/ammo_magazine/type100
+	good_mags = list(/obj/item/ammo_magazine/type100)
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
@@ -270,6 +276,7 @@
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
+	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.63
 	equiptimer = 14
 	firemodes = list(
@@ -289,6 +296,7 @@
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_pps
+	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.04
 	equiptimer = 10
 	firemodes = list(
@@ -307,6 +315,7 @@
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
 	weight = 3.47
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -380,6 +389,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
+	good_mags = list(/obj/item/ammo_magazine/ak74)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -604,6 +614,7 @@
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -638,6 +649,7 @@
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 	magazine_type = /obj/item/ammo_magazine/ar10
+	good_mags = list(/obj/item/ammo_magazine/ar10)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -660,6 +672,7 @@
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
 	weight = 3.07
 	equiptimer = 9
 	slot_flags = SLOT_SHOULDER
@@ -739,6 +752,7 @@
 	caliber = "a762x51"
 	fire_sound = 'sound/weapons/guns/fire/M14Alt.ogg'
 	magazine_type = /obj/item/ammo_magazine/m14
+	good_mags = list(/obj/item/ammo_magazine/m14)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6
 	equiptimer = 15
@@ -765,6 +779,7 @@
 	caliber = "a762x51"
 	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/hk
+	good_mags = list(/obj/item/ammo_magazine/hk)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	weight = 4.2
 	equiptimer = 15
@@ -788,6 +803,7 @@
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
 	weight = 3
 	equiptimer = 10
 	slot_flags = SLOT_SHOULDER
@@ -811,6 +827,7 @@
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 	magazine_type = /obj/item/ammo_magazine/scarh
+	good_mags = list(/obj/item/ammo_magazine/scarh)
 	weight = 3.5
 	equiptimer = 11
 	effectiveness_mod = 1.05
@@ -833,6 +850,7 @@
 	caliber = "a762x51"
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/scarh
+	good_mags = list(/obj/item/ammo_magazine/scarh)
 	weight = 3.5
 	equiptimer = 11
 	effectiveness_mod = 1.46
@@ -856,6 +874,7 @@
 	caliber = "a762x51"
 	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/scarh
+	good_mags = list(/obj/item/ammo_magazine/scarh)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	weight = 3.8
 	equiptimer = 13
@@ -877,6 +896,7 @@
 	caliber = "a57x28"
 	fire_sound = 'sound/weapons/guns/fire/PDW.ogg'
 	magazine_type = /obj/item/ammo_magazine/p90
+	good_mags = list(/obj/item/ammo_magazine/p90)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
 	weight = 2.3
 	equiptimer = 8
@@ -897,6 +917,7 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
+	good_mags = list(/obj/item/ammo_magazine/glock17)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
 	weight = 3
 	equiptimer = 4
@@ -919,6 +940,7 @@
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47/makeshift
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
 	weight = 3.8
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -926,27 +948,6 @@
 		list(name="full auto",	burst=1, burst_delay=1.7, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 0.85
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-
-/obj/item/weapon/gun/projectile/submachinegun/bx7
-	name = "BX-7 Rifle"
-	desc = "Something retarded that doesn't exist. Also extremely overpowered."
-	icon_state = "bx7"
-	item_state = "bx7"
-	base_icon = "bx7"
-	caliber = "a50cal"
-	fire_sound = 'sound/weapons/guns/fire/heavy_rifle.ogg'
-	magazine_type = /obj/item/ammo_magazine/bx7
-	weight = 4.0
-	equiptimer = 10
-	slot_flags = SLOT_SHOULDER
-	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-		list(name="burst fire",	burst=3, burst_delay=1.4, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
-		)
-	effectiveness_mod = 1
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 
@@ -962,6 +963,7 @@
 	reload_sound = 'sound/weapons/guns/interact/AKReload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AKUnload.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
+	good_mags = list(/obj/item/ammo_magazine/ak47)
 	weight = 2.93
 	equiptimer = 12
 	slot_flags = SLOT_SHOULDER
