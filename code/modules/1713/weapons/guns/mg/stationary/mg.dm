@@ -76,6 +76,7 @@
 	caliber = "a762x54_weak"
 	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/maxim
+	good_mags = list(/obj/item/ammo_magazine/maxim)
 	firemodes = list(
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
@@ -90,6 +91,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a762x54_weak"
 	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/maxim
+	good_mags = list(/obj/item/ammo_magazine/maxim)
 	firemodes = list(
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
@@ -104,6 +106,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a792x57_weak"
 	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/mg08
+	good_mags = list(/obj/item/ammo_magazine/mg08)
 	firemodes = list(
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
@@ -117,6 +120,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	base_icon = "pkm"
 	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/pkm
+	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/maxim)
 	firemodes = list(
 		list(name="full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
@@ -131,6 +135,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a303_weak"
 	fire_sound = 'sound/weapons/guns/fire/Vickers.ogg'
 	magazine_type = /obj/item/ammo_magazine/vickers
+	good_mags = list(/obj/item/ammo_magazine/vickers)
 	firemodes = list(
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
@@ -145,6 +150,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	base_icon = "hotchkiss1914"
 	caliber = "a8x50_weak"
 	magazine_type = /obj/item/ammo_magazine/hotchkiss
+	good_mags = list(/obj/item/ammo_magazine/hotchkiss)
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
 	is_hmg = TRUE
 
@@ -155,6 +161,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	base_icon = "type3"
 	caliber = "a65x50_weak"
 	magazine_type = /obj/item/ammo_magazine/type3
+	good_mags = list(/obj/item/ammo_magazine/type3)
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
 	is_hmg = TRUE
 
@@ -166,6 +173,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a77x58"
 	fire_sound = 'sound/weapons/guns/fire/Type92.ogg'
 	magazine_type = /obj/item/ammo_magazine/type92
+	good_mags = list(/obj/item/ammo_magazine/type92)
 	firemodes = list(
 		list(name="full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
@@ -183,6 +191,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a3006"
 	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
 	magazine_type = /obj/item/ammo_magazine/browning
+	good_mags = list(/obj/item/ammo_magazine/browning)
 	firemodes = list(
 		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
@@ -199,6 +208,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	base_icon = "mg34hmg"
 	caliber = "a792x57_weak"
 	magazine_type = /obj/item/ammo_magazine/mg34belt
+	good_mags = list(/obj/item/ammo_magazine/mg34belt, /obj/item/ammo_magazine/mg34)
 	firemodes = list(
 		list(name="full auto", burst=4, burst_delay=1, fire_delay=1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)

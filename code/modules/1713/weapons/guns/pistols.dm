@@ -83,6 +83,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
+	good_mags = list(/obj/item/ammo_magazine/c8mmnambu)
 	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
@@ -105,6 +106,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
+	good_mags = list(/obj/item/ammo_magazine/c8mmnambu)
 	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu/update_icon()
 	..()
@@ -127,6 +129,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.96
+	good_mags = list(/obj/item/ammo_magazine/luger)
 	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
 /obj/item/weapon/gun/projectile/pistol/luger/update_icon()
 	..()
@@ -149,6 +152,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.96
+	good_mags = list(/obj/item/ammo_magazine/walther)
 	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
 /obj/item/weapon/gun/projectile/pistol/waltherp38/update_icon()
 	..()
@@ -170,6 +174,7 @@
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
 	ammo_type = /obj/item/ammo_casing/a9x19
+	good_mags = list(/obj/item/ammo_magazine/glock17)
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
@@ -205,6 +210,7 @@
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
 	ammo_type = /obj/item/ammo_casing/a9x19
+	good_mags = list(/obj/item/ammo_magazine/sig250)
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
@@ -225,6 +231,7 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/pl14
+	good_mags = list(/obj/item/ammo_magazine/pl14)
 	weight = 0.594
 	max_shells = 16 //Glock 17 real capacity
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -241,6 +248,7 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp443
+	good_mags = list(/obj/item/ammo_magazine/mp443)
 	weight = 0.594
 	max_shells = 17
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -264,6 +272,7 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
+	good_mags = list(/obj/item/ammo_magazine/glock17)
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -287,6 +296,7 @@
 	caliber = "a45"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/p220
+	good_mags = list(/obj/item/ammo_magazine/p220)
 	weight = 0.594
 	max_shells = 7
 	ammo_type = /obj/item/ammo_casing/a45
@@ -310,6 +320,7 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
+	good_mags = list(/obj/item/ammo_magazine/glock17)
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -355,6 +366,7 @@
 	caliber = "a765x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/borchardt
+	good_mags = list(/obj/item/ammo_magazine/borchardt)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a765x25
 	load_method = MAGAZINE
@@ -377,6 +389,7 @@
 	caliber = "a32acp"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless
+	good_mags = list(/obj/item/ammo_magazine/colthammerless)
 	weight = 0.680
 	ammo_type = /obj/item/ammo_casing/a32acp
 	load_method = MAGAZINE
@@ -392,6 +405,7 @@
 	caliber = "a380acp"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless/a380acp
+	good_mags = list(/obj/item/ammo_magazine/colthammerless/a380acp)
 	weight = 0.720
 	ammo_type = /obj/item/ammo_casing/a380acp
 	load_method = MAGAZINE
@@ -414,6 +428,7 @@
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
 	magazine_type = /obj/item/ammo_magazine/bergmann
+	good_mags = list(/obj/item/ammo_magazine/bergmann)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/c8mmnambu
 	load_method = MAGAZINE
@@ -435,6 +450,7 @@
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
+	good_mags = list(/obj/item/ammo_magazine/m1911)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a45acp
 	load_method = MAGAZINE
@@ -450,6 +466,7 @@
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
+	good_mags = list(/obj/item/ammo_magazine/m1911)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a45acp
 	load_method = MAGAZINE
@@ -464,6 +481,7 @@
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/tt30
+	good_mags = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a762x25
 	load_method = MAGAZINE
@@ -485,7 +503,8 @@ obj/item/weapon/gun/projectile/pistol/tt30ll
 	w_class = 2
 	caliber = "l762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	magazine_type = /obj/item/projectile/bullet/pistol/rubber
+	magazine_type = /obj/item/ammo_magazine/tt30ll
+	good_mags = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/l762x25
 	load_method = MAGAZINE
@@ -501,6 +520,7 @@ obj/item/weapon/gun/projectile/pistol/tt30ll
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/m9beretta
+	good_mags = list(/obj/item/ammo_magazine/m9beretta)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
@@ -515,6 +535,7 @@ obj/item/weapon/gun/projectile/pistol/tt30ll
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/jericho
+	good_mags = list(/obj/item/ammo_magazine/jericho)
 	weight = 0.85
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE

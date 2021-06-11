@@ -18,6 +18,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
+	good_mags = list(/obj/item/ammo_magazine)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	//+2 accuracy over the LWAP because only one shot

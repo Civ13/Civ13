@@ -99,6 +99,7 @@
 	base_icon = "madsen"
 	caliber = "a762x54"
 	magazine_type = /obj/item/ammo_magazine/madsen
+	good_mags = list(/obj/item/ammo_magazine/madsen)
 	weight = 9.12
 
 	force = 20
@@ -112,6 +113,7 @@
 	base_icon = "type99lmg"
 	caliber = "a77x58"
 	magazine_type = /obj/item/ammo_magazine/type99
+	good_mags = list(/obj/item/ammo_magazine/type99, /obj/item/ammo_magazine/type92)
 	weight = 9.12
 	force = 20
 	throwforce = 30
@@ -128,6 +130,7 @@
 	caliber = "a762x54_weak"
 	fire_sound = 'sound/weapons/guns/fire/DP28.ogg'
 	magazine_type = /obj/item/ammo_magazine/dp
+	good_mags = list(/obj/item/ammo_magazine/dp)
 	weight = 9.12
 	force = 20
 	throwforce = 30
@@ -141,6 +144,7 @@
 	caliber = "a3006_weak"
 	fire_sound = 'sound/weapons/guns/fire/M1918A2.ogg'
 	magazine_type = /obj/item/ammo_magazine/bar
+	good_mags = list(/obj/item/ammo_magazine/bar)
 	weight = 9.12
 	force = 20
 	throwforce = 30
@@ -161,6 +165,7 @@
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	load_method = MAGAZINE
 	magazine_type = /obj/item/ammo_magazine/mg34
+	good_mags = list(/obj/item/ammo_magazine/mg34, /obj/item/ammo_magazine/mg34belt)
 	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
@@ -218,6 +223,7 @@
 	caliber = "a762x51_weak"
 	fire_sound = 'sound/weapons/guns/fire/M60.ogg'
 	magazine_type = /obj/item/ammo_magazine/b762
+	good_mags = list(/obj/item/ammo_magazine/b762)
 	weight = 10.5
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
@@ -238,6 +244,7 @@
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/Minimi.ogg'
 	magazine_type = /obj/item/ammo_magazine/m249
+	good_mags = list(/obj/item/ammo_magazine/m249)
 	weight = 10
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
@@ -271,6 +278,7 @@
 	base_icon = "pkmp"
 	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/pkm/c100
+	good_mags = list(/obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim)
 	weight = 7.5
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
@@ -290,6 +298,7 @@
 	base_icon = "negev"
 	caliber = "a556x45"
 	magazine_type = /obj/item/ammo_magazine/negev
+	good_mags = list(/obj/item/ammo_magazine/negev)
 	weight = 8
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
