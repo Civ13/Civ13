@@ -19,7 +19,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.40, CIVILIAN = 0.70)
 	battle_name = "Occupation"
-	mission_start_message = "<font size=4>The <b>SS</b> have to find and imprison or kill all the UPA partisans hidden within the populace while maintaining peace and order. The <b>UPA</b> must rid the city of the oppressors and kill enemy troops and officers. The civilians want the most money in their pockets for their nationality. <b>The faction with the most points wins!</b></font>"
+	mission_start_message = "<font size=4>The <b>SS</b> have to find and imprison or kill all the UPA partisans hidden within the populace while maintaining peace and order. The <b>UPA</b> must rid the city of the Polish oppressors and kill enemy troops and officers. The civilians want the most money in their pockets to score points for their nationality. <b>The faction with the most points wins!</b><br></font>"
 	faction1 = CIVILIAN
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -58,7 +58,7 @@
 /obj/map_metadata/occupation/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 300000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/gulag13/roundend_condition_def2name(define)
+/obj/map_metadata/occupation/roundend_condition_def2name(define)
 	..()
 	switch (define)
 		if (GERMAN)
@@ -110,6 +110,7 @@
 		else
 			return FALSE
 	return FALSE
+
 /obj/map_metadata/occupation/New()
 	..()
 	var/newnamee = list("UPA" = list(175,175,175,null,0,"star","#FF0000","#000000",0,0))
@@ -120,9 +121,9 @@
 		check_points_msg()
 		config.no_respawn_delays = FALSE
 /obj/map_metadata/occupation/proc/check_points()
-	for(var/i in points)
+/*	for(var/i in points)
 		if (i[1] != "SS")
-			i[2]=0
+			i[2]=0*/
 	for (var/mob/living/human/H in player_list)
 		if (H.stat!=DEAD && H.faction_text == CIVILIAN)
 			var/curval = 0
