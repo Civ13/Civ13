@@ -768,7 +768,7 @@
 	id = "gin"
 	description = "It's gin. In space. I say, good sir."
 	taste_description = "grain alcohol and a hint of a christmas tree"
-	color = "#E68500E6"
+	color = "#ffffff80"
 	strength = 20
 
 //Base type for alchoholic drinks containing coffee
