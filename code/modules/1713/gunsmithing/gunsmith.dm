@@ -564,6 +564,7 @@
 	caliber = "caliber"
 	ammo_type = /obj/item/ammo_casing
 	magazine_type = /obj/item/ammo_magazine/emptypouch
+	good_mags = list(/obj/item/ammo_magazine)
 
 /obj/item/weapon/gun/projectile/custom/New()
 	..()
