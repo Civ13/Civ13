@@ -323,6 +323,36 @@
 		else
 			user << "<span class = 'notice'>The casing is not complete yet.</span>"
 			return
+	else if (map.ID == MAP_NOMADS_KARAFUTO)
+		if (gunpowder >= gunpowder_max && bulletn >= amount)
+			var/list/listing = list("Cancel")
+			if (map.ordinal_age == 4)
+				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
+			else if (map.ordinal_age == 5)
+				listing = list("9x19 Parabellum",".45 pistol", "Cancel")
+			else if (map.ordinal_age >= 6)
+				listing = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR", ".45 pistol", "Cancel")
+			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+			if (input == "Cancel")
+				return
+			else if (input == "9x19 Parabellum")
+				resultpath = /obj/item/ammo_casing/a9x19
+			else if (input == "8x22mmB nambu")
+				resultpath = /obj/item/ammo_casing/c8mmnambu
+			else if (input == "7.62x38mmR")
+				resultpath = /obj/item/ammo_casing/a762x38
+			else if (input == "9x22mm nambu")
+				resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
+			if (resultpath != null)
+				for(var/i=1;i<=amount;i++)
+					new resultpath(user.loc)
+				qdel(src)
+				return
+			else
+				return
+		else
+			user << "<span class = 'notice'>The casing is not complete yet.</span>"
+			return
 	else
 		if (gunpowder >= gunpowder_max && bulletn >= amount)
 			var/list/listing = list("Cancel")
@@ -378,6 +408,47 @@
 				resultpath = /obj/item/ammo_casing/a762x54
 			else if (input == "7.92x57mm MG")
 				resultpath = /obj/item/ammo_casing/a792x57/weak
+			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
+				for(var/i=1;i<=amount;i++)
+					var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+					NC.btype = inputbtype
+					NC.checktype()
+				qdel(src)
+				return
+			else
+				return
+		else
+			user << "<span class = 'notice'>The casing is not complete yet.</span>"
+			return
+	else if (map.ID == MAP_NOMADS_KARAFUTO)
+		if (gunpowder >= gunpowder_max && bulletn >= amount)
+			var/list/listing = list("Cancel")
+			if (map.ordinal_age == 4)
+				listing = list("8x53mm murata", "7.62x54mm mosin", "7.62x54mm maxim", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+			if (map.ordinal_age == 5)
+				listing = list("8x53mm murata", "7.62x54mm mosin", "7.62x54mm maxim","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+			if (map.ordinal_age >= 6)
+				listing = list("7.7x58mm arisaka","7.62x54mm mosin", "7.62x54mm maxim","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+
+			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+			if (input == "Cancel")
+				return
+			else if (input == "12 Gauge (Buckshot)")
+				resultpath = /obj/item/ammo_casing/shotgun
+			else if (input == "12 Gauge (Slugshot)")
+				resultpath = /obj/item/ammo_casing/shotgun/slug
+			else if (input == "12 Gauge (Beanbag)")
+				resultpath = /obj/item/ammo_casing/shotgun/beanbag
+			else if (input == "8x53mm murata")
+				resultpath = /obj/item/ammo_casing/a8x53
+			else if (input == "7.62x54mm mosin")
+				resultpath = /obj/item/ammo_casing/a762x54
+			else if (input == "7.62x54mm maxim")
+				resultpath = /obj/item/ammo_casing/a762x54/weak
+			else if (input == "6.5x50mm arisaka")
+				resultpath = /obj/item/ammo_casing/a65x50
+			else if (input == "7.7x58mm arisaka")
+				resultpath = /obj/item/ammo_casing/a77x58
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
 					var/obj/item/ammo_casing/NC = new resultpath(user.loc)

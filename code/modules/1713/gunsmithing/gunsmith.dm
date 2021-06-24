@@ -52,39 +52,75 @@
 	//custom guns:
 	if (istype(P, /obj/item/weapon/gun/projectile/custom))
 		var/obj/item/weapon/gun/projectile/custom/PC = P
-		switch (PC.receiver_type)
-			if ("Pump-Action")
-				caliber_options = list("shotgun","Cancel")
+		if (map.ID == MAP_NOMADS_KARAFUTO)
+			switch (PC.receiver_type)
+				if ("Pump-Action")
+					caliber_options = list("shotgun","Cancel")
 
-			if ("Bolt-Action","Semi-Auto (large)")
-				caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+				if ("Bolt-Action","Semi-Auto (large)")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
 
-			if ("Open-Bolt (large)")
-				caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+				if ("Open-Bolt (large)")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
 
-			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+					caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+
+				if ("Dual Selective Fire", "Triple Selective Fire")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","Cancel")
+
+			if (PC.feeding_type == "Internal Magazine (Removable)")
+				caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+		else
+			switch (PC.receiver_type)
+				if ("Pump-Action")
+					caliber_options = list("shotgun","Cancel")
+
+				if ("Bolt-Action","Semi-Auto (large)")
+					caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+
+				if ("Open-Bolt (large)")
+					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+
+				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+					caliber_options = list("9mm pistol",".45 pistol","Cancel")
+
+				if ("Dual Selective Fire", "Triple Selective Fire")
+					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+
+			if (PC.feeding_type == "Internal Magazine (Removable)")
 				caliber_options = list("9mm pistol",".45 pistol","Cancel")
-
-			if ("Dual Selective Fire", "Triple Selective Fire")
-				caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
-
-		if (PC.feeding_type == "Internal Magazine (Removable)")
-			caliber_options = list("9mm pistol",".45 pistol","Cancel")
 	//others
-	else if (istype(P, /obj/item/weapon/gun/projectile/automatic))
-		caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
-	else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
-		caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
-	else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
-		caliber_options = list("6.5x50mm small rifle","5.56x45mm intermediate rifle","Cancel")
-	else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
-		caliber_options = list("9mm pistol",".45 pistol","Cancel")
-	else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
-		caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
-	else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
-		caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+	if (map.ID == MAP_NOMADS_KARAFUTO)
+		if (istype(P, /obj/item/weapon/gun/projectile/automatic))
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
+			caliber_options = list("6.5x50mm arisaka","7.62x54mm mosin", "Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
+			caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin", "Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
+			caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+		else
+			caliber_options = list("Cancel")
 	else
-		caliber_options = list("Cancel")
+		if (istype(P, /obj/item/weapon/gun/projectile/automatic))
+			caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
+			caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
+			caliber_options = list("6.5x50mm small rifle","5.56x45mm intermediate rifle","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
+			caliber_options = list("9mm pistol",".45 pistol","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
+			caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+		else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
+			caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+		else
+			caliber_options = list("Cancel")
 
 	var/choice = WWinput(H, "Which caliber do you want to convert \the [P] into? Be aware that this will permanently reduce accuracy by around 10%!", "Firearm Rechambering", "Cancel", caliber_options)
 	if (choice == "Cancel")
@@ -119,6 +155,34 @@
 			else if (choice == "5.56x45mm intermediate rifle")
 				P.caliber = "a556x45"
 				P.ammo_type = /obj/item/ammo_casing/a556x45
+
+			else if (choice == "7.7x58mm arisaka")
+				P.caliber = "a77x58"
+				P.ammo_type = /obj/item/ammo_casing/a77x58
+			else if (choice == "6.5x50mm arisaka")
+				P.caliber = "a65x50"
+				P.ammo_type = /obj/item/ammo_casing/a65x50
+			else if (choice == "7.62x54mm mosin")
+				P.caliber = "a762x54"
+				P.ammo_type = /obj/item/ammo_casing/a762x54
+			else if (choice == "7.62x54mm maxim")
+				P.caliber = "a762x54"
+				P.ammo_type = /obj/item/ammo_casing/a762x54/weak
+			else if (choice == "8x53mm murata")
+				P.caliber = "a8x53"
+				P.ammo_type = /obj/item/ammo_casing/a8x53
+			else if (choice == "9x19 Parabellum")
+				P.caliber = "a9x19"
+				P.ammo_type = /obj/item/ammo_casing/a9x19
+			else if (choice == "8x22mmB nambu")
+				P.caliber = "c8mmnambu"
+				P.ammo_type = /obj/item/ammo_casing/c8mmnambu
+			else if (choice == "9x22mm nambu")
+				P.caliber = "c9mm_jap_revolver"
+				P.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
+			else if (choice == "7.62x38mmR")
+				P.caliber = "a762x38"
+				P.ammo_type = /obj/item/ammo_casing/a762x38
 
 			P.effectiveness_mod *= 0.9
 			if (!findtext(P.name,"(rechambered)"))
@@ -311,25 +375,45 @@
 		using_wood = 0
 		using_steel = 0
 		return
-	var/list/caliberlist = list("Cancel")
-	switch (choice_receiver)
-		if ("Pump-Action")
-			caliberlist = list("shotgun","Cancel")
+	var/caliberlist = list("Cancel")
+	if(map.ID == MAP_NOMADS_KARAFUTO)
+		switch (choice_receiver)
+			if ("Pump-Action")
+				caliberlist = list("shotgun","Cancel")
 
-		if ("Bolt-Action","Semi-Auto (large)")
-			caliberlist = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+			if ("Bolt-Action","Semi-Auto (large)")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
 
-		if ("Open-Bolt (large)")
-			caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+			if ("Open-Bolt (large)")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
 
-		if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+				caliberlist = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+
+			if ("Dual Selective Fire", "Triple Selective Fire")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","Cancel")
+
+		if (choice_feeding == "Internal Magazine (Removable)")
+			caliberlist = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+	else
+		switch (choice_receiver)
+			if ("Pump-Action")
+				caliberlist = list("shotgun","Cancel")
+
+			if ("Bolt-Action","Semi-Auto (large)")
+				caliberlist = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+
+			if ("Open-Bolt (large)")
+				caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+
+			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+				caliberlist = list("9mm pistol",".45 pistol","Cancel")
+
+			if ("Dual Selective Fire", "Triple Selective Fire")
+				caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+
+		if (choice_feeding == "Internal Magazine (Removable)")
 			caliberlist = list("9mm pistol",".45 pistol","Cancel")
-
-		if ("Dual Selective Fire", "Triple Selective Fire")
-			caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
-
-	if (choice_feeding == "Internal Magazine (Removable)")
-		caliberlist = list("9mm pistol",".45 pistol","Cancel")
 
 	var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
 	if (choice_caliber == "Cancel")
@@ -358,6 +442,33 @@
 	else if (choice_caliber == "5.56x45mm intermediate rifle")
 		current_gun.caliber = "a556x45"
 		current_gun.ammo_type = /obj/item/ammo_casing/a556x45
+	else if (choice_caliber == "7.7x58mm arisaka")
+		current_gun.caliber = "a77x58"
+		current_gun.ammo_type = /obj/item/ammo_casing/a77x58
+	else if (choice_caliber == "6.5x50mm arisaka")
+		current_gun.caliber = "a65x50"
+		current_gun.ammo_type = /obj/item/ammo_casing/a65x50
+	else if (choice_caliber == "7.62x54mm mosin")
+		current_gun.caliber = "a762x54"
+		current_gun.ammo_type = /obj/item/ammo_casing/a762x54
+	else if (choice_caliber == "7.62x54mm maxim")
+		current_gun.caliber = "a762x54"
+		current_gun.ammo_type = /obj/item/ammo_casing/a762x54/weak
+	else if (choice_caliber == "8x53mm murata")
+		current_gun.caliber = "a8x53"
+		current_gun.ammo_type = /obj/item/ammo_casing/a8x53
+	else if (choice_caliber == "9x19 Parabellum")
+		current_gun.caliber = "a9x19"
+		current_gun.ammo_type = /obj/item/ammo_casing/a9x19
+	else if (choice_caliber == "8x22mmB nambu")
+		current_gun.caliber = "c8mmnambu"
+		current_gun.ammo_type = /obj/item/ammo_casing/c8mmnambu
+	else if (choice_caliber == "9x22mm nambu")
+		current_gun.caliber = "c9mm_jap_revolver"
+		current_gun.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
+	else if (choice_caliber == "7.62x38mmR")
+		current_gun.caliber = "a762x38"
+		current_gun.ammo_type = /obj/item/ammo_casing/a762x38
 
 	var/do_skn_override = WWinput(user, "Do you want to give this gun a different appearance or keep the default look?", "Gunsmithing", "Keep", list("Keep","Change"))
 	if (do_skn_override == "Change")
@@ -405,6 +516,7 @@
 		var/dst = WWinput(user, "Choose the gun's look:", "Gunsmithing", "Cancel", possible_list)
 		if (dst != "Cancel" && dst != null)
 			current_gun.override_sprite = dst
+			current_gun.base_icon = current_gun.override_sprite
 
 	if (choice_caliber && choice_stock && choice_barrel && choice_receiver && choice_feeding)
 		var/named = input(user, "Choose a name for this gun (max 15 characters):", "Gunsmithing", "gun")
@@ -446,6 +558,7 @@
 			newgunbp.barrel_type = current_gun.barrel_type
 			newgunbp.feeding_type = current_gun.feeding_type
 			newgunbp.override_sprite = current_gun.override_sprite
+			newgunbp.base_icon = current_gun.override_sprite
 			newgunbp.override_icon = current_gun.override_icon
 			newgunbp.cost_wood = using_wood
 			newgunbp.cost_steel = using_steel
@@ -514,6 +627,7 @@
 		NEWGUN.stock_type = bpsource.stock_type
 		NEWGUN.barrel_type = bpsource.barrel_type
 		NEWGUN.feeding_type = bpsource.feeding_type
+		NEWGUN.base_icon = bpsource.base_icon
 		NEWGUN.override_sprite = bpsource.override_sprite
 		NEWGUN.override_icon = bpsource.override_icon
 		NEWGUN.step = 4
@@ -631,6 +745,7 @@
 			stat = "rifle"
 			move_delay = 2
 			fire_delay = 2
+			good_mags = list(/obj/item/ammo_magazine)
 			accuracy_list = list(
 
 				// small body parts: head, hand, feet
@@ -694,6 +809,7 @@
 			single_action = FALSE
 			equiptimer -= 1
 			slot_flags = SLOT_HOLSTER
+			good_mags = list(/obj/item/ammo_magazine)
 			accuracy_list = list(
 				// small body parts: head, hand, feet
 				"small" = list(
@@ -753,6 +869,7 @@
 			equiptimer -= 1
 			gun_type = GUN_TYPE_PISTOL
 			slot_flags = SLOT_HOLSTER
+			good_mags = list(/obj/item/ammo_magazine)
 			accuracy_list = list(
 				// small body parts: head, hand, feet
 				"small" = list(
@@ -808,6 +925,7 @@
 			gtype = "rifle"
 			w_class = 4
 			slot_flags = SLOT_SHOULDER
+			good_mags = list(/obj/item/ammo_magazine)
 			accuracy_list = list(
 
 				// small body parts: head, hand, feet
@@ -876,6 +994,7 @@
 			sel_mode = 1
 			full_auto = TRUE
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+			good_mags = list(/obj/item/ammo_magazine)
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
 				)
@@ -939,6 +1058,7 @@
 			w_class = 5
 			heavy = TRUE
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+			good_mags = list(/obj/item/ammo_magazine)
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),
 				)
@@ -1005,6 +1125,7 @@
 			full_auto = TRUE
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Dual Selective Fire")
+			good_mags = list(/obj/item/ammo_magazine)
 			item_state = "ak47"
 			gtype = "rifle"
 			stat = "rifle"
@@ -1072,6 +1193,7 @@
 			KD_chance = KD_CHANCE_MEDIUM
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Triple Selective Fire")
+			good_mags = list(/obj/item/ammo_magazine)
 			item_state = "m16"
 			gtype = "rifle"
 			stat = "rifle"
@@ -1303,6 +1425,7 @@
 	for (var/datum/firemode/FM in firemodes)
 		if (FM.fire_delay == -1)
 			FM.fire_delay = fire_delay
+	update_icon()
 /obj/item/weapon/gun/projectile/custom/update_icon()
 	if (!override_sprite)
 		if (stock_type == "Folding Stock")
@@ -1323,8 +1446,28 @@
 		overlays += receiver_img
 		overlays += feeding_img
 		update_held_icon()
-	else
-		..()
+	else if (override_sprite)
+		if (receiver_type == "Pump-Action" || receiver_type == "Revolver")
+			return
+
+		if (feeding_type == "Bolt-Action")
+			if (!bolt_open)
+				icon_state = "[base_icon]"
+			else
+				icon_state = "[base_icon]_open"
+
+		if (receiver_type == "Semi-Auto (large)" || receiver_type == "Semi-Auto (small)" )
+			if (!ammo_magazine)
+				icon_state = "[base_icon]_open"
+			else
+				icon_state = "[base_icon]"
+
+		if (receiver_type == "Open-Bolt (large)" || receiver_type == "Open-Bolt (small)")
+			if (!ammo_magazine)
+				icon_state = "[base_icon]_open"
+			else
+				icon_state = "[base_icon]"
+	..()
 
 
 
@@ -1341,6 +1484,7 @@
 	if (jammed_until > world.time)
 		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
 		return FALSE
+	update_icon()
 	return TRUE
 
 
@@ -1419,6 +1563,7 @@
 			jamcheck = 0
 
 		last_fire = world.time
+	update_icon()
 
 
 
@@ -1465,6 +1610,8 @@
 		..()
 
 /obj/item/weapon/gun/projectile/custom/load_ammo(var/obj/item/A, mob/user)
+	if (!good_mags.Find(A.type))
+		good_mags.Add(A.type)
 	if (receiver_type == "Bolt-Action")
 		if (!bolt_open)
 			return
@@ -1472,6 +1619,7 @@
 			--check_bolt_lock // preincrement is superior
 	if (receiver_type == "Revolver")
 		chamber_offset = 0
+	update_icon()
 	..()
 
 /obj/item/weapon/gun/projectile/custom/unload_ammo(mob/user, var/allow_dump=1)
@@ -1504,7 +1652,7 @@
 				if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 		else
 			user << "<span class='warning'>[src] is empty.</span>"
-
+	update_icon()
 	..()
 
 /obj/item/weapon/gun/projectile/custom/consume_next_projectile(var/check = FALSE)
@@ -1594,6 +1742,7 @@
 			update_icon()
 	else
 		usr << "\The [src] has no stock to toggle."
+	update_icon()
 
 /obj/item/weapon/gun/projectile/custom/proc/set_stock()
 	if (folded)
@@ -1602,3 +1751,4 @@
 	else
 		slot_flags = SLOT_SHOULDER
 		effectiveness_mod /= 0.87
+

@@ -245,6 +245,44 @@
 	else
 		..()
 
+/obj/structure/gate/whiterun
+	name = "whiterun gate"
+	desc = "A large wooden double door"
+	icon = 'icons/obj/doors/gates_64x96.dmi'
+	icon_state = "whiterun1"
+	anchored = TRUE
+	density = TRUE
+	health = 1000
+	maxhealth = 1000
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_height = 64
+	bound_width = 64
+/obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the doors uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
+/obj/structure/gate/whiterun/r
+	icon_state = "whiterun2"
+/obj/structure/gate/whiterun/l
+	icon_state = "whiterun1"
 
 /obj/structure/gate/ex_act(severity)
 	switch(severity)

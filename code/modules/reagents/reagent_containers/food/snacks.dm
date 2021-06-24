@@ -1052,6 +1052,19 @@
 		..()
 		bitesize = 3
 
+/obj/item/weapon/reagent_containers/food/snacks/sweetroll
+	name = "Sweet Roll"
+	desc = "A towering donut topped with icing."
+	icon_state = "sweetroll"
+	filling_color = "#FF525A"
+	center_of_mass = list("x"=16, "y"=11)
+	nutriment_desc = list("sweetness" = 2, "icing" = 2, "donut" = 2)
+	nutriment_amt = 4
+	decay = 18*600
+	New()
+		..()
+		bitesize = 3
+
 /obj/item/weapon/reagent_containers/food/snacks/twobread
 	name = "Two Bread"
 	desc = "It is very bitter and winy."
