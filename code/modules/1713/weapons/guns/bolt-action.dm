@@ -294,6 +294,7 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
+	good_mags = list(/obj/item/ammo_magazine/mosin)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	load_delay = 7
@@ -351,6 +352,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
+	good_mags = list(/obj/item/ammo_magazine/mosin)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
 
@@ -378,6 +380,7 @@
 	weight = 3.8
 	ammo_type = /obj/item/ammo_casing/a65x50
 	magazine_type = /obj/item/ammo_magazine/arisaka
+	good_mags = list(/obj/item/ammo_magazine/arisaka)
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
@@ -435,6 +438,7 @@
 	caliber = "a65x50"
 	weight = 3.8
 	magazine_type = /obj/item/ammo_magazine/arisaka
+	good_mags = list(/obj/item/ammo_magazine/arisaka)
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
@@ -506,6 +510,7 @@
 	value = 100
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/arisaka99
+	good_mags = list(/obj/item/ammo_magazine/arisaka99)
 	recoil = 0
 	force = 11
 	throwforce = 25
@@ -578,6 +583,7 @@
 	fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	ammo_type = /obj/item/ammo_casing/a77x58_wood
 	magazine_type = /obj/item/ammo_magazine/arisaka99_training
+	good_mags = list(/obj/item/ammo_magazine/arisaka99, /obj/item/ammo_magazine/arisaka99_training)
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
@@ -634,6 +640,7 @@
 	weight = 3.8
 	ammo_type = /obj/item/ammo_casing/a765x53
 	magazine_type = /obj/item/ammo_magazine/gewehr71
+	good_mags = list(/obj/item/ammo_magazine/gewehr71)
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
@@ -656,6 +663,7 @@
 	weight = 3.8
 	ammo_type = /obj/item/ammo_casing/a762x51
 	magazine_type = /obj/item/ammo_magazine/gewehr71
+	good_mags = list(/obj/item/ammo_magazine/gewehr71)
 	bolt_safety = FALSE
 	effectiveness_mod = 0.85
 	value = 90
@@ -680,6 +688,7 @@
 	weight = 3.8
 	ammo_type = /obj/item/ammo_casing/a765x53
 	magazine_type = /obj/item/ammo_magazine/gewehr71
+	good_mags = list(/obj/item/ammo_magazine/gewehr71)
 	bolt_safety = FALSE
 	effectiveness_mod = 0.89
 	value = 100
@@ -703,6 +712,7 @@
 	weight = 3.68
 	ammo_type = /obj/item/ammo_casing/a7x57
 	magazine_type = /obj/item/ammo_magazine/mauser1893
+	good_mags = list(/obj/item/ammo_magazine/mauser1893)
 	bolt_safety = FALSE
 	effectiveness_mod = 0.91
 	value = 100
@@ -735,6 +745,7 @@
 	weight = 4
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
+	good_mags = list(/obj/item/ammo_magazine/gewehr98)
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
 	value = 100
@@ -754,6 +765,7 @@
 	weight = 3.7
 	ammo_type = /obj/item/ammo_casing/a765x53
 	magazine_type = /obj/item/ammo_magazine/gewehr71
+	good_mags = list(/obj/item/ammo_magazine/gewehr71)
 	effectiveness_mod = 0.96
 	equiptimer = 15
 
@@ -797,6 +809,7 @@
 	throwforce = 16
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
+	good_mags = list(/obj/item/ammo_magazine/enfield)
 	effectiveness_mod = 0.97
 	slot_flags = SLOT_SHOULDER
 	handle_casings = HOLD_CASINGS
@@ -813,6 +826,7 @@
 	weight = 3.8
 	ammo_type = /obj/item/ammo_casing/a65x52
 	magazine_type = /obj/item/ammo_magazine/carcano
+	good_mags = list(/obj/item/ammo_magazine/carcano)
 	bolt_safety = FALSE
 	effectiveness_mod = 0.85
 	value = 100
@@ -843,6 +857,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/arisaka
+	good_mags = list(/obj/item/ammo_magazine/arisaka)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 15
 
@@ -866,6 +881,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/murata
+	good_mags = list(/obj/item/ammo_magazine/murata)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	blackpowder = TRUE
 	equiptimer = 17
@@ -898,6 +914,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
+	good_mags = list(/obj/item/ammo_magazine/mosin)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 17
 /obj/item/weapon/gun/projectile/boltaction/berdan/update_icon(var/add_scope = FALSE)
@@ -930,6 +947,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
+	good_mags = list(/obj/item/ammo_magazine/enfield)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 10
 	equiptimer = 15
@@ -952,6 +970,7 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a8x50
 	magazine_type = /obj/item/ammo_magazine/c8x50
+	good_mags = list(/obj/item/ammo_magazine/c8x50)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 8
 	equiptimer = 16
@@ -974,6 +993,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a8x50
 	magazine_type = /obj/item/ammo_magazine/c8x50_3clip
+	good_mags = list(/obj/item/ammo_magazine/c8x50_3clip)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 3
 	equiptimer = 13
@@ -981,6 +1001,7 @@
 	name = "Berthier M1907/16"
 	desc = "A 5 round, bolt-action carbine, chambered in 8×50mmR Lebel."
 	magazine_type = /obj/item/ammo_magazine/c8x50_5clip
+	good_mags = list(/obj/item/ammo_magazine/c8x50_3clip)
 	max_shells = 5
 	equiptimer = 13
 /obj/item/weapon/gun/projectile/boltaction/mosin/obrez
@@ -1012,6 +1033,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x51
 	damage_modifier = 1.25
 	magazine_type = /obj/item/ammo_magazine/m24
+	good_mags = list(/obj/item/ammo_magazine/m24)
 	bolt_safety = FALSE
 	effectiveness_mod = 1.15
 	value = 130
@@ -1048,6 +1070,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/springfield
+	good_mags = list(/obj/item/ammo_magazine/springfield)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 5
 	equiptimer = 12

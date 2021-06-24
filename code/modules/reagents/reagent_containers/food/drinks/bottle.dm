@@ -593,7 +593,115 @@
 	New()
 		..()
 		reagents.add_reagent("ale", 40)
+//////////////////////////SKYRIM/////////////////////////////////////////////////////////////////
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead
+	name = "mead"
+	desc = "A bottle of nordic mead."
+	icon_state = "mead"
+	item_state = "beer"
+	center_of_mass = list("x"=16, "y"=10)
+	volume = 40
+	value = 20
+	New()
+		..()
+		reagents.add_reagent("mead", 40)
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead/update_icon()
+	if (reagents.reagent_list.len && flags != OPENCONTAINER)
+		icon_state = "mead"
+	else
+		icon_state = "mead_open"
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead/open(mob/user)
+		playsound(loc,'sound/effects/canopen.ogg', rand(10,50), TRUE)
+		user << "<span class='notice'>You pop the cork off of the [src]!</span>"
+		flags |= OPENCONTAINER
+		icon_state = "mead_open"
+		update_icon()
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/alto_wine
+	name = "alto wine"
+	desc = "A bottle of wine, the finest in tamriel."
+	icon_state = "wine"
+	item_state = "beer"
+	center_of_mass = list("x"=16, "y"=10)
+	value = 20
+	volume = 80
+	New()
+		..()
+		reagents.add_reagent("wine", 80)
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/alto_wine/update_icon()
+	if (reagents.reagent_list.len && flags != OPENCONTAINER)
+		icon_state = "wine"
+	else
+		icon_state = "wine_open"
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/alto_wine/open(mob/user)
+		playsound(loc,'sound/effects/canopen.ogg', rand(10,50), TRUE)
+		user << "<span class='notice'>You pop the cork off of the [src]!</span>"
+		flags |= OPENCONTAINER
+		icon_state = "wine_open"
 
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing
+	name = "health potion"
+	desc = "A bottle of a healing chemical."
+	icon_state = "health_minor"
+	item_state = "beer"
+	flags = OPENCONTAINER
+	center_of_mass = list("x"=16, "y"=10)
+	value = 20
+	volume = 5
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/update_icon()
+	if (reagents.reagent_list.len)
+		icon_state = "[initial(icon_state)]"
+	else
+		icon_state = "[initial(icon_state)]"
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor
+	name = "minor healing potion"
+	desc = "A bottle of a weak healing chemical."
+	icon_state = "health_minor"
+	New()
+		..()
+		reagents.add_reagent("minor", 5)
+		icon_state = "health_minor"
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/healing_potion
+	name = "healing potion"
+	desc = "A bottle of a moderate healing chemical."
+	icon_state = "health_potion"
+	value = 40
+	New()
+		..()
+		reagents.add_reagent("healing", 5)
+		icon_state = "health_potion"
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/plentiful
+	name = "potion of plentiful healing"
+	desc = "A bottle of a good healing chemical."
+	icon_state = "health_plentiful"
+	value = 60
+	New()
+		..()
+		reagents.add_reagent("plentiful", 5)
+		icon_state = "health_plentiful"
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/vigorous
+	name = "potion of vigorous healing"
+	desc = "A bottle of a extreme healing chemical."
+	icon_state = "health_vigor"
+	value = 60
+	New()
+		..()
+		reagents.add_reagent("vigor", 5)
+		icon_state = "health_vigor"
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught
+	name = "potion of vigorous healing"
+	desc = "A bottle of a extreme healing chemical."
+	icon_state = "health_vigor"
+	value = 200
+	New()
+		..()
+		reagents.add_reagent("draught", 5)
+		icon_state = "health_vigor"
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake
 	volume = 50
 	name = "sake"

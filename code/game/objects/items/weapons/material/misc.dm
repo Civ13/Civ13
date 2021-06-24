@@ -834,3 +834,54 @@
 			H.awards["tank"]+=(heavy_armor_penetration/200)
 	else
 		..()
+
+
+
+////////////////////////////////////////SKYRIM//////////////////////////////////////
+/obj/item/weapon/material/tes13/mace
+	name = "steel mace"
+	sharp = TRUE
+	edge = FALSE
+	desc = "A steel mace, with 5 large spikes on it."
+	slot_flags = SLOT_BELT
+	icon_state = "steel_mace"
+	item_state = "mace"
+	default_material = "steel"
+	throw_speed = 7
+	throw_range = 11
+	allow_spin = FALSE
+	force_divisor = 0.85 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.95 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","struck","beaten")
+	value = 30
+	block_chance = 15
+	cooldownw = 6
+
+/obj/item/weapon/material/hatchet/battleaxe/tes13
+	name = "steel war axe"
+	desc = "A very sharp axe blade upon a wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "waraxe_tes13"
+	item_state = "battleaxe"
+	default_material = "steel"
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
+	w_class = 3
+	sharp = TRUE
+	edge = TRUE
+	attack_verb = list("chopped", "torn", "cut")
+	applies_material_colour = FALSE
+	value = 20
+	slot_flags = SLOT_BELT
+	block_chance = 15
+	cooldownw = 7
+
+/obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe
+	name = "steel battle axe"
+	desc = "A very sharp double axe blade upon a twohanded wood handle. Not pratical for felling trees but perhaps felling people."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "battleaxe_tes13"
+	force_divisor = 0.8 // 30 with hardness 60 (steel)
+	slot_flags = SLOT_SHOULDER | SLOT_BACK
+	block_chance = 15
+	cooldownw = 7

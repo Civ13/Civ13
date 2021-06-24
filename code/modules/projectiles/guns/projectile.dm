@@ -189,7 +189,7 @@
 			return // incompatible
 		if (bad_magazine_types.Find(AM.type))
 			return //incompatible
-		if (!good_mags.Find(AM.type))
+		else if (!(load_method & AM.mag_type != SPEEDLOADER) && !good_mags.Find(AM.type))
 			return // incompatible
 
 		switch(AM.mag_type)

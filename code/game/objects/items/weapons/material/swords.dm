@@ -575,3 +575,32 @@ obj/item/weapon/material/sword/rapier/iron
 
 /obj/item/weapon/material/sword/xiphos/iron
 	default_material = "iron"
+
+//////////////////////////////////SKYRIM////////////////////////////////////////
+/obj/item/weapon/material/sword/tes13/twohanded
+	name = "twohanded steel sword"
+	desc = "A sword with a long blade and handle meant to be used with 2 hands."
+	icon_state = "twohanded"
+	item_state = "twohanded"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 1.1 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 50
+	cooldownw = 15
+	value = 60
+
+/obj/item/weapon/material/sword/tes13/steel
+	name = "imperial steel sword"
+	desc = "A sword with a steel blade commonly used by the empire."
+	icon_state = "imperial"
+	item_state = "longsword"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 0.80 //
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 20
+	cooldownw = 8
+	value = 60

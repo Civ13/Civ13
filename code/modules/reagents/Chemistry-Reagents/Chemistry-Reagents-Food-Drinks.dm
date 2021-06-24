@@ -693,6 +693,96 @@
 	description = "Absolutely nothing."
 	taste_description = "nothing"
 
+/datum/reagent/drink/health
+/datum/reagent/drink/health/minor
+	name = "Minor Healing"
+	id = "minor"
+	description = "A weak healing concotion."
+	taste_description = "slightly rejuvenating."
+	color = "#440000"
+	adj_dizzy = -20
+/datum/reagent/drink/health/minor/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.adjustBruteLoss(-4 * removed)
+		M.adjustFireLoss(-4 * removed)
+		M.adjustBrainLoss(-4 * removed)
+		M.adjustToxLoss(-4 * removed)
+		M.adjustOxyLoss(-4 * removed)
+		M.eye_blurry = max(M.eye_blurry - 5, FALSE)
+		M.add_chemical_effect(CE_PAINKILLER, 5)
+		M.drowsyness = max(M.drowsyness - 5, FALSE)
+		M.AdjustParalysis(-1)
+		M.AdjustStunned(-1)
+		M.AdjustWeakened(-1)
+		M.restore_blood()
+/datum/reagent/drink/health/healing
+	name = "Healing"
+	id = "healing"
+	description = "A healing concotion."
+	taste_description = "more or less rejuvenating."
+	color = "#440000"
+	adj_dizzy = -50
+/datum/reagent/drink/health/healing/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.adjustBruteLoss(-6 * removed)
+		M.adjustFireLoss(-6 * removed)
+		M.adjustBrainLoss(-6 * removed)
+		M.adjustToxLoss(-6 * removed)
+		M.adjustOxyLoss(-6 * removed)
+		M.eye_blurry = max(M.eye_blurry - 5, FALSE)
+		M.add_chemical_effect(CE_PAINKILLER, 10)
+		M.drowsyness = max(M.drowsyness - 6, FALSE)
+		M.AdjustParalysis(-1)
+		M.AdjustStunned(-1)
+		M.AdjustWeakened(-1)
+		M.restore_blood()
+/datum/reagent/drink/health/plentiful
+	name = "Plentiful Healing"
+	id = "plentiful"
+	description = "A stronger healing concotion."
+	taste_description = "quite rejuvenating."
+	color = "#440000"
+	adj_dizzy = -100
+/datum/reagent/drink/health/plentiful/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.adjustBruteLoss(-10 * removed)
+		M.adjustFireLoss(-10 * removed)
+		M.adjustBrainLoss(-10 * removed)
+		M.adjustToxLoss(-10 * removed)
+		M.adjustOxyLoss(-10 * removed)
+		M.eye_blurry = max(M.eye_blurry - 5, FALSE)
+		M.add_chemical_effect(CE_PAINKILLER, 20)
+		M.drowsyness = max(M.drowsyness - 10, FALSE)
+		M.AdjustParalysis(-1)
+		M.AdjustStunned(-1)
+		M.AdjustWeakened(-1)
+		M.restore_blood()
+/datum/reagent/drink/health/vigorous
+	name = "Vigorous Healing"
+	id = "vigor"
+	description = "a very strong healing concotion."
+	taste_description = "extremely rejuvenating."
+	color = "#440000"
+	adj_dizzy = -200
+/datum/reagent/drink/health/vigorous/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.adjustBruteLoss(-25 * removed)
+		M.adjustFireLoss(-25 * removed)
+		M.adjustBrainLoss(-25 * removed)
+		M.adjustToxLoss(-25 * removed)
+		M.adjustOxyLoss(-25 * removed)
+		M.heal_organ_damage(25 * removed, 25 * removed)
+		M.eye_blurry = max(M.eye_blurry - 5, FALSE)
+		M.add_chemical_effect(CE_PAINKILLER, 40)
+		M.drowsyness = max(M.drowsyness - 15, FALSE)
+		M.AdjustParalysis(-1)
+		M.AdjustStunned(-1)
+		M.AdjustWeakened(-1)
+		M.restore_blood()
+/datum/reagent/drink/health/draught
+	name = "Draught"
+	id = "draught"
+	description = "a rejuvenating healing concotion."
+	taste_description = "extremely rejuvenating."
+	color = "#440000"
+/datum/reagent/drink/health/draught/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.rejuvenate()
 /* Alcohol */
 
 // Basic
@@ -714,6 +804,19 @@
 	color = "#53150AE6"
 	strength = 90
 	nutriment_factor = 2
+
+/datum/reagent/ethanol/mead
+	name = "Mead"
+	id = "mead"
+	description = "A dark alchoholic beverage made by malted barley and yeast."
+	taste_description = "a drink to put some hair on your chest"
+	color = "#53150AE6"
+	strength = 40
+	nutriment_factor = 4
+/datum/reagent/ethanol/mead/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	if (strength)
+		if (issmall(M)) removed *= 2 // Small bodymass, more effect from lower volume.
+		M.adjustBruteLoss(-(strength/8 * removed))
 
 /datum/reagent/ethanol/beer
 	name = "Beer"
@@ -768,7 +871,7 @@
 	id = "gin"
 	description = "It's gin. In space. I say, good sir."
 	taste_description = "grain alcohol and a hint of a christmas tree"
-	color = "#E68500E6"
+	color = "#ffffff80"
 	strength = 20
 
 //Base type for alchoholic drinks containing coffee

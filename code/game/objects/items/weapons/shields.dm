@@ -392,3 +392,50 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	w_class = 4
 	base_block_chance = 85
 	slowdown = 2.85
+//////////////////////////////////////SKYRIM////////////////////////////////////////
+/obj/item/weapon/shield/tes13
+	name = "iron shield"
+	icon_state = "iron_shield_tes13"
+	item_state = "iron_shield_tes13"
+	material = "iron"
+	health = 60
+	w_class = 3.0
+	base_block_chance = 40
+	slowdown = 0.05
+/obj/item/weapon/shield/tes13/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+	if (user.incapacitated())
+		return FALSE
+
+	//block as long as they are not directly behind us
+	var/bad_arc = reverse_direction(user.dir) //arc of directions from which we cannot block
+	if (check_shield_arc(user, bad_arc, damage_source, attacker))
+		if (prob(get_block_chance(user, damage, damage_source, attacker)))
+			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
+			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+				health -= 2
+			else
+				health--
+			if (istype(damage_source, /obj/item/weapon/material/tes13/mace))
+				src.health -= 10
+			check_health()
+			return TRUE
+	return FALSE
+/obj/item/weapon/shield/tes13/stormcloak
+	name = "stormcloak shield"
+	icon_state = "stormcloak"
+	item_state = "stormcloak"
+	material = "wood"
+	health = 60
+	w_class = 3.0
+	base_block_chance = 40
+	slowdown = 0.05
+
+/obj/item/weapon/shield/tes13/whiterun
+	name = "whiterun guard shield"
+	icon_state = "whiterun"
+	item_state = "whiterun"
+	material = "wood"
+	health = 60
+	w_class = 3.0
+	base_block_chance = 40
+	slowdown = 0.05

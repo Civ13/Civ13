@@ -168,6 +168,12 @@
 	glass_type = "mug"
 	volume = 40
 	flammable = TRUE
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tankard
+	name = "tankard"
+	icon_state = "tankard"
+	glass_type = "mug"
+	volume = 40
+	flammable = FALSE
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin
 	name = "waterskin"
