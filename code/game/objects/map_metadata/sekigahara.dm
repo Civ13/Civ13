@@ -85,11 +85,13 @@
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
-	if (caribbean_blocking_area_types.Find(A.type))
-		if (H.original_job.is_western == TRUE && !H.original_job.is_eastern == TRUE)
-			return !faction1_can_cross_blocks()
-		else if (H.original_job.is_eastern == TRUE && !H.original_job.is_western == TRUE)
-			return !faction2_can_cross_blocks()
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.original_job.is_eastern == TRUE && !H.original_job.is_western == TRUE)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.original_job.is_western == TRUE && !H.original_job.is_eastern == TRUE)
+				return TRUE
 		else
-			return FALSE
+			return !faction1_can_cross_blocks()
 	return FALSE

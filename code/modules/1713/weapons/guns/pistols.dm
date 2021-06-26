@@ -343,6 +343,7 @@
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/mauser
+	good_mags = list(/obj/item/ammo_magazine/mauser)
 	weight = 0.794
 	max_shells = 10
 	ammo_type = /obj/item/ammo_casing/a762x25
