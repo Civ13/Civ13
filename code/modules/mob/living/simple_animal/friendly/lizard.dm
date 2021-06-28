@@ -242,3 +242,37 @@
 		qdel(C)
 		adjustBruteLoss(-1)
 	..()
+
+/mob/living/simple_animal/beelzebufo
+	name = "beelzebufo"
+	desc = "A creepy giant frog."
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "beelzebufo"
+	icon_living = "beelzebufo"
+	icon_dead = "beelzebufo-dead"
+	speak_emote = list("croaks", "grumbles")
+	health = 15
+	maxHealth = 5
+	attacktext = "bitten"
+	melee_damage_lower = TRUE
+	melee_damage_upper = 2
+	response_help  = "pets"
+	response_disarm = "shoos"
+	response_harm   = "stomps on"
+	mob_size = MOB_MINISCULE
+	possession_candidate = TRUE
+
+/mob/living/simple_animal/beelzebufo/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
+		visible_message("\The [src] eats \the [C]!")
+		qdel(C)
+		adjustBruteLoss(-1)
+	..()
