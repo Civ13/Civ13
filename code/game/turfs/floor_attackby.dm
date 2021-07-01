@@ -450,6 +450,30 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/redpepper))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/redpepper(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/agave))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/agave(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/parsley))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/parsley(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 			else if (istype(C, /obj/item/stack/farming/seeds/wheat))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/wheat(src)
