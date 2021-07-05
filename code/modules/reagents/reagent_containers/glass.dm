@@ -192,6 +192,34 @@
 			qdel(W)
 			return
 
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/agave))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You rip up the agave leaves, producing agave nectar."
+			reagents.add_reagent("agave", 10)
+			qdel(W)
+			return
+
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/apple))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the apple, producing apple juice."
+			reagents.add_reagent("applejuice", 10)
+			qdel(W)
+			return
+
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 
 			if (!is_open_container())

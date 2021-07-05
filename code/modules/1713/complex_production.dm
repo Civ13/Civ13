@@ -543,6 +543,22 @@
 		..()
 		reagents.add_reagent("protein", 2)
 
+/obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst
+	name = "bratwurst"
+	desc = "German sausage in a slightly larger casing ."
+	icon_state = "bratwurst"
+	icon = 'icons/obj/complex_foods.dmi'
+	bitesize = 5
+	raw = TRUE
+	rotten_icon_state = "bratwurst_rotten"
+	rots = TRUE
+	decay = 16*800
+	satisfaction = -2.5
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted
 	name = "salted sausage"
 	desc = "Meat in a convenient casing. Salted"

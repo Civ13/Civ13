@@ -32,6 +32,33 @@
 		..()
 		reagents.add_reagent("peyote", 5)
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/redpepper
+	name = "red pepper"
+	icon_state = "paprika_pepper"
+	desc = "A very useful pepper for spicing up food."
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("capsaicin", 8)
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/agave
+	name = "agave"
+	icon_state = "agave_leaf"
+	desc = "A desert plant that is moderately useful."
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("agave", 10)
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/parsley
+	name = "parsley"
+	icon_state = "parsley"
+	decay = 90*600
+	satisfaction = 2
+	New()
+		..()
+		reagents.add_reagent("coffee", 15)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/coffee
 	name = "green coffee"
 	icon_state = "coffee"
