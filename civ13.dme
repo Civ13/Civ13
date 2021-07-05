@@ -260,6 +260,7 @@
 #include "code\game\objects\map_metadata\alleyway.dm"
 #include "code\game\objects\map_metadata\arab_town.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"
+#include "code\game\objects\map_metadata\berlin.dm"
 #include "code\game\objects\map_metadata\bohemia.dm"
 #include "code\game\objects\map_metadata\caloocan.dm"
 #include "code\game\objects\map_metadata\camp.dm"
