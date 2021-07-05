@@ -523,7 +523,7 @@
 
 /datum/reagent/drink/apple_juice
 	name = "Apple Juice"
-	id = "apple"
+	id = "applejuice"
 	description = "Juice of the old green apple."
 	taste_description = "sweet"
 	color = "#ff6249"

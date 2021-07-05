@@ -367,19 +367,11 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("oxygen" = 1, "hydrogen" = 1)
 	result_amount = 1
 
-/datum/chemical_reaction/mezcal
-	name = "Mezcal"
-	id = "mezcal"
-	result = "mezcal"
-	required_reagents = list("agave" = 10,)
-	catalysts = list("enzyme" = 5)
-	result_amount = 10
-
 /datum/chemical_reaction/cider
 	name = "Cider"
 	id = "cider"
 	result = "cider"
-	required_reagents = list("applejuice" = 10,)
+	required_reagents = list("applejuice" = 10)
 	catalysts = list("enzyme" = 5)
 	result_amount = 10
 
@@ -1073,7 +1065,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "mezcal"
 	id = "mezcal"
 	result = "mezcal"
-	required_reagents = list("agave" = 2, "water" = 2)
+	required_reagents = list("agave" = 5, "water" = 2)
 	catalysts = list("enzyme" = 5)
 	result_amount = 2
 
