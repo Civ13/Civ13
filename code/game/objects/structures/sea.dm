@@ -101,8 +101,10 @@
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 
 				else if (istype(loc, /turf/floor/beach/water/shallowsaltwater))
-					if (prob(90))
+					if (prob(50))
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawfish
+					else if (prob(50))
+						found =/obj/item/shellfish
 					else
 						found = /mob/living/simple_animal/crab/small/dead
 				else if (istype(loc, /turf/floor/beach/water/jungle) || istype(loc, /turf/floor/beach/water/deep/jungle) || istype(loc, /turf/floor/beach/water/flooded))
@@ -112,7 +114,10 @@
 					found = null
 					return
 				else
-					found =/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+					if (prob(50))
+						found =/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+					else
+						found =/obj/item/shellfish
 					return
 			else
 				return
