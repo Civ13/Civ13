@@ -367,6 +367,13 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("oxygen" = 1, "hydrogen" = 1)
 	result_amount = 1
 
+/datum/chemical_reaction/cider
+	name = "Cider"
+	id = "cider"
+	result = "cider"
+	required_reagents = list("applejuice" = 10)
+	catalysts = list("enzyme" = 5)
+	result_amount = 10
 
 /datum/chemical_reaction/glycerol
 	name = "Glycerol"
@@ -861,8 +868,9 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Coca Wine"
 	id = "cocawine"
 	result = "cocawine"
-	required_reagents = list("wine"= 10, "cocaine" = 5)
-	result_amount = 15
+	required_reagents = list("wine"= 10, "cocaine" = 1)
+	catalysts = list("enzyme" = 5)
+	result_amount = 10
 
 /datum/chemical_reaction/sake
 	name = "Sake"
@@ -1053,6 +1061,13 @@ datum/admins/proc/print_chemical_reactions()
 	catalysts = list("enzyme" = 5)
 	result_amount = 2
 
+/datum/chemical_reaction/mezcal
+	name = "mezcal"
+	id = "mezcal"
+	result = "mezcal"
+	required_reagents = list("agave" = 5, "water" = 2)
+	catalysts = list("enzyme" = 5)
+	result_amount = 2
 
 /datum/chemical_reaction/wheatbeer
 	name = "wheat beer"

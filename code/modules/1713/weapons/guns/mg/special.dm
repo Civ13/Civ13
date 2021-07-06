@@ -108,6 +108,7 @@
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/mk18
+	good_mags = list(/obj/item/ammo_magazine/mk18)
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
@@ -128,6 +129,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
+	good_mags = list(/obj/item/ammo_magazine/ak74)
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(

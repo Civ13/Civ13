@@ -561,7 +561,6 @@
 		reagents.add_reagent("protein", 6)
 		bitesize = 2
 
-
 /obj/item/weapon/reagent_containers/food/snacks/omelette
 	name = "Omelette Du Fromage"
 	desc = "That's all you can say!"
@@ -1686,6 +1685,40 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
+
+/obj/item/weapon/reagent_containers/food/snacks/cutlet/attack_self(mob/user)
+	if (istype(user.l_hand, /obj/item/weapon/reagent_containers/glass) || istype(user.r_hand, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/G
+		if(istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
+			G  = user.l_hand
+		else
+			G  = user.r_hand
+		if (G.reagents.get_reagent_amount("flour") >= 5)
+			if(do_after(user, 90))
+				visible_message("[user.name] pours the [src.name] onto the [G.name], covering it.")
+				G.reagents.remove_reagent("flour", 5)
+				new/obj/item/weapon/reagent_containers/food/snacks/rawschnitzel(user.loc)
+				qdel(src)
+				return
+	else
+		return ..()
+
+/obj/item/weapon/reagent_containers/food/snacks/rawschnitzel
+	name = "uncooked schnitzel"
+	desc = "A thin piece of raw meat covered in flour."
+	icon = 'icons/obj/complex_foods.dmi'
+	icon_state = "schnitzel-breaded"
+	bitesize = 1
+	center_of_mass = list("x"=17, "y"=20)
+	raw = TRUE
+	rotten_icon_state = "schnitzel-breaded-rotten"
+	rots = TRUE
+	decay = 15*600
+	satisfaction = -4
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/cutlet
 	name = "cutlet"

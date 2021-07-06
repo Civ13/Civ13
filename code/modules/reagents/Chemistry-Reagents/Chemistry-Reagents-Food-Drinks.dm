@@ -127,6 +127,25 @@
 	nutriment_factor = 2
 	color = "#792300"
 
+/datum/reagent/nutriment/paprika
+	name = "Paprika"
+	id = "paprika"
+	description = "A mildly spicy spice from red peppers."
+	taste_description = "mildly spicy"
+	taste_mult = 1.1
+	reagent_state = SOLID
+	nutriment_factor = 1.5
+	color = "#792300"
+
+/datum/reagent/nutriment/parsley
+	name = "Parsley"
+	id = "parsley"
+	description = "A clean and peppery taste with a touch of earthiness."
+	taste_description = "peppery and earthy"
+	taste_mult = 1.3
+	reagent_state = SOLID
+	nutriment_factor = 1.2
+
 /datum/reagent/nutriment/cola
 	name = "cola"
 	id = "cola"
@@ -231,6 +250,15 @@
 	reagent_state = LIQUID
 	color = "#709B40"
 	overdose = REAGENTS_OVERDOSE
+
+/datum/reagent/agave
+	name = "Agave"
+	id = "agave"
+	description = "A plant used to make mezcal."
+	taste_description = "sappy"
+	taste_mult = 1.2
+	reagent_state = LIQUID
+	color = "#709B40"
 
 /datum/reagent/capsaicin
 	name = "Capsaicin Oil"
@@ -492,6 +520,13 @@
 	description = "Juice of the potato. Bleh."
 	taste_description = "irish sadness"
 	color = "#302000"
+
+/datum/reagent/drink/apple_juice
+	name = "Apple Juice"
+	id = "applejuice"
+	description = "Juice of the old green apple."
+	taste_description = "sweet"
+	color = "#ff6249"
 
 /datum/reagent/drink/tomatojuice
 	name = "Tomato Juice"
@@ -795,6 +830,15 @@
 	taste_mult = 1.5
 	color = "#33EE00"
 	strength = 40
+
+/datum/reagent/ethanol/mezcal
+	name = "Mezcal"
+	id = "mezcal"
+	description = "Good old honey sap water!"
+	taste_description = "savory and smoky"
+	taste_mult = 1.5
+	color = "#9b870c"
+	strength = 24
 
 /datum/reagent/ethanol/ale
 	name = "Ale"
@@ -1349,7 +1393,16 @@
 	taste_description = "bitterness"
 	taste_mult = 2.5
 	color = "#ffffff80"
-	strength = 12
+	strength = 45
+
+/datum/reagent/ethanol/cider
+	name = "Cider"
+	id = "cider"
+	description = "You've really just some hotshot."
+	taste_description = "sweet and elegant"
+	taste_mult = 2.5
+	color = "#ffffff80"
+	strength = 10
 
 /datum/reagent/ethanol/neurotoxin
 	name = "Neurotoxin"

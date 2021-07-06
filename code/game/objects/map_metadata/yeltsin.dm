@@ -53,16 +53,6 @@
 		. = TRUE
 	else
 		. = FALSE
-	if (J.is_yeltsin == TRUE)
-		if (gamemode != "Siege")
-			if (J.is_whitehouse == TRUE)
-				. = TRUE
-			else
-				. = FALSE
-		else
-			. = TRUE
-	else
-		. = FALSE
 
 /obj/map_metadata/yeltsin/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)

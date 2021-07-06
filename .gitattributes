@@ -1,6 +1,14 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+.editorconfig   text    eol=lf
+.gitignore      text    eol=lf
+*.dm            text    eol=lf
+*.dme           text    eol=lf
+*.dmm           text    eol=lf
+*.md            text    eol=lf
+*.html          text    eol=lf
+
 # Custom for Visual Studio
 *.cs     diff=csharp
 

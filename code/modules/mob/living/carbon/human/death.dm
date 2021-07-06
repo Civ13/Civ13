@@ -207,12 +207,12 @@
 				if (i[1]=="UPA")
 					i[2]+= 5
 				if (i[1]=="SS")
-					i[2]-= 0
-			else
+					i[2]-= 1
+/*			else
 				if (i[1]=="SS")
 					i[2]-= 10
 				if (i[1]=="UPA")
-					i[2]-= 10
+					i[2]-= 10*/
 
 	handle_piss()
 	handle_shit()
