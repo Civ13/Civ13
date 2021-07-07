@@ -32,6 +32,36 @@
 		..()
 		reagents.add_reagent("peyote", 5)
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/parsnip
+	name = "parsnip root"
+	icon_state = "parsnip"
+	desc = "A useful sweetner for food."
+	color = "#7f7053"
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("sugar", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/zucchini
+	name = "Zucchini gourd"
+	icon_state = "zucchini"
+	desc = "A straight gourd plant."
+	color = "#6AAF6A"
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("zucchinijuice", 5)
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/sapodilla
+	name = "sapodilla"
+	icon_state = "sapodilla"
+	desc = "strangely sweet."
+	color = "#f3bc5f"
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("sapodillajuice", 5)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/redpepper
 	name = "red pepper"
 	icon_state = "paprika_pepper"

@@ -965,6 +965,14 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("blood" = 1, "mead" = 1)
 	result_amount = 2
 
+/datum/chemical_reaction/garum
+	name = "Garum"
+	id = "garum"
+	result = "garum"
+	required_reagents = list("sodiumchloride" = 1, "fish" = 2)
+	catalysts = list("enzyme" = 5)
+	result_amount = 2
+
 /datum/chemical_reaction/mead
 	name = "Mead"
 	id = "mead"
