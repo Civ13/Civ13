@@ -17,9 +17,9 @@
 		)
 	age = "1942"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(GERMAN = 0.40, CIVILIAN = 0.70)
+	faction_distribution_coeffs = list(GERMAN = 0.35, CIVILIAN = 0.65)
 	battle_name = "Occupation"
-	mission_start_message = "<font size=4>The <b>SS</b> have to find and imprison or kill all the UPA partisans hidden within the populace while maintaining peace and order. The <b>UPA</b> must rid the city of the Polish oppressors and kill enemy troops and officers. The civilians want the most money in their pockets to score points for their nationality. <b>The faction with the most points wins!</b><br></font>"
+	mission_start_message = "<font size=4>All factions have 10 minutes to prepare before the SS can leave their base. <br> After 20 minutes civilians (including UPA) will be able to access the SS base and UPA armoury unlocks. <br> To gain points the <b>SS</b> must imprison (passive point generation) or kill (one time point gain) all the UPA partisans and any murderers hidden within the populace while still maintaining peace and order. <br> The <b>UPA</b> must rid the city of the Polish oppressors and kill enemy troops and officers(one time point gain).<br> Civilians earn points for their nationality by having rubles in their pockets (points = rubles in pockets).<br> <b>The faction with the most points wins!</b><br></font>"
 	faction1 = CIVILIAN
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -53,10 +53,10 @@
 		else
 			. = FALSE
 /obj/map_metadata/occupation/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/occupation/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 300000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/occupation/roundend_condition_def2name(define)
 	..()
