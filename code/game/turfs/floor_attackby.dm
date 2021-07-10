@@ -402,9 +402,35 @@
 				else
 					qdel(C)
 				return
+			if (ishuman(user))
+				H.adaptStat("farming", 1)
+			if (istype(C, /obj/item/stack/farming/seeds/sapodilla))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/sapodilla(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 			else if (istype(C, /obj/item/stack/farming/seeds/carrot))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/carrot(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/parsnip))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/parsnip(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/zucchini))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/zucchini(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else

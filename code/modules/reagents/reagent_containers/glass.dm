@@ -220,6 +220,48 @@
 			qdel(W)
 			return
 
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/sapodilla))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the sapodilla, producing sapodilla juice."
+			reagents.add_reagent("sapodillajuice", 10)
+			qdel(W)
+			return
+
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You throw the fish into the barrel."
+			reagents.add_reagent("fish", 5)
+			qdel(W)
+			return
+
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You throw the fish into the barrel."
+			reagents.add_reagent("fish", 5)
+			qdel(W)
+			return
+
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 
 			if (!is_open_container())

@@ -260,6 +260,15 @@
 	reagent_state = LIQUID
 	color = "#709B40"
 
+/datum/reagent/fish
+	name = "Fish"
+	id = "fish"
+	description = "tastes like fish."
+	taste_description = "Fishy"
+	taste_mult = 1.2
+	reagent_state = SOLID
+	color = "#8E1600"
+
 /datum/reagent/capsaicin
 	name = "Capsaicin Oil"
 	id = "capsaicin"
@@ -474,6 +483,20 @@
 	description = "It's grapejuice!"
 	taste_description = "grapes"
 	color = "#863333"
+
+/datum/reagent/drink/sapodillajuice
+	name = "Sapodilla Juice"
+	id = "sapodillajuice"
+	description = "It's sweet, malty!"
+	taste_description = "sweet and malty"
+	color = "#f3bc5f"
+
+/datum/reagent/drink/zucchinijuice
+	name = "Zucchini Juice"
+	id = "zucchinijuice"
+	description = "a strange green juice!"
+	taste_description = " slightly sweet and slightly bitter"
+	color = "#365E30"
 
 /datum/reagent/drink/lemonjuice
 	name = "Lemon Juice"
@@ -1060,6 +1083,14 @@
 	taste_description = "sweet 'n creamy"
 	color = "#664300"
 	strength = 15
+
+/datum/reagent/ethanol/garum
+	name = "Garum"
+	id = "garum"
+	description = "Horrid smell but very unami."
+	taste_description = "oceany"
+	color = "#F7C652"
+	strength = 3
 
 /datum/reagent/ethanol/amasec
 	name = "Amasec"
