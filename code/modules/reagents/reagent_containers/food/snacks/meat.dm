@@ -230,6 +230,23 @@
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 3
 
+/obj/item/weapon/reagent_containers/food/snacks/cracked_shellfish
+	name = "cracked shellfish"
+	desc = "Fresh shellfish, cracked open with a knife."
+	icon_state = "cracked_shellfish"
+	health = 30
+	filling_color = "#7F0000"
+	raw = TRUE
+	rotten_icon_state = "cracked_shellfish_rotten"
+	rots = TRUE
+	non_vegetarian = TRUE
+	satisfaction = -4
+	New()
+		..()
+		reagents.add_reagent("protein", 1)
+		reagents.add_reagent("food_poisoning", 1)
+		bitesize = 1
+
 /obj/item/weapon/reagent_containers/food/snacks/animalfat
 	name = "animal"
 	desc = "Its a fresh and raw animal fat."
@@ -246,3 +263,16 @@
 		reagents.add_reagent("lard", 10)
 		bitesize = 3
 	satisfaction = -7 //Its disgusting raw,
+
+/obj/item/shellfish
+	name = "shellfish"
+	desc = "A fresh, closed shellfish. You need a knife to open it."
+	icon_state = "shellfish"
+	icon = 'icons/obj/food/food.dmi'
+
+	attackby(obj/item/I, mob/user)
+		if (istype(I, /obj/item/weapon/material/knife) || istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+			user << "You crack open \the [src]."
+			new /obj/item/weapon/reagent_containers/food/snacks/cracked_shellfish(user.loc)
+			qdel(src)
+			return

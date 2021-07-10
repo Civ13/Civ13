@@ -1,3 +1,4 @@
+"aa" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "ab" = (/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "ac" = (/obj/structure/window/classic,/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "ad" = (/obj/effect/landmark{name = "JoinLateRNSurgeon"},/turf/floor/trench,/area/caribbean/british/land/outside/objective)
@@ -24,6 +25,7 @@
 "ay" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
 "az" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "aA" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
+"aB" = (/obj/structure/barricade,/obj/structure/sign/flag/uk,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "aC" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "aD" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "aE" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
@@ -31,11 +33,14 @@
 "aG" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/trench,/area/caribbean/british/land/inside)
 "aH" = (/obj/structure/sink/puddle,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "aI" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/turf/floor/trench,/area/caribbean/british/land/inside)
+"aJ" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "aK" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/obj/structure/window/barrier/sandbag,/obj/structure/phoneline,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "aL" = (/obj/structure/phoneline,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
 "aM" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
+"aN" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barricade/steel,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "aO" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "aP" = (/obj/structure/wild/tallgrass2,/turf/floor/trench,/area/caribbean/no_mans_land/temperate)
+"aQ" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "aR" = (/obj/structure/closet/crate/ww1/ammo_vickers,/turf/floor/trench,/area/caribbean/british/land/outside/objective)
 "aS" = (/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/german/inside/objective)
 "aT" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
@@ -47,6 +52,7 @@
 "aZ" = (/obj/structure/potted_plant,/turf/floor/trench,/area/caribbean/british/land/inside/objective)
 "ba" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
 "bb" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
+"bc" = (/obj/item/weapon/material/shard{default_material = "wood"},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "bd" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
 "be" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
 "bf" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
@@ -57,6 +63,8 @@
 "bk" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "bl" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "bm" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
+"bn" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
+"bo" = (/obj/effect/decal/cleanable/generic,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "bp" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "bq" = (/obj/structure/lamp/lamp_small/alwayson/red,/obj/structure/bed/roller,/turf/floor/trench,/area/caribbean/british/land/inside)
 "br" = (/obj/structure/wild/tree/dead_tree,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "allied radio"},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
@@ -76,6 +84,7 @@
 "bF" = (/obj/structure/sign/flag/medical,/obj/structure/barricade,/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "bG" = (/turf/floor/trench,/area/caribbean/german/inside)
 "bH" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/trench,/area/caribbean/german/inside)
+"bI" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall)
 "bJ" = (/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/structure/table/wood,/turf/floor/trench,/area/caribbean/german/inside)
 "bK" = (/obj/structure/barricade/vertical,/turf/floor/dirt/burned,/area/caribbean/german/inside)
 "bL" = (/obj/structure/barricade/horizontal,/turf/floor/dirt,/area/caribbean/german/inside/objective)
@@ -94,7 +103,9 @@
 "bY" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "allied radio"},/turf/floor/trench,/area/caribbean/no_mans_land/temperate)
 "bZ" = (/obj/structure/barricade/horizontal,/obj/structure/sign/flag/german,/turf/floor/dirt,/area/caribbean/german/inside/objective)
 "ca" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/turf/floor/trench,/area/caribbean/no_mans_land/temperate)
+"cb" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barricade/steel,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
 "cc" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
+"cd" = (/obj/structure/sign/flag/german,/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "ce" = (/obj/structure/barricade/vertical,/turf/floor/dirt,/area/caribbean/german/inside/objective)
 "cf" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/obj/structure/filingcabinet,/turf/floor/trench,/area/caribbean/german/inside/objective)
 "cg" = (/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/german/inside/objective)
@@ -133,6 +144,7 @@
 "cN" = (/obj/structure/sink/puddle,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "cO" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "cP" = (/obj/structure/closet/crate/ww1/grenades_british,/turf/floor/trench,/area/caribbean/british/land/outside/objective)
+"cQ" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "cR" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall)
 "cS" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
 "cT" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
@@ -149,6 +161,7 @@
 "de" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "df" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "dg" = (/obj/item/weapon/material/shard{default_material = "iron"},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
+"dh" = (/obj/structure/wild/burnedbush,/obj/effect/decal/cleanable/blood/oil,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "di" = (/obj/structure/wild/burnedtree,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "dj" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
 "dk" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
@@ -180,6 +193,7 @@
 "dK" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "dL" = (/obj/structure/wild/tree/dead_tree,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "dM" = (/obj/structure/phoneline,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
+"dN" = (/obj/item/weapon/material/shard{default_material = "iron"},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "dP" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
 "dQ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
 "dR" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
@@ -242,7 +256,6 @@
 "fe" = (/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "ff" = (/obj/item/weapon/material/shard{default_material = "iron"},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "fg" = (/obj/item/weapon/material/shard{default_material = "wood"},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
-"fh" = (/obj/structure/wild/burnedbush,/obj/effect/decal/cleanable/blood/oil,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "fi" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "fj" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
 "fk" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall)
@@ -382,22 +395,22 @@ abababababababababaoaAababababababababahahabababababababababayayayayaAabababaxab
 ahalahahahahahahfObYahalahahahahcHahahahahfPfPalahahabababababayayayababaAababababazababababababababababaEabayahababababayabababaCaCababababababababab
 ahahahahahahahahahahahahahahahahahahahahahahahahahahahahfOcIcxcxcxdGahahahahahahalahahfPfPahahfOahalababayayabahabaAababayabazababaCaCabababaxaEayaAab
 ahahahaDcKcMcKcKcKcNczabcZcKcKcKcKcOcWcYcKcKcKcKcVahahahahahahahalbYahahahahahahahahahahahahahahahahahahdHcxcSahcTcEahcHahahahahahahahalfOfPfPahahahah
-cKcKcKasababaxabayascUcxdfbMababasfefefeasabaAabascKcKcVahahahahahahahaDcKcKcKcOcWcYcKcKcKcKcKcKcVahahahbYahahahahalahahahahahahahahahahahahahahahahah
-ababababababayababascKfldfaEazdadbdbdbdbdbdbdcdddaababascLbVaAabbVcLcLavaAbMasfefefeasabababababdecKcVahahahahahahahahahaDcKcKcNcOcWcYcKcKcKcKcKcKcKcR
-ababababababababaAaCabababababababazabdgababababababaAabascxcxcxcxfrdWazaAabababababababababababaAaAdecRcKcVahahahahahaDdXabayasfefefeavababababababab
-ababdWababdYabaAabazabdWabdZeaeaababababazabababayabaAabascKcKcKcKbbabababebabaxazabaCayabababazababababbMdecKfwayabfxdeayabababababazabababababababaA
-abdadddbdbdbdddaecabababdadbeddbeeayaOabefabaxabegabayayababefabababababdgdadbdbdbdbdbdddbdbdbdbdaefabababaAascxeiejcxasababaAekeleleaemabababenababab
-abaOazabayaAaAaAaAeaayabefababaCababababaAababayabababababaAabazazayababaEabeoabazecaAaAaAababayababazaOayabasfydedefyfrabaAeqazazazaberdadbdbdbdbdaaz
-abababazabegaCabesazabayabaAabayecaCaCaAaAaCababetdbdddbdbeudaabababababababababaCabecabaxaAaAaAababdWabababayababazefabaAababababababecababaCabaOabab
+cKcKcKasasasaaasbbascUcxdfaBasasasfefefeasasavasascKcKcVahahahahahahahaDcKcKcKcOcWcYcKcKcKcKcKcKcVahahahbYahahahahalahahahahahahahahahahahahahahahahah
+asasasasasabayabasascKfldfaJazaNdededededededcfzaNasasascLbVaAabbVcLcLavavaBasfefefeasasasasasasdecKcVahahahahahahahahahaDcKcKcNcOcWcYcKcKcKcKcKcKcKcR
+ababababababababavfrasasasasabababazabdgababababababaAasascxcxcxcxfraQdfaAasasasasasasasabababasavavdecRcKcVahahahahahaDdXasbbasfefefeavasasasasasasas
+ababdWababdYabaAabazabdWabdZeaeaababababazabababayabaAasascKcKcKcKbbasababebabaxazabaCayabababazabasasasaBdecKfwayabfxdebbabasasasasdfasasabababababaA
+abdadddbdbdbdddaecabababdadbeddbeeayaOabefabaxabegabaybbasasbcasasasasabdgdadbdbdbdbdbdddbdbdbdbdaefabababavascxeiejcxasasabaAekeleleaemabababenababab
+abaOazabayaAaAaAaAeaayabefababaCababababaAababayabababababaAabazazayababaEabeoabazecaAaAaAababayababazaOayasasfydedefyfrasaAeqazazazaberdadbdbdbdbdaaz
+abababazabegaCabesazabayabaAabayecaCaCaAaAaCababetdbdddbdbeudaabababababababababaCabecabaxaAaAaAababdWababasbbasasdfbcasavababababababecababaCabaOabab
 abdgabazaFababaCababayemabaAabdgeaekevaEabababababayewaAexeyabaOaOabegdaezdbdaabababaEayenababbdabdadbdbdbeddaababababeAdddddddbezdaaOababababababefaA
 abayababaAababayeBeCabaCazdadbeDdbeEdbdaazabaOabababaEabaAababeFabekekeaaCababexeGeHabababababababazaAaAaAabeHeIeJekekeKeLabaOabababdgababaAababababab
 abaOeMdbezddddddezdbeNecababababazababaCabblabayabababababdgabeOabababeHazababeHeGazazabaAaAbeaCabababababababazeBabdgaCabaAabeRababababeHeceTabababaz
-abefabazababaAayabazaAeUabaAabayabefemeVexefabdadbdbdbdbdbeYdaayayaAaCabaOabecefdadbdbdbdbdddaabfaabaAabayayababaAaAababaAabfbabababababababfcabaOabab
-ababegazaFdddbabababayabazaAababababblaAaAabababegazabayabababayaAaAabascXcXasabababegababaOababababababababayfdeNdbdbddddeAdbdbayabekeaabababaAababaA
-ababababavfmfmasabababababaOeNdbdbffdbdaaAabababababababasdededeasabasasczbkasasgcababababababababababababaOabazabemabfgababaAazabaEaEabeGavfzfzdedeab
-ababaEabasbVbVasabfhasfAdedeasabaEababaAaAaAabgcabdefififjfBfCfDfifificIayabcEfifififififkfifkfideababdWazabababababababababaAabaOababababaschbVcBfEaz
-fmfmfmfmfHababfGfmfmfmfFfCfIfmfmfofmfmfnfmfmfmfmfmfpcHahahahahahahahahahahahahahahahahahahahfQcHfqdeababababdgababababababababefabgcababayascxabbkfJaA
-ahahahfQahahahahahahahahahahahahahahahahahahahfQahahahahfRfRahahahahahahamahahahahcaahahahamahahahfqdeabavdedefKasabdefififififsfiftfkfifififuabbkfkfk
+abefabazababaAayabazaAeUabaAabayabefemeVexefabdadbdbdbdbdbeYdaayayaAfrasbnasbobcdadbdbdbdbdddaabfaabaAabayayababaAaAababaAabfbabababababababfcabaOabab
+ababegdfbIfzdeasasabayabazaAababababblaAaAabababegazabbbasasasbbavavasascXcXasasasabegababaOababababababababayfdeNdbdbddddeAdbdbayabekeaasasasavasasav
+abababasavfmfmasasasasasasbncbdedbffdbdaaAabababasasasasasdededeasasasasczbkasascdasasasasasasasasasasababaOabazabemabfgababaAazabaEaEabcQavfzfzdedeas
+asasaJasasbVbVasasdhasfAdedeasasaJasasavavavascdasdefififjfBfCfDfifificIayabcEfifififififkfifkfideasasdWazabababababababababaAabaOabababasaschbVcBfEaz
+fmfmfmfmfHababfGfmfmfmfFfCfIfmfmfofmfmfnfmfmfmfmfmfpcHahahahahahahahahahahahahahahahahahahahfQcHfqdeasasasasdNasasasasasasasasbcascdasasbbascxabbkfJaA
+ahahahfQahahahahahahahahahahahahahahahahahahahfQahahahahfRfRahahahahahahamahahahahcaahahahamahahahfqdeasavdedefKasasdefififififsfiftfkfifififuabbkfkfk
 ahamahahahahahahahamfRahahfRahahahahamahahahahahahahamahczabababbkahczabababababazabaoabababcBahahahfqfififMfCfNfifjfvfQahahahahahahahahahahahahahahah
 ababaOabababababahabbkahahczaOabababayabababababaAaAababaAababayabahababababaAabaAababaCabababcBahahahahahahahahahahahahahahahamahahahahahahahahamahah
 ababababababababahabdicaaqdjababaAababayabababababayabababababayabahabayababababababazazababababcBahahamfRfRahahahamahdkabaCababazahabbkcaahdlabayabab

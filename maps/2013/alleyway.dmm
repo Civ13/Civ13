@@ -10,27 +10,27 @@
 "aj" = (/turf/wall/brick,/area/caribbean/roofed)
 "ak" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
 "al" = (/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"am" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/structure/closet/crate/bin,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"am" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "an" = (/obj/structure/railing{dir = 4; icon_state = "railing0"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"ao" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"ap" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"ao" = (/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"ap" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/structure/closet/crate/bin,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "aq" = (/obj/structure/table/modern/table,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"ar" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"ar" = (/obj/structure/railing{dir = 4; icon_state = "railing0"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "as" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"at" = (/obj/structure/bed/chair/office/dark{dir = 8; icon_state = "officechair_dark"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"at" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "au" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"av" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aw" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"ax" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"ay" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"av" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"aw" = (/obj/structure/table/modern/table,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"ax" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"ay" = (/obj/structure/bed/chair/office/dark{dir = 8; icon_state = "officechair_dark"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "az" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aA" = (/obj/structure/oven/stove,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aB" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aC" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aD" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aE" = (/obj/structure/pot,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aF" = (/obj/structure/sink/kitchen,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"aG" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"aA" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"aB" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"aC" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"aD" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"aE" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"aF" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"aG" = (/obj/structure/oven/stove,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "aH" = (/obj/structure/shelf,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "aI" = (/obj/structure/grille/ironfence{dir = 8; icon_state = "iron_fence"},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "aJ" = (/obj/effects/premadevehicles/yamasaki/shinobu{custom_color = "#222222"},/turf/floor/plating/road/whiteline{dir = 8; icon_state = "road_line"},/area/caribbean)
@@ -77,15 +77,15 @@
 "by" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{dir = 1; icon_state = "tatami_frame_cee"},/turf/floor/wood,/area/caribbean/roofed)
 "bz" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{dir = 4; icon_state = "tatami_frame_angle"},/turf/floor/wood,/area/caribbean/roofed)
 "bA" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/full,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/roofed)
-"bB" = (/obj/structure/bed/chair{dir = 4; icon_state = "chair"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"bC" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/ramen,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"bB" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"bC" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "bD" = (/obj/structure/bed/chair{dir = 8; icon_state = "chair"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
 "bE" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "bF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{dir = 4; icon_state = "tatami_frame_cee"},/turf/floor/wood,/area/caribbean/roofed)
 "bG" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{dir = 8; icon_state = "tatami_frame_cee"},/turf/floor/wood,/area/caribbean/roofed)
-"bH" = (/obj/structure/bed/chair{dir = 4; icon_state = "chair"},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"bI" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
-"bJ" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/crate/bin,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
+"bH" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"bI" = (/obj/structure/pot,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"bJ" = (/obj/structure/sink/kitchen,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "bK" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "bL" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{dir = 1; icon_state = "tatami_frame_angle"},/turf/floor/wood,/area/caribbean/roofed)
 "bM" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{dir = 1; icon_state = "tatami_frame"},/turf/floor/wood,/area/caribbean/roofed)
@@ -237,33 +237,33 @@
 "eC" = (/obj/structure/grille/ironfence,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/two)
 "eD" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
 "eE" = (/obj/structure/window/barrier/railing/stone,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/two)
-"eF" = (/turf/wall/wood,/area/caribbean/no_mans_land/invisible_wall)
-"eG" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eH" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eI" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/bearmeat,/obj/item/weapon/reagent_containers/food/snacks/bearmeat,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eJ" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eK" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eL" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
+"eF" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"eG" = (/obj/structure/bed/chair{dir = 4; icon_state = "chair"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"eH" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/ramen,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"eI" = (/obj/structure/bed/chair{dir = 8; icon_state = "chair"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"eJ" = (/obj/structure/bed/chair{dir = 4; icon_state = "chair"},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"eK" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
+"eL" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/crate/bin,/turf/floor/plating/tiled,/area/caribbean/no_mans_land/invisible_wall/two)
 "eM" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eN" = (/obj/structure/closet/crate/bin,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eO" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eP" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/turf/floor/wood,/area/caribbean/houses/nml_one)
+"eN" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eO" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eP" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/bearmeat,/obj/item/weapon/reagent_containers/food/snacks/bearmeat,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
 "eQ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{dir = 4; icon_state = "tatami_frame_angle"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall)
-"eR" = (/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eS" = (/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eT" = (/obj/structure/salting_container,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eU" = (/obj/structure/table/modern/table,/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eV" = (/obj/structure/table/modern/table,/obj/structure/mill,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eW" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eX" = (/obj/structure/meat_grinder,/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eY" = (/obj/structure/sink/kitchen{dir = 4; icon_state = "sink_alt"; pixel_x = -12},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"eZ" = (/obj/structure/closet/crate/rations/vegetables,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"fa" = (/obj/item/weapon/reagent_containers/glass/barrel/beer,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"fb" = (/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"fc" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"fd" = (/obj/structure/table/modern/table,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"fe" = (/obj/structure/pot,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses/nml_one)
-"ff" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/houses/nml_one)
+"eR" = (/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eS" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eT" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eU" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eV" = (/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eW" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eX" = (/obj/structure/closet/crate/bin,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eY" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"eZ" = (/obj/item/weapon/stool/padded,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"fa" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"fb" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"fc" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/ramen,/obj/item/weapon/material/kitchen/utensil/chopsticks,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"fd" = (/obj/structure/drying_rack,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"fe" = (/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"ff" = (/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
 "fg" = (/obj/structure/multiz/ladder/ww2/up,/turf/floor/wood,/area/caribbean/roofed)
 "fh" = (/obj/covers/cobblestone/stairs{dir = 8; icon_state = "rampup"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/two)
 "fi" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/ramen,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/turf/floor/wood,/area/caribbean/roofed)
@@ -344,7 +344,7 @@
 "gF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{dir = 8; icon_state = "tatami_frame"},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/turf/floor/wood,/area/caribbean/roofed)
 "gG" = (/obj/structure/window/barrier/railing/stone{dir = 4; icon_state = "stone"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall)
 "gH" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
-"gI" = (/obj/structure/drying_rack,/turf/floor/wood,/area/caribbean/houses/nml_one)
+"gI" = (/obj/structure/salting_container,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
 "gJ" = (/obj/roof/clay/kerawa,/turf/floor/broken_floor,/area/caribbean)
 "gK" = (/obj/roof/clay/kerawa,/turf/floor/wood{icon = 'icons/turf/roofs.dmi'; icon_state = "black_slateroof_dm"},/area/caribbean)
 "gL" = (/obj/roof/clay/kerawa,/obj/structure/closet/crate/wood,/turf/floor/wood{icon = 'icons/turf/roofs.dmi'; icon_state = "black_slateroof_dm"},/area/caribbean)
@@ -374,35 +374,46 @@
 "hj" = (/obj/structure/lamp/lamp_big/alwayson,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
 "hk" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
 "hl" = (/obj/map_metadata/alleyway,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/one)
+"hm" = (/obj/structure/table/modern/table,/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hn" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall)
+"ho" = (/obj/structure/table/modern/table,/obj/structure/mill,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hp" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hq" = (/obj/structure/meat_grinder,/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hr" = (/obj/structure/sink/kitchen{dir = 4; icon_state = "sink_alt"; pixel_x = -12},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hs" = (/obj/structure/closet/crate/rations/vegetables,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"ht" = (/obj/item/weapon/reagent_containers/glass/barrel/beer,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hu" = (/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hv" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hw" = (/obj/structure/table/modern/table,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hx" = (/obj/structure/pot,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hy" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hz" = (/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
+"hA" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/one)
 "rz" = (/turf/wall/wood,/area/caribbean/houses/nml_one)
-"vA" = (/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/houses/nml_one)
 "wq" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/houses/nml_one)
 "yi" = (/obj/structure/table/modern/table,/turf/floor/carpet/redcarpet,/area/caribbean/houses/nml_one)
 "Cd" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"Hy" = (/obj/item/weapon/stool/padded,/turf/floor/wood,/area/caribbean/houses/nml_one)
 "Kg" = (/obj/structure/table/modern/table,/obj/structure/potted_plant,/turf/floor/carpet/redcarpet,/area/caribbean/houses/nml_one)
 "Ks" = (/turf/floor/carpet/redcarpet,/area/caribbean/houses/nml_one)
 "Ms" = (/turf/floor/wood,/area/caribbean/houses/nml_one)
-"PS" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/ramen,/obj/item/weapon/material/kitchen/utensil/chopsticks,/turf/floor/wood,/area/caribbean/houses/nml_one)
-"Wq" = (/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/houses/nml_one)
 "Zo" = (/turf/wall/brick,/area/caribbean/houses/nml_two)
 
 (1,1,1) = {"
 agagagagagahababahagagagagagagagagagagahababacacadaeacacabababababababdydydydydydydydydydydydydydydy
 agagagagagahababahagagagagagagagagagagahababacacadaeacacabababafaaaaaaeCbgbgbgbgbgbgbgbgbgbgbgbgbgdy
-ahahahahahahababahahahahahahahahahahahahababacacadaeacacabababaIaKaKaKeDbgakalalalalamZoalanaoapbgdy
-ababababababababababababababababababababababacacadaeacacabababaIaKaKaKeDbgalalaqaqalalZoalanaoaobgdy
-abababababababababababababababababababababcYacacadaeacacabababaIaKaKaKeDbgalalaqalalalaralanaoaobgdy
-acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababafabbebeeEbgalalasatalalaralalalalbgdy
-acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababababdldlfhbhalalaqaualalZoalalalalbgdy
-acacacacacacacacacacacacacacacacacacacacacacacacadaJacacabababababdldlfhbhalalalalalalZoalalalalbgdy
-abababababababababababababababababababababcYacacadaeacacabababafabbmbmhbbgavawawaxawayZoalalalazbgdy
-ababababababababababababababababababababababacacadaeacacabababaIaKaKaKeDbgZoZoZoZoZoZoZoalalalalbgdy
-abahahahahahabahahahahahahahahahahahahahababacacadaeacacabababaIaKaKaKeDbgaAaBaCaDaEaFaGalalalalbgdy
-abahaHaMaNahabahaOaPaQaRaSaTaUaVaYbabbahababacacadaeacacabababaIaKaKaKeDbkalalalalalalalalalalalbgdy
-abahbdbfbfahabahbibjblbnbobpbqbrbsbsbtahababacacadaeacacabababaIaKaKaKeDbkalalalalalalalalalalalbgdy
-abahbvbfbfahabahaRbwbxbnbybpbqaTbzaTbzbAababacacadaeacacabababaIaKaKaKeDbgbBbCaqbDbBaqbCbDalalalbgdy
-abahbEbfbfahabahbybobFbGbobiblbpbqbpbqahababacacadaeacacabababaIaKaKaKeDbgbHaqbIbDbBbCaqbDalalbJbgdy
+ahahahahahahababahahahahahahahahahahahahababacacadaeacacabababaIaKaKaKeDbgamaoaoaoaoapbgaoaratavbgdy
+ababababababababababababababababababababababacacadaeacacabababaIaKaKaKeDbgaoaoawawaoaobgaoaratatbgdy
+abababababababababababababababababababababcYacacadaeacacabababaIaKaKaKeDbgaoaoawaoaoaobhaoaratatbgdy
+acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababafabbebeeEbgaoaoaxayaoaobhaoaoaoaobgdy
+acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababababdldlfhbhaoaoawaAaoaobgaoaoaoaobgdy
+acacacacacacacacacacacacacacacacacacacacacacacacadaJacacabababababdldlfhbhaoaoaoaoaoaobgaoaoaoaobgdy
+abababababababababababababababababababababcYacacadaeacacabababafabbmbmhbbgaBaCaCaDaCaEbgaoaoaoaFbgdy
+ababababababababababababababababababababababacacadaeacacabababaIaKaKaKeDbgbgbgbgbgbgbgbgaoaoaoaobgdy
+abahahahahahabahahahahahahahahahahahahahababacacadaeacacabababaIaKaKaKeDbgaGbBbCbHbIbJeFaoaoaoaobgdy
+abahaHaMaNahabahaOaPaQaRaSaTaUaVaYbabbahababacacadaeacacabababaIaKaKaKeDbkaoaoaoaoaoaoaoaoaoaoaobgdy
+abahbdbfbfahabahbibjblbnbobpbqbrbsbsbtahababacacadaeacacabababaIaKaKaKeDbkaoaoaoaoaoaoaoaoaoaoaobgdy
+abahbvbfbfahabahaRbwbxbnbybpbqaTbzaTbzbAababacacadaeacacabababaIaKaKaKeDbgeGeHaweIeGaweHeIaoaoaobgdy
+abahbEbfbfahabahbybobFbGbobiblbpbqbpbqahababacacadaeacacabababaIaKaKaKeDbgeJaweKeIeGeHaweIaoaoeLbgdy
 abahahbKahahabahbobFbGbLbMbNbObPbqbpbqahababacacadaeacacabababafaaaaaaeCbgbgbgbgbgbgbgbgbgbgbgbgbgdy
 abababababababahbQbSbXbrbYbZcacbccbiblcgababacacadaeacacabababababababdydydydydydydydydyhfdydydydydy
 abababababababahaTcjbXbLckbaclcmcnbMcoahababacacadaeacacabababababababababababababababababababababab
@@ -427,18 +438,18 @@ ababajbpbqbpdxaKaKaKaKaKaWababababaWaKaXababacacadaeacacabgQdDcBdwficBcBcBcBbQbi
 ababajdFblbidGaWaWaWaWaWababbebeababaWafababacacadaeacacabgQdDcBdwficBcBcBdHcEaTcLbzbxdIahgVgQababab
 gQgQdJdSdTdTeQgQgQgQgQgQgQgGgHgHgRgQgQgQgQgQgSgSgTgUgSgSgQgQdDdKdwfidLdzdMdNcEdObjdPdQdRahgQgQababab
 gQgQdJgWgXgXgYgQgQgQgQgQgQgGgHgHgRgQgQgZgQgQgSgSgTgUgSgSgQgQahahahahahahahahahahahahahahahgQgQababab
-ababajdUbzaTdvaWaWaWaWaWababbmbmababaWafababacacadaeacacabgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQababab
-ababajdCbqbpdxaKaKaKaKaKaWababababaWaKaXababacacadaeacacababahahahahahahahahahahahaheFababababababab
-ababajbpbqbpdxaKaKaKaKaKaKaWababaWaKaKaXababacacadaeacacababahdVbabaclaRdbdWbxdXaPaQeFabahahahahahah
-ababajhablbiblabababababababababaKaKabaXababacacadaeacacababahbrbsbsdYcMcsbtdQbibjbleFabahcBcBcBcBcB
-ababajajajajajaaaaaaaaaaaaafaZabafaaaaafababacacadaeacacababbAaTbzaTbzaRdZbwbxaRbwbxeFabahcBcBcBcBcB
-ababababababababababababababababababababababacacadaeacacababahbpbqbpbqbFbGeaebbGeaeceFabahcBcBcBcBcB
-abababababababahahahahahahahahahahahahahababacacadaeacacababahbpbqbPedeebMbMcoaTcLbzeFabahcBcBcBcBcB
-abababababababahdXaPaQaRaOaPefaRcFegcHahababacacadaeacacababcTbiehcbdccCcDbsbtbibjbleFabahcBcBcBcBcB
-abababababababahbibjblbnbibjblcMcNbjblahababacacadaeacacababahbLckbaclcmcnbMcoaTcLbzeFabahcBcBcBcBcB
-abababababababahcObwbSbnbSbwbSaRbyaTbzbAababacacadaeacacababaheibsctcucvbsbsbtbibjcqeFabahcBcBcBcBcB
-abababababababahbobocPbiblbocQejbobpbqahababacacadaeacacababahahahahahahahahahahahaheFabahahahahahah
-abababababababahbobFbGbLbMbNbOcWbzbpbqahababacacadaeacacababahcxbMbMbOeebNbMcyaRaObzeFgQgQgQgQgQgQgQ
+ababajdUbzaTdvaWaWaWaWaWababbmbmababaWafababacacadaeacacgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQgQababab
+ababajdCbqbpdxaKaKaKaKaKaWababababaWaKaXababacacadaeacacgQgQahahahahahahahahahahahahahgQgQgQabababab
+ababajbpbqbpdxaKaKaKaKaKaKaWababaWaKaKaXababacacadaeacacababahdVbabaclaRdbdWbxdXaPaQahgQgQahahahahah
+ababajhablbiblabababababababababaKaKabaXababacacadaeacacababahbrbsbsdYcMcsbtdQbibjblahgQgQahcBcBcBcB
+ababajajajajajaaaaaaaaaaaaafaZabafaaaaafababacacadaeacacababbAaTbzaTbzaRdZbwbxaRbwbxahgQgQahcBcBcBcB
+ababababababababababababababababababababababacacadaeacacababahbpbqbpbqbFbGeaebbGeaecahgQgQahcBcBcBcB
+abababababababahahahahahahahahahahahahahababacacadaeacacababahbpbqbPedeebMbMcoaTcLbzahgQgQahcBcBcBcB
+abababababababahdXaPaQaRaOaPefaRcFegcHahababacacadaeacacababcTbiehcbdccCcDbsbtbibjblahgQgQahcBcBcBcB
+abababababababahbibjblbnbibjblcMcNbjblahababacacadaeacacababahbLckbaclcmcnbMcoaTcLbzahgQgQahcBcBcBcB
+abababababababahcObwbSbnbSbwbSaRbyaTbzbAababacacadaeacacababaheibsctcucvbsbsbtbibjcqahgQgQahcBcBcBcB
+abababababababahbobocPbiblbocQejbobpbqahababacacadaeacacababahahahahahahahahahahahahahgQgQahahahahah
+abababababababahbobFbGbLbMbNbOcWbzbpbqahababacacadaeacacababahcxbMbMbOeebNbMcyaRaObzahgQgQgQgQgQgQgQ
 abababababababahbQbSbXbrbYbZcacbccbiblcgababacacadaeacacababahbrbsbYcacCbZcDbtcMekbqahgQahahahahahah
 abababababababahaTcjbXbLckbaclcmcnbMcoahababacacadaeacacababbAaTbzeldpcFdpembzaRenbtahgQahcBcBcBcBcB
 abababababababaheoepcrcsbsctcucvbsbscwahababacacadaeacacababahbpbqbpeqereqbpbqcMcEbwahgQahcBcBcBcBcB
@@ -447,17 +458,17 @@ ababababababababciababahbEbEevaHbdahababababacacadaeacacababcTbiblbiblcsbtbrbtcE
 abababababababababababbKbfbfbfbfbfahababababacacadaeacacababahbLbMbMcZcEcFexdpcEeycoahgQahcBcBcBcBcB
 abababababababababababahbfbfbfbfbfahababababacacadaeacacababahdebZdfdgcEezeAeBcEdkbtahgQahcBcBcBcBcB
 hghghghghghghghghghghghchhhihjhkhkhchghghgabacacadaJacacababahahahahahahahahahahahahahgQahahahahahah
-hghchchchchchdhchchchchchchchchchchchchchgabacacadaeacacababababababgQgQgQgQgQgQgQgQgQgQabababababab
-hghceGeHrzeIMseJeKeLWqeMMsMsMsMsMsMseNhchgabacacadaeacaccYabababababgQababababababababababababababab
-hghceHeHrzeOMsMsMsMsWqMsMsHyHyHyMsMsMshchgabacacadaeacacacacacacacacgSacacacacacacacacacacacacacacac
-hghceHeHrzePMsMsMsMsWqMswqwqPSwqHyMsMshehgabacacadaeacacacacacacacacgSacacacacacacacacacacacacacacac
-hghcMsMsgIeRMsMsMsMseSMsMsMsMswqHyMsMshehgabacacadaeacacacacacacacacgSacacacacacacacacacacacacacacac
-hghcMsMseTMsMsMsMseUWqeMMsMsMsPSHyMsMshehgabacacadaeacaccYabababababgQababababababababababababababab
-hghcMsMsMsMsMsMsMseVWqMsMsMsMswqHyMsMshehgabacacadaeacacabgQgQgQgQgQgQababababababababababababababab
-hghceWMsMsMsMsMsMseXWqeYMsMsMsPSHyMsMshehgabacacadaeacacabgQahahahahahahahahahahahahabahahahahahcBah
-hghceZfafafbfbfcwqfdWqfeffwqvAwqHyMsCdhehgabacacadaeacacabgQahcBcBcBcBcBcBcBcBcBcBahabahcBcBfgahcBcB
-hghchchchchchchchchchchchchchchchchchchchgabacacadaeacacabgQahcBcBcBcBcBcBcBcBcBcBahabahcBcBcBcBcBcB
-hlhghghghghghghghghghghghghghghghghghghghgabacacadaeacacabgQahcBcBcBcBcBcBcBcBcBcBahabahgPcBcBahcBcB
+hghchchchchchdhchchchchchchchchchchchchchgabacacadaeacacababababababgQgQgQgQgQgQgQgQgQgQgQababababab
+hghceNeOhcePeReSeTeUeVeWeReReReReReReXhchgabacacadaeacaccYabababababgQgQgQgQgQgQgQgQgQgQgQababababab
+hghceOeOhceYeReReReReVeReReZeZeZeReReRhchgabacacadaeacacacacacacacacgSgSacacacacacacacacacacacacacac
+hghceOeOhcfaeReReReReVeRfbfbfcfbeZeReRhehgabacacadaeacacacacacacacacgSgSacacacacacacacacacacacacacac
+hghceReRfdfeeReReReRffeReReReRfbeZeReRhehgabacacadaeacacacacacacacacgSgSacacacacacacacacacacacacacac
+hghceReRgIeReReReRhmeVeWeReReRfceZeReRhehgabacacadaeacachngQgQgQgQgQgQgQabababababababababababababab
+hghceReReReReReReRhoeVeReReReRfbeZeReRhehgabacacadaeacacgQgQgQgQgQgQgQgQabababababababababababababab
+hghchpeReReReReReRhqeVhreReReRfceZeReRhehgabacacadaeacacgQgQahahahahahahahahahahahahabahahahahahcBah
+hghchshththuhuhvfbhweVhxhyfbhzfbeZeRhAhehgabacacadaeacacgQgQahcBcBcBcBcBcBcBcBcBcBahabahcBcBfgahcBcB
+hghchchchchchchchchchchchchchchchchchchchgabacacadaeacacgQgQahcBcBcBcBcBcBcBcBcBcBahabahcBcBcBcBcBcB
+hlhghghghghghghghghghghghghghghghghghghghgabacacadaeacacgQgQahcBcBcBcBcBcBcBcBcBcBahabahgPcBcBahcBcB
 "}
 
 (1,1,2) = {"
