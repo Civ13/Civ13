@@ -2,7 +2,7 @@
 	ID = MAP_BERLIN
 	title = "Berlin"
 	lobby_icon_state = "ww2"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_winner ="The capitol is under German control."
 	faction_organization = list(
@@ -162,18 +162,3 @@ obj/map_metadata/berlin/job_enabled_specialcheck(var/datum/job/J)
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
-
-/obj/map_metadata/berlin/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
