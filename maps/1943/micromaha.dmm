@@ -52,7 +52,7 @@
 "aZ" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/transport/one)
 "ba" = (/obj/structure/bed/chair{dir = 1; icon_state = "wooden_chair"},/turf/floor/plating/road,/area/caribbean/transport/two)
 "bb" = (/obj/structure/bed/chair{dir = 1; icon_state = "wooden_chair"},/turf/floor/plating/road,/area/caribbean/transport/one)
-"bc" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean/no_mans_land/invisible_wall/two)
+"bc" = (/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/one)
 "bd" = (/obj/item/mine/boobytrap,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
 "be" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean/no_mans_land/invisible_wall/one)
 "bf" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/grass,/area/caribbean/forest)
@@ -214,12 +214,12 @@
 "ef" = (/obj/structure/multiz/ladder/ww2/teleporter/up/three,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "eg" = (/obj/structure/multiz/ladder/ww2/teleporter/up/one,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "eh" = (/obj/effect/decal/warning_stripes{icon_state = "N-corner"},/turf/floor/plating/concrete,/area/caribbean/sea/sea/ins)
-"ei" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1; icon_state = "bulb"},/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/two)
-"ej" = (/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/two)
-"ek" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/two)
-"el" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/two)
-"em" = (/obj/structure/sign/minefield,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
-"en" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
+"ei" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1},/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/one)
+"ej" = (/obj/structure/radio/transmitter_receiver/nopower/faction2,/obj/structure/table/wood,/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/one)
+"ek" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/one)
+"el" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/steel,/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/one)
+"em" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
+"en" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "eo" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
 "ep" = (/obj/structure/wild/smallbush,/obj/structure/barbwire,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
 "eq" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
@@ -229,12 +229,10 @@
 "eu" = (/obj/structure/wild/burnedbush,/obj/structure/barbwire,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
 "ev" = (/obj/structure/barricade/antitank,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/no_mans_land/invisible_wall)
 "ew" = (/obj/structure/barricade/wood_pole,/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall)
-"ex" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1},/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/two)
-"ey" = (/obj/structure/radio/transmitter_receiver/nopower/faction2,/obj/structure/table/wood,/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/two)
-"ez" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/steel,/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/two)
-"eA" = (/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
-"eB" = (/obj/structure/barbwire,/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
-"eC" = (/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/two)
+"ex" = (/obj/structure/sign/minefield,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"ey" = (/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"ez" = (/obj/structure/barbwire,/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"eA" = (/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
 "eD" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/german/inside)
 "eE" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/german/inside)
 "eF" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/german/inside)
@@ -391,15 +389,15 @@
 "ZM" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/forest)
 
 (1,1,1) = {"
-pWpWpWpWMgupUGyPsQMAJyTkTkvuOCuwyPgDupMgispWpFaNaYaYaYaYaYaYaYaNhnhnhZpWxDupupMgupiQafiQagajakalaoaqeZauawejeibebebebebe
-axaykPpWupupupupupupupupupupupupupupupupupgrhnaNaYaYaYaYaYaYaYaNhnaAhngrupupupupupupupupupupupupupupupupupejejbekPayazbe
-kPaykPgvupupHDHDHDHDHDHDHDHDHDHDHDHDupupptpWpFaNaYaYpvaYaYaYaYaNhnhnjRpWtHupupupupaJaJaJaJaJaJaJaJaJaJaJupejejbSkPaykPbe
-kPayoJaKupupupupupupupupupupupupupupupupTDpWlqaLlqlqaIaAhnaYaYaNhnoAaQpWTDupupupHDHDHDHDHDHDHDHDHDHDHDHDHDejejbYkPayoJbe
-axkPoJpWvraUjhakaSvraUjhupupaUvraWOBupVluppWhSaAaAaYhnaYhnaAaYaNhnhnhnpWupupupupupupupupupupupupupupupupupejejbekPkPfYbe
-pWpWpWpWoVpWpWpWpWoVpWpWpWpWpWoVpWpWpWpWpWpWhtaNhohnaRhnaYhnaYaAjypfhnpWVlupupaSvraUjhakaSvrVljhjhupupaUexeyekbebebebebe
-pihnhnhnaaaabHhnhnhnbdaaaabHhnhnhnaabfbgbgpihnaAaAbhbibjPkbkbjblbjbmhnpWpWpWpWpWoVpWpWpWpWoVpWpWpWpWpWpWezpWbcpWpWpWpWbc
-iBpanununubqoHnunununununupubnbnAJnunuabnupghnaAaAoHnypabppaoHnubpbqoHbHhnhnaahnaaaapihShShShSaahSpihnhnelenelelemenelel
-aahnplhnaaZMhnaaaahnbdaahnhnhnochnZMaahnplnNcaaAaAaAaAaAaAaAaAaAaAaAaApgnunununupanuoHbqpapanubqpapununueAeAeAeAeBeCeCeC
+pWpWpWpWMgupUGyPsQMAJyTkTkvuOCuwyPgDupMgispWpFaNaYaYaYaYaYaYaYaNhnhnhZpWxDupupMgupiQafiQagajakalaoaqeZauawbcbSbebebebebe
+axaykPpWupupupupupupupupupupupupupupupupupgrhnaNaYaYaYaYaYaYaYaNhnaAhngrupupupupupupupupupupupupupupupupupbcbcbekPayazbe
+kPaykPgvupupHDHDHDHDHDHDHDHDHDHDHDHDupupptpWpFaNaYaYpvaYaYaYaYaNhnhnjRpWtHupupupupaJaJaJaJaJaJaJaJaJaJaJupbcbcbSkPaykPbe
+kPayoJaKupupupupupupupupupupupupupupupupTDpWlqaLlqlqaIaAhnaYaYaNhnoAaQpWTDupupupHDHDHDHDHDHDHDHDHDHDHDHDHDbcbcbYkPayoJbe
+axkPoJpWvraUjhakaSvraUjhupupaUvraWOBupVluppWhSaAaAaYhnaYhnaAaYaNhnhnhnpWupupupupupupupupupupupupupupupupupbcbcbekPkPfYbe
+pWpWpWpWoVpWpWpWpWoVpWpWpWpWpWoVpWpWpWpWpWpWhtaNhohnaRhnaYhnaYaAjypfhnpWVlupupaSvraUjhakaSvrVljhjhupupaUeiejekbebebebebe
+pihnhnhnaaaabHhnhnhnbdaaaabHhnhnhnaabfbgbgpihnaAaAbhbibjPkbkbjblbjbmhnpWpWpWpWpWoVpWpWpWpWoVpWpWpWpWpWpWelbebebebebebebe
+iBpanununubqoHnunununununupubnbnAJnunuabnupghnaAaAoHnypabppaoHnubpbqoHbHhnhnaahnaaaapihShShShSaahSpihnhnemenememexenemem
+aahnplhnaaZMhnaaaahnbdaahnhnhnochnZMaahnplnNcaaAaAaAaAaAaAaAaAaAaAaAaApgnunununupanuoHbqpapanubqpapununueyeyeyeyezeAeAeA
 aabdhnhnhnocaahSaaFmhnplaraahnaahnaahnplaanNbrbscanupubsbppaoHoHhnaAaApmaahnaraaaahnhnhnhnhnaaaaaahnbdaaaaochSZMaaaaaahn
 hnhnZMhnaahnaraahnhnaahShSaahnbdaanZhnhnZMnNhnaAaAaAaAaAaAaAaAaAaAaAaAoiaaaaaaaaShaaaaarhnhSnZhnochnaaaahShSaaaaaaZMaahn
 hnhnhnaaplhnaahnhnaraaochnaabtaahnhnhnplaapmaaaAaAaAaAaAaAaAaAaAaAaAhnpmaaarhnhnhnaaaaochnocaahShShnhnaaplZMhngEaaaaaahn
