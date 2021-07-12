@@ -206,6 +206,20 @@
 			qdel(W)
 			return
 
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/sapote))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the sapote fruit, producing sapote juice."
+			reagents.add_reagent("sapotejuice", 4)
+			qdel(W)
+			return
+
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/apple))
 
 			if (!is_open_container())

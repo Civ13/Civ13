@@ -32,6 +32,16 @@
 		..()
 		reagents.add_reagent("peyote", 5)
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/sapote
+	name = "sapote fruit"
+	icon_state = "sapote"
+	desc = "A very strange fruit with a nutty flavor."
+	color = "#4CBB17"
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("sapotejuice", 2)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/parsnip
 	name = "parsnip root"
 	icon_state = "parsnip"

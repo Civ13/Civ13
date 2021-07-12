@@ -551,6 +551,13 @@
 	taste_description = "sweet"
 	color = "#ff6249"
 
+/datum/reagent/drink/sapote_juice
+	name = "Sapote Juice"
+	id = "sapotejuice"
+	description = "Juice of the Sapote Fruit."
+	taste_description = "slighty sweet yet nutty"
+	color = "#ff6249"
+
 /datum/reagent/drink/tomatojuice
 	name = "Tomato Juice"
 	id = "tomatojuice"
