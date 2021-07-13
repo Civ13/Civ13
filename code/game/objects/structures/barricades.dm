@@ -13,6 +13,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/protection_chance = 85 //prob of the projectile hitting the barricade
+	var/applies_material_colour = TRUE
 
 /*
 /obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
@@ -47,7 +48,10 @@
 		icon_state = "wood_barricade"
 		flammable = TRUE
 	else
-		color = material.icon_colour
+		if(!applies_material_colour)
+			return
+		else
+			color = material.icon_colour
 	maxhealth = (material.integrity*2.5) + 100
 	health = maxhealth
 
