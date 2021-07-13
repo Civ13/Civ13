@@ -1382,12 +1382,7 @@ RECIPE: /material/stone/,fortified wall (horizontal),/obj/structure/barricade/st
 RECIPE: /material/stone/,fortified wall (vertical),/obj/structure/barricade/stone_v,5,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,fortified crenelated wall (horizontal),/obj/structure/barricade/stone_h/crenelated,5,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,fortified crenelated wall (vertical),/obj/structure/barricade/stone_v/crenelated,5,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,stone shingled wall (vertical center),/obj/structure/barricade/jap_v,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,stone shingled wall (vertical top),/obj/structure/barricade/jap_v_t,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,stone shingled wall (vertical bottom),/obj/structure/barricade/jap_v_b,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,stone shingled wall (horizontal center),/obj/structure/barricade/jap_h,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,stone shingled wall (horizontal left),/obj/structure/barricade/jap_h_l,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/barricade/jap_h_r,4,80,1,1,fortifications,29,0,0,8,null
+RECIPE: /material/stone/,stone shingled wall,/obj/structure/barricade/jap,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,jersey barrier,/obj/structure/window/barrier/jersey,3,70,1,1,fortifications,215,0,0,8,null
 
 //**************************************************************
