@@ -13,6 +13,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/protection_chance = 85 //prob of the projectile hitting the barricade
+	var/applies_material_colour = TRUE
 
 /*
 /obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
@@ -47,7 +48,10 @@
 		icon_state = "wood_barricade"
 		flammable = TRUE
 	else
-		color = material.icon_colour
+		if(!applies_material_colour)
+			return
+		else
+			color = material.icon_colour
 	maxhealth = (material.integrity*2.5) + 100
 	health = maxhealth
 
@@ -1008,3 +1012,100 @@
 	..()
 	icon_state = pick("car1","car2","car3")
 	name = "car"
+
+
+/obj/structure/barricade/jap
+	name = "shingled stone wall"
+	desc = "A wall of stone blocks with some red shingles."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "japwall0"
+	var/base_icon_state = "japwall"
+	material = "stone"
+	health = 2709
+	maxhealth = 2709
+	material_name = "stone"
+	protection_chance = 100
+	var/adjusts = TRUE
+	applies_material_colour = FALSE
+/obj/structure/barricade/jap/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+	if (!adjusts)
+		return
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/T = get_step(src, checkdir)
+		for(var/atom/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+	if (!isnull(junction))
+		icon_state = "[base_icon_state][junction]"
+	return
+
+/obj/structure/barricade/jap/can_join_with(var/atom/W)
+	if (istype(W,src))
+		return TRUE
+	return FALSE
+
+/obj/structure/barricade/jap/update_icon()
+	..()
+	check_relatives(1,1)
+/obj/structure/barricade/jap/New()
+	..()
+	check_relatives(1,1)
+
+/obj/structure/barricade/jap/Destroy()
+	check_relatives(0,1)
+	..()
+/obj/structure/barricade/jap/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+/obj/structure/barricade/jap/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+		return
+	else
+		..()
+/obj/structure/barricade/jap/tall
+	name = "tall shingled stone wall"
+	desc = "A wall of stone blocks with some red shingles. This one is rather tall."
+	icon = 'icons/turf/tallwalls.dmi'
+	icon_state = "japwall0"
+	base_icon_state = "japwall"
+	material = "stone"
+	health = 2709
+	maxhealth = 2709
+	material_name = "stone"
+	protection_chance = 100
+	adjusts = TRUE
+	layer = MOB_LAYER + 0.1
