@@ -37,6 +37,12 @@
 	color = "#d88046" //orange brown
 	biomes = list("desert", "jungle","savanna","semiarid")
 
+/obj/item/stack/farming/seeds/sapote
+	name = "sapote seeds"
+	plant = "sapote"
+	color = "#5f9ea0" //orange brown
+	biomes = list("jungle","temperate")
+
 /obj/item/stack/farming/seeds/redpepper
 	name = "red pepper seeds"
 	plant = "redpepper"
@@ -347,6 +353,14 @@
 	plant = "tobacco"
 	biomes = list("desert","jungle","savanna","semiarid")
 	max_water = 55
+
+/obj/structure/farming/plant/sapote
+	name = "sapote plant"
+	desc = "A sapote plant."
+	icon_state = "sapote-grow1"
+	plant = "sapote"
+	biomes = list("jungle","temperate",)
+	max_water = 65
 
 /obj/structure/farming/plant/hemp
 	name = "hemp plant"
