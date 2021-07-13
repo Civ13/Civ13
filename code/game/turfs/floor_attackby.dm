@@ -420,6 +420,14 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/sapote))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/sapote(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 			else if (istype(C, /obj/item/stack/farming/seeds/parsnip))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/parsnip(src)
