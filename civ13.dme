@@ -10,7 +10,6 @@
 #define DEBUG
 // END_PREFERENCES
 // BEGIN_INCLUDE
-#include "nomads_westernvoyage.dmm"
 #include "code\_macros.dm"
 #include "code\client_macros.dm"
 #include "code\global.dm"
@@ -319,6 +318,7 @@
 #include "code\game\objects\map_metadata\pioneers.dm"
 #include "code\game\objects\map_metadata\port_arthur.dm"
 #include "code\game\objects\map_metadata\recife.dm"
+#include "code\game\objects\map_metadata\reichflakturm.dm"
 #include "code\game\objects\map_metadata\reichstag.dm"
 #include "code\game\objects\map_metadata\retreat.dm"
 #include "code\game\objects\map_metadata\river_kwai.dm"
@@ -1001,5 +1001,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\nomads\nomads_karafuto.dmm"
+#include "maps\1943\reichflakturm.dmm"
 // END_INCLUDE
