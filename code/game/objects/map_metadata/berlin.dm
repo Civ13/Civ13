@@ -27,7 +27,7 @@
 
 obj/map_metadata/berlin/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
+	if (J.is_ww2 == TRUE && J.is_reichstag == FALSE && J.is_occupation == FALSE)
 		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
 		. = TRUE
