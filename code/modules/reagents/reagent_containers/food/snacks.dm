@@ -485,6 +485,22 @@
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 6
 
+/obj/item/weapon/reagent_containers/food/snacks/pink_squid
+	name = "squid"
+	desc = "A living squid."
+	icon_state = "pink_squid"
+	center_of_mass = list("x"=17, "y"=13)
+	rotten_icon_state = "rottenfillet"
+	rots = TRUE
+	non_vegetarian = TRUE
+	decay = 12*600
+	satisfaction = 10
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("food_poisoning", 2)
+		bitesize = 7
+
 /obj/item/weapon/reagent_containers/food/snacks/salmonfillet
 	name = "salmon fillet"
 	desc = "A fillet of salmon."

@@ -93,12 +93,14 @@
 			generating = FALSE
 			if (istype(loc, /turf/floor/beach/water) && !found)
 				if (istype(loc, /turf/floor/beach/water/deep/saltwater))
-					if (prob(70))
+					if (prob(25))
 						found = /obj/item/weapon/reagent_containers/food/snacks/octopus
-					else if (prob(70))
+					else if (prob(50))
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawlobster
 					else
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
+					if (prob(25))
+						found = /obj/item/weapon/reagent_containers/food/snacks/pink_squid
 
 				else if (istype(loc, /turf/floor/beach/water/shallowsaltwater))
 					if (prob(50))
