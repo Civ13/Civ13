@@ -267,6 +267,14 @@
 	worn_state = "fancy_fur_coat"
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/suit/storage/coat/overlord_coat
+	name = "overlord robe"
+	desc = "An extremely elegant robe worn by powerful undead."
+	icon_state = "overlord_coat"
+	item_state = "overlord_coat"
+	worn_state = "overlord_coat"
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
 /obj/item/clothing/suit/storage/jacket/regal
 	name = "regal ermine cape"
 	desc = "A large cape finely decked in stylized fur pattern often used to denote the most prominent members amongst noble circles."
