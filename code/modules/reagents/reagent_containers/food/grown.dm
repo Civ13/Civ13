@@ -32,6 +32,16 @@
 		..()
 		reagents.add_reagent("peyote", 5)
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/juniper
+	name = "juniper berry"
+	icon_state = "juniper_berry"
+	desc = "A normal looking berry."
+	color = "#6AAF6A"
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("juniper", 5)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/sapote
 	name = "sapote fruit"
 	icon_state = "sapote"

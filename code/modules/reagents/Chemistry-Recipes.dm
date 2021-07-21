@@ -1061,6 +1061,14 @@ datum/admins/proc/print_chemical_reactions()
 	catalysts = list("enzyme" = 5)
 	result_amount = 1
 
+/datum/chemical_reaction/gin
+	name = "gin"
+	id = "gin"
+	result = "gin"
+	required_reagents = list("sugar" = 3, "juniper_juice" = 1)
+	catalysts = list("enzyme" = 5)
+	result_amount = 1
+
 /datum/chemical_reaction/beer
 	name = "beer"
 	id = "beer"
