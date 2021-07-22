@@ -146,6 +146,24 @@
 	reagent_state = SOLID
 	nutriment_factor = 1.2
 
+/datum/reagent/nutriment/juniper
+	name = "Juniper"
+	id = "juniper"
+	description = "A very tart and sharp tasting berry"
+	taste_description = "sharp"
+	taste_mult = 1.3
+	reagent_state = SOLID
+	nutriment_factor = 0.6
+
+/datum/reagent/nutriment/juniper_juice
+	name = "Juniper juice"
+	id = "juniper_juice"
+	description = "A very tart and sharp tasting berry"
+	taste_description = "extremely tarty and sharp"
+	taste_mult = 1.3
+	reagent_state = LIQUID
+	nutriment_factor = 0.9
+
 /datum/reagent/nutriment/cola
 	name = "cola"
 	id = "cola"

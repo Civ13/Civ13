@@ -37,6 +37,12 @@
 	color = "#d88046" //orange brown
 	biomes = list("desert", "jungle","savanna","semiarid")
 
+/obj/item/stack/farming/seeds/juniper
+	name = "juniper seeds"
+	plant = "juniper"
+	color = "#5F9EA0"
+	biomes = list("taiga","tundra","temperate")
+
 /obj/item/stack/farming/seeds/sapote
 	name = "sapote seeds"
 	plant = "sapote"
@@ -410,6 +416,14 @@
 	plant = "coffee"
 	biomes = list("jungle","savanna","desert","semiarid")
 	max_water = 80
+
+/obj/structure/farming/plant/juniper
+	name = "juniper"
+	desc = "A juniper bush."
+	icon_state = "juniper-grow1"
+	plant = "juniper"
+	biomes = list("tundra","taiga","temperate")
+	max_water = 85
 
 /obj/structure/farming/plant/cotton
 	name = "cotton"
