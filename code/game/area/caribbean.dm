@@ -872,6 +872,11 @@
 /area/caribbean/german/inside
 	location = AREA_INSIDE
 	icon_state = "red2"
+	base_turf = /turf/floor/plating
+
+/area/caribbean/german/inside/roof
+	location = AREA_OUTSIDE
+	icon_state = "blue1"
 /area/caribbean/german/inside/objective
 
 /area/caribbean/german/reichstag/lobby
