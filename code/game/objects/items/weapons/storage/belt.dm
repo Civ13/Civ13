@@ -84,8 +84,20 @@
 		/obj/item/weapon/material/thrown/throwing_knife,
 		/obj/item/weapon/material/thrown/tomahawk,
 		/obj/item/weapon/material/thrown/throwing_axe,
-		)
+		/obj/item/weapon/fire_extinguisher,
+		/obj/item/flashlight/flashlight,
+		/obj/item/weapon/weldingtool,
+		/obj/item/weapon/material/shovel/trench)
 
+/obj/item/weapon/storage/belt/utility/sapper/New()
+	..()
+	new /obj/item/weapon/wrench(src)
+	new /obj/item/weapon/crowbar/prybar(src)
+	new /obj/item/weapon/weldingtool(src)
+	new /obj/item/weapon/wirecutters/boltcutters(src)
+	new /obj/item/weapon/hammer(src)
+	new /obj/item/weapon/fire_extinguisher(src)
+	new /obj/item/weapon/material/shovel/trench(src)
 
 /obj/item/weapon/storage/belt/utility/full/New()
 	..()
