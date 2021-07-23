@@ -17,7 +17,7 @@
 		//"Cold War Era (1949-1984)" = 0,
 		//"Modern Era (1985-2020)" = 0,
 		"Modern Fire Arms (1949-2021)" = 0,
-		"HRP TDM (Gulag, AOTD, Football, etc)" = 10,
+		"HRP TDM (Gulag, AOTD, Occupation)" = 10,
 		"Civilization 13 (Nomads)" = 0,
 		"Civilization 13 (Colony & Pioneers)" = 0,
 		//"Civilization 13 (Prison Camps)" = 15,
@@ -46,8 +46,8 @@
 				"Early Fire Arms (1650-1930)" = 0,
 				"World War II (1931-1948)" = 0,
 				"Modern Fire Arms (1949-2021)" = 0,
-				"HRP TDM (Gulag, AOTD, Football, etc)" = 10,
-//				"Chad Mode" = 0,
+				"HRP TDM (Gulag, AOTD, Occupation)" = 10,
+				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)
 		else if (config.allowedgamemodes == "RP")
@@ -126,7 +126,7 @@
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
-				MAP_KHALKHYN_GOL = 6,
+				MAP_KHALKHYN_GOL = 8,
 				MAP_MICROMAHA = 0,
 				MAP_OMAHA = 15,
 				MAP_KURSK = 10,
@@ -134,7 +134,7 @@
 				MAP_SMALLINGRAD = 0,
 				MAP_NANJING = 20,
 //				MAP_IWO_JIMA = 70,
-				MAP_RIZAL_STADIUM = 0,
+				MAP_RIZAL_STADIUM = 10,
 				MAP_INTRAMUROS = 15,
 				MAP_WAKE_ISLAND = 15,
 				MAP_NANKOU = 0,
@@ -148,7 +148,7 @@
 				MAP_YPRES = 0,
 				MAP_TSARITSYN = 10,
 				MAP_PORT_ARTHUR = 10,
-				MAP_SANTO_TOMAS = 0,
+				MAP_SANTO_TOMAS = 8,
 				MAP_CALOOCAN = 0,
 				MAP_LITTLE_CREEK_TDM = 0,
 				MAP_MISSIONARY_RIDGE = 10,
@@ -184,7 +184,7 @@
 			)
 		else if (epoch == "HRP TDM (Gulag, AOTD, Football, etc)")
 			maps = list(
-				MAP_FOOTBALL = 8,
+//				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 0,
 				MAP_THE_ART_OF_THE_DEAL = 20,
 //				MAP_ABASHIRI = 5,
