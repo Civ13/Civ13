@@ -382,6 +382,9 @@
 	var/onfire = FALSE
 	var/ash_production = FALSE
 
+/obj/item/stack/material/wood/twentyfive
+	amount = 25
+
 /obj/item/stack/material/wood/proc/start_fire()
 	var/burn_time = amount * 1
 	var/old_amount = amount

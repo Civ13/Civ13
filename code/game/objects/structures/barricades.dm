@@ -188,6 +188,8 @@
 	desc = "A sturdy steel construction."
 	flammable = FALSE
 	protection_chance = 90
+	health = 700
+	maxhealth = 700
 
 /obj/structure/barricade/steel/New(_loc)
 	..(_loc)
