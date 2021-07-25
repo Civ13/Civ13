@@ -182,7 +182,7 @@
 				MAP_SIEGE = 0,
 				MAP_GLADIATORS = 0
 			)
-		else if (epoch == "HRP TDM (Gulag, AOTD, Football, etc)")
+		else if (epoch == "HRP TDM (Gulag, AOTD, Occupation)")
 			maps = list(
 //				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 0,
