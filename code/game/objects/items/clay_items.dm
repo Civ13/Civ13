@@ -96,7 +96,7 @@
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot
 	New()
 		..()
-		icon_state = "unfired_bigclaypot[pick(1,2,3)]"
+		icon_state = "unfired_bigclaypot[pick(1,2)]"
 /obj/item/weapon/clay/verysmallclaypot
 	name = "unfired very small clay pot"
 	icon_state = "unfired_verysmallclaypot"

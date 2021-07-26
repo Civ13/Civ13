@@ -47,7 +47,7 @@
 				"World War II (1931-1948)" = 0,
 				"Modern Fire Arms (1949-2021)" = 0,
 				"HRP TDM (Gulag, AOTD, Occupation)" = 10,
-				"Chad Mode" = 0,
+//				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)
 		else if (config.allowedgamemodes == "RP")
@@ -182,7 +182,7 @@
 				MAP_SIEGE = 0,
 				MAP_GLADIATORS = 0
 			)
-		else if (epoch == "HRP TDM (Gulag, AOTD, Football, etc)")
+		else if (epoch == "HRP TDM (Gulag, AOTD, Occupation)")
 			maps = list(
 //				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 0,
