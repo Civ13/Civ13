@@ -162,7 +162,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "mine"
 	force = 12.0
-	w_class = 5.0
+	w_class = 4.0
 	throwforce = 2.0
 	throw_range = 3
 	throw_speed = 3

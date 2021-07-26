@@ -374,7 +374,7 @@
 /obj/item/stack/ore/fossilskull2
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
-	icon_state = "fossil_skull2"
+	icon_state = "fossil_skulll2"
 	singular_name = "fossil"
 	flammable = FALSE
 

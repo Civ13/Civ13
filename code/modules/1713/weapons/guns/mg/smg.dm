@@ -843,14 +843,14 @@
 /obj/item/weapon/gun/projectile/submachinegun/ar12
 	name = "AR-12"
 	icon_state = "ar12"
-	item_state = "m16old"
+	item_state = "ar12"
 	base_icon = "ar12"
-	desc = "Something retarded that doesn't exist."
+	desc = "An AR-15 style magazine fed shotgun in 12 gauge."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
-	caliber = "a762x51"
+	caliber = "12gauge"
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
-	magazine_type = /obj/item/ammo_magazine/scarh
-	good_mags = list(/obj/item/ammo_magazine/scarh)
+	magazine_type = /obj/item/ammo_magazine/ar12
+	good_mags = list(/obj/item/ammo_magazine/ar12)
 	weight = 3.5
 	equiptimer = 11
 	effectiveness_mod = 1.46

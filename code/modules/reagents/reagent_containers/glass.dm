@@ -165,6 +165,20 @@
 			qdel(W)
 			return
 
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/juniper))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the juniper berries, producing juniper juice."
+			reagents.add_reagent("juniper_juice", 6)
+			qdel(W)
+			return
+
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/animalfat))
 
 			if (!is_open_container())
