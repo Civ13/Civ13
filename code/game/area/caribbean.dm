@@ -877,6 +877,8 @@
 /area/caribbean/german/inside/roof
 	location = AREA_OUTSIDE
 	icon_state = "blue1"
+/area/caribbean/german/inside/roof/objective
+	icon_state = "blue2"
 /area/caribbean/german/inside/objective
 
 /area/caribbean/german/reichstag/lobby
