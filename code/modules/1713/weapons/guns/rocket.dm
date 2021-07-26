@@ -188,7 +188,7 @@
 	name = "M1A1 Bazooka"
 	desc = "An American rocket launcher made for cracking open fortified defenses and enemy armor."
 	icon_state = "bazooka_empty"
-	caliber = "bazooka"
+	var/caliber = "bazooka"
 	item_state = "bazooka"
 	slot_flags = SLOT_SHOULDER
 	force = 10
