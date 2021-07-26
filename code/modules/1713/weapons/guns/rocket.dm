@@ -182,12 +182,56 @@
 /obj/item/weapon/gun/launcher/rocket/panzerfaust/attack_hand(mob/user)
 	..()
 
+
+
+/obj/item/weapon/gun/launcher/rocket/bazooka
+	name = "M1A1 Bazooka"
+	desc = "An American rocket launcher made for cracking open fortified defenses and enemy armor."
+	icon_state = "bazooka_empty"
+	caliber = "bazooka"
+	item_state = "bazooka"
+	slot_flags = SLOT_SHOULDER
+	force = 10
+
+/obj/item/weapon/gun/launcher/rocket/bazooka/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "bazooka"
+	else
+		icon_state = "bazooka_empty"
+
+/obj/item/weapon/gun/launcher/rocket/bazooka/proc/unload(mob/user)
+	if(rockets.len)
+		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
+		rockets.len--
+		user.put_in_hands(G)
+		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
+		update_icon()
+	else
+		user << "<span class='warning'>\The [src] is empty.</span>"
+
+/obj/item/weapon/gun/launcher/rocket/bazooka/attack_hand(mob/user)
+	if(user.get_inactive_hand() == src)
+		unload(user)
+	else
+		..()
+
+////////////////////////////////////////AMMO///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/ammo_casing/rocket
 	name = "RPG rocket"
 	desc = "A high explosive warhead and propeller designed to be fired from a rocket launcher."
 	icon_state = "rocketshell"
 	projectile_type = /obj/item/missile
 	caliber = "rocket"
+	w_class = 4
+	slot_flags = SLOT_BELT
+
+/obj/item/ammo_casing/rocket/bazooka
+	name = "M6A1 HEAT rocket"
+	desc = "A high explosive anti tank warhead and propeller designed to be fired from a rocket launcher."
+	icon_state = "m6a1"
+	projectile_type = /obj/item/missile
+	caliber = "bazooka"
 	w_class = 4
 	slot_flags = SLOT_BELT
 
