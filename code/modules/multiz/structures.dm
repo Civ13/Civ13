@@ -189,10 +189,13 @@
 /obj/structure/multiz/ladder/ww2
 	var/ladder_id = null
 	var/area_id = "defaultareaid"
+	name = "ladder downward"
+	desc = "A ladder.  You can climb down it but you'll have to look closer to see more."
 
 /obj/structure/multiz/ladder/ww2/stairsdown
 	icon_state = "rampbottom"
-	name = "stairs"
+	name = "stairs down"
+	desc = "A stairway leading downward. You'll have to look closer to see more."
 
 /obj/structure/multiz/ladder/ww2/Crossed(var/atom/movable/AM)
 	if (find_target() && istop)
@@ -216,19 +219,26 @@
 /obj/structure/multiz/ladder/ww2/up
 	icon_state = "ladderup"
 	istop = FALSE
+	name = "ladder upward"
+	desc = "A ladder.  You can climb up it but you'll have to look closer to see more."
 
 /obj/structure/multiz/ladder/ww2/up/manhole
 	icon_state = "ladderup"
 	istop = FALSE
+	name = "ladder upwards"
+	desc = "A ladder. Leads upwards to a manhole cover."
 
 /obj/structure/multiz/ladder/ww2/manhole
 	icon_state = "manhole"
 	istop = TRUE
+	name = "manhole cover"
+	desc = "A heavy cover bars access to an underground tunnel."
 
 /obj/structure/multiz/ladder/ww2/stairsup
 	icon_state = "rampup"
-	name = "stairs"
+	name = "stairs up"
 	istop = FALSE
+	desc = "A stairway leading upward.  You'll have to look closer to see more."
 
 /obj/structure/multiz/ladder/ww2/Destroy()
 	if (target && istop)
@@ -244,6 +254,8 @@
 
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong
 	icon_state = "pine_closed"
+	name = "bush"
+	desc = "A hole is dug underneath and leads underground."
 
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
 	if (istype(M, /mob/living/human))
@@ -275,13 +287,15 @@
 		..()
 
 /obj/structure/multiz/ladder/ww2/teleporter
-	name = "ladder"
-	desc = "A ladder.  You can climb it up and down."
+	name = "ladder downwards"
+	desc = "A ladder.  You can climb down it but you'll have to look closer to see more."
 	icon_state = "ladderdown"
 	layer = 2.99 // below crates
 /obj/structure/multiz/ladder/ww2/teleporter/up
 	icon_state = "ladderup"
 	istop = FALSE
+	name = "ladder upwards"
+	desc = "A ladder.  You can climb up it but you'll have to look closer to see more."
 /obj/structure/multiz/ladder/ww2/teleporter/New()
 	..()
 	spawn(100)
