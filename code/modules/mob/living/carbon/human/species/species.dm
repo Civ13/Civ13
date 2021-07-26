@@ -36,7 +36,7 @@
 
 	var/teeth_type = /obj/item/stack/teeth/generic 		 //What sort of teeth do the species have
 
-	var/min_age = 16
+	var/min_age = 18
 	var/max_age = 75
 
 	// Language/culture vars.
