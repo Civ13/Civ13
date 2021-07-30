@@ -43,6 +43,18 @@
 	color = "#5F9EA0"
 	biomes = list("taiga","tundra","temperate")
 
+/obj/item/stack/farming/seeds/liquorice
+	name = "liquorice seeds"
+	plant = "liquorice"
+	color = "#191919"
+	biomes = list("desert","semi-arid","temperate")
+
+/obj/item/stack/farming/seeds/celery
+	name = "celery seeds"
+	plant = "celery"
+	color = "#c38452"
+	biomes = list("semi-arid","temperate")
+
 /obj/item/stack/farming/seeds/sapote
 	name = "sapote seeds"
 	plant = "sapote"
@@ -735,6 +747,33 @@
 	plant = "parsely"
 	biomes = list("temperate","semiarid","sea")
 	max_water = 80
+
+/obj/structure/farming/plant/celery
+	name = "celery"
+	desc = "A celery plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "celery_grow1"
+	plant = "celery"
+	biomes = list("temperate","semiarid","sea","jungle")
+	max_water = 45
+
+/obj/structure/farming/plant/liquorice
+	name = "liquorice"
+	desc = "A liquorice plant."
+	icon = 'icons/farming/plants.dmi'
+	icon_state = "liquorice_grow1"
+	plant = "liquorice"
+	biomes = list("temperate","semiarid","sea","desert")
+	max_water = 38
+
+/obj/structure/farming/plant/herbs
+	name = "herbs"
+	desc = "A herb plant."
+	icon = 'icons/farming/plants.dmi'
+	icon_state = "herbs_grow1"
+	plant = "herbs"
+	biomes = list("temperate","semiarid","sea","jungle")
+	max_water = 38
 
 /obj/structure/farming/plant/apricot
 	name = "apricot"
