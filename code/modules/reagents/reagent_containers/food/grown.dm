@@ -125,7 +125,7 @@
 	satisfaction = 2
 	New()
 		..()
-		reagents.add_reagent("coffee", 15)
+		reagents.add_reagent("parsley", 15)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/coffee
 	name = "green coffee"

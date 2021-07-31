@@ -345,6 +345,94 @@
 		..()
 		bitesize = 1
 
+/obj/item/weapon/reagent_containers/food/snacks/pizza
+	name = "pizza"
+	desc = "A large flattened pie with toppings."
+	icon_state = "pizza"
+	trash = null
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 15*600
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 6)
+		reagents.add_reagent("cheese", 1)
+		reagents.add_reagent("parsley", 1)
+		reagents.add_reagent("tomato", 1)
+		bitesize = 14
+
+/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzapepperoni
+	name = "pepperoni and cheese pizza"
+	desc = "A large flattened pie with cheese and pepperoni."
+	icon_state = "pizzapepperoni"
+	trash = null
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 15*600
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("cheese", 1)
+		reagents.add_reagent("tomato", 1)
+		bitesize = 14
+
+/obj/item/weapon/reagent_containers/food/snacks/pizza/vegetablepizza
+	name = "vegetable pizza"
+	desc = "A large flattened pie with vegetables."
+	icon_state = "vegetablepizza"
+	trash = null
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 15*600
+	non_vegetarian = FALSE
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("capsaicin", 1)
+		reagents.add_reagent("tomato", 1)
+		bitesize = 14
+
+/obj/item/weapon/reagent_containers/food/snacks/pizza/meatpizza
+	name = "meatball pizza"
+	desc = "A large flattened pie with meat balls and tomato sauce."
+	icon_state = "meatpizza"
+	trash = null
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 15*600
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 5)
+		reagents.add_reagent("tomato", 1)
+		bitesize = 14
+
+/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzasauced
+	name = "plain pizza"
+	desc = "A large flattened pie with tomato sauce."
+	icon_state = "pizzasauced"
+	trash = null
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 15*600
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 3)
+		reagents.add_reagent("tomato", 1)
+		bitesize = 14
+
+/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzacheesed
+	name = "cheese pizza"
+	desc = "A large flattened pie with cheese and tomato sauce."
+	icon_state = "pizzacheesed"
+	trash = null
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 15*600
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 3)
+		reagents.add_reagent("cheese", 1)
+		reagents.add_reagent("tomato", 1)
+		bitesize = 14
 
 /obj/item/weapon/reagent_containers/food/snacks/egg
 	name = "egg"
