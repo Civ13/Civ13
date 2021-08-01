@@ -144,6 +144,11 @@
 	spawn(rand(timer,timer*1.5))
 		spawnerproc()
 
+/obj/effect/spawner/mobspawner/japsww2
+	name = "jap spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_jap
+	timer = 400
+
 /obj/effect/spawner/mobspawner/boars
 	name = "boars spawner"
 	max_number = 2
@@ -500,7 +505,7 @@
 	name = "elk doe spawner"
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/deer/elk/male
+	create_path = /mob/living/simple_animal/deer/elk/female
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/reindeer_m
