@@ -9,7 +9,7 @@
 	var/base_state = ""
 	trash = null
 	flammable = TRUE
-	decay = 120*600
+	decay = 1200*6000
 	non_vegetarian = TRUE
 /obj/item/weapon/reagent_containers/food/snacks/MRE/attack(mob/M as mob, mob/user as mob, def_zone)
 	if (!open && opens && M == user)
