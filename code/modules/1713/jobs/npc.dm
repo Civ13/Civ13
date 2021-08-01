@@ -24,6 +24,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_wear_mask)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/emptymagazine/pistol/filled(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
 
 	return TRUE
