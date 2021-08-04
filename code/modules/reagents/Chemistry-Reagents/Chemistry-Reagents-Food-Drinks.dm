@@ -583,6 +583,20 @@
 	taste_description = "tomatoes"
 	color = "#731008"
 
+/datum/reagent/drink/liquorice
+	name = "Liquorice"
+	id = "liquorice"
+	description = "liquorice taste?"
+	taste_description = "sweet, bitter, salty and sour"
+	color = "#191919"
+
+/datum/reagent/drink/celery
+	name = "Celery"
+	id = "celery"
+	description = "green taste?"
+	taste_description = "sweet, bitter, salty and sour"
+	color = "#c38452"
+
 /datum/reagent/drink/tomatojuice/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.heal_organ_damage(0, 0.5 * removed)
