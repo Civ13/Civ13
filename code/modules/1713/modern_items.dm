@@ -470,12 +470,6 @@
 			usr << "This refinery will now produce <b>Diesel</b>."
 			return
 /obj/structure/refinery/attack_hand(var/mob/living/human/H)
-	if (isemptylist(barrel))
-		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
-		return
-	if (volume <= 0 && volume_di <= 0 && volume_et <= 0)
-		H << "<span class = 'notice'>The refinery is empty! Put some percursors in first.</span>"
-		return
 	if (active)
 		active = FALSE
 		powered = FALSE
@@ -484,8 +478,14 @@
 		powersource.lastupdate2 = world.time
 		H << "You power off the refinery."
 		return
+	if (isemptylist(barrel))
+		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
+		return
+	if (volume <= 0 && volume_di <= 0 && volume_et <= 0)
+		H << "<span class = 'notice'>The refinery is empty! Put some precursors in first.</span>"
+		return
 
-	else if (!active && powersource && !powersource.powered)
+	if (!active && powersource && !powersource.powered)
 		H << "<span class = 'notice'>There is not enough power to start the refinery.</span>"
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
@@ -806,9 +806,6 @@
 
 
 /obj/structure/bakelizer/attack_hand(var/mob/living/human/H)
-	if (volume < 1)
-		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
-		return
 	if (active)
 		active = FALSE
 		powered = FALSE
@@ -818,8 +815,11 @@
 		H << "You power off the [src]."
 		update_icon()
 		return
+	if (volume < 1)
+		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
+		return
 
-	else if (!active && !powersource.powered)
+	if (!active && !powersource.powered)
 		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
 		update_icon()
 		return
