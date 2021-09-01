@@ -212,7 +212,7 @@
 		if (W.reagents.has_reagent("water", 10))
 			W.reagents.remove_reagent("water", 10)
 			user << "You mold the dirt and water into clay."
-			new/obj/item/stack/material/clay(user.loc)
+			new/obj/item/stack/material/clay(user.loc, 2)
 			qdel(src)
 			return
 
