@@ -385,12 +385,14 @@ var/list/global/floor_cache = list()
 	..()
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
+	var/mob/living/human/H = user
 	if (istype(C, /obj/item/weapon/material/shovel/trench))
 		var/obj/item/weapon/material/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
+		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed)))) //Think a DEFINE for the number being divided over S.dig_speed could be helpful, keeping it this for now
 			return
 		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
+		H.adaptStat("strength", 1)
 		var/area/A = get_area(src)
 		if (A.climate == "jungle" || A.climate == "savanna")
 			ChangeTurf(/turf/floor/dirt/jungledirt)
@@ -398,10 +400,12 @@ var/list/global/floor_cache = list()
 			ChangeTurf(/turf/floor/dirt)
 		return
 	else if (istype(C, /obj/item/weapon/material/shovel))
+		var/obj/item/weapon/material/shovel/S = C
 		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
-		if (!do_after(user, 100))
+		if (!do_after(user, (100/(H.getStatCoeff("strength"))/S.usespeed)))
 			return
 		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
+		H.adaptStat("strength", 1)
 		var/area/A = get_area(src)
 		if (A.climate == "jungle" || A.climate == "savanna")
 			ChangeTurf(/turf/floor/dirt/jungledirt)
@@ -411,12 +415,14 @@ var/list/global/floor_cache = list()
 	..()
 
 /turf/floor/winter/attackby(obj/item/C as obj, mob/user as mob)
+	var/mob/living/human/H = user
 	if (istype(C, /obj/item/weapon/material/shovel/trench))
 		var/obj/item/weapon/material/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to remove snow layer.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
+		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed))))
 			return
 		visible_message("<span class = 'notice'>[user] removes snow layer.</span>")
+		H.adaptStat("strength", 1)
 		ChangeTurf(/turf/floor/dirt)
 		return
 	..()
