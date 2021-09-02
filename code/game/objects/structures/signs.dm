@@ -146,6 +146,7 @@
 	name = "Minefield"
 	desc = "Achtung! Minen."
 	icon_state = "minefield"
+	flammable = FALSE
 
 /obj/structure/sign/exit/New()
 	..()
