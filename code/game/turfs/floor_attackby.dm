@@ -158,7 +158,7 @@
 					H.shoveling_snow = TRUE
 					visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
-					if (do_after(user, rand(45,60)/SH.usespeed))
+					if (do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
 						visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
 						H.shoveling_snow = FALSE
 						H.adaptStat("strength", 1)
@@ -180,7 +180,7 @@
 					H.shoveling_dirt = TRUE
 					visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
-					if (do_after(user, rand(45,60)/SH.usespeed))
+					if (do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
 						visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
 						H.shoveling_dirt = FALSE
 						H.adaptStat("strength", 1)
@@ -195,7 +195,7 @@
 					H.shoveling_sand = TRUE
 					visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
-					if (do_after(user, rand(45,60)/SH.usespeed))
+					if (do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
 						visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
 						H.shoveling_sand = FALSE
 						H.adaptStat("strength", 1)
@@ -210,7 +210,7 @@
 			if (radiation >= 1 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
 				visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, 150/SH.usespeed))
+				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
 					visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
 					H.adaptStat("strength", 1)
 					radiation *= 0.1
