@@ -39,6 +39,8 @@
 	var/yn = input(usr, "Give this [src] a name?") in list("Yes", "No")
 	if (yn == "Yes")
 		var/_name = input(usr, "What name?") as text
+		if (length(_name) <= 0)
+			return
 		name = sanitize(_name, 20)
 	return
 
