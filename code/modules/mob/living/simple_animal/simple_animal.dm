@@ -1,3 +1,5 @@
+#define GRAIN /obj/item/weapon/reagent_containers/food/snacks/grown/wheat||/obj/item/weapon/reagent_containers/food/snacks/grown/oat||/obj/item/weapon/reagent_containers/food/snacks/grown/barley||/obj/item/weapon/reagent_containers/food/snacks/grown/rice
+
 /mob/living/simple_animal
 	name = "animal"
 	icon = 'icons/mob/animal.dmi'
@@ -64,6 +66,7 @@
 	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunt: move towards prey areas. defends: will attack only if attacked
 
 	var/simplehunger = 1000
+	var/eggsleft = FALSE //Eggs left that may be generated, currently set to FALSE by default to decide what animals lay eggs, may cause issues later
 
 	//hostile mob stuff
 	var/stance = HOSTILE_STANCE_IDLE	//Used to determine behavior
@@ -431,6 +434,37 @@
 
 	return
 
+/mob/living/simple_animal/proc/feed(var/obj/item/O as obj, var/mob/user as mob)
+	if (stat == CONSCIOUS)
+		if (granivore && istype(O, /obj/item/stack/farming/seeds))
+			var/obj/item/stack/S = O
+			if (eggsleft != null && eggsleft < 5)
+				eggsleft++
+			else if (simplehunger >= 1000)
+				user << "<span class = 'red'>\The [src] is not hungry.</span>"
+				return
+			if (mob_size >= MOB_MEDIUM)
+				new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
+			simplehunger += 500
+			adjustBruteLoss(-4)
+			user.visible_message("<span class='notice'>[user] feeds [src] \the [S].</span>")
+			if(S.amount >= 2)
+				S.amount -= 1
+			else
+				qdel(S)
+		if (herbivore && istype(O, GRAIN))
+			var/obj/item/weapon/reagent_containers/food/snacks/grown/G = O
+			if (simplehunger >= 1000)
+				user << "<span class = 'red'>\The [src] is not hungry.</span>"
+				return
+			if (mob_size >= MOB_MEDIUM)
+				new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
+			simplehunger += 550
+			adjustBruteLoss(-4)
+			user.visible_message("<span class='notice'>[user] feeds [src] \the [G].</span>")
+			qdel(G)
+	return
+
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/leash) && behaviour != "defends" && behaviour != "hunt")
 		var/obj/item/weapon/leash/L = O
@@ -445,6 +479,12 @@
 			user << "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1]."
 			qdel(L)
 			return
+	else if (istype(O, /obj/item/stack/farming/seeds))
+		var/obj/item/S = O
+		feed(S, user)
+	else if (istype(O, GRAIN))
+		var/obj/item/G = O
+		feed(G, user)
 	else if (istype(O, /obj/item/stack/medical))
 		if (stat != DEAD)
 			var/obj/item/stack/medical/MED = O
@@ -1116,3 +1156,5 @@
 	if(mutation_variants == null)
 		return
 	..()
+
+#undef GRAIN

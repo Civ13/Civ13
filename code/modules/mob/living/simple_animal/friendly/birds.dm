@@ -91,7 +91,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 10
-	var/eggsleft = 5
+	eggsleft = 5
 	var/roosting_icon = "brownhen_roosting"
 	var/body_color
 	var/egg_timer = FALSE
@@ -120,16 +120,6 @@
 /mob/living/simple_animal/chicken/Destroy()
 
 	chicken_count &= src
-	..()
-/mob/living/simple_animal/chicken/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stat == CONSCIOUS && istype(O, /obj/item/stack/farming/seeds))
-		var/obj/item/stack/S = O
-		if (eggsleft < 5)
-			user.visible_message("<span class='notice'>[user] feeds [src] \the [O].</span>")
-			eggsleft++
-			S.use(1)
-		else
-			user << "<span class = 'red'>The [src] is not hungry.</span>"
 	..()
 /mob/living/simple_animal/chicken/Life()
 	. =..()
@@ -267,7 +257,7 @@
 	health = 12
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
-	var/eggsleft = 5
+	eggsleft = 5
 	var/egg_timer = FALSE
 	granivore = 1
 	behaviour = "wander"
