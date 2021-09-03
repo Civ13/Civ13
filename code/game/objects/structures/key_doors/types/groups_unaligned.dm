@@ -150,8 +150,6 @@
 	icon_state = "private"
 	desc = "A wood paneled privacy door."
 	override_material = FALSE
-	override_opacity = TRUE
-	opacity = FALSE
 
 /obj/structure/simple_door/key_door/anyone/singledoor/housedoor/New(var/newloc,var/material_name)
 	..(newloc, "wood")
