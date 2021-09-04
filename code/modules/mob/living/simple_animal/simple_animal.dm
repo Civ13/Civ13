@@ -439,7 +439,7 @@
 	if (stat == CONSCIOUS)
 		if (granivore && istype(O, /obj/item/stack/farming/seeds))
 			var/obj/item/stack/S = O
-			if (eggsleft != null && eggsleft < maxeggs)
+			if (eggsleft != FALSE && eggsleft < maxeggs)
 				eggsleft++
 			else if (simplehunger >= 1000)
 				user << "<span class = 'red'>\The [src] is not hungry.</span>"
