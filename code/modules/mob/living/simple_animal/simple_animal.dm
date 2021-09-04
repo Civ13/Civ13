@@ -67,6 +67,7 @@
 
 	var/simplehunger = 1000
 	var/eggsleft = FALSE //Eggs left that may be generated, currently set to FALSE by default to decide what animals lay eggs, may cause issues later
+	var/maxeggs = 5
 
 	//hostile mob stuff
 	var/stance = HOSTILE_STANCE_IDLE	//Used to determine behavior
@@ -438,7 +439,7 @@
 	if (stat == CONSCIOUS)
 		if (granivore && istype(O, /obj/item/stack/farming/seeds))
 			var/obj/item/stack/S = O
-			if (eggsleft != null && eggsleft < 5)
+			if (eggsleft != null && eggsleft < maxeggs)
 				eggsleft++
 			else if (simplehunger >= 1000)
 				user << "<span class = 'red'>\The [src] is not hungry.</span>"
