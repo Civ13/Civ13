@@ -14,7 +14,8 @@
 	relative_size = 60
 	attack_verb = list("attacked", "slapped", "whacked")
 	var/mob/living/human/brain/brainmob = null
-
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;container;name;real_name"
+	
 	var/const/damage_threshold_count = 10
 	var/damage_threshold_value = 10
 	var/healed_threshold = 1

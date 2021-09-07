@@ -1,3 +1,7 @@
+//from https://github.com/Persistent-SS13/Persistent-SS13/blob/master/code/modules/world_save/Map%20Storage.dm
+//7-september-2021
+
+//needs to be defined for some atoms
 /datum/proc/after_load()
 	return
 /datum/proc/before_save()
@@ -229,7 +233,7 @@ map_storage
 		// will be different than what the password's hash would normally be, providing
 		// a bit of extra protection against md5 hash directories.
 		game_id = "SS13"
-		list/allowed_locs = list(/obj/item/organ/internal/brain, /obj/item/device/mmi, /obj/mecha)
+		list/allowed_locs = list(/obj/item/organ/internal/brain)
 
 
 
@@ -494,49 +498,6 @@ map_storage
 						return integer*10**exp
 			return text
 
-
-
-map_storage
-	proc/Save_Char(client/C, var/datum/mind/H, var/mob/living/carbon/human/Firstbod, var/slot = 0)
-		var/ckey = ""
-		saving_references = list()
-		existing_references = list()
-		found_types = list()
-		var/mob/current
-		if(!H)
-			message_admins("trying to save char without mind")
-			return
-		if(H.current && H.current.ckey && !Firstbod)
-			ckey = H.current.ckey
-			slot = H.char_slot
-			current = H.current
-		else if(Firstbod)
-			ckey = C.ckey
-			current = Firstbod
-
-		if(findtext(ckey, "@"))
-			var/list/nums = string_explode(ckey, "@")
-			ckey = nums[2]
-			message_admins("@ found, nums.len [nums.len]")
-		fdel("char_saves/[ckey]/[slot].sav")
-		var/savefile/savefile = new("char_saves/[ckey]/[slot].sav")
-		var/bodyind = BuildVarDirectory(savefile, current, 1)
-		var/mindind = BuildVarDirectory(savefile, H, 1)
-		var/locind = 0
-		if(istype(current.loc, /obj))
-			var/foun = 0
-			for(var/typ in allowed_locs)
-				if(istype(current.loc, typ))
-					foun = 1
-					break
-			if(foun)
-				locind = BuildVarDirectory(savefile, current.loc, 1)
-				current.loc.should_save = 0
-		savefile.cd = "/data"
-		savefile["body"] = bodyind
-		savefile["mind"] = mindind
-		savefile["loc"] = locind
-		return 1
 	proc/Load_Records(var/search, var/dir = 1) // gen = 1, med = 2, sec = 3
 		message_admins("Load_Records ran!")
 		all_loaded = list()
@@ -563,7 +524,6 @@ map_storage
 			message_admins("FILE DID NOT EXIST [front_dir]/[search].sav !")
 			return 0
 	proc/Save_Records()
-
 		for(var/datum/data/record/G in data_core.general)
 			saving_references = list()
 			existing_references = list()
@@ -590,146 +550,7 @@ map_storage
 			fdel("sec_records/[name].sav")
 			var/savefile/savefile = new("sec_records/[name].sav")
 			savefile["record"] = BuildVarDirectory(savefile, G, 1)
-	proc/Load_Char(var/ckey, var/slot, var/datum/mind/M, var/transfer = 0)
-		if(!ckey)
-			message_admins("Load_Char without ckey")
-			return
-		if(!slot)
-			message_admins("Load_char without slot")
-			return
-		all_loaded = list()
-		existing_references = list()
-		found_types = list()
-		var/savefile/savefile = new("char_saves/[ckey]/[slot].sav")
-		savefile.cd = "/data"
-		var/bodyind = savefile["body"]
-		var/mindind = savefile["mind"]
-		var/locind = savefile["loc"]
-		var/loc = null
-		TICK_CHECK
-		if(locind != "0")
-			loc = Load_Entry(savefile, locind)
-		var/mob/mob = Load_Entry(savefile, bodyind, nocontents = !transfer, species_override = 1)
-		TICK_CHECK
-		if(!mob)
-			return
-		if(!M)
-			mob.mind = new()
-			M = mob.mind
-		var/datum/mind/mind = Load_Entry(savefile, mindind, null, null, M)
-		TICK_CHECK
-		for(var/datum/dat in all_loaded)
-			dat.after_load()
-		for(var/atom/movable/ob in all_loaded)
-			ob.initialize()
-			ob.after_load()
-			if(ob.load_datums)
-				if(ob.reagents)
-					ob.reagents.my_atom = ob
-			if(istype(ob, /turf/simulated))
-				var/turf/simulated/Te = ob
-				//Te.blocks_air = initial(Te.blocks_air)
-				Te.new_air()
 
-		if(transfer)
-			M.transfer_to(mob)
-		if(loc)
-			mob.loc = loc
-			return loc
-		else
-			return mob
-
-	proc/Load_Char_Fast(var/ckey, var/slot, var/datum/mind/M, var/transfer = 0, var/announce = 0)
-		if(!ckey)
-			message_admins("Load_Char without ckey")
-			return
-		if(!slot)
-			message_admins("Load_char without slot")
-			return
-		so_far = 0
-		all_loaded = list()
-		existing_references = list()
-		found_types = list()
-		all_loaded = list()
-		var/savefile/savefile = new("char_saves/[ckey]/[slot].sav")
-		savefile.cd = "/data"
-		var/bodyind = savefile["body"]
-		var/mindind = savefile["mind"]
-		var/locind = savefile["loc"]
-		savefile.cd = "/entries/[bodyind]"
-		var/type = savefile["type"]
-		var/mob/object = new type()
-		var/obj/old_brain
-		object.deleting = 1
-		var/atom/movable/object2
-		if(locind != "0" && locind != 0)
-			savefile.cd = "/entries/[locind]"
-			type = savefile["type"]
-			object2 = new type()
-		spawn(0)
-			if(istype(object, /mob/living/carbon/human))
-				var/mob/living/carbon/human/organ_donor = object
-				organ_donor.disable_process = 1
-				for(var/obj/x in organ_donor.internal_organs)
-					qdel(x)
-					qdel(x)
-			var/loc = null
-			TICK_CHECK
-			if(locind != "0" && locind != 0)
-				loc = Load_Entry(savefile, locind, replacement = object2, lag_fix = 1)
-			var/mob/living/mob = Load_Entry(savefile, bodyind, replacement = object, nocontents = !transfer, species_override = 1, lag_fix = 1)
-			TICK_CHECK
-			if(!mob)
-				return
-			if(!M)
-				mob.mind = new()
-				M = mob.mind
-			var/datum/mind/mind = Load_Entry(savefile, mindind, null, null, M, lag_fix = 1)
-			TICK_CHECK
-			for(var/datum/dat in all_loaded)
-				dat.after_load()
-			for(var/atom/movable/ob in all_loaded)
-				ob.initialize()
-				ob.after_load()
-				if(ob.load_datums)
-					if(ob.reagents)
-						ob.reagents.my_atom = ob
-				if(istype(ob, /turf/simulated))
-					var/turf/simulated/Te = ob
-					//Te.blocks_air = initial(Te.blocks_air)
-					Te.new_air()
-			message_admins("Char loaded!!! [all_loaded.len] instances")
-			if(!mind.initial_account)
-				message_admins("OMG! CHAR LOADED WITHOUT ACCOUNT!! [mob.real_name]")
-				mind.initial_account = create_account(mob.real_name, 500)
-			if(!mind.primary_cert)
-				message_admins("OMG! CHAR LOADED WITHOUT PRIMARY CERT! [mob.real_name]")
-				mind.primary_cert = job_master.GetCert("intern")
-			if(transfer)
-				M.transfer_to(mob)
-			if(loc)
-				mob.loc = loc
-			TICK_CHECK
-			if(istype(object, /mob/living/carbon/human))
-				var/mob/living/carbon/human/organ_donor = object
-				organ_donor.disable_process = 0
-			if(mob.mind.primary_cert)
-				mob.mind.assigned_job = mob.mind.primary_cert
-				var/rank = get_default_title(mind.ranks[to_strings(mind.assigned_job.department_flag)], mind.assigned_job)
-				var/rank_uid = mob.mind.primary_cert.uid
-				job_master.EquipRankPersistant(mob, rank_uid, 1)
-				data_core.manifest_inject(mob)
-
-				ticker.minds |= mob.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
-				TICK_CHECK
-				spawn(10)
-					var/join_message = "has arrived on the station"
-					AnnounceArrival(mob, rank, join_message)
-
-		if(object2)
-			return object2
-		else
-			return object
 // Saves all of the turfs and objects within turfs to their own directories withn
 // the specifeid savefile name. If objects or turfs have variables to keep track
 // of, it will check to see if those variables have been modified and record the
@@ -787,19 +608,6 @@ map_storage
 				savefile["[turf.x]"] = ref
 				TICK_CHECK
 		return 1
-	proc/Save_World_Chunk(list/areas)
-		// ***** MAP SECTION *****
-		if(fexists(file("map_saves/recent/")))
-			fcopy("map_saves/recent/", "map_saves/backup/[time2text(world.realtime, "MM-DD hh.mm.ss")]/")
-			fdel("map_saves/recent/")
-
-		for(var/z = 1, z < 2, z++)
-			for(var/x = 1, x < 256, x += 15)
-				for(var/y = 1, y < 256, y += 15)
-					Save_Chunk(x, y, z)
-					sleep(-1)
-
-		return 1
 
 	proc/Save_Chunk(tx, ty, z)
 		saving_references = list()
@@ -824,18 +632,7 @@ map_storage
 
 		return 1
 
-	proc/Load_World_Chunk()
-		var/watch = start_watch()
-		log_startup_progress("Started Loading")
-		for(var/z = 1, z < 2, z++)
-			for(var/x = 1, x < 256, x += 15)
-				message_admins("Loaded [x] out of 256")
-				for(var/y = 1, y < 256, y += 15)
-					Load_Chunk(x, y, z)
-					sleep(-1)
-
 	proc/Load_World(list/areas)
-
 		for(var/A in areas)
 			try
 				var/watch = start_watch()
@@ -959,19 +756,6 @@ map_storage
 /*************************************************************************
 SUPPLEMENTARY FUNCTIONS
 **************************************************************************/
-
-map_storage
-
-	// These is called routinely as the load and save functions make progress.
-	// If you want to display how much of the map has been saved or loaded
-	// somewhere, you can use this function to do it.
-
-	proc/SaveOutput(percent)
-		return
-
-	proc/LoadOutput(percent)
-		return
-
 	// This is called when loading a map after all the verification and
 	// password stuff is completed so that the map can have a fresh template
 	// to work with.
@@ -986,3 +770,10 @@ map_storage
 				del(A)
 			del(T)
 		return
+
+/datum/data/record
+	name = "record"
+	size = 5.0
+	var/list/fields = list(  )
+	map_storage_saved_vars = "fields"
+	safe_list_vars = "fields"

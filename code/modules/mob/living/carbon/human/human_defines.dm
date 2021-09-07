@@ -196,3 +196,5 @@
 	if(map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
 		stats.Add("magic" = list(0,100))
 	..()*/
+
+map_storage_saved_vars = "name;real_name;r_markings;g_markings;b_markings;m_style;r_eyes;g_eyes;b_eyes;s_tone;r_skin;g_skin;b_skin;lip_style;lip_color;age;b_type;w_uniform;shoes;belt;gloves;glasses;l_ear;r_ear;wear_id;wear_pda;r_store;l_store;s_store;undewear;undershirt;head;toxloss;oxyloss;cloneloss;brainloss;internal_organs;organs;age;wear_mask;wear_suit;dna;species;back;gender;r_hand;l_hand;flavor_text"

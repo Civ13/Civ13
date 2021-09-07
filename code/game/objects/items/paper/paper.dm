@@ -35,6 +35,9 @@
 	var/const/signfont = "Times New Roman"
 	var/const/crayonfont = "Comic Sans MS"
 
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;info;info_links;stamped"
+	safe_list_vars = "stamped"
+
 /obj/item/weapon/paper/official
 	base_icon = "official"
 	name = "official paper"

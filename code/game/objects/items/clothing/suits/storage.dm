@@ -1,5 +1,6 @@
 /obj/item/clothing/suit/storage
 	var/obj/item/weapon/storage/internal/pockets
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;pockets"
 /obj/item/clothing/suit/storage/New()
 	..()
 	pockets = new/obj/item/weapon/storage/internal(src)
