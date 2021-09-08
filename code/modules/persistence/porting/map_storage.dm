@@ -7,63 +7,6 @@
 /datum/proc/before_save()
 	return
 
-/datum/proc/remove_saved(var/ind)
-	var/A = src.type
-	var/B = replacetext("[A]", "/", "-")
-	var/savedvarparams = file2text("saved_vars/[B].txt")
-	if(!savedvarparams)
-		savedvarparams = ""
-	var/list/saved_vars = params2list(savedvarparams)
-	if(saved_vars.len < ind)
-		message_admins("remove_saved saved_vars less than ind [src]")
-		return
-	saved_vars.Cut(ind, ind+1)
-	savedvarparams = list2params(saved_vars)
-	fdel("saved_vars/[B].txt")
-	text2file(savedvarparams, "saved_vars/[B].txt")
-/datum/proc/add_saved(var/mob/M)
-	if(!check_rights(R_ADMIN, 1, M))
-		return
-	var/input = input(M, "Enter the name of the var you want to save", "Add var","") as text|null
-	if(!hasvar(src, input))
-		to_chat(M, "The [src] does not have this var")
-		return
-	
-	var/A = src.type
-	var/B = replacetext("[A]", "/", "-")
-	var/C = B
-	var/savedvarparams = file2text("saved_vars/[B].txt")
-	message_admins("savedvarparams: | [savedvarparams] | saved_vars/[B].txt")
-	if(!savedvarparams)
-		savedvarparams = ""
-	var/list/savedvars = params2list(savedvarparams)
-	var/list/newvars = list()
-	if(savedvars && savedvars.len)
-		newvars = savedvars.Copy()
-	var/list/found_vars = list()
-	var/list/split = splittext(B, "-")
-	var/list/subtypes = list()
-	if(split && split.len)
-		for(var/x in split)
-			if(x == "") continue
-			var/subtypes_text = ""
-			for(var/xa in subtypes)
-				subtypes_text += "-[xa]"
-			var/savedvarparamss = file2text("saved_vars/[subtypes_text]-[x].txt")
-			message_admins("savedvarparamss: [savedvarparamss] dir: saved_vars/[subtypes_text]-[x].txt")
-			var/list/saved_vars = params2list(savedvarparamss)
-			if(saved_vars && saved_vars.len)
-				found_vars |= saved_vars
-			subtypes += x
-	if(found_vars && found_vars.len)
-		savedvars |= found_vars
-	if(savedvars.Find(input))
-		to_chat(M, "The [src] already saves this var")
-		return
-	newvars |= input
-	savedvarparams = list2params(newvars)
-	fdel("saved_vars/[C].txt")
-	text2file(savedvarparams, "saved_vars/[C].txt")
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
 	to_save |= params2list(map_storage_saved_vars)
@@ -101,102 +44,6 @@
 	if(found_vars && found_vars.len)
 		to_save |= found_vars
 	return to_save
-/datum/proc/add_saved_var(var/mob/M)
-	if(!check_rights(R_ADMIN, 1, M))
-		return
-	var/A = src.type
-	var/B = replacetext("[A]", "/", "-")
-	var/C = B
-	var/list/found_vars = list()
-	var/list/split = splittext(B, "-")
-	var/list/subtypes = list()
-	if(split && split.len)
-		for(var/x in split)
-			if(x == "") continue
-			var/subtypes_text = ""
-			for(var/xa in subtypes)
-				subtypes_text += "-[xa]"
-			var/savedvarparams = file2text("saved_vars/[subtypes_text]-[x].txt")
-			message_admins("savedvarparams: [savedvarparams] dir: saved_vars/[subtypes_text]-[x].txt")
-			var/list/saved_vars = params2list(savedvarparams)
-			if(saved_vars && saved_vars.len)
-				found_vars |= saved_vars
-			subtypes += x
-	var/savedvarparams = file2text("saved_vars/[C].txt")
-	message_admins("savedvarparams: [savedvarparams] saved_vars/[C].txt")
-	if(!savedvarparams)
-		savedvarparams = ""
-	var/list/saved_vars = params2list(savedvarparams)
-	var/dat = "<b>Saved Vars:</b><br><hr>"
-	dat += "<b><u>Inherited</u></b><br><hr>"
-	for(var/x in found_vars)
-		dat += "[x]<br>"
-	dat += "<b><u>For this Object</u></b><br><hr>"
-	var/ind = 0
-	for(var/x in saved_vars)
-		ind++
-		dat += "[x] <a href='?_src_=savevars;Remove=[ind];Vars=\ref[src]'>(Remove)</a><br>"
-	dat += "<hr><br>"
-	dat += "<a href='?_src_=savevars;Vars=\ref[src];Add=1'>(Add new var)</a>"
-	M << browse(dat, "window=roundstats;size=500x600")
-
-proc/lagstopsleep()
-	var/tickstosleep = 1
-	do
-		sleep(world.tick_lag*tickstosleep)
-		tickstosleep *= 2 //increase the amount we sleep each time since sleeps are expensive (5-15 proc calls)
-	while(world.tick_usage > 75 && (tickstosleep*world.tick_lag) < 32) //stop if we get to the point where we sleep for seconds at a time
-
-
-proc/mdlist2params(list/l)
-                           //This converts a multidimensional list into a set of parameters. The
-                           //output is in the following format: "name1=value1&name2=(name3=value3)"
-                           //Notes: This can convert normal lists as well as multidimensional lists
-                           //Warning: Beware of circular references. This will cause in infinite loop.
-                                //If you know there is going to be a circular reference, create a new list
-                                //and pull out the reference
-	if(!istype(l,/list)) return
-	var/rvalue,e = 1
-	for(var/a in l)
-		if(istype(l[a],/list) && length(l[a]))
-			rvalue += list2params(l.Copy(e,l.Find(a)))
-			rvalue += "&[a]=([mdlist2params(l[a])])"
-			e = l.Find(a) + 1
-		else continue
-	if(e == 1) rvalue += list2params(l)
-	return rvalue
-
-proc/params2mdlist(params) //This converts a parameter text string, output by mdlist2params(), into
-                           //a multidimensional list.
-                           //Notes: It will work for parameters output by list2params() as well.
-    if(!istext(params)) return
-    var/list/rlist = list()
-    var/len = length(params)
-    var/element = null
-    var/a = 0,p_count = 1
-    while(a <= len)
-        a ++
-        if(findtext(params,"&",a,a+1))
-            rlist += params2list(copytext(params,1,a))
-            params = copytext(params,a+1)
-            len = length(params)
-            a = 1
-        if(findtext(params,"(",a,a+1))
-            element = copytext(params,1,a-1)
-            params = copytext(params,a+1)
-            len = length(params)
-            p_count = 1
-            while(p_count > 0)
-                a ++
-                if(findtext(params,"(",a,a+1)) p_count ++
-                if(findtext(params,")",a,a+1)) p_count --
-                if(a >= len - 1) break
-            rlist[element] = params2mdlist(copytext(params,1,a+1))
-            params = copytext(params,a+2)
-            len = length(params)
-            a = 1
-    rlist += params2list(copytext(params,1))
-    return rlist
 
 var/map_storage/map_storage = new("SS13")
 /*************************************************************************
@@ -255,7 +102,6 @@ map_storage
 		if(ignore)
 			src.ignore_types = ignore
 		return
-
 
 	proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/species_override = 0, var/lag_fix = 0)
 		try
@@ -491,30 +337,7 @@ map_storage
 						return integer*10**exp
 			return text
 
-	proc/Load_Records(var/search, var/dir = 1) // gen = 1, med = 2, sec = 3
-		message_admins("Load_Records ran!")
-		all_loaded = list()
-		existing_references = list()
-		found_types = list()
-		all_loaded = list()
-		if(!search)
-			return
-		var/front_dir
-		switch(dir)
-			if(1)
-				front_dir = "gen_records"
-			if(2)
-				front_dir = "med_records"
-			if(3)
-				front_dir = "sec_records"
-		if(fexists("[front_dir]/[search].sav"))
-			message_admins("FILE Found [front_dir]/[search].sav !")
-			var/savefile/savefile = new("[front_dir]/[search].sav")
-			var/datum/data/record/G = Load_Entry(savefile, 1)
-			return G
-		else
-			message_admins("FILE DID NOT EXIST [front_dir]/[search].sav !")
-			return 0
+
 
 // Saves all of the turfs and objects within turfs to their own directories withn
 // the specifeid savefile name. If objects or turfs have variables to keep track
@@ -545,42 +368,42 @@ map_storage
 	proc/Save_World(list/areas)
 		// ***** MAP SECTION *****
 		var/backup_dir
-		for(var/A in areas)
+		for(var/A = 1, A <= world.maxz, A++)
 			saving_references = list()
 			existing_references = list()
 			found_types = list()
-			var/B = replacetext("[A]", "/", "-")
-			if(fexists("map_saves/[B].sav"))
-				var/savefile/sav = new("map_saves/[B].sav")
+			if(fexists("map_saves/[A].sav"))
+				var/savefile/sav = new("map_saves/[A].sav")
 				if(!backup_dir)
 					var/i = 1
 					var/found = 0
 					while(!found)
 						found = 1
-						if(fexists("map_backups/[i]/[B].sav"))
+						if(fexists("map_backups/[i]/[A].sav"))
 							found = 0
 							i++
 						else
 							backup_dir = "map_backups/[i]/"
-				fcopy(sav, "[backup_dir][B].sav")
-				fdel("map_saves/[B].sav")
-			var/savefile/savefile = new("map_saves/[B].sav")
-			for(var/turf/turf in get_area_turfs(A))
-				var/ref = BuildVarDirectory(savefile, turf, 1)
-				if(!ref)
-					message_admins("[turf] failed to return a ref!")
-				savefile.cd = "/map/[turf.z]/[turf.y]"
-				savefile["[turf.x]"] = ref
-				TICK_CHECK
+				fcopy(sav, "[backup_dir][A].sav")
+				fdel("map_saves/[A].sav")
+			var/savefile/savefile = new("map_saves/[A].sav")
+			for(var/turf/turf in world)
+				if (turf.z == A)
+					var/ref = BuildVarDirectory(savefile, turf, 1)
+					if(!ref)
+						message_admins("[turf] failed to return a ref!")
+					savefile.cd = "/map/[turf.z]/[turf.y]"
+					savefile["[turf.x]"] = ref
+					TICK_CHECK
+			log_startup_progress("	Saved z-level [A].")
 		return 1
 
 	proc/Load_World(list/areas)
-		for(var/A in areas)
+		for(var/B = 1, B <= world.maxz, B++)
 			try
 				var/watch = start_watch()
 				existing_references = list()
 				all_loaded = list()
-				var/B = replacetext("[A]", "/", "-")
 				if(!fexists("map_saves/[B].sav"))
 					continue
 				var/savefile/savefile = new("map_saves/[B].sav")
@@ -607,45 +430,9 @@ map_storage
 						if(obbie.load_datums)
 							if(obbie.reagents)
 								obbie.reagents.my_atom = ob
-				log_startup_progress("	Loaded [A] in [stop_watch(watch)]s.")
+				log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 			catch(var/exception/e)
 				message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
-	proc/Load_Chunk(tx, ty, tz, var/location = "recent")
-		try
-			tx = tx + 1 - tx % 15
-			ty = ty + 1 - ty % 15
-
-			existing_references = list()
-			all_loaded = list()
-			var/B = "[tx]-[ty]"
-			if(!fexists(file("map_saves/[location]/[tz]/[B].sav")))
-				return
-			var/savefile/savefile = new("map_saves/[location]/[tz]/[B].sav")
-			savefile.cd = "/map"
-			TICK_CHECK
-			for(var/z in savefile.dir)
-				savefile.cd = "/map/[z]"
-				for(var/y in savefile.dir)
-					savefile.cd = "/map/[z]/[y]"
-					for(var/x in savefile.dir)
-						var/turf_ref = savefile["[x]"]
-						if(!turf_ref)
-							message_admins("turf_ref not found, x: [x]")
-							continue
-						var/turf/old_turf = locate(text2num(x), text2num(y), text2num(z))
-						Load_Entry(savefile, turf_ref, old_turf)
-						savefile.cd = "/map/[z]/[y]"
-						TICK_CHECK
-			for(var/i in 1 to all_loaded.len)
-				var/datum/ob = all_loaded[i]
-				ob.after_load()
-				if(istype(ob, /obj))
-					var/obj/obbie = ob
-					if(obbie.load_datums)
-						if(obbie.reagents)
-							obbie.reagents.my_atom = ob
-		catch(var/exception/e)
-			message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
 
 // Loading a file is pretty straightforward - you specify the savefile to load from
 // (make sure its an actual savefile, not just a file name), and if necessary you
@@ -690,14 +477,16 @@ SUPPLEMENTARY FUNCTIONS
 	// password stuff is completed so that the map can have a fresh template
 	// to work with.
 	proc/ClearMap()
-		for(var/turf/T in world)
-			for(var/atom/movable/A in T)
-				if(ismob(A))
-					var/mob/M = A
-					if(M.client)
-						M.loc = null
-						continue
-				del(A)
+		sleep(1)
+		world.log << "Clearing mobs..."
+		for (var/mob/mob in world)
+			if (!istype(mob, /mob/new_player))
+				qdel(mob)
+		sleep(1)
+		world.log << "Clearing objects..."
+		for (var/obj/object in world)
+			if (!istype(object, /obj/map_metadata))
+				qdel(object)
 		return
 
 /datum/data/record
