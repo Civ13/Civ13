@@ -74,13 +74,12 @@
 		savedvarparams = ""
 	var/list/savedvars = params2list(savedvarparams)
 	if(savedvars && savedvars.len)
-		
-	for(var/v in savedvars)
-		if(findtext(v, "\n"))
-			var/list/split2 = splittext(v, "\n")
-			to_save |= split2[1]
-		else
-			to_save |= v
+		for(var/v in savedvars)
+			if(findtext(v, "\n"))
+				var/list/split2 = splittext(v, "\n")
+				to_save |= split2[1]
+			else
+				to_save |= v
 	var/list/found_vars = list()
 	var/list/split = splittext(B, "-")
 	var/list/subtypes = list()
@@ -108,7 +107,6 @@
 	var/A = src.type
 	var/B = replacetext("[A]", "/", "-")
 	var/C = B
-	var/found = 1
 	var/list/found_vars = list()
 	var/list/split = splittext(B, "-")
 	var/list/subtypes = list()
@@ -233,7 +231,7 @@ map_storage
 		// will be different than what the password's hash would normally be, providing
 		// a bit of extra protection against md5 hash directories.
 		game_id = "SS13"
-		list/allowed_locs = list(/obj/item/organ/internal/brain)
+		list/allowed_locs = list(/obj/item/organ/brain)
 
 
 
@@ -300,8 +298,8 @@ map_storage
 			all_loaded += object
 			existing_references["[ind]"] = object
 			if(species_override)
-				var/mob/living/carbon/human/hum = object
-				if(istype(hum, /mob/living/carbon/human))
+				var/mob/living/human/hum = object
+				if(istype(hum, /mob/living/human))
 					var/x = savefile["species"]
 					if(x)
 						var/list/fixed = string_explode(x, "entry")
@@ -335,7 +333,6 @@ map_storage
 					var/list/lis = params2list(x)
 					var/list/final_list = list()
 					if(lis.len)
-						var/firstval = lis[1]
 						for(var/xa in lis)
 							if(findtext(xa, "**entry"))
 								var/list/fixed2 = string_explode(xa, "entry")
@@ -375,10 +372,6 @@ map_storage
 		var/ref = 0
 		if(ind)
 			return ind
-		if(istype(A, /turf/space) && (!A.contents || A.contents.len == 0))
-			savefile.cd = "/entries/0"
-			savefile["type"] = A.type
-			savefile["content"] = ""
 		saving_references += A
 		ref = saving_references.len
 		A.before_save()
@@ -414,7 +407,7 @@ map_storage
 				changing_vars += "air_contents"
 		for(var/v in changing_vars)
 			if(!old_vars.Find(v))
-			savefile.cd = "/entries/[ref]"
+				savefile.cd = "/entries/[ref]"
 			if(A.vars.Find(v))
 				if(istype(A.vars[v], /obj))
 					var/atom/movable/varob = A.vars[v]
@@ -517,39 +510,11 @@ map_storage
 		if(fexists("[front_dir]/[search].sav"))
 			message_admins("FILE Found [front_dir]/[search].sav !")
 			var/savefile/savefile = new("[front_dir]/[search].sav")
-			var/recind = savefile["record"]
 			var/datum/data/record/G = Load_Entry(savefile, 1)
 			return G
 		else
 			message_admins("FILE DID NOT EXIST [front_dir]/[search].sav !")
 			return 0
-	proc/Save_Records()
-		for(var/datum/data/record/G in data_core.general)
-			saving_references = list()
-			existing_references = list()
-			var/name = G.fields["name"]
-			var/fingerprint = G.fields["fingerprint"]
-			fdel("gen_records/[name].sav")
-			var/savefile/savefile = new("gen_records/[name].sav")
-			savefile["record"] = BuildVarDirectory(savefile, G, 1)
-			message_admins("savefile made! record: [savefile["record"]]")
-			fcopy(savefile, "gen_records/[fingerprint].sav")
-		for(var/datum/data/record/G in data_core.medical)
-			saving_references = list()
-			existing_references = list()
-			var/name = G.fields["name"]
-			var/dna = G.fields["b_dna"]
-			fdel("med_records/[name].sav")
-			var/savefile/savefile = new("med_records/[name].sav")
-			savefile["record"] = BuildVarDirectory(savefile, G, 1)
-			fcopy(savefile, "med_records/[dna].sav")
-		for(var/datum/data/record/G in data_core.security)
-			saving_references = list()
-			existing_references = list()
-			var/name = G.fields["name"]
-			fdel("sec_records/[name].sav")
-			var/savefile/savefile = new("sec_records/[name].sav")
-			savefile["record"] = BuildVarDirectory(savefile, G, 1)
 
 // Saves all of the turfs and objects within turfs to their own directories withn
 // the specifeid savefile name. If objects or turfs have variables to keep track
@@ -609,29 +574,6 @@ map_storage
 				TICK_CHECK
 		return 1
 
-	proc/Save_Chunk(tx, ty, z)
-		saving_references = list()
-		existing_references = list()
-		found_types = list()
-		tx = tx + 1 - tx % 15
-		ty = ty + 1 - ty % 15
-		for(var/x = tx, x < tx + 15, x++)
-			for(var/y = ty, y < ty + 15, y++)
-
-				var/turf/T = locate(x,y,z)
-				if(!T)
-					continue
-				var/B = "[tx]-[ty]"
-				var/savefile/savefile = new("map_saves/recent/[T.z]/[B].sav")
-				var/ref = BuildVarDirectory(savefile, T, 1)
-				if(!ref)
-					message_admins("[T] failed to return a ref!")
-				savefile.cd = "/map/[T.z]/[T.y]"
-				savefile["[T.x]"] = ref
-				TICK_CHECK
-
-		return 1
-
 	proc/Load_World(list/areas)
 		for(var/A in areas)
 			try
@@ -665,10 +607,6 @@ map_storage
 						if(obbie.load_datums)
 							if(obbie.reagents)
 								obbie.reagents.my_atom = ob
-					if(istype(ob, /turf/simulated))
-						var/turf/simulated/Te = ob
-						//Te.blocks_air = initial(Te.blocks_air)
-						Te.new_air()
 				log_startup_progress("	Loaded [A] in [stop_watch(watch)]s.")
 			catch(var/exception/e)
 				message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
@@ -706,10 +644,6 @@ map_storage
 					if(obbie.load_datums)
 						if(obbie.reagents)
 							obbie.reagents.my_atom = ob
-				if(istype(ob, /turf/simulated))
-					var/turf/simulated/Te = ob
-					//Te.blocks_air = initial(Te.blocks_air)
-					Te.new_air()
 		catch(var/exception/e)
 			message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
 
@@ -749,10 +683,6 @@ map_storage
 			if(ob.load_datums)
 				if(ob.reagents)
 					ob.reagents.my_atom = ob
-			if(istype(ob, /turf/simulated))
-				var/turf/simulated/Te = ob
-				//Te.blocks_air = initial(Te.blocks_air)
-				Te.new_air()
 /*************************************************************************
 SUPPLEMENTARY FUNCTIONS
 **************************************************************************/
@@ -768,12 +698,11 @@ SUPPLEMENTARY FUNCTIONS
 						M.loc = null
 						continue
 				del(A)
-			del(T)
 		return
 
 /datum/data/record
-	name = "record"
-	size = 5.0
+	var/name = "record"
+	var/size = 5.0
 	var/list/fields = list(  )
 	map_storage_saved_vars = "fields"
 	safe_list_vars = "fields"

@@ -15,21 +15,14 @@ serverdata.txt
 
 .DS_Store
 config/host.txt
-config/host.txt
-config/host.txt
-config/host.txt
 recipes.txt
-config/host.txt
-config/host.txt
-config/host.txt
-.vscode/launch.json
+.vscode/
 cfg/admin.txt
 nullobj.txt
-maps/1943/backup/nanjing.dmm
-maps/1943/nanjing.dmm
-maps/1943/nanjing.dmm
 *.code-workspace
 tts/amazontts.py
 tools/imglist.txt
 tools/jslist.txt
 tools/unused.txt
+map_saves/
+map_backups/
