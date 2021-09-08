@@ -11,7 +11,7 @@
 		return
 	ticker.loadstation()
     
-	/datum/admins/proc/savestation()
+/datum/admins/proc/savestation()
 	set category = "Server"
 	set desc="SAAAVE!"
 	set name="Save Station (EXPERIMENTAL!)"
