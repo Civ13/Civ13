@@ -9,40 +9,12 @@
 
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
-	to_save |= params2list(map_storage_saved_vars)
-	var/A = src.type
-	var/B = replacetext("[A]", "/", "-")
-	var/savedvarparams = file2text("saved_vars/[B].txt")
-	if(!savedvarparams)
-		savedvarparams = ""
-	var/list/savedvars = params2list(savedvarparams)
-	if(savedvars && savedvars.len)
-		for(var/v in savedvars)
-			if(findtext(v, "\n"))
-				var/list/split2 = splittext(v, "\n")
-				to_save |= split2[1]
-			else
-				to_save |= v
-	var/list/found_vars = list()
-	var/list/split = splittext(B, "-")
-	var/list/subtypes = list()
-	if(split && split.len)
-		for(var/x in split)
-			if(x == "") continue
-			var/subtypes_text = ""
-			for(var/xa in subtypes)
-				subtypes_text += "-[xa]"
-			var/savedvarparamss = file2text("saved_vars/[subtypes_text]-[x].txt")
-			var/list/saved_vars = params2list(savedvarparamss)
-			for(var/v in saved_vars)
-				if(findtext(v, "\n"))
-					var/list/split2 = splittext(v, "\n")
-					found_vars |= split2[1]
-				else
-					found_vars |= v
-			subtypes += x
-	if(found_vars && found_vars.len)
-		to_save |= found_vars
+	if (istype(src, /turf) || istype(src, /obj/structure/wild) || (!istype(src, /obj/item) && !istype(src, /obj/structure) && !istype(src, /obj/map_metadata) && !istype(src, /obj/covers)))
+		to_save |= params2list(map_storage_saved_vars)
+	else
+		for (var/key in src.vars)
+			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs")
+				to_save |= key
 	return to_save
 
 var/map_storage/map_storage = new("SS13")
@@ -66,21 +38,12 @@ map_storage
 	var
 		// These are atom types for the map saver to ignore. Objects of these type will
 		// not be saved with everything else.
-		list/ignore_types = list(/mob, /atom/movable/lighting_overlay)
-
-		// If a text string is specified here, then you will be able to use this as a
-		// backdoor password which will let you access any maps. This is primary for
-		// developers who need to be able to access maps created by other people for
-		// debugging purposes.
-		backdoor_password = null
+		list/ignore_types = list(/mob/new_player, /atom/movable/lighting_overlay)
 
 		// This text string is tacked onto all saved passwords so that their md5 values
 		// will be different than what the password's hash would normally be, providing
 		// a bit of extra protection against md5 hash directories.
 		game_id = "SS13"
-		list/allowed_locs = list(/obj/item/organ/brain)
-
-
 
 		// INTERNAL VARIABLES - SHOULD NOT BE ALTERED BY USERS
 
@@ -97,8 +60,6 @@ map_storage
 		..()
 		if(game_id)
 			src.game_id = game_id
-		if(backdoor)
-			src.backdoor_password = backdoor
 		if(ignore)
 			src.ignore_types = ignore
 		return
@@ -234,6 +195,13 @@ map_storage
 					if(!conparams)
 						continue
 					content_refs += "[conparams]"
+				for(var/mob/mcontent in Ad.contents)
+					if(mcontent.loc != Ad) continue
+					var/mconparams = BuildVarDirectory(savefile, mcontent, 1)
+					savefile.cd = "/entries/[ref]"
+					if(!mconparams)
+						continue
+					content_refs += "[mconparams]"
 			var/final_params = list2params(content_refs)
 			savefile.cd = "/entries/[ref]"
 			savefile["content"] = final_params
@@ -250,7 +218,6 @@ map_storage
 			var/atom/movable/AM = A
 			if(contents && AM.load_datums)
 				changing_vars += "reagents"
-				changing_vars += "air_contents"
 		for(var/v in changing_vars)
 			if(!old_vars.Find(v))
 				savefile.cd = "/entries/[ref]"
@@ -396,6 +363,7 @@ map_storage
 					savefile["[turf.x]"] = ref
 					TICK_CHECK
 			log_startup_progress("	Saved z-level [A].")
+		log_startup_progress("Finished saving.")
 		return 1
 
 	proc/Load_World(list/areas)
@@ -424,7 +392,8 @@ map_storage
 							TICK_CHECK
 				for(var/i in 1 to all_loaded.len)
 					var/datum/ob = all_loaded[i]
-					ob.after_load()
+					if (ob)
+						ob.after_load()
 					if(istype(ob, /obj))
 						var/obj/obbie = ob
 						if(obbie.load_datums)
@@ -433,6 +402,7 @@ map_storage
 				log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 			catch(var/exception/e)
 				message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
+		log_startup_progress("Finished loading.")
 
 // Loading a file is pretty straightforward - you specify the savefile to load from
 // (make sure its an actual savefile, not just a file name), and if necessary you
@@ -485,8 +455,7 @@ SUPPLEMENTARY FUNCTIONS
 		sleep(1)
 		world.log << "Clearing objects..."
 		for (var/obj/object in world)
-			if (!istype(object, /obj/map_metadata))
-				qdel(object)
+			qdel(object)
 		return
 
 /datum/data/record

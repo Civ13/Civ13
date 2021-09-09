@@ -1,8 +1,10 @@
 /datum/admins/proc/loadstation()
 	set category = "Server"
 	set desc="SAAAVE!"
-	set name="Load Station (EXPERIMENTAL!)"
-
+	set name="Load Map (EXPERIMENTAL!)"
+	var/inp = WWinput(usr, "Are you sure you want to load the saved map?", "Load Map", "No", list("Yes","No"))
+	if (inp == "no")
+		return
 	if(!check_rights(R_SERVER))
 		return
 
@@ -14,8 +16,10 @@
 /datum/admins/proc/savestation()
 	set category = "Server"
 	set desc="SAAAVE!"
-	set name="Save Station (EXPERIMENTAL!)"
-
+	set name="Save Map (EXPERIMENTAL!)"
+	var/inp = WWinput(usr, "Are you sure you want to save the map?", "Load Map", "No", list("Yes","No"))
+	if (inp == "no")
+		return
 	if(!check_rights(R_SERVER))
 		return
 

@@ -25,9 +25,9 @@
 
 /datum/controller/gameticker/proc/savestation()
 	var/watch = start_watch()
-	to_chat(world, "<FONT color='blue'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER 10 SECONDS</B></FONT>")
+	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
 	sleep(5)
-	map_storage.Save_World(return_areas())
+	map_storage.Save_World()
 	log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
 	return 1
 
@@ -38,7 +38,7 @@
 	sleep(1)
 	map_storage.ClearMap()
 	sleep(1)
-	map_storage.Load_World(return_areas())
+	map_storage.Load_World()
 	if(started)
 		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 	return 1
