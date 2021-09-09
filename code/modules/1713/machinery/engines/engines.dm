@@ -46,6 +46,9 @@
 	var/running_snd = 'sound/machines/diesel_loop.ogg'
 	var/ending_snd = 'sound/machines/diesel_ending.ogg'
 
+	var/starting_snd_len = 29 //Length in time of the starting_snd, used for time before the running_snd is played, default is 29
+	var/running_snd_len = 27 //Length in time of the running_snd, used for repeating the sound, default is 27
+
 /obj/structure/engine/examine(mob/user)
 	..()
 	if (user in range(1,src))
@@ -112,12 +115,9 @@
 /obj/structure/engine/proc/running_sound()
 	if (on)
 		playsound(loc, running_snd, 35, FALSE, 2)
-	if (running_snd == 'sound/machines/steam_loop.ogg')
-		spawn(23)
+		spawn(running_snd_len)
 			running_sound()
-	else
-		spawn(27)
-			running_sound()
+	return
 
 
 /obj/structure/engine/attack_hand(mob/user as mob)
