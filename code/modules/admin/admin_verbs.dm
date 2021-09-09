@@ -137,10 +137,8 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adrev,
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
-	/datum/admins/proc/export_savegame,
-	/datum/admins/proc/import_savegame,
-	/datum/admins/proc/loadstation,
-	/datum/admins/proc/savestation,
+	/datum/admins/proc/loadmap,
+	/datum/admins/proc/savemap,
 	/datum/admins/proc/persistent,
 	/datum/admins/proc/persistent_chad,
 	/client/proc/nanomapgen_DumpImage

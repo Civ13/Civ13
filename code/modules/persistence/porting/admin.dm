@@ -1,4 +1,4 @@
-/datum/admins/proc/loadstation()
+/datum/admins/proc/loadmap()
 	set category = "Server"
 	set desc="SAAAVE!"
 	set name="Load Map (EXPERIMENTAL!)"
@@ -11,9 +11,9 @@
 	if(!ticker)
 		alert("Unable to load the world as it is not set up.")
 		return
-	ticker.loadstation()
+	ticker.loadmap()
     
-/datum/admins/proc/savestation()
+/datum/admins/proc/savemap()
 	set category = "Server"
 	set desc="SAAAVE!"
 	set name="Save Map (EXPERIMENTAL!)"
@@ -27,5 +27,5 @@
 		alert("Unable to start the game as it is not set up.")
 		return
 	spawn(0)
-		ticker.savestation()
+		ticker.savemap()
 		

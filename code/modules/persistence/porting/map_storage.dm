@@ -285,8 +285,6 @@ map_storage
 				return 0
 		return 1
 
-
-
 // If the value is numeric, convert it to a number and return the number value. If
 // the value is text, then return it as it is.
 	proc/Numeric(text)
@@ -314,24 +312,6 @@ map_storage
 // can be references using a number instead of a fully written out type class.
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
-	proc/Save(savefile/savefile, list/areas, extra)
-
-		// Abort if no filename specified.
-		if(!savefile)
-			return 0
-		saving_references = list()
-		existing_references = list()
-		found_types = list()
-		// ***** MAP SECTION *****
-		for(var/A in areas)
-			for(var/turf/turf in get_area_turfs(A))
-				var/ref = BuildVarDirectory(savefile, turf, 1)
-				if(!ref)
-					message_admins("[turf] failed to return a ref!")
-				savefile.cd = "/map/[turf.z]/[turf.y]"
-				savefile["[turf.x]"] = ref
-
-		return 1
 	proc/Save_World(list/areas)
 		// ***** MAP SECTION *****
 		var/backup_dir
@@ -404,42 +384,6 @@ map_storage
 				message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
 		log_startup_progress("Finished loading.")
 
-// Loading a file is pretty straightforward - you specify the savefile to load from
-// (make sure its an actual savefile, not just a file name), and if necessary you
-// include the savefile's password as an argument. This will automatically check to
-// make sure that the file provided is a valid map file, that the password matches,
-// and that the verification values are what they're supposed to be (meaning the
-// file has not been tampered with). Once everything is checked, it will resize the
-// world map to fit the saved map, then unload all saved objects. Finally, any extra
-// values that you included in the savefile will be returned by this function as
-// an associative list.
-	proc/Load(savefile/savefile, password)
-		all_loaded = list()
-		existing_references = list()
-		// Make sure a map file is provided.
-		if(!savefile)
-			return
-		savefile.cd = "/map"
-		for(var/z in savefile.dir)
-			savefile.cd = "/map/[z]"
-			for(var/y in savefile.dir)
-				savefile.cd = "/map/[z]/[y]"
-				for(var/x in savefile.dir)
-					var/turf_ref = savefile["[x]"]
-					if(!turf_ref)
-						message_admins("turf_ref not found, x: [x]")
-						continue
-					var/turf/old_turf = locate(text2num(x), text2num(y), text2num(z))
-					Load_Entry(savefile, turf_ref, old_turf)
-					savefile.cd = "/map/[z]/[y]"
-		for(var/datum/dat in all_loaded)
-			dat.after_load()
-		for(var/atom/movable/ob in all_loaded)
-			ob.initialize()
-			ob.after_load()
-			if(ob.load_datums)
-				if(ob.reagents)
-					ob.reagents.my_atom = ob
 /*************************************************************************
 SUPPLEMENTARY FUNCTIONS
 **************************************************************************/

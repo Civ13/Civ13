@@ -19,16 +19,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	name = "turf"
 	icon = 'icons/turf/floors.dmi'
 	level = TRUE
-//	var/holy = FALSE
-
-	// Initial air contents (in moles)
-//	var/oxygen = FALSE
-//	var/carbon_dioxide = FALSE
-//	var/nitrogen = FALSE
-//	var/plasma = FALSE
 
 	//Properties for airtight tiles (/wall)
-	var/thermal_conductivity = 0.05
 	var/heat_capacity = TRUE
 
 	//Properties for both
@@ -70,7 +62,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/available_snow = 0
 	var/bullethole_count = 0
 	var/overlay_priority = 0
-//	var/uses_daylight_dynamic_lighting = FALSE
+
+	map_storage_saved_vars = "icon_state;name"
 
 /turf/New()
 	..()

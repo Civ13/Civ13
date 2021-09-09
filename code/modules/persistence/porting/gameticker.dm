@@ -23,7 +23,7 @@
 			//you might be thinking of adding more steps to this, or making it use a loop and a counter var
 			//	not worth it.
 
-/datum/controller/gameticker/proc/savestation()
+/datum/controller/gameticker/proc/savemap()
 	var/watch = start_watch()
 	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
 	sleep(5)
@@ -31,7 +31,7 @@
 	log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
 	return 1
 
-/datum/controller/gameticker/proc/loadstation()
+/datum/controller/gameticker/proc/loadmap()
 	var/watch = start_watch()
 	var/started = 0
 	log_startup_progress("Starting map load...")

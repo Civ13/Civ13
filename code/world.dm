@@ -315,7 +315,8 @@ var/global/nextsave = 0
 				world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
 			if (nextsave <= world.realtime)
 				nextsave = world.realtime + 72000
-				do_export()
+				spawn(0)
+					ticker.savemap()
 
 		start_persistence_loop()
 

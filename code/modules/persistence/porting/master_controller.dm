@@ -51,7 +51,7 @@ var/global/pipe_processing_killed = 0
 /datum/controller/game_controller/proc/setup()
 	world.tick_lag = config.Ticklag
 
-	ticker.loadstation()
+	ticker.loadmap()
 	setup_objects()
 
 /datum/controller/game_controller/proc/setup_objects()
