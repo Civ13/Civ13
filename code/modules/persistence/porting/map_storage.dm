@@ -9,11 +9,11 @@
 
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
-	if (istype(src, /turf) || istype(src, /obj/structure/wild) || (!istype(src, /obj/item) && !istype(src, /obj/structure) && !istype(src, /obj/map_metadata) && !istype(src, /obj/covers)))
+	if  (!istype(src, /mob) && ((istype(src, /turf) || istype(src, /obj/structure/wild) || (!istype(src, /obj/item) && !istype(src, /obj/structure) && !istype(src, /obj/map_metadata) && !istype(src, /obj/covers)))))
 		to_save |= params2list(map_storage_saved_vars)
 	else
 		for (var/key in src.vars)
-			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs")
+			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
 				to_save |= key
 	return to_save
 
