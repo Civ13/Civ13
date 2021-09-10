@@ -312,25 +312,32 @@ map_storage
 // can be references using a number instead of a fully written out type class.
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
-	proc/Save_World(list/areas)
+	proc/Save_World()
 		// ***** MAP SECTION *****
-		var/backup_dir
+		var/backup_dir = "map_backups/"
+		var/F0 = file("map_saves/map.txt")
+		if (fexists(F0))
+			fcopy(F0,file("map_backups/map.txt"))
+			fdel(F0)
+		text2file(map.ID,F0)
+		text2file(map.age,F0)
+		text2file(map.ordinal_age,F0)
+		text2file(map.default_research,F0)
+		text2file(map.autoresearch,F0)
+		text2file(map.autoresearch_mult,F0)
+		text2file(map.chad_mode,F0)
+		text2file(map.chad_mode_plus,F0)
+		text2file(map.gamemode,F0)
+		text2file(time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)"),F0)
+		log_startup_progress("	Saved metadata.")
 		for(var/A = 1, A <= world.maxz, A++)
 			saving_references = list()
 			existing_references = list()
 			found_types = list()
 			if(fexists("map_saves/[A].sav"))
 				var/savefile/sav = new("map_saves/[A].sav")
-				if(!backup_dir)
-					var/i = 1
-					var/found = 0
-					while(!found)
-						found = 1
-						if(fexists("map_backups/[i]/[A].sav"))
-							found = 0
-							i++
-						else
-							backup_dir = "map_backups/[i]/"
+				if(fexists("map_backups/[A].sav"))
+					fdel("map_backups/[A].sav")
 				fcopy(sav, "[backup_dir][A].sav")
 				fdel("map_saves/[A].sav")
 			var/savefile/savefile = new("map_saves/[A].sav")
@@ -346,7 +353,7 @@ map_storage
 		log_startup_progress("Finished saving.")
 		return 1
 
-	proc/Load_World(list/areas)
+	proc/Load_World()
 		for(var/B = 1, B <= world.maxz, B++)
 			try
 				var/watch = start_watch()
