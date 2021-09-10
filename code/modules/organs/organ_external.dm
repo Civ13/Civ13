@@ -1388,7 +1388,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		lasting_pain += 10
 	else if(is_dislocated())
 		lasting_pain += 5
-	return pain + lasting_pain + 1.2 * brute_dam + 1.5 * burn_dam
+	return pain + lasting_pain + (1.2 * brute_dam) + (1.5 * burn_dam)
 
 /obj/item/organ/external/proc/remove_pain(var/amount)
 
