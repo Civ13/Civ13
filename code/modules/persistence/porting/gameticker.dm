@@ -7,6 +7,17 @@
 
 #define TICK_CHECK ( world.tick_usage > TICK_LIMIT_RUNNING ? stoplag() : 0 )
 
+proc/string_explode(var/string, var/separator = "")
+	//writepanic("[__FILE__].[__LINE__] \\/proc/string_explode() called tick#: [world.time]")
+	if(istext(string) && (istext(separator) || isnull(separator)))
+		return splittext(string, separator)
+        
+/proc/start_watch()
+	return TimeOfGame
+
+/proc/stop_watch(wh)
+	return round(0.1 * (TimeOfGame - wh), 0.1)
+
 /proc/log_startup_progress(var/message)
 	to_chat(world, "<span class='danger'>[message]</span>")
 
