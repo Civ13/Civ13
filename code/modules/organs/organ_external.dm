@@ -1383,6 +1383,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 // Pain/halloss
 /obj/item/organ/external/proc/get_pain()
 
+	update_health()
 	var/lasting_pain = 0
 	if(is_broken())
 		lasting_pain += 10
@@ -1392,12 +1393,14 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 /obj/item/organ/external/proc/remove_pain(var/amount)
 
+	update_health()
 	var/last_pain = pain
 	pain = max(0,min(max_damage,pain-amount))
 	return -(pain-last_pain)
 
 /obj/item/organ/external/proc/add_pain(var/amount)
 
+	update_health()
 	var/last_pain = pain
 	pain = max(0,min(max_damage,pain+amount))
 	if(owner && ((amount > 15 && prob(20)) || (amount > 30 && prob(60))))
