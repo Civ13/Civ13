@@ -1,8 +1,14 @@
 //Melee, two handed.
 /obj/item/weapon/sledgehammer
+	name = "generic sledgehammer"
+	desc = "A generic sledgehammer, very heavy, but good for crushing things."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "sledgehammer"
+	item_state = "sledgehammer"
 	edge = FALSE
 	sharp = FALSE
 	equiptimer = 35
+	force = 32
 
 //Needs two hands to use.
 /obj/item/weapon/sledgehammer/proc/special_check(mob/user)
