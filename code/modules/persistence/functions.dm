@@ -18,12 +18,19 @@
 
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
-	if  (!istype(src, /mob) && ((istype(src, /turf) || istype(src, /obj/structure/wild) || (!istype(src, /obj/item) && !istype(src, /obj/structure) && !istype(src, /obj/map_metadata) && !istype(src, /obj/covers)))))
+	var/partial = FALSE
+
+	if (!istype(src, /mob) && ((istype(src, /turf) || istype(src, /obj/structure/wild) || (!istype(src, /obj/item) && !istype(src, /obj/structure) && !istype(src, /obj/map_metadata) && !istype(src, /obj/covers)))))
+		partial = TRUE
+	if (istype(src, /datum) && !istype(src, /mob) && !istype(src, /obj) && !istype(src, /turf))
+		partial = FALSE
+	if (partial)
 		to_save |= params2list(map_storage_saved_vars)
 	else
 		for (var/key in src.vars)
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
 				to_save |= key
+			to_save |= "name"
 	return to_save
 
 var/map_storage/map_storage = new("SS13")

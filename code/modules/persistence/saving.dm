@@ -14,14 +14,14 @@
 		fcopy(F0,file("map_backups/map.txt"))
 		fdel(F0)
 	text2file(map.ID,F0)
-	text2file(map.age,F0)
-	text2file(map.ordinal_age,F0)
-	text2file(map.default_research,F0)
-	text2file(map.autoresearch,F0)
-	text2file(map.autoresearch_mult,F0)
-	text2file(map.chad_mode,F0)
-	text2file(map.chad_mode_plus,F0)
-	text2file(map.gamemode,F0)
+	text2file("[map.age]",F0)
+	text2file("[map.ordinal_age]",F0)
+	text2file("[map.default_research]",F0)
+	text2file("[map.autoresearch]",F0)
+	text2file("[map.autoresearch_mult]",F0)
+	text2file("[map.chad_mode]",F0)
+	text2file("[map.chad_mode_plus]",F0)
+	text2file("[map.gamemode]",F0)
 	text2file(time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)"),F0)
 	log_startup_progress("	Saved metadata.")
 	for(var/A = 1, A <= world.maxz, A++)
@@ -41,7 +41,7 @@
 				if(!ref)
 					message_admins("[turf] failed to return a ref!")
 				savefile.cd = "/map/[turf.z]/[turf.y]"
-				savefile["[turf.x]"] = ref
+				savefile["[turf.x]"] << ref
 				TICK_CHECK
 		log_startup_progress("	Saved z-level [A].")
 	log_startup_progress("Finished saving.")
@@ -58,7 +58,8 @@
 	ref = saving_references.len
 	A.before_save()
 	savefile.cd = "/entries/[ref]"
-	savefile["type"] = A.type
+	if (A.type)
+		savefile["type"] << A.type
 	var/list/content_refs = list()
 	if(A.load_contents)
 		var/atom/movable/Ad = A
@@ -79,7 +80,7 @@
 				content_refs += "[mconparams]"
 		var/final_params = list2params(content_refs)
 		savefile.cd = "/entries/[ref]"
-		savefile["content"] = final_params
+		savefile["content"] << final_params
 	var/list/changing_vars
 	if(found_types.Find(A.type))
 		changing_vars = found_types[A.type]
@@ -103,14 +104,14 @@
 				if(!conparams)
 					continue
 				savefile.cd = "/entries/[ref]"
-				savefile["[v]"] = "**entry[conparams]"
+				savefile["[v]"] << "**entry[conparams]"
 			else if(istype(A.vars[v], /datum))
 				var/atom/movable/varob = A.vars[v]
 				var/conparams = BuildVarDirectory(savefile, varob, 1)
 				if(!conparams)
 					continue
 				savefile.cd = "/entries/[ref]"
-				savefile["[v]"] = "**entry[conparams]"
+				savefile["[v]"] << "**entry[conparams]"
 			else if(istype(A.vars[v], /list))
 				if(safe_lists.Find(v))
 					savefile["[v]"] << A.vars[v]
@@ -132,14 +133,14 @@
 							else
 								fixed_list += firstval
 						savefile.cd = "/entries/[ref]"
-						savefile["[v]"] = "**list[list2params(fixed_list)]"
+						savefile["[v]"] << "**list[list2params(fixed_list)]"
 					else
 						if(A.vars[v] != initial(A.vars[v]))
 							savefile.cd = "/entries/[ref]"
-							savefile["[v]"] = "**emptylist"
+							savefile["[v]"] << "**emptylist"
 			else if(A.vars[v] != initial(A.vars[v]) || v == "pixel_x" || v == "pixel_y")
 				savefile.cd = "/entries/[ref]"
-				savefile["[v]"] = A.vars[v]
+				savefile["[v]"] << A.vars[v]
 		else
 			// message_admins("trying to save an invalid var |[v]|")
 	savefile.cd = ".."
