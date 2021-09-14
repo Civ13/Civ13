@@ -271,6 +271,7 @@
 		if (istype(src, /obj/item/weapon/leech))
 			new/mob/living/simple_animal/leech(src.loc)
 			qdel(src)
+
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
 	return
@@ -281,6 +282,10 @@
 
 // called when this item is added into a storage item, which is passed on as S. The loc variable is already set to the storage item.
 /obj/item/proc/on_enter_storage(obj/item/weapon/storage/S as obj)
+	if(istype(src,/obj))
+		var/obj/O = src
+		if(O.invisibility >= 100)
+			O.invisibility = FALSE //Removes item's invisibility to prevent unclickable items in storage
 	return
 
 // called when we're equipped to a slot

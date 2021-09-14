@@ -69,6 +69,9 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		name = capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
 	real_name = name
 
+	body.client.pixel_x = 0 //Resets the pixel offset of the ghost
+	body.client.pixel_y = 0
+
 	..()
 
 /mob/observer/ghost/Destroy()
@@ -144,7 +147,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			client << RESPAWN_MESSAGE
 		if (ishuman(src))
 			var/mob/living/human/H = src
-			H.handle_zoom_stuff(TRUE)
+			H.handle_look_stuff(TRUE)
 			if (human_clients_mob_list.Find(H))
 				human_clients_mob_list -= H
 		announce_ghost_joinleave(ghostize(1))
@@ -157,7 +160,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 					return
 				if (ishuman(src))
 					var/mob/living/human/H = src
-					H.handle_zoom_stuff(TRUE)
+					H.handle_look_stuff(TRUE)
 				client.admin_ghost()
 		else
 			response = WWinput(src, "Are you sure you want to ghost?\n(You may respawn with the 'Respawn' verb in the IC tab)", "Are you sure you want to ghost?", "Ghost", list("Ghost", "Stay in body"))
@@ -170,7 +173,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		var/turf/location = get_turf(src)
 		if (ishuman(src))
 			var/mob/living/human/H = src
-			H.handle_zoom_stuff(TRUE)
+			H.handle_look_stuff(TRUE)
 			if (human_clients_mob_list.Find(H))
 				human_clients_mob_list -= H
 		if (client)
