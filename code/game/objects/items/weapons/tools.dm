@@ -32,7 +32,7 @@
  */
 /obj/item/weapon/fire_extinguisher
 	name = "fire extinguisher"
-	desc = "A red fire extinguisher filled with foam."
+	desc = "A fire extinguisher filled with foam."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "fire_extinguisher"
 	flags = CONDUCT
@@ -45,7 +45,7 @@
 	var/cap = 25
 	New()
 		..()
-		desc = "A red fire extinguisher filled with foam. Has [cap] units left."
+		desc = "A fire extinguisher filled with foam. Has [cap] units left."
 
 /obj/item/weapon/fire_extinguisher/attack_self(mob/living/human/user as mob)
 	if (!ishuman(user))
@@ -53,7 +53,7 @@
 	if (cap >= 1)
 		visible_message("<span class='notice'>[user] sprays the fire extinguisher!</span>", "<span class='notice'>You spray the fire extinguisher!</span>")
 		cap--
-		desc = "A red fire extinguisher filled with foam. Has [cap] units left."
+		desc = "A fire extinguisher filled with foam. Has [cap] units left."
 		var/turf/dest = get_turf(get_step(user, user.dir))
 		if (dest)
 			for (var/obj/effect/fire/BO in dest)
@@ -68,12 +68,18 @@
 		user << "<span class='warning'>The fire extinguisher is empty.</span>"
 		return
 
+/obj/item/weapon/fire_extinguisher/ww2
+	name = "fire extinguisher"
+	desc = "A fire extinguisher filled with foam."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "german_fire_extinguisher"
+
 /*
  * Screwdriver
  */
 /obj/item/weapon/hammer
-	name = "ball-peel hammer"
-	desc = "Tear stuff apart with this."
+	name = "hammer"
+	desc = "Hit stuff apart with this."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "hammer"
 	item_state = "hammer"
@@ -88,9 +94,9 @@
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
 
-/obj/item/weapon/tribalhammer
-	name = "primitive wooden mallet"
-	desc = "hit stuff together with this."
+/obj/item/weapon/hammer/tribalhammer
+	name = "simple wooden mallet"
+	desc = "Hit stuff apart with this."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalhammer"
 	item_state = "tribalhammer"
@@ -104,6 +110,23 @@
 
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
+
+/obj/item/weapon/hammer/modern
+	name = "clawhammer"
+	desc = "For hitting things or pulling them apart."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "hammer_modern"
+	item_state = "hammer_modern"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_NORMAL + 6
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 6
+	throw_range = 5
+
+	attack_verb = list("bludgeoned", "hit")
+	flammable = FALSE
 
 /obj/item/weapon/globe
 	name = "globe"
@@ -122,26 +145,11 @@
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
 
-/obj/item/weapon/hammer/modern
-	name = "clawhammer"
-	desc = "Tear stuff apart with this."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "hammer_modern"
-	item_state = "hammer_modern"
-	flags = CONDUCT
-	slot_flags = SLOT_BELT | SLOT_POCKET
-	force = WEAPON_FORCE_NORMAL + 6
-	w_class = 2.0
-	throwforce = WEAPON_FORCE_NORMAL
-	throw_speed = 6
-	throw_range = 5
-
-	attack_verb = list("bludgeoned", "hit")
-	flammable = FALSE
 
 /*
  * Wirecutters
  */
+
 /obj/item/weapon/wirecutters
 	name = "wirecutters"
 	desc = "This cuts wires."
@@ -205,7 +213,7 @@
 		playsound(loc, 'sound/effects/blowing_horn.ogg', 100, FALSE, 25)
 		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
 		cooldown_horn = TRUE
-		spawn(600)
+		spawn(100)
 			cooldown_horn = FALSE
 		return
 
