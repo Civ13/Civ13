@@ -999,8 +999,6 @@
 #include "code\processes\weather.dm"
 #include "code\processes\lighting\overlays.dm"
 #include "code\processes\lighting\sources.dm"
-#include "code\processes\zoom\zoom_mobs.dm"
-#include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "maps\1943\reichflakturm.dmm"
