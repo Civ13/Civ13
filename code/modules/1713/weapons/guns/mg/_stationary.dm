@@ -18,7 +18,7 @@
 	desc = "a large machinegun."
 	icon_state = ""
 	item_state = ""
-	layer = MOB_LAYER + 1
+	layer = MOB_LAYER + 3
 	anchored = TRUE
 	density = TRUE
 	w_class = 6
