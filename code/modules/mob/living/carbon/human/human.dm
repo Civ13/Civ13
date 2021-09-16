@@ -6,6 +6,8 @@
 	icon_state = "human_m_s"
 	var/is_murderer = FALSE // for the "find the murderer" gamemode
 	var/can_mutate = FALSE //from high rads, into ant etc
+	var/looking = FALSE
+	var/look_amount = 3
 /mob/living/human/New(var/new_loc, var/new_species = null)
 
 	if (original_job_title && !client)
@@ -1054,3 +1056,251 @@ var/list/coefflist = list()
 /mob/living/human/proc/make_adrenaline(amount)
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)
+
+/mob/living/human/proc/handle_ui_visibility()
+	var/mob/living/human/H = src
+	if (H.client)
+		if (H.using_look())
+			for (var/obj/O in H.client.screen)
+				if (O.invisibility)
+					continue
+				if (istype(O, /obj/screen/movable/action_button))
+					var/obj/screen/movable/action_button/A = O
+					if (A.name == "Look into Distance ([src])" || (A.owner && istype(A.owner, /datum/action/toggle_scope)))
+						continue
+				O.invisibility = 100
+				O.scoped_invisible = TRUE
+		else
+			for (var/obj/O in H.client.screen)
+				if (O.scoped_invisible)
+					O.invisibility = FALSE
+
+/mob/living/human/proc/can_look(mob/living/user)//Largely copied from zoom.dm
+	var/mob/living/human/H = user
+
+	if(user.stat || !ishuman(user))
+		user << "<span class = 'warning'>You are unable to look into the distance right now.</span>"
+		return FALSE
+	if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
+		var/obj/item/clothing/mask/currmask = H.wear_mask
+		if (currmask.blocks_scope)
+			user << "You can't see any farther while wearing \the [currmask]!"
+			return FALSE
+	else if (global_hud.darkMask[1] in user.client.screen)
+		user << "Your visor gets in the way of seeing further."
+		return FALSE
+	else if (user.client.pixel_x || user.client.pixel_y) //Resets people's view if they're looking into the distance and try to look through something else
+		user.client.pixel_x = 0
+		user.client.pixel_y = 0
+		return FALSE
+	else
+		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
+		if (E.is_bruised() || E.is_broken() || H.eye_blind > 0)
+			if (!silent) user << "<span class = 'danger'>Your eyes are injured! You can't see any farther.</span>"
+			return FALSE
+	return TRUE
+
+/mob/living/var/dizzycheck = FALSE
+
+/mob/living/human/proc/look_into_distance(mob/living/user, forced_look, var/bypass_can_look =  FALSE)//Largely copied from zoom.dm but made for zooming without weapons in hand
+	var/obj/item/weapon/attachment/scope/adjustable/W = null
+	var/obj/item/weapon/gun/G = null
+	if(istype(get_active_hand(), /obj/item/weapon/attachment/scope/adjustable))
+		W = get_active_hand()
+		look_amount = W.zoom_amt//May cause issues
+	else if(istype(get_active_hand(), /obj/item/weapon/gun))
+		G = get_active_hand()
+		if(G.attachments && G.attachments.len)
+			var/list/LA = list()
+			for(var/obj/item/weapon/attachment/scope/A in G.attachments)//Looks through the attachments of the gun in hand
+				LA.Add(A.zoom_amt)
+			look_amount = max(LA)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
+
+	if(!user || !user.client)
+		return
+
+	switch(forced_look)
+		if(FALSE)
+			looking = FALSE
+		if (TRUE)
+			looking = TRUE
+		else
+			looking = !looking
+
+	if(looking)
+		if(!can_look(user) && !bypass_can_look)//Look checks copied largely from zoom.dm
+			looking = FALSE
+			return
+		else
+			user.dizzycheck = TRUE
+			var/_x = 0
+			var/_y = 0
+			switch(user.dir)
+				if(NORTH)
+					_y = look_amount
+				if(EAST)
+					_x = look_amount
+				if(SOUTH)
+					_y = -look_amount
+				if(WEST)
+					_x = -look_amount
+			if(look_amount > world.view && user && user.client)//So we can still see the player at the edge of the screen if the zoom amount is greater than the world view //Copied from zoom.dm
+				var/view_offset = round((look_amount - world.view)/2, TRUE)
+				user.client.view += view_offset
+				switch(user.dir)
+					if (NORTH)
+						_y -= view_offset
+					if (EAST)
+						_x -= view_offset
+					if (SOUTH)
+						_y += view_offset
+					if (WEST)
+						_x += view_offset
+				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, 4, TRUE)
+				animate(user.client, pixel_x = 0, pixel_y = 0)
+				user.client.pixel_x = world.icon_size*_x
+				user.client.pixel_y = world.icon_size*_y
+			else // Otherwise just slide the camera
+				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, 4, TRUE)
+				animate(user.client, pixel_x = 0, pixel_y = 0)
+				user.client.pixel_x = world.icon_size*_x
+				user.client.pixel_y = world.icon_size*_y
+			user.visible_message("[user] looks into the distance.")
+			handle_ui_visibility()
+	else//Resets
+		user.client.pixel_x = 0
+		user.client.pixel_y = 0
+		user.client.view = world.view
+		look_amount = 3
+		handle_ui_visibility()
+
+	if (looking)
+		// prevent scopes from bugging out opened storage objs in mob process//Copied from zoom.dm
+		for (var/obj/item/weapon/storage/S in user.contents)
+			S.close_all()
+		for (var/obj/item/clothing/under/U in user.contents)
+			for (var/obj/item/clothing/accessory/storage/S in U.accessories)
+				S.hold.close_all()
+		user.dizzycheck = TRUE
+	else
+		user.dizzycheck = FALSE
+
+	if (user.aiming)
+		user.aiming.update_aiming()
+
+	if(W)
+		// make other buttons invisible
+		var/moved = 0
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			if (H.using_look())
+				for (var/obj/screen/movable/action_button/AB in user.client.screen)
+					if (AB.name == "Toggle Sights" && AB != W.azoom.button && W.azoom.button.screen_loc)
+						AB.invisibility = 101
+						if (W.azoom && W.azoom.button && findtext(W.azoom.button.screen_loc,":") && splittext(W.azoom.button.screen_loc, ":").len>=1 && splittext(splittext(W.azoom.button.screen_loc, ":")[1], "+").len>=2)
+							var/azoom_button_screenX = text2num(splittext(splittext(W.azoom.button.screen_loc, ":")[1], "+")[2])
+							var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
+
+							// see if we need to move this button left to compensate
+							if (azoom_button_screenX > AB_screenX)
+								++moved
+						else if (W.azoom && W.azoom.button)
+							var/azoom_button_screenX = text2num(splittext(W.azoom.button.screen_loc, ",")[1])
+							var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
+
+							// see if we need to move this button left to compensate
+							if (azoom_button_screenX > AB_screenX)
+								++moved
+			else
+				if (user && user.client)
+					for (var/obj/screen/movable/action_button/AB in user.client.screen)
+						if (AB.name == "Toggle Sights")
+							AB.invisibility = 0
+
+		// actually shift the button
+		W.azoom.button.pixel_x = -(moved*32)
+		W.azoom.button.UpdateIcon()
+
+		if (W.A_attached)
+			G = W.loc
+	//		var/zoom_offset = round(7 * zoom_amt)
+			if (looking)
+		/*		if (G.accuracy)
+					G.accuracy = G.scoped_accuracy + zoom_offset*/
+				if (G.recoil)
+					G.recoil = round(G.recoil*(W.zoom_amt/5)+1) //recoil is worse when looking through a scope
+			else
+				G.accuracy = initial(G.accuracy)
+				G.recoil = initial(G.recoil)
+
+
+
+/datum/action/toggle_scope
+	name = "Look into Distance"
+	check_flags = AB_CHECK_ALIVE|AB_CHECK_RESTRAINED|AB_CHECK_STUNNED|AB_CHECK_LYING
+	button_icon_state = "sniper_zoom"
+	var/obj/item/weapon/attachment/scope/scope = null
+	var/boundto = null
+
+/datum/action/toggle_scope/IsAvailable()
+	. = ..()
+	if (owner)
+		var/mob/living/human/H = owner
+		if (H.looking)
+			return FALSE
+
+/datum/action/toggle_scope/Trigger()
+	..()
+	if (owner)
+		var/mob/living/human/H = owner
+		H.look_into_distance(owner)
+
+/datum/action/toggle_scope/Remove()
+	if (owner)
+		var/mob/living/human/H = owner
+		if (H.looking)
+			H.look_into_distance(owner, FALSE)
+	..()
+
+/mob/living/human/Move()
+	..()
+	handle_looks_with_movement()
+
+/mob/living/human/proc/handle_looks_with_movement()
+
+	if (client && actions.len)
+		if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons
+			if(src.looking && m_intent=="run")
+				shake_camera(src, 2, rand(2,3))
+
+	for (var/obj/item/weapon/gun/projectile/automatic/stationary/M in range(2, src))
+		if (M.last_user == src && loc != get_turf(M))
+			M.stopped_using(src)
+			M.last_user = null
+// reset all zooms - called from Life(), Weaken(), ghosting and more
+
+/mob/living/human/proc/handle_look_stuff(var/forced = FALSE)
+
+	if (stat == UNCONSCIOUS || stat == DEAD || forced)
+		if (client && actions.len)
+			if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons
+				if(ishuman(src))
+					var/mob/living/human/H = src
+					H.look_into_distance(src, FALSE)
+					return
+
+	for (var/obj/item/weapon/gun/projectile/automatic/stationary/M in range(2, src))
+		if (M.last_user == src && (loc != get_turf(M) || forced))
+			M.stopped_using(src)
+			M.last_user = null
+			return
+
+/mob/living/human/proc/using_look() //May not be nessecary
+	if(using_MG)
+		return TRUE
+	if(stat == CONSCIOUS)
+		if (client && actions.len)
+			if (client.pixel_x || client.pixel_y)
+				if(looking)
+					return TRUE
+	return FALSE

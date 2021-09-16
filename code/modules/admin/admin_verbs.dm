@@ -405,7 +405,7 @@ var/list/admin_verbs_host = list(
 		//ghostize
 		if (ishuman(mob))
 			var/mob/living/human/H = mob
-			H.handle_zoom_stuff(TRUE)
+			H.handle_look_stuff(TRUE)
 
 		var/mob/body = mob
 		var/mob/observer/ghost/ghost = body.ghostize(1)

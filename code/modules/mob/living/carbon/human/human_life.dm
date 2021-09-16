@@ -34,7 +34,7 @@
 	var/healing_stage = 0 //for beds
 /mob/living/human/Life()
 
-	handle_zoom_stuff()
+	handle_look_stuff()
 	if (!map.civilizations && !map.nomads && !map.is_RP)
 		process_awards()
 	if (transforming)

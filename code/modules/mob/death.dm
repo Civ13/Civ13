@@ -106,6 +106,9 @@
 		if (L.HUDneed.Find("health"))
 			var/obj/screen/health/H = L.HUDneed["health"]
 			H.icon_state = "healthdoll_BASE_DEAD"
+		if(istype(src,/mob/living/human))
+			var/mob/living/human/H = src
+			H.look_into_distance(src,FALSE)
 
 	timeofdeath = world.time
 	if (mind) mind.store_memory("Time of death: [stationtime2text()]", FALSE)

@@ -122,7 +122,7 @@
 				O.heal_damage(0, -amount, internal=0,)
 
 /mob/living/human/Stun(amount)
-	handle_zoom_stuff(1)
+	handle_look_stuff(1)
 	..()
 
 /mob/living/human/Weaken(amount)
