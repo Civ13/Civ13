@@ -13,7 +13,7 @@
 		usr << "Start a round in the right map first, then load."
 		return
 	var/inp = WWinput(usr, "Are you sure you want to load the saved map?", "Load Map", "No", list("Yes","No"))
-	if (inp == "no")
+	if (inp == "No")
 		return
 	if(!check_rights(R_SERVER))
 		return
@@ -28,7 +28,7 @@
 	set desc="SAAAVE!"
 	set name="Save Map (EXPERIMENTAL!)"
 	var/inp = WWinput(usr, "Are you sure you want to save the map?", "Load Map", "No", list("Yes","No"))
-	if (inp == "no")
+	if (inp == "No")
 		return
 	if(!check_rights(R_SERVER))
 		return
