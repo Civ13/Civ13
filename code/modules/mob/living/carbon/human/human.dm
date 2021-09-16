@@ -1057,8 +1057,8 @@ var/list/coefflist = list()
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)
 
-/mob/living/human/proc/handle_ui_visibility(mob/living/user)
-	var/mob/living/human/H = user
+/mob/living/human/proc/handle_ui_visibility()
+	var/mob/living/human/H = src
 	if (H.client)
 		if (H.using_look())
 			for (var/obj/O in H.client.screen)
@@ -1096,7 +1096,7 @@ var/list/coefflist = list()
 	else
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
 		if (E.is_bruised() || E.is_broken() || H.eye_blind > 0)
-			if (!silent) user << "<span class = 'danger'>Your eyes are injured! You can't use \the [src].</span>"
+			if (!silent) user << "<span class = 'danger'>Your eyes are injured! You can't see any farther.</span>"
 			return FALSE
 	return TRUE
 
@@ -1166,13 +1166,13 @@ var/list/coefflist = list()
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
 			user.visible_message("[user] looks into the distance.")
-			handle_ui_visibility(user)
+			handle_ui_visibility()
 	else//Resets
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
 		user.client.view = world.view
 		look_amount = 3
-		handle_ui_visibility(user)
+		handle_ui_visibility()
 
 	if (looking)
 		// prevent scopes from bugging out opened storage objs in mob process//Copied from zoom.dm
@@ -1244,19 +1244,22 @@ var/list/coefflist = list()
 
 /datum/action/toggle_scope/IsAvailable()
 	. = ..()
-	var/mob/living/human/H = usr
-	if (H.looking)
-		return FALSE
+	if (owner)
+		var/mob/living/human/H = owner
+		if (H.looking)
+			return FALSE
 
 /datum/action/toggle_scope/Trigger()
 	..()
-	var/mob/living/human/H = usr
-	H.look_into_distance(usr)
+	if (owner)
+		var/mob/living/human/H = owner
+		H.look_into_distance(owner)
 
 /datum/action/toggle_scope/Remove()
-	var/mob/living/human/H = usr
-	if (H.looking)
-		H.look_into_distance(usr, FALSE)
+	if (owner)
+		var/mob/living/human/H = owner
+		if (H.looking)
+			H.look_into_distance(owner, FALSE)
 	..()
 
 /mob/living/human/Move()
