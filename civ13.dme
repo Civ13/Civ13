@@ -895,6 +895,8 @@
 #include "code\modules\organs\internal\lungs.dm"
 #include "code\modules\organs\subtypes\standard.dm"
 #include "code\modules\organs\subtypes\unbreakable.dm"
+#include "code\modules\persistence\admin.dm"
+#include "code\modules\persistence\functions.dm"
 #include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\persistence.dm"
 #include "code\modules\persistence\saving.dm"
@@ -1001,5 +1003,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\reichflakturm.dmm"
+#include "maps\nomads\nomads.dmm"
 // END_INCLUDE

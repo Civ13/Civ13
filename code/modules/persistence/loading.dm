@@ -1,131 +1,138 @@
-////WORK IN PROGRESS - PERSISTENCE STUFF////
-/datum/admins/proc/import_savegame()
-	set category = "Server"
-	set desc="Import Variables"
-	set name="Import Savegame"
-
-	//dont want this to be used for now
-//	return
-	//
-	var/mapfile = file("SQL/saves/map.txt")
-	if (!fexists(mapfile))
-		usr << "The savefile does not exist or is corrupted!"
-		return
-	var/loaded_metadata = file2text(mapfile)
-	var/list/parsed_metadata = splittext(loaded_metadata, "\n")
-	if (map.ID != parsed_metadata[1])
-		usr << "Different maps! Start a round in the right map first, then load."
-		return
-	var/confirm = WWinput(usr, "Are you sure you want to load the world? SERVER MIGHT FREEZE FOR A WHILE!", "Confirmation Required", "No", list("Yes", "No"))
-	if (confirm == "No")
-		return
-	else
-		world << "<big><b>Loading a game, please wait...</b></big>"
-		sleep(1)
-		world.log << "Importing turfs..."
-		var/F = file("SQL/saves/turfs.txt")
-		if (fexists(F))
-			var/tmpturfs = file2text(F)
-			var/list/impturfs = splittext(tmpturfs, "\n")
-			for (var/i in impturfs)
-				var/list/impturfs2 = splittext(i, ";")
-				if (impturfs2.len && impturfs2[1] == "TURF")
-					var/resultp = text2path(impturfs2[5])
-					world.log << "[impturfs2[5]]"
-					var/turf/T
-					T = locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4]))
-					T.ChangeTurf(resultp)
-		world.log << "Imported all turfs."
-		sleep(1)
-		world.log << "Clearing mobs..."
-		for (var/mob/mob in world)
-			if (!istype(mob, /mob/new_player))
-				qdel(mob)
-		world.log << "Importing mobs..."
-		var/F2 = file("SQL/saves/mobs.txt")
-		if (fexists(F2))
-			var/tmpmobs = file2text(F2)
-			var/list/impmobs = splittext(tmpmobs, "\n")
-			for (var/i in impmobs)
-				var/list/impmobs2 = splittext(i, ";")
-				if (impmobs2.len >= 5 && impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player" && impmobs2[5] != "/mob/observer")
-					var/resultp = text2path(impmobs2[5])
-					var/mob/newmob = new resultp(locate(text2num(impmobs2[2]),text2num(impmobs2[3]),text2num(impmobs2[4])))
-					newmob.stat = text2num(impmobs2[6])
-//				else if (impmobs2[1] == "HUMAN")
-//					return
-		world.log << "Imported all mobs."
-		sleep(1)
-		world.log << "Clearing objects..."
-		for (var/obj/object in world)
-			if (!istype(object, /obj/map_metadata))
-				qdel(object)
-		world.log << "Importing objects..."
-		var/F3 = file("SQL/saves/objs.txt")
-		if (fexists(F3))
-			var/tmpobjs = file2text(F3)
-			var/list/impobjs = splittext(tmpobjs, "\n")
-			for (var/i in impobjs)
-//				i = replacetext(i, "|;","|")
-				var/list/impobjs2 = splittext(i, ";")
-				if (impobjs2.len >= 5 && /*impobjs2[1] == "SIMPLE_OBJ" &&*/ !findtext(impobjs2[5],"/obj/map_metadata") && !findtext(impobjs2[5],"/obj/effects/lobby_image"))
-					var/resultp = text2path(impobjs2[5])
-					var/obj/tmpobj = new resultp(locate(text2num(impobjs2[2]),text2num(impobjs2[3]),text2num(impobjs2[4])))
-					if (impobjs2[1] == "OBJECT")
-						for (var/j=6, j<=impobjs2.len, j++)
-							var/list/tempvars = splittext(impobjs2[j], "===")
-							if (tempvars.len == 2)
-								if (tempvars[1] == "name")
-									tmpobj.name = tempvars[2]
-								else if (tempvars[1] == "desc")
-									tmpobj.desc = tempvars[2]
-								else if (tempvars[1] == "dir")
-									tmpobj.dir = text2num(tempvars[2])
-								else if (tempvars[1] == "icon_state")
-									tmpobj.icon_state = tempvars[2]
-								else
-									if (tmpobj.vars[tempvars[1]] && tempvars[1] != "loc" && tempvars[1] != "locs" && tempvars[1] != "verbs")
-										tmpobj.vars[tempvars[1]] = tempvars[2]
-/*
-				else if (impobjs2[1] == "OBJECT")
-					if (!findtext(impobjs2[5],"/obj/map_metadata"))
-						var/resultp = text2path(impobjs2[5])
-						var/obj/newobj = new resultp(locate(impobjs2[2],impobjs2[3],impobjs2[4]))
-						for (var/j=6, j<=impobjs2.len, j++)
-							var/list/tempvars = splittext(impobjs2[j], "=")
-							if (tempvars.len == 2)
-								var/tonum = text2num(tempvars[2])
-								if (tonum && isnum(tonum))
-									newobj.vars[tempvars[1]] = tonum
-								else
-									if (tempvars[2] != "EMPTYLIST")
-/*
-										if (findtext(tempvars[2], "{{"))
-											tempvars[2] = replacetext(tempvars[2], "{{", "")
-											tempvars[2] = replacetext(tempvars[2], "|}}", "")
-											var/list/tempvarslist = splittext(tempvars[2], "|")
-											newobj.vars[tempvars[1]] = tempvarslist
-										else
-											newobj.vars[tempvars[1]] = tempvars[2]
-*/
-										if (!islist(newobj.vars[tempvars[1]]))
-											newobj.vars[tempvars[1]] = tempvars[2]
-*/
-		world.log << "Imported all objects."
-		world.log << "Importing metadata..."
-		var/F4 = file("SQL/saves/map.txt")
-		if (fexists(F4))
-			var/tmpmeta = file2text(F4)
-			var/list/tmpmeta_list = splittext(tmpmeta,"\n")
-			map.age = tmpmeta_list[2]
-			map.ordinal_age = text2num(tmpmeta_list[3])
-			map.default_research = text2num(tmpmeta_list[4])
-			map.autoresearch = text2num(tmpmeta_list[5])
-			map.autoresearch_mult = text2num(tmpmeta_list[6])
-			map.chad_mode = text2num(tmpmeta_list[7])
-			map.chad_mode_plus = text2num(tmpmeta_list[8])
-			map.gamemode = tmpmeta_list[8]
-		world.log << "Imported metadata."
-		world.log << "Importing global settings..."
-		sleep(1)
-		world.log << "Finished all imports."
+/map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
+    try
+        TICK_CHECK
+        var/nextContents
+        if(nocontents)
+            nextContents = 2
+        if(existing_references["[ind]"])
+            if(starting_loc)
+                var/atom/movable/A = existing_references["[ind]"]
+                A.loc = starting_loc
+            return existing_references["[ind]"]
+        savefile.cd = "/entries/[ind]"
+        var/type = savefile["type"]
+        if (!findtext("[type]","/turf/"))
+            return
+        var/atom/movable/object
+        if(!type)
+            return
+        if(lag_fix)
+            so_far++
+            if(so_far > per_pause)
+                sleep(10)
+                so_far = 0
+        if(old_turf)
+            var/finished = 0
+            while(!finished)
+                finished = 1
+            var/xa = old_turf.x
+            var/ya = old_turf.y
+            var/za = old_turf.z
+            old_turf.ChangeTurf(type, FALSE, FALSE)
+            object = locate(xa,ya,za)
+        else if(replacement)
+            object = replacement
+        else
+            object = new type(starting_loc)
+        if(!object)
+            message_admins("object not created, ind: [ind] type:[type]")
+            return
+        all_loaded += object
+        existing_references["[ind]"] = object
+        for(var/v in savefile.dir)
+            savefile.cd = "/entries/[ind]"
+            if(v == "type")
+                continue
+            else if(v == "content")
+                if(nocontents != 2)
+                    var/list/refs = params2list(savefile[v])
+                    var/finished = 0
+                    while(!finished)
+                        finished = 1
+                        for(var/obj/ob in object.contents)
+                            if(ob.loc != object) continue
+                            finished = 0
+                            ob.forceMove(locate(200, 100, 2))
+                            ob.Destroy()
+                    for(var/x in refs)
+                        Load_Entry(savefile, x, null, object, nocontents = nextContents, lag_fix = lag_fix)
+            else if(findtext(savefile[v], "**list"))
+                var/x = savefile[v]
+                var/list/fixed = string_explode(x, "list")
+                x = fixed[2]
+                var/list/lis = params2list(x)
+                var/list/final_list = list()
+                if(lis.len)
+                    for(var/xa in lis)
+                        if(findtext(xa, "**entry"))
+                            var/list/fixed2 = string_explode(xa, "entry")
+                            var/y = fixed2[2]
+                            var/atom/movable/A = Load_Entry(savefile, y, lag_fix = lag_fix)
+                            final_list += A
+                        else
+                            final_list += "**unique**"
+                            final_list[final_list.len] = Numeric(xa)
+                object.vars[v] = final_list
+            else if(findtext(savefile[v], "**entry"))
+                var/x = savefile[v]
+                var/list/fixed = string_explode(x, "entry")
+                x = fixed[2]
+                var/atom/movable/A = Load_Entry(savefile, x, nocontents = nextContents, lag_fix = lag_fix)
+                object.vars[v] = A
+            else if(savefile[v] == "**null")
+                object.vars[v] = null
+            else if(v == "req_access_txt")
+                object.vars[v] = savefile[v]
+            else if(savefile[v] == "**emptylist")
+                continue
+            else
+                savefile.cd = "/entries/[ind]"
+                object.vars[v] = savefile[v]
+            savefile.cd = "/entries/[ind]"
+            TICK_CHECK
+        savefile.cd = ".."
+        if (ishuman(object))
+            var/mob/living/human/H = object
+            H.rejuvenate()
+            if (!H.name && savefile["name"])
+                H.name = savefile["name"]
+        return object
+    catch(var/exception/e)
+        message_admins("EXCEPTION IN LOAD ENTRY!! [e] on [e.file]:[e.line], v: [savefile["type"]]")
+/map_storage/proc/Load_World()
+    for(var/B = 1, B <= world.maxz, B++)
+        try
+            var/watch = start_watch()
+            existing_references = list()
+            all_loaded = list()
+            if(!fexists("map_saves/[B].sav"))
+                continue
+            var/savefile/savefile = new("map_saves/[B].sav")
+            savefile.cd = "/map"
+            TICK_CHECK
+            for(var/z in savefile.dir)
+                savefile.cd = "/map/[z]"
+                for(var/y in savefile.dir)
+                    savefile.cd = "/map/[z]/[y]"
+                    for(var/x in savefile.dir)
+                        var/turf_ref = savefile["[x]"]
+                        if(!turf_ref)
+                            message_admins("turf_ref not found, x: [x]")
+                            continue
+                        var/turf/old_turf = locate(text2num(x), text2num(y), text2num(z))
+                        Load_Entry(savefile, turf_ref, old_turf)
+                        savefile.cd = "/map/[z]/[y]"
+                        TICK_CHECK
+            for(var/i in 1 to all_loaded.len)
+                var/datum/ob = all_loaded[i]
+                if (ob)
+                    ob.after_load()
+                if(istype(ob, /obj))
+                    var/obj/obbie = ob
+                    if(obbie.load_datums)
+                        if(obbie.reagents)
+                            obbie.reagents.my_atom = ob
+            log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
+        catch(var/exception/e)
+            message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
+    log_startup_progress("Finished loading.")

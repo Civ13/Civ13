@@ -26,6 +26,7 @@
 
 	var/custom_code = 0
 	var/locked = 0
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;opened;locked;custom_code"
 /obj/structure/closet/initialize()
 	..()
 	if (!opened)		// if closed, any item at the crate's loc is put in the contents

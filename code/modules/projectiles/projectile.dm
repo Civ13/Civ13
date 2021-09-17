@@ -81,7 +81,8 @@
 	var/turf/firer_loc = null
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
 	var/atype = "normal"
-
+	should_save = 0
+	
 /obj/item/projectile/New()
 	..()
 	damage *=global_damage_modifier

@@ -242,11 +242,7 @@ var/civmax_research = list(230,230,230)
 	icon_state = null
 	human = faction_organization.Copy()
 	initial_faction_organization = faction_organization.Copy()
-/*
-	//export game data (WIP persistence stuff)
-	if (civilizations || nomads)
-		savegame()
-*/
+
 	// makes win condition helper datum
 	win_condition = new
 	if (berryeffects.len)

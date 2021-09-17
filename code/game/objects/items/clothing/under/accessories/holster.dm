@@ -7,7 +7,7 @@
 	var/obj/item/holstered2 = null //for double holsters
 	var/capacity = 1
 	ripable = FALSE
-
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;holstered;holstered2"
 /obj/item/clothing/accessory/holster/proc/holster(var/obj/item/I, var/mob/living/user)
 	if (holstered && istype(user) && capacity == 1)
 		user << "<span class='warning'>There is already \a [holstered] holstered here!</span>"
