@@ -1,4 +1,4 @@
-/map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/species_override = 0, var/lag_fix = 0)
+/map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
     try
         TICK_CHECK
         var/nextContents
@@ -11,6 +11,8 @@
             return existing_references["[ind]"]
         savefile.cd = "/entries/[ind]"
         var/type = savefile["type"]
+        if (!findtext("[type]","/turf/"))
+            return
         var/atom/movable/object
         if(!type)
             return
@@ -20,7 +22,6 @@
                 sleep(10)
                 so_far = 0
         if(old_turf)
-        //	old_turf.blocks_air = 1
             var/finished = 0
             while(!finished)
                 finished = 1
@@ -38,18 +39,6 @@
             return
         all_loaded += object
         existing_references["[ind]"] = object
-        if(species_override)
-            var/mob/living/human/hum = object
-            if(istype(hum, /mob/living/human))
-                var/x = savefile["species"]
-                if(x)
-                    var/list/fixed = string_explode(x, "entry")
-                    if(fixed)
-                        x = fixed[2]
-                        var/datum/species/S = Load_Entry(savefile, x, lag_fix = lag_fix)
-                        savefile.cd = "/entries/[ind]"
-                        hum.set_species(S.name)
-
         for(var/v in savefile.dir)
             savefile.cd = "/entries/[ind]"
             if(v == "type")
@@ -95,17 +84,21 @@
             else if(v == "req_access_txt")
                 object.vars[v] = savefile[v]
             else if(savefile[v] == "**emptylist")
-                object.vars[v] = list()
+                continue
             else
                 savefile.cd = "/entries/[ind]"
                 object.vars[v] = savefile[v]
             savefile.cd = "/entries/[ind]"
             TICK_CHECK
         savefile.cd = ".."
+        if (ishuman(object))
+            var/mob/living/human/H = object
+            H.rejuvenate()
+            if (!H.name && savefile["name"])
+                H.name = savefile["name"]
         return object
     catch(var/exception/e)
-        message_admins("EXCEPTION IN LOAD ENTRY!! [e] on [e.file]:[e.line]")
-
+        message_admins("EXCEPTION IN LOAD ENTRY!! [e] on [e.file]:[e.line], v: [savefile["type"]]")
 /map_storage/proc/Load_World()
     for(var/B = 1, B <= world.maxz, B++)
         try
