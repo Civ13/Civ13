@@ -1057,6 +1057,16 @@ var/list/coefflist = list()
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)
 
+/mob/living/human/proc/using_look() //May not be nessecary
+	if(using_MG)
+		return TRUE
+	if(stat == CONSCIOUS)
+		if (client && actions.len)
+			if (client.pixel_x || client.pixel_y)
+				if(looking)
+					return TRUE
+	return FALSE
+
 /mob/living/human/proc/handle_ui_visibility()
 	var/mob/living/human/H = src
 	if (H.client)
@@ -1074,6 +1084,7 @@ var/list/coefflist = list()
 			for (var/obj/O in H.client.screen)
 				if (O.scoped_invisible)
 					O.invisibility = FALSE
+					O.scoped_invisible = FALSE
 
 /mob/living/human/proc/can_look(mob/living/user)//Largely copied from zoom.dm
 	var/mob/living/human/H = user
@@ -1081,17 +1092,13 @@ var/list/coefflist = list()
 	if(user.stat || !ishuman(user))
 		user << "<span class = 'warning'>You are unable to look into the distance right now.</span>"
 		return FALSE
-	if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
+	else if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
 		var/obj/item/clothing/mask/currmask = H.wear_mask
 		if (currmask.blocks_scope)
 			user << "You can't see any farther while wearing \the [currmask]!"
 			return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		user << "Your visor gets in the way of seeing further."
-		return FALSE
-	else if (user.client.pixel_x || user.client.pixel_y) //Resets people's view if they're looking into the distance and try to look through something else
-		user.client.pixel_x = 0
-		user.client.pixel_y = 0
 		return FALSE
 	else
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
@@ -1132,6 +1139,12 @@ var/list/coefflist = list()
 			looking = FALSE
 			return
 		else
+			// prevent scopes from bugging out opened storage objs in mob process//Copied from zoom.dm
+			for (var/obj/item/weapon/storage/S in user.contents)
+				S.close_all()
+			for (var/obj/item/clothing/under/U in user.contents)
+				for (var/obj/item/clothing/accessory/storage/S in U.accessories)
+					S.hold.close_all()
 			user.dizzycheck = TRUE
 			var/_x = 0
 			var/_y = 0
@@ -1173,16 +1186,6 @@ var/list/coefflist = list()
 		user.client.view = world.view
 		look_amount = 3
 		handle_ui_visibility()
-
-	if (looking)
-		// prevent scopes from bugging out opened storage objs in mob process//Copied from zoom.dm
-		for (var/obj/item/weapon/storage/S in user.contents)
-			S.close_all()
-		for (var/obj/item/clothing/under/U in user.contents)
-			for (var/obj/item/clothing/accessory/storage/S in U.accessories)
-				S.hold.close_all()
-		user.dizzycheck = TRUE
-	else
 		user.dizzycheck = FALSE
 
 	if (user.aiming)
@@ -1190,6 +1193,7 @@ var/list/coefflist = list()
 
 	if(W)
 		// make other buttons invisible
+
 		var/moved = 0
 		if (ishuman(user))
 			var/mob/living/human/H = user
@@ -1215,7 +1219,7 @@ var/list/coefflist = list()
 				if (user && user.client)
 					for (var/obj/screen/movable/action_button/AB in user.client.screen)
 						if (AB.name == "Toggle Sights")
-							AB.invisibility = 0
+							AB.invisibility = FALSE
 
 		// actually shift the button
 		W.azoom.button.pixel_x = -(moved*32)
@@ -1294,13 +1298,3 @@ var/list/coefflist = list()
 			M.stopped_using(src)
 			M.last_user = null
 			return
-
-/mob/living/human/proc/using_look() //May not be nessecary
-	if(using_MG)
-		return TRUE
-	if(stat == CONSCIOUS)
-		if (client && actions.len)
-			if (client.pixel_x || client.pixel_y)
-				if(looking)
-					return TRUE
-	return FALSE
