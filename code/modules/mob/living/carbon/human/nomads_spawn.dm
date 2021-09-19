@@ -1,12 +1,26 @@
 /mob/living/human/proc/nomads_spawn()
 	if (map && map.is_zombie)
-		add_note("Map Mechanics", "- Zombies will spawn in some areas <b>at night</b>.<br><br>- Bodies will turn into zombies after a while! To prevent this, <b>remove the head from the body</b>.<br><br>- Getting bit or scratched by an zombie will not automatically turn you into one. However, theres a small chance you get <b>infected with the zombie virus</b>. You will get high fevers and massive headaches. This can be prevented by taking <b>Potassium Iodide</b>, as it will kill the virus, even after symptoms have started.")
+		add_note("Map Mechanics", "- Zombies will spawn in some areas <b>at night</b>.<br><br>- Bodies will turn into zombies after a while! To prevent this, <b>remove the head from the body</b>.<br><br>- Getting bit or scratched by a zombie will not automatically turn you into one. There is a small chance you get <b>infected with the zombie virus</b> from every strike a zombie lands on you. You will get high fevers, massive headaches, and eventually succumb to the disease; turning into a zombie. This can be cured by taking <b>Potassium Iodide</b>, which will kill the virus, even after symptoms have started.")
 
 	if (map && (/*map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_NEW_WORLD*/map.is_fantrace))
+		var/newnamera = list("Order of the Great Tree" = list(null,"Knowledge",0, "Tree","#098518","#9A9A9A","Shamans")) //gorillas
+		var/newnamerb = list("The Great Serpent" = list(null,"Combat",0, "Skull","#654321","#014421","Shamans")) //lizards
+		var/newnamerc = list("Father in the Sky" = list(null,"Production",0, "Cross","#FFD700","#FFFFFF","Priests")) //hoo-mans
+		var/newnamerd = list("Followers of Morgoth" = list(null,"Combat",0, "Skull","#000000","#9A1313","Cultists")) //orcs
+		var/newnamere = list("Followers of the Hive Mother" = list(null,"Knowledge",0, "Star","#67A7CE","#0C1EA7","Monks")) //ants
+		var/newnamerf = list("Moon Worshippers" = list(null,"Combat",0, "Moon","#848484","#FFFFFF","Priests")) //wolves
+		var/newnamerg = list("Cthulhu" = list(null,"Production",0, "Sun","#ADFF2F","#000000","Cultists")) //crustaceans
+		map.custom_religions += newnamera
+		map.custom_religions += newnamerb
+		map.custom_religions += newnamerc
+		map.custom_religions += newnamerd
+		map.custom_religions += newnamere
+		map.custom_religions += newnamerf
+		map.custom_religions += newnamerg
 		var/area/mob_area = get_area(src)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
-		var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Randomize",list(/*"Biome Appropriate",*/"Randomize","Customize"))
+		var/choices = WWinput(src, "Welcome to the Forgotten Time! As your new life starts you can choose if you want to customize your character. Do you want to?","Character Customization","Randomize",list(/*"Biome Appropriate",*/"Randomize","Customize"))
 		if (choices == "Customize")
 			var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla","Wolf"))
 			if (choice_race == "Randomize")
@@ -15,7 +29,6 @@
 
 				if ("Gorilla")
 					gorillaman = 1
-					civilization = "Gorilla Tribe"
 					religion = "Order of the Great Tree"
 					add_language("Ape Speech",TRUE)
 					for (var/datum/language/ape/A in languages)
@@ -26,7 +39,6 @@
 
 				if ("Orc")
 					orc = 1
-					civilization = "Orc Horde"
 					religion = "Followers of Morgoth"
 					add_language("Black Speech",TRUE)
 					for (var/datum/language/blackspeech/A in languages)
@@ -37,7 +49,6 @@
 
 				if ("Ant")
 					ant = 1
-					civilization = "Ant Colony"
 					religion = "Followers of the Hive Mother"
 					add_language("Antspeak",TRUE)
 					for (var/datum/language/ant/A in languages)
@@ -48,7 +59,6 @@
 
 				if ("Lizard")
 					lizard = 1
-					civilization = "Lizard Clan"
 					religion = "The Great Serpent"
 					add_language("Lizard Hissing",TRUE)
 					for (var/datum/language/lizard/A in languages)
@@ -59,7 +69,6 @@
 
 				if ("Wolf")
 					wolfman = 1
-					civilization = "Wolfpack"
 					religion = "Moon Worshippers"
 					add_language("Wolf Howling",TRUE)
 					for (var/datum/language/wolf/A in languages)
@@ -70,7 +79,6 @@
 
 				if ("Crustacean")
 					crab = 1
-					civilization = "Crustacean Union"
 					religion = "Cthulhu"
 					add_language("Clack Tongue",TRUE)
 					for (var/datum/language/crab/A in languages)
@@ -81,7 +89,6 @@
 
 			var/choice1 = "English"
 			if (choice_race == "Human")
-				civilization = "Human Kingdom"
 				religion = "Father in the Sky"
 				name = species.get_random_english_name(gender)
 				real_name = name
