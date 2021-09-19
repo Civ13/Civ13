@@ -823,24 +823,28 @@
 	desc = "A flexible, close-fitting shirt with camouflage sleeves designed to be worn under combat equipment. This one is tan."
 	icon_state = "ubac_tan"
 	item_state = "ubac_tan"
+	slot = "sash"
 
 /obj/item/clothing/accessory/storage/webbing/ubacgreen
 	name = "green UBAC"
 	desc = "A flexible, close-fitting shirt with camouflage sleeves designed to be worn under combat equipment. This one is green."
 	icon_state = "ubac_green"
 	item_state = "ubac_green"
+	slot = "sash"
 
 /obj/item/clothing/accessory/storage/webbing/ubacblack
 	name = "black UBAC"
 	desc = "A flexible, close-fitting shirt with camouflage sleeves designed to be worn under combat equipment. This one is black."
 	icon_state = "ubac_black"
 	item_state = "ubac_black"
+	slot = "sash"
 
 /obj/item/clothing/accessory/storage/webbing/sweater //does not the capacity to protect against cold currently
-	name = "white sweater"
+	name = "grey sweater"
 	desc = "A sweater to help you be comfy."
 	icon_state = "sweater"
 	item_state = "sweater"
+	slot = "sash"
 
 /obj/item/clothing/accessory/storage/webbing/light
 	name = "light webbing"
