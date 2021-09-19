@@ -144,10 +144,36 @@
 	spawn(rand(timer,timer*1.5))
 		spawnerproc()
 
-/obj/effect/spawner/mobspawner/japsww2
+/obj/effect/spawner/mobspawner/ww2
+	timer = 300
+
+/obj/effect/spawner/mobspawner/ww2/jap
 	name = "jap spawner"
 	create_path = /mob/living/simple_animal/hostile/human/ww2_jap
-	timer = 400
+
+/obj/effect/spawner/mobspawner/ww2/american
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american
+	max_number = 6
+	max_range = 3
+
+/obj/effect/spawner/mobspawner/ww2/american/mg
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american/mg
+	max_number = 2
+	max_range = 3
+
+/obj/effect/spawner/mobspawner/ww2/american/medic
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american/medic
+	max_number = 2
+	max_range = 3
+
+/obj/effect/spawner/mobspawner/ww2/american/lead
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american/squad_leader
+	max_number = 1
+	max_range = 2
 
 /obj/effect/spawner/mobspawner/boars
 	name = "boars spawner"
