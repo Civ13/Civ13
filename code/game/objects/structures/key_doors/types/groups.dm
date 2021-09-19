@@ -653,3 +653,15 @@
 	unique_door_name = "Mechanic Door"
 	locked = TRUE
 	health = 90000
+
+/obj/structure/simple_door/key_door/custom/jail/woodjail/tribal
+	unique_door_name = "Tribal Sealed Bars"
+	locked = TRUE
+	custom_code = 666999
+
+/obj/item/weapon/key/tribal
+	code = 666999
+	name = "tribal key"
+
+/datum/keyslot/tribal
+	code = 666999

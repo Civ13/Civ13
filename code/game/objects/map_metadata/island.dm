@@ -14,7 +14,7 @@
 		PIRATES)
 
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british/ship/,
+		list(BRITISH) = /area/caribbean/british/ship/office,
 		list(PIRATES) = /area/caribbean/pirates/land/inside
 		)
 	age = "1713"
@@ -23,7 +23,7 @@
 	//songs = list()
 	meme = TRUE
 	battle_name = "Skull Island"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts. Each team must capture the other's command post to win.</font>"
 	var/done = FALSE
 obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -57,7 +57,7 @@ obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/island/tick()
 	..()
-	if (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	if (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 		for (var/obj/effect/area_teleporter/AT)
 			AT.Activated()
 		do_once_activations = FALSE

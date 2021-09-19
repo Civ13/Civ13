@@ -12,14 +12,14 @@
 		INDIANS)
 
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british/land,
-		list(INDIANS) = /area/caribbean/pirates/land
+		list(BRITISH) = /area/caribbean/british/ship,
+		list(INDIANS) = /area/caribbean/indians/camp
 		)
 	age = "1713"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(BRITISH = 0.35, INDIANS = 0.65)
 	battle_name = "Supply Raid on Port Andrew"
-	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the combat starts.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the combat starts. In order to win the Carib must capture the British Ship and the British must capture the Carib Altar.</font>"
 	faction1 = BRITISH
 	faction2 = INDIANS
 
@@ -36,6 +36,8 @@ obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (J.is_ww1 == TRUE)
+		. = FALSE
+	else if (J.is_ww2 == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE

@@ -117,6 +117,7 @@
 	anchored = FALSE
 	unlimited = TRUE
 	fuel = 100000
+	unlimited = TRUE
 
 /obj/item/flashlight/lamp/littlelamp
 	on_state = "littlelamp-on"
@@ -224,6 +225,7 @@
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
 	slot_flags = SLOT_BELT|SLOT_MASK
+	unlimited = TRUE
 
 /obj/item/flashlight/modern
 	unlimited = TRUE
