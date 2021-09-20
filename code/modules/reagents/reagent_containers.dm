@@ -8,7 +8,8 @@
 	var/possible_transfer_amounts = list(5,10,15,25,30)
 	var/volume = 30
 	secondary_action = TRUE
-
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;volume"
+	
 /obj/item/weapon/reagent_containers/verb/smell() //set amount_per_transfer_from_this
 	set name = "Smell"
 	set category = null

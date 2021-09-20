@@ -215,7 +215,7 @@
 	if (loc && ismob(loc))
 		if (ishuman(loc))
 			var/mob/living/human/H = loc
-			if (H.using_zoom())
+			if (H.using_look())
 				return FALSE
 	..()
 

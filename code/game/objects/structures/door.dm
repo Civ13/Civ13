@@ -33,6 +33,8 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked" 
+
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
 	if (temperature >= 380)

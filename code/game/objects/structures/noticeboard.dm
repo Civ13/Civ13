@@ -8,6 +8,8 @@
 	var/notices = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;notices"
+	
 /obj/structure/noticeboard/initialize()
 	for (var/obj/item/I in loc)
 		if (notices > 4) break

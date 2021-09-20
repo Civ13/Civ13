@@ -82,7 +82,6 @@ var/world_is_open = TRUE
 	// This is kinda important. Set up details of what the hell things are made of.
 	populate_material_list()
 	processScheduler = new
-//	master_controller = new /datum/controller/game_controller()
 
 	spawn(1)
 		processScheduler.deferSetupfor (/process/ticker)
@@ -315,7 +314,8 @@ var/global/nextsave = 0
 				world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
 			if (nextsave <= world.realtime)
 				nextsave = world.realtime + 72000
-				do_export()
+				spawn(0)
+					ticker.savemap()
 
 		start_persistence_loop()
 
