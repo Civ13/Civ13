@@ -1,8 +1,8 @@
 //todo: toothbrushes, and some sort of "toilet-filthinator" for the hos
 
 /obj/structure/toilet
-	name = "latrine"
-	desc = "A simple latrine."
+	name = "toilet"
+	desc = "A porcelain throne."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "toilet00"
 	density = FALSE
@@ -64,13 +64,17 @@
 			qdel(src)
 			return
 
-	if (istype(I, /obj/item/weapon/crowbar))
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (istype(src, /obj/structure/toilet/outhouse))
+			if (open == FALSE)
+				return
 		user << "<span class='notice'>You start to [cistern ? "replace the lid on the cistern" : "lift the lid off the cistern"].</span>"
 		playsound(loc, 'sound/effects/stonedoor_openclose.ogg', 50, TRUE)
 		if (do_after(user, 30, src))
-			user.visible_message("<span class='notice'>[user] [cistern ? "replaces the lid on the cistern" : "lifts the lid off the cistern"]!</span>", "<span class='notice'>You [cistern ? "replace the lid on the cistern" : "lift the lid off the cistern"]!</span>", "You hear grinding porcelain.")
+			user.visible_message("<span class='notice'>[user] [cistern ? "replaces the lid on the cistern" : "lifts the lid off the cistern"]!</span>", "<span class='notice'>You [cistern ? "replace the lid on the cistern" : "lift the lid off the cistern"]!</span>", "You hear a grinding noise.")
 			cistern = !cistern
-			update_icon()
+			if (!istype(src, /obj/structure/toilet/pit_latrine) && !istype(src, /obj/structure/toilet/outhouse))
+				update_icon()
 			return
 
 	if (istype(src, /obj/structure/toilet/pit_latrine))
@@ -132,7 +136,7 @@
 
 /obj/structure/toilet/pit_latrine
 	name = "pit latrine"
-	desc = "A simple pit latrine, a hole dug on the ground to collect waste."
+	desc = "A simple pit latrine, a hole dug in the ground to collect waste."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "pit_latrine3"
 	open = TRUE
@@ -144,9 +148,19 @@
 	open = TRUE
 
 /obj/structure/toilet/pit_latrine/attack_hand(mob/living/user as mob)
-	return
-
-/obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
+	if (cistern)
+		if (!contents.len)
+			user << "<span class='notice'>The cistern is empty.</span>"
+			return
+		else
+			var/obj/item/I = pick(contents)
+			if (ishuman(user))
+				user.put_in_hands(I)
+			else
+				I.loc = get_turf(src)
+			user << "<span class='notice'>You find \an [I] in the cistern.</span>"
+			w_items -= I.w_class
+			return
 	return
 
 /obj/structure/toilet/outhouse
@@ -169,17 +183,32 @@
 	open = FALSE
 
 /obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
-	if(open == FALSE)
-		open = TRUE
-		density = FALSE
-		icon_state = icon_state_open
-		dump_contents()
-	else
-		open = FALSE
-		density = TRUE
-		icon_state = icon_state_closed
-		store_mobs()
-		stored_units += store_mobs(stored_units)
+	if(!cistern)
+		if(open == FALSE)
+			open = TRUE
+			density = FALSE
+			icon_state = icon_state_open
+			dump_contents()
+		else
+			open = FALSE
+			density = TRUE
+			icon_state = icon_state_closed
+			store_mobs()
+			stored_units += store_mobs(stored_units)
+
+	if (cistern && open)
+		if (!contents.len)
+			user << "<span class='notice'>The cistern is empty.</span>"
+			return
+		else
+			var/obj/item/I = pick(contents)
+			if (ishuman(user))
+				user.put_in_hands(I)
+			else
+				I.loc = get_turf(src)
+			user << "<span class='notice'>You find \an [I] in the cistern.</span>"
+			w_items -= I.w_class
+			return
 
 /obj/structure/toilet/outhouse/AltClick(var/mob/living/user)
 	return
@@ -724,6 +753,9 @@
 
 /obj/structure/sink/attack_hand(mob/user as mob)
 
+	if (src.dry || src.volume <= 0)
+		user << "<span class='warning'>\The [src] is dry!</span>"
+		return
 	if (!Adjacent(user))
 		return
 	if (ishuman(user))
@@ -814,22 +846,18 @@
 				return TRUE
 
 			else
-				if (istype(src, /obj/structure/sink/puddle))
-					if (prob(15))
+				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
+					var/dirty = FALSE
+					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
+						if (PP)
+							dirty = TRUE
+					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				else
-					var/dirty = FALSE
-					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
-						if (PP)
-							dirty = TRUE
-					if (dirty)
-						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
-					else
-						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+					RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				if (RG.reagents)
 					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)

@@ -19,7 +19,7 @@
 	faction_distribution_coeffs = list(BRITISH = 1)
 	battle_name = "Transatlantic Voyage"
 	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"
-
+	is_singlefaction = TRUE
 	is_RP = TRUE
 	var/first_event_done = FALSE
 	var/second_event_done = FALSE

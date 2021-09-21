@@ -90,9 +90,9 @@
 	desc = "A wood sword used for nonlethal practice."
 	icon_state = "wood_sword"
 	item_state = "wood_sword"
-	block_chance = 50
-	force_divisor = 1
-	thrown_force_divisor = 1
+	block_chance = 60
+	force_divisor = 5
+	thrown_force_divisor = 3
 	force = 1
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 0
@@ -107,12 +107,13 @@
 	default_material = "wood"
 
 /obj/item/weapon/material/sword/training/bamboo
+	name = "bokken"
 	desc = "A bamboo sword used for nonlethal practice."
 	icon_state = "bokken_sword"
 	item_state = "bokken_sword"
 	block_chance = 50
-	force_divisor = 1
-	thrown_force_divisor = 1
+	force_divisor = 5
+	thrown_force_divisor = 3
 	force = 1
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 0
@@ -316,6 +317,7 @@ obj/item/weapon/material/sword/armingsword/bronze
 	block_chance = 37
 	cooldownw = 9
 	value = 30
+	chopping_speed = 1.9
 
 /obj/item/weapon/material/sword/bolo/iron
 	default_material = "iron"
@@ -334,6 +336,7 @@ obj/item/weapon/material/sword/armingsword/bronze
 	block_chance = 37
 	cooldownw = 9
 	value = 30
+	chopping_speed = 1.9
 
 /obj/item/weapon/material/sword/kukri/iron
 	default_material = "iron"

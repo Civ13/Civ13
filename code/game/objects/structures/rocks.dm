@@ -78,6 +78,41 @@
 	cooldownw = 5
 	flammable = FALSE
 	var/sharpened = FALSE
+	var/itemtype1 = /obj/item/weapon/material/sword
+	var/itemtype2 = /obj/item/weapon/material/spear
+	var/itemtype3 = /obj/item/weapon/material/kitchen/utensil/knife
+	var/itemtype4 = /obj/item/weapon/material/hatchet
+	var/itemtype5 = /obj/item/weapon/material/boarding_axe
+	var/itemtype6 = /obj/item/weapon/material/machete
+	var/itemtype7 = /obj/item/weapon/material/machete1
+	var/itemtype8 = /obj/item/weapon/material/twohanded
+	var/itemtype9 =/obj/item/weapon/material/thrown
+	var/delay = 250 //Time to do the action.
+	var/noise = 'sound/machines/grindstone.ogg' //Noise to do when doing the action.
+	var/repairamount = 6 //0 is full repair, any other number adds until it hits max.
+	var/damageamount = 4 //How much max durability to take away.
+	var/actiontext = "sharpen" //Plural, flavortext
+
+/obj/item/weapon/flint/attackby(obj/item/M as obj, mob/user as mob)
+	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9))
+		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
+		playsound(src,noise,40,1)
+		if (do_after(user, delay, src))
+			M.maxhealth -= damageamount
+			M.health = min(M.health + repairamount, M.maxhealth)
+			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
+			if(M.maxhealth <= 0 || M.health <= 0)
+				qdel(M)
+				playsound(src, "shatter", 70, TRUE)
+				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")
+		else
+			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
+	else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
+		..()
+		return
+	else
+		user << "<span class='notice'>You cannot repair this with a [src.name]!</span>"
+		return
 
 /obj/item/weapon/flint/sharpened
 	name = "sharpened flint"

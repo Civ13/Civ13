@@ -380,11 +380,12 @@
 /obj/item/weapon/reagent_containers/syringe/thc
 	name = "THC syringe"
 	desc = "Injector containing THC from cannabis."
-	icon_state = "single_use2"
+	icon_state = "single_use1"
 	w_class = 1
 	volume = 20
-	amount_per_transfer_from_this = 10
+	amount_per_transfer_from_this = 20
 	single_use = TRUE
+
 /obj/item/weapon/reagent_containers/syringe/thc/New()
 	..()
 	reagents.add_reagent("thc", 20)

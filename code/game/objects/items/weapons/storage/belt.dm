@@ -96,7 +96,7 @@
 	new /obj/item/weapon/weldingtool(src)
 	new /obj/item/weapon/wirecutters/boltcutters(src)
 	new /obj/item/weapon/hammer(src)
-	new /obj/item/weapon/fire_extinguisher(src)
+	new /obj/item/weapon/fire_extinguisher/ww2(src)
 	new /obj/item/weapon/material/shovel/trench(src)
 
 /obj/item/weapon/storage/belt/utility/full/New()
@@ -121,6 +121,20 @@
 	item_state = "belt_holster"
 	storage_slots = 9
 	max_w_class = 2
+
+/obj/item/weapon/storage/belt/leather/shaman
+	storage_slots = 5
+	max_w_class = 3
+	max_storage_space = 12
+	show_above_suit = TRUE
+
+/obj/item/weapon/storage/belt/leather/shaman/New()
+	..()
+	new /obj/item/weapon/reagent_containers/food/snacks/grown/peyote(src)
+	new /obj/item/flashlight/torch(src)
+	new /obj/item/stack/medical/bruise_pack/bint/leather(src)
+	new /obj/item/stack/material/rope(src)
+	new /obj/item/weapon/material/handle(src)
 
 /obj/item/weapon/storage/belt/leather/occinn
 

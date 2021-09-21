@@ -143,6 +143,7 @@ var/civmax_research = list(230,230,230)
 	var/default_research = 0 //the starting research level
 	var/is_zombie = FALSE
 	var/is_fantrace = FALSE
+	var/perschadplus = FALSE
 
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active

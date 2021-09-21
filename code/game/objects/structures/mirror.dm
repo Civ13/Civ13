@@ -1,7 +1,7 @@
 //wip wip wup
 /obj/structure/mirror
 	name = "mirror"
-	desc = "A simple mirrror."
+	desc = "A simple reflective surface of silvered glass."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "mirror"
 	density = FALSE
@@ -10,6 +10,12 @@
 	var/list/ui_users = list()
 	not_movable = FALSE
 	not_disassemblable = FALSE
+
+/obj/structure/mirror/obsidian
+	name = "mirror"
+	desc = "A single piece of obsidian skillfully cut and polished into a reflective surface."
+	icon_state = "obsidian_mirror"
+
 /obj/structure/mirror/attack_hand(mob/user as mob)
 
 	if (shattered)	return
@@ -25,7 +31,7 @@
 /obj/structure/mirror/proc/shatter()
 	if (shattered)	return
 	shattered = TRUE
-	icon_state = "mirror_broke"
+	icon_state = "[icon_state]_broke"
 	playsound(src, "shatter", 70, TRUE)
 	desc = "Oh no, seven years of bad luck!"
 
@@ -44,7 +50,7 @@
 		var/obj/item/mirror/S = new(loc)
 		user << "You unfasten \the [S] with your [I]."
 		qdel(src)
-		return		
+		return
 	else if ((istype(I, /obj/item/weapon/hammer)) && (shattered))
 		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
@@ -89,12 +95,13 @@
 
 /obj/item/mirror
 	name = "mirror"
-	desc = "A simple mirrror."
+	desc = "A simple glass mirror."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "mirror"
 	w_class = 3		//big
 	value = 0
-	
+
+obsidian_mirror
 /obj/item/mirror/attackby(obj/item/H as obj, mob/user as mob)
 	if (istype(H, /obj/item/weapon/hammer) && isturf(user.loc))
 		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))

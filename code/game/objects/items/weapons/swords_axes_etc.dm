@@ -41,7 +41,7 @@
 	flammable = FALSE
 
 /obj/item/weapon/melee/classic_baton
-	name = "police baton"
+	name = "wood baton"
 	desc = "A wooden truncheon for beating criminal scum."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "baton"
@@ -52,8 +52,8 @@
 	flammable = TRUE
 
 /obj/item/weapon/melee/classic_baton/guard
-	name = "guard baton"
-	desc = "A wooden truncheon for beating criminal scum."
+	name = "heavy baton"
+	desc = "A heavy wooden truncheon for beating criminal scum."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "baton"
 	item_state = "classic_baton"

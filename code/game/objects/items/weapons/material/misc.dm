@@ -1,3 +1,5 @@
+/obj/item/weapon/material
+	var/chopping_speed = FALSE
 /obj/item/weapon/material/harpoon
 	name = "harpoon"
 	sharp = TRUE
@@ -303,14 +305,32 @@
 	w_class = 2
 	sharp = TRUE
 	edge = TRUE
+	default_material = "iron"
 	material = "iron"
 	attack_verb = list("chopped", "torn", "cut")
-	applies_material_colour = FALSE
+	applies_material_colour = TRUE
 	value = 15
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 5
-	var/chopping_speed = 1.90
+	chopping_speed = 1.7
+	health = 20
+	maxhealth = 20
+
+/obj/item/weapon/material/hatchet/steel
+	chopping_speed = 1.55
+	health = 40
+	maxhealth = 40
+	material = "steel"
+	default_material = "steel"
+	applies_material_colour = FALSE
+
+/obj/item/weapon/material/hatchet/bronze
+	chopping_speed = 1.65
+	health = 12
+	maxhealth = 12
+	material = "bronze"
+	default_material = "bronze"
 
 /obj/item/weapon/material/machete
 	name = "machete"
@@ -326,10 +346,12 @@
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = FALSE
 	value = 15
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 15
 	cooldownw = 5
-	var/chopping_speed = 1.50
+	chopping_speed = 1.6
+	health = 15
+	maxhealth = 15
 
 /obj/item/weapon/material/machete1
 	name = "machete"
@@ -345,10 +367,10 @@
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = FALSE
 	value = 15
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 15
 	cooldownw = 5
-	var/chopping_speed = 1.0
+	chopping_speed = 1.6
 
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
@@ -356,19 +378,27 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"
 	material = "stone"
+	default_material = "stone"
 	item_state = "stonehatchet"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
 	block_chance = 15
 	cooldownw = 5
-	chopping_speed = 1.35
+	chopping_speed = 3.3
+	health = 10
+	maxhealth = 10
+	applies_material_colour = FALSE
+
 /obj/item/weapon/material/hatchet/tribal/bone
 	material = "bone"
+	default_material = "stone"
 	desc = "A crude hatchet, made with wood and bone."
 	icon_state = "bonehatchet"
 	item_state = "bonehatchet"
-	chopping_speed = 1.75
+	chopping_speed = 4
+	health = 10
+	maxhealth = 10
 
 /obj/item/weapon/material/hatchet/tribal/flint
 	material = "flint"
@@ -376,7 +406,7 @@
 	icon = 'icons/obj/old_weapons.dmi'
 	icon_state = "flint_axe"
 	item_state = "flinthatchet"
-	chopping_speed = 1.5
+	chopping_speed = 3.5
 
 /obj/item/weapon/material/boarding_axe
 	name = "boarding axe"
@@ -395,6 +425,7 @@
 	value = 20
 	block_chance = 12
 	cooldownw = 6
+	chopping_speed = 2.7
 
 /obj/item/weapon/material/minihoe // -- Numbers
 	name = "mini hoe"
@@ -412,6 +443,21 @@
 	icon_state = "scythe0"
 	name = "scythe"
 	desc = "A sharp and curved blade on a long fibremetal handle, this tool makes it easy to reap what you sow."
+	force_divisor = 0.275 // 16 with hardness 60 (steel)
+	thrown_force_divisor = 0.25 // 5 with weight 20 (steel)
+	sharp = TRUE
+	edge = TRUE
+	throw_speed = TRUE
+	throw_range = 3
+	w_class = 4
+	slot_flags = SLOT_SHOULDER
+	attack_verb = list("chopped", "sliced", "cut", "reaped")
+	cooldownw = 5
+
+/obj/item/weapon/material/scythe/old
+	icon_state = "scythe"
+	name = "scythe"
+	desc = "A sharp and curved blade on a long wooden handle, this tool makes it easy to reap what you sow."
 	force_divisor = 0.275 // 16 with hardness 60 (steel)
 	thrown_force_divisor = 0.25 // 5 with weight 20 (steel)
 	sharp = TRUE
@@ -745,17 +791,21 @@
 	value = 18
 	cooldownw = 13
 
+
 /obj/item/weapon/material/pike/steel
 	default_material = "steel"
 	value = 23
+	health = 30
+	maxhealth = 30
 
 /obj/item/weapon/material/hatchet/battleaxe
 	name = "battle axe"
-	desc = "A very sharp axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	desc = "A very sharp axe blade upon a long wood handle. Great at chopping most things."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "battleaxe"
 	item_state = "battleaxe"
 	default_material = "iron"
+	material = "iron"
 	force_divisor = 0.6 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
 	w_class = 3
@@ -767,14 +817,35 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 11
+	chopping_speed = 1.4
+	health = 25
+	maxhealth = 25
+
+/obj/item/weapon/material/hatchet/battleaxe/steel
+	default_material = "steel"
+	material = "steel"
+	chopping_speed = 1.2
+	health = 50
+	maxhealth = 50
+	applies_material_colour = FALSE
+
+/obj/item/weapon/material/hatchet/battleaxe/bronze
+	default_material = "bronze"
+	material = "bronze"
+	chopping_speed = 1.75
+	health = 15
+	maxhealth = 15
+	applies_material_colour = TRUE
 
 /obj/item/weapon/material/hatchet/bone_battleaxe
 	name = "battle axe"
-	desc = "A very sharp bone axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	material = "bone"
+	desc = "A very sharp bone axe blade upon a long wood handle. Not great at chopping wood but excellent at chopping limbs."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "bone_battleaxe"
 	item_state = "bone_battleaxe"
 	default_material = "bone"
+	material = "bone"
 	force_divisor = 0.6 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
 	w_class = 3
@@ -786,6 +857,17 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 11
+	health = 15
+	maxhealth = 15
+	chopping_speed = 2
+
+/obj/item/weapon/material/hatchet/bone_battleaxe/stone
+	default_material = "stone"
+	material = "stone"
+	chopping_speed = 1.9
+	health = 25
+	maxhealth = 25
+	desc = "A very sharp stone axe blade upon a long wood handle. Not great at chopping wood but excellent at chopping limbs."
 
 /obj/item/weapon/material/scepter
 	name = "gold scepter"
@@ -839,7 +921,7 @@
 
 ////////////////////////////////////////SKYRIM//////////////////////////////////////
 /obj/item/weapon/material/tes13/mace
-	name = "steel mace"
+	name = "mace"
 	sharp = TRUE
 	edge = FALSE
 	desc = "A steel mace, with 5 large spikes on it."
@@ -858,12 +940,13 @@
 	cooldownw = 6
 
 /obj/item/weapon/material/hatchet/battleaxe/tes13
-	name = "steel war axe"
-	desc = "A very sharp axe blade upon a wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	name = "war axe"
+	desc = "A very sharp axe blade upon a steel handle. Not pratical for chopping wood, but pratical for chopping limbs."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "waraxe_tes13"
 	item_state = "battleaxe"
 	default_material = "steel"
+	material = "steel"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
 	w_class = 3
@@ -875,13 +958,19 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 7
+	health = 35
+	maxhealth = 35
+	chopping_speed = 2.5
 
 /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe
-	name = "steel battle axe"
-	desc = "A very sharp double axe blade upon a twohanded wood handle. Not pratical for felling trees but perhaps felling people."
+	name = "battle axe"
+	desc = "A very sharp double axe blade upon a twohanded steel handle. Not pratical for felling trees but perhaps felling people."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "battleaxe_tes13"
 	force_divisor = 0.8 // 30 with hardness 60 (steel)
 	slot_flags = SLOT_SHOULDER | SLOT_BACK
 	block_chance = 15
 	cooldownw = 7
+	health = 35
+	maxhealth = 35
+	chopping_speed = 2.3
