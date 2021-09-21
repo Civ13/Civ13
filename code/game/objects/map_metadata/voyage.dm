@@ -85,6 +85,27 @@
 /obj/map_metadata/voyage/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 100000 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/voyage/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_ww1 == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
+		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale))
+		. = FALSE
+	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
+	else
+		. = TRUE
+
 /obj/map_metadata/voyage/New() // since DM doesn't want to attribute random vars at the beggining...
 	..()
 	do_first_event = rand(600,960)

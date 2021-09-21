@@ -11,12 +11,15 @@
 /obj/structure/barricade/ship/get_material()
 	return material
 
+/obj/structure/barricade/ship/north
+	icon_state = "boat1_up"
 
 /obj/structure/barricade/ship/wall1
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_a"
+	opacity = FALSE
 /obj/structure/barricade/ship/wall2
 	name = "wall"
 	desc = "A wooden ship wall."
@@ -35,16 +38,19 @@
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b1"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b2
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b2"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b3
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b3"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b4
 	name = "wall"
 	desc = "A wooden ship wall."
@@ -55,61 +61,73 @@
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b5"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b6
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b6"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b7
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b7"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b8
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b8"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b9
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b9"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b10
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b10"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b11
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b11"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b12
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b12"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b13
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b13"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b14
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b14"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b15
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b15"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b16
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b16"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b17
 	name = "wall"
 	desc = "A wooden ship wall."
@@ -120,6 +138,7 @@
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b18"
+	opacity = TRUE
 /obj/structure/barricade/ship/blue/b19
 	name = "wall"
 	desc = "A wooden ship wall."
@@ -132,6 +151,7 @@
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_port0"
 	protection_chance = 40
+	opacity = FALSE
 
 /obj/structure/barricade/ship/blue/bport1
 	name = "holed wall"
@@ -139,6 +159,7 @@
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_port1"
 	protection_chance = 25
+	opacity = FALSE
 
 /obj/structure/barricade/ship/blue/bport3
 	name = "crenelated wall"
@@ -146,6 +167,8 @@
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_port3"
 	protection_chance = 20
+	opacity = FALSE
+	density = FALSE
 
 
 /obj/structure/barricade/ship/blue/bwest
@@ -153,30 +176,35 @@
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_west"
+	opacity = FALSE
 
 /obj/structure/barricade/ship/blue/bwest2
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_west2"
+	opacity = FALSE
 
 /obj/structure/barricade/ship/blue/beast
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_east"
+	opacity = FALSE
 
 /obj/structure/barricade/ship/blue/beast2
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_east2"
+	opacity = FALSE
 
 /obj/structure/barricade/ship/wood
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_a1"
+	opacity = TRUE
 
 
 /obj/structure/barricade/ship/wood/a1
@@ -252,6 +280,7 @@
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_port0"
 	protection_chance = 40
+	opacity = FALSE
 
 /obj/structure/barricade/ship/wood/portl1
 	name = "wall"
@@ -259,18 +288,21 @@
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_portl1"
 	protection_chance = 40
+	opacity = FALSE
 /obj/structure/barricade/ship/wood/portl2
 	name = "wall"
 	desc = "A thin wood ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_portl2"
 	protection_chance = 40
+	opacity = FALSE
 /obj/structure/barricade/ship/wood/portl3
 	name = "wall"
 	desc = "A thin wood ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_portl3"
 	protection_chance = 40
+	opacity = FALSE
 
 
 /obj/structure/barricade/ship/wood/port1
@@ -279,6 +311,7 @@
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_port1"
 	protection_chance = 35
+	opacity = FALSE
 
 /obj/structure/barricade/ship/wood/port2
 	name = "crenelated wall"
@@ -286,42 +319,72 @@
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_port2"
 	protection_chance = 25
+	density = FALSE
+	opacity = FALSE
 
 /obj/structure/barricade/ship/aport0
 	name = "closed cannon port"
 	desc = "A port used to fire cannons out of. This one is closed."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_port0"
+	opacity = TRUE
+	protection_chance = 60
+
+/obj/structure/barricade/ship/aport0/north
+	name = "closed cannon port"
+	desc = "A port used to fire cannons out of. This one is closed."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat1_port0_up"
+	opacity = TRUE
+	protection_chance = 60
 
 /obj/structure/barricade/ship/aport1
 	name = "open cannon port"
 	desc = "A port used to fire cannons out of. This one is open."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_port1"
+	opacity = FALSE
+	protection_chance = 30
+
+/obj/structure/barricade/ship/aport1/north
+	name = "open cannon port"
+	desc = "A port used to fire cannons out of. This one is open."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat1_port1_up"
+	opacity = FALSE
+	protection_chance = 30
 
 /obj/structure/barricade/ship/aport2
 	name = "open cannon port"
 	desc = "A port used to fire cannons out of. This one is open and has a cannon poking out."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_port2"
+	opacity = FALSE
+	protection_chance = 45
 
 /obj/structure/barricade/ship/cport0
 	name = "closed cannon port"
 	desc = "A port used to fire cannons out of. This one is closed."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat2_port0"
+	opacity = TRUE
+	protection_chance = 60
 
 /obj/structure/barricade/ship/cport1
 	name = "open cannon port"
 	desc = "A port used to fire cannons out of. This one is open."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat2_port1"
+	opacity = FALSE
+	protection_chance = 30
 
 /obj/structure/barricade/ship/cport2
 	name = "open cannon port"
 	desc = "A port used to fire cannons out of. This one is open and has a cannon poking out."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat2_port2"
+	opacity = FALSE
+	protection_chance = 45
 
 /obj/structure/barricade/ship/mast
 	name = "mast"

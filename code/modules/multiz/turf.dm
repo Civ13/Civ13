@@ -35,6 +35,9 @@
 			return
 
 	// See if something prevents us from falling.
+	for (var/obj/covers/repairedfloor/R in src)
+		if (istype(R, /obj/covers/repairedfloor))
+			return
 	var/soft = FALSE
 	for (var/atom/A in below)
 		if (A.density)

@@ -28,6 +28,15 @@
 
 // Floors
 
+/obj/covers/repairedfloor/ship
+	name = "ship floor"
+	desc = "a wooden ship floor."
+	icon_state = "wood_ship"
+	material = "Wood"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
