@@ -21,7 +21,7 @@
 	..()
 	spawn(15)
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_MISSIONARY_RIDGE)
+		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_VOYAGE && map.ID != MAP_MISSIONARY_RIDGE)
 			visible_message("The [src] sinks!")
 			qdel(src)
 			return
@@ -36,7 +36,31 @@
 	passable = TRUE
 	amount = 1
 	layer = 1.99
-	
+
+/obj/covers/repairedfloor/ship/south
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat_floor_south1"
+
+/obj/covers/repairedfloor/rope
+	name = "grappling hook rope"
+	desc = "a piece of rope attached to a grappling hook"
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "grapplehook_line"
+	flammable = FALSE
+	explosion_resistance = TRUE
+	var/origin = null
+	layer = 3.1
+
+/obj/covers/repairedfloor/rope/end
+	icon_state = "grapple_overlay"
+	layer = 3.15
+
+/obj/covers/repairedfloor/rope/proc/develop(var/obj/norigin)
+	if (!origin)
+		origin = norigin
+	dir = norigin.dir
+	update_icon()
+
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'

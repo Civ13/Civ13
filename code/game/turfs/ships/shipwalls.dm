@@ -5,6 +5,51 @@
 	icon_state = "boat1"
 	material_name = "wood"
 	protection_chance = 60
+	var/ispartial = FALSE
+
+//copied from sandbags
+/obj/structure/barricade/ship/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (!ispartial)
+		return ..()
+
+	if (istype(mover, /obj/effect/effect/smoke))
+		return TRUE
+
+	else if (!istype(mover, /obj/item))
+		if (get_dir(loc, target) & dir)
+			return FALSE
+		else
+			return TRUE
+	else
+		if (istype(mover, /obj/item/projectile))
+			var/obj/item/projectile/proj = mover
+			proj.throw_source = proj.starting
+
+			if (ishuman(proj.firer) && (proj.firer.lying || proj.firer.prone))
+				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
+				if (istype(mover, /obj/item/projectile))
+					var/obj/item/projectile/B = mover
+					return prob(100-protection_chance-(B.penetrating*4))
+				return FALSE
+		if (!mover.throw_source)
+			if (get_dir(loc, target) & dir)
+				return FALSE
+			else
+				return TRUE
+		else
+			switch (get_dir(mover.throw_source, get_turf(src)))
+				if (NORTH, NORTHEAST)
+					if (dir == EAST || dir == WEST || dir == NORTH)
+						return TRUE
+				if (SOUTH, SOUTHEAST)
+					if (dir == EAST || dir == WEST || dir == SOUTH)
+						return TRUE
+				if (EAST)
+					if (dir != WEST)
+						return TRUE
+				if (WEST)
+					if (dir != EAST)
+						return TRUE
 
 /obj/structure/barricade/ship/New(var/newloc, var/material_name)
 	return
@@ -13,6 +58,10 @@
 
 /obj/structure/barricade/ship/north
 	icon_state = "boat1_up"
+
+/obj/structure/barricade/ship/north/corners
+	icon_state = "boat1_up_corners"
+
 
 /obj/structure/barricade/ship/wall1
 	name = "wall"
@@ -152,6 +201,7 @@
 	icon_state = "boat_b_port0"
 	protection_chance = 40
 	opacity = FALSE
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/blue/bport1
 	name = "holed wall"
@@ -160,6 +210,7 @@
 	icon_state = "boat_b_port1"
 	protection_chance = 25
 	opacity = FALSE
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/blue/bport3
 	name = "crenelated wall"
@@ -169,7 +220,7 @@
 	protection_chance = 20
 	opacity = FALSE
 	density = FALSE
-
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/blue/bwest
 	name = "wall"
@@ -329,6 +380,7 @@
 	icon_state = "boat1_port0"
 	opacity = TRUE
 	protection_chance = 60
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/aport0/north
 	name = "closed cannon port"
@@ -337,6 +389,7 @@
 	icon_state = "boat1_port0_up"
 	opacity = TRUE
 	protection_chance = 60
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/aport1
 	name = "open cannon port"
@@ -345,6 +398,7 @@
 	icon_state = "boat1_port1"
 	opacity = FALSE
 	protection_chance = 30
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/aport1/north
 	name = "open cannon port"
@@ -353,6 +407,7 @@
 	icon_state = "boat1_port1_up"
 	opacity = FALSE
 	protection_chance = 30
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/aport2
 	name = "open cannon port"
@@ -361,6 +416,7 @@
 	icon_state = "boat1_port2"
 	opacity = FALSE
 	protection_chance = 45
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/cport0
 	name = "closed cannon port"
@@ -369,6 +425,7 @@
 	icon_state = "boat2_port0"
 	opacity = TRUE
 	protection_chance = 60
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/cport1
 	name = "open cannon port"
@@ -377,6 +434,7 @@
 	icon_state = "boat2_port1"
 	opacity = FALSE
 	protection_chance = 30
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/cport2
 	name = "open cannon port"
@@ -385,6 +443,7 @@
 	icon_state = "boat2_port2"
 	opacity = FALSE
 	protection_chance = 45
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/mast
 	name = "mast"

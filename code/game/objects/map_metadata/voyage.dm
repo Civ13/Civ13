@@ -91,6 +91,8 @@
 		. = FALSE
 	else if (J.is_army == TRUE)
 		. = FALSE
+	else if (J.is_prison == TRUE)
+		. = FALSE
 	else if (J.is_ww1 == TRUE)
 		. = FALSE
 	else if (J.is_coldwar == TRUE)

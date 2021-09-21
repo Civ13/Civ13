@@ -340,3 +340,63 @@
 				return
 			else
 				return
+
+
+/obj/structure/grapplehook
+	name = "grappling hook"
+	icon = 'icons/obj/objects.dmi'
+	desc = "A grappling hook attached to a long hemp rope."
+	icon_state = "grapplehook"
+	opacity = FALSE
+	density = FALSE
+	var/deployed = FALSE
+
+/obj/structure/grapplehook/attack_hand(mob/living/human/user)
+	if (!deployed)
+		var/turf/nT = get_step(loc,user.dir)
+		var/turf/nTT = get_step(nT,user.dir)
+		if (!istype(nTT, /turf/floor/beach/water))
+			user << "<span class='notice'>You cannot deploy in this direction!</span>"
+			return
+		user << "<span class='notice'>You start deploying the [src]...</span>"
+		if (do_after(user, 80, target = src))
+			dir = user.dir
+			deployed = TRUE
+			deploy()
+			update_icon()
+			user << "<span class='notice'>You deployed the [src].</span>"
+			return
+	else
+		user << "<span class='notice'>You start packing the [src]...</span>"
+		if (do_after(user, 80, target = src))
+			dir = user.dir
+			deployed = FALSE
+			undeploy()
+			update_icon()
+			user << "<span class='notice'>You packed the [src].</span>"
+			return
+
+/obj/structure/grapplehook/update_icon()
+	if (deployed)
+		icon_state = "grapplehook_deployed"
+	else
+		icon_state = "grapplehook"
+
+/obj/structure/grapplehook/proc/deploy()
+	var/turf/last_turf = loc
+	for(var/i = 1, i <= 10, i++)
+		var/turf/nT = get_step(last_turf,dir)
+		last_turf = nT
+		if (i>=2)
+			for (var/obj/structure/barricade/ship/Ship in nT)
+				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
+				endpart.develop(src)
+				return
+		var/obj/covers/repairedfloor/rope/part = new/obj/covers/repairedfloor/rope(nT)
+		part.develop(src)
+	return
+/obj/structure/grapplehook/proc/undeploy()
+	for(var/obj/covers/repairedfloor/rope/R in world)
+		if (R.origin == src)
+			qdel(R)
+	return

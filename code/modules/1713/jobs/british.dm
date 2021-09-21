@@ -925,7 +925,7 @@
 	is_officer = TRUE
 
 	is_ww2 = TRUE
-	is_prison
+	is_prison = TRUE
 
 
 	min_positions = 1
