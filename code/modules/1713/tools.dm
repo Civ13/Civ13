@@ -356,7 +356,7 @@
 		var/turf/nT = get_step(loc,user.dir)
 		var/turf/nTT = get_step(nT,user.dir)
 		if (!istype(nTT, /turf/floor/beach/water))
-			user << "<span class='notice'>You cannot deploy in this direction!</span>"
+			user << "<span class='warning'>You cannot deploy in this direction!</span>"
 			return
 		user << "<span class='notice'>You start deploying the [src]...</span>"
 		if (do_after(user, 80, target = src))
@@ -384,7 +384,7 @@
 
 /obj/structure/grapplehook/proc/deploy()
 	var/turf/last_turf = loc
-	for(var/i = 1, i <= 10, i++)
+	for(var/i = 1, i <= 11, i++)
 		var/turf/nT = get_step(last_turf,dir)
 		last_turf = nT
 		if (i>=2)
@@ -394,9 +394,15 @@
 				return
 		var/obj/covers/repairedfloor/rope/part = new/obj/covers/repairedfloor/rope(nT)
 		part.develop(src)
+	visible_message("<span class='warning'>The [src] failed to attach into anything!</span>")
+	src.undeploy()
+	deployed = FALSE
+	update_icon()
 	return
 /obj/structure/grapplehook/proc/undeploy()
 	for(var/obj/covers/repairedfloor/rope/R in world)
 		if (R.origin == src)
 			qdel(R)
+	deployed = FALSE
+	update_icon()
 	return
