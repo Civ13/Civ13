@@ -294,6 +294,16 @@
 	ambience = list("sound/ambience/ship1.ogg")
 	climate = "sea"
 
+/area/caribbean/sea/top	
+	name = "sea"
+	base_turf = /turf/floor/beach/water/deep/saltwater
+	icon_state = "purple2"
+
+/area/caribbean/sea/bottom
+	name = "sea"
+	base_turf = /turf/floor/beach/water/deep/saltwater
+	icon_state = "red4"
+
 /area/caribbean/sea/beach
 	name = "Beach"
 	base_turf = /turf/floor/beach/sand
@@ -1186,6 +1196,7 @@
 
 /area/caribbean/football/nopass
 	icon_state = "green1"
+	
 /////////////////////////////////////////////////////////////
 /////////////leben paratooper code///////////////////////////
 /*

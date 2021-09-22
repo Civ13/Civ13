@@ -336,6 +336,7 @@
 	icon_state = "boat_port0"
 	protection_chance = 40
 	opacity = FALSE
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/wood/portl1
 	name = "wall"
@@ -344,6 +345,8 @@
 	icon_state = "boat_portl1"
 	protection_chance = 40
 	opacity = FALSE
+	ispartial = TRUE
+
 /obj/structure/barricade/ship/wood/portl2
 	name = "wall"
 	desc = "A thin wood ship wall."
@@ -351,6 +354,8 @@
 	icon_state = "boat_portl2"
 	protection_chance = 40
 	opacity = FALSE
+	ispartial = TRUE
+
 /obj/structure/barricade/ship/wood/portl3
 	name = "wall"
 	desc = "A thin wood ship wall."
@@ -358,7 +363,7 @@
 	icon_state = "boat_portl3"
 	protection_chance = 40
 	opacity = FALSE
-
+	ispartial = TRUE
 
 /obj/structure/barricade/ship/wood/port1
 	name = "holed wall"

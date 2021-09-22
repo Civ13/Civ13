@@ -350,6 +350,7 @@
 	opacity = FALSE
 	density = FALSE
 	var/deployed = FALSE
+	var/owner = null
 
 /obj/structure/grapplehook/attack_hand(mob/living/human/user)
 	if (!deployed)

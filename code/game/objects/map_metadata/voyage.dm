@@ -40,6 +40,11 @@
 				if (AT.id == "one")
 					AT.Activated()
 					world << "Pirates are trying to board the ship!"
+					var/tdir = SOUTH
+					for(var/obj/structure/grapplehook/G in world)
+						if (G.owner == "PIRATES")
+							G.dir = tdir
+							G.deploy()
 					return TRUE
 	if ((world.time >= do_second_event) && !second_event_done)
 		world << "Pirates are approaching!"
@@ -49,6 +54,11 @@
 				if (AT.id == "two")
 					AT.Activated()
 					world << "Pirates are trying to board the ship!"
+					var/tdir = SOUTH
+					for(var/obj/structure/grapplehook/G in world)
+						if (G.owner == "PIRATES")
+							G.dir = tdir
+							G.deploy()
 					return TRUE
 	if ((world.time >= do_third_event) && !third_event_done)
 		world << "Pirates are approaching!"
