@@ -1071,6 +1071,12 @@ var/list/coefflist = list()
 	var/mob/living/human/H = src
 	if (H.client)
 		if (H.using_look())
+			// prevent scopes from bugging out opened storage objs in mob process//Copied from zoom.dm
+			for (var/obj/item/weapon/storage/S in H.contents)
+				S.close_all()
+			for (var/obj/item/clothing/under/U in H.contents)
+				for (var/obj/item/clothing/accessory/storage/S in U.accessories)
+					S.hold.close_all()
 			for (var/obj/O in H.client.screen)
 				if (O.invisibility)
 					continue
@@ -1112,7 +1118,11 @@ var/list/coefflist = list()
 /mob/living/human/proc/look_into_distance(mob/living/user, forced_look, var/bypass_can_look =  FALSE)//Largely copied from zoom.dm but made for zooming without weapons in hand
 	var/obj/item/weapon/attachment/scope/adjustable/W = null
 	var/obj/item/weapon/gun/G = null
-	if(istype(get_active_hand(), /obj/item/weapon/attachment/scope/adjustable))
+	var/obj/item/weapon/gun/projectile/automatic/stationary/S = null
+	if(user.using_MG)
+		S = user.using_MG
+		look_amount = S.zoom_amount
+	else if(istype(get_active_hand(), /obj/item/weapon/attachment/scope/adjustable))
 		W = get_active_hand()
 		look_amount = W.zoom_amt//May cause issues
 	else if(istype(get_active_hand(), /obj/item/weapon/gun))
@@ -1139,13 +1149,6 @@ var/list/coefflist = list()
 			looking = FALSE
 			return
 		else
-			// prevent scopes from bugging out opened storage objs in mob process//Copied from zoom.dm
-			for (var/obj/item/weapon/storage/S in user.contents)
-				S.close_all()
-			for (var/obj/item/clothing/under/U in user.contents)
-				for (var/obj/item/clothing/accessory/storage/S in U.accessories)
-					S.hold.close_all()
-			user.dizzycheck = TRUE
 			var/_x = 0
 			var/_y = 0
 			switch(user.dir)
@@ -1180,6 +1183,7 @@ var/list/coefflist = list()
 				user.client.pixel_y = world.icon_size*_y
 			user.visible_message("[user] looks into the distance.")
 			handle_ui_visibility()
+			user.dizzycheck = TRUE
 	else//Resets
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
