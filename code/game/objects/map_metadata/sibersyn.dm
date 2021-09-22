@@ -1,7 +1,7 @@
 
 /obj/map_metadata/sibersyn
 	ID = MAP_SIBERSYN
-	title = "Batlle of the Bridges."
+	title = "Battle of the Bridges"
 	lobby_icon_state = "ww1"
 	no_winner ="The battle ends in stalemate."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
