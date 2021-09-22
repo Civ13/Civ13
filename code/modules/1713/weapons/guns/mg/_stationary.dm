@@ -39,6 +39,8 @@
 
 	var/mob/last_user = null
 
+	var/zoom_amount = 10
+
 	gun_type = GUN_TYPE_MG
 
 	accuracy_increase_mod = 1.00
