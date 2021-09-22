@@ -157,7 +157,7 @@
 			spawn(GN.det_time)
 				GN.prime()
 	spawn(2)
-		if (world.time+firedelay>last_fire)
+		if (world.time>last_fire+firedelay)
 			last_fire = world.time
 			switch(rapid)
 				if(0) //singe-shot
