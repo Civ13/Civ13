@@ -441,7 +441,7 @@
 			var/obj/item/stack/S = O
 			if (eggsleft != FALSE && eggsleft < maxeggs)
 				eggsleft++
-			else if (simplehunger >= 1000)
+			else if (simplehunger >= 800)
 				user << "<span class = 'red'>\The [src] is not hungry.</span>"
 				return
 			if (mob_size >= MOB_MEDIUM)
@@ -455,7 +455,7 @@
 				qdel(S)
 		if (herbivore && istype(O, GRAIN))
 			var/obj/item/weapon/reagent_containers/food/snacks/grown/G = O
-			if (simplehunger >= 1000)
+			if (simplehunger >= 800)
 				user << "<span class = 'red'>\The [src] is not hungry.</span>"
 				return
 			if (mob_size >= MOB_MEDIUM)
