@@ -297,7 +297,7 @@
 
 /obj/item/weapon/material/hatchet
 	name = "hatchet"
-	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."
+	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things. This one is intended for chopping wood."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "hatchet"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
@@ -397,8 +397,8 @@
 	icon_state = "bonehatchet"
 	item_state = "bonehatchet"
 	chopping_speed = 4
-	health = 10
-	maxhealth = 10
+	health = 7.5
+	maxhealth = 7.5
 
 /obj/item/weapon/material/hatchet/tribal/flint
 	material = "flint"
