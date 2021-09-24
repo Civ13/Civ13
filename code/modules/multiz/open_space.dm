@@ -25,21 +25,18 @@ var/process/open_space/OS_controller = null
 
 /turf/floor/broken_floor/update_icon()
 	overlays.Cut()
-	var/turf/below = GetBelow(src)
-	if (!isturf(below))
-		below = get_turf(below)
-	if (below)
-		icon = below.icon
-		icon_state = below.icon_state
-		dir = below.dir
-		color = below.color//rgb(127,127,127)
-	//	overlays += below.overlays // for some reason this turns an open
-	// space into plating.
+	if (!isturf(floorbelowz))
+		floorbelowz = GetBelow(src)
+	if (floorbelowz)
+		icon = floorbelowz.icon
+		icon_state = floorbelowz.icon_state
+		dir = floorbelowz.dir
+		color = floorbelowz.color
 
-		if (!istype(below,/turf/floor/broken_floor))
+		if (!istype(floorbelowz,/turf/floor/broken_floor))
 			// get objects
 			var/image/o_img = list()
-			for (var/obj/o in below)
+			for (var/obj/o in floorbelowz)
 				// ingore objects that have any form of invisibility
 				if (o.invisibility) continue
 				var/image/temp2 = image(o, dir=o.dir, layer = o.layer)
@@ -47,6 +44,13 @@ var/process/open_space/OS_controller = null
 				temp2.color = o.color//rgb(127,127,127)
 				temp2.overlays += o.overlays
 				o_img += temp2
+			for (var/mob/m in floorbelowz)
+				if (m.invisibility || istype(m, /mob/observer/ghost)) continue
+				var/image/temp3 = image(m, dir=m.dir, layer = m.layer)
+				temp3.plane = plane
+				temp3.color = m.color//rgb(127,127,127)
+				temp3.overlays += m.overlays
+				o_img += temp3
 			overlays += o_img
 
 			var/image/over_OS_darkness = image('icons/turf/floors.dmi', "black_open")
@@ -66,7 +70,7 @@ var/process/open_space/OS_controller = null
 	icon = 'icons/turf/areas.dmi'
 	icon_state = "black"
 	density = FALSE
-
+	var/turf/floorbelowz
 /turf/floor/broken_floor/sky
 	name = "sky"
 	density = FALSE
