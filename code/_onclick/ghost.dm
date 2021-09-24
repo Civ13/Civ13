@@ -28,7 +28,7 @@
 		stop_following()
 		forceMove(get_turf(A))
 
-		if (istype(A, /turf/open))
+		if (istype(A, /turf/floor/broken_floor))
 			movedown()
 
 /mob/observer/ghost/ClickOn(var/atom/A, var/params)

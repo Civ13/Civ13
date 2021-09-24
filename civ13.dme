@@ -142,7 +142,6 @@
 #include "code\game\objects\effects\explosion_particles.dm"
 #include "code\game\objects\effects\gibs.dm"
 #include "code\game\objects\effects\list_container.dm"
-#include "code\game\objects\effects\open_floor.dm"
 #include "code\game\objects\effects\overlays.dm"
 #include "code\game\objects\effects\spawner.dm"
 #include "code\game\objects\effects\step_triggers.dm"
@@ -856,7 +855,6 @@
 #include "code\modules\multiz\movement.dm"
 #include "code\modules\multiz\open_space.dm"
 #include "code\modules\multiz\structures.dm"
-#include "code\modules\multiz\turf.dm"
 #include "code\modules\nano\_JSON.dm"
 #include "code\modules\nano\helpers.dm"
 #include "code\modules\nano\JSON Reader.dm"
@@ -1003,5 +1001,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\voyage.dmm"
+#include "maps\1713\naval.dmm"
 // END_INCLUDE

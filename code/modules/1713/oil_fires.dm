@@ -220,6 +220,9 @@
 	for (var/turf/floor/wood/WF in orange(1, src))
 		if (prob(21))
 			new/obj/effect/fire(WF)
+	for (var/obj/covers/repairedfloor/RF in orange(1, src))
+		if (prob(12))
+			new/obj/effect/fire(RF)
 
 //remove duplicates
 	for (var/obj/effect/fire/OTH in src.loc)

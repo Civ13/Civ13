@@ -75,9 +75,11 @@
 			return
 		if (2.0)
 			health -= initial(health)/2
+			try_destroy()
 			return
 		if (3.0)
 			health -= initial(health)/10
+			try_destroy()
 			return
 		else
 	return
@@ -147,7 +149,7 @@
 		return
 
 /obj/covers/fire_act(temperature)
-	if (prob(35 * (temperature/500)) && wood == TRUE)
+	if (prob(20) && flammable == TRUE)
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
 		qdel(src)
 
@@ -274,9 +276,11 @@
 
 /obj/covers/proc/start_fire_dmg(var/obj/effect/fire/SF)
 	spawn(80)
+		if (!SF)
+			return
 		if (health > 0)
 			health -= 10
-			start_fire_dmg()
+			start_fire_dmg(SF)
 			return
 		else
 			try_destroy()
