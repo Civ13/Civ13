@@ -37,6 +37,14 @@
 	amount = 1
 	layer = 1.99
 
+/obj/covers/repairedfloor/ship/try_destroy()
+	if (health <= 50)
+		name = "weak floor"
+		desc = "a weakened ship floor."
+		maxhealth = 50
+		icon_state = "wood_ship_repaired"
+	..()
+
 /obj/covers/repairedfloor/ship/south
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_floor_south1"

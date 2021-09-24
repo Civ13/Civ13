@@ -240,7 +240,7 @@
 "eF" = (/obj/structure/table/wood,/obj/item/weapon/material/hatchet/battleaxe/tes13,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
 "eG" = (/obj/structure/table/wood,/obj/item/weapon/material/sword/tes13/twohanded,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
 "eH" = (/obj/structure/table/wood,/obj/item/weapon/shield/tes13,/obj/item/weapon/shield/tes13,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
-"eI" = (/obj/covers/repairedfloor,/turf/open,/area/caribbean/roofed)
+"eI" = (/obj/covers/repairedfloor,/turf/floor/broken_floor,/area/caribbean/roofed)
 "eJ" = (/obj/structure/brazier,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
 "eK" = (/obj/covers/roads/cobble,/obj/covers/cobblestone,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "eL" = (/obj/structure/table/wood,/obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
