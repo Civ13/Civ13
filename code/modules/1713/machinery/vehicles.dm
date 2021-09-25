@@ -221,7 +221,7 @@
 	var/obj/structure/vehicle/origin = null
 
 /obj/item/vehicleparts/wheel/rope
-	name = "Rope leash handles"
+	name = "Reins"
 	desc = "Used to control animal propulsion vehicles."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "leash"
