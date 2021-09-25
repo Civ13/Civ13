@@ -13,7 +13,7 @@
 
 	config.tts_on = !config.tts_on
 	message_admins("[key_name(src)] changed turned the TTS setting [config.tts_on ? "on" : "off"].")
-	
+
 /client/proc/set_teams()
 	set category = "Special"
 	set name = "Set Teams"
@@ -536,7 +536,7 @@ var/filipino_forceEnabled = FALSE
 		mortality_coefficient_chinese = dead_chinese.len/total_chinese
 
 	if (dead_filipino.len > 0)
-		mortality_coefficient_chinese = dead_filipino.len/total_filipino
+		mortality_coefficient_filipino = dead_filipino.len/total_filipino
 
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
