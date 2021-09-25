@@ -159,7 +159,7 @@ obj/structure/closet/crate/loottreasurechest/New()
 		var/obj/item/stack/S = stack
 		S.amount = rand(1+rarity,(rarity+1)*2)
 
-obj/structure/closet/crate/chest/treasury
+/obj/structure/closet/crate/chest/treasury
 	name = "colony treasury"
 	desc = "Where the colony treasury is stored."
 	icon_state = "treasure_chest"
@@ -168,7 +168,7 @@ obj/structure/closet/crate/chest/treasury
 	anchored = TRUE
 	var/faction = "civilian"
 
-obj/structure/closet/crate/empty
+/obj/structure/closet/crate/empty
 	name = "wood crate"
 	desc = "A wooden crate."
 	icon_state = "wood_crate"

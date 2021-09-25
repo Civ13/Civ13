@@ -126,3 +126,24 @@
 	do_fourth_event = do_third_event  + rand(5000,8000)
 	do_fifth_event = do_fourth_event  + rand(4000,7000)
 
+///////////////Specific objects////////////////////
+/obj/structure/voyage_shipwheel
+	name = "ship wheel"
+	desc = "Used to steer the ship."
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
+	icon_state = "ship_wheel"
+	layer = 2.99
+	var/mob/living/user = null
+
+/obj/structure/voyage_tablemap
+	name = "map"
+	desc = "A map of the regeion. Used by the captain to plan the next moves."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "table_map"
+	layer = 3.2
+	var/mob/living/user = null
+
+/obj/structure/closet/crate/chest/treasury/ship
+	name = "ship's treasury"
+	desc = "Where the ship's treasury is stored."
+	faction = "ship"
