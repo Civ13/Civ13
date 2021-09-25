@@ -113,7 +113,7 @@
 	usespeed = 0.4
 	default_material = "wood"
 	material = "wood"
-	icon_state = "spadew"
+	/*icon_state = "spadew"*/
 
 /obj/item/weapon/material/shovel/spade/foldable
 	name = "foldable shovel"
