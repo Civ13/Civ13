@@ -30,6 +30,8 @@
 	var/itemtype7 = null
 	var/itemtype8 = null
 	var/itemtype9 = null
+	var/itemtype10 = null
+	var/itemtype11 = null
 	var/actiontext = "repair" //Plural, flavortext
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -48,7 +50,7 @@
 	noise = 'sound/effects/woodfile.ogg'
 
 /obj/structure/repair/attackby(obj/item/M as obj, mob/user as mob)
-	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9))
+	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9) || istype(M, itemtype10) || istype(M, itemtype11))
 		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
 		icon_state = activesprite
 		playsound(src,noise,40,1)
@@ -84,7 +86,9 @@
 	itemtype6 = /obj/item/weapon/material/machete
 	itemtype7 = /obj/item/weapon/material/machete1
 	itemtype8 = /obj/item/weapon/material/twohanded
-	itemtype9 =/obj/item/weapon/material/thrown
+	itemtype9 = /obj/item/weapon/material/thrown
+	itemtype10 = /obj/item/weapon/material/shovel
+	itemtype11 = /obj/item/weapon/material/pickaxe
 	repairamount = 8 //0 is full repair, any other number adds until it hits max.
 	damageamount = 2 //How much max durability to take away.
 	delay = 100
