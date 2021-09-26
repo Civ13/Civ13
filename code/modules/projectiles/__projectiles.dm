@@ -29,7 +29,7 @@
 	damage = DAMAGE_MEDIUM-10
 	penetrating = 1
 	armor_penetration = 10
-	icon_state = "flint"
+	icon_state = "arrow_flint"
 	embed = FALSE
 	sharp = FALSE
 
