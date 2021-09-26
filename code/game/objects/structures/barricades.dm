@@ -153,7 +153,10 @@
 		var/obj/item/projectile/P = mover
 		return prob(100-protection_chance-(P.penetrating*4))
 	else
-		return FALSE
+		if (density)
+			return FALSE
+		else
+			return TRUE
 
 /obj/structure/barricade/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage/3

@@ -40,6 +40,11 @@
 				if (AT.id == "one")
 					AT.Activated()
 					world << "Pirates are trying to board the ship!"
+					var/tdir = SOUTH
+					for(var/obj/structure/grapplehook/G in world)
+						if (G.owner == "PIRATES")
+							G.dir = tdir
+							G.deploy()
 					return TRUE
 	if ((world.time >= do_second_event) && !second_event_done)
 		world << "Pirates are approaching!"
@@ -49,6 +54,11 @@
 				if (AT.id == "two")
 					AT.Activated()
 					world << "Pirates are trying to board the ship!"
+					var/tdir = SOUTH
+					for(var/obj/structure/grapplehook/G in world)
+						if (G.owner == "PIRATES")
+							G.dir = tdir
+							G.deploy()
 					return TRUE
 	if ((world.time >= do_third_event) && !third_event_done)
 		world << "Pirates are approaching!"
@@ -85,6 +95,29 @@
 /obj/map_metadata/voyage/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 100000 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/voyage/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_prison == TRUE)
+		. = FALSE
+	else if (J.is_ww1 == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
+		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale))
+		. = FALSE
+	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
+	else
+		. = TRUE
+
 /obj/map_metadata/voyage/New() // since DM doesn't want to attribute random vars at the beggining...
 	..()
 	do_first_event = rand(600,960)
@@ -93,3 +126,24 @@
 	do_fourth_event = do_third_event  + rand(5000,8000)
 	do_fifth_event = do_fourth_event  + rand(4000,7000)
 
+///////////////Specific objects////////////////////
+/obj/structure/voyage_shipwheel
+	name = "ship wheel"
+	desc = "Used to steer the ship."
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
+	icon_state = "ship_wheel"
+	layer = 2.99
+	var/mob/living/user = null
+
+/obj/structure/voyage_tablemap
+	name = "map"
+	desc = "A map of the regeion. Used by the captain to plan the next moves."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "table_map"
+	layer = 3.2
+	var/mob/living/user = null
+
+/obj/structure/closet/crate/chest/treasury/ship
+	name = "ship's treasury"
+	desc = "Where the ship's treasury is stored."
+	faction = "ship"

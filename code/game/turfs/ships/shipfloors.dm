@@ -12,6 +12,9 @@
 	name = "floor"
 	icon_state = "boat_floor_south"
 
+/turf/floor/ship/wood_ship/south1
+	name = "ship floor"
+	icon_state = "boat_floor_south1"
 /turf/floor/ship/wood_ship/east
 	name = "floor"
 	icon_state = "boat_floor_east"

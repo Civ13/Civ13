@@ -313,7 +313,7 @@ var/global/nextsave = 0
 			if (minsleft <= 2 && hr)
 				world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
 			if (nextsave <= world.realtime)
-				nextsave = world.realtime + 72000
+				nextsave = world.realtime + 216000
 				spawn(0)
 					ticker.savemap()
 
