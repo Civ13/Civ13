@@ -1,7 +1,7 @@
 /*****************************Shovel********************************/
 /obj/item/weapon/plough
 	name = "plough"
-	desc = "A simple wood plough. Use it on dirt to create farming areas."
+	desc = "A simple wood plough. Use it on dirt to plough farming areas."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "plough"
 	flags = CONDUCT
@@ -15,7 +15,7 @@
 	edge = FALSE
 	slot_flags = SLOT_BELT
 	flammable = TRUE
-	var/usespeed = 1
+	var/usespeed = 1.5
 
 /obj/item/weapon/plough/attack_self(var/mob/living/L)
 	var/turf/T = get_turf(L)
@@ -24,33 +24,13 @@
 
 /obj/item/weapon/plough/iron
 	name = "iron plough"
-	desc = "A sturdy iron plough, use it on dirt to plough the land."
+	desc = "A sturdy iron plough. Use it on dirt to plough the land."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "iplough"
 	item_state = "iplough"
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = TRUE
-	usespeed = 1.3
-
-/obj/item/weapon/material/shovel
-	name = "shovel"
-	desc = "A large tool for digging and moving dirt."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "shovel"
-	flags = CONDUCT
-	force = 8.0
-	throwforce = 4.0
-	item_state = "shovel"
-	w_class = 3.0
-
-	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
-	sharp = FALSE
-	edge = TRUE
-	slot_flags = SLOT_BACK|SLOT_BELT
-	var/usespeed = 1.2
-	default_material = "iron"
-	force_divisor = 0.25
-	thrown_force_divisor = 0.15
+	usespeed = 2.1
 
 /obj/item/weapon/type89_mortar
 	name = "Type 89 Mortar"
@@ -64,6 +44,7 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
+
 /obj/item/weapon/type89_mortar/attack_self(var/mob/user as mob)
 	var/target = get_step(user, user.dir)
 	if (target)
@@ -74,18 +55,118 @@
 			qdel(src)
 			var/atom/A = new/obj/structure/cannon/mortar/type89(get_turf(user))
 			A.dir = user.dir
+
+/obj/item/weapon/material/shovel
+	name = "shovel"
+	desc = "A long tool for digging and moving dirt."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "shovel"
+	flags = CONDUCT
+	force = 8.0
+	throwforce = 4.0
+	item_state = "shovel"
+	w_class = 3.0
+	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	slot_flags = SLOT_BACK|SLOT_BELT
+	var/usespeed = 1.5
+	default_material = "iron"
+	force_divisor = 0.25
+	thrown_force_divisor = 0.15
+	health = 25
+	maxhealth = 25
+
+/obj/item/weapon/material/shovel/steel
+	material = "steel"
+	usespeed = 2
+	default_material = "steel"
+	health = 50
+	maxhealth = 50
+
 /obj/item/weapon/material/shovel/bone
-	name = "bone shovel"
 	icon_state = "shovel_bone"
-	usespeed = 1
+	usespeed = 0.6
 	default_material = "bone"
+	health = 7.5
+	maxhealth = 7.5
 
 /obj/item/weapon/material/shovel/trench
-	name = "Entrenching Tool"
+	name = "entrenching tool"
 	desc = "A shovel used specifically for digging trenches."
 	icon_state = "german_shovel2"
 	var/dig_speed = 7
 	usespeed = 0.8
+
+/obj/item/weapon/material/shovel/spade
+	name = "spade"
+	desc = "A small tool for digging and moving dirt."
+	icon_state = "spade"
+	item_state = "spade"
+	force = 15.0
+	throwforce = 20.0
+	w_class = 2.0
+	weight = 1.18
+	usespeed = 0.8
+
+/obj/item/weapon/material/shovel/spade/wood
+	usespeed = 0.4
+	default_material = "wood"
+	material = "wood"
+	icon_state = "spadem"
+
+/obj/item/weapon/material/shovel/spade/foldable
+	name = "foldable shovel"
+	icon_state = "german_shovel2"
+	item_state = "lopata"
+	usespeed = 0.9
+
+/obj/item/weapon/material/shovel/spade/small
+	name = "small shovel"
+	icon_state = "lopata"
+	item_state = "lopata"
+	usespeed = 0.9
+
+/obj/item/weapon/material/pickaxe
+	name = "pickaxe"
+	desc = "Miner's favorite."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "pickaxe"
+	flags = CONDUCT
+	w_class = 3.0
+	item_state = "pickaxe"
+	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	slot_flags = SLOT_BACK|SLOT_BELT
+	default_material = "iron"
+	var/usespeed = 2
+	force_divisor = 0.35
+	thrown_force_divisor = 0.25
+	health = 25
+	maxhealth = 25
+
+/obj/item/weapon/material/pickaxe/steel
+	material = "steel"
+	usespeed = 3
+	default_material = "steel"
+	health = 50
+	maxhealth = 50
+
+/obj/item/weapon/material/pickaxe/bone
+	icon_state = "pickaxe_bone"
+	usespeed = 1
+	default_material = "bone"
+	health = 7.50
+	maxhealth = 7.50
+
+
+/obj/item/weapon/material/pickaxe/stone
+	usespeed = 1.5
+	icon_state = "spickaxe"
+	default_material = "stone"
+	health = 15
+	maxhealth = 15
 
 /obj/item/weapon/material/pickaxe/jackhammer
 	name = "jackhammer"
@@ -101,7 +182,9 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK
-	usespeed = 1.4
+	usespeed = 5
+	health = 350
+	maxhealth = 350
 
 //Needs two hands to use.
 /obj/item/weapon/material/pickaxe/jackhammer/proc/special_check(mob/user)
@@ -109,58 +192,6 @@
 		user << "<span class='warning'>You need both hands to use the [src]!</span>"
 		return FALSE
 	..()
-
-/obj/item/weapon/material/pickaxe
-	name = "pickaxe"
-	desc = "Miner's favorite."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "pickaxe"
-	flags = CONDUCT
-	w_class = 3.0
-	item_state = "pickaxe"
-	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
-	sharp = FALSE
-	edge = TRUE
-	slot_flags = SLOT_BACK|SLOT_BELT
-	default_material = "iron"
-	var/usespeed = 1.2
-	force_divisor = 0.35
-	thrown_force_divisor = 0.25
-
-/obj/item/weapon/material/pickaxe/bone
-	name = "bone pickaxe"
-	icon_state = "pickaxe_bone"
-	usespeed = 1
-	default_material = "bone"
-
-/obj/item/weapon/material/pickaxe/stone
-	name = "stone pickaxe"
-	usespeed = 1.1
-	icon_state = "s_pickaxe"
-	default_material = "stone"
-
-/obj/item/weapon/material/shovel/spade
-	name = "spade"
-	desc = "A small tool for digging and moving dirt."
-	icon_state = "spade"
-	item_state = "spade"
-	force = 15.0
-	throwforce = 20.0
-	w_class = 2.0
-	weight = 1.18
-	usespeed = 0.8
-
-/obj/item/weapon/material/shovel/spade/foldable
-	name = "foldable shovel"
-	icon_state = "german_shovel2"
-	item_state = "lopata"
-	usespeed = 0.7
-
-/obj/item/weapon/material/shovel/spade/small
-	name = "small shovel"
-	icon_state = "lopata"
-	item_state = "lopata"
-	usespeed = 0.7
 
 /obj/item/weapon/wirecutters/boltcutters
 	name = "boltcutters"

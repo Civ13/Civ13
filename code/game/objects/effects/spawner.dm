@@ -595,7 +595,7 @@
 	name = "cattle cow spawner"
 	max_number = 2
 	max_range = 8
-	create_path = /mob/living/simple_animal/cattle
+	create_path = /mob/living/simple_animal/cattle/cow
 	timer = 5000
 
 /obj/effect/spawner/mobspawner/cattle/bull
