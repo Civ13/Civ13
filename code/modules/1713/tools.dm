@@ -113,7 +113,7 @@
 	usespeed = 0.4
 	default_material = "wood"
 	material = "wood"
-	/*icon_state = "spadew"*/
+	icon_state = "spadem"
 
 /obj/item/weapon/material/shovel/spade/foldable
 	name = "foldable shovel"
@@ -163,7 +163,7 @@
 
 /obj/item/weapon/material/pickaxe/stone
 	usespeed = 1.5
-	icon_state = "s_pickaxe"
+	icon_state = "spickaxe"
 	default_material = "stone"
 	health = 15
 	maxhealth = 15
