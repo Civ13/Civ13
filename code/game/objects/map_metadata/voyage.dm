@@ -143,6 +143,14 @@
 	layer = 3.2
 	var/mob/living/user = null
 
+/obj/structure/voyage_sextant
+	name = "sextant"
+	desc = "Used to determine the current latitude and longitude using the sun and stars."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "sextant_tool"
+	layer = 3.2
+	var/mob/living/user = null
+
 /obj/structure/closet/crate/chest/treasury/ship
 	name = "ship's treasury"
 	desc = "Where the ship's treasury is stored."

@@ -37,6 +37,12 @@
 	amount = 1
 	layer = 1.99
 
+/obj/covers/repairedfloor/ship/two
+	icon_state = "tatami1"
+
+/obj/covers/repairedfloor/ship/three
+	icon_state = "wooden_floor_s4"
+
 /obj/covers/repairedfloor/ship/try_destroy()
 	if (health <= 50)
 		name = "weak floor"

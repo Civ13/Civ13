@@ -22,8 +22,18 @@
 	var/applies_material_colour = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
+
 /obj/structure/bed/wood
 	material = "wood"
+
+/obj/structure/bed/hammock
+	name = "hammock"
+	desc = "a rope bed, hanging from the ceiling."
+	applies_material_colour = FALSE
+	material = "rope"
+	icon_state = "hammockf"
+/obj/structure/bed/hammock/update_icon()
+	return
 
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
