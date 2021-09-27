@@ -6,7 +6,7 @@
 	material_name = "wood"
 	protection_chance = 60
 	var/ispartial = FALSE
-
+	opacity = TRUE
 //copied from sandbags
 /obj/structure/barricade/ship/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 
@@ -460,3 +460,7 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "wood_mast"
 	protection_chance = 60
+
+/obj/structure/barricade/ship/mast/large
+	icon = 'icons/turf/64x64.dmi'
+	icon_state = "large_mast"

@@ -12,7 +12,7 @@
 		BRITISH)
 
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british/ship/lower,
+		list(BRITISH) = /area/caribbean/no_mans_land,
 		)
 	age = "1713"
 	ordinal_age = 3
@@ -21,79 +21,48 @@
 	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"
 	is_singlefaction = TRUE
 	is_RP = TRUE
-	var/first_event_done = FALSE
-	var/second_event_done = FALSE
-	var/third_event_done = FALSE
-	var/fourth_event_done = FALSE
-	var/fifth_event_done = FALSE
-	var/do_first_event = 1000
-	var/do_second_event = 1000
-	var/do_third_event = 1000
-	var/do_fourth_event = 1000
-	var/do_fifth_event = 1000
-/obj/map_metadata/voyage/check_events()
-	if ((world.time >= do_first_event) && !first_event_done)
-		world << "Pirates are approaching!"
-		first_event_done = TRUE
-		spawn(200)
-			for (var/obj/effect/area_teleporter/AT)
-				if (AT.id == "one")
-					AT.Activated()
-					world << "Pirates are trying to board the ship!"
-					var/tdir = SOUTH
-					for(var/obj/structure/grapplehook/G in world)
-						if (G.owner == "PIRATES")
-							G.dir = tdir
-							G.deploy()
-					return TRUE
-	if ((world.time >= do_second_event) && !second_event_done)
-		world << "Pirates are approaching!"
-		second_event_done = TRUE
-		spawn(200)
-			for (var/obj/effect/area_teleporter/AT)
-				if (AT.id == "two")
-					AT.Activated()
-					world << "Pirates are trying to board the ship!"
-					var/tdir = SOUTH
-					for(var/obj/structure/grapplehook/G in world)
-						if (G.owner == "PIRATES")
-							G.dir = tdir
-							G.deploy()
-					return TRUE
-	if ((world.time >= do_third_event) && !third_event_done)
-		world << "Pirates are approaching!"
-		third_event_done = TRUE
-		spawn(200)
-			for (var/obj/effect/area_teleporter/AT)
-				if (AT.id == "three")
-					AT.Activated()
-					world << "Pirates are trying to board the ship!"
-					return TRUE
-	if ((world.time >= do_fourth_event) && !fourth_event_done)
-		world << "Pirates are approaching!"
-		fourth_event_done = TRUE
-		spawn(200)
-			for (var/obj/effect/area_teleporter/AT)
-				if (AT.id == "fourth")
-					AT.Activated()
-					world << "Pirates are trying to board the ship!"
-					return TRUE
-	if ((world.time >= do_fifth_event) && !fifth_event_done)
-		world << "Pirates are approaching!"
-		fifth_event_done = TRUE
-		spawn(200)
-			for (var/obj/effect/area_teleporter/AT)
-				if (AT.id == "fifth")
-					AT.Activated()
-					world << "Pirates are trying to board the ship!"
-					return TRUE
-	else return FALSE
+
+	var/longitude = 71 //71 to 77 W
+	var/latitude = 21 //21 to 27 N
+	var/list/mapgen = list()
+	var/list/islands = list()
+	var/navmoving = FALSE //if the ship is moving
+	var/navdirection = "North"
+	var/inzone = FALSE //if the ship is currently in an event zone
+
+/obj/map_metadata/voyage/proc/nav()
+	if (navmoving)
+		if (!inzone)
+			switch(navdirection)
+				if ("North")
+					if(latitude < 27)
+						latitude++
+					else
+						navmoving = FALSE
+				if ("South")
+					if(latitude > 21)
+						latitude--
+					else
+						navmoving = FALSE
+				if ("East")
+					if(longitude < 77)
+						longitude++
+					else
+						navmoving = FALSE
+				if ("West")
+					if(longitude > 71)
+						longitude--
+					else
+						navmoving = FALSE
+
+	spawn(1200)
+		nav()
 
 /obj/map_metadata/voyage/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 100000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/voyage/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 100000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/voyage/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -118,13 +87,16 @@
 	else
 		. = TRUE
 
-/obj/map_metadata/voyage/New() // since DM doesn't want to attribute random vars at the beggining...
+/obj/map_metadata/voyage/New()
 	..()
-	do_first_event = rand(600,960)
-	do_second_event = do_first_event  + rand(6000,9600)
-	do_third_event = do_second_event  + rand(6000,9600)
-	do_fourth_event = do_third_event  + rand(5000,8000)
-	do_fifth_event = do_fourth_event  + rand(4000,7000)
+	for(var/lon = 70, lon <= 77, lon++)
+		for(var/lat = 21, lat <= 27, lat++)
+			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
+			if (prob(25))
+				mapgen["[lat],[lon]"][3] = "island"
+				islands += list(lat, lon)
+
+
 
 ///////////////Specific objects////////////////////
 /obj/structure/voyage_shipwheel
@@ -134,6 +106,7 @@
 	icon_state = "ship_wheel"
 	layer = 2.99
 	var/mob/living/user = null
+	density = TRUE
 
 /obj/structure/voyage_tablemap
 	name = "map"
@@ -149,9 +122,35 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "sextant_tool"
 	layer = 3.2
-	var/mob/living/user = null
+
+	attack_hand(mob/living/human/H)
+		var/obj/map_metadata/voyage/nmap = map
+		if (nmap)
+			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W"
+
+/obj/structure/voyage_ropeladder
+	name = "rope ladder"
+	desc = "A strong rope ladder leading up the mast."
+	icon = 'icons/turf/64x64.dmi'
+	icon_state = "ropeladder"
+	layer = 5
+	density = FALSE
+
+/obj/structure/voyage_ropeladder/thin
+	icon_state = "ropeladder_thin"
 
 /obj/structure/closet/crate/chest/treasury/ship
 	name = "ship's treasury"
 	desc = "Where the ship's treasury is stored."
 	faction = "ship"
+
+/obj/structure/voyage_grid
+	name = "loading gate"
+	desc = "A large gridded gate, used to load the ship."
+	icon = 'icons/turf/64x64.dmi'
+	icon_state = "grid"
+	layer = 2.99
+	density = FALSE
+
+/obj/structure/voyage_grid/partial
+	icon_state = "grid_partial"
