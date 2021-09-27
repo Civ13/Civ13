@@ -9,7 +9,7 @@
 	var/volume = 30
 	secondary_action = TRUE
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;volume"
-	
+
 /obj/item/weapon/reagent_containers/verb/smell() //set amount_per_transfer_from_this
 	set name = "Smell"
 	set category = null
@@ -252,8 +252,12 @@
 
 	// Ensure we don't splash beakers and similar containers.
 	if (!target.is_open_container() && istype(target, /obj/item/weapon/reagent_containers))
-		user << "<span class='notice'>\The [target] is closed.</span>"
-		return TRUE
+		if (istype(target, /obj/item/weapon/reagent_containers/food) && !(istype(target, /obj/item/weapon/reagent_containers/food/drinks) || istype(target, /obj/item/weapon/reagent_containers/food/condiment)))
+			user << "<span class='notice'>\The [target] is not a container. What were you thinking?</span>"
+			return TRUE
+		else
+			user << "<span class='notice'>\The [target] is closed.</span>"
+			return TRUE
 	// Otherwise don't care about splashing.
 	else if (!target.is_open_container())
 		return FALSE
