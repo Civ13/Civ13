@@ -6,7 +6,7 @@
 	material_name = "wood"
 	protection_chance = 60
 	var/ispartial = FALSE
-
+	opacity = TRUE
 //copied from sandbags
 /obj/structure/barricade/ship/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 
@@ -388,18 +388,65 @@
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_port0"
 	opacity = TRUE
-	protection_chance = 60
-	ispartial = TRUE
+	protection_chance = 100
+	ispartial = FALSE
+	var/open = FALSE
+	density = TRUE
+	attack_hand(mob/living/human/H)
+		..()
+		if (open)
+			if (do_after(H, 35, src))
+				H << "You close the port."
+				open = FALSE
+				opacity = TRUE
+				protection_chance = 100
+				ispartial = FALSE
+				update_icon()
 
+		else
+			if (do_after(H, 35, src))
+				H << "You open the port."
+				open = TRUE
+				opacity = FALSE
+				protection_chance = 60
+				ispartial = TRUE
+				update_icon()
+	update_icon()
+		if (open)
+			icon_state = "boat1_port1"
+		else
+			icon_state = "boat1_port0"
+	verb/open_close()
+		set name = "Open/Close"
+		set category = null
+		set src in range(1, usr)
+
+		if (!istype(usr, /mob/living/human))
+			return
+		if (open)
+			if (do_after(usr, 35, src))
+				usr << "You close the port."
+				open = FALSE
+				opacity = TRUE
+				protection_chance = 100
+				ispartial = FALSE
+				update_icon()
+
+		else
+			if (do_after(usr, 35, src))
+				usr << "You open the port."
+				open = TRUE
+				opacity = FALSE
+				protection_chance = 60
+				ispartial = TRUE
+				update_icon()
 /obj/structure/barricade/ship/aport0/north
-	name = "closed cannon port"
-	desc = "A port used to fire cannons out of. This one is closed."
-	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_port0_up"
-	opacity = TRUE
-	protection_chance = 60
-	ispartial = TRUE
-
+	update_icon()
+		if (open)
+			icon_state = "boat1_port1_up"
+		else
+			icon_state = "boat1_port0_up"
 /obj/structure/barricade/ship/aport1
 	name = "open cannon port"
 	desc = "A port used to fire cannons out of. This one is open."
@@ -460,3 +507,23 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "wood_mast"
 	protection_chance = 60
+
+/obj/structure/barricade/ship/mast/large
+	icon = 'icons/turf/64x64.dmi'
+	icon_state = "large_mast"
+	var/image/olay
+	var/image/mlay
+	bound_height = 64
+	bound_width = 64
+	opacity = FALSE
+	
+	New()
+		..()
+		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_y = -192, layer=10)
+		olay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="sails_overlay1", pixel_x = 64, pixel_y = -192, layer=10)
+		update_icon()
+
+	update_icon()
+		overlays.Cut()
+		overlays += mlay
+		overlays += olay

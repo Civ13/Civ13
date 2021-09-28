@@ -68,9 +68,9 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	if (!name)							//To prevent nameless ghosts
 		name = capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
 	real_name = name
-
-	body.client.pixel_x = 0 //Resets the pixel offset of the ghost
-	body.client.pixel_y = 0
+	if (ismob(body))
+		body.client.pixel_x = 0 //Resets the pixel offset of the ghost
+		body.client.pixel_y = 0
 
 	..()
 
