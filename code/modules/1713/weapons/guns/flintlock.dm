@@ -138,6 +138,10 @@
 	cocked = FALSE
 	spawn (1)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
+	spawn (5)
+		new/obj/effect/effect/smoke/chem(get_step(src, dir))
+	spawn (12)
+		new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
 /obj/item/weapon/gun/projectile/flintlock/musket
 	name = "flintlock musket"
@@ -393,6 +397,21 @@
 
 
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
+	stat = "heavy"
+	name = "Blunderbuss"
+	desc = "A enlarged version of the musketoon, it can fire bigger bullets. Useless at long range."
+	icon_state = "blunderbuss"
+	item_state = "blunderbuss"
+	recoil = 4
+	force = 14
+	load_delay = 120
+	caliber = "blunderbuss"
+	stat = "rifle"
+	weight = 4.5
+	value = 80
+	effectiveness_mod = 0.7
+	attachment_slots = ATTACH_IRONSIGHTS
+	ammo_type = /obj/item/ammo_casing/blunderbuss
 	gun_type = GUN_TYPE_SHOTGUN
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	equiptimer = 15
@@ -659,10 +678,10 @@
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
 	aim_miss_chance_divider = 1.70
-
+/obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol
 	stat = "heavy"
 	name = "Blunderbuss Pistol"
-	desc = "A enlarged version of the musketoon, it can fire bigger bullets. Useless at long range."
+	desc = "A enlarged version of the musketoon, it can fire bigger bullets. This one has been designed so it can be used with one hand. Useless at medium range."
 	icon_state = "flintlock_blunderbusspistol"
 	item_state = "pistol"
 	recoil = 5
@@ -673,21 +692,5 @@
 	weight = 2.5
 	value = 80
 	effectiveness_mod = 0.6
-	attachment_slots = ATTACH_IRONSIGHTS
-	ammo_type = /obj/item/ammo_casing/blunderbuss
-
-	stat = "heavy"
-	name = "Blunderbuss"
-	desc = "A enlarged version of the musketoon, it can fire bigger bullets. Useless at long range."
-	icon_state = "blunderbuss"
-	item_state = "blunderbuss"
-	recoil = 4
-	force = 14
-	load_delay = 120
-	caliber = "blunderbuss"
-	stat = "rifle"
-	weight = 4.5
-	value = 80
-	effectiveness_mod = 0.7
 	attachment_slots = ATTACH_IRONSIGHTS
 	ammo_type = /obj/item/ammo_casing/blunderbuss
