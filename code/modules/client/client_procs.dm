@@ -341,6 +341,7 @@
 
 	getFiles(
 		'UI/minimap.png',
+		'UI/voyage.png',
 		'UI/abashiri_map.png',
 		'UI/images/uos94.png',
 		'UI/images/uos.png',

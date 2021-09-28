@@ -3,20 +3,20 @@
 	ID = MAP_VOYAGE
 	title = "Voyage"
 	no_winner ="The ship is on the way."
-//	lobby_icon_state = "imperial"
+	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
 
 
 	faction_organization = list(
-		BRITISH)
+		PIRATES)
 
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/no_mans_land,
+		list(PIRATES) = /area/caribbean/no_mans_land,
 		)
 	age = "1713"
 	ordinal_age = 3
-	faction_distribution_coeffs = list(BRITISH = 1)
+	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "Transatlantic Voyage"
 	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"
 	is_singlefaction = TRUE
@@ -82,7 +82,7 @@
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
-	else if (istype(J, /datum/job/indians/tribes))
+	else if (istype(J, /datum/job/pirates/cook) || istype(J, /datum/job/pirates/carpenter) || istype(J, /datum/job/pirates/midshipman))
 		. = FALSE
 	else
 		. = TRUE
@@ -123,6 +123,38 @@
 	desc = "A map of the regeion. Used by the captain to plan the next moves."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "table_map"
+	layer = 3.2
+	var/mob/living/user = null
+	anchored = TRUE
+	var/image/img
+
+	New()
+		..()
+		img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
+
+
+	examine(mob/user)
+		update_icon()
+		user << browse("<img src=voyage.png></img>","window=popup;size=630x630")
+
+	attack_hand(mob/user)
+		update_icon()
+		examine(user)
+
+/obj/structure/voyage_boatswain_book
+	name = "crew book"
+	desc = "A book listing all the ship's crew and their assigned jobs."
+	icon = 'icons/obj/library.dmi'
+	icon_state = "book_bs"
+	layer = 3.2
+	var/mob/living/user = null
+	anchored = TRUE
+
+/obj/structure/voyage_quartermaster_book
+	name = "ship inventory"
+	desc = "A diary tracking the current inventory in the ship."
+	icon = 'icons/obj/library.dmi'
+	icon_state = "book_qm"
 	layer = 3.2
 	var/mob/living/user = null
 	anchored = TRUE
@@ -169,3 +201,4 @@
 
 /obj/structure/voyage_grid/partial
 	icon_state = "grid_partial"
+
