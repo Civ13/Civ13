@@ -27,7 +27,6 @@
 	var/firedelay = 20
 	var/caliber = 75
 	var/broken = FALSE
-	w_class = 20
 	var/can_assemble = FALSE
 	var/assembled = TRUE
 	var/obj/structure/bed/chair/loader/loader_chair = null
@@ -42,6 +41,11 @@
 	firedelay = 30
 	maxrange = 80
 	w_class = 35
+
+/obj/structure/cannon/voyage
+	w_class = 5
+	maxrange = 35
+	angle = 12
 
 /obj/structure/cannon/modern/naval
 	name = "naval cannon"
@@ -269,7 +273,7 @@
 				return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (can_assemble && assembled)
 		if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
@@ -336,7 +340,7 @@
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
@@ -410,7 +414,7 @@
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 
 
@@ -423,11 +427,11 @@
 	for (var/obj/structure/bed/chair/gunner/G in m.loc)
 		found_gunner = TRUE
 	if (found_gunner == FALSE && istype(src, /obj/structure/cannon/modern/tank))
-		user << "<span class = 'warning'>You need to be at the gunner's position to fire.</span>"
+		m << "<span class = 'warning'>You need to be at the gunner's position to fire.</span>"
 		user = null
 		return
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		m << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
 		user = null
 	else if (!anchored && istype(src, /obj/structure/cannon/mortar/type89))
 		user = m
@@ -501,6 +505,17 @@
 			user << "<span class = 'danger'>There's nothing in \the [src].</span>"
 			return
 
+		if (istype(map, /obj/map_metadata/voyage))
+			var/turf/onestep = get_step(loc, src.dir)
+			var/turf/twostep = get_step(onestep, src.dir)
+			for(var/obj/structure/barricade/ship/BS in onestep)
+				if (BS.opacity)
+					user << "You have no opening to fire through!"
+					return
+			for(var/obj/structure/barricade/ship/BS1 in twostep)
+				if (BS1.opacity)
+					user << "You have no opening to fire through!"
+					return
 		if (do_after(user, firedelay, src, can_move = istank))
 
 			// firing code

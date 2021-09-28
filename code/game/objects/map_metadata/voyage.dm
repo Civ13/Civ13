@@ -96,8 +96,10 @@
 				mapgen["[lat],[lon]"][3] = "island"
 				islands += list(lat, lon)
 
-
-
+/obj/map_metadata/voyage/cross_message()
+	return ""
+/obj/map_metadata/voyage/reverse_cross_message()
+	return ""
 ///////////////Specific objects////////////////////
 /obj/structure/voyage_shipwheel
 	name = "ship wheel"
@@ -105,9 +107,17 @@
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "ship_wheel"
 	layer = 2.99
-	var/mob/living/user = null
 	density = TRUE
-
+	anchored = TRUE
+	attack_hand(mob/living/human/H)
+		var/obj/map_metadata/voyage/nmap = map
+		if (nmap)
+			var/newdir = WWinput(H, "The Ship is currently moving [nmap.navdirection]. Which direction to you want to switch to?","Ship Wheel",nmap.navdirection,list("North","South","East","West"))
+			if (newdir != nmap.navdirection)
+				if (do_after(H, 50, src))
+					nmap.navdirection = newdir
+					visible_message("<font size=2>The ship turns <b>[nmap.navdirection]</b>.</font>")
+					return
 /obj/structure/voyage_tablemap
 	name = "map"
 	desc = "A map of the regeion. Used by the captain to plan the next moves."
@@ -115,6 +125,7 @@
 	icon_state = "table_map"
 	layer = 3.2
 	var/mob/living/user = null
+	anchored = TRUE
 
 /obj/structure/voyage_sextant
 	name = "sextant"
@@ -122,12 +133,13 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "sextant_tool"
 	layer = 3.2
+	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
 		var/obj/map_metadata/voyage/nmap = map
 		if (nmap)
-			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W"
-
+			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
+			H << "The ship is facing the <b>[nmap.navdirection]</b>."
 /obj/structure/voyage_ropeladder
 	name = "rope ladder"
 	desc = "A strong rope ladder leading up the mast."
@@ -135,6 +147,7 @@
 	icon_state = "ropeladder"
 	layer = 5
 	density = FALSE
+	anchored = TRUE
 
 /obj/structure/voyage_ropeladder/thin
 	icon_state = "ropeladder_thin"
@@ -143,6 +156,7 @@
 	name = "ship's treasury"
 	desc = "Where the ship's treasury is stored."
 	faction = "ship"
+	anchored = TRUE
 
 /obj/structure/voyage_grid
 	name = "loading gate"
@@ -151,6 +165,7 @@
 	icon_state = "grid"
 	layer = 2.99
 	density = FALSE
+	anchored = TRUE
 
 /obj/structure/voyage_grid/partial
 	icon_state = "grid_partial"
