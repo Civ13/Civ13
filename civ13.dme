@@ -1001,5 +1001,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\naval.dmm"
+#include "maps\special\voyage.dmm"
 // END_INCLUDE
