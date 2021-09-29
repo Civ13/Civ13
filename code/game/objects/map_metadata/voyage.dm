@@ -142,21 +142,31 @@
 		examine(user)
 
 /obj/structure/voyage_boatswain_book
-	name = "crew book"
+	name = "crew log"
 	desc = "A book listing all the ship's crew and their assigned jobs."
 	icon = 'icons/obj/library.dmi'
 	icon_state = "book_bs"
 	layer = 3.2
-	var/mob/living/user = null
 	anchored = TRUE
-
+	attack_hand(mob/living/human/H)
+		if (H.original_job_title == "Pirate Boatswain")
+			var/dat = "<h1>CREW LOG</h1>"
+			dat += tally_crew()
+			H << browse(dat, "window=Crew Log")
+	proc/tally_crew()
+		var/t_text = "<table><tr><th>Name</th><th>Job</th></tr><tr>"
+		for(var/mob/living/human/HM in world)
+			if (HM.stat != DEAD)
+				t_text += "<td>[HM.name]</td><td>[HM.original_job_title]</td>"
+		t_text += "</tr></table>"
+		return t_text
+					
 /obj/structure/voyage_quartermaster_book
 	name = "ship inventory"
 	desc = "A diary tracking the current inventory in the ship."
 	icon = 'icons/obj/library.dmi'
 	icon_state = "book_qm"
 	layer = 3.2
-	var/mob/living/user = null
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
