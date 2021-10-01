@@ -3,7 +3,7 @@
 	icon = 'icons/obj/animal_spawner.dmi'
 	desc = "Thats a empty cave. It would look like a preferable place for animals to shelter."
 	anchored = TRUE
-
+	density = TRUE
 	var/females = 0
 	var/males = 0
 	var/cubs = 0
