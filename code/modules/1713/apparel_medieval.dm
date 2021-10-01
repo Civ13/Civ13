@@ -247,9 +247,19 @@
 /obj/item/clothing/suit/storage/jacket/arabic_robe
 	name = "arabic robe"
 	desc = "A light, loose fitting arabic robe."
+	icon = 'icons/obj/clothing/uniforms.dmi'
 	icon_state = "arabw_robe"
 	item_state = "arabw_robe"
 	worn_state = "arabw_robe"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/suit/arabic_robe
+	name = "light white arabic robe"
+	desc = "A light, white, loose fitting garment for keeping the sun off."
+	icon = 'icons/obj/clothing/uniforms.dmi'
+	icon_state = "arab2"
+	item_state = "arab2"
+	worn_state = "arab2"
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/suit/storage/jacket/plaguedoctor //moved from jobs.dm
