@@ -574,6 +574,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\ships\movement.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\wheels.dm"
 #include "code\modules\1713\siege\boiling_oil.dm"
+#include "code\modules\1713\siege\cannon_types.dm"
 #include "code\modules\1713\siege\catapult.dm"
 #include "code\modules\1713\siege\fire.dm"
 #include "code\modules\1713\siege\piece.dm"

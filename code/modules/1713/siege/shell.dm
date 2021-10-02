@@ -7,7 +7,22 @@
 	var/reagent_payload = null
 	var/damage = 100
 	var/caliber = 75
-	var/atype = "HE"
+	var/atype = "cannonball"
+	var/subtype = /obj/item/projectile/shell
+
+/obj/item/cannon_ball/chainshot
+	name = "chain shot"
+	icon_state = "chainshot"
+	damage = 60
+	subtype = /obj/item/projectile/shell/cannonball/chainshot
+	atype = "chainshot"
+
+/obj/item/cannon_ball/grapeshot
+	name = "grape shot"
+	icon_state = "grapeshot"
+	damage = 30
+	subtype = /obj/item/projectile/shell/cannonball/grapeshot
+	atype = "grapeshot"
 
 /obj/item/cannon_ball/shell
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -15,7 +30,7 @@
 	icon_state = "shell"
 	w_class = 4.0
 	value = 20
-
+	atype = "HE"
 /obj/item/cannon_ball/shell/tank
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "cannon shell"
@@ -24,6 +39,7 @@
 	value = 20
 	caliber = 75
 	heavy_armor_penetration = 15
+	atype = "HE"
 	New()
 		..()
 		name = "[caliber]mm [atype] shell"
