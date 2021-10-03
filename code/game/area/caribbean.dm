@@ -1074,6 +1074,36 @@
 	location = AREA_INSIDE
 	base_turf = /turf/floor/broken_floor
 
+/area/caribbean/pirates/ship/voyage
+	name = "Ship"
+	base_turf = /turf/floor/beach/water/deep/saltwater
+	location = AREA_OUTSIDE
+
+/area/caribbean/pirates/ship/voyage/upper
+	base_turf =/turf/floor/broken_floor
+
+/area/caribbean/pirates/ship/voyage/upper/inside
+	base_turf =/turf/floor/broken_floor
+	location = AREA_INSIDE
+
+/area/caribbean/pirates/ship/voyage/upper/inside/treasury
+	name = "Treasury Room"
+	icon_state = "green4"
+
+/area/caribbean/pirates/ship/voyage/lower
+	base_turf =/turf/floor/beach/water/deep/saltwater
+	location = AREA_INSIDE
+
+/area/caribbean/pirates/ship/voyage/lower/storage
+	name = "Storage Area"
+	icon_state = "green3"
+
+/area/caribbean/pirates/ship/voyage/lower/storage/kitchen
+	name = "Kitchen Storage Area"
+
+/area/caribbean/pirates/ship/voyage/lower/storage/magazine
+	name = "Magazine"
+
 /area/caribbean/indians
 	name = "Natives"
 

@@ -3,20 +3,20 @@
 	ID = MAP_VOYAGE
 	title = "Voyage"
 	no_winner ="The ship is on the way."
-//	lobby_icon_state = "imperial"
+	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
 
 
 	faction_organization = list(
-		BRITISH)
+		PIRATES)
 
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/no_mans_land,
+		list(PIRATES) = /area/caribbean/no_mans_land,
 		)
 	age = "1713"
 	ordinal_age = 3
-	faction_distribution_coeffs = list(BRITISH = 1)
+	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "Transatlantic Voyage"
 	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"
 	is_singlefaction = TRUE
@@ -82,7 +82,7 @@
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
-	else if (istype(J, /datum/job/indians/tribes))
+	else if (istype(J, /datum/job/pirates/cook) || istype(J, /datum/job/pirates/carpenter) || istype(J, /datum/job/pirates/midshipman))
 		. = FALSE
 	else
 		. = TRUE
@@ -126,6 +126,142 @@
 	layer = 3.2
 	var/mob/living/user = null
 	anchored = TRUE
+	var/image/img
+
+	New()
+		..()
+		img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
+
+
+	examine(mob/user)
+		update_icon()
+		user << browse("<img src=voyage.png></img>","window=popup;size=630x630")
+
+	attack_hand(mob/user)
+		update_icon()
+		examine(user)
+
+/obj/structure/voyage_boatswain_book
+	name = "crew log"
+	desc = "A book listing all the ship's crew and their assigned jobs."
+	icon = 'icons/obj/library.dmi'
+	icon_state = "book_bs"
+	layer = 3.2
+	anchored = TRUE
+	attack_hand(mob/living/human/H)
+		if (H.original_job_title == "Pirate Boatswain")
+			var/dat = "<h1>CREW LOG</h1>"
+			dat += tally_crew()
+			H << browse(dat, "window=Crew Log")
+	proc/tally_crew()
+		var/t_text = "<table><tr><th>Name</th><th>Job</th></tr><tr>"
+		for(var/mob/living/human/HM in world)
+			if (HM.stat != DEAD)
+				t_text += "<td>[HM.name]</td><td>[HM.original_job_title]</td>"
+		t_text += "</tr></table>"
+		return t_text
+					
+/obj/structure/voyage_quartermaster_book
+	name = "ship inventory"
+	desc = "A diary tracking the current inventory in the ship."
+	icon = 'icons/obj/library.dmi'
+	icon_state = "book_qm"
+	layer = 3.2
+	anchored = TRUE
+
+	attack_hand(mob/living/human/H)
+		if (H.original_job_title == "Pirate Quartermaster")
+			var/tres = tally_treasure()
+			var/mats = tally_materials()
+			var/mats_wood = mats["wood"]
+			var/mats_cloth = mats["cloth"]
+			var/mats_rope = mats["rope"]
+			var/food = tally_food()
+			var/mats_food = food["food"]
+			var/mats_water = food["water"]
+			var/wep = tally_weapons()
+			var/mats_cannon = wep["cannonballs"]
+			var/mats_musket = wep["musket"]
+			var/mats_pistol = wep["pistol"]
+
+			var/dat = "<h1>SHIP STOCKS</h1>"
+			dat += "Treasury: [tres]<br>"
+			dat += "Wood: [mats_wood]<br>"
+			dat += "Cloth: [mats_cloth]<br>"
+			dat += "Rope: [mats_rope]<br>"
+			dat += "Food: [mats_food] doses<br>"
+			dat += "Water: [mats_water] units<br>"
+			dat += "Cannon Ammo: [mats_cannon] balls<br>"
+			dat += "Musket Ammo: [mats_musket] projectiles<br>"
+			dat += "Pistol Ammo: [mats_pistol] projectiles<br>"
+			H << browse(dat, "window=Ship Stocks")
+	proc/tally_treasure()
+		var/tally = 0
+		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/upper/inside/treasury)
+		for(var/turf/sel_turf in t_turfs)
+			for(var/obj/structure/closet/crate/chest/treasury/ship/S in sel_turf)
+				for(var/obj/item/stack/money/M in S)
+					tally += M.value*M.amount
+				for(var/obj/item/stack/money/M1 in S.loc)
+					tally += M1.value*M1.amount
+		return tally
+
+	proc/tally_materials()
+		var/list/tally = list("cloth" = 0, "wood" = 0, "rope" = 0)
+		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage)
+		for(var/turf/sel_turf in t_turfs)
+			for(var/obj/structure/closet/crate/S in sel_turf)
+				for(var/obj/item/stack/material/cloth/M in S)
+					tally["cloth"] += M.amount
+				for(var/obj/item/stack/material/rope/M1 in S)
+					tally["rope"] += M1.amount
+				for(var/obj/item/stack/material/wood/M2 in S)
+					tally["wood"] += M2.amount
+			for(var/obj/item/stack/material/cloth/M in sel_turf)
+				tally["cloth"] += M.amount
+			for(var/obj/item/stack/material/rope/M1 in sel_turf)
+				tally["rope"] += M1.amount
+			for(var/obj/item/stack/material/wood/M2 in sel_turf)
+				tally["wood"] += M2.amount
+		return tally
+
+	proc/tally_food()
+		var/list/tally = list("food" = 0, "water" = 0)
+		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
+		for(var/turf/sel_turf in t_turfs)
+			for(var/obj/structure/closet/crate/S in sel_turf)
+				for(var/obj/item/weapon/reagent_containers/food/F in S)
+					tally["food"]++
+			for(var/obj/item/weapon/reagent_containers/food/F in sel_turf)
+				tally["food"]++
+			for(var/obj/item/weapon/reagent_containers/glass/barrel/B in sel_turf)
+				for (var/datum/reagent/R in B.reagents.reagent_list)
+					if (istype(R, /datum/reagent/water))
+						tally["water"] += R.volume
+			for(var/obj/structure/reagent_dispensers/largebarrel/L in sel_turf)
+				for (var/datum/reagent/R in L.reagents.reagent_list)
+					if (istype(L, /datum/reagent/water))
+						tally["water"] += R.volume
+		return tally
+
+	proc/tally_weapons()
+		var/list/tally = list("musket" = 0, "pistol" = 0, "cannonballs" = 0)
+		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
+		for(var/turf/sel_turf in t_turfs)
+			for(var/obj/structure/closet/crate/S in sel_turf)
+				for(var/obj/item/ammo_casing/musketball/MB in S)
+					tally["musket"]++
+				for(var/obj/item/ammo_casing/musketball_pistol/MBP in S)
+					tally["pistol"]++
+				for(var/obj/item/cannon_ball/CB in S)
+					tally["cannonballs"]++
+			for(var/obj/item/ammo_casing/musketball/MB in sel_turf)
+				tally["musket"]++
+			for(var/obj/item/ammo_casing/musketball_pistol/MBP in sel_turf)
+				tally["pistol"]++
+			for(var/obj/item/cannon_ball/CB in sel_turf)
+				tally["cannonballs"]++
+		return tally
 
 /obj/structure/voyage_sextant
 	name = "sextant"
@@ -169,3 +305,4 @@
 
 /obj/structure/voyage_grid/partial
 	icon_state = "grid_partial"
+

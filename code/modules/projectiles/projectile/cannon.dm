@@ -18,6 +18,15 @@
 	atype = "HE"
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
 
+/obj/item/projectile/shell/cannonball
+	icon_state = "shell"
+	atype = "cannonball"
+/obj/item/projectile/shell/cannonball/chainshot
+	icon_state = "chainshot"
+	atype = "chainshot"
+/obj/item/projectile/shell/cannonball/grapeshot
+	icon_state = "buckshot"
+	atype = "grapeshot"
 /obj/item/projectile/shell/get_structure_damage()
 	if (damage_type == BRUTE || damage_type == BURN)
 		return damage/2

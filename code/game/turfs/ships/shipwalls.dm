@@ -516,14 +516,43 @@
 	bound_height = 64
 	bound_width = 64
 	opacity = FALSE
+	maxhealth = 10000
+	health = 10000
+
+	var/sailhealth = 100
+	var/rigginghealth = 100
+	var/sailstat = 100
 	
 	New()
 		..()
-		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_y = -192, layer=10)
-		olay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="sails_overlay1", pixel_x = 64, pixel_y = -192, layer=10)
+		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_x = -32, pixel_y = -192, layer=10)
+		olay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="sails_overlay_h100", pixel_x = 32, pixel_y = -192, layer=10)
 		update_icon()
 
 	update_icon()
 		overlays.Cut()
 		overlays += mlay
+		if (sailstat <= 0)
+			olay.icon_state = "sails_overlay0"
+		else if (sailhealth > 75)
+			olay.icon_state = "sails_overlay_h100"
+		else if (sailhealth <= 75 && sailhealth > 50)
+			olay.icon_state = "sails_overlay_h75"
+		else if (sailhealth <= 50 && sailhealth > 25)
+			olay.icon_state = "sails_overlay_h50"
+		else if (sailhealth <= 25)
+			olay.icon_state = "sails_overlay_h25"
 		overlays += olay
+
+	examine(mob/user)
+		..(user)
+		var/sailstat_t = "Full Sail"
+		if (sailstat <= 66 && sailstat > 33)
+			sailstat_t = "Half Sail"
+		else if (sailstat <= 33 && sailstat > 0)
+			sailstat_t = "Reduced Sail"
+		else if (sailstat <= 0)
+			sailstat_t = "Retracted"
+		user << "Sails: <b>[sailstat_t]</b>"
+		user << "Sail Status: <b>[sailhealth]%</b>"
+		user << "Rigging Status: <b>[rigginghealth]%</b>"
