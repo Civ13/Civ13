@@ -8,7 +8,6 @@
 	faction_organization = list(
 		RUSSIAN,
 		CHECHEN)
-
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/japanese/land,
 		list(CHECHEN) = /area/caribbean/japanese/land,
@@ -24,18 +23,17 @@
 	songs = list(
 		"Cyka Blyat:1" = 'sound/music/cyka_blyat.ogg',)
 	artillery_count = 10
+
 /obj/map_metadata/rusretreat/job_enabled_specialcheck(var/datum/job/J)
 	..()
-If (datum/job/Russian/army)
- >> If (!j.is_yeltsin)
- >>  >> ..() = FALSE
- >> else
- >>  >> ..() = TRUE
-	if (istype(J, /datum/job/Arab/Chechen))
-		if (J.is_yeltsin == TRUE)
-			. = TRUE
-		else
-			. = FALSE
+	if (istype(J, /datum/job/russian) && !J.is_rusretreat)
+		. = FALSE
+	else
+		. = TRUE
+	if (istype(J, /datum/job/arab/chechen) && !J.is_rusretreat)
+		. = FALSE
+	else
+		. = TRUE
 
 /obj/map_metadata/rusretreat/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
@@ -85,7 +83,7 @@ If (datum/job/Russian/army)
 		return ""
 
 
-var/no_loop_ret = FALSE
+	no_loop_ret = FALSE
 
 /obj/map_metadata/rusretreat/update_win_condition()
 	if (!win_condition_specialcheck())

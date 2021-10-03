@@ -33,7 +33,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
+	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
@@ -68,7 +68,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/russian/sa_sergeant/equip(var/mob/living/human/H)
+/datum/job/russian/msa_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -88,12 +88,14 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
+	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
+
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Insurgents!")
@@ -144,7 +146,8 @@
 	uniform.attackby(white, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
+	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
+
 	uniform.attackby(armour, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
@@ -186,10 +189,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
+	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
-
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
@@ -236,7 +238,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_tanker(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
+	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
@@ -287,7 +289,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
+	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -320,7 +322,7 @@
 
 /////////DRA Goverment//////////////
 
-/datum/arab/civilian/presidentAFG
+/datum/job/civilian/afgan/presidentafg
 	title = "President"
 	en_meaning = "President"
 	rank_abbreviation = "Pr."
@@ -332,7 +334,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/russian/hvt/equip(var/mob/living/human/H)
+/datum/job/civilian/afgan/presidentafg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
@@ -361,7 +363,7 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-/datum/arab/civilian/mayorAFG
+/datum/job/civilian/afgan/mayorafg
 	title = "Governor"
 	rank_abbreviation = "Gv."
 	spawn_location = "JoinLatessm"
@@ -372,7 +374,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/russian/hvt/equip(var/mob/living/human/H)
+/datum/job/civilian/afgan/mayorafg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
@@ -403,7 +405,7 @@
 ////////////DRA soliders/////////////
 
 
-/datum/job/afgan/sergant
+/datum/job/afgan/dra/sergant
 	title = "DRA sergant"
 	rank_abbreviation = "Sgt."
 
@@ -418,7 +420,7 @@
 	min_positions = 2
 	max_positions = 5
 
-/datum/job/russian/sa_sergeant/equip(var/mob/living/human/H)
+/datum/job/afgan/dra/sergant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -438,11 +440,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-		var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
-
-	var/obj/item/clothing/accessory/armband/armbangle/gold = new/obj/item/clothing/accessory/armband/armbangle/gold(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armband/armbangle/gold = new/obj/item/clothing/accessory/armband/armbangle(null)
+	uniform.attackby(gold, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))
@@ -461,7 +460,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/sa_medic
+/datum/job/afgan/dra/medic
 	title = "DRA field medic"
 	rank_abbreviation = "Cpl."
 
@@ -473,7 +472,7 @@
 	min_positions = 2
 	max_positions = 4
 
-/datum/job/russian/sa_medic/equip(var/mob/living/human/H)
+/datum/job/afgan/dra/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -495,8 +494,8 @@
 	uniform.attackby(white, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern(null)
+	uniform.attackby(plate, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 
 	H.civilization = "Afgov"
@@ -513,6 +512,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/afgan/dra/soldier
 	title = "DRA Rifleman"
 	rank_abbreviation = "Pvt."
 
@@ -524,7 +524,7 @@
 	min_positions = 10
 	max_positions = 45
 
-/datum/job/russian/sa_soldier/equip(var/mob/living/human/H)
+/datum/job/afgan/dra/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -533,8 +533,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/combat(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern(null)
+	uniform.attackby(plate, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
@@ -559,6 +559,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/afgan/dra/palg
 	title = "DRA palace guard"
 	rank_abbreviation = "Ppg."
 
@@ -570,7 +571,7 @@
 	min_positions = 10
 	max_positions = 45
 
-/datum/job/russian/sa_soldier/equip(var/mob/living/human/H)
+/datum/job/afgan/dra/palg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -579,11 +580,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/combat(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern/plate(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern(null)
+	uniform.attackby(plate, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
-		var/obj/item/clothing/accessory/ruffle/neck = new /obj/item/clothing/accessory/ruffle/neck(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/ruffle/neck = new /obj/item/clothing/accessory/ruffle(null)
+	uniform.attackby(neck, H)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
@@ -606,9 +607,10 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
+
 ////////////////////////////////////////////////afgan civilians////////////////////////////////////////
 
-/datum/arab/civilian/Afacworker
+/datum/job/civilian/afgan/facworker
 	title = "factory worker"
 	en_meaning = " "
 	rank_abbreviation = " "
@@ -618,7 +620,7 @@
 	min_positions = 1
 	max_positions = 45
 
-/datum/job/arab/imam/equip(var/mob/living/human/H)
+/datum/job/civilian/afgan/facworker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -643,7 +645,7 @@
 
 	return TRUE
 
-/datum/arab/civilian/Aminer
+/datum/job/civilian/afgan/miner
 	title = "miner"
 	en_meaning = " "
 	rank_abbreviation = " "
@@ -653,7 +655,7 @@
 	min_positions = 1
 	max_positions = 50
 
-/datum/job/arab/imam/equip(var/mob/living/human/H)
+/datum/job/civilian/afgan/miner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -680,7 +682,7 @@
 
 	return TRUE
 
-	/datum/arab/civilian/Avillager
+/datum/job/civilian/afgan/villager
 	title = "villager"
 	en_meaning = " "
 	rank_abbreviation = " "
@@ -690,6 +692,7 @@
 	min_positions = 1
 	max_positions = 90
 
+/datum/job/civilian/afgan/villager/equip(var/mob/living/human/H)
 
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -713,7 +716,7 @@
 
 	return TRUE
 
-		/datum/arab/civilian/ADoctor
+/datum/job/civilian/afgan/doctor
 	title = "Doctor"
 	en_meaning = " "
 	rank_abbreviation = "Dr."
@@ -723,7 +726,7 @@
 	min_positions = 1
 	max_positions = 15
 
-/datum/job/arab/imam/equip(var/mob/living/human/H)
+/datum/job/civilian/afgan/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -737,7 +740,7 @@
 	H.civilization = "civilian"
 
 	H.add_note("Role", "You are an <b>[title]</b>, an local doctor, keep your fellow citizens healthy!!")
-	H.setStat("strength", STAT_MEDIUM)
+	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
@@ -748,7 +751,7 @@
 	give_random_name(H)
 	return TRUE
 
-		/datum/arab/civilian/Aurbanciv
+/datum/job/civilian/afgan/urbanciv
 	title = "urban unemployed civilian"
 	en_meaning = " "
 	rank_abbreviation = " "
@@ -758,6 +761,7 @@
 	min_positions = 1
 	max_positions = 45
 
+/datum/job/civilian/afgan/urbanciv/equip(var/mob/living/human/H)
 
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -770,7 +774,7 @@
 
 	H.add_note("Role", "You are an <b>[title]</b>, an local civilian,you are unemployed, good luck finding a job!")
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_LOW)
@@ -780,7 +784,7 @@
 	give_random_name(H)
 	return TRUE
 
-		/datum/arab/civilian/AUBrec
+/datum/job/civilian/afgan/ubrec
 	title = "factory overseer"
 	en_meaning = " "
 	rank_abbreviation = " "
@@ -790,7 +794,7 @@
 	min_positions = 1
 	max_positions = 2
 
-
+/datum/job/civilian/afgan/ubrec/equip(var/mob/living/human/H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 //clothes
@@ -813,17 +817,17 @@
 
 	return TRUE
 
-			/datum/arab/civilian/AUBmin
+/datum/job/civilian/afgan/ubmin
 	title = "miner overseer"
-	en_meaning = " "
-	rank_abbreviation = " "
+	en_meaning = "Mine Overseer "
+	rank_abbreviation = "Overseer "
 
 	spawn_location = "JoinLateAR"
 
 	min_positions = 1
 	max_positions = 2
 
-
+/datum/job/civilian/afgan/ubmin/equip(var/mob/living/human/H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 //clothes
@@ -833,7 +837,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
 	H.civilization = "civilian"
 
-	H.add_note("Role", "You are an <b>[title]</b>, an local mine overseer, command your workers and recruit new people!")
+	H.add_note("Role", "You are an <b>[H.title]</b>, an local mine overseer, command your workers and recruit new people!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -847,7 +851,7 @@
 	return TRUE
 ////////////////////////////////////////////////Insurgents////////////////////////////////////////
 
-/datum/job/arab/hezbollah/AInsurgentleader
+/datum/job/arab/hezbollah/ainsurgentleader
 	title = "Insurgent Leader"
 	en_meaning = " "
 	rank_abbreviation = "Leader"
@@ -859,13 +863,15 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/arab/imam/equip(var/mob/living/human/H)
+/datum/job/arab/hezbollah/ainsurgentleader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-	var/obj/item/clothing/accessory/armor/modern/british = new /obj/item/clothing/accessory/armor/modern/british(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/modern/british = new /obj/item/clothing/accessory/armor/modern(null)
+	uniform.attackby(british, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
@@ -888,7 +894,7 @@
 
 	return TRUE
 
-	/datum/job/arab/hezbollah/Ainsurgent
+/datum/job/arab/hezbollah/ainsurgent
 	title = "Insurgent"
 	en_meaning = " "
 	rank_abbreviation = " "
@@ -899,6 +905,7 @@
 	min_positions = 10
 	max_positions = 250
 
+/datum/job/arab/hezbollah/ainsurgent/equip(var/mob/living/human/H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
 //clothes

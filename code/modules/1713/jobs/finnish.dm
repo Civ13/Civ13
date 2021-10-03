@@ -9,18 +9,18 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 
-	is_FSC = TRUE
+	is_fsc = TRUE
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/hauptmann/equip(var/mob/living/human/H)
+/datum/job/finnish/kapteeni/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
-    H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
 //weapons
@@ -28,7 +28,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(armband, H)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	world << "<b><big>[H.real_name] is the commander of the Finnish Forces!</big></b>"
@@ -45,7 +44,7 @@
 
 	return TRUE
 
-/datum/job/finnish/ luutnantti
+/datum/job/finnish/luutnantti
 	title = " luutnantti"
 	en_meaning = "First Lieutenant"
 	rank_abbreviation = "luut."
@@ -55,20 +54,20 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	is_FSC = TRUE
+	is_fsc = TRUE
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/oberleutnant/equip(var/mob/living/human/H)
+/datum/job/finnish/luutnantti/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
-    H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
@@ -90,7 +89,7 @@
 
 	return TRUE
 
-/datum/job/finnish/vänrikki
+/datum/job/finnish/vanrikki
 	title = "vänrikki"
 	en_meaning = "Second Lieutenant"
 	rank_abbreviation = "lt."
@@ -100,18 +99,18 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	is_FSC = TRUE
+	is_fsc = TRUE
 
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/german/leutnant/equip(var/mob/living/human/H)
+/datum/job/finnish/vanrikki/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
-    H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
@@ -146,19 +145,19 @@
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	is_squad_leader = TRUE
-	is_FSC = TRUE
+	is_fsc = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/german/gruppenfuhrer/equip(var/mob/living/human/H)
+/datum/job/finnish/kersantti/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
@@ -187,20 +186,20 @@
 
 	spawn_location = "JoinLateGE"
 
-	is_FSC = TRUE
+	is_fsc = TRUE
 	uses_squads = TRUE
 
 	min_positions = 8
 	max_positions = 70
 
-/datum/job/german/schutze_soldaten/equip(var/mob/living/human/H)
+/datum/job/finnish/sotamies/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm/winter(H), slot_head)
@@ -210,9 +209,10 @@
 	if (prob(45))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
 	else
-   H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
-	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
-	uniform.attackby(webbing, H)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Maavoimat forces. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -235,19 +235,19 @@
 
 	spawn_location = "JoinLateGE"
 
-	is_FSC = TRUE
+	is_fsc = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
 	max_positions = 12
 
-
+/datum/job/finnish/salaampuja/equip(var/mob/living/human/H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
-    H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 
 //head
 	if (prob(85))
@@ -277,7 +277,7 @@
 
 	return TRUE
 
-/datum/job/finnish/ITPAR
+/datum/job/finnish/itpar
 	title = "itsenäisyyspäivänparaatissa"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Dr."
@@ -285,13 +285,13 @@
 	spawn_location = "JoinLateGEDoc"
 
 	is_medic = TRUE
-	is_FSC = TRUE
+	is_fsc = TRUE
 
 
 	min_positions = 2
 	max_positions = 4
 
-/datum/job/german/mediziner/equip(var/mob/living/human/H)
+/datum/job/finnish/itpar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -338,12 +338,13 @@
 	min_positions = 2
 	max_positions = 12
 
+/datum/job/finnish/Pioneeri/equip(var/mob/living/human/H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
-    H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm/winter(H), slot_head)
@@ -369,12 +370,3 @@
 	H.setStat("machinegun", STAT_VERY_HIGH)
 
 	return TRUE
-
-//////////////////////////////////////////////////////////
-
-/obj/item/clothing/under/customuniform/fins
-    name = "finnish uniform"
-    desc = "A finnish winter uniform."
-    shirtcolor = "#00000"
-    pantscolor = "#00000"
-    color = "#00000"
