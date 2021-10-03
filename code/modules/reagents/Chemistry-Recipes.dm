@@ -601,7 +601,7 @@ datum/admins/proc/print_chemical_reactions()
 	result_amount = 1
 	log_is_important = TRUE
 
-/datum/chemical_reaction/ngunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
+/datum/chemical_reaction/gunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()
 	e.set_up(round (created_volume/4, TRUE), exloc, FALSE, FALSE)
@@ -1051,6 +1051,11 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("hydrogen" = 2, "carbon" = 2, "ammonia" = 2)
 	result_amount = 6
 
+/datum/chemical_reaction/sterilizine
+	name = "Sterilizine"
+	result = /datum/reagent/sterilizine
+	required_reagents = list(/datum/reagent/ethanol = 1, /datum/reagent/anti_toxin = 1, /datum/reagent/acid/hydrochloric = 1)
+	result_amount = 3
 
 //fermentation
 /datum/chemical_reaction/rum

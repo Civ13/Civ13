@@ -161,6 +161,7 @@
 	amount = 5
 	layer = 5.11
 
+
 /obj/structure/wild/tree/cactus
 	name = "cactus"
 	icon = 'icons/obj/flora/bigtrees.dmi'
@@ -174,6 +175,7 @@
 	layer = 5.11
 	health = 50
 	maxhealth = 50
+	pixel_x = -16
 
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
@@ -188,6 +190,7 @@
 	branches = 3
 	max_branches = 3
 	leaves = 0
+	pixel_x = -16
 
 /obj/structure/wild/tree/dead_tree/destroyed
 	name = "destroyed tree"
@@ -223,6 +226,7 @@
 	branches = 3
 	max_branches = 3
 	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
+	pixel_x = -16
 
 /obj/structure/wild/tree/live_tree/snow
 	name = "tree"
@@ -711,6 +715,7 @@
 	max_leaves = 3
 	branches = 3
 	max_branches = 3
+	pixel_x = -16
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))
