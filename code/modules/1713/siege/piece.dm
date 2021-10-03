@@ -245,8 +245,15 @@
 		return FALSE
 
 	if (!locate(user) in range(1,src))
-		user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
-		return FALSE
+		if (icon != 'icons/obj/cannon_v.dmi')
+			user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
+			return FALSE
+		else
+			if (dir == SOUTH)
+				var/turf/T = get_step(src,NORTH)
+				if (!locate(user) in range(1,T))
+					user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
+					return FALSE
 
 	if (!user.can_use_hands())
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
