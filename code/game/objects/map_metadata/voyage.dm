@@ -84,6 +84,7 @@
 	inzone = TRUE
 	ship_anchored = TRUE
 	world << "<big>The ship arrives at the destination.</big>"
+	load_map("ship1","random")
 	return
 
 /obj/map_metadata/voyage/proc/abandon_event()
@@ -91,10 +92,10 @@
 	inzone = FALSE
 	ship_anchored = FALSE
 	world << "<big>The ship returns to the high seas.</big>"
-	clear_maps()
+	clear_map()
 	return
 
-/obj/map_metadata/voyage/proc/clear_maps()
+/obj/map_metadata/voyage/proc/clear_map()
 	//North
 	for(var/turf/T in get_area_turfs(/area/caribbean/sea/top))
 		for (var/mob/living/M in T)
@@ -131,6 +132,123 @@
 		new/area/caribbean/sea/bottom(T3)
 		for (var/atom/movable/lighting_overlay/LO in T3)
 			LO.update_overlay()
+////////////////////////////////////////////////////////////////
+//////////////////LOADING AND SAVING PARTIAL MAPS//////////////
+/obj/map_metadata/voyage/proc/load_map(mapname = "ship1", location = "random")
+	if (location == "random")
+		location = pick("south","north")
+	var/y_offset = 0 //for north maps
+	if (location == "north")
+		y_offset = 50
+	var/partpath = "maps/zones/[location]/[mapname]"
+	world.log << "Importing [partpath]..."
+	var/F = file("[partpath]/turfs.txt")
+	if (fexists(F))
+		world.log << "Importing turfs..."
+		var/tmpturfs = file2text(F)
+		var/list/impturfs = splittext(tmpturfs, "\n")
+		for (var/i in impturfs)
+			var/list/impturfs2 = splittext(i, ";")
+			if (impturfs2.len && impturfs2[1] == "TURF")
+				var/resultp = text2path(impturfs2[5])
+				var/turf/T = locate(text2num(impturfs2[2]),text2num(impturfs2[3])+y_offset,text2num(impturfs2[4]))
+				if (T)
+					T.ChangeTurf(resultp)
+	var/F2 = file("[partpath]/mobs.txt")
+	if (fexists(F2))
+		world.log << "Importing mobs..."
+		var/tmpmobs = file2text(F2)
+		var/list/impmobs = splittext(tmpmobs, "\n")
+		for (var/i in impmobs)
+			var/list/impmobs2 = splittext(i, ";")
+			if (impmobs2.len >= 5 && impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player" && impmobs2[5] != "/mob/observer")
+				var/resultp = text2path(impmobs2[5])
+				var/mob/newmob = new resultp(locate(text2num(impmobs2[2]),text2num(impmobs2[3])+y_offset,text2num(impmobs2[4])))
+				newmob.stat = text2num(impmobs2[6])
+	var/F3 = file("[partpath]/objs.txt")
+	if (fexists(F3))
+		world.log << "Importing objects..."
+		var/tmpobjs = file2text(F3)
+		var/list/impobjs = splittext(tmpobjs, "\n")
+		for (var/i in impobjs)
+			var/list/impobjs2 = splittext(i, ";")
+			if (impobjs2.len >= 5)
+				var/resultp = text2path(impobjs2[5])
+				var/obj/tmpobj = new resultp(locate(text2num(impobjs2[2]),text2num(impobjs2[3])+y_offset,text2num(impobjs2[4])))
+				if (impobjs2[1] == "OBJECT")
+					for (var/j=6, j<=impobjs2.len, j++)
+						var/list/tempvars = splittext(impobjs2[j], "===")
+						if (tempvars.len == 2)
+							if (tempvars[1] == "name")
+								tmpobj.name = tempvars[2]
+							else if (tempvars[1] == "desc")
+								tmpobj.desc = tempvars[2]
+							else if (tempvars[1] == "dir")
+								tmpobj.dir = text2num(tempvars[2])
+							else if (tempvars[1] == "icon_state")
+								tmpobj.icon_state = tempvars[2]
+							else
+								if (tmpobj.vars[tempvars[1]] && tempvars[1] != "loc" && tempvars[1] != "locs" && tempvars[1] != "verbs")
+									tmpobj.vars[tempvars[1]] = tempvars[2]
+	world.log << "Imported all objects."
+	world.log << "Finished all imports."
+///////////////////////////////////////////////////////////////////
+/obj/map_metadata/voyage/proc/list2text_assoc(var/atom/A, nx = -1, ny = -1, nz = -1)
+	. = list()
+	if (istype(A, /obj/structure/wild) || (!istype(A, /obj/item) && !istype(A, /obj/structure) && !istype(A, /obj/map_metadata) && !istype(A, /obj/covers)))
+		return "SIMPLE_OBJ;[A.x];[A.y];[A.z];[A.type]"
+	else
+		for (var/key in list("name","desc","icon_state","icon","dir"))
+			if (A.vars[key] != initial(A.vars[key]))
+				if (islist(A.vars[key]))
+					if (isemptylist(A.vars[key]))
+						. += "[key]===EMPTYLIST"
+					else
+						. += "[key]==={{"
+						for(var/i in A.vars[key])
+							. += "[i]|"
+						. += "}}"
+				else
+					. += "[key]===[A.vars[key]]"
+		if (nx == -1)
+			nx = A.x
+		if (ny == -1)
+			ny = A.y
+		if (nz == -1)
+			nz = A.z
+		return "OBJECT;[nx];[ny];[nz];[A.type];[list2text(.)]"
+
+/obj/map_metadata/voyage/proc/do_export(saveloc = "maps/test")
+	world << "<i><b>Saving the game... Might lag for a few seconds.</b></i>"
+	world.log << "Started saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
+	var/F = file("[saveloc]/mobs.txt")
+	if (fexists(F))
+		fdel(F)
+	var/F1 = file("[saveloc]/turfs.txt")
+	if (fexists(F1))
+		fdel(F1)
+	var/F2 = file("[saveloc]/objs.txt")
+	if (fexists(F2))
+		fdel(F2)
+	spawn(10)
+		for (var/turf/T in world)
+			if (!istype(T, /turf/floor/beach/water/deep/saltwater))
+				text2file("TURF;[T.x];[T.y];[T.z];[T.type]",F1)
+			for (var/mob/living/A in T)
+				text2file("MOB;[A.x];[A.y];[A.z];[A.type];[A.stat]",F)
+			for (var/obj/O in T)
+				if (!istype(O,/obj/effect/decal) && !istype(O,/obj/screen) && !istype(O,/atom/movable/lighting_overlay) && !istype(O,/obj/map_metadata) && !istype(O,/obj/effect))
+					if(istype(O, /obj/structure/closet))
+						for(var/obj/CT in O)
+							text2file(list2text_assoc(CT, O.x, O.y, O.z),F2)
+					text2file(list2text_assoc(O),F2)
+	sleep(1)
+	world.log << "Finished saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
+	world << "<i><b>Finished saving.</b></i>"
+	return
+
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 /obj/map_metadata/voyage/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
 
