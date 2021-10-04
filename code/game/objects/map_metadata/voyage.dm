@@ -28,36 +28,109 @@
 	var/list/islands = list()
 	var/navmoving = FALSE //if the ship is moving
 	var/navdirection = "North"
+	var/navprogress = 0 //how far along on moving to a neighbouring tile the ship is
+	var/navspeed = 0
 	var/inzone = FALSE //if the ship is currently in an event zone
-
+	var/ship_anchored = FALSE
 /obj/map_metadata/voyage/proc/nav()
-	if (navmoving)
+	if (navmoving && !ship_anchored)
 		if (!inzone)
-			switch(navdirection)
-				if ("North")
-					if(latitude < 27)
-						latitude++
-					else
-						navmoving = FALSE
-				if ("South")
-					if(latitude > 21)
-						latitude--
-					else
-						navmoving = FALSE
-				if ("East")
-					if(longitude < 77)
-						longitude++
-					else
-						navmoving = FALSE
-				if ("West")
-					if(longitude > 71)
-						longitude--
-					else
-						navmoving = FALSE
+			navspeed = calc_speed()
+			navprogress += navspeed
+			if (navprogress >= 100)
+				navprogress = 0
+				if (navdirection == "island" || navdirection == "ship")
+					enter_event()
+				else
+					switch(navdirection)
+						if ("North")
+							if(latitude < 27)
+								latitude++
+							else
+								navmoving = FALSE
+						if ("South")
+							if(latitude > 21)
+								latitude--
+							else
+								navmoving = FALSE
+						if ("East")
+							if(longitude < 77)
+								longitude++
+							else
+								navmoving = FALSE
+						if ("West")
+							if(longitude > 71)
+								longitude--
+							else
+								navmoving = FALSE
 
-	spawn(1200)
+	spawn(600)
 		nav()
 
+/obj/map_metadata/voyage/proc/calc_speed()
+	var/spd = 0
+	var/snum = 0
+	for(var/obj/structure/barricade/ship/mast/large/S in world)
+		if (S.owner == "ship")
+			spd += (S.sailstat+S.sailhealth+S.rigginghealth)/300
+			snum++
+	if (spd != 0 && snum != 0)
+		spd/=snum //divide by number of masts
+	spd*=33 //how much % of progress per minute for each spd unit, ex: 2 masts in full condition = 1*33 = 33, 3 mins to change tiles
+	return spd
+
+/obj/map_metadata/voyage/proc/enter_event()
+	navmoving = FALSE
+	inzone = TRUE
+	ship_anchored = TRUE
+	world << "<big>The ship arrives at the destination.</big>"
+	return
+
+/obj/map_metadata/voyage/proc/abandon_event()
+	navmoving = TRUE
+	inzone = FALSE
+	ship_anchored = FALSE
+	world << "<big>The ship returns to the high seas.</big>"
+	clear_maps()
+	return
+
+/obj/map_metadata/voyage/proc/clear_maps()
+	//North
+	for(var/turf/T in get_area_turfs(/area/caribbean/sea/top))
+		for (var/mob/living/M in T)
+			qdel(M)
+		for (var/obj/O in T)
+			qdel(O)
+		if (T.type != /turf/floor/beach/water/deep/saltwater)
+			T.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+	for(var/turf/T1 in get_area_turfs(/area/caribbean/sea/top/roofed))
+		for (var/mob/living/M in T1)
+			qdel(M)
+		for (var/obj/O in T1)
+			qdel(O)
+		if (T1.type != /turf/floor/beach/water/deep/saltwater)
+			T1.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+		new/area/caribbean/sea/top(T1)
+		for (var/atom/movable/lighting_overlay/LO in T1)
+			LO.update_overlay()
+	//South
+	for(var/turf/T2 in get_area_turfs(/area/caribbean/sea/bottom))
+		for (var/mob/living/M in T2)
+			qdel(M)
+		for (var/obj/O in T2)
+			qdel(O)
+		if (T2.type != /turf/floor/beach/water/deep/saltwater)
+			T2.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+	for(var/turf/T3 in get_area_turfs(/area/caribbean/sea/bottom/roofed))
+		for (var/mob/living/M in T3)
+			qdel(M)
+		for (var/obj/O in T3)
+			qdel(O)
+		if (T3.type != /turf/floor/beach/water/deep/saltwater)
+			T3.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+		new/area/caribbean/sea/bottom(T3)
+		for (var/atom/movable/lighting_overlay/LO in T3)
+			LO.update_overlay()
 /obj/map_metadata/voyage/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
 
@@ -112,7 +185,13 @@
 	attack_hand(mob/living/human/H)
 		var/obj/map_metadata/voyage/nmap = map
 		if (nmap)
-			var/newdir = WWinput(H, "The Ship is currently moving [nmap.navdirection]. Which direction to you want to switch to?","Ship Wheel",nmap.navdirection,list("North","South","East","West"))
+			var/optlist = list("North","South","East","West")
+			var/def_dir = nmap.navdirection
+			var/currtile = nmap.mapgen["[nmap.latitude],[nmap.longitude]"][3]
+			if (currtile != "sea")
+				optlist = list("Approach [currtile]","North","South","East","West")
+				def_dir = "Approach [currtile]"
+			var/newdir = WWinput(H, "The Ship is currently moving [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
 			if (newdir != nmap.navdirection)
 				if (do_after(H, 50, src))
 					nmap.navdirection = newdir
@@ -154,11 +233,11 @@
 			dat += tally_crew()
 			H << browse(dat, "window=Crew Log")
 	proc/tally_crew()
-		var/t_text = "<table><tr><th>Name</th><th>Job</th></tr><tr>"
+		var/t_text = "<style>table, th, td {border: 1px solid black;}</style><table><tr><th>Name</th><th>Job</th></tr>"
 		for(var/mob/living/human/HM in world)
 			if (HM.stat != DEAD)
-				t_text += "<td>[HM.name]</td><td>[HM.original_job_title]</td>"
-		t_text += "</tr></table>"
+				t_text += "<tr><td>[HM.name]</td><td>[HM.original_job_title]</td></tr>"
+		t_text += "</table>"
 		return t_text
 					
 /obj/structure/voyage_quartermaster_book
@@ -185,15 +264,15 @@
 			var/mats_pistol = wep["pistol"]
 
 			var/dat = "<h1>SHIP STOCKS</h1>"
-			dat += "Treasury: [tres]<br>"
-			dat += "Wood: [mats_wood]<br>"
-			dat += "Cloth: [mats_cloth]<br>"
-			dat += "Rope: [mats_rope]<br>"
-			dat += "Food: [mats_food] doses<br>"
-			dat += "Water: [mats_water] units<br>"
-			dat += "Cannon Ammo: [mats_cannon] balls<br>"
-			dat += "Musket Ammo: [mats_musket] projectiles<br>"
-			dat += "Pistol Ammo: [mats_pistol] projectiles<br>"
+			dat += "<b>Treasury:</b> [tres] reales<br>"
+			dat += "<b>Wood:</b> [mats_wood] logs<br>"
+			dat += "<b>Cloth:</b> [mats_cloth] sheets<br>"
+			dat += "<b>Rope:</b> [mats_rope] coils<br>"
+			dat += "<b>Food:</b> [mats_food] doses<br>"
+			dat += "<b>Water:</b> [mats_water] units<br>"
+			dat += "<b>Cannon Ammo:</b> [mats_cannon] balls<br>"
+			dat += "<b>Musket Ammo:</b> [mats_musket] projectiles<br>"
+			dat += "<b>Pistol Ammo:</b> [mats_pistol] projectiles<br>"
 			H << browse(dat, "window=Ship Stocks")
 	proc/tally_treasure()
 		var/tally = 0
@@ -276,6 +355,7 @@
 		if (nmap)
 			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
 			H << "The ship is facing the <b>[nmap.navdirection]</b>."
+
 /obj/structure/voyage_ropeladder
 	name = "rope ladder"
 	desc = "A strong rope ladder leading up the mast."
@@ -285,6 +365,57 @@
 	density = FALSE
 	anchored = TRUE
 
+/obj/structure/voyage_anchor
+	name = "anchor"
+	desc = "A large iron anchor."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "anchor"
+	layer = 5
+	density = FALSE
+	anchored = TRUE
+
+/obj/structure/voyage_anchor_capstan
+	name = "anchor capstan"
+	desc = "A vertical-axled rotating machine used to raise and lower the ship's anchor."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "capstan"
+	layer = 4
+	density = TRUE
+	anchored = TRUE
+
+	attack_hand(mob/user)
+		if(map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			if (nmap.inzone)
+				if (nmap.ship_anchored)
+					var/resp = WWinput(user, "You are currently in an event, are you sure you want to raise the anchor and leave? It will take two minutes.","Anchor","No",list("Yes","No"))
+					if (resp == "No")
+						return
+					else
+						world << "<big>The ship is getting ready to leave, all crew outside must return within <b>2</b> minutes or be left behind!</big>"
+						spawn(1200)
+							nmap.ship_anchored = TRUE
+							nmap.navmoving = FALSE
+							nmap.abandon_event()
+				else
+					user << "You start pulling the anchor..."
+					if (do_after(user, 60, src))
+						user << "You lower the anchor."
+						nmap.ship_anchored = TRUE
+						nmap.navmoving = FALSE	
+
+			else
+				user << "You start pulling the anchor..."
+				if (do_after(user, 60, src))
+					if (nmap.ship_anchored)
+						user << "You raise the anchor."
+						nmap.ship_anchored = FALSE
+						nmap.navmoving = TRUE
+					else
+						user << "You lower the anchor."
+						nmap.ship_anchored = TRUE
+						nmap.navmoving = FALSE
+	
 /obj/structure/voyage_ropeladder/thin
 	icon_state = "ropeladder_thin"
 

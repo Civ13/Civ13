@@ -299,10 +299,16 @@
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	icon_state = "purple2"
 
+/area/caribbean/sea/top/roofed
+	location = AREA_INSIDE
+
 /area/caribbean/sea/bottom
 	name = "sea"
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	icon_state = "red4"
+
+/area/caribbean/sea/bottom/roofed
+	location = AREA_INSIDE
 
 /area/caribbean/sea/beach
 	name = "Beach"

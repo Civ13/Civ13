@@ -522,6 +522,7 @@
 	var/sailhealth = 100
 	var/rigginghealth = 100
 	var/sailstat = 100
+	var/owner = "ship"
 	
 	New()
 		..()
