@@ -1067,6 +1067,20 @@ var/list/atom_types = null
 	message_admins("[key_name(usr)] manually reloaded crafting recipes.")
 	load_recipes()
 
+/client/proc/load_voyage_event()
+	set name = "Load Event"
+	set category = "Debug"
+
+	if (!check_rights(R_SERVER))	return
+	if (!map || map.ID != MAP_VOYAGE)
+		WWalert(usr, "This only works on Voyage!","Wrong Map")
+		return
+	var/obj/map_metadata/voyage/nmap = map
+	var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("North","South","Random"))
+	var/nam = WWinput(usr, "Which map to load?","Load Map","ship1",list("ship1","ship2","ship3","ship4","ship5","island1","island2"))
+	nmap.load_map(nam,loct)
+	message_admins("[key_name(usr)] manually loaded an event.")
+
 /proc/load_recipes()
 	var/all_craft_lists = flist("config/crafting/")
 	for (var/i in all_craft_lists)

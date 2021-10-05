@@ -1190,7 +1190,7 @@ TURF;21;20;2;/turf/floor/dirt/jungledirt
 TURF;22;20;2;/turf/floor/dirt/jungledirt
 TURF;23;20;2;/turf/floor/dirt/dust
 TURF;24;20;2;/turf/floor/dirt/dust
-TURF;25;20;2;/turf/floor/dirt/dust
+TURF;25;20;2;/turf/floor/dirt/jungledirt
 TURF;26;20;2;/turf/floor/dirt/jungledirt
 TURF;27;20;2;/turf/floor/dirt/dust
 TURF;28;20;2;/turf/floor/dirt/jungledirt

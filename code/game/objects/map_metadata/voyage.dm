@@ -18,7 +18,7 @@
 	ordinal_age = 3
 	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "Transatlantic Voyage"
-	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"
+	mission_start_message = "<font size=4>Your crew of pirates assembles for the first voyage. Will you get rich, or perish like the others?</font>"
 	is_singlefaction = TRUE
 	is_RP = TRUE
 
@@ -200,7 +200,10 @@
 	if (istype(A, /obj/structure/wild) || (!istype(A, /obj/item) && !istype(A, /obj/structure) && !istype(A, /obj/map_metadata) && !istype(A, /obj/covers)))
 		return "SIMPLE_OBJ;[A.x];[A.y];[A.z];[A.type]"
 	else
-		for (var/key in list("name","desc","icon_state","dir","amount"))
+		var/keylist = list("name","desc","icon_state","dir")
+		if (istype(A, /obj/item/stack))
+			keylist += "amount"
+		for (var/key in keylist)
 			if (A.vars[key] && A.vars[key] != initial(A.vars[key]))
 				if (islist(A.vars[key]))
 					if (isemptylist(A.vars[key]))
@@ -247,7 +250,7 @@
 	sleep(1)
 	world.log << "Finished saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
 	world << "<i><b>Finished saving.</b></i>"
-	return
+	return saveloc
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
