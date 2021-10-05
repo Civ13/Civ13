@@ -822,6 +822,7 @@
 #include "code\modules\mob\living\simple_animal\hostile\mammoth.dm"
 #include "code\modules\mob\living\simple_animal\hostile\mimic.dm"
 #include "code\modules\mob\living\simple_animal\hostile\mosquitoes.dm"
+#include "code\modules\mob\living\simple_animal\hostile\native.dm"
 #include "code\modules\mob\living\simple_animal\hostile\pachy.dm"
 #include "code\modules\mob\living\simple_animal\hostile\panther.dm"
 #include "code\modules\mob\living\simple_animal\hostile\pirate.dm"

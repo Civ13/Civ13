@@ -69,6 +69,7 @@
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/british
 	casingtype = null
+	attack_verb = "slashes"
 
 	New()
 		..()

@@ -49,7 +49,7 @@
 	var/melee_damage_lower = FALSE
 	var/melee_damage_upper = FALSE
 	var/attacktext = "attacked"
-	var/attack_sound = null
+	var/attack_sound = 'sound/weapons/bite.ogg'
 	var/friendly = "nuzzles"
 	var/environment_smash = FALSE
 	var/resistance		  = FALSE	// Damage reduction
@@ -86,6 +86,8 @@
 
 	//Radiation Varients
 	var/mutation_variants = list()
+
+	var/attack_verb = "bites"
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe

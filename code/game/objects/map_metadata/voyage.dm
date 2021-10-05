@@ -92,6 +92,8 @@
 	inzone = FALSE
 	ship_anchored = FALSE
 	world << "<big>The ship returns to the high seas.</big>"
+	for(var/obj/structure/grapplehook/G in world)
+		G.undeploy()
 	clear_map()
 	return
 
@@ -198,8 +200,8 @@
 	if (istype(A, /obj/structure/wild) || (!istype(A, /obj/item) && !istype(A, /obj/structure) && !istype(A, /obj/map_metadata) && !istype(A, /obj/covers)))
 		return "SIMPLE_OBJ;[A.x];[A.y];[A.z];[A.type]"
 	else
-		for (var/key in list("name","desc","icon_state","icon","dir"))
-			if (A.vars[key] != initial(A.vars[key]))
+		for (var/key in list("name","desc","icon_state","dir","amount"))
+			if (A.vars[key] && A.vars[key] != initial(A.vars[key]))
 				if (islist(A.vars[key]))
 					if (isemptylist(A.vars[key]))
 						. += "[key]===EMPTYLIST"
@@ -237,7 +239,7 @@
 			for (var/mob/living/A in T)
 				text2file("MOB;[A.x];[A.y];[A.z];[A.type];[A.stat]",F)
 			for (var/obj/O in T)
-				if (!istype(O,/obj/effect/decal) && !istype(O,/obj/screen) && !istype(O,/atom/movable/lighting_overlay) && !istype(O,/obj/map_metadata) && !istype(O,/obj/effect))
+				if (!istype(O,/obj/screen) && !istype(O,/atom/movable/lighting_overlay) && !istype(O,/obj/map_metadata) && !istype(O,/obj/effect))
 					if(istype(O, /obj/structure/closet))
 						for(var/obj/CT in O)
 							text2file(list2text_assoc(CT, O.x, O.y, O.z),F2)
@@ -510,7 +512,7 @@
 					if (resp == "No")
 						return
 					else
-						world << "<big>The ship is getting ready to leave, all crew outside must return within <b>2</b> minutes or be left behind!</big>"
+						world << "<big>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</big>"
 						spawn(1200)
 							nmap.ship_anchored = TRUE
 							nmap.navmoving = FALSE

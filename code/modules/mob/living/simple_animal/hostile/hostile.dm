@@ -49,6 +49,8 @@
 					continue
 				else if (L in friends)
 					continue
+				else if (map.ID == MAP_VOYAGE) //so animals dont slaughter each other in the islands
+					continue
 				else
 					if (!L.stat)
 						stance = HOSTILE_STANCE_ATTACK
@@ -95,11 +97,8 @@
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	if(prob(50))
-		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
-	else
-		playsound(src.loc, 'sound/weapons/bite_2.ogg', 100, TRUE, 2)
-	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
+	playsound(src.loc, attack_sound, 100, TRUE, 2)
+	custom_emote(1, "[attack_verb] [target_mob]!")
 
 	var/damage = pick(melee_damage_lower,melee_damage_upper)
 	if (ishuman(target_mob))

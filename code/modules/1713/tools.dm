@@ -416,11 +416,15 @@
 
 /obj/structure/grapplehook/proc/deploy()
 	var/turf/last_turf = loc
-	for(var/i = 1, i <= 11, i++)
+	for(var/i = 1, i <= 13, i++)
 		var/turf/nT = get_step(last_turf,dir)
 		last_turf = nT
 		if (i>=2)
 			for (var/obj/structure/barricade/ship/Ship in nT)
+				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
+				endpart.develop(src)
+				return
+			if (istype(nT, /turf/floor/beach/sand) || istype(nT, /turf/floor/dirt) || istype(nT, /turf/floor/grass))
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return
