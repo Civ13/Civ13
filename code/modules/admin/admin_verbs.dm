@@ -174,6 +174,7 @@ var/list/admin_verbs_debug = list(
 	/datum/admins/proc/print_crafting_recipes,
 	/datum/admins/proc/redirect_all_players,
 	/client/proc/ticklag,
+	/client/proc/load_voyage_event,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(

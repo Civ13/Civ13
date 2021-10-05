@@ -1076,7 +1076,7 @@ var/list/atom_types = null
 		WWalert(usr, "This only works on Voyage!","Wrong Map")
 		return
 	var/obj/map_metadata/voyage/nmap = map
-	var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("North","South","Random"))
+	var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("north","south","random"))
 	var/nam = WWinput(usr, "Which map to load?","Load Map","ship1",list("ship1","ship2","ship3","ship4","ship5","island1","island2"))
 	nmap.load_map(nam,loct)
 	message_admins("[key_name(usr)] manually loaded an event.")
