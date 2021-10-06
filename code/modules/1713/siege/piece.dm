@@ -22,7 +22,7 @@
 	var/nuclear = FALSE
 	var/reagent_payload = "none"
 	var/maxrange = 50
-	var/maxsway = 3
+	var/maxsway = 4
 	var/sway = 0
 	var/firedelay = 20
 	var/caliber = 75

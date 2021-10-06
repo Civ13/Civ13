@@ -81,9 +81,13 @@
 		qdel(src)
 		return TRUE
 
-	firer = user
+	if (user)
+		firer = user
+		firer_original_dir = firer.dir
+	else
+		firer = null
+		firer_original_dir = dir
 	firer_loc = get_turf(src)
-	firer_original_dir = firer.dir
 	firedfrom = launcher
 
 	original = target

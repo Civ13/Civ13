@@ -47,7 +47,6 @@
 		..()
 		w_class = caliber/2
 
-
 /obj/structure/cannon/modern/tank/voyage
 	spritemod = TRUE
 	w_class = 5
@@ -62,6 +61,66 @@
 	bound_width = 32
 	anchored = TRUE
 	ammotype = /obj/item/cannon_ball
+
+/obj/structure/cannon/modern/tank/voyage/autofire //npc cannon
+	var/stopfiring = FALSE
+	attack_hand(mob/user)
+		return
+
+	New()
+		..()
+		do_autofire_proc()
+
+	proc/do_autofire_proc()
+		spawn(120+rand(-12,26))
+			do_autofire()
+			if (!stopfiring)
+				do_autofire_proc()
+	
+	proc/do_autofire()
+		if (!loaded)
+			var/obj/item/cannon_ball/W = new/obj/item/cannon_ball(src)
+			loaded = W
+			angle = 13+rand(-5,5)
+			sway = rand(-maxsway,maxsway)
+			var/turf/TF
+			switch(dir)
+				if (NORTH)
+					TF = locate(src.x+sway,src.y+angle,z)
+				if (SOUTH)
+					TF = locate(src.x-sway,src.y-angle,z)
+				if (EAST)
+					TF = locate(src.x+angle,src.y-sway,z)
+				if (WEST)
+					TF = locate(src.x-angle,src.y+sway,z)
+			if (!TF)
+				return FALSE
+
+			var/obj/item/projectile/shell/S = new loaded.subtype(loc)
+			S.damage = loaded.damage
+			S.atype = loaded.atype
+			S.caliber = loaded.caliber
+			S.heavy_armor_penetration = loaded.heavy_armor_penetration
+			S.name = loaded.name
+			S.starting = get_turf(src)
+			loaded = null
+			S.launch(TF, null, src, 0, 0)
+			// screen shake
+			for (var/mob/m in player_list)
+				if (m.client)
+					var/abs_dist = abs(m.x - x) + abs(m.y - y)
+					if (abs_dist <= 37)
+						shake_camera(m, 3, (5 - (abs_dist/10)))
+			// smoke
+			spawn (rand(3,4))
+				new/obj/effect/effect/smoke/chem(get_step(src, dir))
+			spawn (rand(5,6))
+				new/obj/effect/effect/smoke/chem(get_step(src, dir))
+			// sound
+			spawn (rand(1,2))
+				var/turf/t1 = get_turf(src)
+				playsound(t1, "artillery_out", 100, TRUE)
+				playsound(t1, "artillery_out_distant", 100, TRUE)
 
 /obj/structure/cannon/modern/tank/german75
 	name = "7.5 cm KwK 40"
