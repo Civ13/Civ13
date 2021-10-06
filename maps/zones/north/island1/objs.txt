@@ -97,7 +97,7 @@ OBJECT;9;15;2;/obj/covers/thatch2;
 OBJECT;9;15;2;/obj/item/stack/material/cloth;name===cloth sheet;desc===A sheet of cloth.
 OBJECT;10;15;2;/obj/covers/thatch2;
 OBJECT;10;15;2;/obj/item/flashlight/tiki_torch;
-OBJECT;10;15;2;/obj/item/stack/money/gems;
+OBJECT;10;15;2;/obj/item/stack/money/gems;icon_state===gem2
 OBJECT;11;15;2;/obj/covers/dirt_wall/blocks;
 OBJECT;12;15;2;/obj/covers/dirt_wall/blocks;
 OBJECT;13;15;2;/obj/item/flashlight/tiki_torch;
@@ -125,7 +125,7 @@ OBJECT;6;16;2;/obj/covers/dirt_wall/blocks;
 OBJECT;7;16;2;/obj/covers/thatch2;
 OBJECT;7;16;2;/obj/structure/religious/monument/cultist/cthulu;
 OBJECT;8;16;2;/obj/covers/thatch2;
-OBJECT;8;16;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
+OBJECT;8;16;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
 OBJECT;9;16;2;/obj/covers/thatch2;
 OBJECT;10;16;2;/obj/covers/thatch2;
 OBJECT;11;16;2;/obj/covers/thatch2;
@@ -155,7 +155,7 @@ OBJECT;8;17;2;/obj/covers/thatch2;
 OBJECT;8;17;2;/obj/item/stack/material/cloth;name===cloth sheet;desc===A sheet of cloth.
 OBJECT;8;17;2;/obj/item/stack/money/gems;icon_state===gem2
 OBJECT;9;17;2;/obj/covers/thatch2;
-OBJECT;9;17;2;/obj/item/stack/money/gems;icon_state===gem2
+OBJECT;9;17;2;/obj/item/stack/money/gems;
 OBJECT;10;17;2;/obj/covers/thatch2;
 OBJECT;10;17;2;/obj/item/flashlight/tiki_torch;
 OBJECT;11;17;2;/obj/covers/dirt_wall/blocks;
@@ -224,7 +224,7 @@ OBJECT;18;20;2;/obj/covers/straw_wall;
 OBJECT;19;20;2;/obj/covers/straw_wall;
 OBJECT;20;20;2;/obj/covers/straw_wall;
 SIMPLE_OBJ;29;20;2;/obj/structure/wild/smallbush
-OBJECT;30;20;2;/obj/structure/religious/remains;icon_state===remains4
+OBJECT;30;20;2;/obj/structure/religious/remains;icon_state===remains3
 OBJECT;33;20;2;/obj/item/stack/material/bone;name===bone piece;desc===A piece of bone.
 SIMPLE_OBJ;34;20;2;/obj/structure/wild/tallgrass2
 SIMPLE_OBJ;35;20;2;/obj/structure/wild/smallbush
@@ -237,7 +237,7 @@ SIMPLE_OBJ;74;20;2;/obj/structure/wild/palm
 SIMPLE_OBJ;9;21;2;/obj/structure/wild/smallbush
 OBJECT;11;21;2;/obj/covers/straw_wall;
 OBJECT;12;21;2;/obj/covers/thatch;
-OBJECT;12;21;2;/obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot;
+OBJECT;12;21;2;/obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot;icon_state===bigclaypot2
 OBJECT;13;21;2;/obj/covers/thatch;
 OBJECT;14;21;2;/obj/covers/thatch;
 OBJECT;14;21;2;/obj/item/flashlight/torch/on;
@@ -252,18 +252,18 @@ OBJECT;20;21;2;/obj/structure/bed/bedroll;
 OBJECT;21;21;2;/obj/covers/straw_wall;
 OBJECT;31;21;2;/obj/item/clothing/suit/storage/jacket/british_captain;
 OBJECT;32;21;2;/obj/item/weapon/material/spear;name===wood spear
-OBJECT;33;21;2;/obj/structure/religious/remains;icon_state===remains2
+OBJECT;33;21;2;/obj/structure/religious/remains;icon_state===remains5
 OBJECT;34;21;2;/obj/item/clothing/head/tricorne_british_army;
-OBJECT;35;21;2;/obj/structure/religious/remains;icon_state===remains5
+OBJECT;35;21;2;/obj/structure/religious/remains;icon_state===remains2
 SIMPLE_OBJ;40;21;2;/obj/structure/wild/tallgrass2
-OBJECT;43;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
-OBJECT;44;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
-OBJECT;45;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
-OBJECT;46;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
-OBJECT;47;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
-OBJECT;48;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
-OBJECT;49;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
-OBJECT;50;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.
+OBJECT;43;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
+OBJECT;44;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
+OBJECT;45;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
+OBJECT;46;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
+OBJECT;47;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
+OBJECT;48;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
+OBJECT;49;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
+OBJECT;50;21;2;/obj/structure/farming/plant/corn;name===young corn plant;desc===A young corn plant.;icon_state===corn-grow2
 SIMPLE_OBJ;56;21;2;/obj/structure/wild/tallgrass2
 SIMPLE_OBJ;61;21;2;/obj/structure/wild/palm
 SIMPLE_OBJ;68;21;2;/obj/structure/wild/palm
@@ -319,21 +319,21 @@ OBJECT;20;23;2;/obj/covers/thatch;
 OBJECT;20;23;2;/obj/structure/bed/bedroll;
 OBJECT;21;23;2;/obj/covers/straw_wall;
 SIMPLE_OBJ;22;23;2;/obj/structure/wild/tallgrass2
-OBJECT;29;23;2;/obj/structure/religious/remains;icon_state===remains6
+OBJECT;29;23;2;/obj/structure/religious/remains;icon_state===remains2
 OBJECT;31;23;2;/obj/item/stack/material/bone;name===bone piece;desc===A piece of bone.
-OBJECT;32;23;2;/obj/structure/religious/remains;icon_state===remains2
+OBJECT;32;23;2;/obj/structure/religious/remains;icon_state===remains6
 OBJECT;33;23;2;/obj/item/clothing/suit/storage/jacket/british_officer_army;
 OBJECT;34;23;2;/obj/item/weapon/gun/projectile/flintlock/brownbess;
 SIMPLE_OBJ;35;23;2;/obj/structure/wild/smallbush
 SIMPLE_OBJ;36;23;2;/obj/structure/wild/smallbush
-OBJECT;43;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
-OBJECT;44;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
-OBJECT;45;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
-OBJECT;46;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
-OBJECT;47;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
-OBJECT;48;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
-OBJECT;49;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
-OBJECT;50;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.
+OBJECT;43;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
+OBJECT;44;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
+OBJECT;45;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
+OBJECT;46;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
+OBJECT;47;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
+OBJECT;48;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
+OBJECT;49;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
+OBJECT;50;23;2;/obj/structure/farming/plant/cotton;name===young cotton plant;desc===A young cotton plant.;icon_state===cotton-grow2
 SIMPLE_OBJ;53;23;2;/obj/structure/wild/smallbush
 SIMPLE_OBJ;60;23;2;/obj/structure/wild/smallbush
 SIMPLE_OBJ;67;23;2;/obj/structure/wild/palm
@@ -352,7 +352,7 @@ SIMPLE_OBJ;28;24;2;/obj/structure/wild/tallgrass2
 SIMPLE_OBJ;28;24;2;/obj/structure/wild/smallbush
 SIMPLE_OBJ;29;24;2;/obj/structure/wild/tallgrass2
 SIMPLE_OBJ;29;24;2;/obj/structure/wild/smallbush
-OBJECT;33;24;2;/obj/structure/religious/remains;
+OBJECT;33;24;2;/obj/structure/religious/remains;icon_state===remains3
 SIMPLE_OBJ;34;24;2;/obj/structure/wild/palm
 SIMPLE_OBJ;36;24;2;/obj/structure/wild/tallgrass2
 SIMPLE_OBJ;52;24;2;/obj/structure/wild/tallgrass2
