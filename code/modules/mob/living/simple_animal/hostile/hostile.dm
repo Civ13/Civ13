@@ -31,7 +31,7 @@
 			var/mob/living/L = A
 			if (istype(L, /mob/living/human))
 				var/mob/living/human/RH = L
-				if (RH.faction_text == faction && !attack_same)
+				if (RH.faction_text == faction && !attack_same && src.faction != PIRATES)
 					continue
 				else if (RH in friends)
 					continue
