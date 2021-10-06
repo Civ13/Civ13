@@ -13,7 +13,7 @@
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
 				var/mob/living/human/H = ML
-				if (H.faction_text == src.faction)
+				if (H.faction_text == src.faction && src.faction != PIRATES)
 					the_targets -= ML
 			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
 				the_targets -= ML

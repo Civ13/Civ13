@@ -78,6 +78,12 @@
 				do_autofire_proc()
 	
 	proc/do_autofire()
+		var/found = FALSE
+		for(var/mob/living/simple_animal/hostile/HH in range(2,src))
+			found = TRUE
+			break
+		if (!found)
+			return
 		if (!loaded)
 			var/obj/item/cannon_ball/W = new/obj/item/cannon_ball(src)
 			loaded = W
@@ -109,7 +115,7 @@
 			for (var/mob/m in player_list)
 				if (m.client)
 					var/abs_dist = abs(m.x - x) + abs(m.y - y)
-					if (abs_dist <= 37)
+					if (abs_dist <= 15)
 						shake_camera(m, 3, (5 - (abs_dist/10)))
 			// smoke
 			spawn (rand(3,4))

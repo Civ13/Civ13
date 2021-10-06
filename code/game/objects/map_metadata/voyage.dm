@@ -21,6 +21,7 @@
 	mission_start_message = "<font size=4>Your crew of pirates assembles for the first voyage. Will you get rich, or perish like the others?</font>"
 	is_singlefaction = TRUE
 	is_RP = TRUE
+	has_hunger = TRUE
 
 	var/longitude = 71 //71 to 77 W
 	var/latitude = 21 //21 to 27 N

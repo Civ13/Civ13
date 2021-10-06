@@ -7,6 +7,28 @@
 	protection_chance = 60
 	var/ispartial = FALSE
 	opacity = TRUE
+
+/obj/structure/barricade/ship/dismantle()
+	new/obj/effect/decal/cleanable/debris(loc)
+	if(prob(50))
+		var/x1 = src.x+pick(-1,1)
+		var/y1 = src.y+pick(-1,1)
+		new/obj/effect/decal/cleanable/debris(locate(x1,y1,src.z))
+	..()
+	return
+/obj/effect/decal/cleanable/debris
+	name = "ship debris"
+	desc = "Bits and pieces blown off a ship."
+	density = FALSE
+	anchored = TRUE
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
+	icon_state = "debris0"
+
+	New()
+		..()
+		icon_state = pick("debris0","debris1","debris2","debris3")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+
 //copied from sandbags
 /obj/structure/barricade/ship/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 

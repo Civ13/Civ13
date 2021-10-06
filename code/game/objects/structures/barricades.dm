@@ -131,7 +131,7 @@
 	switch(severity)
 		if (1.0)
 			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
-			qdel(src)
+			dismantle()
 			return
 		if (2.0)
 			health -= (200 + round(maxhealth * 0.30))

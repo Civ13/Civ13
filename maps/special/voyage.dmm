@@ -61,6 +61,7 @@
 "mD" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper/inside/treasury)
 "mI" = (/obj/structure/barricade/ship/wood/a2,/obj/structure/barricade/ship/wood/a1,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper)
 "nb" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
+"nE" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper)
 "nF" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper)
 "og" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/fishing,/obj/item/weapon/fishing,/obj/item/weapon/fishing/net,/obj/item/weapon/fishing/net,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "om" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/hammer,/obj/item/weapon/hammer,/obj/item/weapon/hammer,/obj/item/weapon/hammer,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
@@ -120,6 +121,7 @@
 "BM" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "Ca" = (/obj/effect/landmark{name = "JoinLatePirateCap"},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Co" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/cutting_board,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"Cu" = (/obj/structure/barricade/ship/blue/bport0,/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper)
 "Cw" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/meat,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "CF" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "CL" = (/obj/covers/repairedfloor/ship,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/obj/structure/cannon/modern/tank/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
@@ -320,7 +322,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaVCimNJWnimWtNJWtAcWAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVyAcAcAcAcWZimvbNJvbimXhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjXqXyXEzGXKYORPVMvqXRHfHfYlHfHfYlHfHfYlHfHfYlHfHfYlHfHfmINbrNrNrNvLYZvsYOvsxrWZZgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYOyBVMVMAMVMVMdaVMnFVMVMVMMnVMVMnFVMVMdaVMVMuTVMVMVMVMvLYOBvBvDxDGvLjnZgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYOyBVMVMAMVMVMdaVMnFVMnEVMMnVMVMnFVMnEdaVMVMuTVMVMVMVMvLYOBvBvDxDGvLjnZgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjimNJimimumYOUTVMVMAMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMuTVMVMVMVMDWvsYOvsDxFgvLmDOnXhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjvtYOvrckYqYORPVMVMFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiiVMVMVMVMUTYOYOPyBvQLvLmDRoRPsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYORPVMZmFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiiETVMVMVMvLvsYOvsYOYObamDRoRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -330,7 +332,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaXjTzrhawAaumYORPVMhjFxVMVMVMVMVMVMVMFLVMwmVMVMVMVMVMVM
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOaYYOyBVMVMFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiiVMVMVMVMUTYOYOYODxcPvLmDRoRPsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaavSYOGFYOYOUTYOUTVMVMAMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMuTVMVMVMVMDWvsYOvsDxGFvLmDeXNnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjcnLCYOYOumYORPVMVMAMVMVMVMVMnFVMVMVMVMVMVMVMnFVMVMVMVMuTVMVMVMVMvLYOYOYOYODGdQHgvkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjCauptLDrumYORPVMlaYcuIuIrfuIuIKQuIuIgHuIuIKQuIuIrfuIuISeNbVMjOVMvLYZvsYOvsxrHgVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjCauptLDrumYORPVMlaYcuIuIrfuIuIKQCuuIgHuIuIKQuICurfuIuISeNbVMjOVMvLYZvsYOvsxrHgVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaarOHPHXHPHPHPHXHPiUdRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAEiUiUiUiUdQHPHPHXHPHPVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
