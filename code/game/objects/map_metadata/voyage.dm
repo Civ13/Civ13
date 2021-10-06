@@ -17,7 +17,7 @@
 	age = "1713"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(PIRATES = 1)
-	battle_name = "Transatlantic Voyage"
+	battle_name = "Pirate life"
 	mission_start_message = "<font size=4>Your crew of pirates assembles for the first voyage. Will you get rich, or perish like the others?</font>"
 	is_singlefaction = TRUE
 	is_RP = TRUE
@@ -85,7 +85,7 @@
 	inzone = TRUE
 	ship_anchored = TRUE
 	world << "<big>The ship arrives at the destination.</big>"
-	load_map("ship1","random")
+	load_map(pick("island1","island2"),"random")
 	return
 
 /obj/map_metadata/voyage/proc/abandon_event()
