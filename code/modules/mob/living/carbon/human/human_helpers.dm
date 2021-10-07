@@ -74,6 +74,10 @@
 	set name = "Sleep"
 	set category = "IC"
 
+	if(map && map.ID == MAP_VOYAGE)
+		WWalert("You cannot use this function on this map.","Disabled",usr)
+		return
+
 	if (usr.sleeping)
 		usr << "<span class = 'red'>You are already sleeping.</span>"
 		return
