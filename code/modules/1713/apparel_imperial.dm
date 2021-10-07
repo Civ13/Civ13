@@ -357,7 +357,7 @@
 	desc = "A small pouch, where you can carry your coins and small objects."
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "coinpouch1"
-	slot_flags = SLOT_ID
+	slot_flags = SLOT_ID | SLOT_BELT | SLOT_POCKET
 	slots = 8
 
 /obj/item/clothing/accessory/storage/coinpouch/wallet

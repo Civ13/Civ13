@@ -214,6 +214,7 @@ var/list/name_to_material
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
 	stack_type = /obj/item/stack/material/diamond
 	flags = MATERIAL_UNMELTABLE
+	integrity = 30000
 
 /material/obsidian
 	name = "obsidian"
@@ -223,6 +224,7 @@ var/list/name_to_material
 	sheet_singular_name = "cut rock"
 	sheet_plural_name = "cut rocks"
 	stack_type = /obj/item/stack/material/obsidian
+	integrity = 15000
 
 /material/barbedwire
 	name = "barbedwire"
@@ -337,6 +339,7 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/gold
+	integrity = 75
 
 /material/copper
 	name = "copper"
@@ -347,6 +350,7 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/copper
+	integrity = 90
 
 /material/plastic
 	name = "plastic"
@@ -356,6 +360,7 @@ var/list/name_to_material
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/plastic
+	integrity = 30
 
 /material/tin
 	name = "tin"
@@ -366,6 +371,7 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/tin
+	integrity = 60
 
 /material/bronze
 	name = "bronze"
@@ -376,6 +382,7 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/bronze
+	integrity = 150
 
 /material/lead
 	name = "lead"
@@ -386,6 +393,7 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/lead
+	integrity = 50
 
 /material/silver
 	name = "silver"
@@ -396,13 +404,14 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/silver
+	integrity = 100
 
 /material/sandstone
 	name = "sandstone"
 	icon_base = "new_stonebrick"
 	icon_colour = "#D9C179"
 	hardness = 45
-	integrity = 500
+	integrity = 90
 	weight = 22
 	shard_type = SHARD_STONE_PIECE
 	door_icon_base = "stone"
@@ -415,7 +424,7 @@ var/list/name_to_material
 	icon_base = "stone_block_wall"
 	icon_colour = "#808080"
 	hardness = 50
-	integrity = 500
+	integrity = 200
 	weight = 22
 	shard_type = SHARD_STONE_PIECE
 	door_icon_base = "stone"
@@ -444,6 +453,7 @@ var/list/name_to_material
 	sheet_singular_name = "brick"
 	sheet_plural_name = "bricks"
 	stack_type = /obj/item/stack/material/stonebrick
+
 /material/brick
 	name = "brick"
 	display_name = "brick"
@@ -459,7 +469,7 @@ var/list/name_to_material
 	name = "flint"
 	icon_colour = "#6f6a64"
 	hardness = 50
-	integrity = 500
+	integrity = 110
 	weight = 22
 	sheet_singular_name = "stone"
 	sheet_plural_name = "stones"
@@ -473,7 +483,7 @@ var/list/name_to_material
 	sheet_plural_name = "pieces"
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	stack_type = /obj/item/stack/material/bone
-
+	integrity = 55
 /*
 /material/stone/marble
 	name = "marble"
@@ -490,7 +500,7 @@ var/list/name_to_material
 	icon_base = "new_stonebrick"
 	icon_colour = "#fffcf0" // marble - white
 	hardness = 45
-	integrity = 500
+	integrity = 160
 	weight = 22
 	shard_type = SHARD_STONE_PIECE
 	door_icon_base = "stone"
@@ -504,7 +514,7 @@ var/list/name_to_material
 	icon_reinf = "reinf_over"
 	icon_colour = "#666666"
 	hardness = 60
-	integrity = 300
+	integrity = 350
 	hitsound = 'sound/weapons/genhit.ogg'
 	door_icon_base = "metal"
 	stack_type = /obj/item/stack/material/steel
@@ -513,7 +523,7 @@ var/list/name_to_material
 	name = "glass"
 	icon_colour = "#00E1FF"
 	hardness = 30
-	integrity = 100
+	integrity = 15
 	weight = 15
 	opacity = 0.3
 	shard_type = SHARD_SHARD
@@ -541,6 +551,7 @@ var/list/name_to_material
 	sheet_plural_name = "ingots"
 	hitsound = 'sound/weapons/smash.ogg'
 	stack_type = /obj/item/stack/material/iron
+	integrity = 250
 
 /material/iron/indestructable
 	name = "indestructable"
@@ -553,7 +564,7 @@ var/list/name_to_material
 	icon_base = "wood"
 	icon_colour = "#824B28"
 	hardness = 40
-	integrity = 50
+	integrity = 39
 	weight = 18
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER
@@ -585,7 +596,7 @@ var/list/name_to_material
 	icon_base = "wood"
 	icon_colour = "#414833"
 	hardness = 45
-	integrity = 50
+	integrity = 45
 	weight = 15
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER

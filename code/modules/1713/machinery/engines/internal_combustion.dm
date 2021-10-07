@@ -82,22 +82,23 @@
 /obj/structure/engine/internal/turn_on(var/mob/user = null)
 	if (broken)
 		user << "\The [src] is broken, you can't turn it on!"
+		return
 	if (fueltank != null)
 		var/done = FALSE
 		for (var/F in fuels)
 			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelefficiency*5) && done == FALSE)
-				on = TRUE
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
 				playsound(loc, starting_snd, 35, FALSE, 3)
-				update_icon()
-				running()
-				for (var/obj/structure/cable/CB in connections)
-					CB.power_on(maxpower)
-				spawn(40)
+				spawn(starting_snd_len)
+					on = TRUE
 					running_sound()
-				done = TRUE
-				return
+					update_icon() //Having the update_icon here means that the icon for it being on doesn't start until after the spawn which is arguably a downside, maybe patchable
+					running()
+					for (var/obj/structure/cable/CB in connections)
+						CB.power_on(maxpower)
+					done = TRUE
+	return
 
 
 /obj/structure/engine/internal/running()
@@ -216,7 +217,7 @@
 
 /obj/structure/engine/internal/turbine
 	name = "turbine engine"
-	desc = "A turbine engine using a air compressor. High Power-To-Weight ratio and can run on a lot of fuels, but has bad fuel economy."
+	desc = "A turbine engine using an air compressor. High Power-To-Weight ratio and can run on a lot of fuels, but has bad fuel economy."
 	icon = 'icons/obj/engines32.dmi'
 	icon_state = "turbine_static"
 	engineclass = "turbine"
@@ -226,9 +227,13 @@
 	fuelefficiency = 0.4
 	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil", "fat_oil")
 
-	starting_snd = 'sound/machines/turbine_starting.ogg'
-	running_snd = 'sound/machines/turbine_loop.ogg'
-	ending_snd = 'sound/machines/turbine_ending.ogg'
+	starting_snd = 'sound/machines/atomic_turbine_exterior_starting.ogg'
+	running_snd = 'sound/machines/atomic_turbine_exterior_loop.ogg'
+	ending_snd = 'sound/machines/atomic_turbine_exterior_ending.ogg'
+
+	starting_snd_len = 39
+	running_snd_len = 37
+
 /obj/structure/engine/internal/diesel
 	name = "diesel engine"
 	desc = "A heavy diesel engine, using compression instead of spark plugs. High torque and fuel efficiency."

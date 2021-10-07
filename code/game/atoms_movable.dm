@@ -31,6 +31,8 @@
 	var/error = 0
 	var/area/a = null
 
+	var/load_datums = 1
+	
 /atom/movable/New()
 	..()
 	if (auto_init && ticker && ticker.current_state == GAME_STATE_PLAYING)

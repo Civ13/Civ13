@@ -91,6 +91,24 @@
 		..()
 		reagents.add_reagent("capsaicin", 8)
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/liquorice
+	name = "liquorice"
+	icon_state = "liquorice_root"
+	desc = "A very strange tasting root."
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("liquorice", 8)
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/celery
+	name = "celery"
+	icon_state = "celery_stalk"
+	desc = "Tastes like green."
+	decay = 60*600
+	New()
+		..()
+		reagents.add_reagent("celery", 8)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/agave
 	name = "agave"
 	icon_state = "agave_leaf"
@@ -107,7 +125,7 @@
 	satisfaction = 2
 	New()
 		..()
-		reagents.add_reagent("coffee", 15)
+		reagents.add_reagent("parsley", 15)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/coffee
 	name = "green coffee"

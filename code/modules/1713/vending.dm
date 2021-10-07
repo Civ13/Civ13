@@ -25,6 +25,15 @@
 
 	)
 
+/obj/structure/vending/muskets/small
+	name = "musket rack"
+	desc = "A rack of war muskets."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/musket = 5,
+
+	)
+
 /obj/structure/vending/muskets/english
 	name = "English musket rack"
 	desc = "A rack of war muskets."

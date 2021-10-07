@@ -35,7 +35,7 @@
 
 /obj/item/sign
 	name = "sign"
-	desc = ""
+	desc = "This sign has come loose, maybe you could fasten it somewhere."
 	icon = 'icons/obj/decals.dmi'
 	w_class = 3		//big
 	var/sign_state = ""
@@ -146,6 +146,7 @@
 	name = "Minefield"
 	desc = "Achtung! Minen."
 	icon_state = "minefield"
+	flammable = FALSE
 
 /obj/structure/sign/exit/New()
 	..()

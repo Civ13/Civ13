@@ -13,7 +13,7 @@
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
 				var/mob/living/human/H = ML
-				if (H.faction_text == src.faction)
+				if (H.faction_text == src.faction && src.faction != PIRATES)
 					the_targets -= ML
 			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
 				the_targets -= ML
@@ -31,7 +31,7 @@
 			var/mob/living/L = A
 			if (istype(L, /mob/living/human))
 				var/mob/living/human/RH = L
-				if (RH.faction_text == faction && !attack_same)
+				if (RH.faction_text == faction && !attack_same && src.faction != PIRATES)
 					continue
 				else if (RH in friends)
 					continue
@@ -48,6 +48,8 @@
 				if (L.faction == faction && !attack_same)
 					continue
 				else if (L in friends)
+					continue
+				else if (map.ID == MAP_VOYAGE) //so animals dont slaughter each other in the islands
 					continue
 				else
 					if (!L.stat)
@@ -95,11 +97,8 @@
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	if(prob(50))
-		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
-	else
-		playsound(src.loc, 'sound/weapons/bite_2.ogg', 100, TRUE, 2)
-	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
+	playsound(src.loc, attack_sound, 100, TRUE, 2)
+	custom_emote(1, "[attack_verb] [target_mob]!")
 
 	var/damage = pick(melee_damage_lower,melee_damage_upper)
 	if (ishuman(target_mob))

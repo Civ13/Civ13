@@ -2,7 +2,7 @@
 
 /obj/structure/machinery/factory
 	name = "furnace"
-	desc = "An industrial furnace, used to smelter minerals."
+	desc = "An industrial furnace, used to smelt minerals."
 	icon = 'icons/obj/machines/coinsmelter.dmi'
 	icon_state = "coinsmelter"
 	layer = 2.9

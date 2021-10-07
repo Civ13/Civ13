@@ -182,7 +182,7 @@ default behaviour is:
 	set name = "Succumb"
 	set desc = "Succumb to death."
 	set category = "IC"
-	if (map.civilizations || getTotalDmg() > 90)
+	if (getTotalDmg() > 60)
 		if (WWinput(src, "Are you sure you want to succumb? You only live once.", "", "Cancel", list("Succumb", "Cancel")) == "Succumb")
 			adjustBrainLoss(300)
 			death()

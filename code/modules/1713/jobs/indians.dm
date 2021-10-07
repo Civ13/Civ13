@@ -29,8 +29,11 @@
 	var/obj/item/clothing/accessory/armband/indian2_a = new /obj/item/clothing/accessory/armband/indian2(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indian2_a, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/thrown/tomahawk(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/thrown/tomahawk(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/bone_battleaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_shoulder)
+
 	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Elder</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
@@ -66,13 +69,14 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianshaman_a, H)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/leather/shaman(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/skullmask(H), slot_wear_mask)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_r_store)
 	give_random_name(H)
 	H.f_style = "Shaved"
@@ -122,7 +126,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 	else if (randweapon == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/bone_battleaxe(H), slot_l_hand)
 	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")

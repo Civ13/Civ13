@@ -128,7 +128,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					call(callback[1], callback[2])(newwinner)
 				callback = null
 		else
-			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (75% is needed)</b>"
+			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (59% is needed)</b>"
 		log_vote(text)
 		world << "<font color='purple'>[text]</font>"
 		return .
@@ -190,7 +190,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(vote_type)
 				if ("restart")
 					choices.Add("Restart Round","Continue Playing")
-					win_threshold = 0.65
+					win_threshold = 0.59
 				if ("epoch")
 					for (var/epoch in processes.epochswap.epochs)
 						if (!default)
@@ -330,8 +330,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
 						usr << "You can't start restart votes if you are not playing."
 						return FALSE
-					if (map.nomads && clients.len < 10 && ((world.time-round_start_time)>36000) && !usr.client.holder)
-						usr << "You can't start restart votes if the server population is lower than 10 and the round has been going for over an hour."
+					if ((map.nomads || map.is_RP) && clients.len < 3 && ((world.time-round_start_time)>108000) && !usr.client.holder)
+						usr << "You can't start restart votes if the server population is lower than 3 and the round has been going for over 3 hour."
 						return FALSE
 					initiate_vote("restart",usr.key)
 			if ("custom")

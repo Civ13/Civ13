@@ -30,7 +30,7 @@
 			visible_message("[user] closes the blast doors!")
 			open = FALSE
 			cooldown = world.time
-			for (var/obj/structure/gate/G in range(distance,src.loc))
+			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/rollermove.ogg', 100)
 				G.icon_state = "blast_closing"
 				spawn(10)
@@ -43,7 +43,7 @@
 			visible_message("[user] opens the blast doors!")
 			open = TRUE
 			cooldown = world.time
-			for (var/obj/structure/gate/G in range(distance,src.loc))
+			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/lever.ogg', 100)
 				G.icon_state = "blast_opening"
 				spawn(10)
@@ -62,22 +62,24 @@
 			open = FALSE
 			cooldown = world.time
 			for (var/obj/structure/gate/G in range(distance,src.loc))
-				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-				G.icon_state = "gate_closing"
-				spawn(30)
-					G.icon_state = "gate0"
-					G.density = TRUE
+				if (G.name == "gate")
+					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+					G.icon_state = "gate_closing"
+					spawn(30)
+						G.icon_state = "gate0"
+						G.density = TRUE
 			return
 		else
 			visible_message("[user] opens the gates!")
 			open = TRUE
 			cooldown = world.time
 			for (var/obj/structure/gate/G in range(distance,src.loc))
-				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-				G.icon_state = "gate_opening"
-				spawn(30)
-					G.icon_state = "gate1"
-					G.density = FALSE
+				if (G.name == "gate")
+					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+					G.icon_state = "gate_opening"
+					spawn(30)
+						G.icon_state = "gate1"
+						G.density = FALSE
 			return
 
 /obj/structure/gatecontrol/sandstone/attack_hand(var/mob/user as mob)
@@ -194,6 +196,7 @@
 	else
 		..()
 /obj/structure/gate/sandstone
+	name = "sandstone gate"
 	icon_state = "s_gate0"
 	anchored = TRUE
 	density = TRUE

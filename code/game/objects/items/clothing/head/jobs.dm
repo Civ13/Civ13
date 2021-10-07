@@ -47,8 +47,8 @@
 	icon_state = "chaplain"
 
 /obj/item/clothing/suit/storage/jacket/chaplain
-	name = "preacher's hood"
-	desc = "Typical priest hood."
+	name = "preacher's robe"
+	desc = "Typical priest robe."
 	icon_state = "chaplain_hoodie"
 
 //Mime

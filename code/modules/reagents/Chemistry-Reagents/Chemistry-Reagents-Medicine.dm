@@ -276,7 +276,7 @@
 	metabolism = REM * 0.75
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
-    
+
 /datum/reagent/saline_glucose/affect_blood(var/mob/living/human/M, var/alien, var/removed)
     M.add_chemical_effect(CE_BLOODRESTORE, 4 * removed)
 
@@ -544,3 +544,28 @@
 	M.add_chemical_effect(CE_PULSE, 9)
 	M.mood += removed*100
 
+/datum/reagent/sterilizine
+	name = "Sterilizine"
+	description = "Sterilizes wounds in preparation for surgery and thoroughly removes blood."
+	taste_description = "bitterness"
+	reagent_state = LIQUID
+	color = "#c8a5dc"
+	touch_met = 5
+
+/datum/reagent/sterilizine/affect_touch(var/mob/living/human/M, var/alien, var/removed)
+	if(M.germ_level < INFECTION_LEVEL_TWO) // rest and antibiotics is required to cure serious infections
+		M.germ_level -= min(removed*20, M.germ_level)
+	for(var/obj/item/I in M.contents)
+		I.was_bloodied = null
+	M.was_bloodied = null
+
+/datum/reagent/sterilizine/touch_obj(var/obj/O)
+	O.germ_level -= min(volume*20, O.germ_level)
+	O.was_bloodied = null
+
+/datum/reagent/sterilizine/touch_turf(var/turf/T)
+	T.germ_level -= min(volume*20, T.germ_level)
+	for(var/obj/item/I in T.contents)
+		I.was_bloodied = null
+	for(var/obj/effect/decal/cleanable/blood/B in T)
+		qdel(B)

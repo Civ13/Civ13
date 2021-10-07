@@ -34,7 +34,7 @@
 	var/healing_stage = 0 //for beds
 /mob/living/human/Life()
 
-	handle_zoom_stuff()
+	handle_look_stuff()
 	if (!map.civilizations && !map.nomads && !map.is_RP)
 		process_awards()
 	if (transforming)
@@ -726,7 +726,7 @@
 
 		if (heatDamageFromClothingTimer >= 35)
 			if (prob(50))
-				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
+				src << "<span class = 'warning'><big>You are very uncomfortable. Remove the coat.</big></span>"
 			heatDamageFromClothingTimer = 6
 			adjustFireLoss(2)
 
@@ -1715,7 +1715,7 @@
 					if (0 to 13)
 						if (prob(5))
 							emote("shiver")
-							src << "You feel slighly sick."
+							src << "You feel slightly sick."
 						return
 					if (13 to 25)
 						if (prob(10))

@@ -33,6 +33,8 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked" 
+
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
 	if (temperature >= 380)
@@ -325,7 +327,7 @@
 		attack_hand(user)//keys!
 	return TRUE // for key_doors
 
-/obj/structure/simple_door/key_door/custom/jail/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/simple_door/key_door/custom/jail/steeljail/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
 		if (W.code == custom_code)
 			locked = !locked

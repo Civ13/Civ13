@@ -5,6 +5,8 @@
 
 	var/ranged = FALSE
 	var/rapid = FALSE //If fires faster
+	var/firedelay = 5
+	var/last_fire = 0
 	var/casingtype = null
 	var/projectiletype = null
 	var/fire_desc = "fires"
@@ -154,30 +156,32 @@
 			GN.active = TRUE
 			spawn(GN.det_time)
 				GN.prime()
-	spawn(rand(0,2))
-		switch(rapid)
-			if(0) //singe-shot
-				Shoot(target_mob, src.loc, src)
-				if(casingtype)
-					new casingtype
-			if(1) //semi-auto
-				var/shots = rand(1,3)
-				var/s_timer = 1
-				for(var/i = 1, i<= shots, i++)
-					spawn(s_timer)
-						Shoot(target_mob, src.loc, src)
-						if(casingtype)
-							new casingtype(get_turf(src))
-					s_timer+=3
-			if (2) //automatic
-				var/shots = rand(3,5)
-				var/s_timer = 1
-				for(var/i = 1, i<= shots, i++)
-					spawn(s_timer)
-						Shoot(target_mob, src.loc, src)
-						if(casingtype)
-							new casingtype(get_turf(src))
-					s_timer+=2
+	spawn(2)
+		if (world.time>last_fire+firedelay)
+			last_fire = world.time
+			switch(rapid)
+				if(0) //singe-shot
+					Shoot(target_mob, src.loc, src)
+					if(casingtype)
+						new casingtype
+				if(1) //semi-auto
+					var/shots = rand(1,3)
+					var/s_timer = 1
+					for(var/i = 1, i<= shots, i++)
+						spawn(s_timer)
+							Shoot(target_mob, src.loc, src)
+							if(casingtype)
+								new casingtype(get_turf(src))
+						s_timer+=3
+				if (2) //automatic
+					var/shots = rand(3,5)
+					var/s_timer = 1
+					for(var/i = 1, i<= shots, i++)
+						spawn(s_timer)
+							Shoot(target_mob, src.loc, src)
+							if(casingtype)
+								new casingtype(get_turf(src))
+						s_timer+=2
 	return
 
 /mob/living/simple_animal/hostile/human/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)

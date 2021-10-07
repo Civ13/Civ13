@@ -266,8 +266,6 @@
 
 /datum/job/dutch/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
 
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -282,6 +280,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/dutch_sailor3(H), slot_w_uniform)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
 
 	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Quartier-ma�tre</b> orders!")
 	H.setStat("strength", STAT_NORMAL)

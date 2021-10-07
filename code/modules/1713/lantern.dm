@@ -117,6 +117,7 @@
 	anchored = FALSE
 	unlimited = TRUE
 	fuel = 100000
+	unlimited = TRUE
 
 /obj/item/flashlight/lamp/littlelamp
 	on_state = "littlelamp-on"
@@ -164,13 +165,13 @@
 
 /obj/item/flashlight/tiki_torch
 	name = "tiki torch"
-	icon_state = "tiki torch"
 	desc = "A tiki style torch."
 	brightness_on = 8			// luminosity when on
 	light_color = rgb(254, 200, 200) // red tint
 	on_state = "tikitorch-on"
 	off_state = "tikitorch"
 	item_state = "torch"
+	icon_state = "tikitorch"
 	value = 10
 	fuel = 600 // 10 mins
 	anchored = FALSE
@@ -224,6 +225,7 @@
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
 	slot_flags = SLOT_BELT|SLOT_MASK
+	unlimited = TRUE
 
 /obj/item/flashlight/modern
 	unlimited = TRUE

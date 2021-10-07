@@ -470,12 +470,6 @@
 			usr << "This refinery will now produce <b>Diesel</b>."
 			return
 /obj/structure/refinery/attack_hand(var/mob/living/human/H)
-	if (isemptylist(barrel))
-		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
-		return
-	if (volume <= 0 && volume_di <= 0 && volume_et <= 0)
-		H << "<span class = 'notice'>The refinery is empty! Put some percursors in first.</span>"
-		return
 	if (active)
 		active = FALSE
 		powered = FALSE
@@ -484,8 +478,14 @@
 		powersource.lastupdate2 = world.time
 		H << "You power off the refinery."
 		return
+	if (isemptylist(barrel))
+		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
+		return
+	if (volume <= 0 && volume_di <= 0 && volume_et <= 0)
+		H << "<span class = 'notice'>The refinery is empty! Put some precursors in first.</span>"
+		return
 
-	else if (!active && powersource && !powersource.powered)
+	if (!active && powersource && !powersource.powered)
 		H << "<span class = 'notice'>There is not enough power to start the refinery.</span>"
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
@@ -806,9 +806,6 @@
 
 
 /obj/structure/bakelizer/attack_hand(var/mob/living/human/H)
-	if (volume < 1)
-		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
-		return
 	if (active)
 		active = FALSE
 		powered = FALSE
@@ -818,8 +815,11 @@
 		H << "You power off the [src]."
 		update_icon()
 		return
+	if (volume < 1)
+		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
+		return
 
-	else if (!active && !powersource.powered)
+	if (!active && !powersource.powered)
 		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
 		update_icon()
 		return
@@ -935,12 +935,13 @@
 	..()
 	storage.attackby(W, user)
 	update_icon()
-/////////////////////////////////////////////////////////////////////////////////Katana Wall Stand////////////////////////
+///////////////////////////////////////////////////////////////////////////////Katana Wall Stand////////////////////////
 /obj/structure/katana_stand
 	name = "katana display"
 	desc = "A display for a katana mounted to a wall."
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "katana_stand"
+	item_state = "katana_stand"
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -948,23 +949,25 @@
 	density = FALSE
 	opacity = FALSE
 	var/obj/item/weapon/storage/internal/storage
-	var/max_storage = 1
+	var/max_storage = 3
 	New()
 		..()
 		storage.can_hold = list(/obj/item/clothing/accessory/storage/sheath/katana, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/material/sword/katana)
-/obj/item/weapon/storage/bag/trash/update_icon()
-	if (contents.len == FALSE)
-		icon_state = "katana_stand"
-	else if (contents.len >= 1)
+
+/obj/structure/katana_stand/update_icon()
+	if (storage.contents.len > 0)
 		icon_state = "katana_stand1"
+	else
+		icon_state = "katana_stand"
 
 /obj/structure/katana_stand/New()
 	..()
 	storage = new/obj/item/weapon/storage/internal(src)
-	storage.storage_slots = max_storage
+	storage.storage_slots = 1
 	storage.max_w_class = 3
 	storage.max_storage_space = max_storage*3
 	update_icon()
+
 /obj/structure/katana_stand/Destroy()
 	qdel(storage)
 	storage = null
@@ -976,15 +979,19 @@
 		update_icon()
 	else
 		return
+
 /obj/structure/katana_stand/MouseDrop(obj/over_object as obj)
 	if (storage.handle_mousedrop(usr, over_object))
 		..(over_object)
 		update_icon()
+
 /obj/structure/katana_stand/attackby(obj/item/W as obj, mob/user as mob)
 	..()
 	storage.attackby(W, user)
 	update_icon()
+
 /obj/structure/katana_stand/full
+
 /obj/structure/katana_stand/full/New()
 	..()
 	new /obj/item/weapon/material/sword/katana(src)

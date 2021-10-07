@@ -102,19 +102,22 @@
 		return ..()
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/hatchet))
-		var/obj/item/weapon/material/hatchet/HT = W
+	if(istype(W,/obj/item/weapon/material/hatchet) ||istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe))
+		var/obj/item/weapon/material/HT = W
 
 		visible_message("<span class='danger'>[user] begins to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
+
 		if (do_after(user, 50*HT.chopping_speed, user.loc))
 			health = 0
 			try_destroy()
-			if (prob(50))
-				if (istype(user, /mob/living/human))
-					var/mob/living/human/H = user
-					H.adaptStat("strength", 1)
+			HT.health = HT.health - 0.25
+			if (HT.health <=0)
+				HT.shatter()
+			if (istype(user, /mob/living/human))
+				var/mob/living/human/H = user
+				H.adaptStat("strength", 1)
 			return
 	else
 		switch(W.damtype)
@@ -158,6 +161,7 @@
 	amount = 5
 	layer = 5.11
 
+
 /obj/structure/wild/tree/cactus
 	name = "cactus"
 	icon = 'icons/obj/flora/bigtrees.dmi'
@@ -171,6 +175,7 @@
 	layer = 5.11
 	health = 50
 	maxhealth = 50
+	pixel_x = -16
 
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
@@ -185,6 +190,7 @@
 	branches = 3
 	max_branches = 3
 	leaves = 0
+	pixel_x = -16
 
 /obj/structure/wild/tree/dead_tree/destroyed
 	name = "destroyed tree"
@@ -220,6 +226,7 @@
 	branches = 3
 	max_branches = 3
 	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
+	pixel_x = -16
 
 /obj/structure/wild/tree/live_tree/snow
 	name = "tree"
@@ -708,6 +715,7 @@
 	max_leaves = 3
 	branches = 3
 	max_branches = 3
+	pixel_x = -16
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))

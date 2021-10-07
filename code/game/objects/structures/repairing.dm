@@ -26,25 +26,31 @@
 	var/itemtype3 = null
 	var/itemtype4 = null
 	var/itemtype5 = null
+	var/itemtype6 = null
+	var/itemtype7 = null
+	var/itemtype8 = null
+	var/itemtype9 = null
+	var/itemtype10 = null
+	var/itemtype11 = null
 	var/actiontext = "repair" //Plural, flavortext
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 
 /obj/structure/repair/gun
 	name = "firearm maintenance bench"
-	desc = "A bench with several tools for cleaning and repairing firearms." //Noise to do when doing the action.
+	desc = "A bench with several tools for cleaning and repairing firearms."
 	repairamount = 25
 	damageamount = 1
 	itemtype1 = /obj/item/weapon/gun
 	itemtype2 = null
 	itemtype3 = null
 	itemtype4 = null
-	actiontext = "repair"
+	actiontext = "restore"
 	delay = 180
 	noise = 'sound/effects/woodfile.ogg'
 
 /obj/structure/repair/attackby(obj/item/M as obj, mob/user as mob)
-	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4))
+	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9) || istype(M, itemtype10) || istype(M, itemtype11))
 		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
 		icon_state = activesprite
 		playsound(src,noise,40,1)
@@ -64,7 +70,7 @@
 		..()
 		return
 	else
-		user << "<span class='notice'>You cannot repair this with a [src.name]!</span>"
+		user << "<span class='notice'>You cannot [actiontext] this with a [src.name]!</span>"
 		return
 /obj/structure/repair/grindstone
 	name = "grindstone"
@@ -73,12 +79,20 @@
 	idlesprite = "grindstone"
 	activesprite = "grindstone_on"
 	itemtype1 = /obj/item/weapon/material/sword
-	itemtype2 = /obj/item/weapon/melee
+	itemtype2 = /obj/item/weapon/material/spear
 	itemtype3 = /obj/item/weapon/material/kitchen/utensil/knife
 	itemtype4 = /obj/item/weapon/material/hatchet
+	itemtype5 = /obj/item/weapon/material/boarding_axe
+	itemtype6 = /obj/item/weapon/material/machete
+	itemtype7 = /obj/item/weapon/material/machete1
+	itemtype8 = /obj/item/weapon/material/twohanded
+	itemtype9 = /obj/item/weapon/material/thrown
+	itemtype10 = /obj/item/weapon/material/shovel
+	itemtype11 = /obj/item/weapon/material/pickaxe
 	repairamount = 8 //0 is full repair, any other number adds until it hits max.
 	damageamount = 2 //How much max durability to take away.
 	delay = 100
+	actiontext = "sharpen"
 
 /obj/structure/repair/workbench
 	name = "armor repair workbench"
@@ -105,6 +119,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
+
 /obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
 	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
 		switch(alert(user,"Ae you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!","Serial number filing","Yes","No"))

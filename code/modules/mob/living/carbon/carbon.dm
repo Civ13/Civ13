@@ -112,6 +112,10 @@
 	hand = !( hand )
 	for (var/obj/screen/inventory/hand/H in HUDinventory)
 		H.update_icon()
+	if (istype(src, /mob/living/human))
+		var/mob/living/human/H = src
+		if (H.using_look())
+			look_into_distance(src, FALSE)
 	return
 
 /mob/living/human/proc/activate_hand(var/selhand) //0 or "r" or "right" for right hand; TRUE or "l" or "left" for left hand.

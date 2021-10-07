@@ -10,7 +10,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!istype(src))
 		return
 
-	if (using_zoom())
+	if (src.using_look())
 		return
 
 	var/obj/item/I = get_active_hand()

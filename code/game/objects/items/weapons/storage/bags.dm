@@ -32,19 +32,23 @@
 	icon_state = "trashbag0"
 	item_state = "trashbag"
 
-	w_class = 4
+	w_class = 1
 	max_w_class = 2
 	can_hold = list() // any
 
 /obj/item/weapon/storage/bag/trash/update_icon()
-	if (contents.len == FALSE)
-		icon_state = "trashbag0"
-	else if (contents.len < 12)
+	if (contents.len >= 2 && contents.len < 4)
 		icon_state = "trashbag1"
-	else if (contents.len < 21)
+		w_class = 2
+	else if (contents.len >= 4 && contents.len < 7)
 		icon_state = "trashbag2"
-	else icon_state = "trashbag3"
-
+		w_class = 3
+	else if (contents.len >= 7)
+		icon_state = "trashbag3"
+		w_class = 4
+	else
+		icon_state = "trashbag0"
+		w_class = 1
 
 // -----------------------------
 //		Plastic Bag

@@ -18,6 +18,15 @@
 	atype = "HE"
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
 
+/obj/item/projectile/shell/cannonball
+	icon_state = "shell"
+	atype = "cannonball"
+/obj/item/projectile/shell/cannonball/chainshot
+	icon_state = "chainshot"
+	atype = "chainshot"
+/obj/item/projectile/shell/cannonball/grapeshot
+	icon_state = "buckshot"
+	atype = "grapeshot"
 /obj/item/projectile/shell/get_structure_damage()
 	if (damage_type == BRUTE || damage_type == BURN)
 		return damage/2
@@ -72,9 +81,13 @@
 		qdel(src)
 		return TRUE
 
-	firer = user
+	if (user)
+		firer = user
+		firer_original_dir = firer.dir
+	else
+		firer = null
+		firer_original_dir = dir
 	firer_loc = get_turf(src)
-	firer_original_dir = firer.dir
 	firedfrom = launcher
 
 	original = target

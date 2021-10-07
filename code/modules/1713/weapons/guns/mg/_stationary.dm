@@ -18,7 +18,7 @@
 	desc = "a large machinegun."
 	icon_state = ""
 	item_state = ""
-	layer = MOB_LAYER + 1
+	layer = MOB_LAYER + 3
 	anchored = TRUE
 	density = TRUE
 	w_class = 6
@@ -38,6 +38,8 @@
 	var/user_old_y = FALSE
 
 	var/mob/last_user = null
+
+	var/zoom_amount = 10
 
 	gun_type = GUN_TYPE_MG
 
@@ -124,13 +126,13 @@
 
 	for (var/datum/action/A in actions)
 		if (istype(A, /datum/action/toggle_scope))
+			var/mob/living/human/H = user
 			if (user.client.pixel_x | user.client.pixel_y)
-				for (var/datum/action/toggle_scope/T in user.actions)
-					if (T.scope.zoomed)
-						T.scope.zoom(user, FALSE)
+				if (H.looking)
+					H.look_into_distance(user, FALSE)
 			var/datum/action/toggle_scope/S = A
-			S.boundto = src
-			S.scope.zoom(user, TRUE, TRUE)
+			S.boundto = src//The lines including this line and the line below this call to two different files, could be helpful to combine the functions of the files
+			H.look_into_distance(user, TRUE, TRUE)
 			last_user = user
 			break
 
@@ -139,10 +141,10 @@
 
 	for (var/datum/action/A in actions)
 		if (istype(A, /datum/action/toggle_scope))
+			var/mob/living/human/H = user
 			var/datum/action/toggle_scope/TS = A
 			if (TS.boundto == src)
-				var/datum/action/toggle_scope/S = A
-				S.scope.zoom(user, FALSE)
+				H.look_into_distance(user, FALSE)
 				break
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/is_used_by(mob/user)

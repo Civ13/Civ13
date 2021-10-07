@@ -167,7 +167,7 @@
 			switch(radiation)
 				if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE) //0.15 Gy, equal to 1 year smoking 1 1/2 packs of cigarettes a day. Avg dose for Chernobyl recovery workers
 					if (prob(0.5))
-						src << "You feel slighly nauseous."
+						src << "You feel slightly nauseous."
 				if(RAD_LEVEL_MODERATE to RAD_LEVEL_HIGH)//Gives radiation poisoning (passing out, twitches, severe erytrema)
 					if (prob(1))
 						src << "You feel nauseous."

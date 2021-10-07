@@ -96,6 +96,7 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
+
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (map.ID == MAP_CIVILIZATIONS)
@@ -169,10 +170,32 @@
 			else
 				if (gender == "male")
 					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+					if (prob(20))
+						equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(src), slot_head)
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+
+		else if (map.ordinal_age == 4)
+			if (gender == "male")
+				equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+
+		else if (map.ordinal_age == 5)
+			if (gender == "male")
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+
 		else if (map.ordinal_age == 6)
 			if (map.ID == MAP_NATIONSRP)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
@@ -191,6 +214,38 @@
 						else if (original_job_title == "Civilization B Citizen")
 							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
 							update_icons(1)
+			else
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+
+
+		else if (map.ordinal_age == 7)
+			if (gender == "male")
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+
+		else if (map.ordinal_age == 8)
+			if (gender == "male")
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/clothing/under/modern7(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+
+	else
+		if (s_tone <= -175)
+			equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
+
 
 //coats/////////////////////////////////////////////////
 	spawn(5)
@@ -212,7 +267,7 @@
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 			w_uniform = null
-			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/arabic_robe(src), slot_wear_suit)
 			update_inv_w_uniform(1)
 		if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
 			var/f_res = FALSE
@@ -684,7 +739,7 @@
 					remove_language("English")
 					for (var/datum/language/crab/A in languages)
 						default_language = A
-					name = species.get_random_japanese_name(gender)
+					name = species.get_random_crab_name(gender)
 					real_name = name
 					give_clothes()
 					return

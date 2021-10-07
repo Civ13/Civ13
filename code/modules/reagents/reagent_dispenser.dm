@@ -24,7 +24,7 @@
 
 	var/custom_code = 0
 	var/locked = 0
-
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;custom_code;locked"
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (istype(W, /obj/item/weapon/pen))
 			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)

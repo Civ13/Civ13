@@ -1,7 +1,7 @@
 /obj/map_metadata/alleyway
 	ID = MAP_ALLEYWAY
 	title = "Alleyway"
-	lobby_icon_state = "taotd"
+	lobby_icon_state = "alleyway"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="The fighting for the street is still going on."

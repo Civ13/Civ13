@@ -109,11 +109,12 @@
 	layer = 3
 	health = 800
 	wall = TRUE
-	explosion_resistance = 5
+	explosion_resistance = 65
 	buildstackamount = 8
 	buildstack = /obj/item/stack/rods
 	opacity = 0
 	material = "Steel"
 	passable = FALSE
+	flammable = FALSE
 
 

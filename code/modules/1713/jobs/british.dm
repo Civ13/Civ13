@@ -268,9 +268,6 @@
 
 /datum/job/british/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
-
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
 
@@ -284,6 +281,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor3(H), slot_w_uniform)
 	else if (randcloth == 4)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor4(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
 
@@ -925,7 +924,7 @@
 	is_officer = TRUE
 
 	is_ww2 = TRUE
-	is_prison
+	is_prison = TRUE
 
 
 	min_positions = 1

@@ -30,8 +30,9 @@
 
 	layer			  = 13 // The lighting overlay should appear above everything including weather effects
 	var/turf/T		 = loc // If this runtimes atleast we'll know what's creating overlays in things that aren't turfs.
-	T.lighting_overlay = src
-	T.luminosity	   = FALSE
+	if (T)
+		T.lighting_overlay = src
+		T.luminosity	   = FALSE
 
 	if (no_update)
 		return

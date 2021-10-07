@@ -9,7 +9,9 @@
 	icon = 'icons/obj/playing_cards.dmi'
 	var/list/cards = list()
 	flammable = TRUE
-
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;cards"
+	safe_list_vars = "cards"
+	
 /obj/item/weapon/deck/cards
 	name = "deck of cards"
 	desc = "A simple deck of playing cards."

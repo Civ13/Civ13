@@ -240,7 +240,7 @@ var/global/datum/controller/occupations/job_master
 
 	var/turf/spawnpoint = null
 	var/list/turfs = latejoin_turfs[spawn_location]
-	if (!latejoin_turfs[spawn_location].len)
+	if (!latejoin_turfs[spawn_location] || !latejoin_turfs[spawn_location].len)
 		spawnpoint = locate(48,50,1)
 	else
 		spawnpoint = pick(turfs)
@@ -589,7 +589,7 @@ var/global/datum/controller/occupations/job_master
 		if (map.faction_distribution_coeffs.Find(CHINESE))
 			max_chinese = ceil(relevant_clients * map.faction_distribution_coeffs[CHINESE])
 		if (map.faction_distribution_coeffs.Find(FILIPINO))
-			max_chinese = ceil(relevant_clients * map.faction_distribution_coeffs[FILIPINO])
+			max_filipino = ceil(relevant_clients * map.faction_distribution_coeffs[FILIPINO])
 	switch (side)
 		if (CIVILIAN)
 			if (civilians_forceEnabled)

@@ -11,7 +11,7 @@
 
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/japanese/land,
-		list(CHINESE) = /area/caribbean/japanese/land,
+		list(CHINESE) = /area/caribbean/british,
 		)
 	age = "1950"
 	ordinal_age = 7
@@ -145,7 +145,7 @@ var/no_loop_ret = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Americans</b> have oddly retreated back into enemy tarritory!</font>"
+			world << "<font size = 3>The <b>Americans</b> have oddly retreated back into enemy territory!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1

@@ -144,6 +144,37 @@
 	spawn(rand(timer,timer*1.5))
 		spawnerproc()
 
+/obj/effect/spawner/mobspawner/ww2
+	timer = 300
+
+/obj/effect/spawner/mobspawner/ww2/jap
+	name = "jap spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_jap
+
+/obj/effect/spawner/mobspawner/ww2/american
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american
+	max_number = 6
+	max_range = 3
+
+/obj/effect/spawner/mobspawner/ww2/american/mg
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american/mg
+	max_number = 2
+	max_range = 3
+
+/obj/effect/spawner/mobspawner/ww2/american/medic
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american/medic
+	max_number = 2
+	max_range = 3
+
+/obj/effect/spawner/mobspawner/ww2/american/lead
+	name = "american spawner"
+	create_path = /mob/living/simple_animal/hostile/human/ww2_american/squad_leader
+	max_number = 1
+	max_range = 2
+
 /obj/effect/spawner/mobspawner/boars
 	name = "boars spawner"
 	max_number = 2
@@ -500,7 +531,7 @@
 	name = "elk doe spawner"
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/deer/elk/male
+	create_path = /mob/living/simple_animal/deer/elk/female
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/reindeer_m
@@ -564,7 +595,7 @@
 	name = "cattle cow spawner"
 	max_number = 2
 	max_range = 8
-	create_path = /mob/living/simple_animal/cattle
+	create_path = /mob/living/simple_animal/cattle/cow
 	timer = 5000
 
 /obj/effect/spawner/mobspawner/cattle/bull
