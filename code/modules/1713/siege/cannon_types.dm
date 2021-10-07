@@ -80,8 +80,9 @@
 	proc/do_autofire()
 		var/found = FALSE
 		for(var/mob/living/simple_animal/hostile/HH in range(2,src))
-			found = TRUE
-			break
+			if(HH.stat != DEAD)
+				found = TRUE
+				break
 		if (!found)
 			return
 		if (!loaded)

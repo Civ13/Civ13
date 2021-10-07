@@ -7,7 +7,10 @@
 	protection_chance = 60
 	var/ispartial = FALSE
 	opacity = TRUE
-
+	New()
+		..()
+		if (dir == SOUTH && ispartial)
+			layer = 4.5
 /obj/structure/barricade/ship/dismantle()
 	new/obj/effect/decal/cleanable/debris(loc)
 	if(prob(50))
@@ -95,12 +98,20 @@
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_a"
 	opacity = FALSE
+
 /obj/structure/barricade/ship/wall2
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat2"
 
+/obj/structure/barricade/ship/wall2/doorway
+	name = "dorway"
+	desc = "A wooden ship dorway."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat2_doorway"
+	density = FALSE
+	opacity = FALSE
 
 /obj/structure/barricade/ship/blue
 	name = "wall"
@@ -237,7 +248,7 @@
 	protection_chance = 25
 	opacity = FALSE
 	ispartial = TRUE
-
+	
 /obj/structure/barricade/ship/blue/bport3
 	name = "crenelated wall"
 	desc = "A thin wood ship wall, with a lower part to fire through."

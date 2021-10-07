@@ -27,6 +27,7 @@
 	var/latitude = 21 //21 to 27 N
 	var/list/mapgen = list()
 	var/list/islands = list()
+	var/list/ships = list()
 	var/navmoving = FALSE //if the ship is moving
 	var/navdirection = "North"
 	var/navprogress = 0 //how far along on moving to a neighbouring tile the ship is
@@ -322,12 +323,12 @@
 /obj/map_metadata/voyage/New()
 	..()
 	nav()
-	for(var/lon = 70, lon <= 77, lon++)
+	for(var/lon = 71, lon <= 77, lon++)
 		for(var/lat = 21, lat <= 27, lat++)
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
 			if (prob(25))
 				mapgen["[lat],[lon]"][3] = "island"
-				islands += list(lat, lon)
+				islands += list(list("[pick(country_names)]",lat, lon))
 
 /obj/map_metadata/voyage/cross_message()
 	return ""
@@ -358,6 +359,8 @@
 			if (newdir != nmap.navdirection)
 				if (do_after(H, 50, src))
 					nmap.navdirection = newdir
+					if (findtext(nmap.navdirection,"Approach "))
+						nmap.navdirection = replacetext(nmap.navdirection,"Approach ","")
 					visible_message("<font size=2>The ship turns <b>[nmap.navdirection]</b>.</font>")
 					return
 /obj/structure/voyage_tablemap
@@ -369,15 +372,23 @@
 	var/mob/living/user = null
 	anchored = TRUE
 	var/image/img
-
+	var/icon/img_flattened
 	New()
 		..()
 		img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
-
+		spawn(20)
+			if(map.ID == MAP_VOYAGE)
+				var/obj/map_metadata/voyage/nmap = map
+				for(var/list/L in nmap.islands)
+					var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=pick("island1","island2","island3"),layer=src.layer+1)
+					newisland.pixel_x = 42+((L[3]-71)*70)
+					newisland.pixel_y = 25+((L[2]-21)*67)
+					img.overlays+=newisland
+		img_flattened = getFlatIcon(img)
 
 	examine(mob/user)
 		update_icon()
-		user << browse("<img src=voyage.png></img>","window=popup;size=630x630")
+		user << browse(getFlatIcon(img),"window=popup;size=630x630")
 
 	attack_hand(mob/user)
 		update_icon()
@@ -517,9 +528,36 @@
 		var/obj/map_metadata/voyage/nmap = map
 		if (nmap)
 			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
-			H << "The ship is facing the <b>[nmap.navdirection]</b>."
+			H << "The ship is heading <b>[nmap.navdirection]</b>."
 			if(nmap.ship_anchored)
 				H << "The ship is <font color='red'><b>anchored</b></font>."
+
+/obj/structure/voyage_shipbell
+	name = "ship's bell"
+	desc = "Used to relay signals to the crew."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "bell_stand"
+	layer = 4
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+	var/cooldown_bell_stand = 0
+
+	attack_hand(mob/living/human/user)
+		if(!ishuman(user))
+			return
+		play()
+
+	proc/play()
+		if (world.time >= cooldown_bell_stand)
+			for (var/mob/M in player_list)
+				M.client << sound('sound/effects/bell_stand.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			world << "<font size=4>You hear the ship's bell!</font>"
+			cooldown_bell_stand = world.time+50
+			icon_state = "bell_stand_ringing"
+			spawn(15)
+				icon_state = "bell_stand"
+
 
 /obj/structure/voyage_ropeladder
 	name = "rope ladder"

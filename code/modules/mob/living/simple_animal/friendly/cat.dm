@@ -239,3 +239,12 @@
 /mob/living/simple_animal/cat/kitten/New()
 	gender = pick(MALE, FEMALE)
 	..()
+
+/mob/living/simple_animal/cat/salem
+	name = "Salem"
+	desc = "The ship's black tomcat. Keeps the hull clear of mice and brings good luck to the crew. His death would be disastrous..."
+	gender = MALE
+	icon_state = "cat4"
+	item_state = "cat4"
+	icon_living = "cat4"
+	icon_dead = "cat4_dead"
