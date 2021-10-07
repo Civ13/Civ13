@@ -579,3 +579,24 @@
 		user << "Sails: <b>[sailstat_t]</b>"
 		user << "Sail Status: <b>[sailhealth]%</b>"
 		user << "Rigging Status: <b>[rigginghealth]%</b>"
+
+	attackby(obj/item/I, mob/living/human/H)
+		if (istype(I, /obj/item/stack/material))
+			var/obj/item/stack/material/M = I
+			if (istype(I,/obj/item/stack/material/cloth))
+				if (sailhealth < 100)
+					H << "You start patching the sails..."
+					if(do_after(H,30,src))
+						if(M.amount >= 1)
+							M.amount--
+							H << "You repair one of the holes."
+
+			else if (istype(I,/obj/item/stack/material/rope))
+				if (rigginghealth < 100)
+					H << "You start replacing the damaged riggings..."
+					if(do_after(H,30,src))
+						if(M.amount >= 1)
+							M.amount--
+							H << "You fix one of the ropes."
+		else
+			..()
