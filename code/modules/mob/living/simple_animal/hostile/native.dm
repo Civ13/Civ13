@@ -1,5 +1,5 @@
 /mob/living/simple_animal/hostile/native
-	name = "Native"
+	name = "native"
 	desc = "Seems ferocious."
 	icon_state = "native_melee1"
 	icon_dead = "native_melee1_dead"
@@ -25,6 +25,7 @@
 	starves = FALSE
 	faction = INDIANS
 	attack_verb = "slashes"
+	behaviour = "hostile"
 
 /mob/living/simple_animal/hostile/native/New()
 	..()
@@ -34,7 +35,7 @@
 	icon_dead = "[icon_pick]_dead"
 
 /mob/living/simple_animal/hostile/native/bigboi
-	name = "Giant Native"
+	name = "giant native"
 	desc = "A massive native, better avoided."
 	maxHealth = 300
 	health = 300
@@ -53,7 +54,7 @@
 	icon_dead = "native_bigboi_dead"
 
 /mob/living/simple_animal/hostile/human/native/ranged
-	name = "Native"
+	name = "native"
 	desc = "Seems ferocious."
 	icon_state = "native_ranged1"
 	icon_dead = "native_ranged1_dead"
@@ -61,6 +62,7 @@
 	harm_intent_damage = 10
 	attack_sound = 'sound/weapons/punch3.ogg'
 	behaviour = "hostile"
+	starves = FALSE
 	ranged = TRUE
 	rapid = FALSE
 	firedelay = 40

@@ -26,7 +26,8 @@
 		if (F)
 			T = F
 			break
-
+		if (behaviour == "hostile")
+			stance = HOSTILE_STANCE_ATTACK
 		if (isliving(A))
 			var/mob/living/L = A
 			if (istype(L, /mob/living/human))

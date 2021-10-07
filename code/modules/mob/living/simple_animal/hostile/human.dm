@@ -20,7 +20,7 @@
 	var/action_running = FALSE
 	var/target_action = null
 	var/datum/language/language = new/datum/language/english
-
+	behaviour = "hostile"
 	var/list/messages = list(
 		"backup" = list(),
 		"injured" = list(),

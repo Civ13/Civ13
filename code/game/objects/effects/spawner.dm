@@ -645,7 +645,7 @@
 	name = "trex spawner"
 	max_number = 1
 	max_range = 8
-	create_path = /mob/living/simple_animal/hostile/trex
+	create_path = /mob/living/simple_animal/hostile/dinosaur/trex
 	timer = 7200
 /obj/effect/spawner/mobspawner/troll
 	name = "troll spawner"

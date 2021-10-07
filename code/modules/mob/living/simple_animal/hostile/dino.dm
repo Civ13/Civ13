@@ -27,7 +27,7 @@
 	carnivore = 1
 	faction = "neutral"
 	can_bite_limbs_off = TRUE
-
+	behaviour = "hostile"
 /mob/living/simple_animal/hostile/dinosaur/compsognathus
 	name = "compsognathus"
 	desc = "Deadly in numbers..."
@@ -56,6 +56,7 @@
 	predatory_carnivore = 1
 	carnivore = 1
 	faction = "neutral"
+	behaviour = "hostile"
 
 /mob/living/simple_animal/hostile/dinosaur/dimetrodon
 	name = "dimetrodon"
@@ -86,3 +87,46 @@
 	carnivore = 1
 	faction = "neutral"
 	can_bite_limbs_off = TRUE
+	behaviour = "hostile"
+
+/mob/living/simple_animal/hostile/dinosaur/trex
+	name = "tyrannosaurus rex"
+	desc = "A gargantuan carnivorous dinosaur of spine chillingly terrible majesty. The monarch of the prehistoric world"
+	icon = 'icons/mob/animal_128.dmi'
+	icon_state = "rex"
+	icon_living = "rex"
+	icon_dead = "rex_dead"
+	speak = list("GRRRHRMM!","ROOOOOOOAR!")
+	speak_emote = list("roars")
+	emote_hear = list("GRRRRHMM")
+	emote_see = list("stares with murderous intent", "sniffs the air")
+	speak_chance = TRUE
+	health = 1200
+	maxHealth = 1200
+	move_to_delay = 10
+	attacktext = "chomps"
+	melee_damage_lower = 50
+	melee_damage_upper = 55
+	response_help  = "nudges"
+	response_disarm = "overpowers"
+	response_harm   = "rams"
+	faction = "hostile"
+	density = TRUE
+	mob_size = MOB_HUGE
+	can_bite_limbs_off = TRUE
+	stop_automated_movement_when_pulled = FALSE
+	dir = WEST
+	bound_height = 96
+	bound_width = 96
+	predatory_carnivore = 1
+	carnivore = 1
+	break_stuff_probability = 45 //smashes and thrashes around relentlessly.
+	behaviour = "hostile"
+	bound_x = 64
+
+/mob/living/simple_animal/hostile/trex/update_icons()
+	..()
+	if (dir == SOUTH || dir == EAST)
+		bound_x = 0
+	else
+		bound_x = 64

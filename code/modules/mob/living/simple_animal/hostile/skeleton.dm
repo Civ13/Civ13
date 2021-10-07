@@ -22,6 +22,7 @@
 	break_stuff_probability = 25
 	attacktext = "scratched"
 	attack_sound = 'sound/weapons/genhit1.ogg'
+	behaviour = "hostile"
 
 	faction = "neutral"
 /mob/living/simple_animal/hostile/skeleton/attacker
