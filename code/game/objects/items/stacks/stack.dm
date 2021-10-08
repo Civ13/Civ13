@@ -295,7 +295,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = null
 	var/obj/structure/vending/sales/build_override_vending = null
 	var/obj/structure/supplier/build_override_supply = null
-	if (istype(get_turf(H), /turf/floor/beach/water/deep))
+	if (istype(get_turf(H), /turf/floor/beach/water/deep) && map.ID != MAP_VOYAGE)
 		H << "<span class = 'danger'>You can't build here!</span>"
 		return
 	if (findtext(recipe.title, "talisman"))

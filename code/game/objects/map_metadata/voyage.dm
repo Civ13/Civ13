@@ -329,11 +329,27 @@
 			if (prob(25))
 				mapgen["[lat],[lon]"][3] = "island"
 				islands += list(list("[pick(country_names)]",lat, lon))
-
+	spawn(100)
+		load_new_recipes()
 /obj/map_metadata/voyage/cross_message()
 	return ""
 /obj/map_metadata/voyage/reverse_cross_message()
 	return ""
+
+
+/obj/map_metadata/voyage/load_new_recipes()
+	var/F3 = file("config/crafting/material_recipes_voyage.txt")
+	if (fexists(F3))
+		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_lists["global"] = list()
+		for (var/i in craftlist_temp)
+			if (findtext(i, ","))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_lists["global"] += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+
 ///////////////Specific objects////////////////////
 /obj/structure/voyage_shipwheel
 	name = "ship wheel"
