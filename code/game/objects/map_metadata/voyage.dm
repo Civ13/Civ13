@@ -138,6 +138,12 @@
 	for(var/obj/structure/grapplehook/G in world)
 		G.undeploy()
 	clear_map()
+	for(var/list/L in ships)
+		if (L[3] == latitude && L[4] == longitude)
+			ships -= L
+	for(var/list/L1 in islands)
+		if (L1[2] == latitude && L1[3] == longitude)
+			L[4] = world.time + 18000
 	return
 
 /obj/map_metadata/voyage/proc/clear_map()
@@ -351,7 +357,7 @@
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
 			if (prob(25))
 				mapgen["[lat],[lon]"][3] = "island"
-				islands += list(list(pick("island1","island2","island3"),lat, lon))
+				islands += list(list(pick("island1","island2","island3"),lat, lon, 0))
 			else
 				sea += list(list("sea",lat,lon))
 	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
@@ -406,6 +412,11 @@
 				optlist = list("Approach [parsed_currtile]","North","South","East","West")
 				def_dir = "Approach [parsed_currtile]"
 			var/newdir = WWinput(H, "The Ship is currently heading to the [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
+			if (findtext(newdir,"Approach "))
+				for(var/list/L in nmap.islands)
+				if (L[2] == nmap.latitude && L[3] == nmap.longitude && world.time <= L[4])
+					WWalert(H, "You've visited this island too recently!", "Island")
+					return
 			if (newdir != nmap.navdirection)
 				if (do_after(H, 50, src))
 					nmap.navdirection = newdir
