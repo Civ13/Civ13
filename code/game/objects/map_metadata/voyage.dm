@@ -27,6 +27,7 @@
 	var/latitude = 21 //21 to 27 N
 	var/list/mapgen = list()
 	var/list/islands = list()
+	var/list/sea = list()
 	var/list/ships = list()
 	var/navmoving = FALSE //if the ship is moving
 	var/navdirection = "North"
@@ -41,7 +42,7 @@
 			navprogress += navspeed
 			if (navprogress >= 100)
 				navprogress = 0
-				if (navdirection == "island" || navdirection == "ship")
+				if (navdirection == "island" || findtext(navdirection,"ship"))
 					enter_event()
 				else
 					switch(navdirection)
@@ -80,7 +81,24 @@
 
 	spawn(600)
 		nav()
+//0 means random for numerical values
+/obj/map_metadata/voyage/proc/gen_ship(sfaction = "random", ssize = 0, slat = 0, slon = 0)
+	if (sfaction == "random" || !(sfaction in list("pirates","merchant","spanish","british","undead")))
+		sfaction = pick("pirates","merchant","spanish","british","undead")
+	if (ssize <= 0 || ssize > 5)
+		ssize = pick(1,2,3,4,5)
+	else
+		ssize = round(ssize)
 
+	var/csloc = pick(src.sea)
+	if (slat == 0 || !(slat in list(21,22,23,24,25,26,27)))
+		slat = csloc[2]
+	if (slon == 0 || !(slon in list(71,72,73,74,75,76,77)))
+		slon = csloc[3]
+
+	if(mapgen["[slat],[slon]"])
+		mapgen["[slat],[slon]"][3] = "ship[ssize]_[sfaction]"
+	ships += list(list(ssize,sfaction,slat,slon))
 /obj/map_metadata/voyage/proc/calc_speed()
 	var/spd = 0
 	var/snum = 0
@@ -101,7 +119,12 @@
 	inzone = TRUE
 	ship_anchored = TRUE
 	world << "<big>The ship arrives at the destination.</big>"
-	load_map(pick("island1","island2"),"random")
+	if (navdirection == "island")
+		load_map(pick("island1","island2"),"random")
+		return
+	else
+		var/parsed_ship = splittext(navdirection,"_")
+		load_map(parsed_ship[1])
 	return
 
 /obj/map_metadata/voyage/proc/abandon_event()
@@ -328,7 +351,10 @@
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
 			if (prob(25))
 				mapgen["[lat],[lon]"][3] = "island"
-				islands += list(list("[pick(country_names)]",lat, lon))
+				islands += list(list(pick("island1","island2","island3"),lat, lon))
+			else
+				sea += list(list("sea",lat,lon))
+	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
 	spawn(100)
 		load_new_recipes()
 /obj/map_metadata/voyage/cross_message()
@@ -374,15 +400,18 @@
 			var/def_dir = nmap.navdirection
 			var/currtile = nmap.mapgen["[nmap.latitude],[nmap.longitude]"][3]
 			if (currtile != "sea")
-				optlist = list("Approach [currtile]","North","South","East","West")
-				def_dir = "Approach [currtile]"
-			var/newdir = WWinput(H, "The Ship is currently moving [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
+				var/parsed_currtile = currtile
+				if (findtext(parsed_currtile,"ship"))
+					parsed_currtile = "ship"
+				optlist = list("Approach [parsed_currtile]","North","South","East","West")
+				def_dir = "Approach [parsed_currtile]"
+			var/newdir = WWinput(H, "The Ship is currently heading to the [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
 			if (newdir != nmap.navdirection)
 				if (do_after(H, 50, src))
 					nmap.navdirection = newdir
 					if (findtext(nmap.navdirection,"Approach "))
 						nmap.navdirection = replacetext(nmap.navdirection,"Approach ","")
-					visible_message("<font size=2>The ship turns <b>[nmap.navdirection]</b>.</font>")
+					visible_message("<font size=2>The ship heads to the <b>[nmap.navdirection]</b>.</font>")
 					return
 /obj/structure/voyage/tablemap
 	name = "map"
@@ -396,16 +425,30 @@
 	var/icon/img_flattened
 	New()
 		..()
-		img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
-		spawn(20)
-			if(map.ID == MAP_VOYAGE)
-				var/obj/map_metadata/voyage/nmap = map
-				for(var/list/L in nmap.islands)
-					var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=pick("island1","island2","island3"),layer=src.layer+1)
-					newisland.pixel_x = 42+((L[3]-71)*70)
-					newisland.pixel_y = 25+((L[2]-21)*67)
-					img.overlays+=newisland
-		img_flattened = getFlatIcon(img)
+		spawn(30)
+			img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
+			update_icon()
+	update_icon()
+		if(map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			for(var/list/L in nmap.islands)
+				var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
+				newisland.pixel_x = 42+((L[3]-71)*70)
+				newisland.pixel_y = 91+((L[2]-21)*67)
+				img.overlays+=newisland
+			for(var/list/L in nmap.ships)
+				var/image/newship = image(icon='icons/minimap_effects.dmi', icon_state="ship[L[1]]",layer=src.layer+1.1)
+				newship.pixel_x = 42+((L[4]-71)*70)
+				newship.pixel_y = 91+((L[3]-21)*67)
+				var/image/newship_s = image(icon='icons/minimap_effects.dmi', icon_state="size[L[1]]",layer=src.layer+1.11)
+				newship_s.pixel_x = 42+((L[4]-71)*70)
+				newship_s.pixel_y = 91+((L[3]-21)*67)
+				var/image/newship_f = image(icon='icons/minimap_effects.dmi', icon_state=L[2],layer=src.layer+1.12)
+				newship_f.pixel_x = 42+((L[4]-71)*70)
+				newship_f.pixel_y = 91+((L[3]-21)*67)
+				img.overlays+=newship
+				img.overlays+=newship_s
+				img.overlays+=newship_f
 
 	examine(mob/user)
 		update_icon()
@@ -549,7 +592,7 @@
 		var/obj/map_metadata/voyage/nmap = map
 		if (nmap)
 			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
-			H << "The ship is heading <b>[nmap.navdirection]</b>."
+			H << "The ship is heading to the <b>[nmap.navdirection]</b>."
 			if(nmap.ship_anchored)
 				H << "The ship is <font color='red'><b>anchored</b></font>."
 
