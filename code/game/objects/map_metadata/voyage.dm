@@ -143,7 +143,7 @@
 			ships -= L
 	for(var/list/L1 in islands)
 		if (L1[2] == latitude && L1[3] == longitude)
-			L[4] = world.time + 18000
+			L1[4] = world.time + 18000
 	return
 
 /obj/map_metadata/voyage/proc/clear_map()
@@ -414,9 +414,9 @@
 			var/newdir = WWinput(H, "The Ship is currently heading to the [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
 			if (findtext(newdir,"Approach "))
 				for(var/list/L in nmap.islands)
-				if (L[2] == nmap.latitude && L[3] == nmap.longitude && world.time <= L[4])
-					WWalert(H, "You've visited this island too recently!", "Island")
-					return
+					if (L[2] == nmap.latitude && L[3] == nmap.longitude && world.time <= L[4])
+						WWalert(H, "You've visited this island too recently!", "Island")
+						return
 			if (newdir != nmap.navdirection)
 				if (do_after(H, 50, src))
 					nmap.navdirection = newdir
