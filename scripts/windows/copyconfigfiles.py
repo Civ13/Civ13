@@ -23,4 +23,4 @@ with open(os.path.join(mdir, cdir, 'scripts/windows/copiedfolderpaths.txt')) as 
         npath = os.path.join(mdir, cdir, path)
         if os.path.isdir(npath):
             shutil.rmtree(npath)
-            shutil.copytree(os.path.join(mdir, "civ13-git/", path), npath)
+        shutil.copytree(os.path.join(mdir, "civ13-git/", path), npath)
