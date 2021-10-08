@@ -60,7 +60,23 @@
 				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover
-					return prob(100-protection_chance-(B.penetrating*4))
+					if(B.atype == "cannonball")
+
+					else if (B.atype == "chainshot")
+						if (ispartial)
+							return TRUE
+						else
+							return FALSE
+					else if (B.atype == "grapeshot")
+						if (ispartial)
+							return TRUE
+						else
+							return FALSE
+					else
+						if (ispartial)
+							if (prob(70))
+								return TRUE
+						return prob(100-protection_chance-(B.penetrating*4))
 				return FALSE
 		if (!mover.throw_source)
 			if (get_dir(loc, target) & dir)
@@ -392,7 +408,7 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
-	dir = WEST
+	dir = EAST
 
 /obj/structure/barricade/ship/wood/portl2
 	name = "wall"

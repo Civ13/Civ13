@@ -357,7 +357,7 @@
 		if (proj.firer == rider)
 			return //we can't hit the animals we are riding
 		var/mob/living/human/H = proj.firer
-		if (prob(40))
+		if (prob(40) && proj.firedfrom)
 			switch (proj.firedfrom.gun_type)
 				if (GUN_TYPE_RIFLE)
 					H.adaptStat("rifle", 1)

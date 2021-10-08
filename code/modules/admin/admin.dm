@@ -1084,7 +1084,7 @@ var/list/atom_types = null
 		S.update_icon()
 	nmap.inzone = TRUE
 	nmap.ship_anchored = TRUE
-	for(var/obj/structure/voyage_anchor_capstan/VAC)
+	for(var/obj/structure/voyage/anchor_capstan/VAC)
 		VAC.update_icon()
 	world << "<big>The ship arrives at the destination.</big>"
 	nmap.clear_map()

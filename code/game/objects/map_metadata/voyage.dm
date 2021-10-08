@@ -351,7 +351,12 @@
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 
 ///////////////Specific objects////////////////////
-/obj/structure/voyage_shipwheel
+/obj/structure/voyage/bullet_act(var/obj/item/projectile/P, def_zone)
+	P.on_hit(src, FALSE, def_zone)
+	return
+/obj/structure/voyage/attackby(obj/P, mob/user)
+	return
+/obj/structure/voyage/shipwheel
 	name = "ship wheel"
 	desc = "Used to steer the ship."
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
@@ -379,7 +384,7 @@
 						nmap.navdirection = replacetext(nmap.navdirection,"Approach ","")
 					visible_message("<font size=2>The ship turns <b>[nmap.navdirection]</b>.</font>")
 					return
-/obj/structure/voyage_tablemap
+/obj/structure/voyage/tablemap
 	name = "map"
 	desc = "A map of the regeion. Used by the captain to plan the next moves."
 	icon = 'icons/obj/items.dmi'
@@ -410,7 +415,7 @@
 		update_icon()
 		examine(user)
 
-/obj/structure/voyage_boatswain_book
+/obj/structure/voyage/boatswain_book
 	name = "crew log"
 	desc = "A book listing all the ship's crew and their assigned jobs."
 	icon = 'icons/obj/library.dmi'
@@ -430,7 +435,7 @@
 		t_text += "</table>"
 		return t_text
 					
-/obj/structure/voyage_quartermaster_book
+/obj/structure/voyage/quartermaster_book
 	name = "ship inventory"
 	desc = "A diary tracking the current inventory in the ship."
 	icon = 'icons/obj/library.dmi'
@@ -532,7 +537,7 @@
 				tally["cannonballs"]++
 		return tally
 
-/obj/structure/voyage_sextant
+/obj/structure/voyage/sextant
 	name = "sextant"
 	desc = "Used to determine the current latitude and longitude using the sun and stars."
 	icon = 'icons/obj/items.dmi'
@@ -548,7 +553,7 @@
 			if(nmap.ship_anchored)
 				H << "The ship is <font color='red'><b>anchored</b></font>."
 
-/obj/structure/voyage_shipbell
+/obj/structure/voyage/shipbell
 	name = "ship's bell"
 	desc = "Used to relay signals to the crew."
 	icon = 'icons/obj/structures.dmi'
@@ -575,7 +580,7 @@
 				icon_state = "bell_stand"
 
 
-/obj/structure/voyage_ropeladder
+/obj/structure/voyage/ropeladder
 	name = "rope ladder"
 	desc = "A strong rope ladder leading up the mast."
 	icon = 'icons/turf/64x64.dmi'
@@ -584,7 +589,7 @@
 	density = FALSE
 	anchored = TRUE
 
-/obj/structure/voyage_anchor
+/obj/structure/voyage/anchor
 	name = "anchor"
 	desc = "A large iron anchor."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
@@ -593,7 +598,7 @@
 	density = FALSE
 	anchored = TRUE
 
-/obj/structure/voyage_anchor_capstan
+/obj/structure/voyage/anchor_capstan
 	name = "anchor capstan"
 	desc = "A vertical-axled rotating machine used to raise and lower the ship's anchor."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
@@ -663,7 +668,7 @@
 							S.update_icon()
 						update_icon()
 	
-/obj/structure/voyage_ropeladder/thin
+/obj/structure/voyage/ropeladder/thin
 	icon_state = "ropeladder_thin"
 
 /obj/structure/closet/crate/chest/treasury/ship
@@ -672,7 +677,7 @@
 	faction = "ship"
 	anchored = TRUE
 
-/obj/structure/voyage_grid
+/obj/structure/voyage/grid
 	name = "loading gate"
 	desc = "A large gridded gate, used to load the ship."
 	icon = 'icons/turf/64x64.dmi'
@@ -681,7 +686,7 @@
 	density = FALSE
 	anchored = TRUE
 
-/obj/structure/voyage_grid/partial
+/obj/structure/voyage/grid/partial
 	icon_state = "grid_partial"
 
 /obj/effect/sailing_effect
