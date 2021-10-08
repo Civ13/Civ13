@@ -109,7 +109,7 @@
 	if (spd != 0 && snum != 0)
 		spd/=snum //divide by number of masts
 	spd*=33 //how much % of progress per minute for each spd unit, ex: 2 masts in full condition = 1*33 = 33, 3 mins to change tiles
-	return spd
+	return spd+1
 
 /obj/map_metadata/voyage/proc/enter_event()
 	navmoving = FALSE
@@ -422,7 +422,7 @@
 					nmap.navdirection = newdir
 					if (findtext(nmap.navdirection,"Approach "))
 						nmap.navdirection = replacetext(nmap.navdirection,"Approach ","")
-					visible_message("<font size=2>The ship heads to the <b>[nmap.navdirection]</b>.</font>")
+					visible_message("<font size=3>The ship heads to the <b>[nmap.navdirection]</b>.</font>")
 					return
 /obj/structure/voyage/tablemap
 	name = "map"

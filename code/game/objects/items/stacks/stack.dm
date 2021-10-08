@@ -621,7 +621,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>"
 			return
 	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
-		if (H.getStatCoeff("crafting") < 1.1)
+		if (H.getStatCoeff("crafting") < 1.1 && map.ID != MAP_VOYAGE)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 	else if (findtext(recipe.title, "locked large stone double doors") || findtext(recipe.title, "locked large sandstone double doors") || findtext(recipe.title, "locked large lead double doors") || findtext(recipe.title, "locked large copper double doors") || findtext(recipe.title, "locked large bronze double doors") || findtext(recipe.title, "locked large silver double doors") || findtext(recipe.title, "locked large gold double doors") || findtext(recipe.title, "locked large bone double doors"))
