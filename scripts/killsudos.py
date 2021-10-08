@@ -1,6 +1,3 @@
-# https://stackoverflow.com/questions/2703640/process-list-on-linux-via-python
-# https://stackoverflow.com/questions/21090379/how-to-use-psutil-get-cpu-percent
-
 import os
 import signal
 
