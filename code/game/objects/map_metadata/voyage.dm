@@ -138,6 +138,10 @@
 	for(var/obj/structure/grapplehook/G in world)
 		G.undeploy()
 	clear_map()
+	//convert looted autofire cannons to normal cannons
+	for(var/obj/structure/cannon/modern/tank/voyage/autofire/C in world)
+		new/obj/structure/cannon/modern/tank/voyage(C.loc)
+		qdel(C)
 	for(var/list/L in ships)
 		if (L[3] == latitude && L[4] == longitude)
 			ships -= L
@@ -681,7 +685,9 @@
 					if (resp == "No")
 						return
 					else
-						world << "<big>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</big>"
+						world << "<font size=4>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>"
+						spawn(600)
+							world << "<font size=4>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
 						spawn(1200)
 							nmap.ship_anchored = FALSE
 							nmap.navmoving = TRUE

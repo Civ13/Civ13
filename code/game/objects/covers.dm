@@ -178,6 +178,11 @@
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
+		if (istype(mover,/obj/item/projectile/shell))
+			var/obj/item/projectile/shell/S = mover
+			if(prob(18) && S.atype == "cannonball")
+				visible_message("<span class = 'warning'>\The [mover.name] hits \the [src]!</span>")
+				return FALSE
 		if (prob(75) && density)
 			visible_message("<span class = 'warning'>\The [mover.name] hits \the [src]!</span>")
 			return FALSE

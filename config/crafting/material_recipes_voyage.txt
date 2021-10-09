@@ -14,6 +14,12 @@ RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/f
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,9,70,0,1,storage,0,54,0,8,null
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,none,0,0,0,8,null
 
+RECIPE: /material/leather/,sword sheath,/obj/item/clothing/accessory/storage/sheath,3,80,0,1,weapon accessories,0,39,0,2,null
+RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/storage/sheath/longer,3,80,0,1,weapon accessories,0,39,0,2,null
+RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,4,80,0,1,weapon accessories,0,39,0,2,null
+RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,3,80,0,1,weapon accessories,0,39,0,2,null
+RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,6,80,0,1,weapon accessories,0,39,0,2,null
+
 RECIPE: /material/bearpelt/brown/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/brown/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/brown/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
