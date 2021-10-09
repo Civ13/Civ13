@@ -356,9 +356,12 @@
 		src.r_eyes = red
 		src.g_eyes = green
 		src.b_eyes = blue
-
-		src.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-		src.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
+		if (src.gender == FEMALE)
+			src.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+			src.f_style = pick("Shaved")
+		else
+			src.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+			src.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
 		update_body()
 ///////////////////////////////////////ABASHIRI/////////////////////////////////////////////////////////////////////////////////////////////
 	else if (istype(original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))

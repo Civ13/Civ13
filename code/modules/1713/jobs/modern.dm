@@ -12,6 +12,7 @@
 	whitelisted = TRUE
 	is_modernday = TRUE
 	is_radioman = TRUE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -57,6 +58,7 @@
 	uses_squads = TRUE
 	is_radioman = TRUE
 	is_modernday = TRUE
+	can_be_female = TRUE
 	can_get_coordinates = TRUE
 
 	min_positions = 2
@@ -103,6 +105,7 @@
 
 	is_medic = TRUE
 	is_coldwar = TRUE
+	can_be_female = TRUE
 	is_modernday = TRUE
 
 	min_positions = 2
@@ -152,6 +155,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -196,6 +200,7 @@
 
 	is_coldwar = TRUE
 	is_modernday = TRUE
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -245,6 +250,7 @@
 
 	is_coldwar = TRUE
 	is_modernday = TRUE
+	can_be_female = TRUE
 	uses_squads = TRUE
 
 	min_positions = 10

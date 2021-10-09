@@ -235,7 +235,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
-
+	can_be_female = TRUE
 	min_positions = 6
 	max_positions = 200
 
@@ -281,6 +281,7 @@
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 10

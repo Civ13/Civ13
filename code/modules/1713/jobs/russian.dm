@@ -555,7 +555,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-
+	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
@@ -1038,7 +1038,7 @@
 	title = "Krasny Armiya Strelok"
 	en_meaning = "Red Army Rifleman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateRU3"
 
 	is_rcw = TRUE
@@ -1139,7 +1139,7 @@
 	title = "Tankist"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = ""
-
+	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
@@ -1232,7 +1232,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-
+	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_ss_panzer = TRUE

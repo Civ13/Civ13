@@ -268,7 +268,7 @@
 	rank_abbreviation = "Merchant"
 
 	spawn_location = "JoinLateRN"
-
+	can_be_female = TRUE
 	is_RP = TRUE
 	is_merchant = TRUE
 
@@ -331,7 +331,7 @@
 
 	is_RP = TRUE
 	is_religious = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 20
 
@@ -371,7 +371,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 40
 
@@ -428,7 +428,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -487,7 +487,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -559,7 +559,7 @@
 	rank_abbreviation = "Blacksmith"
 
 	spawn_location = "JoinLateRN"
-
+	can_be_female = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
 
@@ -634,7 +634,7 @@
 	rank_abbreviation = "Innkeeper"
 
 	spawn_location = "JoinLateRN"
-
+	can_be_female = TRUE
 	is_RP = TRUE
 
 	min_positions = 1
@@ -710,7 +710,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRN"
-
+	can_be_female = TRUE
 	is_RP = TRUE
 
 	min_positions = 10
@@ -1046,7 +1046,7 @@
 	rank_abbreviation = "Comerciante"
 
 	spawn_location = "JoinLateSP"
-
+	can_be_female = TRUE
 	is_RP = TRUE
 	is_merchant = TRUE
 
@@ -1107,7 +1107,7 @@
 
 	is_RP = TRUE
 	is_religious = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 20
 
@@ -1147,7 +1147,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 40
 
@@ -1205,7 +1205,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -1264,7 +1264,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -1338,7 +1338,7 @@
 
 	whitelisted = TRUE
 	is_RP = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -1410,7 +1410,7 @@
 	rank_abbreviation = "Ventero"
 
 	spawn_location = "JoinLateSP"
-
+	can_be_female = TRUE
 	is_RP = TRUE
 
 	min_positions = 1
@@ -1486,7 +1486,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateSP"
-
+	can_be_female = TRUE
 	is_RP = TRUE
 
 	min_positions = 10
@@ -1827,7 +1827,7 @@
 
 	is_RP = TRUE
 	is_merchant = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 20
 
@@ -1886,7 +1886,7 @@
 
 	is_religious = TRUE
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 20
 
@@ -1926,7 +1926,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 40
 
@@ -1984,7 +1984,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -2043,7 +2043,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -2118,7 +2118,7 @@
 	whitelisted = TRUE
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -2192,7 +2192,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -2268,7 +2268,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 10
 	max_positions = 150
 
@@ -2606,7 +2606,7 @@
 
 	is_merchant = TRUE
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 20
 
@@ -2665,7 +2665,7 @@
 
 	is_RP = TRUE
 	is_religious = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 20
 
@@ -2705,7 +2705,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 40
 
@@ -2763,7 +2763,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -2822,7 +2822,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 3
 	max_positions = 50
 
@@ -2898,7 +2898,7 @@
 
 	is_RP = TRUE
 
-
+	can_be_female = TRUE
 	min_positions = 2
 	max_positions = 10
 
@@ -2971,7 +2971,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -3047,7 +3047,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-
+	can_be_female = TRUE
 	min_positions = 10
 	max_positions = 150
 
