@@ -645,6 +645,46 @@
 	protection_chance = 45
 	ispartial = TRUE
 
+/obj/structure/barricade/ship/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			for(var/obj/structure/barricade/ship/mast/large/L in range(3,src))
+				L.sailhealth -= 5
+				L.rigginghealth -= 5
+				if(L.rigginghealth<0)
+					L.rigginghealth = 0
+				if(L.sailhealth<0)
+					L.sailhealth = 0
+			dismantle()
+			return
+		if (2.0)
+			health -= (200 + round(maxhealth * 0.30))
+			if (health <= 0)
+				visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+				for(var/obj/structure/barricade/ship/mast/large/L in range(3,src))
+					L.sailhealth -= 2
+					L.rigginghealth -= 2
+					if(L.rigginghealth<0)
+						L.rigginghealth = 0
+					if(L.sailhealth<0)
+						L.sailhealth = 0
+				dismantle()
+			return
+		if (3.0)
+			health -= (100 + round(maxhealth * 0.10))
+			if (health <= 0)
+				visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+				for(var/obj/structure/barricade/ship/mast/large/L in range(3,src))
+					L.sailhealth -= 1
+					L.rigginghealth -= 1
+					if(L.rigginghealth<0)
+						L.rigginghealth = 0
+					if(L.sailhealth<0)
+						L.sailhealth = 0
+				dismantle()
+			return
+
 /obj/structure/barricade/ship/mast
 	name = "mast"
 	desc = "A wooden ship mast."
@@ -712,6 +752,9 @@
 						if(M.amount >= 1)
 							M.amount--
 							H << "You repair one of the holes."
+							sailhealth+=2
+							if (sailhealth > 100)
+								sailhealth = 100
 
 			else if (istype(I,/obj/item/stack/material/rope))
 				if (rigginghealth < 100)
@@ -720,5 +763,35 @@
 						if(M.amount >= 1)
 							M.amount--
 							H << "You fix one of the ropes."
+							rigginghealth+=2
+							if (rigginghealth > 100)
+								rigginghealth = 100
 		else
 			..()
+
+	ex_act(severity)
+		switch(severity)
+			if (1.0)
+				sailhealth -= 10
+				rigginghealth -= 10
+				if(rigginghealth<0)
+					rigginghealth = 0
+				if(sailhealth<0)
+					sailhealth = 0
+				return
+			if (2.0)
+				sailhealth -= 6
+				rigginghealth -= 6
+				if(rigginghealth<0)
+					rigginghealth = 0
+				if(sailhealth<0)
+					sailhealth = 0
+				return
+			if (3.0)
+				sailhealth -= 3
+				rigginghealth -= 3
+				if(rigginghealth<0)
+					rigginghealth = 0
+				if(sailhealth<0)
+					sailhealth = 0
+				return
