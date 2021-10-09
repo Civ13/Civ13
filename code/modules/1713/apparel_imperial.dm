@@ -329,6 +329,19 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
+/obj/item/clothing/shoes/whiteputtee
+	name = "black puttee boots"
+	desc = "Classic black boots with white puttees."
+	icon_state = "whiteput"
+	item_state = "whiteput"
+	worn_state = "whiteput"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
 /* Colonial Accessories & Items*/
 
 /obj/item/clothing/accessory/ruffle/neck
@@ -874,6 +887,13 @@
 	item_state = "spanish_officer"
 	worn_state = "spanish_officer"
 
+/obj/item/clothing/suit/storage/jacket/spanish_soldier
+	name = "spanish soldier jacket"
+	desc = "A standard jacket of the spanish army. Yellow with red trimming."
+	icon_state = "spanish_army"
+	item_state = "spanish_army"
+	worn_state = "spanish_army"
+
 /obj/item/clothing/under/spanish_sailor1
 	name = "spanish sailor clothes"
 	desc = "A set of spanish navy sailor clothes, with brown shirt and trousers."
@@ -894,6 +914,13 @@
 	icon_state = "spanish_sailor3"
 	item_state = "spanish_sailor3"
 	worn_state = "spanish_sailor3"
+
+/obj/item/clothing/under/spanish_soldier
+	name = "spanish soldier uniform"
+	desc = "Blue spanish soldier trousers and a fancy white shirt."
+	icon_state = "spanish_soldier"
+	item_state = "spanish_soldier"
+	worn_state = "spanish_soldier"
 
 /* Colonial French Army & Navy Clothes*/
 

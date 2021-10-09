@@ -7,6 +7,12 @@
 	protection_chance = 60
 	var/ispartial = FALSE
 	opacity = TRUE
+	New()
+		..()
+		spawn(10)
+			if (dir == SOUTH && ispartial)
+				layer = 4.5
+				update_icon()
 
 /obj/structure/barricade/ship/dismantle()
 	new/obj/effect/decal/cleanable/debris(loc)
@@ -55,7 +61,21 @@
 				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover
-					return prob(100-protection_chance-(B.penetrating*4))
+					if (B.atype == "chainshot")
+						if (ispartial)
+							return TRUE
+						else
+							return FALSE
+					else if (B.atype == "grapeshot")
+						if (ispartial)
+							return TRUE
+						else
+							return FALSE
+					else
+						if (ispartial)
+							if (prob(70))
+								return TRUE
+						return prob(100-protection_chance-(B.penetrating*4))
 				return FALSE
 		if (!mover.throw_source)
 			if (get_dir(loc, target) & dir)
@@ -100,6 +120,14 @@
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat2"
+
+/obj/structure/barricade/ship/wall2/doorway
+	name = "doorway"
+	desc = "A wooden ship doorway."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat2_doorway"
+	density = FALSE
+	opacity = FALSE
 
 
 /obj/structure/barricade/ship/blue
@@ -220,6 +248,13 @@
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b19"
 
+/obj/structure/barricade/ship/blue/b20
+	name = "wall"
+	desc = "A wooden ship wall."
+	icon = 'icons/turf/boat_b.dmi'
+	icon_state = "boat_b20"
+	opacity = TRUE
+
 /obj/structure/barricade/ship/blue/bport0
 	name = "wall"
 	desc = "A wooden ship wall."
@@ -228,6 +263,73 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport0/south/New()
+	..()
+	dir = SOUTH
+
+/obj/structure/barricade/ship/blue/bport9
+	name = "wall"
+	desc = "A wooden ship wall."
+	icon = 'icons/turf/boat_b.dmi'
+	icon_state = "boat_b_port9"
+	protection_chance = 40
+	opacity = FALSE
+	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport5
+	name = "wall"
+	desc = "A wooden ship wall."
+	icon = 'icons/turf/boat_b.dmi'
+	icon_state = "boat_b_port5"
+	protection_chance = 40
+	opacity = FALSE
+	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport5
+	name = "wall"
+	desc = "A wooden ship wall."
+	icon = 'icons/turf/boat_b.dmi'
+	icon_state = "boat_b_port5"
+	protection_chance = 40
+	opacity = FALSE
+	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport_north
+	name = "wall"
+	desc = "A wooden ship wall."
+	icon = 'icons/turf/boat_b.dmi'
+	icon_state = "boat_b_port_1"
+	protection_chance = 40
+	opacity = FALSE
+	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport_10
+	name = "wall"
+	desc = "A wooden ship wall."
+	icon = 'icons/turf/boat_b.dmi'
+	icon_state = "boat_b_port_10"
+	protection_chance = 40
+	opacity = FALSE
+	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport_6
+	name = "wall"
+	desc = "A wooden ship wall."
+	icon = 'icons/turf/boat_b.dmi'
+	icon_state = "boat_b_port_6"
+	protection_chance = 40
+	opacity = FALSE
+	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport_6/corner
+	icon_state = "boat_b_port_6-2"
+/obj/structure/barricade/ship/blue/bport_10/corner
+	icon_state = "boat_b_port_10-2"
+/obj/structure/barricade/ship/blue/bport5/corner
+	icon_state = "boat_b_port5-2"
+/obj/structure/barricade/ship/blue/bport9/corner
+	icon_state = "boat_b_port9-2"
 
 /obj/structure/barricade/ship/blue/bport1
 	name = "holed wall"
@@ -247,6 +349,9 @@
 	opacity = FALSE
 	density = FALSE
 	ispartial = TRUE
+/obj/structure/barricade/ship/blue/bport3/south/New()
+	..()
+	dir = SOUTH
 
 /obj/structure/barricade/ship/blue/bwest
 	name = "wall"
@@ -254,6 +359,7 @@
 	icon = 'icons/turf/boat_b.dmi'
 	icon_state = "boat_b_west"
 	opacity = FALSE
+	dir = NORTH
 
 /obj/structure/barricade/ship/blue/bwest2
 	name = "wall"
@@ -359,6 +465,13 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
+	dir = NORTH
+/obj/structure/barricade/ship/wood/port0/north/New()
+	..()
+	dir = NORTH
+/obj/structure/barricade/ship/wood/port0south/New()
+	..()
+	dir = SOUTH
 
 /obj/structure/barricade/ship/wood/portl1
 	name = "wall"
@@ -368,6 +481,7 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
+	dir = EAST
 
 /obj/structure/barricade/ship/wood/portl2
 	name = "wall"
@@ -377,6 +491,7 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
+	dir = WEST
 
 /obj/structure/barricade/ship/wood/portl3
 	name = "wall"
@@ -403,6 +518,13 @@
 	protection_chance = 25
 	density = FALSE
 	opacity = FALSE
+/obj/structure/barricade/ship/wood/port2/north/New()
+	..()
+	dir = NORTH
+/obj/structure/barricade/ship/wood/port2/south/New()
+	..()
+	dir = SOUTH
+
 
 /obj/structure/barricade/ship/aport0
 	name = "closed cannon port"
@@ -545,7 +667,7 @@
 	var/rigginghealth = 100
 	var/sailstat = 100
 	var/owner = "ship"
-	
+
 	New()
 		..()
 		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_x = -32, pixel_y = -192, layer=10)
