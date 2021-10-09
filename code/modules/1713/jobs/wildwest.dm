@@ -463,6 +463,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
+	can_be_female = TRUE
 
 
 	min_positions = 2

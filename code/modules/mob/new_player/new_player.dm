@@ -608,20 +608,19 @@ var/global/redirect_all_players = null
 		if (client && client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
-	if (!job.is_medic || !job.is_deal || !job.is_rp)
-		if (client && client.prefs.gender == FEMALE && !job.can_be_female)
-			WWalert(usr,"You must be male to play as this role.","Error")
+	if (client && client.prefs.gender == FEMALE && !job.can_be_female)
+		WWalert(usr,"You must be male to play as this role.","Error")
+		return FALSE
+	else if (client && client.prefs.gender == FEMALE && job.can_be_female)
+		spawning = TRUE
+		close_spawn_windows()
+		job_master.AssignRole(src, rank, TRUE)
+		var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
+		if (!character)
 			return FALSE
-		else if (client && client.prefs.gender == FEMALE && job.can_be_female)
-			spawning = TRUE
-			close_spawn_windows()
-			job_master.AssignRole(src, rank, TRUE)
-			var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
-			if (!character)
-				return FALSE
 
-			character = job_master.EquipRank(character, rank, TRUE)
-			return
+		character = job_master.EquipRank(character, rank, TRUE)
+		return
 	if (!job.can_be_minor && client.prefs.age < 18)
 		WWalert(usr,"You must be atleast 18 to play this role.","Error")
 		return FALSE
@@ -629,11 +628,6 @@ var/global/redirect_all_players = null
 	if (istype(job, /datum/job/german/hj_reichstag) && client.prefs.age > 17)
 		WWalert(usr,"You must be under 18 to play this role.","Error")
 		return FALSE
-
-	if (client.ckey == "Sirobar" && !istype(job, /datum/job/russian) && !istype(job, /datum/job/arab))
-		if (client.prefs.f_style != "Shaved" || client.prefs.f_style != "Short Facial Hair"  || client.prefs.f_style != "Goatee")
-			WWalert(usr,"You must stop your beards man, this is the final staw, its in the rules","Error")
-			return FALSE
 
 	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian) && map.ID != MAP_BOHEMIA)
 		if (client.prefs.gender == FEMALE)

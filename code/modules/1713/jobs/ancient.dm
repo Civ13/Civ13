@@ -546,6 +546,7 @@
 	is_ancient = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 5

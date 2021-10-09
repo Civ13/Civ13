@@ -889,6 +889,7 @@
 	en_meaning = ""
 	min_positions = 2
 	max_positions = 8
+	can_be_female = TRUE
 	spawn_location = "JoinLateCivA"
 	equip(var/mob/living/human/H)
 		..()
@@ -911,6 +912,7 @@
 	en_meaning = ""
 	min_positions = 1
 	max_positions = 4
+	can_be_female = TRUE
 	equip(var/mob/living/human/H)
 		..()
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/leather/occinn(H), slot_belt)
@@ -925,6 +927,7 @@
 	title = "Civilian Farmer"
 	spawn_location = "JoinLateCivC"
 	en_meaning = ""
+	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 3
 	equip(var/mob/living/human/H)
@@ -1028,6 +1031,7 @@
 /datum/job/civilian/occupation/basic
 	title = "Basic Civilian"
 	en_meaning = ""
+	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
 	min_positions = 8
