@@ -681,7 +681,9 @@
 					if (resp == "No")
 						return
 					else
-						world << "<big>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</big>"
+						world << "<font size=4>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>"
+						spawn(600)
+							world << "<font size=4>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
 						spawn(1200)
 							nmap.ship_anchored = FALSE
 							nmap.navmoving = TRUE
