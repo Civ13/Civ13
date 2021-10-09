@@ -726,6 +726,17 @@
 	S.starting = get_turf(src)
 
 	loaded = null
-
-	S.launch(TF, user, src, 0, 0)
+	if (S.atype == "grapeshot")
+		var/tot = pick(3,4)
+		for(var/i = 1, i<= tot,i++)
+			var/obj/item/projectile/shell/S1 = new S.type(loc)
+			S1.damage = S.damage
+			S1.atype = S.atype
+			S1.caliber = S.caliber
+			S1.heavy_armor_penetration = S.heavy_armor_penetration
+			S1.name = S.name
+			S1.starting = get_turf(src)
+			S1.launch(TF, user, src, rand(-2,2), 0)
+	else
+		S.launch(TF, user, src, 0, 0)
 	return TRUE

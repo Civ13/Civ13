@@ -80,7 +80,7 @@
 			VERY_LONG_RANGE_MOVING = 32),
 	)
 
-	load_delay = 150 //15 seconds for rifles, 12 seconds for pistols & blunderbuss
+	load_delay = 110 //11 seconds for rifles, 8 seconds for pistols & blunderbuss
 	aim_miss_chance_divider = 3.00
 
 	var/cocked = FALSE
@@ -236,7 +236,7 @@
 	value = 100
 	item_state = "springfield"
 	icon_state = "springfield"
-	load_delay = 100
+	load_delay = 70
 
 /obj/item/weapon/gun/projectile/flintlock/springfield1795
 	name = "Springfield 1795 Musket"
@@ -249,7 +249,7 @@
 	value = 100
 	item_state = "springfield"
 	icon_state = "springfield1795"
-	load_delay = 100
+	load_delay = 80
 
 /obj/item/weapon/gun/projectile/flintlock/musketoon
 	name = "flintlock musketoon"
@@ -337,7 +337,7 @@
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
 	move_delay = 3
 	fire_delay = 3
-	load_delay = 100
+	load_delay = 80
 	value = 70
 	stat = "pistol"
 	gtype = "pistol"
@@ -404,7 +404,7 @@
 	item_state = "blunderbuss"
 	recoil = 4
 	force = 14
-	load_delay = 120
+	load_delay = 100
 	caliber = "blunderbuss"
 	stat = "rifle"
 	weight = 4.5
@@ -481,7 +481,7 @@
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
 	move_delay = 3
 	fire_delay = 3
-	load_delay = 102
+	load_delay = 80
 	value = 70
 	stat = "pistol"
 	gtype = "pistol"
@@ -554,7 +554,7 @@
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
 	move_delay = 3.4
 	fire_delay = 3.1
-	load_delay = 105
+	load_delay = 75
 	value = 70
 	stat = "pistol"
 	gtype = "pistol"
@@ -622,7 +622,7 @@
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
 	move_delay = 3
 	fire_delay = 3
-	load_delay = 102
+	load_delay = 80
 	value = 70
 	stat = "pistol"
 	gtype = "pistol"
@@ -686,7 +686,7 @@
 	item_state = "pistol"
 	recoil = 5
 	force = 14
-	load_delay = 125
+	load_delay = 110
 	caliber = "blunderbuss"
 	stat = "rifle"
 	weight = 2.5

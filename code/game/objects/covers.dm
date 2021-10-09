@@ -137,12 +137,33 @@
 		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-	if (WWinput(user, "This will start building a floor cover [user.dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+	if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc) && src)
 			qdel(src)
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				H.adaptStat("crafting", 3)
+		return
+
+/obj/item/weapon/covers/ship/attack_self(mob/user)
+	var/covers_time = 80
+	if (ishuman(user))
+		var/turf/targetfloor = get_turf(get_step(user, user.dir))
+		if (istype(targetfloor, /turf/wall))
+			visible_message("<span class='notice'>You can't build here!</span>")
+			return
+		var/mob/living/human/H = user
+		covers_time /= H.getStatCoeff("strength")
+		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+	if (WWinput(user, "This will start building a new ship floor [dir2text(user.dir)] of you.", "Ship Floor Repair", "Continue", list("Continue", "Stop")) == "Continue")
+		visible_message("<span class='danger'>[user] starts constructing the new floor.</span>", "<span class='danger'>You start constructing the new floor.</span>")
+		if (do_after(user, covers_time, user.loc) && src)
+			qdel(src)
+			new/obj/covers/repairedfloor/ship(get_step(user, user.dir), user)
+			visible_message("<span class='danger'>[user] finishes placing the new floor.</span>")
 			if (ishuman(user))
 				var/mob/living/human/H = user
 				H.adaptStat("crafting", 3)

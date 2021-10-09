@@ -282,17 +282,6 @@
 		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
 			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
-		var/your_dir = "NORTH"
-
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
 
 		var/sandbag_time = 50
 
@@ -302,7 +291,7 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a sandbag wall [your_dir] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			if (WWinput(user, "This will start building a sandbag wall [dir2text(user.dir)] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/progress = bag.sand_amount
@@ -317,18 +306,6 @@
 
 	else if (istype(C, /obj/item/weapon/barrier))
 
-		var/your_dir = "NORTH"
-
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
-
 		var/sandbag_time = 50
 
 		if (ishuman(user))
@@ -337,7 +314,7 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a dirt barricade [your_dir] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			if (WWinput(user, "This will start building a dirt barricade [dir2text(user.dir)] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/obj/item/weapon/barrier/bag = C
@@ -352,19 +329,6 @@
 				return
 
 	else if (istype(C, /obj/item/weapon/snowwall))
-
-		var/your_dir = "NORTH"
-
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
-
 		var/sandbag_time = 50
 
 		if (ishuman(user))
@@ -373,7 +337,7 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a snow barricade [your_dir] of you.", "Snow Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			if (WWinput(user, "This will start building a snow barricade [dir2text(user.dir)] of you.", "Snow Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/obj/item/weapon/snowwall/bag = C
@@ -825,18 +789,6 @@
 
 	else if (istype(C, /obj/item/weapon/covers) && !istype(src, /turf/floor/beach/water/deep/saltwater))
 
-		var/your_dir = "NORTH"
-
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
-
 		var/covers_time = 80
 
 		if (ishuman(user))
@@ -845,7 +797,7 @@
 			covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 				if (do_after(user, covers_time, user.loc))
 					if (!istype(src, /turf/floor/beach/water/deep/saltwater))

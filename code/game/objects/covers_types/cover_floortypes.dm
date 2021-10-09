@@ -8,6 +8,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 0
+	
 /obj/covers/repairedfloor
 	name = "repaired floor"
 	desc = "a repaired wood floor."
