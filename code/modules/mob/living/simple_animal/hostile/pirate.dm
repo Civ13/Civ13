@@ -74,7 +74,7 @@
 	faction = PIRATES
 	ranged = TRUE
 	rapid = FALSE
-	firedelay = 80
+	firedelay = 180
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/pirate
 	casingtype = null

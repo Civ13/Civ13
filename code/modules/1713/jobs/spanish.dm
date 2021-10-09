@@ -342,3 +342,79 @@
 	give_random_name(H)
 
 	return TRUE
+/////////////////////////////////////////////////EXTRAS FOR CORPSES///////////////////////////////////////////////////
+/datum/job/spanish/corpse/soldier
+	title = "Military Soldado"
+	en_meaning = "Military Soldier"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateSP"
+
+	min_positions = 1
+	max_positions = 30
+
+/datum/job/spanish/corpse/soldier/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/whiteputtee(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/spanish_soldier(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/spanish_soldier(H), slot_wear_suit)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+
+	return TRUE
+
+/datum/job/spanish/corpse/soldier_rifle
+	title = "Rifle Soldado"
+	en_meaning = "Rifleman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateSP"
+
+	min_positions = 1
+	max_positions = 30
+
+/datum/job/spanish/corpse/soldier_rifle/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/whiteputtee(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/spanish_soldier(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/spanish_soldier(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/m1752(H), slot_l_hand)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+
+	return TRUE
