@@ -203,7 +203,7 @@ OBJECT;45;5;2;/obj/covers/repairedfloor/ship;
 OBJECT;46;5;2;/obj/covers/repairedfloor/ship;
 OBJECT;47;5;2;/obj/structure/table/wood;
 OBJECT;47;5;2;/obj/covers/repairedfloor/ship;
-OBJECT;47;5;2;/obj/structure/voyage_tablemap;dir===4
+OBJECT;47;5;2;/obj/structure/voyage/tablemap;dir===4
 OBJECT;47;5;2;/obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733;
 OBJECT;48;5;2;/obj/covers/repairedfloor/ship;
 OBJECT;48;5;2;/obj/structure/bed/chair/comfy/blue;name===blue chair;desc===It's a chair. It looks comfy. It's made of steel and covered with blue cloth.;icon_state===;dir===8

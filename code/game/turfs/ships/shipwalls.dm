@@ -7,7 +7,12 @@
 	protection_chance = 60
 	var/ispartial = FALSE
 	opacity = TRUE
-
+	New()
+		..()
+		spawn(10)
+			if (dir == SOUTH && ispartial)
+				layer = 4.5
+				update_icon()
 /obj/structure/barricade/ship/dismantle()
 	new/obj/effect/decal/cleanable/debris(loc)
 	if(prob(50))
@@ -55,7 +60,23 @@
 				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover
-					return prob(100-protection_chance-(B.penetrating*4))
+					if(B.atype == "cannonball")
+
+					else if (B.atype == "chainshot")
+						if (ispartial)
+							return TRUE
+						else
+							return FALSE
+					else if (B.atype == "grapeshot")
+						if (ispartial)
+							return TRUE
+						else
+							return FALSE
+					else
+						if (ispartial)
+							if (prob(70))
+								return TRUE
+						return prob(100-protection_chance-(B.penetrating*4))
 				return FALSE
 		if (!mover.throw_source)
 			if (get_dir(loc, target) & dir)
@@ -77,8 +98,6 @@
 					if (dir != EAST)
 						return TRUE
 
-/obj/structure/barricade/ship/New(var/newloc, var/material_name)
-	return
 /obj/structure/barricade/ship/get_material()
 	return material
 
@@ -95,12 +114,20 @@
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1_a"
 	opacity = FALSE
+
 /obj/structure/barricade/ship/wall2
 	name = "wall"
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat2"
 
+/obj/structure/barricade/ship/wall2/doorway
+	name = "doorway"
+	desc = "A wooden ship doorway."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat2_doorway"
+	density = FALSE
+	opacity = FALSE
 
 /obj/structure/barricade/ship/blue
 	name = "wall"
@@ -229,6 +256,9 @@
 	opacity = FALSE
 	ispartial = TRUE
 
+/obj/structure/barricade/ship/blue/bport0/south/New()
+	..()
+	dir = SOUTH
 /obj/structure/barricade/ship/blue/bport1
 	name = "holed wall"
 	desc = "A thin wood ship wall, with a lower part to fire through."
@@ -237,7 +267,7 @@
 	protection_chance = 25
 	opacity = FALSE
 	ispartial = TRUE
-
+	
 /obj/structure/barricade/ship/blue/bport3
 	name = "crenelated wall"
 	desc = "A thin wood ship wall, with a lower part to fire through."
@@ -247,6 +277,10 @@
 	opacity = FALSE
 	density = FALSE
 	ispartial = TRUE
+
+/obj/structure/barricade/ship/blue/bport3/south/New()
+	..()
+	dir = SOUTH
 
 /obj/structure/barricade/ship/blue/bwest
 	name = "wall"
@@ -359,7 +393,13 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
-
+	dir = NORTH
+/obj/structure/barricade/ship/wood/port0/north/New()
+	..()
+	dir = NORTH
+/obj/structure/barricade/ship/wood/port0/south/New()
+	..()
+	dir = SOUTH
 /obj/structure/barricade/ship/wood/portl1
 	name = "wall"
 	desc = "A thin wood ship wall."
@@ -368,6 +408,7 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
+	dir = EAST
 
 /obj/structure/barricade/ship/wood/portl2
 	name = "wall"
@@ -377,6 +418,7 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
+	dir = WEST
 
 /obj/structure/barricade/ship/wood/portl3
 	name = "wall"
@@ -386,6 +428,7 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
+	dir = WEST
 
 /obj/structure/barricade/ship/wood/port1
 	name = "holed wall"
@@ -404,6 +447,12 @@
 	density = FALSE
 	opacity = FALSE
 
+/obj/structure/barricade/ship/wood/port2/north/New()
+	..()
+	dir = NORTH
+/obj/structure/barricade/ship/wood/port2/south/New()
+	..()
+	dir = SOUTH
 /obj/structure/barricade/ship/aport0
 	name = "closed cannon port"
 	desc = "A port used to fire cannons out of. This one is closed."
@@ -462,6 +511,7 @@
 				protection_chance = 60
 				ispartial = TRUE
 				update_icon()
+
 /obj/structure/barricade/ship/aport0/north
 	icon_state = "boat1_port0_up"
 	update_icon()

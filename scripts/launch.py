@@ -1,5 +1,4 @@
 import os
-import signal
 import shutil
 import time
 currdir = os.path.dirname(os.path.abspath(__file__))

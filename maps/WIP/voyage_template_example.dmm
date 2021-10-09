@@ -4,7 +4,7 @@
 "fo" = (/obj/structure/barricade/ship/wood/a9,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "gJ" = (/obj/structure/barricade/ship/wood/a5,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "iB" = (/obj/map_metadata/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
-"jh" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage_tablemap{dir = 4; layer = 2.9},/obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
+"jh" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage/tablemap{dir = 4; layer = 2.9},/obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "jK" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "kK" = (/obj/structure/barricade/ship/wood/a4,/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b1,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "ry" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/rations/fruits,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)

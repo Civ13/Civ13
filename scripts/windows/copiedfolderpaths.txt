@@ -1,2 +1,4 @@
 UI
 maps/zones
+config/names
+config/crafting

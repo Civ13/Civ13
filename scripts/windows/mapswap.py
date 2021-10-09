@@ -2,7 +2,6 @@ import sys
 import os
 import shutil
 import time
-import signal
 
 def getListOfFiles(dirName):
     # create a list of file and sub directories 

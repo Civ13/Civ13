@@ -80,12 +80,23 @@
 	proc/do_autofire()
 		var/found = FALSE
 		for(var/mob/living/simple_animal/hostile/HH in range(2,src))
-			found = TRUE
-			break
+			if(HH.stat != DEAD)
+				found = TRUE
+				break
 		if (!found)
 			return
 		if (!loaded)
-			var/obj/item/cannon_ball/W = new/obj/item/cannon_ball(src)
+			var/obj/item/cannon_ball/W
+			if (src.z == world.maxz)
+				if (prob(25))
+					W = new/obj/item/cannon_ball/chainshot(src)
+				else
+					if (prob(50))
+						W = new/obj/item/cannon_ball/grapeshot(src)
+					else
+						W = new/obj/item/cannon_ball(src)
+			else
+				W = new/obj/item/cannon_ball(src)
 			loaded = W
 			angle = 13+rand(-5,5)
 			sway = rand(-maxsway,maxsway)
@@ -110,7 +121,19 @@
 			S.name = loaded.name
 			S.starting = get_turf(src)
 			loaded = null
-			S.launch(TF, null, src, 0, 0)
+			if (S.atype == "grapeshot")
+				var/tot = pick(3,4)
+				for(var/i = 1, i<= tot,i++)
+					var/obj/item/projectile/shell/S1 = new S.type(loc)
+					S1.damage = S.damage
+					S1.atype = S.atype
+					S1.caliber = S.caliber
+					S1.heavy_armor_penetration = S.heavy_armor_penetration
+					S1.name = S.name
+					S1.starting = get_turf(src)
+					S1.launch(TF, null, src, rand(-2,2), 0)
+			else
+				S.launch(TF, null, src, 0, 0)
 			// screen shake
 			for (var/mob/m in player_list)
 				if (m.client)

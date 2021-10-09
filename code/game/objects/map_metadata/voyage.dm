@@ -27,6 +27,8 @@
 	var/latitude = 21 //21 to 27 N
 	var/list/mapgen = list()
 	var/list/islands = list()
+	var/list/sea = list()
+	var/list/ships = list()
 	var/navmoving = FALSE //if the ship is moving
 	var/navdirection = "North"
 	var/navprogress = 0 //how far along on moving to a neighbouring tile the ship is
@@ -40,7 +42,7 @@
 			navprogress += navspeed
 			if (navprogress >= 100)
 				navprogress = 0
-				if (navdirection == "island" || navdirection == "ship")
+				if (navdirection == "island" || findtext(navdirection,"ship"))
 					enter_event()
 				else
 					switch(navdirection)
@@ -79,7 +81,24 @@
 
 	spawn(600)
 		nav()
+//0 means random for numerical values
+/obj/map_metadata/voyage/proc/gen_ship(sfaction = "random", ssize = 0, slat = 0, slon = 0)
+	if (sfaction == "random" || !(sfaction in list("pirates","merchant","spanish","british","undead")))
+		sfaction = pick("pirates","merchant","spanish","british","undead")
+	if (ssize <= 0 || ssize > 5)
+		ssize = pick(1,2,3,4,5)
+	else
+		ssize = round(ssize)
 
+	var/csloc = pick(src.sea)
+	if (slat == 0 || !(slat in list(21,22,23,24,25,26,27)))
+		slat = csloc[2]
+	if (slon == 0 || !(slon in list(71,72,73,74,75,76,77)))
+		slon = csloc[3]
+
+	if(mapgen["[slat],[slon]"])
+		mapgen["[slat],[slon]"][3] = "ship[ssize]_[sfaction]"
+	ships += list(list(ssize,sfaction,slat,slon))
 /obj/map_metadata/voyage/proc/calc_speed()
 	var/spd = 0
 	var/snum = 0
@@ -90,7 +109,7 @@
 	if (spd != 0 && snum != 0)
 		spd/=snum //divide by number of masts
 	spd*=33 //how much % of progress per minute for each spd unit, ex: 2 masts in full condition = 1*33 = 33, 3 mins to change tiles
-	return spd
+	return spd+1
 
 /obj/map_metadata/voyage/proc/enter_event()
 	navmoving = FALSE
@@ -100,7 +119,12 @@
 	inzone = TRUE
 	ship_anchored = TRUE
 	world << "<big>The ship arrives at the destination.</big>"
-	load_map(pick("island1","island2"),"random")
+	if (navdirection == "island")
+		load_map(pick("island1","island2"),"random")
+		return
+	else
+		var/parsed_ship = splittext(navdirection,"_")
+		load_map(parsed_ship[1])
 	return
 
 /obj/map_metadata/voyage/proc/abandon_event()
@@ -114,6 +138,12 @@
 	for(var/obj/structure/grapplehook/G in world)
 		G.undeploy()
 	clear_map()
+	for(var/list/L in ships)
+		if (L[3] == latitude && L[4] == longitude)
+			ships -= L
+	for(var/list/L1 in islands)
+		if (L1[2] == latitude && L1[3] == longitude)
+			L1[4] = world.time + 18000
 	return
 
 /obj/map_metadata/voyage/proc/clear_map()
@@ -322,19 +352,43 @@
 /obj/map_metadata/voyage/New()
 	..()
 	nav()
-	for(var/lon = 70, lon <= 77, lon++)
+	for(var/lon = 71, lon <= 77, lon++)
 		for(var/lat = 21, lat <= 27, lat++)
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
 			if (prob(25))
 				mapgen["[lat],[lon]"][3] = "island"
-				islands += list(lat, lon)
-
+				islands += list(list(pick("island1","island2","island3"),lat, lon, 0))
+			else
+				sea += list(list("sea",lat,lon))
+	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
+	spawn(100)
+		load_new_recipes()
 /obj/map_metadata/voyage/cross_message()
 	return ""
 /obj/map_metadata/voyage/reverse_cross_message()
 	return ""
+
+
+/obj/map_metadata/voyage/load_new_recipes()
+	var/F3 = file("config/crafting/material_recipes_voyage.txt")
+	if (fexists(F3))
+		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_lists["global"] = list()
+		for (var/i in craftlist_temp)
+			if (findtext(i, ","))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_lists["global"] += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+
 ///////////////Specific objects////////////////////
-/obj/structure/voyage_shipwheel
+/obj/structure/voyage/bullet_act(var/obj/item/projectile/P, def_zone)
+	P.on_hit(src, FALSE, def_zone)
+	return
+/obj/structure/voyage/attackby(obj/P, mob/user)
+	return
+/obj/structure/voyage/shipwheel
 	name = "ship wheel"
 	desc = "Used to steer the ship."
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
@@ -352,15 +406,25 @@
 			var/def_dir = nmap.navdirection
 			var/currtile = nmap.mapgen["[nmap.latitude],[nmap.longitude]"][3]
 			if (currtile != "sea")
-				optlist = list("Approach [currtile]","North","South","East","West")
-				def_dir = "Approach [currtile]"
-			var/newdir = WWinput(H, "The Ship is currently moving [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
+				var/parsed_currtile = currtile
+				if (findtext(parsed_currtile,"ship"))
+					parsed_currtile = "ship"
+				optlist = list("Approach [parsed_currtile]","North","South","East","West")
+				def_dir = "Approach [parsed_currtile]"
+			var/newdir = WWinput(H, "The Ship is currently heading to the [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
+			if (findtext(newdir,"Approach "))
+				for(var/list/L in nmap.islands)
+					if (L[2] == nmap.latitude && L[3] == nmap.longitude && world.time <= L[4])
+						WWalert(H, "You've visited this island too recently!", "Island")
+						return
 			if (newdir != nmap.navdirection)
 				if (do_after(H, 50, src))
 					nmap.navdirection = newdir
-					visible_message("<font size=2>The ship turns <b>[nmap.navdirection]</b>.</font>")
+					if (findtext(nmap.navdirection,"Approach "))
+						nmap.navdirection = replacetext(nmap.navdirection,"Approach ","")
+					visible_message("<font size=3>The ship heads to the <b>[nmap.navdirection]</b>.</font>")
 					return
-/obj/structure/voyage_tablemap
+/obj/structure/voyage/tablemap
 	name = "map"
 	desc = "A map of the regeion. Used by the captain to plan the next moves."
 	icon = 'icons/obj/items.dmi'
@@ -369,21 +433,43 @@
 	var/mob/living/user = null
 	anchored = TRUE
 	var/image/img
-
+	var/icon/img_flattened
 	New()
 		..()
-		img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
-
+		spawn(30)
+			img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
+			update_icon()
+	update_icon()
+		if(map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			for(var/list/L in nmap.islands)
+				var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
+				newisland.pixel_x = 42+((L[3]-71)*70)
+				newisland.pixel_y = 91+((L[2]-21)*67)
+				img.overlays+=newisland
+			for(var/list/L in nmap.ships)
+				var/image/newship = image(icon='icons/minimap_effects.dmi', icon_state="ship[L[1]]",layer=src.layer+1.1)
+				newship.pixel_x = 42+((L[4]-71)*70)
+				newship.pixel_y = 91+((L[3]-21)*67)
+				var/image/newship_s = image(icon='icons/minimap_effects.dmi', icon_state="size[L[1]]",layer=src.layer+1.11)
+				newship_s.pixel_x = 42+((L[4]-71)*70)
+				newship_s.pixel_y = 91+((L[3]-21)*67)
+				var/image/newship_f = image(icon='icons/minimap_effects.dmi', icon_state=L[2],layer=src.layer+1.12)
+				newship_f.pixel_x = 42+((L[4]-71)*70)
+				newship_f.pixel_y = 91+((L[3]-21)*67)
+				img.overlays+=newship
+				img.overlays+=newship_s
+				img.overlays+=newship_f
 
 	examine(mob/user)
 		update_icon()
-		user << browse("<img src=voyage.png></img>","window=popup;size=630x630")
+		user << browse(getFlatIcon(img),"window=popup;size=630x630")
 
 	attack_hand(mob/user)
 		update_icon()
 		examine(user)
 
-/obj/structure/voyage_boatswain_book
+/obj/structure/voyage/boatswain_book
 	name = "crew log"
 	desc = "A book listing all the ship's crew and their assigned jobs."
 	icon = 'icons/obj/library.dmi'
@@ -403,7 +489,7 @@
 		t_text += "</table>"
 		return t_text
 					
-/obj/structure/voyage_quartermaster_book
+/obj/structure/voyage/quartermaster_book
 	name = "ship inventory"
 	desc = "A diary tracking the current inventory in the ship."
 	icon = 'icons/obj/library.dmi'
@@ -505,7 +591,7 @@
 				tally["cannonballs"]++
 		return tally
 
-/obj/structure/voyage_sextant
+/obj/structure/voyage/sextant
 	name = "sextant"
 	desc = "Used to determine the current latitude and longitude using the sun and stars."
 	icon = 'icons/obj/items.dmi'
@@ -517,11 +603,38 @@
 		var/obj/map_metadata/voyage/nmap = map
 		if (nmap)
 			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
-			H << "The ship is facing the <b>[nmap.navdirection]</b>."
+			H << "The ship is heading to the <b>[nmap.navdirection]</b>."
 			if(nmap.ship_anchored)
 				H << "The ship is <font color='red'><b>anchored</b></font>."
 
-/obj/structure/voyage_ropeladder
+/obj/structure/voyage/shipbell
+	name = "ship's bell"
+	desc = "Used to relay signals to the crew."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "bell_stand"
+	layer = 4
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+	var/cooldown_bell_stand = 0
+
+	attack_hand(mob/living/human/user)
+		if(!ishuman(user))
+			return
+		play()
+
+	proc/play()
+		if (world.time >= cooldown_bell_stand)
+			for (var/mob/M in player_list)
+				M.client << sound('sound/effects/bell_stand.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			world << "<font size=4>You hear the ship's bell!</font>"
+			cooldown_bell_stand = world.time+50
+			icon_state = "bell_stand_ringing"
+			spawn(15)
+				icon_state = "bell_stand"
+
+
+/obj/structure/voyage/ropeladder
 	name = "rope ladder"
 	desc = "A strong rope ladder leading up the mast."
 	icon = 'icons/turf/64x64.dmi'
@@ -530,7 +643,7 @@
 	density = FALSE
 	anchored = TRUE
 
-/obj/structure/voyage_anchor
+/obj/structure/voyage/anchor
 	name = "anchor"
 	desc = "A large iron anchor."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
@@ -539,7 +652,7 @@
 	density = FALSE
 	anchored = TRUE
 
-/obj/structure/voyage_anchor_capstan
+/obj/structure/voyage/anchor_capstan
 	name = "anchor capstan"
 	desc = "A vertical-axled rotating machine used to raise and lower the ship's anchor."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
@@ -609,7 +722,7 @@
 							S.update_icon()
 						update_icon()
 	
-/obj/structure/voyage_ropeladder/thin
+/obj/structure/voyage/ropeladder/thin
 	icon_state = "ropeladder_thin"
 
 /obj/structure/closet/crate/chest/treasury/ship
@@ -618,7 +731,7 @@
 	faction = "ship"
 	anchored = TRUE
 
-/obj/structure/voyage_grid
+/obj/structure/voyage/grid
 	name = "loading gate"
 	desc = "A large gridded gate, used to load the ship."
 	icon = 'icons/turf/64x64.dmi'
@@ -627,7 +740,7 @@
 	density = FALSE
 	anchored = TRUE
 
-/obj/structure/voyage_grid/partial
+/obj/structure/voyage/grid/partial
 	icon_state = "grid_partial"
 
 /obj/effect/sailing_effect
