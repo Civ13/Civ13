@@ -26,12 +26,14 @@
 "eK" = (/obj/covers/repairedfloor/ship,/obj/structure/repair,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "eX" = (/obj/structure/barricade/ship/blue/b18,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "fl" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark{name = "JoinLatePirateMidshipman"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"fv" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/weapon/flame/candle,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "fT" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark{name = "JoinLatePirateCarpenter"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "gc" = (/obj/effect/sailing_effect{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "gp" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "gD" = (/obj/structure/bookcase,/obj/covers/repairedfloor/ship,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "gH" = (/obj/structure/barricade/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "gI" = (/obj/structure/barricade/ship/north{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"gW" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/cannonball/chainshot,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "hj" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage/tablemap{dir = 4},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "hK" = (/obj/covers/repairedfloor/ship,/obj/structure/reagent_dispensers/largebarrel,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "hR" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
@@ -71,6 +73,7 @@
 "og" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/fishing,/obj/item/weapon/fishing,/obj/item/weapon/fishing/net,/obj/item/weapon/fishing/net,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "om" = (/obj/covers/repairedfloor/ship,/obj/structure/railing,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "oo" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/musketball,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
+"pY" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "rf" = (/obj/structure/barricade/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "rh" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/wood,/obj/item/weapon/bedsheet/captain,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "rw" = (/obj/covers/wood_wall/adjustable,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
@@ -120,6 +123,7 @@
 "zG" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/wood,/obj/item/weapon/bedsheet/rd,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Aa" = (/obj/structure/bookcase,/obj/covers/repairedfloor/ship,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Ac" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"Ae" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/craftable/rifles/wood/filled_musket,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "AE" = (/obj/structure/barricade/ship/blue/b17,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "AL" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/mast/large,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "AM" = (/obj/covers/repairedfloor/ship,/obj/covers/wood/stairs{dir = 8},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -132,7 +136,7 @@
 "CL" = (/obj/covers/repairedfloor/ship,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/obj/structure/cannon/modern/tank/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "CQ" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/sign/custom/plaque{desc = "Food and water stored here."; name = "Kitchen Storage"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "CY" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/meat_grinder,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"CZ" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/muskets/small,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
+"CZ" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/craftable/rifles/wood/filled_blunderbuss,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "Dr" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/cabinet,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Dx" = (/obj/effect/landmark{name = "JoinLatePirateSurgeon"},/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "DG" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/cabinet,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
@@ -175,6 +179,8 @@
 "Nn" = (/obj/structure/barricade/ship/blue/b10,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "NJ" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "On" = (/obj/structure/barricade/ship/wood/a5,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"OG" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/cannonball/grapeshot,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
+"OR" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/craftable/rifles/wood/filled_musketoon,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "Pn" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/shipwheel,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Pq" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "Py" = (/obj/effect/decal/cleanable/blood/splatter,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
@@ -259,13 +265,13 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaagIhKhWhKKbjTieIMizjTaujTizKbjoCFixCFCFixCFCFixCFZvix
 aaaaaaaaaaaaaaaaaaaaaaaaaaaagIEkkhEkkECFjTjTjTCFCFjTIMKbkVCFHAZvCFHACFCFHACFCFHACFKbkVXBXBlulCXBKbdGtcrTrTooKbdGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaagInbEkogCQjTCFCFCFCFCFCFjTCFMCCFomomomCFCFomomomCFCFCFCFMCXBXBXBXBXBNkkVCZrTtCrTookVrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaagIrVEksaKbizjTCFCFCFCFCFCFCFkVfljBlilililijBlijBfTReReRekVXBXBsosQXBXBdGrTrTtCrTmgKbrwrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaauouuEkuJKbIMjTjTizjTmjCFjTIMdGjBlijBCFjBlilijBlijBRekXJqdGycXBdKXBXBXBkErTrTrTrTmgKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaauouuEkuJKbIMjTjTizjTmjCFjTIMdGjBlijBCFjBlilijBlijBRekXJqdGycXBdKTdXBXBkErTrTrTrTmgKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaauoyFEkyKKbjTCFjTIMjTmjGWjTEzdGfllililililijBlilifTwhCFCFdGycXBsosoXBXBPFrTrTrTrTyOKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaagIyFEkySKbCFCFCFCFCFCFCFCFjokVCFjBlijBlijBlijBliCFReReRekVycXBXBXBXByckVCZrTtCrTkwKbrwrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaagIBMEkuuCQCoCwCYtnCFCFCFCFCFMCCFwEwEwECFCFwEwEwECFCFCFCFMCXBXBXBXBXBQMdGCZrTtCrTmgkVrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaagIEkEkEkkEtDtDtDCFCFCFjTEzKbkVCFtTCFCFixCFCFixCFCFtTCFKbkVjDXBXBXBjDKbdGuZrTrTrTKbdGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaagIyFyFyFKbFcFcFfFfbeCFjTFMKbjoCFCLCFCFMRCFZvMRkXCFCLifdGsoTdXBXBXBsoKbrTrTrTooKbdGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaHwHHHHICHHHHHHHHHHICHHHHHHHHHHHHKgHHICKgHHHHKgICHHKgHHKnRfXBmabJXBRfKbevyAoogpdGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaagIyFEkySKbCFCFCFCFCFCFCFCFjokVCFjBlijBlijBlijBliCFReReRekVycXBXBXBXByckVAerTtCrTkwKbrwrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaagIBMEkuuCQCoCwCYtnCFCFCFCFCFMCCFwEwEwECFCFwEwEwECFCFCFCFMCXBXBXBXBXBQMdGORrTtCrTmgkVrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaagIEkEkEkkEtDtDtDCFCFCFjTEzKbkVCFtTCFCFixCFCFixCFCFtTCFKbkVjDXBXBXBjDKbdGuZrTrTOGKbdGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaagIyFyFyFKbFcFcFfFfbeCFjTFMKbjoCFCLCFCFMRCFZvMRkXCFCLifdGsoXBXBXBXBsoKbrTrTrTooKbdGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaHwHHHHICHHHHHHHHHHICHHHHHHHHHHHHKgHHICKgHHHHKgICHHKgHHKnRfXBmabJXBRfKbevyAgWgpdGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBHwHHHHHHHHHHHHHHHHHHHHHHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -335,12 +341,12 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaXjXqXyXEzGXKYORPVMvqXRHfHfYlHfHfYlHfHfYlHfHfYlHfHfYlHf
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYOyBVMVMAMVMVMdaVMnFTZVMVMMnVMVMTZnFVMdaVMVMuTVMVMVMVMvLYOBvBvDxDGvLjnZgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjimNJimimumYOUTVMVMAMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMuTVMVMVMVMDWvsYOvsDxFgvLmDOnXhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjvtYOvrckYqYORPVMlBFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiilBVMVMVMUTYOYOPyBvQLvLmDRoRPsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYORPVMZmFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiiETVMVMVMvLvsYOvsYOYObamDRoRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYORPVMZmFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiiETVMVMVMvLvsYOvsYOpYbamDRoRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjVJttKWgDumYORPVMPnFxNbVMVMVMVMVMPPEOVMZFVMPPVMVMVMVMVMiiJfVMVMeqvLiNYOBvPyYOUTmDRoRPsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjimNJimimWtYORPVMakFxNbVMALVMVMVMVMVMVMVMVMVMVMVMALVMVMiiZwVMVMVMvLvsYOvsYOtivLmDRoRPsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjTzrhawAaumYORPVMhjFxVMVMVMVMVMVMVMFLVMwmVMVMVMVMVMVMVMiiPUVMVMVMvLYOYOPyYOtivLmDRoRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOaYYOyBVMlBFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiilBVMVMVMUTYOYOYODxcPvLmDRoRPsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaavSYOGFYOYOUTYOUTVMVMAMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMuTVMVMVMVMDWvsYOvsDxGFvLmDeXNnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaavSYOGFYOYOUTYOUTVMVMAMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMuTVMVMVMVMDWvsYOvsDxfvvLmDeXNnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjcnLCYOYOumYORPVMVMAMVMVMVMVMVMVMnFVMVMVMVMVMnFVMVMVMVMuTVMVMVMVMvLYOYOYOYODGdQHgvkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjCauptLDrumYORPVMlaYcuIuIrfuIuIKQuIuIgHuIuIKQuIuIrfuIuISeNbVMjOVMvLYZvsYOvsxrHgVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaarOHPHXHPHPHPHXHPiUdRiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBAEiUiUiUiUdQHPHPHXHPHPVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

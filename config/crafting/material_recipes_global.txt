@@ -394,12 +394,6 @@ RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sh
 RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/food/drinks/gunpowder,2,60,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,3,70,0,1,weapon accessories,0,54,0,8,null
 
-RECIPE: /material/leather/,sword sheath,/obj/item/clothing/accessory/storage/sheath,3,80,0,1,weapon accessories,0,54,0,8,null
-RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/storage/sheath/longer,3,80,0,1,weapon accessories,0,54,0,8,null
-RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,4,80,0,1,weapon accessories,0,54,0,8,null
-RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,3,80,0,1,weapon accessories,0,54,0,8,null
-RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,6,80,0,1,weapon accessories,0,54,0,8,null
-
 RECIPE: /material/leather/,bullet pouch,/obj/item/ammo_magazine/emptypouch,3,70,0,1,weapon accessories,0,0,85,8,null
 RECIPE: /material/leather/,hip holster,/obj/item/clothing/accessory/holster/hip,2,50,0,1,weapon accessories,0,0,85,8,null
 RECIPE: /material/leather/,double hip holster,/obj/item/clothing/accessory/holster/hip/double,3,70,0,1,weapon accessories,0,0,85,8,null

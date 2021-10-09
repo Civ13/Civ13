@@ -248,3 +248,4 @@
 	item_state = "cat4"
 	icon_living = "cat4"
 	icon_dead = "cat4_dead"
+	starves = FALSE

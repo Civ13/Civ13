@@ -450,6 +450,22 @@ obj/structure/closet/crate/loottreasurechest/New()
 	paths = list(/obj/item/cannon_ball = 15)
 	cratevalue = 175 //assuming 10 value
 
+/obj/structure/closet/crate/cannonball/chainshot
+	name = "Cannonball crate (chainshot)"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/cannon_ball/chainshot = 15)
+	cratevalue = 175 //assuming 10 value
+
+/obj/structure/closet/crate/cannonball/grapeshot
+	name = "Cannonball crate (grapeshot)"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/cannon_ball/grapeshot = 15)
+	cratevalue = 175 //assuming 10 value
+
 /obj/structure/closet/crate/webbings
 	name = "bandolier crate"
 	icon_state = "wood_crate"
