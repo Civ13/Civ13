@@ -138,6 +138,10 @@
 	for(var/obj/structure/grapplehook/G in world)
 		G.undeploy()
 	clear_map()
+	//convert looted autofire cannons to normal cannons
+	for(var/obj/structure/cannon/modern/tank/voyage/autofire/C in world)
+		new/obj/structure/cannon/modern/tank/voyage(C.loc)
+		qdel(C)
 	for(var/list/L in ships)
 		if (L[3] == latitude && L[4] == longitude)
 			ships -= L

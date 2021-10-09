@@ -42,13 +42,17 @@
 	if (istype(A, /turf))
 		var/turf/T = A
 		if (atype == "HE")
-			if (!istype(T, /turf/floor/beach))
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 				T.ChangeTurf(/turf/floor/dirt/burned)
 			explosion(T, 1, 2, 2, 3)
-		else
-			if (!istype(T, /turf/floor/beach))
+		else if (atype == "cannonball")
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 				T.ChangeTurf(/turf/floor/dirt/burned)
-			explosion(T, 0, 0, 1, 3)
+			explosion(T, 1, 1, 1, 2)
+		else
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
+				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 0, 0, 1, 2)
 	spawn(50)
 		if (src)
 			qdel(src)
