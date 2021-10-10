@@ -85,9 +85,9 @@ OBJECT;28;1;2;/obj/covers/cobblestone;
 OBJECT;29;1;2;/obj/covers/cobblestone;
 OBJECT;30;1;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall1
 OBJECT;31;1;2;/obj/covers/cobblestone;
-OBJECT;31;1;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
-OBJECT;31;1;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
-OBJECT;31;1;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
+OBJECT;31;1;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
+OBJECT;31;1;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
+OBJECT;31;1;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
 OBJECT;31;1;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
 OBJECT;31;1;2;/obj/structure/closet/crate/chest;
 OBJECT;32;1;2;/obj/covers/cobblestone;
@@ -262,10 +262,10 @@ OBJECT;29;2;2;/obj/covers/cobblestone;
 OBJECT;30;2;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;30;2;2;/obj/item/flashlight/lantern/on/anchored;
 OBJECT;31;2;2;/obj/covers/cobblestone;
-OBJECT;31;2;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
+OBJECT;31;2;2;/obj/item/stack/money/goldvaluables;
 OBJECT;31;2;2;/obj/item/stack/money/goldvaluables;
 OBJECT;31;2;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
-OBJECT;31;2;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
+OBJECT;31;2;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
 OBJECT;31;2;2;/obj/structure/closet/crate/chest;
 OBJECT;32;2;2;/obj/covers/cobblestone;
 OBJECT;33;2;2;/obj/covers/cobblestone;
@@ -274,66 +274,66 @@ OBJECT;35;2;2;/obj/covers/cobblestone;
 OBJECT;36;2;2;/obj/covers/cobblestone;
 OBJECT;37;2;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;38;2;2;/obj/covers/cobblestone;
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;38;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;38;2;2;/obj/structure/closet/crate/rations/biscuits;
 OBJECT;39;2;2;/obj/covers/cobblestone;
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;39;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;39;2;2;/obj/structure/closet/crate/rations/biscuits;
 OBJECT;40;2;2;/obj/covers/cobblestone;
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
-OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
+OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;icon_state===hardtack2
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
 OBJECT;40;2;2;/obj/item/weapon/reagent_containers/food/snacks/hardtack;
@@ -378,30 +378,30 @@ OBJECT;28;3;2;/obj/covers/cobblestone;
 OBJECT;29;3;2;/obj/covers/cobblestone;
 OBJECT;30;3;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;31;3;2;/obj/covers/cobblestone;
+OBJECT;31;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
+OBJECT;31;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
+OBJECT;31;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
 OBJECT;31;3;2;/obj/item/stack/money/goldvaluables;
-OBJECT;31;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
-OBJECT;31;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
-OBJECT;31;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
 OBJECT;31;3;2;/obj/structure/closet/crate/chest;
 OBJECT;32;3;2;/obj/covers/cobblestone;
 OBJECT;33;3;2;/obj/covers/cobblestone;
 OBJECT;34;3;2;/obj/covers/cobblestone;
 OBJECT;34;3;2;/obj/item/stack/money/goldvaluables;
-OBJECT;34;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
+OBJECT;34;3;2;/obj/item/stack/money/goldvaluables;
 OBJECT;34;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
-OBJECT;34;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
+OBJECT;34;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
 OBJECT;34;3;2;/obj/structure/closet/crate/chest;
 OBJECT;35;3;2;/obj/covers/cobblestone;
 OBJECT;35;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
 OBJECT;35;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
-OBJECT;35;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
+OBJECT;35;3;2;/obj/item/stack/money/goldvaluables;
 OBJECT;35;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
 OBJECT;35;3;2;/obj/structure/closet/crate/chest;
 OBJECT;36;3;2;/obj/covers/cobblestone;
+OBJECT;36;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
 OBJECT;36;3;2;/obj/item/stack/money/goldvaluables;
-OBJECT;36;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
-OBJECT;36;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
-OBJECT;36;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff2
+OBJECT;36;3;2;/obj/item/stack/money/goldvaluables;icon_state===goldstuff3
+OBJECT;36;3;2;/obj/item/stack/money/goldvaluables;
 OBJECT;36;3;2;/obj/structure/closet/crate/chest;
 OBJECT;37;3;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;38;3;2;/obj/covers/cobblestone;
@@ -551,7 +551,7 @@ OBJECT;15;6;2;/obj/item/clothing/accessory/storage/webbing;
 OBJECT;15;6;2;/obj/item/clothing/accessory/storage/webbing;
 OBJECT;15;6;2;/obj/item/clothing/accessory/storage/webbing;
 OBJECT;15;6;2;/obj/item/clothing/accessory/storage/webbing;
-OBJECT;15;6;2;/obj/structure/closet/crate/webbings;
+OBJECT;15;6;2;/obj/structure/closet/crate/webbings;dir===4
 OBJECT;16;6;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall6
 OBJECT;16;6;2;/obj/item/flashlight/lantern/on/anchored;
 OBJECT;17;6;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall9
@@ -601,7 +601,7 @@ OBJECT;52;6;2;/obj/item/clothing/accessory/storage/webbing;
 OBJECT;52;6;2;/obj/item/clothing/accessory/storage/webbing;
 OBJECT;52;6;2;/obj/item/clothing/accessory/storage/webbing;
 OBJECT;52;6;2;/obj/item/clothing/accessory/storage/webbing;
-OBJECT;52;6;2;/obj/structure/closet/crate/webbings;dir===4
+OBJECT;52;6;2;/obj/structure/closet/crate/webbings;
 OBJECT;53;6;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall6
 OBJECT;53;6;2;/obj/item/flashlight/lantern/on/anchored;
 OBJECT;54;6;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall9
@@ -643,7 +643,7 @@ OBJECT;16;7;2;/obj/item/ammo_casing/musketball;
 OBJECT;16;7;2;/obj/item/ammo_casing/musketball;
 OBJECT;16;7;2;/obj/item/ammo_casing/musketball;
 OBJECT;16;7;2;/obj/item/ammo_casing/musketball;
-OBJECT;16;7;2;/obj/structure/closet/crate/musketball;dir===4
+OBJECT;16;7;2;/obj/structure/closet/crate/musketball;
 OBJECT;17;7;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall6
 OBJECT;18;7;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall9
 OBJECT;19;7;2;/obj/covers/cobblestone;
@@ -706,7 +706,7 @@ OBJECT;53;7;2;/obj/item/ammo_casing/musketball;
 OBJECT;53;7;2;/obj/item/ammo_casing/musketball;
 OBJECT;53;7;2;/obj/item/ammo_casing/musketball;
 OBJECT;53;7;2;/obj/item/ammo_casing/musketball;
-OBJECT;53;7;2;/obj/structure/closet/crate/musketball;dir===4
+OBJECT;53;7;2;/obj/structure/closet/crate/musketball;
 OBJECT;54;7;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall6
 OBJECT;55;7;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall9
 OBJECT;4;8;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
@@ -781,7 +781,7 @@ OBJECT;42;8;2;/obj/item/cannon_ball;
 OBJECT;42;8;2;/obj/item/cannon_ball;
 OBJECT;42;8;2;/obj/item/cannon_ball;
 OBJECT;42;8;2;/obj/item/cannon_ball;
-OBJECT;42;8;2;/obj/structure/closet/crate/cannonball;dir===8
+OBJECT;42;8;2;/obj/structure/closet/crate/cannonball;
 OBJECT;43;8;2;/obj/covers/cobblestone;
 OBJECT;44;8;2;/obj/covers/cobblestone;
 OBJECT;45;8;2;/obj/covers/cobblestone;
@@ -813,7 +813,7 @@ OBJECT;5;9;2;/obj/item/cannon_ball;
 OBJECT;5;9;2;/obj/item/cannon_ball;
 OBJECT;5;9;2;/obj/item/cannon_ball;
 OBJECT;5;9;2;/obj/item/cannon_ball;
-OBJECT;5;9;2;/obj/structure/closet/crate/cannonball;
+OBJECT;5;9;2;/obj/structure/closet/crate/cannonball;dir===8
 OBJECT;6;9;2;/obj/covers/cobblestone;
 OBJECT;7;9;2;/obj/covers/cobblestone;
 OBJECT;8;9;2;/obj/covers/cobblestone;
@@ -838,10 +838,15 @@ OBJECT;23;9;2;/obj/covers/cobblestone;
 OBJECT;24;9;2;/obj/covers/cobblestone;
 OBJECT;25;9;2;/obj/covers/cobblestone;
 OBJECT;25;9;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
+OBJECT;25;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
+OBJECT;25;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
+OBJECT;25;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
 OBJECT;26;9;2;/obj/covers/cobblestone;
 OBJECT;27;9;2;/obj/covers/cobblestone;
 OBJECT;28;9;2;/obj/covers/cobblestone;
 OBJECT;28;9;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
+OBJECT;28;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
+OBJECT;28;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
 OBJECT;29;9;2;/obj/covers/cobblestone;
 OBJECT;30;9;2;/obj/covers/cobblestone;
 OBJECT;31;9;2;/obj/covers/cobblestone;
@@ -850,11 +855,12 @@ OBJECT;32;9;2;/obj/covers/cobblestone;
 OBJECT;33;9;2;/obj/covers/cobblestone;
 OBJECT;34;9;2;/obj/covers/cobblestone;
 OBJECT;34;9;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
+OBJECT;34;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
+OBJECT;34;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
 OBJECT;35;9;2;/obj/covers/cobblestone;
 OBJECT;36;9;2;/obj/covers/cobblestone;
 OBJECT;37;9;2;/obj/covers/cobblestone;
 OBJECT;37;9;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
-OBJECT;37;9;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
 OBJECT;38;9;2;/obj/covers/cobblestone;
 OBJECT;39;9;2;/obj/covers/cobblestone;
 OBJECT;40;9;2;/obj/covers/cobblestone;
@@ -907,7 +913,7 @@ OBJECT;5;10;2;/obj/item/cannon_ball;
 OBJECT;5;10;2;/obj/item/cannon_ball;
 OBJECT;5;10;2;/obj/item/cannon_ball;
 OBJECT;5;10;2;/obj/item/cannon_ball;
-OBJECT;5;10;2;/obj/structure/closet/crate/cannonball;dir===8
+OBJECT;5;10;2;/obj/structure/closet/crate/cannonball;
 OBJECT;6;10;2;/obj/covers/cobblestone;
 OBJECT;7;10;2;/obj/covers/cobblestone;
 OBJECT;8;10;2;/obj/covers/cobblestone;
@@ -978,7 +984,7 @@ OBJECT;42;10;2;/obj/item/cannon_ball;
 OBJECT;42;10;2;/obj/item/cannon_ball;
 OBJECT;42;10;2;/obj/item/cannon_ball;
 OBJECT;42;10;2;/obj/item/cannon_ball;
-OBJECT;42;10;2;/obj/structure/closet/crate/cannonball;dir===8
+OBJECT;42;10;2;/obj/structure/closet/crate/cannonball;
 OBJECT;43;10;2;/obj/covers/cobblestone;
 OBJECT;44;10;2;/obj/covers/cobblestone;
 OBJECT;45;10;2;/obj/covers/cobblestone;
@@ -1006,7 +1012,7 @@ OBJECT;6;11;2;/obj/item/weapon/grenade/old_grenade;
 OBJECT;6;11;2;/obj/item/weapon/grenade/old_grenade;
 OBJECT;6;11;2;/obj/item/weapon/grenade/old_grenade;
 OBJECT;6;11;2;/obj/item/weapon/grenade/old_grenade;
-OBJECT;6;11;2;/obj/structure/closet/crate/grenades;dir===1
+OBJECT;6;11;2;/obj/structure/closet/crate/grenades;
 OBJECT;7;11;2;/obj/covers/cobblestone;
 OBJECT;8;11;2;/obj/covers/cobblestone;
 OBJECT;9;11;2;/obj/covers/cobblestone;
@@ -1107,6 +1113,10 @@ OBJECT;9;12;2;/obj/covers/cobblestone;
 OBJECT;10;12;2;/obj/covers/cobblestone;
 OBJECT;11;12;2;/obj/covers/cobblestone;
 OBJECT;11;12;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
+OBJECT;11;12;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
+OBJECT;11;12;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
+OBJECT;11;12;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
+OBJECT;11;12;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
 OBJECT;12;12;2;/obj/covers/cobblestone;
 OBJECT;13;12;2;/obj/covers/cobblestone;
 OBJECT;14;12;2;/obj/covers/cobblestone;
@@ -1125,13 +1135,10 @@ OBJECT;46;12;2;/obj/covers/cobblestone;
 OBJECT;47;12;2;/obj/covers/cobblestone;
 OBJECT;48;12;2;/obj/covers/cobblestone;
 OBJECT;48;12;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
-OBJECT;48;12;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
 OBJECT;49;12;2;/obj/covers/cobblestone;
 OBJECT;50;12;2;/obj/covers/cobblestone;
 OBJECT;51;12;2;/obj/covers/cobblestone;
 OBJECT;51;12;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
-OBJECT;51;12;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
-OBJECT;51;12;2;/obj/item/projectile/shell/cannonball/grapeshot;name===grape shot
 OBJECT;52;12;2;/obj/covers/cobblestone;
 OBJECT;53;12;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall5
 OBJECT;53;12;2;/obj/item/flashlight/lantern/on/anchored;

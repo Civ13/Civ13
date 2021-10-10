@@ -13,11 +13,9 @@
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
 				var/mob/living/human/H = ML
-				if (H.faction_text == src.faction && istype(ML, /mob/living/simple_animal/hostile/human/pirate/friendly))
+				if (H.faction_text == src.faction && src != istype(ML, /mob/living/simple_animal/hostile/human/pirate/friendly) && src.hostile_pirate == FALSE)
 					the_targets -= ML
-				else if (H.faction_text == src.faction && src.faction != PIRATES)
-					the_targets -= ML
-			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
+			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction || src == istype(ML, /mob/living/simple_animal/hostile/human/pirate/friendly))
 				the_targets -= ML
 	for (var/atom/A in the_targets)
 
@@ -34,9 +32,7 @@
 			var/mob/living/L = A
 			if (istype(L, /mob/living/human))
 				var/mob/living/human/RH = L
-				if (RH.faction_text == src.faction && istype(L, /mob/living/simple_animal/hostile/human/pirate/friendly))
-					continue
-				else if (RH.faction_text == faction && !attack_same && src.faction != PIRATES)
+				if (RH.faction_text == faction && !attack_same && src.hostile_pirate == FALSE)
 					continue
 				else if (RH in friends)
 					continue
