@@ -386,7 +386,7 @@
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
-	create_path = /mob/living/simple_animal/hostile/pirate
+	create_path = /mob/living/simple_animal/hostile/human/pirate
 	timer = 750
 
 /obj/effect/spawner/mobspawner/british

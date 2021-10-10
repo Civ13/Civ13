@@ -13,7 +13,9 @@
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
 				var/mob/living/human/H = ML
-				if (H.faction_text == src.faction && src.faction != PIRATES)
+				if (H.faction_text == src.faction && istype(ML, /mob/living/simple_animal/hostile/human/pirate/friendly))
+					the_targets -= ML
+				else if (H.faction_text == src.faction && src.faction != PIRATES)
 					the_targets -= ML
 			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
 				the_targets -= ML
@@ -32,7 +34,9 @@
 			var/mob/living/L = A
 			if (istype(L, /mob/living/human))
 				var/mob/living/human/RH = L
-				if (RH.faction_text == faction && !attack_same && src.faction != PIRATES)
+				if (RH.faction_text == src.faction && istype(L, /mob/living/simple_animal/hostile/human/pirate/friendly))
+					continue
+				else if (RH.faction_text == faction && !attack_same && src.faction != PIRATES)
 					continue
 				else if (RH in friends)
 					continue

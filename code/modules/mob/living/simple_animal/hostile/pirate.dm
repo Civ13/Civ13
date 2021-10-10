@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/pirate
+/mob/living/simple_animal/hostile/human/pirate
 	name = "Pirate"
 	desc = "Does what he wants cause a pirate is free."
 	icon_state = "piratemelee"
@@ -15,6 +15,7 @@
 	maxHealth = 100
 	health = 100
 	move_to_delay = 6
+	faction = PIRATES
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 15
 	melee_damage_lower = 30
@@ -24,7 +25,7 @@
 	mob_size = MOB_MEDIUM
 	behaviour = "hostile"
 
-	var/corpse = /mob/living/human/corpse/pirate
+	corpse = /mob/living/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
 
 	faction = PIRATES
@@ -36,7 +37,7 @@
 //	icon_state = icon_pick
 
 
-/mob/living/simple_animal/hostile/pirate/death()
+/mob/living/simple_animal/hostile/human/pirate/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
@@ -98,3 +99,123 @@
 		gun.forceMove(src.loc)
 		qdel(src)
 	return
+
+
+/mob/living/simple_animal/hostile/human/pirate/friendly
+	name = "Pirate"
+	desc = "Does what he wants cause a pirate is free. But isn't hostile at first."
+	icon_state = "pirate_friendly1"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Sure could use a drink","Landlubber!","can't wait to go see the girls of ol' maui", "time for drinking lads!!", "took some damage in that last fight")
+	speak_emote = list("grumbles", "screams")
+	emote_hear = list("curses","grumbles","screams")
+	emote_see = list("stares ferociously", "stomps")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 100
+	health = 100
+	move_to_delay = 6
+	faction = "neutral"
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 5
+	melee_damage_lower = 5
+	melee_damage_upper = 10
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "wander"
+	friends = list("neutral", "PIRATES")
+
+	corpse = /mob/living/human/corpse/pirate
+	New()
+		..()
+		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
+		messages["backup"] =list( "!!I need help!","!!Help me!")
+		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
+		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
+
+		gun = new/obj/item/weapon/material/sword/cutlass(src)
+		icon_state = "pirate_friendly[rand(1,3)]"
+
+
+/mob/living/simple_animal/hostile/human/pirate/friendly/captain
+	name = "Pirate Captain"
+	desc = "Does what he wants cause a pirate is free. But isn't hostile at first. This one has a flaming beard, pretty cool."
+	icon_state = "pirate_friendly_captain"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Sure could use a drink","Landlubber!","can't wait to go see the girls of ol' maui", "time for drinking lads!!", "took some damage in that last fight", "Ahoy! this be your captain! ME! Yahaaargh!")
+	speak_emote = list("grumbles", "screams")
+	emote_hear = list("curses","grumbles","screams")
+	emote_see = list("stares ferociously", "stomps")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 200
+	role = "officer"
+	health = 200
+	move_to_delay = 6
+	faction = "neutral"
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 10
+	melee_damage_lower = 20
+	melee_damage_upper = 40
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "wander"
+
+	corpse = /mob/living/human/corpse/pirate
+
+	New()
+		..()
+		faction2_npcs++
+		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
+		messages["backup"] =list( "!!I need help!","!!To my side!")
+		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
+		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
+
+		gun = new/obj/item/weapon/material/sword/cutlass(src)
+		icon_state = "pirate_captain"
+
+/mob/living/simple_animal/hostile/human/pirate/friendly/blindman
+	name = "Old Blind Pirate"
+	desc = "Does what he wants cause a pirate is free. But isn't hostile at first. This one has no vision, but is probably experienced enough to kick your ass, even with no eyes."
+	icon_state = "pirate_friendly_blind"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Sure could use a drink","Landlubber!","can't wait to go see the girls of ol' maui", "time for drinking lads!!", "took some damage in that last fight", "Ahoy! this be your captain! ME! Yahaaargh!")
+	speak_emote = list("grumbles", "screams")
+	emote_hear = list("curses","grumbles","screams")
+	emote_see = list("stares ferociously", "stomps")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 200
+	role = "medic"
+	health = 500
+	move_to_delay = 6
+	faction = "neutral"
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 50
+	melee_damage_lower = 50
+	melee_damage_upper = 50
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "wander"
+
+	corpse = /mob/living/human/corpse/pirate
+	New()
+		..()
+		faction2_npcs++
+		messages["injured"] = list("!!I'm hit!","!!Ye dare fight an old man?!")
+		messages["backup"] =list( "!!I need help!","!!To my side!")
+		messages["enemy_sighted"] = list("!!Cripple abuser!","!!Enemy in my sights! Even though I cant see!")
+		messages["grenade"] = list("!!OOO, A SCARY GRENADE!!!", "!!AHARGH, I EAT GRENADES FOR BREAKFAST!!")
+		icon_state = "pirate_blind"
