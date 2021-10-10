@@ -255,7 +255,10 @@
 								tmpobj.icon_state = tempvars[2]
 							else
 								if (tmpobj.vars[tempvars[1]] && tempvars[1] != "loc" && tempvars[1] != "locs" && tempvars[1] != "verbs")
-									tmpobj.vars[tempvars[1]] = tempvars[2]
+									if (isnum(tmpobj.vars[tempvars[1]]))
+										tmpobj.vars[tempvars[1]] = text2num(tempvars[2])
+									else
+										tmpobj.vars[tempvars[1]] = tempvars[2]
 	world.log << "Imported all objects."
 	world.log << "Finished all imports."
 ///////////////////////////////////////////////////////////////////
