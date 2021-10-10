@@ -13,9 +13,9 @@
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
 				var/mob/living/human/H = ML
-				if (H.faction_text == src.faction && src != istype(ML, /mob/living/simple_animal/hostile/human/pirate/friendly) && src.hostile_pirate == FALSE)
+				if (H.faction_text == src.faction)
 					the_targets -= ML
-			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction || src == istype(ML, /mob/living/simple_animal/hostile/human/pirate/friendly))
+			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
 				the_targets -= ML
 	for (var/atom/A in the_targets)
 
@@ -32,7 +32,7 @@
 			var/mob/living/L = A
 			if (istype(L, /mob/living/human))
 				var/mob/living/human/RH = L
-				if (RH.faction_text == faction && !attack_same && src.hostile_pirate == FALSE)
+				if (RH.faction_text == faction)
 					continue
 				else if (RH in friends)
 					continue
@@ -46,7 +46,7 @@
 						T = RH
 						break
 			else
-				if (L.faction == faction && !attack_same)
+				if (L.faction == faction)
 					continue
 				else if (L in friends)
 					continue
