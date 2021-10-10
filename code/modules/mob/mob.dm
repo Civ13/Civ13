@@ -593,9 +593,10 @@
 
 	else if (isobj(AM))
 		var/obj/I = AM
-		if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
-			src << "<span class='warning'>It won't budge!</span>"
-			return
+		if(!istype(I, /obj/structure/cannon/modern/tank/voyage))
+			if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
+				src << "<span class='warning'>It won't budge!</span>"
+				return
 
 	if (pulling)
 		var/pulling_old = pulling
