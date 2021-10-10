@@ -24,6 +24,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 	behaviour = "hostile"
+	hostile_pirate = TRUE
 
 	corpse = /mob/living/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
@@ -79,6 +80,7 @@
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/pirate
 	casingtype = null
+	hostile_pirate = TRUE
 
 	New()
 		..()
@@ -130,6 +132,7 @@
 	friends = list("neutral", "PIRATES")
 
 	corpse = /mob/living/human/corpse/pirate
+	hostile_pirate = FALSE
 	New()
 		..()
 		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
@@ -170,7 +173,7 @@
 	behaviour = "wander"
 
 	corpse = /mob/living/human/corpse/pirate
-
+	hostile_pirate = FALSE
 	New()
 		..()
 		faction2_npcs++
@@ -180,7 +183,7 @@
 		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
 
 		gun = new/obj/item/weapon/material/sword/cutlass(src)
-		icon_state = "pirate_captain"
+		icon_state = "pirate_friendly_captain"
 
 /mob/living/simple_animal/hostile/human/pirate/friendly/blindman
 	name = "Old Blind Pirate"
@@ -209,7 +212,7 @@
 	attack_sound = 'sound/weapons/punch3.ogg'
 	mob_size = MOB_MEDIUM
 	behaviour = "wander"
-
+	hostile_pirate = FALSE
 	corpse = /mob/living/human/corpse/pirate
 	New()
 		..()
@@ -218,4 +221,4 @@
 		messages["backup"] =list( "!!I need help!","!!To my side!")
 		messages["enemy_sighted"] = list("!!Cripple abuser!","!!Enemy in my sights! Even though I cant see!")
 		messages["grenade"] = list("!!OOO, A SCARY GRENADE!!!", "!!AHARGH, I EAT GRENADES FOR BREAKFAST!!")
-		icon_state = "pirate_blind"
+		icon_state = "pirate_friendly_blind"

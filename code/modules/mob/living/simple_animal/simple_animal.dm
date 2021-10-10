@@ -88,6 +88,7 @@
 	var/mutation_variants = list()
 
 	var/attack_verb = "bites"
+	var/hostile_pirate = FALSE
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe

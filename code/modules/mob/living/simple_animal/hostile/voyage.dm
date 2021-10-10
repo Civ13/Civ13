@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/human/voyage/spanish/
+/mob/living/simple_animal/hostile/human/voyage/spanish
 	name = "Spanish Soldier"
 	desc = "Attacks any and all intruders or enemies."
 	icon_state = "spanish_soldier"
@@ -26,7 +26,12 @@
 
 	corpse = /mob/living/human/corpse/spanish_soldier
 	faction = SPANISH
-
+/mob/living/simple_animal/hostile/human/voyage/spanish/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	qdel(src)
+	return
 
 /mob/living/simple_animal/hostile/human/voyage/spanish/ranged
 	name = "Spanish Rifleman"

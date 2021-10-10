@@ -1,0 +1,9 @@
+MOB;28;8;1;/mob/living/simple_animal/hostile/human/voyage/spanish;0
+MOB;32;8;1;/mob/living/simple_animal/hostile/human/voyage/spanish/ranged;0
+MOB;42;10;1;/mob/living/simple_animal/hostile/human/voyage/spanish;0
+MOB;36;12;1;/mob/living/simple_animal/hostile/human/voyage/spanish;0
+MOB;25;6;2;/mob/living/simple_animal/hostile/human/voyage/spanish;0
+MOB;33;6;2;/mob/living/simple_animal/hostile/human/voyage/spanish;0
+MOB;40;6;2;/mob/living/simple_animal/hostile/human/voyage/spanish;0
+MOB;17;8;2;/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/sgt;0
+MOB;26;8;2;/mob/living/simple_animal/hostile/human/voyage/spanish/ranged;0
