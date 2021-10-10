@@ -1,12 +1,12 @@
 /mob/living/simple_animal/hostile/human/voyage/spanish/
-	name = "Spanishg Soldier"
+	name = "Spanish Soldier"
 	desc = "Attacks any and all intruders or enemies."
 	icon_state = "spanish_soldier"
 	icon_dead = "piratemelee_dead"
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
-	speak = list("For Spain!!","Die Pirate!")
+	speak = list("Fine day for sailing","Sure hope we dont run into any pirates")
 	speak_emote = list("grumbles", "screams")
 	emote_hear = list("curses","grumbles","screams")
 	emote_see = list("stares ferociously", "readies his sword")
@@ -37,7 +37,7 @@
 	response_disarm = "shoves"
 	response_harm = "hits"
 	speak = list()
-	speak_emote = list("I've got 'em in my sights!")
+	speak_emote = list("another day in the grand spanish navy")
 	emote_hear = list()
 	emote_see = list("stares", "cocks musket")
 	speak_chance = TRUE
@@ -66,7 +66,7 @@
 		..()
 		messages["injured"] = list("!!I am injured!","!!I'm hit!!")
 		messages["backup"] = list("!!Over here!", "!!Come here!!")
-		messages["enemy_sighted"] = list("!!I see one!", "!!HEY YOU!!")
+		messages["enemy_sighted"] = list("!!I see one!", "!!Got em in my sights!!")
 		messages["grenade"] = list("!!GRENADE!")
 
 /mob/living/simple_animal/hostile/human/voyage/spanish/ranged/sgt
@@ -78,7 +78,7 @@
 	response_disarm = "shoves"
 	response_harm = "hits"
 	speak = list()
-	speak_emote = list("I've got 'em in my sights!")
+	speak_emote = list("another day in the grand spanish navy")
 	emote_hear = list()
 	emote_see = list("stares", "cocks flintlock pistol")
 	speak_chance = TRUE
@@ -107,7 +107,7 @@
 		..()
 		messages["injured"] = list("!!I am injured!","!!I'm hit!!")
 		messages["backup"] = list("!!Over here!", "!!Come here!!")
-		messages["enemy_sighted"] = list("!!I see one!", "!!HEY YOU!!")
+		messages["enemy_sighted"] = list("!!I see one!", "!!Got em in my sights!!")
 		messages["grenade"] = list("!!GRENADE!")
 
 /mob/living/simple_animal/hostile/human/voyage/spanish/ranged/lt
@@ -119,7 +119,7 @@
 	response_disarm = "shoves"
 	response_harm = "hits"
 	speak = list()
-	speak_emote = list("I've got 'em in my sights!")
+	speak_emote = list("another day in the grand spanish navy")
 	emote_hear = list()
 	emote_see = list("stares", "cocks flintlock pistol")
 	speak_chance = TRUE
@@ -148,7 +148,7 @@
 		..()
 		messages["injured"] = list("!!I am injured!","!!I'm hit!!")
 		messages["backup"] = list("!!Over here!", "!!Come here!!")
-		messages["enemy_sighted"] = list("!!I see one!", "!!HEY YOU!!")
+		messages["enemy_sighted"] = list("!!I see one!", "!!Got em in my sights!!")
 		messages["grenade"] = list("!!GRENADE!")
 
 /mob/living/simple_animal/hostile/human/voyage/spanish/ranged/cpt
@@ -160,7 +160,7 @@
 	response_disarm = "shoves"
 	response_harm = "hits"
 	speak = list()
-	speak_emote = list("I've got 'em in my sights!")
+	speak_emote = list("another day in the grand spanish navy")
 	emote_hear = list()
 	emote_see = list("stares", "cocks flintlock pistol")
 	speak_chance = TRUE
@@ -189,5 +189,5 @@
 		..()
 		messages["injured"] = list("!!I am injured!","!!I'm hit!!")
 		messages["backup"] = list("!!Over here!", "!!Come here!!")
-		messages["enemy_sighted"] = list("!!I see one!", "!!HEY YOU!!")
+		messages["enemy_sighted"] = list("!!I see one!", "!!Got em in my sights!!")
 		messages["grenade"] = list("!!GRENADE!")
