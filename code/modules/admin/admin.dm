@@ -1076,20 +1076,41 @@ var/list/atom_types = null
 		WWalert(usr, "This only works on Voyage!","Wrong Map")
 		return
 	var/obj/map_metadata/voyage/nmap = map
-	var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("north","south","random"))
-	var/nam = WWinput(usr, "Which map to load?","Load Map","ship1",list("ship1","ship2","ship3","ship4","ship5","island1","island2","island_fortress1","island_fortress1","trading1","piratetown","cursedisland","islandfort2"))
-	nmap.navmoving = FALSE
-	for(var/obj/effect/sailing_effect/S in world)
-		S.icon_state = "sailing_effect_stopped"
-		S.update_icon()
-	nmap.inzone = TRUE
-	nmap.ship_anchored = TRUE
-	for(var/obj/structure/voyage/anchor_capstan/VAC)
-		VAC.update_icon()
-	world << "<big>The ship arrives at the destination.</big>"
-	nmap.clear_map()
-	nmap.load_map(nam,loct)
-	message_admins("[key_name(usr)] manually loaded an event.")
+	var/do_clear = FALSE
+	var/do_load = FALSE
+	var/checking = WWinput(usr, "Do you just want to clear the map, load, or load without clearing?","Load Map","Cancel",list("Clear and load","Load without clearing","Just clear","Cancel"))
+	switch(checking)
+		if("Clear and load")
+			do_clear = TRUE
+			do_load = TRUE
+		if("Load without clearing")
+			do_clear = FALSE
+			do_load = TRUE
+		if("Just clear")
+			do_clear = TRUE
+			do_load = FALSE
+		if("Cancel")
+			return
+	if (do_load)
+		var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("north","south","random"))
+		var/nam = WWinput(usr, "Which map to load?","Load Map","ship1",list("manual input","ship1","ship2","ship3","ship4","ship5","island1","island2","island_fortress1","island_fortress1","trading1","piratetown","cursedisland","islandfort2"))
+		if (nam == "manual input")
+			nam = input(usr, "which map?","Manual Input","") as text
+		nmap.navmoving = FALSE
+		for(var/obj/effect/sailing_effect/S in world)
+			S.icon_state = "sailing_effect_stopped"
+			S.update_icon()
+		nmap.inzone = TRUE
+		nmap.ship_anchored = TRUE
+		for(var/obj/structure/voyage/anchor_capstan/VAC)
+			VAC.update_icon()
+		world << "<big>The ship arrives at the destination.</big>"
+	if (do_clear)
+		nmap.clear_map()
+		message_admins("[key_name(usr)] manually cleared the map.")
+	if (do_load)
+		nmap.load_map(nam,loct)
+		message_admins("[key_name(usr)] manually loaded an event.")
 
 /proc/load_recipes()
 	var/all_craft_lists = flist("config/crafting/")
