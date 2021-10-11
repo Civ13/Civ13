@@ -123,8 +123,7 @@
 		load_map(pick("island1","island2","piratetown","cursedisland"),"random")
 		return
 	else
-		var/parsed_ship = splittext(navdirection,"_")
-		load_map(parsed_ship[1])
+		load_map(mapgen["[latitude],[longitude]"][3])
 	return
 
 /obj/map_metadata/voyage/proc/abandon_event()
@@ -364,10 +363,15 @@
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
 			if (prob(25))
 				mapgen["[lat],[lon]"][3] = "island"
-				islands += list(list(pick("island1","island2","island3"),lat, lon, 0))
+				islands += list(list(pick("island1","island2","island3","island4","island5"),lat, lon, 0))
 			else
 				sea += list(list("sea",lat,lon))
 	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
+	gen_ship(sfaction = "spanish", ssize = 1, slat = 0, slon = 0)
+	gen_ship(sfaction = "spanish", ssize = 2, slat = 0, slon = 0)
+	gen_ship(sfaction = "pirates", ssize = 2, slat = 0, slon = 0)
+	gen_ship(sfaction = "spanish", ssize = 3, slat = 0, slon = 0)
+	gen_ship(sfaction = "spanish", ssize = 5, slat = 0, slon = 0)
 	spawn(100)
 		load_new_recipes()
 /obj/map_metadata/voyage/cross_message()
@@ -451,19 +455,19 @@
 			var/obj/map_metadata/voyage/nmap = map
 			for(var/list/L in nmap.islands)
 				var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
-				newisland.pixel_x = 42+((L[3]-71)*70)
-				newisland.pixel_y = 91+((L[2]-21)*67)
+				newisland.pixel_x = 42+((L[3]-71)*69)
+				newisland.pixel_y = 96+((L[2]-21)*67)
 				img.overlays+=newisland
 			for(var/list/L in nmap.ships)
 				var/image/newship = image(icon='icons/minimap_effects.dmi', icon_state="ship[L[1]]",layer=src.layer+1.1)
-				newship.pixel_x = 42+((L[4]-71)*70)
-				newship.pixel_y = 91+((L[3]-21)*67)
+				newship.pixel_x = 42+((L[4]-71)*69)
+				newship.pixel_y = 96+((L[3]-21)*67)
 				var/image/newship_s = image(icon='icons/minimap_effects.dmi', icon_state="size[L[1]]",layer=src.layer+1.11)
-				newship_s.pixel_x = 42+((L[4]-71)*70)
-				newship_s.pixel_y = 91+((L[3]-21)*67)
+				newship_s.pixel_x = 42+((L[4]-71)*69)
+				newship_s.pixel_y = 96+((L[3]-21)*67)
 				var/image/newship_f = image(icon='icons/minimap_effects.dmi', icon_state=L[2],layer=src.layer+1.12)
-				newship_f.pixel_x = 42+((L[4]-71)*70)
-				newship_f.pixel_y = 91+((L[3]-21)*67)
+				newship_f.pixel_x = 42+((L[4]-71)*69)
+				newship_f.pixel_y = 96+((L[3]-21)*67)
 				img.overlays+=newship
 				img.overlays+=newship_s
 				img.overlays+=newship_f
