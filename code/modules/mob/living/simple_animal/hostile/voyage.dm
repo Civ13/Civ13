@@ -196,3 +196,153 @@
 		messages["backup"] = list("!!Over here!", "!!Come here!!")
 		messages["enemy_sighted"] = list("!!I see one!", "!!Got em in my sights!!")
 		messages["grenade"] = list("!!GRENADE!")
+
+
+
+////////////////////////////////////////////////CIVIES////////////////////////////////////////////////////////
+
+/mob/living/simple_animal/hostile/human/voyage/merchant
+	name = "Merchant"
+	desc = "Defends himself if he has to"
+	icon_state = "merchant"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Would you like to see my wares?","Sure hope we dont run into any pirates.", "I've got the produce if you've got the coin")
+	speak_emote = list("mouths something")
+	emote_hear = list("hums something","mumbles")
+	emote_see = list("stares at the next possible customer", "playes with his hands")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 100
+	health = 100
+	move_to_delay = 6
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 5
+	melee_damage_lower = 10
+	melee_damage_upper = 20
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "defend"
+
+	corpse = /mob/living/human/corpse/merchant
+	faction = PIRATES
+/mob/living/simple_animal/hostile/human/voyage/merchant/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	qdel(src)
+	return
+
+/mob/living/simple_animal/hostile/human/voyage/barmaiden
+	name = "Bar Maid"
+	desc = "Defends herself if she has to"
+	icon_state = "barmaiden"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Fancy a drink?","You've got to go elsewhere for those kinds of services", "Bottoms up lads!", "Keep drinking and making me rich!")
+	speak_emote = list("mouths something")
+	emote_hear = list("hums something","whistles a tune")
+	emote_see = list("stares at the next possible customer", "glares an an eyeing customer")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 100
+	health = 100
+	move_to_delay = 6
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 5
+	melee_damage_lower = 10
+	melee_damage_upper = 20
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "defend"
+
+	corpse = /mob/living/human/corpse/barmaiden
+	faction = PIRATES
+/mob/living/simple_animal/hostile/human/voyage/barmaiden/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	qdel(src)
+	return
+
+/mob/living/simple_animal/hostile/human/voyage/civilian
+	name = "Civilian"
+	desc = "Defends himself if he has to"
+	icon_state = "civ1"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Could use a drink","Know where I might find some fine ladies?", "Bottoms up lads!", "Nothing as good as that hot bleaching sun on the even hotter sand.")
+	speak_emote = list("grumbles")
+	emote_hear = list("hums something","whistles a tune")
+	emote_see = list("eyes down a suspicious looking grain of sand", "glares at the sea", "trips")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 100
+	health = 100
+	move_to_delay = 6
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 5
+	melee_damage_lower = 10
+	melee_damage_upper = 20
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "defend"
+
+	corpse = /mob/living/human/corpse/colony_civ
+	faction = PIRATES
+	New()
+		..()
+		icon_state = "civ[rand(1,5)]"
+/mob/living/simple_animal/hostile/human/voyage/civilian/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	qdel(src)
+	return
+
+/mob/living/simple_animal/hostile/human/voyage/civilian_f
+	name = "Civilian"
+	desc = "Defends herself if she has to"
+	icon_state = "civ1"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Could use a drink","Know where I might find a good man that doesnt drink all his pay?", "We need more stores around here...", "Damn these dresses can get warm")
+	speak_emote = list("grumbles")
+	emote_hear = list("hums something","whistles a tune")
+	emote_see = list("eyes down a suspicious looking grain of sand", "glares at the sea", "trips", "looks at the large number of pirates")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 100
+	health = 100
+	move_to_delay = 6
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 5
+	melee_damage_lower = 10
+	melee_damage_upper = 20
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "defend"
+
+	corpse = /mob/living/human/corpse/colony_civ_f
+	faction = PIRATES
+	New()
+		..()
+		icon_state = "civ[rand(6,9)]"
+/mob/living/simple_animal/hostile/human/voyage/civilian_f/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	qdel(src)
+	return

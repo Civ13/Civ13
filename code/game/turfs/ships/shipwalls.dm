@@ -469,7 +469,7 @@
 /obj/structure/barricade/ship/wood/port0/north/New()
 	..()
 	dir = NORTH
-/obj/structure/barricade/ship/wood/port0south/New()
+/obj/structure/barricade/ship/wood/port0/south/New()
 	..()
 	dir = SOUTH
 
