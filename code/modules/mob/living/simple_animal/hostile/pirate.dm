@@ -214,3 +214,42 @@
 		messages["enemy_sighted"] = list("!!Cripple abuser!","!!Enemy in my sights! Even though I cant see!")
 		messages["grenade"] = list("!!OOO, A SCARY GRENADE!!!", "!!AHARGH, I EAT GRENADES FOR BREAKFAST!!")
 		icon_state = "pirate_friendly_blind"
+
+/mob/living/simple_animal/hostile/human/pirate/friendly/female
+	name = "Pirate Woman"
+	desc = "Does what she wants cause a pirate is free. But isn't hostile at first.."
+	icon_state = "pirate_friendly_female"
+	icon_dead = "piratemelee_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("Sure could use a drink","Landlubber!", "time for drinking lads!!", "took some damage in that last fight")
+	speak_emote = list("grumbles", "screams")
+	emote_hear = list("curses","grumbles","screams")
+	emote_see = list("stares ferociously", "stomps")
+	speak_chance = TRUE
+	speed = 4
+	maxHealth = 200
+	role = "officer"
+	health = 200
+	move_to_delay = 6
+	stop_automated_movement_when_pulled = FALSE
+	harm_intent_damage = 10
+	melee_damage_lower = 20
+	melee_damage_upper = 40
+	attacktext = "punched"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	mob_size = MOB_MEDIUM
+	behaviour = "wander"
+
+	corpse = /mob/living/human/corpse/pirate
+	New()
+		..()
+		faction2_npcs++
+		messages["injured"] = list("!!I'm hit!","!!Ye dare hit a woman?!")
+		messages["backup"] =list( "!!I need help!","!!To my side!")
+		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
+		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
+
+		gun = new/obj/item/weapon/material/sword/cutlass(src)
+		icon_state = "pirate_friendly_female"
