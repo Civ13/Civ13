@@ -120,7 +120,7 @@
 	ship_anchored = TRUE
 	world << "<big>The ship arrives at the destination.</big>"
 	if (navdirection == "island")
-		load_map(pick("island1","island2"),"random")
+		load_map(pick("island1","island2","piratetown","cursedisland"),"random")
 		return
 	else
 		var/parsed_ship = splittext(navdirection,"_")
@@ -495,7 +495,7 @@
 				t_text += "<tr><td>[HM.name]</td><td>[HM.original_job_title]</td></tr>"
 		t_text += "</table>"
 		return t_text
-					
+
 /obj/structure/voyage/quartermaster_book
 	name = "ship inventory"
 	desc = "A diary tracking the current inventory in the ship."
@@ -730,7 +730,7 @@
 							S.icon_state = "sailing_effect_stopped"
 							S.update_icon()
 						update_icon()
-	
+
 /obj/structure/voyage/ropeladder/thin
 	icon_state = "ropeladder_thin"
 

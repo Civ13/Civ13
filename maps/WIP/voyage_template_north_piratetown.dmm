@@ -82,7 +82,7 @@
 "bD" = (/obj/covers/cobblestone,/obj/structure/furnace/blast_furnace,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
 "bE" = (/obj/covers/cobblestone,/obj/structure/furnace,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
 "bF" = (/obj/covers/cobblestone,/obj/structure/anvil/steel,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
-"bG" = (/obj/covers/wood,/obj/structure/roof_support,/turf/floor/beach/sand,/area/caribbean/sea/top/roofed)
+"bG" = (/obj/item/flashlight/lantern/on/anchored{pixel_x = 0; pixel_y = 10},/obj/structure/barricade/wood_pole,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
 "bH" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/mob/living/simple_animal/hostile/human/voyage/civilian,/turf/floor/beach/sand,/area/caribbean/sea/top/roofed)
 "bI" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/mob/living/simple_animal/hostile/human/voyage/civilian_f,/turf/floor/beach/sand,/area/caribbean/sea/top/roofed)
 "bJ" = (/mob/living/simple_animal/hostile/human/voyage/merchant,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
@@ -91,6 +91,9 @@
 "bM" = (/obj/covers/wood,/mob/living/simple_animal/hostile/human/voyage/civilian_f,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
 "bN" = (/obj/covers/wood,/mob/living/simple_animal/hostile/human/voyage/civilian,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
 "bO" = (/obj/covers/cobblestone,/mob/living/simple_animal/hostile/human/voyage/civilian,/turf/floor/beach/sand/dark,/area/caribbean/sea/top/roofed)
+"bP" = (/obj/covers/wood,/obj/structure/roof_support,/obj/item/flashlight/lantern/on/anchored{pixel_x = 0; pixel_y = 10},/turf/floor/beach/sand,/area/caribbean/sea/top/roofed)
+"bQ" = (/obj/covers/wood,/obj/structure/bed/wood,/obj/item/flashlight/lantern/on/anchored{pixel_x = 0; pixel_y = 10},/turf/floor/beach/sand,/area/caribbean/sea/top/roofed)
+"bR" = (/obj/covers/wood,/obj/structure/oven,/obj/item/flashlight/lantern/on/anchored{pixel_x = 0; pixel_y = 10},/turf/floor/beach/sand,/area/caribbean/sea/top/roofed)
 
 (1,1,1) = {"
 ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
@@ -128,16 +131,16 @@ adafamamamamaRawaxaBahawaGbvahawafadadadadadadadadadadadadadadadadadadadadadadad
 adafamawawawawawaxamamamamamamamafadadadadadadadadadadadafafafafafafafafafafadadadadafaHaNaHaJaKaKafadafamamamaDadadadafamamamamaDamamafadafamafamaOaf
 adafamaxaxaxaxaxamamamamamamamaPafadadadadadadadadadadadafamamalakagahahajafadaiaiaiaQaKaKaKaJbMaKafadafambLamaMadadadafafaMaDafafaSafafadafamaDamalaf
 adafamamamamamamamaTamamamamamamafadadaUaUaUaUaUaUaUaUadafambKamakamamamamafadaiaiaiafaKaKaKaJaVaQafadafafafafafadadadadadaiaiaiaiaiadadadafamafaMafaf
-adafamamamamamamamamamamamamaWaXafadadaUbdbebfbfbfbfaUadafaDakakaCamamamamafaiaiaiaiaMaKaKaKaKaKaKafadafagamamafadadadadaiaiaiaiadadadadadafamafbKbgaf
+adafamamamamamamamamamamamamaWaXafadadaUbdbebfbfbfbGaUadafaDakakaCamamamamafaiaiaiaiaMaKaKaKaKaKaKafadafagamamafadadadadaiaiaiaiadadadadadafamafbKbgaf
 adafamaBawahbjayahazaAamambHawazafadadaUbfbfbfbfbfbfaUadafamamamamamambLamafaiaiaiadbhaKaKbNaKaKaKafadafambLamaDadadadadaiaiaiaiaiaiadadadafamaDamalaf
-adafambHahazbiaBawahbIamamaBahawafadadaUbfbfbfbJbfbfaUadafamamamamamamamamafaiaiaiadbhaKaKaKaKaKaKafadafamamamaMadadaiaiaiaiaiaiaiaiaiadadafamafaMafaf
+adafaTbHahazbiaBawahbIamamaBahawafadadaUbfbfbfbJbfbfaUadafamamamamamamamamafaiaiaiadbhaKaKaKaKaKaKafadafamamamaMadadaiaiaiaiaiaiaiaiaiadadafamafaMafaf
 adafafafaSaSafafbkbkafaMblaMafafafadadbmbnbnbnbnbnbobmadafafafafaDaMaSaSafafaiaiaiadafbpaHaKaHbqbrafadafalamamafadaiaiaiaiaiaiaiaiaiaiaiaiafamafbKbgaf
 adamamamamamamamamamamamamamamamamadadadadaiaiaiaiadadadadadadadadadadadadadaiaiaiadafafafafafafafafadafafafafafaiaiaiadadadadadadaiaiaiaiaDamaDamalaf
-adbGamamamambGamamamambGamamamambGadadadaiaiaiaiaiaiaiaiaiaiadadadadadaiaiaiaiaiaiaiadadadadadadadadadadadadadaiaiaiaiadadadadadadadadaiaiafamafaMafaf
+adbPamamamambPamamamambPamamamambPadadadaiaiaiaiaiaiaiaiaiaiadadadadadaiaiaiaiaiaiaiadadadadadadadadadadadadadaiaiaiaiadadadadadadadadaiaiafamafaMafaf
 adafafafafafafafafafaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiadafaMaDafafaSaSafafadafamafaFbgaf
-adafalamafajahahagafaiaiaiaiaiaiaiaiaiaiadaiaiaiadadadaiaiaiaiaiaiaiaiaiadadadadaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiadadafamamamajahahagafadafamaDamalaf
+adafbQamafajahahbRafaiaiaiaiaiaiaiaiaiaiadaiaiaiadadadaiaiaiaiaiaiaiaiaiadadadadaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiadadafamamamajahahagafadafamaDamalaf
 adafamamafamamamamaDaiaiaiaiaiaiaiaiadadadadaiadadadadadadadadadadadadadadadaYadadadadadadadadaZbababababababaaZadadadafambKamamamamamafadafafafafafaf
-adafaDafafamamaFamafaiadadaibbbcaiadadadadaiaiaiadadadadapapadadadadapapadadadadadapapadadadadaMbsbsbsbsbsbsbsaMadadadafamamamakaCakakafadadadadadadad
+adafaDafaMamamaFamafaiadadaibbbcaiadadadadaiaiaiadadadadapapadadadadapapadadadadadapapadadadadaMbsbsbsbsbsbsbsaMadadadafamamamakaCakakafadadadadadadad
 adafamamamamamamamaSaiadadadbbbcaiadadadadaibtaibwadadadapapadadadadapapadadadadadapapadadadadafbubsbsbsbObsbsafadadadafamamamakamamalafadadadadadadad
 arafamamamambKamamafadadadadbbbcadadadadadaiaiaiadadadadapapadadadadapapadadadadadapapadadadadafbxbsbsbsbsbsbsafadadadafamamamaDamamamafadadadadadadad
 arafafafafafafafafafadadadadadadadadadadadadadarararararasapadadadadapasarararararasasadadadadafbsbsbsbsbsbsbyafadadadafafafafafafafafafadadadadadadad
