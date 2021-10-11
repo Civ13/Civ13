@@ -138,7 +138,10 @@
 	ship_anchored = TRUE
 	world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 	if (navdirection == "island")
-		load_map(pick("island1","island2","piratetown","cursedisland"),"random")
+		if (prob(50))
+			load_map(pick("island1","island2","piratetown","cursedisland"),"north")
+		else
+			load_map(pick("island1","island2"),"south")
 		return
 	else
 		load_map(mapgen["[latitude],[longitude]"][3])
