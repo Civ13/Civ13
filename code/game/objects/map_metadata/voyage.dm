@@ -611,13 +611,16 @@
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
+		examine()
+
+	examine(mob/H)
+		..()
 		var/obj/map_metadata/voyage/nmap = map
 		if (nmap)
 			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
-			H << "The ship is heading to the <b>[nmap.navdirection]</b>."
+			H << "The ship is heading to the <b>[nmap.navdirection]</b>, progress: <b>[nmap.navprogress]%</b>"
 			if(nmap.ship_anchored)
 				H << "The ship is <font color='red'><b>anchored</b></font>."
-
 /obj/structure/voyage/shipbell
 	name = "ship's bell"
 	desc = "Used to relay signals to the crew."

@@ -66,7 +66,6 @@ OBJECT;27;14;1;/obj/covers/wood_ship;
 OBJECT;27;14;1;/obj/structure/bed/hammock;
 OBJECT;28;14;1;/obj/covers/wood_ship;
 OBJECT;29;14;1;/obj/covers/wood_ship;
-OBJECT;29;13;1;/obj/structure/cannon/modern/tank/voyage/autofire;
 OBJECT;30;14;1;/obj/covers/wood_ship;
 OBJECT;31;14;1;/obj/covers/wood_ship;
 OBJECT;32;14;1;/obj/covers/wood_ship;
@@ -74,7 +73,6 @@ OBJECT;32;14;1;/obj/item/flashlight/lantern/on/anchored;
 OBJECT;33;14;1;/obj/covers/wood_ship;
 OBJECT;34;14;1;/obj/covers/wood_ship;
 OBJECT;35;14;1;/obj/covers/wood_ship;
-OBJECT;35;13;1;/obj/structure/cannon/modern/tank/voyage/autofire;
 OBJECT;36;14;1;/obj/covers/wood_ship;
 OBJECT;37;14;1;/obj/covers/wood_ship;
 OBJECT;38;14;1;/obj/covers/wood_ship;
@@ -386,14 +384,12 @@ OBJECT;26;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;27;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;28;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;29;20;1;/obj/structure/barricade/ship/aport0/north;
-OBJECT;29;19;1;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
 OBJECT;30;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;31;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;32;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;33;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;34;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;35;20;1;/obj/structure/barricade/ship/aport0/north;
-OBJECT;35;19;1;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
 OBJECT;36;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;37;20;1;/obj/structure/barricade/ship;dir===1
 OBJECT;38;20;1;/obj/structure/barricade/ship;dir===1
@@ -477,21 +473,18 @@ OBJECT;23;14;2;/obj/structure/barricade/ship/wood/a12;
 OBJECT;24;14;2;/obj/covers/wood_ship;
 OBJECT;25;14;2;/obj/covers/wood_ship;
 OBJECT;26;14;2;/obj/covers/wood_ship;
-OBJECT;26;13;2;/obj/structure/cannon/modern/tank/voyage/autofire;
 OBJECT;27;14;2;/obj/covers/wood_ship;
 OBJECT;28;14;2;/obj/covers/wood_ship;
 OBJECT;29;14;2;/obj/covers/wood_ship;
 OBJECT;30;14;2;/obj/covers/wood_ship;
 OBJECT;31;14;2;/obj/covers/wood_ship;
 OBJECT;32;14;2;/obj/covers/wood_ship;
-OBJECT;32;13;2;/obj/structure/cannon/modern/tank/voyage/autofire;
 OBJECT;33;14;2;/obj/covers/wood_ship;
 OBJECT;34;14;2;/obj/covers/wood_ship;
 OBJECT;35;14;2;/obj/covers/wood_ship;
 OBJECT;36;14;2;/obj/covers/wood_ship;
 OBJECT;37;14;2;/obj/covers/wood_ship;
 OBJECT;38;14;2;/obj/covers/wood_ship;
-OBJECT;38;13;2;/obj/structure/cannon/modern/tank/voyage/autofire;
 OBJECT;39;14;2;/obj/covers/wood_ship;
 OBJECT;40;14;2;/obj/covers/wood_ship;
 OBJECT;41;14;2;/obj/covers/wood_ship;
@@ -562,7 +555,6 @@ OBJECT;27;16;2;/obj/covers/wood_ship;
 OBJECT;27;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;27;16;2;/obj/item/flashlight/lantern/on/anchored;
 OBJECT;28;16;2;/obj/covers/wood_ship;
-OBJECT;27;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;29;16;2;/obj/covers/wood_ship;
 OBJECT;30;16;2;/obj/covers/wood_ship;
 OBJECT;31;16;2;/obj/covers/wood_ship;
@@ -573,7 +565,6 @@ OBJECT;35;16;2;/obj/covers/wood_ship;
 OBJECT;35;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;35;16;2;/obj/item/flashlight/lantern/on/anchored;
 OBJECT;36;16;2;/obj/covers/wood_ship;
-OBJECT;35;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;37;16;2;/obj/covers/wood_ship;
 OBJECT;37;16;2;/obj/item/cannon_ball;
 OBJECT;37;16;2;/obj/item/cannon_ball;
@@ -612,9 +603,7 @@ OBJECT;24;17;2;/obj/covers/wood_ship;
 OBJECT;25;17;2;/obj/covers/wood_ship;
 OBJECT;26;17;2;/obj/covers/wood_ship;
 OBJECT;27;17;2;/obj/covers/wood_ship;
-OBJECT;27;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;28;17;2;/obj/covers/wood_ship;
-OBJECT;27;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;29;17;2;/obj/covers/wood_ship;
 OBJECT;30;17;2;/obj/covers/wood_ship;
 OBJECT;31;17;2;/obj/covers/wood_ship;
@@ -622,9 +611,7 @@ OBJECT;32;17;2;/obj/covers/wood_ship;
 OBJECT;33;17;2;/obj/covers/wood_ship;
 OBJECT;34;17;2;/obj/covers/wood_ship;
 OBJECT;35;17;2;/obj/covers/wood_ship;
-OBJECT;35;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;36;17;2;/obj/covers/wood_ship;
-OBJECT;35;16;2;/obj/structure/barricade/ship/mast/large;
 OBJECT;37;17;2;/obj/covers/wood_ship;
 OBJECT;38;17;2;/obj/covers/wood_ship;
 OBJECT;39;17;2;/obj/covers/wood_ship;
@@ -725,7 +712,6 @@ OBJECT;25;20;2;/obj/covers/wood_ship;
 OBJECT;25;20;2;/obj/structure/barricade/ship/blue/bport_north;
 OBJECT;26;20;2;/obj/structure/barricade/ship/blue/bport3;dir===1
 OBJECT;26;20;2;/obj/covers/repairedfloor/ship/south;
-OBJECT;26;19;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
 OBJECT;27;20;2;/obj/covers/wood_ship;
 OBJECT;27;20;2;/obj/structure/barricade/ship/blue/bport_north;
 OBJECT;27;20;2;/obj/item/cannon_ball;
@@ -754,7 +740,6 @@ OBJECT;31;20;2;/obj/covers/wood_ship;
 OBJECT;31;20;2;/obj/structure/barricade/ship/blue/bport_north;
 OBJECT;32;20;2;/obj/structure/barricade/ship/blue/bport3;dir===1
 OBJECT;32;20;2;/obj/covers/repairedfloor/ship/south;
-OBJECT;32;19;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
 OBJECT;33;20;2;/obj/covers/wood_ship;
 OBJECT;33;20;2;/obj/structure/barricade/ship/blue/bport_north;
 OBJECT;34;20;2;/obj/covers/wood_ship;
@@ -783,7 +768,6 @@ OBJECT;37;20;2;/obj/item/cannon_ball;
 OBJECT;37;20;2;/obj/structure/closet/crate/cannonball;
 OBJECT;38;20;2;/obj/structure/barricade/ship/blue/bport3;dir===1
 OBJECT;38;20;2;/obj/covers/repairedfloor/ship/south;
-OBJECT;38;19;2;/obj/structure/cannon/modern/tank/voyage/autofire;dir===1
 OBJECT;39;20;2;/obj/covers/wood_ship;
 OBJECT;39;20;2;/obj/structure/barricade/ship/blue/bport_north;
 OBJECT;40;20;2;/obj/covers/wood_ship;

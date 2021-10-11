@@ -465,7 +465,7 @@
 	protection_chance = 40
 	opacity = FALSE
 	ispartial = TRUE
-	dir = NORTH
+	dir = SOUTH
 /obj/structure/barricade/ship/wood/port0/north/New()
 	..()
 	dir = NORTH
