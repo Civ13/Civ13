@@ -1096,7 +1096,12 @@ var/list/atom_types = null
 			return
 	if (do_load)
 		var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("north","south","random"))
-		var/nam = WWinput(usr, "Which map to load?","Load Map","ship1",list("manual input","ship1","ship2","ship3","ship4","ship5","island1","island2","island_fortress1","island_fortress1","trading1","piratetown","cursedisland","islandfort2"))
+		var/options = list("manual input")
+		var/t_options = flist("maps/zones/[loct]/")
+		for(var/i in t_options)
+			if(findtext(i,"/"))
+				options += replacetext(i, "/", "")
+		var/nam = WWinput(usr, "Which map to load?","Load Map","manual input",options)
 		if (nam == "manual input")
 			nam = input(usr, "which map?","Manual Input","") as text
 		nmap.navmoving = FALSE
