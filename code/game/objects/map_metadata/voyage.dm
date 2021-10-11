@@ -312,13 +312,15 @@
 			if (istype(AR,/area/caribbean/sea/bottom/roofed) || istype(AR,/area/caribbean/sea/top/roofed))
 				text2file("AREA;[T.x];[T.y];[T.z];[AR.type]",F3)
 			for (var/mob/living/A in T)
-				text2file("MOB;[A.x];[A.y];[A.z];[A.type];[A.stat]",F)
+				if (A.loc == T)
+					text2file("MOB;[A.x];[A.y];[A.z];[A.type];[A.stat]",F)
 			for (var/obj/O in T)
-				if (!istype(O,/obj/screen) && !istype(O,/atom/movable/lighting_overlay) && !istype(O,/obj/map_metadata) && !istype(O,/obj/effect))
-					if(istype(O, /obj/structure/closet))
-						for(var/obj/CT in O)
-							text2file(list2text_assoc(CT, O.x, O.y, O.z),F2)
-					text2file(list2text_assoc(O),F2)
+				if (O.loc == T)
+					if (!istype(O,/obj/screen) && !istype(O,/atom/movable/lighting_overlay) && !istype(O,/obj/map_metadata) && !istype(O,/obj/effect))
+						if(istype(O, /obj/structure/closet) && (istype(O, /obj/structure/closet/crate/empty) || !istype(O, /obj/structure/closet/crate)))
+							for(var/obj/CT in O)
+								text2file(list2text_assoc(CT, O.x, O.y, O.z),F2)
+						text2file(list2text_assoc(O),F2)
 	sleep(1)
 	world.log << "Finished saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
 	world << "<i><b>Finished saving.</b></i>"
@@ -611,7 +613,7 @@
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
-		examine()
+		examine(H)
 
 	examine(mob/H)
 		..()
