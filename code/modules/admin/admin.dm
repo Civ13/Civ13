@@ -1077,7 +1077,9 @@ var/list/atom_types = null
 		return
 	var/obj/map_metadata/voyage/nmap = map
 	var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("north","south","random"))
-	var/nam = WWinput(usr, "Which map to load?","Load Map","ship1",list("ship1","ship2","ship3","ship4","ship5","island1","island2","island_fortress1","island_fortress1","trading1"))
+	var/nam = WWinput(usr, "Which map to load?","Load Map","ship1",list("manual input","ship1","ship2","ship3","ship4","ship5","island1","island2","island_fortress1","island_fortress1","trading1"))
+	if (nam == "manual input")
+		nam = input(usr, "which map?","Manual Input","") as text
 	nmap.navmoving = FALSE
 	for(var/obj/effect/sailing_effect/S in world)
 		S.icon_state = "sailing_effect_stopped"
