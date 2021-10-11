@@ -1089,6 +1089,9 @@ var/list/atom_types = null
 		if("Just clear")
 			do_clear = TRUE
 			do_load = FALSE
+			nmap.clear_map()
+			message_admins("[key_name(usr)] manually cleared the map.")
+			return
 		if("Cancel")
 			return
 	if (do_load)
@@ -1105,12 +1108,12 @@ var/list/atom_types = null
 		for(var/obj/structure/voyage/anchor_capstan/VAC)
 			VAC.update_icon()
 		world << "<big>The ship arrives at the destination.</big>"
-	if (do_clear)
-		nmap.clear_map()
-		message_admins("[key_name(usr)] manually cleared the map.")
-	if (do_load)
-		nmap.load_map(nam,loct)
-		message_admins("[key_name(usr)] manually loaded an event.")
+		if (do_clear)
+			nmap.clear_map()
+			message_admins("[key_name(usr)] manually cleared the map.")
+		if (do_load)
+			nmap.load_map(nam,loct)
+			message_admins("[key_name(usr)] manually loaded an event.")
 
 /proc/load_recipes()
 	var/all_craft_lists = flist("config/crafting/")
