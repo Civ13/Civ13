@@ -72,7 +72,6 @@
 	//hostile mob stuff
 	var/stance = HOSTILE_STANCE_IDLE	//Used to determine behavior
 	var/mob/living/target_mob
-	var/attack_same = FALSE
 	var/move_to_delay = 4 //delay for the automated movement.
 	var/list/friends = list()
 	var/break_stuff_probability = 10
@@ -88,7 +87,6 @@
 	var/mutation_variants = list()
 
 	var/attack_verb = "bites"
-	var/hostile_pirate = FALSE
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -375,7 +373,9 @@
 
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	..()
-
+	if (istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly))
+		faction = CIVILIAN
+		behaviour = "hostile"
 	if (behaviour == "hunt")
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
@@ -470,6 +470,9 @@
 	return
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
+	if (istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly))
+		faction = CIVILIAN
+		behaviour = "hostile"
 	if (istype(O, /obj/item/weapon/leash) && behaviour != "defends" && behaviour != "hunt")
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)

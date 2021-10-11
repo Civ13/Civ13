@@ -10,12 +10,13 @@
 	speak_emote = list("grumbles", "screams")
 	emote_hear = list("curses","grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
+	attack_verb = "slashes"
 	speak_chance = TRUE
 	speed = 4
 	maxHealth = 100
 	health = 100
 	move_to_delay = 6
-	faction = PIRATES
+	faction = CIVILIAN
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 15
 	melee_damage_lower = 30
@@ -24,12 +25,9 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 	behaviour = "hostile"
-	hostile_pirate = TRUE
 
 	corpse = /mob/living/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
-
-	faction = PIRATES
 
 ///mob/living/simple_animal/hostile/pirate/New()
 //	..()
@@ -73,14 +71,12 @@
 	mob_size = MOB_MEDIUM
 	starves = FALSE
 	behaviour = "hostile"
-	faction = PIRATES
 	ranged = TRUE
 	rapid = FALSE
 	firedelay = 180
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/pirate
 	casingtype = null
-	hostile_pirate = TRUE
 
 	New()
 		..()
@@ -120,7 +116,6 @@
 	maxHealth = 100
 	health = 100
 	move_to_delay = 6
-	faction = "neutral"
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 5
 	melee_damage_lower = 5
@@ -129,10 +124,11 @@
 	attack_sound = 'sound/weapons/punch3.ogg'
 	mob_size = MOB_MEDIUM
 	behaviour = "wander"
-	friends = list("neutral", "PIRATES")
-
+	wander = TRUE
+	stance = HOSTILE_STANCE_IDLE
 	corpse = /mob/living/human/corpse/pirate
-	hostile_pirate = FALSE
+	faction = PIRATES
+	attack_verb = "hits"
 	New()
 		..()
 		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
@@ -162,7 +158,6 @@
 	role = "officer"
 	health = 200
 	move_to_delay = 6
-	faction = "neutral"
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 10
 	melee_damage_lower = 20
@@ -173,7 +168,6 @@
 	behaviour = "wander"
 
 	corpse = /mob/living/human/corpse/pirate
-	hostile_pirate = FALSE
 	New()
 		..()
 		faction2_npcs++
@@ -203,7 +197,6 @@
 	role = "medic"
 	health = 500
 	move_to_delay = 6
-	faction = "neutral"
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 50
 	melee_damage_lower = 50
@@ -212,7 +205,6 @@
 	attack_sound = 'sound/weapons/punch3.ogg'
 	mob_size = MOB_MEDIUM
 	behaviour = "wander"
-	hostile_pirate = FALSE
 	corpse = /mob/living/human/corpse/pirate
 	New()
 		..()

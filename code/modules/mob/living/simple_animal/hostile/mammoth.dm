@@ -16,7 +16,7 @@
 	response_help  = "pets"
 	response_disarm = "punches"
 	response_harm   = "kicks"
-	faction = list("hostile")
+	faction = "hostile"
 	density = TRUE
 	mob_size = MOB_HUGE
 	fat_extra = 20

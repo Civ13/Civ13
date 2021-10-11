@@ -220,6 +220,8 @@
 		if (get_dist(src, target_mob) <= 1)	//Attacking
 			AttackingTarget()
 			return TRUE
+		else
+			MoveToTarget()
 
 /mob/living/simple_animal/hostile/human/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
