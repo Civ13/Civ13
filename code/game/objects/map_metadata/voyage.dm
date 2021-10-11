@@ -49,6 +49,7 @@
 						if ("North")
 							if(latitude < 27)
 								latitude++
+								check_ships()
 							else
 								navmoving = FALSE
 								for(var/obj/effect/sailing_effect/S in world)
@@ -57,6 +58,7 @@
 						if ("South")
 							if(latitude > 21)
 								latitude--
+								check_ships()
 							else
 								navmoving = FALSE
 								for(var/obj/effect/sailing_effect/S in world)
@@ -65,6 +67,7 @@
 						if ("East")
 							if(longitude < 77)
 								longitude++
+								check_ships()
 							else
 								navmoving = FALSE
 								for(var/obj/effect/sailing_effect/S in world)
@@ -73,14 +76,29 @@
 						if ("West")
 							if(longitude > 71)
 								longitude--
+								check_ships()
 							else
 								navmoving = FALSE
 								for(var/obj/effect/sailing_effect/S in world)
 									S.icon_state = "sailing_effect_stopped"
 									S.update_icon()
-
 	spawn(600)
 		nav()
+//checks for ships when the player ship arrives in new coordinate
+/obj/map_metadata/voyage/proc/check_ships()
+	for(var/list/L in ships)
+		if (L[3] == latitude && L[4] == longitude)
+			world << "<font size=4 color='yellow'>A ship approaches!</font>"
+			navmoving = FALSE
+			for(var/obj/effect/sailing_effect/S in world)
+				S.icon_state = "sailing_effect_stopped"
+				S.update_icon()
+			inzone = TRUE
+			ship_anchored = TRUE
+			load_map(mapgen["[latitude],[longitude]"][3])
+			return
+
+		
 //0 means random for numerical values
 /obj/map_metadata/voyage/proc/gen_ship(sfaction = "random", ssize = 0, slat = 0, slon = 0)
 	if (sfaction == "random" || !(sfaction in list("pirates","merchant","spanish","british","undead")))
@@ -118,7 +136,7 @@
 		S.update_icon()
 	inzone = TRUE
 	ship_anchored = TRUE
-	world << "<big>The ship arrives at the destination.</big>"
+	world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 	if (navdirection == "island")
 		load_map(pick("island1","island2","piratetown","cursedisland"),"random")
 		return
@@ -133,7 +151,7 @@
 		S.update_icon()
 	inzone = FALSE
 	ship_anchored = FALSE
-	world << "<big>The ship returns to the high seas.</big>"
+	world << "<font size=4 color='yellow'>The ship returns to the high seas.</font>"
 	for(var/obj/structure/grapplehook/G in world)
 		G.undeploy()
 	clear_map()
@@ -370,7 +388,9 @@
 				sea += list(list("sea",lat,lon))
 	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 1, slat = 0, slon = 0)
+	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 2, slat = 0, slon = 0)
+	gen_ship(sfaction = "pirates", ssize = 2, slat = 0, slon = 0)
 	gen_ship(sfaction = "pirates", ssize = 2, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 3, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 5, slat = 0, slon = 0)
@@ -435,7 +455,7 @@
 					nmap.navdirection = newdir
 					if (findtext(nmap.navdirection,"Approach "))
 						nmap.navdirection = replacetext(nmap.navdirection,"Approach ","")
-					visible_message("<font size=3>The ship heads to the <b>[nmap.navdirection]</b>.</font>")
+					visible_message("<font size=3 color='yellow'>The ship heads to the <b>[nmap.navdirection]</b>.</font>")
 					return
 /obj/structure/voyage/tablemap
 	name = "map"
@@ -457,19 +477,19 @@
 			var/obj/map_metadata/voyage/nmap = map
 			for(var/list/L in nmap.islands)
 				var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
-				newisland.pixel_x = 42+((L[3]-71)*69)
-				newisland.pixel_y = 96+((L[2]-21)*67)
+				newisland.pixel_x = 45+((L[3]-71)*69)
+				newisland.pixel_y = 104+((L[2]-21)*67)
 				img.overlays+=newisland
 			for(var/list/L in nmap.ships)
 				var/image/newship = image(icon='icons/minimap_effects.dmi', icon_state="ship[L[1]]",layer=src.layer+1.1)
-				newship.pixel_x = 42+((L[4]-71)*69)
-				newship.pixel_y = 96+((L[3]-21)*67)
+				newship.pixel_x = 45+((L[4]-71)*69)
+				newship.pixel_y = 104+((L[3]-21)*67)
 				var/image/newship_s = image(icon='icons/minimap_effects.dmi', icon_state="size[L[1]]",layer=src.layer+1.11)
-				newship_s.pixel_x = 42+((L[4]-71)*69)
-				newship_s.pixel_y = 96+((L[3]-21)*67)
+				newship_s.pixel_x = 45+((L[4]-71)*69)
+				newship_s.pixel_y = 104+((L[3]-21)*67)
 				var/image/newship_f = image(icon='icons/minimap_effects.dmi', icon_state=L[2],layer=src.layer+1.12)
-				newship_f.pixel_x = 42+((L[4]-71)*69)
-				newship_f.pixel_y = 96+((L[3]-21)*67)
+				newship_f.pixel_x = 45+((L[4]-71)*69)
+				newship_f.pixel_y = 104+((L[3]-21)*67)
 				img.overlays+=newship
 				img.overlays+=newship_s
 				img.overlays+=newship_f
@@ -643,7 +663,7 @@
 		if (world.time >= cooldown_bell_stand)
 			for (var/mob/M in player_list)
 				M.client << sound('sound/effects/bell_stand.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-			world << "<font size=4>You hear the ship's bell!</font>"
+			world << "<font size=4 color='yellow'>You hear the ship's bell!</font>"
 			cooldown_bell_stand = world.time+50
 			icon_state = "bell_stand_ringing"
 			spawn(15)
@@ -697,9 +717,9 @@
 					if (resp == "No")
 						return
 					else
-						world << "<font size=4>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>"
+						world << "<font size=4 color='yellow'>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>"
 						spawn(600)
-							world << "<font size=4>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
+							world << "<font size=4 color='yellow'>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
 						spawn(1200)
 							nmap.ship_anchored = FALSE
 							nmap.navmoving = TRUE
@@ -724,7 +744,7 @@
 				if (do_after(user, 60, src))
 					if (nmap.ship_anchored)
 						user << "You raise the anchor."
-						world << "<big>The ship starts moving.</big>"
+						world << "<font size=3 color='yellow'>The ship starts moving.</font>"
 						nmap.ship_anchored = FALSE
 						nmap.navmoving = TRUE
 						for(var/obj/effect/sailing_effect/S in world)
