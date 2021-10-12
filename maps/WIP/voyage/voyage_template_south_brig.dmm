@@ -1,0 +1,185 @@
+"aa" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"ab" = (/obj/structure/barricade/ship/north/corners{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ac" = (/obj/structure/barricade/ship{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ad" = (/obj/structure/barricade/ship/aport0/north,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ae" = (/obj/structure/barricade/ship/north/corners,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"af" = (/obj/structure/barricade/ship{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ag" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/goldvaluables,/obj/item/stack/money/goldvaluables,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ah" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/goldvaluables,/obj/item/stack/money/goldvaluables,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ai" = (/obj/covers/repairedfloor/ship,/obj/covers/wood_wall,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aj" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ak" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"al" = (/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"am" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"an" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ao" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/grenades,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ap" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aq" = (/obj/structure/barricade/ship/north/corners{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ar" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"as" = (/obj/structure/barricade/ship/north/corners{dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"at" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"au" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/sgt,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"av" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aw" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ax" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/hammock,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ay" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/cannonball,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"az" = (/obj/structure/barricade/ship{dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aA" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/pen,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aB" = (/obj/covers/repairedfloor/ship,/obj/covers/wood_wall,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aC" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum/empty,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aD" = (/obj/structure/barricade/ship{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aE" = (/obj/structure/barricade/ship/wall2{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aF" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aG" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aH" = (/obj/structure/multiz/ladder/ww2/up,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aI" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/rations/biscuits,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aJ" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aK" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/musketball,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aL" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/muskets/spanish,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aM" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/rations/fruits,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aN" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aO" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aP" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aQ" = (/obj/structure/barricade/ship/north/corners{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aR" = (/obj/structure/barricade/ship/blue/beast,/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship{dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aS" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aT" = (/obj/structure/barricade/ship/north/corners{dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aU" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/real/fifty,/obj/item/stack/money/real/fifty,/obj/item/stack/money/real/fifty,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aV" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/real/fifty,/obj/item/stack/money/real/fifty,/obj/item/stack/money/real/fifty,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aW" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aX" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/pearls,/obj/item/stack/money/pearls,/obj/item/stack/money/pearls,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aY" = (/obj/structure/barricade/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aZ" = (/obj/structure/barricade/ship/aport0,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"ba" = (/obj/map_metadata/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"bb" = (/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"bc" = (/obj/structure/barricade/ship/wood/a4,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bd" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"be" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bf" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/obj/structure/sign/painting2,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bg" = (/obj/structure/barricade/ship/wood/a7,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bh" = (/obj/structure/barricade/ship/wood/a12,/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wood/a9,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bi" = (/obj/structure/barricade/ship/blue/bport_north,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bj" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wood/portl2,/obj/structure/barricade/ship/blue/bport_north,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bk" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/bport_north,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bl" = (/obj/covers/repairedfloor/ship/south,/obj/structure/barricade/ship/blue/bport3{dir = 1},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bm" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/bport_north,/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bn" = (/obj/structure/barricade/ship/blue/bport3{dir = 1},/obj/covers/repairedfloor/ship/south,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bo" = (/obj/structure/barricade/ship/blue/bport_10,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bp" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b1,/obj/structure/flag/spanish,/obj/structure/barricade/ship/wood/a4,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bq" = (/obj/structure/barricade/ship/wood/a10,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"br" = (/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bs" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/musketball_pistol,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bt" = (/obj/structure/barricade/ship/wood/a6,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bu" = (/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bv" = (/obj/structure/barricade/ship/wood/portl2,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bw" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin{dir = 1},/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bx" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"by" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bz" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bA" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook,/obj/structure/voyage/ropeladder/thin{dir = 1},/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bB" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin{dir = 1},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bC" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/sgt,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bD" = (/obj/structure/barricade/ship/blue/bport5/corner,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bE" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b2,/obj/structure/barricade/ship/wood/a2,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bF" = (/obj/structure/barricade/ship/wood/a6,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bG" = (/obj/covers/repairedfloor/ship,/obj/covers/wood/stairs{dir = 8},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bH" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b2,/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/wood/a2,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bI" = (/obj/structure/barricade/ship/wood/a6,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bJ" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bK" = (/obj/structure/barricade/ship/blue/b2{opacity = 0},/obj/structure/window/classic,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bL" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bM" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bN" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wood/portl2,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bO" = (/obj/structure/barricade/ship/blue/beast,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bP" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/voyage/sextant,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bQ" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bR" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 4},/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/cpt,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bS" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/voyage/tablemap{dir = 4; layer = 2.9},/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bT" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/lt,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bU" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"bV" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bW" = (/obj/structure/multiz/ladder/ww2{area_id = "b1"},/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bX" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 6},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bY" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 10},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bZ" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"ca" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/mast/large,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cb" = (/obj/structure/barricade/ship/blue/beast,/obj/covers/repairedfloor/ship,/obj/structure/flag/spanish,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cc" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cd" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 5},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"ce" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 9},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cf" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b2,/obj/structure/sign/painting3,/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/wood/a2,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"cg" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"ch" = (/obj/structure/barricade/ship/blue/bport_6/corner,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"ci" = (/obj/structure/barricade/ship/blue/bport9,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cj" = (/obj/structure/ship_bow,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"ck" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/cabinet,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"cl" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b15,/obj/structure/flag/spanish,/obj/structure/barricade/ship/blue/b17,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"cm" = (/obj/structure/barricade/ship/blue/b20,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"cn" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b15,/obj/structure/barricade/ship/blue/b17,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"co" = (/obj/structure/barricade/ship/blue/b9,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"cp" = (/obj/structure/barricade/ship/blue/b9,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"cq" = (/obj/structure/barricade/ship/blue/b8,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"cr" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/bport0,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cs" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wood/portl2,/obj/structure/barricade/ship/blue/bport0,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"ct" = (/obj/structure/barricade/ship/blue/bport0,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cu" = (/obj/structure/barricade/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cw" = (/obj/structure/barricade/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cy" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/bport3,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cz" = (/obj/structure/barricade/ship/blue/bport0,/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cA" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire,/obj/structure/barricade/ship/blue/bport3,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaabacacacacacacacacacacacacadacacadacacadacacadacacadacacadacacadacacadacacacacaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafagahahahahahagaiajajakalamakakamakakamakalanakakamalakamakakamakakamalaoaiapaqaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakakakakakakaiakakakakakakarakakakakarakakakakakarakakarakakarakarakakaiapapasaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakakakakakakaiakakakakakakakakakakakakakatakakakauakakavakakakakakakakaiapapapaqaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafawawawakavakakaiakakakakaxakaxakaxakaxakaxakaxakaxakaxakaxakaxakaxakatakaiakakakayazaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakaAakakakakaBakakakakakakakakakakakakakakakaCakakakakakakakakakakakakaBakakakayaDaEaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakauaFakakakakaGakakaHakaIaIaJakakaKaKaLaLaLaLaKaKakavaIaIaMaMakaNaNakakaOakakakayaDaEaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakaPakarakakaGakakaHakaIaIakatakaKaKaLaLaLaLaKaKakakaIaIaMaMakaNaNakakaOakakakayaDaEaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakakakakakakaBakakakakakakakakakakakakakakakakakakakakakakakakakakakakaBakakakayaDaEaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakakakakakakaiakakakakaxakaxakaxakaxakaxakaxakaxakaxakaxakaxakaxakakakaiakakakayaRaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakakarakakakaiakakatakakakakavakakakakarakakakakakakakatakakakakakakakaiaNaNaNabaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafakakakakakakakaiaSaSaSakakakakakarakakakakakakarakakarakakakakakarakakakaiapapaTaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaafaUaVaVaVaVaWaXaiaSaSaSalakakakakakakakakalakakakakalakakakakakakakakalaoaiapabaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaqaYaYaYaYaYaYaYaYaYaYaYaYaZaYaYaZaYaYaZaYaYaZaYaYaZaYaYaZaYaYaZaYaYaZaYaYaYaYaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}
+
+(1,1,2) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaabcbdbebfbdbgbebhbibibjbkbkblbkbkblbmbkblbkbkblbkbmbnbkbkbnbkbkbnbkbkbnbkbkbkbkboaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabpbqbrbrbrbrbrbsbtbububvbububwbubxbybzbubybububAbxbubybzbubybBbubybxbubybubCbububDboaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabEbrbrbrbrarbrbrbFbububGbubububububububububububububububububububububububububububububDboaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabHbrbrbrbrbrbrbrbIbububGbububububububububububububububububububCbububububububububJbububDboaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabKbrbrbLbMbrbrbrbtbububNbububJbubububububububububububububububububububzbububububububububOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabKbrbrbrbPbrbrbrbtbubQbNbububububzbubububububububJbubububububububububububJbububububububOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabKbrbrbRbSbrbTbrbUbubVbNbWbububububububXbubYbubububububububububububububububububububzbubOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabKbrbrbrbZbrbrbrbUbubVbNbWbucabubububububububucabubJbubububucabubJbubububububububububucbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabKbrbrbLbLbrbrbrbtbuccbNbububububububucdbucebubububububzbubububububububububububububububOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabKbrbrbrbrbrbrbrbFbububNbJbububububububububububububububububububububububububububububububOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaacfcgbrbrbrbrbrbrbIbububGbububububububJbubububububububububububJbububububububJbubububuchcicjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabEckbrbrarbrbrbLbtbububGbububububububububububububububububububububububububububububuchciaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaclcmbrbrbrbrbrbLbtbububvbCbubububxbubzbubububCbubxbububzbubububububxbububCbububuchciaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaacncocpcocococpcqcrcrcsctctcuctctcwctctcwctctcuctctcwctctcyczctcyctctcActctctctciaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}
