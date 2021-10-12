@@ -1004,5 +1004,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\voyage\voyage_template_north_flute.dmm"
+#include "maps\special\voyage.dmm"
 // END_INCLUDE
