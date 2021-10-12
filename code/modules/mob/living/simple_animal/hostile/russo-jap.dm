@@ -31,14 +31,6 @@
 
 	faction = JAPANESE
 
-
-/mob/living/simple_animal/hostile/human/japanese/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
-
 /mob/living/simple_animal/hostile/human/japanesecap
 	name = "Japanese Captain"
 	desc = "A japanese captain."
@@ -67,15 +59,6 @@
 	corpse = /mob/living/human/corpse/japanesecap
 
 	faction = JAPANESE
-
-
-/mob/living/simple_animal/hostile/human/japanesecap/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
-
 
 /mob/living/simple_animal/hostile/human/ww2_jap
 	name = "Japanese Soldier"
@@ -122,12 +105,8 @@
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 		icon_state = "ww2_jap_ranged[rand(1,4)]"
 /mob/living/simple_animal/hostile/human/ww2_jap/death()
-	..()
 	faction2_npcs--
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
+	..()
 
 
 /mob/living/simple_animal/hostile/human/ww2_jap/summer
@@ -222,10 +201,6 @@
 /mob/living/simple_animal/hostile/human/ww2_american/death()
 	..()
 	faction1_npcs--
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
 
 /mob/living/simple_animal/hostile/human/ww2_american/medic
 	name = "American Medic"

@@ -43,12 +43,3 @@
 			gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
 		else
 			gun = new/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized(src)
-
-/mob/living/simple_animal/hostile/human/bandit/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	if(gun)
-		gun.forceMove(src.loc)
-		qdel(src)
-	return

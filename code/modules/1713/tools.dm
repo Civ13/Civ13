@@ -416,7 +416,7 @@
 
 /obj/structure/grapplehook/proc/deploy()
 	var/turf/last_turf = loc
-	for(var/i = 1, i <= 13, i++)
+	for(var/i = 1, i <= 17, i++)
 		var/turf/nT = get_step(last_turf,dir)
 		last_turf = nT
 		if (i>=2)

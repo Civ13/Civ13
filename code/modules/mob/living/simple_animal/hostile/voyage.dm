@@ -26,12 +26,6 @@
 
 	corpse = /mob/living/human/corpse/spanish_soldier
 	faction = SPANISH
-/mob/living/simple_animal/hostile/human/voyage/spanish/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
 
 /mob/living/simple_animal/hostile/human/voyage/spanish/ranged
 	name = "Spanish Rifleman"
@@ -229,12 +223,6 @@
 
 	corpse = /mob/living/human/corpse/merchant
 	faction = PIRATES
-/mob/living/simple_animal/hostile/human/voyage/merchant/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
 
 /mob/living/simple_animal/hostile/human/voyage/barmaiden
 	name = "Bar Maid"
@@ -264,12 +252,6 @@
 
 	corpse = /mob/living/human/corpse/barmaiden
 	faction = PIRATES
-/mob/living/simple_animal/hostile/human/voyage/barmaiden/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
 
 /mob/living/simple_animal/hostile/human/voyage/civilian
 	name = "Civilian"
@@ -302,12 +284,6 @@
 	New()
 		..()
 		icon_state = "civ[rand(1,5)]"
-/mob/living/simple_animal/hostile/human/voyage/civilian/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
 
 /mob/living/simple_animal/hostile/human/voyage/civilian_f
 	name = "Civilian"
@@ -340,9 +316,3 @@
 	New()
 		..()
 		icon_state = "civ[rand(6,9)]"
-/mob/living/simple_animal/hostile/human/voyage/civilian_f/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return

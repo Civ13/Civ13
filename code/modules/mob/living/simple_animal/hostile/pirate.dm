@@ -27,23 +27,13 @@
 	behaviour = "hostile"
 
 	corpse = /mob/living/human/corpse/pirate
-	var/weapon1 = /obj/item/weapon/material/sword/cutlass
+	weapon = /obj/item/weapon/material/sword/cutlass
 
-///mob/living/simple_animal/hostile/pirate/New()
+///mob/living/simple_animal/hostile/human/pirate/New()
 //	..()
 //	var/icon_pick = pick("piratemelee","piratemelee1","piratemelee2")
 //	icon_living = icon_pick
 //	icon_state = icon_pick
-
-
-/mob/living/simple_animal/hostile/human/pirate/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	if(weapon1)
-		new weapon1 (src.loc)
-	qdel(src)
-	return
 
 /mob/living/simple_animal/hostile/human/pirate/ranged
 	name = "Pirate"
@@ -88,16 +78,6 @@
 			gun = new/obj/item/weapon/gun/projectile/flintlock/musketoon(src)
 		else
 			gun = new/obj/item/weapon/gun/projectile/flintlock/musket(src)
-
-/mob/living/simple_animal/hostile/human/pirate/ranged/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	if(gun)
-		gun.forceMove(src.loc)
-		qdel(src)
-	return
-
 
 /mob/living/simple_animal/hostile/human/pirate/friendly
 	name = "Pirate"

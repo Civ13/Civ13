@@ -1,0 +1,11 @@
+MOB;26;18;2;/mob/living/simple_animal/hostile/human/pirate;0
+MOB;32;20;2;/mob/living/simple_animal/hostile/human/pirate;0
+MOB;37;20;2;/mob/living/simple_animal/hostile/human/pirate/ranged;0
+MOB;43;20;2;/mob/living/simple_animal/hostile/human/pirate;0
+MOB;30;21;2;/mob/living/simple_animal/hostile/human/pirate/ranged;0
+MOB;33;21;2;/mob/living/simple_animal/hostile/human/pirate/ranged;0
+MOB;43;22;2;/mob/living/simple_animal/hostile/human/pirate;0
+MOB;38;23;2;/mob/living/simple_animal/hostile/human/pirate;0
+MOB;25;24;2;/mob/living/simple_animal/hostile/human/pirate;0
+MOB;31;24;2;/mob/living/simple_animal/hostile/human/pirate;0
+MOB;39;24;2;/mob/living/simple_animal/hostile/human/pirate;0

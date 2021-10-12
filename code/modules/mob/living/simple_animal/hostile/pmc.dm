@@ -35,12 +35,3 @@
 	New()
 		..()
 		gun = new/obj/item/weapon/gun/projectile/submachinegun/ar12(src)
-
-/mob/living/simple_animal/hostile/human/pmc/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	if(gun)
-		gun.forceMove(src.loc)
-	qdel(src)
-	return
