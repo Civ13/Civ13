@@ -29,7 +29,7 @@
 	corpse = /mob/living/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
 
-///mob/living/simple_animal/hostile/pirate/New()
+///mob/living/simple_animal/hostile/human/pirate/New()
 //	..()
 //	var/icon_pick = pick("piratemelee","piratemelee1","piratemelee2")
 //	icon_living = icon_pick
