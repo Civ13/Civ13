@@ -481,18 +481,18 @@
 			for(var/list/L in nmap.islands)
 				var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
 				newisland.pixel_x = 45+((L[3]-71)*69)
-				newisland.pixel_y = 104+((L[2]-21)*67)
+				newisland.pixel_y = 116+((L[2]-21)*67)
 				img.overlays+=newisland
 			for(var/list/L in nmap.ships)
 				var/image/newship = image(icon='icons/minimap_effects.dmi', icon_state="ship[L[1]]",layer=src.layer+1.1)
 				newship.pixel_x = 45+((L[4]-71)*69)
-				newship.pixel_y = 104+((L[3]-21)*67)
+				newship.pixel_y = 116+((L[3]-21)*67)
 				var/image/newship_s = image(icon='icons/minimap_effects.dmi', icon_state="size[L[1]]",layer=src.layer+1.11)
 				newship_s.pixel_x = 45+((L[4]-71)*69)
-				newship_s.pixel_y = 104+((L[3]-21)*67)
+				newship_s.pixel_y = 116+((L[3]-21)*67)
 				var/image/newship_f = image(icon='icons/minimap_effects.dmi', icon_state=L[2],layer=src.layer+1.12)
 				newship_f.pixel_x = 45+((L[4]-71)*69)
-				newship_f.pixel_y = 104+((L[3]-21)*67)
+				newship_f.pixel_y = 116+((L[3]-21)*67)
 				img.overlays+=newship
 				img.overlays+=newship_s
 				img.overlays+=newship_f

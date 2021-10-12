@@ -1112,7 +1112,7 @@ var/list/atom_types = null
 		nmap.ship_anchored = TRUE
 		for(var/obj/structure/voyage/anchor_capstan/VAC)
 			VAC.update_icon()
-		world << "<big>The ship arrives at the destination.</big>"
+		world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 		if (do_clear)
 			nmap.clear_map()
 			message_admins("[key_name(usr)] manually cleared the map.")
