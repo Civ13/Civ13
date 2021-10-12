@@ -313,14 +313,14 @@
 				turns_since_move = FALSE
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
-				if (!target_mob || !(target_mob in ListTargets(7)) || target_mob.stat != CONSCIOUS)
+				if (!target_mob || !(target_mob in ListTargets(10)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
 					if (target_mob)
 						stance = HOSTILE_STANCE_ATTACK
 						if (target_mob && get_dist(target_mob,src)>1)
 							AttackTarget()
 			if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
-				if (target_mob && target_mob in ListTargets(7))
+				if (target_mob && target_mob in ListTargets(10))
 					if ((SA_attackable(target_mob)))
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 						stance = HOSTILE_STANCE_ATTACK
@@ -754,12 +754,7 @@
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
-	if (behaviour == "defends")
-		stance = HOSTILE_STANCE_ATTACK
-		stance_step = 6
-		target_mob = user
-		..()
-	else if (behaviour == "hunt")
+	if (behaviour == "defends" || behaviour == "hunt" || behaviour == "hostile")
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 		target_mob = user

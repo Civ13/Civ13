@@ -29,14 +29,6 @@
 
 	faction = BRITISH
 
-
-/mob/living/simple_animal/hostile/british/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
-
 /mob/living/simple_animal/hostile/human/british/ranged
 	name = "Redcoat Soldier"
 	desc = "A british soldier."
@@ -83,15 +75,6 @@
 		else
 			gun = new/obj/item/weapon/gun/projectile/flintlock/musket(src)
 
-/mob/living/simple_animal/hostile/human/british/ranged/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	if(gun)
-		gun.forceMove(src.loc)
-		qdel(src)
-	return
-
 /mob/living/simple_animal/hostile/townmilitia
 	name = "Town Militia"
 	desc = "A british town militia."
@@ -119,15 +102,6 @@
 
 	var/corpse = /mob/living/human/corpse/british
 	faction = CIVILIAN
-
-
-/mob/living/simple_animal/hostile/townmilitia/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
-
 
 /mob/living/simple_animal/hostile/british/voyage
 	name = "Redcoat Soldier"
@@ -159,11 +133,3 @@
 	corpse = /mob/living/human/corpse/british
 
 	faction = BRITISH
-
-
-/mob/living/simple_animal/hostile/british/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
