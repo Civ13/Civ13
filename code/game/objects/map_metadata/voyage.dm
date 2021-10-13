@@ -141,7 +141,7 @@
 		if (prob(50))
 			load_map(pick("island1","island2","piratetown","cursedisland"),"north")
 		else
-			load_map(pick("island1","island2"),"south")
+			load_map(pick("island1","island2","piratetown","islandfort1","islandfort2"),"south")
 		return
 	else
 		load_map(mapgen["[latitude],[longitude]"][3])
@@ -238,7 +238,8 @@
 			var/list/impareas2 = splittext(i, ";")
 			if (impareas2.len && impareas2[1] == "AREA")
 				var/resultp = text2path(impareas2[5])
-				new resultp(locate(text2num(impareas2[2]),text2num(impareas2[3])+y_offset,text2num(impareas2[4])))
+				if(resultp)
+					new resultp(locate(text2num(impareas2[2]),text2num(impareas2[3])+y_offset,text2num(impareas2[4])))
 
 	var/F2 = file("[partpath]/mobs.txt")
 	if (fexists(F2))

@@ -1,18 +1,18 @@
 "aa" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
-"ab" = (/obj/structure/barricade/ship{icon_state = "boat1"; dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"ac" = (/obj/structure/barricade/ship/north,/obj/structure/barricade/ship{icon_state = "boat1"; dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"ad" = (/obj/structure/barricade/ship/north,/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship{icon_state = "boat1"; dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"ae" = (/obj/structure/barricade/ship/north/corners{icon_state = "boat1_up_corners"; dir = 9},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"af" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{icon_state = "boat1_up_corners"; dir = 5},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"ag" = (/obj/structure/barricade/ship/north{dir = 8},/obj/structure/barricade/ship{icon_state = "boat1"; dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"ah" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/barricade/ship/north/corners{icon_state = "boat1_up_corners"; dir = 5},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"ai" = (/obj/structure/barricade/ship/north{dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship{icon_state = "boat1"; dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"aj" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/barricade/ship/north/corners{icon_state = "boat1_up_corners"; dir = 6},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ab" = (/obj/structure/barricade/ship{dir = 1; icon_state = "boat1"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ac" = (/obj/structure/barricade/ship/north,/obj/structure/barricade/ship{dir = 1; icon_state = "boat1"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ad" = (/obj/structure/barricade/ship/north,/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship{dir = 1; icon_state = "boat1"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ae" = (/obj/structure/barricade/ship/north/corners{dir = 9; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"af" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{dir = 5; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ag" = (/obj/structure/barricade/ship/north{dir = 8},/obj/structure/barricade/ship{dir = 8; icon_state = "boat1"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ah" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/barricade/ship/north/corners{dir = 5; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ai" = (/obj/structure/barricade/ship/north{dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship{dir = 8; icon_state = "boat1"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"aj" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "ak" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/voyage/sextant,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "al" = (/obj/structure/barricade/ship/north/corners{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "am" = (/obj/structure/barricade/ship/north/corners{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"an" = (/obj/structure/barricade/ship/north/corners{icon_state = "boat1_up_corners"; dir = 10},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"ao" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{icon_state = "boat1_up_corners"; dir = 6},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"an" = (/obj/structure/barricade/ship/north/corners{dir = 10; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"ao" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "ap" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest/treasury/ship,/obj/effect/landmark{name = "TreasuryPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside/treasury)
 "aq" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "ar" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 6},/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -273,7 +273,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaghKhWhKKbjTieIMizjTaujTizKbjoCFixCFCFixCFCFixCFZvix
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagEkkhEkkECFjTjTjTCFCFjTIMKbkVCFHAZvCFHACFCFHACFCFHACFKbkVXBXBlulCXBKbdGtcrTrTooahKnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagnbEkogCQjTCFCFCFCFCFCFjTCFMCCFomomomCFCFomomomCFCFCFCFMCXBXBXBXBXBNkkVCZrTtCrTookVrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagrVEksaKbizjTCFCFCFCFCFCFCFkVfljBlilililijBlijBfTReReRekVXBXBsosQXBXBdGrTrTtCrTmgKbrwrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaiuuEkuJKbIMjTjTizjTmjCFjTIMdGjBlijBCFjBlilijBlijBRekXJqdGycXBdKTdXBXBkErTrTrTrTmgKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaiuuEkuJkVIMjTjTizjTmjCFjTIMdGjBlijBCFjBlilijBlijBRekXJqdGycXBdKTdXBXBkErTrTrTrTmgKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaiyFEkyKKbjTCFjTIMjTmjGWjTEzdGfllililililijBlilifTwhCFCFdGycXBsosoXBXBPFrTrTrTrTyOKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagyFEkySKbCFCFCFCFCFCFCFCFjokVCFjBlijBlijBlijBliCFReReRekVycXBXBXBXByckVAerTtCrTkwKbrwrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagBMEkuuCQCoCwCYtnCFCFCFCFCFMCCFwEwEwECFCFwEwEwECFCFCFCFMCXBXBXBXBXBQMdGORrTtCrTmgkVrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -312,7 +312,6 @@ ZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZn
 ZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZn
 ZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZn
 "}
-
 (1,1,2) = {"
 PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPq
 PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPq

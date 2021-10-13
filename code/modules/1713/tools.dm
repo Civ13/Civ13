@@ -393,6 +393,10 @@
 		user << "<span class='notice'>You start deploying the [src]...</span>"
 		if (do_after(user, 80, target = src))
 			dir = user.dir
+			if (dir == SOUTHWEST || dir == SOUTHEAST)
+				dir = SOUTH
+			if (dir == NORTHWEST || dir == NORTHEAST)
+				dir = NORTH
 			deployed = TRUE
 			deploy()
 			update_icon()
