@@ -793,3 +793,45 @@
 	layer = 4
 	density = FALSE
 	anchored = TRUE
+
+/obj/effect/flooding
+	name = "flooded floor"
+	desc = "The water seems to be about 50cm deep."
+	icon = 'icons/misc/beach.dmi'
+	icon_state = "flood_overlay1"
+	layer = 2
+	density = FALSE
+	anchored = TRUE
+	var/flood_level = 1
+
+	New()
+		..()
+		spawn(10)
+			var/found = FALSE
+			for(var/obj/covers/CV in loc)
+				found = TRUE
+				break
+			if (found)
+				for(var/obj/effect/flooding/FLD in loc)
+					flood_level = min(3,flood_level+FLD.flood_level)
+					qdel(FLD)
+					update_icon()
+			else if (!found && istype(loc, /turf/floor/beach/water))
+				qdel(src)
+
+	update_icon()
+		icon_state = "flood_overlay[flood_level]"
+		desc = "The water seems to be about [flood_level*50]cm deep."
+
+	attackby(obj/item/I, mob/living/human/user)
+		if(istype(I, /obj/item/weapon/reagent_containers/glass))
+			if (I.reagents.get_free_space() >= 50)
+				I.reagents.add_reagent("sodiumchloride", 8)
+				I.reagents.add_reagent("water", 42)
+				user << "You fill \the [I]."
+				flood_level--
+				if (flood_level <= 0)
+					qdel(src)
+
+			else
+				user << "span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"

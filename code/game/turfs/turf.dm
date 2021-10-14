@@ -398,6 +398,9 @@ var/const/enterloopsanity = 100
 					break
 				else if (istype(CV, /obj/covers/wood))
 					footstepsound = "woodfootsteps"
+					for(var/obj/effect/flooding/FLD in src)
+						footstepsound = "waterfootsteps"
+						break
 					break
 				else
 					footstepsound = "platingfootsteps"
