@@ -770,6 +770,7 @@
 							rigginghealth+=2
 							if (rigginghealth > 100)
 								rigginghealth = 100
+			update_icon()
 		else
 			..()
 
@@ -782,6 +783,7 @@
 					rigginghealth = 0
 				if(sailhealth<0)
 					sailhealth = 0
+				update_icon()
 				return
 			if (2.0)
 				sailhealth -= 6
@@ -790,6 +792,7 @@
 					rigginghealth = 0
 				if(sailhealth<0)
 					sailhealth = 0
+				update_icon()
 				return
 			if (3.0)
 				sailhealth -= 3
@@ -798,4 +801,5 @@
 					rigginghealth = 0
 				if(sailhealth<0)
 					sailhealth = 0
+				update_icon()
 				return
