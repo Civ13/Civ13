@@ -522,7 +522,10 @@
 		var/t_text = "<style>table, th, td {border: 1px solid black;}</style><table><tr><th>Name</th><th>Job</th></tr>"
 		for(var/mob/living/human/HM in world)
 			if (HM.stat != DEAD)
-				t_text += "<tr><td>[HM.name]</td><td>[HM.original_job_title]</td></tr>"
+				var/t_tile = HM.original_job_title
+				if (t_title == "Pirate")
+					t_title = "Sailor"
+				t_text += "<tr><td>[HM.name]</td><td>[t_title]</td></tr>"
 		t_text += "</table>"
 		return t_text
 
@@ -813,10 +816,11 @@
 				break
 			if (found)
 				for(var/obj/effect/flooding/FLD in loc)
-					flood_level = min(3,flood_level+FLD.flood_level)
-					qdel(FLD)
-					update_icon()
-			else if (!found && istype(loc, /turf/floor/beach/water))
+					if (src != FLD)
+						flood_level = min(3,flood_level+FLD.flood_level)
+						qdel(FLD)
+						update_icon()
+			else
 				qdel(src)
 
 	update_icon()
@@ -826,12 +830,16 @@
 	attackby(obj/item/I, mob/living/human/user)
 		if(istype(I, /obj/item/weapon/reagent_containers/glass))
 			if (I.reagents.get_free_space() >= 50)
-				I.reagents.add_reagent("sodiumchloride", 8)
-				I.reagents.add_reagent("water", 42)
-				user << "You fill \the [I]."
-				flood_level--
-				if (flood_level <= 0)
-					qdel(src)
+				user << "You start filling \the [I]..."
+				if (do_after(user,40,src))
+					if (I.reagents.get_free_space() >= 50)
+						I.reagents.add_reagent("sodiumchloride", 8)
+						I.reagents.add_reagent("water", 42)
+						user << "You fill \the [I]."
+						playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+						flood_level--
+						if (flood_level <= 0)
+							qdel(src)
 
 			else
 				user << "span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"

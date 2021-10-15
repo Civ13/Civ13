@@ -130,7 +130,7 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
-
+	H.make_title_changer()
 	return TRUE
 
 /datum/job/pirates/midshipman

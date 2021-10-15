@@ -252,6 +252,33 @@
 							U.name = "[U.title] [U.name]"
 							usr << "[src] is now a [U.title]."
 							return
+	else if (map.ID == MAP_VOYAGE)
+		var/list/closemobs = list("Cancel")
+		for (var/mob/living/human/M in range(4,loc))
+			if (M.original_job_title == "Pirate" || M.title != "")
+				closemobs += M
+		var/choice2 = WWinput(usr, "Who to assign a job to?", "Job Assignment", "Cancel", closemobs)
+		if (choice2 == "Cancel")
+			return
+		else
+			U = choice2
+			var/list/optlist = list("Cancel","Sailor","Carpenter","Nurse","Cannonier","Cook","Marine","Guard","Mate","Navigator","Deputy Boatswain","Deputy Quartermaster")
+			var/inp = WWinput(usr, "Choose a job to give:","Job Assignment","Cancel",optlist)
+			if (inp == "Cancel" || !inp)
+				return
+			else
+				if (inp == "Sailor")
+					U.original_job_title = "Pirate"
+					U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title] ",""))
+					U.title = ""
+				else
+					U.title = inp
+					U.original_job_title = inp
+					U.name = "[U.title] [U.name]"
+				usr << "[U] has been assigned the job of [inp]."
+				var/job_msg = "You have been assigned to the job of [inp]."
+				WWalert(U, job_msg, "Job Assignment")
+				return
 	else
 		usr << "<span class='danger'>You cannot give titles in this map.</span>"
 		return
@@ -290,6 +317,26 @@
 						else
 							usr << "[src] has no title."
 							return
+	else if (map.ID == MAP_VOYAGE)
+		var/list/closemobs = list("Cancel")
+		for (var/mob/living/human/M in range(4,loc))
+			if ((M.original_job_title != "Pirate") && M.title != "")
+				closemobs += M
+		var/choice2 = WWinput(usr, "Who to remove a job from?", "Job Assignment", "Cancel", closemobs)
+		if (choice2 == "Cancel")
+			return
+		else
+			U = choice2
+			if (U && U.title != "")
+				U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title] ",""))
+				usr << "[U]'s job of [U.title] has been removed by [usr]."
+				U.original_job_title = "Pirate"
+				U.title = ""
+				WWalert(U,"Your job has been removed. You are now a basic sailor.","Job Assignment")
+				return
+			else
+				usr << "[U] has no job assigned."
+				return
 	else
 		usr << "<span class='danger'>You cannot give titles in this map.</span>"
 		return
