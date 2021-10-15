@@ -570,6 +570,8 @@
 				var/t_title = HM.original_job_title
 				if (t_title == "Pirate")
 					t_title = "Sailor"
+				else
+					t_title = replacetext(HM.original_job_title,"Pirate ","")
 				t_text += "<tr><td>[HM.name]</td><td>[t_title]</td></tr>"
 		t_text += "</table>"
 		return t_text
