@@ -522,7 +522,7 @@
 		var/t_text = "<style>table, th, td {border: 1px solid black;}</style><table><tr><th>Name</th><th>Job</th></tr>"
 		for(var/mob/living/human/HM in world)
 			if (HM.stat != DEAD)
-				var/t_tile = HM.original_job_title
+				var/t_title = HM.original_job_title
 				if (t_title == "Pirate")
 					t_title = "Sailor"
 				t_text += "<tr><td>[HM.name]</td><td>[t_title]</td></tr>"
