@@ -632,8 +632,7 @@ var/civmax_research = list(230,230,230)
 	return FALSE
 
 /obj/map_metadata/proc/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
@@ -790,9 +789,6 @@ var/civmax_research = list(230,230,230)
 			return 4200 // 7 minutes
 		else
 			return 2400 // 4 minutes
-
-/obj/map_metadata/proc/win_condition_specialcheck()
-	return TRUE
 
 /obj/map_metadata/proc/roundend_condition_def2name(define)
 	switch (define)

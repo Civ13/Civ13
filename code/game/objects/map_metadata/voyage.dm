@@ -22,6 +22,7 @@
 	is_singlefaction = TRUE
 	is_RP = TRUE
 	has_hunger = TRUE
+	respawn_delay = 1800 //3 minutes
 
 	var/longitude = 71 //71 to 77 W
 	var/latitude = 21 //21 to 27 N
@@ -35,7 +36,40 @@
 	var/navspeed = 0
 	var/inzone = FALSE //if the ship is currently in an event zone
 	var/ship_anchored = TRUE
+
+	var/roundend_msg = "The round has ended!"
+
+/obj/map_metadata/voyage/proc/get_sink()
+	var/t_level = 0
+	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower))
+		t_level += F.flood_level*2
+	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower/storage/kitchen))
+		t_level += F.flood_level*2
+	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower/storage))
+		t_level += F.flood_level*2
+	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower/storage/magazine))
+		t_level += F.flood_level*2
+	return t_level
+
+/obj/map_metadata/voyage/proc/check_roundend_conditions()
+	//sinking
+	if (get_sink() >= 100)
+		roundend_msg = "The ship has sank due to flooding in the lower decks!<br><font color='red'>You have lost!</font>"
+		map.next_win = world.time - 100
+		return
+	//everyone dead
+	if(processes.ticker.playtime_elapsed >= 6000) //10 mins
+		var/found = FALSE
+		for(var/mob/living/human/H in world)
+			if (H.stat != DEAD)
+				found = TRUE
+		if (!found)
+			roundend_msg = "The whole crew has succumbed!<br><font color='red'>You have lost!</font>"
+			map.next_win = world.time - 100
+			return
+
 /obj/map_metadata/voyage/proc/nav()
+	check_roundend_conditions()
 	if (navmoving && !ship_anchored)
 		if (!inzone)
 			navspeed = calc_speed()
@@ -207,6 +241,16 @@
 		new/area/caribbean/sea/bottom(T3)
 		for (var/atom/movable/lighting_overlay/LO in T3)
 			LO.update_overlay()
+
+/obj/map_metadata/voyage/update_win_condition()
+	if (world.time >= next_win && next_win != -1)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		world << "<font size=4>[roundend_msg]</font>"
+		win_condition_spam_check = TRUE
+		return FALSE
+
 ////////////////////////////////////////////////////////////////
 //////////////////LOADING AND SAVING PARTIAL MAPS//////////////
 /obj/map_metadata/voyage/proc/load_map(mapname = "ship1", location = "random")
@@ -475,8 +519,9 @@
 		..()
 		spawn(30)
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
-			update_icon()
-	update_icon()
+			get_updated_img()
+	proc/get_updated_img()
+		img.overlays.Cut()
 		if(map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
 			for(var/list/L in nmap.islands)
@@ -648,8 +693,10 @@
 		if (nmap)
 			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
 			H << "The ship is heading to the <b>[nmap.navdirection]</b>, progress: <b>[nmap.navprogress]%</b>"
+			H << "Sinking progress: <b>[nmap.get_sink()]%</b>"
 			if(nmap.ship_anchored)
 				H << "The ship is <font color='red'><b>anchored</b></font>."
+	
 /obj/structure/voyage/shipbell
 	name = "ship's bell"
 	desc = "Used to relay signals to the crew."

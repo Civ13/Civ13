@@ -46,8 +46,7 @@
 		points_check()
 
 /obj/map_metadata/sekigahara/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (processes.ticker.playtime_elapsed >= 12000 || world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE

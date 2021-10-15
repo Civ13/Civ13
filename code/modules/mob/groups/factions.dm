@@ -258,7 +258,7 @@
 			if (M.original_job_title == "Pirate" || M.title != "")
 				closemobs += M
 		var/choice2 = WWinput(usr, "Who to assign a job to?", "Job Assignment", "Cancel", closemobs)
-		if (choice2 == "Cancel")
+		if (choice2 == "Cancel" || !choice2)
 			return
 		else
 			U = choice2
@@ -275,7 +275,7 @@
 					U.title = inp
 					U.original_job_title = inp
 					U.name = "[U.title] [U.name]"
-				usr << "[U] has been assigned the job of [inp]."
+				usr << "[U.real_name] has been assigned the job of [inp]."
 				var/job_msg = "You have been assigned to the job of [inp]."
 				WWalert(U, job_msg, "Job Assignment")
 				return

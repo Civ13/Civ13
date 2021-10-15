@@ -45,8 +45,7 @@ obj/map_metadata/siege/job_enabled_specialcheck(var/datum/job/J)
 var/no_loop_rom = FALSE
 
 /obj/map_metadata/siege/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= 21000)
 		if (win_condition_spam_check)
 			return FALSE

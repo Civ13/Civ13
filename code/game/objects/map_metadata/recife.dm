@@ -41,8 +41,7 @@ obj/map_metadata/recife/job_enabled_specialcheck(var/datum/job/J)
 var/no_loop = FALSE
 
 /obj/map_metadata/recife/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (processes.ticker.playtime_elapsed >= 24000)
 		if (win_condition_spam_check)
 			return FALSE

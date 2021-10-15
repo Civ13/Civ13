@@ -97,8 +97,7 @@ obj/map_metadata/berlin/job_enabled_specialcheck(var/datum/job/J)
 
 
 /obj/map_metadata/berlin/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= 24000)
 		if (win_condition_spam_check)
 			return FALSE

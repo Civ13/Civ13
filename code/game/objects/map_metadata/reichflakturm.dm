@@ -94,8 +94,7 @@
 
 
 /obj/map_metadata/reichflakturm/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
