@@ -333,7 +333,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_ww2 = TRUE
-
+	is_karelina = TRUE
 	min_positions = 1
 	max_positions = 1
 
@@ -382,6 +382,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
+	is_karelina = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -419,7 +420,7 @@
 	title = "K.A. Serjant"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
-
+	is_karelina = TRUE
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -470,7 +471,7 @@
 	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRUDoc"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	is_medic = TRUE
 	min_positions = 1
@@ -510,7 +511,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
@@ -553,9 +554,8 @@
 	title = "K.A. Soldat"
 	en_meaning = "Red Army Private"
 	rank_abbreviation = ""
-
 	spawn_location = "JoinLateRU"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
@@ -1094,7 +1094,7 @@
 	rank_abbreviation = "Kom."
 
 	spawn_location = "JoinLateRU"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
@@ -1139,7 +1139,7 @@
 	title = "Tankist"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = ""
-
+	is_karelina = TRUE
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
@@ -1185,7 +1185,7 @@
 	title = "Gvardii Serjant"
 	en_meaning = "Guards Mechanized Squad Leader"
 	rank_abbreviation = "Srj."
-
+	is_karelina = TRUE
 	spawn_location = "JoinLateRU"
 	is_ss_panzer = TRUE
 
@@ -1232,7 +1232,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_ss_panzer = TRUE
@@ -1284,7 +1284,7 @@
 
 	spawn_location = "JoinLateRUSap"
 	is_ss_panzer = TRUE
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 2

@@ -4,7 +4,7 @@
 	title = "Soviet Army lieutenant"
 	rank_abbreviation = "lt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateRUCap"
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -15,7 +15,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/russian/sa_lieutenant/equip(var/mob/living/human/H)
+/datum/job/russian/msa_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -57,7 +57,7 @@
 	title = "Soviet Army Sergeant"
 	rank_abbreviation = "Sgt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateRUCap"
 
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -115,15 +115,14 @@
 	title = "Soviet Army Field Medic"
 	rank_abbreviation = "Cpl."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRU"
 
 	is_medic = TRUE
-	is_yeltsin = TRUE
 
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/russian/sa_medic/equip(var/mob/living/human/H)
+/datum/job/russian/msa_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -171,16 +170,15 @@
 	title = "Soviet Army Rifleman"
 	rank_abbreviation = "Pvt."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRU"
 
-	is_yeltsin = TRUE
 
 	uses_squads = TRUE
 
 	min_positions = 10
 	max_positions = 200
 
-/datum/job/russian/sa_soldier/equip(var/mob/living/human/H)
+/datum/job/russian/msa_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -220,16 +218,14 @@
 	title = "Soviet army tankist"
 	rank_abbreviation = "Tankist"
 
-	spawn_location = "JoinLateRN"
-
-	is_yeltsin = TRUE
+	spawn_location = "JoinLateRU"
 
 	uses_squads = TRUE
 
 	min_positions = 10
 	max_positions = 200
 
-/datum/job/russian/sa_soldier/equip(var/mob/living/human/H)
+/datum/job/russian/msa_tankmen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -271,7 +267,7 @@
 	title = "Spetznaz"
 	rank_abbreviation = "Spz."
 
-	spawn_location = "JoinLateRNsptz"
+	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
 	is_yeltsin = TRUE
 
@@ -280,7 +276,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/russian/spetznaz/equip(var/mob/living/human/H)
+/datum/job/russian/mspetznaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
@@ -772,7 +768,7 @@
 
 	H.civilization = "civilian"
 
-	H.add_note("Role", "You are an <b>[title]</b>, an local civilian,you are unemployed, good luck finding a job!")
+	H.add_note("Role", "You are an <b>[title]</b>, a local civilian,you are unemployed. Good luck finding a job!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_LOW)
