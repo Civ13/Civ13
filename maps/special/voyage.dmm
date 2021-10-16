@@ -21,6 +21,7 @@
 "au" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "av" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 9},/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "aw" = (/obj/covers/repairedfloor/ship,/obj/structure/table/fancy,/obj/structure/potted_plant{dir = 5},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"ax" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone/wood/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "aY" = (/obj/structure/barricade/ship/wood/a12,/obj/covers/repairedfloor/ship,/obj/structure/sign/custom/plaque{desc = "The ship Captain's room and office."; name = "Captain's Room"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "ba" = (/obj/covers/repairedfloor/ship,/obj/structure/sign/custom/plaque{desc = "Where the ship's riches are kept."; name = "Treasury"},/obj/structure/barricade/ship/wood/a2,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "be" = (/obj/covers/repairedfloor/ship,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
@@ -68,7 +69,6 @@
 "jT" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/stool/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "kh" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/mouse/black,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "kw" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/empty,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
-"kE" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "kV" = (/obj/structure/barricade/ship/wall2{dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "kX" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "la" = (/obj/structure/barricade/ship/blue/b18,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -270,14 +270,14 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaagcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcalababababababababababKnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaalacacadacacacacacadacacacacacacbjacadbjacacbjadacbjacaeRfNkdDdDhRRfKbyAyAeKafKnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaghKhWhKKbjTieIMizjTaujTizKbjoCFixCFCFixCFCFixCFZvixCFKbjDXBXBXBXBXBKbrTrTrTcNahKnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaagEkkhEkkECFjTjTjTCFCFjTIMKbkVCFHAZvCFHACFCFHACFCFHACFKbkVXBXBlulCXBKbdGtcrTrTooahKnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaagEkkhEkaxCFjTjTjTCFCFjTIMKbkVCFHAZvCFHACFCFHACFCFHACFKbkVXBXBlulCXBKbdGtcrTrTooahKnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagnbEkogCQjTCFCFCFCFCFCFjTCFMCCFomomomCFCFomomomCFCFCFCFMCXBXBXBXBXBNkkVCZrTtCrTookVrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagrVEksaKbizjTCFCFCFCFCFCFCFkVfljBlilililijBlijBfTReReRekVXBXBsosQXBXBdGrTrTtCrTmgKbrwrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaiuuEkuJkVIMjTjTizjTmjCFjTIMdGjBlijBCFjBlilijBlijBRekXJqdGycXBdKTdXBXBkErTrTrTrTmgKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaiuuEkuJkVIMjTjTizjTmjCFjTIMdGjBlijBCFjBlilijBlijBRekXJqdGycXBdKTdXBXBaxrTrTrTrTmgKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaiyFEkyKKbjTCFjTIMjTmjGWjTEzdGfllililililijBlilifTwhCFCFdGycXBsosoXBXBPFrTrTrTrTyOKbrwrwrwrwrwrwaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagyFEkySKbCFCFCFCFCFCFCFCFjokVCFjBlijBlijBlijBliCFReReRekVycXBXBXBXByckVAerTtCrTkwKbrwrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagBMEkuuCQCoCwCYtnCFCFCFCFCFMCCFwEwEwECFCFwEwEwECFCFCFCFMCXBXBXBXBXBQMdGORrTtCrTmgkVrwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaagEkEkEkkEtDtDtDCFCFCFjTEzKbkVCFtTCFCFixCFCFixCFCFtTCFKbkVjDXBXBXBjDKbdGuZrTrTOGajamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaagEkEkEkaxtDtDtDCFCFCFjTEzKbkVCFtTCFCFixCFCFixCFCFtTCFKbkVjDXBXBXBjDKbdGuZrTrTOGajamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaagyFyFyFKbFcFcFfFfbeCFjTFMKbjoCFCLCFCFMRCFZvMRkXCFCLifdGsoXBXBXBXBsoKbrTrTrTooajamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaHwHHHHICHHHHHHHHHHICHHHHHHHHHHHHKgHHICKgHHHHKgICHHKgHHanRfXBmabJXBRfKbevyAgWaoamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBHwHHHHHHHHHHHHHHHHHHHHamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -312,6 +312,7 @@ ZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZn
 ZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZn
 ZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZnZn
 "}
+
 (1,1,2) = {"
 PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPq
 PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPq
