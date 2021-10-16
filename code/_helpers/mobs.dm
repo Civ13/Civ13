@@ -138,6 +138,31 @@ proc/random_russian_name(gender, species = "Human")
 	else
 		return current_species.get_random_russian_name(gender)
 
+proc/random_finnish_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+	else
+		return current_species.get_random_oldnorse_name(gender)
+
+proc/random_chechen_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_arab)) + " " + capitalize(pick(first_names_male_arab))
+		else
+			return capitalize(pick(first_names_male_arab)) + " " + capitalize(pick(first_names_male_arab))
+	else
+		return current_species.get_random_arab_name(gender)
 
 proc/random_portuguese_name(gender, species = "Human")
 	var/datum/species/current_species
@@ -588,6 +613,41 @@ Proc for attack log creation, because really why not
 
 	return russian
 
+/proc/getchechenmobs(var/alive = FALSE)
+	var/list/chechen = list()
+	for (var/mob/living/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/arab/civilian/chechen))
+			continue
+		if (istype(H, /mob/living/human/corpse))
+			continue
+		chechen += H
+
+	return chechen
+
+/proc/getfinnishmobs(var/alive = FALSE)
+	var/list/finnish = list()
+	for (var/mob/living/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/finnish))
+			continue
+		if (istype(H, /mob/living/human/corpse))
+			continue
+		finnish += H
+
+	return finnish
+
+
 /proc/getgermanmobs(var/alive = FALSE)
 	var/list/german = list()
 	for (var/mob/living/human/H in mob_list)
@@ -720,6 +780,10 @@ Proc for attack log creation, because really why not
 			mobs = getjapanesemobs(0)
 		if (RUSSIAN)
 			mobs = getrussianmobs(0)
+		if (CHECHEN)
+			mobs = getchechenmobs(0)
+		if (FINNISH)
+			mobs = getfinnishmobs(0)
 		if (GERMAN)
 			mobs = getgermanmobs(0)
 		if (AMERICAN)

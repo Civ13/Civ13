@@ -69,7 +69,7 @@
 /datum/job/var/is_yeltsin = FALSE
 /datum/job/var/is_whitehouse = FALSE
 /datum/job/var/is_kremlin = FALSE
-/datum/job/var/is_fsc = FALSE
+/datum/job/var/is_karelina = FALSE
 /datum/job/var/is_rusretreat = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
@@ -114,6 +114,10 @@
 		. = JAPANESE
 	else if (istype(src, /datum/job/russian))
 		. = RUSSIAN
+	else if (istype(src, /datum/job/finnish))
+		. = FINNISH
+	else if (istype(src, /datum/job/arab/civilian/chechen))
+		. = CHECHEN
 	else if (istype(src, /datum/job/roman))
 		. = ROMAN
 	else if (istype(src, /datum/job/german))
@@ -165,6 +169,12 @@
 	else if (istype(src, /datum/job/russian))
 		user.faction_text = "RUSSIAN"
 		user.base_faction = new/datum/faction/russian(user, src)
+	else if (istype(src, /datum/job/finnish))
+		user.faction_text = "FINNISH"
+		user.base_faction = new/datum/faction/finnish(user, src)
+	else if (istype(src, /datum/job/arab/civilian/chechen))
+		user.faction_text = "CHECHEN"
+		user.base_faction = new/datum/faction/chechen(user, src)
 	else if (istype(src, /datum/job/civilian))
 		user.faction_text = "CIVILIAN"
 		user.base_faction = new/datum/faction/civilian(user, src)
