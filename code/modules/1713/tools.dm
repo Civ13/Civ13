@@ -393,6 +393,10 @@
 		user << "<span class='notice'>You start deploying the [src]...</span>"
 		if (do_after(user, 80, target = src))
 			dir = user.dir
+			if (dir == SOUTHWEST || dir == SOUTHEAST)
+				dir = SOUTH
+			if (dir == NORTHWEST || dir == NORTHEAST)
+				dir = NORTH
 			deployed = TRUE
 			deploy()
 			update_icon()
@@ -414,7 +418,13 @@
 	else
 		icon_state = "grapplehook"
 
+/obj/structure/grapplehook/attackby(obj/item/I, mob/living/human/H)
+	if (deployed && istype(I, /obj/item/weapon/wrench))
+		return
+	..()
+
 /obj/structure/grapplehook/proc/deploy()
+	anchored = TRUE
 	var/turf/last_turf = loc
 	for(var/i = 1, i <= 17, i++)
 		var/turf/nT = get_step(last_turf,dir)

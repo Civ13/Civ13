@@ -86,8 +86,7 @@
 var/no_loop_nk = FALSE
 
 /obj/map_metadata/nankou/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= 12000)
 		if (win_condition_spam_check)
 			return FALSE

@@ -117,7 +117,7 @@ var/process/open_space/OS_controller = null
 				H.updatehealth()
 
 		if (istype(A, /obj))
-			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers))
+			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast))
 				return
 			else
 				A.z -= 1

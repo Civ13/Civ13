@@ -279,6 +279,15 @@
 	density = FALSE
 	initial_flooring = /decl/flooring/water_deep
 
+/turf/floor/beach/water/deep/Crossed(atom/A)
+	..()
+	for(var/obj/covers/C in src)
+		return
+	if (!istype(A, /mob) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !!istype(A, /obj/effect/sailing_effect))
+		spawn(60)
+			if (A.loc == src)
+				qdel(A)
+
 /turf/floor/beach/water/deep/jungle
 	name = "deep jungle river"
 	icon_state = "seashallow_jungle3"

@@ -740,7 +740,7 @@ OBJECT;14;8;2;/obj/covers/cobblestone;
 OBJECT;15;8;2;/obj/covers/cobblestone;
 OBJECT;16;8;2;/obj/covers/cobblestone;
 OBJECT;17;8;2;/obj/covers/cobblestone;
-OBJECT;17;8;2;/obj/structure/vending/muskets/spanish;
+OBJECT;17;8;2;/obj/structure/vending/craftable/rifles/wood/filled_musket_spanish;
 OBJECT;18;8;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;19;8;2;/obj/covers/cobblestone;
 OBJECT;20;8;2;/obj/covers/cobblestone;
@@ -794,7 +794,7 @@ OBJECT;51;8;2;/obj/covers/cobblestone;
 OBJECT;52;8;2;/obj/covers/cobblestone;
 OBJECT;53;8;2;/obj/covers/cobblestone;
 OBJECT;54;8;2;/obj/covers/cobblestone;
-OBJECT;54;8;2;/obj/structure/vending/muskets/spanish;
+OBJECT;54;8;2;/obj/structure/vending/craftable/rifles/wood/filled_musket_spanish;
 OBJECT;55;8;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;4;9;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;5;9;2;/obj/covers/cobblestone;
@@ -827,7 +827,7 @@ OBJECT;14;9;2;/obj/covers/cobblestone;
 OBJECT;15;9;2;/obj/covers/cobblestone;
 OBJECT;16;9;2;/obj/covers/cobblestone;
 OBJECT;17;9;2;/obj/covers/cobblestone;
-OBJECT;17;9;2;/obj/structure/vending/muskets/spanish;
+OBJECT;17;9;2;/obj/structure/vending/craftable/rifles/wood/filled_musket_spanish;
 OBJECT;18;9;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;19;9;2;/obj/covers/cobblestone;
 OBJECT;20;9;2;/obj/covers/cobblestone;
@@ -894,7 +894,7 @@ OBJECT;51;9;2;/obj/covers/cobblestone;
 OBJECT;52;9;2;/obj/covers/cobblestone;
 OBJECT;53;9;2;/obj/covers/cobblestone;
 OBJECT;54;9;2;/obj/covers/cobblestone;
-OBJECT;54;9;2;/obj/structure/vending/muskets/spanish;
+OBJECT;54;9;2;/obj/structure/vending/craftable/rifles/wood/filled_musket_spanish;
 OBJECT;55;9;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;4;10;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;5;10;2;/obj/covers/cobblestone;
@@ -927,7 +927,7 @@ OBJECT;14;10;2;/obj/covers/cobblestone;
 OBJECT;15;10;2;/obj/covers/cobblestone;
 OBJECT;16;10;2;/obj/covers/cobblestone;
 OBJECT;17;10;2;/obj/covers/cobblestone;
-OBJECT;17;10;2;/obj/structure/vending/muskets/spanish;
+OBJECT;17;10;2;/obj/structure/vending/craftable/rifles/wood/filled_musket_spanish;
 OBJECT;18;10;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall7
 OBJECT;19;10;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall12
 OBJECT;20;10;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall12
@@ -997,7 +997,7 @@ OBJECT;51;10;2;/obj/covers/cobblestone;
 OBJECT;52;10;2;/obj/covers/cobblestone;
 OBJECT;53;10;2;/obj/covers/cobblestone;
 OBJECT;54;10;2;/obj/covers/cobblestone;
-OBJECT;54;10;2;/obj/structure/vending/muskets/spanish;
+OBJECT;54;10;2;/obj/structure/vending/craftable/rifles/wood/filled_musket_spanish;
 OBJECT;55;10;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall3
 OBJECT;4;11;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall6
 OBJECT;5;11;2;/obj/covers/stone_wall/fortress;icon_state===fortress_brickwall9

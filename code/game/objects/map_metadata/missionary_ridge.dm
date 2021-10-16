@@ -94,8 +94,7 @@
 		return ""
 
 /obj/map_metadata/missionary_ridge/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= 18000)
 		if (win_condition_spam_check)
 			return FALSE

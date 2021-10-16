@@ -50,7 +50,22 @@
 		desc = "a weakened ship floor."
 		maxhealth = 50
 		icon_state = "wood_ship_repaired"
-	..()
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+		if(istype(src.loc, /turf/floor/beach/water))
+			var/turf/T1 = get_step(src,pick(NORTH,NORTHWEST))
+			if(T1)
+				new/obj/effect/flooding(T1)
+			var/turf/T2 = get_step(src,pick(EAST,NORTHEAST))
+			if(T2)
+				new/obj/effect/flooding(T2)
+			var/turf/T3 = get_step(src,pick(WEST,SOUTHWEST))
+			if(T3)
+				new/obj/effect/flooding(T3)
+			var/turf/T4 = get_step(src,pick(SOUTH,SOUTHEAST))
+			if(T4)
+				new/obj/effect/flooding(T4)
+		qdel(src)
 
 /obj/covers/repairedfloor/ship/south
 	icon = 'icons/turf/boat.dmi'

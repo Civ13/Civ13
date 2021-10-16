@@ -10,7 +10,7 @@
 	New()
 		..()
 		spawn(10)
-			if (dir == SOUTH && ispartial)
+			if (dir == NORTH && ispartial)
 				layer = 4.5
 				update_icon()
 
@@ -48,7 +48,7 @@
 		return TRUE
 
 	else if (!istype(mover, /obj/item))
-		if (get_dir(loc, target) & dir)
+		if (get_dir(loc, target) & OPPOSITE_DIR(dir))
 			return FALSE
 		else
 			return TRUE
@@ -78,7 +78,7 @@
 						return prob(100-protection_chance-(B.penetrating*4))
 				return FALSE
 		if (!mover.throw_source)
-			if (get_dir(loc, target) & dir)
+			if (get_dir(loc, target) & OPPOSITE_DIR(dir))
 				return FALSE
 			else
 				return TRUE
@@ -663,8 +663,8 @@
 			if (health <= 0)
 				visible_message("<span class='danger'>\The [src] is blown apart!</span>")
 				for(var/obj/structure/barricade/ship/mast/large/L in range(3,src))
-					L.sailhealth -= 2
-					L.rigginghealth -= 2
+					L.sailhealth -= rand(2,3)
+					L.rigginghealth -= rand(2,3)
 					if(L.rigginghealth<0)
 						L.rigginghealth = 0
 					if(L.sailhealth<0)
@@ -676,8 +676,8 @@
 			if (health <= 0)
 				visible_message("<span class='danger'>\The [src] is blown apart!</span>")
 				for(var/obj/structure/barricade/ship/mast/large/L in range(3,src))
-					L.sailhealth -= 1
-					L.rigginghealth -= 1
+					L.sailhealth -= rand(1,2)
+					L.rigginghealth -= rand(1,2)
 					if(L.rigginghealth<0)
 						L.rigginghealth = 0
 					if(L.sailhealth<0)
@@ -752,6 +752,8 @@
 						if(M.amount >= 1)
 							M.amount--
 							H << "You repair one of the holes."
+							if (M.amount <= 0)
+								qdel(M)
 							sailhealth+=2
 							if (sailhealth > 100)
 								sailhealth = 100
@@ -763,9 +765,12 @@
 						if(M.amount >= 1)
 							M.amount--
 							H << "You fix one of the ropes."
+							if (M.amount <= 0)
+								qdel(M)
 							rigginghealth+=2
 							if (rigginghealth > 100)
 								rigginghealth = 100
+			update_icon()
 		else
 			..()
 
@@ -778,6 +783,7 @@
 					rigginghealth = 0
 				if(sailhealth<0)
 					sailhealth = 0
+				update_icon()
 				return
 			if (2.0)
 				sailhealth -= 6
@@ -786,6 +792,7 @@
 					rigginghealth = 0
 				if(sailhealth<0)
 					sailhealth = 0
+				update_icon()
 				return
 			if (3.0)
 				sailhealth -= 3
@@ -794,4 +801,5 @@
 					rigginghealth = 0
 				if(sailhealth<0)
 					sailhealth = 0
+				update_icon()
 				return

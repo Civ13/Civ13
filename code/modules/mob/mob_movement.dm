@@ -458,6 +458,14 @@
 			var/no_snow = FALSE
 			for (var/obj/covers/CV in get_turf(F))
 				no_snow = TRUE
+			for(var/obj/effect/flooding/FLD in get_turf(F))
+				switch(FLD.flood_level)
+					if (1)
+						standing_on_snow = 2
+					if (2)
+						standing_on_snow = 4
+					if (3)
+						standing_on_snow = 6
 			if ((F_area.weather == WEATHER_WET && findtext(F_area.icon_state,"rain")) || F_area.weather == WEATHER_EXTREME)
 				if (F.may_become_muddy)
 					if (F_area.climate != "semiarid" || F_area.climate != "jungle" || F_area.climate != "desert" || F_area.climate != "savanna" || season == "WINTER" || season == "SPRING")
