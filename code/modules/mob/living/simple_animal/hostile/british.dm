@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/british
+/mob/living/simple_animal/hostile/human/british
 	name = "Redcoat Soldier"
 	desc = "A british soldier."
 	icon_state = "britishmelee"
@@ -24,10 +24,15 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 	behaviour = "hostile"
+	base_icon = "britishmelee1"
 
-	var/corpse = /mob/living/human/corpse/british
+	corpse = /mob/living/human/corpse/british
 
 	faction = BRITISH
+	New()
+		..()
+		base_icon = "britishmelee[rand(1,6)]"
+		icon_state = "[base_icon]"
 
 /mob/living/simple_animal/hostile/human/british/ranged
 	name = "Redcoat Soldier"
@@ -63,6 +68,7 @@
 	corpse = /mob/living/human/corpse/british
 	casingtype = null
 	attack_verb = "slashes"
+	base_icon = "britishmelee1"
 
 	New()
 		..()
@@ -74,8 +80,13 @@
 			gun = new/obj/item/weapon/gun/projectile/flintlock/musketoon(src)
 		else
 			gun = new/obj/item/weapon/gun/projectile/flintlock/musket(src)
+		base_icon = "britishranged[rand(1,6)]"
+		icon_state = "[base_icon]"
+		if (behaviour == "defend")
+			icon_state = "[base_icon]_docile"
+			fire_cannons = FALSE
 
-/mob/living/simple_animal/hostile/townmilitia
+/mob/living/simple_animal/hostile/human/townmilitia
 	name = "Town Militia"
 	desc = "A british town militia."
 	icon_state = "britishmelee"
@@ -100,10 +111,10 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 
 
-	var/corpse = /mob/living/human/corpse/british
+	corpse = /mob/living/human/corpse/british
 	faction = CIVILIAN
 
-/mob/living/simple_animal/hostile/british/voyage
+/mob/living/simple_animal/hostile/human/british/voyage
 	name = "Redcoat Soldier"
 	desc = "A british soldier."
 	icon_state = "britishmelee"
@@ -129,7 +140,12 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 	behaviour = "hostile"
+	base_icon = "britishmelee1"
 
 	corpse = /mob/living/human/corpse/british
 
 	faction = BRITISH
+	New()
+		..()
+		base_icon = "britishmelee[rand(1,6)]"
+		icon_state = "[base_icon]"

@@ -108,6 +108,7 @@
 	stance = HOSTILE_STANCE_IDLE
 	corpse = /mob/living/human/corpse/pirate
 	faction = PIRATES
+	fire_cannons = FALSE
 	attack_verb = "hits"
 	New()
 		..()

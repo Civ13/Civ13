@@ -76,11 +76,11 @@
 			do_autofire()
 			if (!stopfiring)
 				do_autofire_proc()
-	
+
 	proc/do_autofire()
 		var/found = FALSE
-		for(var/mob/living/simple_animal/hostile/HH in range(2,src))
-			if(HH.stat != DEAD)
+		for(var/mob/living/simple_animal/hostile/human/HH in range(2,src))
+			if(HH.stat != DEAD && HH.fire_cannons == TRUE)
 				found = TRUE
 				break
 		if (!found)
