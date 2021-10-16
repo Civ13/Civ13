@@ -10,10 +10,10 @@
 		CHECHEN)
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/japanese/land,
-		list(CHECHEN) = /area/caribbean/japanese/land,
+		list(CHECHEN) = /area/caribbean/british,
 		)
 	age = "1995"
-	ordinal_age = 8
+	ordinal_age = 7
 	faction_distribution_coeffs = list(CHECHEN = 0.6, RUSSIAN = 0.4)
 	battle_name = "Retreat"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Milita will win if they hold out for <b>30 minutes</b>. The Russians will win if they manage to cross the bridge to friendly territory!</font>"
@@ -26,14 +26,10 @@
 
 /obj/map_metadata/rusretreat/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/russian) && !J.is_rusretreat)
-		. = FALSE
-	else
+	if (J.is_rusretreat == TRUE)
 		. = TRUE
-	if (istype(J, /datum/job/arab/chechen) && !J.is_rusretreat)
-		. = FALSE
 	else
-		. = TRUE
+		. = FALSE
 
 /obj/map_metadata/rusretreat/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
