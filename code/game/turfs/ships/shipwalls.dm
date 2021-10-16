@@ -10,7 +10,7 @@
 	New()
 		..()
 		spawn(10)
-			if (dir == SOUTH && ispartial)
+			if (dir == NORTH && ispartial)
 				layer = 4.5
 				update_icon()
 
@@ -48,7 +48,7 @@
 		return TRUE
 
 	else if (!istype(mover, /obj/item))
-		if (get_dir(loc, target) & dir)
+		if (get_dir(loc, target) & OPPOSITE_DIR(dir))
 			return FALSE
 		else
 			return TRUE
@@ -78,7 +78,7 @@
 						return prob(100-protection_chance-(B.penetrating*4))
 				return FALSE
 		if (!mover.throw_source)
-			if (get_dir(loc, target) & dir)
+			if (get_dir(loc, target) & OPPOSITE_DIR(dir))
 				return FALSE
 			else
 				return TRUE

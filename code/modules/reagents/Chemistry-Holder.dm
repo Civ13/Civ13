@@ -331,17 +331,15 @@
 	return FALSE
 
 //Splashing reagents is messier than trans_to, the target's loc gets some of the reagents as well.
-/datum/reagents/proc/splash(var/atom/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE, var/min_spill=0, var/max_spill=60)
+/datum/reagents/proc/splash(var/atom/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE, var/min_spill=0, var/max_spill=60, var/force_spill = FALSE)
 	var/spill = FALSE
-	if (!isturf(target) && target.loc)
+	if ((!isturf(target) && target.loc) || force_spill)
 		if (amount <= 25)
 			spill = amount
 		else
 			spill = amount*(rand(min_spill, max_spill)/100)
 		amount -= spill
 	if (spill)
-		if (has_reagent("water", 25))
-			new/obj/effect/flooding(target.loc)
 		splash(target.loc, spill, multiplier, copy, min_spill, max_spill)
 
 	trans_to(target, amount, multiplier, copy)

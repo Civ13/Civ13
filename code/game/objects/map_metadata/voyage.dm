@@ -85,37 +85,30 @@
 								latitude++
 								check_ships()
 							else
-								navmoving = FALSE
-								for(var/obj/effect/sailing_effect/S in world)
-									S.icon_state = "sailing_effect_stopped"
-									S.update_icon()
+								for(var/obj/structure/voyage/anchor_capstan/AC in world)
+									AC.lower_anchor()
+								
 						if ("South")
 							if(latitude > 21)
 								latitude--
 								check_ships()
 							else
-								navmoving = FALSE
-								for(var/obj/effect/sailing_effect/S in world)
-									S.icon_state = "sailing_effect_stopped"
-									S.update_icon()
+								for(var/obj/structure/voyage/anchor_capstan/AC in world)
+									AC.lower_anchor()
 						if ("East")
 							if(longitude < 77)
 								longitude++
 								check_ships()
 							else
-								navmoving = FALSE
-								for(var/obj/effect/sailing_effect/S in world)
-									S.icon_state = "sailing_effect_stopped"
-									S.update_icon()
+								for(var/obj/structure/voyage/anchor_capstan/AC in world)
+									AC.lower_anchor()
 						if ("West")
 							if(longitude > 71)
 								longitude--
 								check_ships()
 							else
-								navmoving = FALSE
-								for(var/obj/effect/sailing_effect/S in world)
-									S.icon_state = "sailing_effect_stopped"
-									S.update_icon()
+								for(var/obj/structure/voyage/anchor_capstan/AC in world)
+									AC.lower_anchor()
 	spawn(600)
 		nav()
 //checks for ships when the player ship arrives in new coordinate
@@ -764,6 +757,25 @@
 		if(anchored)
 			overlays += anchor
 
+	proc/raise_anchor()
+		if(map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			world << "<font size=3 color='yellow'>The ship starts moving.</font>"
+			nmap.ship_anchored = FALSE
+			nmap.navmoving = TRUE
+			for(var/obj/effect/sailing_effect/S in world)
+				S.icon_state = "sailing_effect"
+				S.update_icon()
+			update_icon()
+	proc/lower_anchor()
+		if(map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			nmap.ship_anchored = TRUE
+			nmap.navmoving = FALSE
+			for(var/obj/effect/sailing_effect/S in world)
+				S.icon_state = "sailing_effect_stopped"
+				S.update_icon()
+			update_icon()
 	attack_hand(mob/user)
 		if(map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
@@ -777,44 +789,23 @@
 						spawn(600)
 							world << "<font size=4 color='yellow'>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
 						spawn(1200)
-							nmap.ship_anchored = FALSE
-							nmap.navmoving = TRUE
-							for(var/obj/effect/sailing_effect/S in world)
-								S.icon_state = "sailing_effect"
-								S.update_icon()
-							update_icon()
+							raise_anchor()
 							nmap.abandon_event()
 				else
 					user << "You start [nmap.ship_anchored ? "raising" : "lowering"] the anchor..."
 					if (do_after(user, 60, src))
 						user << "You lower the anchor."
-						nmap.ship_anchored = TRUE
-						nmap.navmoving = FALSE
-						for(var/obj/effect/sailing_effect/S in world)
-							S.icon_state = "sailing_effect_stopped"
-							S.update_icon()
-						update_icon()
+						lower_anchor()
 
 			else
 				user << "You start [nmap.ship_anchored ? "raising" : "lowering"] the anchor..."
 				if (do_after(user, 60, src))
 					if (nmap.ship_anchored)
 						user << "You raise the anchor."
-						world << "<font size=3 color='yellow'>The ship starts moving.</font>"
-						nmap.ship_anchored = FALSE
-						nmap.navmoving = TRUE
-						for(var/obj/effect/sailing_effect/S in world)
-							S.icon_state = "sailing_effect"
-							S.update_icon()
-						update_icon()
+						raise_anchor()
 					else
 						user << "You lower the anchor."
-						nmap.ship_anchored = TRUE
-						nmap.navmoving = FALSE
-						for(var/obj/effect/sailing_effect/S in world)
-							S.icon_state = "sailing_effect_stopped"
-							S.update_icon()
-						update_icon()
+						lower_anchor()
 
 /obj/structure/voyage/ropeladder/thin
 	icon_state = "ropeladder_thin"

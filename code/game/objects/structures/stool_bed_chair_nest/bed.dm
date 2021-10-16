@@ -35,6 +35,34 @@
 /obj/structure/bed/hammock/update_icon()
 	return
 
+/obj/structure/bed/hammock/New()
+	..()
+	processing_objects |= src
+
+/obj/structure/bed/hammock/Del()
+	processing_objects -= src
+	..()
+
+
+/obj/structure/bed/hammock/process()
+	fire()
+
+// call this instead of process() if you want to do direct calls, I think its better - Kachnov
+/obj/structure/bed/hammock/proc/fire()
+	if (buckled_mob)
+		icon_state = "hammockf_static"
+		if (pixel_y == 0)
+			pixel_y = 1
+		else if (pixel_y == 1)
+			pixel_y = 0
+		else if (pixel_y == 0)
+			pixel_y = -1
+		else // somehow
+			pixel_y = 0
+		buckled_mob.pixel_y = pixel_y
+	else
+		icon_state = "hammockf"
+
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
 	if (!istype(src, /obj/structure/bed/bedroll))

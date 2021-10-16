@@ -44,6 +44,8 @@
 		buckled_mob.anchored = initial(buckled_mob.anchored)
 		buckled_mob.update_canmove()
 		buckled_mob = null
+		buckled_mob.pixel_x = 0
+		buckled_mob.pixel_y = 0
 		if (istype(src, /obj/structure/bed/bedroll) && istype(., /mob/living/human))
 			var/obj/structure/bed/bedroll/BR = src
 			BR.used = FALSE
