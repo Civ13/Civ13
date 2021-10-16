@@ -106,8 +106,6 @@
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			else if (reagents.has_reagent("fat_oil", 15))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			else if (reagents.has_reagent("water", 25))
-				new/obj/effect/flooding(user.loc)
 
 			var/previous_total_volume = reagents.total_volume
 			reagents.splash(target, reagents.total_volume)

@@ -288,7 +288,6 @@
 			if (A.loc == src)
 				qdel(A)
 
-
 /turf/floor/beach/water/deep/jungle
 	name = "deep jungle river"
 	icon_state = "seashallow_jungle3"

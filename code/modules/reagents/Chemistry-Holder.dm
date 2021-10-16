@@ -340,12 +340,15 @@
 			spill = amount*(rand(min_spill, max_spill)/100)
 		amount -= spill
 	if (spill)
+		if (has_reagent("water", 25))
+			new/obj/effect/flooding(target.loc)
 		splash(target.loc, spill, multiplier, copy, min_spill, max_spill)
 
 	trans_to(target, amount, multiplier, copy)
 	if (istype(target, /turf/floor/dirt))
 		for (var/obj/structure/farming/plant/P in target)
 			P.water = min(P.water+amount,P.max_water)
+
 
 /datum/reagents/proc/trans_id_to(var/atom/target, var/id, var/amount = TRUE)
 	if (!target || !target.reagents || !target.simulated)

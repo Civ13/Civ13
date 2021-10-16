@@ -858,7 +858,7 @@
 
 	New()
 		..()
-		spawn(10)
+		spawn(30)
 			var/found = FALSE
 			for(var/obj/covers/CV in loc)
 				found = TRUE
@@ -889,6 +889,5 @@
 						flood_level--
 						if (flood_level <= 0)
 							qdel(src)
-
 			else
-				user << "span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
+				user << "<span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
