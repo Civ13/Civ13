@@ -22,6 +22,8 @@
 	var/target_action = null
 	var/datum/language/language = new/datum/language/english
 	behaviour = "hostile"
+	var/fire_cannons = TRUE
+	var/base_icon = "male_template"
 	var/list/messages = list(
 		"backup" = list(),
 		"injured" = list(),
@@ -113,6 +115,19 @@
 						say(pick("!!Taking cover!"), language)
 					following_mob = null
 					take_cover(H)
+
+				else if (findtext(message, "fire") || findtext(message, "shoot"))
+					if (prob(35))
+						say(pick("!!Firing!"), language)
+					else
+						say(pick("!!Aye!"), language)
+					fire_cannons = TRUE
+				else if (findtext(message, "cease fire") || findtext(message, "stop firing") || findtext(message, "stop shooting"))
+					if (prob(35))
+						say(pick("!!Ceasing Fire!"), language)
+					else
+						say(pick("!!Aye! Ceasing Fire!"), language)
+					fire_cannons = FALSE
 
 
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
