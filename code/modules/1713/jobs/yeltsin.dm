@@ -2,8 +2,9 @@
 	title = "Soviet Army Lieutenant"
 	rank_abbreviation = "Lt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateRUCap"
 
+	is_rusretreat = TRUE
 	is_yeltsin = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
@@ -55,9 +56,10 @@
 	title = "Soviet Army Sergeant"
 	rank_abbreviation = "Sgt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateRUCap"
 
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
@@ -111,10 +113,11 @@
 	title = "Soviet Army Field Medic"
 	rank_abbreviation = "Cpl."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRU"
 
 	is_medic = TRUE
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -165,7 +168,7 @@
 	title = "Soviet Army SWAT"
 	rank_abbreviation = "SWAT"
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRUswat"
 
 	is_yeltsin = TRUE
 
@@ -215,9 +218,10 @@
 	title = "Soviet Army Rifleman"
 	rank_abbreviation = "Pvt."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRU"
 
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 
 	uses_squads = TRUE
 
@@ -266,9 +270,10 @@
 	title = "Spetznaz"
 	rank_abbreviation = "Spz."
 
-	spawn_location = "JoinLateRNsptz"
+	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 
 	uses_squads = TRUE
 
