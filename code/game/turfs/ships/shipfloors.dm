@@ -1,6 +1,6 @@
 /turf/floor/ship/wood_ship
 	name = "floor"
-	icon = 'icons/turf/boat.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "boat_floor1"
 	stepsound = "wood"
 

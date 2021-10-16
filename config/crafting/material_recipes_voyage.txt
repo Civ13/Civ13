@@ -164,10 +164,10 @@ RECIPE: /material/wood/,ship wall - topside (west),/obj/structure/barricade/ship
 RECIPE: /material/wood/,ship cannon port (north),/obj/structure/barricade/ship/aport0/north,8,100,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,ship cannon port (south),/obj/structure/barricade/ship/aport0,8,100,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,ship doorway,/obj/structure/barricade/ship/wall2/doorway,5,50,0,1,construction,0,0,0,8,null
-RECIPE: /material/wood/,ship partial wall (north),/obj/structure/barricade/ship/wood/port0/north,5,60,0,1,construction,0,0,0,8,null
-RECIPE: /material/wood/,ship partial wall (south),/obj/structure/barricade/ship/blue/bport0/south,5,60,0,1,construction,0,0,0,8,null
-RECIPE: /material/wood/,ship crenelated wall (north),/obj/structure/barricade/ship/wood/port2/north,5,60,0,1,construction,0,0,0,8,null
-RECIPE: /material/wood/,ship crenelated wall (south),/obj/structure/barricade/ship/blue/bport3/south,5,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,ship partial wall (north),/obj/structure/window/barrier/ship/wood/port0/north,5,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,ship partial wall (south),/obj/structure/window/barrier/ship/blue/bport0/south,5,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,ship crenelated wall (north),/obj/structure/window/barrier/ship/wood/port2/north,5,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,ship crenelated wall (south),/obj/structure/window/barrier/ship/blue/bport3/south,5,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,horizontal wood barrier,/obj/structure/barricade/horizontal,5,35,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,vertical wood barrier,/obj/structure/barricade/vertical,5,35,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,bucket,/obj/item/weapon/reagent_containers/glass/bucket,4,60,0,1,kitchen,0,0,0,8,null

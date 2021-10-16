@@ -68,7 +68,7 @@
 		qdel(src)
 
 /obj/covers/repairedfloor/ship/south
-	icon = 'icons/turf/boat.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "boat_floor_south1"
 
 /obj/covers/repairedfloor/rope
