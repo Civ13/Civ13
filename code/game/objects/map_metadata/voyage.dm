@@ -150,7 +150,7 @@
 	var/snum = 0
 	for(var/obj/structure/barricade/ship/mast/large/S in world)
 		if (S.owner == "ship")
-			if (S.mast_upgraded == TRUE)
+			if (S.mast_is_upgraded == TRUE)
 				spd += (S.sailstat+S.sailhealth+S.rigginghealth)/150
 				snum++
 			else
