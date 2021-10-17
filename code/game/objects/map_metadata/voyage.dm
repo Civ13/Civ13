@@ -76,7 +76,7 @@
 			navprogress += navspeed
 			if (navprogress >= 100)
 				navprogress = 0
-				if (navdirection == "island" || findtext(navdirection,"ship"))
+				if (navdirection == "island" || findtext(navdirection,"ship" || navdirection == "island fort"))
 					enter_event()
 				else
 					switch(navdirection)
@@ -87,7 +87,7 @@
 							else
 								for(var/obj/structure/voyage/anchor_capstan/AC in world)
 									AC.lower_anchor()
-								
+
 						if ("South")
 							if(latitude > 21)
 								latitude--
@@ -125,7 +125,7 @@
 			load_map(mapgen["[latitude],[longitude]"][3])
 			return
 
-		
+
 //0 means random for numerical values
 /obj/map_metadata/voyage/proc/gen_ship(sfaction = "random", ssize = 0, slat = 0, slon = 0)
 	if (sfaction == "random" || !(sfaction in list("pirates","merchant","spanish","british","undead")))
@@ -168,8 +168,10 @@
 		if (prob(50))
 			load_map(pick("island1","island2","piratetown","cursedisland"),"north")
 		else
-			load_map(pick("island1","island2","piratetown","islandfort1","islandfort2"),"south")
+			load_map(pick("island1","island2","piratetown"),"south")
 		return
+	else if (navdirection == "island fort")
+		load_map(pick("island1","island2"),"south")
 	else
 		load_map(mapgen["[latitude],[longitude]"][3])
 	return
@@ -425,6 +427,8 @@
 			if (prob(25))
 				mapgen["[lat],[lon]"][3] = "island"
 				islands += list(list(pick("island1","island2","island3","island4","island5"),lat, lon, 0))
+				mapgen["[lat],[lon]"][3] = "island fort"
+				islands += list(list(pick("island_fortress1","island_fortress2"),lat, lon, 0))
 			else
 				sea += list(list("sea",lat,lon))
 	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
@@ -435,6 +439,7 @@
 	gen_ship(sfaction = "pirates", ssize = 2, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 3, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 5, slat = 0, slon = 0)
+	gen_ship(sfaction = "spanish", ssize = 6, slat = 0, slon = 0)
 	spawn(100)
 		load_new_recipes()
 /obj/map_metadata/voyage/cross_message()
@@ -691,7 +696,7 @@
 			H << "Sinking progress: <b>[nmap.get_sink()]%</b>"
 			if(nmap.ship_anchored)
 				H << "The ship is <font color='red'><b>anchored</b></font>."
-	
+
 /obj/structure/voyage/shipbell
 	name = "ship's bell"
 	desc = "Used to relay signals to the crew."

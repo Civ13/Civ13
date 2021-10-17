@@ -77,7 +77,7 @@
 					return
 				else
 					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","!!That's nothing, I am busy..."), language)
-		if (H.faction_text == faction && s_language.name == language.name && H.original_job && H.original_job.is_officer)
+		if (H.faction_text == faction && s_language.name == language.name && H.original_job.is_officer)
 			if (findtext(message, "men, "))
 				if (findtext(message, "charge") || findtext(message, "attack") || findtext(message, "advance"))
 					charge(H.get_objective())
