@@ -172,7 +172,9 @@
 	basic_icon = "ship"
 	icon_state = "ship"
 	desc = "A wood round ship door"
-	override_material = TRUE
+	override_material = FALSE
+	override_opacity = TRUE
+	opacity = FALSE
 
 #undef ANYONE_CODE
 
