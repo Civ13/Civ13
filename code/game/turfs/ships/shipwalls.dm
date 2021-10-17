@@ -705,6 +705,8 @@
 	var/sailhealth = 100
 	var/rigginghealth = 100
 	var/sailstat = 100
+	var/upgrade_mast = 0
+	var/mast_is_upgraded = FALSE
 	var/owner = "ship"
 
 	New()
@@ -769,6 +771,18 @@
 							rigginghealth+=2
 							if (rigginghealth > 100)
 								rigginghealth = 100
+			else if (istype(I,/obj/item/stack/material/wood))
+				if (upgrade_mast < 500)
+					H << "You start upgrading the mast"
+					if(do_after(H,30,src))
+						if(M.amount >= 1)
+							H << "You add some upgrades to the mast"
+							if (M.amount <= 0)
+								qdel(M)
+							upgrade_mast+= M.amount
+							if (upgrade_mast >= 500)
+								upgrade_mast = 500
+								mast_is_upgraded = TRUE
 			update_icon()
 		else
 			..()
@@ -802,3 +816,25 @@
 					sailhealth = 0
 				update_icon()
 				return
+
+/obj/structure/barricade/ship/mast/large/upgraded
+	icon = 'icons/turf/64x64.dmi'
+	icon_state = "large_mast"
+	image/olay
+	image/mlay
+	bound_height = 64
+	bound_width = 64
+	opacity = FALSE
+	maxhealth = 15000
+	health = 15000
+
+	sailhealth = 100
+	rigginghealth = 100
+	sailstat = 100
+	owner = "ship"
+
+	New()
+		..()
+		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_x = -32, pixel_y = -192, layer=10)
+		olay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="sails_overlay_h100", pixel_x = 32, pixel_y = -192, layer=10)
+		update_icon()

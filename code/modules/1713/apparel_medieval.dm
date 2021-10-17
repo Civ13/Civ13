@@ -2378,6 +2378,7 @@ obj/item/clothing/head/helmet/samurai/black
 	item_state = "stormcloak"
 	worn_state = "stormcloak"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	health = 60
 
@@ -2394,6 +2395,7 @@ obj/item/clothing/head/helmet/samurai/black
 	item_state = "whiterun"
 	worn_state = "whiterun"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	health = 60
 
@@ -2423,6 +2425,7 @@ obj/item/clothing/head/helmet/samurai/black
 	item_state = "stormcloak"
 	worn_state = "stormcloak"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 0.4
@@ -2440,3 +2443,13 @@ obj/item/clothing/head/helmet/samurai/black
 	restricts_view = 2
 	health = 80
 	slowdown = 0.05
+
+/////////////tes13 civilian/////////////////////////
+/obj/item/clothing/suit/storage/coat/tes13/fine_clothing
+	name = "fine clothing"
+	desc = "A fine fur jacket and shirt, for the better off people."
+	icon_state = "fine_clothes"
+	item_state = "fine_clothes"
+	worn_state = "fine_clothes"
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	health = 60
