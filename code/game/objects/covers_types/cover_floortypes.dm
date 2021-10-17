@@ -79,7 +79,7 @@
 	flammable = FALSE
 	explosion_resistance = TRUE
 	var/origin = null
-	layer = 3.1
+	layer = 3.999
 
 /obj/covers/repairedfloor/rope/end
 	icon_state = "grapple_overlay"
