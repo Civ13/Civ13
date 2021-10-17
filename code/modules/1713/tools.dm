@@ -434,6 +434,10 @@
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return
+			for (var/obj/structure/window/barrier/Ship in nT)
+				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
+				endpart.develop(src)
+				return
 			if (istype(nT, /turf/floor/beach/sand) || istype(nT, /turf/floor/dirt) || istype(nT, /turf/floor/grass))
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)

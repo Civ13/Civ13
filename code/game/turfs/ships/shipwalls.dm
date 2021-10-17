@@ -50,7 +50,6 @@
 	for (var/obj/covers/repairedfloor/rope/R in loc)
 		return TRUE
 
-
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 

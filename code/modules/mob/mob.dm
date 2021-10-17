@@ -187,6 +187,16 @@
 /mob/proc/show_inv(mob/user as mob)
 	return
 
+/atom/verb/Interact()
+	set name = "Interact"
+	set src in view(1)
+
+	var/mob/user = usr
+	if(src in range(1,usr))
+		user.ClickOn(src)
+	else
+		src.examine(user)
+
 //mob verbs are faster than object verbs. See http://www.byond.com/forum/?post=1326139&page=2#comment8198716 for why this isn't atom/verb/examine()
 /mob/verb/examinate(atom/A as mob|obj|turf in view())
 	set name = "Examine"
