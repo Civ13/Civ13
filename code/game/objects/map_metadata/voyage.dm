@@ -28,6 +28,7 @@
 	var/latitude = 21 //21 to 27 N
 	var/list/mapgen = list()
 	var/list/islands = list()
+	var/list/forts = list()
 	var/list/sea = list()
 	var/list/ships = list()
 	var/navmoving = FALSE //if the ship is moving
@@ -149,8 +150,12 @@
 	var/snum = 0
 	for(var/obj/structure/barricade/ship/mast/large/S in world)
 		if (S.owner == "ship")
-			spd += (S.sailstat+S.sailhealth+S.rigginghealth)/300
-			snum++
+			if (S.mast_is_upgraded == TRUE)
+				spd += (S.sailstat+S.sailhealth+S.rigginghealth)/150
+				snum++
+			else
+				spd += (S.sailstat+S.sailhealth+S.rigginghealth)/300
+				snum++
 	if (spd != 0 && snum != 0)
 		spd/=snum //divide by number of masts
 	spd*=33 //how much % of progress per minute for each spd unit, ex: 2 masts in full condition = 1*33 = 33, 3 mins to change tiles
@@ -171,7 +176,7 @@
 			load_map(pick("island1","island2","piratetown"),"south")
 		return
 	else if (navdirection == "island fort")
-		load_map(pick("island1","island2"),"south")
+		load_map(pick("island_fortress1","island_fortress2"),"south")
 	else
 		load_map(mapgen["[latitude],[longitude]"][3])
 	return
@@ -197,6 +202,9 @@
 	for(var/list/L1 in islands)
 		if (L1[2] == latitude && L1[3] == longitude)
 			L1[4] = world.time + 18000
+	for(var/list/L2 in forts)
+		if (L2[2] == latitude && L2[3] == longitude)
+			L2[4] = world.time + 18000
 	return
 
 /obj/map_metadata/voyage/proc/clear_map()
@@ -424,11 +432,12 @@
 	for(var/lon = 71, lon <= 77, lon++)
 		for(var/lat = 21, lat <= 27, lat++)
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
-			if (prob(25))
+			if (prob(15))
+				mapgen["[lat],[lon]"][4] = "fort"
+				forts += list(list(pick("island_fortress1","island_fortress2"),lat, lon, 0))
+			else if (prob(85))
 				mapgen["[lat],[lon]"][3] = "island"
 				islands += list(list(pick("island1","island2","island3","island4","island5"),lat, lon, 0))
-				mapgen["[lat],[lon]"][3] = "island fort"
-				islands += list(list(pick("island_fortress1","island_fortress2"),lat, lon, 0))
 			else
 				sea += list(list("sea",lat,lon))
 	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)
@@ -496,6 +505,10 @@
 					if (L[2] == nmap.latitude && L[3] == nmap.longitude && world.time <= L[4])
 						WWalert(H, "You've visited this island too recently!", "Island")
 						return
+				for(var/list/L2 in nmap.forts)
+					if (L2[2] == nmap.latitude && L2[3] == nmap.longitude && world.time <= L2[4])
+						WWalert(H, "You've visited this island fort too recently!", "Fort")
+						return
 			if (newdir != nmap.navdirection)
 				if (do_after(H, 50, src))
 					nmap.navdirection = newdir
@@ -527,6 +540,11 @@
 				newisland.pixel_x = 49+((L[3]-71)*69)
 				newisland.pixel_y = 81+((L[2]-21)*68)
 				img.overlays+=newisland
+			for(var/list/L in nmap.forts)
+				var/image/newfort = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
+				newfort.pixel_x = 49+((L[3]-71)*69)
+				newfort.pixel_y = 81+((L[2]-21)*68)
+				img.overlays+=newfort
 			for(var/list/L in nmap.ships)
 				var/image/newship = image(icon='icons/minimap_effects.dmi', icon_state="ship[L[1]]",layer=src.layer+1.1)
 				newship.pixel_x = 49+((L[4]-71)*69)

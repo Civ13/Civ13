@@ -6,15 +6,18 @@
 "af" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "ag" = (/obj/structure/window/barrier/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire,/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "ah" = (/obj/structure/window/barrier/ship/blue/bport0,/obj/covers/repairedfloor/ship,/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"ai" = (/obj/structure/barricade/ship/north/corners{dir = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"aj" = (/obj/structure/barricade/ship/north/corners{dir = 5; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"ak" = (/obj/structure/barricade/ship/north/corners{dir = 4},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{dir = 5; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "al" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"am" = (/obj/structure/barricade/ship/north/corners{dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"am" = (/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"an" = (/obj/structure/barricade/ship/north/corners{dir = 1},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"ao" = (/obj/structure/barricade/ship{dir = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aq" = (/obj/structure/barricade/ship/wood/a6,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "as" = (/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"au" = (/obj/structure/barricade/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "av" = (/obj/structure/barricade/ship/north/corners{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aw" = (/obj/structure/barricade/ship{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "ax" = (/obj/structure/barricade/ship/aport0/north,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"ay" = (/obj/structure/barricade/ship/north/corners,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "az" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/goldvaluables,/obj/item/stack/money/goldvaluables,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aA" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/goldvaluables,/obj/item/stack/money/goldvaluables,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aB" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -26,7 +29,6 @@
 "aH" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aJ" = (/obj/structure/barricade/ship/north/corners{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aL" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
-"aM" = (/obj/structure/barricade/ship/north/corners{dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aN" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/sgt,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aO" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aQ" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -137,20 +139,20 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaavawawawawawawawawawawawawaxawawaxawawaxawawaxawawaxawawaxawawaxawawaxawawawawayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadazaAaAaAaAaAazbSaBaBcfasaCcfcfaCcfcfaCcfasaFcfcfaCascfaCcfcfaCcfcfaCasaGbSaHaJayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfbScfcfcfcfcfcfaLcfcfcfcfaLcfcfcfcfcfaLcfcfaLcfcfaLcfaLcfcfbSaHaHaMayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfbScfcfcfcfcfcfcfcfcfcfcfcfcfbocfcfcfaNcfcfaOcfcfcfcfcfcfcfbSaHaHaHaJayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadaQaQaQcfaOcfcfbScfcfcfcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbocfbScfcfcfaRaSayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadcfcfaTcfcfcfcfaUcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfaVcfcfcfcfcfcfcfcfcfcfcfcfaUcfcfcfaRaWaXayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaavawawawawawawawawawawawawaxawawaxawawaxawawaxawawaxawawaxawawaxawawaxawawawawaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadazaAaAaAaAaAazbSaBaBcfasaCcfcfaCcfcfaCcfasaFcfcfaCascfaCcfcfaCcfcfaCasaGbSaHajaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfbScfcfcfcfcfcfaLcfcfcfcfaLcfcfcfcfcfaLcfcfaLcfcfaLcfaLcfcfbSaHaHakaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfbScfcfcfcfcfcfcfcfcfcfcfcfcfbocfcfcfaNcfcfaOcfcfcfcfcfcfcfbSaHaHaHajaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadaQaQaQcfaOcfcfbScfcfcfcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbocfbScfcfcfaRaSaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadcfcfaTcfcfcfcfaUcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfaVcfcfcfcfcfcfcfcfcfcfcfcfaUcfcfcfaRaWaXaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaadcfaNaYcfcfcfcfaecfcfbycfbHbHbNcfcfbObObPbPbPbPbObOcfaObHbHbRbRcfalalcfcfaZcfcfcfaRaWaXaWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaadcfcfbTcfaLcfcfaecfcfbycfbHbHcfbocfbObObPbPbPbPbObOcfcfbHbHbRbRcfalalcfcfaZcfcfcfaRaWaXaWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfaUcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfaUcfcfcfaRaWaXbUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfbScfcfcfcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfbxcfcfcfbScfcfcfaRbVbUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfaLcfcfcfbScfcfbocfcfcfcfaOcfcfcfcfaLcfcfcfcfcfcfcfbocfcfcfcfcfcfcfbSalalalavbUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfbSbWbWbWcfcfcfcfcfaLcfcfcfcfcfcfaLcfcfaLcfcfcfcfcfaLcfcfcfbSaHaHambUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaadbXbZbZbZbZcaccbSbWbWbWascfcfcfcfcfcfcfcfascfcfcfcfascfcfcfcfcfcfcfcfasaGbSaHavbUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaJauauauauauauauauauauauaubYauaubYauaubYauaubYauaubYauaubYauaubYauaubYauauauaubUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfaLcfcfcfbScfcfbocfcfcfcfaOcfcfcfcfaLcfcfcfcfcfcfcfbocfcfcfcfcfcfcfbSalalalambUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadcfcfcfcfcfcfcfbSbWbWbWcfcfcfcfcfaLcfcfcfcfcfcfaLcfcfaLcfcfcfcfcfaLcfcfcfbSaHaHanbUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaadbXbZbZbZbZcaccbSbWbWbWascfcfcfcfcfcfcfcfascfcfcfcfascfcfcfcfcfcfcfcfasaGbSaHambUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaJaoaoaoaoaoaoaoaoaoaoaoaobYaoaobYaoaobYaoaobYaoaobYaoaobYaoaobYaoaobYaoaoaoaobUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
