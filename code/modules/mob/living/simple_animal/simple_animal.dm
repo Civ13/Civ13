@@ -214,7 +214,6 @@
 
 	else
 		fire_alert = FALSE
-	return TRUE
 
 /mob/living/simple_animal/proc/do_behaviour(var/t_behaviour = null)
 	if (stat == DEAD || stat == UNCONSCIOUS)
@@ -470,9 +469,12 @@
 	return
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
-	if (istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly))
-		faction = CIVILIAN
-		behaviour = "hostile"
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if ((H.a_intent == I_DISARM || H.a_intent == I_HARM) && istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly) && src.behaviour != "Hostile")
+			for(var/mob/living/simple_animal/hostile/human/pirate/friendly/FR in world)
+				FR.faction = CIVILIAN
+				FR.behaviour = "hostile"
 	if (istype(O, /obj/item/weapon/leash) && behaviour != "defends" && behaviour != "hunt")
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)

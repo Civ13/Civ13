@@ -5,11 +5,11 @@
 	behaviour = "hunt"
 
 /mob/living/simple_animal/proc/FindTarget()
-
 	var/atom/T = null
 	stop_automated_movement = FALSE
-	var/list/the_targets = ListTargets(8)
+	var/list/the_targets = ListTargets(13)
 	if (behaviour == "hostile")
+		stance = HOSTILE_STANCE_ATTACK
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
 				var/mob/living/human/H = ML
@@ -17,17 +17,10 @@
 					the_targets -= ML
 			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
 				the_targets -= ML
-	for (var/atom/A in the_targets)
 
+	for (var/atom/A in the_targets)
 		if (A == src)
 			continue
-
-		var/atom/F = Found(A)
-		if (F)
-			T = F
-			break
-		if (behaviour == "hostile")
-			stance = HOSTILE_STANCE_ATTACK
 		if (isliving(A))
 			var/mob/living/L = A
 			if (istype(L, /mob/living/human))
@@ -41,7 +34,7 @@
 				else if (RH.lizard && istype(src,/mob/living/simple_animal/hostile/alligator))
 					continue
 				else
-					if (!RH.stat)
+					if (RH.stat != DEAD)
 						stance = HOSTILE_STANCE_ATTACK
 						T = RH
 						break
@@ -53,7 +46,7 @@
 				else if (map.ID == MAP_VOYAGE) //so animals dont slaughter each other in the islands
 					continue
 				else
-					if (!L.stat)
+					if (L.stat != DEAD)
 						stance = HOSTILE_STANCE_ATTACK
 						T = L
 						break
@@ -67,10 +60,6 @@
 
 		stance = HOSTILE_STANCE_ATTACK
 	return T
-
-
-/mob/living/simple_animal/proc/Found(var/atom/A)
-	return
 
 /mob/living/simple_animal/proc/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))

@@ -41,7 +41,6 @@
 	qdel(src)
 	return
 /mob/living/simple_animal/hostile/human/Life()
-
 	..()
 	do_human_behaviour()
 	if (role == "medic" && !action_running)
@@ -228,31 +227,35 @@
 /mob/living/simple_animal/hostile/human/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
-		return FALSE
-	if (!(target_mob in ListTargets(11)))
+		return "lost"
+	if (!(target_mob in ListTargets(12)))
 		spawn(50)
-		if (!(target_mob in ListTargets(11)))
+		if (!(target_mob in ListTargets(12)))
 			LostTarget()
-			return FALSE
+			return "lost"
 	if (ranged)
-		if (get_dist(src, target_mob) <= 5)
+		if (get_dist(src, target_mob) <= 6)
 			walk(src,0)
 			do_movement(loc)
 			OpenFire(target_mob)
+			return "fire"
 		else
 			MoveToTarget()
+			return "move"
 	else
 		if (get_dist(src, target_mob) <= 1)	//Attacking
 			AttackingTarget()
-			return TRUE
+			return "melee"
 		else
 			MoveToTarget()
+			return "move"
+	return "none"
 
 /mob/living/simple_animal/hostile/human/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 		wander = TRUE
-	if (target_mob in ListTargets(8))
+	if (target_mob in ListTargets(11))
 		stance = HOSTILE_STANCE_ATTACK
 		wander = FALSE
 		if(ranged)
@@ -451,13 +454,13 @@
 			turns_since_move = FALSE
 	switch(stance)
 		if (HOSTILE_STANCE_IDLE)
-			if (!target_mob || !(target_mob in ListTargets(10)) || target_mob.stat != CONSCIOUS)
+			if (!target_mob || !(target_mob in ListTargets(12)) || target_mob.stat != CONSCIOUS)
 				target_mob = FindTarget()
 				if (target_mob)
 					stance = HOSTILE_STANCE_ATTACK
 
 		if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
-			if (target_mob && target_mob in ListTargets(10))
+			if (target_mob && target_mob in ListTargets(12))
 				if ((SA_attackable(target_mob)))
 					set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 					stance = HOSTILE_STANCE_ATTACK
