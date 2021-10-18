@@ -189,6 +189,7 @@
 
 /atom/verb/Interact()
 	set name = "Interact"
+	set category = "IC"
 	set src in view(1)
 
 	var/mob/user = usr

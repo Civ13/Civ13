@@ -432,12 +432,13 @@
 	for(var/lon = 71, lon <= 77, lon++)
 		for(var/lat = 21, lat <= 27, lat++)
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
-			if (prob(15))
-				mapgen["[lat],[lon]"][4] = "fort"
-				forts += list(list(pick("island_fortress1","island_fortress2"),lat, lon, 0))
-			else if (prob(85))
-				mapgen["[lat],[lon]"][3] = "island"
-				islands += list(list(pick("island1","island2","island3","island4","island5"),lat, lon, 0))
+			if (prob(25))
+				if (prob(15))
+					mapgen["[lat],[lon]"][3] = "fort"
+					forts += list(list(pick("island_fortress1","island_fortress2"),lat, lon, 0))
+				else
+					mapgen["[lat],[lon]"][3] = "island"
+					islands += list(list(pick("island1","island2","island3","island4","island5"),lat, lon, 0))
 			else
 				sea += list(list("sea",lat,lon))
 	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)

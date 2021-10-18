@@ -90,7 +90,13 @@
 		origin = norigin
 	dir = norigin.dir
 	update_icon()
+	for(var/obj/structure/window/barrier/B in loc)
+		B.density = FALSE
 
+/obj/covers/repairedfloor/rope/Destroy()
+	for(var/obj/structure/window/barrier/B in loc)
+		B.density = TRUE
+	..()
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
