@@ -1078,8 +1078,12 @@ var/list/atom_types = null
 	var/obj/map_metadata/voyage/nmap = map
 	var/do_clear = FALSE
 	var/do_load = FALSE
-	var/checking = WWinput(usr, "Do you just want to clear the map, load, or load without clearing?","Load Map","Cancel",list("Clear and load","Load without clearing","Just clear","Cancel"))
+	var/checking = WWinput(usr, "Do you just want to clear the map, load, or load without clearing?","Load Map","Cancel",list("Clear and load","Load without clearing","Just clear","testing dmm suite","Cancel"))
 	switch(checking)
+		if("testing dmm suite")
+			var/dmm_text = file2text("maps/WIP/voyage/voyage_template_south_flute.dmm")
+			var/dmm_suite/suite = new()
+			suite.read_map(dmm_text, 1, 1, 1)
 		if("Clear and load")
 			do_clear = TRUE
 			do_load = TRUE
