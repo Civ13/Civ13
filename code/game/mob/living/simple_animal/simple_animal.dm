@@ -471,8 +471,8 @@
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
 	if (ishuman(user))
 		var/mob/living/human/H = user
-		if ((H.a_intent == I_DISARM || H.a_intent == I_HARM) && istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly) && src.behaviour != "Hostile")
-			for(var/mob/living/simple_animal/hostile/human/pirate/friendly/FR in world)
+		if ((H.a_intent == I_DISARM || H.a_intent == I_HARM) && (istype(src, /mob/living/simple_animal/hostile/human/voyage) || istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly)) && src.behaviour != "Hostile")
+			for(var/mob/living/simple_animal/hostile/human/FR in world)
 				FR.faction = CIVILIAN
 				FR.behaviour = "hostile"
 	if (istype(O, /obj/item/weapon/leash) && behaviour != "defends" && behaviour != "hunt")

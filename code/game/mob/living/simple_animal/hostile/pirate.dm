@@ -63,7 +63,7 @@
 	behaviour = "hostile"
 	ranged = TRUE
 	rapid = FALSE
-	firedelay = 180
+	firedelay = 100
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/pirate
 	casingtype = null
@@ -112,12 +112,18 @@
 	attack_verb = "hits"
 	New()
 		..()
+		if(prob(33))
+			ranged = TRUE
+			firedelay = 100
+			projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
+			gun = new/obj/item/weapon/gun/projectile/flintlock/pistol(src)
+		else
+			gun = new/obj/item/weapon/material/sword/cutlass(src)
 		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
 		messages["backup"] =list( "!!I need help!","!!Help me!")
 		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
 		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
 
-		gun = new/obj/item/weapon/material/sword/cutlass(src)
 		icon_state = "pirate_friendly[rand(1,3)]"
 
 

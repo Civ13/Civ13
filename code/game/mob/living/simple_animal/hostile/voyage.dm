@@ -56,7 +56,7 @@
 	faction = SPANISH
 	ranged = TRUE
 	rapid = FALSE
-	firedelay = 150
+	firedelay = 120
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball
 	corpse = /mob/living/human/corpse/spanish_rifleman
 	casingtype = null
@@ -97,7 +97,7 @@
 	faction = SPANISH
 	ranged = TRUE
 	rapid = FALSE
-	firedelay = 120
+	firedelay = 100
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/spanish_sgt
 	casingtype = null
@@ -138,7 +138,7 @@
 	faction = SPANISH
 	ranged = TRUE
 	rapid = FALSE
-	firedelay = 120
+	firedelay = 80
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/spanish_lt
 	casingtype = null
@@ -179,7 +179,7 @@
 	faction = SPANISH
 	ranged = TRUE
 	rapid = FALSE
-	firedelay = 100
+	firedelay = 80
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 	corpse = /mob/living/human/corpse/spanish_cpt
 	casingtype = null
@@ -235,7 +235,7 @@
 	speak = list("Fancy a drink?","You've got to go elsewhere for those kinds of services", "Bottoms up lads!", "Keep drinking and making me rich!")
 	speak_emote = list("mouths something")
 	emote_hear = list("hums something","whistles a tune")
-	emote_see = list("stares at the next possible customer", "glares an an eyeing customer")
+	emote_see = list("stares at the next possible customer", "glares at an eyeing customer")
 	speak_chance = TRUE
 	speed = 4
 	maxHealth = 100
@@ -284,6 +284,10 @@
 	New()
 		..()
 		icon_state = "civ[rand(1,5)]"
+		if(prob(33))
+			ranged = TRUE
+			firedelay = 100
+			projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 
 /mob/living/simple_animal/hostile/human/voyage/civilian_f
 	name = "Civilian"
