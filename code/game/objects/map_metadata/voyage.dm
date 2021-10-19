@@ -261,8 +261,16 @@
 		location = pick("south","north")
 	var/y_offset = 0 //for north maps
 	if (location == "north")
-		y_offset = 50
-	var/partpath = "maps/zones/[location]/[mapname]"
+		y_offset = 51
+	var/dmm_file = "maps/zones/[location]/[mapname].dmm"
+	if(!isfile(file(dmm_file)))
+		var/newName_p1 = splittext(mapname,"_")
+		var/newName = newName_p1[1]
+		dmm_file = "maps/zones/[location]/[newName].dmm"
+	var/dmm_text = file2text(dmm_file)
+	var/dmm_suite/suite = new()
+	suite.read_map(dmm_text, 1, y_offset, 1)
+	/*
 	world.log << "Importing [partpath]..."
 	var/F = file("[partpath]/turfs.txt")
 	if (fexists(F))
@@ -329,6 +337,7 @@
 										tmpobj.vars[tempvars[1]] = tempvars[2]
 	world.log << "Imported all objects."
 	world.log << "Finished all imports."
+	*/
 ///////////////////////////////////////////////////////////////////
 /obj/map_metadata/voyage/proc/list2text_assoc(var/atom/A, nx = -1, ny = -1, nz = -1)
 	. = list()

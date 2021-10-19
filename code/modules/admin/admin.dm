@@ -1078,12 +1078,8 @@ var/list/atom_types = null
 	var/obj/map_metadata/voyage/nmap = map
 	var/do_clear = FALSE
 	var/do_load = FALSE
-	var/checking = WWinput(usr, "Do you just want to clear the map, load, or load without clearing?","Load Map","Cancel",list("Clear and load","Load without clearing","Just clear","testing dmm suite","Cancel"))
+	var/checking = WWinput(usr, "Do you just want to clear the map, load, or load without clearing?","Load Map","Cancel",list("Clear and load","Load without clearing","Just clear","Cancel"))
 	switch(checking)
-		if("testing dmm suite")
-			var/dmm_text = file2text("maps/WIP/voyage/voyage_template_south_flute.dmm")
-			var/dmm_suite/suite = new()
-			suite.read_map(dmm_text, 1, 1, 1)
 		if("Clear and load")
 			do_clear = TRUE
 			do_load = TRUE
@@ -1103,8 +1099,8 @@ var/list/atom_types = null
 		var/options = list("manual input")
 		var/t_options = flist("maps/zones/[loct]/")
 		for(var/i in t_options)
-			if(findtext(i,"/"))
-				options += replacetext(i, "/", "")
+			if(findtext(i,"dmm"))
+				options += replacetext(i, ".dmm", "")
 		var/nam = WWinput(usr, "Which map to load?","Load Map","manual input",options)
 		if (nam == "manual input")
 			nam = input(usr, "which map?","Manual Input","") as text

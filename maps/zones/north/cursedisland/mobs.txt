@@ -1,7 +1,0 @@
-MOB;24;8;1;/mob/living/simple_animal/hostile/skeleton/pirate;0
-MOB;39;8;1;/mob/living/simple_animal/hostile/skeleton/pirate;0
-MOB;20;9;1;/mob/living/simple_animal/hostile/skeleton/pirate;0
-MOB;24;9;1;/mob/living/simple_animal/hostile/skeleton/pirate;0
-MOB;20;11;1;/mob/living/simple_animal/hostile/skeleton/pirate;0
-MOB;23;11;1;/mob/living/simple_animal/hostile/skeleton/pirate;0
-MOB;33;11;1;/mob/living/simple_animal/hostile/skeleton/pirate;0
