@@ -52,21 +52,24 @@
 		icon_state = "wood_ship_repaired"
 	if (health <= 0)
 		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-		if(istype(src.loc, /turf/floor/beach/water))
-			var/turf/T1 = get_step(src,pick(NORTH,NORTHWEST))
-			if(T1)
-				new/obj/effect/flooding(T1)
-			var/turf/T2 = get_step(src,pick(EAST,NORTHEAST))
-			if(T2)
-				new/obj/effect/flooding(T2)
-			var/turf/T3 = get_step(src,pick(WEST,SOUTHWEST))
-			if(T3)
-				new/obj/effect/flooding(T3)
-			var/turf/T4 = get_step(src,pick(SOUTH,SOUTHEAST))
-			if(T4)
-				new/obj/effect/flooding(T4)
-		qdel(src)
+		Destroy()
 
+/obj/covers/repairedfloor/ship/Destroy()
+	if(istype(src.loc, /turf/floor/beach/water))
+		var/turf/T1 = get_step(src.loc,pick(NORTH,NORTHWEST))
+		if(T1)
+			new/obj/effect/flooding(T1)
+		var/turf/T2 = get_step(src.loc,pick(EAST,NORTHEAST))
+		if(T2)
+			new/obj/effect/flooding(T2)
+		var/turf/T3 = get_step(src.loc,pick(WEST,SOUTHWEST))
+		if(T3)
+			new/obj/effect/flooding(T3)
+		var/turf/T4 = get_step(src.loc,pick(SOUTH,SOUTHEAST))
+		if(T4)
+			new/obj/effect/flooding(T4)
+	. = ..()
+	qdel(src)
 /obj/covers/repairedfloor/ship/south
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "boat_floor_south1"
@@ -79,7 +82,7 @@
 	flammable = FALSE
 	explosion_resistance = TRUE
 	var/origin = null
-	layer = 3.1
+	layer = 3.999
 
 /obj/covers/repairedfloor/rope/end
 	icon_state = "grapple_overlay"
@@ -90,7 +93,13 @@
 		origin = norigin
 	dir = norigin.dir
 	update_icon()
+	for(var/obj/structure/window/barrier/B in loc)
+		B.density = FALSE
 
+/obj/covers/repairedfloor/rope/Destroy()
+	for(var/obj/structure/window/barrier/B in loc)
+		B.density = TRUE
+	..()
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'

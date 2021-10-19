@@ -10,8 +10,6 @@
 #define RAD_LEVEL_CRITICAL 300 //LD50
 #define RAD_LEVEL_DEADLY 500 //Always kills
 
-
-
 //severity: mSv per second. duration: duration in seconds
 /proc/radiation_pulse(turf/epicenter, range, severity, duration, log)
 	duration = round(duration)

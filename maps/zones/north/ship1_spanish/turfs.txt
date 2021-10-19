@@ -1,5 +1,0 @@
-TURF;50;4;2;/turf/wall/wood
-TURF;50;5;2;/turf/wall/wood
-TURF;51;5;2;/turf/wall/wood
-TURF;52;5;2;/turf/wall/wood
-TURF;50;6;2;/turf/wall/wood

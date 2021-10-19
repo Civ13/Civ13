@@ -261,8 +261,16 @@
 		location = pick("south","north")
 	var/y_offset = 0 //for north maps
 	if (location == "north")
-		y_offset = 50
-	var/partpath = "maps/zones/[location]/[mapname]"
+		y_offset = 51
+	var/dmm_file = "maps/zones/[location]/[mapname].dmm"
+	if(!isfile(file(dmm_file)))
+		var/newName_p1 = splittext(mapname,"_")
+		var/newName = newName_p1[1]
+		dmm_file = "maps/zones/[location]/[newName].dmm"
+	var/dmm_text = file2text(dmm_file)
+	var/dmm_suite/suite = new()
+	suite.read_map(dmm_text, 1, y_offset, 1)
+	/*
 	world.log << "Importing [partpath]..."
 	var/F = file("[partpath]/turfs.txt")
 	if (fexists(F))
@@ -329,6 +337,7 @@
 										tmpobj.vars[tempvars[1]] = tempvars[2]
 	world.log << "Imported all objects."
 	world.log << "Finished all imports."
+	*/
 ///////////////////////////////////////////////////////////////////
 /obj/map_metadata/voyage/proc/list2text_assoc(var/atom/A, nx = -1, ny = -1, nz = -1)
 	. = list()
@@ -432,12 +441,13 @@
 	for(var/lon = 71, lon <= 77, lon++)
 		for(var/lat = 21, lat <= 27, lat++)
 			mapgen["[lat],[lon]"] = list(lat, lon, "sea")
-			if (prob(15))
-				mapgen["[lat],[lon]"][4] = "fort"
-				forts += list(list(pick("island_fortress1","island_fortress2"),lat, lon, 0))
-			else if (prob(85))
-				mapgen["[lat],[lon]"][3] = "island"
-				islands += list(list(pick("island1","island2","island3","island4","island5"),lat, lon, 0))
+			if (prob(25))
+				if (prob(15))
+					mapgen["[lat],[lon]"][3] = "fort"
+					forts += list(list(pick("island_fortress1","island_fortress2"),lat, lon, 0))
+				else
+					mapgen["[lat],[lon]"][3] = "island"
+					islands += list(list(pick("island1","island2","island3","island4","island5"),lat, lon, 0))
 			else
 				sea += list(list("sea",lat,lon))
 	gen_ship(sfaction = "pirates", ssize = 1, slat = 0, slon = 0)

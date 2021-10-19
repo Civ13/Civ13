@@ -311,7 +311,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (H.religion == "Clerics")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
-	if (findtext(recipe.title, "totem"))
+	else if (findtext(recipe.title, "totem"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
@@ -327,7 +327,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (H.religion == "Cultists")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
-	if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental ominous statue of the ruler"))
+	else if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental ominous statue of the ruler"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
@@ -343,7 +343,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (H.religion == "Clerics")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
-	if (findtext(recipe.title, "monumental stone buddha"))
+	else if (findtext(recipe.title, "monumental stone buddha"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
@@ -359,7 +359,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (H.religion == "Clerics")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
-	if (findtext(recipe.title, "monumental statue of a giant ape"))
+	else if (findtext(recipe.title, "monumental statue of a giant ape"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
@@ -375,7 +375,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (H.religion == "Clerics")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
-	if (H.original_job_title == "Gorilla tribesman" || H.original_job_title == "Ant tribesman")
+	else if (H.original_job_title == "Gorilla tribesman" || H.original_job_title == "Ant tribesman")
 		if (findtext(recipe.title, "wood sarissa") || findtext(recipe.title, "wood dory") || findtext(recipe.title, "soft wood wall") || findtext(recipe.title, "log wall"))
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
@@ -438,6 +438,15 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			faction_override_door.faction = H.civilization
 			faction_override_door.name = "[H.civilization]'s Door"
 
+	else if (istype(recipe.result_type,/obj/structure/barricade/ship))
+		if (user.z == 1)
+			if (recipe.result_type == /obj/structure/barricade/ship/wood/a7 || recipe.result_type == /obj/structure/barricade/ship/blue/b9 || recipe.result_type == /obj/structure/barricade/ship/wood/a6 || recipe.result_type == /obj/structure/barricade/ship/wood/a2 || recipe.result_type == /obj/structure/window/barrier/ship/wood/port0/north || recipe.result_type == /obj/structure/window/barrier/ship/blue/bport0/south || recipe.result_type == /obj/structure/window/barrier/ship/wood/port2/north || recipe.result_type == /obj/structure/window/barrier/ship/blue/bport3/south)
+				user << "You cannot build this on the lower deck."
+				return
+		else
+			if (recipe.result_type == /obj/structure/barricade/ship/aport0/north || recipe.result_type == /obj/structure/barricade/ship/aport0 || recipe.result_type == /obj/structure/barricade/ship/wall2)
+				user << "You cannot build this on the upper deck."
+				return
 	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"

@@ -52,7 +52,10 @@
 
 	for (var/obj/covers/repairedfloor/rope/R in loc)
 		return TRUE
-		
+
+	for (var/obj/covers/repairedfloor/rope/R in get_turf(get_step(mover,mover.dir)))
+		return TRUE
+
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 

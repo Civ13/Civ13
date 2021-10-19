@@ -452,7 +452,7 @@
 /obj/structure/grapplehook/proc/undeploy()
 	for(var/obj/covers/repairedfloor/rope/R in world)
 		if (R.origin == src)
-			qdel(R)
+			R.Destroy()
 	deployed = FALSE
 	update_icon()
 	return

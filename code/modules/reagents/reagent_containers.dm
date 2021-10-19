@@ -51,19 +51,21 @@
 			out.Add("[size][tastes[i]]")
 	usr << "<span class='notice'>You can smell [english_list(out,"something indescribable")].</span>" //no taste means there are too many tastes and not enough flavor.
 /obj/item/weapon/reagent_containers/secondary_attack_self(mob/living/human/user)
-	if (!is_open_container())
-		return
-	var/turf/TGT = get_turf(get_step(user, user.dir))
-	if (TGT)
-		for(var/obj/F in TGT)
-			if ((istype(F, /obj/covers) && F.density) || istype(F, /obj/structure/barricade))
-				return
-		if (reagents.has_reagent("water", 25))
-			new/obj/effect/flooding(TGT)
-		reagents.splash(TGT, reagents.total_volume,TRUE,FALSE,min_spill = 100, max_spill = 100, force_spill = TRUE)
-		playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
-		user << "<span class='notice'>You spill \the [src] into the tile in front of you.</span>"
-
+	if(user.a_intent == I_HARM)
+		if (!is_open_container())
+			return
+		var/turf/TGT = get_turf(get_step(user, user.dir))
+		if (TGT)
+			for(var/obj/F in TGT)
+				if ((istype(F, /obj/covers) && F.density) || istype(F, /obj/structure/barricade))
+					return
+			if (reagents.has_reagent("water", 25))
+				new/obj/effect/flooding(TGT)
+			reagents.splash(TGT, reagents.total_volume,TRUE,FALSE,min_spill = 100, max_spill = 100, force_spill = TRUE)
+			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
+			user << "<span class='notice'>You spill \the [src] into the tile in front of you.</span>"
+	else
+		smell()
 /obj/item/weapon/reagent_containers/verb/set_APTFT() //set amount_per_transfer_from_this
 	set name = "Set transfer amount"
 	set category = null
