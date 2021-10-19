@@ -383,6 +383,17 @@
 	var/deployed = FALSE
 	var/owner = null
 
+/obj/structure/grapplehook/auto
+	dir = SOUTH
+	anchored = TRUE
+	New()
+		..()
+		spawn(rand(200,350))
+		if (!deployed)
+			deployed = TRUE
+			deploy()
+			update_icon()
+			return
 /obj/structure/grapplehook/attack_hand(mob/living/human/user)
 	if (!deployed)
 		var/turf/nT = get_step(loc,user.dir)

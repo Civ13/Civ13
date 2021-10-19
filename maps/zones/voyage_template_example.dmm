@@ -34,7 +34,7 @@
 "Jf" = (/obj/structure/barricade/ship/wood/a3,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "Jj" = (/obj/structure/window/barrier/ship/blue/bport0,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/main_deck)
 "Ju" = (/obj/structure/flag/pirates,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/main_deck)
-"JO" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook{owner = "PIRATES"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/main_deck)
+"JO" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto{owner = "PIRATES"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/main_deck)
 "Lq" = (/obj/structure/barricade/ship/wood/a1,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "LP" = (/obj/structure/barricade/ship/blue/b16,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)
 "Mh" = (/obj/structure/barricade/ship/wood/a6,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/office)

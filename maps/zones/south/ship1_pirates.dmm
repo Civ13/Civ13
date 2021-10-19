@@ -1,3 +1,5 @@
+"aa" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"ab" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "aV" = (/obj/structure/window/barrier/ship/wood/port0,/obj/covers/repairedfloor/ship/south,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "aX" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/rations/ale,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "bc" = (/obj/structure/barricade/ship/wood/a12,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
@@ -8,7 +10,6 @@
 "hD" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "iB" = (/obj/map_metadata/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "ki" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
-"kn" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook{owner = "PIRATES"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "kV" = (/obj/structure/barricade/ship/wood/a1,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "la" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "mt" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/pirate/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
@@ -81,14 +82,15 @@ YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 iBYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 "}
+
 (1,1,2) = {"
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYORDkikikikiRQYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcfFBoBofFbcysLUoiLUysaVysLUysLUysLUysLUysLUysLUysLUPMkiVJkiRQYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
-YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcZeBoBofFbchDhDhDhDlahDknhDhDhDQaknhDQEhDQEQaknhDQEgWBQShsIUtRQYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
+YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcZeBoBofFbchDhDhDhDlahDaahDhDhDQaaahDQEhDQEQaaahDQEgWBQShsIUtRQYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcaXBoBoBonkhDhDhDhDhDhDhDmthDhDhDhDhDhDhDhDhDhDhDhDgWBoBoBoBonkNkYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcVgBoBoBowuhDhDqmhDhDhDBFhDhDQEhDhDhDqmhDhDhDhDhDhDwuBoBoseTPnkNkNkNkYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcRCBoBoBonkhDhDhDhDhDhDhDhDhDhDhDhDhDhDhDhDmthDhDhDgWBoBoBoBonkNkYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
-YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcWeBoBoBonkhDhDQEhDhDmtknhDQEhDhDknhDhDhDhDhDknhDQEkVvfUkNBtJCFYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
+YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcWeBoBoBonkhDhDQEhDhDmtabhDQEhDhDabhDhDhDhDhDabhDQEkVvfUkNBtJCFYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOhcWeIKXifFnkKEKVKEKVOuKVKEKVKEKVbsKVKEKVKEKVbsKVKEKVWtrYrYrYTXYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOKKrYrYrYrYQkYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO

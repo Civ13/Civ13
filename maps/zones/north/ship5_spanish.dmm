@@ -13,6 +13,7 @@
 "am" = (/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "an" = (/obj/structure/barricade/ship/north/corners{dir = 1},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "ao" = (/obj/structure/barricade/ship{dir = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"ap" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto{dir = 1},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "aq" = (/obj/structure/barricade/ship/wood/a6,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "as" = (/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "av" = (/obj/structure/barricade/ship/north/corners{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -24,7 +25,7 @@
 "aC" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aD" = (/obj/structure/barricade/ship/blue/b9,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "aE" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/wood/portl2,/obj/structure/window/barrier/ship/blue/bport0,/turf/floor/broken_floor,/area/caribbean/sea/top)
-"aF" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"aF" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aG" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/grenades,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aH" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aJ" = (/obj/structure/barricade/ship/north/corners{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -99,7 +100,7 @@
 "qm" = (/obj/structure/window/barrier/ship/wood/portl2,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "rO" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin{dir = 1},/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "sR" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport3,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/top)
-"tI" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook,/turf/floor/broken_floor,/area/caribbean/sea/top)
+"tI" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "uC" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 5},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "wf" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "wX" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/voyage/tablemap{dir = 4; layer = 2.9},/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
@@ -108,7 +109,7 @@
 "yD" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "AK" = (/obj/structure/barricade/ship/blue/beast,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "AV" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/voyage/sextant,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
-"Dd" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook,/obj/structure/voyage/ropeladder/thin{dir = 1},/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"Dd" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto,/obj/structure/voyage/ropeladder/thin{dir = 1},/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "Ea" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 4},/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/cpt,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "ET" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "Fl" = (/obj/structure/barricade/ship/blue/b8,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
@@ -168,7 +169,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaacdcecgchcecjcgckclclcmcncncocncncocncncocncncocncncpcncncpcncncpcncncpcncncncncqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaactcucicicicicicvbMcrcrqmcrcrrOcrtIxpyDcrxpcrcrDdtIcrxpyDcrxpLicrxptIcrxpcrOpcrcrUVcqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaactcucicicicicicvbMcrcrqmcrcrrOcrapxpyDcrxpcrcrDdtIcrxpyDcrxpLicrxpapcrxpcrOpcrcrUVcqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaabEciciciciaLcicibgcrcrbJcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrUVcqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaYKciciciciciciciaqcrcrbJcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrOpcrcrcrcrcrcrcrcrcscrcrUVcqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaZVcicijFXJcicicibMcrcrbicrcrcscrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcryDcrcrcrcrcrcrcrcrAKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
