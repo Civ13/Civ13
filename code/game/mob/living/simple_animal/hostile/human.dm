@@ -647,7 +647,7 @@
 	var/t_distance = 1000
 	//check all the targets and choose the closest one that has enemies nearby.
 	for(var/list/LT in faction_targets)
-		if (LT[2] == src.faction)
+		if (LT[2] == src.faction || LT[2] == "all")
 			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
 			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
 				if (HH.faction != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)

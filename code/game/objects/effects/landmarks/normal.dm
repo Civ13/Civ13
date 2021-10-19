@@ -77,14 +77,16 @@ var/global/list/faction_targets = list()
 /obj/effect/landmark/npctarget/faction
 	name = "faction target"
 	icon_state = "f1"
-	anchored = 1.0
-	invisibility = 101
 	var/faction = "none"
 	New()
 		..()
 		spawn(200) //so you have time to edit
 			faction_targets += list(list(src.name,src.faction,src.x,src.y,src.z))
 			qdel(src)
+
+/obj/effect/landmark/npctarget/faction/all
+	name = "all faction target"
+	faction = "all"
 
 //spawns a squad of soldiers + medic + squad leader
 var/global/faction1_npcs = 0
