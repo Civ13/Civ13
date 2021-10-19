@@ -40,7 +40,13 @@ dmm_suite/proc/loadModel(atomPath, list/attributes, list/strings, xcrd, ycrd, zc
 			location.ChangeTurf(atomPath)
 			return location
 	else
-		instance = new atomPath(location)
+		if(!istype(atomPath, /obj/map_metadata)) //don't load metadata
+			instance = new atomPath(location)
+			if(istype(instance, /obj/structure/closet)) //make sure stuff inside lockers gets stored
+				var/obj/structure/closet/N = instance
+				spawn(10)
+					N.open()
+					N.close()
 	// Handle cases where Atom/New was redifined without calling Super()
 	if(preloader && instance) // Atom could delete itself in New()
 		preloader.load(instance)
@@ -93,7 +99,6 @@ dmm_suite/proc/read_map(dmm_text as text, coordX as num, coordY as num, coordZ a
 		var/list/yLines = list()
 		for(var/posY = yReversed.len to 1 step -1)
 			yLines.Add(yReversed[posY])
-		//
 		for(var/posY = 1 to yLines.len)
 			var/yLine = yLines[posY]
 			for(var/posX = 1 to length(yLine)/key_len)
@@ -126,8 +131,6 @@ dmm_suite/proc/parse_grid(models as text, xcrd, ycrd, zcrd)
 			originalStrings[indexText] = (match)
 	while(found)
 	// Identify each object's data, instantiate it, & reconstitues its fields.
-	var/list/turfStackTypes = list()
-	var/list/turfStackAttributes = list()
 	for(var/atomModel in text2list(models, ","))
 		var/bracketPos = findtext(atomModel, "{")
 		var/atomPath = text2path(copytext(atomModel, 1, bracketPos))
@@ -141,16 +144,4 @@ dmm_suite/proc/parse_grid(models as text, xcrd, ycrd, zcrd)
 				var/attributeKey = copytext(paddedAttribute, 1, equalPos-1)
 				var/attributeValue = copytext(paddedAttribute, equalPos+2)
 				attributes[attributeKey] = attributeValue
-		if(!ispath(atomPath, /turf))
-			loadModel(atomPath, attributes, originalStrings, xcrd, ycrd, zcrd)
-		else
-			turfStackTypes.Insert(1, atomPath)
-			turfStackAttributes.Insert(1, null)
-			turfStackAttributes[1] = attributes
-	// Layer all turf appearances into final turf
-	if(!turfStackTypes.len) return
-	var/turf/topTurf = loadModel(turfStackTypes[1], turfStackAttributes[1], originalStrings, xcrd, ycrd, zcrd)
-	for(var/turfIndex = 2 to turfStackTypes.len)
-		var/mutable_appearance/underlay = new(turfStackTypes[turfIndex])
-		loadModel(underlay, turfStackAttributes[turfIndex], originalStrings, xcrd, ycrd, zcrd)
-		topTurf.underlays.Add(underlay)
+		loadModel(atomPath, attributes, originalStrings, xcrd, ycrd, zcrd)
