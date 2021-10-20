@@ -814,9 +814,9 @@
 				S.update_icon()
 			update_icon()
 	attack_hand(mob/user)
-		if(map.ID == MAP_VOYAGE)
+		if(map.ID == MAP_VOYAGE && ishuman(user))
 			var/obj/map_metadata/voyage/nmap = map
-			if (nmap.inzone)
+			if (nmap.inzone == 1)
 				if (nmap.ship_anchored)
 					var/resp = WWinput(user, "You are currently in an event, are you sure you want to raise the anchor and leave? It will take two minutes.","Anchor","No",list("Yes","No"))
 					if (resp == "No")
@@ -833,7 +833,6 @@
 					if (do_after(user, 60, src))
 						user << "You lower the anchor."
 						lower_anchor()
-
 			else
 				user << "You start [nmap.ship_anchored ? "raising" : "lowering"] the anchor..."
 				if (do_after(user, 60, src))

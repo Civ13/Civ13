@@ -40,7 +40,7 @@ dmm_suite/proc/loadModel(atomPath, list/attributes, list/strings, xcrd, ycrd, zc
 			location.ChangeTurf(atomPath)
 			return location
 	else
-		if(!istype(atomPath, /obj/map_metadata)) //don't load metadata
+		if(!ispath(atomPath, /obj/map_metadata)) //don't load metadata
 			instance = new atomPath(location)
 			if(istype(instance, /obj/structure/closet)) //make sure stuff inside lockers gets stored
 				var/obj/structure/closet/N = instance
