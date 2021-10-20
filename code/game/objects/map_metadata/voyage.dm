@@ -43,13 +43,13 @@
 /obj/map_metadata/voyage/proc/get_sink()
 	var/t_level = 0
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower))
-		t_level += F.flood_level*2
+		t_level += F.flood_level*3
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower/storage/kitchen))
-		t_level += F.flood_level*2
+		t_level += F.flood_level*3
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower/storage))
-		t_level += F.flood_level*2
+		t_level += F.flood_level*3
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower/storage/magazine))
-		t_level += F.flood_level*2
+		t_level += F.flood_level*3
 	return t_level
 
 /obj/map_metadata/voyage/proc/check_roundend_conditions()

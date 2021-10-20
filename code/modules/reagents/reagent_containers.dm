@@ -59,9 +59,13 @@
 			for(var/obj/F in TGT)
 				if ((istype(F, /obj/covers) && F.density) || istype(F, /obj/structure/barricade))
 					return
+			if (reagents.has_reagent("water", 75))
+				new/obj/effect/flooding(TGT)
+			if (reagents.has_reagent("water", 50))
+				new/obj/effect/flooding(TGT)
 			if (reagents.has_reagent("water", 25))
 				new/obj/effect/flooding(TGT)
-			reagents.splash(TGT, reagents.total_volume,TRUE,FALSE,min_spill = 100, max_spill = 100, force_spill = TRUE)
+			reagents.splash(TGT, reagents.total_volume,TRUE,FALSE,min_spill = reagents.total_volume, max_spill = reagents.total_volume, force_spill = TRUE)
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You spill \the [src] into the tile in front of you.</span>"
 	else
