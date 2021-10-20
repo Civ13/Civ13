@@ -372,7 +372,7 @@
 
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	..()
-	if (istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly))
+	if (istype(src, /mob/living/simple_animal/hostile/human/voyage/pirate/friendly))
 		faction = CIVILIAN
 		behaviour = "hostile"
 	if (behaviour == "hunt")
@@ -471,7 +471,7 @@
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
 	if (ishuman(user))
 		var/mob/living/human/H = user
-		if ((H.a_intent == I_DISARM || H.a_intent == I_HARM) && (istype(src, /mob/living/simple_animal/hostile/human/voyage) || istype(src, /mob/living/simple_animal/hostile/human/pirate/friendly)) && src.behaviour != "Hostile")
+		if ((H.a_intent == I_DISARM || H.a_intent == I_HARM) && (istype(src, /mob/living/simple_animal/hostile/human/voyage) || istype(src, /mob/living/simple_animal/hostile/human/voyage/pirate/friendly)) && src.behaviour != "Hostile")
 			for(var/mob/living/simple_animal/hostile/human/FR in world)
 				FR.faction = CIVILIAN
 				FR.behaviour = "hostile"

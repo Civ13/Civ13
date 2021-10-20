@@ -286,7 +286,7 @@
 		if (role == "officer")
 			idle_counter++
 			if (idle_counter >= 120)
-				for(var/mob/living/simple_animal/hostile/human/H in range(3,src))
+				for(var/mob/living/simple_animal/hostile/human/H in range(6,src))
 					if (H.faction == src.faction)
 						H.charge(get_objective())
 				idle_counter = 0
@@ -625,7 +625,7 @@
 			playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 	else
 		//none found - just move to the nearest one
-		for(var/list/LT in faction_targets)
+		for(var/list/LT in map.faction_targets)
 			if (LT[2] == src.faction)
 				var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
 				if (get_dist(src,t_turf2)<t_distance)
@@ -646,7 +646,7 @@
 	var/turf/t_turf = null
 	var/t_distance = 1000
 	//check all the targets and choose the closest one that has enemies nearby.
-	for(var/list/LT in faction_targets)
+	for(var/list/LT in map.faction_targets)
 		if (LT[2] == src.faction || LT[2] == "all")
 			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
 			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
@@ -665,8 +665,8 @@
 	var/turf/t_turf = null
 	var/t_distance = 1000
 	//check all the targets and choose the closest one that has enemies nearby.
-	for(var/list/LT in faction_targets)
-		if (LT[2] == src.faction_text)
+	for(var/list/LT in map.faction_targets)
+		if (LT[2] == src.faction_text || LT[2] == "all")
 			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
 			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
 				if (HH.faction != src.faction_text && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)

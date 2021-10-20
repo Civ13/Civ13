@@ -1120,6 +1120,14 @@ var/list/atom_types = null
 			nmap.load_map(nam,loct)
 			message_admins("[key_name(usr)] manually loaded an event.")
 
+client/proc/debug_variables_map()
+	set name = "Debug Map Variables"
+	set category = "Debug"
+
+	if (!check_rights(R_SERVER))	return
+
+	debug_variables(map)
+
 /proc/load_recipes()
 	var/all_craft_lists = flist("config/crafting/")
 	for (var/i in all_craft_lists)

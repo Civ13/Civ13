@@ -386,14 +386,14 @@
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
-	create_path = /mob/living/simple_animal/hostile/human/pirate
+	create_path = /mob/living/simple_animal/hostile/human/voyage/pirate
 	timer = 750
 
 /obj/effect/spawner/mobspawner/british
 	name = "redcoat spawner"
 	max_number = 5
 	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/human/british
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british
 	timer = 750
 
 /obj/effect/spawner/mobspawner/townmilitia

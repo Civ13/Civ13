@@ -64,18 +64,18 @@
 "Ra" = (/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/blue/b20{dir = 2},/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "Re" = (/obj/structure/barricade/ship/wood/a10,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "Rx" = (/obj/structure/barricade/ship/blue/b17,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
-"RH" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"RH" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "SP" = (/obj/structure/barricade/ship/blue/b20{dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
-"SS" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood/red{dir = 4},/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
+"SS" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood/red{dir = 4},/mob/living/simple_animal/hostile/human/voyage/pirate/ranged/captain,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "Tt" = (/obj/covers/wood_ship,/obj/structure/window/barrier/ship/blue/bport9,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
-"TP" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"TP" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "Ue" = (/obj/structure/barricade/ship/blue/b8,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "UK" = (/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/blue/b20{dir = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "Wh" = (/obj/structure/barricade/ship/wood/a4,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
-"WD" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate/ranged,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"WD" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate/ranged,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "Xm" = (/obj/covers/wood_ship,/obj/structure/voyage/grid/partial{dir = 9},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "Xz" = (/obj/structure/barricade/ship/wood/a12,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
-"Yh" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"Yh" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "YG" = (/obj/covers/wood_ship,/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "YI" = (/obj/structure/barricade/ship/wood/a5,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "Ze" = (/obj/structure/window/barrier/ship/blue/bport_north,/obj/covers/wood_ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
@@ -109,7 +109,6 @@ bHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbH
 bHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbH
 aObHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbH
 "}
-
 (1,1,2) = {"
 bHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbH
 bHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbHbH

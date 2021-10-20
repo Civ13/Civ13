@@ -78,7 +78,8 @@ var/civmax_research = list(230,230,230)
 	var/time_to_end_round_after_both_sides_locked = 9000
 	var/admins_triggered_roundend = FALSE
 	var/admins_triggered_noroundend = FALSE
-
+	var/list/faction_targets = list()
+	
 	// win conditions 3.0 - Kachnov
 	var/datum/win_condition/win_condition = null
 	var/current_win_condition = "Neither side has captured the other side's base."

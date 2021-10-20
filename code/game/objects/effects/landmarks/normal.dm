@@ -72,17 +72,13 @@
 	anchored = 1.0
 	invisibility = 101
 
-var/global/list/faction_targets = list()
-
 /obj/effect/landmark/npctarget/faction
 	name = "faction target"
 	icon_state = "f1"
 	var/faction = "none"
 	New()
+		map.faction_targets += list(list(src.name,src.faction,src.loc.x,src.loc.y,src.loc.z))
 		..()
-		spawn(200) //so you have time to edit
-			faction_targets += list(list(src.name,src.faction,src.x,src.y,src.z))
-			qdel(src)
 
 /obj/effect/landmark/npctarget/faction/all
 	name = "all faction target"

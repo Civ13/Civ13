@@ -14,7 +14,7 @@
 "an" = (/obj/structure/barricade/ship/wood/a2,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "ao" = (/obj/covers/wood_ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/goldvaluables,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "ap" = (/obj/structure/barricade/ship/wood/a12,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"aq" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"aq" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "ar" = (/obj/covers/wood_ship,/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "as" = (/obj/structure/barricade/ship/wood/a5,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "at" = (/obj/covers/wood_ship,/obj/structure/simple_door/key_door/anyone,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -25,7 +25,7 @@
 "az" = (/obj/covers/wood_ship,/obj/structure/closet/crate/rations/fruits,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aA" = (/obj/covers/wood_ship,/obj/structure/closet/crate/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aB" = (/obj/covers/wood_ship,/obj/structure/multiz/ladder/ww2/up,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"aC" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"aC" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aD" = (/obj/covers/wood_ship,/obj/structure/window/barrier/ship/blue/bport_6/corner,/obj/structure/barricade/ship/blue/b20{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aE" = (/obj/structure/barricade/ship/blue/b8,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "aF" = (/obj/structure/barricade/ship/blue/b17,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -58,12 +58,12 @@
 "bg" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "bh" = (/obj/structure/barricade/ship/wood/a12,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "bi" = (/obj/covers/wood_ship,/obj/structure/voyage/shipbell,/turf/floor/broken_floor,/area/caribbean/sea/top)
-"bj" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate,/turf/floor/broken_floor,/area/caribbean/sea/top)
-"bk" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood/red{dir = 4},/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
+"bj" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate,/turf/floor/broken_floor,/area/caribbean/sea/top)
+"bk" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood/red{dir = 4},/mob/living/simple_animal/hostile/human/voyage/pirate/ranged/captain,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "bl" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "bm" = (/obj/covers/wood_ship,/obj/structure/simple_door/key_door/anyone,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "bn" = (/obj/covers/wood_ship,/obj/structure/voyage/grid/partial{dir = 6},/turf/floor/broken_floor,/area/caribbean/sea/top)
-"bo" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/pirate/ranged,/turf/floor/broken_floor,/area/caribbean/sea/top)
+"bo" = (/obj/covers/wood_ship,/mob/living/simple_animal/hostile/human/voyage/pirate/ranged,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bp" = (/obj/covers/wood_ship,/obj/structure/voyage/grid/partial{dir = 10},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bq" = (/obj/covers/wood_ship,/obj/structure/barricade/ship/mast/large,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "br" = (/obj/covers/wood_ship,/obj/structure/window/barrier/ship/blue/bport_6/corner,/turf/floor/broken_floor,/area/caribbean/sea/top)
@@ -111,7 +111,6 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
-
 (1,1,2) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
