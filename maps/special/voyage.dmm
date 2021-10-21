@@ -14,12 +14,8 @@
 "an" = (/obj/structure/barricade/ship/north/corners{dir = 10; icon_state = "boat1_up_corners"},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "ao" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "ap" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest/treasury/ship,/obj/effect/landmark{name = "TreasuryPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside/treasury)
-"aq" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
-"ar" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 6},/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
-"as" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 10},/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
-"at" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 5},/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "au" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"av" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 9},/obj/effect/landmark{name = "SupplyPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"av" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid/middle,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "aw" = (/obj/covers/repairedfloor/ship,/obj/structure/table/fancy,/obj/structure/potted_plant{dir = 5},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "ax" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone/wood/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "aY" = (/obj/structure/barricade/ship/wood/a12,/obj/covers/repairedfloor/ship,/obj/structure/sign/custom/plaque{desc = "The ship Captain's room and office."; name = "Captain's Room"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
@@ -31,13 +27,17 @@
 "cn" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 4},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "cN" = (/obj/covers/repairedfloor/ship,/obj/structure/repair/gun,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "cP" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"cT" = (/obj/structure/voyage/grid{dir = 8},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "da" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin{dir = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"dw" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 9},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"dz" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 8},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "dD" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/empty,/obj/item/stack/material/cloth,/obj/item/stack/material/cloth,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "dG" = (/obj/structure/barricade/ship/wall2{dir = 4},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "dK" = (/obj/covers/repairedfloor/ship,/obj/effect/spawner/mobspawner/mouse{create_path = /mob/living/simple_animal/mouse/black; name = "black mouse spawner"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "dQ" = (/obj/structure/barricade/ship/blue/b17,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "dR" = (/obj/structure/barricade/ship/blue/b19,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
-"eq" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/shipbell,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"ek" = (/obj/structure/window/barrier/ship/blue/bport3,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"eq" = (/obj/structure/voyage/grid{dir = 5},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "ev" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/empty,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "eK" = (/obj/covers/repairedfloor/ship,/obj/structure/repair,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "eX" = (/obj/structure/barricade/ship/blue/b18,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
@@ -87,7 +87,9 @@
 "om" = (/obj/covers/repairedfloor/ship,/obj/structure/railing,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "oo" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/musketball,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "oP" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark/npctarget/faction/all,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"pL" = (/obj/structure/voyage/grid{dir = 4},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "pY" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"qx" = (/obj/structure/voyage/grid{dir = 6},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "rf" = (/obj/structure/window/barrier/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "rh" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/wood,/obj/item/weapon/bedsheet/captain,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "rw" = (/obj/covers/wood_wall/adjustable,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
@@ -96,6 +98,7 @@
 "rT" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "rV" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "sa" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
+"sh" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 4},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "so" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "sL" = (/obj/covers/wood_wall/adjustable,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper/inside)
 "sQ" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/olive_oil,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
@@ -153,15 +156,19 @@
 "Dx" = (/obj/effect/landmark{name = "JoinLatePirateSurgeon"},/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "DG" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/cabinet,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "DW" = (/obj/structure/barricade/ship/wood/a2,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"Eh" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Ek" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "Ez" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "ET" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/boatswain_book,/obj/structure/table/wood,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Fc" = (/obj/structure/pot,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"Fe" = (/obj/structure/voyage/grid{dir = 9},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Ff" = (/obj/structure/oven,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "Fg" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Fx" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/wood/portl2,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "FM" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"Ge" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder/thin,/obj/structure/window/barrier/ship/blue/bport0,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "GF" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/weapon/flame/candle,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"GU" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 10},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "GW" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/cat/salem,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "Hf" = (/obj/structure/window/barrier/ship/wood/port0,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Hg" = (/obj/structure/barricade/ship/blue/b18,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
@@ -191,7 +198,9 @@
 "NJ" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "On" = (/obj/structure/barricade/ship/wood/a5,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "OG" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/cannonball/grapeshot,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
+"OM" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "OR" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/craftable/rifles/wood/filled_musketoon,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
+"Pj" = (/obj/structure/voyage/grid{dir = 10},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Pn" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/shipwheel,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Pq" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "Py" = (/obj/effect/decal/cleanable/blood/splatter,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
@@ -199,14 +208,17 @@
 "PP" = (/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/wood_pole,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "PQ" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/covers/repairedfloor/ship,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "PU" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/quartermaster_book,/obj/structure/table/wood,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"Qe" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/shipbell,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Qm" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark/npctarget/faction/all,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "QL" = (/obj/item/stack/medical/splint,/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/stack/medical/splint,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "QM" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "Re" = (/obj/covers/repairedfloor/ship,/obj/covers/jail/steeljail,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "Rf" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "Ro" = (/obj/structure/barricade/ship{dir = 1; icon_state = "boat1"},/obj/covers/repairedfloor/ship,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"Rx" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 5},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "RP" = (/obj/structure/barricade/ship/wood/a6,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Se" = (/obj/structure/barricade/ship/wood/a2,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"Sf" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/lever,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Td" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/mouse/black,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "Tz" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/pen,/obj/item/clothing/head/powdered_wig,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/structure/closet/crate/chest,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "TZ" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage{dir = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -216,6 +228,7 @@
 "VC" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b1,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "VJ" = (/obj/effect/landmark{name = "JoinLatePirateQM"},/obj/covers/repairedfloor/ship,/obj/structure/bed/chair{dir = 4},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "VM" = (/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"Wk" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 6},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Wn" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/obj/structure/sign/painting2,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Wt" = (/obj/structure/barricade/ship/wood/a12,/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wood/a9,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "WA" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wood/a9,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -351,17 +364,17 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaagcgcgcgcgcgcgcgcgcgcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagcgcgcgcgcgcgcgcgcgcgcgcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaVCimNJWnimWtNJWtAcWAgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcVyAcAcAcAcWZimvbNJvbimXhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjXqXyXEzGXKYORPVMvqXRHfHfYlHfHfYlHfHfYlHfHfYlHfHfYlHfHfmINbrNrNrNvLYZvsYOvsxrWZZgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYOyBVMVMAMVMVMdaVMnFTZVMVMMnVMVMTZnFVMdaVMVMuTVMVMVMVMvLYOBvBvDxDGvLjnZgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYOyBVMVMAMVMVMdaVMnFTZVMVMMnVMVMTZnFdaVMVMVMuTVMVMVMVMvLYOBvBvDxDGvLjnZgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjimNJimimumYOUTVMVMAMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMuTVMVMVMVMDWvsYOvsDxFgvLmDOnXhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjvtYOvrckYqYORPVMlBFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiilBVMVMVMUTYOYOPyBvQLvLmDapRPsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYORPVMZmFxVMVMVMVMVMVMVMaqaqaqaqVMVMVMVMVMVMiiETVMVMVMvLvsYOvsYOpYbamDapRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjVJttKWgDumYORPoPPnFxNbVMVMVMVMVMPParaqasaqPPVMVMVMVMVMiiJfVMVMeqvLiNYOBvPyYOUTXSapRPsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjimNJimimWtYORPVMakFxNbVMALVMVMVMVMaqaqaqaqVMVMVMALVMVMiiZwVMVMVMvLvsYOvsYOtivLmDapRPsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjTzrhawAaumYORPVMhjFxVMVMVMVMVMVMVMataqavaqVMVMVMVMVMVMiiPUVMVMVMvLYOYOPyYOtivLmDapRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjvtYOvrckYqYORPVMlBFxVMVMVMVMVMVMVMVMSfVMVMVMVMVMVMVMVMiilBVMVMVMUTYOYOPyBvQLvLmDapRPsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOUTYORPVMZmFxVMVMVMVMVMVMVMdwEhEhRxVMVMVMVMVMVMiiETVMVMSfvLvsYOvsYOpYbamDapRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjVJttKWgDumYORPoPPnFxNbVMVMVMVMVMPPdzavavshPPVMVMVMVMVMiiJfVMFeeqvLiNYOBvPyYOUTXSapRPsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjimNJimimWtYORPVMakFxNbVMALVMVMVMVMdzavavshVMVMALVMVMVMiiZwVMcTpLvLvsYOvsYOtivLmDapRPsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjTzrhawAaumYORPVMhjFxVMVMVMVMVMVMVMGUOMOMWkVMVMVMVMVMVMiiPUVMPjqxvLYOYOPyYOtivLmDapRPsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjYOYOYOYOaYYOyBVMlBFxVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMiilBVMVMVMUTYOYOYODxcPvLmDapRPsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaavSYOGFYOYOUTYOUTVMVMAMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMuTVMVMVMVMDWvsYOvsDxfvvLmDeXNnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaXjcnLCYOYOumYORPVMVMAMVMVMVMVMVMVMnFVMVMVMVMVMnFVMVMVMVMuTVMVMVMVMvLYOYOYOYODGdQHgvkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaXjCauptLDrumYORPVMlaYcuIuIrfuIuIKQuIuIgHuIuIKQuIuIrfuIuISeNbVMjOVMvLYZvsYOvsxrHgVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaXjCauptLDrumYORPVMlaYcuIuIrfuIuIKQuIuIgHuIuIKQuIGeekuIuISeNbVMjOQevLYZvsYOvsxrHgVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaarOHPHXHPHPHPHXHPiUdRiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBAEiUiUiUiUdQHPHPHXHPHPVjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

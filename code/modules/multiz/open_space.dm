@@ -39,7 +39,7 @@ var/process/open_space/OS_controller = null
 			for (var/obj/o in floorbelowz)
 				// ingore objects that have any form of invisibility
 				if (o.invisibility) continue
-				var/image/temp2 = image(o, dir=o.dir, layer = o.layer)
+				var/image/temp2 = image(o, dir=o.dir, layer = o.layer+0.02)
 				temp2.plane = plane
 				temp2.color = o.color//rgb(127,127,127)
 				temp2.overlays += o.overlays
@@ -98,6 +98,9 @@ var/process/open_space/OS_controller = null
 		return
 	for (var/obj/covers/C in src)
 		if (istype(C, /obj/covers))
+			return
+	for(var/obj/structure/voyage/grid/G in src)
+		if(G.opened == FALSE)
 			return
 	if (floorbelowz)
 		if (istype(A, /mob))

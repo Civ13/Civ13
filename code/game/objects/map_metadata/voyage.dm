@@ -862,14 +862,54 @@
 /obj/structure/voyage/grid
 	name = "loading gate"
 	desc = "A large gridded gate, used to load the ship."
-	icon = 'icons/turf/64x64.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "grid"
 	layer = 2.99
 	density = FALSE
 	anchored = TRUE
+	var/opened = FALSE
+	var/initial_icon_state = "grid"
 
-/obj/structure/voyage/grid/partial
-	icon_state = "grid_partial"
+	update_icon()
+		if (opened)
+			icon_state = "[initial_icon_state]_open"
+		else
+			icon_state = initial_icon_state
+
+/obj/structure/voyage/grid/middle
+	icon_state = "grid_middle"
+	initial_icon_state = "grid_middle"
+
+/obj/structure/voyage/lever
+	name = "loading gate lever"
+	desc = "A lever used to open and close the loading gate."
+	icon = 'icons/obj/vehicles/train_lever.dmi'
+	icon_state = "lever_none"
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	var/switched = FALSE
+
+/obj/structure/voyage/lever/update_icon()
+	if (!switched)
+		icon_state = "lever_none"
+	else
+		icon_state = "lever_pulled"
+
+/obj/structure/voyage/lever/attack_hand(mob/living/human/H as mob)
+	if(!ishuman(H))
+		return
+	visible_message("[H] starts [switched ? "closing" : "opening"] the loading gate...","You start [switched ? "closing" : "opening"] the loading gate...")
+	if(do_after(H, 80, src, can_move = FALSE))
+		switched = !switched
+		update_icon()
+		for (var/obj/structure/voyage/grid/S in range(5,src))
+			S.opened = switched
+			S.update_icon()
+		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+		return
 
 /obj/effect/sailing_effect
 	name = "waves"

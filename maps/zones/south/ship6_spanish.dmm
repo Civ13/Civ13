@@ -94,12 +94,12 @@
 "bS" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/sgt,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "bT" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 4; icon_state = "wooden_chair_red"},/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/cpt,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "bU" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b17,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
-"bV" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 6; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
-"bW" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 10; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bV" = (/obj/structure/voyage/grid{dir = 9},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"bW" = (/obj/structure/voyage/grid{dir = 5},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "bX" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/mast/large,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "bZ" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b9,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
-"ca" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 5; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
-"cb" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 9; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"ca" = (/obj/structure/voyage/grid{dir = 10},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"cb" = (/obj/structure/voyage/grid{dir = 6},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "cc" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport_6/corner,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "cd" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b20{dir = 2; icon_state = "boat_b20"},/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "ce" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0/south,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
@@ -109,7 +109,12 @@
 "ci" = (/obj/structure/window/barrier/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "cj" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0/south,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "mE" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0/south,/obj/structure/voyage/ropeladder/thin,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"qL" = (/obj/structure/voyage/grid,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"rd" = (/obj/structure/voyage/grid/middle,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"vg" = (/obj/structure/voyage/grid{dir = 1},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "yG" = (/obj/structure/window/barrier/ship/blue/bport3,/obj/structure/voyage/ropeladder,/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"Az" = (/obj/structure/voyage/grid{dir = 4},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
+"LI" = (/obj/structure/voyage/grid{dir = 8},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -149,9 +154,9 @@ aaaaaaaabhaYblblblblblbtbkblblbLblblbwbobobpbobobobobobpbobobobobobpbobobobobpbo
 aaaaaaaabzblblblblblblbtblbOblblblbObwbBbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobfbEaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblbkbkblblblbtblblblblblblbwbBbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblblbPblblblbablblblblblblbbbobobobobobobQbQbobobobobobobobobNbNbobobobobSbobobobobQbQbobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaabzblbTbDblblblbJblblblblblblbJbobobobobobSbobobobobVbobWbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaabzblblbIblblblbJblblblblblblbJbobobobobobobXbobobobobobobobSbobXbobobobobobobobobobobXbobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaabzblbkbMblblblbablblblblblblbbbobobobobobobNbNbobocabocbbobobobQbQbobobobobobobobobobNbNbobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabzblbTbDblblblbJblblblblblblbJbobobobobobSbobobobobVvgbWbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabzblblbIblblblbJblblblblblblbJbobobobobobobXboboboLIrdAzbobSbobXbobobobobobobobobobobXbobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabzblbkbMblblblbablblblblblblbbbobobobobobobNbNbobocaqLcbbobobobQbQbobobobobobobobobobNbNbobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblblblblblblbtblblblblblblbwbBbobobobobobobobobobobobobobobobobobobobobobobobpbobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblblblblblblbtblblblblblblbwbBbobpbobobobpbobobpbobobobobobobobpbobobobpbobobobobobobobobobobobpboboboboboboboboboccbRaUaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabUcdblblblblblbtbObLblblblbObwbobobobobobobobobobobobobpbobobobobobobobobobobobobobobobpbobobobobobobobobobobobocccebRaaaaaaaaaaaaaaaaaaaaaaaa

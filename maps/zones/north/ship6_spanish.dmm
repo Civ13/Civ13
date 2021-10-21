@@ -44,8 +44,8 @@
 "aT" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/red,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "aU" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/musketball,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "aV" = (/obj/covers/repairedfloor/ship,/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
-"aW" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 6; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/top)
-"aX" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 10; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"aW" = (/obj/structure/voyage/grid{dir = 9},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"aX" = (/obj/structure/voyage/grid{dir = 5},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "aY" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "aZ" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wood/a12,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "ba" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/top)
@@ -68,8 +68,8 @@
 "br" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/mast/large,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bs" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "bt" = (/obj/covers/repairedfloor/ship,/obj/structure/table/modern/table,/obj/structure/voyage/sextant,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
-"bu" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 5; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/top)
-"bv" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/grid/partial{dir = 9; icon_state = "grid_partial"},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"bu" = (/obj/structure/voyage/grid{dir = 10},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"bv" = (/obj/structure/voyage/grid{dir = 6},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bw" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport_6/corner,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bx" = (/obj/structure/barricade/ship/wall2{dir = 2; icon_state = "boat2"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "by" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport9,/turf/floor/broken_floor,/area/caribbean/sea/top)
@@ -109,9 +109,14 @@
 "ch" = (/obj/structure/window/barrier/ship/blue/bport3,/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "ci" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0/south,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "cj" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0/south,/obj/structure/voyage/ropeladder/thin,/turf/floor/broken_floor,/area/caribbean/sea/top)
+"fM" = (/obj/structure/voyage/grid,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "kq" = (/obj/structure/window/barrier/ship/blue/bport3,/obj/structure/voyage/ropeladder,/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire,/turf/floor/broken_floor,/area/caribbean/sea/top)
+"uJ" = (/obj/structure/voyage/grid{dir = 4},/turf/floor/broken_floor,/area/caribbean/sea/top)
 "Cl" = (/obj/effect/landmark{name = "Grappling Hook area - do not block"},/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0/south,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "Kv" = (/obj/effect/landmark{name = "Grappling Hook area - do not block"},/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/blue/bport0/south,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/broken_floor,/area/caribbean/sea/top)
+"MP" = (/obj/structure/voyage/grid{dir = 8},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"OX" = (/obj/structure/voyage/grid{dir = 1},/turf/floor/broken_floor,/area/caribbean/sea/top)
+"TV" = (/obj/structure/voyage/grid/middle,/turf/floor/broken_floor,/area/caribbean/sea/top)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -155,9 +160,9 @@ aaaaaaaaaaaJaQaqaqaqaqaqayapaqaqbiaqaqaCatatbhatatatatatbhatatatatatbhatatatatbh
 aaaaaaaaaaaFaqaqaqaqaqaqayaqaraqaqaqaraCbjatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatbfaOaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqapapaqaqaqayaqaqaqaqaqaqaCbjatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqaqaSaqaqaqaPaqaqaqaqaqaqaZatatatatatataUaUatatatatatatatatbmbmatatatatbnatatatataUaUatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaFaqboaVaqaqaqasaqaqaqaqaqaqasatatatatatbnatatatataWataXatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaFaqaqbqaqaqaqasaqaqaqaqaqaqasatatatatatatbratatatatatatatbnatbratatatatatatatatatatbratatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaFaqapbtaqaqaqaPaqaqaqaqaqaqaZatatatatatatbmbmatatbuatbvatatataUaUatatatatatatatatatbmbmatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaFaqboaVaqaqaqasaqaqaqaqaqaqasatatatatatbnatatatataWOXaXatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaFaqaqbqaqaqaqasaqaqaqaqaqaqasatatatatatatbratatatMPTVuJatbnatbratatatatatatatatatatbratatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaFaqapbtaqaqaqaPaqaqaqaqaqaqaZatatatatatatbmbmatatbufMbvatatataUaUatatatatatatatatatbmbmatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqaqaqaqaqaqayaqaqaqaqaqaqaCbjatatatatatatatatatatatatatatatatatatatatatatatbhatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqaqaqaqaqaqayaqaqaqaqaqaqaCbjatbhatatatbhatatbhatatatatatatatbhatatatbhatatatatatatatatatatatbhatatatatatatatatatbwbyawaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabEbFaqaqaqaqaqayarbiaqaqaqaraCatatatatatatatatatatatatbhatatatatatatatatatatatatatatatbhatatatatatatatatatatatatbwbVbyaaaaaaaaaaaaaaaaaaaaaa
