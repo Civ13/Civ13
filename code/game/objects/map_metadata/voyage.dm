@@ -880,6 +880,41 @@
 	density = FALSE
 	anchored = TRUE
 
+/obj/effect/mast
+	name = "mast"
+	desc = "Waves caused by the ship's movement."
+	icon = 'icons/obj/vehicles/mast_vertical.dmi'
+	icon_state = "blank"
+	layer = 4
+	density = FALSE
+	anchored = TRUE
+	mouse_opacity = FALSE
+	var/obj/structure/barricade/ship/mast/large/mast
+	var/image/olay
+	var/image/mlay
+
+	New()
+		..()
+		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_x = -32, pixel_y = -192, layer=10)
+		olay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="sails_overlay_h100", pixel_x = 32, pixel_y = -192, layer=10)
+		update_icon()
+
+	update_icon()
+		if(mast)
+			overlays.Cut()
+			overlays += mlay
+			if (mast.sailstat <= 0)
+				olay.icon_state = "sails_overlay0"
+			else if (mast.sailhealth > 75)
+				olay.icon_state = "sails_overlay_h100"
+			else if (mast.sailhealth <= 75 && mast.sailhealth > 50)
+				olay.icon_state = "sails_overlay_h75"
+			else if (mast.sailhealth <= 50 && mast.sailhealth > 25)
+				olay.icon_state = "sails_overlay_h50"
+			else if (mast.sailhealth <= 25)
+				olay.icon_state = "sails_overlay_h25"
+			overlays += olay
+
 /obj/effect/flooding
 	name = "flooded floor"
 	desc = "The water seems to be about 50cm deep."

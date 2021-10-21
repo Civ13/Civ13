@@ -694,8 +694,7 @@
 /obj/structure/barricade/ship/mast/large
 	icon = 'icons/turf/64x64.dmi'
 	icon_state = "large_mast"
-	var/image/olay
-	var/image/mlay
+	var/obj/effect/mast/mast_overlay
 	bound_height = 64
 	bound_width = 64
 	opacity = FALSE
@@ -711,24 +710,9 @@
 
 	New()
 		..()
-		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_x = -32, pixel_y = -192, layer=10)
-		olay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="sails_overlay_h100", pixel_x = 32, pixel_y = -192, layer=10)
-		update_icon()
-
-	update_icon()
-		overlays.Cut()
-		overlays += mlay
-		if (sailstat <= 0)
-			olay.icon_state = "sails_overlay0"
-		else if (sailhealth > 75)
-			olay.icon_state = "sails_overlay_h100"
-		else if (sailhealth <= 75 && sailhealth > 50)
-			olay.icon_state = "sails_overlay_h75"
-		else if (sailhealth <= 50 && sailhealth > 25)
-			olay.icon_state = "sails_overlay_h50"
-		else if (sailhealth <= 25)
-			olay.icon_state = "sails_overlay_h25"
-		overlays += olay
+		mast_overlay = new/obj/effect/mast(src.loc)
+		mast_overlay.mast = src
+		mast_overlay.update_icon()
 
 	examine(mob/user)
 		..(user)
@@ -820,8 +804,6 @@
 /obj/structure/barricade/ship/mast/large/upgraded
 	icon = 'icons/turf/64x64.dmi'
 	icon_state = "large_mast"
-	image/olay
-	image/mlay
 	bound_height = 64
 	bound_width = 64
 	opacity = FALSE
@@ -832,9 +814,3 @@
 	rigginghealth = 100
 	sailstat = 100
 	owner = "ship"
-
-	New()
-		..()
-		mlay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="mast_overlay", pixel_x = -32, pixel_y = -192, layer=10)
-		olay = image(icon='icons/obj/vehicles/mast_vertical.dmi',icon_state="sails_overlay_h100", pixel_x = 32, pixel_y = -192, layer=10)
-		update_icon()
