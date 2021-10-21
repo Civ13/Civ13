@@ -1,5 +1,6 @@
 
 /mob/living/simple_animal/hostile/human
+	attack_verb = "hits"
 	var/corpse = null
 	var/weapon = null
 	var/idle_counter = 0

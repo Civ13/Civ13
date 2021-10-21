@@ -99,6 +99,10 @@
 /obj/covers/repairedfloor/rope/Destroy()
 	for(var/obj/structure/window/barrier/B in loc)
 		B.density = TRUE
+	for(var/obj/O in loc)
+		loc.Entered(O)
+	for(var/mob/living/M in loc)
+		loc.Entered(M)
 	..()
 /obj/covers/wood
 	name = "wood floor"

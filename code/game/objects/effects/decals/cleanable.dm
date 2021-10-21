@@ -8,6 +8,13 @@
 	..()
 
 /obj/effect/decal/cleanable/New()
+	if (istype(loc, /turf/floor/beach/water))
+		var/found = FALSE
+		for(var/obj/covers/C in loc)
+			found = TRUE
+			break
+		if (!found)
+			qdel(src)
 	if (random_icon_states && length(random_icon_states) > 0)
 		icon_state = pick(random_icon_states)
 	..()

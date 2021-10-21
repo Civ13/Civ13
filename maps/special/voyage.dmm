@@ -183,7 +183,7 @@
 "KW" = (/obj/covers/repairedfloor/ship,/obj/structure/potted_plant{dir = 6},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "LC" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage/tablemap{dir = 4},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Mn" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder{dir = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
-"MC" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wall2/doorway,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"MC" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wall2/doorway{dir = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "MR" = (/obj/covers/repairedfloor/ship,/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/obj/structure/cannon/modern/tank/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "Nb" = (/obj/structure/multiz/ladder/ww2{area_id = "b1"},/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Nk" = (/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)

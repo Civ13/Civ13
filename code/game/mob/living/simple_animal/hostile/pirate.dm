@@ -108,7 +108,7 @@
 		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
 		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
 
-		gun = new/obj/item/weapon/material/sword/cutlass(src)
+		gun = new/obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733(src)
 		icon_state = "pirate_friendly_captain"
 
 /mob/living/simple_animal/hostile/human/voyage/pirate/friendly

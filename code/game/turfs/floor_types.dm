@@ -287,6 +287,12 @@
 		spawn(60)
 			if (A.loc == src)
 				qdel(A)
+	if(istype(A, /mob/living))
+		var/mob/living/ML = A
+		if (ML.stat == DEAD)
+			spawn(60)
+				if (A.loc == src)
+					qdel(A)
 /turf/floor/beach/water/deep/Entered(atom/movable/A)
 	..()
 	for(var/obj/covers/C in src)
@@ -295,6 +301,12 @@
 		spawn(60)
 			if (istype(A.loc,/turf/floor/beach/water/deep))
 				qdel(A)
+	if(istype(A, /mob/living))
+		var/mob/living/ML = A
+		if (ML.stat == DEAD)
+			spawn(60)
+				if (A.loc == src)
+					qdel(A)
 /turf/floor/beach/water/deep/jungle
 	name = "deep jungle river"
 	icon_state = "seashallow_jungle3"

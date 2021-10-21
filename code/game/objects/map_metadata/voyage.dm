@@ -131,8 +131,8 @@
 /obj/map_metadata/voyage/proc/gen_ship(sfaction = "random", ssize = 0, slat = 0, slon = 0)
 	if (sfaction == "random" || !(sfaction in list("pirates","merchant","spanish","british","undead")))
 		sfaction = pick("pirates","merchant","spanish","british","undead")
-	if (ssize <= 0 || ssize > 5)
-		ssize = pick(1,2,3,4,5)
+	if (ssize <= 0 || ssize > 6)
+		ssize = pick(1,2,3,4,5,6)
 	else
 		ssize = round(ssize)
 
@@ -176,7 +176,7 @@
 			load_map(pick("island1","island2","piratetown"),"south")
 		return
 	else if (navdirection == "island fort")
-		load_map(pick("island_fortress1","island_fortress2"),"south")
+		load_map(pick("islandfort1","islandfort2"),"south")
 	else
 		load_map(mapgen["[latitude],[longitude]"][3])
 	return
@@ -589,7 +589,7 @@
 	layer = 3.2
 	anchored = TRUE
 	attack_hand(mob/living/human/H)
-		if (H.original_job_title == "Pirate Boatswain")
+		if (H.original_job_title == "Pirate Boatswain" || H.title == "Deputy Boatswain")
 			var/dat = "<h1>CREW LOG</h1>"
 			dat += tally_crew()
 			H << browse(dat, "window=Crew Log")
@@ -615,7 +615,7 @@
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
-		if (H.original_job_title == "Pirate Quartermaster")
+		if (H.original_job_title == "Pirate Quartermaster" || H.title == "Deputy Quartermaster")
 			var/tres = tally_treasure()
 			var/mats = tally_materials()
 			var/mats_wood = mats["wood"]
@@ -628,6 +628,7 @@
 			var/mats_cannon = wep["cannonballs"]
 			var/mats_musket = wep["musket"]
 			var/mats_pistol = wep["pistol"]
+			var/mats_blunderbuss = wep["blunderbuss"]
 
 			var/dat = "<h1>SHIP STOCKS</h1>"
 			dat += "<b>Treasury:</b> [tres] reales<br>"
@@ -639,6 +640,7 @@
 			dat += "<b>Cannon Ammo:</b> [mats_cannon] balls<br>"
 			dat += "<b>Musket Ammo:</b> [mats_musket] projectiles<br>"
 			dat += "<b>Pistol Ammo:</b> [mats_pistol] projectiles<br>"
+			dat += "<b>Blunderbuss Ammo:</b> [mats_blunderbuss] projectiles<br>"
 			H << browse(dat, "window=Ship Stocks")
 	proc/tally_treasure()
 		var/tally = 0
@@ -690,7 +692,7 @@
 		return tally
 
 	proc/tally_weapons()
-		var/list/tally = list("musket" = 0, "pistol" = 0, "cannonballs" = 0)
+		var/list/tally = list("musket" = 0, "pistol" = 0, "blunderbuss" = 0, "cannonballs" = 0)
 		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 		for(var/turf/sel_turf in t_turfs)
 			for(var/obj/structure/closet/crate/S in sel_turf)
@@ -698,12 +700,16 @@
 					tally["musket"]++
 				for(var/obj/item/ammo_casing/musketball_pistol/MBP in S)
 					tally["pistol"]++
+				for(var/obj/item/ammo_casing/blunderbuss/MBB in S)
+					tally["blunderbuss"]++
 				for(var/obj/item/cannon_ball/CB in S)
 					tally["cannonballs"]++
 			for(var/obj/item/ammo_casing/musketball/MB in sel_turf)
 				tally["musket"]++
 			for(var/obj/item/ammo_casing/musketball_pistol/MBP in sel_turf)
 				tally["pistol"]++
+			for(var/obj/item/ammo_casing/blunderbuss/MBB in sel_turf)
+				tally["blunderbuss"]++
 			for(var/obj/item/cannon_ball/CB in sel_turf)
 				tally["cannonballs"]++
 		return tally
@@ -789,10 +795,11 @@
 		anchor = image(icon = 'icons/obj/vehicles/vehicleparts.dmi', icon_state = "anchor", layer = 5, pixel_y = -32)
 
 	update_icon()
-		..()
-		overlays.Cut()
-		if(anchored)
-			overlays += anchor
+		if(map.ID == MAP_VOYAGE)
+			overlays.Cut()
+			var/obj/map_metadata/voyage/nmap = map
+			if(nmap.ship_anchored)
+				overlays += anchor
 
 	proc/raise_anchor()
 		if(map.ID == MAP_VOYAGE)
