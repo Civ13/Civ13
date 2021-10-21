@@ -610,9 +610,12 @@
 										else if (S.density)
 											if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
 												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
-	//		else
-		//		log_debug("ignored [AM] (2)")
-
+						if (istype(O, /obj/covers/repairedfloor))
+							if ((prob(18) && src.atype == "cannonball") || src.atype != "cannonball")
+								O.pre_bullet_act(src)
+								if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
+									if (O && !O.gcDestroyed)
+										passthrough = FALSE
 	//penetrating projectiles can pass through things that otherwise would not let them
 	++penetrating
 	if ((T.density && penetrating > 0) && (can_hit_in_trench != -1))

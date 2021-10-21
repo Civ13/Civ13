@@ -275,10 +275,10 @@
 			start_fire()
 		try_destroy()
 	else
-		if (wall)
+		if (wall || (istype(src, /obj/covers/repairedfloor) && !istype(src, /obj/covers/repairedfloor/rope)))
 			if (istype(proj, /obj/item/projectile/shell))
 				var/obj/item/projectile/shell/S = proj
-				if (S.atype == "HE")
+				if (S.atype == "HE" || S.atype == "cannonball")
 					visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 					qdel(src)
 					return

@@ -68,8 +68,7 @@
 		var/turf/T4 = get_step(src.loc,pick(SOUTH,SOUTHEAST))
 		if(T4)
 			new/obj/effect/flooding(T4)
-	. = ..()
-	qdel(src)
+	..()
 /obj/covers/repairedfloor/ship/south
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "boat_floor_south1"
