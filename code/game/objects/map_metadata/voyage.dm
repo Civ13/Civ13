@@ -485,6 +485,10 @@
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 
 ///////////////Specific objects////////////////////
+/obj/structure/voyage
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/voyage/bullet_act(var/obj/item/projectile/P, def_zone)
 	P.on_hit(src, FALSE, def_zone)
 	return
@@ -889,7 +893,7 @@
 	density = FALSE
 	opacity = FALSE
 	not_movable = TRUE
-	not_disassemblable = FALSE
+	not_disassemblable = TRUE
 	var/switched = FALSE
 
 /obj/structure/voyage/lever/update_icon()
@@ -910,6 +914,54 @@
 			S.update_icon()
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		return
+
+/obj/structure/voyage/voicepipe
+	name = "voicepipe"
+	desc = "A brass tube used to communicate with different areas of the ship."
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
+	icon_state = "voicepipe"
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	var/vp_reference = null
+	var/directional = FALSE //if you need to stand right in front to broadcast
+
+/obj/structure/voyage/voicepipe/cannons
+	vp_reference = "Lower Deck"
+	name = "voicepipe (lower deck)"
+
+/obj/structure/voyage/voicepipe/upper
+	vp_reference = "Upper Deck"
+	name = "voicepipe (upper deck)"
+
+/obj/structure/voyage/voicepipe/medical
+	vp_reference = "Medical"
+	name = "voicepipe (medical)"
+
+/obj/structure/voyage/voicepipe/kitchen
+	vp_reference = "Kitchen"
+	name = "voicepipe (kitchen)"
+
+/obj/structure/voyage/voicepipe/prow
+	vp_reference = "Prow"
+	name = "voicepipe (prow post)"
+
+/obj/structure/voyage/voicepipe/proc/broadcast(var/msg, var/mob/living/human/speaker)
+
+	// ignore emotes.
+	if (dd_hasprefix(msg, "*"))
+		return
+
+	var/list/tried_mobs = list()
+
+	for (var/mob/living/human/hearer in human_mob_list)
+		if (tried_mobs.Find(hearer))
+			continue
+		tried_mobs += hearer
+		if (hearer.stat == CONSCIOUS)
+			for (var/obj/structure/voyage/voicepipe/phone in view(7, hearer))
+				if (src.vp_reference == phone.vp_reference && src != phone)
+					hearer.hear_voicepipe(msg, speaker.default_language, speaker, src, phone)
 
 /obj/effect/sailing_effect
 	name = "waves"
