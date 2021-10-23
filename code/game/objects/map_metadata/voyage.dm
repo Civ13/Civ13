@@ -218,32 +218,35 @@
 			qdel(M)
 		for (var/obj/O in T)
 			qdel(O)
-		if (T.type != /turf/floor/beach/water/deep/saltwater)
+		if (!istype(T,/turf/floor/beach/water/deep/saltwater))
 			T.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+	sleep(1)
 	for(var/turf/T1 in get_area_turfs(/area/caribbean/sea/top/roofed))
 		for (var/mob/living/M in T1)
 			qdel(M)
 		for (var/obj/O in T1)
 			qdel(O)
-		if (T1.type != /turf/floor/beach/water/deep/saltwater)
+		if (!istype(T1,/turf/floor/beach/water/deep/saltwater))
 			T1.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
 		new/area/caribbean/sea/top(T1)
 		for (var/atom/movable/lighting_overlay/LO in T1)
 			LO.update_overlay()
+	sleep(1)
 	//South
 	for(var/turf/T2 in get_area_turfs(/area/caribbean/sea/bottom))
 		for (var/mob/living/M in T2)
 			qdel(M)
 		for (var/obj/O in T2)
 			qdel(O)
-		if (T2.type != /turf/floor/beach/water/deep/saltwater)
+		if (!istype(T2,/turf/floor/beach/water/deep/saltwater))
 			T2.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+	sleep(1)
 	for(var/turf/T3 in get_area_turfs(/area/caribbean/sea/bottom/roofed))
 		for (var/mob/living/M in T3)
 			qdel(M)
 		for (var/obj/O in T3)
 			qdel(O)
-		if (T3.type != /turf/floor/beach/water/deep/saltwater)
+		if (!istype(T3,/turf/floor/beach/water/deep/saltwater))
 			T3.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
 		new/area/caribbean/sea/bottom(T3)
 		for (var/atom/movable/lighting_overlay/LO in T3)
@@ -918,6 +921,9 @@
 					new/area/caribbean/pirates/ship/voyage/upper(TF)
 				else
 					new/area/caribbean/pirates/ship/voyage/lower(TF)
+			if(istype(S.loc, /turf/floor/broken_floor) && S.opened)
+				for(var/atom/movable/AT in S.loc)
+					S.loc.Entered(AT)
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		return
 
@@ -933,8 +939,8 @@
 	var/directional = FALSE //if you need to stand right in front to broadcast
 
 /obj/structure/voyage/voicepipe/cannons
-	vp_reference = "Lower Deck"
-	name = "voicepipe (lower deck)"
+	vp_reference = "Gun Deck"
+	name = "voicepipe (gun deck)"
 
 /obj/structure/voyage/voicepipe/upper
 	vp_reference = "Upper Deck"
