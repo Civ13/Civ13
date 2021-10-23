@@ -99,6 +99,9 @@ var/process/open_space/OS_controller = null
 	for (var/obj/covers/C in src)
 		if (istype(C, /obj/covers))
 			return
+	for (var/obj/structure/multiz/ladder/LD in src)
+		if (istype(LD, /obj/structure/multiz/ladder))
+			return
 	for(var/obj/structure/voyage/grid/G in src)
 		if(G.opened == FALSE)
 			return
