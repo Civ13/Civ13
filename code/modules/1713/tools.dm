@@ -425,7 +425,7 @@
 
 /obj/structure/grapplehook/update_icon()
 	if (deployed)
-		icon_state = "grapplehook_deployed"
+		icon_state = "grapplehook_bridge_deployed"
 	else
 		icon_state = "grapplehook"
 

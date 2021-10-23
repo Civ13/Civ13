@@ -627,6 +627,7 @@
 	opacity = TRUE
 	protection_chance = 60
 	ispartial = TRUE
+	density = TRUE
 
 /obj/structure/barricade/ship/cport1
 	name = "open cannon port"

@@ -912,6 +912,12 @@
 		for (var/obj/structure/voyage/grid/S in range(5,src))
 			S.opened = switched
 			S.update_icon()
+			var/turf/TF = locate(S.x,S.y,S.z-1)
+			if(TF)
+				if(S.opened)
+					new/area/caribbean/pirates/ship/voyage/upper(TF)
+				else
+					new/area/caribbean/pirates/ship/voyage/lower(TF)
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		return
 

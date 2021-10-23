@@ -34,7 +34,6 @@ proc/GetBelow(var/atom/atom)
 
 	var/turf/turf = get_turf(atom)
 	if (!turf)
-		world << "No turf"
 		return null
 	return HasBelow(turf.z) ? get_step(turf, DOWN) : null
 

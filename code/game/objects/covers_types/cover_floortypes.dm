@@ -77,14 +77,19 @@
 	name = "grappling hook rope"
 	desc = "a piece of rope attached to a grappling hook"
 	icon = 'icons/obj/objects.dmi'
-	icon_state = "grapplehook_line"
+	icon_state = "grapplehook_line_bridge"
 	flammable = FALSE
 	explosion_resistance = TRUE
 	var/origin = null
 	layer = 3.999
 
+	New()
+		..()
+		if(icon_state == "grapplehook_line_bridge")
+		icon_state = pick("grapplehook_line_bridge","grapplehook_line_bridge1","grapplehook_line_bridge2")
+
 /obj/covers/repairedfloor/rope/end
-	icon_state = "grapple_overlay"
+	icon_state = "grapple_bridge_overlay"
 	layer = 3.15
 
 /obj/covers/repairedfloor/rope/proc/develop(var/obj/norigin)
