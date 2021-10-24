@@ -126,26 +126,28 @@
 
 /proc/checkTurfPassable(turf/T)
 	if(!T)
-		return 0 // can't go on a turf that doesn't exist!!
+		return FALSE // can't go on a turf that doesn't exist!!
 	if(T.density) // simplest case
-		return 0
+		return FALSE
+	if(istype(T, /turf/floor/broken_floor) && !T.iscovered())
+		return FALSE
 	for(var/atom/O in T.contents)
 		if (O.density) // && !(O.flags & ON_BORDER)) -- fuck you, windows, you're dead to me
 			if (istype(O, /obj/structure/simple_door))
 				var/obj/structure/simple_door/D = O
 				if (D.locked)
-					return 0 // a blocked door is a blocking door
+					return FALSE // a blocked door is a blocking door
 			if (istype(O, /obj/covers))
 				var/obj/covers/W = O
 				if (W.passable == FALSE)
-					return 0 // walls specificed as not passable shouldn't be passable now
+					return FALSE // walls specificed as not passable shouldn't be passable now
 			if (ismob(O))
 				var/mob/M = O
 				if (M.anchored)
-					return 0 // an anchored mob is a blocking mob
+					return FALSE // an anchored mob is a blocking mob
 				else
-			return 0 // not a special case, so this is a blocking object
-	return 1
+			return FALSE // not a special case, so this is a blocking object
+	return TRUE
 
 /******************************************************************/
 // Navigation procs
@@ -168,11 +170,11 @@
 		target_obj = tgt
 	if (!target_obj)
 		found_path = list()
-		return 0
+		return FALSE
 	if (get_dist(src,target_obj)<=1)
 		target_obj = null
 		found_path = list()
-		return 0
+		return FALSE
 //	walk(src, 0)
 	if(found_path.len > 0)
 		// follow the path
@@ -195,18 +197,18 @@
 			return found_path.len
 		else
 			walk_towards(src,target_obj,move_to_delay)
-			return 0
+			return FALSE
 
 /mob/living/simple_animal/hostile/human/proc/get_path(var/atom/tgt = null)
 	if (tgt)
 		target_obj = tgt
 	if(!target_obj)
-		return 0
+		return FALSE
 	var/turf/ta = get_turf(src)
 	var/turf/tb = get_turf(target_obj)
 	if (!ta || !tb)
-		return 0
+		return FALSE
 	found_path = cirrAstar(ta, tb, 1, 250)
 	if(!found_path.len) // no path :C
-		return 0
+		return FALSE
 	return found_path.len

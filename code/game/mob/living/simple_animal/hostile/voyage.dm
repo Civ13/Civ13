@@ -38,6 +38,7 @@
 	stop_automated_movement_when_pulled = 0
 	corpse = /mob/living/human/corpse/spanish_soldier
 	faction = SPANISH
+	language = new/datum/language/spanish
 
 /mob/living/simple_animal/hostile/human/voyage/spanish/ranged
 	name = "Spanish Rifleman"
