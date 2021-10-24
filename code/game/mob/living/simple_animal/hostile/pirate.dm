@@ -146,7 +146,7 @@
 			projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
 			gun = new/obj/item/weapon/gun/projectile/flintlock/pistol(src)
 		else
-			gun = new/obj/item/weapon/material/sword/cutlass(src)
+			weapon = new/obj/item/weapon/material/sword/cutlass(src)
 		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
 		messages["backup"] =list( "!!I need help!","!!Help me!")
 		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
@@ -255,5 +255,5 @@
 		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
 		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
 
-		gun = new/obj/item/weapon/material/sword/cutlass(src)
+		weapon = new/obj/item/weapon/material/sword/cutlass(src)
 		icon_state = "pirate_friendly_female"

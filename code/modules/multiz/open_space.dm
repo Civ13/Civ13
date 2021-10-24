@@ -71,6 +71,9 @@ var/process/open_space/OS_controller = null
 	icon_state = "black"
 	density = FALSE
 	var/turf/floorbelowz
+	// "push" floors for effects, like the bottom deck of the ship. It pushes you into a direction if you fall that way.
+	var/push_dir = null
+
 /turf/floor/broken_floor/sky
 	name = "sky"
 	density = FALSE
@@ -107,6 +110,9 @@ var/process/open_space/OS_controller = null
 			return
 	if (floorbelowz)
 		if (istype(A, /mob))
+			if(push_dir)
+				A.forceMove(get_step(src,push_dir))
+				return
 			A.z -= 1
 			A.visible_message("[A] falls from the level above and slams into \the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch.")
 			if (istype(A, /mob/living/human))
@@ -123,9 +129,12 @@ var/process/open_space/OS_controller = null
 				H.updatehealth()
 
 		if (istype(A, /obj))
-			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast))
+			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast) || istype(A, /obj/structure/voyage/grid))
 				return
 			else
+				if(push_dir)
+					A.forceMove(get_step(src,push_dir))
+					return
 				A.z -= 1
 				A.visible_message("\The [A] falls from the level above and slams into the floor!", "You hear something slam into the deck.")
 

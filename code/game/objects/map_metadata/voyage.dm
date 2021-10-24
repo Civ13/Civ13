@@ -77,7 +77,7 @@
 			navprogress += navspeed
 			if (navprogress >= 100)
 				navprogress = 0
-				if (navdirection == "island" || findtext(navdirection,"ship" || navdirection == "island fort"))
+				if (navdirection == "island" || findtext(navdirection,"ship" || navdirection == "fort"))
 					enter_event()
 				else
 					switch(navdirection)
@@ -175,7 +175,7 @@
 		else
 			load_map(pick("island1","island2","piratetown"),"south")
 		return
-	else if (navdirection == "island fort")
+	else if (navdirection == "fort")
 		load_map(pick("islandfort1","islandfort2"),"south")
 	else
 		load_map(mapgen["[latitude],[longitude]"][3])
@@ -596,7 +596,7 @@
 	layer = 3.2
 	anchored = TRUE
 	attack_hand(mob/living/human/H)
-		if (H.original_job_title == "Pirate Boatswain" || H.title == "Deputy Boatswain")
+		if (H.original_job_title == "Pirate Boatswain" || H.title == "Deputy Boatswain" || H.original_job_title == "Pirate Captain")
 			var/dat = "<h1>CREW LOG</h1>"
 			dat += tally_crew()
 			H << browse(dat, "window=Crew Log")
@@ -622,7 +622,7 @@
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
-		if (H.original_job_title == "Pirate Quartermaster" || H.title == "Deputy Quartermaster")
+		if (H.original_job_title == "Pirate Quartermaster" || H.title == "Deputy Quartermaster" || H.original_job_title == "Pirate Captain")
 			var/tres = tally_treasure()
 			var/mats = tally_materials()
 			var/mats_wood = mats["wood"]
