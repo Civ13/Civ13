@@ -77,8 +77,10 @@
 	icon_state = "f1"
 	var/faction = "none"
 	New()
-		map.faction_targets += list(list(src.name,src.faction,src.loc.x,src.loc.y,src.loc.z))
-		..()
+		spawn(150)
+			if(map && src)
+				map.faction_targets += list(list(src.name,src.faction,src.loc.x,src.loc.y,src.loc.z))
+			..()
 
 /obj/effect/landmark/npctarget/faction/all
 	name = "all faction target"

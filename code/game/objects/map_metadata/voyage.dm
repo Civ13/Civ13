@@ -59,7 +59,7 @@
 		map.next_win = world.time - 100
 		return
 	//everyone dead
-	if(processes.ticker.playtime_elapsed >= 6000) //10 mins
+	if(processes && processes.ticker.playtime_elapsed >= 6000) //10 mins
 		var/found = FALSE
 		for(var/mob/living/human/H in world)
 			if (H.stat != DEAD)
