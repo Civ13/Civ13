@@ -84,9 +84,9 @@
 		var/mob/living/simple_animal/hostile/human/SMH = speaker
 		if(SMH.role == "officer")
 			found_officer = TRUE
-	else if (ishuman(speaker) && speaker.faction == src.faction)
+	else if (ishuman(speaker))
 		var/mob/living/human/H = speaker
-		if(H.original_job.is_officer)
+		if(H.original_job.is_officer && H.faction_text == src.faction)
 			found_officer = TRUE
 	if(found_officer)
 		if (s_language.name == language.name)
