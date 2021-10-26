@@ -213,7 +213,7 @@
 "Rv" = (/obj/structure/barricade/ship/blue/b19,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Rx" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/voicepipe/upper{dir = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "RJ" = (/obj/covers/repairedfloor/ship,/obj/structure/sign/custom/plaque{desc = "Where the ship's riches are kept."; name = "Treasury"},/obj/structure/barricade/ship/wood/a2,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"RK" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/anchor_capstan,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"RK" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/shipbell,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "RO" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/voicepipe/cannons{dir = 1; directional = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "RP" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest/treasury/ship,/obj/effect/landmark{name = "TreasuryPR"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside/treasury)
 "RS" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/voicepipe/medical{dir = 1; directional = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -231,7 +231,7 @@
 "UC" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/voicepipe/kitchen{dir = 1; directional = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "UT" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Vj" = (/obj/structure/barricade/ship/blue/b18,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"Vl" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/shipbell,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
+"Vl" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/anchor_capstan,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Vt" = (/obj/structure/barricade/ship/wood/a12,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Vy" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/wood,/obj/item/weapon/bedsheet/blue,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "VC" = (/obj/structure/barricade/ship/wood/a12,/obj/covers/repairedfloor/ship,/obj/structure/sign/custom/plaque{desc = "The ship Quartermaster's room and office."; name = "Quartermaster's Room"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
@@ -380,14 +380,14 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqXyXEzGXKKQKgKgKgXRMnHfHfMCHfHfHfOMHfMCHfHfHfOMHfMC
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqYOYOYOYOXSKgKgKgKgQpVMVMQLVMVMnFdaVMQMVMVMnFdaQLVMVMVMRoVMVMVMVMYZYOBvBvFgvLYZSePyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqimWnimimVtVMVMVMVMQpVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMRoVMVMVMVMTZDxYODxFgUTYZOnXhIRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqVyYOckYqVCVMWkVMFxWtWAVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMZwFxVMVMVMXSYOYOXjBvYlYZOnRPZmsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqYOYOYOYOXSVMRSVMnwWtVMVMWHVMVMSjVMVMEhRxVMVMVMWHSjVMVMZwhgVMVMVlYZDxYODxYObaRJOnRPZmsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqYOYOYOYOXSVMRSVMnwWtVMVMWHVMVMSjVMVMEhRxVMVMVMWHSjVMVMZwhgVMVMVMYZDxYODxYObaRJOnRPZmsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqttKWgDumVtVMoPPnELWtVMVMVMVMVMVMdzPPPPPPPPKAVMVMVMVMVMZwxqVMVMRKYZYOYOBvXjYOXSlYRPZmsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqimWnimimHcVMUCVMVLWtVMVMsrVMVMVMCgiLiLiLiLfqVMsrVMVMVMZwZkVMVMrZYZDxYODxYOTkYZOnRPZmsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqrhawAaBlVtVMROVMznWtVMVMWHVMVMSjVMVMVMVMVMVMVMWHSjVMVMZwwHVMVMVMYZYOYOXjYOEcYZOnRPZmsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqYOYOYOYOKxVMVMVMFxWtWAVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMZwFxVMVMVMXSYOYOYOFgpFYZOnRPZmsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaSzYOdOYOYOXSVMVMVMVMQpVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMRoVMVMVMDWTZDxYODxFgYPYZOnNntsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqLCqFYOYOVtqplPVMVMQpVMVMVMVMVMnFVMVMVMVMVMnFnFVMVMVMVMRoVMVMqplPYZYOYOYOYOvLHgVjxlwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaXquptLDrUnVtQeSflaYceBuIuIekuIuIuIGeuIjcuIuIuIGeekTuuIuIUgPjVMQeSfYZEcDxvsDxWZVjRvwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaXquptLDrUnVtQeSflaYceBuIuIekuIuIuIGeuIjcuIuIuIGeekTuuIuIUgPjVlQeSfYZEcDxvsDxWZVjRvwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaUlHPOwHPHPHPiUiUiUXOwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNOhiUiUiUiUHgHPHPOwHPHPRvwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaawNwNwNwNwNwNwNwNwNwNwNiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBwNwNwNwNwNwNwNwNwNwNwNwNwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

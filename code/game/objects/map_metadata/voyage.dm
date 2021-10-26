@@ -123,6 +123,8 @@
 				S.update_icon()
 			inzone = TRUE
 			ship_anchored = TRUE
+			for(var/obj/structure/voyage/anchor_capstan/AC in world)
+				AC.update_icon()
 			load_map(mapgen["[latitude],[longitude]"][3])
 			return
 
@@ -168,6 +170,8 @@
 		S.update_icon()
 	inzone = TRUE
 	ship_anchored = TRUE
+	for(var/obj/structure/voyage/anchor_capstan/AC in world)
+		AC.update_icon()
 	world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 	if (navdirection == "island")
 		if (prob(50))
@@ -188,6 +192,8 @@
 		S.update_icon()
 	inzone = FALSE
 	ship_anchored = FALSE
+	for(var/obj/structure/voyage/anchor_capstan/AC in world)
+		AC.update_icon()
 	world << "<font size=4 color='yellow'>The ship returns to the high seas.</font>"
 	for(var/obj/structure/grapplehook/G in world)
 		G.undeploy()
@@ -494,6 +500,9 @@
 
 /obj/structure/voyage/bullet_act(var/obj/item/projectile/P, def_zone)
 	P.on_hit(src, FALSE, def_zone)
+	return
+
+/obj/structure/voyage/ex_act(severity)
 	return
 /obj/structure/voyage/attackby(obj/P, mob/user)
 	return
