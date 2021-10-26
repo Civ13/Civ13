@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/zombie
+/mob/living/simple_animal/hostile/human/zombie
 	name = "\improper zombie"
 	desc = "A reanimated dead corpse."
 	icon = 'icons/mob/zombie1.dmi'
@@ -27,7 +27,7 @@
 	var/list/bodyparts = list()
 	behaviour = "hostile"
 
-/mob/living/simple_animal/hostile/zombie/New()
+/mob/living/simple_animal/hostile/human/zombie/New()
 	..()
 	icon_state = ""
 	var/list/totalbodyparts = list("l_hand_s","r_hand_s","l_arm_s","r_arm_s","l_leg_s","r_leg_s","l_foot_s","r_foot_s")
@@ -64,10 +64,10 @@
 	limb_updates()
 	update_icons()
 
-/mob/living/simple_animal/hostile/zombie/handle_mutations_and_radiation()
+/mob/living/simple_animal/hostile/human/zombie/handle_mutations_and_radiation()
 	return
 
-/mob/living/simple_animal/hostile/zombie/update_icons()
+/mob/living/simple_animal/hostile/human/zombie/update_icons()
 	..()
 	overlays.Cut()
 	if (stat == DEAD)
@@ -77,10 +77,10 @@
 		for(var/i in bodyparts)
 			overlays += image(icon, i)
 
-/mob/living/simple_animal/hostile/zombie/death()
+/mob/living/simple_animal/hostile/human/zombie/death()
 	update_icons()
 	..()
-/mob/living/simple_animal/hostile/zombie/Life()
+/mob/living/simple_animal/hostile/human/zombie/Life()
 	..()
 	switch(stance)
 
@@ -102,7 +102,7 @@
 				var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
 				playsound(src.loc, sound2play, 100, TRUE)
 
-/mob/living/simple_animal/hostile/zombie/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
+/mob/living/simple_animal/hostile/human/zombie/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 	if (hit_zone in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(25))
 		visible_message("<span class='notice'>[user] tried to strike \the [src] but missed!</span>")
 		return
@@ -129,7 +129,7 @@
 	return FALSE
 
 
-/mob/living/simple_animal/hostile/zombie/proc/limb_hit(var/limb)
+/mob/living/simple_animal/hostile/human/zombie/proc/limb_hit(var/limb)
 	if (limb == "head")
 		if (prob(50))
 			health = 0
@@ -145,7 +145,7 @@
 	limb_updates()
 	update_icons()
 
-/mob/living/simple_animal/hostile/zombie/proc/limb_updates()
+/mob/living/simple_animal/hostile/human/zombie/proc/limb_updates()
 	harm_intent_damage = 14
 	melee_damage_lower = 8
 	melee_damage_upper = 14
@@ -181,7 +181,7 @@
 			speed -= 1
 
 
-/mob/living/simple_animal/hostile/zombie/AttackingTarget()
+/mob/living/simple_animal/hostile/human/zombie/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
 	if(prob(50))

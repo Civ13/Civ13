@@ -177,7 +177,7 @@
 				if (namt <= 0)
 					namt = 1
 				if (!istype(src, /mob/living/simple_animal/crab))
-					if (istype(src, /mob/living/simple_animal/hostile/zombie))
+					if (istype(src, /mob/living/simple_animal/hostile/human/zombie))
 						for (var/i=0, i<=namt, i++)
 							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 							meat.name = "rotten zombie meat"

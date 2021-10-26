@@ -158,11 +158,11 @@
 			if (turns_since_move >= move_to_delay)
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
 
-					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
+					if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 							walk_towards(src, locate(/obj/effect/landmark/npctarget),6)
-					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker_gods))
-						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
+					if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker_gods))
+						var/mob/living/simple_animal/hostile/human/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
 					if (((stance==HOSTILE_STANCE_IDLE || stance==HOSTILE_STANCE_TIRED) && (prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220)) || simplehunger < 180)
@@ -243,7 +243,7 @@
 			turns_since_move++
 			if (turns_since_move >= move_to_delay && stance==HOSTILE_STANCE_IDLE)
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
-					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
+					if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 							walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
@@ -558,7 +558,7 @@
 								for (var/i=0, i<=fat_calc, i++) //Fat drop
 									var/obj/item/weapon/reagent_containers/food/snacks/animalfat/fat = new/obj/item/weapon/reagent_containers/food/snacks/animalfat(get_turf(src))
 									fat.name = "[name] fat"
-						if (istype(src, /mob/living/simple_animal/hostile/zombie))
+						if (istype(src, /mob/living/simple_animal/hostile/human/zombie))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 								meat.name = "rotten zombie meat"
@@ -1099,7 +1099,7 @@
 					visible_message("<span class='notice'>\The [src] rips \the [ML] apart!</span>")
 					simplehunger += 400
 					if (!istype(ML, /mob/living/simple_animal/crab))
-						if (istype(ML, /mob/living/simple_animal/hostile/zombie))
+						if (istype(ML, /mob/living/simple_animal/hostile/human/zombie))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 								meat.name = "rotten zombie meat"

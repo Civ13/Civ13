@@ -73,8 +73,8 @@
 				var/i
 				for(i=1,i<contents.len,i++)//dump all items on ground
 					drop_item(contents[i])
-				var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
-				playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+				var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
+				playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
 				//transferring vars.
 				playerzombie.loc = loc
 				playerzombie.name = real_name

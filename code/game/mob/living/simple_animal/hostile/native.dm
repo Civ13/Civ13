@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/native
+/mob/living/simple_animal/hostile/human/native
 	name = "native"
 	desc = "Seems ferocious."
 	icon_state = "native_melee1"
@@ -27,14 +27,14 @@
 	attack_verb = "slashes"
 	behaviour = "hostile"
 
-/mob/living/simple_animal/hostile/native/New()
+/mob/living/simple_animal/hostile/human/native/New()
 	..()
 	var/icon_pick = pick("native_melee1","native_melee2","native_melee3")
 	icon_living = icon_pick
 	icon_state = icon_pick
 	icon_dead = "[icon_pick]_dead"
 
-/mob/living/simple_animal/hostile/native/bigboi
+/mob/living/simple_animal/hostile/human/native/bigboi
 	name = "giant native"
 	desc = "A massive native, better avoided."
 	maxHealth = 300
@@ -47,7 +47,7 @@
 	attacktext = "bludgeoned"
 	attack_verb = "hits"
 	icon_state = "native_bigboi"
-/mob/living/simple_animal/hostile/native/bigboi/New()
+/mob/living/simple_animal/hostile/human/native/bigboi/New()
 	..()
 	icon_living = "native_bigboi"
 	icon_state = "native_bigboi"
@@ -72,6 +72,7 @@
 
 	New()
 		..()
+		gun = new/obj/item/weapon/gun/projectile/bow/shortbow(src)
 		var/icon_pick = pick("native_ranged1","native_ranged2")
 		icon_living = icon_pick
 		icon_state = icon_pick

@@ -5,7 +5,7 @@
 "ae" = (/obj/structure/religious/remains,/turf/floor/dirt,/area/caribbean/void/caves)
 "af" = (/turf/wall/old_stone,/area/caribbean/void/caves)
 "ag" = (/turf/floor/plating/stone_old,/area/caribbean/void/caves)
-"ah" = (/mob/living/simple_animal/hostile/skeleton,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
+"ah" = (/mob/living/simple_animal/hostile/human/skeleton,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "ai" = (/obj/structure/simple_door/stone,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "aj" = (/turf/wall/rockwall,/area/caribbean/sea/sea)
 "ak" = (/turf/wall/indestructable/black,/area/caribbean/void/caves)

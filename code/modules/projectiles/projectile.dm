@@ -433,8 +433,8 @@
 			target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
 		else
 			visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
-		if (istype(target_mob, /mob/living/simple_animal/hostile/zombie))
-			var/mob/living/simple_animal/hostile/zombie/Z = target_mob
+		if (istype(target_mob, /mob/living/simple_animal/hostile/human/zombie))
+			var/mob/living/simple_animal/hostile/human/zombie/Z = target_mob
 			Z.limb_hit(hit_zone)
 	if (istype(target_mob, /mob/living/simple_animal/hostile/human) && target_mob.stat != DEAD && prob(33))
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
