@@ -282,7 +282,7 @@
 				if (newturf.corners[i])
 					continue
 				newturf.corners[i] = new/datum/lighting_corner(newturf, LIGHTING_CORNER_DIAGONAL[i])
-		new/area/caribbean/sea/bottom(T1)
+		new/area/caribbean/sea/bottom(T3)
 		for (var/atom/movable/lighting_overlay/LO in T3)
 			LO.update_overlay()
 
