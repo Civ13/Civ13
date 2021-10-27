@@ -610,7 +610,7 @@
 										else if (S.density)
 											if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
 												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
-						if (istype(O, /obj/covers/repairedfloor))
+						if (istype(O, /obj/covers/repairedfloor) && istype(src, /obj/item/projectile/shell))
 							if ((prob(18) && src.atype == "cannonball") || src.atype != "cannonball")
 								O.pre_bullet_act(src)
 								if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
@@ -786,7 +786,7 @@
 		return FALSE
 
 //	var/obj/item/projectile/test/trace = new /obj/item/projectile/test(get_turf(firer)) //Making the test....
-	var/obj/item/projectile/bullet/trace = new (get_turf(firer))
+	var/obj/item/projectile/trace = new (get_turf(firer))
 	trace.invisibility = 101
 
 	//Set the flags and pass flags to that of the real projectile...

@@ -275,25 +275,23 @@
 			start_fire()
 		try_destroy()
 	else
-		if (wall || (istype(src, /obj/covers/repairedfloor) && !istype(src, /obj/covers/repairedfloor/rope)))
-			if (istype(proj, /obj/item/projectile/shell))
-				var/obj/item/projectile/shell/S = proj
-				if (S.atype == "HE" || S.atype == "cannonball")
+		if (istype(proj, /obj/item/projectile/shell))
+			var/obj/item/projectile/shell/S = proj
+			if (S.atype == "HE" || S.atype == "cannonball")
+				visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+				qdel(src)
+				return
+			else
+				if (prob(60))
 					visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 					qdel(src)
-					return
-				else
-					if (prob(60))
-						visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-						qdel(src)
-			else
+		else
+			if (wall)
 				if (istype(proj, /obj/item/projectile/bullet) && bullethole_count.len < 13)
 					new_bullethole()
 				health -= proj.damage * 0.1
 				try_destroy()
-			return
-		else
-			return
+		return
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)

@@ -1,6 +1,9 @@
 
 /mob/living/simple_animal/hostile/human
 	attack_verb = "hits"
+	speed = 4
+	move_to_delay = 3
+
 	var/corpse = null
 	var/weapon = null
 	var/idle_counter = 0
@@ -193,7 +196,7 @@
 			GN.active = TRUE
 			spawn(GN.det_time)
 				GN.prime()
-	spawn(2)
+	spawn(1)
 		if (world.time>last_fire+firedelay)
 			last_fire = world.time
 			switch(rapid)

@@ -5,7 +5,7 @@ var/process/open_space/OS_controller = null
 
 /process/open_space/setup()
 	name = "openspace"
-	schedule_interval = TRUE SECONDS // every second
+	schedule_interval = 1 SECONDS // every second
 	start_delay = 12
 	OS_controller = src
 

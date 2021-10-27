@@ -11,12 +11,9 @@
 	emote_hear = list("curses","grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
 	speak_chance = TRUE
-	speed = 4
-	move_to_delay = 6
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 100
 	health = 100
-	move_to_delay = 6
 	harm_intent_damage = 5
 	melee_damage_lower = 30
 	melee_damage_upper = 40
@@ -47,11 +44,9 @@
 	emote_hear = list()
 	emote_see = list("stares", "cocks musket")
 	speak_chance = TRUE
-	speed = 6
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 150
 	health = 150
-	move_to_delay = 4
 	harm_intent_damage = 10
 	melee_damage_lower = 35
 	melee_damage_upper = 45
@@ -103,7 +98,6 @@
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 100
 	health = 100
-	move_to_delay = 6
 	harm_intent_damage = 5
 	melee_damage_lower = 30
 	melee_damage_upper = 40

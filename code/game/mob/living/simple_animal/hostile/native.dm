@@ -11,10 +11,8 @@
 	emote_hear = list("grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
 	speak_chance = TRUE
-	speed = 5
 	maxHealth = 120
 	health = 120
-	move_to_delay = 5
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 15
 	melee_damage_lower = 30
@@ -26,6 +24,7 @@
 	faction = INDIANS
 	attack_verb = "slashes"
 	behaviour = "hostile"
+	language = new/datum/language/carib
 
 /mob/living/simple_animal/hostile/human/native/New()
 	..()
@@ -39,8 +38,8 @@
 	desc = "A massive native, better avoided."
 	maxHealth = 300
 	health = 300
-	move_to_delay = 7
-	speed = 7
+	move_to_delay = 5
+	speed = 5
 	harm_intent_damage = 30
 	melee_damage_lower = 50
 	melee_damage_upper = 70
@@ -66,7 +65,7 @@
 	ranged = TRUE
 	rapid = FALSE
 	firedelay = 40
-	projectiletype = /obj/item/projectile/arrow/arrow/copper
+	projectiletype = /obj/item/projectile/arrow/arrow/iron
 	casingtype = null
 	attack_verb = "slashes"
 
