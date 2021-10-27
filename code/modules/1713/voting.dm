@@ -29,6 +29,7 @@
 		else
 			user << "You are not part of this Nation."
 			return
+
 /obj/structure/voting/civb
 	name = "ballot box"
 	icon_state = "bet_box_green"
@@ -43,6 +44,18 @@
 		else
 			user << "You are not part of this Nation."
 			return
+
+/obj/structure/voting/pirates
+	name = "ballot box"
+	icon_state = "bet_box_red"
+
+	attack_hand(var/mob/living/human/user as mob)
+		if (user.faction_text == PIRATES)
+			..()
+		else
+			user << "You are not part of this Faction."
+			return
+
 /obj/structure/voting/examine(mob/user)
 	..()
 	if (in_election)

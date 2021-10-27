@@ -80,6 +80,7 @@
 "oP" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/voicepipe/upper{dir = 1; directional = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "pF" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "pL" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/custom/jail/steeljail,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"pN" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/voting/pirates,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "pY" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/sign/custom/plaque{desc = "Weapon and ammunition storage."; name = "Magazine Room"},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "qg" = (/obj/covers/repairedfloor/ship,/obj/structure/table/fancy,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "qp" = (/obj/structure/voyage/grid{dir = 9},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -383,7 +384,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqVyYOckYqVCVMWkVMFxWtWAVMVMVMVMVMVMVMVMVMVMVMVMVMVM
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqYOYOYOYOXSVMRSVMnwWtVMVMWHVMVMSjVMVMEhRxVMVMVMWHSjVMVMZwhgVMVMVMYZDxYODxYObaRJOnRPZmsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqttKWgDumVtVMoPPnELWtVMVMVMVMVMVMdzPPPPPPPPKAVMVMVMVMVMZwxqVMVMRKYZYOYOBvXjYOXSlYRPZmsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqimWnimimHcVMUCVMVLWtVMVMsrVMVMVMCgiLiLiLiLfqVMsrVMVMVMZwZkVMVMrZYZDxYODxYOTkYZOnRPZmsLsLsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqrhawAaBlVtVMROVMznWtVMVMWHVMVMSjVMVMVMVMVMVMVMWHSjVMVMZwwHVMVMVMYZYOYOXjYOEcYZOnRPZmsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqrhawAaBlVtVMROVMznWtVMVMWHVMVMSjVMVMVMVMVMVMVMWHSjVMVMZwwHVMVMpNYZYOYOXjYOEcYZOnRPZmsLsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqYOYOYOYOKxVMVMVMFxWtWAVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMZwFxVMVMVMXSYOYOYOFgpFYZOnRPZmsLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaSzYOdOYOYOXSVMVMVMVMQpVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMRoVMVMVMDWTZDxYODxFgYPYZOnNntsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqLCqFYOYOVtqplPVMVMQpVMVMVMVMVMnFVMVMVMVMVMnFnFVMVMVMVMRoVMVMqplPYZYOYOYOYOvLHgVjxlwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
