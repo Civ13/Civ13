@@ -17,7 +17,6 @@ var/civmax_research = list(230,230,230)
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]
 	var/admin_ended_all_grace_periods = FALSE
-	var/event_faction = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
 	var/list/valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME, WEATHER_NONE, WEATHER_SMOG)
@@ -405,16 +404,16 @@ var/civmax_research = list(230,230,230)
 	if (ar_to_close_timeleft > 0)
 		ar_to_close_timeleft--
 	if (last_crossing_block_status[faction1] == FALSE)
-		if (faction1_can_cross_blocks())
+		if (faction1_can_cross_blocks() && cross_message(faction1) != "")
 			world << cross_message(faction1)
 
 	else if (last_crossing_block_status[faction1] == TRUE)
-		if (!faction1_can_cross_blocks())
+		if (!faction1_can_cross_blocks() && reverse_cross_message(faction1) != "")
 			world << reverse_cross_message(faction1)
 
 
 	if (last_crossing_block_status[faction2] == FALSE)
-		if (faction2_can_cross_blocks())
+		if (faction2_can_cross_blocks() && cross_message(faction2) != "")
 			world << cross_message(faction2)
 			if (battleroyale)
 				var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
@@ -422,15 +421,8 @@ var/civmax_research = list(230,230,230)
 					M.client << warning_sound
 
 	else if (last_crossing_block_status[faction2] == TRUE)
-		if (!faction2_can_cross_blocks())
+		if (!faction2_can_cross_blocks() && reverse_cross_message(faction2) != "")
 			world << reverse_cross_message(faction2)
-
-	if (last_crossing_block_status[event_faction] == FALSE)
-		if (specialfaction_can_cross_blocks())
-			world << cross_message(event_faction)
-	else if (last_crossing_block_status[event_faction] == TRUE)
-		if (!specialfaction_can_cross_blocks())
-			world << reverse_cross_message(event_faction)
 
 	last_crossing_block_status[faction2] = faction2_can_cross_blocks()
 	last_crossing_block_status[faction1] = faction1_can_cross_blocks()
@@ -448,8 +440,6 @@ var/civmax_research = list(230,230,230)
 			next_win = world.time - 100
 
 		lastcheck = world.realtime + 600
-	if (event_faction)
-		last_crossing_block_status[event_faction] = specialfaction_can_cross_blocks()
 
 	update_win_condition()
 	check_events()

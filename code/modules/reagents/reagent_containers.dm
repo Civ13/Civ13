@@ -65,7 +65,7 @@
 				new/obj/effect/flooding(TGT)
 			if (reagents.has_reagent("water", 25))
 				new/obj/effect/flooding(TGT)
-			reagents.splash(TGT, reagents.total_volume,TRUE,FALSE,min_spill = reagents.total_volume, max_spill = reagents.total_volume, force_spill = TRUE)
+			reagents.splash(TGT, reagents.total_volume)
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You spill \the [src] into the tile in front of you.</span>"
 	else
@@ -129,6 +129,17 @@
 		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		return TRUE
 
+/obj/item/weapon/reagent_containers/proc/proper_spill(target, spill_amount) //puts water on the floor
+	var/turf/TGT = get_turf(target)
+	if (reagents.has_reagent("water", 75))
+		new/obj/effect/flooding(TGT)
+	if (reagents.has_reagent("water", 50))
+		new/obj/effect/flooding(TGT)
+	if (reagents.has_reagent("water", 25))
+		new/obj/effect/flooding(TGT)
+	reagents.splash(TGT, spill_amount)
+	playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
+
 /obj/item/weapon/reagent_containers/proc/standard_splash_mob(var/mob/user, var/mob/target) // This goes into afterattack
 	if (!istype(target))
 		return
@@ -154,7 +165,7 @@
 				washed = TRUE
 			else
 				user.visible_message("<span class='danger'>[target] has been splashed with something by [user]!</span>", "<span class = 'notice'>You splash the solution onto [target].</span>")
-				reagents.splash(target, reagents.total_volume)
+				proper_spill(target, reagents.total_volume)
 				return TRUE
 	if (washed)
 		if (target == user)
@@ -164,8 +175,7 @@
 
 	else
 		user.visible_message("<span class='danger'>[target] has been splashed with something by [user]!</span>", "<span class = 'notice'>You splash the solution onto [target].</span>")
-
-	reagents.splash(target, reagents.total_volume)
+	proper_spill(target, reagents.total_volume)
 	return TRUE
 
 /obj/item/weapon/reagent_containers/proc/self_feed_message(var/mob/user)

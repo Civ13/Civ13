@@ -14,7 +14,9 @@
 			found = TRUE
 			break
 		if (!found)
-			qdel(src)
+			spawn(10)
+				if(src)
+					qdel(src)
 	if (random_icon_states && length(random_icon_states) > 0)
 		icon_state = pick(random_icon_states)
 	..()

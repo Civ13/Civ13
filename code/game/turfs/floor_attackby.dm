@@ -148,7 +148,8 @@
 				new/obj/effect/flooding(user.loc)
 			if (C.reagents.has_reagent("water", 25))
 				new/obj/effect/flooding(user.loc)
-			C.reagents.splash(src, C.reagents.total_volume)
+			var/obj/item/weapon/reagent_containers/food/drinks/DK = C
+			DK.proper_spill(src, DK.reagents.total_volume)
 			C.reagents.clear_reagents()
 			C.update_icon()
 			C.reagents.del_reagent("cholera")

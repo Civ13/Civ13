@@ -59,7 +59,7 @@
 		map.next_win = world.time - 100
 		return
 	//everyone dead
-	if(processes && processes.ticker.playtime_elapsed >= 6000) //10 mins
+	if(processes && processes.ticker && processes.ticker.playtime_elapsed >= 6000) //10 mins
 		var/found = FALSE
 		for(var/mob/living/human/H in world)
 			if (H.stat != DEAD)
@@ -77,7 +77,7 @@
 			navprogress += navspeed
 			if (navprogress >= 100)
 				navprogress = 0
-				if (navdirection == "island" || findtext(navdirection,"ship" || navdirection == "fort"))
+				if (navdirection == "island" || findtext(navdirection,"ship") || findtext(navdirection,"fort"))
 					enter_event()
 				else
 					switch(navdirection)
@@ -175,7 +175,7 @@
 	world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 	if (navdirection == "island")
 		if (prob(50))
-			load_map(pick("island1","island2","piratetown","cursedisland"),"north")
+			load_map(pick("island1","island2","piratetown","cursed_island"),"north")
 		else
 			load_map(pick("island1","island2","piratetown"),"south")
 		return
