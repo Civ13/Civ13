@@ -15,6 +15,14 @@
 	var/election_desc = ""
 	var/list/vote_options = list()
 	var/total_votes = 0
+
+	//voyage stuff
+	var/special_election = FALSE
+	var/found_captain = FALSE
+	var/found_boatswain = FALSE
+	var/found_quartermaster = FALSE
+	var/mob/living/human/person = null
+	var/person_role = ""
 /obj/structure/voting/civa
 	name = "ballot box"
 	icon_state = "bet_box_red"
@@ -55,6 +63,17 @@
 		else
 			user << "You are not part of this Faction."
 			return
+/obj/structure/voting/proc/find_roles()
+	found_captain = FALSE
+	found_boatswain = FALSE
+	found_quartermaster = FALSE
+	for(var/mob/living/human/H in mob_list)
+		if(H.original_job_title == "Pirate Captain")
+			found_captain = TRUE
+		if(H.original_job_title == "Pirate Boatswain")
+			found_boatswain = TRUE
+		if(H.original_job_title == "Pirate Quartermaster")
+			found_quartermaster = TRUE
 
 /obj/structure/voting/examine(mob/user)
 	..()
@@ -81,28 +100,48 @@
 	else
 		if (in_election)
 			return
-		var/inpt = input(user, "What do you want the vote to be on? (Leave blank to cancel)", "Electoral System", "") as text
-		if (!inpt || inpt == "" || in_election)
-			return
-		if (in_election)
-			return
-		var/inpt2 = input(user, "What options should the vote have? Separate them with ';'. (example: 'Yes;No') (Leave blank to cancel)", "Electoral System", "") as text
-		if (!inpt || inpt == "" || in_election)
-			return
-		var/inpt2_parsed = splittext(inpt2,";")
-		in_election = TRUE
-		election_desc = inpt
-		vote_options = inpt2_parsed
+		var/previous_input = WWinput(user, "Is this a vote for an officer position or something else?","Electoral System","Officer",list("Officer","Custom Vote"))
+		if(previous_input == "Officer")
+			find_roles()
+			var/list/choicelist = list("Cancel")
+			if(!found_captain)
+				choicelist += "Captain"
+			if(!found_boatswain)
+				choicelist += "Boatswain"
+			if(!found_quartermaster)
+				choicelist += "Quartermaster"
+			var/choose_officer = WWinput(user, "Which free position do you want to run for?","Electoral System","Cancel",choicelist)
+			if(choose_officer == "Cancel")
+				return
+			special_election = TRUE
+			in_election = TRUE
+			election_desc = "Shall [user] be the new [choose_officer]?"
+			person = user
+			person_role = choose_officer
+			vote_options = list("Yes","No")
+		else
+			var/inpt = input(user, "What do you want the vote to be on? (Leave blank to cancel)", "Electoral System", "") as text
+			if (!inpt || inpt == "" || in_election)
+				return
+			if (in_election)
+				return
+			var/inpt2 = input(user, "What options should the vote have? Separate them with ';'. (example: 'Yes;No') (Leave blank to cancel)", "Electoral System", "") as text
+			if (!inpt || inpt == "" || in_election)
+				return
+			var/inpt2_parsed = splittext(inpt2,";")
+			in_election = TRUE
+			election_desc = inpt
+			vote_options = inpt2_parsed
 		voted = list()
 		votes = list()
 		total_votes = 0
 		for(var/j in vote_options)
 			votes += list("[j]" = 0)
-		visible_message("<big><font color='yellow'>A vote has started! Results in 3 minutes.</big></font>")
+		visible_message("<big><font color='yellow'>A vote has started! Results in 2 minutes.</big></font>")
 		visible_message("<big><font color='yellow'><b><i>[election_desc]</i></b></big></font>")
 		for(var/i in vote_options)
 			visible_message("<font color='yellow'><b><i>&nbsp;&nbsp;&nbsp;&nbsp;[i]</i></b></font>")
-		start_timer(1800)
+		start_timer(1200)
 
 /obj/structure/voting/proc/start_timer(var/time = 1800)
 	spawn(time)
@@ -125,4 +164,15 @@
 		for(var/i in votes)
 			visible_message("<font color='yellow'><b><i>[i]</i> - [(votes[i]/total_votes)*100]% ([votes[i]] votes)</b></font>")
 		total_votes = 0
+		if(special_election && winner == "Yes")
+			visible_message("<big><font color='yellow'>[person] has been elected as the new [person_role].</font></big>")
+			if(person)
+				person.original_job_title = "Pirate [person_role]"
+				person.name = replacetext(person.name,"[person.title] ","")
+				person.title = person_role
+				person.name = "[person.title] [person.name]"
+				person.original_job = job_master.GetJob("Pirate [person_role]")
+				WWalert(person,"You are the new [person_role]!","Election Winner")
+		person = null
+		person_role = ""
 	return

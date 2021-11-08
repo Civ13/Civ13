@@ -471,7 +471,7 @@
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
-	else if (istype(J, /datum/job/pirates/cook) || istype(J, /datum/job/pirates/carpenter) || istype(J, /datum/job/pirates/midshipman))
+	else if (istype(J, /datum/job/pirates/captain) || istype(J, /datum/job/pirates/boatswain) || istype(J, /datum/job/pirates/quartermaster) || istype(J, /datum/job/pirates/cook) || istype(J, /datum/job/pirates/carpenter) || istype(J, /datum/job/pirates/midshipman))
 		. = FALSE
 	else
 		. = TRUE
