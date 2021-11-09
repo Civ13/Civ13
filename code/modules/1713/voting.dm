@@ -172,6 +172,10 @@
 				person.title = person_role
 				person.name = "[person.title] [person.name]"
 				person.original_job = job_master.GetJob("Pirate [person_role]")
+				if(person_role == "Boatswain")
+					person.make_title_changer()
+				person.make_commander()
+				person.make_artillery_officer()
 				WWalert(person,"You are the new [person_role]!","Election Winner")
 		person = null
 		person_role = ""

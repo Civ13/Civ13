@@ -398,7 +398,7 @@
 	if (!deployed)
 		var/turf/nT = get_step(loc,user.dir)
 		var/turf/nTT = get_step(nT,user.dir)
-		if (!istype(nTT, /turf/floor/beach/water))
+		if (!istype(nTT, /turf/floor/beach/water) && !istype(nTT, /turf/floor/broken_floor))
 			user << "<span class='warning'>You cannot deploy in this direction!</span>"
 			return
 		user << "<span class='notice'>You start deploying the [src]...</span>"
