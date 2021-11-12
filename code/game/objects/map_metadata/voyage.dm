@@ -54,7 +54,7 @@
 	//everyone dead
 	if(processes && processes.ticker && processes.ticker.playtime_elapsed >= 6000) //10 mins
 		var/found = FALSE
-		for(var/mob/living/human/H in world)
+		for(var/mob/living/human/H in mob_list)
 			if (H.stat == CONSCIOUS)
 				found = TRUE
 		if (!found)

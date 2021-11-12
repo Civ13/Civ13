@@ -68,11 +68,11 @@
 	found_boatswain = FALSE
 	found_quartermaster = FALSE
 	for(var/mob/living/human/H in mob_list)
-		if(H.original_job_title == "Pirate Captain")
+		if(H.original_job_title == "Pirate Captain" && H.stat != DEAD)
 			found_captain = TRUE
-		if(H.original_job_title == "Pirate Boatswain")
+		if(H.original_job_title == "Pirate Boatswain" && H.stat != DEAD)
 			found_boatswain = TRUE
-		if(H.original_job_title == "Pirate Quartermaster")
+		if(H.original_job_title == "Pirate Quartermaster" && H.stat != DEAD)
 			found_quartermaster = TRUE
 
 /obj/structure/voting/examine(mob/user)
