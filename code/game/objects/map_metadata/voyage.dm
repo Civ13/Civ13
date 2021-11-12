@@ -5,16 +5,10 @@
 	no_winner ="The ship is on the way."
 	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 0
-
-
-	faction_organization = list(
-		PIRATES)
-
-	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/no_mans_land,
-		)
+	faction_organization = list(PIRATES)
+	roundend_condition_sides = list(list(PIRATES) = /area/caribbean/no_mans_land)
 	age = "1713"
+	gamemode = "Pirate Ship"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "Pirate life"
@@ -37,7 +31,6 @@
 	var/navspeed = 0
 	var/inzone = FALSE //if the ship is currently in an event zone
 	var/ship_anchored = TRUE
-
 	var/roundend_msg = "The round has ended!"
 
 /obj/map_metadata/voyage/proc/get_sink()
@@ -62,7 +55,7 @@
 	if(processes && processes.ticker && processes.ticker.playtime_elapsed >= 6000) //10 mins
 		var/found = FALSE
 		for(var/mob/living/human/H in world)
-			if (H.stat != DEAD)
+			if (H.stat == CONSCIOUS)
 				found = TRUE
 		if (!found)
 			roundend_msg = "The whole crew has succumbed!<br><font color='red'>You have lost!</font>"
@@ -311,74 +304,7 @@
 	var/dmm_text = file2text(dmm_file)
 	var/dmm_suite/suite = new()
 	suite.read_map(dmm_text, 1, y_offset, 1)
-	/*
-	world.log << "Importing [partpath]..."
-	var/F = file("[partpath]/turfs.txt")
-	if (fexists(F))
-		world.log << "Importing turfs..."
-		var/tmpturfs = file2text(F)
-		var/list/impturfs = splittext(tmpturfs, "\n")
-		for (var/i in impturfs)
-			var/list/impturfs2 = splittext(i, ";")
-			if (impturfs2.len && impturfs2[1] == "TURF")
-				var/resultp = text2path(impturfs2[5])
-				var/turf/T = locate(text2num(impturfs2[2]),text2num(impturfs2[3])+y_offset,text2num(impturfs2[4]))
-				if (T)
-					T.ChangeTurf(resultp)
-	var/F1 = file("[partpath]/areas.txt")
-	if (fexists(F1))
-		world.log << "Importing areas..."
-		var/tmpareas = file2text(F1)
-		var/list/impareas = splittext(tmpareas, "\n")
-		for (var/i in impareas)
-			var/list/impareas2 = splittext(i, ";")
-			if (impareas2.len && impareas2[1] == "AREA")
-				var/resultp = text2path(impareas2[5])
-				if(resultp)
-					new resultp(locate(text2num(impareas2[2]),text2num(impareas2[3])+y_offset,text2num(impareas2[4])))
 
-	var/F2 = file("[partpath]/mobs.txt")
-	if (fexists(F2))
-		world.log << "Importing mobs..."
-		var/tmpmobs = file2text(F2)
-		var/list/impmobs = splittext(tmpmobs, "\n")
-		for (var/i in impmobs)
-			var/list/impmobs2 = splittext(i, ";")
-			if (impmobs2.len >= 5 && impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player" && impmobs2[5] != "/mob/observer")
-				var/resultp = text2path(impmobs2[5])
-				var/mob/newmob = new resultp(locate(text2num(impmobs2[2]),text2num(impmobs2[3])+y_offset,text2num(impmobs2[4])))
-				newmob.stat = text2num(impmobs2[6])
-	var/F3 = file("[partpath]/objs.txt")
-	if (fexists(F3))
-		world.log << "Importing objects..."
-		var/tmpobjs = file2text(F3)
-		var/list/impobjs = splittext(tmpobjs, "\n")
-		for (var/i in impobjs)
-			var/list/impobjs2 = splittext(i, ";")
-			if (impobjs2.len >= 5)
-				var/resultp = text2path(impobjs2[5])
-				var/obj/tmpobj = new resultp(locate(text2num(impobjs2[2]),text2num(impobjs2[3])+y_offset,text2num(impobjs2[4])))
-				if (impobjs2[1] == "OBJECT")
-					for (var/j=6, j<=impobjs2.len, j++)
-						var/list/tempvars = splittext(impobjs2[j], "===")
-						if (tempvars.len == 2)
-							if (tempvars[1] == "name")
-								tmpobj.name = tempvars[2]
-							else if (tempvars[1] == "desc")
-								tmpobj.desc = tempvars[2]
-							else if (tempvars[1] == "dir")
-								tmpobj.dir = text2num(tempvars[2])
-							else if (tempvars[1] == "icon_state")
-								tmpobj.icon_state = tempvars[2]
-							else
-								if (tmpobj.vars[tempvars[1]] && tempvars[1] != "loc" && tempvars[1] != "locs" && tempvars[1] != "verbs")
-									if (isnum(tmpobj.vars[tempvars[1]]))
-										tmpobj.vars[tempvars[1]] = text2num(tempvars[2])
-									else
-										tmpobj.vars[tempvars[1]] = tempvars[2]
-	world.log << "Imported all objects."
-	world.log << "Finished all imports."
-	*/
 ///////////////////////////////////////////////////////////////////
 /obj/map_metadata/voyage/proc/list2text_assoc(var/atom/A, nx = -1, ny = -1, nz = -1)
 	. = list()
@@ -502,6 +428,7 @@
 	gen_ship(sfaction = "spanish", ssize = 6, slat = 0, slon = 0)
 	spawn(100)
 		load_new_recipes()
+		config.no_respawn_delays = FALSE
 /obj/map_metadata/voyage/cross_message()
 	return ""
 /obj/map_metadata/voyage/reverse_cross_message()

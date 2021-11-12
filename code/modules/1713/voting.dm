@@ -137,17 +137,17 @@
 		total_votes = 0
 		for(var/j in vote_options)
 			votes += list("[j]" = 0)
-		visible_message("<big><font color='yellow'>A vote has started! Results in 2 minutes.</big></font>")
-		visible_message("<big><font color='yellow'><b><i>[election_desc]</i></b></big></font>")
+		world << "<big><font color='yellow'>A vote has started! Results in 2 minutes.</big></font>"
+		world << "<big><font color='yellow'><b><i>[election_desc]</i></b></big></font>"
 		for(var/i in vote_options)
-			visible_message("<font color='yellow'><b><i>&nbsp;&nbsp;&nbsp;&nbsp;[i]</i></b></font>")
+			world << "<font color='yellow'><b><i>&nbsp;&nbsp;&nbsp;&nbsp;[i]</i></b></font>"
 		start_timer(1200)
 
 /obj/structure/voting/proc/start_timer(var/time = 1800)
 	spawn(time)
 		in_election = FALSE
 		if (total_votes == 0)
-			visible_message("<big><font color='yellow'><b>The election ended with no votes!</b></big></font>")
+			world << "<big><font color='yellow'><b>The election ended with no votes!</b></big></font>"
 		var/winner = "none"
 		var/sum = 0
 		for(var/j in votes)
@@ -157,26 +157,27 @@
 			else if (votes[j] == sum && sum != 0)
 				winner = "tie"
 		if (winner != "tie")
-			visible_message("<big><font color='yellow'><b><i>[winner]</i></b> is the most voted choice!</big></font>")
+			world << "<big><font color='yellow'><b><i>[winner]</i></b> is the most voted choice!</big></font>"
 		else
-			visible_message("<big><font color='yellow'>The vote ended in a <b><i>tie</i></b>!</big></font>")
-		visible_message("<font color='yellow'><b>Results:</b></font>")
-		for(var/i in votes)
-			visible_message("<font color='yellow'><b><i>[i]</i> - [(votes[i]/total_votes)*100]% ([votes[i]] votes)</b></font>")
-		total_votes = 0
-		if(special_election && winner == "Yes")
-			visible_message("<big><font color='yellow'>[person] has been elected as the new [person_role].</font></big>")
-			if(person)
-				person.original_job_title = "Pirate [person_role]"
-				person.name = replacetext(person.name,"[person.title] ","")
-				person.title = person_role
-				person.name = "[person.title] [person.name]"
-				person.original_job = job_master.GetJob("Pirate [person_role]")
-				if(person_role == "Boatswain")
-					person.make_title_changer()
-				person.make_commander()
-				person.make_artillery_officer()
-				WWalert(person,"You are the new [person_role]!","Election Winner")
-		person = null
-		person_role = ""
+			world << "<big><font color='yellow'>The vote ended in a <b><i>tie</i></b>!</big></font>"
+		if(total_votes > 0)
+			world << "<font color='yellow'><b>Results:</b></font>"
+			for(var/i in votes)
+				world << "<font color='yellow'><b><i>[i]</i> - [(votes[i]/total_votes)*100]% ([votes[i]] votes)</b></font>"
+			total_votes = 0
+			if(special_election && winner == "Yes")
+				world << "<big><font color='yellow'>[person] has been elected as the new [person_role].</font></big>"
+				if(person)
+					person.original_job_title = "Pirate [person_role]"
+					person.name = replacetext(person.name,"[person.title] ","")
+					person.title = person_role
+					person.name = "[person.title] [person.name]"
+					person.original_job = job_master.GetJob("Pirate [person_role]")
+					if(person_role == "Boatswain")
+						person.make_title_changer()
+					person.make_commander()
+					person.make_artillery_officer()
+					WWalert(person,"You are the new [person_role]!","Election Winner")
+			person = null
+			person_role = ""
 	return
