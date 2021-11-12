@@ -111,6 +111,7 @@
 	fuel = 10
 
 /obj/item/flashlight/lamp/oldlamp
+	name = "stand lamp"
 	on_state = "oldlamp-on"
 	off_state = "oldlamp"
 	icon_state = "oldlamp"
@@ -120,6 +121,7 @@
 	unlimited = TRUE
 
 /obj/item/flashlight/lamp/littlelamp
+	name = "small lamp"
 	on_state = "littlelamp-on"
 	off_state = "littlelamp"
 	icon_state = "littlelamp"
