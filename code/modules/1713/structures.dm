@@ -726,3 +726,77 @@
 	layer = 5
 	density = FALSE
 	anchored = TRUE
+
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////TORCH STAND/////////////////////////////////////////////
+/obj/structure/torch_stand
+	name = "torch moount"
+	desc = "A mount to affix torches or lanterns to the wall"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "torch_stand"
+	item_state = "torch_stand"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	var/obj/item/weapon/storage/internal/storage
+	var/max_storage = 3
+	var/brightness_on = 5 //luminosity when on
+	New()
+		..()
+		storage.can_hold = list(/obj/item/flashlight/torch, /obj/item/flashlight/lantern)
+
+/obj/structure/torch_stand/update_icon()
+	var/obj/item/flashlight/O
+	if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/torch && O.on == TRUE))
+		icon_state = "torch_stand1_on"
+		set_light(brightness_on)
+	else if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/torch && O.on == FALSE))
+		icon_state = "torch_stand1"
+	else if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/lantern && O.on == TRUE))
+		icon_state = "torch_stand_lantern_on"
+		set_light(brightness_on)
+	else if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/lantern && O.on == FALSE))
+		icon_state = "torch_stand_lantern"
+	else
+		icon_state = "torch_stand"
+
+/obj/structure/torch_stand/New()
+	..()
+	storage = new/obj/item/weapon/storage/internal(src)
+	storage.storage_slots = 1
+	storage.max_w_class = 2
+	storage.max_storage_space = max_storage*3
+	update_icon()
+
+/obj/structure/torch_stand/Destroy()
+	qdel(storage)
+	storage = null
+	..()
+
+/obj/structure/torch_stand/attack_hand(mob/user as mob)
+	if (istype(user, /mob/living/human) && user in range(1,src))
+		storage.open(user)
+		update_icon()
+	else
+		return
+
+/obj/structure/torch_stand/MouseDrop(obj/over_object as obj)
+	if (storage.handle_mousedrop(usr, over_object))
+		..(over_object)
+		update_icon()
+
+/obj/structure/torch_stand/attackby(obj/item/W as obj, mob/user as mob)
+	..()
+	storage.attackby(W, user)
+	update_icon()
+
+/obj/structure/torch_stand/full
+
+/obj/structure/torch_stand/full/New()
+	..()
+	new /obj/item/flashlight/torch/on/unlimited
+	update_icon()
