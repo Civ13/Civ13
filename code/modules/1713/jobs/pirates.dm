@@ -60,7 +60,6 @@
 	whitelisted = TRUE
 	can_be_female = TRUE
 
-
 	min_positions = 1
 	max_positions = 1
 

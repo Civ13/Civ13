@@ -433,8 +433,8 @@
 			target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
 		else
 			visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
-		if (istype(target_mob, /mob/living/simple_animal/hostile/zombie))
-			var/mob/living/simple_animal/hostile/zombie/Z = target_mob
+		if (istype(target_mob, /mob/living/simple_animal/hostile/human/zombie))
+			var/mob/living/simple_animal/hostile/human/zombie/Z = target_mob
 			Z.limb_hit(hit_zone)
 	if (istype(target_mob, /mob/living/simple_animal/hostile/human) && target_mob.stat != DEAD && prob(33))
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
@@ -610,9 +610,12 @@
 										else if (S.density)
 											if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
 												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
-	//		else
-		//		log_debug("ignored [AM] (2)")
-
+						if (istype(O, /obj/covers/repairedfloor) && istype(src, /obj/item/projectile/shell))
+							if ((prob(18) && src.atype == "cannonball") || src.atype != "cannonball")
+								O.pre_bullet_act(src)
+								if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
+									if (O && !O.gcDestroyed)
+										passthrough = FALSE
 	//penetrating projectiles can pass through things that otherwise would not let them
 	++penetrating
 	if ((T.density && penetrating > 0) && (can_hit_in_trench != -1))
@@ -783,7 +786,7 @@
 		return FALSE
 
 //	var/obj/item/projectile/test/trace = new /obj/item/projectile/test(get_turf(firer)) //Making the test....
-	var/obj/item/projectile/bullet/trace = new (get_turf(firer))
+	var/obj/item/projectile/trace = new (get_turf(firer))
 	trace.invisibility = 101
 
 	//Set the flags and pass flags to that of the real projectile...

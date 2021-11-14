@@ -67,6 +67,19 @@
 			if (TL.connected)
 				TL.broadcast(message_without_html, src)
 
+		for (var/obj/structure/voyage/voicepipe/VP in range(1,src))
+			if (VP.vp_reference)
+				if (VP.directional)
+					switch(VP.dir)
+						if(NORTH,EAST)
+							if(src in get_turf(get_step(VP,EAST)))
+								VP.broadcast(message_without_html, src)
+						if(SOUTH,WEST)
+							if(src in get_turf(get_step(VP,WEST)))
+								VP.broadcast(message_without_html, src)
+				else
+					VP.broadcast(message_without_html, src)
+
 /mob/living/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)
 		if (client)

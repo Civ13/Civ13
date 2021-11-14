@@ -1,5 +1,9 @@
 
 /mob/living/simple_animal/hostile/human
+	attack_verb = "hits"
+	speed = 4
+	move_to_delay = 3
+
 	var/corpse = null
 	var/weapon = null
 	var/idle_counter = 0
@@ -49,43 +53,56 @@
 /mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
 	if (stat == DEAD)
 		return
-
-	if (istype(speaker, /mob/living/simple_animal/hostile/human) && speaker.faction == src.faction && role == "medic")
+	if(!isliving(speaker))
+		return
+	if (role == "medic")
+		if (istype(speaker, /mob/living/simple_animal/hostile/human) && speaker.faction == src.faction)
+			var/mob/living/simple_animal/hostile/human/SMH = speaker
+			if (target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
+				for(var/msg in SMH.messages["injured"])
+					msg = replacetext(msg,"!!","")
+					if (findtext(message,msg))
+						say("!!Coming!", language)
+						target_action = "moving"
+						target_mob = null
+						target_obj = speaker
+						do_movement(target_obj)
+						return
+		else if (ishuman(speaker))
+			var/mob/living/human/H = speaker
+			message = original_message
+			if (H.faction_text == faction && s_language.name == language.name)
+				if (findtext(message, "medic!") && target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
+					if (H.getTotalDmg()>30)
+						say("!!Coming!", language)
+						target_action = "moving"
+						target_mob = null
+						target_obj = speaker
+						do_movement(target_obj)
+						return
+					else
+						say(pick("!!Shut up, you pussy!","!!That's just a scratch...","!!That's nothing, I am busy..."), language)
+	var/found_officer = FALSE
+	if (istype(speaker, /mob/living/simple_animal/hostile/human) && speaker.faction == src.faction)
 		var/mob/living/simple_animal/hostile/human/SMH = speaker
-		if (target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
-			for(var/msg in SMH.messages["injured"])
-				msg = replacetext(msg,"!!","")
-				if (findtext(message,msg))
-					say("!!Coming!", language)
-					target_action = "moving"
-					target_mob = null
-					target_obj = speaker
-					do_movement(target_obj)
-					return
+		if(SMH.role == "officer")
+			found_officer = TRUE
 	else if (ishuman(speaker))
 		var/mob/living/human/H = speaker
-		message = original_message
-		if (H.faction_text == faction && s_language.name == language.name && role == "medic")
-			if (findtext(message, "medic!") && target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
-				if (H.getTotalDmg()>30)
-					say("!!Coming!", language)
-					target_action = "moving"
-					target_mob = null
-					target_obj = speaker
-					do_movement(target_obj)
-					return
-				else
-					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","!!That's nothing, I am busy..."), language)
-		if (H.faction_text == faction && s_language.name == language.name && H.original_job.is_officer)
+		if(H.original_job.is_officer && H.faction_text == src.faction)
+			found_officer = TRUE
+	if(found_officer)
+		if (s_language.name == language.name)
 			if (findtext(message, "men, "))
 				if (findtext(message, "charge") || findtext(message, "attack") || findtext(message, "advance"))
-					charge(H.get_objective())
+					var/mob/living/lspeaker = speaker
+					charge(lspeaker.get_objective())
 
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
 					following_mob = null
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
-					do_movement(H)
+					do_movement(speaker)
 					spawn(30)
 						do_movement(loc)
 						walk(src,0)
@@ -93,8 +110,8 @@
 				else if (findtext(message, "follow me") || findtext(message, "on me"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Following!"), language)
-					do_movement(H)
-					following_mob = (H)
+					do_movement(speaker)
+					following_mob = speaker
 
 				else if (findtext(message, "stop") || findtext(message, "hold"))
 					if (prob(20))
@@ -113,14 +130,8 @@
 					if (prob(35))
 						say(pick("!!Taking cover!"), language)
 					following_mob = null
-					take_cover(H)
+					take_cover(speaker)
 
-				else if (findtext(message, "fire") || findtext(message, "shoot"))
-					if (prob(35))
-						say(pick("!!Firing!"), language)
-					else
-						say(pick("!!Aye!"), language)
-					fire_cannons = TRUE
 				else if (findtext(message, "cease fire") || findtext(message, "stop firing") || findtext(message, "stop shooting"))
 					if (prob(35))
 						say(pick("!!Ceasing Fire!"), language)
@@ -128,13 +139,18 @@
 						say(pick("!!Aye! Ceasing Fire!"), language)
 					fire_cannons = FALSE
 
-
+				else if (findtext(message, "fire") || findtext(message, "shoot"))
+					if (prob(35))
+						say(pick("!!Firing!"), language)
+					else
+						say(pick("!!Aye!"), language)
+					fire_cannons = TRUE
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
 					following_mob = null
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Moving out!"), language)
-//					if (prob(33))
-//						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
+					if (prob(15))
+						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 					var/turf/t_dir = null
 					if (findtext(message, "move north"))
 						t_dir = locate(x+rand(-2,2),y+10,z)
@@ -180,7 +196,7 @@
 			GN.active = TRUE
 			spawn(GN.det_time)
 				GN.prime()
-	spawn(2)
+	spawn(1)
 		if (world.time>last_fire+firedelay)
 			last_fire = world.time
 			switch(rapid)
@@ -286,7 +302,7 @@
 		if (role == "officer")
 			idle_counter++
 			if (idle_counter >= 120)
-				for(var/mob/living/simple_animal/hostile/human/H in range(3,src))
+				for(var/mob/living/simple_animal/hostile/human/H in range(6,src))
 					if (H.faction == src.faction)
 						H.charge(get_objective())
 				idle_counter = 0
@@ -625,7 +641,7 @@
 			playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 	else
 		//none found - just move to the nearest one
-		for(var/list/LT in faction_targets)
+		for(var/list/LT in map.faction_targets)
 			if (LT[2] == src.faction)
 				var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
 				if (get_dist(src,t_turf2)<t_distance)
@@ -646,7 +662,7 @@
 	var/turf/t_turf = null
 	var/t_distance = 1000
 	//check all the targets and choose the closest one that has enemies nearby.
-	for(var/list/LT in faction_targets)
+	for(var/list/LT in map.faction_targets)
 		if (LT[2] == src.faction || LT[2] == "all")
 			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
 			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
@@ -665,8 +681,8 @@
 	var/turf/t_turf = null
 	var/t_distance = 1000
 	//check all the targets and choose the closest one that has enemies nearby.
-	for(var/list/LT in faction_targets)
-		if (LT[2] == src.faction_text)
+	for(var/list/LT in map.faction_targets)
+		if (LT[2] == src.faction_text || LT[2] == "all")
 			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
 			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
 				if (HH.faction != src.faction_text && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)

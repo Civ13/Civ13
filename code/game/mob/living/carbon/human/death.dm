@@ -42,7 +42,9 @@
 	emote("painscream")
 
 /mob/living/human/death(gibbed = FALSE)
-
+	plane = 1 //for water overlays
+	water_overlay = FALSE
+	update_fire(1)
 	if (stat == DEAD) return
 	if (map && map.ID == MAP_GLADIATORS && client)
 		var/obj/map_metadata/gladiators/GD = map

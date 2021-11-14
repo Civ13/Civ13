@@ -85,7 +85,7 @@
 "bG" = (/obj/structure/barricade/stone_h,/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
 "bH" = (/turf/floor/dirt,/area/caribbean/nomads/forest/snow)
 "bI" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
-"bJ" = (/mob/living/simple_animal/hostile/skeleton/attacker{attacktext = "clawed"; desc = "A mythical monster with many legends surrounding it. If you're smart you'd run before it sees you."; emote_hear = list("whispers"); emote_see = list("watches","prepares","readies"); harm_intent_damage = 24; health = 1000; icon = 'icons/mob/animal_64.dmi'; icon_dead = "wendigo_dead"; icon_state = "wendigo"; name = "Wendigo"; speak_emote = list("raspily whispers")},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
+"bJ" = (/mob/living/simple_animal/hostile/human/skeleton/attacker{attacktext = "clawed"; desc = "A mythical monster with many legends surrounding it. If you're smart you'd run before it sees you."; emote_hear = list("whispers"); emote_see = list("watches","prepares","readies"); harm_intent_damage = 24; health = 1000; icon = 'icons/mob/animal_64.dmi'; icon_dead = "wendigo_dead"; icon_state = "wendigo"; name = "Wendigo"; speak_emote = list("raspily whispers")},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "bK" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
 "bL" = (/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/void/caves/special)
 "bM" = (/obj/effect/spawner/orespawner,/turf/floor/dirt/underground,/area/caribbean/void/caves)

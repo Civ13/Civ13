@@ -1,3 +1,5 @@
+"aa" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
+"ab" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "bT" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/rations/ale,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "cq" = (/obj/structure/barricade/ship/blue/b17,/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b15,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "eG" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
@@ -18,8 +20,8 @@
 "uU" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/hammock,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "xK" = (/obj/structure/window/barrier/ship/wood/port0,/obj/covers/repairedfloor/ship/south,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "xN" = (/obj/covers/repairedfloor/ship,/obj/structure/wallclock,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"yr" = (/obj/structure/window/barrier/ship/wood/port2,/obj/covers/repairedfloor/ship/south,/mob/living/simple_animal/hostile/human/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
-"yZ" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
+"yr" = (/obj/structure/window/barrier/ship/wood/port2,/obj/covers/repairedfloor/ship/south,/mob/living/simple_animal/hostile/human/voyage/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
+"yZ" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/pirate,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "Ae" = (/obj/covers/repairedfloor/ship,/obj/structure/table/fancy,/obj/item/weapon/reagent_containers/food/snacks/applepie,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "BN" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "CS" = (/obj/structure/window/barrier/ship/wood/port2,/obj/covers/repairedfloor/ship/south,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
@@ -34,7 +36,6 @@
 "Jf" = (/obj/structure/barricade/ship/wood/a3,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "Jj" = (/obj/structure/window/barrier/ship/blue/bport0,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "Ju" = (/obj/structure/flag/pirates,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
-"JO" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook{owner = "PIRATES"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "Lq" = (/obj/structure/barricade/ship/wood/a1,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "LP" = (/obj/structure/barricade/ship/blue/b16,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "Mh" = (/obj/structure/barricade/ship/wood/a6,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -42,13 +43,13 @@
 "Nw" = (/turf/wall/wood,/area/caribbean/sea/top/roofed)
 "PC" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "Qg" = (/obj/structure/barricade/ship/blue/b10,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"Qn" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/pirate/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
+"Qn" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/pirate/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "RW" = (/obj/structure/barricade/ship/blue/b19,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "So" = (/obj/structure/barricade/ship/blue/b8,/obj/covers/repairedfloor/ship,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "SS" = (/obj/covers/repairedfloor/ship,/obj/structure/table/rack/coatrack,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "TQ" = (/obj/structure/barricade/ship/blue/b9,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "Uz" = (/obj/covers/repairedfloor/ship,/obj/item/stack/money/goldvaluables,/obj/structure/closet/crate/chest,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"Xz" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/comfy/blue{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"Xz" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/comfy/blue{dir = 8},/mob/living/simple_animal/hostile/human/voyage/pirate/ranged/captain,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "Ym" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "YO" = (/obj/structure/barricade/ship/blue/b18,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 
@@ -98,11 +99,11 @@ PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCkKjKjKjKjKfoPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRuUBNBNuUFUCSrTyrrTCSxKCSrTCSrTCSrTCSrTCSrTCSrTCSrTJfjKHfjKfoPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRryBNBNuUFUGSGSGSGSeGGSJOGSGSGSeGJOGSyZGSyZeGJOGSyZtLxNtWumgJfoPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRryBNBNuUFUGSGSGSGSeGGSaaGSGSGSeGaaGSyZGSyZeGaaGSyZtLxNtWumgJfoPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRbTBNBNBNMhGSGSGSGSGSGSGSQnGSGSGSGSGSGSGSGSGSGSGSGStLBNBNBNBNMhNwPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRAeBNBNBNYmGSGSHKGSGSGSJuGSGSyZGSGSGSHKGSGSGSGSGSGSYmBNBNjhXzMhNwNwNwPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRMuBNBNBNMhGSGSGSGSGSGSGSGSGSGSGSGSGSGSGSQnGSGSGSGStLBNBNBNBNMhNwPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRUzBNBNBNMhGSGSyZGSGSQnJOGSyZGSGSJOGSGSGSGSGSJOGSyZLqSSsOELYOQgPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRUzBNBNBNMhGSGSyZGSGSQnabGSyZGSGSabGSGSGSGSGSabGSyZLqSSsOELYOQgPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCGRUzIGsguUMhuaJjuaJjFtJjuaJjuaJjFtJjuaJjuaJjFtJjuaJjLPTQTQTQRWPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCcqTQTQTQTQSoPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 "}

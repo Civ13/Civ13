@@ -283,18 +283,34 @@
 	..()
 	for(var/obj/covers/C in src)
 		return
+	for(var/obj/structure/multiz/ladder/S in src)
+		return
 	if (!istype(A, /mob) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !!istype(A, /obj/effect/sailing_effect))
 		spawn(60)
-			if (A.loc == src)
+			if (A && A.loc == src)
 				qdel(A)
+	if(istype(A, /mob/living))
+		var/mob/living/ML = A
+		if (ML && ML.stat == DEAD)
+			spawn(60)
+				if (A && A.loc == src)
+					qdel(A)
 /turf/floor/beach/water/deep/Entered(atom/movable/A)
 	..()
 	for(var/obj/covers/C in src)
+		return
+	for(var/obj/structure/multiz/ladder/S in src)
 		return
 	if (!istype(A, /mob) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
 		spawn(60)
 			if (istype(A.loc,/turf/floor/beach/water/deep))
 				qdel(A)
+	if(istype(A, /mob/living))
+		var/mob/living/ML = A
+		if (ML && ML.stat == DEAD)
+			spawn(60)
+				if (A && A.loc == src)
+					qdel(A)
 /turf/floor/beach/water/deep/jungle
 	name = "deep jungle river"
 	icon_state = "seashallow_jungle3"
@@ -334,6 +350,8 @@
 
 /turf/proc/iscovered()
 	for(var/obj/covers/C in src)
+		return TRUE
+	for(var/obj/structure/multiz/ladder/ST in src)
 		return TRUE
 	for (var/obj/structure/vehicleparts/frame/ship/S in src)
 		return TRUE

@@ -1110,7 +1110,7 @@ var/list/atom_types = null
 			S.update_icon()
 		nmap.inzone = TRUE
 		nmap.ship_anchored = TRUE
-		for(var/obj/structure/voyage/anchor_capstan/VAC)
+		for(var/obj/structure/voyage/anchor_capstan/VAC in world)
 			VAC.update_icon()
 		world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 		if (do_clear)
@@ -1119,6 +1119,14 @@ var/list/atom_types = null
 		if (do_load)
 			nmap.load_map(nam,loct)
 			message_admins("[key_name(usr)] manually loaded an event.")
+
+client/proc/debug_variables_map()
+	set name = "Debug Map Variables"
+	set category = "Debug"
+
+	if (!check_rights(R_SERVER))	return
+
+	debug_variables(map)
 
 /proc/load_recipes()
 	var/all_craft_lists = flist("config/crafting/")

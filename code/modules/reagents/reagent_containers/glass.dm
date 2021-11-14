@@ -108,7 +108,7 @@
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 
 			var/previous_total_volume = reagents.total_volume
-			reagents.splash(target, reagents.total_volume)
+			proper_spill(target, reagents.total_volume)
 			if(reagents.total_volume != previous_total_volume) //really splashed
 				playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 				user << "<span class='notice'>You splash the solution onto [target].</span>"

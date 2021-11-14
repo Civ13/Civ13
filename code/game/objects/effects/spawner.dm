@@ -66,7 +66,7 @@
 	var/activated = 1
 	var/current_number = 0
 	var/max_number = 10
-	var/create_path = /mob/living/simple_animal/hostile/skeleton
+	var/create_path = /mob/living/simple_animal/hostile/human/skeleton
 	var/timer = 400
 	var/scalable = 0 // when 1, it will only get active above x players
 	var/scalable_nr = 10
@@ -77,7 +77,7 @@
 
 /obj/effect/spawner/mobspawner/skeletons
 	name = "skeleton spawner"
-	create_path = /mob/living/simple_animal/hostile/skeleton
+	create_path = /mob/living/simple_animal/hostile/human/skeleton
 	timer = 400
 
 /obj/effect/spawner/mobspawner/skeletons/off
@@ -85,7 +85,7 @@
 
 /obj/effect/spawner/mobspawner/attacker
 	name = "attacking skeleton spawner"
-	create_path = /mob/living/simple_animal/hostile/skeleton/attacker
+	create_path = /mob/living/simple_animal/hostile/human/skeleton/attacker
 
 /obj/effect/spawner/mobspawner/New()
 	..()
@@ -386,14 +386,14 @@
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
-	create_path = /mob/living/simple_animal/hostile/human/pirate
+	create_path = /mob/living/simple_animal/hostile/human/voyage/pirate
 	timer = 750
 
 /obj/effect/spawner/mobspawner/british
 	name = "redcoat spawner"
 	max_number = 5
 	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/human/british
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british
 	timer = 750
 
 /obj/effect/spawner/mobspawner/townmilitia
@@ -718,7 +718,7 @@
 	hostile = TRUE
 	max_number = 10
 	max_range = 5
-	create_path = /mob/living/simple_animal/hostile/zombie
+	create_path = /mob/living/simple_animal/hostile/human/zombie
 	timer = 1000
 
 /obj/effect/spawner/mobspawner/zombies/many

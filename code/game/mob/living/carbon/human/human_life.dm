@@ -524,8 +524,8 @@
 				bodytemperature = 313.35
 			else if (disease_progression >= 240 && prob(50))
 				adjustBrainLoss(200)
-				var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
-				playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+				var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
+				playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
 				visible_message("<big>[src] turns into a zombie!</big>")
 				//transferring vars.
 				playerzombie.loc = loc
@@ -1615,8 +1615,8 @@
 										found = TRUE
 										break
 									if ((map.is_zombie) && found)
-										var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
-										playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+										var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
+										playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
 										//transferring vars.
 										playerzombie.loc = loc
 										playerzombie.name = "[real_name]'s zombie"
