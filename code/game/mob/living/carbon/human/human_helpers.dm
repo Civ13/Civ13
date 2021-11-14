@@ -300,7 +300,7 @@
 	var/water_overlay = FALSE
 /mob/living/human/proc/handle_drowning()
 	var/turf/T = get_turf(src)
-	if (!istype(T, /turf/floor/beach/water/deep))
+	if (!istype(T, /turf/floor/beach/water/deep) || T.iscovered())
 		drowning = FALSE
 		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())
 			water_overlay = TRUE

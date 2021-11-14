@@ -51,7 +51,7 @@
 	spritemod = TRUE
 	w_class = 5
 	maxrange = 35
-	angle = 12
+	angle = 20
 	caliber = 75
 	name = "cannon"
 	icon = 'icons/obj/cannon_v.dmi'

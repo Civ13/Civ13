@@ -104,7 +104,7 @@
 "cf" = (/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "cg" = (/obj/structure/mine_support/stone,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "ch" = (/obj/item/remains/human,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
-"ci" = (/mob/living/simple_animal/hostile/skeleton,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
+"ci" = (/mob/living/simple_animal/hostile/human/skeleton,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "cj" = (/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ck" = (/obj/structure/altar/marble,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "cl" = (/obj/effect/spawner/mobspawner/attacker,/turf/floor/plating/stone_old,/area/caribbean/void/caves)

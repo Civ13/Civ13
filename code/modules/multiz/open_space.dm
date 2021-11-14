@@ -5,7 +5,7 @@ var/process/open_space/OS_controller = null
 
 /process/open_space/setup()
 	name = "openspace"
-	schedule_interval = TRUE SECONDS // every second
+	schedule_interval = 1 SECONDS // every second
 	start_delay = 12
 	OS_controller = src
 
@@ -39,7 +39,7 @@ var/process/open_space/OS_controller = null
 			for (var/obj/o in floorbelowz)
 				// ingore objects that have any form of invisibility
 				if (o.invisibility) continue
-				var/image/temp2 = image(o, dir=o.dir, layer = o.layer)
+				var/image/temp2 = image(o, dir=o.dir, layer = o.layer+0.02)
 				temp2.plane = plane
 				temp2.color = o.color//rgb(127,127,127)
 				temp2.overlays += o.overlays
@@ -71,6 +71,9 @@ var/process/open_space/OS_controller = null
 	icon_state = "black"
 	density = FALSE
 	var/turf/floorbelowz
+	// "push" floors for effects, like the bottom deck of the ship. It pushes you into a direction if you fall that way.
+	var/push_dir = null
+
 /turf/floor/broken_floor/sky
 	name = "sky"
 	density = FALSE
@@ -99,8 +102,17 @@ var/process/open_space/OS_controller = null
 	for (var/obj/covers/C in src)
 		if (istype(C, /obj/covers))
 			return
+	for (var/obj/structure/multiz/ladder/LD in src)
+		if (istype(LD, /obj/structure/multiz/ladder))
+			return
+	for(var/obj/structure/voyage/grid/G in src)
+		if(G.opened == FALSE)
+			return
 	if (floorbelowz)
 		if (istype(A, /mob))
+			if(push_dir)
+				A.forceMove(get_step(src,push_dir))
+				return
 			A.z -= 1
 			A.visible_message("[A] falls from the level above and slams into \the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch.")
 			if (istype(A, /mob/living/human))
@@ -117,9 +129,12 @@ var/process/open_space/OS_controller = null
 				H.updatehealth()
 
 		if (istype(A, /obj))
-			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast))
+			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast) || istype(A, /obj/structure/voyage/grid))
 				return
 			else
+				if(push_dir)
+					A.forceMove(get_step(src,push_dir))
+					return
 				A.z -= 1
 				A.visible_message("\The [A] falls from the level above and slams into the floor!", "You hear something slam into the deck.")
 

@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/native
+/mob/living/simple_animal/hostile/human/native
 	name = "native"
 	desc = "Seems ferocious."
 	icon_state = "native_melee1"
@@ -11,10 +11,8 @@
 	emote_hear = list("grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
 	speak_chance = TRUE
-	speed = 5
 	maxHealth = 120
 	health = 120
-	move_to_delay = 5
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 15
 	melee_damage_lower = 30
@@ -26,28 +24,29 @@
 	faction = INDIANS
 	attack_verb = "slashes"
 	behaviour = "hostile"
+	language = new/datum/language/carib
 
-/mob/living/simple_animal/hostile/native/New()
+/mob/living/simple_animal/hostile/human/native/New()
 	..()
 	var/icon_pick = pick("native_melee1","native_melee2","native_melee3")
 	icon_living = icon_pick
 	icon_state = icon_pick
 	icon_dead = "[icon_pick]_dead"
 
-/mob/living/simple_animal/hostile/native/bigboi
+/mob/living/simple_animal/hostile/human/native/bigboi
 	name = "giant native"
 	desc = "A massive native, better avoided."
 	maxHealth = 300
 	health = 300
-	move_to_delay = 7
-	speed = 7
+	move_to_delay = 5
+	speed = 5
 	harm_intent_damage = 30
 	melee_damage_lower = 50
 	melee_damage_upper = 70
 	attacktext = "bludgeoned"
 	attack_verb = "hits"
 	icon_state = "native_bigboi"
-/mob/living/simple_animal/hostile/native/bigboi/New()
+/mob/living/simple_animal/hostile/human/native/bigboi/New()
 	..()
 	icon_living = "native_bigboi"
 	icon_state = "native_bigboi"
@@ -66,12 +65,13 @@
 	ranged = TRUE
 	rapid = FALSE
 	firedelay = 40
-	projectiletype = /obj/item/projectile/arrow/arrow/copper
+	projectiletype = /obj/item/projectile/arrow/arrow/iron
 	casingtype = null
 	attack_verb = "slashes"
 
 	New()
 		..()
+		gun = new/obj/item/weapon/gun/projectile/bow/shortbow(src)
 		var/icon_pick = pick("native_ranged1","native_ranged2")
 		icon_living = icon_pick
 		icon_state = icon_pick

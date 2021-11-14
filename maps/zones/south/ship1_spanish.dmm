@@ -1,3 +1,5 @@
+"aa" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"ab" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "bw" = (/obj/structure/window/barrier/ship/wood/port2,/obj/covers/repairedfloor/ship/south,/mob/living/simple_animal/hostile/human/voyage/spanish,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "bR" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "ce" = (/obj/structure/barricade/ship/blue/b10,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
@@ -13,7 +15,6 @@
 "jC" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/potted_plant{dir = 5},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "jD" = (/obj/structure/barricade/ship/blue/b19,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "kn" = (/obj/structure/window/barrier/ship/wood/port2,/obj/covers/repairedfloor/ship/south,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
-"kQ" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook{owner = "PIRATES"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "ln" = (/obj/covers/repairedfloor/ship,/obj/item/stack/money/goldvaluables,/obj/structure/closet/crate/chest,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "pp" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "pJ" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/blue/b2,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
@@ -79,14 +80,15 @@ YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 iBYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 "}
+
 (1,1,2) = {"
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOcldCdCdCdCArYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJDgxPxPDgeSknHjbwHjknwLknHjknHjknHjknHjknHjknHjknHjrudCJXdCArYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
-YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJWpxPxPDgeSppppppppeUppkQppppppeUkQppbRppbReUkQppbRvhKfzNpWubArYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
+YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJWpxPxPDgeSppppppppeUppppppaappeUaappbRppbReUaappbRvhKfzNpWubArYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJqcxPxPxPEBpppppppppppppperppppppppppppppppppppppppvhxPxPxPxPEBXYYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJshxPxPxPMgppppQPppppppNEppppbRppppppQPppppppppppppMgxPxPvAtVEBXYXYXYYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJvIxPxPxPEBppppppppppppppppppppppppppppppbRppppppppvhxPxPxPxPEBXYYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
-YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJlnxPxPxPEBppppbRpppperkQppbRppppkQppppppppppkQppbRTRwBKqjCwPceYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
+YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJlnxPxPxPEBppppbRpppperabppbRppppabppppppppppabppbRTRwBKqjCwPceYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOpJlndOsEDgEBzbehzbehOOehzbehzbehOOehzbehzbehOOehzbehfmSPSPSPjDYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOPoSPSPSPSPQUYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO
 YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYOYO

@@ -693,7 +693,7 @@ obj/structure/religious/monument
 	var/I = 0
 	while(I < round(current_tribesmen/2))
 
-		var/mob/living/simple_animal/hostile/skeleton/attacker_gods/newmob = new /mob/living/simple_animal/hostile/skeleton/attacker_gods(src.loc)
+		var/mob/living/simple_animal/hostile/human/skeleton/attacker_gods/newmob = new /mob/living/simple_animal/hostile/human/skeleton/attacker_gods(src.loc)
 		newmob.target_loc = loc
 		var/randdir = pick(1,2,3,4)
 		if (randdir == 1)

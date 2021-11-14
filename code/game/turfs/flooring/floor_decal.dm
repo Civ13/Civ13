@@ -20,11 +20,22 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/initialize()
 	if (supplied_dir) set_dir(supplied_dir)
 	var/turf/T = get_turf(src)
+	for(var/obj/covers/repairedfloor/R in T)
+		var/cache_key = "[alpha]-[color]-[dir]-[icon_state]-[layer]"
+		if (!floor_decals[cache_key])
+			var/image/I = image(icon = icon, icon_state = icon_state, dir = dir)
+			I.layer = 2.01
+			I.color = color
+			I.alpha = alpha
+			floor_decals[cache_key] = I
+		R.overlays |= floor_decals[cache_key]
+		qdel(src)
+		return
 	if (istype(T, /turf/floor))
 		var/cache_key = "[alpha]-[color]-[dir]-[icon_state]-[layer]"
 		if (!floor_decals[cache_key])
 			var/image/I = image(icon = icon, icon_state = icon_state, dir = dir)
-			I.layer = T.layer
+			I.layer = 2.01
 			I.color = color
 			I.alpha = alpha
 			floor_decals[cache_key] = I

@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/skeleton
+/mob/living/simple_animal/hostile/human/skeleton
 	name = "\improper Skeleton"
 	desc = "Scary, spooky skeletons!"
 	icon_state = "skeleton1"
@@ -25,26 +25,26 @@
 	behaviour = "hostile"
 
 	faction = "neutral"
-/mob/living/simple_animal/hostile/skeleton/attacker
+/mob/living/simple_animal/hostile/human/skeleton/attacker
 	name = "\improper Skeleton"
 
-/mob/living/simple_animal/hostile/skeleton/attacker_gods
+/mob/living/simple_animal/hostile/human/skeleton/attacker_gods
 	name = "\improper Skeleton"
 	var/obj/structure/religious/totem/offerings/target_loc
 
-/mob/living/simple_animal/hostile/skeleton/New()
+/mob/living/simple_animal/hostile/human/skeleton/New()
 	..()
 	icon_state = pick("skeleton1","skeleton2","skeleton3",)
 	attack_sound = pick('sound/weapons/genhit1.ogg', 'sound/weapons/genhit2.ogg', 'sound/weapons/genhit3.ogg')
 	icon_dead = pick("skeleton_remains1","skeleton_remains2","skeleton_remains3",)
 
-/mob/living/simple_animal/hostile/skeleton/death()
+/mob/living/simple_animal/hostile/human/skeleton/death()
 	..()
 	new/obj/structure/religious/remains(src.loc)
 	qdel(src)
 	return
 
-/mob/living/simple_animal/hostile/skeleton/pirate
+/mob/living/simple_animal/hostile/human/skeleton/pirate
 	name = "Pirate Skeleton"
 	desc = "Scary, spooky skeletons! This one was once a pirate."
 	icon_state = "skeleton3_pir"

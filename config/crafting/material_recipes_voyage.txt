@@ -14,11 +14,11 @@ RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/f
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,9,70,0,1,storage,0,54,0,8,null
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,none,0,0,0,8,null
 
-RECIPE: /material/leather/,sword sheath,/obj/item/clothing/accessory/storage/sheath,3,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/storage/sheath/longer,3,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,4,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,3,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,6,80,0,1,weapon accessories,0,39,0,2,null
+RECIPE: /material/leather/,sword sheath,/obj/item/clothing/accessory/storage/sheath,3,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/storage/sheath/longer,3,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,4,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,3,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,6,80,0,1,weapon accessories,0,39,0,8,null
 
 RECIPE: /material/bearpelt/brown/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/brown/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
@@ -206,6 +206,7 @@ RECIPE: /material/wood/,wooden rifle rack,/obj/structure/vending/craftable/rifle
 RECIPE: /material/wood/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,1,kitchen,19,0,0,8,null
 RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel/empty,5,75,1,1,kitchen,19,0,0,8,null
+RECIPE: /material/wood/,door,/obj/structure/simple_door/key_door/anyone/wood/ship,5,50,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
 RECIPE: /material/rags/,garrote,/obj/item/garrote,14,120,0,1,none,0,43,0,8,null
