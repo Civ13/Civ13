@@ -257,6 +257,12 @@ macro "hotkeymode"
 		name = "CTRL+J"
 		command = "toggle-gun-mode"
 	elem 
+		name = "L"
+		command = "attack-direction"
+	elem 
+		name = "CTRL+L"
+		command = "attack-direction"
+	elem 
 		name = "M"
 		command = "m-intent-run"
 	elem 
