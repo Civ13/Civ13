@@ -1,3 +1,6 @@
+/obj/item/weapon/material/thrown
+	chopping_speed = 4
+
 /obj/item/weapon/material/thrown/star
 	name = "shuriken"
 	desc = "A sharp, perfectly weighted piece of metal."
