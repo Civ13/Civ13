@@ -100,7 +100,9 @@
 	else
 		if (in_election)
 			return
-		var/previous_input = WWinput(user, "Is this a vote for an officer position or something else?","Electoral System","Officer",list("Officer","Custom Vote"))
+		var/previous_input = "Officer"
+		if(user.title == "Captain" || user.title == "Boatswain" || user.title == "Quartermaster")
+			previous_input = WWinput(user, "Is this a vote for an officer position or something else?","Electoral System","Officer",list("Officer","Custom Vote"))
 		if(previous_input == "Officer")
 			find_roles()
 			var/list/choicelist = list("Cancel")
@@ -111,7 +113,9 @@
 			if(!found_quartermaster)
 				choicelist += "Quartermaster"
 			var/choose_officer = WWinput(user, "Which free position do you want to run for?","Electoral System","Cancel",choicelist)
-			if(choose_officer == "Cancel")
+			if(!choose_officer || choose_officer == "Cancel" || choose_officer == "")
+				return
+			if(choose_officer != "Captain" && choose_officer != "Quartermaster" && choose_officer != "Boatswain")
 				return
 			special_election = TRUE
 			in_election = TRUE

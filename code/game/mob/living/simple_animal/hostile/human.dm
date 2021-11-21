@@ -89,10 +89,10 @@
 			found_officer = TRUE
 	else if (ishuman(speaker))
 		var/mob/living/human/H = speaker
-		if(H.original_job.is_officer && H.faction_text == src.faction)
+		if(H && H.original_job && H.original_job.is_officer && H.faction_text == src.faction)
 			found_officer = TRUE
 	if(found_officer)
-		if (s_language.name == language.name)
+		if (s_language && language && s_language.name == language.name)
 			if (findtext(message, "men, "))
 				if (findtext(message, "charge") || findtext(message, "attack") || findtext(message, "advance"))
 					var/mob/living/lspeaker = speaker
