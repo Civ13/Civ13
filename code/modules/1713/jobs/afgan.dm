@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////Soviet army (1985's)////////////////////////////////////////
 
 /datum/job/russian/msa_lieutenant
-	title = "Soviet Army lieutenant"
+	title = "Soviet Army Afgan lieutenant"
 	rank_abbreviation = "lt."
 
 	spawn_location = "JoinLateRUCap"
@@ -54,7 +54,7 @@
 	return TRUE
 
 /datum/job/russian/msa_sergeant
-	title = "Soviet Army Sergeant"
+	title = "Soviet Army Afgan Sergeant"
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRUCap"
@@ -112,7 +112,7 @@
 
 
 /datum/job/russian/msa_medic
-	title = "Soviet Army Field Medic"
+	title = "Soviet Army Afgan Field Medic"
 	rank_abbreviation = "Cpl."
 
 	spawn_location = "JoinLateRU"
@@ -167,7 +167,7 @@
 	return TRUE
 
 /datum/job/russian/msa_soldier
-	title = "Soviet Army Rifleman"
+	title = "Soviet Army Afgan Rifleman"
 	rank_abbreviation = "Pvt."
 
 	spawn_location = "JoinLateRU"
@@ -215,7 +215,7 @@
 	return TRUE
 
 /datum/job/russian/msa_tankmen
-	title = "Soviet army tankist"
+	title = "Soviet army Afgan tankist"
 	rank_abbreviation = "Tankist"
 
 	spawn_location = "JoinLateRU"
@@ -264,7 +264,7 @@
 	return TRUE
 
 /datum/job/russian/mspetznaz
-	title = "Spetznaz"
+	title = "Spetznaz Afgan "
 	rank_abbreviation = "Spz."
 
 	spawn_location = "JoinLateRUsptz"
