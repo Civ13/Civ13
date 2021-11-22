@@ -32,7 +32,8 @@
 	var/inzone = FALSE //if the ship is currently in an event zone
 	var/ship_anchored = TRUE
 	var/roundend_msg = "The round has ended!"
-
+	var/list/statistics = list(0,0,list(0,0,0,0,0,0)) //roundend statistics: treasure, places visited, ships faced (per level)
+	var/no_spam = FALSE
 /obj/map_metadata/voyage/proc/get_sink()
 	var/t_level = 0
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/pirates/ship/voyage/lower))
@@ -61,7 +62,28 @@
 			roundend_msg = "The whole crew has succumbed!<br><font color='red'>You have lost!</font>"
 			map.next_win = world.time - 100
 			return
-
+			
+/obj/map_metadata/voyage/proc/show_stats()
+	if (no_spam)
+		return
+	var/tally = 0
+	var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/upper/inside/treasury)
+	for(var/turf/sel_turf in t_turfs)
+		for(var/obj/structure/closet/crate/chest/treasury/ship/S in sel_turf)
+			for(var/obj/item/stack/money/M in S)
+				tally += M.value*M.amount
+			for(var/obj/item/stack/money/M1 in S.loc)
+				tally += M1.value*M1.amount
+	world << "<font size=4 color='yellow'>Total Treasure: [tally]</font>"
+	world << "<font size=4 color='yellow'>Islands Visited: [statistics[2]]</font>"
+	world << "<font size=4 color='yellow'>Ships Defeated:</font>"
+	world << "<font size=4 color='yellow'>	Xebecs (lvl 1): [statistics[3][1]]</font>"
+	world << "<font size=4 color='yellow'>	Schooners (lvl 2): [statistics[3][2]]</font>"
+	world << "<font size=4 color='yellow'>	Flutes (lvl 3): [statistics[3][3]]</font>"
+	world << "<font size=4 color='yellow'>	Brigs (lvl 4): [statistics[3][4]]</font>"
+	world << "<font size=4 color='yellow'>	Galleons (lvl 5): [statistics[3][5]]</font>"
+	world << "<font size=4 color='yellow'>	Man-O-Wars (lvl 6): [statistics[3][6]]</font>"
+	no_spam = TRUE
 /obj/map_metadata/voyage/proc/nav()
 	check_roundend_conditions()
 	if (navmoving && !ship_anchored)
@@ -201,12 +223,15 @@
 
 	for(var/list/L in ships)
 		if (L[3] == latitude && L[4] == longitude)
+			statistics[3][L[1]]++
 			ships -= L
 	for(var/list/L1 in islands)
 		if (L1[2] == latitude && L1[3] == longitude)
+			statistics[2]++
 			L1[4] = world.time + 18000
 	for(var/list/L2 in forts)
 		if (L2[2] == latitude && L2[3] == longitude)
+			statistics[2]++
 			L2[4] = world.time + 18000
 	return
 

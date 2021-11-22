@@ -40,6 +40,9 @@
 	// no SCHECK here
 	if (is_ready())
 		map.save_awards()
+		if(map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			nmap.show_stats()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
 				"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
