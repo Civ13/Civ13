@@ -6,19 +6,19 @@
 	respawn_delay = 1200
 
 	faction_organization = list(
-		RUSSIAN,
-		CHECHEN)
+		CHECHEN,
+		RUSSIAN)
 	roundend_condition_sides = list(
-		list(RUSSIAN) = /area/caribbean/japanese/land,
 		list(CHECHEN) = /area/caribbean/british,
+		list(RUSSIAN) = /area/caribbean/japanese/land,
 		)
 	age = "1995"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(CHECHEN = 0.6, RUSSIAN = 0.4)
 	battle_name = "Retreat"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Milita will win if they hold out for <b>30 minutes</b>. The Russians will win if they manage to cross the bridge to friendly territory!</font>"
-	faction1 = RUSSIAN
-	faction2 = CHECHEN
+	faction2 = RUSSIAN
+	faction1 = CHECHEN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Cyka Blyat:1" = 'sound/music/cyka_blyat.ogg',)
@@ -31,10 +31,10 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/rusretreat/faction2_can_cross_blocks()
+/obj/map_metadata/rusretreat/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/rusretreat/faction1_can_cross_blocks()
+/obj/map_metadata/rusretreat/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 
@@ -88,7 +88,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Chechens</b> have successfuly deterred the withdrawal! The Russians have halted the Retreat!"
+		var/message = "The <b>Chechens</b> have successfuly deterred the withdrawal! The Russians have halted the retreat!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -139,7 +139,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Russians</b> have oddly retreated back into enemy territory!</font>"
+			world << "<font size = 3>Oddly the <b>Russians</b> have retreated back into enemy territory!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -154,10 +154,10 @@
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction1)
+			if (H.faction_text == faction2)
 				return TRUE
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction2)
+			if (H.faction_text == faction1)
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
