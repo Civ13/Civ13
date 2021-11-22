@@ -1172,6 +1172,22 @@
 	..()
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/chechoff
+/obj/item/weapon/storage/belt/smallpouches/green/chechoff/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/horn(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/rusoff
+/obj/item/weapon/storage/belt/smallpouches/green/rusoff/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/whistle(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+
 /obj/item/clothing/under/blue_shorts
 	name = "blue shorts"
 	desc = "Basic blue shorts."
