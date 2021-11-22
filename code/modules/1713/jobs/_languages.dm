@@ -237,8 +237,8 @@
 				H.default_language = R
 				break
 		if (CHECHEN)
-			for (var/datum/language/ukrainian/U in H.languages)
-				H.default_language = U
+			for (var/datum/language/arab/A in H.languages)
+				H.default_language = A
 				break
 		if (FINNISH)
 			for (var/datum/language/oldnorse/O in H.languages)
