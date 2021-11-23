@@ -118,7 +118,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/curedham
 	name = "cured ham slice"
-	desc = "Delicious Iberian-style jam�n."
+	desc = "Delicious Iberian-style jamon."
 	icon = 'icons/obj/complex_foods.dmi'
 	icon_state = "ham_ready_to_eat"
 	trash = null

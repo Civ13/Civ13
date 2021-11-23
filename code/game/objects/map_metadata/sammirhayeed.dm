@@ -85,8 +85,7 @@
 var/no_loop_kar = FALSE
 
 /obj/map_metadata/sammirhayeed/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= 21000)
 		if (win_condition_spam_check)
 			return FALSE

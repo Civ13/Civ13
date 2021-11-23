@@ -90,8 +90,7 @@
 var/no_loop_intra = FALSE
 
 /obj/map_metadata/intramuros/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= 21000)
 		if (win_condition_spam_check)
 			return FALSE

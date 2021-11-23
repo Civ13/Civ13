@@ -8,6 +8,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 0
+	
 /obj/covers/repairedfloor
 	name = "repaired floor"
 	desc = "a repaired wood floor."
@@ -49,24 +50,46 @@
 		desc = "a weakened ship floor."
 		maxhealth = 50
 		icon_state = "wood_ship_repaired"
-	..()
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+		Destroy()
 
+/obj/covers/repairedfloor/ship/Destroy()
+	if(istype(src.loc, /turf/floor/beach/water))
+		var/turf/T1 = get_step(src.loc,pick(NORTH,NORTHWEST))
+		if(T1)
+			new/obj/effect/flooding(T1)
+		var/turf/T2 = get_step(src.loc,pick(EAST,NORTHEAST))
+		if(T2)
+			new/obj/effect/flooding(T2)
+		var/turf/T3 = get_step(src.loc,pick(WEST,SOUTHWEST))
+		if(T3)
+			new/obj/effect/flooding(T3)
+		var/turf/T4 = get_step(src.loc,pick(SOUTH,SOUTHEAST))
+		if(T4)
+			new/obj/effect/flooding(T4)
+	..()
 /obj/covers/repairedfloor/ship/south
-	icon = 'icons/turf/boat.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "boat_floor_south1"
 
 /obj/covers/repairedfloor/rope
 	name = "grappling hook rope"
 	desc = "a piece of rope attached to a grappling hook"
 	icon = 'icons/obj/objects.dmi'
-	icon_state = "grapplehook_line"
+	icon_state = "grapplehook_line_bridge"
 	flammable = FALSE
 	explosion_resistance = TRUE
 	var/origin = null
-	layer = 3.1
+	layer = 3.999
+
+	New()
+		..()
+		if(icon_state == "grapplehook_line_bridge")
+			icon_state = pick("grapplehook_line_bridge","grapplehook_line_bridge1","grapplehook_line_bridge2")
 
 /obj/covers/repairedfloor/rope/end
-	icon_state = "grapple_overlay"
+	icon_state = "grapple_bridge_overlay"
 	layer = 3.15
 
 /obj/covers/repairedfloor/rope/proc/develop(var/obj/norigin)
@@ -74,7 +97,17 @@
 		origin = norigin
 	dir = norigin.dir
 	update_icon()
+	for(var/obj/structure/window/barrier/B in loc)
+		B.density = FALSE
 
+/obj/covers/repairedfloor/rope/Destroy()
+	for(var/obj/structure/window/barrier/B in loc)
+		B.density = TRUE
+	for(var/obj/O in loc)
+		loc.Entered(O)
+	for(var/mob/living/M in loc)
+		loc.Entered(M)
+	..()
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'

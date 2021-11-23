@@ -174,6 +174,7 @@
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_vietcong = TRUE
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 12

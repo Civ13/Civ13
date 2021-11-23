@@ -91,8 +91,7 @@
 var/no_loop_cal = FALSE
 
 /obj/map_metadata/caloocan/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE

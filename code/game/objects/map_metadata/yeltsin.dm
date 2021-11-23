@@ -1,6 +1,6 @@
 /obj/map_metadata/yeltsin
 	ID = MAP_YELTSIN
-	title = "Battle for the Russian Parliament."
+	title = "Battle for the Russian Parliament"
 	lobby_icon_state = "coldwar"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
@@ -156,8 +156,6 @@
 			return TRUE
 
 		if ("Siege")
-			if (!win_condition_specialcheck())
-				return FALSE
 			if (world.time >= 24000)
 				if (win_condition_spam_check)
 					return FALSE
@@ -223,8 +221,6 @@
 			return TRUE
 
 		if ("Kills")
-			if (!win_condition_specialcheck())
-				return FALSE
 			if (processes.ticker.playtime_elapsed >= 24000 || world.time >= next_win && next_win != -1)
 				if (win_condition_spam_check)
 					return FALSE

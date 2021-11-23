@@ -713,6 +713,10 @@
 	New()
 		..()
 		reagents.add_reagent("sake", 50)
+		if (flags == FALSE)
+			icon_state = "sake_closed"
+		else
+			icon_state = "sake"
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake/empty
 	volume = 50

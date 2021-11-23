@@ -3,14 +3,12 @@
 ///SIEVERTS: basic unit used is mSv. An exposure to 1 Sv for 1 hour gives a total exposure of 1 Gy (since 1 Sv is equal to 1 Gy for all except alpha radiation).
 ///The radiation var of humans is measured in rads, so 100 radiation means 1 Gy. 1 mSv = 0.1 rad
 
-#define RAD_LEVEL_NORMAL 15 //0.15 Gy, equal to 1 year smoking 1 1/2 packs of cigarettes a day. Avg dose for Chernobyl recovery workers.
-#define RAD_LEVEL_MODERATE 40 //Gives mild radiation poisoning symptoms (vomiting, erytrema)
-#define RAD_LEVEL_HIGH 100 //Gives radiation poisoning (passing out, twitches, severe erytrema)
-#define RAD_LEVEL_VERY_HIGH 200 //Severe radiation poisoning, sometimes fatal
-#define RAD_LEVEL_CRITICAL 300 //LD50
-#define RAD_LEVEL_DEADLY 500 //Always kills
-
-
+/// RAD_LEVEL_NORMAL 15 //0.15 Gy, equal to 1 year smoking 1 1/2 packs of cigarettes a day. Avg dose for Chernobyl recovery workers.
+/// RAD_LEVEL_MODERATE 40 //Gives mild radiation poisoning symptoms (vomiting, erytrema)
+/// RAD_LEVEL_HIGH 100 //Gives radiation poisoning (passing out, twitches, severe erytrema)
+/// RAD_LEVEL_VERY_HIGH 200 //Severe radiation poisoning, sometimes fatal
+/// RAD_LEVEL_CRITICAL 300 //LD50
+/// RAD_LEVEL_DEADLY 500 //Always kills
 
 //severity: mSv per second. duration: duration in seconds
 /proc/radiation_pulse(turf/epicenter, range, severity, duration, log)

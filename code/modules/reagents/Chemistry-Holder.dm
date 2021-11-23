@@ -331,18 +331,13 @@
 	return FALSE
 
 //Splashing reagents is messier than trans_to, the target's loc gets some of the reagents as well.
-/datum/reagents/proc/splash(var/atom/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE, var/min_spill=0, var/max_spill=60)
-	var/spill = FALSE
-	if (!isturf(target) && target.loc)
-		spill = amount*(rand(min_spill, max_spill)/100)
-		amount -= spill
-	if (spill)
-		splash(target.loc, spill, multiplier, copy, min_spill, max_spill)
+/datum/reagents/proc/splash(var/atom/target, var/amount = TRUE)
 
-	trans_to(target, amount, multiplier, copy)
+	trans_to(target, amount)
 	if (istype(target, /turf/floor/dirt))
 		for (var/obj/structure/farming/plant/P in target)
 			P.water = min(P.water+amount,P.max_water)
+
 
 /datum/reagents/proc/trans_id_to(var/atom/target, var/id, var/amount = TRUE)
 	if (!target || !target.reagents || !target.simulated)

@@ -587,6 +587,8 @@ obj/structure/religious/monument
 					RMN.forceMove(src.loc)
 				for (var/obj/item/IT in src)
 					IT.forceMove(src.loc)
+				for (var/obj/structure/closet/crate/CR in src)
+					CR.forceMove(src.loc)
 				for (var/mob/living/ML in src)
 					if (ML.stat != 0)
 						ML.forceMove(src.loc)
@@ -618,6 +620,16 @@ obj/structure/religious/monument
 			return
 	else
 		return
+
+/obj/structure/religious/grave/initialize()
+	..()
+	if (!open)		// if closed, any item at the crate's loc is put in the contents
+		var/obj/item/I
+		icon_state = "grave_filled"
+		for (I in loc)
+			if (I.density || I.anchored || I == src) continue
+			I.forceMove(src)
+	update_icon()
 
 /obj/structure/religious/impaledskull
 	name = "impaled skull"
@@ -681,7 +693,7 @@ obj/structure/religious/monument
 	var/I = 0
 	while(I < round(current_tribesmen/2))
 
-		var/mob/living/simple_animal/hostile/skeleton/attacker_gods/newmob = new /mob/living/simple_animal/hostile/skeleton/attacker_gods(src.loc)
+		var/mob/living/simple_animal/hostile/human/skeleton/attacker_gods/newmob = new /mob/living/simple_animal/hostile/human/skeleton/attacker_gods(src.loc)
 		newmob.target_loc = loc
 		var/randdir = pick(1,2,3,4)
 		if (randdir == 1)

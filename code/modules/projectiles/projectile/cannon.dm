@@ -42,13 +42,17 @@
 	if (istype(A, /turf))
 		var/turf/T = A
 		if (atype == "HE")
-			if (!istype(T, /turf/floor/beach))
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 				T.ChangeTurf(/turf/floor/dirt/burned)
 			explosion(T, 1, 2, 2, 3)
-		else
-			if (!istype(T, /turf/floor/beach))
+		else if (atype == "cannonball")
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 				T.ChangeTurf(/turf/floor/dirt/burned)
-			explosion(T, 0, 0, 1, 3)
+			explosion(T, 1, 1, 1, 2)
+		else
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
+				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 0, 0, 1, 2)
 	spawn(50)
 		if (src)
 			qdel(src)
@@ -72,9 +76,13 @@
 		qdel(src)
 		return TRUE
 
-	firer = user
+	if (user)
+		firer = user
+		firer_original_dir = firer.dir
+	else
+		firer = null
+		firer_original_dir = dir
 	firer_loc = get_turf(src)
-	firer_original_dir = firer.dir
 	firedfrom = launcher
 
 	original = target
@@ -89,3 +97,65 @@
 	projectile_list += src
 
 	return FALSE
+
+//////////////////////////////////////////
+////////////////CANNONBALL////////////////
+
+/obj/item/projectile/shell/cannonball
+	icon_state = "shell"
+	atype = "cannonball"
+/obj/item/projectile/shell/cannonball/chainshot
+	icon_state = "chainshot"
+	atype = "chainshot"
+/obj/item/projectile/shell/cannonball/grapeshot
+	icon_state = "buckshot"
+	atype = "grapeshot"
+
+/obj/item/projectile/shell/cannonball/on_impact(var/atom/A)
+	impact_effect(effect_transform)		// generate impact effect
+	playsound(src, artillery_in, 50, TRUE, -2)
+	if (istype(A, /turf))
+		var/turf/T = A
+		if (atype == "cannonball")
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
+				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 1, 2, 2, 3)
+		else
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
+				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 0, 0, 1, 3)
+	spawn(50)
+		if (src)
+			qdel(src)
+	return TRUE
+
+/obj/item/projectile/shell/cannonball/get_structure_damage()
+	if (atype == "chainshot")
+		return damage/2
+	if (atype == "grapeshot")
+		return damage/5
+	return FALSE
+
+/obj/item/projectile/shell/cannonball/attack_mob(var/mob/living/target_mob)
+	switch(atype)
+		if("cannonball")
+			if (prob(80))
+				mob_passthrough_check = TRUE
+			else
+				mob_passthrough_check = FALSE
+		if("grapeshot")
+			mob_passthrough_check = FALSE
+			is_shrapnel = TRUE
+		if("chainshot")
+			mob_passthrough_check = TRUE
+			if (ishuman(target_mob))
+				var/mob/living/human/H
+				var/obj/item/organ/external/affecting = H.get_organ(pick("l_leg","l_arm","r_leg","r_arm"))
+				affecting.droplimb(0, DROPLIMB_BLUNT)
+	return ..()
+
+/obj/item/projectile/shell/can_embed()
+	//prevent embedding if the projectile is passing through the mob
+	if (mob_passthrough_check)
+		return FALSE
+	return ..()

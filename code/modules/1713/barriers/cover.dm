@@ -50,6 +50,12 @@
 // procedure for both incomplete and complete sandbags
 /obj/structure/window/barrier/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 
+	for (var/obj/covers/repairedfloor/rope/R in loc)
+		return TRUE
+
+	for (var/obj/covers/repairedfloor/rope/R in get_turf(get_step(mover,mover.dir)))
+		return TRUE
+
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 

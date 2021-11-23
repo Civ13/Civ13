@@ -137,12 +137,33 @@
 		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-	if (WWinput(user, "This will start building a floor cover [user.dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+	if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc) && src)
 			qdel(src)
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				H.adaptStat("crafting", 3)
+		return
+
+/obj/item/weapon/covers/ship/attack_self(mob/user)
+	var/covers_time = 80
+	if (ishuman(user))
+		var/turf/targetfloor = get_turf(get_step(user, user.dir))
+		if (istype(targetfloor, /turf/wall))
+			visible_message("<span class='notice'>You can't build here!</span>")
+			return
+		var/mob/living/human/H = user
+		covers_time /= H.getStatCoeff("strength")
+		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+	if (WWinput(user, "This will start building a new ship floor [dir2text(user.dir)] of you.", "Ship Floor Repair", "Continue", list("Continue", "Stop")) == "Continue")
+		visible_message("<span class='danger'>[user] starts constructing the new floor.</span>", "<span class='danger'>You start constructing the new floor.</span>")
+		if (do_after(user, covers_time, user.loc) && src)
+			qdel(src)
+			new/obj/covers/repairedfloor/ship(get_step(user, user.dir), user)
+			visible_message("<span class='danger'>[user] finishes placing the new floor.</span>")
 			if (ishuman(user))
 				var/mob/living/human/H = user
 				H.adaptStat("crafting", 3)
@@ -157,6 +178,11 @@
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
+		if (istype(mover,/obj/item/projectile/shell))
+			var/obj/item/projectile/shell/S = mover
+			if(prob(18) && S.atype == "cannonball")
+				visible_message("<span class = 'warning'>\The [mover.name] hits \the [src]!</span>")
+				return FALSE
 		if (prob(75) && density)
 			visible_message("<span class = 'warning'>\The [mover.name] hits \the [src]!</span>")
 			return FALSE
@@ -249,25 +275,23 @@
 			start_fire()
 		try_destroy()
 	else
-		if (wall)
-			if (istype(proj, /obj/item/projectile/shell))
-				var/obj/item/projectile/shell/S = proj
-				if (S.atype == "HE")
+		if (istype(proj, /obj/item/projectile/shell))
+			var/obj/item/projectile/shell/S = proj
+			if (S.atype == "HE" || S.atype == "cannonball")
+				visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+				qdel(src)
+				return
+			else
+				if (prob(60))
 					visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 					qdel(src)
-					return
-				else
-					if (prob(60))
-						visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-						qdel(src)
-			else
+		else
+			if (wall)
 				if (istype(proj, /obj/item/projectile/bullet) && bullethole_count.len < 13)
 					new_bullethole()
 				health -= proj.damage * 0.1
 				try_destroy()
-			return
-		else
-			return
+		return
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)

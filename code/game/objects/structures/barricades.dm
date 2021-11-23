@@ -37,23 +37,24 @@
 
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)
-	if (!material_name)
-		material_name = "wood"
-	material = get_material_by_name("[material_name]")
-	if (!material)
-		qdel(src)
-		return
-	name = "[material.display_name] barricade"
-	if (istype(material, /material/wood))
-		icon_state = "wood_barricade"
-		flammable = TRUE
-	else
-		if(!applies_material_colour)
+	if(!istype(src, /obj/structure/barricade/ship))
+		if (!material_name)
+			material_name = "wood"
+		material = get_material_by_name("[material_name]")
+		if (!material)
+			qdel(src)
 			return
+		name = "[material.display_name] barricade"
+		if (istype(material, /material/wood))
+			icon_state = "wood_barricade"
+			flammable = TRUE
 		else
-			color = material.icon_colour
-	maxhealth = (material.integrity*2.5) + 100
-	health = maxhealth
+			if(!applies_material_colour)
+				return
+			else
+				color = material.icon_colour
+		maxhealth = (material.integrity*2.5) + 100
+		health = maxhealth
 
 /obj/structure/barricade/get_material()
 	return material
@@ -131,7 +132,7 @@
 	switch(severity)
 		if (1.0)
 			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
-			qdel(src)
+			dismantle()
 			return
 		if (2.0)
 			health -= (200 + round(maxhealth * 0.30))

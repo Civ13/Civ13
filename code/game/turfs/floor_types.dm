@@ -279,6 +279,26 @@
 	density = FALSE
 	initial_flooring = /decl/flooring/water_deep
 
+/turf/floor/beach/water/deep/Crossed(atom/A)
+	..()
+	check_sinking(A)
+/turf/floor/beach/water/deep/Entered(atom/movable/A)
+	..()
+	check_sinking(A)
+
+/turf/floor/beach/water/proc/check_sinking(atom/movable/A)
+	if(iscovered())
+		return
+	if (!istype(A, /mob) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
+		spawn(60)
+			if (istype(A.loc,/turf/floor/beach/water/deep))
+				qdel(A)
+	if(istype(A, /mob/living))
+		var/mob/living/ML = A
+		if (ML && ML.stat == DEAD)
+			spawn(60)
+				if (A && A.loc == src)
+					qdel(A)
 /turf/floor/beach/water/deep/jungle
 	name = "deep jungle river"
 	icon_state = "seashallow_jungle3"
@@ -318,6 +338,8 @@
 
 /turf/proc/iscovered()
 	for(var/obj/covers/C in src)
+		return TRUE
+	for(var/obj/structure/multiz/ladder/ST in src)
 		return TRUE
 	for (var/obj/structure/vehicleparts/frame/ship/S in src)
 		return TRUE

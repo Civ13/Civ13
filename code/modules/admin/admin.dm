@@ -1067,6 +1067,67 @@ var/list/atom_types = null
 	message_admins("[key_name(usr)] manually reloaded crafting recipes.")
 	load_recipes()
 
+/client/proc/load_voyage_event()
+	set name = "Load Event"
+	set category = "Debug"
+
+	if (!check_rights(R_SERVER))	return
+	if (!map || map.ID != MAP_VOYAGE)
+		WWalert(usr, "This only works on Voyage!","Wrong Map")
+		return
+	var/obj/map_metadata/voyage/nmap = map
+	var/do_clear = FALSE
+	var/do_load = FALSE
+	var/checking = WWinput(usr, "Do you just want to clear the map, load, or load without clearing?","Load Map","Cancel",list("Clear and load","Load without clearing","Just clear","Cancel"))
+	switch(checking)
+		if("Clear and load")
+			do_clear = TRUE
+			do_load = TRUE
+		if("Load without clearing")
+			do_clear = FALSE
+			do_load = TRUE
+		if("Just clear")
+			do_clear = TRUE
+			do_load = FALSE
+			nmap.clear_map()
+			message_admins("[key_name(usr)] manually cleared the map.")
+			return
+		if("Cancel")
+			return
+	if (do_load)
+		var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("north","south","random"))
+		var/options = list("manual input")
+		var/t_options = flist("maps/zones/[loct]/")
+		for(var/i in t_options)
+			if(findtext(i,"dmm"))
+				options += replacetext(i, ".dmm", "")
+		var/nam = WWinput(usr, "Which map to load?","Load Map","manual input",options)
+		if (nam == "manual input")
+			nam = input(usr, "which map?","Manual Input","") as text
+		nmap.navmoving = FALSE
+		for(var/obj/effect/sailing_effect/S in world)
+			S.icon_state = "sailing_effect_stopped"
+			S.update_icon()
+		nmap.inzone = TRUE
+		nmap.ship_anchored = TRUE
+		for(var/obj/structure/voyage/anchor_capstan/VAC in world)
+			VAC.update_icon()
+		world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
+		if (do_clear)
+			nmap.clear_map()
+			message_admins("[key_name(usr)] manually cleared the map.")
+		if (do_load)
+			nmap.load_map(nam,loct)
+			message_admins("[key_name(usr)] manually loaded an event.")
+
+client/proc/debug_variables_map()
+	set name = "Debug Map Variables"
+	set category = "Debug"
+
+	if (!check_rights(R_SERVER))	return
+
+	debug_variables(map)
+
 /proc/load_recipes()
 	var/all_craft_lists = flist("config/crafting/")
 	for (var/i in all_craft_lists)

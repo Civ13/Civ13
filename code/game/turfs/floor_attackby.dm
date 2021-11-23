@@ -126,26 +126,34 @@
 		return ..(C, user)
 
 	else if (istype(C, /obj/item/weapon/reagent_containers/food/drinks))
-		if (istype(C, /obj/item/weapon/reagent_containers/food/drinks/bottle))
-			var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = C
-			if (B.rag)
-				return
-		visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
-		if (C.reagents.has_reagent("petroleum", 5))
-			new/obj/effect/decal/cleanable/blood/oil(user.loc)
-		if (C.reagents.has_reagent("gasoline", 5))
-			new/obj/effect/decal/cleanable/blood/oil(user.loc)
-		if (C.reagents.has_reagent("diesel", 10))
-			new/obj/effect/decal/cleanable/blood/oil(user.loc)
-		if (C.reagents.has_reagent("biodiesel", 10))
-			new/obj/effect/decal/cleanable/blood/oil(user.loc)
-		if (C.reagents.has_reagent("olive_oil", 15))
-			new/obj/effect/decal/cleanable/blood/oil(user.loc)
-		C.reagents.splash(src, C.reagents.total_volume)
-		C.reagents.clear_reagents()
-		C.update_icon()
-		C.reagents.del_reagent("cholera")
-		return
+		if (user.a_intent == I_HARM)
+			if (istype(C, /obj/item/weapon/reagent_containers/food/drinks/bottle))
+				var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = C
+				if (B.rag)
+					return
+			visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
+			if (C.reagents.has_reagent("petroleum", 5))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			if (C.reagents.has_reagent("gasoline", 5))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			if (C.reagents.has_reagent("diesel", 10))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			if (C.reagents.has_reagent("biodiesel", 10))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			if (C.reagents.has_reagent("olive_oil", 15))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			if (C.reagents.has_reagent("water", 75))
+				new/obj/effect/flooding(user.loc)
+			if (C.reagents.has_reagent("water", 50))
+				new/obj/effect/flooding(user.loc)
+			if (C.reagents.has_reagent("water", 25))
+				new/obj/effect/flooding(user.loc)
+			var/obj/item/weapon/reagent_containers/food/drinks/DK = C
+			DK.proper_spill(src, DK.reagents.total_volume)
+			C.reagents.clear_reagents()
+			C.update_icon()
+			C.reagents.del_reagent("cholera")
+			return
 
 	else if (istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
 		var/turf/T = get_turf(src)
@@ -282,17 +290,6 @@
 		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
 			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
-		var/your_dir = "NORTH"
-
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
 
 		var/sandbag_time = 50
 
@@ -302,7 +299,7 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a sandbag wall [your_dir] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			if (WWinput(user, "This will start building a sandbag wall [dir2text(user.dir)] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/progress = bag.sand_amount
@@ -317,18 +314,6 @@
 
 	else if (istype(C, /obj/item/weapon/barrier))
 
-		var/your_dir = "NORTH"
-
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
-
 		var/sandbag_time = 50
 
 		if (ishuman(user))
@@ -337,7 +322,7 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a dirt barricade [your_dir] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			if (WWinput(user, "This will start building a dirt barricade [dir2text(user.dir)] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/obj/item/weapon/barrier/bag = C
@@ -352,19 +337,6 @@
 				return
 
 	else if (istype(C, /obj/item/weapon/snowwall))
-
-		var/your_dir = "NORTH"
-
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
-
 		var/sandbag_time = 50
 
 		if (ishuman(user))
@@ -373,7 +345,7 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a snow barricade [your_dir] of you.", "Snow Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			if (WWinput(user, "This will start building a snow barricade [dir2text(user.dir)] of you.", "Snow Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/obj/item/weapon/snowwall/bag = C
@@ -823,39 +795,30 @@
 				user << "<span class='danger'>You can't plough this type of terrain.</span>"
 				return
 
-	else if (istype(C, /obj/item/weapon/covers) && !istype(src, /turf/floor/beach/water/deep/saltwater))
+	else if (istype(C, /obj/item/weapon/covers))
+		if (!istype(src, /turf/floor/beach/water/deep/saltwater) || map.ID == MAP_VOYAGE)
+			var/covers_time = 80
 
-		var/your_dir = "NORTH"
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				covers_time /= H.getStatCoeff("strength")
+				covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
-		switch (user.dir)
-			if (NORTH)
-				your_dir = "NORTH"
-			if (SOUTH)
-				your_dir = "SOUTH"
-			if (EAST)
-				your_dir = "EAST"
-			if (WEST)
-				your_dir = "WEST"
-
-		var/covers_time = 80
-
-		if (ishuman(user))
-			var/mob/living/human/H = user
-			covers_time /= H.getStatCoeff("strength")
-			covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-
-		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
-				if (do_after(user, covers_time, user.loc))
-					if (!istype(src, /turf/floor/beach/water/deep/saltwater))
-						qdel(C)
-						new/obj/covers/repairedfloor(src, user)
-						visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							H.adaptStat("crafting", 3)
-				return
+			if (src == get_step(user, user.dir))
+				if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+					visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
+					if (do_after(user, covers_time, user.loc))
+						if (!istype(src, /turf/floor/beach/water/deep/saltwater) || map.ID == MAP_VOYAGE)
+							qdel(C)
+							if (istype(C, /obj/item/weapon/covers/ship))
+								new/obj/covers/repairedfloor/ship(src, user)
+							else
+								new/obj/covers/repairedfloor(src, user)
+							visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
+							if (ishuman(user))
+								var/mob/living/human/H = user
+								H.adaptStat("crafting", 3)
+					return
 
 
 	if (flooring)

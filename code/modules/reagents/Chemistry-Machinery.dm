@@ -617,7 +617,7 @@
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return
 	if (B.reagents)
-		if (B.reagents.total_volume > 0 && collector.reagents.get_free_space() > 0)
+		if (B.reagents.total_volume > 0 && collector && collector.reagents.get_free_space() > 0)
 			var/amt_transf = collector.reagents.get_free_space()
 			var/tamt = B.reagents.trans_to_holder(src.reagents, min(10, amt_transf), TRUE, FALSE)
 			H << "You pour [tamt] units from \the [B] into the distiller."

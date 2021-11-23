@@ -584,7 +584,7 @@
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 	uses_squads = TRUE
-
+	can_be_female = TRUE
 
 	min_positions = 12
 	max_positions = 60
@@ -644,6 +644,7 @@
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 	uses_squads = TRUE
+	can_be_minor = TRUE
 
 
 	min_positions = 12

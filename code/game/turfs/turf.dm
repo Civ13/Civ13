@@ -392,12 +392,18 @@ var/const/enterloopsanity = 100
 			else
 				footstepsound = "erikafootsteps"
 
+			for(var/obj/structure/multiz/ladder/ww2/LADDER in src)
+				footstepsound = "woodfootsteps"
+				break
 			for(var/obj/covers/CV in src)
 				if (istype(CV, /obj/covers/carpet))
 					footstepsound = "carpetfootsteps"
 					break
 				else if (istype(CV, /obj/covers/wood))
 					footstepsound = "woodfootsteps"
+					for(var/obj/effect/flooding/FLD in src)
+						footstepsound = "waterfootsteps"
+						break
 					break
 				else
 					footstepsound = "platingfootsteps"

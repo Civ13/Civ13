@@ -383,16 +383,31 @@
 	var/deployed = FALSE
 	var/owner = null
 
+/obj/structure/grapplehook/auto
+	dir = SOUTH
+	anchored = TRUE
+	New()
+		..()
+		spawn(rand(200,350))
+		if (!deployed)
+			deployed = TRUE
+			deploy()
+			update_icon()
+			return
 /obj/structure/grapplehook/attack_hand(mob/living/human/user)
 	if (!deployed)
 		var/turf/nT = get_step(loc,user.dir)
 		var/turf/nTT = get_step(nT,user.dir)
-		if (!istype(nTT, /turf/floor/beach/water))
+		if (!istype(nTT, /turf/floor/beach/water) && !istype(nTT, /turf/floor/broken_floor))
 			user << "<span class='warning'>You cannot deploy in this direction!</span>"
 			return
 		user << "<span class='notice'>You start deploying the [src]...</span>"
 		if (do_after(user, 80, target = src))
 			dir = user.dir
+			if (dir == SOUTHWEST || dir == SOUTHEAST)
+				dir = SOUTH
+			if (dir == NORTHWEST || dir == NORTHEAST)
+				dir = NORTH
 			deployed = TRUE
 			deploy()
 			update_icon()
@@ -410,17 +425,31 @@
 
 /obj/structure/grapplehook/update_icon()
 	if (deployed)
-		icon_state = "grapplehook_deployed"
+		icon_state = "grapplehook_bridge_deployed"
 	else
 		icon_state = "grapplehook"
 
+/obj/structure/grapplehook/attackby(obj/item/I, mob/living/human/H)
+	if (deployed && istype(I, /obj/item/weapon/wrench))
+		return
+	..()
+
 /obj/structure/grapplehook/proc/deploy()
+	anchored = TRUE
 	var/turf/last_turf = loc
-	for(var/i = 1, i <= 11, i++)
+	for(var/i = 1, i <= 17, i++)
 		var/turf/nT = get_step(last_turf,dir)
 		last_turf = nT
 		if (i>=2)
 			for (var/obj/structure/barricade/ship/Ship in nT)
+				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
+				endpart.develop(src)
+				return
+			for (var/obj/structure/window/barrier/Ship in nT)
+				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
+				endpart.develop(src)
+				return
+			if (istype(nT, /turf/floor/beach/sand) || istype(nT, /turf/floor/dirt) || istype(nT, /turf/floor/grass))
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return
@@ -434,7 +463,7 @@
 /obj/structure/grapplehook/proc/undeploy()
 	for(var/obj/covers/repairedfloor/rope/R in world)
 		if (R.origin == src)
-			qdel(R)
+			R.Destroy()
 	deployed = FALSE
 	update_icon()
 	return

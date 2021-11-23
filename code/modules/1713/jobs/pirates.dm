@@ -60,7 +60,6 @@
 	whitelisted = TRUE
 	can_be_female = TRUE
 
-
 	min_positions = 1
 	max_positions = 1
 
@@ -113,7 +112,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket2(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket1(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
 
@@ -130,7 +129,7 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
-
+	H.make_title_changer()
 	return TRUE
 
 /datum/job/pirates/midshipman

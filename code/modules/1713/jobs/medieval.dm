@@ -1332,6 +1332,7 @@
 	is_religious = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 20
@@ -1372,6 +1373,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -1430,6 +1432,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 	min_positions = 3
 	max_positions = 10
@@ -1492,6 +1495,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -1551,6 +1555,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 
 	min_positions = 1
@@ -1610,6 +1615,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 
 	min_positions = 1
@@ -1670,6 +1676,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 
 	min_positions = 10
@@ -1730,6 +1737,7 @@
 	whitelisted = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 3

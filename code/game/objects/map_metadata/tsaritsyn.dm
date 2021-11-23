@@ -92,8 +92,7 @@ obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
 var/no_loop_t = FALSE
 
 /obj/map_metadata/tsaritsyn/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (world.time >= 24000)
 		if (win_condition_spam_check)
 			return FALSE

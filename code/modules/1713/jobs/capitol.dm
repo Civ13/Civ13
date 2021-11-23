@@ -9,6 +9,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_radioman = TRUE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -53,6 +54,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
+	can_be_female = TRUE
 
 	can_get_coordinates = TRUE
 
@@ -100,6 +102,7 @@
 
 	is_medic = TRUE
 	is_capitol = TRUE
+	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -150,7 +153,7 @@
 	is_capitol = TRUE
 
 	uses_squads = TRUE
-
+	can_be_female = TRUE
 	min_positions = 10
 	max_positions = 100
 
@@ -196,6 +199,7 @@
 	is_whitehouse = TRUE
 	is_capitol = TRUE
 	whitelisted = TRUE
+	can_be_female = TRUE
 
 	min_positions = 4
 	max_positions = 4
@@ -241,6 +245,7 @@
 	is_capitol = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
+	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -286,6 +291,7 @@
 	min_positions = 10
 	max_positions = 150
 	is_capitol = TRUE
+	can_be_female = TRUE
 
 /datum/job/civilian/us_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -351,6 +357,7 @@
 	min_positions = 10
 	max_positions = 150
 	is_capitol = TRUE
+	can_be_female = TRUE
 
 /datum/job/civilian/us_patriot/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

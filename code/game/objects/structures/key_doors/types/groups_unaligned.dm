@@ -162,5 +162,19 @@
 	override_opacity = TRUE
 	opacity = FALSE
 
+/obj/structure/simple_door/key_door/anyone/wood/ship
+	material = "wood"
+	health = 150
+/obj/structure/simple_door/key_door/anyone/wood/ship/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	name = "wooden ship door"
+	icon = 'icons/obj/doors/material_doors_leonister.dmi'
+	basic_icon = "ship"
+	icon_state = "ship"
+	desc = "A wood round ship door"
+	override_material = FALSE
+	override_opacity = TRUE
+	opacity = FALSE
+
 #undef ANYONE_CODE
 

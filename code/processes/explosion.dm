@@ -250,7 +250,8 @@
 
 /process/explosion/proc/queue(var/datum/explosiondata/data)
 	if (!data) return
-	work_queue += data
+	if(islist(work_queue))
+		work_queue += data
 
 /process/explosion/statProcess()
 	..()

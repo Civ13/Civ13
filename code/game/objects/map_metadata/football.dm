@@ -148,8 +148,7 @@
 			else
 				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goal</font>"
 /obj/map_metadata/football/update_win_condition()
-	if (!win_condition_specialcheck())
-		return FALSE
+
 	if (processes.ticker.playtime_elapsed >= 13200 || world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE

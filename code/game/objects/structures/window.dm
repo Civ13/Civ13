@@ -179,6 +179,8 @@
 		return TRUE
 
 /obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf)
+	for(var/obj/covers/repairedfloor/rope/R in loc)
+		return TRUE
 	if (istype(O) && O.checkpass(PASSGLASS))
 		return TRUE
 	if (get_dir(O.loc, target) == dir)

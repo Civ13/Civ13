@@ -101,7 +101,6 @@
 	w_class = 3		//big
 	value = 0
 
-obsidian_mirror
 /obj/item/mirror/attackby(obj/item/H as obj, mob/user as mob)
 	if (istype(H, /obj/item/weapon/hammer) && isturf(user.loc))
 		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
