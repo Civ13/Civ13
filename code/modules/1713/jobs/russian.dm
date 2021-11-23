@@ -333,6 +333,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_ww2 = TRUE
+	is_karelina = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -380,7 +381,7 @@
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 1
@@ -425,7 +426,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = TRUE
-
+	is_karelina = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -470,7 +471,7 @@
 	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRUDoc"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	is_medic = TRUE
 	min_positions = 1
@@ -510,7 +511,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
@@ -558,7 +559,7 @@
 	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-
+	is_karelina = TRUE
 
 	min_positions = 20
 	max_positions = 100
@@ -1094,7 +1095,7 @@
 	rank_abbreviation = "Kom."
 
 	spawn_location = "JoinLateRU"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
@@ -1141,7 +1142,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
@@ -1188,7 +1189,7 @@
 
 	spawn_location = "JoinLateRU"
 	is_ss_panzer = TRUE
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -1236,7 +1237,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_ss_panzer = TRUE
-
+	is_karelina = TRUE
 	min_positions = 6
 	max_positions = 30
 
@@ -1284,7 +1285,7 @@
 
 	spawn_location = "JoinLateRUSap"
 	is_ss_panzer = TRUE
-
+	is_karelina = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 2

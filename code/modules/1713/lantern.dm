@@ -26,7 +26,7 @@
 	name = "bronze etsy lamp"
 	icon_state = "etsy"
 	item_state = "etsy"
-	desc = "A bronze lamp with several candle holders."
+	desc = "A bronze lamp with several wicks."
 	brightness_on = 8			// luminosity when on
 	light_color = rgb(200, 255, 200) // green tint
 	on_state = "etsy-on"
