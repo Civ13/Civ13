@@ -80,3 +80,36 @@
 		messages["backup"] = list("!!Malé!!", "!!Sale!")
 		messages["enemy_sighted"] = list("!!Unga Dunga!", "!!Muko!!")
 		messages["grenade"] = list("!!BANGAAA!")
+
+/mob/living/simple_animal/hostile/human/voyage/slave
+	name = "slave"
+	icon_state = "slave1"
+	desc = "An african slave from a local plantation."
+	icon_dead = "slave1_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("We workin'","It'sa hard day fo ya'll", "Ooh mama!")
+	speak_emote = list("grumbles", "screams")
+	emote_hear = list("grumbles","screams")
+	emote_see = list("stares ferociously", "stomps")
+	speak_chance = TRUE
+	maxHealth = 120
+	health = 120
+	stop_automated_movement_when_pulled = TRUE
+	harm_intent_damage = 12
+	melee_damage_lower = 20
+	melee_damage_upper = 30
+	attacktext = "slashed"
+	attack_sound = 'sound/weapons/bladeslice.ogg'
+	mob_size = MOB_MEDIUM
+	starves = FALSE
+	faction = PIRATES
+	attack_verb = "punches"
+	language = new/datum/language/english
+	New()
+		..()
+		var/icon_pick = pick("slave1","slave2","slave3","slave4")
+		icon_living = icon_pick
+		icon_state = icon_pick
+		icon_dead = "[icon_pick]_dead"
