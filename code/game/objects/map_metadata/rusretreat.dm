@@ -1,6 +1,6 @@
 /obj/map_metadata/rusretreat
 	ID = MAP_RUSRETREAT
-	title = "Retreat From Chechen"
+	title = "Retreat From Grozny"
 	lobby_icon_state = "coldwar"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
@@ -15,7 +15,7 @@
 	age = "1995"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(CHECHEN = 0.6, RUSSIAN = 0.4)
-	battle_name = "Retreat"
+	battle_name = "Retreat From Grozny"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Milita will win if they hold out for <b>30 minutes</b>. The Russians will win if they manage to cross the bridge to friendly territory!</font>"
 	faction2 = RUSSIAN
 	faction1 = CHECHEN
@@ -23,6 +23,21 @@
 	songs = list(
 		"Cyka Blyat:1" = 'sound/music/cyka_blyat.ogg',)
 	artillery_count = 10
+
+/obj/map_metadata/rusretreat/New()
+	..()
+	spawn(20)
+		for(var/obj/structure/lamp/O)
+			if (prob(25))
+				O.on = TRUE
+				O.powerneeded = FALSE
+			if (prob(20))
+				O.lamp_broken = TRUE
+		for(var/obj/structure/curtain/NC)
+			if ((NC.icon_state != "open") && prob(15))
+				NC.icon_state = "open"
+				NC.opacity = FALSE
+
 
 /obj/map_metadata/rusretreat/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -82,8 +97,6 @@
 	no_loop_ret = FALSE
 
 /obj/map_metadata/rusretreat/update_win_condition()
-
-
 	if (world.time >= 18000)
 		if (win_condition_spam_check)
 			return FALSE
