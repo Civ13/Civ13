@@ -374,6 +374,8 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_RUSSIAN", 100)
 								if (PIRATES)
 									playsound(get_turf(src), "charge_PIRATES", 100)
+								if (FINNISH)
+									playsound(get_turf(src), "charge_PIRATES", 100)
 								if (BRITISH)
 									playsound(get_turf(src), "charge_BRITISH", 100)
 								if (FRENCH)
