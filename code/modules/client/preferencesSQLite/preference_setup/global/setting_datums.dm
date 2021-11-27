@@ -48,6 +48,10 @@ var/list/_client_preferences_by_type
 	description ="Show chat overlays"
 	key = "CHAT_OVERLAY"
 
+/datum/client_preference/show_tips
+	description ="Show tips"
+	key = "CHAT_TIPS"
+
 /datum/client_preference/play_chat_tts
 	description ="Play chat TTS"
 	key = "CHAT_TTS"
