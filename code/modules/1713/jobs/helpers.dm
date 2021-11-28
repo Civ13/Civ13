@@ -62,6 +62,18 @@
 					if (H.original_job.base_type_flag() == RUSSIAN)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (CHECHEN)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == CHECHEN)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
+		if (FINNISH)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == FINNISH)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 		if (ROMAN)
 			for (var/mob/living/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
@@ -136,6 +148,10 @@
 			return dead_japanese.len + heavily_injured_japanese.len + alive_japanese.len
 		if (RUSSIAN)
 			return dead_russian.len + heavily_injured_russian.len + alive_russian.len
+		if (CHECHEN)
+			return dead_chechen.len + heavily_injured_chechen.len + alive_chechen.len
+		if (FINNISH)
+			return dead_finnish.len + heavily_injured_finnish.len + alive_finnish.len
 		if (CIVILIAN)
 			return dead_civilians.len + heavily_injured_civilians.len + alive_civilians.len
 		if (ROMAN)

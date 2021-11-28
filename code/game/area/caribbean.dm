@@ -294,7 +294,7 @@
 	ambience = list("sound/ambience/ship1.ogg")
 	climate = "sea"
 
-/area/caribbean/sea/top	
+/area/caribbean/sea/top
 	name = "sea"
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	icon_state = "purple2"
@@ -460,6 +460,31 @@
 	icon_state = "purple1"
 	climate = "temperate"
 	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/temperate/two
+	name = "No Man's Land 2"
+	icon_state = "purple2"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/temperate/three
+	name = "No Man's Land 3"
+	icon_state = "blue3"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/temperate/four
+	name = "No Man's Land 4"
+	icon_state = "red4"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/temperate/five
+	name = "No Man's Land 5"
+	icon_state = "green5"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+
 /area/caribbean/no_mans_land/desert
 	name = "No Man's Land"
 	icon_state = "purple1"
@@ -1232,7 +1257,6 @@
 
 /area/caribbean/football/nopass
 	icon_state = "green1"
-	
 /////////////////////////////////////////////////////////////
 /////////////leben paratooper code///////////////////////////
 /*

@@ -2,13 +2,13 @@
 	title = "Soviet Army Lieutenant"
 	rank_abbreviation = "Lt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateRUCap"
 
+	is_rusretreat = TRUE
 	is_yeltsin = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_radioman = TRUE
 
 	min_positions = 1
 	max_positions = 3
@@ -28,7 +28,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -55,12 +56,12 @@
 	title = "Soviet Army Sergeant"
 	rank_abbreviation = "Sgt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateRUCap"
 
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_radioman = TRUE
 
 	can_get_coordinates = TRUE
 
@@ -82,7 +83,8 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -111,10 +113,11 @@
 	title = "Soviet Army Field Medic"
 	rank_abbreviation = "Cpl."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRU"
 
 	is_medic = TRUE
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -165,7 +168,7 @@
 	title = "Soviet Army SWAT"
 	rank_abbreviation = "SWAT"
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRUswat"
 
 	is_yeltsin = TRUE
 
@@ -215,9 +218,10 @@
 	title = "Soviet Army Rifleman"
 	rank_abbreviation = "Pvt."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRU"
 
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 
 	uses_squads = TRUE
 
@@ -266,9 +270,10 @@
 	title = "Spetznaz"
 	rank_abbreviation = "Spz."
 
-	spawn_location = "JoinLateRNsptz"
+	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
 	is_yeltsin = TRUE
+	is_rusretreat = TRUE
 
 	uses_squads = TRUE
 

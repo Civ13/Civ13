@@ -73,6 +73,7 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 
+
 /* Cold War Accessories*/
 
 /obj/item/clothing/mask/facecamo
@@ -1109,3 +1110,10 @@
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
+
+/obj/item/clothing/under/customuniform/fins
+    name = "finnish uniform"
+    desc = "A finnish winter uniform."
+    shirtcolor = "#FFFFFF"
+    pantscolor = "#FFFFFF"
+    color = "#FFFFFF"

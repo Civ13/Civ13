@@ -250,6 +250,10 @@
 	volume = 60
 	center_of_mass = list("x"=17, "y"=7)
 
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka/New()
+	..()
+	reagents.add_reagent("vodka", 60)
 /obj/item/weapon/reagent_containers/food/drinks/flask/shiny
 	name = "shiny flask"
 	desc = "A shiny metal flask. It appears to have a Greek symbol inscribed on it."
@@ -273,6 +277,11 @@
 	icon_state = "barflask"
 	volume = 60
 	center_of_mass = list("x"=17, "y"=7)
+
+/obj/item/weapon/reagent_containers/food/drinks/flask/barflask/vodka
+/obj/item/weapon/reagent_containers/food/drinks/flask/barflask/vodka/New()
+	..()
+	reagents.add_reagent("vodka", 60)
 
 /obj/item/weapon/reagent_containers/food/drinks/flask/vacuumflask
 	name = "vacuum flask"

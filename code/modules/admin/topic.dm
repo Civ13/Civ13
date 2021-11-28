@@ -308,6 +308,12 @@
 									if ("Russian")
 										H.name = H.species.get_random_russian_name(H.gender)
 										H.real_name = H.name
+									if ("Chechen")
+										H.name = H.species.get_random_arab_name(H.gender)
+										H.real_name = H.name
+									if ("Finnish")
+										H.name = H.species.get_random_oldnorse_name(H.gender)
+										H.real_name = H.name
 									if ("Ukrainian")
 										H.name = H.species.get_random_ukrainian_name(H.gender)
 										H.real_name = H.name

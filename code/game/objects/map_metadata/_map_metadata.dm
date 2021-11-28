@@ -721,6 +721,8 @@ var/civmax_research = list(230,230,230)
 		ARAB = 0,
 		JAPANESE = 0,
 		RUSSIAN = 0,
+		CHECHEN = 0,
+		FINNISH = 0,
 		GERMAN = 0,
 		AMERICAN = 0,
 		VIETNAMESE = 0,
@@ -826,6 +828,10 @@ var/civmax_research = list(230,230,230)
 			return "Japanese"
 		if (RUSSIAN)
 			return "Russian"
+		if (CHECHEN)
+			return "Chechen"
+		if (FINNISH)
+			return "Finnish"
 		if (AMERICAN)
 			return "American"
 		if (VIETNAMESE)
@@ -862,6 +868,10 @@ var/civmax_research = list(230,230,230)
 			return "Japanese Empire"
 		if (RUSSIAN)
 			return "Russian Empire"
+		if (CHECHEN)
+			return "Chechen Republic of Ichkeria"
+		if (FINNISH)
+			return "Republic of Finland"
 		if (GERMAN)
 			return "German Empire"
 		if (AMERICAN)

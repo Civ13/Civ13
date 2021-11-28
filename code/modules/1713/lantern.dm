@@ -26,7 +26,7 @@
 	name = "bronze etsy lamp"
 	icon_state = "etsy"
 	item_state = "etsy"
-	desc = "A bronze lamp with several candle holders."
+	desc = "A bronze lamp with several wicks."
 	brightness_on = 8			// luminosity when on
 	light_color = rgb(200, 255, 200) // green tint
 	on_state = "etsy-on"
@@ -111,6 +111,7 @@
 	fuel = 10
 
 /obj/item/flashlight/lamp/oldlamp
+	name = "stand lamp"
 	on_state = "oldlamp-on"
 	off_state = "oldlamp"
 	icon_state = "oldlamp"
@@ -120,6 +121,7 @@
 	unlimited = TRUE
 
 /obj/item/flashlight/lamp/littlelamp
+	name = "small lamp"
 	on_state = "littlelamp-on"
 	off_state = "littlelamp"
 	icon_state = "littlelamp"

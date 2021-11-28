@@ -817,6 +817,10 @@ var/global/redirect_all_players = null
 		dat += "[alive_japanese.len] Japanese "
 	if (RUSSIAN in map.faction_organization)
 		dat += "[alive_russian.len] Russian "
+	if (CHECHEN in map.faction_organization)
+		dat += "[alive_chechen.len] Chechen "
+	if (FINNISH in map.faction_organization)
+		dat += "[alive_finnish.len] Finnish "
 	if (GERMAN in map.faction_organization)
 		dat += "[alive_german.len] German "
 	if (AMERICAN in map.faction_organization)
@@ -849,6 +853,8 @@ var/global/redirect_all_players = null
 		GREEK = FALSE,
 		ARAB = FALSE,
 		RUSSIAN = FALSE,
+		CHECHEN = FALSE,
+		FINNISH = FALSE,
 		JAPANESE = FALSE,
 		GERMAN = FALSE,
 		AMERICAN = FALSE,
@@ -916,6 +922,12 @@ var/global/redirect_all_players = null
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/russian) && !russian_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/arab/civilian/chechen) && !chechen_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/finnish) && !finnish_toggled)
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/german) && !german_toggled)

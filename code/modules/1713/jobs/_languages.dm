@@ -98,6 +98,18 @@
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
 
+/datum/job/finnish
+	default_language = "Russian"
+	additional_languages = list("Russian" = 75)
+	male_tts_voice = "Maxim"
+	female_tts_voice = "Tatyana"
+
+/datum/job/arab/civilian/chechen
+	default_language = "Ukrainian"
+	additional_languages = list("Russian" = 75)
+	male_tts_voice = "Jacek" //polish
+	female_tts_voice = "Maja" //polish
+
 /datum/job/german
 	default_language = "German"
 	additional_languages = list("French" = 15, "English" = 15)
@@ -223,6 +235,14 @@
 		if (RUSSIAN)
 			for (var/datum/language/russian/R in H.languages)
 				H.default_language = R
+				break
+		if (CHECHEN)
+			for (var/datum/language/arab/A in H.languages)
+				H.default_language = A
+				break
+		if (FINNISH)
+			for (var/datum/language/oldnorse/O in H.languages)
+				H.default_language = O
 				break
 		if (ROMAN)
 			for (var/datum/language/latin/L in H.languages)

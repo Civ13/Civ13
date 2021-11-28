@@ -1445,6 +1445,10 @@
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
+				if (CHECHEN)
+					holder2.icon_state = "pirate_basic"
+				if (FINNISH)
+					holder2.icon_state = "ger0_basic"
 				if (JAPANESE)
 					if (original_job.is_yakuza && original_job.is_yama)
 						holder2.icon_state = "yamaguchi"

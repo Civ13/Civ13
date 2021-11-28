@@ -6,7 +6,7 @@
 		src << "<span class = 'danger'>You don't have the permissions.</span>"
 		return
 
-	var/i2faction[17]
+	var/i2faction[20]
 	i2faction[1] = BRITISH
 	i2faction[2] = PIRATES
 	i2faction[3] = INDIANS
@@ -24,6 +24,9 @@
 	i2faction[15] = AMERICAN
 	i2faction[16] = VIETNAMESE
 	i2faction[17] = CHINESE
-	for (var/i in TRUE to 17)
+	i2faction[18] = FILIPINO
+	i2faction[19] = CHECHEN
+	i2faction[20] = FINNISH
+	for (var/i in TRUE to 20)
 		var/faction = i2faction[i]
 		src << "<i># of [faction] total members:</i> <b>[soldiers[faction]]</b>"

@@ -225,8 +225,9 @@
 	max_leaves = 2
 	branches = 3
 	max_branches = 3
-	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
 	pixel_x = -16
+	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
+
 
 /obj/structure/wild/tree/live_tree/snow
 	name = "tree"
@@ -367,7 +368,8 @@
 /obj/structure/wild/tree/New()
 	..()
 	if (!istype(src, /obj/structure/wild/tree/anchored))
-		pixel_x = rand(-8,8)
+		pixel_x = rand(-24,-8)
+		pixel_y = rand(0,16)
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
@@ -716,6 +718,11 @@
 	branches = 3
 	max_branches = 3
 	pixel_x = -16
+
+/obj/structure/wild/jungle/New()
+	..()
+	pixel_x = rand(-24,-8)
+	pixel_y = rand(0,16)
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))
