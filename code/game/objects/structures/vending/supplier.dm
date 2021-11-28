@@ -75,7 +75,7 @@
 					choice2 = 0
 				else if (choice2 > 100000)
 					choice2 = 100000
-				orderprice = choice2/10
+				orderprice = choice2
 				var/choice3 = input(user,"How much do you want to buy? This stall will keep accepting orders until it runs out of money.", "Stall Management", moneyin) as num
 				if (choice3 < 0)
 					choice3 = 0
@@ -182,7 +182,7 @@
 				choice2 = 0
 			else if (choice2 > 100000)
 				choice2 = 100000
-			orderprice = choice2/10
+			orderprice = choice2
 			return
 		else if (choice == "Change Amount")
 			var/choice3 = input(H,"How much do you want to buy? This stall will keep accepting orders until it runs out of money.", "Stall Management", moneyin) as num
