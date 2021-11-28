@@ -1,6 +1,7 @@
 /mob/living/simple_animal/hostile/human/kenobi
 	name = "Kenobi"
 	desc = "A monkey dawning a japanese uniform. fucking weeb."
+	icon = 'icons/mob/animal.dmi'
 	icon_state = "monkey_kenobi"
 	icon_dead = "monkey_kenobi_dead"
 	response_help = "pets"

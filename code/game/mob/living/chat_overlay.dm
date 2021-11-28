@@ -82,7 +82,7 @@ var/global/sound_tts_num = 0
 	else
 		shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
 	spawn(2)
-		var/fpath = "[genUID].ogg"
+		var/fpath = "[genUID].mp3"
 		if (fexists(fpath))
 			if (client)
 				src.playsound_local(loc,fpath,100)

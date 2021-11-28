@@ -257,3 +257,71 @@
 
 		weapon = /obj/item/weapon/material/sword/cutlass
 		icon_state = "pirate_friendly_female"
+
+/mob/living/simple_animal/hostile/human/voyage/slaver
+	name = "slaver"
+	desc = "A slave owner and conductor."
+	icon_state = "slaver1"
+	icon_dead = "slaver1_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("C'mon, work!")
+	speak_emote = list("grumbles", "screams")
+	emote_hear = list("curses","grumbles","screams")
+	emote_see = list("stares ferociously", "stomps")
+	maxHealth = 100
+	health = 100
+	harm_intent_damage = 15
+	melee_damage_lower = 20
+	melee_damage_upper = 30
+	attacktext = "whipped"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	behaviour = "wander"
+	wander = TRUE
+	stance = HOSTILE_STANCE_IDLE
+	faction = PIRATES
+	fire_cannons = FALSE
+	attack_verb = "whips"
+	role = "soldier"
+	New()
+		..()
+		weapon = /obj/item/weapon/melee/classic_baton/whip
+		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
+		messages["backup"] =list( "!!I need help!","!!Help me!")
+		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
+		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
+
+/mob/living/simple_animal/hostile/human/voyage/slaver/club
+	name = "slaver"
+	desc = "A slave owner and conductor."
+	icon_state = "slaver2"
+	icon_dead = "slaver2_dead"
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "hits"
+	speak = list("C'mon, work!")
+	speak_emote = list("grumbles", "screams")
+	emote_hear = list("curses","grumbles","screams")
+	emote_see = list("stares ferociously", "stomps")
+	maxHealth = 100
+	health = 100
+	harm_intent_damage = 18
+	melee_damage_lower = 22
+	melee_damage_upper = 32
+	attacktext = "clubbed"
+	attack_sound = 'sound/weapons/punch3.ogg'
+	behaviour = "wander"
+	wander = TRUE
+	stance = HOSTILE_STANCE_IDLE
+	faction = PIRATES
+	fire_cannons = FALSE
+	attack_verb = "clubs"
+	role = "soldier"
+	New()
+		..()
+		weapon = /obj/item/weapon/melee/classic_baton/club
+		messages["injured"] = list("!!I'm hit!","!!AAARGH!")
+		messages["backup"] =list( "!!I need help!","!!Help me!")
+		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
+		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")

@@ -3,6 +3,9 @@
 	attack_verb = "hits"
 	speed = 4
 	move_to_delay = 3
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "pirate_friendly1"
+	icon_dead = "pirate_friendly_dead"
 
 	var/corpse = null
 	var/weapon = null

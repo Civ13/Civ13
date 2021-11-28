@@ -196,7 +196,7 @@
 					bowls = min(round(contents.len/3) + 3,10) // 1 object = 3 bowls. 10 objects = 6 bowls
 					initial_bowls = bowls
 					visible_message("<span class = 'notice'>The liquid in the pot turns into a stew.</span>")
-					stew_desc = "Stew with "
+					stew_desc = "stew with "
 					stew_nutriment_desc.Cut()
 					for (var/obj/item/I in contents)
 						stew_desc += I.name
@@ -206,6 +206,8 @@
 									stew_desc += " and "
 								else
 									stew_desc += ", "
+						if(length(stew_desc) > 50)
+							stew_desc = "stew"
 						if (istype(I, /obj/item/weapon/reagent_containers/food))
 							var/obj/item/weapon/reagent_containers/food/F = I
 							if (F.reagents)
