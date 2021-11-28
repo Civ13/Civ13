@@ -10,6 +10,7 @@
 	speak_emote = list("rattles")
 	emote_hear = list("spooks")
 	emote_see = list("stares", "spooks","rattles")
+	icon = 'icons/mob/animal.dmi'
 	speak_chance = TRUE
 	speed = 5
 	maxHealth = 100

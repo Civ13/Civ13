@@ -190,9 +190,9 @@
 	world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 	if (navdirection == "island")
 		if (prob(50))
-			load_map(pick("island1","island2","piratetown","cursed_island"),"north")
+			load_map(pick("island1","island2","island3","piratetown","cursed_island"),"north")
 		else
-			load_map(pick("island1","island2","piratetown"),"south")
+			load_map(pick("island1","island2","island3","piratetown"),"south")
 		return
 	else if (navdirection == "fort")
 		load_map(pick("islandfort1","islandfort2"),"south")

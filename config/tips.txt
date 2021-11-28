@@ -1,4 +1,4 @@
-Drag yourself to a ladder to look up or down it.
+Drag yourself to a ladder to look up or down.
 Over hunting can lead to extinction. Consider taking up Animal Husbandry to ensure a long lasting supply of food and leather for your civilization.
 Cannibalism is a feature, but eating other people might make you valid.
 You can build locked doors in the same way as regular doors. You have to have a key in one hand and metal/wood in the other (active) hand.
@@ -15,3 +15,7 @@ If you are bleeding you can use the grab intent, aim at the injured body part, a
 Entrenching tool fits in your backpack slot and is always worth taking in TDM.
 When using an lmg, it is best to prone for the most effective accuracy, take cover behind incomplete sandbags so you can still fire while behind cover (sandbags must be incomplete).
 Use the numpad to quickly change your aim between body parts.
+You can disarm mines and tripmines by clicking on a trap with barehands or a wirecutter. Be wary that, while success gives grenade/mine, failure on ap mines/tripmines yields a deadly result to you and everyone near you, enemy included. It is much easier to spot tripmine than normal one.
+Butchering an animal with GRAB intent active will output pelts instead of leather.
+Use an empty hand with grab intent on a water source to drink from it.
+Tools and melee weapons only take durability damage from attacking people and animals, actions like throwing, using for intended purpose (tools only), and breaking stuff (other than targets) does not damage it in any way.
