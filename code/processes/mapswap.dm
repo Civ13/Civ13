@@ -161,11 +161,11 @@
 				MAP_ISLAND = 0,
 				MAP_CURSED_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
-				MAP_SUPPLY_RAID = 8,
+				MAP_SUPPLY_RAID = 0,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
-				MAP_SEKIGAHARA = 0,
+				MAP_SEKIGAHARA = 6,
 			)
 		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
@@ -575,7 +575,7 @@
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
 		else if (map && map.ID == MAP_YELTSIN)
-			world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Central Processing</b> and the <b>Parliamental Hall</b></big> for <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
+			world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Parliamental Hall</b></big> until <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Siege"
