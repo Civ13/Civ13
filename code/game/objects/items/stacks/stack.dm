@@ -174,17 +174,19 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	return ..()
 
 /obj/item/stack/AltClick(mob/living/user)
-	if(zero_amount())
-		return
-	var/max = amount
-	var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
-	max = amount
-	stackmaterial = min(max, stackmaterial)
-	if(stackmaterial == null || stackmaterial <= 0)
-		return
-	else
-		change_stack(user, stackmaterial)
-		to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
+	var/turf/T = get_turf(src)
+	if (T && user.TurfAdjacent(T))
+		if(zero_amount())
+			return
+		var/max = amount
+		var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
+		max = amount
+		stackmaterial = min(max, stackmaterial)
+		if(stackmaterial == null || stackmaterial <= 0)
+			return
+		else
+			change_stack(user, stackmaterial)
+			to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
 
 /obj/item/stack/proc/change_stack(mob/user, amount)
 	var/obj/item/stack/F = split(amount)
