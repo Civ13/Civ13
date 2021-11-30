@@ -143,9 +143,9 @@
 	name = "ianthasaurus"
 	desc = "A cute tiny ianthasaurus."
 	icon = 'icons/mob/critter.dmi'
-	icon_state = "ianthasaurus"
-	icon_living = "ianthasaurus"
-	icon_dead = "ianthasaurus_dead"
+	icon_state = "ichthyostega"
+	icon_living = "ichthyostega"
+	icon_dead = "ichthyostega_dead"
 	speak_emote = list("hisses")
 	health = 10
 	maxHealth = 10

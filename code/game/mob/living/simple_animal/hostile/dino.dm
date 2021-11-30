@@ -124,8 +124,7 @@
 	behaviour = "hostile"
 	bound_x = 64
 
-/mob/living/simple_animal/hostile/trex/update_icons()
-	..()
+/mob/living/simple_animal/hostile/dinosaur/trex/update_icons()
 	if (dir == SOUTH || dir == EAST)
 		bound_x = 0
 	else
