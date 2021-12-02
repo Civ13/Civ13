@@ -342,6 +342,7 @@
 	stat = "pistol"
 	gtype = "pistol"
 	equiptimer = 7
+	gun_type = GUN_TYPE_PISTOL
 	accuracy_list = list(
 
 
@@ -485,6 +486,7 @@
 	value = 70
 	stat = "pistol"
 	gtype = "pistol"
+	gun_type = GUN_TYPE_PISTOL
 	equiptimer = 7
 	accuracy_list = list(
 
@@ -558,6 +560,7 @@
 	value = 70
 	stat = "pistol"
 	gtype = "pistol"
+	gun_type = GUN_TYPE_PISTOL
 	equiptimer = 7
 	accuracy_list = list(
 
@@ -626,6 +629,7 @@
 	value = 70
 	stat = "pistol"
 	gtype = "pistol"
+	gun_type = GUN_TYPE_PISTOL
 	equiptimer = 7
 	accuracy_list = list(
 
@@ -688,7 +692,9 @@
 	force = 14
 	load_delay = 110
 	caliber = "blunderbuss"
-	stat = "rifle"
+	stat = "pistol"
+	gtype = "pistol"
+	gun_type = GUN_TYPE_PISTOL
 	weight = 2.5
 	value = 80
 	effectiveness_mod = 0.6
