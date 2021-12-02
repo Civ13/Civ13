@@ -216,7 +216,7 @@
 "el" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
 "em" = (/obj/structure/simple_door/stone,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
 "en" = (/obj/effect/decal/cleanable/dirt,/turf/wall/old_stone,/area/caribbean/no_mans_land/invisible_wall/inside)
-"eo" = (/mob/living/simple_animal/hostile/british,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/british/land/outside)
+"eo" = (/mob/living/simple_animal/hostile/human/voyage/british,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/british/land/outside)
 "ep" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood/drip,/obj/item/weapon/shield,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "eq" = (/obj/item/flashlight/torch,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "er" = (/obj/effect/decal/cleanable/blood/drip,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
@@ -295,7 +295,7 @@
 "fN" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/beach/sand,/area/caribbean/island)
 "fO" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/beach/sand,/area/caribbean/british/land/outside)
 "fP" = (/obj/effect/spawner/objective_spawner,/turf/floor/beach/water/deep/saltwater,/area/caribbean/island)
-"fQ" = (/mob/living/simple_animal/hostile/british,/turf/floor/beach/sand,/area/caribbean/british/land/outside)
+"fQ" = (/mob/living/simple_animal/hostile/human/voyage/british,/turf/floor/beach/sand,/area/caribbean/british/land/outside)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaazazaBaBaBaBaBaCaBaBaBaBaBaBaBaBaBaDaBaBaBaBaHaHaHagagagagagagagagagagagagagaHaHaHaHaHaHaHaHaHaHaHadaHaHaHaHaHaHaHaHekabehaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaGaGaGaGaGaGaGaGaGaGaGaGaG
