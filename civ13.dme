@@ -1010,5 +1010,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\jungle_of_the_chads.dmm"
+#include "maps\special\voyage.dmm"
 // END_INCLUDE

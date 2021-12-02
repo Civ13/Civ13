@@ -101,9 +101,9 @@
 		if (in_election)
 			return
 		var/previous_input = "Officer"
-		if(user.title == "Captain" || user.title == "Boatswain" || user.title == "Quartermaster")
-			previous_input = WWinput(user, "Is this a vote for an officer position or something else?","Electoral System","Officer",list("Officer","Custom Vote"))
-		if(previous_input == "Officer")
+		if (user.title == "Captain" || user.title == "Boatswain" || user.title == "Quartermaster")
+			previous_input = "Custom Vote"
+		if (previous_input == "Officer")
 			find_roles()
 			var/list/choicelist = list("Cancel")
 			if(!found_captain)

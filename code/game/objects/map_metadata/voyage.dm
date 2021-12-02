@@ -611,33 +611,32 @@
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
-		if (H.original_job_title == "Pirate Quartermaster" || H.title == "Deputy Quartermaster" || H.original_job_title == "Pirate Captain")
-			var/tres = tally_treasure()
-			var/mats = tally_materials()
-			var/mats_wood = mats["wood"]
-			var/mats_cloth = mats["cloth"]
-			var/mats_rope = mats["rope"]
-			var/food = tally_food()
-			var/mats_food = food["food"]
-			var/mats_water = food["water"]
-			var/wep = tally_weapons()
-			var/mats_cannon = wep["cannonballs"]
-			var/mats_musket = wep["musket"]
-			var/mats_pistol = wep["pistol"]
-			var/mats_blunderbuss = wep["blunderbuss"]
+		var/tres = tally_treasure()
+		var/mats = tally_materials()
+		var/mats_cloth = mats["cloth"]
+		var/mats_wood = mats["wood"]
+		var/mats_rope = mats["rope"]
+		var/food = tally_food()
+		var/mats_food = food["food"]
+		var/mats_water = food["water"]
+		var/wep = tally_weapons()
+		var/mats_cannon = wep["cannonballs"]
+		var/mats_musket = wep["musket"]
+		var/mats_pistol = wep["pistol"]
+		var/mats_blunderbuss = wep["blunderbuss"]
 
-			var/dat = "<h1>SHIP STOCKS</h1>"
-			dat += "<b>Treasury:</b> [tres] reales<br>"
-			dat += "<b>Wood:</b> [mats_wood] logs<br>"
-			dat += "<b>Cloth:</b> [mats_cloth] sheets<br>"
-			dat += "<b>Rope:</b> [mats_rope] coils<br>"
-			dat += "<b>Food:</b> [mats_food] doses<br>"
-			dat += "<b>Water:</b> [mats_water] units<br>"
-			dat += "<b>Cannon Ammo:</b> [mats_cannon] balls<br>"
-			dat += "<b>Musket Ammo:</b> [mats_musket] projectiles<br>"
-			dat += "<b>Pistol Ammo:</b> [mats_pistol] projectiles<br>"
-			dat += "<b>Blunderbuss Ammo:</b> [mats_blunderbuss] projectiles<br>"
-			H << browse(dat, "window=Ship Stocks")
+		var/dat = "<h1>SHIP STOCKS</h1>"
+		dat += "<b>Treasury:</b> [tres] reales<br>"
+		dat += "<b>Wood:</b> [mats_wood] logs<br>"
+		dat += "<b>Cloth:</b> [mats_cloth] sheets<br>"
+		dat += "<b>Rope:</b> [mats_rope] coils<br>"
+		dat += "<b>Food:</b> [mats_food] doses<br>"
+		dat += "<b>Water:</b> [mats_water] units<br>"
+		dat += "<b>Cannon Ammo:</b> [mats_cannon] balls<br>"
+		dat += "<b>Musket Ammo:</b> [mats_musket] projectiles<br>"
+		dat += "<b>Pistol Ammo:</b> [mats_pistol] projectiles<br>"
+		dat += "<b>Blunderbuss Ammo:</b> [mats_blunderbuss] projectiles<br>"
+		H << browse(dat, "window=Ship Stocks")
 	proc/tally_treasure()
 		var/tally = 0
 		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/upper/inside/treasury)

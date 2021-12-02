@@ -149,7 +149,7 @@
 		if("chainshot")
 			mob_passthrough_check = TRUE
 			if (ishuman(target_mob))
-				var/mob/living/human/H
+				var/mob/living/human/H = target_mob
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_leg","l_arm","r_leg","r_arm"))
 				affecting.droplimb(0, DROPLIMB_BLUNT)
 	return ..()

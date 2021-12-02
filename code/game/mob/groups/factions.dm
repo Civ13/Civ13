@@ -256,7 +256,8 @@
 		var/list/closemobs = list("Cancel")
 		for (var/mob/living/human/M in range(4,loc))
 			if (M.original_job_title == "Pirate" || M.title != "")
-				closemobs += M
+				if(M.title != "Captain" && M.title != "Boatswain" && M.title != "Quartermaster")
+					closemobs += M
 		var/choice2 = WWinput(usr, "Who to assign a job to?", "Job Assignment", "Cancel", closemobs)
 		if (choice2 == "Cancel" || !choice2)
 			return
