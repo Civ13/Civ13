@@ -103,10 +103,10 @@
 	speak_chance = TRUE
 	health = 1200
 	maxHealth = 1200
-	move_to_delay = 10
+	move_to_delay = 7
 	attacktext = "chomps"
-	melee_damage_lower = 50
-	melee_damage_upper = 55
+	melee_damage_lower = 75
+	melee_damage_upper = 88
 	response_help  = "nudges"
 	response_disarm = "overpowers"
 	response_harm   = "rams"
