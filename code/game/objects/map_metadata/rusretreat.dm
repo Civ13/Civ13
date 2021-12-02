@@ -1,7 +1,7 @@
 /obj/map_metadata/rusretreat
 	ID = MAP_RUSRETREAT
 	title = "Retreat From Grozny"
-	lobby_icon_state = "coldwar"
+	lobby_icon_state = "grozny"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 
@@ -9,8 +9,8 @@
 		CHECHEN,
 		RUSSIAN)
 	roundend_condition_sides = list(
-		list(CHECHEN) = /area/caribbean/british,
-		list(RUSSIAN) = /area/caribbean/japanese/land,
+		list(CHECHEN) = /area/caribbean/japanese/land,
+		list(RUSSIAN) = /area/caribbean/british,
 		)
 	age = "1995"
 	ordinal_age = 7
@@ -21,7 +21,7 @@
 	faction1 = CHECHEN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Cyka Blyat:1" = 'sound/music/cyka_blyat.ogg',)
+		"Cyka Blyat:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
 	artillery_count = 10
 
 /obj/map_metadata/rusretreat/New()
