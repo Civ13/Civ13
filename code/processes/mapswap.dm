@@ -124,6 +124,7 @@
 				MAP_ROAD_TO_DAK_TO = 0,
 				MAP_HUE = 0,
 				MAP_RETREAT = 6,
+				MAP_RUSRETREAT = 6,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
@@ -142,7 +143,8 @@
 				MAP_FOREST = 14,
 				MAP_INTRAMUROS = 14,
 				MAP_WAKE_ISLAND = 14,
-				MAP_NANJING = 20
+				MAP_BERLIN = 14,
+				MAP_NANJING = 14,
 			)
 
 		else if (epoch == "Early Fire Arms (1650-1930)")
@@ -158,10 +160,10 @@
 				MAP_LITTLE_CREEK_TDM = 0,
 				MAP_MISSIONARY_RIDGE = 10,
 				MAP_NAVAL = 0,
-				MAP_ISLAND = 0,
-				MAP_CURSED_ISLAND = 0,
+		//		MAP_ISLAND = 0,
+		//		MAP_CURSED_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
-				MAP_SUPPLY_RAID = 0,
+		//		MAP_SUPPLY_RAID = 0,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
