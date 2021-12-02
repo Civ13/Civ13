@@ -1,3 +1,6 @@
+"aa" = (/mob/living/simple_animal/hostile/dinosaur/trex,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"ab" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/hostile/dinosaur/trex,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"ac" = (/obj/item/stack/material/hemp,/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "aM" = (/obj/structure/wild/jungle/acacia,/obj/structure/wild/tallgrass,/obj/structure/wild/rock,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
 "aO" = (/obj/item/stack/material/hemp,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "bh" = (/mob/living/simple_animal/hostile/dinosaur/velociraptor,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
@@ -54,7 +57,6 @@
 "OW" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "OY" = (/obj/structure/wild/largejungle,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
 "PN" = (/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
-"RS" = (/mob/living/simple_animal/hostile/dinosaur/compsognathus,/obj/item/stack/material/hemp,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "Sw" = (/mob/living/simple_animal/hostile/dinosaur/velociraptor,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "TT" = (/obj/structure/wild/jungle/acacia,/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "TU" = (/obj/structure/wild/largejungle,/obj/structure/wild/smallbush,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
@@ -96,15 +98,16 @@ OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
 OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
 YFOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
 "}
+
 (1,1,2) = {"
 GQUaGQGQWKqbGQlylyGQUaUauxUaGQGQGQGQGQGQGQUaBVUaUaGQGQGQGQGQGQGQGQGQGQGQGQGQUaUaUaqbGQUaUaWaGQAeGQUaGQjGGQGQGQGQWKGQjGGQqbqbqbOYqbUaGQGQGQGQUaGQGQGQGQ
 GQjGGQGQaOqbGQGQGQUaBVPNUaUaGQGQokqbGQGQUaGQUaUaGQvPUaUaUaUHvOUaUaGQjGGQUaUaGQGQGQqbYEYEGQWaWaGQGQUaUajGGQqbGQGQGQGQGQWKGQqbqbqbGQUaGQGQGQGQBVAeqbokqb
-UaGQUaqbyNqbqbjGUaUaUaUaUaUaGQGQGQqbqbUaUaCDGQGQGQGQGQAbGQGQGQUaUaUaGQaOGQUaWKGQqbqbIByNGQGQlylylyUajGGQUaqbqbqbqbaOGQGQGQGQGQGQUaGQUaGQjGGQqbvkqbqbqm
-UaYEUaqbGQGQlylyWKGQojYEYEUaGQGQGQGQqbqbGQGQYEYEGQjGGQGQWaaOGQlylylyGQYEGQGQlyGQmRqbqbqbqbqbGQGQGQGQUaGQGQGQgIqbqbGGGQGQjGGQGQYEoYUaUaGQGQojqbqbedGQqm
+UaGQUaqbyNqbqbjGUaUaUaUaUaUaGQGQGQqbqbUaUaCDGQGQGQGQGQAbGQGQGQUaUaUaGQaOGQUaWKGQqbqbIByNGQGQlylylyUajGGQUaqbqbqbqbaOGQGQGQGQGQGQUaGQaaGQjGGQqbvkqbqbqm
+UaabUaqbGQGQlylyWKGQojYEYEUaGQGQGQGQqbqbGQGQYEYEGQjGGQGQWaaOGQlylylyGQYEGQGQlyGQmRqbqbqbqbqbGQGQGQGQUaGQGQGQgIqbqbGGGQGQjGGQGQYEoYUaUaGQGQojqbqbedGQqm
 GQUaGQUaGQaOAbGQaOGQYEkSGQGQGQGQPNGQqbGQGQGQGQGQGQaOGQGQWaSwqbqbqblyGQYEGQGQlylylylyGQGQjGGQUaUazFGQWKYEYEYEGQGQokqbGQGQGQWaGQGQUaUaUHoYANojqbGQGQaOGQ
 GQvPUaAgGQGQWaWaGQWaGQWalylyGQGQGQWaWalyUaUajGUaojGQGQUaGQqbqbGQGQAbojWaWaaOGQGQlylyGQaOGQGQGQUaUaGQGQlylylyGQkSUaPNPNGQWaojGQGQUaGQUaGQaOGQokqbGQWaGQ
 GQGQGQGGqbqbqbGQGQWaWaWaGQlyBpGQWaEWWalyUaBVUaUaGQTUGQUaqbqbGQqbWaGQexmHWaGQGQUaUaWQGQGQGQWaWaWaoYWaGQlylyUaUaUaUaqmGQWaWaWaWaUaUaGQGQqbGQqbqbUaUaexWa
-GQlylyqbqbGQqbaOGQGQWajGGQRSlyGQWaWaGQGQUaUaBVUalyGQGQYEYEYEqbqbqbWaWaWaWaGQexUaUaWaGQUauxEWWaqbqbWaGQWaGQGQUaGQGQGQGQWaGQWaGQUaGQGQGQqbqbqbqbUaGQxfGQ
+GQlylyqbqbGQqbaOGQGQWajGGQaclyGQWaWaGQGQUaUaBVUalyGQGQYEYEYEqbqbqbWaWaWaWaGQexUaUaWaGQUauxEWWaqbqbWaGQWaGQGQUaGQGQGQGQWaGQWaGQUaGQGQGQqbqbqbqbUaGQxfGQ
 ojGQlylyqbOYGQUaGQWaWaGQGQGQlylyWaWaaOYEUaUabNGQlyUaUaqbqbqbqbUaUaWaGQWaGQGQexWaUaGQGQUaUaGQGQqbqbqbqbGQjGGQUaGQGQGQAYWaAbXHUaWKGQTTGQlylyWaUaUaGQGQGQ
 GQwTGQWaWaGQGQUaUaGQGQUaGQqbqbGQaMWaGQUaXHGQGQUaUaWKGQqbojUaBVUaUaGQWaWaPNWaWaGQBVGQUaUaqbqbqbGQqbGQqbGQGQSwUaGQGQjGkWGQGQUaYEaOUaGQlylyGQUaWaWaWaqbGQ
 GQGQceWaceWaWaWKGQkWUaGQOYqbSwGQlylyWKGQPNUaqbGQGQGQWaEWUaUaUaGQYJGQjGWaWaWaGQUaGQGQYEGQGQGQGQaOUaUaUHUaGQzUGQaOGQGQUaUavOojYEWaGQGQUavMWaGQWaGQGQGQqb
