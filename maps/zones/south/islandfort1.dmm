@@ -1,5 +1,6 @@
 "a" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "b" = (/obj/map_metadata/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"c" = (/obj/covers/cobblestone,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
 "d" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/bottom)
 "e" = (/turf/floor/beach/sand,/area/caribbean/sea/bottom)
 "f" = (/obj/covers/stone_wall/fortress,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/bottom/roofed)
@@ -40,6 +41,7 @@
 "O" = (/obj/covers/cobblestone,/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
 "P" = (/obj/covers/cobblestone,/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol,/obj/item/ammo_casing/blunderbuss,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
 "Q" = (/obj/covers/cobblestone,/obj/structure/bed/chair/wood/red{icon_state = "wooden_chair_red"; dir = 1},/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/cpt,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
+"R" = (/obj/covers/cobblestone,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/beach/sand,/area/caribbean/sea/bottom)
 "S" = (/obj/structure/flag/spanish,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/bottom)
 "T" = (/obj/structure/flag/spanish,/turf/floor/beach/sand,/area/caribbean/sea/bottom)
 "U" = (/obj/covers/cobblestone,/obj/structure/closet/crate/chest,/obj/item/stack/money/doubloon/ten,/obj/item/stack/money/doubloon/ten,/obj/item/stack/money/doubloon/ten,/obj/item/stack/money/doubloon/ten,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
@@ -90,15 +92,15 @@ edaddadadaadaddeddadaddaddeeeeeeeeeeeeeeeedddddedeeeeeeeeeeeeeeeeeeeeeeeede
 eeddadddeddedeeddedddddddeeeeeeeeeeeeeeedeeeeeddeeeeeeeeeeeeeeeeeeeeeeeeeed
 eeeeSfhlfhmhhmhhTeeeeeeeeeeeeeeeeeeeeeeeeThhmhhmhhmhhTeeeeeeeeeeeeeeeeeeeee
 eeeehnopoopooponheeeeeeeeeeeeeeeeeeeeeeeehnopoopooponheeeeeeeeeeeeeeeeeeeee
-eeehhqooooooooorhheeeeeeeeeeeeeeeeeeeeeehhqooooooooorhheeeeeeeeeeeeeeeeeeee
+eeehhqoocoooooorhheeeeeeeeeeeeeeeeeeeeeehhqooocooooorhheeeeeeeeeeeeeeeeeeee
 eeehtoowooooooooxhVVWiVViVWiVViWViVViWVVhtooyoooooyooxheeeeeeeeeeeeeeeeeeee
-eeehtooBoooooyooxhjjjkjjkjjkjjkjjkjjkjjjhtoooooDoooooxheeeeeeeeeeeeeeeeeeee
-eeehtoowooDoooooxhjjjjjjjjjjjjjjjjjjjjjjhtoooooooooooxheeeeeeeeeeeeeeeeeeee
-eeehhoooooooooorhhjjjCjjjjjjjCjjjjjjCjjjhhoooooooooorhheeeeeeeeeeeeeeeeeeee
-eeeehnooooooooHnhjjjjjjjjjjjjjjjjjjjjjjjjhnooooooooHnheeeeeeeeeeeeeeeeeeeee
+eeehtooBoooooyooxhjCjkjjkRjkjjkRjkjjkjCjhtoooooDoooooxheeeeeeeeeeeeeeeeeeee
+eeehtoowooDoooocxhjjjjjjjjjjjjjjjjjjjjjjhtoooooooooooxheeeeeeeeeeeeeeeeeeee
+eeehhoooooooooorhhjjjCjjjjjjjCjjjjjjCjjjhhooyoooocoorhheeeeeeeeeeeeeeeeeeee
+eeeehnooyoooooHnhjjjjjjjjjjjjjjjjjjjjjjjjhnooooooooHnheeeeeeeeeeeeeeeeeeeee
 eeeeehhhhhhhhIhhjjjjXjjjjjjjjJjjjjjjjXjjjjhhhIhhhhhhheeeeeeeeeeeeeeeeeeeeee
 eeeeeegjjjjjjjjjjjjjjhhhhnIhhhhhInhhhjjjjjjjjjjjjjjsgKeeeeeeeeeeeeeeeeeeeee
-eeeeeegjjjjjjjjjjjjjjhooooooohLooLLLhjjjjjjjjjjjjjjjueeeeeeeeeeeeeeeeeeeeee
-eeeeeegjjjjjjjjjjjvvvhoMNOMoonLooooohzzzjjjjjjjjjjjjueeeeeeeeeeeeeeeeeeeeee
-eeeeeegjjjjjjjjjjjAAAhPMoQooohLooUUUhEEEjjjjFFFFGGGGgKeeeeeeeeeeeeeeeeeeeee
+eeeeeegjCjjjjjjjjjjjjhooooooohLooLLLhjjjjjjjjjjjjjjjueeeeeeeeeeeeeeeeeeeeee
+eeeeeegjjjjjjjCCRjvvvhoMNOMoonLoooochzzzjCCCjjjjjjjjueeeeeeeeeeeeeeeeeeeeee
+eeeeeegjjRjjjjCCCjAAAhPMoQooohLcoUUUhEEEjCCCFFFFGGGGgKeeeeeeeeeeeeeeeeeeeee
 "}
