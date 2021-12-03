@@ -370,9 +370,9 @@ var/civmax_research = list(230,230,230)
 	if (tips.len)
 		for(var/client/C in clients)
 			if(C.is_preference_enabled(/datum/client_preference/show_tips))
-				world << "<font color='#5194BB'>---</font>"
-				world << "<font color='#5194BB'><b>Tip:</b> [pick(tips)]</font>"
-				world << "<font color='#5194BB'>---</font>"
+				C << "<font color='#5194BB'>---</font>"
+				C << "<font color='#5194BB'><b>Tip:</b> [pick(tips)]</font>"
+				C << "<font color='#5194BB'>---</font>"
 
 /obj/map_metadata/proc/set_ordinal_age()
 	if (age == "5000 B.C.")
