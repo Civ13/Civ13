@@ -68,21 +68,22 @@ var/global/sound_tts_num = 0
 /mob/proc/play_tts(message,var/mob/living/human/speaker)
 	if (!message || message == "" || !client || !speaker)
 		return
-	var/voice = "Matthew"
+	message = replacetext(message, "&#39", "'")
+	var/voice = "ap --setf duration_stretch=0.7"
 	if (!speaker.original_job)
 		return
 	if (gender == MALE)
-		voice = speaker.original_job.male_tts_voice
+		voice = "ap --setf duration_stretch=0.8"
 	else
-		voice = speaker.original_job.female_tts_voice
+		voice = "slt --setf duration_stretch=0.8"
 	sound_tts_num+=1
 	var/genUID = sound_tts_num
 	if (world.system_type != UNIX)
-		shell("python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
+		shell("./tts/mimic -t \"[message]\" -voice [voice] -o [genUID].wav")
 	else
-		shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
+		shell("mimic -t \"[message]\" -voice [voice] -o [genUID].wav")
 	spawn(2)
-		var/fpath = "[genUID].mp3"
+		var/fpath = "[genUID].wav"
 		if (fexists(fpath))
 			if (client)
 				src.playsound_local(loc,fpath,100)

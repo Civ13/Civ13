@@ -118,6 +118,7 @@
 	if (!destination && origin)
 		destination = origin
 	message = capitalize(message)
+	message = replacetext(message, "&#39", "'")
 
 	if (sleeping || stat==1) //If unconscious or sleeping
 		hear_sleep(message)
