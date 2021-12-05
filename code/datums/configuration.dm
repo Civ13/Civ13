@@ -62,7 +62,7 @@ var/list/gamemode_cache = list()
 	var/ToRban = FALSE
 	var/automute_on = FALSE					//enables automuting/spam prevention
 
-	var/tts_on = FALSE
+	var/tts_on = TRUE
 	var/guests_allowed = TRUE
 	var/debugparanoid = FALSE
 
