@@ -69,7 +69,7 @@ var/global/sound_tts_num = 0
 	if (!message || message == "" || !client || !speaker)
 		return
 	message = replacetext(message, "&#39", "'")
-	var/voice = "ap --setf duration_stretch=0.7"
+	var/voice = "ap --setf duration_stretch=0.8"
 	if (!speaker.original_job)
 		return
 	if (gender == MALE)
