@@ -49,8 +49,8 @@
 	return TRUE
 
 /datum/job/arab/civilian/chechen/milita
-	title = "Chechen Milita"
-	en_meaning = "Chechnyan armed milita"
+	title = "Chechen Militia"
+	en_meaning = "Chechnyan armed militia"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCC"
 	min_positions = 10
