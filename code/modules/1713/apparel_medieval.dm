@@ -505,6 +505,20 @@
 	item_state = "nun"
 	worn_state = "nun"
 
+/obj/item/clothing/under/medieval/wise_knight
+	name = "Wise Knight robes"
+	desc = "A lightly darkened robe used by wise knights."
+	icon_state = "wise_knight"
+	item_state = "wise_knight"
+	worn_state = "wise_knight"
+
+/obj/item/clothing/under/medieval/arrogant_warrior
+	name = "Arrogant Warrior robes"
+	desc = "A darkened robe used by upset warriors."
+	icon_state = "arrogant_warrior"
+	item_state = "arrogant_warrior"
+	worn_state = "arrogant_warrior"
+
 /obj/item/clothing/under/christian_priest
 	name = "black priest outfit"
 	desc = "A plain black outfit with a clerical white collar around the neck, often worn by priests of organized religions."
