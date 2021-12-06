@@ -105,7 +105,7 @@
 	female_tts_voice = "Tatyana"
 
 /datum/job/arab/civilian/chechen
-	default_language = "Ukrainian"
+	default_language = "Arabic"
 	additional_languages = list("Russian" = 75)
 	male_tts_voice = "Jacek" //polish
 	female_tts_voice = "Maja" //polish
