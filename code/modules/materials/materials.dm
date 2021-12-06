@@ -1037,3 +1037,52 @@ var/list/name_to_material
 	icon_colour = "#62E36C"
 	hardness = 6
 	flags = MATERIAL_PADDING
+
+/material/crystal
+	name = "white_crystal"
+	display_name = "white crystal"
+	use_name = "white crystal"
+	hardness = 75
+	flags = MATERIAL_PADDING
+
+/material/crystal/red
+	name = "red_crystal"
+	display_name = "red crystal"
+	use_name = "red crystal"
+	hardness = 65
+	flags = MATERIAL_PADDING
+
+/material/crystal/blue
+	name = "blue_crystal"
+	display_name = "blue crystal"
+	use_name = "blue crystal"
+	hardness = 75
+	flags = MATERIAL_PADDING
+
+/material/crystal/magenta
+	name = "magenta_crystal"
+	display_name = "magenta crystal"
+	use_name = "magenta crystal"
+	hardness = 75
+	flags = MATERIAL_PADDING
+
+/material/crystal/purple
+	name = "purple_crystal"
+	display_name = "purple crystal"
+	use_name = "purple crystal"
+	hardness = 75
+	flags = MATERIAL_PADDING
+
+/material/crystal/orange
+	name = "orange_crystal"
+	display_name = "orange crystal"
+	use_name = "orange crystal"
+	hardness = 75
+	flags = MATERIAL_PADDING
+
+/material/crystal/green
+	name = "green_crystal"
+	display_name = "green crystal"
+	use_name = "green crystal"
+	hardness = 75
+	flags = MATERIAL_PADDING
