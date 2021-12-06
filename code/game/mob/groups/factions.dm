@@ -263,7 +263,7 @@
 			return
 		else
 			U = choice2
-			var/list/optlist = list("Cancel","Sailor","Carpenter","Nurse","Cannonier","Cook","Marine","Sargeant","Navigator","Deputy Boatswain","Deputy Quartermaster")
+			var/list/optlist = list("Cancel","Sailor","Swabber","Carpenter","Nurse","Cannonier","Cook","Marine","Sergeant","Navigator","Deputy Boatswain","Deputy Quartermaster")
 			var/inp = WWinput(usr, "Choose a job to give:","Job Assignment","Cancel",optlist)
 			if (inp == "Cancel" || !inp)
 				return
