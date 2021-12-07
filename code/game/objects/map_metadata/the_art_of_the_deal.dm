@@ -50,7 +50,7 @@
 					var/obj/item/stack/money/M = I
 					tlist[2]+=M.amount*M.value/4
 			tlist[2] += scores[SF.faction]
-			if (C.storedvalue >= maxpoints)
+			if (tlist[2] >= maxpoints)
 				var/message = "[tlist[1]] has reached a valuation over [maxpoints] and won!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				score()
