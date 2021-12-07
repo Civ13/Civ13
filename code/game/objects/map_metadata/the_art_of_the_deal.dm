@@ -35,6 +35,7 @@
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
+	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
 /obj/map_metadata/proc/assign_precursors()
 	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
@@ -129,6 +130,8 @@
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
+		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate))
+			. = FALSE
 		if (clients.len <= 15)
 			if (J.title == "Paramedic" || J.title == "Legitimate Business")
 				. = FALSE
