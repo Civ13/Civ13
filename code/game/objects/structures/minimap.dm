@@ -120,11 +120,11 @@
 
 /obj/item/weapon/map/New()
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
-	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "blinking",layer=src.layer+1)
+	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "whiteandred",layer=src.layer+1)
 
 /obj/item/weapon/map/examine(mob/user)
 	update_icon()
-	user << browse("<img src=minimap.png></img>","window=popup;size=630x630")
+	user << browse(getFlatIcon(img),"window=popup;size=630x630")
 
 /obj/item/weapon/map/update_icon()
 	..()
