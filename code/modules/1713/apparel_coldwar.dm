@@ -713,6 +713,22 @@
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt/New()
+	..()
+	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_svd
+/obj/item/weapon/storage/belt/smallpouches/green/sov_svd/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/svd(src)
+	new /obj/item/ammo_magazine/svd(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green/sov_swat
 /obj/item/weapon/storage/belt/smallpouches/green/sov_swat/New()
 	storage_slots = 6
