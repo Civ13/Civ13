@@ -458,6 +458,13 @@
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
+/obj/item/clothing/head/beret_rus_vdv
+	name = "VDV beret"
+	desc = "A beret worn by the Russian Airborn Forces."
+	icon_state = "beret_rus_vdv"
+	item_state = "beret_rus_vdv"
+	body_parts_covered = HEAD
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -704,6 +711,22 @@
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt/New()
+	..()
+	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_svd
+/obj/item/weapon/storage/belt/smallpouches/green/sov_svd/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/svd(src)
+	new /obj/item/ammo_magazine/svd(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_swat
