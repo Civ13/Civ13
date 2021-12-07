@@ -458,6 +458,13 @@
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
+/obj/item/clothing/head/beret_rus_vdv
+	name = "VDV beret"
+	desc = "A beret worn by the Russian Airborn Forces."
+	icon_state = "beret_rus_vdv"
+	item_state = "beret_rus_vdv"
+	body_parts_covered = HEAD
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1

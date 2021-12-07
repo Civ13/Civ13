@@ -465,6 +465,13 @@
 	desc = "A cap worn by russian army officers."
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"
+
+/obj/item/clothing/head/ruscap_fed
+	name = "Russian Federal Forces Service Cap"
+	desc = "A cap worn by the Russian Federal Army."
+	icon_state = "fieldcap_rus_fed"
+	item_state = "fieldcap_rus_fed"
+
 /obj/item/weapon/storage/belt/russian
 	name = "Russian Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
@@ -751,6 +758,13 @@
 	icon_state = "milrus2"
 	item_state = "milrus2"
 	worn_state = "milrus2"
+
+/obj/item/clothing/under/milrus_vsr93
+	name = "russian military outfit VSR 93"
+	desc = "An outfit composed of the VSR93 camo pants and shirt, along with a high waistbelt."
+	icon_state = "milrus_vsr93"
+	item_state = "milrus_vsr93"
+	worn_state = "milrus_vsr93"
 
 /obj/item/clothing/under/baily
 	name = "security outfit"

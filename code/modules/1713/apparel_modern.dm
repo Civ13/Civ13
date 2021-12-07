@@ -841,6 +841,16 @@
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 
+/obj/item/clothing/suit/storage/jacket/rus_winter_vsr93
+	name = "Russian Federal Forces winter jacket"
+	desc = "A winter jacket used by the Russian Federal Forces in VSR93 camo."
+	icon_state = "rus_winter_vsr93"
+	item_state = "rus_winter_vsr93"
+	worn_state = "rus_winter_vsr93"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
 /* Punk */
 
 /obj/item/clothing/under/punk

@@ -13,15 +13,15 @@
 		list(RUSSIAN) = /area/caribbean/british,
 		)
 	age = "1995"
-	ordinal_age = 7
+	ordinal_age = 8 // instead of 7 in order to get the russian icons above the players
 	faction_distribution_coeffs = list(CHECHEN = 0.6, RUSSIAN = 0.4)
 	battle_name = "Retreat From Grozny"
-	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Milita will win if they hold out for <b>30 minutes</b>. The Russians will win if they manage to cross the bridge to friendly territory!</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Militia will win if they hold out for <b>30 minutes</b>. The Russian Federal Forces will win if they manage to cross the bridge into friendly territory!</font>"
 	faction2 = RUSSIAN
 	faction1 = CHECHEN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Cyka Blyat:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
+		"Just don't tell mom I'm in Chechnya:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
 	artillery_count = 10
 
 /obj/map_metadata/rusretreat/New()
@@ -79,7 +79,7 @@
 
 /obj/map_metadata/rusretreat/cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<font size = 4>The Russians may now cross the invisible wall!</font>"
+		return "<font size = 4>The Russian Federal Forces may now cross the invisible wall!</font>"
 	else if (faction == CHECHEN)
 		return ""
 	else
@@ -87,7 +87,7 @@
 
 /obj/map_metadata/rusretreat/reverse_cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>The Russians may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Russian Federal Forces may no longer cross the invisible wall!</span>"
 	else if (faction == CHECHEN)
 		return ""
 	else
@@ -101,14 +101,14 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Chechens</b> have successfuly deterred the withdrawal! The Russians have halted the retreat!"
+		var/message = "The <b>Chechens</b> have successfuly deterred the withdrawal! The Russian Federal Forces failed the retreat!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_ret == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Russians</b> have crossed the bridge into friendly territory! The retreat is completed!"
+		var/message = "The <b>Russian Federal Forces</b> have crossed the bridge into friendly territory! The retreat is succesful!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -118,7 +118,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Russians</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
+				current_win_condition = "The <b>Russian Federal Forces</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -127,7 +127,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Russians</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
+				current_win_condition = "The <b>Russian Federal Forces</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -136,7 +136,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Russians</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
+				current_win_condition = "The <b>Russian Federal Forces</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -145,14 +145,14 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Russians</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
+				current_win_condition = "The <b>Russian Federal Forces</b> have crossed the bridge into friendly territory! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>Oddly the <b>Russians</b> have retreated back into enemy territory!</font>"
+			world << "<font size = 3>Oddly the <b>Russian Federal Forces</b> have retreated back into enemy territory!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
