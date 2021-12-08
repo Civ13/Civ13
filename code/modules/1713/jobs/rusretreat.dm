@@ -37,6 +37,17 @@
 
 
 	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
+
+	var/new_hair = pick("Dark Brown","Black","Orange","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.civilization = "Militia"
 	give_random_name(H)
 	H.add_note("Role", "You are a Warlord! Organize the militia and fend off the russian invaders!")
@@ -201,6 +212,17 @@
 
 
 	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
+
+	var/new_hair = pick("Dark Brown","Black","Orange","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.add_note("Role", "You are a <b>[title]</b> insurging against the Russian tyrants! Listen to your Warlords!")
 	H.civilization = "Militia"
 	give_random_name(H)
@@ -254,6 +276,17 @@
 	uniform.attackby(holsterh, H)
 
 	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
+
+	var/new_hair = pick("Dark Brown","Black","Orange","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy and motivated!")
 	H.civilization = "Militia"
 	give_random_name(H)
@@ -312,6 +345,17 @@
 
 
 	H.f_style = pick("Full Beard","Goatee","Selleck Mustache","Shaved")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
+
+	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
@@ -372,6 +416,17 @@
 
 
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
+
+	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the chechen insurgents!")
@@ -388,7 +443,7 @@
 
 
 /datum/job/russian/ruff_medic
-	title = "Russian Federal Forces Field Medic"
+	title = "Russian Federal Forces Corpsman"
 	rank_abbreviation = "Pfc."
 
 	spawn_location = "JoinLateRU"
@@ -430,6 +485,17 @@
 
 
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
+
+	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
@@ -444,6 +510,88 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/russian/ruff_radioman
+	title = "Russian Federal Forces Radio Operator"
+	rank_abbreviation = "Pfc."
+
+	spawn_location = "JoinLateRU"
+
+	is_rusretreat = TRUE
+	is_radioman = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/russian/ruff_radioman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
+	uniform.attackby(armour, H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+
+//head
+	var/randhead3 = rand(1,2)
+	switch(randhead3)
+		if (1)
+			if (prob(70))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
+		if (2)
+			if (prob(30))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+//back
+	var/randarmwrus = rand(1,2)
+	switch(randarmwrus)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+
+//jacket
+	if (prob(65))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+
+
+	H.f_style = pick("Selleck Mustache","Shaved")
+	H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
+
+	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.civilization = "Soviet Army"
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday; What a joy! Follow orders given by your superiors and defeat the enemy!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
 
 /datum/job/russian/ruff_soldier
 	title = "Russian Federal Forces Private"
@@ -475,24 +623,27 @@
 	var/randhead3 = rand(1,2)
 	switch(randhead3)
 		if (1)
-			if (prob(75))
+			if (prob(70))
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
 			else
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_tanker(H), slot_head)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+			if (prob(70))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
 //back
 	var/randarmwrus = rand(1,2)
 	switch(randarmwrus)
 		if (1)
-			if (prob(75))
+			if (prob(80))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
 		if (2)
-			if (prob(75))
+			if (prob(80))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
 			else
@@ -508,6 +659,17 @@
 
 
 	H.f_style = pick("Selleck Mustache","Shaved")
+	H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
+
+	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday; What a joy! Follow orders given by your superiors and defeat the enemy!")
@@ -523,7 +685,7 @@
 	return TRUE
 
 /datum/job/russian/ruff_spetznaz
-	title = "Spetznaz Operative"
+	title = "Spetznaz GRU Operative"
 	rank_abbreviation = "Spz. Op."
 
 	spawn_location = "JoinLateRUsptz"
@@ -562,8 +724,17 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
 
-	if (H.f_style != "Goatee" && H.f_style != "Selleck Mustache" && H.f_style != "Shaved")
-		H.f_style = pick("Goatee","Selleck Mustache","Shaved")
+	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
+
+	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
 	H.civilization = "Soviet Army"
 	give_random_name(H)
