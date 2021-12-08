@@ -202,7 +202,7 @@ var/civmax_research = list(230,230,230)
 	var/list/precursor_stocks = list(
 		"indigon crystals" = list(7,60),
 		"crimsonite crystals" = list(7,60),
-		"verdine crystals" = list(,60),
+		"verdine crystals" = list(7,60),
 		"galdonium crystals" = list(7,60),
 	)
 	var/winddirection = "East"
