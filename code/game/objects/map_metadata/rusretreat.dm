@@ -12,7 +12,7 @@
 		list(CHECHEN) = /area/caribbean/japanese/land,
 		list(RUSSIAN) = /area/caribbean/british,
 		)
-	age = "1995"
+	age = "1996"
 	ordinal_age = 8 // instead of 7 in order to get the russian icons above the players
 	faction_distribution_coeffs = list(CHECHEN = 0.6, RUSSIAN = 0.4)
 	battle_name = "Retreat From Grozny"
