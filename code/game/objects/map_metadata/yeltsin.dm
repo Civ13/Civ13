@@ -16,7 +16,7 @@
 		list(CIVILIAN) = /area/caribbean/british/land/inside/objective,
 		list(RUSSIAN) = /area/caribbean/arab
 		)
-	age = "1990"
+	age = "1993"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.3, CIVILIAN = 0.7)
 	battle_name = "Battle for the Russian Parliament."
@@ -25,7 +25,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Cyka Blyat:1" = 'sound/music/cyka_blyat.ogg',)
+		"Kino - I Want Changes:1" = 'sound/music/want_changes.ogg',)
 	artillery_count = 0
 	valid_artillery = list()
 	scores = list(
