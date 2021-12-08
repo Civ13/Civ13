@@ -561,7 +561,23 @@ var/global/redirect_all_players = null
 		return FALSE
 
 	if (rank == "Company Member")
-		rank = pick(map.availablefactions)
+		var/y_nr = processes.job_data.get_active_positions_name("Goldstein Solutions")
+		var/g_nr = processes.job_data.get_active_positions_name("Kogama Kraftsmen")
+		var/r_nr = processes.job_data.get_active_positions_name("Rednikov Industries")
+		var/b_nr = processes.job_data.get_active_positions_name("Giovanni Blu Stocks")
+		var/list/posslist = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
+		if (r_nr > y_nr && r_nr > b_nr && r_nr > g_nr)
+			posslist -= "Rednikov Industries"
+		if (b_nr > y_nr && b_nr > r_nr && b_nr > g_nr)
+			posslist -= "Giovanni Blu Stocks"
+		if (g_nr > y_nr && g_nr > b_nr && g_nr > r_nr)
+			posslist -= "Kogama Kraftsmen"
+		if (y_nr > r_nr && y_nr > b_nr && y_nr > g_nr)
+			posslist -= "Goldstein Solutions"
+		if (isemptylist(posslist))
+			rank = pick("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
+		else
+			rank = pick(posslist)
 		spawning = TRUE
 		close_spawn_windows()
 		job_master.AssignRole(src, rank, TRUE)
@@ -860,8 +876,6 @@ var/global/redirect_all_players = null
 		)
 
 	var/prev_side = FALSE
-	if(map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-		dat += "&[CIVILIAN]&<b><a style=\"background-color:#777777;\" href='byond://?src=\ref[src];SelectedJob=Company Member'>Company Member (Random) </b><br>"
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 
 		if (job.faction != "Human")
@@ -957,7 +971,6 @@ var/global/redirect_all_players = null
 
 			var/extra_span = "<b>"
 			var/end_extra_span = "</b><br>"
-
 			if (job.is_officer && !job.is_commander)
 				extra_span = "<b><font size=2>"
 				end_extra_span = "</font></b><br>"
@@ -973,7 +986,8 @@ var/global/redirect_all_players = null
 				if (job_is_available)
 					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
-
+	if(map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+		dat += "&[CIVILIAN]&<b><a style=\"background-color:#777777;\" href='byond://?src=\ref[src];SelectedJob=Company Member'>Company Member (Random) </b><br>"
 	dat += "</center>"
 
 	// shitcode to hide jobs that aren't available

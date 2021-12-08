@@ -152,7 +152,8 @@
 	if (J.is_deal)
 		. = TRUE
 		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate))
-			. = FALSE
+			if(!findtext(J.title, "CEO"))
+				. = FALSE
 		if (clients.len <= 15)
 			if (J.title == "Paramedic" || J.title == "Legitimate Business")
 				. = FALSE
