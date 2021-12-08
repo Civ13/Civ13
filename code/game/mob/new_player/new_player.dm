@@ -561,7 +561,23 @@ var/global/redirect_all_players = null
 		return FALSE
 
 	if (rank == "Company Member")
-		rank = pick(map.availablefactions)
+		var/y_nr = processes.job_data.get_active_positions_name("Goldstein Solutions")
+		var/g_nr = processes.job_data.get_active_positions_name("Kogama Kraftsmen")
+		var/r_nr = processes.job_data.get_active_positions_name("Rednikov Industries")
+		var/b_nr = processes.job_data.get_active_positions_name("Giovanni Blu Stocks")
+		var/list/posslist = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
+		if (r_nr > y_nr && r_nr > b_nr && r_nr > g_nr)
+			posslist -= "Rednikov Industries"
+		if (b_nr > y_nr && b_nr > r_nr && b_nr > g_nr)
+			posslist -= "Giovanni Blu Stocks"
+		if (g_nr > y_nr && g_nr > b_nr && g_nr > r_nr)
+			posslist -= "Kogama Kraftsmen"
+		if (y_nr > r_nr && y_nr > b_nr && y_nr > g_nr)
+			posslist -= "Goldstein Solutions"
+		if (isemptylist(posslist))
+			rank = pick("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
+		else
+			rank = pick(posslist)
 		spawning = TRUE
 		close_spawn_windows()
 		job_master.AssignRole(src, rank, TRUE)
