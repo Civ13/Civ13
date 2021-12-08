@@ -14,7 +14,7 @@
 		)
 	age = "1996"
 	ordinal_age = 8 // instead of 7 in order to get the russian icons above the players
-	faction_distribution_coeffs = list(CHECHEN = 0.6, RUSSIAN = 0.4)
+	faction_distribution_coeffs = list(CHECHEN = 0.67, RUSSIAN = 0.33)
 	battle_name = "Retreat From Grozny"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Militia will win if they hold out for <b>30 minutes</b>. The Russian Federal Forces will win if they manage to cross the bridge into friendly territory!</font>"
 	faction2 = RUSSIAN
@@ -22,7 +22,7 @@
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Just don't tell mom I'm in Chechnya:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
-	artillery_count = 10
+	artillery_count = 2
 
 /obj/map_metadata/rusretreat/New()
 	..()
