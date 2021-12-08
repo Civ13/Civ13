@@ -8,6 +8,7 @@
    * - 2a1 PASGT Armor
    * - 2a2 US Lightwieght Helmets
    * - 2b US Army Clothing
+   * - 2c Russian Army Clothing
    /////////////////////////////////////
    * - 3 USSR helmets
    * - 4 Hezbollah
@@ -467,6 +468,15 @@
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
 
+/* Russian Army Clothing*/
+
+/obj/item/clothing/under/milrus_vsr93
+	name = "russian military outfit VSR 93" //Uniform used mostly in the 90's
+	desc = "An outfit composed of the VSR93 camo pants and shirt, along with a high waistbelt."
+	icon_state = "milrus_vsr93"
+	item_state = "milrus_vsr93"
+	worn_state = "milrus_vsr93"
+
 /* USSR Helmets*/
 
 /obj/item/clothing/head/helmet/modern/sovietfacehelmet
@@ -596,6 +606,12 @@
 	body_parts_covered = HEAD|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 84, arrow = 104, gun = 98, energy = 38, bomb = 79, bio = 34, rad = FALSE)
+
+/obj/item/clothing/head/ruscap_fed
+	name = "Russian Federal Forces service cap"
+	desc = "A cap worn by the Russian Federal Army."
+	icon_state = "fieldcap_rus_fed"
+	item_state = "fieldcap_rus_fed"
 
 /* Hezbollah*/
 
@@ -837,6 +853,16 @@
 	icon_state = "motorist_jacket"
 	item_state = "motorist_jacket"
 	worn_state = "motorist_jacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
+/obj/item/clothing/suit/storage/jacket/rus_winter_vsr93
+	name = "Russian Federal Forces winter jacket"
+	desc = "A winter jacket used by the Russian Federal Forces in VSR93 camo."
+	icon_state = "rus_winter_vsr93"
+	item_state = "rus_winter_vsr93"
+	worn_state = "rus_winter_vsr93"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)

@@ -484,6 +484,77 @@ obj/item/weapon/material/sword/magic/onoff/green
 		atk_mode = BASH
 	..()
 
+obj/item/weapon/material/sword/magic/onoff/darkgreen
+	name = "Dark Green Beam Blade"
+	icon_state = "greenbeamblade_off"
+	item_state = "greenbeamblade_off"
+	base_icon = "greenbeamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of dark green light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
+
+	old_force_divisor = 0.10
+	old_thrown_force_divisor = 0.10
+	old_sharpness = 0
+	old_block_chance = 25
+
+	new_force_divisor = 10
+	new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
+	new_block_chance = 95
+	new_sharpness = 100
+
+	hitsound_off = 'sound/weapons/punch1.ogg' //default
+	drawsound_off = 'sound/weapons/punch1.ogg' //temp
+
+	hitsound_on = 'sound/weapons/magic/LS_Hit_1.ogg'
+	drawsound_on = 'sound/weapons/magic/LS_On.ogg'
+
+	onsound = 'sound/weapons/magic/LS_On.ogg'
+	offsound = 'sound/weapons/magic/LS_Off.ogg'
+
+	state = "OFF"
+	on_state = "darkgreenbeamblade"
+	on_state_item = "darkgreenbeamblade"
+	off_state = "greenbeamblade_off"
+	off_state_item = ""
+/obj/item/weapon/material/sword/magic/onoff/attack_self()
+	if(state == "OFF")
+		icon_state = on_state
+		item_state = on_state_item
+		force_divisor = new_force_divisor
+		thrown_force_divisor = new_thrown_force_divisor
+		sharpness = new_sharpness
+		block_chance = new_block_chance
+		playsound(loc, onsound, 100, TRUE)
+		hitsound = hitsound_on
+		drawsound = drawsound_on
+		state = "ON"
+		sharp = 1
+		edge = 1
+		atk_mode = SLASH
+	else
+		icon_state = off_state
+		item_state = off_state_item
+		force_divisor = old_force_divisor
+		thrown_force_divisor = old_thrown_force_divisor
+		sharpness = old_sharpness
+		block_chance = old_block_chance
+		playsound(loc, offsound, 100, TRUE)
+		hitsound = hitsound_off
+		drawsound = drawsound_off
+		state = "OFF"
+		sharp = FALSE
+		edge = FALSE
+		atk_mode = BASH
+	..()
+
 obj/item/weapon/material/sword/magic/onoff/purple
 	name = "Purple Beam Blade"
 	icon_state = "purplebeamblade_off"
@@ -697,6 +768,77 @@ obj/item/weapon/material/sword/magic/onoff/magenta
 		atk_mode = BASH
 	..()
 
+obj/item/weapon/material/sword/magic/onoff/redpink
+	name = "Reddish Pink Beam Blade"
+	icon_state = "magentabeamblade_off"
+	item_state = "magentabeamblade_off"
+	base_icon = "magentabeamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of reddish pink light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
+
+	old_force_divisor = 0.10
+	old_thrown_force_divisor = 0.10
+	old_sharpness = 0
+	old_block_chance = 25
+
+	new_force_divisor = 10
+	new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
+	new_block_chance = 95
+	new_sharpness = 100
+
+	hitsound_off = 'sound/weapons/punch1.ogg' //default
+	drawsound_off = 'sound/weapons/punch1.ogg' //temp
+
+	hitsound_on = 'sound/weapons/magic/LS_Hit_1.ogg'
+	drawsound_on = 'sound/weapons/magic/LS_On.ogg'
+
+	onsound = 'sound/weapons/magic/LS_On.ogg'
+	offsound = 'sound/weapons/magic/LS_Off.ogg'
+
+	state = "OFF"
+	on_state = "redpinkbeamblade"
+	on_state_item = "redpinkbeamblade"
+	off_state = "beamblade_off"
+	off_state_item = ""
+/obj/item/weapon/material/sword/magic/onoff/attack_self()
+	if(state == "OFF")
+		icon_state = on_state
+		item_state = on_state_item
+		force_divisor = new_force_divisor
+		thrown_force_divisor = new_thrown_force_divisor
+		sharpness = new_sharpness
+		block_chance = new_block_chance
+		playsound(loc, onsound, 100, TRUE)
+		hitsound = hitsound_on
+		drawsound = drawsound_on
+		state = "ON"
+		sharp = 1
+		edge = 1
+		atk_mode = SLASH
+	else
+		icon_state = off_state
+		item_state = off_state_item
+		force_divisor = old_force_divisor
+		thrown_force_divisor = old_thrown_force_divisor
+		sharpness = old_sharpness
+		block_chance = old_block_chance
+		playsound(loc, offsound, 100, TRUE)
+		hitsound = hitsound_off
+		drawsound = drawsound_off
+		state = "OFF"
+		sharp = FALSE
+		edge = FALSE
+		atk_mode = BASH
+	..()
+
 obj/item/weapon/material/sword/magic/onoff/yellow
 	name = "Yellow Beam Blade"
 	icon_state = "yellowbeamblade_off"
@@ -807,6 +949,148 @@ obj/item/weapon/material/sword/magic/onoff/orange
 	on_state = "orangebeamblade"
 	on_state_item = "orangebeamblade"
 	off_state = "orangebeamblade_off"
+	off_state_item = ""
+/obj/item/weapon/material/sword/magic/onoff/attack_self()
+	if(state == "OFF")
+		icon_state = on_state
+		item_state = on_state_item
+		force_divisor = new_force_divisor
+		thrown_force_divisor = new_thrown_force_divisor
+		sharpness = new_sharpness
+		block_chance = new_block_chance
+		playsound(loc, onsound, 100, TRUE)
+		hitsound = hitsound_on
+		drawsound = drawsound_on
+		state = "ON"
+		sharp = 1
+		edge = 1
+		atk_mode = SLASH
+	else
+		icon_state = off_state
+		item_state = off_state_item
+		force_divisor = old_force_divisor
+		thrown_force_divisor = old_thrown_force_divisor
+		sharpness = old_sharpness
+		block_chance = old_block_chance
+		playsound(loc, offsound, 100, TRUE)
+		hitsound = hitsound_off
+		drawsound = drawsound_off
+		state = "OFF"
+		sharp = FALSE
+		edge = FALSE
+		atk_mode = BASH
+	..()
+
+obj/item/weapon/material/sword/magic/onoff/darkorange
+	name = "Dark Orange Beam Blade"
+	icon_state = "greenbeamblade_off"
+	item_state = "greenbeamblade_off"
+	base_icon = "greenbeamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of dark orange light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
+
+	old_force_divisor = 0.10
+	old_thrown_force_divisor = 0.10
+	old_sharpness = 0
+	old_block_chance = 25
+
+	new_force_divisor = 10
+	new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
+	new_block_chance = 95
+	new_sharpness = 100
+
+	hitsound_off = 'sound/weapons/punch1.ogg' //default
+	drawsound_off = 'sound/weapons/punch1.ogg' //temp
+
+	hitsound_on = 'sound/weapons/magic/LS_Hit_1.ogg'
+	drawsound_on = 'sound/weapons/magic/LS_On.ogg'
+
+	onsound = 'sound/weapons/magic/LS_On.ogg'
+	offsound = 'sound/weapons/magic/LS_Off.ogg'
+
+	state = "OFF"
+	on_state = "darkorangebeamblade"
+	on_state_item = "darkorangebeamblade"
+	off_state = "greenbeamblade_off"
+	off_state_item = ""
+/obj/item/weapon/material/sword/magic/onoff/attack_self()
+	if(state == "OFF")
+		icon_state = on_state
+		item_state = on_state_item
+		force_divisor = new_force_divisor
+		thrown_force_divisor = new_thrown_force_divisor
+		sharpness = new_sharpness
+		block_chance = new_block_chance
+		playsound(loc, onsound, 100, TRUE)
+		hitsound = hitsound_on
+		drawsound = drawsound_on
+		state = "ON"
+		sharp = 1
+		edge = 1
+		atk_mode = SLASH
+	else
+		icon_state = off_state
+		item_state = off_state_item
+		force_divisor = old_force_divisor
+		thrown_force_divisor = old_thrown_force_divisor
+		sharpness = old_sharpness
+		block_chance = old_block_chance
+		playsound(loc, offsound, 100, TRUE)
+		hitsound = hitsound_off
+		drawsound = drawsound_off
+		state = "OFF"
+		sharp = FALSE
+		edge = FALSE
+		atk_mode = BASH
+	..()
+
+obj/item/weapon/material/sword/magic/onoff/bronze
+	name = "Bronze Beam Blade"
+	icon_state = "greenbeamblade_off"
+	item_state = "greenbeamblade_off"
+	base_icon = "greenbeamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of bronze light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
+
+	old_force_divisor = 0.10
+	old_thrown_force_divisor = 0.10
+	old_sharpness = 0
+	old_block_chance = 25
+
+	new_force_divisor = 10
+	new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
+	new_block_chance = 95
+	new_sharpness = 100
+
+	hitsound_off = 'sound/weapons/punch1.ogg' //default
+	drawsound_off = 'sound/weapons/punch1.ogg' //temp
+
+	hitsound_on = 'sound/weapons/magic/LS_Hit_1.ogg'
+	drawsound_on = 'sound/weapons/magic/LS_On.ogg'
+
+	onsound = 'sound/weapons/magic/LS_On.ogg'
+	offsound = 'sound/weapons/magic/LS_Off.ogg'
+
+	state = "OFF"
+	on_state = "bronzebeamblade"
+	on_state_item = "bronzebeamblade"
+	off_state = "greenbeamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
 	if(state == "OFF")
