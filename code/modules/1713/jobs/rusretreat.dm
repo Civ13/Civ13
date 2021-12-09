@@ -25,9 +25,13 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/toughguy(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/military(H), slot_l_store)
+
+//back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb(H), slot_shoulder)
 
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/chechoff(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
@@ -51,27 +55,27 @@
 	H.civilization = "Militia"
 	give_random_name(H)
 	H.add_note("Role", "You are a Warlord! Organize the militia and fend off the russian invaders!")
-	H.setStat("strength", STAT_NORMAL)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-/datum/job/arab/civilian/chechen/milita
+/datum/job/arab/civilian/chechen/militia
 	title = "Chechen Milita"
-	en_meaning = "Chechnyan armed milita"
+	en_meaning = "Chechnyan Armed Militia"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCC"
 	min_positions = 10
-	max_positions = 100
+	max_positions = 200
 	is_rusretreat = TRUE
 
-/datum/job/arab/civilian/chechen/milita/equip(var/mob/living/human/H)
+/datum/job/arab/civilian/chechen/militia/equip(var/mob/living/human/H)
 
 //shoes
 	var/randshoe2 = rand(1,5)
@@ -210,6 +214,9 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 
+//back
+	if (prob(33))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel(H), slot_back)
 
 	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
@@ -223,15 +230,15 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are a <b>[title]</b> insurging against the Russian tyrants! Listen to your Warlords!")
+	H.add_note("Role", "You are a <b>[title]</b> insurging against the Russian occupants! Do all it takes to prevent them from crossing the bridge south of the city and listen to your Warlords!")
 	H.civilization = "Militia"
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
@@ -295,7 +302,7 @@
 	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
@@ -359,15 +366,15 @@
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
-	H.setStat("strength", STAT_NORMAL)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/russian/ruff_sergeant
@@ -395,7 +402,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //head
-	if (prob(30))
+	if (prob(33))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
@@ -410,8 +417,11 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
-//jacket
+
 	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack(H), slot_back)
+//jacket
+	if (prob(33))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
 
 
@@ -430,15 +440,15 @@
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the chechen insurgents!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 
@@ -500,11 +510,11 @@
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
@@ -537,7 +547,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
-	var/randhead3 = rand(1,2)
+	var/randhead3 = rand(1,3)
 	switch(randhead3)
 		if (1)
 			if (prob(70))
@@ -549,6 +559,11 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 			else
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+		if (3)
+			if (prob(40))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/olivebandana(H), slot_head)
 //back
 	var/randarmwrus = rand(1,2)
 	switch(randarmwrus)
@@ -581,9 +596,9 @@
 
 	H.civilization = "Soviet Army"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday; What a joy! Follow orders given by your superiors and defeat the enemy!")
+	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday, but unlike your other comrades, they gave you a radio with your rifle! What a joy! Follow orders given by your superiors and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
@@ -604,7 +619,7 @@
 	uses_squads = TRUE
 
 	min_positions = 10
-	max_positions = 200
+	max_positions = 80
 
 /datum/job/russian/ruff_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -620,7 +635,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
-	var/randhead3 = rand(1,2)
+	var/randhead3 = rand(1,3)
 	switch(randhead3)
 		if (1)
 			if (prob(70))
@@ -632,6 +647,11 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 			else
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+		if (3)
+			if (prob(60))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/olivebandana(H), slot_head)
 //back
 	var/randarmwrus = rand(1,2)
 	switch(randarmwrus)
@@ -681,7 +701,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/russian/ruff_spetznaz
@@ -695,7 +715,7 @@
 	uses_squads = TRUE
 
 	min_positions = 1
-	max_positions = 10
+	max_positions = 8
 
 /datum/job/russian/ruff_spetznaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -719,6 +739,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_spz(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
