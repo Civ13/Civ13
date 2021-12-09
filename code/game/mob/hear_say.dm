@@ -105,7 +105,10 @@
 		if (client && speaker.client && (speaker in view(7,src) || speaker == src))
 
 			if (client.is_preference_enabled(/datum/client_preference/show_chat_overlays))
-				client.seen_chat_text += new/obj/chat_text(speaker,message2,src)
+				var/obj/chat_text/CT = new/obj/chat_text(speaker,message2,src)
+				client.seen_chat_text += CT
+				if(speaker.client)
+					speaker.client.stored_chat_text += CT
 
 			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
 				play_tts(message2,speaker)
