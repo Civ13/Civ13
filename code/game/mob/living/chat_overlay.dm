@@ -25,7 +25,7 @@
 		target = null
 	return ..()
 
-/obj/chat_text/New(var/atom/desired_loc, var/mob/origin_loc, var/desired_text, var/mob/target_mob)
+/obj/chat_text/New(var/mob/origin_loc, var/desired_text, var/mob/target_mob)
 	..()
 	loc = null
 	if(isliving(origin_loc) && origin_loc.client && target_mob && target_mob.client)
@@ -34,9 +34,9 @@
 		if (!owner)
 			return
 		for (var/obj/chat_text/CT in owner.stored_chat_text)
-			if (CT.target)
-				CT.target.seen_chat_text -= CT
-				CT.target.images -= CT.message
+			if (CT.target == target)
+				target.seen_chat_text -= CT
+				target.images -= CT.message
 			owner.stored_chat_text -= CT
 			qdel(CT)
 		owner.stored_chat_text += src
@@ -63,6 +63,9 @@
 		qdel(src)
 
 	return FALSE
+
+//TTS stuff
+
 var/global/sound_tts_num = 0
 
 /mob/proc/play_tts(message,var/mob/living/human/speaker)
