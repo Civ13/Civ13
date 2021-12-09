@@ -1653,96 +1653,66 @@
 /datum/program/elektra/Topic(href, href_list, hsrc)
 	..()
 	mainbody = ""
-	switch(href_list["elektra"])
-		if ("3")
-			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
-				mainbody = "<b>You need to have money in one of your hands!</b>"
+	if (findtext(href_list["elektra"],"B"))
+		var/selectedprec = splittext(href_list["elektra"],"-")[2]
+		var/chosenprec = map.precursor_stocks[selectedprec]
+		var/forsale
+		if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
+			mainbody = "<b>You need to have money in one of your hands!</b>"
+			sleep(0.5)
+			do_html(user)
+			return
+		else
+			switch(selectedprec)
+				if ("indigon crystals")
+					forsale = /obj/item/stack/precursor/blue
+				if ("crimsonite crystals")
+					forsale = /obj/item/stack/precursor/red
+				if ("verdine crystals")
+					forsale = /obj/item/stack/precursor/green
+				if ("galdonium crystals")
+					forsale = /obj/item/stack/precursor/yellow
+			var/obj/item/stack/money/mstack = null
+			if (istype(user.l_hand, /obj/item/stack/money))
+				mstack = user.l_hand
+			else
+				mstack = user.r_hand
+			if (mstack.value*mstack.amount >= chosenprec[2])
+				mstack.amount -= (chosenprec[2]/mstack.value)
+				if (mstack.amount<= 0)
+					qdel(mstack)
+				if (!forsale)
+					mainbody = "Authentication Error!"
+					sleep(0.5)
+					do_html(user)
+				var/obj/item/stack/precursor/PR = new forsale(null)
+				if (PR)
+					PR.forceMove(get_turf(origin))
+				mainbody = "You fulfill the order."
+				chosenprec[2] = min(360,round(chosenprec[2]*1.1))
+				chosenprec[1] -= 1
 				sleep(0.5)
 				do_html(user)
 				return
 			else
-				var/chosenprec
-				switch(map.assign_precursors[user.civilization])
-					if ("indigon crystals")
-						chosenprec = map.precursor_stocks["indigon crystals"]
-					if ("crimsonite crystals")
-						chosenprec = map.precursor_stocks["crimsonite crystals"]
-					if ("verdine crystals")
-						chosenprec = map.precursor_stocks["verdine crystals"]
-					if ("galdonium crystals")
-						chosenprec = map.precursor_stocks["galdonium crystals"]
-				var/forsale
-				switch(map.assign_precursors[user.civilization])
-					if ("indigon crystals")
-						forsale = /obj/item/stack/precursor/blue
-					if ("crimsonite crystals")
-						forsale = /obj/item/stack/precursor/red
-					if ("verdine crystals")
-						forsale = /obj/item/stack/precursor/green
-					if ("galdonium crystals")
-						forsale = /obj/item/stack/precursor/yellow
-				var/obj/item/stack/money/mstack = null
-				if (istype(user.l_hand, /obj/item/stack/money))
-					mstack = user.l_hand
-				else
-					mstack = user.r_hand
-				if (mstack.value*mstack.amount >= chosenprec[2])
-					mstack.amount -= (chosenprec[2]/mstack.value)
-					if (mstack.amount<= 0)
-						qdel(mstack)
-					if (!forsale)
-						mainbody = "Authentication Error!"
-						sleep(0.5)
-						do_html(user)
-					var/obj/item/stack/precursor/PR = new forsale(null)
-					if (PR)
-						PR.forceMove(get_turf(origin))
-					mainbody = "You fulfill the order."
-					chosenprec[2] = min(360,round(chosenprec[2]*1.1))
-					chosenprec[1] -= 1
-					sleep(0.5)
-					do_html(user)
-					return
-				else
-					mainbody = "<b>Not enough money!</b>"
-					sleep(0.5)
-					do_html(user)
-					return
+				mainbody = "<b>Not enough money!</b>"
+				sleep(0.5)
+				do_html(user)
+				return
 
-		if ("2") //buy
-			var/forsale
-			switch(user.civilization)
-				if ("Rednikov Industries")
-					forsale = map.assign_precursors["Rednikov Industries"]
-				if ("Giovanni Blu Stocks")
-					forsale = map.assign_precursors["Giovanni Blu Stocks"]
-				if ("Kogama Kraftsmen")
-					forsale = map.assign_precursors["Kogama Kraftsmen"]
-				if ("Goldstein Solutions")
-					forsale = map.assign_precursors["Goldstein Solutions"]
-
-			if (forsale)
-				var/cost
-				var/available
-				switch(map.assign_precursors[user.civilization])
-					if ("indigon crystals")
-						cost = map.precursor_stocks["indigon crystals"][2]
-						available = map.precursor_stocks["indigon crystals"][1]
-					if ("crimsonite crystals")
-						cost = map.precursor_stocks["crimsonite crystals"][2]
-						available = map.precursor_stocks["crimsonite crystals"][1]
-					if ("verdine crystals")
-						cost = map.precursor_stocks["verdine crystals"][2]
-						available = map.precursor_stocks["verdine crystals"][1]
-					if ("galdonium crystals")
-						cost = map.precursor_stocks["galdonium crystals"][2]
-						available = map.precursor_stocks["galdonium crystals"][1]
+	if (href_list["elektra"] == "2") //buy
+		var/forsale_opt = map.assign_precursors[user.civilization]
+		mainbody = ""
+		if (forsale_opt)
+			for(var/i in map.assign_precursors[user.civilization])
+				var/cost = map.precursor_stocks[i][2]
+				var/available = map.precursor_stocks[i][1]
 				if (available>0)
-					mainbody = "<a href='?src=\ref[src];elektra=3'>[forsale], [cost/4] dollars ([available] available)</a><br>"
-				else
-					mainbody = "<b>We are currently out of stock. Please visit soon!</b>"
-			else
+					mainbody += "<a href='?src=\ref[src];elektra=B-[i]'>[i], [cost/4] dollars ([available] available)</a><br>"
+			if (mainbody == "")
 				mainbody = "<b>We are currently out of stock. Please visit soon!</b>"
+		else
+			mainbody = "<b>We are currently out of stock. Please visit soon!</b>"
 
 	sleep(0.5)
 	do_html(user)

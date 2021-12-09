@@ -58,26 +58,6 @@
 				ticker.finished = TRUE
 				return TRUE
 
-/obj/map_metadata/proc/assign_precursors()
-	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
-	var/list/picked = list()
-	assign_precursors["Rednikov Industries"] = pick(possibilities1)
-	picked += assign_precursors["Rednikov Industries"]
-	possibilities1 = list("crimsonite crystals","verdine crystals","galdonium crystals")
-	possibilities1 -= picked
-	assign_precursors["Giovanni Blu Stocks"] = pick(possibilities1)
-	picked += assign_precursors["Giovanni Blu Stocks"]
-	possibilities1 = list("crimsonite crystals","indigon crystals","galdonium crystals")
-	possibilities1 -= picked
-	if ("galdonium crystals" in possibilities1)
-		assign_precursors["Kogama Kraftsmen"] = "galdonium crystals"
-	else
-		assign_precursors["Kogama Kraftsmen"] = pick(possibilities1)
-	picked += assign_precursors["Kogama Kraftsmen"]
-	possibilities1 = list("crimsonite crystals","indigon crystals","verdine crystals")
-	possibilities1 -= picked
-	assign_precursors["Goldstein Solutions"] = pick(possibilities1)
-
 /obj/map_metadata/art_of_the_deal/New()
 	..()
 	spawn(3000)
@@ -98,7 +78,6 @@
 		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
-		assign_precursors()
 	spawn(150)
 		assign_delivery_zones()
 		send_buy_orders()
