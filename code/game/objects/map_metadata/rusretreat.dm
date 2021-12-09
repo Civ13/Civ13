@@ -16,7 +16,7 @@
 	ordinal_age = 8 // instead of 7 in order to get the russian icons above the players
 	faction_distribution_coeffs = list(CHECHEN = 0.67, RUSSIAN = 0.33)
 	battle_name = "Retreat From Grozny"
-	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Militia will win if they hold out for <b>30 minutes</b>. The Russian Federal Forces will win if they manage to cross the bridge into friendly territory!</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chechen Militia will win if they hold out the retreat for <b>30 minutes</b>. The Russian Federal Forces will win if they manage to cross the bridge south of the city into friendly territory!</font>"
 	faction2 = RUSSIAN
 	faction1 = CHECHEN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -132,7 +132,7 @@
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// Soviet major
+	// Russian major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
@@ -141,7 +141,7 @@
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// Soviet minor
+	// Russian minor
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
