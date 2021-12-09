@@ -198,7 +198,12 @@ var/civmax_research = list(230,230,230)
 	var/list/pending_warrants = list()
 	var/list/emails = list("support@monkeysoft.ug" = list())
 
-	var/list/assign_precursors = list()
+	var/list/assign_precursors = list(
+		"Rednikov Industries" = list("verdine crystals","indigon crystals","galdonium crystals"),
+		"Giovanni Blu Stocks" = list("crimsonite crystals","verdine crystals","galdonium crystals"),
+		"Kogama Kraftsmen" = list("crimsonite crystals","indigon crystals","galdonium crystals"),
+		"Goldstein Solutions" = list("crimsonite crystals","indigon crystals","verdine crystals"),
+)
 	var/list/precursor_stocks = list(
 		"indigon crystals" = list(7,60),
 		"crimsonite crystals" = list(7,60),
