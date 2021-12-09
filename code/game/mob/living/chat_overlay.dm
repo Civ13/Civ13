@@ -61,7 +61,16 @@
 
 	else
 		qdel(src)
-
+	spawn(60)
+		animate(src,alpha=0,time=10)
+		sleep(10)
+		if(src)
+			if (target)
+				target.seen_chat_text -= src
+				target.images -= message
+			if (owner)
+				owner.stored_chat_text -= src
+			src.Destroy()
 	return FALSE
 
 //TTS stuff
