@@ -72,17 +72,22 @@
 
 var/global/sound_tts_num = 0
 
+/mob/living/human/var/voice_pitch = 100
+/mob/living/human/New()
+	..()
+	voice_pitch = rand(70,140)
+
 /mob/proc/play_tts(message,var/mob/living/human/speaker)
 	if (!message || message == "" || !client || !speaker)
 		return
 	message = replacetext(message, "&#39", "'")
-	var/voice = "ap --setf duration_stretch=0.8"
+	var/voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=100"
 	if (!speaker.original_job)
 		return
 	if (gender == MALE)
-		voice = "ap --setf duration_stretch=0.8"
+		voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
 	else
-		voice = "slt --setf duration_stretch=0.8"
+		voice = "slt --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
 	sound_tts_num+=1
 	var/genUID = sound_tts_num
 	if (world.system_type != UNIX)
