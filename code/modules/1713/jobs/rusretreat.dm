@@ -691,7 +691,7 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday; What a joy! Follow orders given by your superiors and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
