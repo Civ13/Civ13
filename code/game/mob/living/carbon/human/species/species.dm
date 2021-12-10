@@ -375,7 +375,7 @@
 /datum/species/proc/get_random_russian_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian))
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian) + "a")
 		else
 			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
 
@@ -418,6 +418,13 @@
 			return capitalize(pick(first_names_female_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
 		else
 			return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
+
+/datum/species/proc/get_random_chechen_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_male_chechen)) + " " + capitalize(pick(last_names_chechen) + "a") //will have to changed in case chechen female names get added
+		else
+			return capitalize(pick(first_names_male_chechen)) + " " + capitalize(pick(last_names_chechen))
 
 /datum/species/proc/get_random_hebrew_name(var/gender)
 	if (!name_language)

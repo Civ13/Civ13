@@ -295,7 +295,7 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy and motivated!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your brothers healthy and motivated!")
 	H.civilization = "Militia"
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
