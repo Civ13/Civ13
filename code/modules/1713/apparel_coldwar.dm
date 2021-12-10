@@ -73,6 +73,7 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 
+
 /* Cold War Accessories*/
 
 /obj/item/clothing/mask/facecamo
@@ -457,6 +458,13 @@
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
+/obj/item/clothing/head/beret_rus_vdv
+	name = "VDV beret"
+	desc = "A beret worn by the Russian Airborn Forces."
+	icon_state = "beret_rus_vdv"
+	item_state = "beret_rus_vdv"
+	body_parts_covered = HEAD
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -703,6 +711,22 @@
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt/New()
+	..()
+	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_svd
+/obj/item/weapon/storage/belt/smallpouches/green/sov_svd/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/svd(src)
+	new /obj/item/ammo_magazine/svd(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_swat
@@ -1109,3 +1133,10 @@
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
+
+/obj/item/clothing/under/customuniform/fins
+    name = "finnish uniform"
+    desc = "A finnish winter uniform."
+    shirtcolor = "#FFFFFF"
+    pantscolor = "#FFFFFF"
+    color = "#FFFFFF"

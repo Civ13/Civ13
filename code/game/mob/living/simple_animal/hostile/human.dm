@@ -3,6 +3,9 @@
 	attack_verb = "hits"
 	speed = 4
 	move_to_delay = 3
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "pirate_friendly1"
+	icon_dead = "pirate_friendly_dead"
 
 	var/corpse = null
 	var/weapon = null
@@ -89,10 +92,10 @@
 			found_officer = TRUE
 	else if (ishuman(speaker))
 		var/mob/living/human/H = speaker
-		if(H.original_job.is_officer && H.faction_text == src.faction)
+		if(H && H.original_job && H.original_job.is_officer && H.faction_text == src.faction)
 			found_officer = TRUE
 	if(found_officer)
-		if (s_language.name == language.name)
+		if (s_language && language && s_language.name == language.name)
 			if (findtext(message, "men, "))
 				if (findtext(message, "charge") || findtext(message, "attack") || findtext(message, "advance"))
 					var/mob/living/lspeaker = speaker

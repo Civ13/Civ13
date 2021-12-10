@@ -1,7 +1,7 @@
 /mob/living/simple_animal/hostage
 	name = "Hostage"
 	desc = "A poor guy made hostage."
-	icon = 'icons/mob/animal.dmi'
+	icon = 'icons/mob/npcs.dmi'
 	icon_state = "hostage_m1"
 	icon_living = "hostage_m1"
 	icon_dead = "hostage_m1_dead"

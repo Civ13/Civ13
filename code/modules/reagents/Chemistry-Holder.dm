@@ -331,9 +331,9 @@
 	return FALSE
 
 //Splashing reagents is messier than trans_to, the target's loc gets some of the reagents as well.
-/datum/reagents/proc/splash(var/atom/target, var/amount = TRUE)
+/datum/reagents/proc/splash(var/atom/target, var/amount = TRUE, copy = FALSE)
 
-	trans_to(target, amount)
+	trans_to(target, amount, 1, copy)
 	if (istype(target, /turf/floor/dirt))
 		for (var/obj/structure/farming/plant/P in target)
 			P.water = min(P.water+amount,P.max_water)

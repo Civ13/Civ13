@@ -281,25 +281,13 @@
 
 /turf/floor/beach/water/deep/Crossed(atom/A)
 	..()
-	for(var/obj/covers/C in src)
-		return
-	for(var/obj/structure/multiz/ladder/S in src)
-		return
-	if (!istype(A, /mob) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !!istype(A, /obj/effect/sailing_effect))
-		spawn(60)
-			if (A && A.loc == src)
-				qdel(A)
-	if(istype(A, /mob/living))
-		var/mob/living/ML = A
-		if (ML && ML.stat == DEAD)
-			spawn(60)
-				if (A && A.loc == src)
-					qdel(A)
+	check_sinking(A)
 /turf/floor/beach/water/deep/Entered(atom/movable/A)
 	..()
-	for(var/obj/covers/C in src)
-		return
-	for(var/obj/structure/multiz/ladder/S in src)
+	check_sinking(A)
+
+/turf/floor/beach/water/proc/check_sinking(atom/movable/A)
+	if(iscovered())
 		return
 	if (!istype(A, /mob) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
 		spawn(60)

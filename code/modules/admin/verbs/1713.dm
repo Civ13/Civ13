@@ -171,6 +171,8 @@ var/greek_toggled = TRUE
 var/arab_toggled = TRUE
 var/japanese_toggled = TRUE
 var/russian_toggled = TRUE
+var/chechen_toggled = TRUE
+var/finnish_toggled = TRUE
 var/german_toggled = TRUE
 var/american_toggled = TRUE
 var/vietnamese_toggled = TRUE
@@ -199,6 +201,8 @@ var/filipino_toggled = TRUE
 	choices += "ARAB ([arab_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "JAPANESE ([japanese_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "RUSSIAN ([russian_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "CHECHEN ([chechen_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "FINNISH ([finnish_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "GERMAN ([german_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "AMERICAN ([american_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "VIETNAMESE ([vietnamese_toggled ? "ENABLED" : "DISABLED"])"
@@ -248,9 +252,17 @@ var/filipino_toggled = TRUE
 		world << "<span class = 'warning'>The Japanese faction has been [japanese_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Japanese faction 'enabled' setting to [japanese_toggled].")
 	else if (findtext(choice, "RUSSIAN"))
-		dutch_toggled = !russian_toggled
+		russian_toggled = !russian_toggled
 		world << "<span class = 'warning'>The Russian faction has been [russian_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Russian faction 'enabled' setting to [russian_toggled].")
+	else if (findtext(choice, "CHECHEN"))
+		chechen_toggled = !chechen_toggled
+		world << "<span class = 'warning'>The Chechen faction has been [chechen_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Chechen faction 'enabled' setting to [chechen_toggled].")
+	else if (findtext(choice, "FINNISH"))
+		finnish_toggled = !finnish_toggled
+		world << "<span class = 'warning'>The Finnish faction has been [finnish_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Finnish faction 'enabled' setting to [finnish_toggled].")
 	else if (findtext(choice, "ROMAN"))
 		roman_toggled = !roman_toggled
 		world << "<span class = 'warning'>The Roman faction has been [roman_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
@@ -296,6 +308,8 @@ var/greek_forceEnabled = FALSE
 var/arab_forceEnabled = FALSE
 var/japanese_forceEnabled = FALSE
 var/russian_forceEnabled = FALSE
+var/chechen_forceEnabled = FALSE
+var/finnish_forceEnabled = FALSE
 var/german_forceEnabled = FALSE
 var/american_forceEnabled = FALSE
 var/vietnamese_forceEnabled = FALSE
@@ -324,6 +338,8 @@ var/filipino_forceEnabled = FALSE
 	choices += "ARAB ([arab_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "JAPANESE ([japanese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "RUSSIAN ([russian_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "CHECHEN ([chechen_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "FINNISH ([finnish_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "GERMAN ([german_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "AMERICAN ([american_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "VIETNAMESE ([vietnamese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
@@ -370,9 +386,21 @@ var/filipino_forceEnabled = FALSE
 		world << "<span class = 'notice'>The Japanese faction [japanese_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Japanese faction 'forceEnabled' setting to [japanese_forceEnabled].")
 	else if (findtext(choice, "RUSSIAN"))
-		dutch_forceEnabled = !dutch_forceEnabled
+		russian_forceEnabled = !russian_forceEnabled
 		world << "<span class = 'notice'>The Russian faction [russian_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Russian faction 'forceEnabled' setting to [russian_forceEnabled].")
+
+	else if (findtext(choice, "CHECHEN"))
+		chechen_forceEnabled = !chechen_forceEnabled
+		world << "<span class = 'notice'>The Chechen faction [chechen_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Chechen faction 'forceEnabled' setting to [chechen_forceEnabled].")
+
+	else if (findtext(choice, "FINNISH"))
+		finnish_forceEnabled = !finnish_forceEnabled
+		world << "<span class = 'notice'>The Finnish faction [finnish_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Finnish faction 'forceEnabled' setting to [finnish_forceEnabled].")
+
+
 	else if (findtext(choice, "INDIANS"))
 		indians_forceEnabled = !indians_forceEnabled
 		world << "<span class = 'notice'>The Native faction [indians_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
@@ -459,6 +487,8 @@ var/filipino_forceEnabled = FALSE
 	var/total_arab = alive_arab.len + dead_arab.len + heavily_injured_arab.len
 	var/total_japanese = alive_japanese.len + dead_japanese.len + heavily_injured_japanese.len
 	var/total_russian = alive_russian.len + dead_russian.len + heavily_injured_russian.len
+	var/total_chechen = alive_chechen.len + dead_chechen.len + heavily_injured_chechen.len
+	var/total_finnish = alive_finnish.len + dead_finnish.len + heavily_injured_finnish.len
 	var/total_german = alive_german.len + dead_german.len + heavily_injured_german.len
 	var/total_american = alive_american.len + dead_american.len + heavily_injured_american.len
 	var/total_vietnamese = alive_vietnamese.len + dead_vietnamese.len + heavily_injured_vietnamese.len
@@ -478,6 +508,8 @@ var/filipino_forceEnabled = FALSE
 	var/mortality_coefficient_arab = 0
 	var/mortality_coefficient_japanese = 0
 	var/mortality_coefficient_russian = 0
+	var/mortality_coefficient_chechen = 0
+	var/mortality_coefficient_finnish = 0
 	var/mortality_coefficient_german = 0
 	var/mortality_coefficient_american = 0
 	var/mortality_coefficient_vietnamese = 0
@@ -523,6 +555,12 @@ var/filipino_forceEnabled = FALSE
 	if (dead_russian.len > 0)
 		mortality_coefficient_russian = dead_russian.len/total_russian
 
+	if (dead_chechen.len > 0)
+		mortality_coefficient_chechen = dead_chechen.len/total_chechen
+
+	if (dead_finnish.len > 0)
+		mortality_coefficient_finnish = dead_finnish.len/total_finnish
+
 	if (dead_german.len > 0)
 		mortality_coefficient_german = dead_german.len/total_german
 
@@ -551,6 +589,8 @@ var/filipino_forceEnabled = FALSE
 	var/mortality_arab = round(mortality_coefficient_arab*100)
 	var/mortality_japanese = round(mortality_coefficient_japanese*100)
 	var/mortality_russian = round(mortality_coefficient_russian*100)
+	var/mortality_chechen = round(mortality_coefficient_chechen*100)
+	var/mortality_finnish = round(mortality_coefficient_finnish*100)
 	var/mortality_german = round(mortality_coefficient_german*100)
 	var/mortality_american = round(mortality_coefficient_american*100)
 	var/mortality_vietnamese = round(mortality_coefficient_vietnamese*100)
@@ -575,6 +615,8 @@ var/filipino_forceEnabled = FALSE
 	var/msg16 = "Vietnamese: [alive_vietnamese.len] alive, [heavily_injured_vietnamese.len] heavily injured or unconscious, [dead_vietnamese.len] deceased. Mortality rate: [mortality_vietnamese]%"
 	var/msg17 = "Chinese: [alive_chinese.len] alive, [heavily_injured_chinese.len] heavily injured or unconscious, [dead_chinese.len] deceased. Mortality rate: [mortality_chinese]%"
 	var/msg18 = "Filipino: [alive_filipino.len] alive, [heavily_injured_filipino.len] heavily injured or unconscious, [dead_filipino.len] deceased. Mortality rate: [mortality_filipino]%"
+	var/msg19 = "Chechen: [alive_chechen.len] alive, [heavily_injured_chechen.len] heavily injured or unconscious, [dead_chechen.len] deceased. Mortality rate: [mortality_chechen]%"
+	var/msg20 = "Finnish: [alive_finnish.len] alive, [heavily_injured_finnish.len] heavily injured or unconscious, [dead_finnish.len] deceased. Mortality rate: [mortality_finnish]%"
 
 	var/msg_npcs = "NPCs: [faction1_npcs] americans alive, [faction2_npcs] japanese alive."
 
@@ -660,6 +702,11 @@ var/filipino_forceEnabled = FALSE
 		msg17 = null
 	if (map && !map.faction_organization.Find(FILIPINO))
 		msg18 = null
+	if (map && !map.faction_organization.Find(CHECHEN))
+		msg19 = null
+	if (map && !map.faction_organization.Find(FINNISH))
+		msg20 = null
+
 	var/public = "Yes"
 
 	if (shower && !private)
@@ -707,6 +754,10 @@ var/filipino_forceEnabled = FALSE
 				world << "<font size=3>[msg17]</font>"
 			if (msg18)
 				world << "<font size=3>[msg18]</font>"
+			if (msg19)
+				world << "<font size=3>[msg19]</font>"
+			if (msg20)
+				world << "<font size=3>[msg20]</font>"
 			if (map.civilizations && msg_religions != "")
 				world << "<font size=3>[msg_religions]</font>"
 			if (map.civilizations && msg_factions != "")
@@ -756,3 +807,7 @@ var/filipino_forceEnabled = FALSE
 			shower << msg17
 		if (msg18)
 			shower << msg18
+		if (msg19)
+			shower << msg19
+		if (msg20)
+			shower << msg20

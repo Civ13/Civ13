@@ -35,26 +35,28 @@
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
+	var/maxpoints = 2500
+	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
-/obj/map_metadata/proc/assign_precursors()
-	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
-	var/list/picked = list()
-	assign_precursors["Rednikov Industries"] = pick(possibilities1)
-	picked += assign_precursors["Rednikov Industries"]
-	possibilities1 = list("crimsonite crystals","verdine crystals","galdonium crystals")
-	possibilities1 -= picked
-	assign_precursors["Giovanni Blu Stocks"] = pick(possibilities1)
-	picked += assign_precursors["Giovanni Blu Stocks"]
-	possibilities1 = list("crimsonite crystals","indigon crystals","galdonium crystals")
-	possibilities1 -= picked
-	if ("galdonium crystals" in possibilities1)
-		assign_precursors["Kogama Kraftsmen"] = "galdonium crystals"
-	else
-		assign_precursors["Kogama Kraftsmen"] = pick(possibilities1)
-	picked += assign_precursors["Kogama Kraftsmen"]
-	possibilities1 = list("crimsonite crystals","indigon crystals","verdine crystals")
-	possibilities1 -= picked
-	assign_precursors["Goldstein Solutions"] = pick(possibilities1)
+
+/obj/map_metadata/art_of_the_deal/update_win_condition()
+	if (win_condition_spam_check)
+		return FALSE
+	for(var/obj/structure/closet/safe/SF in world)
+		if (SF.faction)
+			var/list/tlist = list(SF.faction,0)
+			for(var/obj/item/I in SF)
+				if (istype(I, /obj/item/stack/money))
+					var/obj/item/stack/money/M = I
+					tlist[2]+=M.amount*M.value/4
+			tlist[2] += scores[SF.faction]
+			if (tlist[2] >= maxpoints)
+				var/message = "[tlist[1]] has reached a valuation over [maxpoints] and won!"
+				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				score()
+				win_condition_spam_check = TRUE
+				ticker.finished = TRUE
+				return TRUE
 
 /obj/map_metadata/art_of_the_deal/New()
 	..()
@@ -76,7 +78,6 @@
 		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
-		assign_precursors()
 	spawn(150)
 		assign_delivery_zones()
 		send_buy_orders()
@@ -129,6 +130,9 @@
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
+		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate))
+			if(!findtext(J.title, "CEO"))
+				. = FALSE
 		if (clients.len <= 15)
 			if (J.title == "Paramedic" || J.title == "Legitimate Business")
 				. = FALSE

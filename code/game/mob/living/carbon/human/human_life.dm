@@ -802,7 +802,7 @@
 		return //too busy for pesky metabolic regulation
 
 	if (bodytemperature < species.cold_level_1) //260.15 is 310.15 - 50, the temperature where you start to feel effects.
-		if (nutrition >= 2) //If we are very, very cold we'll use up quite a bit of nutriment to heat us up.
+		if (nutrition >= 2 && !inducedSSD) //If we are very, very cold we'll use up quite a bit of nutriment to heat us up.
 			nutrition -= 0.10
 		bodytemperature += 0.1
 	else if (bodytemperature > species.heat_level_1) //360.15 is 310.15 + 50, the temperature where you start to feel effects.
@@ -1445,6 +1445,10 @@
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
+				if (CHECHEN)
+					holder2.icon_state = "pirate_basic"
+				if (FINNISH)
+					holder2.icon_state = "ger0_basic"
 				if (JAPANESE)
 					if (original_job.is_yakuza && original_job.is_yama)
 						holder2.icon_state = "yamaguchi"

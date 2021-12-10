@@ -27,7 +27,9 @@
 #define TEAM_VI 16
 #define TEAM_CH 17
 #define TEAM_FP 18
-var/global/soldiers[17]
+#define TEAM_FI 19
+#define TEAM_CC 20
+var/global/soldiers[20]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -129,6 +131,22 @@ var/global/soldiers[17]
 
 /datum/faction/russian/base_type()
 	return "/datum/faction/russian"
+
+/datum/faction/chechen
+	icon_state = ""
+	title = "Chechen Soldier"
+	team = TEAM_CC
+
+/datum/faction/chechen/base_type()
+	return "/datum/faction/chechen"
+
+/datum/faction/finnish
+	icon_state = ""
+	title = "Finnish Soldier"
+	team = TEAM_FI
+
+/datum/faction/finnish/base_type()
+	return "/datum/faction/finnish"
 
 /datum/faction/german
 	icon_state = ""
@@ -243,5 +261,11 @@ var/global/soldiers[17]
 	else if (istype(J, /datum/job/russian))
 		if ("[type]" == "/datum/faction/russian")
 			soldiers[RUSSIAN]++
+	else if (istype(J, /datum/job/arab/civilian/chechen))
+		if ("[type]" == "/datum/faction/chechen")
+			soldiers[CHECHEN]++
+	else if (istype(J, /datum/job/finnish))
+		if ("[type]" == "/datum/faction/finnish")
+			soldiers[FINNISH]++
 	H.all_factions += src
 	..()

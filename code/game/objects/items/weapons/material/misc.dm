@@ -1,5 +1,5 @@
 /obj/item/weapon/material
-	var/chopping_speed = FALSE
+	var/chopping_speed = 5
 /obj/item/weapon/material/harpoon
 	name = "harpoon"
 	sharp = TRUE

@@ -110,11 +110,11 @@
 			else
 				for(var/datum/data/vending_product/VP in product_records)
 					if (VP.product_name == choice2)
-						var/input3 = input("The current price for [VP.product_name] is [VP.price] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
+						var/input3 = input("The current price for [VP.product_name] is [VP.price] silver coins. What should the new price be?", "Product Price", VP.price) as num
 						if (input3 < 0 || input3 == null)
 							return FALSE
 						else
-							VP.price = input3/10
+							VP.price = input3
 							return TRUE
 		else if (choice1 == "Remove Product")
 			var/list/choicelist = list("Exit")
@@ -168,7 +168,7 @@
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			data["price"] = currently_vending.price/4
 		else
-			data["price"] = currently_vending.price*10
+			data["price"] = currently_vending.price
 		data["message_err"] = FALSE
 		data["message"] = status_message
 		data["message_err"] = status_error
@@ -198,7 +198,7 @@
 				listed_products.Add(list(list(
 					"key" = key,
 					"name" = I.product_name,
-					"price" = I.price*10,
+					"price" = I.price,
 					"color" = I.display_color,
 					"amount" = I.amount)))
 
@@ -411,14 +411,15 @@
 
 	)
 	prices = list(
-		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
-		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 0.15,
-		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 0.15,
-		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 0.35
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 1.5,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 1.5,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 1.5,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 3.5
 	)
 	New()
 		..()
-		update_icon()
+		spawn(20)
+			update_icon()
 
 //moneycounter by robert//
 /obj/structure/vending/sales/food/hot/moneycounter

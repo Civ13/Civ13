@@ -87,9 +87,9 @@ var/global/list/valid_coordinates = list()
 	set category = "Officer"
 	set name = "Faction Announcement"
 	set desc="Announce to everyone in your faction."
-	var/messaget = "Governor Announcement"
+	var/messaget = "Announcement"
 	var/message = input("Global message to send:", "IC Announcement", null, null)
-	if (message)
+	if (message && message != "")
 		message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 	for (var/mob/living/human/M)

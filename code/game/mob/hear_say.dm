@@ -99,13 +99,16 @@
 				H.add_note("Known Languages", "[language.name]")
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
 
-/mob/proc/on_hear_say(var/message, var/mob/speaker = null,var/message2 = "")
+/mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")
 	src << message
 	if (speaker && message2 != "")
 		if (client && speaker.client && (speaker in view(7,src) || speaker == src))
 
 			if (client.is_preference_enabled(/datum/client_preference/show_chat_overlays))
-				client.seen_chat_text += new/obj/chat_text(null,speaker,message2,src)
+				var/obj/chat_text/CT = new/obj/chat_text(speaker,message2,src)
+				client.seen_chat_text += CT
+				if(speaker.client)
+					speaker.client.stored_chat_text += CT
 
 			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
 				play_tts(message2,speaker)
@@ -118,6 +121,7 @@
 	if (!destination && origin)
 		destination = origin
 	message = capitalize(message)
+	message = replacetext(message, "&#39", "'")
 
 	if (sleeping || stat==1) //If unconscious or sleeping
 		hear_sleep(message)
@@ -153,10 +157,8 @@
 
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
-
-	if (findtext(message,";10-") || findtext(message,"; 10-"))
+	if (findtext(message,"10-") || findtext(message," 10-"))
 		message = ten_code(message, speaker)
-	message = replacetext(message,";","")
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"

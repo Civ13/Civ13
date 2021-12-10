@@ -25,7 +25,8 @@
 	battle_name = "Skull Island"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts. Each team must capture the other's command post to win.</font>"
 	var/done = FALSE
-obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
+
+/obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_RP == TRUE)
 		. = FALSE

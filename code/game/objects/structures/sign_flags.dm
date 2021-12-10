@@ -292,6 +292,11 @@
 	desc = "The flag of the Philippines. Flipped for wartime."
 	icon_state = "flag_fp_war"
 
+/obj/structure/sign/flag/pirate
+	name = "Pirate flag"
+	desc = "The black pirate flag, with a skull in the middle."
+	icon_state = "pirate"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."

@@ -425,7 +425,9 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["SelectedJob"])
-
+		if(href_list["SelectedJob"] == "Company Member")
+			AttemptLateSpawn(href_list["SelectedJob"])
+			return
 		var/datum/job/actual_job = null
 
 		for (var/datum/job/j in job_master.occupations)
@@ -557,6 +559,44 @@ var/global/redirect_all_players = null
 					WWalert(usr,"You're banned from this role!", "Error")
 
 		return FALSE
+
+	if (rank == "Company Member")
+		var/y_nr = processes.job_data.get_active_positions_name("Goldstein Solutions")
+		var/g_nr = processes.job_data.get_active_positions_name("Kogama Kraftsmen")
+		var/r_nr = processes.job_data.get_active_positions_name("Rednikov Industries")
+		var/b_nr = processes.job_data.get_active_positions_name("Giovanni Blu Stocks")
+		var/list/posslist = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
+		if (r_nr > y_nr && r_nr > b_nr && r_nr > g_nr)
+			posslist -= "Rednikov Industries"
+		if (b_nr > y_nr && b_nr > r_nr && b_nr > g_nr)
+			posslist -= "Giovanni Blu Stocks"
+		if (g_nr > y_nr && g_nr > b_nr && g_nr > r_nr)
+			posslist -= "Kogama Kraftsmen"
+		if (y_nr > r_nr && y_nr > b_nr && y_nr > g_nr)
+			posslist -= "Goldstein Solutions"
+		if (isemptylist(posslist))
+			rank = pick("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
+		else
+			rank = pick(posslist)
+		spawning = TRUE
+		close_spawn_windows()
+		job_master.AssignRole(src, rank, TRUE)
+		var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
+		if (!character)
+			return FALSE
+
+		character = job_master.EquipRank(character, rank, TRUE)					//equips the human
+		job_master.relocate(character)
+
+		if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
+			character.buckled.loc = character.loc
+			character.buckled.set_dir(character.dir)
+
+		if (character.mind)
+			ticker.minds += character.mind
+		character.lastarea = get_area(loc)
+		qdel(src)
+		return TRUE
 	if (!IsJobAvailable(rank))
 		if (!nomsg)
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
@@ -633,28 +673,6 @@ var/global/redirect_all_players = null
 		if (client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
-	if (job.is_deal)
-		var/y_nr = processes.job_data.get_active_positions_name("Goldstein Solutions")
-		var/g_nr = processes.job_data.get_active_positions_name("Kogama Kraftsmen")
-		var/r_nr = processes.job_data.get_active_positions_name("Rednikov Industries")
-		var/b_nr = processes.job_data.get_active_positions_name("Giovanni Blu Stocks")
-
-		if (istype(job, /datum/job/civilian/businessman/red))
-			if (r_nr > y_nr || r_nr > b_nr || r_nr > g_nr)
-				WWalert(usr,"Too many people playing as this role.","Error")
-				return FALSE
-		else if(istype(job, /datum/job/civilian/businessman/blue))
-			if (b_nr > y_nr || b_nr > r_nr || b_nr > g_nr)
-				WWalert(usr,"Too many people playing as this role.","Error")
-				return FALSE
-		else if(istype(job, /datum/job/civilian/businessman/green))
-			if (g_nr > y_nr || g_nr > b_nr || g_nr > r_nr)
-				WWalert(usr,"Too many people playing as this role.","Error")
-				return FALSE
-		else if(istype(job, /datum/job/civilian/businessman/yellow))
-			if (y_nr > r_nr || y_nr > b_nr || y_nr > g_nr)
-				WWalert(usr,"Too many people playing as this role.","Error")
-				return FALSE
 	if (job.is_yakuza)
 		var/yy_nr = processes.job_data.get_active_positions_name("Yamaguchi-Gumi Kaiin")
 		var/yi_nr = processes.job_data.get_active_positions_name("Ichiwa-Kai Kaiin")
@@ -688,11 +706,6 @@ var/global/redirect_all_players = null
 				WWalert(usr,"Too many people playing as Eastern: [yi_nr] Western, [yy_nr] Eastern","Error")
 				return FALSE
 
-
-//		else if(istype(job, /datum/job/civilian/policeofficer))
-//			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > y_nr)
-//				WWalert(usr,"Too many people playing as this role.","Error")
-//				return FALSE
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -817,6 +830,10 @@ var/global/redirect_all_players = null
 		dat += "[alive_japanese.len] Japanese "
 	if (RUSSIAN in map.faction_organization)
 		dat += "[alive_russian.len] Russian "
+	if (CHECHEN in map.faction_organization)
+		dat += "[alive_chechen.len] Chechen "
+	if (FINNISH in map.faction_organization)
+		dat += "[alive_finnish.len] Finnish "
 	if (GERMAN in map.faction_organization)
 		dat += "[alive_german.len] German "
 	if (AMERICAN in map.faction_organization)
@@ -849,6 +866,8 @@ var/global/redirect_all_players = null
 		GREEK = FALSE,
 		ARAB = FALSE,
 		RUSSIAN = FALSE,
+		CHECHEN = FALSE,
+		FINNISH = FALSE,
 		JAPANESE = FALSE,
 		GERMAN = FALSE,
 		AMERICAN = FALSE,
@@ -857,7 +876,6 @@ var/global/redirect_all_players = null
 		)
 
 	var/prev_side = FALSE
-
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 
 		if (job.faction != "Human")
@@ -918,6 +936,12 @@ var/global/redirect_all_players = null
 		if (istype(job, /datum/job/russian) && !russian_toggled)
 			job_is_available = FALSE
 
+		if (istype(job, /datum/job/arab/civilian/chechen) && !chechen_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/finnish) && !finnish_toggled)
+			job_is_available = FALSE
+
 		if (istype(job, /datum/job/german) && !german_toggled)
 			job_is_available = FALSE
 
@@ -947,7 +971,6 @@ var/global/redirect_all_players = null
 
 			var/extra_span = "<b>"
 			var/end_extra_span = "</b><br>"
-
 			if (job.is_officer && !job.is_commander)
 				extra_span = "<b><font size=2>"
 				end_extra_span = "</font></b><br>"
@@ -963,8 +986,8 @@ var/global/redirect_all_players = null
 				if (job_is_available)
 					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
-
-
+	if(map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+		dat += "&[CIVILIAN]&<b><a style=\"background-color:#777777;\" href='byond://?src=\ref[src];SelectedJob=Company Member'>Company Member (Random) </b><br>"
 	dat += "</center>"
 
 	// shitcode to hide jobs that aren't available

@@ -226,13 +226,35 @@
 	icon_state = "ladderup"
 	istop = FALSE
 	name = "ladder upwards"
-	desc = "A ladder. Leads upwards to a manhole cover."
+	desc = "A ladder. Leads upwards to a heavy cover."
+
+/obj/structure/multiz/ladder/ww2/up/manhole/chech/attack_hand(var/mob/M)
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
+		if (H.faction_text != "CHECHEN")
+			H << "You can't figure out the hatch!"
+			return
+		else
+			..()
+	else
+		..()
 
 /obj/structure/multiz/ladder/ww2/manhole
 	icon_state = "manhole"
 	istop = TRUE
 	name = "manhole cover"
 	desc = "A heavy cover bars access to an underground tunnel."
+
+/obj/structure/multiz/ladder/ww2/manhole/chech/attack_hand(var/mob/M)
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
+		if (H.faction_text != "CHECHEN")
+			H << "You can't figure out the hatch!"
+			return
+		else
+			..()
+	else
+		..()
 
 /obj/structure/multiz/ladder/ww2/stairsup
 	icon_state = "rampup"

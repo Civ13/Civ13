@@ -31,6 +31,8 @@
 #define DUTCH "DUTCH"
 #define JAPANESE "JAPANESE"
 #define RUSSIAN "RUSSIAN"
+#define CHECHEN "CHECHEN"
+#define FINNISH "FINNISH"
 #define GREEK "GREEK"
 #define ARAB "ARAB"
 #define GERMAN "GERMAN"
@@ -84,8 +86,15 @@
 				return "White Army"
 			else
 				return "Russian Empire"
+
 	if (constant == ROMAN)
 		return "Roman Republic"
+
+	if (constant == CHECHEN)
+		return "Chechen Republic of Ichkeria"
+
+	if (constant == FINNISH)
+		return "Republic of Finland"
 
 	if (constant == GERMAN)
 		if (age >= 6)

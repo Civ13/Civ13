@@ -384,6 +384,13 @@ var/list/global/phone_numbers = list()
 		..()
 		phone_numbers += phonenumber
 		update_icon()
+		spawn(100)
+			for (var/obj/item/weapon/telephone/mobile/faction/F in world)
+				if (F != src)
+					contacts += list(list(F.name,F.phonenumber))
+			for (var/obj/item/weapon/telephone/mobile/mobilefaction/F in world)
+				if (F != src)
+					contacts += list(list(F.name,F.phonenumber))
 	update_icon()
 		icon_state = "telephone"
 /obj/item/weapon/telephone/mobile/faction/red
@@ -402,37 +409,34 @@ var/list/global/phone_numbers = list()
 /obj/item/weapon/telephone/mobile/faction/red/New()
 	..()
 	contacts += list(list("Emergency",911))
-	spawn(100)
-		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
-			if (F != src)
-				contacts += list(list(F.name,F.phonenumber))
+
 /obj/item/weapon/telephone/mobile/faction/blue/New()
 	..()
 	contacts += list(list("Emergency",911))
-	spawn(100)
-		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
-			if (F != src)
-				contacts += list(list(F.name,F.phonenumber))
+
 /obj/item/weapon/telephone/mobile/faction/green/New()
 	..()
 	contacts += list(list("Emergency",911))
-	spawn(100)
-		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
-			if (F != src)
-				contacts += list(list(F.name,F.phonenumber))
+
 /obj/item/weapon/telephone/mobile/faction/yellow/New()
+	..()
+	contacts += list(list("Emergency",911))
+
+//ROBERTS CELLPHONES//
+/obj/item/weapon/telephone/mobile/mobilefaction
+	name = "Corporate cellphone"
+	desc = "Used to communicate with other telephones."
+
+/obj/item/weapon/telephone/mobile/mobilefaction/New()
 	..()
 	contacts += list(list("Emergency",911))
 	spawn(100)
 		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
 			if (F != src)
 				contacts += list(list(F.name,F.phonenumber))
-
-//ROBERTS CELLPHONES//
-/obj/item/weapon/telephone/mobile/mobilefaction/
-	name = "Corporate cellphone"
-	desc = "Used to communicate with other telephones."
-
+		for (var/obj/item/weapon/telephone/mobile/mobilefaction/F in world)
+			if (F != src)
+				contacts += list(list(F.name,F.phonenumber))
 /obj/item/weapon/telephone/mobile/mobilefaction/blue
 	name = "Corporate cellphone"
 	desc = "Used to communicate with other telephones, intended for CEOs. Number: 2229."

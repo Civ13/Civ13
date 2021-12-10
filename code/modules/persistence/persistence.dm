@@ -44,7 +44,7 @@
 		map.perschadplus = FALSE
 		map.chad_mode = FALSE
 		map.chad_mode_plus = FALSE
-		map.gamemode = "Resource Research"
+		map.gamemode = "Resource-Based Research"
 		config.allow_vote_restart = TRUE
 		world << "<big><b>The current round is no longer a Persistent Chad Mode + Round.</b></big>"
 	return

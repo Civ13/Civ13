@@ -40,6 +40,9 @@
 	// no SCHECK here
 	if (is_ready())
 		map.save_awards()
+		if(map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			nmap.show_stats()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
 				"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
@@ -121,6 +124,7 @@
 				MAP_ROAD_TO_DAK_TO = 0,
 				MAP_HUE = 0,
 				MAP_RETREAT = 6,
+				MAP_RUSRETREAT = 6,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
@@ -139,7 +143,8 @@
 				MAP_FOREST = 14,
 				MAP_INTRAMUROS = 14,
 				MAP_WAKE_ISLAND = 14,
-				MAP_NANJING = 20
+				MAP_BERLIN = 14,
+				MAP_NANJING = 14,
 			)
 
 		else if (epoch == "Early Fire Arms (1650-1930)")
@@ -155,14 +160,14 @@
 				MAP_LITTLE_CREEK_TDM = 0,
 				MAP_MISSIONARY_RIDGE = 10,
 				MAP_NAVAL = 0,
-				MAP_ISLAND = 0,
-				MAP_CURSED_ISLAND = 0,
+		//		MAP_ISLAND = 0,
+		//		MAP_CURSED_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
-				MAP_SUPPLY_RAID = 8,
+		//		MAP_SUPPLY_RAID = 0,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
-				MAP_SEKIGAHARA = 0,
+				MAP_SEKIGAHARA = 6,
 			)
 		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
@@ -572,7 +577,7 @@
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
 		else if (map && map.ID == MAP_YELTSIN)
-			world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Central Processing</b> and the <b>Parliamental Hall</b></big> for <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
+			world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Parliamental Hall</b></big> until <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Siege"
