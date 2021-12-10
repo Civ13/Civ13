@@ -38,65 +38,91 @@
 	item_state = "arrogant_student"
 	worn_state = "arrogant_student"
 
-/obj/item/clothing/suit/storage/jacket/wise_tutor
-	name = "wise tutor's robe"
-	desc = "A rough brown robe, favored by wizened teachers."
+/obj/item/clothing/suit/storage/coat/wise_tutor_robes
+	name = "wise tutor robes"
+	desc = "Robes commonly worn by wise tutors."
 	icon_state = "wise_tutor_robe"
 	item_state = "wise_tutor_robe"
 	worn_state = "wise_tutor_robe"
-	var/toggled = FALSE
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	flags_inv = BLOCKHEADHAIR
 
-/obj/item/clothing/suit/storage/jacket/wise_tutor/verb/toggle_hood()
+/obj/item/clothing/suit/storage/coat/wise_tutor_robes/verb/toggle_hood()
 	set category = null
 	set src in usr
-	if (type !=/obj/item/clothing/suit/storage/jacket/wise_tutor)
+	set name = "Toggle Hood"
+	if (hood)
+		icon_state = "wise_tutor_robe"
+		item_state = "wise_tutor_robe"
+		worn_state = "wise_tutor_robe"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+		item_state_slots["slot_wear_suit"] = "wise_tutor_robe"
+		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
+		update_icon()
+		hood = FALSE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
 		return
-	else
-		if (toggled)
-			item_state = "wise_tutor_robe"
-			icon_state = "wise_tutor_robe"
-			worn_state = "wise_tutor_robe"
-			item_state_slots["slot_w_uniform"] = "wise_tutor_robe"
-			usr << "<span class = 'danger'>you take down your robe's hood.</span>"
-			toggled = FALSE
-		else if (!toggled)
-			item_state = "wise_tutor_hooded"
-			icon_state = "wise_tutor_hooded"
-			worn_state = "wise_tutor_hooded"
-			item_state_slots["slot_w_uniform"] = "wise_tutor_hooded"
-			usr << "<span class = 'danger'>you put up your robe's hood.</span>"
-			toggled = TRUE
-	update_clothing_icon()
+	else if (!hood)
+		icon_state = "wise_tutor_hooded"
+		item_state = "wise_tutor_hooded"
+		worn_state = "wise_tutor_hooded"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
+		item_state_slots["slot_wear_suit"] = "wise_tutor_hooded"
+		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
+		update_icon()
+		hood = TRUE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
 
-/obj/item/clothing/suit/storage/jacket/arrogant_student
-	name = "arrogant_student robe"
-	desc = "A rough black robe, favored by those who believe they are already good enough."
+/obj/item/clothing/suit/storage/coat/arrogant_student_robes
+	name = "arrogant student robes"
+	desc = "Robes commonly worn by spiteful students."
 	icon_state = "arrogant_student_robe"
 	item_state = "arrogant_student_robe"
 	worn_state = "arrogant_student_robe"
-	var/toggled = FALSE
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	flags_inv = BLOCKHEADHAIR
 
-/obj/item/clothing/suit/storage/jacket/arrogant_student/verb/toggle_hood()
+/obj/item/clothing/suit/storage/coat/arrogant_student_robes/verb/toggle_hood()
 	set category = null
 	set src in usr
-	if (type !=/obj/item/clothing/suit/storage/jacket/arrogant_student)
+	set name = "Toggle Hood"
+	if (hood)
+		icon_state = "arrogant_student_robe"
+		item_state = "arrogant_student_robe"
+		worn_state = "arrogant_student_robe"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+		item_state_slots["slot_wear_suit"] = "arrogant_student_robe"
+		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
+		update_icon()
+		hood = FALSE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
 		return
-	else
-		if (toggled)
-			item_state = "arrogant_student_robe"
-			icon_state = "arrogant_student_robe"
-			worn_state = "arrogant_student_robe"
-			item_state_slots["slot_w_uniform"] = "arrogant_student_robe"
-			usr << "<span class = 'danger'>you take down your robe's hood.</span>"
-			toggled = FALSE
-		else if (!toggled)
-			item_state = "arrogant_student_robe_hooded"
-			icon_state = "arrogant_student_robe_hooded"
-			worn_state = "arrogant_student_robe_hooded"
-			item_state_slots["slot_w_uniform"] = "arrogant_student_robe_hooded"
-			usr << "<span class = 'danger'>you put up your robe's hood.</span>"
-			toggled = TRUE
-	update_clothing_icon()
+	else if (!hood)
+		icon_state = "arrogant_student_robe_hooded"
+		item_state = "arrogant_student_robe_hooded"
+		worn_state = "arrogant_student_robe_hooded"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
+		item_state_slots["slot_wear_suit"] = "arrogant_student_robe_hooded"
+		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
+		update_icon()
+		hood = TRUE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots
 	name = "\improper wrapped boots"
