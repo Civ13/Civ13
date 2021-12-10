@@ -324,6 +324,18 @@ var/global/list/damage_icon_parts = list()
 				overlays_standing[HAIR_LAYER] = null
 				if (update_icons)   update_icons()
 				return
+		else if(istype(wear_suit, /obj/item/clothing/suit/storage/coat/wise_tutor_robes))
+			var/obj/item/clothing/suit/storage/coat/wise_tutor_robes/M = wear_suit
+			if(M.hood == TRUE)
+				overlays_standing[HAIR_LAYER] = null
+				if (update_icons)   update_icons()
+				return
+		else if(istype(wear_suit, /obj/item/clothing/suit/storage/coat/arrogant_student_robes))
+			var/obj/item/clothing/suit/storage/coat/arrogant_student_robes/M = wear_suit
+			if(M.hood == TRUE)
+				overlays_standing[HAIR_LAYER] = null
+				if (update_icons)   update_icons()
+				return
 		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/kool_kids_klub))
 			overlays_standing[HAIR_LAYER]	= null
 			if (update_icons)   update_icons()
@@ -370,6 +382,36 @@ var/global/list/damage_icon_parts = list()
 				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
 				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "bald_s")
 				face_standing.Blend(hair_s, ICON_OVERLAY)
+
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/arrogant_student_robes))
+			var/obj/item/clothing/suit/storage/coat/arrogant_student_robes/M = wear_suit
+			if (M.hood == FALSE)
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
+					var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
+					if (hair_style.do_colouration)
+						hair_s.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
+
+					face_standing.Blend(hair_s, ICON_OVERLAY)
+			else
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "bald_s")
+				face_standing.Blend(hair_s, ICON_OVERLAY)
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/wise_tutor_robes))
+			var/obj/item/clothing/suit/storage/coat/wise_tutor_robes/M = wear_suit
+			if (M.hood == FALSE)
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
+					var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
+					if (hair_style.do_colouration)
+						hair_s.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
+
+					face_standing.Blend(hair_s, ICON_OVERLAY)
+			else
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "bald_s")
+				face_standing.Blend(hair_s, ICON_OVERLAY)
+
 
 		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/kool_kids_klub))
 			var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
@@ -1051,6 +1093,7 @@ var/global/list/damage_icon_parts = list()
 		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
 			overlays_standing[SURGERY_LEVEL] = standing
 
+
 //fur coat hood
 
 		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
@@ -1058,6 +1101,14 @@ var/global/list/damage_icon_parts = list()
 			if (WS.hood == TRUE)
 				update_hair(1)
 			else
+				update_hair(1)
+		else if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/wise_tutor_robes))
+			var/obj/item/clothing/suit/storage/coat/wise_tutor_robes/WS = wear_suit
+			if(WS.hood == TRUE)
+				update_hair(1)
+		else if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/arrogant_student_robes))
+			var/obj/item/clothing/suit/storage/coat/arrogant_student_robes/WS = wear_suit
+			if(WS.hood == TRUE)
 				update_hair(1)
 		else if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/monk_robes))
 			var/obj/item/clothing/suit/storage/coat/monk_robes/WS = wear_suit
@@ -1081,7 +1132,6 @@ var/global/list/damage_icon_parts = list()
 
 		r_store.screen_loc = find_inv_position(slot_r_store)
 	if (update_icons)	update_icons()
-
 
 /mob/living/human/update_inv_wear_mask(var/update_icons=1)
 	if ( wear_mask && ( istype(wear_mask, /obj/item/clothing/mask) || istype(wear_mask, /obj/item/clothing/accessory) || istype(wear_mask, /obj/item/weapon/grenade)) && !(head && head.flags_inv & HIDEMASK))
