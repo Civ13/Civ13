@@ -622,7 +622,7 @@ Proc for attack log creation, because really why not
 			continue
 		if (!H.loc)
 			continue
-		if (!istype(H.original_job, /datum/job/chechen))
+		if (!istype(H.original_job, /datum/job/arab/civilian/chechen))
 			continue
 		if (istype(H, /mob/living/human/corpse))
 			continue
