@@ -7,9 +7,24 @@
 	throw_range = 5
 	w_class = 3.0
 	var/mob/affecting = null
+
 /obj/item/weapon/storage/bible/orthodox
+	name = "The Holy Bible"
 	icon_state ="orthodoxbible"
 	item_state = "orthodoxbible"
+	desc = "The orthodox bible."
+
+/obj/item/weapon/storage/bible/quran
+	name = "The Quran"
+	icon_state ="koran"
+	item_state = "koran"
+	desc ="Muslim holy book."
+
+/obj/item/weapon/storage/bible/talmud
+	name = "The Talmud"
+	icon_state ="talmud"
+	item_state = "talmud"
+	desc ="Jewish holy book."
 
 /obj/item/weapon/storage/bible/booze
 	name = "bible"

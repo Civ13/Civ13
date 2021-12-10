@@ -69,8 +69,14 @@
 
 /obj/structure/sign/flag/jihad4
 	name = "\improper green islamic banner"
-	desc = "A greeb banner with the shadada."
+	desc = "A green banner with the shadada."
 	icon_state = "jihad4"
+
+/obj/structure/sign/flag/chechen
+	name = "\improper chechen flag"
+	desc = "The Chechen Separatist flag."
+	icon_state = "flag_chechen"
+
 
 /obj/structure/sign/clock
 	name = "\improper clock"

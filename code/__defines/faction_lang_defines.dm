@@ -79,13 +79,16 @@
 		return "Japanese Empire"
 
 	if (constant == RUSSIAN)
-		if (age >= 6)
+		if (age == 6)
 			return "Soviet Union"
+		if (age == 7)
+			return "Soviet Union"
+		if (age >= 8)
+			return "Russian Federal Forces"
+		if (map.ID == "TSARITSYN")
+			return "White Army"
 		else
-			if (map.ID == "TSARITSYN")
-				return "White Army"
-			else
-				return "Russian Empire"
+			return "Russian Empire"
 
 	if (constant == ROMAN)
 		return "Roman Republic"
