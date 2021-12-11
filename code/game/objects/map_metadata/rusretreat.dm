@@ -22,7 +22,7 @@
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Just don't tell mom I'm in Chechnya:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
-	artillery_count = 2
+	artillery_count = 3
 
 /obj/map_metadata/rusretreat/New()
 	..()
