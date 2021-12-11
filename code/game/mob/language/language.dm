@@ -105,7 +105,7 @@
 /datum/language/proc/get_random_russian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian))
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian) + "a")
 		else
 			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
 
@@ -251,6 +251,16 @@
 		return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
 
 	var/full_name = "Ibrahim Ibn Osama"
+	return full_name
+
+/datum/language/proc/get_random_chechen_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_male_chechen)) + " " + capitalize(pick(last_names_chechen) + "a")
+		else
+			return capitalize(pick(first_names_male_chechen)) + " " + capitalize(pick(last_names_chechen))
+
+	var/full_name = "Dzokhar Kadyrov"
 	return full_name
 
 

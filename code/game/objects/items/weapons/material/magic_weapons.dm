@@ -200,6 +200,8 @@
 	shockpower = 15
 	applies_material_colour = TRUE
 
+// Odis' Beamblade collection
+
 /obj/item/weapon/material/sword/magic/onoff
 	name = "White Beam Blade"
 	icon_state = "beamblade_off"
@@ -241,7 +243,7 @@
 	var/off_state = "beamblade_off"
 	var/off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -255,6 +257,7 @@
 		sharp = 1
 		edge = 1
 		atk_mode = SLASH
+		update_icon()
 	else
 		icon_state = off_state
 		item_state = off_state_item
@@ -269,6 +272,7 @@
 		sharp = FALSE
 		edge = FALSE
 		atk_mode = BASH
+		update_icon()
 	..()
 
 obj/item/weapon/material/sword/magic/onoff/blue

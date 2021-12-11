@@ -136,6 +136,9 @@ var/list/first_names_male_filipino = file2list("config/names/first_male_filipino
 var/list/first_names_female_filipino  = file2list("config/names/first_female_filipino.txt")
 var/list/last_names_filipino  = file2list("config/names/last_filipino.txt")
 
+var/list/first_names_male_chechen = file2list("config/names/first_male_chechen.txt")
+var/list/last_names_chechen = file2list("config/names/last_chechen.txt")
+
 var/list/country_names = file2list("config/names/countries.txt")
 /* NOT USED FOR NOW!
 var/civname_a = pick(country_names)

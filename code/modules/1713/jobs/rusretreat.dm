@@ -1,5 +1,11 @@
 /////////Chechen Army//////////////
 
+/datum/job/arab/civilian/chechen/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_chechen_name(H.gender)
+	H.real_name = H.name
+	H.circumcised = TRUE
+
+
 /datum/job/arab/civilian/chechen/leader
 	title = "Chechnyan Warlord"
 	en_meaning = "Warlord"
@@ -67,7 +73,7 @@
 	return TRUE
 
 /datum/job/arab/civilian/chechen/militia
-	title = "Chechen Milita"
+	title = "Chechen Militia"
 	en_meaning = "Chechnyan Armed Militia"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCC"
@@ -295,7 +301,7 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy and motivated!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your brothers healthy and motivated!")
 	H.civilization = "Militia"
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)

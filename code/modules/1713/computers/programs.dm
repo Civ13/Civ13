@@ -1093,24 +1093,61 @@
 	compatible_os = list("unga OS 94","unga OS")
 
 /datum/program/cartrader/do_html(mob/living/human/user)
-	if (mainmenu == "---")
-		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
-		mainmenu = "<h2>CARTRADER NETWORK</h2><br>"
+	var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+	mainmenu = "<h2>CARTRADER NETWORK</h2><br>"
+	if(mainbody == "---")
+		mainbody = ""
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
 	..()
 
 /datum/program/cartrader/Topic(href, href_list, hsrc)
 	..()
-	mainbody = ""
 	if (href_list["carlist"])
 		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+		mainbody = ""
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
 		sleep(0.5)
 		do_html(user)
 	if (href_list["cartrader"])
 		var/found = FALSE
+		for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+			for (var/obj/structure/ST in T)
+				found = TRUE
+				break
+			for (var/mob/living/human/HT in T)
+				found = TRUE
+				break
+		if (found)
+			mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Clear the arrival area first.</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+			sleep(0.5)
+			do_html(user)
+			return
+		var/c_cost = splittext(href_list["cartrader"],"(")[2]
+		c_cost = replacetext(c_cost,")","")
+		c_cost = text2num(c_cost)
+
+		var/obj/effects/premadevehicles/PV
+		var/chosencolor = WWinput(user,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
+		var/basecolor = chosencolor
+		switch(chosencolor)
+			if ("Black")
+				chosencolor = "#181717"
+			if ("Light Grey")
+				chosencolor = "#919191"
+			if ("Dark Grey")
+				chosencolor = "#616161"
+			if ("White")
+				chosencolor = "#FFFFFF"
+			if ("Green")
+				chosencolor = "#007F00"
+			if ("Red")
+				chosencolor = "#7F0000"
+			if ("Yellow")
+				chosencolor = "#b8b537"
+			if ("Blue")
+				chosencolor = "#00007F"
 		for(var/turf/T in get_area_turfs(/area/caribbean/supply))
 			if (found)
 				break
@@ -1125,118 +1162,68 @@
 			sleep(0.5)
 			do_html(user)
 			return
-		var/c_cost = splittext(href_list["cartrader"],"(")[2]
-		c_cost = replacetext(href_list["cartrader"],"(","")
-		c_cost = text2num(href_list["cartrader"])
-		if (href_list["cartrader"] == "Yamasaki M125 motorcycle (160)")
-			if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
-				var/obj/item/stack/money/D
-				if (istype(user.get_active_hand(),/obj/item/stack/money))
-					D = user.get_active_hand()
-				else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
-					D = user.get_inactive_hand()
-				if (D && D.value*D.amount >= c_cost*4)
-					D.amount-=c_cost/5
-				else
-					mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
-					sleep(0.5)
-					do_html(user)
-					return
+		if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
+			var/obj/item/stack/money/D
+			if (istype(user.get_active_hand(),/obj/item/stack/money))
+				D = user.get_active_hand()
+			else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
+				D = user.get_inactive_hand()
 			else
 				mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
 				sleep(0.5)
 				do_html(user)
 				return
-			new /obj/structure/vehicle/motorcycle/m125/full(locate(origin.x+4,origin.y-1,origin.z))
-			new /obj/item/clothing/head/helmet/motorcycle(locate(origin.x+4,origin.y-1,origin.z))
-			return
+			if (D && D.amount*5 >= c_cost)
+				D.amount-=c_cost/5
+			else
+				mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+				sleep(0.5)
+				do_html(user)
+				return
 		else
-			var/obj/effects/premadevehicles/PV
-			var/chosencolor = WWinput(user,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
-			var/basecolor = chosencolor
-			switch(chosencolor)
-				if ("Black")
-					chosencolor = "#181717"
-				if ("Light Grey")
-					chosencolor = "#919191"
-				if ("Dark Grey")
-					chosencolor = "#616161"
-				if ("White")
-					chosencolor = "#FFFFFF"
-				if ("Green")
-					chosencolor = "#007F00"
-				if ("Red")
-					chosencolor = "#7F0000"
-				if ("Yellow")
-					chosencolor = "#b8b537"
-				if ("Blue")
-					chosencolor = "#00007F"
-			for(var/turf/T in get_area_turfs(/area/caribbean/supply))
-				if (found)
-					break
-				for (var/obj/structure/ST in T)
-					found = TRUE
-					break
-				for (var/mob/living/human/HT in T)
-					found = TRUE
-					break
-			if (found)
-				mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Clear the arrival area first.</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
-				sleep(0.5)
-				do_html(user)
-				return
-			if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
-				var/obj/item/stack/money/D
-				if (istype(user.get_active_hand(),/obj/item/stack/money))
-					D = user.get_active_hand()
-				else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
-					D = user.get_inactive_hand()
-				if (D && D.value*D.amount >= c_cost*4)
-					D.amount-=c_cost/5
-				else
-					mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
-					sleep(0.5)
-					do_html(user)
-					return
-			else
-				mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
-				sleep(0.5)
-				do_html(user)
-				return
-			if (href_list["cartrader"] == "ASNO Quattroporte (500)")
-				PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(origin.x+3,origin.y-3,origin.z))
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Quattroporte", basecolor))
+			mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+			sleep(0.5)
+			do_html(user)
+			return
 
-			else if (href_list["cartrader"] == "ASNO Piccolino (400)")
-				PV = new /obj/effects/premadevehicles/asno/piccolino(locate(origin.x+3,origin.y-3,origin.z))
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Piccolino", basecolor))
+		if (href_list["cartrader"] == "Yamasaki M125 motorcycle (160)")
+			var/obj/structure/vehicle/motorcycle/m125/full/N = new /obj/structure/vehicle/motorcycle/m125/full(locate(origin.x+4,origin.y-1,origin.z))
+			N.do_color(basecolor)
+			new /obj/item/clothing/head/helmet/motorcycle(locate(origin.x+4,origin.y-1,origin.z))
+		else if (href_list["cartrader"] == "ASNO Quattroporte (500)")
+			PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(origin.x+3,origin.y-3,origin.z))
+			spawn(5)
+				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Quattroporte", basecolor))
 
-			else if (href_list["cartrader"] == "Ubermacht Erstenklasse (800)")
-				PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(origin.x+3,origin.y-3,origin.z))
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Ubermacht Erstenklasse", basecolor))
+		else if (href_list["cartrader"] == "ASNO Piccolino (400)")
+			PV = new /obj/effects/premadevehicles/asno/piccolino(locate(origin.x+3,origin.y-3,origin.z))
+			spawn(5)
+				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Piccolino", basecolor))
 
-			else if (href_list["cartrader"] == "SMC Falcon (750)")
-				PV = new /obj/effects/premadevehicles/smc/falcon(locate(origin.x+3,origin.y-3,origin.z))
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Falcon", basecolor))
+		else if (href_list["cartrader"] == "Ubermacht Erstenklasse (800)")
+			PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(origin.x+3,origin.y-3,origin.z))
+			spawn(5)
+				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Ubermacht Erstenklasse", basecolor))
 
-			else if (href_list["cartrader"] == "Yamasaki Kazoku (600)")
-				PV = new /obj/effects/premadevehicles/yamasaki/kazoku(locate(origin.x+3,origin.y-3,origin.z))
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Kazoku", basecolor))
+		else if (href_list["cartrader"] == "SMC Falcon (750)")
+			PV = new /obj/effects/premadevehicles/smc/falcon(locate(origin.x+3,origin.y-3,origin.z))
+			spawn(5)
+				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Falcon", basecolor))
 
-			else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (900)")
-				PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(origin.x+3,origin.y-3,origin.z))
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Shinobu 5000", basecolor))
-			else if  (href_list["cartrader"] == "SMC Wyoming (700)")
-				PV = new /obj/effects/premadevehicles/smc/wyoming(locate(origin.x+3,origin.y-3,origin.z))
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Wyoming", basecolor))
+		else if (href_list["cartrader"] == "Yamasaki Kazoku (600)")
+			PV = new /obj/effects/premadevehicles/yamasaki/kazoku(locate(origin.x+3,origin.y-3,origin.z))
+			spawn(5)
+				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Kazoku", basecolor))
 
+		else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (900)")
+			PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(origin.x+3,origin.y-3,origin.z))
+			spawn(5)
+				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Shinobu 5000", basecolor))
+		else if  (href_list["cartrader"] == "SMC Wyoming (700)")
+			PV = new /obj/effects/premadevehicles/smc/wyoming(locate(origin.x+3,origin.y-3,origin.z))
+			spawn(5)
+				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Wyoming", basecolor))
+		if (PV)
 			PV.custom_color = chosencolor
 			PV.doorcode = rand(1000,9999)
 			PV.new_number()
@@ -1314,7 +1301,7 @@
 		else if  (user.civilization in map.warrants)
 			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked and the issue of new ones forbidden for murdering police officers.</font>"
 			sleep(0.5)
-			do_html(user)
+			do_html(user) 
 			return
 		else if  (user.real_name in map.warrants)
 			mainbody += "<font color='red'>You have, or had, a warrant in your name, so your request was <b>denied</b>.</font>"
