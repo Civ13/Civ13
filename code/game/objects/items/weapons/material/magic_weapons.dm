@@ -257,6 +257,7 @@
 		sharp = 1
 		edge = 1
 		atk_mode = SLASH
+		update_icon()
 	else
 		icon_state = off_state
 		item_state = off_state_item
@@ -271,6 +272,7 @@
 		sharp = FALSE
 		edge = FALSE
 		atk_mode = BASH
+		update_icon()
 	..()
 
 obj/item/weapon/material/sword/magic/onoff/blue
