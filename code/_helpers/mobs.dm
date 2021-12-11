@@ -132,7 +132,7 @@ proc/random_russian_name(gender, species = "Human")
 
 	if (!current_species || current_species.name_language == null)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian))
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian) + "a")
 		else
 			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
 	else
@@ -158,11 +158,11 @@ proc/random_chechen_name(gender, species = "Human")
 
 	if (!current_species || current_species.name_language == null)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_arab)) + " " + capitalize(pick(first_names_male_arab))
+			return capitalize(pick(first_names_male_chechen)) + " " + capitalize(pick(last_names_chechen) + "a") //will have to changed if added in the future
 		else
-			return capitalize(pick(first_names_male_arab)) + " " + capitalize(pick(first_names_male_arab))
+			return capitalize(pick(first_names_male_chechen)) + " " + capitalize(pick(last_names_chechen))
 	else
-		return current_species.get_random_arab_name(gender)
+		return current_species.get_random_chechen_name(gender)
 
 proc/random_portuguese_name(gender, species = "Human")
 	var/datum/species/current_species

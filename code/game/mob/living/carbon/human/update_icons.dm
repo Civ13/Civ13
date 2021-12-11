@@ -383,7 +383,7 @@ var/global/list/damage_icon_parts = list()
 				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "bald_s")
 				face_standing.Blend(hair_s, ICON_OVERLAY)
 
-		else if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/arrogant_student_robes))
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/arrogant_student_robes))
 			var/obj/item/clothing/suit/storage/coat/arrogant_student_robes/M = wear_suit
 			if (M.hood == FALSE)
 				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
@@ -397,7 +397,8 @@ var/global/list/damage_icon_parts = list()
 				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
 				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "bald_s")
 				face_standing.Blend(hair_s, ICON_OVERLAY)
-		else if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/wise_tutor_robes))
+
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/wise_tutor_robes))
 			var/obj/item/clothing/suit/storage/coat/wise_tutor_robes/M = wear_suit
 			if (M.hood == FALSE)
 				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
@@ -1106,9 +1107,13 @@ var/global/list/damage_icon_parts = list()
 			var/obj/item/clothing/suit/storage/coat/wise_tutor_robes/WS = wear_suit
 			if(WS.hood == TRUE)
 				update_hair(1)
+			else
+				update_hair(1)
 		else if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/arrogant_student_robes))
 			var/obj/item/clothing/suit/storage/coat/arrogant_student_robes/WS = wear_suit
 			if(WS.hood == TRUE)
+				update_hair(1)
+			else
 				update_hair(1)
 		else if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/monk_robes))
 			var/obj/item/clothing/suit/storage/coat/monk_robes/WS = wear_suit

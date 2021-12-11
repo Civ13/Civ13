@@ -30,6 +30,7 @@
 #define IROQUOIS_SYLLABLES list("a", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "s", "sa", "da", "ta", "dla", "tla", "tsa", "wa", "ya", "e", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "i", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "tli", "tsi", "twi", "wi", "yi", "ti", "o", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tio", "tso", "wo", "yo", "u", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "v", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "wv", "yv")
 #define FILIPINO_SYLLABLES list("a", "b", "da", "fa", "ga", "gra", "ha", "han", "hon", "ka", "la", "lat", "ma", "na", "nga", "pa", "pra", "ra", "sa", "sal", "ta", "tra", "wa", "e", "be", "bre", "de", "dre", "ge", "he", "ke", "le", "me", "ne", "pe", "pre", "re", "se", "te", "tre", "i", "bi", "di", "fi", "gi", "hi", "ki", "li", "mi", "ni", "pi", "pri", "ri", "si", "ti", "o", "ong", "oo", "bo", "bro", "do", "dro", "go", "ho", "ko", "lo", "mo", "no", "ngo", "po", "pro", "ro", "so", "to", "tro", "yo", "u", "bu", "du", "gu", "hu", "ku", "lu", "mu", "pu", "yu")
 #define ITALIAN_SYLLABLES list("pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va", "ta", "ra", "ga", "da", "na", "sa", "la", "te", "re", "ge", "de", "ne", "se", "le", "ti", "ri", "gi", "di", "ni", "si")
+#define CHECHEN_SYLLABLES list("la", "ma", "nakh", "dukh", "duy", "lu", "sal", "shi", "shov", "dansh", "en", "be", "kha", "ja", "bal", "tsa", "mol", "ush", "jin", "khor", "gie", "buylsh", "or", "ga", "tha", "zan", "dakh", "gash", "det", "mekh", "sa", "salam", "al", "kum", "ha", "at", "qo", "di", "ste", "aid")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -129,7 +130,16 @@
 	colour = "Arabic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
-	mutual_intelligibility = list(/datum/language/hebrew = 35, /datum/language/egyptian= 30)
+	mutual_intelligibility = list(/datum/language/hebrew = 35, /datum/language/egyptian= 30, /datum/language/chechen= 30)
+
+/datum/language/chechen
+	name = "Chechen"
+	desc = "Marsallah!"
+	key = "c"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CHECHEN_SYLLABLES
+	mutual_intelligibility = list(/datum/language/russian = 5, /datum/language/arabic= 30, /datum/language/armenian= 30)
 
 /datum/language/hebrew
 	name = "Hebrew"
@@ -228,7 +238,7 @@
 	colour = "Armenian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
-	mutual_intelligibility = list(/datum/language/hebrew = 10)
+	mutual_intelligibility = list(/datum/language/hebrew = 10, /datum/language/chechen= 30)
 
 /datum/language/vietnamese
 	name = "Vietnamese"
