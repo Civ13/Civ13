@@ -811,6 +811,7 @@
 		M.AdjustStunned(-1)
 		M.AdjustWeakened(-1)
 		M.restore_blood()
+		M.updatehealth()
 /datum/reagent/drink/health/healing
 	name = "Healing"
 	id = "healing"
@@ -831,6 +832,7 @@
 		M.AdjustStunned(-1)
 		M.AdjustWeakened(-1)
 		M.restore_blood()
+		M.updatehealth()
 /datum/reagent/drink/health/plentiful
 	name = "Plentiful Healing"
 	id = "plentiful"
@@ -851,6 +853,7 @@
 		M.AdjustStunned(-1)
 		M.AdjustWeakened(-1)
 		M.restore_blood()
+		M.updatehealth()
 /datum/reagent/drink/health/vigorous
 	name = "Vigorous Healing"
 	id = "vigor"
@@ -872,6 +875,7 @@
 		M.AdjustStunned(-1)
 		M.AdjustWeakened(-1)
 		M.restore_blood()
+		M.updatehealth()
 /datum/reagent/drink/health/draught
 	name = "Draught"
 	id = "draught"
@@ -880,6 +884,41 @@
 	color = "#440000"
 /datum/reagent/drink/health/draught/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 		M.rejuvenate()
+		M.updatehealth()
+
+/datum/reagent/drink/stamina
+/datum/reagent/drink/stamina/minor
+	name = "Minor Stamina"
+	id = "minor_stamina"
+	description = "A weak stamina concotion."
+	taste_description = "slightly reinvigorating."
+	color = "#440000"
+	adj_dizzy = -20
+/datum/reagent/drink/stamina/minor/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.stats["stamina"][1] = max(M.stats["stamina"][1] + 20, 0)
+		M.updatehealth()
+
+/datum/reagent/drink/stamina/plentiful
+	name = "Stamina Potion"
+	id = "plentiful_stamina"
+	description = "A good stamina concotion."
+	taste_description = "fairly reinvigorating."
+	color = "#667164"
+	adj_dizzy = -20
+/datum/reagent/drink/stamina/plentiful/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.stats["stamina"][1] = max(M.stats["stamina"][1] + 50, 0)
+		M.updatehealth()
+
+/datum/reagent/drink/stamina/vigorous
+	name = "Vigorous Stamina Potion"
+	id = "stamina_vigor"
+	description = "A good stamina concotion."
+	taste_description = "fairly reinvigorating."
+	color = "#667164"
+	adj_dizzy = -20
+/datum/reagent/drink/stamina/vigorous/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+		M.stats["stamina"][1] = max(M.stats["stamina"][1] + 150, 0)
+		M.updatehealth()
 /* Alcohol */
 
 // Basic

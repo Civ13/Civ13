@@ -377,6 +377,7 @@
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
+//////////////////////////////////////////////////////WELDER///////////////////////////////////////////////////////////
 /obj/item/weapon/weldingtool
 	name = "welding tool"
 	desc = "used to weld metals together"
@@ -394,6 +395,170 @@
 	throw_range = 5
 	w_class = 3.0
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+	var/welding = FALSE
+/obj/item/weapon/weldingtool/process(var/mob/living/human/L, var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = null)
+	if (welding)
+		if (!L.back || !istype(L.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
+			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
+			setWelding(0)
+			return
+
+		if (istype(L.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
+			FM = L.back
+
+		if (!FM)
+			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
+			setWelding(0)
+			return
+
+		if (prob(5))
+			remove_fuel(1)
+
+		if (get_fuel(FM) < 1)
+			setWelding(0)
+
+/obj/item/weapon/weldingtool/attack_self(mob/user as mob)
+	setWelding(!welding, usr)
+	return
+
+//Returns the amount of fuel in the welder
+/obj/item/weapon/weldingtool/proc/get_fuel(var/obj/item/weapon/reagent_containers/glass/flamethrower/FM)
+	return FM.reagents.get_reagent_amount("gasoline")
+
+
+//Removes fuel from the welding tool. If a mob is passed, it will perform an eyecheck on the mob. This should probably be renamed to use()
+/obj/item/weapon/weldingtool/proc/remove_fuel(var/amount = TRUE, var/mob/M = null, var/obj/item/weapon/reagent_containers/glass/flamethrower/FM)
+	if (!welding)
+		return FALSE
+	if (get_fuel() >= amount)
+		FM.reagents.remove_reagent("gasoline", amount)
+		if (M)
+			eyecheck(M)
+		return TRUE
+	else
+		if (M)
+			M << "<span class='notice'>You need more welding fuel to complete this task.</span>"
+		return FALSE
+
+//Returns whether or not the welding tool is currently on.
+/obj/item/weapon/weldingtool/proc/isOn()
+	return welding
+
+/obj/item/weapon/weldingtool/update_icon()
+	..()
+	icon_state = welding ? on_state : off_state
+	var/mob/M = loc
+	if (istype(M))
+		M.update_inv_l_hand()
+		M.update_inv_r_hand()
+
+//Sets the welding state of the welding tool. If you see W.welding = TRUE anywhere, please change it to W.setWelding(1)
+//so that the welding tool updates accordingly
+/obj/item/weapon/weldingtool/proc/setWelding(var/set_welding, var/mob/M, var/obj/item/weapon/reagent_containers/glass/flamethrower/FM)
+	var/turf/T = get_turf(src)
+	//If we're turning it on
+	if (set_welding && !welding)
+		if (get_fuel() > 0)
+			if (M)
+				M << "<span class='notice'>You switch the [src] on.</span>"
+			else if (T)
+				T.visible_message("<span class='danger'>\The [src] turns on.</span>")
+			force = WEAPON_FORCE_PAINFUL
+			damtype = "fire"
+			w_class = 4
+			welding = TRUE
+			update_icon()
+			set_light(l_range = 1.4, l_power = TRUE, l_color = COLOR_ORANGE)
+			processing_objects |= src
+		else
+			if (M)
+				M << "<span class='notice'>You need more welding fuel to complete this task.</span>"
+			return
+	//Otherwise
+	else if (!set_welding && welding)
+		processing_objects -= src
+		if (M)
+			M << "<span class='notice'>You switch \the [src] off.</span>"
+		else if (T)
+			T.visible_message("<span class='warning'>\The [src] turns off.</span>")
+		force = WEAPON_FORCE_WEAK
+		damtype = "brute"
+		w_class = initial(w_class)
+		welding = FALSE
+		update_icon()
+		set_light(l_range = FALSE, l_power = FALSE, l_color = COLOR_ORANGE)
+
+//Decides whether or not to damage a player's eyes based on what they're wearing as protection
+//Note: This should probably be moved to mob
+/obj/item/weapon/weldingtool/proc/eyecheck(mob/user as mob)
+	if (!iscarbon(user))	return TRUE
+	if (istype(user, /mob/living/human))
+		var/mob/living/human/H = user
+		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
+		if (!E)
+			return
+		var/safety = H.eyecheck()
+		switch(safety)
+			if (FLASH_PROTECTION_MODERATE)
+				H << "<span class='warning'>Your eyes sting a little.</span>"
+				E.damage += rand(1, 2)/2
+				if (E.damage > 12)
+					H.eye_blurry += rand(3,6)/2
+			if (FLASH_PROTECTION_NONE)
+				H << "<span class='warning'>Your eyes burn.</span>"
+				E.damage += rand(2, 4)/2
+				if (E.damage > 10)
+					E.damage += rand(4,10)/2
+			if (FLASH_PROTECTION_REDUCED)
+				H << "<span class='danger'>Your equipment intensify the welder's glow. Your eyes itch and burn severely.</span>"
+				H.eye_blurry += rand(12,20)/2
+				E.damage += rand(12, 16)/2
+		if (safety<FLASH_PROTECTION_MAJOR)
+			if (E.damage > 10)
+				user << "<span class='warning'>Your eyes are really starting to hurt. This can't be good for you!</span>"
+
+			if (E.damage >= E.min_broken_damage)
+				H << "<span class='danger'>You go blind!</span>"
+				H.sdisabilities |= BLIND
+			else if (E.damage >= E.min_bruised_damage)
+				H << "<span class='danger'>You go blind!</span>"
+				H.eye_blind = 5
+				H.eye_blurry = 5
+				H.disabilities |= NEARSIGHTED
+				spawn(100)
+					H.disabilities &= ~NEARSIGHTED
+
+
+
+
+/obj/item/weapon/reagent_containers/glass/welding_tank
+	name = "portable welding tank"
+	desc = "A portable welding tank using gasoline as a fuel source."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "welding_tank"
+	item_state = "welding_tank"
+	flags = CONDUCT
+	sharp = FALSE
+	edge = FALSE
+	nothrow = TRUE
+	attack_verb = list("bashed", "hit")
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	flammable = TRUE
+	w_class = 10
+	slot_flags = SLOT_BACK
+	throw_speed = 1
+	throw_range = 1
+	amount_per_transfer_from_this = 5
+	volume = 100
+	density = FALSE
+
+/obj/item/weapon/reagent_containers/glass/welding_tank/filled/New()
+	..()
+	reagents.add_reagent("gasoline",100)
+///////////////////////////////////////END OF WELDER/////////////////////////////////////////////////////////////////////////
+
+
 
 /obj/item/weapon/gongmallet
 	name = "gong mallet"

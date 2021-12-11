@@ -139,7 +139,7 @@
 	colour = "Arabic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CHECHEN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/russian = 5, /datum/language/arabic= 30, /datum/language/armenian= 30)
+	mutual_intelligibility = list(/datum/language/russian = 5, /datum/language/arab= 30, /datum/language/armenian= 30)
 
 /datum/language/hebrew
 	name = "Hebrew"

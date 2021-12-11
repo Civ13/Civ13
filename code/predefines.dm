@@ -225,6 +225,7 @@
 
 // sdisabilities
 #define BLIND TRUE
+#define NEARSIGHTED TRUE
 #define MUTE  2
 #define DEAF  4
 

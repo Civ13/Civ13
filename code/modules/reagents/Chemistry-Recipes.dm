@@ -605,14 +605,25 @@ datum/admins/proc/print_chemical_reactions()
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()
 	e.set_up(round (created_volume/4, TRUE), exloc, FALSE, FALSE)
-	for (var/mob/living/L in exloc)
-		e.amount *= 0.25
-		if (L.stat != DEAD)
-			if (e.amount >= 6)
-				L.crush()
-			e.amount *= 1.5
-	e.start()
-	holder.clear_reagents()
+	var/obj/item/flashlight/torch/T
+	var/obj/item/weapon/flame/F
+	for(T in range(2,src))
+		if (T.on == TRUE)
+			e.start()
+			holder.clear_reagents()
+		break
+	for(F in range(2,src))
+		if (F.lit == TRUE)
+			e.start()
+			holder.clear_reagents()
+		break
+	var/mob/living/human/H
+	for(H in range(2,src))
+		var/obj/item/clothing/mask/smokable/C
+		if ((istype(H.wear_mask,/obj/item/clothing/mask/smokable)) && C.lit == TRUE)
+			e.start()
+			holder.clear_reagents()
+		break
 
 
 /datum/chemical_reaction/napalm
