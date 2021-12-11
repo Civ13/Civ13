@@ -745,24 +745,30 @@
 	var/obj/item/weapon/storage/internal/storage
 	var/max_storage = 3
 	var/brightness_on = 5 //luminosity when on
-	New()
-		..()
-		storage.can_hold = list(/obj/item/flashlight/torch, /obj/item/flashlight/lantern)
 
 /obj/structure/torch_stand/update_icon()
-	var/obj/item/flashlight/O
-	if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/torch && O.on == TRUE))
-		icon_state = "torch_stand1_on"
-		set_light(brightness_on)
-	else if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/torch && O.on == FALSE))
-		icon_state = "torch_stand1"
-	else if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/lantern && O.on == TRUE))
-		icon_state = "torch_stand_lantern_on"
-		set_light(brightness_on)
-	else if (storage.contents.len > 0 && istype(O, /obj/item/flashlight/lantern && O.on == FALSE))
-		icon_state = "torch_stand_lantern"
+	if (storage.contents.len > 0)
+		for (var/obj/item/flashlight/torch in contents)
+			if (torch.on == TRUE)
+				icon_state = "torch_stand1_on"
+				set_light(1)
+			else
+				icon_state = "torch_stand1"
+				set_light(0)
+		for (var/obj/item/flashlight/lantern in contents)
+			if (lantern.on == TRUE)
+				icon_state = "torch_stand_lantern_on"
+				set_light(1)
+			else
+				icon_state = "torch_stand_lantern"
+				set_light(0)
 	else
 		icon_state = "torch_stand"
+	if (dir == 2)
+		pixel_y = 32
+	else
+		pixel_y = 0
+		return
 
 /obj/structure/torch_stand/New()
 	..()
@@ -770,6 +776,7 @@
 	storage.storage_slots = 1
 	storage.max_w_class = 2
 	storage.max_storage_space = max_storage*3
+	storage.can_hold = list(/obj/item/flashlight/torch, /obj/item/flashlight/lantern)
 	update_icon()
 
 /obj/structure/torch_stand/Destroy()
@@ -798,5 +805,5 @@
 
 /obj/structure/torch_stand/full/New()
 	..()
-	new /obj/item/flashlight/torch/on/unlimited
+	new /obj/item/flashlight/torch/on(src.storage)
 	update_icon()

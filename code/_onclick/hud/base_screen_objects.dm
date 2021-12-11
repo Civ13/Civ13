@@ -1070,6 +1070,12 @@ obj/screen/tactic
 /obj/screen/drugoverlay/update_icon()
 	underlays.Cut()
 
+	var/mob/living/human/H = parentmob
+
+	if (!istype(H))
+		if (parentmob.sdisabilities & NEARSIGHTED)
+			underlays += global_hud.vimpaired
+
 	if (parentmob.eye_blurry)
 		underlays += global_hud.blurry
 	if (parentmob.druggy)

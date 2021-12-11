@@ -895,7 +895,7 @@
 	color = "#440000"
 	adj_dizzy = -20
 /datum/reagent/drink/stamina/minor/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
-		M.stats["stamina"][1] = max(user.stats["stamina"][1] + 20, 0)
+		M.stats["stamina"][1] = max(M.stats["stamina"][1] + 20, 0)
 		M.updatehealth()
 
 /datum/reagent/drink/stamina/plentiful
@@ -906,7 +906,7 @@
 	color = "#667164"
 	adj_dizzy = -20
 /datum/reagent/drink/stamina/plentiful/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
-		M.stats["stamina"][1] = max(user.stats["stamina"][1] + 50, 0)
+		M.stats["stamina"][1] = max(M.stats["stamina"][1] + 50, 0)
 		M.updatehealth()
 
 /datum/reagent/drink/stamina/vigorous
@@ -917,7 +917,7 @@
 	color = "#667164"
 	adj_dizzy = -20
 /datum/reagent/drink/stamina/vigorous/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
-		M.stats["stamina"][1] = max(user.stats["stamina"][1] + 150, 0)
+		M.stats["stamina"][1] = max(M.stats["stamina"][1] + 150, 0)
 		M.updatehealth()
 /* Alcohol */
 
