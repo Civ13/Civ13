@@ -1,5 +1,5 @@
 /datum/job/russian/sa_lieutenant
-	title = "Soviet Army Lieutenant"
+	title = "Russian Army Lieutenant"
 	rank_abbreviation = "Lt."
 
 	spawn_location = "JoinLateRUCap"
@@ -19,7 +19,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/gglasses(H), slot_eyes)
@@ -37,8 +37,8 @@
 	uniform.attackby(armour, H)
 //jacket
 	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
-	H.civilization = "Soviet Army"
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
 	H.setStat("strength", STAT_NORMAL)
@@ -53,7 +53,7 @@
 	return TRUE
 
 /datum/job/russian/sa_sergeant
-	title = "Soviet Army Sergeant"
+	title = "Russian Army Sergeant"
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRUCap"
@@ -75,7 +75,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
@@ -93,10 +93,10 @@
 	uniform.attackby(armour, H)
 //jacket
 	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
-	H.civilization = "Soviet Army"
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	H.civilization = "Russian Army"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Insurgents!")
+	H.add_note("Role", "You are a <b>[title]</b>, lead your assigned squad against the Insurgents!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -110,7 +110,7 @@
 
 
 /datum/job/russian/sa_medic
-	title = "Soviet Army Field Medic"
+	title = "Russian Army Field Medic"
 	rank_abbreviation = "Cpl."
 
 	spawn_location = "JoinLateRU"
@@ -128,7 +128,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
@@ -149,8 +149,8 @@
 	uniform.attackby(armour, H)
 //jacket
 	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
-	H.civilization = "Soviet Army"
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
 	H.setStat("strength", STAT_NORMAL)
@@ -165,8 +165,9 @@
 	return TRUE
 
 /datum/job/russian/sa_swat
-	title = "Soviet Army SWAT"
-	rank_abbreviation = "SWAT"
+	title = "Russian OMON Unit"
+	en_meaning = "SWAT"
+	rank_abbreviation = "OMON ofc."
 
 	spawn_location = "JoinLateRUswat"
 
@@ -200,9 +201,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_swat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/balistic(H), slot_r_hand)
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian Army"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, Special Weapons and Tactics Response Team. Use your superior training and gear to control the miltia!")
+	H.add_note("Role", "You are a <b>[title]</b>, part of the OMON, the Special Purpouse Mobile Unit of the Minitry of Internal Affairs. Use your superior training and gear to control the miltia!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_HIGH)
@@ -215,7 +216,7 @@
 	return TRUE
 
 /datum/job/russian/sa_soldier
-	title = "Soviet Army Rifleman"
+	title = "Russian Army Rifleman"
 	rank_abbreviation = "Pvt."
 
 	spawn_location = "JoinLateRU"
@@ -234,7 +235,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
@@ -251,8 +252,8 @@
 
 //jacket
 	if (prob(65))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
-	H.civilization = "Soviet Army"
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
@@ -268,7 +269,7 @@
 
 /datum/job/russian/spetznaz
 	title = "Spetznaz"
-	rank_abbreviation = "Spz."
+	rank_abbreviation = "Spz.Op"
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
@@ -305,9 +306,9 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian Army"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, Spetznaz Response Team. You are the best of the best; end this conflict!")
+	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetznaz Response Team. You are the best of the best; end this conflict!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_VERY_HIGH)
@@ -322,8 +323,8 @@
 /////////KGBS & SSMs//////////////
 
 /datum/job/civilian/russian/hvt
-	title = "Soviet HVT"
-	en_meaning = "Soviet Supreme Member"
+	title = "Soviet Supreme Deputy"
+	en_meaning = "Soviet HVT"
 	rank_abbreviation = "Ssm."
 	spawn_location = "JoinLatessm"
 	is_kremlin = TRUE
@@ -353,7 +354,7 @@
 	var/obj/item/clothing/accessory/medal/soviet/ww2/delegate_supreme_soviet/pin = new /obj/item/clothing/accessory/medal/soviet/ww2/delegate_supreme_soviet(null)
 	uniform.attackby(pin, H)
 	H.civilization = "Militia"
-	H.add_note("Role", "You are an essential member of the Supreme Soviet. They are out to get you! Rely on the people and stay alive!")
+	H.add_note("Role", "You are an essential member of the Supreme Soviet. They are out to get you! Rely on the people who are still following your ideology and stay alive!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -415,7 +416,7 @@
 	uniform.attackby(pin, H)
 	H.civilization = "Militia"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>KGB officer</b>.<br> Elite training, elite gear. Your very pen conceals a potent paralysis toxin. Keep the High Value Target safe at all costs!<br><i>You can use the \"Find HVT\" command under the \"Officer\" tab to locate the HVT(s).</i>")
+	H.add_note("Role", "You are a <b>KGB officer</b>.<br> Elite training, elite gear. Your pen conceals a potent paralysis toxin. Keep the High Value Target safe at all costs!<br><i>You can use the \"Find HVT\" command under the \"Officer\" tab to locate the HVT(s).</i>")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_VERY_HIGH)
@@ -431,7 +432,7 @@
 ////////////MILITIAS/////////////
 
 /datum/job/civilian/russian/rus_militia
-	title = "Prolatariate"
+	title = "Proletariate"
 	en_meaning = "Improvised Weapon Militia"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCiv"
@@ -592,7 +593,7 @@
 
 /datum/job/civilian/russian/rus_patriot
 	title = "Russian Patriot"
-	en_meaning = "firearm Militia"
+	en_meaning = "Firearms Militia"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCiv"
 	min_positions = 10
@@ -732,7 +733,7 @@
 	else if (randsuits == 6)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
 
-	H.add_note("Role", "You are a <b>[title]</b>, insurging against Yeltsin's tyranny. Your life for the dream of the people!")
+	H.add_note("Role", "You are a <b>[title]</b>, insurging against Yeltsin's tyranny. You're ready to give your life for the dream of the people!")
 	H.civilization = "Militia"
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -781,7 +782,7 @@
 
 	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard")
 		H.f_style = pick("Full Beard","Medium Beard","Long Beard")
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your comerades healthy and motivated!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy and motivated!")
 	H.civilization = "Militia"
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)

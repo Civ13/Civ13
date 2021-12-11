@@ -799,12 +799,12 @@ obj/structure/vending/hezammo
 		var/obj/item/weapon/gun/projectile/flintlock/musketoon/B = new/obj/item/weapon/gun/projectile/flintlock/musketoon(src.loc)
 		src.stock_auto(B)
 /obj/structure/vending/yeltsinapparel
-	name = "Soviet apparel rack"
+	name = "Russian Army apparel rack"
 	desc = "A rack of clothing and gear."
 	icon_state = "apparel_russia"
 	products = list(
 		/obj/item/clothing/shoes/soldiershoes = 15,
-		/obj/item/clothing/under/milrus2 = 15,
+		/obj/item/clothing/under/milrus_vsr93 = 15,
 		/obj/item/clothing/suit/storage/coat/modern_winter = 15,
 		/obj/item/clothing/head/ww2/sov_ushanka = 10,
 		/obj/item/clothing/mask/sovietbala = 15,
@@ -825,7 +825,7 @@ obj/structure/vending/hezammo
 	)
 
 /obj/structure/vending/yeltsinweapons
-	name = "Soviet weapon rack"
+	name = "Russian Army weapon rack"
 	desc = "A rack of war equipment."
 	icon_state = "modern_british"
 	products = list(
@@ -847,7 +847,7 @@ obj/structure/vending/hezammo
 	)
 
 /obj/structure/vending/yeltsinammo
-	name = "Soviet ammo crate"
+	name = "Russian Army ammo crate"
 	desc = "A large crate of ammunition."
 	icon_state = "ammo_crates"
 	products = list(
