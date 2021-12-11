@@ -748,14 +748,14 @@
 
 /obj/structure/torch_stand/update_icon()
 	if (storage.contents.len > 0)
-		for (var/obj/item/flashlight/torch in contents)
+		for (var/obj/item/flashlight/torch in src.storage.contents)
 			if (torch.on == TRUE)
 				icon_state = "torch_stand1_on"
 				set_light(1)
 			else
 				icon_state = "torch_stand1"
 				set_light(0)
-		for (var/obj/item/flashlight/lantern in contents)
+		for (var/obj/item/flashlight/lantern in src.storage.contents)
 			if (lantern.on == TRUE)
 				icon_state = "torch_stand_lantern_on"
 				set_light(1)
