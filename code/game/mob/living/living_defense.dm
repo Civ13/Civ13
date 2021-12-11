@@ -62,7 +62,7 @@
 
 /mob/living/bullet_act(var/obj/item/projectile/P, var/def_zone)
 
-	var/mob/living/human/H
+	var/mob/living/human/H = src
 	var/obj/item/weapon/material/sword/magic/onoff/LS
 	if ((istype(H.l_hand, /obj/item/weapon/material/sword/magic/onoff) && LS.state == "ON") || (istype(H.r_hand, /obj/item/weapon/material/sword/magic/onoff) && LS.state == "ON"))
 		qdel(P)
