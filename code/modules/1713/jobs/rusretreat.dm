@@ -4,7 +4,7 @@
 	title = "Chechnyan Warlord"
 	en_meaning = "Warlord"
 	rank_abbreviation = "W."
-	spawn_location = "JoinLateCC"
+	spawn_location = "JoinLateCCWL"
 	is_rusretreat = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -58,11 +58,11 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
@@ -234,13 +234,14 @@
 	H.civilization = "Militia"
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/arab/civilian/chechen/medic
@@ -363,12 +364,12 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_HIGH)
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_HIGH)
@@ -381,7 +382,7 @@
 	title = "Russian Federal Forces Sergeant"
 	rank_abbreviation = "Sgt."
 
-	spawn_location = "JoinLateRUCap"
+	spawn_location = "JoinLateRUSgt"
 
 	is_rusretreat = TRUE
 	is_squad_leader = TRUE
@@ -437,18 +438,18 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the chechen insurgents!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 
 
@@ -456,7 +457,7 @@
 	title = "Russian Federal Forces Corpsman"
 	rank_abbreviation = "Pfc."
 
-	spawn_location = "JoinLateRU"
+	spawn_location = "JoinLateRUMedic"
 
 	is_medic = TRUE
 	is_rusretreat = TRUE
@@ -506,7 +507,7 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
 	H.setStat("strength", STAT_NORMAL)
@@ -515,7 +516,7 @@
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_VERY_HIGH)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
@@ -524,7 +525,7 @@
 	title = "Russian Federal Forces Radio Operator"
 	rank_abbreviation = "Pfc."
 
-	spawn_location = "JoinLateRU"
+	spawn_location = "JoinLateRURadop"
 
 	is_rusretreat = TRUE
 	is_radioman = TRUE
@@ -594,18 +595,18 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday, but unlike your other comrades, they gave you a radio with your rifle! What a joy! Follow orders given by your superiors and defeat the enemy!")
+	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday, but unlike your other comrades, they gave you a radio with your rifle and some additional evening classes during bootcamp! What a joy! Follow orders given by your superiors and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/russian/ruff_soldier
@@ -690,17 +691,17 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday; What a joy! Follow orders given by your superiors and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
@@ -759,14 +760,14 @@
 
 	H.civilization = "Soviet Army"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetznaz GRU. You are the best of the best; put an end this conflict!")
+	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetznaz GRU. You are the best of the best; put an end to this conflict!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_HIGH)
 	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
