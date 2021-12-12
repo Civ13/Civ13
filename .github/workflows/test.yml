@@ -31,5 +31,5 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: ./scripts/travis_pre_byond.sh
+        run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
