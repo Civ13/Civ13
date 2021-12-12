@@ -512,6 +512,9 @@
 /obj/structure/engine/internal/diesel/premade/van
 	enginesize = 7000
 
+/obj/structure/engine/internal/diesel/premade/chiha
+	enginesize = 25000
+
 /obj/structure/engine/internal/gasoline/premade/falcon
 	enginesize = 6500
 
@@ -522,6 +525,12 @@
 	enginesize = 3800
 /obj/structure/engine/internal/gasoline/premade/type95
 	enginesize = 3800
+
+/obj/structure/engine/internal/gasoline/premade/panzeriv
+	enginesize = 12000
+
+/obj/structure/engine/internal/gasoline/premade/panzervi
+	enginesize = 25000
 
 /obj/structure/emergency_lights
 	name = "emergency lights control"

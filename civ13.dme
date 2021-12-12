@@ -708,6 +708,7 @@
 #include "code\modules\1713\jobs\rusretreat.dm"
 #include "code\modules\1713\jobs\russian.dm"
 #include "code\modules\1713\jobs\samurai.dm"
+#include "code\modules\1713\jobs\skyrim.dm"
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\UPA.dm"

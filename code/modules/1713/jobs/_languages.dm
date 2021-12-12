@@ -166,6 +166,18 @@
 /datum/job/npc
 	default_language = "English"
 
+/datum/job/skyrim
+	default_language = "Old Norse"
+	additional_languages = list("Latin" = 20)
+	male_tts_voice = "Brian"
+	female_tts_voice = "Amy"
+
+/datum/job/skyrim/imperial
+	default_language = "Latin"
+	additional_languages = list("Old Norse" = 100)
+	male_tts_voice = "Brian"
+	female_tts_voice = "Amy"
+
 /datum/job/update_character(var/mob/living/human/H)
 	. = ..()
 
@@ -205,9 +217,14 @@
 					H.default_language = RR
 					break
 			else
-				for (var/datum/language/english/E in H.languages)
-					H.default_language = E
-					break
+				if (map.ID == MAP_WHITERUN)
+					for (var/datum/language/oldnorse/N in H.languages)
+						H.default_language = N
+						break
+				else
+					for (var/datum/language/english/E in H.languages)
+						H.default_language = E
+						break
 		if (SPANISH)
 			for (var/datum/language/spanish/S in H.languages)
 				H.default_language = S
