@@ -11,6 +11,9 @@ cd byond
 make here
 echo "Compiling the dme..."
 retval=1
+echo $PWD
+source $HOME/BYOND/byond/bin/byondsetup
+cd -
 DreamMaker -max_errors 0 civ13.dme | tee result.log
 retval=$?
 if ! grep '\- 0 errors, 0 warnings' result.log
