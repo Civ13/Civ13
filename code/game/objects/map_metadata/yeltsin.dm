@@ -29,7 +29,7 @@
 	artillery_count = 0
 	valid_artillery = list()
 	scores = list(
-		"Soviet Army" = 0,
+		"Russian Army" = 0,
 		"Militia" = 0,
 	)
 	var/ger_points = 0
@@ -67,33 +67,33 @@
 		if (CIVILIAN)
 			return "Militia"
 		if (RUSSIAN)
-			return "Soviet Army"
+			return "Russian Army"
 /obj/map_metadata/yeltsin/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (CIVILIAN)
 			return "Militias"
 		if (RUSSIAN)
-			return "Soviet Army"
+			return "Russian Army"
 
 /obj/map_metadata/yeltsin/army2name(army)
 	..()
 	switch (army)
 		if ("Militias")
 			return "Militia"
-		if ("Soviet Army")
-			return "Soviet Army"
+		if ("Russian Army")
+			return "Russian Army"
 
 
 /obj/map_metadata/yeltsin/cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<font size = 4>The Soviet Army may now cross the invisible wall!</font>"
+		return "<font size = 4>The Russian Army may now cross the invisible wall!</font>"
 	else
 		return ""
 
 /obj/map_metadata/yeltsin/reverse_cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>The Soviet Army may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Russian Army may no longer cross the invisible wall!</span>"
 	else
 		return ""
 
@@ -119,7 +119,7 @@
 				if (!win_condition_spam_check)
 					var/count = 0
 					for (var/mob/living/human/H in HVT_list)
-						if (H.original_job_title == "Soviet HVT" && H.stat != DEAD)
+						if (H.original_job_title == "Soviet Supereme Deputy" && H.stat != DEAD)
 							count++
 					if (count == 0)
 						message = "The battle is over! All the <b>HVT</b>s are dead!"
@@ -160,14 +160,14 @@
 				if (win_condition_spam_check)
 					return FALSE
 				ticker.finished = TRUE
-				message = "The Militia has managed to defend the Capitol! The Soviet Army retreat!"
+				message = "The Militia has managed to defend the Parliament! The Russian Army retreats!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				return FALSE
 			if ((current_winner && current_loser && world.time > next_win) && no_loop_capitol == FALSE)
 				ticker.finished = TRUE
-				message = "The Soviet Army have captured the Capitol!"
+				message = "The Russian Army has captured the Parliament!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
@@ -177,7 +177,7 @@
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Soviet Army control the Capitol! They will win in {time} minutes."
+						current_win_condition = "The Russian Army controls the Parliament! They will win in {time} minutes."
 						next_win = world.time + short_win_time(RUSSIAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -186,7 +186,7 @@
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Soviet Army control the Capitol! They will win in {time} minutes."
+						current_win_condition = "The Russian Army controls the Parliament! They will win in {time} minutes."
 						next_win = world.time + short_win_time(RUSSIAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -195,7 +195,7 @@
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Soviet Army control the Capitol! They will win in {time} minutes."
+						current_win_condition = "The Militia controls the Parliament! They will win in {time} minutes."
 						next_win = world.time + short_win_time(CIVILIAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -204,14 +204,14 @@
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Militia control the Capitol! They will win in {time} minutes."
+						current_win_condition = "The Militia controls the Parliament! They will win in {time} minutes."
 						next_win = world.time + short_win_time(CIVILIAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 			else
 				if (current_win_condition != no_winner && current_winner && current_loser)
-					world << "<font size = 3>The Militia has recaptured the Capitol!</font>"
+					world << "<font size = 3>The Militia has recaptured the Parliament!</font>"
 					current_winner = null
 					current_loser = null
 				next_win = -1
@@ -226,13 +226,13 @@
 					return FALSE
 				ticker.finished = TRUE
 				message = "The round has ended!"
-				if (scores["Militia"] > scores["Soviet Army"])
-					message = "The battle is over! The <b>Militia</b> were victorious over the <b>Soviet Army</b>!"
+				if (scores["Militia"] > scores["Russian Army"])
+					message = "The battle is over! The <b>Militia</b> was victorious over the <b>Russian Army</b>!"
 					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 					win_condition_spam_check = TRUE
 					return FALSE
-				else if (scores["Soviet Army"] > scores["Militia"])
-					message = "The battle is over! The <b>Soviet Army</b> were victorious over the <b>Militia</b>!"
+				else if (scores["Russian Army"] > scores["Militia"])
+					message = "The battle is over! The <b>Russian Army</b> was victorious over the <b>Militia</b>!"
 					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 					win_condition_spam_check = TRUE
 					return FALSE
@@ -266,7 +266,7 @@
 			cust_color="blue"
 			ger_points++
 		else if (c2 > c1)
-			a1_control = "Soviet Army"
+			a1_control = "Russian Army"
 			cust_color="red"
 			sov_points++
 		if (a1_control != prev_control)
@@ -291,17 +291,17 @@
 			cust_color="blue"
 			ger_points++
 		else if (c2 > c1)
-			a2_control = "Soviet Army"
+			a2_control = "Russian Army"
 			cust_color="red"
 			sov_points++
 		if (a2_control != prev_control)
 			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Parlimental </b>!</big>"
+				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Parliamental Hall</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Parliamental Hall</b>!</big>"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Militia: [scores["Militia"]]</big>"
-	world << "<big>Soviet Army: [scores["Soviet Army"]]</big>"
+	world << "<big>Russian Army: [scores["Russian Army"]]</big>"
 //	world << "<big>Militia: [ger_points]</big>"
 //	world << "<big>Soviet Army: [sov_points]</big>"
 	spawn(300)
