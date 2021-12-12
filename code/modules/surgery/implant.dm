@@ -82,7 +82,7 @@
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			return affected && affected.cavity && affected.open == TRUE
+			return affected && !affected.cavity && affected.open == FALSE
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
