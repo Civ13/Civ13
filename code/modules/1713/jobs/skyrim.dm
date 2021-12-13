@@ -83,7 +83,7 @@
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a whiterun guard. Defend the city from those rebel storm cloaks!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
