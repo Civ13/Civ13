@@ -217,7 +217,7 @@
 
 	var/overlay = 'icons/obj/magicoverlay.dmi'
 	var/overlay_icon = 'icons/obj/magicoverlay.dmi'
-
+	var/set_light()
 	var/old_force_divisor = 0.10
 	var/old_thrown_force_divisor = 0.10
 	var/old_sharpness = 0
@@ -226,7 +226,7 @@
 	var/new_force_divisor = 10
 	var/new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
 	var/new_block_chance = 95
-	var/new_sharpness = 100
+	var/new_sharpness = 500
 
 	var/hitsound_off = 'sound/weapons/punch1.ogg' //default
 	var/drawsound_off = 'sound/weapons/punch1.ogg' //temp
@@ -257,6 +257,7 @@
 		sharp = 1
 		edge = 1
 		atk_mode = SLASH
+		set_light(2, 0.25, "#FFFFFF")
 		update_icon()
 	else
 		icon_state = off_state
@@ -274,6 +275,70 @@
 		atk_mode = BASH
 		update_icon()
 	..()
+
+obj/item/weapon/material/sword/magic/onoff/dualblue
+	name = "Blue Beam Blade"
+	icon_state = "beamblade_off"
+	item_state = "beamblade_off"
+	base_icon = "beamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of blue light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
+
+obj/item/weapon/material/sword/magic/onoff/dualgreen
+	name = "Blue Beam Blade"
+	icon_state = "beamblade_off"
+	item_state = "beamblade_off"
+	base_icon = "beamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of blue light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
+
+obj/item/weapon/material/sword/magic/onoff/dualpurple
+	name = "Blue Beam Blade"
+	icon_state = "beamblade_off"
+	item_state = "beamblade_off"
+	base_icon = "beamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of blue light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
+
+obj/item/weapon/material/sword/magic/onoff/dualred
+	name = "Blue Beam Blade"
+	icon_state = "beamblade_off"
+	item_state = "beamblade_off"
+	base_icon = "beamblade_off"
+	cooldownw = DEFAULT_QUICK_COOLDOWN
+	desc = "A blade made of blue light contained by a strange force."
+	atk_mode = BASH
+	force_divisor = 0.10
+	thrown_force_divisor = 0.10
+	sharpness = 0
+	block_chance = 25
+
+	overlay = 'icons/obj/magicoverlay.dmi'
+	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 obj/item/weapon/material/sword/magic/onoff/blue
 	name = "Blue Beam Blade"
@@ -316,7 +381,7 @@ obj/item/weapon/material/sword/magic/onoff/blue
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -329,6 +394,7 @@ obj/item/weapon/material/sword/magic/onoff/blue
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#0000FF")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -387,7 +453,7 @@ obj/item/weapon/material/sword/magic/onoff/red
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -400,6 +466,7 @@ obj/item/weapon/material/sword/magic/onoff/red
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#FF0000")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -458,7 +525,7 @@ obj/item/weapon/material/sword/magic/onoff/green
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -471,6 +538,7 @@ obj/item/weapon/material/sword/magic/onoff/green
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#00FF00")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -529,7 +597,7 @@ obj/item/weapon/material/sword/magic/onoff/lightgreen
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -542,6 +610,7 @@ obj/item/weapon/material/sword/magic/onoff/lightgreen
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#90EE90")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -600,7 +669,7 @@ obj/item/weapon/material/sword/magic/onoff/darkgreen
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -613,6 +682,7 @@ obj/item/weapon/material/sword/magic/onoff/darkgreen
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#013220")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -671,7 +741,7 @@ obj/item/weapon/material/sword/magic/onoff/purple
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -684,6 +754,7 @@ obj/item/weapon/material/sword/magic/onoff/purple
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#800080")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -742,7 +813,7 @@ obj/item/weapon/material/sword/magic/onoff/teal
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -755,6 +826,7 @@ obj/item/weapon/material/sword/magic/onoff/teal
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#008080")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -813,7 +885,7 @@ obj/item/weapon/material/sword/magic/onoff/cyan
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -826,6 +898,7 @@ obj/item/weapon/material/sword/magic/onoff/cyan
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#00FFFF")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -884,7 +957,7 @@ obj/item/weapon/material/sword/magic/onoff/magenta
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -897,6 +970,7 @@ obj/item/weapon/material/sword/magic/onoff/magenta
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#FF00FF")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -955,7 +1029,7 @@ obj/item/weapon/material/sword/magic/onoff/redpink
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -968,6 +1042,7 @@ obj/item/weapon/material/sword/magic/onoff/redpink
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#ffc0cb")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -1026,7 +1101,7 @@ obj/item/weapon/material/sword/magic/onoff/yellow
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -1039,6 +1114,7 @@ obj/item/weapon/material/sword/magic/onoff/yellow
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#FFFF00")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -1097,7 +1173,7 @@ obj/item/weapon/material/sword/magic/onoff/gold
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -1110,6 +1186,7 @@ obj/item/weapon/material/sword/magic/onoff/gold
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#FFD700")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -1181,6 +1258,7 @@ obj/item/weapon/material/sword/magic/onoff/orange
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#FFA500")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -1239,7 +1317,7 @@ obj/item/weapon/material/sword/magic/onoff/darkorange
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -1252,6 +1330,7 @@ obj/item/weapon/material/sword/magic/onoff/darkorange
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#ff8c00")
 		atk_mode = SLASH
 	else
 		icon_state = off_state
@@ -1310,7 +1389,7 @@ obj/item/weapon/material/sword/magic/onoff/bronze
 	off_state = "beamblade_off"
 	off_state_item = ""
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
-	if(state == "OFF")
+	if(state == "ON")
 		icon_state = on_state
 		item_state = on_state_item
 		force_divisor = new_force_divisor
@@ -1323,6 +1402,7 @@ obj/item/weapon/material/sword/magic/onoff/bronze
 		state = "ON"
 		sharp = 1
 		edge = 1
+		set_light(2, 0.25, "#CD7F32")
 		atk_mode = SLASH
 	else
 		icon_state = off_state

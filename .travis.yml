@@ -14,8 +14,8 @@ addons:
       - gcc-multilib
 env:
   global:
-    - BYOND_MAJOR="513"
-    - BYOND_MINOR="1525"
+    - BYOND_MAJOR="514"
+    - BYOND_MINOR="1571"
     - BYOND_MACRO_COUNT=2
  
 cache:

@@ -119,7 +119,7 @@
 				if (!win_condition_spam_check)
 					var/count = 0
 					for (var/mob/living/human/H in HVT_list)
-						if (H.original_job_title == "Soviet Supereme Deputy" && H.stat != DEAD)
+						if (H.original_job_title == "Soviet Supreme Deputy" && H.stat != DEAD)
 							count++
 					if (count == 0)
 						message = "The battle is over! All the <b>HVT</b>s are dead!"
