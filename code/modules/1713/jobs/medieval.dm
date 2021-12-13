@@ -223,8 +223,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet3(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/crossbow(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/crossbow(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant archer. You have basic armor and a bow and arrow. You are in charge of harassing the enemy troops from a safe distance!")
@@ -484,8 +484,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/halberd(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/crossbow(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/crossbow(H), slot_back)
 
 	H.add_note("Role", "You are a <b>[title]</b>, newly arrived member of the Templar Order. Assist your fellow members in defending the faith!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1082,8 +1082,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/arab(H), slot_head)
 
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/crossbow(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/crossbow(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/arab_buckler(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, an arabic archer. Use hit-and-run tactics to defeat the infidels!")

@@ -150,8 +150,8 @@
 "cT" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
 "cU" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "cV" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean)
-"cW" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/turf/floor/beach/sand/desert,/area/caribbean)
-"cX" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/turf/floor/beach/sand/desert,/area/caribbean)
+"cW" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/table/fancy,/obj/item/weapon/storage/bible/quran,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"cX" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/obj/structure/sign/flag/jihad3,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "cY" = (/obj/structure/catapult,/turf/floor/beach/sand/desert,/area/caribbean)
 "cZ" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "da" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/carpet/redcarpet,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
@@ -308,7 +308,7 @@
 "fV" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall)
 "fW" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
 "fX" = (/obj/structure/wild/palm,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
-"fY" = (/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/turf/floor/beach/sand/desert,/area/caribbean)
+"fY" = (/obj/covers/dirt_wall/blocks,/obj/structure/sign/flag/jihad1,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "fZ" = (/obj/structure/window/barrier/railing,/obj/structure/gatecontrol{code = 4412},/turf/floor/beach/sand/dark,/area/caribbean)
 "ga" = (/obj/structure/gate/sandstone{code = 4412},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "gb" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand,/area/caribbean)
@@ -321,8 +321,8 @@
 "gi" = (/obj/map_metadata/sammirhayeed,/turf/floor/beach/sand/desert,/area/caribbean)
 "gj" = (/obj/covers/sandstone,/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand/desert,/area/caribbean)
 "gk" = (/obj/covers/sandstone,/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand,/area/caribbean)
-"gl" = (/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand,/area/caribbean)
-"gm" = (/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand/dark,/area/caribbean)
+"gl" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean)
+"gm" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean)
 "gn" = (/obj/structure/barricade/horizontal,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
 "go" = (/obj/structure/barricade/horizontal,/obj/structure/sign/flag/templar1,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "gp" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -331,6 +331,9 @@
 "gs" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/two)
 "gt" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "gu" = (/obj/structure/closet/crate/empty,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
+"gv" = (/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean)
+"gw" = (/obj/structure/closet/crate/bolts/iron,/turf/floor/beach/sand/dark,/area/caribbean)
+"gx" = (/obj/structure/closet/crate/bolts/iron,/turf/floor/beach/sand,/area/caribbean)
 
 (1,1,1) = {"
 akakakakakakakakakakarararararararaTaTaNaTaTaTaTaTaTaTaTaTaNaTaTaTakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakak
@@ -349,10 +352,10 @@ bGdndndndndncbeybGabababababababababaaabaobMbMbEbEbEbDbDbDbDbDbWahdobWdobWdobWbu
 bGdndndndndndndnbFgfabababababaaaaaaaaabaobMbMbEbEbDbDbDbDdxbDdybDdybEdxbDdybEbMbEbEbXbubububububububububuawawabbrbrbrbrbrabananan
 ezdndncabudndndneAaqaqaqababaaaaaaaaaaabaobMbMbEbEbEbEbDbDbEbEbEbDbDbEbEbEbEbEbMbEbEbXbubububububububWbubnawawabaCaCaCaCaCabananan
 cbdndndndndndndneofjawawawawaoaoaoaoaoaoaobMbMbMbMbMbMbDbDdzccdzccdzccdzccdzbEbMbEbEbnfhcgbubububufEbWeIbXfkababbrbrbrbrbrabananan
-cbdndncabudndndneofjawawawawaoaoaoaoaoaoaobMbMbMbMbMbMbDbEccbMbMfGcefGbMbMccbEbMbEbEbnbXbXbnepbnbXbXbnbnbnababaaaaaaaaabababananan
+cbcWdncabudndndneofjawawawawaoaoaoaoaoaoaobMbMbMbMbMbMbDbEccbMbMfGcefGbMbMccbEbMbEbEbnbXbXbnepbnbXbXbnbnbnababaaaaaaaaabababananan
 cbdndndndndndndnbGaqaqaqababababcbcfcbepcbcfcbbEbEbMbMbEbDdzbMdzcececedzbMdzbEbMbMbMaoaoaoaoaoaoaoaoabaaaaabaaaaaaaaaaaaababananan
-cbdndncabudndndnbFgfababababababcbfhbubububucbbEbEbMbMbEbDbMcdcecedpcececdbMbEbMbMbMaoaoaoaoaoaoaoaoababaaaaaaaaabababaaaaabananan
-cbdndndndndnbGbGbGababababababaacfbububububucbbDbDbMbMbDbDdzbMdzcececedzbMdzbEbMbMbMaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoabaaaaananan
+cXdndncabudndndnbFgfababababababcbfhbubububucbbEbEbMbMbEbDbMcdcecedpcececdbMbEbMbMbMaoaoaoaoaoaoaoaoababaaaaaaaaabababaaaaabananan
+cbdndndndndnbGfYbGababababababaacfbububububucbbDbDbMbMbDbDdzbMdzcececedzbMdzbEbMbMbMaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoabaaaaananan
 aTbPdleHdlbPbYababababababaaaaaacfbubububufEcbbDbEbMbMbDbEccbMbMfGcefGbMbMccbEbMbMbEabaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoabaaaaananan
 bYbYbYbYbYbYbYababababababaaaaabcbfhbubVbVbVcbbDbEbMbMbDbEdzccdzccdzccdzccdzbEbMbMbEabababababababababababaaaaaaababababaaaaananan
 anananababababababababababaaababcbcbcbcbcbcbeBbEbEbMbMbEbEbEbEbEbEbEbDbDbEbEbEbMbMbEabababababababababaaaaaaababababababababananan
@@ -378,7 +381,7 @@ anananababanaeaqaqaqaqaqaqaqaJaJaJaJaqaqaqaqaJaJgjaJaJaqaqaqaqaEasataeaJaJaJaqaq
 anananaiaianavaKaqaqaqaLaMaMaMaMaMaJaJaJaMaMaMaMaMaMaMaJaJaJfoeDasateDfoaJaJaJaMaMaMajajaMaMaJaJaJaMaMaMaMaMalaJaJaJamanaiaiananan
 akakananananananaeaqaOakakakakakakakakakakakakakakakakakakakakakasatakakakakakakakakakakakakakakakakakakakakakauaJaOakakakakakakak
 akakakeKeKeKeKeKaJaJaJeKeLeKfpeKeKeKeKeKeKeKeKeKfpeKeKeKeKeKbQfseEeEfsbQeKeKeKeKeKfpeKeKeKeKeKeKeKeKeKfpeKeLeKauaJaOeKeKeKeKakakak
-akakeMeNbgbgbgbgaJaJaJcWbgbgbgcWbgcWbgcWbgcWbgcWbgbgcWbgbhaybabAaoaobAdwbbbibgbgcXbgbgcWbgcWbgbgcWbgbgcWbgbgcWaJaJaJbgcWbgbjbdbebe
+akakeMeNbgbgbgbgaJaJaJglbgbgbgglbgglbgglbgglbgglbgbgglbgbhaybabAaoaobAdwbbbibgbggmbgbgglbgglbgbgglbgbgglbgbgglaJaJaJbgglbgbjbdbebe
 akakeMeOaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJbkbcdLbBaoaobBePcOblaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaObfakak
 akakeMfMaJaJaJaJgkaqaqaqaqaqaqaJaJaJaJaJaJaJgjaJaJaJaJfNbkcSeQcQcRcRcQeRdMbmfNaJaJaJaJaJaJaJaJaJaJaJaJaJgjaJaJaJaJaJaJaJaJfObfakak
 akakakaMaMaMapapapapapapapapapapaMaMaMaMaMaMaMaMapapapbRbHcSeScQcRcRcQeTdMbHbSaMaMaMaMaMaMaMaMaMaMaMaMapaMapapapapaMaMaMaMaMbfakak
@@ -394,7 +397,7 @@ akakaadQaaababdGdGabababababdGababaadHdHaaabababdGababdGababbBbBaoaobBaaaaababab
 akakaaaaababababdGabaaababababababaaaaaaaadOababdCabababababbBbBaoaobBabaaabdGabaaaaaaababdCdCababababaaaaaaaaaaaabBbBbBbBbBbBcVcV
 akakdHaaababdGababaaaaaaabababdGaaaaaaaaaaaaababababababababbBbBaoaobBabdOabababaadHaaabababdGdGabaaaaaaaaaaaaaaaabBbJbBbBbBbBcVcV
 akakdHdHaaaaaaaaaaaadQabababababaaaadFaaaaaaaaabababababdGdHbBbBaoaobBabababababaadHdHababdGdGabaaaaaaaaaaaadBaaaabBbBbBbBbBbBcVcV
-akakaaaaaaaaaaaafYfYabababfYfYaaaaaafYfYaaaaaafYfYabdGababdHbBbBaoaobBabfYfYdGaaaafYfYababdGfYfYabaaaafYfYdHaaaafYfYbBbBbBbBbBcVfP
+akakaaaaaaaaaaaagvgvabababgvgvaaaaaagvgvaaaaaagvgvabdGababdHbBbBaoaobBabgvgvdGaaaagvgvababdGgvgvabaaaagvgvdHaaaagvgvbBbBbBbBbBcVfP
 akakakakakakakakakakabababananaaaaaaakakaaaaaaananaaababakakdRfZaoaodRfRananababaaakakaaaaaaananabaaaaakakaaaaaacVcVcVfPfPfPfPfPfP
 akakakakakakakakakggaiaiaianakfSfSfSakggfSaiaiananaiaiaianancVghgagaghanananaiaiaianakfSfSfSgganaiaifSakakfSfSfTghcVfPfPfPfPfQfQfQ
 aaaaaaaaaaaaaadHaaabdDabababdHaaaaaaaadHaaabababababdCdDabdGefbBaoaobBdGdGababababdGaaaaaaababdGdGabaaaaaaaabJbBbBbBbBbBbBbBbpbpbp
@@ -431,9 +434,9 @@ aaaaaadGabababababbTababababbUaaaadHaabUaaaaaaabbBaoaobBaabUaaaaaaaabUaaabababbT
 aaaaabdGababababababababababaaaaaabBbBbBaaaaaaaabBaoaobBaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaadHaaaadHaaaabBbBgdbBbpbpbCbCbCbCcscscscs
 ckckcmcmdWcmcmcmcmgucmcmcmcmguckgpgpgpgugpgpckckgpgrgrgpcmguckckckaacuabaaaaaacuaaaaaaaaaaaaaaaaaaaaaadPbBbBbBbpbpbCbCbCbCbCcscscs
 ckcmcmcmcmcmdVdWcmcmdXgngngngngogpgpgqgqgpgpgpgpgpgrgrgscmcmckckckaaabababaaaaaaaaaadHdHdHaaaaaaaaaaaabBbBbBbBbpbpbCbCbCbCbCcscscs
-aadDabababababdGdJcjeGcpdrdsdvdtcncrcocococncncncnaoaobBglabaackckaadFaaababdHaaaadHdHaaaaaaaaaaaaaaaabBbBbBbpbpbpbCbCbCbCbCcscscs
-aaababababdGdGabdJcjcjcjcjcjcjcjctcvcncococncncncnaoaobBgmabaagtckaaaaaaaaaaaaaaaadHaadHaageaadHaaaabBbBbBbBbpbpbCbCbCbCbCbCcscscs
-aaaaababdGdGababcjcjesdJetcjdJcjdcctddcnddcncncncnaoaobBgmglaackckaaaadHdHaaaaaaaadHdHaaaaaaaaaaaabBbBbBbBbBbpbpbCbCbCbCbCbCcscscs
+aadDabababababdGdJcjeGcpdrdsdvdtcncrcocococncncncnaoaobBababaackckaadFaaababdHaaaadHdHaaaaaaaaaaaaaaaabBbBbBbpbpbpbCbCbCbCbCcscscs
+aaababababdGdGabdJcjcjcjcjcjcjcjctcvcncococncncncnaoaobBgwgxaagtckaaaaaaaaaaaaaaaadHaadHaageaadHaaaabBbBbBbBbpbpbCbCbCbCbCbCcscscs
+aaaaababdGdGababcjcjesdJetcjdJcjdcctddcnddcncncncnaoaobBgwgxaackckaaaadHdHaaaaaaaadHdHaaaaaaaaaaaabBbBbBbBbBbpbpbCbCbCbCbCbCcscscs
 aaaaaaaaaaaaaaaacwcxclclclclclcjcjctcncncnctcncncncycycncnctctckckaaaaaadHaaaaaaaaaadHaaaaaaegaaaadPbBbBbBbBbpbCbCbCbCbCbCcscscscs
 aaaaaaehdFaadHaaczcAcBcCcDeicEcjdYctdcctdcctctcncncycycnctctctckckckckckckckaaaadBaadHaadHaadHaaaabBbBbBbBbpbpbCbCbCbCbCbCcscscscs
 aadQaadFaaaaaaaaczctcjcjcDejcjdJcjctctctctctctdccndfcyddctdZctckckckckckckckaaaaaaaaaaaaaaaaaaaadPbBbBbBbBbpbpbCbCbCbCbCbCcscscscs

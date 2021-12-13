@@ -119,6 +119,13 @@
 	projectile_type = /obj/item/projectile/arrow/arrow/vial
 	weight = 0.18
 	volume = 15
+
+/obj/item/ammo_casing/arrow/vial/poisonous
+	name = "poison arrow"
+	desc = "An arrow with a poison tip."
+	icon_state = "arrow_vial"
+	projectile_type = /obj/item/projectile/arrow/arrow/vial/poisonous
+
 //Crossbow
 
 /obj/item/ammo_casing/bolt
