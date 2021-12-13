@@ -44,9 +44,9 @@
 		owner = origin_loc.client
 		target = target_mob.client
 
-		for (var/obj/chat_text/CT in owner.stored_chat_text)
-			if (CT.target && CT != src)
-				CT.Destroy()
+		for (var/image/CT in owner.images)
+			if(CT.plane == CHAT_PLANE)
+				animate(CT,pixel_y = CT.pixel_y + 8,time = 3)
 
 		message = image(loc = origin_loc)
 		message.plane = CHAT_PLANE
@@ -59,7 +59,7 @@
 
 			target.overlay_cleaner(message, src)
 		spawn(50)
-			animate(src,alpha=0,time=10)
+			animate(message,alpha=0,time=10)
 			sleep(10)
 			if(src)
 				Destroy()
