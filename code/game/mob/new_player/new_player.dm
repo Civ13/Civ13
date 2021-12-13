@@ -455,7 +455,7 @@ var/global/redirect_all_players = null
 				return
 		if (map && map.ID == MAP_YELTSIN)
 			var/obj/map_metadata/yeltsin/CP = map
-			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet Supreme Deputy"))
+			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet Supreme Chairman"))
 				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
 				return
 		if (map && map.ID == MAP_ALLEYWAY)
