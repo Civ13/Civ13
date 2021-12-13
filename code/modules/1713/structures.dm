@@ -748,20 +748,32 @@
 
 /obj/structure/torch_stand/update_icon()
 	if (storage.contents.len > 0)
-		for (var/obj/item/flashlight/torch in src.storage.contents)
-			if (torch.on == TRUE)
+		for (var/obj/item/flashlight/torch/TOR in src.storage.contents)
+			if (TOR.on == TRUE)
 				icon_state = "torch_stand1_on"
 				set_light(1)
+				light_color = "#FCDA7C"
+				light_range = 4
+				return
 			else
 				icon_state = "torch_stand1"
 				set_light(0)
-		for (var/obj/item/flashlight/lantern in src.storage.contents)
-			if (lantern.on == TRUE)
+				light_color = null
+				light_range = 0
+				return
+			return
+		for (var/obj/item/flashlight/lantern/LAN in src.storage.contents)
+			if (LAN.on == TRUE)
 				icon_state = "torch_stand_lantern_on"
 				set_light(1)
+				light_color = "#FCDA7C"
+				light_range = 6
+				return
 			else
 				icon_state = "torch_stand_lantern"
 				set_light(0)
+				return
+			return
 	else
 		icon_state = "torch_stand"
 	if (dir == 2)

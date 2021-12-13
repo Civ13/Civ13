@@ -2099,6 +2099,7 @@ RECIPE: /material/wood/,shell rack,/obj/structure/shellrack,6,90,1,1,furniture,8
 RECIPE: /material/wood/,large crate,/obj/structure/closet/crate/empty/large,8,80,1,1,furniture,95,0,0,8,null
 RECIPE: /material/wood/,military crate,/obj/structure/closet/crate/ww2,5,50,1,1,furniture,105,0,0,8,null
 RECIPE: /material/wood/,standing clock,/obj/structure/wallclock,6,150,1,1,furniture,110,0,0,8,null
+RECIPE: /material/wood/,torch mount,/obj/structure/torch_stand,1,35,1,1,furniture,25,0,0,6,null
 
 //*********************| WOOD DECORATION & MONUMENTS |**************************
 

@@ -205,6 +205,7 @@ RECIPE: /material/wood/,paper sheet,/obj/item/weapon/paper,5,25,0,1,paper & prin
 RECIPE: /material/wood/,book,/obj/item/weapon/book,10,75,0,1,paper & printing,45,0,0,8,null
 RECIPE: /material/wood/,clipboard,/obj/item/weapon/clipboard,8,85,0,1,paper & printing,125,0,0,8,null
 RECIPE: /material/wood/,wooden pegleg,/obj/item/weapon/prosthesis/pegleg,12,110,0,1,medical,0,0,18,8,null
+RECIPE: /material/wood/,torch mount,/obj/structure/torch_stand,1,35,1,1,furniture,25,0,0,6,null
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
 RECIPE: /material/rags/,garrote,/obj/item/garrote,14,120,0,1,none,0,43,0,8,null
