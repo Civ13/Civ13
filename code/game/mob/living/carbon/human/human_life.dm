@@ -1446,7 +1446,7 @@
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
 				if (CHECHEN)
-					holder2.icon_state = "pirate_basic"
+					holder2.icon_state = "chechen_basic"
 				if (FINNISH)
 					holder2.icon_state = "ger0_basic"
 				if (JAPANESE)
@@ -1463,9 +1463,9 @@
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
-					else if (map.ordinal_age == 6 || map.ordinal_age == 7)
+					else if (map.ordinal_age >= 6)
 						holder2.icon_state = "sov_basic"
-					else
+					if (map.ID == MAP_YELTSIN || map.ID == MAP_RUSRETREAT)
 						holder2.icon_state = "ru_basic"
 				if (GERMAN)
 					if (map.ordinal_age <= 1)
@@ -1488,7 +1488,7 @@
 				if (CHINESE)
 					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
-					if (map.ID == MAP_CAPITOL_HILL || map.ID == MAP_YELTSIN)
+					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
 					else if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"
@@ -1512,7 +1512,7 @@
 //						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = ""
-					if (map.ID == MAP_TSARITSYN)
+					if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN)
 						holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
 			if (original_job.uses_squads && squad > 0)
