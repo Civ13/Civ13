@@ -123,7 +123,7 @@
 	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
 	RUB.amount = 75
 	H.equip_to_slot_or_del(RUB, slot_r_store)
-
+	H.equip_to_slot_or_del(new/obj/item/weapon/attachment/bayonet(H), slot_l_store)
 //head
 //back
 	give_random_name(H)
@@ -199,6 +199,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/pen/reagent/sleepy(H), slot_l_ear)
 	if (prob(40))
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
@@ -212,7 +213,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy! Play your role as a civilian doctor while assisting your UPA allies!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy and play your role as a civilian doctor while assisting your UPA allies! Your pen as in injectoor with a powerful sleeping agent and can be refilled!")
 	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -287,6 +288,7 @@
 	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
 	RUB.amount = 75
 	H.equip_to_slot_or_del(RUB, slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
@@ -372,6 +374,7 @@
 	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
 	RUB.amount = 50
 	H.equip_to_slot_or_del(RUB, slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 //back
 	give_random_name(H)
@@ -452,6 +455,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
@@ -518,6 +522,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
@@ -579,6 +584,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
@@ -638,10 +644,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/german/G1 = new/obj/item/weapon/key/german(null)
 	KC.attackby(G1,H)
@@ -694,6 +702,7 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
 
 //head
 	if (prob(80))
@@ -702,7 +711,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
 	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
 	else
 		if (prob(10))
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g43(H), slot_shoulder)

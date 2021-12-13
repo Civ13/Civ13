@@ -31,6 +31,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
+	uniform.attackby(h, H)
 	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -167,7 +171,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
 	var/randspear = pick(1,2,3)
 	if (randspear == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_belt)
 	if (randspear == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_belt)
 	if (randspear == 3)
@@ -275,7 +279,7 @@
 
 	var/randwep = pick(1,2,3,4)
 	if (randwep == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_back)
 	if (randwep == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/pitchfork(H), slot_back)
 	if (randwep == 3)
@@ -338,6 +342,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
+	uniform.attackby(h, H)
 	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the Leader of the Templar Knights in the Holy Land. Defend Christianity!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -565,6 +573,10 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
+	uniform.attackby(h, H)
 	world << "<b><big>[H.real_name] is the British Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -700,7 +712,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
 	var/randspear = pick(1,2,3)
 	if (randspear == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_belt)
 	if (randspear == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_belt)
 	if (randspear == 3)
@@ -807,7 +819,7 @@
 
 	var/randwep = pick(1,2,3,4)
 	if (randwep == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_back)
 	if (randwep == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/pitchfork(H), slot_back)
 	if (randwep == 3)
@@ -864,17 +876,21 @@
 /datum/job/arab/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/emirate(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/emirate(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/arabic_robe(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/emirate(H), slot_wear_suit)
 //head
 
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/emirate(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/saif(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
+	uniform.attackby(h, H)
 	world << "<b><big>[H.real_name] is the Emir!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the military leader of this group of soldiers. Defeat the crusaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1014,7 +1030,7 @@
 
 	var/randspear = pick(1,2,3)
 	if (randspear == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_belt)
 	if (randspear == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_belt)
 	if (randspear == 3)

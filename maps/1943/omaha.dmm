@@ -502,6 +502,7 @@
 "jH" = (/obj/structure/multiz/ladder/ww2/teleporter/up/three,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "jI" = (/obj/structure/multiz/ladder/ww2/teleporter/up/one,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "jJ" = (/obj/effect/decal/warning_stripes{icon_state = "N-corner"},/turf/floor/plating/concrete,/area/caribbean/sea/sea/ins)
+"jK" = (/obj/effect/floor_decal/industrial/hatch,/obj/structure/closet/crate/ww2,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "jM" = (/obj/structure/optable,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
 "jN" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/houses)
 "jO" = (/obj/structure/closet/crate/coldwar,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
@@ -1151,7 +1152,7 @@ oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPakakakakakakakakakakakakakakakakalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalaloPoPoPoP
 oPoPoPamakanaoananananananaoanananananaoanalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalalaqoPoP
-oPoPoPakananauaKaLaKbgaKbhaKbiaKbjbjaKbkanblbmbnbmbmbmbmbmbmbobobmbmbmbmbmbmbmbmbmbmbobobmbqbqbmbmbmbmbrbobobmbmalalaloP
+oPoPoPakananauaKaLaKbgaKbhaKbiaKbjjKaKbkanblbmbnbmbmbmbmbmbmbobobmbmbmbmbmbmbmbmbmbmbobobmbqbqbmbmbmbmbrbobobmbmalalaloP
 oPoPoPakanbkbtaKaLaKbgaKbuaKbvaKbwbjaKaKanblbnbnbnbmbmbmbmbmbmbxbybybybybybybybzbmbmbmbmbmbmbmbmbmbAbBbEbmbmbrbmbmbmalal
 oPoPoPakanaKbFaKbGaKbIaKbJaKbKaKbLbjaKaKanbMbnbnbnbmbmbmbmbmbmbNbObObObObObObObPbmbmbmbmbmbmbmbmbmbmbQbSbTbmbQbEbTbmbmal
 oPoPoPakanaKbFaKbGaKbIaKbUaKbVaKbWbjaKaKbXblbnbnbnbmbmbmbmbmbmbNbObObObObObObObPbmbmbmbmbmbmbmbmbmbmbYbmbmbAbZbSbmbmbmbm

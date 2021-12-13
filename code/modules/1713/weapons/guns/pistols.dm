@@ -528,6 +528,12 @@ obj/item/weapon/gun/projectile/pistol/tt30ll
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.12
 
+/obj/item/weapon/gun/projectile/pistol/m9beretta/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/pistol/jericho941
 	name = "Jericho 941"
 	desc = "The standard issue pistol of the IDF of the late 20th century. Chambered in 9mm Parabellum."

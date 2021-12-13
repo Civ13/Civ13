@@ -578,6 +578,10 @@
 	block_chance = 15
 	cooldownw = 10
 
+/obj/item/weapon/material/spear/dory/bronze
+	name = "bronze spear"
+	default_material = "bronze"
+
 /obj/item/weapon/material/spear/sarissa
 	name = "sarissa"
 	sharp = TRUE
@@ -746,6 +750,10 @@
 			worn_state = "dory"
 		spawn(1)
 			update_icon()
+
+/obj/item/weapon/material/spear/sarissa/bronze
+	name = "bronze spear"
+	default_material = "bronze"
 
 /obj/item/weapon/material/halberd
 	name = "halberd"
