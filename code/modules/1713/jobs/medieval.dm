@@ -225,7 +225,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/crossbow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/crossbow(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/meat(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant archer. You have basic armor and a bow and arrow. You are in charge of harassing the enemy troops from a safe distance!")
 	H.setStat("strength", STAT_NORMAL)
@@ -287,7 +287,7 @@
 	if (randwep == 4)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/meat(H), slot_l_store)
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/blue_buckler(H), slot_l_hand)
 	var/obj/item/clothing/accessory/armband/french/fr_a = new /obj/item/clothing/accessory/armband/french(null)
@@ -766,7 +766,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/meat(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant archer. You have basic armor and a bow and arrow. You are in charge of harassing the enemy troops from a safe distance!")
 	H.setStat("strength", STAT_NORMAL)
@@ -827,7 +827,7 @@
 	if (randwep == 4)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/meat(H), slot_l_store)
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/blue_buckler(H), slot_l_hand)
 	var/obj/item/clothing/accessory/armband/british/fr_a = new /obj/item/clothing/accessory/armband/british(null)
