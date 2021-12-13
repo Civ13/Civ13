@@ -37,6 +37,8 @@
 		target = null
 	return ..()
 
+/image/var/owner = null
+
 /obj/chat_text/New(var/mob/origin_loc, var/desired_text, var/mob/target_mob)
 	..()
 	loc = null
@@ -45,10 +47,11 @@
 		target = target_mob.client
 
 		for (var/image/CT in owner.images)
-			if(CT.plane == CHAT_PLANE)
+			if(CT.plane == CHAT_PLANE && CT.owner == owner)
 				animate(CT,pixel_y = CT.pixel_y + 8,time = 3)
 
 		message = image(loc = origin_loc)
+		message.owner = owner
 		message.plane = CHAT_PLANE
 		message.maptext_width = TILE_SIZE*7
 		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
