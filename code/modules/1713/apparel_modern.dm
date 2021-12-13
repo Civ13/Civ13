@@ -477,6 +477,13 @@
 	item_state = "milrus_vsr93"
 	worn_state = "milrus_vsr93"
 
+/obj/item/clothing/under/milrus_omon
+	name = "russian OMON uniform" //Uniform used mostly in the 90's
+	desc = "An outfit designed and issued for the OMON forces of the Russian Federation."
+	icon_state = "milrus_omon"
+	item_state = "milrus_omon"
+	worn_state = "milrus_omon"
+
 /* USSR Helmets*/
 
 /obj/item/clothing/head/helmet/modern/sovietfacehelmet

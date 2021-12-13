@@ -73,6 +73,16 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 
+/obj/item/clothing/suit/storage/jacket/afghanka
+	name = "afghanka coat"
+	desc = "A soviet winter jacket issued and developped in the early 80's."
+	icon_state = "rus_winter_afghanka"
+	item_state = "rus_winter_afghanka"
+	worn_state = "rus_winter_afghanka"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
 
 /* Cold War Accessories*/
 
@@ -983,6 +993,40 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+	/* Sovie apparel 70-80'ss*/
+
+/obj/item/clothing/under/afghanka
+	name = "afghanka uniform"
+	desc = "A standard soviet uniform developped and issued in the early 80's, still in use after the collapse of the Soviet Union."
+	icon_state = "milrus_afghanka_open"
+	item_state = "milrus_afghanka_open"
+	worn_state = "milrus_afghanka_open"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/adjusted = FALSE
+/obj/item/clothing/under/afghanka/verb/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust collar"
+	if (type != /obj/item/clothing/under/afghanka)
+		return
+	else
+		if(adjusted)
+			worn_state = "milrus_afghanka_open"
+			item_state = "milrus_afghanka_open"
+			icon_state = "milrus_afghanka_open"
+			item_state_slots["w_uniform"] = "milrus_afghanka_open"
+			usr << "You <b>open up</b> the collar of your uniform."
+			adjusted = FALSE
+			update_clothing_icon()
+		else if (!adjusted)
+			worn_state = "milrus_afghanka_closed"
+			item_state = "milrus_afghanka_closed"
+			icon_state = "milrus_afghanka_closed"
+			item_state_slots["w_uniform"] = "milrus_afghanka_closed"
+			usr << "You <b>close up</b> the collar of your uniform."
+			adjusted = TRUE
+			update_clothing_icon()
 
 	/* Swinging 60's*/
 
