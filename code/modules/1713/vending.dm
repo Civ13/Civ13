@@ -807,7 +807,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/under/milrus_vsr93 = 5,
 		/obj/item/clothing/under/afghanka = 15,
 		/obj/item/clothing/under/milrus_omon = 10,
-		/obj/item/clothing/suit/storage/jacket/milrus_winter_vsr93 = 5,
+		/obj/item/clothing/suit/storage/jacket/rus_winter_vsr93 = 5,
 		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
 		/obj/item/clothing/head/ww2/sov_ushanka = 10,
 		/obj/item/clothing/mask/sovietbala = 15,
