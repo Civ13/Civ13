@@ -954,9 +954,9 @@
 	name = "VZ-58"
 	desc = "Czechoslovakian assault rifle chambered in 7.62x39mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
-	icon_state = "az58"
+	icon_state = "vz58"
 	item_state = "vz58"
-	base_icon = "az58"
+	base_icon = "vz58"
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	reload_sound = 'sound/weapons/guns/interact/AKReload.ogg'
@@ -973,3 +973,19 @@
 	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/submachinegun/vz58/white
+	name = "White VZ-58"
+	desc = "Czechoslovakian assault rifle chambered in 7.62x39mm. This model has a birch stock and handguard."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "white_vz58"
+	item_state = "white_vz58"
+	base_icon = "white_vz58"
+
+/obj/item/weapon/gun/projectile/submachinegun/vz58/black
+	name = "Black VZ-58"
+	desc = "Czechoslovakian assault rifle chambered in 7.62x39mm. This model has a black stock and handguard."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "black_vz58"
+	item_state = "black_vz58"
+	base_icon = "black_vz58"
