@@ -13,4 +13,3 @@ scripts/updateserverabspaths.py
 scripts/updateserverabspathsnogitpull.py
 scripts/killciv13.py
 scripts/killsudos.py
-scripts/clear_oggs.py

@@ -670,9 +670,6 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -1288,7 +1285,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
 	uniform.attackby(jap_ittoheih, H)
-
+	var/obj/item/clothing/accessory/storage/sheath/baton/fullh = new /obj/item/clothing/accessory/storage/sheath/baton(null)
+	uniform.attackby(fullh, H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
 	KC.attackby(G1,H)
@@ -1550,8 +1548,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/rank/jap_2lth = new /obj/item/clothing/accessory/rank/jap_2lt(null)
 	uniform.attackby(jap_2lth, H)
 	give_random_name(H)
@@ -2062,9 +2058,6 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")

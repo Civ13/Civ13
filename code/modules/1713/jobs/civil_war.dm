@@ -195,7 +195,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/capnball/dragoon(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/capnball/dragoon(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/union_uniform(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 //head
@@ -463,7 +463,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/capnball/dragoon(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/capnball/dragoon(H), slot_l_hand)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)

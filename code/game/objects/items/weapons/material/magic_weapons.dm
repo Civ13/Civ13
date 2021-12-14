@@ -220,12 +220,16 @@
 	var/set_light()
 	var/old_force_divisor = 0.10
 	var/old_thrown_force_divisor = 0.10
+	var/old_force = 0
 	var/old_sharpness = 0
 	var/old_block_chance = 25
+	var/old_damage = DAMAGE_MEDIUM
 
-	var/new_force_divisor = 10
-	var/new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
-	var/new_block_chance = 95
+	var/new_damage = DAMAGE_OH_GOD
+	var/new_force_divisor = 15
+	var/new_thrown_force_divisor = 0.55 // 10 when thrown with weight 20 (steel)
+	var/new_block_chance = 96
+	var/new_force = 200
 	var/new_sharpness = 500
 
 	var/hitsound_off = 'sound/weapons/punch1.ogg' //default
@@ -236,12 +240,14 @@
 
 	var/onsound = 'sound/weapons/magic/LS_On.ogg'
 	var/offsound = 'sound/weapons/magic/LS_Off.ogg'
+	var/suicide = FALSE
 
 	var/state = "OFF"
 	var/on_state = "beamblade"
 	var/on_state_item = "beamblade"
 	var/off_state = "beamblade_off"
 	var/off_state_item = ""
+
 /obj/item/weapon/material/sword/magic/onoff/attack_self()
 	if(state == "ON")
 		icon_state = on_state
@@ -253,6 +259,8 @@
 		playsound(loc, onsound, 100, TRUE)
 		hitsound = hitsound_on
 		drawsound = drawsound_on
+		new_force = 200
+		new_damage = DAMAGE_OH_GOD
 		state = "ON"
 		sharp = 1
 		edge = 1
@@ -269,76 +277,14 @@
 		playsound(loc, offsound, 100, TRUE)
 		hitsound = hitsound_off
 		drawsound = drawsound_off
+		old_force = 0
+		old_damage = DAMAGE_MEDIUM
 		state = "OFF"
 		sharp = FALSE
 		edge = FALSE
 		atk_mode = BASH
 		update_icon()
 	..()
-
-obj/item/weapon/material/sword/magic/onoff/dualblue
-	name = "Blue Beam Blade"
-	icon_state = "beamblade_off"
-	item_state = "beamblade_off"
-	base_icon = "beamblade_off"
-	cooldownw = DEFAULT_QUICK_COOLDOWN
-	desc = "A blade made of blue light contained by a strange force."
-	atk_mode = BASH
-	force_divisor = 0.10
-	thrown_force_divisor = 0.10
-	sharpness = 0
-	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
-obj/item/weapon/material/sword/magic/onoff/dualgreen
-	name = "Blue Beam Blade"
-	icon_state = "beamblade_off"
-	item_state = "beamblade_off"
-	base_icon = "beamblade_off"
-	cooldownw = DEFAULT_QUICK_COOLDOWN
-	desc = "A blade made of blue light contained by a strange force."
-	atk_mode = BASH
-	force_divisor = 0.10
-	thrown_force_divisor = 0.10
-	sharpness = 0
-	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
-obj/item/weapon/material/sword/magic/onoff/dualpurple
-	name = "Blue Beam Blade"
-	icon_state = "beamblade_off"
-	item_state = "beamblade_off"
-	base_icon = "beamblade_off"
-	cooldownw = DEFAULT_QUICK_COOLDOWN
-	desc = "A blade made of blue light contained by a strange force."
-	atk_mode = BASH
-	force_divisor = 0.10
-	thrown_force_divisor = 0.10
-	sharpness = 0
-	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
-obj/item/weapon/material/sword/magic/onoff/dualred
-	name = "Blue Beam Blade"
-	icon_state = "beamblade_off"
-	item_state = "beamblade_off"
-	base_icon = "beamblade_off"
-	cooldownw = DEFAULT_QUICK_COOLDOWN
-	desc = "A blade made of blue light contained by a strange force."
-	atk_mode = BASH
-	force_divisor = 0.10
-	thrown_force_divisor = 0.10
-	sharpness = 0
-	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 obj/item/weapon/material/sword/magic/onoff/blue
 	name = "Blue Beam Blade"

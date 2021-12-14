@@ -3,7 +3,7 @@
 	ID = MAP_GULAG13
 	title = "GULAG 13"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "camp"
+	lobby_icon_state = "gulag"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 3600
 	has_hunger = TRUE
@@ -25,7 +25,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
+		"Red Army Choir - Slavery and Suffering:1" = 'sound/music/slavery_and_suffering.ogg')
 	gamemode = "Prison Simulation"
 	var/list/points = list(
 		list("Guards",0,0),

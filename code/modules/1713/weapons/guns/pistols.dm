@@ -476,7 +476,7 @@
 
 /obj/item/weapon/gun/projectile/pistol/tt30
 	name = "TT-33"
-	desc = "The standard issue pistol of the Soviet Union. Chambered in 7.62x25mm Tokarev."
+	desc = "The standard issue pistol of the Soviet Union before the 1950's. Chambered in 7.62x25mm Tokarev."
 	icon_state = "tt30"
 	w_class = 2
 	caliber = "a762x25"
@@ -496,6 +496,27 @@
 	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
 	SP.attached(null,src,TRUE)
 
+/obj/item/weapon/gun/projectile/pistol/makarov
+	name = "Makarov PM"
+	desc = "The standard issue pistol of the Soviet Union and Russian Federation after the 1950's. Chambered in 9x18mm Makarov."
+	icon_state = "makarov"
+	w_class = 2
+	caliber = "a9x18"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
+	magazine_type = /obj/item/ammo_magazine/makarov
+	good_mags = list(/obj/item/ammo_magazine/makarov)
+	weight = 0.704
+	ammo_type = /obj/item/ammo_casing/a9x18
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.98
+	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
+
+/obj/item/weapon/gun/projectile/pistol/tt30/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 obj/item/weapon/gun/projectile/pistol/tt30ll
 	name = "TT-33"
@@ -527,6 +548,12 @@ obj/item/weapon/gun/projectile/pistol/tt30ll
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.12
+
+/obj/item/weapon/gun/projectile/pistol/m9beretta/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/pistol/jericho941
 	name = "Jericho 941"

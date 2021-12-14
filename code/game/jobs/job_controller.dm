@@ -212,7 +212,23 @@ var/global/datum/controller/occupations/job_master
 					found = TRUE
 					continue
 			if (!found)
-				H.forceMove(get_turf(HSL))
+				var/turf/spawnloc = get_turf(HSL)
+				if (HSL.dir == NORTH && get_turf(locate(HSL.x, HSL.y-1, HSL.z)))
+					spawnloc = get_turf(locate(HSL.x, HSL.y-1, HSL.z))
+				else if (HSL.dir == EAST && get_turf(locate(HSL.x-1, HSL.y, HSL.z)))
+					spawnloc = get_turf(locate(HSL.x-1, HSL.y, HSL.z))
+				else if (HSL.dir == SOUTH && get_turf(locate(HSL.x, HSL.y+1, HSL.z)))
+					spawnloc = get_turf(locate(HSL.x, HSL.y+1, HSL.z))
+				else if (HSL.dir == WEST && get_turf(locate(HSL.x+1, HSL.y, HSL.z)))
+					spawnloc = get_turf(locate(HSL.x+1, HSL.y, HSL.z))
+				if (spawnloc.density)
+					spawnloc = get_turf(HSL)
+				else
+					for(var/obj/O in spawnloc)
+						if (O.density)
+							spawnloc = get_turf(HSL)
+							break
+				H.forceMove(spawnloc)
 				HSL << "<big><font color='green'>[H] has arrived at your squad.</font></big>"
 				// make sure we have the right ambience for our new location
 				spawn (1)

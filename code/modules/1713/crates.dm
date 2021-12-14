@@ -788,4 +788,18 @@ obj/structure/closet/crate/airdrops/medicine
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_casing/arrow/stone = 20)
+
+/obj/structure/closet/crate/bolts
+	name = "bolt crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow = 20)
+
+/obj/structure/closet/crate/bolts/iron
+	name = "iron arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/bolt/iron = 20)
 #undef DYNAMIC_AMT

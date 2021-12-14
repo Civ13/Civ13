@@ -3,7 +3,7 @@
 	desc = "A face-covering mask that filters harmful gases from the air."
 	icon_state = "gas_alt"
 	item_flags = BLOCK_GAS_SMOKE_EFFECT | AIRTIGHT
-	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE
+	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE|BLOCKHAIR
 	body_parts_covered = FACE|EYES
 	w_class = 2.0
 	item_state = "gas_alt"
@@ -63,6 +63,15 @@
 /obj/item/clothing/mask/gas/russia
 	icon_state = "russiamask"
 	item_state = "russiamask"
+	name = "GP-9 gas mask"
+	desc = "A panoramic gas mask intented for civilian use and civil denfense."
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
+/obj/item/clothing/mask/gas/russia_pmk2
+	icon_state = "russiamask_pmk2"
+	item_state = "russiamask_pmk2"
+	name = "PMK-2 gas mask"
+	desc = "Compact combined mask designed in the early 1990's, issued to the Russian Armed Forces"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/swat
@@ -70,7 +79,7 @@
 	item_state = "swatmask"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
-/obj/item/clothing/mask/gas/modern
+/obj/item/clothing/mask/gas/soviet
 	icon_state = "sovietmask"
 	item_state = "sovietmask"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")

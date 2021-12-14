@@ -7,14 +7,10 @@
 	var/list/stored_chat_text = list()
 	var/list/seen_chat_text = list()
 
-/client/proc/overlay_cleaner(message = null, chat_text = null)
+/client/proc/overlay_cleaner(message = null)
 	spawn(50)
 		if (message)
 			src.images -= message
-		if (chat_text)
-			src.stored_chat_text -= chat_text
-			src.stored_chat_text -= chat_text
-
 
 /obj/chat_text
 	name = "overlay"
@@ -37,6 +33,8 @@
 		target = null
 	return ..()
 
+/image/var/target = null
+
 /obj/chat_text/New(var/mob/origin_loc, var/desired_text, var/mob/target_mob)
 	..()
 	loc = null
@@ -44,11 +42,12 @@
 		owner = origin_loc.client
 		target = target_mob.client
 
-		for (var/obj/chat_text/CT in owner.stored_chat_text)
-			if (CT.target && CT != src)
-				CT.Destroy()
+		for (var/image/CT in owner.images)
+			if(CT.plane == CHAT_PLANE && CT.target == target)
+				animate(CT,pixel_y = CT.pixel_y + 8,time = 3)
 
 		message = image(loc = origin_loc)
+		message.target = target
 		message.plane = CHAT_PLANE
 		message.maptext_width = TILE_SIZE*7
 		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
@@ -56,10 +55,9 @@
 		message.maptext = "<center>[desired_text]</center>"
 		if(target)
 			target.images += message
-
-			target.overlay_cleaner(message, src)
+			target.overlay_cleaner(message)
 		spawn(50)
-			animate(src,alpha=0,time=10)
+			animate(message,alpha=0,time=10)
 			sleep(10)
 			if(src)
 				Destroy()
