@@ -1082,8 +1082,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/arab(H), slot_head)
 
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/crossbow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/crossbow(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/medieval(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/arab_buckler(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, an arabic archer. Use hit-and-run tactics to defeat the infidels!")
