@@ -40,6 +40,18 @@ You will need a windows machine or a virtual machine running it from another OS.
 
 
 ## Setting up a Server
+
+### Windows
+1. Install both [BYOND](https://www.byond.com/download/) and [Python 3](https://www.python.org/downloads/windows/)
+
+2. Download this repository, preferably with GitHub or another git program if you want to keep it updated.
+
+3. Open civ13.dme with BYOND DreamMaker and compile.
+
+4. Open civ13.dmb with BYOND DreamSeeker to launch the server.
+
+
+### Linux
 1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
  
 2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13/Civ13/master/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install wget*** first.
