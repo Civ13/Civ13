@@ -184,7 +184,7 @@
 "dB" = (/obj/structure/table/wood,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "dC" = (/obj/item/weapon/wrench,/obj/structure/table/wood,/obj/item/weapon/wrench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/hammer,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "dD" = (/obj/item/weapon/storage/belt/smallpouches,/obj/structure/table/wood,/obj/item/weapon/storage/belt/smallpouches,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
-"dE" = (/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket. This one was captured by the allies for their use."; name = "Stolen Panzerfaust"},/obj/item/weapon/gun/launcher/rocket/panzerfaust,/obj/structure/table/wood,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
+"dE" = (/obj/structure/table/wood,/obj/item/ammo_casing/rocket/bazooka,/obj/item/ammo_casing/rocket/bazooka,/obj/item/ammo_casing/rocket/bazooka,/obj/item/weapon/gun/launcher/rocket/bazooka,/obj/item/weapon/gun/launcher/rocket/bazooka,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "dF" = (/obj/structure/closet,/obj/item/clothing/head/flatcap1,/obj/item/clothing/gloves/fingerless,/obj/item/clothing/accessory/holster/hip,/obj/item/clothing/mask/shemagh/greykerchief,/obj/item/clothing/shoes/workboots,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "dG" = (/obj/structure/radio/transmitter_receiver/nopower/faction1,/obj/structure/table,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "dH" = (/turf/wall/iron/low,/area/caribbean/sea/sea/ins)
@@ -498,8 +498,8 @@ oPoPoPoPoPoPadadbVbVdadddddddddddddddddebVbVbVdbbVbVbVbVbVbVbVbVbVbVbVbVbVbVbVbV
 oPoPoPoPoPoPadadcNbVdabVbVbVbVcNbVbVbVdabVbVbVbVcNbVbVbVbVbVcNbVbVbVbVcNbVbVbVbVbVcNbVbVbVbVbVcNadoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPoPadadadancYanadadadaddfbVbVdabVbVbVdgadadadadancYadadadadadadadadadadadadchanadadadadadoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPoPadaddhbVczbVczbVdiaddfbVbVdabVbVbVdjadbTbVbVbVbVbVbVbVbVbTaddkbVdldmdnbVbVdmdmdfbTadoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPoPoPoPadadcIbVbUbVbWbVbUaddobVbVdabVbVbVdpaddqdrbVbVbVdsdtbVbVdqadbVbVbVbVbVbVbVbVbVbVbVadoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPoPoPoPadadcybVczbVczbVczaddubVbVdabVbVbVdvadbVbVbVbVbVdsdtbVbVbVaddfbVdvdmdlbVbVdjdmdwbVadoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPadadcIbVbUbVbWbVbUaddobVbVdabVbVbVdpaddqbVbVbVdrdsdtbVbVdqadbVbVbVbVbVbVbVbVbVbVbVadoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPadadcybVczbVczbVczaddubVbVdabVbVbVdvadbVdrbVbVbVdsdtbVbVbVaddfbVdvdmdlbVbVdjdmdwbVadoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPoPadadancNbUbVbWbVcPaddxbVbVdabVbVbVdvaddydzdqdAdBdCdDdEdFdradcNbVbVbVbVbVbVbVbVbVcNadoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPoPamadadadadadadadanaddgbVbVdabVbVbVdGadanadadadadadadadadanadanadadadadanadadadadanadoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPoPoPoPadadadadadadadaddHdIbVdabVbVbVbVbTbVbVbTbVdJadadadadadadadadadadadadadadadadadadoPoPoPoPoPoPoPoPoPoPoPoP
