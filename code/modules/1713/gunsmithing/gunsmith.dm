@@ -506,7 +506,7 @@
 				possible_list = list("Cancel", "revolver", "t26revolver", "nagant", "panther", "detective", "detective_leopard", "detective_gold", "goldrevolver", "mateba", "peacemaker", "colt1877", "dragoon", "coltnewpolice", "enfield02", "smithwesson32", "graysonfito", "magnum58", "webley4", "m1892")
 			if ("Semi-Auto (small)")
 				current_gun.override_icon = 'icons/obj/guns/pistols.dmi'
-				possible_list = list("Cancel", "p220", "nambu", "mauser", "luger", "borchardt", "colt", "m9beretta", "tanm9", "black1911","tt30", "waltherp38", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
+				possible_list = list("Cancel", "p220", "nambu", "mauser", "luger", "borchardt", "colt", "m9beretta", "tanm9", "black1911","tt30","makarov", "waltherp38", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
 			if ("Dual Selective Fire")
 				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "stg", "g3", "ar12", "ak47", "ak74", "aks74", "akms", "ak74m", "az58", "whiteaz58", "blackaz58", "chinese_assault_rifle")

@@ -468,6 +468,11 @@
 	penetrating = 2
 	armor_penetration = 8
 
+/obj/item/projectile/bullet/pistol/a9x18
+	damage = DAMAGE_LOW
+	penetrating = 2
+	armor_penetration = 9
+
 /obj/item/projectile/bullet/pistol/a792x33
 	damage = DAMAGE_HIGH + 5
 	penetrating = 3
@@ -521,6 +526,11 @@ obj/item/projectile/bullet/rifle/a556x45
 	damage = DAMAGE_LOW - 20
 	penetrating = 1
 	armor_penetration = 1
+
+/obj/item/projectile/bullet/rifle/a9x39
+	damage = DAMAGE_VERY_HIGH + 23
+	penetrating = 5
+	armor_penetration = 42
 
 /obj/item/projectile/bullet/pellet/buckshot
 	name = "buckshot"

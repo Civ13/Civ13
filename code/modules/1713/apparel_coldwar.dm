@@ -739,6 +739,14 @@
 	new /obj/item/ammo_magazine/svd(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez
+/obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/vintorez(src)
+	new /obj/item/ammo_magazine/vintorez(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green/sov_swat
 /obj/item/weapon/storage/belt/smallpouches/green/sov_swat/New()
 	storage_slots = 6

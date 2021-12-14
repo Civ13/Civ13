@@ -293,3 +293,13 @@
 	weight = 0.04
 	multiple_sprites = TRUE
 	clip = TRUE
+
+/obj/item/ammo_magazine/vintorez
+	name = "VSS Vintorez magazine (9x39mm)"
+	icon_state = "g43"
+	caliber = "a9x39"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x39
+	max_ammo = 10
+	weight = 0.32
+	multiple_sprites = TRUE
