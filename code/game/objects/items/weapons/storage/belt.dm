@@ -123,7 +123,7 @@
 	max_w_class = 2
 
 /obj/item/weapon/storage/belt/leather/shaman
-	storage_slots = 5
+	storage_slots = 6
 	max_w_class = 3
 	max_storage_space = 12
 	show_above_suit = TRUE
@@ -135,6 +135,7 @@
 	new /obj/item/stack/medical/bruise_pack/bint/leather(src)
 	new /obj/item/stack/material/rope(src)
 	new /obj/item/weapon/material/handle(src)
+	new /obj/item/weapon/material/kitchen/utensil/knife/bone(src)
 
 /obj/item/weapon/storage/belt/leather/occinn
 

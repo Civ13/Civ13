@@ -291,7 +291,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek_sl(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/xiphos/bronze(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/dory(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/dory/bronze(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/aspis(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a squad leader in charge of a <b>Stichos</b>, a squad of Hoplites in a Phalanx. Receive orders from the <b>Lochagos</b> and lead your squad to victory!")
@@ -334,7 +334,7 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/xiphos/bronze(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/aspis(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa/bronze(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier from the city-state of Athens. You have your <b>Sarissa</b> spear, your round <b>Aspis</b> shield and your <b>Xiphos</b> sword.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -561,7 +561,7 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/asterix/conspicious(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, the chieftain of your tribe. Lead your men to victory!")
 
