@@ -302,13 +302,17 @@
 				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 			else if (map.ordinal_age == 5)
 				listing = list("9mm pistol",".45 pistol", "Cancel")
-			else if (map.ordinal_age >= 6)
+			else if (map.ordinal_age == 6)
 				listing = list("9x19 Parabellum", "7.62x25mm", "7.62x38mmR", "Cancel")
+			else if (map.ordinal_age >= 7)
+				listing = list("9x19 Parabellum", "9x18 Makarov", "7.62x25mm", "7.62x38mmR", "Cancel")
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			if (input == "Cancel")
 				return
 			else if (input == "9x19 Parabellum")
 				resultpath = /obj/item/ammo_casing/a9x19
+			else if (input == "9x18 Makarov")
+				resultpath = /obj/item/ammo_casing/a9x18
 			else if (input == "7.62x25mm")
 				resultpath = /obj/item/ammo_casing/a762x25
 			else if (input == "7.62x38mmR")
@@ -329,14 +333,18 @@
 			if (map.ordinal_age == 4)
 				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 			else if (map.ordinal_age == 5)
-				listing = list("9x19 Parabellum",".45 pistol", "Cancel")
-			else if (map.ordinal_age >= 6)
+				listing = list("9x19 Parabellum", ".45 pistol", "Cancel")
+			else if (map.ordinal_age == 6)
 				listing = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR", ".45 pistol", "Cancel")
+			else if (map.ordinal_age >= 7)
+				listing = list("9x19 Parabellum", "9x18 Makarov", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR", ".45 pistol", "Cancel")
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			if (input == "Cancel")
 				return
 			else if (input == "9x19 Parabellum")
 				resultpath = /obj/item/ammo_casing/a9x19
+			else if (input == "9x18 Makarov")
+				resultpath = /obj/item/ammo_casing/a9x18
 			else if (input == "8x22mmB nambu")
 				resultpath = /obj/item/ammo_casing/c8mmnambu
 			else if (input == "7.62x38mmR")
@@ -360,8 +368,10 @@
 				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 			else if (map.ordinal_age == 5)
 				listing = list("9mm pistol",".45 pistol", "Cancel")
-			else if (map.ordinal_age >= 6)
+			else if (map.ordinal_age == 6)
 				listing = list("9mm pistol",".45 pistol", "Cancel")
+			else if (map.ordinal_age >= 7)
+				listing = list("9mm pistol","9mm Makarov pistol",".45 pistol", "Cancel")
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			if (input == "Cancel")
 				return
@@ -375,6 +385,8 @@
 				resultpath = /obj/item/ammo_casing/a45
 			else if (input == "9mm pistol")
 				resultpath = /obj/item/ammo_casing/a9x19
+			else if (input == "9mm Makarov pistol")
+				resultpath = /obj/item/ammo_casing/a9x18
 			if (resultpath != null)
 				for(var/i=1;i<=amount;i++)
 					new resultpath(user.loc)
