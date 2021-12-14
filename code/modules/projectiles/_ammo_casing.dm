@@ -830,6 +830,16 @@
 	caliber = "a9x19"
 	value = 2
 
+/obj/item/ammo_casing/a9x18
+	name = "9x18mm Makarov cartridge"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a9x18
+	caliber = "a9x18"
+	value = 2
+
 /obj/item/ammo_casing/a765x25
 	name = "7.65x25 Borchardt cartridge"
 	desc = "A brass casing."
@@ -931,6 +941,16 @@
 	weight = 0.06
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x39
 	caliber = "a762x39"
+	value = 2
+
+/obj/item/ammo_casing/a9x39
+	name = "9x39mm cartridge"
+	desc = "A brass soviet rifle casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.09
+	projectile_type = /obj/item/projectile/bullet/rifle/a9x39
+	caliber = "a9x39"
 	value = 2
 
 /obj/item/ammo_casing/a44p
