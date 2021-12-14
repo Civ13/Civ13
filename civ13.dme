@@ -265,8 +265,6 @@
 #include "code\game\mob\living\simple_animal\hostile\commanded\commanded.dm"
 #include "code\game\mob\living\simple_animal\hostile\commanded\dog.dm"
 #include "code\game\mob\living\simple_animal\hostile\commanded\kenobi.dm"
-#include "code\game\mob\magic\spell.dm"
-#include "code\game\mob\magic\spells.dm"
 #include "code\game\mob\new_player\appearance.dm"
 #include "code\game\mob\new_player\lobby_image.dm"
 #include "code\game\mob\new_player\login.dm"
