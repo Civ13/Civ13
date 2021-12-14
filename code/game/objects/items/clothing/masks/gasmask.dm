@@ -71,7 +71,7 @@
 	icon_state = "russiamask_pmk2"
 	item_state = "russiamask_pmk2"
 	name = "PMK-2 gas mask"
-	desc = "Combined combined mask designed in the early 1990's, issued to the Russian armed forces"
+	desc = "Compact combined mask designed in the early 1990's, issued to the Russian Armed Forces"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/swat
