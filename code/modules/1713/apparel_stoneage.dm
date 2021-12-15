@@ -429,6 +429,19 @@
 	new /obj/item/ammo_casing/bolt/iron(src)
 	new /obj/item/ammo_casing/bolt/iron(src)
 
+/obj/item/weapon/storage/backpack/quiver/poison/New()
+	..()
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+
 /obj/item/clothing/under/leaves_skirt/au_naturel
 	name = "au naturel leaf covering"
 	desc = "leaves arranged on the body to preserve modesty"

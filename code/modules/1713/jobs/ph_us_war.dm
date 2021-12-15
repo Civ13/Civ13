@@ -185,7 +185,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/american/us_uni(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 //head
@@ -237,7 +237,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock(H), slot_shoulder)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
+	H.add_note("Role", "You are a <b>[title]</b>, a well trained sniper. Follow orders and take out priority targets from a distance!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_HIGH)
@@ -486,7 +486,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/baliwag(H), slot_head)
@@ -524,7 +524,6 @@
 	is_ww2 = FALSE
 	uses_squads = TRUE
 	is_ph_us_war = TRUE
-	whitelisted = TRUE
 	can_be_female = TRUE
 
 	min_positions = 8

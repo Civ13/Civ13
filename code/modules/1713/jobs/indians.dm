@@ -73,7 +73,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/skullmask(H), slot_wear_mask)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(H), slot_l_store)
