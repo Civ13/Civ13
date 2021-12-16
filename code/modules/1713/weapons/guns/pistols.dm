@@ -518,7 +518,7 @@
 	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
 	SP.attached(null,src,TRUE)
 
-obj/item/weapon/gun/projectile/pistol/tt30ll
+/obj/item/weapon/gun/projectile/pistol/tt30ll
 	name = "TT-33"
 	desc = "The pistol of the Soviet Union. this one has been modfied to fire rubber bullets."
 	icon_state = "tt30"

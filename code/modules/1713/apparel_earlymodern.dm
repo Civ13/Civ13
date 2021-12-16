@@ -1381,3 +1381,11 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/knife, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/material/shovel, /obj/item/weapon/key)
+
+/obj/item/clothing/suit/storage/coat/winter_coat
+	name = "brown winter coat"
+	desc = "A thick winter coat."
+	icon_state = "winter_coat"
+	item_state = "winter_coat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT

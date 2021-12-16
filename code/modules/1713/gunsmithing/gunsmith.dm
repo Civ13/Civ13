@@ -509,7 +509,7 @@
 				possible_list = list("Cancel", "p220", "nambu", "mauser", "luger", "borchardt", "colt", "m9beretta", "tanm9", "black1911","tt30","makarov", "waltherp38", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
 			if ("Dual Selective Fire")
 				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
-				possible_list = list("Cancel", "stg", "g3", "ar12", "ak47", "ak74", "aks74", "akms", "ak74m", "az58", "whiteaz58", "blackaz58", "chinese_assault_rifle")
+				possible_list = list("Cancel", "stg", "g3", "ar12", "ak47", "ak74", "aks74", "akms", "ak74m", "vz58", "whitevz58", "blackvz58", "chinese_assault_rifle")
 			if ("Triple Selective Fire")
 				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
