@@ -749,7 +749,6 @@
 	is_rusretreat = TRUE
 	is_modernday = TRUE
 	is_ww2 = FALSE
-	is_scout = TRUE
 
 	uses_squads = TRUE
 
