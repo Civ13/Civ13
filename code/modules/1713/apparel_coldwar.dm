@@ -475,6 +475,13 @@
 	item_state = "beret_rus_vdv"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/beret_rus_spez
+	name = "Spetznaz beret"
+	desc = "A beret worn by the Spetznaz."
+	icon_state = "beret_rus_spez"
+	item_state = "beret_rus_spez"
+	body_parts_covered = HEAD
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -745,6 +752,16 @@
 	new /obj/item/weapon/grenade/smokebomb(src)
 	new /obj/item/ammo_magazine/vintorez(src)
 	new /obj/item/ammo_magazine/vintorez(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/sov_saiga
+/obj/item/weapon/storage/belt/smallpouches/green/sov_saiga/New()
+	storage_slots = 5
+	..()
+	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/ammo_magazine/saiga12(src)
+	new /obj/item/ammo_magazine/saiga12(src)
+	new /obj/item/ammo_magazine/saiga12(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_swat
