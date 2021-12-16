@@ -32,7 +32,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/cigarette/cigar(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/toughguy(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_l_store)
 
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
@@ -47,7 +47,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 
-
+	H.s_tone = rand(-60,-30)
 	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
 
@@ -138,7 +138,7 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/commando_bandana(H), slot_head)
 		if (6)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 
 //gloves
 	var/randglove2 = rand(1,4)
@@ -167,7 +167,7 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/cigarette/cigar(H), slot_wear_mask)
 		if (6)
-			H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/cigarette(H), slot_wear_mask)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 
 //weapon
 	var/randarmw = rand(1,3)
@@ -189,9 +189,9 @@
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_l_hand)
 
-//vodka
-	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(H), slot_r_hand)
+//quran
+	if (prob(33))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/bible/quran(H), slot_r_hand)
 
 	var/randsword2 = rand(1,3)
 	switch(randsword2)
@@ -219,14 +219,15 @@
 	else if (randsuits == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
 	else if (randsuits == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/winter_coat(H), slot_wear_suit)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 
 //back
-	if (prob(33))
+	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel(H), slot_back)
 
+	H.s_tone = rand(-60,-30)
 	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
 
@@ -294,6 +295,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 
+	H.s_tone = rand(-60,-30)
 	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
 
@@ -352,9 +354,9 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -364,7 +366,7 @@
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
 
-
+	H.s_tone = rand(-32,-24)
 	H.f_style = pick("Full Beard","Goatee","Selleck Mustache","Shaved")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
 
@@ -424,9 +426,9 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -435,12 +437,12 @@
 	uniform.attackby(armour, H)
 
 	if (prob(25))
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/civbag(H), slot_back)
 //jacket
 	if (prob(33))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
 
-
+	H.s_tone = rand(-32,-24)
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
 
@@ -502,11 +504,11 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
 	uniform.attackby(white, H)
@@ -515,7 +517,7 @@
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
 
-
+	H.s_tone = rand(-32,-24)
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
 
@@ -606,12 +608,10 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 
-
-
-
+	H.s_tone = rand(-32,-24)
 	H.f_style = pick("Selleck Mustache","Shaved")
 	H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
 
@@ -711,8 +711,9 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
 
 
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 
+	H.s_tone = rand(-32,-24)
 	H.f_style = pick("Selleck Mustache","Shaved")
 	H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
 
@@ -771,17 +772,28 @@
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal(H), slot_eyes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sovietbala(H), slot_wear_mask)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_spz(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/civbag(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
+
+	var/randarmwruspez = rand(1,3)
+	switch (randarmwruspez)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/vintorez(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_spez(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/saiga12(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_saiga(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding(H), slot_head)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_spz(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/zsh1(H), slot_head)
 
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
@@ -795,7 +807,7 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetznaz GRU. You are the best of the best; put an end to this conflict!")
 	H.setStat("strength", STAT_HIGH)

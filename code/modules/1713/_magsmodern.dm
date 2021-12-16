@@ -108,6 +108,16 @@
 	weight = 0.75
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/saiga12
+	name = "Saiga-12K magazine (12gauge)"
+	icon_state = "type99"
+	mag_type = MAGAZINE
+	caliber = "12gauge"
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
+	max_ammo = 10
+	weight = 0.75
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/pkm
 	name = "PKM ammo belt (7.62x54mmR)"
 	icon_state = "maximbelt"
