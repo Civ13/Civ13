@@ -584,3 +584,17 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	w_class = 1.0
+
+//////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
+/obj/item/weapon/lockpick
+	name = "lockpick"
+	desc = "A lockpick. Used to unlock chests and doors. It does require some skill though."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "lockpick"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = 5
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 1.0
+
+	attack_verb = list("shanked", "jabbed", "stabbed","shiv'd")
