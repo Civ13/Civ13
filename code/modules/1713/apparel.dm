@@ -31,6 +31,20 @@
 	item_state = "wise_tutor"
 	worn_state = "wise_tutor"
 
+/obj/item/clothing/under/wise_tutor2
+	name = "wise tutor's alternative outfit"
+	desc = "A loose outfit worn by the wise & experienced."
+	icon_state = "wise_tutor2"
+	item_state = "wise_tutor2"
+	worn_state = "wise_tutor2"
+
+/obj/item/clothing/under/wise_disciple
+	name = "wise disciple outfit"
+	desc = "A loose outfit worn by the unwise & unexperienced."
+	icon_state = "wise_tutor3"
+	item_state = "wise_tutor3"
+	worn_state = "wise_tutor3"
+
 /obj/item/clothing/under/arrogant_student
 	name = "arrogant student's outfit"
 	desc = "A loose outfit worn by arrogant students."

@@ -49,7 +49,7 @@
 				"Early Fire Arms (1650-1930)" = 0,
 				"World War II (1931-1948)" = 0,
 				"Modern Fire Arms (1949-2021)" = 0,
-				"HRP TDM (Gulag, AOTD, Occupation)" = 10,
+				"HRP TDM (Gulag, AOTD, Occupation, Little Creek, Hunt)" = 10,
 //				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)
@@ -163,7 +163,7 @@
 		//		MAP_ISLAND = 0,
 				MAP_CURSED_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
-				MAP_SUPPLY_RAID = 0,
+		//		MAP_SUPPLY_RAID = 0,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
@@ -189,14 +189,17 @@
 				MAP_SIEGE = 0,
 				MAP_GLADIATORS = 0
 			)
-		else if (epoch == "HRP TDM (Gulag, AOTD, Occupation)")
+		else if (epoch == "HRP TDM (Gulag, AOTD, Occupation, Little Creek, Hunt)")
 			maps = list(
 //				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 0,
-				MAP_THE_ART_OF_THE_DEAL = 20,
+				MAP_HUNT = 0,
 //				MAP_ABASHIRI = 5,
 //				MAP_RIVER_KWAI = 0,
+				MAP_LITTLE_CREEK = 10,
 				MAP_OCCUPATION = 10,
+				MAP_THE_ART_OF_THE_DEAL = 20,
+
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(

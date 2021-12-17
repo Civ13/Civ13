@@ -3,9 +3,8 @@
 	title = "Nankou"
 	lobby_icon_state = "china"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
-
+	no_hardcore = TRUE
 	respawn_delay = 1200
-
 	faction_organization = list(
 		JAPANESE,
 		CHINESE)

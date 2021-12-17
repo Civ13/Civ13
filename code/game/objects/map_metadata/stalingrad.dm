@@ -114,7 +114,7 @@
 					c1++
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
-		if (c1+c2<=0 || c1 == c2)
+		if (c1 == c2 && c1 != 0)
 			a1_control = "none"
 		else if (c1 > c2)
 			a1_control = "Germans"
@@ -139,7 +139,7 @@
 					c1++
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
-		if (c1+c2<=0 || c1 == c2)
+		if (c1 == c2 && c1 != 0)
 			a2_control = "none"
 		else if (c1 > c2)
 			a2_control = "Germans"
@@ -164,7 +164,7 @@
 					c1++
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
-		if (c1+c2<=0 || c1 == c2)
+		if (c1 == c2 && c1 != 0)
 			a3_control = "none"
 		else if (c1 > c2)
 			a3_control = "Germans"
@@ -272,7 +272,7 @@
 					c1++
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
-		if (c1+c2<=0 || c1 == c2)
+		if (c1 == c2 && c1 != 0)
 			a1_control = "none"
 		else if (c1 > c2)
 			a1_control = "Germans"
@@ -295,7 +295,7 @@
 					c1++
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
-		if (c1+c2<=0 || c1 == c2)
+		if (c1 == c2 && c1 != 0)
 			a2_control = "none"
 		else if (c1 > c2)
 			a2_control = "Germans"
@@ -318,7 +318,7 @@
 					c1++
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
-		if (c1+c2<=0 || c1 == c2)
+		if (c1 == c2 && c1 != 0)
 			a3_control = "none"
 		else if (c1 > c2)
 			a3_control = "Germans"
@@ -341,7 +341,7 @@
 					c1++
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
-		if (c1+c2<=0 || c1 == c2)
+		if (c1 == c2 && c1 != 0)
 			a4_control = "none"
 		else if (c1 > c2)
 			a4_control = "Germans"

@@ -6,6 +6,7 @@
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
 	gamemode = "Siege"
+	no_hardcore = TRUE
 	var/list/HVT_list = list()
 
 	faction_organization = list(

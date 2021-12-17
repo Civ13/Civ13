@@ -77,6 +77,10 @@
 	desc = "The Chechen Separatist flag."
 	icon_state = "flag_chechen"
 
+/obj/structure/sign/flag/ireland
+	name = "\improper irish flag"
+	desc = "The Irish Republic flag."
+	icon_state = "flag_ireland"
 
 /obj/structure/sign/clock
 	name = "\improper clock"

@@ -507,7 +507,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 /mob/living/human/slot_is_accessible(var/slot, var/obj/item/I, mob/user=null)
 	var/obj/item/covering = null
 	var/check_flags = FALSE
-
 	switch(slot)
 		if (slot_wear_mask)
 			covering = head
