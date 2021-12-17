@@ -331,16 +331,17 @@
 				user << "You don't have the skills to use this."
 				return
 			else
-				if (do_after(35*H.getStatCoeff("dexterity")))
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>you pick the lock</span>"
+						user << "<span class='notice'>You pick the lock.</span>"
 						src.locked = 0
 						return
 					else if (prob(60))
 						qdel(W)
-						user << "<span class='notice'>Your lockpick broke!</span>"
+						user << "<span class='warning'>Your lockpick broke!</span>"
 						return
 					else
+						user << "<span class='warning'>You failed to pick the lock!</span>"
 						return
 				return
 	else
@@ -396,16 +397,17 @@
 				user << "You don't have the skills to use this."
 				return
 			else
-				if (do_after(35*H.getStatCoeff("dexterity")))
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>you pick the lock</span>"
+						user << "<span class='notice'>You pick the lock.</span>"
 						src.locked = 0
 						return
 					else if (prob(60))
 						qdel(W)
-						user << "<span class='notice'>Your lockpick broke!</span>"
+						user << "<span class='warning'>Your lockpick broke!</span>"
 						return
 					else
+						user << "<span class='warning'>You failed to pick the lock!</span>"
 						return
 				return
 	else
