@@ -18,7 +18,7 @@
 	mission_start_message = "<font size=4>The <b>Yamaguchi-Gumi Clan</b> and <b>Ichiwa-Kai Clan</b> are facing each other the streets of Kobe!</font>"
 	faction1 = JAPANESE
 	songs = list(
-		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
+		"Akira:1" = 'sound/music/akira.ogg',)
 	is_singlefaction = TRUE
 	scores = list(
 		"Yamaguchi-Gumi" = 0,

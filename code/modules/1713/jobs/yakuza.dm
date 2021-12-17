@@ -37,6 +37,19 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.civilization = "Yamaguchi-Gumi"
 	give_random_name(H)
+
+	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
+
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	world << "<b><font color='yellow' size=3>[H.real_name] is the Underboss of the Yamaguchi-Gumi!</font></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -91,6 +104,19 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.civilization = "Yamaguchi-Gumi"
 	give_random_name(H)
+
+	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
+
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	world << "<b><font color='yellow' size=3>[H.real_name] is the Deputy Underboss of the Yamaguchi-Gumi Gang!!</font></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. Second to underboss. The whole operation relies on you and your orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -146,6 +172,20 @@
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.civilization = "Yamaguchi-Gumi"
+	give_random_name(H)
+
+	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
+
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Yamaguchi-Gumi Clan. Follow your <b>Underboss'</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -197,6 +237,19 @@
 	H.civilization = "Ichiwa-Kai"
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	world << "<b><font color='yellow' size=3>[H.real_name] is the Underboss of the Ichiwa-Kai!</font></b>"
+
+	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
+
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -250,6 +303,19 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	give_random_name(H)
 	world << "<b><font color='yellow' size=3>[H.real_name] is the Deputy Underboss of the Ichiwa-Kai Gang!!</font></b>"
+
+	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
+
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. Second to underboss. The whole operation relies on you and your orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -303,6 +369,19 @@
 	H.civilization = "Ichiwa-Kai"
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	give_random_name(H)
+
+	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
+
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Ichiwa-Kai Clan. Follow your <b>Underboss'</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
