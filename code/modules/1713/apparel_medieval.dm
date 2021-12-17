@@ -2445,6 +2445,19 @@ obj/item/clothing/head/helmet/samurai/black
 	slowdown = 0.4
 	health = 80
 
+/obj/item/clothing/suit/armor/tes13/imperial
+	name = "imperial officer armor"
+	desc = "A thick, steel armor worn by imperial officers"
+	icon_state = "imperial_officer"
+	item_state = "imperial_officer"
+	worn_state = "imperial_officer"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.5
+	health = 80
+
 /obj/item/clothing/head/helmet/medieval/tes13/stormcloak
 	name = "stormcloak officer helmet"
 	desc = "A bear pelt helmet with an armored lining."

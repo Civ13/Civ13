@@ -49,7 +49,7 @@
 				"Early Fire Arms (1650-1930)" = 0,
 				"World War II (1931-1948)" = 0,
 				"Modern Fire Arms (1949-2021)" = 0,
-				"HRP TDM (Gulag, AOTD, Occupation)" = 10,
+				"HRP TDM (Gulag, AOTD, Occupation, Little Creek, Hunt)" = 10,
 //				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)

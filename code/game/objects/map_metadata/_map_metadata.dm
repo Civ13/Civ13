@@ -78,7 +78,7 @@ var/civmax_research = list(230,230,230)
 	var/admins_triggered_roundend = FALSE
 	var/admins_triggered_noroundend = FALSE
 	var/list/faction_targets = list()
-	
+
 	// win conditions 3.0 - Kachnov
 	var/datum/win_condition/win_condition = null
 	var/current_win_condition = "Neither side has captured the other side's base."
@@ -823,7 +823,10 @@ var/civmax_research = list(230,230,230)
 		if (DUTCH)
 			return "Dutch"
 		if (ROMAN)
-			return "Roman"
+			if(map.ID == MAP_WHITERUN)
+				return "Empire"
+			else
+				return "Roman"
 		if (GERMAN)
 			return "German"
 		if (GREEK)
@@ -865,7 +868,10 @@ var/civmax_research = list(230,230,230)
 		if (DUTCH)
 			return "Dutch Republic"
 		if (ROMAN)
-			return "Roman Republic"
+			if (map.ID == MAP_WHITERUN)
+				return "Imperial Army"
+			else
+				return "Roman Republic"
 		if (GREEK)
 			return "Greek States"
 		if (ARAB)
@@ -908,6 +914,8 @@ var/civmax_research = list(230,230,230)
 			return "Dutch"
 		if ("Roman Republic")
 			return "Roman"
+		if ("Imperial Army")
+			return "Empire"
 		if ("Greek States")
 			return "Greek"
 		if ("Arabic Caliphate")

@@ -373,6 +373,14 @@
 	slot_flags = SLOT_ID | SLOT_BELT | SLOT_POCKET
 	slots = 8
 
+/obj/item/clothing/accessory/storage/coinpouch/tes13
+	name = "coin pouch"
+	desc = "A small pouch, where you can carry your septims and small objects."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "coinpouch_tes13"
+	slot_flags = SLOT_ID | SLOT_BELT | SLOT_POCKET
+	slots = 8
+
 /obj/item/clothing/accessory/storage/coinpouch/wallet
 	name = "wallet"
 	desc = "A personal wallet, where you can carry your coins and small objects."
