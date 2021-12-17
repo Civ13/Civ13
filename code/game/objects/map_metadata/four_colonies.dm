@@ -33,7 +33,24 @@
 	gamemode = "Faction-Based RP"
 	is_RP = TRUE
 
-obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
+	New()
+		..()
+		spawn(3000)
+			score()
+/obj/map_metadata/four_colonies/proc/score()
+	world << "<b><font color='yellow' size=3>Faction Treasuries:</font></b>"
+	for(var/obj/structure/closet/crate/chest/treasury/SF in world)
+		if (SF.faction)
+			var/list/tlist = list(capitalize(SF.faction),0)
+			for(var/obj/item/I in SF)
+				if (istype(I, /obj/item/stack/money))
+					var/obj/item/stack/money/M = I
+					tlist[2]+=M.amount*M.value
+			world << "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] dollars</font></big>"
+
+	spawn(3000)
+		score()
+/obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))
 		. = FALSE

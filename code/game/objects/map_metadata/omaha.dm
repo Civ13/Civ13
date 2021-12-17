@@ -5,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	var/victory_time = 24000
+	no_hardcore = TRUE
 
 	faction_organization = list(
 		GERMAN,
@@ -169,6 +170,7 @@ var/no_loop_o = FALSE
 /obj/map_metadata/omaha/micromaha
 	title = "Micro Omaha Beach"
 	ID = MAP_MICROMAHA
+	no_hardcore = TRUE
 	respawn_delay = 600
 	victory_time = 15000
 	faction_distribution_coeffs = list(GERMAN = 0.4, AMERICAN = 0.6)

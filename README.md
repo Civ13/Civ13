@@ -1,6 +1,5 @@
 # Civilization 13
 
-[![Build Status](https://travis-ci.com/Civ13/Civ13.svg?branch=master)](https://travis-ci.com/Civ13/Civ13)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/civ13/civ13.svg?style=flat)
 ![GitHub repo size](https://img.shields.io/github/repo-size/civ13/civ13.svg?style=flat)
 

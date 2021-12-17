@@ -77,6 +77,11 @@
 	desc = "A sign fat people usually like."
 	icon_state = "mcd"
 
+/obj/structure/sign/mckellens
+	name = "McKellen's"
+	desc = "A sign for the McKellen's Franchise establishment."
+	icon_state = "mckellens"
+
 /obj/structure/sign/bar
 	name = "BAR"
 	desc = "A sign that says bar on it."

@@ -14,6 +14,7 @@
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		)
 	age = "1944"
+	no_hardcore = TRUE
 	ordinal_age = 6
 	faction_distribution_coeffs = list(JAPANESE = 0.6, AMERICAN = 0.4)
 	battle_name = "Rizal Stadium"

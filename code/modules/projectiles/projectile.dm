@@ -425,7 +425,7 @@
 	else if (target_mob && !useless && !target_mob.takes_less_damage) // if we just grazed, useless is set to TRUE
 		if (target_mob.stat == CONSCIOUS && prob(mygun.KO_chance) && damage >= DAMAGE_HIGH-6)
 			visible_message("<span class = 'danger'>[target_mob] is knocked out!</span>")
-			target_mob.Paralyse(3)
+			target_mob.Paralyse(12)
 
 	//hit messages
 	if (blockedhit == FALSE)
