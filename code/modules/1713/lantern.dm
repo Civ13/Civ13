@@ -238,3 +238,43 @@
 	on_state = "modernlight_on"
 	off_state = "modernlight_off"
 	slot_flags = SLOT_BELT|SLOT_MASK
+
+/obj/item/flashlight/militarylight
+	unlimited = TRUE
+	name = "military flashlight"
+	desc = "an electrical military flashlight."
+	icon_state = "militarylight_off"
+	item_state = "militarylight"
+	on_state = "militarylight_on"
+	off_state = "militarylight_off"
+	slot_flags = SLOT_BELT|SLOT_MASK
+	var/switchlens = FALSE
+
+
+/* please can someone make this work?
+/obj/item/flashlight/militarylight/verb/switchlens()
+	set category = null
+	set src in usr
+	set name = "Switch lens"
+	if (type != /obj/item/flashlight/militarylight)
+		return
+	else
+		if (!switchlens)
+			light_power = 2
+			light_color = "#e58775"
+			on_state = "militarylight_on_red"
+			switchlens = TRUE
+			update_icon()
+		else if (!switchlens)
+			light_power = 2
+			light_color = "#89ed96"
+			on_state ="militarylight_on_green"
+			switchlens = TRUE
+			update_icon()
+		else if (switchlens)
+			on_state ="militarylight_on"
+			update_icon()
+			light_power = 5
+			light_color = rgb(200, 255, 200)
+			switchlens = FALSE
+*/
