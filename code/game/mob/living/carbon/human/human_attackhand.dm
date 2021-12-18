@@ -1,11 +1,25 @@
 /mob/living/human/proc/get_unarmed_attack(var/mob/living/human/target, var/hit_zone)
-	for (var/datum/unarmed_attack/u_attack in species.unarmed_attacks)
-		if (u_attack.is_usable(src, target, hit_zone))
-			if (pulling_punches)
-				var/datum/unarmed_attack/soft_variant = u_attack.get_sparring_variant()
-				if (soft_variant)
-					return soft_variant
-			return u_attack
+	if(mind && mind.martial_art && mind.martial_art.id != "")
+		switch(a_intent)
+			if(I_HARM)
+				mind.martial_art.harm_act(src, target)
+
+			if(I_HELP)
+				mind.martial_art.help_act(src, target)
+
+			if(I_GRAB)
+				mind.martial_art.grab_act(src, target)
+
+			if(I_DISARM)
+				mind.martial_art.disarm_act(src, target)
+	else
+		for (var/datum/unarmed_attack/u_attack in species.unarmed_attacks)
+			if (u_attack.is_usable(src, target, hit_zone))
+				if (pulling_punches)
+					var/datum/unarmed_attack/soft_variant = u_attack.get_sparring_variant()
+					if (soft_variant)
+						return soft_variant
+				return u_attack
 	return null
 
 /mob/living/human/attack_hand(mob/living/human/M as mob)

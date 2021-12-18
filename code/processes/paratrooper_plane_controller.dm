@@ -45,7 +45,7 @@
 			if (altitude <= first_nonlethal_altitude)
 				return // we're done
 			altitude -= 500
-			for (var/mob/living/carbon/human/H in player_list)
+			for (var/mob/living/human/H in player_list)
 				if (istype(H, /datum/job/german/schutze_soldaten))
 					if (H.z == 2)
 						H << getMessage()
