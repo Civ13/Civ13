@@ -184,6 +184,7 @@ RECIPE: /material/wood/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,
 RECIPE: /material/wood/,grey folder,/obj/item/weapon/folder,1,75,0,1,paper & printing,120,0,0,8,null
 RECIPE: /material/wood/,yellow folder,/obj/item/weapon/folder/yellow,1,75,0,1,paper & printing,120,0,0,8,null
 RECIPE: /material/wood/,red folder,/obj/item/weapon/folder/red,1,75,0,1,paper & printing,120,0,0,8,null
+RECIPE: /material/wood/,torch mount,/obj/structure/torch_stand,1,35,1,1,furniture,25,0,0,6,null
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,light brown outfit,/obj/item/clothing/under/modern1,4,75,0,1,clothing,112,0,0,8,null

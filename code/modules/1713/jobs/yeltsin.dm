@@ -23,11 +23,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/gglasses(H), slot_eyes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_officercap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -36,8 +36,10 @@
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
 //jacket
-	if (prob(15))
+	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	else if (prob(15))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
 	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
@@ -92,8 +94,10 @@
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
 //jacket
-	if (prob(15))
+	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	else if (prob(15))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
 	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead your assigned squad against the Insurgents!")
@@ -128,7 +132,14 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
@@ -147,9 +158,7 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
-//jacket
-	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+
 	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
@@ -184,7 +193,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tacti(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_omon(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/platecarrierblack/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarrierblack(null)
@@ -198,9 +207,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/zsh2(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_swat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/balistic(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_swat(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/balistic(H), slot_back)
 	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, part of the OMON, the Special Purpouse Mobile Unit of the Minitry of Internal Affairs. Use your superior training and gear to control the miltia!")
@@ -235,7 +244,15 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
@@ -250,9 +267,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
 
-//jacket
-	if (prob(65))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
 	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
@@ -301,11 +315,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding(H), slot_head)
 //back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_spz(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetznaz Response Team. You are the best of the best; end this conflict!")
@@ -323,9 +338,9 @@
 /////////KGBS & SSMs//////////////
 
 /datum/job/civilian/russian/hvt
-	title = "Soviet Supreme Deputy"
+	title = "Soviet Supreme Chairman"
 	en_meaning = "Soviet HVT"
-	rank_abbreviation = "Ssm."
+	rank_abbreviation = "Chairman"
 	spawn_location = "JoinLatessm"
 	is_kremlin = TRUE
 	is_yeltsin = TRUE
@@ -355,6 +370,7 @@
 	uniform.attackby(pin, H)
 	H.civilization = "Militia"
 	H.add_note("Role", "You are an essential member of the Supreme Soviet. They are out to get you! Rely on the people who are still following your ideology and stay alive!")
+	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -581,6 +597,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, insurging against Yeltsin's tyranny. Your life for the dream of the people!")
 	H.civilization = "Militia"
+	give_random_name(H)
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
@@ -735,6 +752,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, insurging against Yeltsin's tyranny. You're ready to give your life for the dream of the people!")
 	H.civilization = "Militia"
+	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_HIGH)
@@ -784,6 +802,7 @@
 		H.f_style = pick("Full Beard","Medium Beard","Long Beard")
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy and motivated!")
 	H.civilization = "Militia"
+	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_LOW)

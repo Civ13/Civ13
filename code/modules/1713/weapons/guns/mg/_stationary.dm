@@ -1,9 +1,6 @@
 //*********************
 //POD MACHINEGUNS
 //*********************
-/obj/item/weapon/gun/projectile/automatic
-	gtype = "mg"
-	icon = 'icons/obj/guns/mgs.dmi'
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
 	set category = null // was "Minigun" - removes lag
 	set name = "Eject magazine"

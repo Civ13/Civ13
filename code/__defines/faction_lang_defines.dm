@@ -53,6 +53,8 @@
 	if (constant == CIVILIAN)
 		if (map.ID == "TSARITSYN")
 			return "Red Army"
+		if (map.ID == "YELTSIN")
+			return "Militia"
 		else
 			return "Colonists"
 
@@ -79,12 +81,12 @@
 		return "Japanese Empire"
 
 	if (constant == RUSSIAN)
-		if (age == 6)
-			return "Soviet Union"
-		if (age == 7)
-			return "Soviet Union"
-		if (age >= 8)
+		if (map.ID == "YELTSIN")
+			return "Russian Army"
+		if (map.ID == "RUSRETREAT")
 			return "Russian Federal Forces"
+		else if (age >= 6)
+			return "Soviet Union"
 		if (map.ID == "TSARITSYN")
 			return "White Army"
 		else

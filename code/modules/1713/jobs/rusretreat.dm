@@ -13,6 +13,8 @@
 	spawn_location = "JoinLateCCWL"
 	is_rusretreat = TRUE
 	is_commander = TRUE
+	is_ww2 = FALSE
+	is_modernday = TRUE
 	whitelisted = TRUE
 
 	min_positions = 1
@@ -80,6 +82,7 @@
 	min_positions = 10
 	max_positions = 200
 	is_rusretreat = TRUE
+	is_modernday = TRUE
 
 /datum/job/arab/civilian/chechen/militia/equip(var/mob/living/human/H)
 
@@ -259,6 +262,8 @@
 
 	is_medic = TRUE
 	is_rusretreat = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 
 	min_positions = 3
 	max_positions = 10
@@ -326,6 +331,8 @@
 	is_rusretreat = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 	whitelisted = TRUE
 
 	min_positions = 1
@@ -391,6 +398,8 @@
 	spawn_location = "JoinLateRUSgt"
 
 	is_rusretreat = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -467,6 +476,8 @@
 
 	is_medic = TRUE
 	is_rusretreat = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 
 	min_positions = 2
 	max_positions = 8
@@ -477,7 +488,14 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+		if (prob(15))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
+		if (prob(15))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
@@ -496,9 +514,6 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
-//jacket
-	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
 
 
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
@@ -528,7 +543,8 @@
 	return TRUE
 
 /datum/job/russian/ruff_radioman
-	title = "Russian Federal Forces Radio Operator"
+	title = "Russian Federal Forces Artillery Liaison"
+	en_meaning = "Radio Operator"
 	rank_abbreviation = "Pfc."
 
 	spawn_location = "JoinLateRURadop"
@@ -536,6 +552,8 @@
 	is_rusretreat = TRUE
 	is_radioman = TRUE
 	uses_squads = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 
 	min_positions = 1
 	max_positions = 5
@@ -546,8 +564,15 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
 	uniform.attackby(armour, H)
@@ -584,9 +609,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 
-//jacket
-	if (prob(65))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+
 
 
 	H.f_style = pick("Selleck Mustache","Shaved")
@@ -622,6 +645,8 @@
 	spawn_location = "JoinLateRU"
 
 	is_rusretreat = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 
 	uses_squads = TRUE
 
@@ -634,7 +659,15 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/platecarriergreen(null)
@@ -680,11 +713,6 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
 
-//jacket
-	if (prob(65))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
-
-
 	H.f_style = pick("Selleck Mustache","Shaved")
 	H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
 
@@ -718,6 +746,8 @@
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
 	is_rusretreat = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 
 	uses_squads = TRUE
 
@@ -749,8 +779,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
