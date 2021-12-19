@@ -136,14 +136,14 @@ var/list/nonbreaking_types = list(
 	else if (istype(W, /obj/item/weapon/lockpick))
 		if (src.locked == 1)
 			var/mob/living/human/H = user
-			visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
 			if (H.getStatCoeff("dexterity") < 1.7)
 				user << "You don't have the skills to use this."
 				return
 			else
-				if (do_after(35*H.getStatCoeff("dexterity")))
+				visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>you pick the lock</span>"
+						user << "<span class='notice'>You pick the lock.</span>"
 						src.locked = 0
 						return
 					else if (prob(60))
@@ -182,23 +182,24 @@ var/list/nonbreaking_types = list(
 		if (keyslot.check_weapon(W, user, TRUE))
 			keyslot.locked = !keyslot.locked
 	else if (istype(W, /obj/item/weapon/lockpick))
-		if (src.locked == 1)
+		if (keyslot.locked)
 			var/mob/living/human/H = user
-			visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
 			if (H.getStatCoeff("dexterity") < 1.7)
 				user << "You don't have the skills to use this."
 				return
 			else
-				if (do_after(35*H.getStatCoeff("dexterity")))
+				visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>you pick the lock</span>"
-						src.locked = 0
+						user << "<span class='notice'>You pick the lock.</span>"
+						keyslot.locked = 0
 						return
 					else if (prob(60))
 						qdel(W)
-						user << "<span class='notice'>Your lockpick broke!</span>"
+						user << "<span class='warning'>Your lockpick broke!</span>"
 						return
 					else
+						user << "<span class='warning'>You failed to pick the lock!</span>"
 						return
 				return
 
