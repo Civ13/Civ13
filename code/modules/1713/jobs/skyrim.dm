@@ -261,7 +261,7 @@
 	title = "Whiterun Guard"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateFR"
+	spawn_location = "JoinLateRU"
 
 	is_medieval = TRUE
 	is_skyrim = TRUE
@@ -412,7 +412,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
 		//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, the squad leader <b>sergeant</b>, a squad of Legionaries. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -427,10 +427,10 @@
 	return TRUE
 
 /datum/job/civilian/skyrim/stormcloak/soldier //imperial - soldier
-	title = "Imperial soldier"
+	title = "Stormcloak soldier"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateRO"
+	spawn_location = "JoinLateGE"
 
 	is_skyrim = TRUE
 	is_stormcloak = TRUE
@@ -458,7 +458,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/hide(H), slot_head)
 	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
-		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_l_hand)
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
 	else
@@ -477,10 +477,10 @@
 	return TRUE
 
 /datum/job/civilian/skyrim/stormcloak/archer //imperial - soldier
-	title = "Imperial archer"
+	title = "Stormcloak archer"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateRO"
+	spawn_location = "JoinLateGE"
 
 	is_skyrim = TRUE
 	is_stormcloak = TRUE
