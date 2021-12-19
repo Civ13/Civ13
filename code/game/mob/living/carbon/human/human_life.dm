@@ -1444,7 +1444,10 @@
 				if (GREEK)
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
-					holder2.icon_state = "roman_basic"
+					if (map.ID == MAP_WHITERUN)
+						holder2.icon_state = "empire"
+					else
+						holder2.icon_state = "roman_basic"
 				if (CHECHEN)
 					holder2.icon_state = "chechen_basic"
 				if (FINNISH)
@@ -1506,6 +1509,8 @@
 						holder2.icon_state = ""
 					else if (original_job.is_upa && map.ID != MAP_OCCUPATION)
 						holder2.icon_state = "upa_basic"
+					else if (map.ID == MAP_WHITERUN)
+						holder2.icon_state = "stormcloak"
 //					else if (original_job_title == "Outlaw")
 //						holder2.icon_state = "civ1"
 //					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )

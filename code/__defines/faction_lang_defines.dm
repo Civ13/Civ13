@@ -93,7 +93,10 @@
 			return "Russian Empire"
 
 	if (constant == ROMAN)
-		return "Roman Republic"
+		if (map.ID == "WHITERUN")
+			return "Imperial Army"
+		else
+			return "Roman Republic"
 
 	if (constant == CHECHEN)
 		return "Chechen Republic of Ichkeria"

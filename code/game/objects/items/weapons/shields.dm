@@ -439,3 +439,13 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	w_class = 3.0
 	base_block_chance = 40
 	slowdown = 0.05
+
+/obj/item/weapon/shield/tes13/imperial
+	name = "imperial kite shield"
+	icon_state = "imperial_kite"
+	item_state = "imperial_kite"
+	material = "wood"
+	health = 60
+	w_class = 3.0
+	base_block_chance = 40
+	slowdown = 0.05
