@@ -1,15 +1,23 @@
-/datum/job/skyrim
+/datum/job/civilian/skyrim
 	faction = "Human"
 
-/datum/job/skyrim/give_random_name(var/mob/living/human/H)
+/datum/job/civilian/skyrim/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_oldnorse_name(H.gender)
 	H.real_name = H.name
 
-/datum/job/skyrim/imperial/give_random_name(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/guard_captain/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_oldnorse_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/roman/skyrim/imperial/guard/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_oldnorse_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/roman/skyrim/imperial/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_roman_name(H.gender)
 	H.real_name = H.name
 
-/datum/job/skyrim/imperial/captain	//imperial - captain
+/datum/job/roman/skyrim/imperial/captain	//imperial - captain
 	title = "Imperial Captain"
 	rank_abbreviation = "Cen."
 
@@ -23,7 +31,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/skyrim/imperial/captain/equip(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -48,7 +56,7 @@
 
 	return TRUE
 
-/datum/job/skyrim/imperial/lieutenant	//imperial - lieutenant
+/datum/job/roman/skyrim/imperial/lieutenant	//imperial - lieutenant
 	title = "Imperial Lieutenant"
 	rank_abbreviation = "Dec."
 
@@ -62,7 +70,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/skyrim/imperial/lieutenant/equip(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -87,7 +95,7 @@
 
 	return TRUE
 
-/datum/job/skyrim/imperial/sergeant	//imperial - sergeant
+/datum/job/roman/skyrim/imperial/sergeant	//imperial - sergeant
 	title = "Imperial squad leader"
 	rank_abbreviation = "Vex."
 
@@ -102,7 +110,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/skyrim/imperial/sergeant/equip(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -126,7 +134,7 @@
 
 	return TRUE
 
-/datum/job/skyrim/imperial/soldier //imperial - soldier
+/datum/job/roman/skyrim/imperial/soldier //imperial - soldier
 	title = "Imperial soldier"
 	rank_abbreviation = ""
 
@@ -139,7 +147,7 @@
 	min_positions = 1
 	max_positions = 200
 
-/datum/job/skyrim/imperial/soldier/equip(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -163,7 +171,7 @@
 
 	return TRUE
 
-/datum/job/skyrim/imperial/archer //imperial - soldier
+/datum/job/roman/skyrim/imperial/archer //imperial - soldier
 	title = "Imperial archer"
 	rank_abbreviation = ""
 
@@ -176,7 +184,7 @@
 	min_positions = 1
 	max_positions = 200
 
-/datum/job/skyrim/imperial/archer/equip(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -201,7 +209,7 @@
 
 	return TRUE
 //////////////////////WHITERUN GARRISON///////////////////////////////////////////
-/datum/job/skyrim/imperial/guard_captain
+/datum/job/roman/skyrim/imperial/guard_captain
 	title = "Whiterun Head Guard"
 	rank_abbreviation = ""
 
@@ -215,7 +223,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/skyrim/imperial/guard_captain/equip(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/guard_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -249,7 +257,7 @@
 
 	return TRUE
 
-/datum/job/skyrim/imperial/guard
+/datum/job/roman/skyrim/imperial/guard
 	title = "Whiterun Guard"
 	rank_abbreviation = ""
 
@@ -263,7 +271,7 @@
 	min_positions = 5
 	max_positions = 25
 
-/datum/job/skyrim/imperial/guard/equip(var/mob/living/human/H)
+/datum/job/roman/skyrim/imperial/guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -276,7 +284,10 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/guard(H), slot_head)
+	if(prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/hide(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/guard(H), slot_head)
 	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_l_hand)
@@ -292,6 +303,221 @@
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+
+
+/////////////////////////////////////////////////////////////STORMCLOAKS///////////////////////////////////////////////////////////////////////////
+/datum/job/civilian/skyrim/stormcloak/ulfric	//imperial - captain
+	title = "Ulfric Stormcloak"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+
+	is_commander = TRUE
+	is_skyrim = TRUE
+	is_stormcloak = TRUE
+	is_officer = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/skyrim/stormcloak/ulfric/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/ulfirc(H), slot_w_uniform)
+		//head
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/ulfric(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, the leader of the <b>Stormcloaks</b>, an entire rebellion. Organize your men and lead the rebellion to victory, for Skyrim and all her people!</b>.")
+	H.setStat("strength", STAT_MAX)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_MAX)
+	H.setStat("swords", STAT_MAX)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MAX)
+	H.setStat("medical", STAT_MAX)
+	H.real_name = "Ulfric Stormcloak"
+
+	return TRUE
+
+/datum/job/civilian/skyrim/stormcloak/lieutenant	//imperial - lieutenant
+	title = "Stormcloak Lieutenant"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGECap"
+
+	is_commander = TRUE
+	is_skyrim = TRUE
+	is_officer = TRUE
+	is_stormcloak = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/skyrim/stormcloak/lieutenant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/tes13/stormcloak(H), slot_wear_suit)
+		//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/stormcloak(H), slot_head)
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, the second in command as a <b>lieutenant</b>, a platoon of Legionaries. Organize your <b>sergeants</b> and lead your soldiers to victory!</b>.")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_VERY_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/civilian/skyrim/stormcloak/sergeant	//imperial - sergeant
+	title = "stormcloak squad leader"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+
+	is_commander = TRUE
+	is_skyrim = TRUE
+	is_stormcloak = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/civilian/skyrim/stormcloak/sergeant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
+		//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, the squad leader <b>sergeant</b>, a squad of Legionaries. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/civilian/skyrim/stormcloak/soldier //imperial - soldier
+	title = "Imperial soldier"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRO"
+
+	is_skyrim = TRUE
+	is_stormcloak = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 200
+
+/datum/job/civilian/skyrim/stormcloak/soldier/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	if (H.gender == "male")
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/female(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+
+//head
+	if(prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/guard(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/hide(H), slot_head)
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_l_hand)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_belt)
+	H.add_note("Role", "You are a <b>[title]</b>, a rebel soldier. Fight the empire and liberate Skyrim!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/civilian/skyrim/stormcloak/archer //imperial - soldier
+	title = "Imperial archer"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRO"
+
+	is_skyrim = TRUE
+	is_stormcloak = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 200
+
+/datum/job/civilian/skyrim/stormcloak/archer/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		//clothes
+	if (H.gender == "male")
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/female(H), slot_w_uniform)
+		//head
+	if(prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/guard(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/hide(H), slot_head)
+		//weapons
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/medieval(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_r_hand)
+	H.add_note("Role", "You are a <b>[title]</b>, the ranged support of the Empire. Keep the enemy full of arrows and allow the infantry to charge in!</b>.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	give_random_name(H)
 
