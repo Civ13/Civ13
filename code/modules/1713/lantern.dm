@@ -226,7 +226,7 @@
 	item_state = "modern_flashlight"
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
-	slot_flags = SLOT_BELT|SLOT_MASK
+	slot_flags = SLOT_BELT | SLOT_ID | SLOT_POCKET
 	unlimited = TRUE
 
 /obj/item/flashlight/modern
@@ -237,44 +237,56 @@
 	item_state = "modern_flashlight"
 	on_state = "modernlight_on"
 	off_state = "modernlight_off"
-	slot_flags = SLOT_BELT|SLOT_MASK
+	slot_flags = SLOT_BELT | SLOT_ID | SLOT_POCKET
 
 /obj/item/flashlight/militarylight
 	unlimited = TRUE
 	name = "military flashlight"
-	desc = "an electrical military flashlight."
+	desc = "An electrical military flashlight. Comes with adjustable lenses."
 	icon_state = "militarylight_off"
 	item_state = "militarylight"
 	on_state = "militarylight_on"
 	off_state = "militarylight_off"
-	slot_flags = SLOT_BELT|SLOT_MASK
-	var/switchlens = FALSE
+	slot_flags = SLOT_BELT | SLOT_ID | SLOT_POCKET
+	var/lens = 3
+	secondary_action = TRUE
 
-
-/* please can someone make this work?
-/obj/item/flashlight/militarylight/verb/switchlens()
+/*/obj/item/flashlight/militarylight/verb/switchlens()
 	set category = null
 	set src in usr
-	set name = "Switch lens"
-	if (type != /obj/item/flashlight/militarylight)
-		return
-	else
-		if (!switchlens)
-			light_power = 2
-			light_color = "#e58775"
+	set name = "Switch lens" */
+
+/obj/item/flashlight/militarylight/secondary_attack_self(mob/living/human/user)
+
+	lens +=1
+	if (lens > 3)
+		lens = 1
+
+	switch (lens)
+		if (1)
+			light_range = 1.5
+			brightness_on = 2.5
+			light_color = "#ad2005"
 			on_state = "militarylight_on_red"
-			switchlens = TRUE
+			lens = 1
+			user << "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>"
 			update_icon()
-		else if (!switchlens)
-			light_power = 2
-			light_color = "#89ed96"
+			return
+		if (2)
+			light_range = 1.5
+			brightness_on = 2.5
+			light_color = "#17ad2a"
 			on_state ="militarylight_on_green"
-			switchlens = TRUE
+			lens = 2
 			update_icon()
-		else if (switchlens)
+			user << "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>"
+			return
+		if (3)
+			light_range = 5
+			brightness_on = 5
+			light_color = "#fcffd6"
 			on_state ="militarylight_on"
+			lens = 3
+			user << "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>"
 			update_icon()
-			light_power = 5
-			light_color = rgb(200, 255, 200)
-			switchlens = FALSE
-*/
+			return
