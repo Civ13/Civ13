@@ -4,7 +4,7 @@ open//totally not basing this off of the language datum system.
 /datum/spell
 	var/name 		= "Generic Spell"
 	var/desc   		= "A generic spell."
-	var/icon 		= 'icons/obj/magicprojectile.dmi'
+	var/icon 		= 'icons/obj/magicprojectiles.dmi'
 	var/icon_state 	= "energy"
 	var/proj_icon	= 'icons/obj/magicicon.dmi'
 	var/proj_state	= "0"
@@ -68,7 +68,7 @@ open//totally not basing this off of the language datum system.
 //Spell in hand.
 /obj/item/spell
 	name = "magic spell"
-	icon = 'icons/obj/magicprojectile.dmi'
+	icon = 'icons/obj/magicprojectiles.dmi'
 	icon_state = "spell"
 	nothrow = TRUE
 	var/datum/spell/SPEL = /datum/spell
