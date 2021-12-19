@@ -857,6 +857,10 @@
 #include "code\modules\lighting\lighting_system.dm"
 #include "code\modules\lighting\lighting_turf.dm"
 #include "code\modules\lighting\~lighting_undefs.dm"
+#include "code\modules\magic\spell.dm"
+#include "code\modules\magic\spellfx.dm"
+#include "code\modules\magic\spellmin.dm"
+#include "code\modules\magic\spells.dm"
 #include "code\modules\materials\material_sheets.dm"
 #include "code\modules\materials\materials.dm"
 #include "code\modules\multiz\_stubs.dm"
@@ -1011,5 +1015,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\voyage.dmm"
+#include "maps\nomads\nomads.dmm"
 // END_INCLUDE

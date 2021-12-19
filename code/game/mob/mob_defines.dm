@@ -133,7 +133,8 @@
 	var/mob/living/human/LAssailant = null
 
 //Wizard mode, but can be used in other modes thanks to the brand new "Give Spell" badmin button
-	var/spell/list/spell_list = list()
+	//Reused for Magic
+	var/mob/list/spell_list = list()
 
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
 	mouse_drop_pointer = MOUSE_ACTIVE_POINTER
