@@ -31,7 +31,6 @@
 
 #define isbrain(A) istype(A, /mob/living/human/brain)
 
-#define ishuman(A) istype(A, /mob/living/human)
 //---------------------------------------------------
 
 #define isanimal(A) istype(A, /mob/living/simple_animal)
