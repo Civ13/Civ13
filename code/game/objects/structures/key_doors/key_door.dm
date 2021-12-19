@@ -133,6 +133,26 @@ var/list/nonbreaking_types = list(
 					return
 		if (W.code != custom_code)
 			user << "None of the keys match this lock!"
+	else if (istype(W, /obj/item/weapon/lockpick))
+		if (src.locked == 1)
+			var/mob/living/human/H = user
+			if (H.getStatCoeff("dexterity") < 1.7)
+				user << "You don't have the skills to use this."
+				return
+			else
+				visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
+					if(prob(H.getStatCoeff("dexterity")*35))
+						user << "<span class='notice'>You pick the lock.</span>"
+						src.locked = 0
+						return
+					else if (prob(60))
+						qdel(W)
+						user << "<span class='notice'>Your lockpick broke!</span>"
+						return
+					else
+						return
+				return
 	else
 		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HARM) && check_can_break_doors(W))
 			if (!user.hitting_key_door)
@@ -161,6 +181,28 @@ var/list/nonbreaking_types = list(
 			return
 		if (keyslot.check_weapon(W, user, TRUE))
 			keyslot.locked = !keyslot.locked
+	else if (istype(W, /obj/item/weapon/lockpick))
+		if (keyslot.locked)
+			var/mob/living/human/H = user
+			if (H.getStatCoeff("dexterity") < 1.7)
+				user << "You don't have the skills to use this."
+				return
+			else
+				visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
+					if(prob(H.getStatCoeff("dexterity")*35))
+						user << "<span class='notice'>You pick the lock.</span>"
+						keyslot.locked = 0
+						return
+					else if (prob(60))
+						qdel(W)
+						user << "<span class='warning'>Your lockpick broke!</span>"
+						return
+					else
+						user << "<span class='warning'>You failed to pick the lock!</span>"
+						return
+				return
+
 	else
 		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HARM) && check_can_break_doors(W))
 			if (!user.hitting_key_door)

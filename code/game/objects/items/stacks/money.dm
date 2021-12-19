@@ -500,3 +500,64 @@
 	amount = 10
 /obj/item/stack/money/dollar/onehundy
 	amount = 100
+
+
+
+/////////////////////////SKYRIM/////////////////////////////
+/obj/item/stack/money/septim
+	name = "septim"
+	desc = "A single septim coin."
+	singular_name = "septim"
+	icon_state = "septim" //Damn jerry rig
+	amount = 1
+	value = 1
+	max_amount = 500
+/obj/item/stack/money/septim/New()
+	if(amount == 2)
+		icon_state = "septim_2"
+	if(amount == 3)
+		icon_state = "septim_3"
+	if(amount == 4)
+		icon_state = "septim_4"
+	if(amount == 5)
+		icon_state = "septim_5"
+	if(amount == 6)
+		icon_state = "septim_6"
+	if(amount >= 7)
+		icon_state = "septim_7"
+	if(amount >= 10)
+		icon_state = "septim_10"
+	if(amount >= 50)
+		icon_state = "septim_50"
+	if(amount >= 100)
+		icon_state = "septim_100"
+	if(amount == 500)
+		icon_state = "septim_500"
+	if(amount > 500)
+		icon_state = "septim_500+"
+	update_icon()
+	return ..()
+/obj/item/stack/money/septim/update_icon()
+	if(amount == 2)
+		icon_state = "septim_2"
+	if(amount == 3)
+		icon_state = "septim_3"
+	if(amount == 4)
+		icon_state = "septim_4"
+	if(amount == 5)
+		icon_state = "septim_5"
+	if(amount == 6)
+		icon_state = "septim_6"
+	if(amount >= 7)
+		icon_state = "septim_7"
+	if(amount >= 10)
+		icon_state = "septim_10"
+	if(amount >= 50)
+		icon_state = "septim_50"
+	if(amount >= 100)
+		icon_state = "septim_100"
+	if(amount == 500)
+		icon_state = "septim_500"
+	if(amount > 500)
+		icon_state = "septim_500+"
+	..()

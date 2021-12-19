@@ -33,7 +33,7 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
-	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked" 
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked"
 
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
@@ -323,6 +323,27 @@
 					new buildstack(get_turf(src))
 				qdel(src)
 				return
+	else if (istype(W, /obj/item/weapon/lockpick))
+		if (src.locked == 1)
+			var/mob/living/human/H = user
+			visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+			if (H.getStatCoeff("dexterity") < 1.7)
+				user << "You don't have the skills to use this."
+				return
+			else
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
+					if(prob(H.getStatCoeff("dexterity")*35))
+						user << "<span class='notice'>You pick the lock.</span>"
+						src.locked = 0
+						return
+					else if (prob(60))
+						qdel(W)
+						user << "<span class='warning'>Your lockpick broke!</span>"
+						return
+					else
+						user << "<span class='warning'>You failed to pick the lock!</span>"
+						return
+				return
 	else
 		attack_hand(user)//keys!
 	return TRUE // for key_doors
@@ -367,6 +388,27 @@
 				for (var/i = TRUE, i <= buildstackamount, i++)
 					new buildstack(get_turf(src))
 				qdel(src)
+				return
+	else if (istype(W, /obj/item/weapon/lockpick))
+		if (src.locked == 1)
+			var/mob/living/human/H = user
+			visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+			if (H.getStatCoeff("dexterity") < 1.7)
+				user << "You don't have the skills to use this."
+				return
+			else
+				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
+					if(prob(H.getStatCoeff("dexterity")*35))
+						user << "<span class='notice'>You pick the lock.</span>"
+						src.locked = 0
+						return
+					else if (prob(60))
+						qdel(W)
+						user << "<span class='warning'>Your lockpick broke!</span>"
+						return
+					else
+						user << "<span class='warning'>You failed to pick the lock!</span>"
+						return
 				return
 	else
 		attack_hand(user)//keys!

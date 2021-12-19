@@ -2445,6 +2445,19 @@ obj/item/clothing/head/helmet/samurai/black
 	slowdown = 0.4
 	health = 80
 
+/obj/item/clothing/suit/armor/tes13/imperial
+	name = "imperial officer armor"
+	desc = "A thick, steel armor worn by imperial officers"
+	icon_state = "imperial_officer"
+	item_state = "imperial_officer"
+	worn_state = "imperial_officer"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.5
+	health = 80
+
 /obj/item/clothing/head/helmet/medieval/tes13/stormcloak
 	name = "stormcloak officer helmet"
 	desc = "A bear pelt helmet with an armored lining."
@@ -2458,6 +2471,43 @@ obj/item/clothing/head/helmet/samurai/black
 	health = 80
 	slowdown = 0.05
 
+
+/obj/item/clothing/under/tes13/imperial
+	name = "imperial armor"
+	desc = "A red tunic with leather armor overtop."
+	icon_state = "tes13_imperial"
+	item_state = "tes13_imperial"
+	worn_state = "tes13_imperial"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 60
+
+/obj/item/clothing/head/helmet/medieval/tes13/imperial
+	name = "imperial helmet"
+	desc = "An imperial helmet made of leather"
+	icon_state = "tes13_imperial"
+	item_state = "tes13_imperial"
+	worn_state = "tes13_imperial"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 45, arrow = 40, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 80
+	slowdown = 0.01
+
+/obj/item/clothing/head/helmet/medieval/tes13/imperial/officer
+	name = "imperial officer helmet"
+	desc = "An imperial helmet made of steel"
+	icon_state = "tes13_imperial_officer"
+	item_state = "tes13_imperial_officer"
+	worn_state = "tes13_imperial_officer"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 70, arrow = 50, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 80
+	slowdown = 0.03
 /////////////tes13 civilian/////////////////////////
 /obj/item/clothing/suit/storage/coat/tes13/fine_clothing
 	name = "fine clothing"

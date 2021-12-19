@@ -28,12 +28,12 @@
 "aB" = (/obj/structure/bed/chair/wood/wings{icon_state = "wooden_chair_wings"; dir = 8},/turf/floor/wood/fancywood,/area/caribbean)
 "aC" = (/obj/structure/window/classic/reinforced,/turf/floor/wood,/area/caribbean)
 "aD" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 9},/turf/floor/wood,/area/caribbean)
-"aE" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean)
-"aF" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4},/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood/fancywood,/area/caribbean)
+"aE" = (/obj/structure/mine_support/stone/marble,/turf/floor/carpet/redcarpet,/area/caribbean)
+"aF" = (/obj/structure/mine_support/stone/marble,/turf/floor/carpet/greencarpet,/area/caribbean)
 "aG" = (/obj/structure/sign/ogoldenplaque,/turf/wall/wood,/area/caribbean)
 "aH" = (/obj/structure/sign/painting2,/turf/wall/wood,/area/caribbean)
 "aI" = (/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/wood/fancywood,/area/caribbean)
-"aJ" = (/obj/structure/window/barrier/railing/stone,/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean)
+"aJ" = (/obj/structure/mine_support/stone/marble,/turf/floor/wood/fancywood,/area/caribbean)
 "aK" = (/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/wood,/area/caribbean)
 "aL" = (/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/carpet/redcarpet,/area/caribbean)
 "aM" = (/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/carpet/redcarpet,/area/caribbean)
@@ -41,8 +41,7 @@
 "aO" = (/obj/structure/sign/painting8,/turf/wall/wood,/area/caribbean)
 "aP" = (/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 1},/turf/floor/carpet/redcarpet,/area/caribbean)
 "aQ" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 1},/turf/floor/wood,/area/caribbean)
-"aR" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 1},/turf/floor/wood,/area/caribbean)
-"aS" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4},/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 1},/turf/floor/wood/fancywood,/area/caribbean)
+"aR" = (/obj/structure/mine_support/stone/marble,/turf/floor/plating/white,/area/caribbean)
 "aT" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 6},/turf/floor/wood,/area/caribbean)
 "aU" = (/obj/structure/noticeboard,/turf/wall/wood,/area/caribbean)
 "aV" = (/obj/structure/filingcabinet,/turf/floor/wood,/area/caribbean)
@@ -150,21 +149,21 @@ aaaaaaaaaaaabvbvbvbzbwbwbAbBbCbwbDbwbEbFbwbvbvbvbvbvbvbvbvbvbvbvbCbDbwbDbwbCbwbC
 aaaaaaaaaaaabvbvbvbwbDbwbzbGbFbHbwbCbIbwbzbvbvbvbvbvbvbvbvbvbvbvbzbwbwbJbAbwbFbwbGbwbEbKbFbwbvbvbvaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaabvbvbvbAbwbJbwbwbLbwbGbFbwbBbDbvbvbvbvbvbvbvbvbvbvbvbwbBbwbFbwbGbMbHbwbFbwbFbwbEbvbvbvaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaabvbvbvbFbwbCabababaCaCabababababafabababbTababababababababababaCaCababababbwbDbwbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbwbAbwabadawadaWadadabaDadadaoaeacapaVababadadaDabacawadadadadawaQabbJbFbCbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbMbwbBaCadagaXaXaXadabaxadadaoayagahacaiajadadazabacadaAaqaqaBadacabbwbNbFbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbwbGbFaCaYagaXaXaXadacaoaoaoaoakalalalamanadaoaoacacadaAaqaqaBadbPabbGbwbwbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbBbObwaCadagaXaXaXadabaRaSaoaoadadadadadaoadaoacaGacadaAaqaqaBadacabbwbFbEbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbzbwbJabadaIadaZadadaHaEaFaoaoaoaoaoaoaoaoaoaoacabaTaIadadadadaIacabbEbCbBbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbAbEbwababababababababaJaFaoaoaoaoaoaoaoaoaoaoaKababababababababababbFbDbFbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbvbvbvabbgbbbababbblabaxadadaqaqaoaoaoaqaqadadazabbgbbbababbblabbvbvbvbvbvbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaabvbvbvbvbvbvabbcbcbababcbcabaDadadararaoaoaoararadadaDabbcbcbababcbcabbvbvbvbvbvbvbvbvaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvbvabbdbabababbbtabasasasasasaLaoaLasasasasasabbubbbabababdabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvbvbebfbabababcbcabaxadadadadaoaMaoadadadadazabbcbcbabababmbebvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvbvbebnbabababbblaNacatauauavaoabaoatauauavacaObgbbbabababobebvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvbvbebfbabababcbcabacatauauavaoaPaoatauauavacabbcbcbabababmbebvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvbvabbdbabababbbtabacatauauavaoaoaoatauauavacabbubbbabababdabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvbvabbababababcbcabacatauauavaoaoaoatauauavacabbcbcbabababaabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvbvabbpbababababqabaxadadadadaoaoaoadadadadazabbrbababababsabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbwbAbwabadawadaWadadabaDadaoaoaeacapaVababadadaDabacawadadadadawaQabbJbFbCbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbMbwbBaCadagaXaXaXadabaxadaoaoayagahacaiajadadazabacadaAaqaqaBadacabbwbNbFbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbwbGbFaCaYagaXaFaXadacaoaoaoaoakalalalamanadaoaoacacaJaAaqaqaBaJbPabbGbwbwbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbBbObwaCadagaXaXaXadabacaoaoaoaoaoaoaoaoaoaoaoacaGacadaAaqaqaBadacabbwbFbEbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbzbwbJabadaIadaZadadaHacadadaqaqaoaEaoaqaqadadacabaTaIadadadadaIacabbEbCbBbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbAbEbwababababababababaxadadararaoaoaoararadadazababababababababababbFbDbFbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbvbvbvabbgbbbababbblabasasasasasaLaoaLasasasasasabbgbbbababbblabbvbvbvbvbvbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaabvbvbvbvbvbvabbcbcbababcbcabacatauauavaoaoaoatauauavacabbcbcbababcbcabbvbvbvbvbvbvbvbvaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvbvabbdbabababbbtabacatauauavaoaMaoatauauavacabbubbbabababdabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvbvbebfbaaRbabcbcabaxatauauavaoabaoatauauavazabbcbcbaaRbabmbebvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvbvbebnbabababbblaNacatauauavaoaPaoatauauavacaObgbbbabababobebvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvbvbebfbabababcbcabacadadadadaoaoaoadadadadacabbcbcbabababmbebvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvbvabbdbabababbbtabacadaoaoaoaoaoaoaoaoaoadacabbubbbabababdabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvbvabbabaaRbabcbcabacadaoaoaoaoaEaoaoaoaoadacabbcbcbaaRbabaabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvbvabbpbababababqabaxadadadaoaoaoaoaoadadadazabbrbababababsabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvbvabbibababababhabaDacacacaoaoaMaoaoacacacaDabbhbababababiabbvbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvababababbjaGababababababaGbkbkaUbkbkaGababababababaGbjababababbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvabacapacaoacbUbVbWbVbUacacaoaoapaoaoacacbUbVbWbVbUacaoacapbPabbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -174,7 +173,7 @@ aaaaaaaaaaaaaaaaaabvbvabbPaKacbUbVacaoacbVbUcEbVacaoaoaoacbVcEbUbVacaoacbVbUacaK
 aaaaaaaaaaaaaaaaaabvbvabababababababaoabababababbXaoaoaobXabababababaoabababababababbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvchcFbwabbQadadadadadbRabacacaoaoaoacacabbRadadadadadadabcjcGclbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvbwcjcmaCadadadadadadadabacaoaoaoaoaoacabadadadadadagadaCcmchbwbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaabvbvcncoclaCadadadadadadcHabcIaoaoaoaoaocJabcKadadadadagbSaCcpcocmbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabvbvcncoclaCadadadaJadadcHabcIaoaoaoaoaocJabcKadadaJadagbSaCcpcocmbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvcqcmcnaCadadagagagadadabacacacaoacacacabadadadadadagadaCcibwcrbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvcjckcpabadadadaradadadababababbjababababbQadadadadadadabbwcmcobvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaabvbvcicjchabababaCaCaCabababcscLbxbxbxcLctabababaCaCaCabababchbwcpbvbvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

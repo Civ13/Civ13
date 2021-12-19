@@ -4,6 +4,7 @@
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
+	no_hardcore = TRUE
 	var/victory_time = 24000
 
 	faction_organization = list(

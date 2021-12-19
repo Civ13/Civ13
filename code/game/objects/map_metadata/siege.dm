@@ -5,8 +5,7 @@
 	lobby_icon_state = "ancient"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-
-
+	no_hardcore = TRUE
 	faction_organization = list(
 		ROMAN,
 		GREEK)
