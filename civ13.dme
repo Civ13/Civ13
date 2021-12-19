@@ -501,6 +501,7 @@
 #include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\map_metadata\wake_island.dm"
+#include "code\game\objects\map_metadata\whiterun.dm"
 #include "code\game\objects\map_metadata\yeltsin.dm"
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\structures\appliances.dm"
@@ -1015,6 +1016,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\four_colonies.dmm"
+#include "maps\1013\whiterun.dmm"
 // END_INCLUDE
 
