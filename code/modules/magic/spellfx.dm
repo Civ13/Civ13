@@ -1,1 +1,0 @@
-/* Spell Effect code goes here. Just make em procs or somethin'. */
