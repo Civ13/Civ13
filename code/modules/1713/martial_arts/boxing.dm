@@ -1,7 +1,13 @@
 /datum/martial_art/boxing
 	name = "Boxing"
 	id = "boxing"
-
+	New()
+		..()
+		help_verb_text = "<b>[name]</b>\n\
+				<span class='notice'>HELP</span>: Nothing.\n\
+				<span class='notice'>DISARM</span>: Pushes the target mob away.\n\
+				<span class='notice'>GRAB</span>: Attempts to block punches or other disarmed attacks.\n\
+				<span class='notice'>HARM</span>: Throws a punch at the target mob. Small chance to KO."
 /datum/martial_art/boxing/disarm_act(mob/living/human/A, mob/living/human/D)
 	to_chat(A, "<span class='warning'>Can't disarm while boxing!</span>")
 	return TRUE
@@ -45,8 +51,3 @@
 			D.SetSleeping(100)
 			D.attack_log += "\[[time_stamp()]\] <font color='orange'>Knocked out (boxing) by [A.name] ([A.ckey])</font>"
 	return TRUE
-
-/datum/martial_art/boxing/can_use(mob/living/owner)
-	if (!ishuman(owner))
-		return FALSE
-	return ..()

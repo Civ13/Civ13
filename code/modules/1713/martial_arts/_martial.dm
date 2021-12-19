@@ -10,16 +10,27 @@
 /// IF an object is weak against armor, this is the value that any present armor is multiplied by
 #define ARMOR_WEAKENED_MULTIPLIER 2
 
+
+/// Verb added to humans who learn the art of the sleeping carp.
+/mob/living/human/verb/martial_arts_help()
+	set name = "Check Intent Behavior"
+	set desc = "Check what HELP, DISARM, GRAB and HARM intents do."
+	set category = "IC"
+
+	if (mind && mind.martial_art)
+		to_chat(usr, mind.martial_art.help_verb_text)
+
 /datum/martial_art
-	var/name = "Martial Art"
+	var/name = "Default"
 	var/id = ""
 	var/streak = ""
 	var/max_streak_length = 6
 	var/current_target
-	var/datum/martial_art/base // The permanent style. This will be null unless the martial art is temporary
-	var/block_chance = 0 //Chance to block melee attacks using items while on throw mode.
-	var/help_verb
-	var/allow_temp_override = TRUE //if this martial art can be overridden by temporary martial arts
+	var/help_verb_text = "<b>Default Intents:</b>\n\
+		<span class='notice'>HELP</span>: Hugs the target mob.\n\
+		<span class='notice'>DISARM</span>: Attempts to disarm the target mob.\n\
+		<span class='notice'>GRAB</span>: Attempts to grab the target mob.\n\
+		<span class='notice'>HARM</span>: Punches the target mob."
 	var/smashes_tables = FALSE //If the martial art smashes tables when performing table slams and head smashes
 	var/datum/weakref/holder //owner of the martial art
 	var/display_combos = FALSE //shows combo meter if true
@@ -50,43 +61,17 @@
 /datum/martial_art/proc/reset_streak(mob/living/new_target, update_icon = TRUE)
 	current_target = new_target
 	streak = ""
-/datum/martial_art/proc/teach(mob/living/holder_living, make_temporary=FALSE)
+/datum/martial_art/proc/teach(mob/living/holder_living)
 	if(!istype(holder_living) || !holder_living.mind)
 		return FALSE
-	if(holder_living.mind.martial_art)
-		if(make_temporary)
-			if(!holder_living.mind.martial_art.allow_temp_override)
-				return FALSE
-			store(holder_living.mind.martial_art, holder_living)
-		else
-			holder_living.mind.martial_art.on_remove(holder_living)
-	else if(make_temporary)
-		base = holder_living.mind.default_martial_art
-	if(help_verb)
-		holder_living.verbs += help_verb
 	holder_living.mind.martial_art = src
 	holder = holder_living
 	return TRUE
 
-/datum/martial_art/proc/store(datum/martial_art/old, mob/living/holder_living)
-	old.on_remove(holder_living)
-	if (old.base) //Checks if old is temporary, if so it will not be stored.
-		base = old.base
-	else //Otherwise, old is stored.
-		base = old
-
 /datum/martial_art/proc/remove(mob/living/holder_living)
 	if(!istype(holder_living) || !holder_living.mind || holder_living.mind.martial_art != src)
 		return
-	on_remove(holder_living)
-	if(base)
-		base.teach(holder_living)
-	else
-		var/datum/martial_art/default = holder_living.mind.default_martial_art
-		default.teach(holder_living)
+	var/datum/martial_art/default = holder_living.mind.default_martial_art
+	default.teach(holder_living)
 	holder = null
 
-/datum/martial_art/proc/on_remove(mob/living/holder_living)
-	if(help_verb)
-		holder_living.verbs -= help_verb
-	return

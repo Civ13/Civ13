@@ -5,10 +5,14 @@
 /datum/martial_art/the_sleeping_carp
 	name = "The Sleeping Carp"
 	id = "sleepingcarp"
-	allow_temp_override = FALSE
-	help_verb = /mob/living/proc/sleeping_carp_help
 	display_combos = TRUE
-
+	help_verb_text = "<b><i>You retreat inward and recall the teachings of the Sleeping Carp...</i></b>\n\
+	<span class='notice'>Gnashing Teeth</span>: Harm Harm. Deal additional damage every second (consecutive) punch!\n\
+	<span class='notice'>Crashing Wave Kick</span>: Harm Disarm. Launch your opponent away from you with incredible force!\n\
+	<span class='notice'>Keelhaul</span>: Harm Grab. Kick an opponent to the floor, knocking them down! If your opponent is already prone, this move will disarm them and deal additional stamina damage to them.\n\
+	Also, you are more resilient against suffering wounds in combat, and your limbs cannot be dismembered. This grants you extra staying power during extended combat, especially against slashing and other bleeding weapons.\
+	You are not invincible, however- while you may not suffer debilitating wounds often, you must still watch your health and appropriate medical supplies when possible for use during downtime.\
+	In addition, your training has imbued you with a loathing of guns, and you can no longer use them.</span>"
 /datum/martial_art/the_sleeping_carp/proc/check_streak(mob/living/human/A, mob/living/human/D)
 	if(findtext(streak,STRONG_PUNCH_COMBO))
 		streak = ""
@@ -97,17 +101,3 @@
 		return TRUE
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Disarmed (Sleeping Carp) by [A.name] ([A.ckey])</font>"
 	return ..()
-
-/// Verb added to humans who learn the art of the sleeping carp.
-/mob/living/proc/sleeping_carp_help()
-	set name = "Recall Teachings"
-	set desc = "Remember the martial techniques of the Sleeping Carp clan."
-	set category = "Sleeping Carp"
-
-	to_chat(usr, "<b><i>You retreat inward and recall the teachings of the Sleeping Carp...</i></b>\n\
-	<span class='notice'>Gnashing Teeth</span>: Harm Harm. Deal additional damage every second (consecutive) punch!\n\
-	<span class='notice'>Crashing Wave Kick</span>: Harm Disarm. Launch your opponent away from you with incredible force!\n\
-	<span class='notice'>Keelhaul</span>: Harm Grab. Kick an opponent to the floor, knocking them down! If your opponent is already prone, this move will disarm them and deal additional stamina damage to them.\n\
-	Also, you are more resilient against suffering wounds in combat, and your limbs cannot be dismembered. This grants you extra staying power during extended combat, especially against slashing and other bleeding weapons.\
-	You are not invincible, however- while you may not suffer debilitating wounds often, you must still watch your health and appropriate medical supplies when possible for use during downtime.\
-	In addition, your training has imbued you with a loathing of guns, and you can no longer use them.</span>")
