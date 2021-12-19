@@ -2432,6 +2432,19 @@ obj/item/clothing/head/helmet/samurai/black
 	health = 60
 	slowdown = 0.05
 
+/obj/item/clothing/head/helmet/medieval/tes13/hide
+	name = "hide helmet"
+	desc = "A thick helmet of hide worn often by soldiers or guards."
+	icon_state = "tes13_hide"
+	item_state = "tes13_hide"
+	worn_state = "tes13_hide"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 35, arrow = 20, gun = 10, energy = 15, bomb = 20, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 60
+	slowdown = 0.01
+
 /obj/item/clothing/suit/armor/tes13/stormcloak
 	name = "stormcloak officer armor"
 	desc = "A thick, leather armor of hide with a bearpelt draped over it."
@@ -2508,6 +2521,31 @@ obj/item/clothing/head/helmet/samurai/black
 	restricts_view = 2
 	health = 80
 	slowdown = 0.03
+
+
+/obj/item/clothing/under/tes13/stormcloak/ulfirc
+	name = "Ulfric Stormcloak's clothes"
+	desc = "A suit of blue fine clothing over some trousers"
+	icon_state = "ulfric"
+	item_state = "ulfric"
+	worn_state = "ulfric"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	body_parts_covered = HEAD|EYES|LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
+	armor = list(melee = 80, arrow = 80, gun = 10, energy = 15, bomb = 80, bio = 20, rad = FALSE)
+	health = 200
+
+/obj/item/clothing/under/tes13/imperial/bolgruf
+	name = "Jarl Bolgruf's clothes"
+	desc = "A suit of fine clothing over some trousers"
+	icon_state = "bolgruf"
+	item_state = "bolgruf"
+	worn_state = "bolgruf"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	body_parts_covered = HEAD|EYES|LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
+	armor = list(melee = 80, arrow = 80, gun = 10, energy = 15, bomb = 80, bio = 20, rad = FALSE)
+	health = 200
 /////////////tes13 civilian/////////////////////////
 /obj/item/clothing/suit/storage/coat/tes13/fine_clothing
 	name = "fine clothing"
@@ -2515,5 +2553,14 @@ obj/item/clothing/head/helmet/samurai/black
 	icon_state = "fine_clothes"
 	item_state = "fine_clothes"
 	worn_state = "fine_clothes"
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	health = 60
+
+/obj/item/clothing/suit/storage/coat/tes13/fine_clothing/blue
+	name = "fine clothing"
+	desc = "A fine fur jacket and shirt, for the better off people. This one is blue"
+	icon_state = "fine_clothes2"
+	item_state = "fine_clothes2"
+	worn_state = "fine_clothes2"
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	health = 60

@@ -754,30 +754,30 @@
 				set_light(1)
 				light_color = "#FCDA7C"
 				light_range = 4
-				return
+				break
 			else
 				icon_state = "torch_stand1"
 				set_light(0)
 				light_color = null
 				light_range = 0
-				return
-			return
+				break
 		for (var/obj/item/flashlight/lantern/LAN in src.storage.contents)
 			if (LAN.on == TRUE)
 				icon_state = "torch_stand_lantern_on"
 				set_light(1)
 				light_color = "#FCDA7C"
 				light_range = 6
-				return
+				break
 			else
 				icon_state = "torch_stand_lantern"
 				set_light(0)
-				return
-			return
+				break
+
 	else
 		icon_state = "torch_stand"
-	if (dir == 2)
+	if (dir == 1)
 		pixel_y = 32
+		return
 	else
 		pixel_y = 0
 		return

@@ -982,3 +982,27 @@
 	health = 35
 	maxhealth = 35
 	chopping_speed = 2.3
+
+/obj/item/weapon/material/hatchet/battleaxe/tes13/ulfric
+	name = "ulfric's war axe"
+	desc = "A very sharp axe blade upon a steel handle. Not pratical for chopping wood, but pratical for chopping limbs. This one belongs to the Jarl of Windhelm, Ulfric Stormcloak."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "waraxe_tes13"
+	item_state = "battleaxe"
+	default_material = "steel"
+	material = "steel"
+	force = 100
+	force_divisor = 1 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 1 // 15 with weight 20 (steel)
+	w_class = 3
+	sharp = TRUE
+	edge = TRUE
+	attack_verb = list("chopped", "torn", "cut")
+	applies_material_colour = FALSE
+	value = 200
+	slot_flags = SLOT_BELT
+	block_chance = 20
+	cooldownw = 4
+	health = 200
+	maxhealth = 200
+	chopping_speed = 5
