@@ -251,11 +251,6 @@
 	var/lens = 3
 	secondary_action = TRUE
 
-/*/obj/item/flashlight/militarylight/verb/switchlens()
-	set category = null
-	set src in usr
-	set name = "Switch lens" */
-
 /obj/item/flashlight/militarylight/secondary_attack_self(mob/living/human/user)
 
 	lens +=1
