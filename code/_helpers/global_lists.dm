@@ -110,6 +110,9 @@ var/global/list/supplydrop_turfs = list()
 var/global/list/bullet_casings = list()
 var/global/list/blood = list()
 
+// magic
+var/list/all_spells = list()
+
 // Strings which corraspond to bodypart covering flags, useful for outputting what something covers.
 var/global/list/string_part_flags = list(
 	"head" = HEAD,
@@ -236,6 +239,12 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 	for (var/T in paths)
 		var/datum/job/J = new T
 		joblist[J.title] = J
+
+	//Magic.
+	paths = typesof(/datum/spell)-/datum/spell
+	for (var/T in paths)
+		var/datum/spell/S = new T
+		all_spells += S
 
 	//Languages and species.
 	paths = typesof(/datum/language)-/datum/language
