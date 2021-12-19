@@ -64,7 +64,7 @@
 	var/datum/money_account/initial_account
 
 	var/datum/martial_art/martial_art = new/datum/martial_art/boxing
-	var/static/default_martial_art = new/datum/martial_art
+	var/static/datum/martial_art/default_martial_art = new/datum/martial_art
 
 /datum/mind/New(var/_key)
 	key = _key
