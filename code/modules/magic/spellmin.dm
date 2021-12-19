@@ -1,9 +1,15 @@
-/mob/verb/list_spells()
+var/list/admin_verbs_magic = list(
+	/client/proc/addrem_spells,
+	/client/proc/list_spells
+	)
+
+/client/proc/list_spells()
 	set name = "List Spells"
 	set desc = "List all the spells."
 	set category = "Admin"
 	set src = usr
 
+	if (!holder)	return
 	if (!check_rights(R_ADMIN))
 		return
 
@@ -13,12 +19,13 @@
 	src << browse(dat, "window=checklanguage")
 	return
 
-/mob/verb/addrem_spells()
+/client/proc/addrem_spells()
 	set name = "Add/Rem Spells"
 	set desc = "Add or Remove spells from a mob."
 	set category = "Admin"
 	set src = usr
 
+	if (!holder)	return
 	if (!check_rights(R_ADMIN))
 		return
 
