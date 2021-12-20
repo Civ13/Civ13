@@ -170,6 +170,16 @@
 	else
 		..()
 
+/obj/item/weapon/storage/fancy/cigarettes/marlboro
+	name = "Marlboro cigarette packet"
+	desc = "A Marlboro cigarette packet."
+	icon_state = "marlboro"
+
+/obj/item/weapon/storage/fancy/cigarettes/luckystrike
+	name = "Lucky Strike cigarette packet"
+	desc = "A Lucky Strike cigarette packet."
+	icon_state = "luckystrike"
+
 /obj/item/weapon/storage/fancy/cigar
 	name = "cigar case"
 	desc = "A case for holding your cigars when you are not smoking them."
