@@ -272,7 +272,7 @@
 	climate = "sea"
 
 /area/caribbean/island/river
-	base_turf = /turf/floor/beach/water
+	base_turf = /turf/floor/beach/water/deep
 	icon_state = "red1"
 
 /area/caribbean/island/tropical

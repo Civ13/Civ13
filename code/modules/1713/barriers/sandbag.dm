@@ -27,7 +27,7 @@
 
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
-		if (istype(src, /obj/structure/window/barrier/railing) || istype(src, /obj/structure/window/barrier/jersey) || istype(src, /obj/structure/window/barrier/sandstone))
+		if (istype(src, /obj/structure/window/barrier/railing) || istype(src, /obj/structure/window/barrier/jersey) || istype(src, /obj/structure/window/barrier/sandstone) || istype(src, /obj/structure/window/barrier/ship) || istype(src, /obj/structure/window/barrier/palisade) || istype(src, /obj/structure/window/barrier/sandstone))
 			return
 		if (WWinput(user, "Dismantle this [src]?", "Dismantle [src]", "Yes", list("Yes", "No")) == "Yes")
 			visible_message("<span class='danger'>[user] starts dismantling the [src].</span>", "<span class='danger'>You start dismantling the [src].</span>")
@@ -238,6 +238,16 @@
 	anchored = TRUE
 	climbable = TRUE
 	maxhealth = 30
+
+/obj/structure/window/barrier/palisade
+	name = "palisade"
+	desc = "A wooden palisade."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "palisade"
+	health = 25
+	anchored = TRUE
+	climbable = FALSE
+	flammable = TRUE
 
 /obj/item/weapon/barrier/sandbag
 	name = "sandbag"
