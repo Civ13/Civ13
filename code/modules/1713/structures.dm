@@ -731,7 +731,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////TORCH STAND/////////////////////////////////////////////
 /obj/structure/torch_stand
-	name = "torch moount"
+	name = "torch mount"
 	desc = "A mount to affix torches or lanterns to the wall"
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "torch_stand"
