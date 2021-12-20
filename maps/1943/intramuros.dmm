@@ -370,7 +370,7 @@
 "hf" = (/obj/structure/barbwire,/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean)
 "hg" = (/obj/structure/table/rack,/obj/item/weapon/storage/bible/booze,/turf/floor/wood,/area/caribbean/roofed)
 "hh" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigarettes,/obj/item/weapon/storage/fancy/cigarettes,/turf/floor/wood,/area/caribbean/roofed)
-"hi" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar,/turf/floor/wood,/area/caribbean/roofed)
+"hi" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar/full,/turf/floor/wood,/area/caribbean/roofed)
 "hj" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/picklejar,/obj/item/weapon/storage/fancy/picklejar,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood,/area/caribbean/roofed)
 "hk" = (/obj/structure/table/rack,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/tramadol,/turf/floor/wood,/area/caribbean/roofed)
 "hl" = (/obj/structure/table/rack,/obj/item/weapon/matchbox,/turf/floor/wood,/area/caribbean/roofed)

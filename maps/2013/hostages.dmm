@@ -129,7 +129,7 @@
 "cy" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "cz" = (/obj/structure/closet/crate,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cA" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"cB" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/glass,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cB" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/glass,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "cC" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
 "cD" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
 "cE" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
@@ -170,6 +170,7 @@
 "dn" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
 "do" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
 "dp" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
+"dq" = (/obj/structure/closet/crate,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/storage/fancy/cigarettes{icon_state = "luckystrike"; name = "Lucky Strike"},/obj/item/weapon/storage/fancy/cigarettes{icon_state = "luckystrike"; name = "Lucky Strike"},/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "dr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "ds" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "dt" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{icon_state = "pkm"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
@@ -391,7 +392,6 @@
 "hB" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/pill_bottle/pervitin,/turf/floor/dirt,/area/caribbean/arab/caves)
 "hC" = (/obj/structure/table,/obj/item/kitchen/plate,/obj/item/weapon/storage/pill_bottle/pervitin,/turf/floor/dirt,/area/caribbean/arab/caves)
 "hD" = (/obj/structure/table,/obj/item/weapon/storage/pill_bottle/pervitin,/turf/floor/dirt,/area/caribbean/arab/caves)
-"hE" = (/obj/structure/closet/crate,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/storage/fancy/cigarettes{icon_state = "luckystrike"; name = "Lucky Strike"},/obj/item/weapon/storage/fancy/cigarettes{icon_state = "luckystrike"; name = "Lucky Strike"},/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "hF" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/dirt,/area/caribbean/arab/caves)
 
 (1,1,1) = {"
@@ -408,7 +408,7 @@ cjagcjaQazbaazbbatatbfatczcHbkbkbkagatataBatatatatatblbmbdatatatafcpcpaeaeaSaeae
 cjcjcjbpbhbibjazatatatbqbrbrbrbrbrbsagatatbwatblblblblbwcjataCatafcpcpaeaeaiaeaeaeaeaeaSaiaeanacacaeacacacacaeaeacacacaaaaababababababababababababababababababababababababababababababababcfcfehbAdYabab
 cjcjagaAbnaAbaboatbkbxbybBbkcsagbkbCagagbDbEbJblfhfjcjcjcjcjaUaUaYcpcpaeaeaeaeaeaeaeaeaeaeaeacaeaeacacaeacacacanacacacaaaaababababababababababababababababababababababababababababababababcfcfcfegcfabab
 cjcjcjbpbvbaazazasbkbKbybBctcucvbkbCagcIbMbNblbDfAfBfBcjcjcjaFaeaecpcpaeaeaeaeaeaeaeaeaeaeaZacacaeanaeaDacacacacacacaaaaaaababababababababababababababababababababababababababababababababhihiababababab
-cjcjcjazcBbaazazatathEbPbTbkcwagagbZbkcJblblblatfCfDfDfEfEcjaiaeaecpcGaeaeaeaeaeaeaeaeaZaeaeacaeaebuaDaeacacacacacacacaaababababababababababababababababababababababababababababababababdecfdAababababab
+cjcjcjazcBbaazazatatdqbPbTbkcwagagbZbkcJblblblatfCfDfDfEfEcjaiaeaecpcGaeaeaeaeaeaeaeaeaZaeaeacaeaebuaDaeacacacacacacacaaababababababababababababababababababababababababababababababababdecfdAababababab
 cjcjagbbbIaAazbbatagagcbcccccccccdceaBblblblbDfAfAfDfDfDfEcjcjaeaZcpcpaeaOaeaeaeaFaOaeaeaeaZacbzacaeaeaeaFacaiacacaaaaaaabababababababababababababababababababababababababababababababababcfcfababababab
 cjagagatatasascKataCbkbkbkagbkbkbkbkblblblblatfAfDfDfDfFcjcjcjcpcpcpcpaeaeaeaeaFaDaeaeaeaeaeacaeacaeaiaeaeacacaFacaaaaaaabababababababababababababababababababababababababababababababababcfcfababababab
 cjcjcjagatataBatatataBaMbkatatbkbkbkbkblatatbDfAfDfDfEcjcjcjcCcpcpcpcpaeaeaeaeaeaeaDaeaeacaZacacacaeaiaiaeaeaeaeacaaaaaaabababababababababababababababababababababababababababababababababcfdAhjabababab
