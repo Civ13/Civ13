@@ -345,6 +345,14 @@
 	H.setStat("bows", STAT_MAX)
 	H.setStat("medical", STAT_MAX)
 	H.real_name = "Ulfric Stormcloak"
+	H.h_style = "Flaired Hair"
+	H.f_style = "Goatee"
+	H.b_hair = 36
+	H.g_hair = 48
+	H.r_hair = 59
+	H.b_hair = 36
+	H.g_hair = 48
+	H.r_hair = 59
 
 	return TRUE
 

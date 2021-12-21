@@ -756,6 +756,10 @@
 	var/brightness_on = 5 //luminosity when on
 
 /obj/structure/torch_stand/update_icon()
+	if (dir == 1)
+		pixel_y = 32
+	else
+		pixel_y = 0
 	if (storage.contents.len > 0)
 		for (var/obj/item/flashlight/torch/TOR in src.storage.contents)
 			if (TOR.on == TRUE)
@@ -763,33 +767,27 @@
 				set_light(1)
 				light_color = "#FCDA7C"
 				light_range = 4
-				break
+				return
 			else
 				icon_state = "torch_stand1"
 				set_light(0)
 				light_color = null
 				light_range = 0
-				break
+				return
 		for (var/obj/item/flashlight/lantern/LAN in src.storage.contents)
 			if (LAN.on == TRUE)
 				icon_state = "torch_stand_lantern_on"
 				set_light(1)
 				light_color = "#FCDA7C"
 				light_range = 6
-				break
+				return
 			else
 				icon_state = "torch_stand_lantern"
 				set_light(0)
-				break
+				return
 
 	else
 		icon_state = "torch_stand"
-	if (dir == 1)
-		pixel_y = 32
-		return
-	else
-		pixel_y = 0
-		return
 
 /obj/structure/torch_stand/New()
 	..()
