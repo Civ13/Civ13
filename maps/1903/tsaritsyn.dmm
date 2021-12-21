@@ -446,7 +446,7 @@
 "iD" = (/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "iE" = (/obj/structure/religious/totem{desc = "A large cross."; icon = 'icons/misc/support.dmi'; icon_state = "cross"; name = "stone cross"},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "iF" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/russian/land/inside/command{name = "The Church"})
-"iG" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/dirt/dust,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
+"iG" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/dirt/dust,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
 "iH" = (/obj/structure/bed/bedroll,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "iI" = (/obj/item/clothing/head/nun_hood,/obj/item/clothing/head/nun_hood,/obj/item/clothing/under/nun,/obj/item/clothing/under/nun,/obj/item/clothing/under/nun,/obj/structure/closet/cabinet,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "iJ" = (/obj/effect/decal/cleanable/dirt,/turf/floor/trench,/area/caribbean/forest/dirt)

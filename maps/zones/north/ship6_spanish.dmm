@@ -12,10 +12,10 @@
 "al" = (/obj/structure/multiz/ladder/ww2/up,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "am" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/hammock,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "an" = (/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
+"ao" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "ap" = (/obj/covers/repairedfloor/ship,/obj/structure/table/modern/table,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "aq" = (/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "ar" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
-"as" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/custom/singledoor/privacy{unique_door_name = ""},/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "at" = (/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "au" = (/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "av" = (/obj/structure/barricade/ship/north/corners{dir = 8; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
@@ -59,7 +59,6 @@
 "bi" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/lt,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
 "bj" = (/obj/covers/repairedfloor/ship,/obj/structure/multiz/ladder/ww2,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bk" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/chest,/obj/item/stack/money/doubloon/ten,/obj/item/stack/money/doubloon/ten,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
-"bl" = (/obj/structure/simple_door/key_door/anyone/wood/ship,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top/roofed)
 "bm" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/craftable/rifles/wood/filled_musket_spanish,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bn" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/sgt,/turf/floor/broken_floor,/area/caribbean/sea/top)
 "bo" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 4; icon_state = "wooden_chair_red"},/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/cpt,/turf/floor/broken_floor,/area/caribbean/sea/top/roofed)
@@ -133,8 +132,8 @@ aaaaaaaaaaadaebkbpbpbpbpbxbpbpbpbpbpbpbxbpbpbIbpbpbpbpbpbIbpbpbpbpbpbIbpbpbpbpbI
 aaaaaaaaaabDbkbpbpbpbpbpbxbpbpcfcfbpbpbxalbpbpbpbpbpbpbpbpbpbpambpambpambpambpambpambpambpambpambpambpambpbpbpbpbpbpbpbpbGbpbGajbBaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabDbkbpbpbpbsbpbxbpbpbpbHbpbpbxalbpbpbpbpbsbpbpanbpbpbpbpbpbpbpbpbpanbpbpbpbpbpbpbpanbpbpbpbpbpbpanbpbpbpbpbpbpbpbpbpbJbKaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabDbkbpbpbpbpbpcabpbpbpbHbpbpcabpbpbpbpbpbsbpbpbpbpbpbpbpbLbMbpbNbObPbPbpbQbQbRbpbSbSbTbUbpbYbYbZbpbpbpbpbpbpbpbGbpbGbJbKaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaabDbkbpbsbpbpbpblbpbpbpbHbpbpblbpbpbpbpbpbsbpbpbpbpbpbpbpbLbMbpbNbObPbPbpbQbQbRbpbSbSbTbUbpbYbYbZbpbpbpbpbpbpbpbpbpbpbJbKaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaabDbkbpbsbpbpbpblbpbpbpbHbpbpblbpbpbpbpbpbsbpbpbpbpbpbpbpbLbMbpbNbObPbPbpbQbQbRbpbSbSbTbUbpbYbYbZbpbpbpbpbpbpbpbGbpbGbCbKaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaabDbkbpbsbpbpbpaobpbpbpbHbpbpaobpbpbpbpbpbsbpbpbpbpbpbpbpbLbMbpbNbObPbPbpbQbQbRbpbSbSbTbUbpbYbYbZbpbpbpbpbpbpbpbpbpbpbJbKaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaabDbkbpbsbpbpbpaobpbpbpbHbpbpaobpbpbpbpbpbsbpbpbpbpbpbpbpbLbMbpbNbObPbPbpbQbQbRbpbSbSbTbUbpbYbYbZbpbpbpbpbpbpbpbGbpbGbCbKaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabDbkbpbpbpbpbpcabpbpbpbHbpbpcabpbpbpbpbpbsbpbpanbpbpbpbpbpbpbpbpbpanbpbpbpbpbpbpbpanbpbpbpbpbpbpanbpbpbpbpbpbpbpbpbpbCbKaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabDbkbpbpbpbsbpbxbpbpbpbHbpbpbxalbpbpbpbpbpbpbpbpbpbpambpambpambpambpambpambpambIambpambpambpambpbpbpbpbpbpbpbpbGbpbGbCbKaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabDbkbpbpbpbpbpbxbpbpcfcfbpbpbxalbpbIbpbpbpbIbpbpbIbpbpbpbpbpbpbpbIbpbpbpbIbpbpbpbpbpbpbpbpbpbpbpbIbpbpbpbpbpbpbpcfcfauavawaaaaaaaaaaaaaaaaaa
@@ -145,6 +144,7 @@ aaaaaaaaaaaaaaaaaaaxaEaEaEaEaEaEaEaEaEaEaEaHaEaEaHaEaEaHaEaEaHaEaEaHaEaEaHaEaEaH
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
+
 (1,1,2) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -160,8 +160,8 @@ aaaaaaaaaaaJaQaqaqaqaqaqayapaqaqbiaqaqaCatatbhatatatatatbhatatatatatbhatatatatbh
 aaaaaaaaaaaFaqaqaqaqaqaqayaqaraqaqaqaraCbjatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatbfaOaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqapapaqaqaqayaqaqaqaqaqaqaCbjatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqaqaSaqaqaqaPaqaqaqaqaqaqaZatatatatatataUaUatatatatatatatatbmbmatatatatbnatatatataUaUatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaFaqboaVaqaqaqasaqaqaqaqaqaqasatatatatatbnatatatataWOXaXatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaFaqaqbqaqaqaqasaqaqaqaqaqaqasatatatatatatbratatatMPTVuJatbnatbratatatatatatatatatatbratatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaFaqboaVaqaqaqaoaqaqaqaqaqaqaoatatatatatbnatatatataWOXaXatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaFaqaqbqaqaqaqaoaqaqaqaqaqaqaoatatatatatatbratatatMPTVuJatbnatbratatatatatatatatatatbratatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqapbtaqaqaqaPaqaqaqaqaqaqaZatatatatatatbmbmatatbufMbvatatataUaUatatatatatatatatatbmbmatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqaqaqaqaqaqayaqaqaqaqaqaqaCbjatatatatatatatatatatatatatatatatatatatatatatatbhatatatatatatatatatatatatatatatatatatataIaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaFaqaqaqaqaqaqayaqaqaqaqaqaqaCbjatbhatatatbhatatbhatatatatatatatbhatatatbhatatatatatatatatatatatbhatatatatatatatatatbwbyawaaaaaaaaaaaaaaaaaa

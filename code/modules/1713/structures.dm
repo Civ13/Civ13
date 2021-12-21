@@ -352,7 +352,6 @@
 	name = "German Flag"
 	desc = "The German flag."
 
-
 /obj/structure/flag/confed
 	icon_state = "confed"
 	name = "Confederate flag"
@@ -377,6 +376,16 @@
 	icon_state = "filipino_wartime"
 	name = "Philippines Republic"
 	desc = "The Republic of the Philippines flag. This one flipped for wartime."
+
+/obj/structure/flag/nva
+	icon_state = "nva"
+	name = "North Vietnam Flag"
+	desc = "The flag of North Vietnam."
+
+/obj/structure/flag/vietcong
+	icon_state = "vietcong"
+	name = "Vietcong Flag"
+	desc = "The flag of the National Liberation Front of Vietnam."
 
 /obj/structure/flag/pole
 	icon_state = "flagpole_blank"
@@ -819,3 +828,18 @@
 	..()
 	new /obj/item/flashlight/torch/on(src.storage)
 	update_icon()
+
+//////////////////////////CAMONET/////////////////////////////////
+
+/obj/structure/camonet
+	name ="camonet"
+	icon = 'icons/obj/structures.dmi'
+	icon_state ="camonet"
+	layer = MOB_LAYER + 8
+	alpha = 175
+	density = FALSE
+	anchored = TRUE
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	mouse_opacity = FALSE

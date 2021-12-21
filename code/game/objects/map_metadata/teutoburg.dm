@@ -18,7 +18,7 @@
 	ordinal_age = 1
 	faction_distribution_coeffs = list(ROMAN = 0.4, GERMAN = 0.6)
 	battle_name = "battle of Teutoburg Forest"
-	mission_start_message = "<font size=4>The <b>Germanic</b> and <b>Roman</b> armies are facing each other in the Teutoburg forest! Get ready for the battle! It will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Germanic</b> and <b>Roman</b> armies are facing each other across the Teutoburg forest! Each side wants to capture the other's base. Get ready for the battle, it will start in <b>5 minutes</b>!</font>"
 	faction1 = ROMAN
 	faction2 = GERMAN
 	ambience = list('sound/ambience/jungle1.ogg')
