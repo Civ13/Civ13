@@ -9,6 +9,7 @@
 "ai" = (/obj/structure/barricade/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "aj" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "ak" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"al" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "am" = (/obj/structure/barricade/ship/aport1/north,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "an" = (/obj/structure/barricade/ship/north/corners{dir = 2; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "ao" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
@@ -37,7 +38,7 @@
 "aL" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/cannonball/grapeshot,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "aM" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/bayonets,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "aN" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/webbings,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
-"aO" = (/obj/structure/simple_door/key_door/anyone/wood/ship,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
+"aO" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone/ship,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "aP" = (/obj/structure/barricade/ship/north/corners{dir = 8; icon_state = "boat1_up_corners"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "aQ" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder{dir = 1; icon_state = "ropeladder"},/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
 "aR" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom/roofed)
@@ -82,7 +83,6 @@
 "bG" = (/obj/covers/repairedfloor/ship,/obj/structure/grapplehook/auto,/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "bH" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/ropeladder{dir = 1; icon_state = "ropeladder"},/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1; icon_state = "cannon"},/turf/floor/broken_floor,/area/caribbean/sea/bottom)
 "bI" = (/obj/covers/repairedfloor/ship,/obj/structure/table/modern/table,/obj/structure/voyage/tablemap{dir = 8; icon_state = "table_map"},/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
-"bJ" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/custom/singledoor/privacy{unique_door_name = ""},/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "bK" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 8; icon_state = "wooden_chair_red"},/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "bL" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/hostile/human/voyage/spanish/ranged/lt,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
 "bM" = (/obj/covers/repairedfloor/ship,/obj/structure/table/modern/table,/obj/structure/voyage/sextant,/turf/floor/broken_floor,/area/caribbean/sea/bottom/roofed)
@@ -127,8 +127,8 @@ aaaaaaaaafabagajajajajapajajajajajajapajajawajajajajajawajajajajajawajajajajawaj
 aaaaaaaaauagajajajajajapajajaxaxajajapavajajajajajajajajajajarajarajarajarajarajarajarajarajarajarajarajajajajajajajajaRajaRaeanaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaauagajajajakajapajajajayajajapavajajajajakajajaSajajajajajajajajajaSajajajajajajajaSajajajajajajaSajajajajajajajajajaAaBaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaauagajajajajajacajajajayajajacajajajajajakajajajajajajajaCaDajaEaFaGaGajaHaHaIajaJaJaKaLajaMaMaNajajajajajajajaRajaRaAaBaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaauagajakajajajaOajajajayajajaOajajajajajakajajajajajajajaCaDajaEaFaGaGajaHaHaIajaJaJaKaLajaMaMaNajajajajajajajajajajaAaBaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaauagajakajajajaOajajajayajajaOajajajajajakajajajajajajajaCaDajaEaFaGaGajaHaHaIajaJaJaKaLajaMaMaNajajajajajajajaRajaRataBaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaauagajakajajajalajajajayajajalajajajajajakajajajajajajajaCaDajaEaFaGaGajaHaHaIajaJaJaKaLajaMaMaNajajajajajajajajajajaAaBaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaauagajakajajajalajajajayajajalajajajajajakajajajajajajajaCaDajaEaFaGaGajaHaHaIajaJaJaKaLajaMaMaNajajajajajajajaRajaRataBaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaauagajajajajajacajajajayajajacajajajajajakajajaSajajajajajajajajajaSajajajajajajajaSajajajajajajaSajajajajajajajajajataBaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaauagajajajakajapajajajayajajapavajajajajajajajajajajarajarajarajarajarajarajarawarajarajarajarajajajajajajajajaRajaRataBaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaauagajajajajajapajajaxaxajajapavajawajajajawajajawajajajajajajajawajajajawajajajajajajajajajajajawajajajajajajajaxaxaqaPaUaaaaaaaaaaaaaaaaaaaa
@@ -143,6 +143,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
+
 (1,1,2) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -150,16 +151,16 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaXaaaaaaaa
 aaaaaaaaaaaaaaaabhbibibqbibibibibibibrbsbubxbxbubsbxbubsbxbubsbxbubsbxbubsbxbubxbsbubxbsbubxbsbubxbsbubxbsbubxbsbEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaabhbiaYaZbFbabkbkblblblbvbbbobdbobobdbcbebdbobobdbobobdbGbobHbobobdbobcbdbobobdbobebdbobobdbobobdbobobfbsbEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabhaYblblblblbtbkbKblblblbAbwbobobobobobobobobobobobobobobobobobobobobobobobobobobobobpbobobobobobobobobobobfbsbEaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaabhaYblblblblblbtbkblblbLblblbwbobobpbobobobobobpbobobobobobpbobobobobpbobobpbobobobobobobobobobpbobobobpbobobobobfbsbEaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabhaYblblblblblbtbkblblblblblbwbobobpbobobobobobpbobobobobobpbobobobobpbobobpbobobobobobobobobobpbobobobpbobobobobfbsbEaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblblblblblblbtblbOblblblbObwbBbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobfbEaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblbkbkblblblbtblblblblblblbwbBbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblblbPblblblbablblblblblblbbbobobobobobobQbQbobobobobobobobobNbNbobobobobSbobobobobQbQbobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaabzblbTbDblblblbJblblblblblblbJbobobobobobSbobobobobVvgbWbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaabzblblbIblblblbJblblblblblblbJbobobobobobobXboboboLIrdAzbobSbobXbobobobobobobobobobobXbobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabzblbTbDblblblaOblblblblblblaObobobobobobSbobobobobVvgbWbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabzblblbIblblblaOblblblblblblaObobobobobobobXboboboLIrdAzbobSbobXbobobobobobobobobobobXbobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblbkbMblblblbablblblblblblbbbobobobobobobNbNbobocaqLcbbobobobQbQbobobobobobobobobobNbNbobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblblblblblblbtblblblblblblbwbBbobobobobobobobobobobobobobobobobobobobobobobobpbobobobobobobobobobobobobobobobobobobobCaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaabzblblblblblblbtblblblblblblbwbBbobpbobobobpbobobpbobobobobobobobpbobobobpbobobobobobobobobobobobpboboboboboboboboboccbRaUaaaaaaaaaaaaaaaaaaaa
-aaaaaaaabUcdblblblblblbtbObLblblblbObwbobobobobobobobobobobobobpbobobobobobobobobobobobobobobobpbobobobobobobobobobobobocccebRaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabUcdblblblbLblbtbObLblblblbObwbobobobobobobobobobobobobpbobobobobobobobobobobobobobobobpbobobobobobobobobobobobocccebRaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaabUcdblblblblbtbkbyblblblbAbwbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobocccebRaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaabUbZcdcfcgbabkbkbkblblbvbbbobobobobobobobobobGbobobobobobobobobobobobobobGbobobobobobobobobGbobobobocccebRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaabUbZbZbZbZbZchbZbZbZbncecicjcecicjmEcicjcecicjcecicjceyGcjcecicjcecicjcecicjmEcicjcecicjcecicjcebRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

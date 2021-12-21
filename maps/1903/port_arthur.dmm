@@ -207,7 +207,7 @@
 "dY" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_small/alwayson,/obj/item/weapon/key/russian,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "dZ" = (/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "ea" = (/obj/structure/lamp/lamp_small/alwayson,/obj/structure/closet/crate/footlocker,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/ammo_magazine/c762x38mmR,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"eb" = (/obj/structure/closet/crate/footlocker,/obj/item/weapon/storage/fancy/cigar,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"eb" = (/obj/structure/closet/crate/footlocker,/obj/item/weapon/storage/fancy/cigar/full,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "ec" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "ed" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
 "ee" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
