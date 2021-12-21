@@ -7,6 +7,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 300
 	no_hardcore = TRUE
+	force_mapgen = TRUE
 	faction_organization = list(
 		ROMAN,
 		CIVILIAN)
