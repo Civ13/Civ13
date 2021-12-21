@@ -17,7 +17,7 @@
 	return ..(user)
 
 /*	if (ishuman(user))
-		var/mob/living/carbon/human/human_user = user
+		var/mob/living/human/human_user = user
 		var/dat
 		pages = FALSE
 		switch(screen)

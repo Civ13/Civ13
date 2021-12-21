@@ -119,7 +119,6 @@
 
 	for(var/i=1,i<=map.custom_company[company].len,i++)
 		if (map.custom_company[company][i][1] == H && map.custom_company[company][i][2] > 0)
-			world.log << "found"
 			return TRUE
 
 	return FALSE

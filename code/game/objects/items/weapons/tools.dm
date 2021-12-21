@@ -491,7 +491,7 @@
 //Decides whether or not to damage a player's eyes based on what they're wearing as protection
 //Note: This should probably be moved to mob
 /obj/item/weapon/weldingtool/proc/eyecheck(mob/user as mob)
-	if (!iscarbon(user))	return TRUE
+	if (!ishuman(user))	return TRUE
 	if (istype(user, /mob/living/human))
 		var/mob/living/human/H = user
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]

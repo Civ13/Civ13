@@ -738,6 +738,8 @@
 #include "code\modules\1713\machinery\modular_vehicles\ships\frame_parts.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\movement.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\wheels.dm"
+#include "code\modules\1713\martial_arts\_martial.dm"
+#include "code\modules\1713\martial_arts\boxing.dm"
 #include "code\modules\1713\siege\boiling_oil.dm"
 #include "code\modules\1713\siege\cannon_types.dm"
 #include "code\modules\1713\siege\catapult.dm"
@@ -1016,6 +1018,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1013\whiterun.dmm"
+#include "maps\special\voyage.dmm"
 // END_INCLUDE
 

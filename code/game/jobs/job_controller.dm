@@ -199,11 +199,9 @@ var/global/datum/controller/occupations/job_master
 		if (H.faction_text == map.faction1)
 			if (map.faction1_squad_leaders[H.squad])
 				HSL = map.faction1_squad_leaders[H.squad]
-				world.log << "found"
 		else if (H.faction_text == map.faction2)
 			if (map.faction2_squad_leaders[H.squad])
 				HSL = map.faction2_squad_leaders[H.squad]
-				world.log << "found"
 		if (HSL && HSL.stat == CONSCIOUS)
 			world.log << "[HSL]"
 			var/found = FALSE
