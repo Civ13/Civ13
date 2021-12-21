@@ -307,6 +307,11 @@
 	desc = "The black pirate flag, with a skull in the middle."
 	icon_state = "pirate"
 
+/obj/structure/sign/flag/firstcav
+	name = "1st Cavalry Division flag"
+	desc = "Flag of the United States Army 1st Cavalry Division."
+	icon_state = "flag_1stcav"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."

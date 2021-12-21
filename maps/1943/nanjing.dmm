@@ -273,7 +273,7 @@
 "fm" = (/obj/structure/table/rack,/obj/item/weapon/beartrap,/obj/item/weapon/beartrap,/obj/item/weapon/beartrap,/turf/floor/wood,/area/caribbean/roofed)
 "fn" = (/obj/structure/table/rack,/obj/item/weapon/crowbar/prybar,/obj/item/weapon/crowbar/prybar,/obj/item/weapon/crowbar/prybar,/turf/floor/wood,/area/caribbean/roofed)
 "fo" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/wood,/area/caribbean/roofed)
-"fp" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigar,/turf/floor/wood,/area/caribbean/roofed)
+"fp" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/storage/fancy/cigar/full,/turf/floor/wood,/area/caribbean/roofed)
 "fq" = (/obj/structure/table/rack,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/turf/floor/wood,/area/caribbean/roofed)
 "fr" = (/obj/structure/table/rack,/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/turf/floor/wood,/area/caribbean/roofed)
 "fs" = (/obj/structure/grille/ironfence,/obj/structure/window/classic/reinforced,/turf/floor/wood,/area/caribbean/roofed)

@@ -32,7 +32,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman_centurion(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/cape(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman/praetorian(H), slot_l_hand)
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_centurion(H), slot_head)
 		//weapons
@@ -74,6 +75,7 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_decurion(H), slot_head)
 		//weapons
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman/praetorian(H), slot_l_hand)
@@ -107,9 +109,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt(H), slot_head)
 
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
 	//pelt randomization
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt(H), slot_head)
@@ -151,6 +152,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman(H), slot_head)
 		//weapons
@@ -189,8 +191,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/wolfpelt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/chainmail(H), slot_wear_suit)
 
 	//pelt randomization
 	if (prob(50))
@@ -246,7 +247,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/greek_commander(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/cape/blue(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scaled(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek_commander(H), slot_head)
 //weapons
@@ -287,6 +288,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek2(H), slot_w_uniform)
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek3(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scaled(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek_sl(H), slot_head)
 //weapons
@@ -329,6 +331,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek2(H), slot_w_uniform)
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek3(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scaled(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek(H), slot_head)
 //weapons
@@ -366,6 +369,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/toxotai(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/linen(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/toxotai(H), slot_head)
 //weapons
@@ -563,6 +567,7 @@
 		//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the chieftain of your tribe. Lead your men to victory!")
 
 	H.setStat("strength", STAT_HIGH)
@@ -595,15 +600,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/bronze_lamellar(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scaled(H), slot_wear_suit)
 		//head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/asterix(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/horned(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword/iron(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword/iron(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_l_hand)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a germanic swordsman.")
 

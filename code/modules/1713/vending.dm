@@ -718,6 +718,54 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m9beretta = 50,
 	)
 
+/obj/structure/vending/usa_apparel_coldwar
+	name = "US Army apparel rack"
+	desc = "Basic wear for the soldiers of the US Army."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/blackboots1 = 30,
+		/obj/item/clothing/under/us_uni = 20,
+		/obj/item/clothing/under/us_uni/us_greentrousers = 10,
+		/obj/item/clothing/under/us_uni/us_lightuni = 10,
+		/obj/item/clothing/under/us_uni/us_lightuni2 = 10,
+		/obj/item/clothing/accessory/armor/coldwar/flakjacket = 30,
+		/obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory = 20,
+		/obj/item/weapon/storage/belt/smallpouches/green = 25,
+		/obj/item/weapon/storage/belt/largepouches/green/ = 5,
+		/obj/item/clothing/accessory/storage/webbing/us_vest = 30,
+		/obj/item/stack/medical/bruise_pack/gauze = 30,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+		/obj/item/clothing/mask/facecamo = 20,
+		/obj/item/weapon/storage/fancy/cigarettes/marlboro = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/luckystrike = 10,
+		/obj/item/weapon/flame/lighter = 10,
+	)
+
+/obj/structure/vending/usa_equipment_coldwar
+	name = "US Army weapons and ammunition"
+	desc = "Weapons, ammunition, equipment and explosives issued by the US Army."
+	icon_state = "equipment_usa"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/m16 = 40,
+		/obj/item/weapon/gun/projectile/submachinegun/greasegun = 20,
+		/obj/item/weapon/gun/projectile/automatic/m60 = 10,
+		/obj/item/ammo_magazine/m16 = 80,
+		/obj/item/ammo_magazine/greasegun = 40,
+		/obj/item/ammo_magazine/m14 = 30,
+		/obj/item/ammo_magazine/b762 = 15,
+		/obj/item/ammo_magazine/m1911 = 50,
+		/obj/item/weapon/attachment/bayonet/military = 30,
+		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
+		/obj/item/weapon/grenade/coldwar/m67 = 15,
+		/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 15,
+		/obj/item/weapon/grenade/incendiary/anm14 = 10,
+	)
+
+
+
 //craftable rifle rack
 /obj/structure/vending/craftable
 	var/product_type = /obj/item/weapon/gun/projectile
