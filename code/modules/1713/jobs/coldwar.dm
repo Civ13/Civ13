@@ -373,6 +373,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -395,7 +396,7 @@
 	title = "USA Sergeant"
 	rank_abbreviation = "Sgt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateRNSL"
 
 	is_coldwar = TRUE
 	is_squad_leader = TRUE
@@ -420,6 +421,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -465,6 +467,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
 	uniform.attackby(lw, H)
@@ -483,10 +486,10 @@
 	return TRUE
 
 /datum/job/american/american_medic
-	title = "USA Field Medic"
+	title = "USA Corpsman"
 	rank_abbreviation = "Cpl."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRNMed"
 
 	is_medic = TRUE
 	is_coldwar = TRUE
@@ -511,9 +514,10 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
-	uniform.attackby(white, H)
+	var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(medicalarm, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
@@ -557,6 +561,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
@@ -605,6 +610,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	give_random_name(H)
@@ -648,6 +654,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m60(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m60(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
@@ -703,6 +710,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
