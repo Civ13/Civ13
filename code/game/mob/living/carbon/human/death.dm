@@ -63,7 +63,7 @@
 	else if (map && map.ID == MAP_ABASHIRI && client)
 		var/obj/map_metadata/abashiri/GD = map
 		if (original_job && istype(original_job, /datum/job/civilian/abashiri))
-			var/mob/living/human/H = client
+			var/mob/living/human/H = src
 			for(var/i in GD.points)
 				if (i[1]==H.nationality)
 					i[3]-=50

@@ -352,7 +352,6 @@
 	name = "German Flag"
 	desc = "The German flag."
 
-
 /obj/structure/flag/confed
 	icon_state = "confed"
 	name = "Confederate flag"
@@ -377,6 +376,16 @@
 	icon_state = "filipino_wartime"
 	name = "Philippines Republic"
 	desc = "The Republic of the Philippines flag. This one flipped for wartime."
+
+/obj/structure/flag/nva
+	icon_state = "nva"
+	name = "North Vietnam Flag"
+	desc = "The flag of North Vietnam."
+
+/obj/structure/flag/vietcong
+	icon_state = "vietcong"
+	name = "Vietcong Flag"
+	desc = "The flag of the National Liberation Front of Vietnam."
 
 /obj/structure/flag/pole
 	icon_state = "flagpole_blank"
@@ -731,7 +740,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////TORCH STAND/////////////////////////////////////////////
 /obj/structure/torch_stand
-	name = "torch moount"
+	name = "torch mount"
 	desc = "A mount to affix torches or lanterns to the wall"
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "torch_stand"
@@ -747,6 +756,10 @@
 	var/brightness_on = 5 //luminosity when on
 
 /obj/structure/torch_stand/update_icon()
+	if (dir == 1)
+		pixel_y = 32
+	else
+		pixel_y = 0
 	if (storage.contents.len > 0)
 		for (var/obj/item/flashlight/torch/TOR in src.storage.contents)
 			if (TOR.on == TRUE)
@@ -761,7 +774,6 @@
 				light_color = null
 				light_range = 0
 				return
-			return
 		for (var/obj/item/flashlight/lantern/LAN in src.storage.contents)
 			if (LAN.on == TRUE)
 				icon_state = "torch_stand_lantern_on"
@@ -773,14 +785,9 @@
 				icon_state = "torch_stand_lantern"
 				set_light(0)
 				return
-			return
+
 	else
 		icon_state = "torch_stand"
-	if (dir == 2)
-		pixel_y = 32
-	else
-		pixel_y = 0
-		return
 
 /obj/structure/torch_stand/New()
 	..()
@@ -819,3 +826,18 @@
 	..()
 	new /obj/item/flashlight/torch/on(src.storage)
 	update_icon()
+
+//////////////////////////CAMONET/////////////////////////////////
+
+/obj/structure/camonet
+	name ="camonet"
+	icon = 'icons/obj/structures.dmi'
+	icon_state ="camonet"
+	layer = MOB_LAYER + 8
+	alpha = 175
+	density = FALSE
+	anchored = TRUE
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	mouse_opacity = FALSE

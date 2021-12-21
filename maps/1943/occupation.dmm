@@ -503,7 +503,7 @@
 "jI" = (/obj/structure/table/rack,/obj/item/flashlight,/obj/item/flashlight,/obj/item/flashlight,/obj/item/flashlight,/turf/floor/wood,/area/caribbean/roofed)
 "jJ" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
 "jK" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/wood,/area/caribbean/roofed)
-"jL" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigar,/turf/floor/wood,/area/caribbean/roofed)
+"jL" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/storage/fancy/cigar/full,/turf/floor/wood,/area/caribbean/roofed)
 "jM" = (/obj/structure/table/rack,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/turf/floor/wood,/area/caribbean/roofed)
 "jN" = (/obj/structure/table/rack,/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/turf/floor/wood,/area/caribbean/roofed)
 "jO" = (/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)

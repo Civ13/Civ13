@@ -503,6 +503,7 @@
 "jI" = (/obj/structure/multiz/ladder/ww2/teleporter/up/one,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
 "jJ" = (/obj/effect/decal/warning_stripes{icon_state = "N-corner"},/turf/floor/plating/concrete,/area/caribbean/sea/sea/ins)
 "jK" = (/obj/effect/floor_decal/industrial/hatch,/obj/structure/closet/crate/ww2,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/turf/floor/plating/road,/area/caribbean/sea/sea/ins)
+"jL" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar/full,/turf/floor/wood,/area/caribbean/houses)
 "jM" = (/obj/structure/optable,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
 "jN" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/houses)
 "jO" = (/obj/structure/closet/crate/coldwar,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
@@ -586,7 +587,6 @@
 "lv" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/forest)
 "lw" = (/obj/structure/table/rack,/obj/item/weapon/storage/bible/booze,/turf/floor/wood,/area/caribbean/houses)
 "lx" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigarettes,/obj/item/weapon/storage/fancy/cigarettes,/turf/floor/wood,/area/caribbean/houses)
-"ly" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigar,/turf/floor/wood,/area/caribbean/houses)
 "lz" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/forest)
 "lA" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/picklejar,/obj/item/weapon/storage/fancy/picklejar,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood,/area/caribbean/houses)
 "lB" = (/obj/structure/table/rack,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/tramadol,/turf/floor/wood,/area/caribbean/houses)
@@ -896,7 +896,7 @@ jBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBjBnonpnqnxnBnBnCiQiSiSjwkQiQiSiSiS
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNnDnininEnFnFnjnjniiQiSiSjbjbiQiSiSiSjbjbiQiSiSjbiSiSiSiSjbjbjDaNaYaYaYeOaYaN
 iQiQiQiQiQiQiQiQiQiQiQiQiQaNaaaaaaaaaaaaaaaanNnumunHnjnFnInInJiQliiSiSlkiQliiSiSiSlkiQlliSjbiSjvjviSkvloiQaNaYaYaYaYaYaN
 iQjliSiSiSiSjliSiSiSiSjliQaNaaaaaaaaaraaaaaYaaaaaNnPmimiminHniiQiQiQiQiQiQiQiQjCiQiQjaiQiZiQiQiSiQiQjsiQiQaRaYaYbCbRaYaN
-iQiSlwiSlxiSlyiSlAiSlBiSiQaNaaaaaaaaaNaNaNaNaWpIaNaYaYaYaYnPmuaNaWaNaNaNaNaNaaaaaaaaiQlCiSlEiQiSiZjllFjliQaNaYaYbCnGnKaN
+iQiSlwiSlxiSjLiSlAiSlBiSiQaNaaaaaaaaaNaNaNaNaWpIaNaYaYaYaYnPmuaNaWaNaNaNaNaNaaaaaaaaiQlCiSlEiQiSiZjllFjliQaNaYaYbCnGnKaN
 iQiSlLiSlNiSlOiSlPiSlQiSiQaNaraaaaaNaNaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaNaNaaaaaaiQlRiSlSiQiSiQiSiSiSiQaNaYaYnMoboboz
 iQiSlZiSmaiSmbiSmciSmdiSiQaNaaaaaNaNaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaNaNfYaajaiSiSnriQiSiQiSiSiSiQaRaYaYaYaYaYaN
 iQjviSiSiSiSjviSiSiSiSjviQaNaaaNaNaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaNaNaaiQkslTjviQiSiQjvmmjviQaNaYaYaYaYaYaN
