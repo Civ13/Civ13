@@ -1603,7 +1603,7 @@
 		return
 
 /mob/living/human/proc/do_rotting()
-	if (map && !map.is_zombie && !istype(src, /mob/living/human/corpse))
+	if (map && istype(src, /mob/living/human/corpse))
 		return
 	spawn(600)
 		if (stat == DEAD)
