@@ -140,43 +140,51 @@
 /* US Army Clothes*/
 
 /obj/item/clothing/under/us_uni
-	name = "olive drab uniform"
-	desc = "The standard us army uniform of the mid-20th century."
-	icon_state = "us_uni"
-	item_state = "us_uni"
-	worn_state = "us_uni"
+	name = "OG-107 uniform"
+	desc = "The standard US Army uniform of the mid-20th century."
+	icon_state = "us_uni_og107"
+	item_state = "us_uni_og107"
+	worn_state = "us_uni_og107"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_camo
 	name = "woodland camo uniform"
-	desc = "The standard us army camo uniform the mid-20th century."
+	desc = "The standard US Army camo uniform the mid-20th century."
 	icon_state = "us_camo"
 	item_state = "us_camo"
 	worn_state = "us_camo"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_greentrousers
-	name = "olive drab trousers"
-	desc = "The standard us army olive drab uniform trousers."
-	icon_state = "us_greentrousers"
-	item_state = "us_greentrousers"
-	worn_state = "us_greentrousers"
+	name = "OG-107 trousers"
+	desc = "The standard US Army OG-107 uniform trousers."
+	icon_state = "us_greentrousers_og107"
+	item_state = "us_greentrousers_og107"
+	worn_state = "us_greentrousers_og107"
 	body_parts_covered = LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/us_uni/us_lightuni
-	name = "olive drab uniform with rolled sleeves"
-	desc = "A rolled-sleeves version of the us army olive drab uniform."
-	icon_state = "us_uni_rolled"
-	item_state = "us_uni_rolled"
-	worn_state = "us_uni_rolled"
+	name = "OG-107 uniform with rolled sleeves"
+	desc = "A rolled-sleeves version of the US Army OG-107 uniform."
+	icon_state = "us_uni_og107_rolled"
+	item_state = "us_uni_og107_rolled"
+	worn_state = "us_uni_og107_rolled"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/us_uni/us_lightuni2
-	name = "olive drab trousers and white undershirt"
-	desc = "A light version of the us army olive drab trousers and the service white undershirt."
-	icon_state = "us_lightuni2"
-	item_state = "us_lightuni2"
-	worn_state = "us_lightuni2"
+	name = "OG-107 trousers and khaki undershirt"
+	desc = "A light version of the US Army OG-107 trousers and the service khaki undershirt."
+	icon_state = "us_og107_lightuni"
+	item_state = "us_og107_lightuni"
+	worn_state = "us_og107_lightuni"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/under/us_uni/us_lightuni3
+	name = "OG-107 trousers and white undershirt"
+	desc = "A light version of the US Army OG-107 trousers and the service white untucked undershirt."
+	icon_state = "us_og107_lightuni2"
+	item_state = "us_og107_lightuni2"
+	worn_state = "us_og107_lightuni2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/us_uni/us_tigerstripes
