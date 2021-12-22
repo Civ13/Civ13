@@ -501,9 +501,6 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak(H), slot_w_uniform)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/female(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
-
 //head
 	if(prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/guard(H), slot_head)
@@ -515,7 +512,7 @@
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a rebel soldier. Fight the empire and liberate Skyrim!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

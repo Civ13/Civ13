@@ -647,6 +647,7 @@
 	center_of_mass = list("x"=16, "y"=10)
 	value = 20
 	volume = 5
+	slot_flags = SLOT_BELT|SLOT_POCKET
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/update_icon()
 	if (reagents.reagent_list.len)
 		icon_state = "[initial(icon_state)]"
@@ -685,6 +686,7 @@
 	desc = "A bottle of a extreme healing chemical."
 	icon_state = "health_vigor"
 	value = 60
+	slot_flags = SLOT_BELT
 	New()
 		..()
 		reagents.add_reagent("vigor", 5)
@@ -695,6 +697,7 @@
 	desc = "A bottle of a extreme healing chemical."
 	icon_state = "health_vigor"
 	value = 200
+	slot_flags = SLOT_BELT
 	New()
 		..()
 		reagents.add_reagent("draught", 5)
@@ -710,6 +713,7 @@
 	center_of_mass = list("x"=16, "y"=10)
 	value = 20
 	volume = 5
+	slot_flags = SLOT_BELT|SLOT_POCKET
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/stamina/update_icon()
 	if (reagents.reagent_list.len)
 		icon_state = "[initial(icon_state)]"
@@ -738,6 +742,7 @@
 	name = "vigorous stamina potion"
 	desc = "A bottle of a stamina chemical."
 	icon_state = "stamina_vigor"
+	slot_flags = SLOT_BELT
 	New()
 		..()
 		reagents.add_reagent("stamina_vigor", 5)
