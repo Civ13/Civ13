@@ -20,7 +20,7 @@
 	ordinal_age = 3
 	faction_distribution_coeffs = list(ROMAN = 0.5, CIVILIAN = 0.5)
 	battle_name = "Siege of Whiterun"
-	mission_start_message = "<font size=4>The <b>Stormcloaks</b> troops are besieging the <b>Imperial</b> City of <b>Whiterun</b>! The Imperials will win if they manage to hold the fortress for 30 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Stormcloaks</b> troops are besieging the <b>Imperial</b> City of <b>Whiterun</b>! The Imperials will win if they manage to hold the city for 30 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
 	faction1 = ROMAN
 	faction2 = CIVILIAN
 	ambience = list('sound/ambience/desert.ogg')
@@ -139,7 +139,7 @@ var/no_loop_whrn = FALSE
 				current_loser = "Imperials"
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The Imperials have recaptured the fortress!</font>"
+			world << "<font size = 3>The Imperials have recaptured the city!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
