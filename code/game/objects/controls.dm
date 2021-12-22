@@ -259,8 +259,7 @@
 	maxhealth = 1000
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	bound_height = 64
-	bound_width = 64
+	layer = MOB_LAYER + 0.01
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the doors uselessly!"//sucker

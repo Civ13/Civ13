@@ -41,7 +41,8 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial/officer(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/vigorous(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a <b>Captain</b>, a company of Legionaries. Organize your <b>Lieutenants</b> and lead your soldiers to victory!</b>.")
 	H.setStat("strength", STAT_VERY_VERY_HIGH)
@@ -80,7 +81,8 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial/officer(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/plentiful(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, the second in command as a <b>lieutenant</b>, a platoon of Legionaries. Organize your <b>sergeants</b> and lead your soldiers to victory!</b>.")
 	H.setStat("strength", STAT_VERY_HIGH)
@@ -119,7 +121,8 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/plentiful(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, the squad leader <b>sergeant</b>, a squad of Legionaries. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
 	H.setStat("strength", STAT_HIGH)
@@ -156,6 +159,7 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
 		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, the infantry and backbone of the Empire. Fight for the glory of the Empire!</b>.")
@@ -196,6 +200,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/medieval(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the ranged support of the Empire. Keep the enemy full of arrows and allow the infantry to charge in!</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -231,8 +236,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial/bolgruf(H), slot_w_uniform)
 		//head
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel/balgruuf(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel/balgruuf(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught(H), slot_belt)
 	H.add_note("Role", "You are <b>[title]</b>, the Jarl of the <b>Whiterun</b>, an imperial aligned city. Organize your men and lead the defense to victory, for the Empire and all her people!</b>.")
 	H.setStat("strength", STAT_MAX)
 	H.setStat("crafting", STAT_NORMAL)
@@ -248,9 +254,9 @@
 	H.b_hair = 120
 	H.g_hair = 151
 	H.r_hair = 184
-	H.b_hair = 120
-	H.g_hair = 151
-	H.r_hair = 184
+	H.b_facial = 120
+	H.g_facial = 151
+	H.r_facial = 184
 
 	return TRUE
 
@@ -340,6 +346,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a whiterun guard. Defend the city from those rebel storm cloaks!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -378,8 +385,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/ulfirc(H), slot_w_uniform)
 		//head
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/ulfric(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/ulfric(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of the <b>Stormcloaks</b>, an entire rebellion. Organize your men and lead the rebellion to victory, for Skyrim and all her people!</b>.")
 	H.setStat("strength", STAT_MAX)
 	H.setStat("crafting", STAT_NORMAL)
@@ -395,9 +403,9 @@
 	H.b_hair = 36
 	H.g_hair = 48
 	H.r_hair = 59
-	H.b_hair = 36
-	H.g_hair = 48
-	H.r_hair = 59
+	H.b_facial = 36
+	H.g_facial = 48
+	H.r_facial = 59
 
 	return TRUE
 
@@ -458,14 +466,25 @@
 /datum/job/civilian/skyrim/stormcloak/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
+	if (H.gender == "male")
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/female(H), slot_w_uniform)
 		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
+	if(prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/guard(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/hide(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_back)
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_l_hand)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, the squad leader <b>sergeant</b>, a squad of Legionaries. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -513,6 +532,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a rebel soldier. Fight the empire and liberate Skyrim!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -560,6 +580,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/medieval(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the ranged support of the Empire. Keep the enemy full of arrows and allow the infantry to charge in!</b>.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
