@@ -607,3 +607,18 @@ obj/item/weapon/material/sword/rapier/iron
 	block_chance = 20
 	cooldownw = 8
 	value = 60
+
+/obj/item/weapon/material/sword/tes13/steel/balgruuf
+	name = "balgruuf's imperial steel sword"
+	desc = "A sword with a steel blade commonly used by the empire. This one was especially forged for balgruuf."
+	icon_state = "imperial"
+	item_state = "longsword"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 1 //
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	force = 100
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 20
+	cooldownw = 8
+	value = 500

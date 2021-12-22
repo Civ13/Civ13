@@ -209,6 +209,51 @@
 
 	return TRUE
 //////////////////////WHITERUN GARRISON///////////////////////////////////////////
+/datum/job/roman/skyrim/imperial/balgruuf	//imperial - captain
+	title = "Jarl Balgruuf"
+	rank_abbreviation = "Jarl"
+
+	spawn_location = "JoinLateRUCap"
+
+	is_commander = TRUE
+	is_skyrim = TRUE
+	is_imperial = TRUE
+	is_officer = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/roman/skyrim/imperial/balgruuf/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial/bolgruf(H), slot_w_uniform)
+		//head
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel/balgruuf(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_back)
+	H.add_note("Role", "You are <b>[title]</b>, the Jarl of the <b>Whiterun</b>, an imperial aligned city. Organize your men and lead the defense to victory, for the Empire and all her people!</b>.")
+	H.setStat("strength", STAT_MAX)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_MAX)
+	H.setStat("swords", STAT_MAX)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MAX)
+	H.setStat("medical", STAT_MAX)
+	H.real_name = "Balgruuf"
+	H.h_style = "Flaired Hair"
+	H.f_style = "Goatee"
+	H.b_hair = 120
+	H.g_hair = 151
+	H.r_hair = 184
+	H.b_hair = 120
+	H.g_hair = 151
+	H.r_hair = 184
+
+	return TRUE
+
 /datum/job/roman/skyrim/imperial/guard_captain
 	title = "Whiterun Head Guard"
 	rank_abbreviation = ""
@@ -311,7 +356,7 @@
 
 
 /////////////////////////////////////////////////////////////STORMCLOAKS///////////////////////////////////////////////////////////////////////////
-/datum/job/civilian/skyrim/stormcloak/ulfric	//imperial - captain
+/datum/job/civilian/skyrim/stormcloak/ulfric	//stormcloak - captain
 	title = "Ulfric Stormcloak"
 	rank_abbreviation = ""
 
