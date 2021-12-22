@@ -166,15 +166,15 @@
 /datum/job/npc
 	default_language = "English"
 
-/datum/job/skyrim
+/datum/job/civilian/skyrim
 	default_language = "Old Norse"
 	additional_languages = list("Latin" = 20)
 	male_tts_voice = "Brian"
 	female_tts_voice = "Amy"
 
-/datum/job/skyrim/imperial
-	default_language = "Latin"
-	additional_languages = list("Old Norse" = 100)
+/datum/job/roman/skyrim/imperial
+	default_language = "Old Norse"
+	additional_languages = list("Latin" = 100)
 	male_tts_voice = "Brian"
 	female_tts_voice = "Amy"
 
