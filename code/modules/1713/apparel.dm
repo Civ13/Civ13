@@ -24,6 +24,257 @@
 	worn_state = "flipflops"
 	force = WEAPON_FORCE_WEAK
 
+///////////////////////////////////////////////////////////////////
+/// Majority of the Sprites under this is made by Mane from TGMC///
+///////////////////////////////////////////////////////////////////
+
+/obj/item/clothing/under/bodyglove
+	name = "replicant black bodyglove"
+	desc = "A tight bodyglove worn by troopers."
+	icon_state = "replicant_bodyglove"
+	item_state = "replicant_bodyglove"
+	worn_state = "replicant_bodyglove"
+
+/obj/item/clothing/shoes/replicantshoes
+	name = "replicant boots"
+	desc = "A pair of plastoid boots."
+	icon_state = "replicant_boots"
+	item_state = "replicant_boots"
+	worn_state = "replicant_boots"
+	body_parts_covered = FEET
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 45, arrow = 70, gun = 50, energy = 15, bomb = 35, bio = 15, rad = FALSE)
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 35
+
+/obj/item/clothing/gloves/replicantgloves
+	name = "plastoid gauntlets"
+	desc = "A pair of armored plastoid gauntlets."
+	icon_state = "replicant_gloves"
+	item_state = "replicant_gloves"
+	worn_state = "replicant_gloves"
+	body_parts_covered = HANDS
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 55, arrow = 60, gun = 30, energy = 18, bomb = 35, bio = 15, rad = FALSE)
+	cold_protection = HANDS
+	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 30
+
+// ARMOR
+
+/obj/item/clothing/suit/armor/replicant
+	name = "replicant trooper armor"
+	desc = "A thick, expensive plastoid armor, covering most of the body."
+	icon_state = "replicant_armor"
+	item_state = "replicant_armor"
+	worn_state = "replicant_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 75, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/replicant/pilot
+	name = "replicant pilot armor"
+	desc = "A thin, expensive plastoid armor, covering most of the body."
+	icon_state = "reppilot_armor"
+	item_state = "reppilot_armor"
+	worn_state = "reppilot_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 25, arrow = 50, gun = 55, energy = 10, bomb = 50, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/replicant/mp
+	name = "replicant MP armor"
+	desc = "An extremely thick, expensive plastoid armor, covering most of the body."
+	icon_state = "repmp_armor"
+	item_state = "repmp_armor"
+	worn_state = "repmp_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 25, arrow = 50, gun = 55, energy = 10, bomb = 50, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/replicant/sgt
+	name = "replicant sergeant armor"
+	desc = "A thick, expensive green marked plastoid armor, covering most of the body."
+	icon_state = "repsgt_armor"
+	item_state = "repsgt_armor"
+	worn_state = "repsgt_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 75, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/replicant/lieutenant
+	name = "replicant lieutenant armor"
+	desc = "A thick, expensive blue marked plastoid armor, covering most of the body."
+	icon_state = "replieutenant_armor"
+	item_state = "replieutenant_armor"
+	worn_state = "replieutenant_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 75, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/replicant/captain
+	name = "replicant captain armor"
+	desc = "A thick, expensive red marked plastoid armor, covering most of the body."
+	icon_state = "repcaptain_armor"
+	item_state = "repcaptain_armor"
+	worn_state = "repcaptain_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 75, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/replicant/commander
+	name = "replicant commander armor"
+	desc = "A thick, expensive gold marked plastoid armor, covering most of the body."
+	icon_state = "repcommander_armor"
+	item_state = "repcommander_armor"
+	worn_state = "repcommander_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 55, arrow = 95, gun = 85, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+// HELMETS
+
+/obj/item/clothing/head/helmet/replicant
+	name = "Phase I Replicant Trooper Helmet"
+	desc = "A reinforced plastoid helmet of the Republic Army."
+	icon_state = "replicant_helmet"
+	item_state = "replicant_helmet"
+	worn_state = "replicant_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/pilot
+	name = "Phase I Replicant Pilot Helmet"
+	desc = "A reinforced plastoid helmet of the Republic Army."
+	icon_state = "reppilot_helmet"
+	item_state = "reppilot_helmet"
+	worn_state = "reppilot_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/MP
+	name = "Phase I Replicant MP Helmet"
+	desc = "A highly reinforced plastoid helmet of the Republic Army."
+	icon_state = "repmp_helmet"
+	item_state = "repmp_helmet"
+	worn_state = "repmp_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/sgt
+	name = "Phase I Replicant Sergeant Helmet"
+	desc = "A reinforced plastoid helmet of the Republic Army."
+	icon_state = "repsgt_helmet"
+	item_state = "repsgt_helmet"
+	worn_state = "repsgt_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/lt
+	name = "Phase I Replicant Lieutenant Helmet"
+	desc = "A reinforced plastoid helmet of the Republic Army."
+	icon_state = "replt_helmet"
+	item_state = "replt_helmet"
+	worn_state = "replt_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/captain
+	name = "Phase I Replicant Captain Helmet"
+	desc = "A reinforced plastoid helmet of the Republic Army."
+	icon_state = "repcaptain_helmet"
+	item_state = "repcaptain_helmet"
+	worn_state = "repcaptain_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/commander
+	name = "Phase I Replicant Commander Helmet"
+	desc = "A reinforced plastoid helmet of the Republic Army."
+	icon_state = "repcommander_helmet"
+	item_state = "repcommander_helmet"
+	worn_state = "repcommander_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+// OFFICER UNIFORMS //
+
+/obj/item/clothing/under/navalcaptain
+	name = "republic naval captain uniform"
+	desc = "A well adjusted captain's jacket."
+	icon_state = "repcaptain_uniform"
+	item_state = "repcaptain_uniform"
+	worn_state = "repcaptain_uniform"
+
+/obj/item/clothing/under/navalensign
+	name = "republic naval ensign uniform"
+	desc = "A well adjusted ensign's jacket."
+	icon_state = "repensign_uniform"
+	item_state = "repensign_uniform"
+	worn_state = "repensign_uniform"
+
+/obj/item/clothing/under/navalsurgeon
+	name = "republic medical officer uniform"
+	desc = "A well adjusted medical jacket."
+	icon_state = "repmedical_uniform"
+	item_state = "repmedical_uniform"
+	worn_state = "repmedical_uniform"
+
+/obj/item/clothing/under/dartharmor
+	name = "black cybernetic armor"
+	desc = "A dark mechanical armor made for souless individuals."
+	icon_state = "darth_armor"
+	item_state = "darth_armor"
+	worn_state = "darth_armor"
+
+/obj/item/clothing/head/navalcaptaincap
+	name = "republic naval captain cap"
+	desc = "a tight fitting green cap."
+	icon_state = "repnavalcaptain_cap"
+	item_state = "repnavalcaptain_cap"
+	worn_state = "repnavalcaptain_cap"
+
+/obj/item/clothing/head/navalensigncap
+	name = "republic naval ensign cap"
+	desc = "a tight fitting blue grey cap."
+	icon_state = "repensign_cap"
+	item_state = "repensign_cap"
+	worn_state = "repensign_cap"
+
+/obj/item/clothing/head/navalsurgeoncap
+	name = "republic medical officer cap"
+	desc = "a tight fitting grey cap."
+	icon_state = "repmedicalofficer_cap"
+	item_state = "repmedicalofficer_cap"
+	worn_state = "repmedicalofficer_cap"
+
+
+////////////////////////////////////////////////////////////////////////////////////
+
 /obj/item/clothing/under/wise_tutor
 	name = "wise tutor's outfit"
 	desc = "A loose outfit worn by the wise & experienced."
