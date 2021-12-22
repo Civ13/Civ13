@@ -27,7 +27,7 @@
 obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/roman))
-		if (J.is_gladiator == TRUE)
+		if (J.is_gladiator == TRUE || J.is_skyrim == TRUE)
 			. = FALSE
 		else
 			. = TRUE
