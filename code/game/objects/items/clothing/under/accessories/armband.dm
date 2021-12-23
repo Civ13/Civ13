@@ -241,6 +241,87 @@
 	worn_state = "policetag"
 	slot = "armband"
 
+/obj/item/clothing/accessory/pauldronsingle
+	name = "Standard Single Pauldron "
+	desc = "A plastoid armored shoulder cover."
+	icon_state = "pauldron_s"
+	item_state = "pauldron_s"
+	worn_state = "pauldron_s"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldronsingle/green
+	name = "Standard Green Single Pauldron "
+	desc = "A green plastoid armored shoulder cover."
+	icon_state = "pauldron_sg"
+	item_state = "pauldron_sg"
+	worn_state = "pauldron_sg"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldronsingle/blue
+	name = "Standard Blue Single Pauldron "
+	desc = "A blue plastoid armored shoulder cover."
+	icon_state = "pauldron_sb"
+	item_state = "pauldron_sb"
+	worn_state = "pauldron_sb"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldronsingle/red
+	name = "Standard Red Single Pauldron "
+	desc = "A red plastoid armored shoulder cover."
+	icon_state = "pauldron_sr"
+	item_state = "pauldron_sr"
+	worn_state = "pauldron_sr"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldronsingle/gold
+	name = "Standard Gold Single Pauldron "
+	desc = "A gold plastoid armored shoulder cover."
+	icon_state = "pauldron_sy"
+	item_state = "pauldron_sy"
+	worn_state = "pauldron_sy"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldrondouble
+	name = "Standard Double Pauldron "
+	desc = "Dual plastoid shoulder cover."
+	icon_state = "pauldron_d"
+	item_state = "pauldron_d"
+	worn_state = "pauldron_d"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldrondouble/green
+	name = "Standard Green Double Pauldron "
+	desc = "Dual green plastoid shoulder cover."
+	icon_state = "pauldron_dg"
+	item_state = "pauldron_dg"
+	worn_state = "pauldron_dg"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldrondouble/blue
+	name = "Standard Blue Double Pauldron "
+	desc = "Dual blue plastoid shoulder cover."
+	icon_state = "pauldron_db"
+	item_state = "pauldron_db"
+	worn_state = "pauldron_db"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldrondouble/red
+	name = "Standard Red Double Pauldron "
+	desc = "Dual red plastoid shoulder cover."
+	icon_state = "pauldron_dr"
+	item_state = "pauldron_dr"
+	worn_state = "pauldron_dr"
+	slot = "decor"
+
+/obj/item/clothing/accessory/pauldrondouble/gold
+	name = "Standard Gold Double Pauldron "
+	desc = "Dual red plastoid shoulder cover."
+	icon_state = "pauldron_dy"
+	item_state = "pauldron_dy"
+	worn_state = "pauldron_dy"
+	slot = "decor"
+
+
 /obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
 	if (uncolored)
 		var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")

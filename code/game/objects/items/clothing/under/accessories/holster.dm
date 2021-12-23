@@ -230,3 +230,8 @@
 	name = "hip holster"
 	desc = "A handgun holster slung low on the hip."
 	icon_state = "tacholster"
+
+/obj/item/clothing/accessory/holster/replicantkama
+	name = "replicant kama"
+	desc = "A kama skirt with a built in holster slung low on the hip."
+	icon_state = "replicant_kama"
