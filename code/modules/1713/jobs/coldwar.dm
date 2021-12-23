@@ -368,7 +368,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/lt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/lt(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_belt)
@@ -379,6 +379,15 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armband/yellow_scarf/yscarf = new /obj/item/clothing/accessory/armband/yellow_scarf(null)
 	uniform.attackby(yscarf, H)
+
+	if (prob(60))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	H.s_tone = rand(-40,-20)
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
 	H.setStat("strength", STAT_NORMAL)
@@ -417,16 +426,24 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/sgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+
+	if (prob(60))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	H.s_tone = rand(-40,-20)
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Vietcong!")
 	H.setStat("strength", STAT_NORMAL)
@@ -471,6 +488,15 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
 	uniform.attackby(lw, H)
+
+	if (prob(60))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	H.s_tone = rand(-40,-20)
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
 	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
@@ -526,6 +552,15 @@
 	uniform.attackby(medicalarm, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+
+	if (prob(60))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	H.s_tone = rand(-40,-20)
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
 	H.setStat("strength", STAT_NORMAL)
@@ -579,6 +614,14 @@
 	var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
 	uniform.attackby(fj, H)
 
+	if (prob(60))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	H.s_tone = rand(-40,-20)
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of your squad communications. Keep the line open between the <b>Squad Leader</b> and HQ!")
 	H.setStat("strength", STAT_NORMAL)
@@ -627,8 +670,16 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+
+	if (prob(60))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	H.s_tone = rand(-40,-20)
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, fighting against the Vietcong!")
 	H.setStat("strength", STAT_NORMAL)
@@ -644,7 +695,7 @@
 
 /datum/job/american/american_lmg
 	title = "USA Automatic Rifleman"
-	rank_abbreviation = "Spc."
+	rank_abbreviation = "Pfc."
 
 	spawn_location = "JoinLateRN"
 
@@ -678,6 +729,18 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
+	if (prob(78))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	if (prob(25))
+		H.s_tone = rand(-210,-160)
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
+	else
+		H.s_tone = rand(-40,-20)
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
 	uniform.attackby(fj, H)
@@ -696,6 +759,7 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
+
 /datum/job/american/american_soldier
 	title = "USA Rifleman"
 	rank_abbreviation = "Pvt."
@@ -738,6 +802,19 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+
+	if (prob(78))
+		H.f_style = pick("Shaved","Selleck Mustache")
+	else
+		H.f_style = pick("Van Dyke Mustache","Elvis Sideburns","Goatee")
+
+	if (prob(25))
+		H.s_tone = rand(-200,-160)
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
+	else
+		H.s_tone = rand(-40,-20)
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
