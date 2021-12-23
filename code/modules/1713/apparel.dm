@@ -149,7 +149,49 @@
 	slowdown = 1.5
 	health = 60
 
+/obj/item/clothing/suit/armor/stormtrooper
+	name = "stormtrooper armor"
+	desc = "A thick, expensive imperial plastoid armor, covering most of the body."
+	icon_state = "stormtrooper_armor"
+	item_state = "stormtrooper_armor"
+	worn_state = "stormtrooper_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 65, arrow = 96, gun = 88, energy = 25, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
 // HELMETS
+
+/obj/item/clothing/head/helmet/replicant/ARF
+	name = "Phase I Replicant ARF Helmet"
+	desc = "A reinforced plastoid helmet of the Republic Army."
+	icon_state = "repARF_helmet"
+	item_state = "repARF_helmet"
+	worn_state = "repARF_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/airborne
+	name = "Phase I Replicant Airborne Helmet"
+	desc = "A reinforced airborne helmet of the Republic Army."
+	icon_state = "repairborne_helmet"
+	item_state = "repairborne_helmet"
+	worn_state = "repairborne_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 50, gun = 35, energy = 25, bomb = 40, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/stormtrooper
+	name = "Replicant Stormtrooper Helmet"
+	desc = "A reinforced helmet of the Imperial Army."
+	icon_state = "repstormtrooper_helmet"
+	item_state = "repstormtrooper_helmet"
+	worn_state = "repstormtrooper_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 60, gun = 65, energy = 25, bomb = 30, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant
 	name = "Phase I Replicant Trooper Helmet"
