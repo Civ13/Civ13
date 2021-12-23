@@ -728,6 +728,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/under/us_uni/us_greentrousers = 10,
 		/obj/item/clothing/under/us_uni/us_lightuni = 10,
 		/obj/item/clothing/under/us_uni/us_lightuni2 = 10,
+		/obj/item/clothing/under/us_uni/us_lightuni3 = 10,
 		/obj/item/clothing/accessory/armor/coldwar/flakjacket = 30,
 		/obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory = 20,
 		/obj/item/weapon/storage/belt/smallpouches/green = 25,
