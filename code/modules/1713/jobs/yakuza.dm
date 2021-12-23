@@ -38,7 +38,10 @@
 	H.civilization = "Yamaguchi-Gumi"
 	give_random_name(H)
 
-	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	if (prob(80))
+		H.f_style = pick("Shaved")
+	else
+		H.f_style = pick("Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
 
 	var/new_hair = pick("Dark Brown","Black")
@@ -105,7 +108,10 @@
 	H.civilization = "Yamaguchi-Gumi"
 	give_random_name(H)
 
-	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	if (prob(75))
+		H.f_style = pick("Shaved")
+	else
+		H.f_style = pick("Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
 
 	var/new_hair = pick("Dark Brown","Black")
@@ -174,7 +180,10 @@
 	H.civilization = "Yamaguchi-Gumi"
 	give_random_name(H)
 
-	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	if (prob(75))
+		H.f_style = pick("Shaved")
+	else
+		H.f_style = pick("Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
 
 	var/new_hair = pick("Dark Brown","Black")
@@ -238,7 +247,10 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	world << "<b><font color='yellow' size=3>[H.real_name] is the Underboss of the Ichiwa-Kai!</font></b>"
 
-	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	if (prob(75))
+		H.f_style = pick("Shaved")
+	else
+		H.f_style = pick("Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
 
 	var/new_hair = pick("Dark Brown","Black")
@@ -304,7 +316,11 @@
 	give_random_name(H)
 	world << "<b><font color='yellow' size=3>[H.real_name] is the Deputy Underboss of the Ichiwa-Kai Gang!!</font></b>"
 
-	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	if (prob(75))
+		H.f_style = pick("Shaved")
+	else
+		H.f_style = pick("Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
 
 	var/new_hair = pick("Dark Brown","Black")
@@ -370,7 +386,11 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	give_random_name(H)
 
-	H.f_style = pick("Shaved","Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+	if (prob(75))
+		H.f_style = pick("Shaved")
+	else
+		H.f_style = pick("Selleck Mustache","Goatee","Shot Facial Hair","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Square Mustache","Elvis Sideburns")
+
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair","Slick")
 
 	var/new_hair = pick("Dark Brown","Black")

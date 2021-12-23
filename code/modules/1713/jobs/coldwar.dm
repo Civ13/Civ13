@@ -735,8 +735,16 @@
 		H.f_style = pick("Van Dyke Mustache","Elvis Sideburns","Goatee")
 
 	if (prob(25))
-		H.s_tone = rand(-210,-160)
+		H.s_tone = rand(-210,-170)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
+		var/new_hair = "Black"
+		var/hex_hair = hair_colors[new_hair]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
 		H.s_tone = rand(-40,-20)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
@@ -809,8 +817,16 @@
 		H.f_style = pick("Van Dyke Mustache","Elvis Sideburns","Goatee")
 
 	if (prob(25))
-		H.s_tone = rand(-200,-160)
+		H.s_tone = rand(-200,-170)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
+		var/new_hair = "Black"
+		var/hex_hair = hair_colors[new_hair]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
 		H.s_tone = rand(-40,-20)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
