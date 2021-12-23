@@ -247,15 +247,15 @@
 
 /obj/item/clothing/head/helmet/modern/ushelmet/lt
 	name = "M1 helmet 1st LT"
-	desc = "A typical us army helmet. With lieutenant markings."
+	desc = "A typical US Army helmet. With lieutenant markings."
 	icon_state = "m1_1st_lt"
 	item_state = "m1_1st_lt"
 	worn_state = "m1_1st_lt"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/camo
 	name = "M1 camo helmet"
-	desc = "A typical us army helmet. With a woodland camo cover."
-	icon_state = "ushelmet_camo"
+	desc = "A typical US Army helmet. With a Mitchell camo cover."
+	icon_state = "m1_camo_mitchell"
 	item_state = "ushelmet_camo"
 	worn_state = "ushelmet_camo"
 
@@ -278,6 +278,13 @@
 			var/chosen = pick(optlist)
 			attachments += chosen
 			optlist -= chosen
+
+/obj/item/clothing/head/helmet/modern/ushelmet/camo/lt
+	name = "M1 camo helmet"
+	desc = "A typical US Army helmet. With a Mitchell camo cover."
+	icon_state = "m1_camo_mitchell_lt"
+	item_state = "ushelmet_camo_lt"
+	worn_state = "ushelmet_camo_lt"
 
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1
