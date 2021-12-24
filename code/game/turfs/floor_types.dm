@@ -337,15 +337,33 @@
 		return ..()
 
 /turf/proc/iscovered()
-	for(var/obj/covers/C in src)
+	for(var/obj/covers/C in src.contents)
 		return TRUE
-	for(var/obj/structure/multiz/ladder/ST in src)
+	for (var/obj/structure/vehicleparts/frame/ship/S in src.contents)
 		return TRUE
-	for (var/obj/structure/vehicleparts/frame/ship/S in src)
+	for(var/obj/structure/STR in src.contents)
+		var/obj/structure/vehicleparts/frame/ship/S
+		if (S in src.contents)
+			return TRUE
+		else
+			return FALSE
+	for(var/obj/item/OB in src.contents)
+		var/obj/structure/vehicleparts/frame/ship/S
+		if (S in src.contents)
+			return TRUE
+		else
+			return FALSE
+	for(var/obj/structure/multiz/ladder/ST in src.contents)
 		return TRUE
-	for (var/obj/structure/vehicle/boat/B in src)
+	for (var/obj/structure/vehicleparts/axis/ship/SA in src.contents)
 		return TRUE
-	for (var/obj/structure/vehicle/raft/R in src)
+	for (var/obj/structure/vehicleparts/shipwheel/SW in src.contents)
+		return TRUE
+	for (var/obj/structure/vehicleparts/movement/sails/SM in src.contents)
+		return TRUE
+	for (var/obj/structure/vehicle/boat/B in src.contents)
+		return TRUE
+	for (var/obj/structure/vehicle/raft/R in src.contents)
 		return TRUE
 	return FALSE
 /turf/floor/beach/water/swamp

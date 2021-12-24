@@ -2,6 +2,7 @@
 /obj/structure/vehicleparts/axis
 	var/list/masts = list()
 	var/anchor = TRUE
+	var/ship = FALSE
 /obj/structure/vehicleparts/axis/ship
 	name = "ship rudder control"
 	desc = "An axis connecting the rudder to the ship's wheel."
@@ -11,6 +12,7 @@
 	speedlist = list(1=15,2=11,3=7)
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
+	ship = TRUE
 
 /obj/structure/vehicleparts/axis/ship/heavy
 	name = "heavy rudder control"
