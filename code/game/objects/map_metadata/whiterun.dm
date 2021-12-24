@@ -25,7 +25,7 @@
 	faction2 = CIVILIAN
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
-		"Dovahkiin" = 'sound/music/dragonborn.ogg')
+		"One They Fear:1" = 'sound/music/tesonetheyfear.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/whiterun/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
