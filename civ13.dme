@@ -1018,6 +1018,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\voyage.dmm"
+#include "maps\1969\hue.dmm"
 // END_INCLUDE
 
