@@ -676,8 +676,8 @@
 
 /* Cold War Belts*/
 
-/obj/item/weapon/storage/belt/largepouches/green/m60
-/obj/item/weapon/storage/belt/largepouches/green/m60/New()
+/obj/item/weapon/storage/belt/largepouches/olive/m60
+/obj/item/weapon/storage/belt/largepouches/olive/m60/New()
 	..()
 	new/obj/item/ammo_magazine/b762(src)
 	new/obj/item/ammo_magazine/b762(src)
@@ -931,7 +931,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest
-	name = "us army webbing"
+	name = "US Army webbing"
 	desc = "A large webbing with several small pockets."
 	icon_state = "us_vest"
 	item_state = "us_vest"
@@ -939,6 +939,17 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/us_bandolier
+	name = "US Army bandolier"
+	desc = "A large cotton bandolier with several small pouches."
+	icon_state = "us_bandolier"
+	item_state = "us_badolier"
+	slots = 5
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
+
 
 /* NBC &  Hazmat Suits*/
 
