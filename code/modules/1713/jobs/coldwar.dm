@@ -371,7 +371,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/lt(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -429,6 +430,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
@@ -606,7 +608,8 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
@@ -663,14 +666,17 @@
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2(H), slot_w_uniform)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/us_vest/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/us_vest(null)
+	var/obj/item/clothing/accessory/storage/webbing/us_vest/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/us_bandolier(null)
 	uniform.attackby(fullwebbing, H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
 
 	if (prob(60))
 		H.f_style = pick("Shaved","Selleck Mustache")
@@ -725,9 +731,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m60(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m60(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/olive/m60(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
 
 	if (prob(78))
 		H.f_style = pick("Shaved","Selleck Mustache")
@@ -807,9 +815,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
+
 
 	if (prob(78))
 		H.f_style = pick("Shaved","Selleck Mustache")

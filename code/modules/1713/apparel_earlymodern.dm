@@ -1111,6 +1111,9 @@
 /obj/item/weapon/storage/belt/largepouches/green
 	icon_state = "largepouches_green"
 	item_state = "largepouches_green"
+/obj/item/weapon/storage/belt/largepouches/olive
+	icon_state = "largepouches_olive"
+	item_state = "largepouches_olive"
 /obj/item/weapon/storage/belt/smallpouches
 	name = "small pouches"
 	desc = "A belt with 4 small pouches, that can fit items like magazines, knives, and other small things."
@@ -1187,6 +1190,10 @@
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive
+	icon_state = "smallpouches_olive"
+	item_state = "smallpouches_olive"
 
 /obj/item/clothing/under/blue_shorts
 	name = "blue shorts"
