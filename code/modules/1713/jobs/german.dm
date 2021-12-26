@@ -4,7 +4,10 @@
 /datum/job/german/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_german_name(H.gender)
 	H.real_name = H.name
-
+	if(H.h_style != "Bald" && H.h_style != "Crewcut" && H.h_style != "Undercut" && H.h_style != "Short Hair" && H.h_style != "Cut Hair" && H.h_style != "Skinhead" && H.h_style != "Average Joe" && H.h_style != "Fade" && H.h_style != "Combover" && H.h_style != "Father")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
+	if(H.f_style != "Goatee" && H.f_style != "Selleck Mustache" && H.f_style != "Shaved" && H.f_style != "Short Facial Hair")
+		H.f_style = pick("Full Beard","Goatee","Selleck Mustache","Shaved", "Short Facial Hair")
 /datum/job/german/captain
 	title = "Heer Hauptmann"
 	en_meaning = "Army Captain"

@@ -48,7 +48,7 @@
 	uniform.attackby(holsterh, H)
 
 	H.s_tone = rand(-60,-30)
-	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
+	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache","Short Facial Hair")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
 
 	var/new_hair = pick("Dark Brown","Black","Orange","Grey")
@@ -228,7 +228,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel(H), slot_back)
 
 	H.s_tone = rand(-60,-30)
-	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
+	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache","Short Facial Hair")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
 
 	var/new_hair = pick("Dark Brown","Black","Orange","Grey")
@@ -296,7 +296,7 @@
 	uniform.attackby(holsterh, H)
 
 	H.s_tone = rand(-60,-30)
-	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache")
+	H.f_style = pick("Full Beard","Medium Beard","Long Beard","Abraham Lincoln Beard","Neckbeard","Selleck Mustache","Short Facial Hair")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father","Parted","Shoulder-length Hair")
 
 	var/new_hair = pick("Dark Brown","Black","Orange","Grey")
@@ -367,7 +367,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
 
 	H.s_tone = rand(-32,-24)
-	H.f_style = pick("Full Beard","Goatee","Selleck Mustache","Shaved")
+	H.f_style = pick("Full Beard","Goatee","Selleck Mustache","Shaved","Short Facial Hair")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
 
 	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown","Grey")
@@ -443,7 +443,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
 
 	H.s_tone = rand(-32,-24)
-	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
+	H.f_style = pick("Goatee","Selleck Mustache","Shaved","Short Facial Hair")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
 
 	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown","Grey")
@@ -518,7 +518,7 @@
 	uniform.attackby(armour, H)
 
 	H.s_tone = rand(-32,-24)
-	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
+	H.f_style = pick("Goatee","Selleck Mustache","Shaved","Short Facial Hair")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
 
 	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")
@@ -612,7 +612,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 
 	H.s_tone = rand(-32,-24)
-	H.f_style = pick("Selleck Mustache","Shaved")
+	H.f_style = pick("Selleck Mustache","Shaved","Short Facial Hair")
 	H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
 
 	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")
@@ -714,7 +714,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 
 	H.s_tone = rand(-32,-24)
-	H.f_style = pick("Selleck Mustache","Shaved")
+	H.f_style = pick("Selleck Mustache","Shaved","Short Facial Hair")
 	H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
 
 	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")
@@ -795,7 +795,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/zsh1(H), slot_head)
 
-	H.f_style = pick("Goatee","Selleck Mustache","Shaved")
+	H.f_style = pick("Goatee","Selleck Mustache","Shaved","Short Facial Hair")
 	H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover")
 
 	var/new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond","Light Brown")

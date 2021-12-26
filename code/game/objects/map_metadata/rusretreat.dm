@@ -22,8 +22,9 @@
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Just don't tell mom I'm in Chechnya:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
-	artillery_count = 3
-
+	artillery_count = 10 //they really need it to get anywhere
+	artillery_timer = 300 //and they need it quick. It's artillery supposedly, not CAS.
+	valid_artillery = list("Explosive","Napalm","Creeping Barrage")
 /obj/map_metadata/rusretreat/New()
 	..()
 	spawn(20)
