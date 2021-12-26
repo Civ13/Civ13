@@ -320,7 +320,7 @@
 		var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
 		uniform.attackby(pasgt_armor, H)
 	else if (randarm == 2)
-		var/obj/item/clothing/accessory/armor/coldwar/platecarrierblack/plate_armor = new /obj/item/clothing/accessory/armor/coldwar/platecarrierblack(null)
+		var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack/plate_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack(null)
 		uniform.attackby(plate_armor, H)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
