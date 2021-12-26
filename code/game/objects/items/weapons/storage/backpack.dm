@@ -207,7 +207,11 @@ obj/item/weapon/storage/backpack/ww2/american
 	desc = "Standard issue buttpack for american military personel"
 	icon_state = "us_buttpack"
 	item_state = "us_buttpack"
+	item_state_slots = list(
+		slot_l_hand_str = "us_buttpack",
+		slot_r_hand_str = "us_buttpack",
+		)
 	worn_state = "us_buttpack"
 	base_icon = "us_buttpack"
 	slot_flags = SLOT_BACK
-	max_storage_space = 14
+	max_storage_space = 12
