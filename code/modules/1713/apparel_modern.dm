@@ -44,7 +44,7 @@
 	..()
 	hold = new/obj/item/weapon/storage/internal(src)
 	hold.storage_slots = slots
-	hold.can_hold = list(/obj/item/weapon/armorplates,)
+	hold.can_hold = list(/obj/item/weapon/armorplates, /obj/item/ammo_magazine,)
 
 /obj/item/clothing/accessory/armor/coldwar/plates/attack_hand(mob/user as mob)
 	if (has_suit)	//if we are part of a suit
@@ -261,40 +261,40 @@
 
 	/* Carrier & Plate Carrier Vests */
 
-/obj/item/clothing/accessory/armor/coldwar/platecarrier
+/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier
 	name = "tan plate carrier"
 	desc = "A plate carrier that can store magazines and pouches. This one is tan."
 	icon_state = "platecarrier_tan"
 	item_state = "platecarrier_tan"
 	worn_state = "platecarrier_tan"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.1
 	w_class = 4
 	weight = 1.0
 
-/obj/item/clothing/accessory/armor/coldwar/platecarriergreen
+/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen
 	name = "olive plate carrier"
 	desc = "A plate carrier that can store magazines and pouches. This one is olive."
 	icon_state = "platecarrier_green"
 	item_state = "platecarrier_green"
 	worn_state = "platecarrier_green"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.1
 	w_class = 4
 	weight = 1.0
 
-/obj/item/clothing/accessory/armor/coldwar/platecarrierblack
+/obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack
 	name = "black plate carrier"
 	desc = "A plate carrier that can store magazines and pouches. This one is black."
 	icon_state = "platecarrier_black"
 	item_state = "platecarrier_black"
 	worn_state = "platecarrier_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.1
 	w_class = 4
@@ -339,7 +339,19 @@
 	w_class = 3
 	weight = 3.0
 
-
+/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine
+	name = "UARM plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is made by UARM."
+	icon_state = "ukraine_armor"
+	item_state = "ukraine_armor"
+	worn_state = "ukraine_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 40, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+	slots = 3
 /* Us Army*/
 
 	/* Us Army Armor*/
@@ -1180,3 +1192,118 @@
 	restricts_view = 2
 	health = 60
 
+//////////////////////////////////////Russo-Ukraine war/////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head/helmet/modern/mk6
+	name = "Mk6 helmet"
+	desc = "A british developed kevlar ballistics helmet."
+	icon_state = "mk6"
+	item_state = "mk6"
+	worn_state = "mk6"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 70, arrow = 67, gun = 73, energy = 18, bomb = 65, bio = 20, rad = FALSE)
+	var/adjusted = FALSE
+
+/obj/item/clothing/head/helmet/modern/mk6/verb/adjust_band()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/modern/mk6)
+		return
+	else
+		if (adjusted)
+			item_state = "mk6"
+			worn_state = "mk6"
+			item_state_slots["slot_head"] = "mk6"
+			usr << "<span class = 'danger'>you adjust your helmet's straps.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "mk6_straps"
+			worn_state = "mk6_straps"
+			item_state_slots["slot_head"] = "mk6_straps"
+			usr << "<span class = 'danger'>you adjust your helmet's straps.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
+
+
+/obj/item/clothing/head/helmet/modern/russian_b7
+	name = "64b7 helmet"
+	desc = "A russian developed kevlar ballistics helmet."
+	icon_state = "64b7"
+	item_state = "64b7"
+	worn_state = "64b7"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 70, arrow = 67, gun = 73, energy = 18, bomb = 65, bio = 20, rad = FALSE)
+
+/obj/item/clothing/under/ukraine
+	name = "ACU pattern uniform"
+	desc = "The standard Ukrainian Ground Forces camo uniform."
+	icon_state = "ukraine_acu"
+	item_state = "ukraine_acu"
+	worn_state = "ukraine_acu"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ukraine/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ukraine)
+		return
+	else
+		if (rolled)
+			item_state = "ukraine_acu"
+			worn_state = "ukraine_acu"
+			item_state_slots["w_uniform"] = "ukraine_acu"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "ukraine_acu_rolled"
+			worn_state = "ukraine_acu_rolled"
+			item_state_slots["w_uniform"] = "ukraine_acu_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/head/cap/ukraine
+	name = "ACU field cap"
+	desc = "An ACU pattern field cap, standard issue for the Ukrainian Ground Forces"
+	icon_state = "ukraine_cap"
+	item_state = "ukraine_cap"
+	worn_state = "ukraine_cap"
+
+
+/obj/item/clothing/under/russian
+	name = "EMR pattern uniform"
+	desc = "The standard Russian Federation Army camo uniform."
+	icon_state = "russian_emr"
+	item_state = "russian_emr"
+	worn_state = "russian_emr"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/rolled = FALSE
+/obj/item/clothing/under/russian/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/russian)
+		return
+	else
+		if (rolled)
+			item_state = "russian_emr"
+			worn_state = "russian_emr"
+			item_state_slots["w_uniform"] = "russian_emr"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "russian_emr_rolled"
+			worn_state = "russian_emr_rolled"
+			item_state_slots["w_uniform"] = "russian_emr_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()

@@ -185,7 +185,7 @@
 			var/client/assailant = M.client
 			if (assailant)
 				attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been hit with a [O], thrown by [M.name] ([assailant.ckey])</font>")
-				M.attack_log += text("\[[time_stamp()]\] <font color='red'>Hit [name] ([ckey]) with a thrown [O]</font>")
+				M.attack_log += text("\[[time_stamp()]\] <font color='red'>Hit [name] ([ckey])([stat]) with a thrown [O]</font>")
 				if (!istype(src,/mob/living/simple_animal/mouse))
 					msg_admin_attack("[name] ([ckey]) was hit by a [O], thrown by [M.name] ([assailant.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)")
 		if (istype(O, /obj/item/weapon/snowball))
