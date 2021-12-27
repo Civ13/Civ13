@@ -247,6 +247,26 @@
 	desc = "A flag of Ukraine."
 	icon_state = "ukraine"
 
+/obj/structure/sign/flag/ukraine/azov
+	name = "flag of the Azov regiment"
+	desc = "The flag of the infamous Azov regiment of the Ukrainian National Guard."
+	icon_state ="flag_ukraine_azov"
+
+/obj/structure/sign/flag/ukraine/rightsector
+	name = "flag of the Right Sector"
+	desc = "The flag of the Ukrainian far-right paramilitary movement."
+	icon_state ="flag_ukraine_rightsector"
+
+/obj/structure/sign/flag/ukraine/dnr
+	name = "flag of the Donetsk People's Republic"
+	desc = "The flag of the self-proclaimed state of the Donetsk People's Republic"
+	icon_state = "flag_ukraine_dnr"
+
+/obj/structure/sign/flag/ukraine/lnr
+	name = "flag of the Luhansk People's Republic"
+	desc = "The flag of the self-proclaimed state of the Luhansk People's Republic"
+	icon_state = "flag_ukraine_lnr"
+
 /obj/structure/sign/flag/vietnam
 	name = "North Vietnam flag"
 	desc = "The North Vietnamese flag."
@@ -311,6 +331,11 @@
 	name = "1st Cavalry Division flag"
 	desc = "Flag of the United States Army 1st Cavalry Division."
 	icon_state = "flag_1stcav"
+
+/obj/structure/sign/flag/cuba
+	name = "Cubanlag"
+	desc = "The Cuban flag."
+	icon_state = "flag_cuba"
 
 /obj/structure/sign/flag/custom
 	name = "flag"
