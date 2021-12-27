@@ -294,6 +294,8 @@
 	density = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	bound_width = 64
+	bound_height = 64
 
 /obj/structure/gate/whiterun/r
 	icon_state = "whiterun2"
