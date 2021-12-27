@@ -332,3 +332,41 @@
 			user << "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>"
 			update_icon()
 			return
+
+/obj/item/flashlight/japflashlight
+	unlimited = TRUE
+	name = "japanese dynamo flashlight"
+	desc = "A japanese flashlight with a dynamo mechanism and adjustable light intensity."
+	icon_state = "flashlightjap_off"
+	item_state = "militarylight"
+	on_state = "flashlightjap_on"
+	off_state = "flashlightjap_off"
+	slot_flags = SLOT_BELT | SLOT_ID | SLOT_POCKET
+	var/intensity = 3
+	secondary_action = TRUE
+
+/obj/item/flashlight/japflashlight/secondary_attack_self(mob/living/human/user)
+
+	intensity +=1
+	if (intensity > 3)
+		intensity = 1
+
+	switch (intensity)
+		if (1)
+			light_range = 3
+			brightness_on = 3
+			intensity = 1
+			user << "<span class='notice'>You <b>reduce</b> the intensity of your flashlight.</span>"
+			return
+		if (2)
+			light_range = 2
+			brightness_on = 2
+			intensity = 2
+			user << "<span class='notice'>You <b>reduce further</b> the intensity of your flashlight.</span>"
+			return
+		if (3)
+			light_range = 5
+			brightness_on = 5
+			intensity = 3
+			user << "<span class='notice'>You switch back the intensity to <b>normal</b> on your flashlight.</span>"
+			return
