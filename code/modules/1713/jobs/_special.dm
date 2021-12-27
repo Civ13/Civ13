@@ -75,6 +75,7 @@
 /datum/job/var/is_skyrim = FALSE
 /datum/job/var/is_imperial = FALSE
 /datum/job/var/is_stormcloak = FALSE
+/datum/job/var/is_ukrainerussowar = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov

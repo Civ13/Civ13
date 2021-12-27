@@ -631,6 +631,29 @@
 		set_stock()
 		update_icon()
 
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74m
+	name = "AK-74M"
+	desc = "Russian assault rifle, chambered in 5.45x39mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "ak74m"
+	item_state = "ak74m"
+	base_icon = "ak74m"
+	caliber = "a545x39"
+	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak74/ak74m
+	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74)
+	weight = 3.07
+	equiptimer = 15
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.15, 0.2, 0.1)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.15, 1.2, 1.15, 1.1)),
+		)
+	effectiveness_mod = 1.08
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16A1"
 	desc = "An American assault rifle, chambered in 5.56x45mm."

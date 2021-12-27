@@ -18,6 +18,10 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak74/ak74m
+	name = "AK-74M Magazine (5.45x39mm)"
+	icon_state = "ak74m"
+
 /obj/item/ammo_magazine/bx7
 	name = "BX-7 (.50 caliber)"
 	icon_state = "bx7"
