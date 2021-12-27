@@ -100,6 +100,8 @@
 	else
 		if (in_election)
 			return
+		if (user.original_job.title == "Pirate Surgeon")
+			return
 		var/previous_input = "Officer"
 		if (user.title == "Captain" || user.title == "Boatswain" || user.title == "Quartermaster")
 			previous_input = "Custom Vote"
