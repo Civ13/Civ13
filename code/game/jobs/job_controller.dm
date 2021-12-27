@@ -193,17 +193,20 @@ var/global/datum/controller/occupations/job_master
 	if (!H)
 		return
 
-	if (H.original_job && H.original_job.uses_squads && !H.original_job.is_squad_leader && H.squad > 0)
+	if (H.original_job && H.original_job.uses_squads)
 		var/mob/living/human/HSL = null
-		world.log << "trying"
-		if (H.faction_text == map.faction1)
+		if(H.original_job.is_squad_leader)
+			for(var/mob/living/human/HM in world)
+				if(HM.original_job.is_commander && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+					HSL = HM
+					break
+		else if (H.faction_text == map.faction1)
 			if (map.faction1_squad_leaders[H.squad])
 				HSL = map.faction1_squad_leaders[H.squad]
 		else if (H.faction_text == map.faction2)
 			if (map.faction2_squad_leaders[H.squad])
 				HSL = map.faction2_squad_leaders[H.squad]
 		if (HSL && HSL.stat == CONSCIOUS)
-			world.log << "[HSL]"
 			var/found = FALSE
 			for(var/mob/living/human/EN in range(6,HSL))
 				if (EN.stat == CONSCIOUS && EN.faction_text != H.faction_text)

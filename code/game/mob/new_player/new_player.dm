@@ -489,11 +489,11 @@ var/global/redirect_all_players = null
 				return
 
 		if (actual_job.is_officer)
-			if ((input(src, "This is an officer position. You're expected to coordinate your team's actions instead of engaging in direct combat. <br> Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
+			if ((input(src, "This is an officer position. You're expected to coordinate your team's actions instead of engaging in direct combat. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
 				return
 
 		if (actual_job.is_squad_leader)
-			if ((input(src, "This is a squad leader position. You're expected to coordinate your squad actions and accomplish orders given by your superiors. If you die, your squad members won't be able to spawn on you anymore. <br> Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
+			if ((input(src, "This is a squad leader position. You're expected to coordinate your squad actions and accomplish orders given by your superiors. If you die, your squad members won't be able to spawn on you anymore. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
 				return
 
 		if (actual_job.spawn_delay)
