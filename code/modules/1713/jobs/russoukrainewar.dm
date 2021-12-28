@@ -1,7 +1,7 @@
 /datum/job/civilian/ukrainian/lieutenant
-	title = "Starshiy Leitenant"
+	title = "Starshiy Leytenant"
 	en_meaning = "1st Lieutenant"
-	rank_abbreviation = "Stl."
+	rank_abbreviation = "St.L."
 
 	spawn_location = "JoinLateRNCap"
 
@@ -36,16 +36,15 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Ukrainian Ground Forces in the fight against the invaders!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_MAX)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MAX)
-	H.setStat("dexterity", STAT_MAX)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MAX)
+	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MAX)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/civilian/ukrainian/sergeant
@@ -84,16 +83,15 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad of the Ukrainian Ground Forces in the fight against the invaders!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_VERY_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 
 /datum/job/civilian/ukrainian/infantry
@@ -134,21 +132,16 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, apart of the Ukrainian Ground Forces in the fight against the invaders!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_HIGH)
+	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
-
-
-
-
 
 /datum/job/civilian/ukrainian/ugf_doctor
 	title = "UGF Likar"
@@ -164,7 +157,7 @@
 	is_modernday = TRUE
 
 	min_positions = 2
-	max_positions = 2
+	max_positions = 8
 
 /datum/job/civilian/ukrainian/ugf_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -193,15 +186,14 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MAX)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_VERY_HIGH)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
@@ -243,14 +235,13 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_HIGH)
+	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
+	H.setStat("rifle", STAT_VERY_HIGH)
 	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
@@ -260,7 +251,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////RUSKI/////////////////////////////////////////////////////////////////////////////
 
 /datum/job/russian/russ_lieutenant
-	title = "Russian Federal Forces Lieutenant "
+	title = "Russian Federal Forces Lieutenant"
 	rank_abbreviation = "Lt."
 
 	spawn_location = "JoinLateRUCap"
@@ -286,7 +277,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
-
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
@@ -328,7 +318,7 @@
 	return TRUE
 
 /datum/job/russian/russ_sergeant
-	title = "Russian Federal Forces Sergeant "
+	title = "Russian Federal Forces Sergeant"
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRUSgt"
@@ -390,7 +380,7 @@
 
 	H.civilization = "Russian"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the chechen insurgents!")
+	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the enemy!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -404,7 +394,7 @@
 
 
 /datum/job/russian/russ_medic
-	title = "Russian Federal Forces Corpsman "
+	title = "Russian Federal Forces Corpsman"
 	rank_abbreviation = "Pfc."
 
 	spawn_location = "JoinLateRUMedic"
@@ -470,7 +460,7 @@
 	return TRUE
 
 /datum/job/russian/russ_soldier
-	title = "Russian Federal Forces Private "
+	title = "Russian Federal Forces Private"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
@@ -483,7 +473,7 @@
 	uses_squads = TRUE
 
 	min_positions = 10
-	max_positions = 80
+	max_positions = 150
 
 /datum/job/russian/russ_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -542,7 +532,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, apart of the Russian Federal Forces. Follow orders given by your superiors and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
