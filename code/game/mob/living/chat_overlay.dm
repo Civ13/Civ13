@@ -34,6 +34,7 @@
 	return ..()
 
 /image/var/target = null
+/image/var/owner = null
 
 /obj/chat_text/New(var/mob/origin_loc, var/desired_text, var/mob/target_mob)
 	..()
@@ -48,6 +49,7 @@
 
 		message = image(loc = origin_loc)
 		message.target = target
+		message.owner = owner
 		message.plane = CHAT_PLANE
 		message.maptext_width = TILE_SIZE*7
 		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
