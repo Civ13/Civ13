@@ -40,7 +40,7 @@
 "aN" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/hammock,/obj/effect/landmark{name = "JoinLatePirateCarpenter"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "aO" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/sign/custom/plaque{desc = "Weapon and ammunition storage."; name = "Magazine Room"},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "aP" = (/obj/covers/repairedfloor/ship,/obj/item/stack/material/rope{amount = 10},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
-"aQ" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"; icon_state = "ladderup_wood"; layer = 2},/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
+"aQ" = (/obj/covers/repairedfloor/ship,/obj/structure/pot,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "aR" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "aS" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/cannonball/chainshot,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
 "aT" = (/obj/covers/repairedfloor/ship,/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
@@ -53,25 +53,25 @@
 "ba" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/meat,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "bb" = (/obj/covers/repairedfloor/ship,/obj/structure/window/classic{layer = 6.1},/obj/structure/window/barrier/ship/blue/bport0,/obj/structure/window/barrier/ship/wood/port0,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bc" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/item/weapon/whistle,/obj/item/clothing/suit/storage/jacket/piratejacket1,/obj/item/clothing/head/tricorne_black,/obj/structure/closet/cabinet/ceiling,/obj/item/clothing/accessory/storage/sheath/longer/officer,/obj/item/weapon/melee/classic_baton/whip,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"bd" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/boatswain_book,/obj/structure/table/wood,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"bd" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/stool/wood,/obj/item/remains/mouse,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "be" = (/obj/covers/repairedfloor/ship,/obj/structure/reagent_dispensers/largebarrel,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
-"bf" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark/npctarget/faction/all,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
+"bf" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"; icon_state = "ladderup_wood"; layer = 2},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "bg" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bh" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/custom/jail/steeljail,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bi" = (/obj/covers/repairedfloor/ship,/obj/covers/jail/steeljail,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"bj" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/voicepipe/kitchen{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
+"bj" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/book,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "bk" = (/obj/covers/repairedfloor/ship,/obj/structure/window/barrier/ship/wood/portl2,/obj/structure/window/barrier/ship/wood/portl1,/obj/structure/window/classic{layer = 6.1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "bl" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/mouse/black,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "bm" = (/obj/structure/multiz/ladder/ww2{area_id = "b1"; icon_state = "ladderdown_wood"; name = "ladder (magazine)"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "bn" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/custom/jail/steeljail,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bo" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/pen,/obj/item/clothing/head/powdered_wig,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/structure/closet/crate/chest,/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"bp" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/clothing/suit/storage/jacket/piratejacket5,/obj/item/clothing/head/piratehat,/obj/item/weapon/flame/candle,/obj/item/clothing/accessory/storage/sheath/longer/officer,/obj/item/weapon/handcuffs/rope,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"bp" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"; icon_state = "ladderup_wood"; layer = 2},/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "bq" = (/obj/structure/barricade/ship/wood/a2,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "br" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage/sextant,/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "bs" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "bt" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/cutting_board,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "bu" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 4},/obj/effect/landmark{name = "JoinLatePirateCap"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"bv" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage/sextant,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"bv" = (/obj/covers/repairedfloor/ship,/obj/effect/landmark/npctarget/faction/all,/obj/structure/voyage/voicepipe/kitchen{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "bw" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling{name = "cloth and rope"},/obj/item/stack/material/cloth,/obj/item/stack/material/cloth,/obj/item/stack/material/cloth,/obj/item/stack/material/cloth,/obj/item/stack/material/rope{amount = 10},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/lower/storage)
 "bx" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage/tablemap{dir = 4; icon_state = "globe"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "by" = (/obj,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
@@ -89,7 +89,7 @@
 "bK" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/wings{dir = 1},/obj/effect/landmark{name = "JoinLatePirateQM"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bL" = (/obj/structure/barricade/ship/blue/b17,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bM" = (/obj/covers/repairedfloor/ship,/obj/structure/table/fancy,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"bN" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/clothing/head/tricorne_black,/obj/item/weapon/folder/sred,/obj/item/clothing/suit/storage/jacket/piratejacket1,/obj/item/clothing/accessory/storage/sheath/longer/officer,/obj/item/weapon/melee/classic_baton/whip,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"bN" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/olive_oil,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "bO" = (/obj/structure/barricade/ship/wood/a2,/obj/covers/repairedfloor/ship,/obj/structure/sign/flag/medical,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "bP" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/cabinet,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/splint,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bQ" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/structure/barricade/ship/north/corners{dir = 6; icon_state = "boat1_up_corners"},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
@@ -101,12 +101,19 @@
 "bW" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/padded,/obj/effect/decal/cleanable/blood/splatter,/obj/effect/decal/cleanable/blood/splatter,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bX" = (/obj/structure/barricade/ship/wood/a2,/obj/covers/repairedfloor/ship,/obj/structure/sign/custom/plaque{desc = "Where the ship's surgeons are kept."; name = "Surgeon's Office"},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "bY" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
-"bZ" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"bZ" = (/obj/covers/repairedfloor/ship,/obj/item/violin,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "ca" = (/obj/covers/repairedfloor/ship,/obj/effect/decal/cleanable/blood/drip,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "cb" = (/obj/covers/repairedfloor/ship,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "cc" = (/obj/covers/repairedfloor/ship,/obj/effect/decal/cleanable/blood/drip,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "cd" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/obj/structure/sign/flag/pirate,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "ce" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/stool/wood,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"cf" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"; icon_state = "ladderup_wood"; layer = 2},/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
+"cg" = (/obj/covers/repairedfloor/ship,/obj/structure/oven,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
+"ch" = (/obj/covers/repairedfloor/ship,/obj/structure/voyage/boatswain_book,/obj/structure/table/wood,/obj/item/weapon/paper_bin{pixel_x = -8; pixel_y = 14},/obj/item/weapon/pen,/obj/item/weapon/book,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"ci" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/clothing/suit/storage/jacket/piratejacket5,/obj/item/clothing/head/piratehat,/obj/item/weapon/flame/candle,/obj/item/clothing/accessory/storage/sheath/longer/officer,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/whistle,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"cj" = (/obj/structure/table/wood,/obj/covers/repairedfloor/ship,/obj/structure/voyage/sextant,/obj/item/weapon/paper_bin{pixel_x = -8; pixel_y = 14},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"ck" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/book,/obj/item/weapon/paper_bin{pixel_x = -8; pixel_y = 14},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
+"cl" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/structure/closet/cabinet/ceiling,/obj/item/clothing/head/tricorne_black,/obj/item/weapon/folder/sred,/obj/item/clothing/suit/storage/jacket/piratejacket1,/obj/item/clothing/accessory/storage/sheath/longer/officer,/obj/item/weapon/melee/classic_baton/whip,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/whistle,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "cT" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "da" = (/obj/covers/repairedfloor/ship,/obj/structure/cannon/modern/tank/voyage{dir = 1},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "dz" = (/obj/effect/landmark{name = "SupplyPR"},/obj/structure/voyage/grid{dir = 9},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -121,7 +128,6 @@
 "gD" = (/obj/covers/repairedfloor/ship,/obj/structure/potted_plant{dir = 6},/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "gF" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/mouse/black,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
 "hj" = (/obj/covers/repairedfloor/ship,/obj/structure/closet/crate/musketball,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
-"hR" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"; icon_state = "ladderup_wood"; layer = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "hW" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade/ship/wall2/doorway{dir = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "if" = (/obj/covers/repairedfloor/ship,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "ii" = (/obj/covers/repairedfloor/ship,/obj/structure/vending/craftable/rifles/wood,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/magazine)
@@ -209,7 +215,6 @@
 "Mn" = (/obj/structure/barricade/ship/wood/a8,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "MC" = (/obj/covers/repairedfloor/ship/south,/obj/structure/window/barrier/ship/wood/port0,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "Nb" = (/obj/structure/barricade/ship/wood/a2,/obj/structure/barricade/ship/wood/a1,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
-"Nk" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"; icon_state = "ladderup_wood"; layer = 2},/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage)
 "Nn" = (/obj/structure/barricade/ship/blue/b18,/obj/covers/repairedfloor/ship,/obj/item/flashlight/lantern/on/anchored,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "NJ" = (/obj/structure/barricade/ship/wood/a7,/obj/covers/repairedfloor/ship,/obj/structure/sign/flag/medical,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)
 "Oh" = (/obj/structure/barricade/ship/blue/b17,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
@@ -302,19 +307,19 @@ aaaaaaaaaaaagcgcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaagcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaagcgcgcgcgcgcbygcgcgcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagcgcgcgcgcgcgcgcgcgcgcgcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaalabananababababababajgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcalabababababababababababajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatclGagsfuTRfafjTjTcTaiababababababadababadababadababadaeRfaoCFjBCFaoRfaprTrTahKnajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcagiNagCQRfRfCFCFCFCFjTizafRfflCFkXCFCFkXCFackXCFdKkXCFRfaoCFhRCFaoRfaqkwrTrTrTeqajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcEkEkEkgFEkavCFCFCFCFCFjTjTRfORCFZvdKCFZvCFCFZvCFCFZvCFRfORCFCFCFjBRfORarrTrTrTrTeqajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbeEkEkEkaCaJCFCFjTjTCFCFCFCFhWCFCFCFCFCFCFCFCFCFauCFCFCFhWCFCFCFCFCFORasrTdMdMkwrTAeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcaKEkEkEkaLAeCFjTizafCFCFhRCFORaxayayayayayayayayayaQaTaUORjBaojBCFCFAerTrTamkwrTiiRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatclGagsfaQRfafjTjTcTaiababababababadababadababadababadaeRfaoCFjBCFaoRfaprTrTahKnajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcagiNagCQRfRfCFCFCFCFbdizafRfflCFkXCFCFkXCFackXCFdKkXCFRfaoCFbfCFaoRfaqkwrTrTrTeqajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbjEkEkgFuTaJCFCFCFCFCFjTjTRfORCFZvdKCFZvCFCFZvCFCFZvCFRfORCFCFCFjBRfORarrTrTrTrTeqajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbeEkEkEkEkavCFCFjTjTCFCFCFCFhWCFCFCFCFCFCFCFCFCFauCFCFCFhWCFCFCFCFCFORasrTdMdMkwrTAeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcaKEkEkEkaLAeCFjTizafjTCFbfCFORaxayayayayayayayayaybpaTaUORjBaojBCFCFAerTrTamkwrTiiRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaatcaVEkEkEkEkaWCFCFjTjTCFCFjTizAeaAXBaXatXBaxayazaYaXXBXBaZORaBjBaoCFCFFcrTrTrTaFrTiiRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbaEkbfbjEkaWCFCFCFCFCFCFjTtTORaGXBXBaXaDaEaHaIaXXBXBXBXBAeCFblCFCFCFFcrTrTrTrTrTqgRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbtEkEkEkEkaWCFCFjTCFCFCFhRCFORbwXBmIXBaMXBXBaXmIaXNkXBmIORaNjBaoCFCFaOrTrTrTrTrTiiRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbeEkEkbzaLbACFjTafjTCFCFCFCFORaEaHaHaHaHaHaHaHaHaHaHaHaIORjBaojBCFCFORiirTyOrTrTiiAeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcakEkEkEkaCbECFjTizjTCFCFCFCFhWCFCFCFCFCFCFCFCFCFCFCFCFCFhWCFCFCFCFaPAeiirTrTrTkwdMRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcagagEkEkEkavCFCFCFCFvrjTtTvSORCFifCFCFkXCFdKkXJqCFifCFRfORCFCFCFjBRfORrTrTrThjhjCZySaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcrfkhEkbJRfRfCFCFCFCFCFjTaRRfflCFAMCFCFDcCFacDcCFCFAMCFORaoCFhRCFaoRfhjrTrTrTrTCZySaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaatcagogluuTRfIMjTjTizbQKkKkKkKkKkKkOGKkKkOGKkKkOGKkKkOGHwORaoCFaoCFaoRfsarTrTaSFeySaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbaEkbvEkEkaWCFCFCFCFCFCFjTtTORaGXBXBbNaDaEaHaIaXXBXBXBXBAebZblCFCFCFFcrTrTrTrTrTqgRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbtEkEkEkEkaWCFCFjTjTCFCFbfCFORbwXBmIXBaMXBXBaXmIaXcfXBmIORaNjBaoCFCFaOrTrTrTrTrTiiRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcbeEkbzEkaCbACFjTafizjTCFCFCFORaEaHaHaHaHaHaHaHaHaHaHaHaIORjBaojBCFCFORiirTyOrTrTiiAeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcakEkEkEkEkavCFCFjTjTCFCFCFCFhWCFCFCFCFCFCFCFCFCFCFCFCFCFhWCFCFCFCFaPAeiirTrTrTkwdMRfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcagagEkEkuTbECFCFCFCFvrjTtTvSORCFifCFCFkXCFdKkXJqCFifCFRfORCFCFCFjBRfORrTrTrThjhjCZySaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcrfkhEkbJRfRfCFCFCFCFCFjTaRRfflCFAMCFCFDcCFacDcCFCFAMCFORaoCFbfCFaoRfhjrTrTrTrTCZySaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaatcagoglucgRfIMjTjTizbQKkKkKkKkKkKkOGKkKkOGKkKkOGKkKkOGHwORaoCFaoCFaoRfsarTrTaSFeySaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaqWKkKkKkKkKkKkKkKkKkySiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBqWKkKkKkKkKkKkKkKkKkKkKkySaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -380,18 +385,18 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaagcgcgcgcgcgcgcgcgcgcgcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagcgcgcgcgcgcgcgcgcgcgcgcgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaGFimGUbbimHcAcAcAcHXgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcICAcAcAcICcdimWnimimcdIRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqbcbdbRYOKQKgKgbSXRMnHfHfMCHfHfHfMCOMMCHfHfHfOMHfHfMCHfNbrNrNrNUgbgbhYObiYObgZgPyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqbcchbRYOKQKgKgbSXRMnHfHfMCHfHfHfMCOMMCHfHfHfOMHfHfMCHfNbrNrNrNUgbgbhYObiYObgZgPyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaabkzGbTYOYOXSVMVMVMVMQpVMVMQLVMVMnFVMdaVMVMnFVMdaVMQLVMVMRoVMVMbmUgbibiYObnYOYOYZSePyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqimWnimimVtVMVMVMVMQpVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMRoVMVMVMUgbgbhYObiYOYOYZRPXhIRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaabkAaawbobpVtKgWkVMFxWtVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMZwFxVMVMbqbibiYObibibibBOnRPSeIRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqimWnimimVtKgVMVMVMQpVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMRoVMVMVMUgbgbhYObiYOYOYZRPXhIRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaabkAaawbociVtVMWkVMFxWtVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMZwFxVMVMbqbibiYObibibibBOnRPSeIRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaabkYOYOYOYOKxVMRSVMbrWtVMVMWAWHVMVMVMVMVMVMVMVMVMVMWHSjVMZwVMVMVMbsYOYOYOYOYOYOXSOnOnRPSeIRaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaSzbubvYOYOXSVMoPPnELWtVMVMVMVMVMVMVMVMVMEhdzPPKAVMVMVMVMZwVMVMVMbsYOBvBvYOYOceRJRPOnbURPZmsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaSzbucjYOYOXSVMoPPnELWtVMVMVMVMVMVMVMVMVMEhdzPPKAVMVMVMVMZwVMVMVMbsYOBvBvYOYOceRJRPOnbURPZmsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaabkYObxYODrVtVMUCVMbVWtVMVMsrVMVMVMVMVMVMRxCgiLfqVMsrVMVMZwVMVMrZICimimNJXSXSNJZgimimimimZmsLsLsLsLaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaabkYOYOYOBlVtKgROVMpNWtVMVMWAWHVMVMVMVMVMVMVMVMVMVMWHSjVMZwVMVMVMbqpFbWYOXjYODxbXbYbZbCVjtsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaabkYOYOYOBlVtVMROVMpNWtVMVMWAWHVMVMVMVMVMVMVMVMVMVMWHSjVMZwVMVMVMbqpFbWYOXjYODxbXbYckbCVjtsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqimWnimimVtKgVMVMFxWtVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMZwFxVMVMbObDYODxYOFgYOXSYOFgVjRvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqbFbGbHbIVCVMVMVMVMQpVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMRocaVMBvbsBvYOYOcbFgTkbBbPNnRvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqbFbGbHbIVCKgVMVMVMQpVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMVMRocaVMBvbsBvYOYOcbFgTkbBbPNnRvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaabkbKYOYOYOXSVMVMVMVMQpVMVMVMVMVMnFVMVMVMVMnFVMnFVMVMVMVMRoVMVMVMbsYOccXjYOYODxbLVjxlwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqbMVygDbNVtKgKgRKYceBuIuIekuIuIuIuIGeTuuIuIuIGeuIekTuuIUgVlVMbmbObPDxYODxWZEcVjRvwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaXqbMVygDclVtKgKgRKYceBuIuIekuIuIuIuIGeTuuIuIuIGeuIekTuuIUgVlVMbmbObPDxYODxWZEcVjRvwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaUlHPHPbbHPHPiUiUiUXOwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNwNOhiUiUiUiUHPHPHPOwHPHPRvwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaawNwNwNwNwNwNwNwNwNwNwNiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBiBwNwNwNwNwNwNwNwNwNwNwNwNwNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiBiBiBiBiBiBiBiBiBiBiBiBiBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
