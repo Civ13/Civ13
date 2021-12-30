@@ -1020,6 +1020,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1969\rusretreat.dmm"
+#include "maps\WIP\testing.dmm"
 // END_INCLUDE
 
