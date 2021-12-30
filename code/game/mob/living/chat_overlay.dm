@@ -45,7 +45,7 @@
 
 		for (var/image/CT in target.images)
 			if(CT.plane == CHAT_PLANE && CT.owner == owner)
-				animate(CT,pixel_y = CT.pixel_y + 10,time = 3)
+				animate(CT,pixel_y = CT.pixel_y + 11,time = 1)
 
 		message = image(loc = origin_loc)
 		message.target = target
