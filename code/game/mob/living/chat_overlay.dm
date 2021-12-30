@@ -82,7 +82,7 @@ var/global/sound_tts_num = 0
 	var/voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=100"
 	if (!speaker.original_job)
 		return
-	if (gender == MALE)
+	if (speaker.gender == MALE)
 		voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
 	else
 		voice = "slt --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
