@@ -42,9 +42,9 @@
 		owner = origin_loc.client
 		target = target_mob.client
 
-		for (var/image/CT in owner.images)
-			if(CT.plane == CHAT_PLANE && CT.target == target)
-				animate(CT,pixel_y = CT.pixel_y + 8,time = 3)
+		for (var/image/CT in target.images)
+			if(CT.plane == CHAT_PLANE && CT.owner == owner)
+				animate(CT,pixel_y = CT.pixel_y + 10,time = 3)
 
 		message = image(loc = origin_loc)
 		message.target = target
