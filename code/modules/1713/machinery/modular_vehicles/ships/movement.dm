@@ -12,6 +12,11 @@
 	ntype = "mast"
 	var/sails_on = FALSE
 
+/obj/structure/vehicleparts/movement/sails/premade/New()
+	..()
+	sails = new/obj/item/sail(src)
+	update_icon()
+
 /obj/structure/vehicleparts/movement/sails/update_icon()
 	if (sails)
 		if (sails_on)
