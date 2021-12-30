@@ -266,7 +266,6 @@
 		else if (mob_area.climate == "desert")
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			w_uniform = null
 			equip_to_slot_or_del(new /obj/item/clothing/suit/arabic_robe(src), slot_wear_suit)
 			update_inv_w_uniform(1)
 		if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
