@@ -207,7 +207,7 @@
 								else
 									stew_desc += ", "
 						if(length(stew_desc) > 50)
-							stew_desc = "stew"
+							stew_desc = "stew "
 						if (istype(I, /obj/item/weapon/reagent_containers/food))
 							var/obj/item/weapon/reagent_containers/food/F = I
 							if (F.reagents)
