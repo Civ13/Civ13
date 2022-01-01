@@ -19,7 +19,7 @@
 	ordinal_age = 3
 	faction_distribution_coeffs = list(INDIANS = 0.5, PIRATE = 0.5)
 	battle_name = "marooned pirates"
-	mission_start_message = "<big>After a major storm, a Pirate shipwreck has come ashore in an unknown Island. However, they are not alone...<br> The gracewall will be up after <b>45 minutes</b>.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND PIRATES ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
+	mission_start_message = "<big>After a major storm, a Pirate shipwreck has washed ashore on an unknown Island. However; they are not alone...<br> The gracewall will drop after <b>25 minutes</b>.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND PIRATES ARE NEUTRAL BY DEFAULT.</b> Attacking the other team without valid reason (including but not limited to sprinting to their spawn to pick a fight with them as soon as the grace wall drops) will be considered griefing and will not be tolerated.<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = PIRATES
@@ -51,10 +51,10 @@ obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 /obj/map_metadata/hunt/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 27000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hunt/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 27000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hunt/cross_message(faction)
 	return "The gracewall is now removed."
