@@ -1,6 +1,6 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen
 	dropsound = 'sound/effects/drop_default.ogg'
-	name = "Canteen"
+	name = "canteen"
 	icon_state = "canteen_german"
 	volume = 200
 	w_class = 3 // fits in webbing unlike w_class = 4
@@ -13,7 +13,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2
 	dropsound = 'sound/effects/drop_default.ogg'
-	name = "Canteen"
+	name = "canteen"
 	icon_state = "canteen_german"
 	volume = 200
 	w_class = 3 // fits in webbing unlike w_class = 4
@@ -27,14 +27,14 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/german
 	dropsound = 'sound/effects/drop_default.ogg'
-	name = "German Canteen"
+	name = "German canteen"
 	icon_state = "canteen_german"
 	volume = 200
 	w_class = 3 // fits in webbing unlike w_class = 4
 	desc = "A very large canteen for storing water."
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap
 	dropsound = 'sound/effects/drop_default.ogg'
-	name = "Japanese Canteen"
+	name = "Japanese canteen"
 	icon_state = "canteen_jap"
 	item_state = "canteen_jap"
 	volume = 200
@@ -46,11 +46,22 @@
 	reagents.add_reagent("water", 200)
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us
 	dropsound = 'sound/effects/drop_default.ogg'
-	name = "American Canteen"
+	name = "American canteen"
 	icon_state = "canteen_us"
 	volume = 200
 	w_class = 3 // fits in webbing unlike w_class = 4
 	desc = "A very large canteen for storing water."
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us/New()
+	..()
+	reagents.add_reagent("water", 200)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus
+	dropsound = 'sound/effects/drop_default.ogg'
+	name = "Russian canteen"
+	icon_state = "canteen_soviet"
+	volume = 200
+	w_class = 3 // fits in webbing unlike w_class = 4
+	desc = "A very large canteen for storing water."
+/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus/New()
 	..()
 	reagents.add_reagent("water", 200)

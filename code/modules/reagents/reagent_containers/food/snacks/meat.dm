@@ -29,7 +29,8 @@
 // all these sybtypes.
 /obj/item/weapon/reagent_containers/food/snacks/meat/human
 	name = "human meat"
-	desc = "Tastes like chicken."
+	desc = "Tastes like kind of like ham..."
+	disgusting = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/meat/monkey
 	name = "monkey meat"
@@ -42,6 +43,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog
 	name = "poisonous frog meat"
 	desc = "Probably not a good idea to put it in the stew."
+	disgusting = TRUE
 	var/uses = 4
 	New()
 		..()
@@ -203,6 +205,7 @@
 	health = 180
 	filling_color = "#773B00"
 	raw = TRUE
+	disgusting = TRUE
 	non_vegetarian = TRUE
 	satisfaction = -20
 	rots = TRUE
@@ -241,6 +244,7 @@
 	rots = TRUE
 	non_vegetarian = TRUE
 	satisfaction = -4
+	decay = 5*600
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
@@ -257,7 +261,8 @@
 	rotten_icon_state = "rottenanimalfat"
 	rots = TRUE
 	non_vegetarian = TRUE
-	decay = 15*600
+	disgusting = TRUE
+	decay = 5*600
 	New()
 		..()
 		reagents.add_reagent("lard", 10)

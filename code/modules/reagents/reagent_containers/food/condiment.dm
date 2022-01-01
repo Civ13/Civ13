@@ -200,7 +200,7 @@
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "flour"
 	item_state = "flour"
-	decay = 100*600
+	decay = 100*6000
 	satisfaction = -3
 	volume = 10
 	New()
@@ -263,14 +263,14 @@
 		reagents.add_reagent("sugar", 30)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
-	decay = 60*00
+	decay = 0
 /obj/item/weapon/reagent_containers/food/condiment/tealeaves
 	name = "tea leaves"
 	desc = "some tea leaves. mix with hot water."
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "tea_leaves_dried"
 	item_state = "flour"
-	decay = 80*600
+	decay = 0
 	satisfaction = 4
 	New()
 		..()

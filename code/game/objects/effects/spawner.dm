@@ -80,6 +80,27 @@
 	create_path = /mob/living/simple_animal/hostile/human/skeleton
 	timer = 400
 
+/obj/effect/spawner/mobspawner/compsognathus
+	name = "compsognathus spawner"
+	create_path = /mob/living/simple_animal/hostile/dinosaur/compsognathus
+	timer = 400
+
+/obj/effect/spawner/mobspawner/dimetrodon
+	name = "dimetrodon spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/dinosaur/dimetrodon
+	timer = 1500
+
+/obj/effect/spawner/mobspawner/pachycephalosaurus
+	name = "pachycephalosaurus spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/dinosaur/pachycephalosaurus
+	timer = 1500
+
 /obj/effect/spawner/mobspawner/skeletons/off
 	activated = FALSE
 
@@ -686,6 +707,9 @@
 	create_path = /mob/living/simple_animal/hostile/dinosaur/velociraptor
 	timer = 3000
 	activated = 0
+
+/obj/effect/spawner/mobspawner/velociraptor/on
+	activated = TRUE
 
 /obj/effect/spawner/mobspawner/cockroach
 	name = "cockroach spawner"

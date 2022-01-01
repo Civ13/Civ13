@@ -550,7 +550,7 @@
 	value = 1
 	New()
 		..()
-		reagents.del_reagents()
+		reagents.del_reagents("wine", 100)
 
 //////////////////////////SMALL BOTTLES ///////////////////////
 

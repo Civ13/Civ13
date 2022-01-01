@@ -278,7 +278,7 @@
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 3, "meat" = 1)
 	non_vegetarian = TRUE
-	decay = 180*600
+	decay = 250*6000
 	New()
 		..()
 		bitesize = 2
@@ -291,7 +291,7 @@
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 3, "fish" = 1)
 	non_vegetarian = TRUE
-	decay = 180*600
+	decay = 180*6000
 	New()
 		..()
 		bitesize = 2
@@ -303,7 +303,7 @@
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 2, "fish" = 2)
-	decay = 180*600
+	decay = 180*6000
 	New()
 		..()
 		bitesize = 2
@@ -352,7 +352,7 @@
 	trash = null
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 15*600
-	non_vegetarian = TRUE
+	non_vegetarian = FALSE
 	New()
 		..()
 		reagents.add_reagent("protein", 6)
@@ -377,7 +377,7 @@
 		bitesize = 14
 
 /obj/item/weapon/reagent_containers/food/snacks/pizza/vegetablepizza
-	name = "vegetable pizza"
+	name = "spicy vegetable pizza"
 	desc = "A large flattened pie with vegetables."
 	icon_state = "vegetablepizza"
 	trash = null
@@ -537,7 +537,7 @@
 	center_of_mass = list("x"=16, "y"=16)
 	raw = TRUE
 	non_vegetarian = TRUE
-	decay = 14*600
+	decay = 7*600
 	New()
 		..()
 		reagents.add_reagent("protein", rand(3,5))
@@ -698,7 +698,6 @@
 	name = "waffles"
 	desc = "Mmm, waffles"
 	icon_state = "waffles"
-	trash = /obj/item/trash
 	filling_color = "#E6DEB5"
 	center_of_mass = list("x"=15, "y"=11)
 	nutriment_desc = list("waffle" = 8)
@@ -820,6 +819,7 @@
 	center_of_mass = list("x"=16, "y"=12)
 	decay = 18*600
 	satisfaction = -8
+	disgusting = TRUE
 	New()
 		..()
 		reagents.add_reagent("toxin", 1)
@@ -967,7 +967,8 @@
 	nutriment_desc = list("soup" = 5)
 	nutriment_amt = 5
 	decay = 15*600
-	non_vegetarian = TRUE
+	non_vegetarian = FALSE
+	satisfaction = 4
 	New()
 		..()
 		reagents.add_reagent("tomatojuice", 10)
@@ -984,6 +985,7 @@
 	decay = 16*600
 	trash = /obj/item/kitchen/snack_bowl
 	non_vegetarian = TRUE
+	satisfaction = 4
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
@@ -1001,6 +1003,7 @@
 	nutriment_desc = list("tomato" = 2, "potato" = 2, "carrot" = 2, "meat" = 2, "mushroom" = 2)
 	nutriment_amt = 5
 	trash = /obj/item/kitchen/wood_bowl
+	satisfaction = 4
 	decay = 16*600
 	New()
 		..()
@@ -1058,7 +1061,7 @@
 	filling_color = "#DE4545"
 	center_of_mass = list("x"=16, "y"=10)
 	nutriment_desc = list("noodles" = 4, "meat" = 2, "egg" = 1)
-	satisfaction = 12
+	satisfaction = 9
 	nutriment_amt = 6
 	decay = 11*600
 	New()
@@ -1072,7 +1075,6 @@
 	name = "boiled rice"
 	desc = "A boring dish of boring rice."
 	icon_state = "boiledrice"
-	trash = /obj/item/kitchen/snack_bowl
 	filling_color = "#FFFBDB"
 	center_of_mass = list("x"=17, "y"=11)
 	nutriment_desc = list("rice" = 2)
@@ -1728,7 +1730,7 @@
 	decay = 25*600
 
 /obj/item/weapon/reagent_containers/food/snacks/bun/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	// Bun + meatball = burger
+	// Bun + meatpatty = burger
 	/*
 	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/meatball))
 		new /obj/item/weapon/reagent_containers/food/snacks/monkeyburger(src)
@@ -1749,6 +1751,19 @@
 		user << "You make a hotdog."
 		qdel(W)
 		qdel(src)
+
+/obj/item/weapon/reagent_containers/food/snacks/burger
+	name = "burger"
+	desc = "Does not contain ham, probably."
+	icon_state = "hburger"
+	satisfaction = 6
+	bitesize = 2
+	center_of_mass = list("x"=16, "y"=17)
+	decay = 17*600
+	New()
+		..()
+		reagents.add_reagent("protein", 6)
+
 /*
 // Burger + cheese wedge = cheeseburger
 /obj/item/weapon/reagent_containers/food/snacks/monkeyburger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
