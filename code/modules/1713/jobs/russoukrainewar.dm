@@ -36,7 +36,7 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Ukrainian Ground Forces in the fight against the invaders!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
+	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.") //Partisan mechanics are kept because ukrainians are on defense and rely on traps and not just soldiers to cause enemy casualties
 	H.setStat("strength", STAT_MAX)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MAX)
@@ -113,7 +113,7 @@
 	is_modernday = FALSE
 
 	min_positions = 25
-	max_positions = 150
+	max_positions = 80 ////lowpop map, not a grand scale offensive. If ukrainians somehow lose 80 troops, they deserve to lose.
 
 /datum/job/civilian/ukrainian/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -323,15 +323,15 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("strength", STAT_MAX)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MAX)
+	H.setStat("dexterity", STAT_MAX)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
+	H.setStat("pistol", STAT_MAX)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MAX)
 	return TRUE
 
 /datum/job/russian/russ_sergeant
@@ -349,7 +349,7 @@
 
 	can_get_coordinates = TRUE
 
-	min_positions = 2
+	min_positions = 4
 	max_positions = 8
 
 /datum/job/russian/russ_sergeant/equip(var/mob/living/human/H)
@@ -397,16 +397,16 @@
 
 	H.civilization = "Russian"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the chechen insurgents!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.add_note("Role", "You are a <b>[title]</b>, lead your squad in the russian advance!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_LOW)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_VERY_HIGH)
 	return TRUE
 
 
@@ -423,7 +423,7 @@
 	is_ukrainerussowar = TRUE
 
 	min_positions = 2
-	max_positions = 8
+	max_positions = 4
 
 /datum/job/russian/russ_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -465,15 +465,15 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
-	H.setStat("strength", STAT_NORMAL)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_HIGH)
 	return TRUE
 
 /datum/job/russian/russ_soldier
@@ -489,7 +489,7 @@
 
 	uses_squads = TRUE
 
-	min_positions = 10
+	min_positions = 25
 	max_positions = 80
 
 /datum/job/russian/russ_soldier/equip(var/mob/living/human/H)
@@ -537,15 +537,17 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, apart of the Russian Federal Forces. Follow orders given by your superiors and defeat the enemy!")
-	H.setStat("strength", STAT_NORMAL)
+	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
+	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
+	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_HIGH)
 	return TRUE
 
 /datum/job/russian/russ_sniper
