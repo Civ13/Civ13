@@ -753,6 +753,14 @@
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74m
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74m/New()
+	..()
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green/sov_svd
 /obj/item/weapon/storage/belt/smallpouches/green/sov_svd/New()
 	..()
