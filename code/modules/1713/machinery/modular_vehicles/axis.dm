@@ -519,8 +519,8 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 	for (var/locx=1; locx<=maxdist; locx++)
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
-			if (!matrix_current_locs[loc2textv].len)
-				return
+			if (!matrix_current_locs[loc2textv] || !matrix_current_locs[loc2textv].len)
+				continue
 			var/dlocfinding
 			switch(maxdist)
 				if (1)
@@ -533,6 +533,8 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					dlocfinding = rotation_matrixes4[tdir][loc2textv][1]
 				if (5)
 					dlocfinding = rotation_matrixes5[tdir][loc2textv][1]
+			if (!dlocfinding)
+				continue
 			var/turf/T = matrix_current_locs[dlocfinding][1]
 			var/list/todestroy = list()
 			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])

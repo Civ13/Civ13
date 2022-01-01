@@ -492,22 +492,22 @@
 			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
 				return TRUE
 		if ("frontleft")
-			if ((w_front[5] <= 0 || w_left[5]) && prob(75))
+			if ((w_front[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
 			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
 				return TRUE
 		if ("backleft")
-			if ((w_back[5] <= 0 || w_left[5]) && prob(75))
+			if ((w_back[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
 			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
 				return TRUE
 		if ("frontright")
-			if ((w_front[5] <= 0 || w_right[5]) && prob(75))
+			if ((w_front[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
 			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
 				return TRUE
 		if ("backright")
-			if ((w_back[5] <= 0 || w_right[5]) && prob(75))
+			if ((w_back[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
 			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
 				return TRUE
