@@ -11,7 +11,7 @@
 	is_ww2 = FALSE
 	is_upa = FALSE
 	is_ukrainerussowar = TRUE
-	is_modernday = TRUE
+	is_modernday = FALSE
 
 	min_positions = 1
 	max_positions = 1
@@ -36,7 +36,7 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Ukrainian Ground Forces in the fight against the invaders!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
+	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.") //Partisan mechanics are kept because ukrainians are on defense and rely on traps and not just soldiers to cause enemy casualties
 	H.setStat("strength", STAT_MAX)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MAX)
@@ -60,7 +60,7 @@
 	is_ww2 = FALSE
 	is_upa = FALSE
 	is_ukrainerussowar = TRUE
-	is_modernday = TRUE
+	is_modernday = FALSE
 
 	min_positions = 4
 	max_positions = 8
@@ -78,6 +78,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
 	uniform.attackby(platecarrier_ukraine, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_l_hand)
@@ -107,10 +110,10 @@
 	is_ww2 = FALSE
 	is_upa = FALSE
 	is_ukrainerussowar = TRUE
-	is_modernday = TRUE
+	is_modernday = FALSE
 
 	min_positions = 25
-	max_positions = 150
+	max_positions = 80 ////lowpop map, not a grand scale offensive. If ukrainians somehow lose 80 troops, they deserve to lose.
 
 /datum/job/civilian/ukrainian/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -161,7 +164,7 @@
 	is_ww2 = FALSE
 	is_upa = FALSE
 	is_ukrainerussowar = TRUE
-	is_modernday = TRUE
+	is_modernday = FALSE
 
 	min_positions = 2
 	max_positions = 2
@@ -186,10 +189,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
-	uniform.attackby(platecarrier_ukraine, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
+	uniform.attackby(platecarrier_ukraine, H)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
@@ -216,7 +220,7 @@
 	is_ww2 = FALSE
 	is_upa = FALSE
 	is_ukrainerussowar = TRUE
-	is_modernday = TRUE
+	is_modernday = FALSE
 
 	min_positions = 5
 	max_positions = 10
@@ -237,6 +241,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
 	uniform.attackby(platecarrier_ukraine, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_l_hand)
@@ -260,7 +267,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////RUSKI/////////////////////////////////////////////////////////////////////////////
 
 /datum/job/russian/russ_lieutenant
-	title = "Russian Federal Forces Lieutenant "
+	title = " Russian Federal Forces Lieutenant"
 	rank_abbreviation = "Lt."
 
 	spawn_location = "JoinLateRUCap"
@@ -268,7 +275,7 @@
 	is_rusretreat = FALSE
 	is_officer = TRUE
 	is_commander = TRUE
-	is_modernday = TRUE
+	is_modernday = FALSE
 	is_ww2 = FALSE
 	whitelisted = TRUE
 	is_ukrainerussowar = TRUE
@@ -316,25 +323,25 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("strength", STAT_MAX)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MAX)
+	H.setStat("dexterity", STAT_MAX)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
+	H.setStat("pistol", STAT_MAX)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MAX)
 	return TRUE
 
 /datum/job/russian/russ_sergeant
-	title = "Russian Federal Forces Sergeant "
+	title = " Russian Federal Forces Sergeant"
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRUSgt"
 
 	is_rusretreat = FALSE
-	is_modernday = TRUE
+	is_modernday = FALSE
 	is_ww2 = FALSE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -342,7 +349,7 @@
 
 	can_get_coordinates = TRUE
 
-	min_positions = 2
+	min_positions = 4
 	max_positions = 8
 
 /datum/job/russian/russ_sergeant/equip(var/mob/living/human/H)
@@ -358,9 +365,9 @@
 	if (prob(33))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
@@ -390,33 +397,33 @@
 
 	H.civilization = "Russian"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the chechen insurgents!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.add_note("Role", "You are a <b>[title]</b>, lead your squad in the russian advance!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_LOW)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_VERY_HIGH)
 	return TRUE
 
 
 /datum/job/russian/russ_medic
-	title = "Russian Federal Forces Corpsman "
+	title = " Russian Federal Forces Corpsman"
 	rank_abbreviation = "Pfc."
 
 	spawn_location = "JoinLateRUMedic"
 
 	is_medic = TRUE
 	is_rusretreat = FALSE
-	is_modernday = TRUE
+	is_modernday = FALSE
 	is_ww2 = FALSE
 	is_ukrainerussowar = TRUE
 
 	min_positions = 2
-	max_positions = 8
+	max_positions = 4
 
 /datum/job/russian/russ_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -427,7 +434,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
@@ -458,31 +465,31 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
-	H.setStat("strength", STAT_NORMAL)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_HIGH)
 	return TRUE
 
 /datum/job/russian/russ_soldier
-	title = "Russian Federal Forces Private "
+	title = " Russian Federal Forces Private"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
 
 	is_rusretreat = FALSE
-	is_modernday = TRUE
+	is_modernday = FALSE
 	is_ww2 = FALSE
 	is_ukrainerussowar = TRUE
 
 	uses_squads = TRUE
 
-	min_positions = 10
+	min_positions = 25
 	max_positions = 80
 
 /datum/job/russian/russ_soldier/equip(var/mob/living/human/H)
@@ -500,26 +507,16 @@
 
 //head
 	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
 //back
-	var/randarmwrus = rand(1,2)
-	switch(randarmwrus)
-		if (1)
-			if (prob(80))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
-				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_l_hand)
-				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
-		if (2)
-			if (prob(80))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
-				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
-				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
+	if (prob(80))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74m(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
 
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
@@ -540,13 +537,67 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, apart of the Russian Federal Forces. Follow orders given by your superiors and defeat the enemy!")
-	H.setStat("strength", STAT_NORMAL)
+	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
+	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
+	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_HIGH)
+	return TRUE
+
+/datum/job/russian/russ_sniper
+	title = "Russian Federal Forces Sniper"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+
+	uses_squads = TRUE
+	is_ww2 = FALSE
+	is_upa = FALSE
+	is_ukrainerussowar = TRUE
+	is_modernday = FALSE
+
+	min_positions = 5
+	max_positions = 10
+
+/datum/job/russian/russ_sniper/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+
+//head
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+//back
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	uniform.attackby(armour, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_l_hand)
+	give_random_name(H)
+	H.s_tone = rand(-35,-25)
+	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
+	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_VERY_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE

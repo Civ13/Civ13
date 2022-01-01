@@ -102,11 +102,11 @@
 		return ""
 
 /obj/map_metadata/stalingrad/proc/points_check()
+	var/cust_color = "white"
 	if (processes.ticker.playtime_elapsed > 6000)
 		var/c1 = 0
 		var/c2 = 0
 		var/prev_control = a1_control
-		var/cust_color = "white"
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
@@ -116,6 +116,7 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a1_control = "none"
+			cust_color="white"
 		else if (c1 > c2)
 			a1_control = "Germans"
 			cust_color="blue"
@@ -141,6 +142,7 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a2_control = "none"
+			cust_color="white"
 		else if (c1 > c2)
 			a2_control = "Germans"
 			cust_color="blue"
@@ -166,6 +168,7 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a3_control = "none"
+			cust_color="white"
 		else if (c1 > c2)
 			a3_control = "Germans"
 			cust_color="blue"
@@ -179,6 +182,21 @@
 				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>City Hall</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a3_control]</font> captured the <b>City Hall</b>!</big>"
+	if (a1_control == "Soviets")
+		cust_color = "red"
+	else
+		cust_color = "blue"
+	world << "<big><font color='[cust_color]'><b>Telephone Central</b>: [a1_control]</font></big>"
+	if (a2_control == "Soviets")
+		cust_color = "red"
+	else
+		cust_color = "blue"
+	world << "<big><font color='[cust_color]'><b>Train Station</b>: [a2_control]</font></big>"
+	if (a3_control == "Soviets")
+		cust_color = "red"
+	else
+		cust_color = "blue"
+	world << "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Germans: [ger_points]</big>"
 	world << "<big>Soviets: [sov_points]</big>"
@@ -274,6 +292,7 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a1_control = "none"
+			cust_color="white"
 		else if (c1 > c2)
 			a1_control = "Germans"
 			cust_color="blue"
@@ -283,6 +302,10 @@
 			cust_color="red"
 			sov_points++
 		if (a1_control != "none")
+			if (a1_control == "Soviets")
+				cust_color = "red"
+			else
+				cust_color = "blue"
 			world << "<big><font color='[cust_color]'><b>Telephone Central</b>: [a1_control]</font></big>"
 		else
 			world << "<big><b>Telephone Central</b>: Nobody</big>"
@@ -297,6 +320,7 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a2_control = "none"
+			cust_color="white"
 		else if (c1 > c2)
 			a2_control = "Germans"
 			cust_color="blue"
@@ -306,6 +330,10 @@
 			cust_color="red"
 			sov_points++
 		if (a2_control != "none")
+			if (a2_control == "Soviets")
+				cust_color = "red"
+			else
+				cust_color = "blue"
 			world << "<big><font color='[cust_color]'><b>Train Station</b>: [a2_control]</font></big>"
 		else
 			world << "<big><b>Train Station</b>: Nobody</big>"
@@ -320,6 +348,7 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a3_control = "none"
+			cust_color="white"
 		else if (c1 > c2)
 			a3_control = "Germans"
 			cust_color="blue"
@@ -329,6 +358,10 @@
 			cust_color="red"
 			sov_points++
 		if (a3_control != "none")
+			if (a3_control == "Soviets")
+				cust_color = "red"
+			else
+				cust_color = "blue"
 			world << "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>"
 		else
 			world << "<big><b>City Hall</b>: Nobody</big>"
@@ -343,6 +376,7 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a4_control = "none"
+			cust_color="white"
 		else if (c1 > c2)
 			a4_control = "Germans"
 			cust_color="blue"
@@ -352,6 +386,10 @@
 			cust_color="red"
 			sov_points++
 		if (a4_control != "none")
+			if (a4_control == "Soviets")
+				cust_color = "red"
+			else
+				cust_color = "blue"
 			world << "<big><font color='[cust_color]'><b>Hospital</b>: [a4_control]</font></big>"
 		else
 			world << "<big><b>Hospital</b>: Nobody</big>"
