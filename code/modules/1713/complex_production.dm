@@ -569,6 +569,7 @@
 	rots = FALSE
 	satisfaction = -4
 	non_vegetarian = TRUE
+	decay = 32*800
 	New()
 		..()
 		reagents.add_reagent("protein", 2)
@@ -597,9 +598,11 @@
 	rots = FALSE
 	satisfaction = 1
 	non_vegetarian = TRUE
+	decay = 0
 	New()
 		..()
 		reagents.add_reagent("protein", 2)
+
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
@@ -608,9 +611,6 @@
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
-		qdel(src)
-		return
-	..()
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice
 	name = "salami slice"

@@ -27,7 +27,7 @@
 	icon_state = "peyote"
 	desc = "A potent hallucinogenic."
 	color = "#6AAF6A"
-	decay = 60*600
+	decay = 120*600
 	New()
 		..()
 		reagents.add_reagent("peyote", 5)
@@ -95,7 +95,7 @@
 	name = "liquorice"
 	icon_state = "liquorice_root"
 	desc = "A very strange tasting root."
-	decay = 60*600
+	decay = 0
 	New()
 		..()
 		reagents.add_reagent("liquorice", 8)
@@ -131,7 +131,7 @@
 	name = "green coffee"
 	icon_state = "coffee"
 	color = "#a5201d"
-	decay = 90*600
+	decay = 180*600
 	satisfaction = 8
 	New()
 		..()
@@ -146,7 +146,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/grown/olives
 	name = "bunch of olives"
 	icon_state = "olives"
-	decay = 35*600
+	decay = 20*600
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy
 	name = "Psilocybin mushroom"
@@ -161,42 +161,48 @@
 	name = "bunch of mushrooms"
 	icon_state = "mushrooms"
 	satisfaction = 4
-	decay = 15*600
+	decay = 30*600
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/melon
 	name = "melon"
 	icon_state = "melon"
 	satisfaction = 4
 	//color = "#f08080"
+	decay = 20*600
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin
 	name = "pumpkin"
 	icon_state = "pumpkin"
 	satisfaction = 4
 //	color = "#f08080"
+	decay = 100*600
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/lemon
 	name = "lemon"
 	icon_state = "lemon"
-	satisfaction = -2
+	satisfaction = 1
+	decay = 100*600
 //	color = "#eedd82"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/lime
 	name = "lime"
 	icon_state = "lime"
 	satisfaction = 1
+	decay = 100*600
 //	color = "#32cd32"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/orange
 	name = "orange"
 	icon_state = "orange"
 	satisfaction = 3
+	decay = 100*600
 //	color = "#ffa500"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/apple
 	name = "apple"
 	icon_state = "apple"
 	satisfaction = 3
+	decay = 50*600
 //	color = "#ff0000"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/banana
@@ -221,6 +227,7 @@
 	name = "coconut"
 	icon_state = "coconut"
 	satisfaction = 3
+	decay = 150*600
 	New()
 		..()
 		reagents.add_reagent("water", 15)
@@ -239,7 +246,7 @@
 	desc = "wheat. Can be milled."
 	color = "#fffaf0"
 	nutriment_desc = list("wheat" = TRUE)
-	decay = 55*600
+	decay = 500*6000
 	satisfaction = -2
 /obj/item/weapon/reagent_containers/food/snacks/grown/oat
 	name = "oat"
@@ -247,7 +254,7 @@
 	desc = "oats. Can be milled."
 	color = "#fffaf0"
 	nutriment_desc = list("oats" = TRUE)
-	decay = 55*600
+	decay = 200*6000
 	satisfaction = -2
 /obj/item/weapon/reagent_containers/food/snacks/grown/barley
 	name = "barley"
@@ -255,7 +262,7 @@
 	desc = "barley. Can be milled."
 	color = "#fffaf0"
 	nutriment_desc = list("barley" = TRUE)
-	decay = 55*600
+	decay = 200*6000
 	satisfaction = -2
 /obj/item/weapon/reagent_containers/food/snacks/grown/tomato
 	name = "tomato"
@@ -269,14 +276,14 @@
 	icon_state = "potato"
 	color = "#8b7355"
 	nutriment_desc = list("potato" = TRUE)
-	decay = 70*600
+	decay = 70*6000
 	satisfaction = -3
 /obj/item/weapon/reagent_containers/food/snacks/grown/beans
 	name = "beans"
 	icon_state = "beans"
 	color = "#8b7355"
 	nutriment_desc = list("beans" = TRUE)
-	decay = 60*600
+	decay = 100*6000
 /obj/item/weapon/reagent_containers/food/snacks/grown/cabbage
 	name = "head of cabbage"
 	icon_state = "cabbage"
@@ -288,13 +295,13 @@
 	icon_state = "carrot"
 	color = "#ff8c00"
 	nutriment_desc = list("carrot" = TRUE)
-
+	decay = 25*600
 /obj/item/weapon/reagent_containers/food/snacks/grown/corn
 	name = "corn"
 	icon_state = "corn"
 	color = "#8b7355"
 	nutriment_desc = list("corn" = TRUE)
-	decay = 35*600
+	decay = 10*600
 	satisfaction = 2
 /obj/item/weapon/reagent_containers/food/snacks/grown/corn/attack_self(mob/user as mob)
 	if (do_after(user, 120, user.loc))
