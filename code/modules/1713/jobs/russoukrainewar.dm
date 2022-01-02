@@ -32,7 +32,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m(H), slot_shoulder)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Ukrainian Ground Forces in the fight against the invaders!")
@@ -83,7 +83,7 @@
 	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
 	uniform.attackby(platecarrier_ukraine, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad of the Ukrainian Ground Forces in the fight against the invaders!")
@@ -133,7 +133,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
 	uniform.attackby(platecarrier_ukraine, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, apart of the Ukrainian Ground Forces in the fight against the invaders!")
@@ -146,7 +146,7 @@
 	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_HIGH)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 
@@ -191,9 +191,9 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
 	uniform.attackby(platecarrier_ukraine, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
@@ -243,10 +243,10 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
 	uniform.attackby(platecarrier_ukraine, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_l_hand)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
@@ -303,6 +303,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
@@ -368,13 +369,15 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
 	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/civbag(H), slot_back)
@@ -448,6 +451,8 @@
 	uniform.attackby(white, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
 	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 
 	H.s_tone = rand(-32,-24)
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved","Short Facial Hair")
@@ -547,7 +552,7 @@
 	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_HIGH)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/russian/russ_sniper
@@ -583,9 +588,9 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
 	uniform.attackby(armour, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_l_hand)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
