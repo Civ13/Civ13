@@ -179,7 +179,7 @@
 
 	// special scenario: A is an ammo box, src is a PTRD or something
 	// turn A from the ammo magazine to the first bullet in the ammo magazine
-	if (istype(A, /obj/item/ammo_magazine) && A.vars.Find("is_box") && A:is_box && A:ammo_type == ammo_type)
+	if (istype(A, /obj/item/ammo_magazine) && (A.vars.Find("is_box") == TRUE && A:is_box && A:ammo_type == ammo_type))
 		var/obj/item/ammo_magazine/AM = A
 		if (AM.stored_ammo.len)
 			A = AM.stored_ammo[1]
@@ -188,7 +188,7 @@
 	else if (istype(A, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/AM = A
 
-		if (!(load_method & AM.mag_type) || caliber != AM.caliber)
+		if (!(load_method & AM.mag_type) || (caliber != AM.caliber && !AM in src.good_mags))
 			return // incompatible
 		if (bad_magazine_types.Find(AM.type))
 			return //incompatible

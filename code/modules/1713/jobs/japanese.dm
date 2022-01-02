@@ -477,7 +477,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -527,7 +526,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -577,7 +575,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -618,7 +615,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
@@ -673,7 +669,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
@@ -724,7 +719,6 @@
 //other
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -781,7 +775,6 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 			H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -827,7 +820,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/jap_headband(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/grenade/suicide_vest/kamikaze(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
@@ -879,7 +871,6 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type99(H), slot_shoulder)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier99(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -917,7 +908,6 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 
 //head
 	var/randhead = rand(1,3)
@@ -991,7 +981,6 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper(H), slot_shoulder)
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -1035,7 +1024,6 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
@@ -1091,7 +1079,6 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1354,7 +1341,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1408,7 +1394,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -1462,7 +1447,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1513,7 +1497,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
@@ -1565,7 +1548,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1617,7 +1599,6 @@
 //other
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -1657,7 +1638,6 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_summer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,3)
 	if (randhead == 1)
@@ -1714,7 +1694,6 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_summer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,3)
 	if (randhead == 1)
@@ -1766,7 +1745,6 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_summer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,3)
 	if (randhead == 1)
@@ -1821,7 +1799,6 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_summer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,3)
 	if (randhead == 1)
@@ -1878,7 +1855,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
@@ -1929,7 +1905,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
@@ -1980,7 +1955,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
@@ -2029,7 +2003,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
@@ -2081,7 +2054,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	give_random_name(H)
@@ -2124,7 +2096,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/firstaid/adv(H), slot_back)
 //other
@@ -2167,7 +2138,6 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,2)
 	if (randhead == 1)
@@ -2213,7 +2183,6 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,2)
 	if (randhead == 1)
@@ -2263,7 +2232,6 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,2)
 	if (randhead == 1)
@@ -2315,7 +2283,6 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 //head
 	var/randhead = rand(1,2)
 	if (randhead == 1)
