@@ -1032,7 +1032,9 @@
 						update_icon()
 			else
 				qdel(src)
-
+		spawn(12000)
+			if (src)
+				qdel(src)
 	update_icon()
 		icon_state = "flood_overlay[flood_level]"
 		desc = "The water seems to be about [flood_level*50]cm deep."
