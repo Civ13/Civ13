@@ -83,7 +83,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
-	good_mags = list(/obj/item/ammo_magazine/c8mmnambu)
+	good_mags = list(/obj/item/ammo_magazine/c8mmnambu, /obj/item/ammo_magazine/c8mmnambu/empty)
 	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
@@ -106,7 +106,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
-	good_mags = list(/obj/item/ammo_magazine/c8mmnambu)
+	good_mags = list(/obj/item/ammo_magazine/c8mmnambu, /obj/item/ammo_magazine/c8mmnambu/empty)
 	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu/update_icon()
 	..()
@@ -129,7 +129,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.96
-	good_mags = list(/obj/item/ammo_magazine/luger)
+	good_mags = list(/obj/item/ammo_magazine/luger, /obj/item/ammo_magazine/luger/empty)
 	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
 /obj/item/weapon/gun/projectile/pistol/luger/update_icon()
 	..()
@@ -367,7 +367,7 @@
 	caliber = "a765x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/borchardt
-	good_mags = list(/obj/item/ammo_magazine/borchardt)
+	good_mags = list(/obj/item/ammo_magazine/borchardt, /obj/item/ammo_magazine/borchardt/empty)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a765x25
 	load_method = MAGAZINE
@@ -451,7 +451,7 @@
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
-	good_mags = list(/obj/item/ammo_magazine/m1911)
+	good_mags = list(/obj/item/ammo_magazine/m1911, /obj/item/ammo_magazine/m1911/empty)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a45acp
 	load_method = MAGAZINE
@@ -482,7 +482,7 @@
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/tt30
-	good_mags = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll)
+	good_mags = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll, /obj/item/ammo_magazine/tt30/empty)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a762x25
 	load_method = MAGAZINE
@@ -504,7 +504,7 @@
 	caliber = "a9x18"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/makarov
-	good_mags = list(/obj/item/ammo_magazine/makarov)
+	good_mags = list(/obj/item/ammo_magazine/makarov, /obj/item/ammo_magazine/makarov/empty)
 	weight = 0.704
 	ammo_type = /obj/item/ammo_casing/a9x18
 	load_method = MAGAZINE
