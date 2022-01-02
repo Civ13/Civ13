@@ -6,7 +6,7 @@
 	desc = "Left in the sun too long, looks weird."
 	color = "#8b7355"
 	nutriment_desc = list("potato" = TRUE)
-	decay = 70*400
+	decay = 70*800
 	satisfaction = -3
 	New()
 		..()

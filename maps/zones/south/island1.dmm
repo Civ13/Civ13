@@ -1,3 +1,5 @@
+"aa" = (/obj/structure/wild/jungle,/mob/living/simple_animal/hostile/poison/snake/cobra,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/bottom)
+"ab" = (/mob/living/simple_animal/hostile/poison/snake/cobra,/turf/floor/beach/sand/dark,/area/caribbean/sea/bottom)
 "aO" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "de" = (/obj/map_metadata/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
 "dj" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/dark,/area/caribbean/sea/bottom)
@@ -41,7 +43,6 @@
 "LP" = (/obj/structure/wild/rock/basalt,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "Nd" = (/turf/floor/beach/sand,/area/caribbean/sea/bottom)
 "Nh" = (/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/bottom)
-"NE" = (/mob/living/simple_animal/hostile/poison/snake/constrictor,/turf/floor/beach/sand/dark,/area/caribbean/sea/bottom)
 "NI" = (/obj/structure/wild/junglebush,/turf/floor/dirt/dust,/area/caribbean/sea/bottom)
 "Oh" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "RH" = (/obj/structure/wild/jungle,/obj/structure/wild/tallgrass,/turf/floor/beach/sand/dark,/area/caribbean/sea/bottom)
@@ -87,6 +88,7 @@ qtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqt
 qtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqt
 deqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqt
 "}
+
 (1,1,2) = {"
 qtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtmBqtqtqtAUAUqtmBqtqtqtqtqtqtqtqtqtqtqtqtqtqtAUAUAUqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqt
 qtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtqtmBqtqtAUAUAUqtmBqtqtqtqtqtqtqtqtqtqtqtAUAUAUAUNdAUAUqtqtqtqtAUAUAUAUAUAUAUqtqtqtqtqtqtqtqtqtqt
@@ -106,11 +108,11 @@ qtqtqtqtqtqtqtAUNdNdNdNdNdoCoCikoCoCoCCyoCoCroHlHloCikikUHoCGroCdjoCUHUHoCpwoCff
 qtqtqtqtqtqtqtAUNdNdNdVGNdNdoCoCffHloCoCHlHlHlHloCoCoCUHUHoCjrHlLKoCoCoCoCffNIpZikoCUHUHUHUHUHffWYoCHhUHoCHlHloCoCoCAGHlHlqlikoCoCNdNdNdNdNdAUAUAUAUqt
 qtqtqtqtqtqtqtAUAUNdNdNdNdoCpwoCoCoCmKoCHloCaOHloCpwoCUHUHoCHlHlikoCTjoCffffoCHloCoCUHUHrYrYUHoCoCUHUHoCoCHlaOHlffoCUWHloCoCKwoCoCNdNdLENdNdNdNdAUAUqt
 qtqtqtqtqtqtAUAUNdNdNdNdNdoCoCoCHlIsoCoCHMoCZgHlqloCWYUHUHUHoCHlAGoCoCmKoCikHljrUHyTUHrYrYUHUHoCoCUHUHUHWYoCHlHlpZffffTjoCffffoCoCffNdNdNdmnVGNdAUAUAU
-qtqtqtqtqtqtAUAUVGNdNdNdoCUHUHoCoCikoCpwoCoCuQoCoCoCUHUHUHmKHlHlSJffCyHldjffxMUHUHrYrYrYUHUHmKTjffoCUHUHoCHlaOoCWYoCoCUHffNEffffoCTjffoCoCNdNdNdNdNdAU
+qtqtqtqtqtqtAUAUVGNdNdNdoCUHUHoCoCikoCpwoCoCuQoCoCoCUHUHUHmKHlHlSJffCyHldjffxMUHUHrYrYrYUHUHmKTjffoCUHUHoCHlaOoCWYoCoCUHffoCffffoCTjffoCoCNdNdNdNdNdAU
 qtqtqtqtqtqtAUAUNdNdLENdoCUHUHUHoCHlVnVWoCoCoCffoCUHUHUHHloCoCdjoCoCoCHlHlHlHlUHUHrYrYUHUHoCSJffCMffffoCaOHlWYoCUHUHUHUHoCHllYoCoCoCoCoCoCoCNdNdNdNdNd
-qtqtqtqtqtAUAUNdNdNdNdoCoCoCUHyTHlHlHloCffoCWYGroCoCUHUHoCoCdkWYoCoCHlffHlHlUHUHrYrYUHUHoCoCHlHlAGHlHloCHlUioCLkUHHhUHffffoCHljroCHlIsHlpwoCNdNdLENdNd
+qtqtqtqtqtAUAUNdNdNdNdoCoCoCUHaaHlHlHloCffoCWYGroCoCUHUHoCoCdkWYoCoCHlffHlHlUHUHrYrYUHUHoCoCHlHlAGHlHloCHlUioCLkUHHhUHffffabHljroCHlIsHlpwoCNdNdLENdNd
 qtqtqtqtAUAUNdNdNdNdNdoCffoCUHyToCWpHlHlfffflvCyHlHlHloCoCHloCoCoCHlaOHlHlUHUHrYrYUHUHUHoCqlHlHlHlffffGroCoCUHUHUHUHffffHlHlHloCoCHlTjHlqloCoCNdNdNdNd
-qtqtqtAUAUNdLENdNdNdoCikffoCoCoCHljrHlYXffffoCoCoCmKHlHlHlCMoCmKoCikHlNEHlUHrYrYUHyToCoCoCHljrHloCLKikHMoCoCUHUHUHoCffHlHlaOHloCHlGTSxAGHMHlffoCoCNdNd
+qtqtqtAUAUNdLENdNdNdoCikffoCoCoCHljrHlYXffffoCoCoCmKHlHlHlCMoCmKoCikHloCHlUHrYrYUHyToCoCoCHljrHloCLKikHMoCoCUHUHUHoCffHlHlaOHloCHlGTSxAGHMHlffoCoCNdNd
 qtqtAUAUNdNdNdNdVGoCoCHlHlWYoCHMHMHlHlYNoCoCUHffoCUHUHoCoCffrNoCoCoCoCHlWpUHrYrYUHffoCIFoCdjHlGroCHlZgoCmKoCoCoCpwoCoCDuSJoCoCHMHlHlHlUWjrHlHMTjoCNdNd
 qtqtAUAUNdNdNdNdNdNdoCHlWpoCoCffffoCpwoCoCUHUHUHUHUHUHUHffffffpwoCoCGrHlUHUHrYUHUHUHoCoCHloCoCoCoCoCffffoCWYpwoCoCoCLPHloCVWoCoCHloCffoCpwoCoCoCpwoCNd
 "}

@@ -38,7 +38,8 @@
 		reagents.remove_reagent("protein", 2)
 		reagents.add_reagent("food_poisoning", 1)
 	rotten = TRUE
-	satisfaction = -10
+	disgusting = TRUE
+	satisfaction = -30
 	spawn(1000)
 		if (isturf(loc) && prob(30))
 			var/scavengerspawn = rand(1,3)
@@ -72,9 +73,9 @@
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
 			if (F.powersource && F.powersource.powered)
-				decaytimer += 100 //much slower
+				decaytimer *= 7 //much slower
 			else
-				decaytimer += 300
+				decaytimer *= 2
 		else if (isturf(loc)) //if on the floor (i.e. not stored inside something), decay faster
 			decaytimer += 600
 		else if (!istype(loc, /obj/item/weapon/can)) //if not canned, since canned food doesn't spoil

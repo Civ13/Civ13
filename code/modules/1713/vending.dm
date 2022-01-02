@@ -140,6 +140,7 @@
 		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
 		/obj/item/ammo_magazine/mosin = 50,
 		/obj/item/ammo_magazine/mosinbox = 10,
+		/obj/item/weapon/attachment/bayonet/military = 25,
 	)
 
 /obj/structure/vending/ww1gerweapons
@@ -485,6 +486,7 @@
 		/obj/item/clothing/head/jungle_hat/khaki = 15,
 		/obj/item/clothing/mask/balaclava = 15,
 		/obj/item/clothing/glasses/nvg = 15,
+		/obj/item/clothing/glasses/thermal = 10,
 	)
 
 /obj/structure/vending/sofweapons
@@ -506,6 +508,7 @@
 		/obj/item/weapon/grenade/flashbang/m84 = 15,
 		/obj/item/weapon/grenade/incendiary/anm14 = 15,
 		/obj/item/weapon/plastique/c4 = 6,
+		/obj/item/weapon/attachment/bayonet/military = 15,
 	)
 
 obj/structure/vending/sofammo
@@ -543,7 +546,7 @@ obj/structure/vending/sofammo
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/flashlight/militarylight_alt = 15,
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/german = 30,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
 	)
@@ -612,6 +615,7 @@ obj/structure/vending/sofammo
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
 		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet/military = 25,
 	)
 
 /obj/structure/vending/sovietweapons
