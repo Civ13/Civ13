@@ -36,6 +36,30 @@
 /obj/map_metadata/factory/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
+/obj/map_metadata/factory/roundend_condition_def2name(define)
+	..()
+	switch (define)
+		if (CIVILIAN)
+			return "Ukrainian Forces"
+		if (RUSSIAN)
+			return "Russian Federal Forces"
+/obj/map_metadata/factory/roundend_condition_def2army(define)
+	..()
+	switch (define)
+		if (CIVILIAN)
+			return "Ukrainian Forces"
+		if (RUSSIAN)
+			return "Russian Federal Forces"
+
+/obj/map_metadata/factory/army2name(army)
+	..()
+	switch (army)
+		if ("Ukrainian Forces")
+			return "Ukrainian"
+		if ("Russians")
+			return "Russian Federation"
+
+
 /obj/map_metadata/factory/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
