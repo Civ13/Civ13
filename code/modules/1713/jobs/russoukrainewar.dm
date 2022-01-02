@@ -133,7 +133,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine(null)
 	uniform.attackby(platecarrier_ukraine, H)
-	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
