@@ -52,7 +52,6 @@ var/global/list/anvil_recipes = list(
 	"Sharps Rifle" = list("Sharps Rifle","guns",4,5,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/singleshot),
 	"Coach Gun" = list("Coach Gun","guns",4,6,22,0,0,0,/obj/item/weapon/gun/projectile/shotgun/coachgun),
 	"Gewehr 71" = list("Gewehr 71","guns",4,6,30,0,0,0,/obj/item/weapon/gun/projectile/boltaction/gewehr71),
-	"Makeshift AK-47" = list("Makeshift AK-47","guns",7,8,32,0,0,0,/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47),
 
 	///*Muskets*///
 	"Crude Musket" = list("Crude Musket","guns",3,4,0,15,0,0,/obj/item/weapon/gun/projectile/flintlock/crude),
