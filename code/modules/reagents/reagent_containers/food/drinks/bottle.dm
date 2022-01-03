@@ -247,7 +247,7 @@
 //Keeping this here for now, I'll ask if I should keep it here.
 /obj/item/weapon/broken_bottle
 
-	name = "Broken Bottle"
+	name = "broken bottle"
 	desc = "A bottle with a sharp broken bottom."
 	icon = 'icons/obj/drinks.dmi'
 	icon_state = "broken_bottle"
@@ -350,7 +350,7 @@
 		reagents.del_reagents()
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/bottleofnothing
-	name = "Bottle of Nothing"
+	name = "bottle of nothing"
 	desc = "A bottle filled with nothing"
 	icon_state = "bottleofnothing"
 	center_of_mass = list("x"=17, "y"=5)
