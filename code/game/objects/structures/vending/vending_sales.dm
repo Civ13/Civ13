@@ -208,6 +208,8 @@
 	if (!ui)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
+		else if (map.ID == MAP_GULAG13)
+			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 440, 600)
 		else
 			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
 		ui.set_initial_data(data)
@@ -265,6 +267,11 @@
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
 								qdel(D)
+						else if (map.ID == MAP_GULAG13)
+							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+							D.amount = moneyin/D.value
+							if (D.amount == 0)
+								qdel(D)
 						else
 							if (moneyin > 0 && moneyin <= 3)
 								var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
@@ -291,6 +298,11 @@
 		else if (href_list["remove_money"])
 			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
+				D.amount = moneyin/D.value
+				if (D.amount == 0)
+					qdel(D)
+			else if (map.ID == MAP_GULAG13)
+				var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
 				D.amount = moneyin/D.value
 				if (D.amount == 0)
 					qdel(D)
@@ -420,6 +432,58 @@
 		..()
 		spawn(20)
 			update_icon()
+
+/obj/structure/vending/sales/market_stall/prepared/gulag
+	name = "apparel comissary"
+	desc = "A prison vending stall where prisoners can spend their hard-earned Rubles."
+	products = list(
+		/obj/item/clothing/gloves/watch/goldwatch = 5,
+		/obj/item/clothing/glasses/monocle = 20,
+		/obj/item/clothing/glasses/sunglasses = 20,
+		/obj/item/clothing/head/bowler_hat = 20,
+		/obj/item/clothing/suit/storage/coat/fancy_fur_coat = 5
+	)
+	prices = list(
+		/obj/item/clothing/gloves/watch/goldwatch = 200,
+		/obj/item/clothing/glasses/monocle = 50,
+		/obj/item/clothing/glasses/sunglasses = 30,
+		/obj/item/clothing/head/bowler_hat = 40,
+		/obj/item/clothing/suit/storage/coat/fancy_fur_coat = 200
+	)
+
+/obj/structure/vending/sales/market_stall/prepared/gulag/food
+	name = "food comissary"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 50,
+		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge = 50,	
+		/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami = 50,
+		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 50,
+		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 50
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge = 5,	
+		/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 15
+	)
+
+/obj/structure/vending/sales/market_stall/prepared/gulag/consumables
+	name = "consumables comissary"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 50,
+		/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter = 50,
+		/obj/item/weapon/storage/fancy/cigar/full = 50,
+		/obj/item/weapon/reagent_containers/pill/cocaine = 50,
+		/obj/item/clothing/mask/smokable/cigarette/joint = 50
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 40,
+		/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter = 15,
+		/obj/item/weapon/storage/fancy/cigar/full = 180,
+		/obj/item/weapon/reagent_containers/pill/cocaine = 200,
+		/obj/item/clothing/mask/smokable/cigarette/joint = 70
+	)
 
 //moneycounter by robert//
 /obj/structure/vending/sales/food/hot/moneycounter

@@ -894,7 +894,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette
 	name = "Baguette"
-	icon_state = "Bon Appetite!."
+	icon_state = "Bon Appetit!"
 	icon_state = "baguette"
 	slice_path = /obj/item/weapon/reagent_containers/food/snacks/breadslice
 	slices_num = 5
@@ -1548,7 +1548,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread
 	name = "Bread"
-	icon_state = "Some plain old Earthen bread."
+	icon_state = "Some plain old bread."
 	icon_state = "bread"
 	slice_path = /obj/item/weapon/reagent_containers/food/snacks/breadslice
 	slices_num = 5
