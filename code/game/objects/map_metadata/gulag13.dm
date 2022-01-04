@@ -29,7 +29,6 @@
 	gamemode = "Prison Simulation"
 	var/list/points = list(
 		list("Guards",0,0),
-		list("Vory",0,0),
 		list("German",0,0),
 		list("Polish",0,0),
 		list("Ukrainian",0,0),

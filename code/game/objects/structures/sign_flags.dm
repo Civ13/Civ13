@@ -231,7 +231,10 @@
 	name = "German Empire flag"
 	desc = "A horizontal tricolour flag of the German Empire."
 	icon_state = "flag_germany"
-
+/obj/structure/sign/flag/german/modern
+	name = "German flag"
+	desc = "A horizontal tricolour flag of the German Republic."
+	icon_state = "flag_germany_republic"
 /obj/structure/sign/flag/uk
 	name = "United Kingdom flag"
 	desc = "A flag of the United Kingdom."
@@ -246,6 +249,11 @@
 	name = "Ukrainian flag"
 	desc = "A flag of Ukraine."
 	icon_state = "ukraine"
+
+/obj/structure/sign/flag/poland
+	name = "Polish flag"
+	desc = "A flag of Poland."
+	icon_state = "flag_poland"
 
 /obj/structure/sign/flag/ukraine/azov
 	name = "flag of the Azov regiment"
