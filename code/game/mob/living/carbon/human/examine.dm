@@ -311,9 +311,9 @@
 				msg += "<br><i>You recognize [T.him] as a prisoner named <b>[real_name]</b>.</i>"
 				if (H.nationality == nationality)
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[H.nationality]</b>!</i>"
-				if (H.original_job_title == "Collaborator" && original_job_title == H.original_job_title)
+				if (H.original_job.title == "Collaborator" && original_job.title == H.original_job.title)
 					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"
-			if (H.faction_text == "RUSSIAN" && original_job_title == "Collaborator")
+			if (H.faction_text == "RUSSIAN" && original_job.title == "Collaborator")
 				msg += "<br><i>You recognize [T.him] as a <b>collaborator</b>!</i>"
 	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (ishuman(user) && user != src)

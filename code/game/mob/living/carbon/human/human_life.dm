@@ -1513,6 +1513,13 @@
 						holder2.icon_state = "stormcloak"
 					else if (map.ID == MAP_FACTORY)
 						holder2.icon_state = "ukr_basic"
+					else if (map.ID == MAP_GULAG13)
+						if(nationality == "Polish")
+							holder2.icon_state = "pol_basic"
+						else if(nationality == "German")
+							holder2.icon_state = "ger3_basic"
+						else if(nationality == "Ukrainian")
+							holder2.icon_state = "ukr_basic"
 //					else if (original_job_title == "Outlaw")
 //						holder2.icon_state = "civ1"
 //					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )
@@ -1522,6 +1529,20 @@
 					if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN)
 						holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
+			if (faction_text == CIVILIAN && map.ID == MAP_GULAG13)
+				switch(original_job_title)
+					if ("Janitor")
+						holder2.overlays += icon(holder2.icon,"role_janitor")
+					if ("Kitchen Duty")
+						holder2.overlays += icon(holder2.icon,"role_kitchen")
+					if ("Miner")
+						holder2.overlays += icon(holder2.icon,"role_miner")
+					if ("Nurse Helper")
+						holder2.overlays += icon(holder2.icon,"role")
+					if ("Builder")
+						holder2.overlays += icon(holder2.icon,"role_builder")
+					if ("Logger")
+						holder2.overlays += icon(holder2.icon,"role_logger")
 			if (original_job.uses_squads && squad > 0)
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""

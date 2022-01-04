@@ -610,8 +610,6 @@
 /datum/job/civilian/prisoner/collaborator
 	title = "Collaborator"
 	en_meaning = ""
-
-
 	min_positions = 1
 	max_positions = 12
 	equip(var/mob/living/human/H)
@@ -643,6 +641,8 @@
 		H.setStat("rifle", STAT_VERY_HIGH)
 		H.setStat("dexterity", STAT_VERY_VERY_HIGH)
 		H.setStat("pistol", STAT_VERY_VERY_HIGH)
+		spawn(20)
+			H.original_job_title = randrole
 
 ////////////////////////////////////////////////////ABASHIRI PRISONERS////////////////////////////////////////////
 /datum/job/civilian/abashiri/prisoner/wing1
