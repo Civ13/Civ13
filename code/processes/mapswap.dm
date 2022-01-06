@@ -248,6 +248,7 @@
 			maps = list(
 				MAP_BATTLEROYALE_MEDIEVAL = 0,
 				MAP_BATTLEROYALE_IMPERIAL = 0,
+				MAP_BATTLEROYALE_WILDWEST = 0,
 				MAP_BATTLEROYALE_MODERN = 0,)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
