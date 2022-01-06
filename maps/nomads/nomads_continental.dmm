@@ -225,7 +225,7 @@
 "eq" = (/obj/item/stack/farming/seeds/wheat,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "er" = (/obj/effect/spawner/mobspawner/rabbits,/turf/floor/grass,/area/caribbean/nomads/forest)
 "es" = (/mob/living/simple_animal/penguin,/turf/floor/beach/water/ice/salty,/area/caribbean/nomads/taiga)
-"et" = (/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
+"et" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "eu" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ev" = (/mob/living/simple_animal/turkey_f,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ew" = (/obj/structure/fish/cod,/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/taiga)

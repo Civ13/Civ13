@@ -144,7 +144,7 @@
 "cN" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/nomads)
 "cO" = (/mob/living/simple_animal/hostile/commanded/dog,/turf/floor/grass,/area/caribbean/nomads)
 "cP" = (/mob/living/simple_animal/horse,/turf/floor/grass,/area/caribbean/nomads)
-"cQ" = (/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/nomads)
+"cQ" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads)
 "cR" = (/obj/structure/wild/tallgrass,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/nomads)
 "cS" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads)
 "cT" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/nomads/forest)

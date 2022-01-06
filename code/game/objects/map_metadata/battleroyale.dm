@@ -477,3 +477,35 @@
 	else
 		. = FALSE
 	return .
+
+
+/obj/map_metadata/battleroyale/four
+	ID = MAP_BATTLEROYALE_WILDWEST
+	title = "Wild West Battle Royale"
+	age = "1873"
+	ordinal_age = 4
+	faction_distribution_coeffs = list(PIRATES = 1)
+	battle_name = "Battleroyale at Little Creek"
+	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
+
+/obj/map_metadata/battleroyale/four/job_enabled_specialcheck(var/datum/job/J)
+
+	..()
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
+		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale/wildwest))
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
+		. = TRUE
+	else
+		. = FALSE
+	return .

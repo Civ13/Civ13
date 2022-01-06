@@ -848,7 +848,7 @@
 "kaQ" = (/obj/structure/table/modern/table,/obj/item/flashlight/lantern,/turf/floor/plating/tiled,/area/caribbean/roofed/temperate)
 "kcs" = (/obj/covers/brick_wall,/turf/floor/grass,/area/caribbean/roofed/temperate)
 "kcB" = (/obj/structure/closet/crate/bin,/obj/item/weapon/storage/bag/trash,/turf/floor/plating/tiled/dark,/area/caribbean/roofed)
-"kcR" = (/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
+"kcR" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "kdW" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 4; icon_state = "tube"},/obj/structure/sink{pixel_y = 16},/turf/floor/plating/white,/area/caribbean/roofed/temperate)
 "keG" = (/obj/structure/bed/chair{dir = 1; icon_state = "chair"},/turf/floor/plating/tiled/dark,/area/caribbean/roofed)
 "kfM" = (/obj/structure/closet/anchored,/obj/item/clothing/under/mechanic_outfit,/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed/temperate)

@@ -248,7 +248,7 @@
 "eN" = (/obj/structure/oil_spring,/turf/floor/grass,/area/caribbean/forest)
 "eO" = (/obj/effect/spawner/mobspawner/wolves,/turf/floor/grass,/area/caribbean/forest)
 "eP" = (/mob/living/simple_animal/horse,/turf/floor/grass,/area/caribbean/forest)
-"eQ" = (/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/forest)
+"eQ" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/forest)
 "eR" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/forest)
 "eS" = (/obj/effect/spawner/mobspawner/turkeys,/turf/floor/grass,/area/caribbean/forest)
 "eT" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/forest)

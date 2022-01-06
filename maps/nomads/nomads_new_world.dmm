@@ -109,7 +109,7 @@
 "cN" = (/turf/floor/dirt,/area/caribbean/nomads/desert)
 "cO" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/nomads/desert)
 "cP" = (/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
-"cQ" = (/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
+"cQ" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cR" = (/obj/effect/spawner/objspawner/tree,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cT" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cU" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/dust,/area/caribbean/nomads/desert)

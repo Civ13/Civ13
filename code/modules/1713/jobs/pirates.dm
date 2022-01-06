@@ -593,6 +593,99 @@
 			H.name = H.client.ckey
 	return TRUE
 
+
+/datum/job/pirates/battleroyale/wildwest
+	title = "Wild West Battle Royale Fighter"
+	en_meaning = ""
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateDM"
+
+	is_deathmatch = TRUE
+	can_be_female = TRUE
+	min_positions = 0
+	max_positions = 0
+	total_positions = 0
+
+/datum/job/pirates/battleroyale/wildwest/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
+//clothes
+	var/randcloth = rand(1,5)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+	else if (randcloth == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+	else if (randcloth == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+
+//head
+	var/randcloth3 = rand(1,3)
+	if (randcloth3 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	else if (randcloth3 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
+	else if (randcloth3 == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+
+//jacket
+	var/randcloth2 = rand(1,5)
+	if (randcloth2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/leatherovercoat1(H), slot_wear_suit)
+	else if (randcloth2 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/leatherovercoat2(H), slot_wear_suit)
+	else if (randcloth2 == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/bluevest(H), slot_wear_suit)
+	else if (randcloth2 == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
+	else if (randcloth2 == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
+	if (prob(80))
+		var/randcloth4 = rand(1,2)
+		if (randcloth4 == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
+		else if (randcloth4 == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+
+//bandages
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+
+	H.add_note("Role", "Be the last one to live!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	spawn(200)
+		if (H.client)
+			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
+			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
+			H.client.screen += new/obj/screen/playersleft("Players Left","12,14", H, null, "")
+	spawn(20)
+		if (H.client)
+			H.name = H.client.ckey
+	return TRUE
+
 /datum/job/pirates/marooned
 	title = "Marooned Pirate Crew"
 	en_meaning = "Marooned Pirate"

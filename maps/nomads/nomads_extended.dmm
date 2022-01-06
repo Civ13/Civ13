@@ -73,7 +73,7 @@
 "bu" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/water,/area/caribbean/nomads/forest)
 "bv" = (/obj/item/stack/farming/seeds/coffee,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bw" = (/mob/living/simple_animal/frog/poisonous,/turf/floor/grass,/area/caribbean/nomads/forest)
-"bx" = (/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
+"bx" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "by" = (/obj/item/stack/farming/seeds/mushroom,/turf/floor/grass,/area/caribbean/nomads/forest)
 "bz" = (/mob/living/simple_animal/chicken,/turf/floor/grass,/area/caribbean/nomads/forest)
 "bA" = (/obj/item/stack/farming/seeds/potato{amount = 5},/turf/floor/grass,/area/caribbean/nomads/forest)
