@@ -4,6 +4,7 @@
 	additional_languages = list("English" = 25, "Russian" = 85, "German" = 65)
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
+	spawn_location = "JoinLateCiv"
 
 /datum/job/civilian/ukrainian/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_ukrainian_name(H.gender)
