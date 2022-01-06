@@ -14,7 +14,7 @@
 
 /obj/effect/spawner/lootdrop/guns
 	name = "gun spawner"
-	loot = list(/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/semiautomatic/svd,/obj/item/weapon/gun/projectile/automatic/m249,/obj/item/weapon/gun/projectile/submachinegun/mp40)
+	loot = list(/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/semiautomatic/svd,/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,/obj/item/weapon/gun/projectile/submachinegun/mp40)
 
 
 /obj/effect/spawner/lootdrop/guns/medieval
@@ -31,7 +31,7 @@
 
 /obj/effect/spawner/lootdrop/ammo
 	name = "ammo spawner"
-	loot = list(/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/svd)
+	loot = list(/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/svd)
 	nr = 2
 
 /obj/effect/spawner/lootdrop/ammo/medieval
