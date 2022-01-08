@@ -39,7 +39,8 @@
 /process/epochswap/fire()
 	// no SCHECK here
 	if (is_ready())
-		map.save_awards()
+		spawn(20)
+			map.save_awards()
 		if(map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
 			nmap.show_stats()

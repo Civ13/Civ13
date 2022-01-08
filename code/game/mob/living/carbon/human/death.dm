@@ -46,6 +46,9 @@
 	water_overlay = FALSE
 	update_fire(1)
 	if (stat == DEAD) return
+	if (map && map.battleroyale && alive_n_of_side(PIRATES) > 1)
+		var/obj/map_metadata/battleroyale/BR = map
+		BR.give_award(client.ckey, real_name, alive_n_of_side(PIRATES))
 	if (map && map.ID == MAP_GLADIATORS && client)
 		var/obj/map_metadata/gladiators/GD = map
 		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
