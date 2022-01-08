@@ -9,8 +9,7 @@
 
 	no_winner ="The fighting is still going."
 
-	faction_organization = list(
-		PIRATES)
+	faction_organization = list(PIRATES)
 
 	roundend_condition_sides = list(
 		list(PIRATES) = /area/caribbean/british/ship, //it isnt in the map so nobody wins by capture
@@ -219,6 +218,12 @@
 				ar_to_close_string = "None"
 		ar_to_close_timeleft = 30
 		world << "<big><b>The [ar_to_close_string] Area will close in 60 seconds!</big></b>"
+		spawn(275)
+			warn_closing_areas(ar_to_close,30)
+			spawn(100)
+				warn_closing_areas(ar_to_close,20)
+				spawn(100)
+					warn_closing_areas(ar_to_close,10)
 		spawn(300)
 			ar_to_close_timeleft = 15
 			world << "<big><b>The [ar_to_close_string] Area will close in 30 seconds!</big></b>"
@@ -229,6 +234,53 @@
 	else
 		return "too many areas closed"
 
+/obj/map_metadata/battleroyale/proc/warn_closing_areas(var/artc = null, var/time=30)
+	var/sound_to_play = null
+	switch(artc)
+		if ("one")
+			sound_to_play = 'sound/voice/battleroyale/close_nw.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Western Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("two")
+			sound_to_play = 'sound/voice/battleroyale/close_ne.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("three")
+			sound_to_play = 'sound/voice/battleroyale/close_w.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Western Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("four")
+			sound_to_play = 'sound/voice/battleroyale/close_e.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Eastern Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("five")
+			sound_to_play = 'sound/voice/battleroyale/close_sw.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Western Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("six")
+			sound_to_play = 'sound/voice/battleroyale/close_se.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Eastern Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("none")
+			return
 /obj/map_metadata/battleroyale/proc/close_area(var/artc = null)
 	if (closed_areas.len >= 5)
 		return
@@ -339,7 +391,7 @@
 	maptext_x = (32*8 * -0.5)+32
 	maptext_y = 32*0.75
 	icon_state = "blank"
-
+	var/currwarning = "yellow"
 /obj/screen/areashow/New()
 	..()
 	var/area/parea = get_area(get_turf(parentmob))
@@ -348,7 +400,7 @@
 	else
 		maptext = "<center><font color='yellow'>Unknown Area</font></center>"
 	icon_state = "blank"
-	spawn(50)
+	spawn(30)
 		update()
 
 /obj/screen/areashow/proc/update()
@@ -358,10 +410,14 @@
 	if (parea)
 		maptext = "<center><font color='yellow'><b>[parea.name]</b> ([parentmob.x],[parentmob.y])</font></center>"
 		if (parea.name == "[map.ar_to_close_string] Area")
-			maptext = "<center><font color='red'><b>[parea.name]</b> ([parentmob.x],[parentmob.y]) (CLOSING!)</font></center>"
+			maptext = "<center><font color='[currwarning]'><b>[parea.name]</b> ([parentmob.x],[parentmob.y]) (CLOSING!)</font></center>"
+			if(currwarning == "yellow")
+				currwarning = "red"
+			else
+				currwarning = "yellow"
 	else
 		maptext = "<center><font color='yellow'>Unknown Area</font></center>"
-	spawn(10)
+	spawn(5)
 		update()
 
 /obj/screen/areaclosing
