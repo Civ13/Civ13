@@ -5,7 +5,7 @@
 	lobby_icon_state = "wildwest"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 1800
+	respawn_delay = 3600
 	has_hunger = TRUE
 
 	faction_organization = list(
@@ -37,8 +37,6 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/little_creek/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/little_creek/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
