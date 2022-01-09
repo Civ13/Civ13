@@ -250,6 +250,11 @@
 	desc = "A flag of Ukraine."
 	icon_state = "ukraine"
 
+/obj/structure/sign/flag/ukraine/upa
+	name = "flag of the UPA"
+	desc = "The flag of the Ukrainian Insurgent Army called UPA."
+	icon_state ="flag_ukraine_upa"
+
 /obj/structure/sign/flag/poland
 	name = "Polish flag"
 	desc = "A flag of Poland."

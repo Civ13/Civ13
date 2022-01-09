@@ -611,6 +611,8 @@
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		qdel(src)
+		return
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice
 	name = "salami slice"
