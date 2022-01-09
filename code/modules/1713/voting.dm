@@ -103,7 +103,7 @@
 		if (user.original_job.title == "Pirate Surgeon")
 			return
 		var/previous_input = "Officer"
-		if (user.title == "Captain" || user.title == "Boatswain" || user.title == "Quartermaster")
+		if (user.title == "Captain" || user.title == "Boatswain" || user.title == "Quartermaster" || map.ID != MAP_VOYAGE)
 			previous_input = "Custom Vote"
 		if (previous_input == "Officer")
 			find_roles()
