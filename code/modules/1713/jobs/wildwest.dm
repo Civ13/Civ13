@@ -52,7 +52,6 @@
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/graysonfito12(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/graysonfito12(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 
 	H.add_note("Role", "You are the <b>[title]</b>, responsible for keeping the law and order in Little Creek. Organize your <b>Deputies</b> and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -76,7 +75,7 @@
 	is_law = TRUE
 
 	min_positions = 3
-	max_positions = 16
+	max_positions = 20
 
 /datum/job/civilian/deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -213,6 +212,7 @@
 	var/obj/item/clothing/accessory/armband/british/red_a = new /obj/item/clothing/accessory/armband/british(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(red_a, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/coachgun(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, a functionary of <b>Little Creek Banking Co.</b>. Your job is to keep the bank's vault safe, so work with the <b>Sheriff</b> and his <b>Deputies</b>!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -294,6 +294,7 @@
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
 	H.setStat("strength", STAT_NORMAL)
@@ -360,6 +361,7 @@
 		uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/derringer(H), slot_belt)
 
 	H.add_note("Role", "You are the <b>Town's Doctor</b>, living in Little Creek. Take care of the (many) wounded...")
 	H.setStat("strength", STAT_NORMAL)
@@ -457,6 +459,7 @@
 	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_l_hand)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 
 	H.add_note("Role", "You are a <b>Rancher</b>, living in Little Creek. Take care of your farm and keep the town fed!")
 	H.setStat("strength", STAT_NORMAL)
@@ -512,6 +515,7 @@
 		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
@@ -553,6 +557,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/nun_hood(H), slot_head)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/derringer(H), slot_r_store)
 
 	H.add_note("Role", "You are the <b>Priest</b>, living in Little Creek. Take care of the church, act as undertaker, and make sure the population follows the Lord's commandments.")
 	H.setStat("strength", STAT_NORMAL)
@@ -612,6 +617,7 @@
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/ten(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel/spade/wood(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 
 	H.add_note("Role", "You are the <b>Town's Blacksmith</b>, living in Little Creek. Take care of the smithy and the stables!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -714,7 +720,7 @@
 	title = "West Side Gang"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLatePirate"
 	can_be_female = TRUE
 	is_cowboy = TRUE
 	is_outlaw = TRUE
@@ -779,7 +785,6 @@
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -796,7 +801,7 @@
 	title = "East Side Gang"
 	rank_abbreviation = ""
 	can_be_female = TRUE
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLatePirate2"
 
 	is_cowboy = TRUE
 	is_outlaw = TRUE
@@ -861,7 +866,6 @@
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
