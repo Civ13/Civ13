@@ -57,32 +57,6 @@
 	if (W)
 		if (is_hot(W))
 			burn(is_hot(W))
-
-
-	// Basic dismantling.
-	if (isnull(construction_stage) || !reinf_material)
-
-		var/cut_delay = 60 - material.cut_delay
-		var/dismantle_verb
-		var/dismantle_sound
-
-		if (dismantle_verb)
-
-			user << "<span class='notice'>You begin [dismantle_verb] through the outer plating.</span>"
-			if (dismantle_sound)
-				playsound(src, dismantle_sound, 100, TRUE)
-
-			if (cut_delay<0)
-				cut_delay = FALSE
-
-			if (!do_after(user,cut_delay,src))
-				return
-
-			user << "<span class='notice'>You remove the outer plating.</span>"
-			dismantle_wall()
-			user.visible_message("<span class='warning'>The wall was torn open by [user]!</span>")
-			return
-
 /*
 	if (istype(W,/obj/item/frame))
 		var/obj/item/frame/F = W
@@ -118,8 +92,6 @@
 		if (!W.force)
 			return attack_hand(user)
 		var/dam_threshhold = material.integrity
-		if (reinf_material)
-			dam_threshhold = ceil(max(dam_threshhold,reinf_material.integrity)/2)
 		var/dam_prob = min(100,material.hardness*1.5)
 		if (dam_prob < 100 && W.force > (dam_threshhold/10))
 			playsound(src, hitsound, 80, TRUE)
