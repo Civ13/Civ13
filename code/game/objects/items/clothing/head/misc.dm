@@ -21,6 +21,14 @@
 	siemens_coefficient = 0.9
 	body_parts_covered = FALSE
 
+/obj/item/clothing/head/pimphat
+	name = "pimp-hat"
+	desc = "It's a gangster hat."
+	icon_state = "pimp_hat"
+	item_state = "pimp_hat"
+	siemens_coefficient = 0.9
+	body_parts_covered = FALSE
+
 /obj/item/clothing/head/peakyblinder
 	name = "flat cap"
 	desc = "It's an common cap."
