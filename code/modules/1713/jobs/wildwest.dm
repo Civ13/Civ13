@@ -53,6 +53,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/graysonfito12(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/graysonfito12(H), slot_belt)
 
+	give_random_name(H)
 	H.add_note("Role", "You are the <b>[title]</b>, responsible for keeping the law and order in Little Creek. Organize your <b>Deputies</b> and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -113,6 +114,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -173,6 +175,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -213,6 +216,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/coachgun(H), slot_l_hand)
+
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a functionary of <b>Little Creek Banking Co.</b>. Your job is to keep the bank's vault safe, so work with the <b>Sheriff</b> and his <b>Deputies</b>!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -296,6 +301,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_belt)
 
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -363,6 +369,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/derringer(H), slot_belt)
 
+	give_random_name(H)
 	H.add_note("Role", "You are the <b>Town's Doctor</b>, living in Little Creek. Take care of the (many) wounded...")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -399,6 +406,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/ten(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
 
+	give_random_name(H)
 	H.add_note("Role", "You are the <b>Saloon's Bartender</b>, living in Little Creek. Take care of the Saloon, shooting the drunkards out if need be.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -461,6 +469,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>Rancher</b>, living in Little Creek. Take care of your farm and keep the town fed!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -519,6 +528,8 @@
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
+
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>Prospector</b>, living in Little Creek. Mine and keep the town supplied with raw materials.")
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -559,6 +570,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/derringer(H), slot_r_store)
 
+	give_random_name(H)
 	H.add_note("Role", "You are the <b>Priest</b>, living in Little Creek. Take care of the church, act as undertaker, and make sure the population follows the Lord's commandments.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -619,6 +631,7 @@
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel/spade/wood(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 
+	give_random_name(H)
 	H.add_note("Role", "You are the <b>Town's Blacksmith</b>, living in Little Creek. Take care of the smithy and the stables!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", 200)
@@ -704,6 +717,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/cash(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
+
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -785,6 +800,8 @@
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
+
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -866,6 +883,8 @@
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_l_store)
+
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

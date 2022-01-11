@@ -105,12 +105,68 @@
 	body_parts_covered = FALSE
 
 /obj/item/clothing/glasses/sunglasses
-	desc = "Strangely ancient technology used to help provide rudimentary eye cover. Enhanced shielding blocks many flashes."
+	desc = "Strangely ancient technology used to help provide rudimentary eye cover. Enhanced lenses blocks deadly sun rays."
 	name = "sunglasses"
 	icon_state = "sun"
 	item_state = "sunglasses"
 	darkness_view = -1
 	flash_protection = FLASH_PROTECTION_MODERATE
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/redglasses
+	desc = "A pair of glasses that look like they're from the 60's, Groovy BAY'BE."
+	name = "red vintage glasses"
+	icon_state = "redlense"
+	item_state = "redlense"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/univisorred
+	desc = "A uni lense visor that look like they're from the 80's, Looks a bit futuristic."
+	name = "univisor red"
+	icon_state = "univisor_r"
+	item_state = "univisor_r"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/univisorcyan
+	desc = "A uni lense visor that look like they're from the 80's, Looks a bit futuristic."
+	name = "univisor cyan"
+	icon_state = "univisor_c"
+	item_state = "univisor_c"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/univisorgreen
+	desc = "A uni lense visor that look like they're from the 80's, Looks a bit futuristic."
+	name = "univisor green"
+	icon_state = "univisor_g"
+	item_state = "univisor_g"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/univisoryellow
+	desc = "A uni lense visor that look like they're from the 80's, Looks a bit futuristic."
+	name = "univisor yellow"
+	icon_state = "univisor_y"
+	item_state = "univisor_y"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/univisorwhite
+	desc = "A uni lense visor that look like they're from the 80's, Looks a bit futuristic."
+	name = "univisor white"
+	icon_state = "univisor_w"
+	item_state = "univisor_w"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/univisorflashy
+	desc = "A uni lense visor that look like they're from the 80's, Looks a bit futuristic."
+	name = "univisor flashy"
+	icon_state = "univisor_flashy"
+	item_state = "univisor_flashy"
+	darkness_view = -1
 	body_parts_covered = FALSE
 
 /obj/item/clothing/glasses/sunglasses/blindfold
