@@ -42,6 +42,12 @@
 	icon_state = "hawaiian_green"
 	item_state = "hawaiian_green"
 
+/obj/item/clothing/suit/pimpsuit
+	name = "purple pimp jacket."
+	desc = "A brightly colored purple button up coat for gangsters."
+	icon_state = "pimpcoat"
+	item_state = "pimpcoat"
+
 /obj/item/clothing/suit/gorillasuit
 	name = "full body gorilla outfit"
 	desc = "A lifelike full body gorilla suit-outfit, ideal for costume parties and pranksters."

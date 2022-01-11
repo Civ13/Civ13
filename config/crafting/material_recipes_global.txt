@@ -673,7 +673,7 @@ RECIPE: /material/cloth/,orange hawaiian shirt,/obj/item/clothing/suit/hawaiian/
 RECIPE: /material/cloth/,purple hawaiian shirt,/obj/item/clothing/suit/hawaiian/purple,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,green hawaiian shirt,/obj/item/clothing/suit/hawaiian/green,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,motorist jacket,/obj/item/clothing/under/motorist,6,110,0,1,jackets & vests,0,0,180,8,null
-
+RECIPE: /material/cloth/pimp coat,,/obj/item/clothing/suit/pimpcoat,6,109,0,1,jackets & vests,0,0,180,8,null
 //*****************| CLOTH ARMOR |***************************
 
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,3,null
@@ -744,6 +744,7 @@ RECIPE: /material/cloth/,custom officer cap,/obj/item/clothing/head/custom_off_c
 RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats,0,0,109,8,null
+RECIPE: /material/cloth/,pimphat,/obj/item/clothing/head/custom/pimp_hat,2,130,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,ushanka,/obj/item/clothing/head/ww2/sov_ushanka/nomads,4,95,0,1,hats,0,0,110,8,null
 RECIPE: /material/cloth/,police cap,/obj/item/clothing/head/traffic_police,4,75,0,1,military & law enforcement clothes,0,0,160,8,null
 
@@ -1542,6 +1543,13 @@ RECIPE: /material/glass/,green glasses,/obj/item/clothing/glasses/gglasses,6,120
 RECIPE: /material/glass/,corrective glasses,/obj/item/clothing/glasses/regular,6,120,0,1,eyewear,110,120,0,8,null
 RECIPE: /material/glass/,sunglasses,/obj/item/clothing/glasses/sunglasses,2,90,1,1,eyewear,140,0,0,8,null
 RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/large,2,90,1,1,eyewear,165,0,0,8,null
+RECIPE: /material/glass/,redglasses,/obj/item/clothing/glasses/redlense,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,univisor_r,/obj/item/clothing/glasses/univisorred,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,univisor_g,/obj/item/clothing/glasses/univisorgreen,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,univisor_y,/obj/item/clothing/glasses/univisoryellow,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,univisor_c,/obj/item/clothing/glasses/univisorcyan,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,univisor_w,/obj/item/clothing/glasses/univisorwhite,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,univisor_flashy,/obj/item/clothing/glasses/univisorflashy,2,90,1,1,eyewear,140,0,0,8,null
 
 //**************************************************************
 //************************ROBERTS CARTS*************************
