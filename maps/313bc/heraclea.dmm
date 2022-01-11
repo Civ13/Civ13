@@ -6,7 +6,7 @@
 "af" = (/obj/structure/wild/tree,/turf/floor/grass,/area/caribbean/forest)
 "ag" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
 "ah" = (/turf/floor/dirt,/area/caribbean/forest)
-"ai" = (/obj/structure/gate/sandstone/open,/turf/floor/dirt/dust,/area/caribbean/forest)
+"ai" = (/obj/structure/gate/sandstone,/turf/floor/dirt/dust,/area/caribbean/forest)
 "aj" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
 "ak" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
 "al" = (/turf/floor/dirt/dust,/area/caribbean/forest)
@@ -57,6 +57,7 @@
 "be" = (/obj/structure/barricade/sandstone_v/crenelated,/turf/floor/dirt,/area/caribbean/forest)
 "bf" = (/obj/structure/barricade/sandstone_v/crenelated,/obj/covers/wood,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/forest)
 "bg" = (/obj/covers/wood,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/forest)
+"bh" = (/obj/structure/table/wood,/obj/item/weapon/doctor_handbook,/obj/item/weapon/storage/firstaid/surgery_bronze,/turf/floor/dirt/dust,/area/caribbean/roman)
 "bi" = (/turf/floor/beach/sand,/area/caribbean/forest)
 "bj" = (/obj/structure/simple_door/wood{name = "House"},/obj/covers/wood_ship,/turf/floor/dirt,/area/caribbean/houses/nml_one)
 "bk" = (/obj/structure/grille/fence{icon_state = "1"; dir = 8},/obj/structure/grille/fence{icon_state = "1"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
@@ -69,7 +70,10 @@
 "br" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/dirt,/area/caribbean/roman)
 "bs" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/dirt,/area/caribbean/greek)
 "bt" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/sand,/area/caribbean/forest)
+"bu" = (/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/turf/floor/dirt/dust,/area/caribbean/roman)
 "bv" = (/obj/structure/sink/well,/turf/floor/dirt,/area/caribbean/forest)
+"bw" = (/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/dirt/dust,/area/caribbean/roman)
+"bx" = (/obj/item/stack/medical/advanced/herbs,/turf/floor/dirt/dust,/area/caribbean/roman)
 "by" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/dirt,/area/caribbean/greek)
 "bz" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/dirt,/area/caribbean/greek)
 "bA" = (/obj/structure/multiz/stairs_wood{icon_state = "wood2_stairs"; dir = 1},/turf/floor/dirt,/area/caribbean/greek)
@@ -97,7 +101,7 @@
 "bW" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/greek)
 "bX" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt,/area/caribbean/greek)
 "bY" = (/turf/floor/dirt/dust,/area/caribbean/greek)
-"bZ" = (/obj/item/weapon/storage/firstaid/surgery,/obj/structure/table/wood,/obj/item/weapon/doctor_handbook,/turf/floor/dirt/dust,/area/caribbean/roman)
+"bZ" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/table/wood,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/turf/floor/dirt/dust,/area/caribbean/greek)
 "ca" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/roman)
 "cb" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/roman)
 "cc" = (/obj/structure/wild/tree,/turf/floor/dirt,/area/caribbean/roman)
@@ -227,7 +231,6 @@
 "eC" = (/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/turf/floor/dirt/dust,/area/caribbean/greek)
 "eD" = (/obj/item/weapon/material/spear/dory,/obj/item/weapon/material/spear/dory,/obj/item/weapon/material/spear/dory,/obj/structure/table/rack,/turf/floor/dirt/dust,/area/caribbean/greek)
 "eE" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/doctor_handbook,/turf/floor/dirt/dust,/area/caribbean/greek)
-"eF" = (/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/turf/floor/dirt/dust,/area/caribbean/greek)
 "eG" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/dust,/area/caribbean/greek)
 "eH" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/turf/floor/dirt/dust,/area/caribbean/greek)
 "eI" = (/obj/item/weapon/shield/aspis,/obj/item/weapon/shield/aspis,/obj/item/weapon/shield/aspis,/obj/structure/table/rack,/turf/floor/dirt/dust,/area/caribbean/greek)
@@ -238,7 +241,6 @@
 "eN" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/dirt/dust,/area/caribbean/roman)
 "eO" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/dirt/dust,/area/caribbean/roman)
 "eP" = (/obj/structure/pot,/turf/floor/dirt/dust,/area/caribbean/roman)
-"eQ" = (/obj/structure/wild/tree/dead_tree,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/greek)
 "eR" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/dirt/dust,/area/caribbean/greek)
 "eS" = (/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/structure/closet/crate/empty{name = "catapult projectiles"},/turf/floor/dirt/dust,/area/caribbean/greek)
 "eT" = (/obj/structure/table/rack,/obj/item/weapon/gun/projectile/bow,/obj/item/weapon/gun/projectile/bow,/obj/item/weapon/gun/projectile/bow,/obj/item/weapon/gun/projectile/bow,/turf/floor/dirt/dust,/area/caribbean/greek)
@@ -283,9 +285,9 @@ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbgbbbeabababababababamahahabababahahababababababab
 bmbmbmbmbmbmbmbnbobpbmbmbmbmbrbbbbbeabababagababababababahahabafababababababababaeabababababababababatabababababababababamabafaNababdidududubibiaQaQaRaRaRaQbibiduduaaahabababbKahahababagababaeafababababaeabahahaNahahawazaOaCaCaOazabababaKabababababababababahblbbbbbsbybybybybybybybybybybzbAbsbybybyby
 cKcKcKcKbBbBbBbCbobDbEbEbFbGbCbbbbbIababaeababababababaeabababababahabababababahabababababababababababababababababababamababababababdiaqahahbibibiaQaRaRaQaQbibidgdubKahabababahababababaeababababababababababahahahahahahayaWaCaCaWaFababahaKababababababababababblbbbbbJcpcpcpcpfififififjcpbLbAbJbMbMbMcp
 bNcKbObRbScKcKcKbRbSbRbTbTbUbCbbbbbeaeababababababababaXagabababababababababamabahabaeababaeababababababahabaeabababaeababababaeababdiduahahbqbibiaQaQaRaQaQbibidgdgbKabaeabababaoaoabababagabababaeabaeabababbKahaXahahbQayaOaCaZaOaFabamabbaababababaeababababahbVbbbbbJbMbWcpcpfififififkcpbYbYbXbMcpcpbX
-bZbRcacacacbcccKbRcKcdcecfchbCbbbdbeabahababababaeabaeabagabababababagabaeababababababafabababababanabatabababababaeababamatataoababdidiahaaahbibiaQaQaRaRaQbibtaLduahahabaeababaeafabaeababababababaoabagababababahahahabayazbjbjazaFaGaGaGbkababababababababaoabblbbbbbJbMcpcpcpcicicpcpcpcpbYcpcpcpcpcpcp
-cjbRclbRclcmcKbRcKcccdcecfchbCbbbcbeahabababcoababababababababakakaeababababafafababababahahahababababanababatabatabababatababaoababdiduahbibqbqbiaQaRaRaQaQbiaaduduahahababababahababaeabababababaeaoababababagahahahahahahahahahahahababababanabababaeababanababblbbbbcqcrcpcpcpcpcpcsctcubYbYcuctctctcscp
-bRbRclbRclcmcKbRbRbRcvcdcfchbCbbbbbeababababababahagababababababababababababababababababahauahahabababahababababababababahawababababdiduahahbqbiaQaQaQaRaRaQbibidgdpahahabafababababababababagaeahaeabababaeagaXahahbvahaXaXahahahabahabahababababaeababababagaXabblbbbbcycybYcpcpcAcpcBcCbYbYbYbYcFcIcIcBcp
+bhbRcacacacbcccKbRcKcdcecfchbCbbbdbeabahababababaeabaeabagabababababagabaeababababababafabababababanabatabababababaeababamatataoababdidiahaaahbibiaQaQaRaRaQbibtaLduahahabaeababaeafabaeababababababaoabagababababahahahabayazbjbjazaFaGaGaGbkababababababababaoabblbbbbbJbMcpcpcpcicicpcpcpcpbYcpcpcpcpcpcp
+cjbRclbuclcmcKbRcKcccdcecfchbCbbbcbeahabababcoababababababababakakaeababababafafababababahahahababababanababatabatabababatababaoababdiduahbibqbqbiaQaRaRaQaQbiaaduduahahababababahababaeabababababaeaoababababagahahahahahahahahahahahababababanabababaeababanababblbbbbcqcrcpcpcpcpcpcsctcubYbYcuctctctcscp
+bwbRclbxclcmcKbRbRbRcvcdcfchbCbbbbbeababababababahagababababababababababababababababababahauahahabababahababababababababahawababababdiduahahbqbiaQaQaQaRaRaQbibidgdpahahabafababababababababagaeahaeabababaeagaXahahbvahaXaXahahahabahabahababababaeababababagaXabblbbbbcycybYcpcpcAcpcBcCbYbYbYbYcFcIcIcBcp
 bRbRclbRclcmbRbRbRcKbRcJcJchbCbbbbbeabaeababababanababababababababababababaeababahaXahahauauahahabababababakabababababababalamabababdudpaabibibiaQaRaRaRaRaQaQbidhdgahaeabahababagabababaeabababababababababagahaXaXahahahawahahbQahahababafagababababababababababblbbbbbsbybYbYbYcpcpcBcFbYbYbYbYbYbYbYcBcp
 bRbRcLcLcLcMbRbRbRcOcKcKcKbObCbbbbbIabahabababababababababaeabanababababababahahahauavauahawahabababaeababanahabababababababababababdidubqbiaQaQaQaRaQaQaRaRaQaQaMdpdpdqdpdpdiabagagagababababababababababababahahakaXbKaXahahabahahahahahafagaeababababababahababblbbbbbJcPcQcQbYbYcpcBcFbYbYbYcSbYbYcTcBcp
 cKbRcKbRbRbRbRbRcUcVcWcKcKbSbCbbbbbeahahahabababababalabamababahahababaeababahahauauauahahahabababababamababababaeababababahahabababdiaUdbbiaQaQaRaRaQbiaQaRaRcndhdhdmdududpdiababababamabafafababababaeababafaAahabaAbKaXahahahahahahahaeababababababcXabababaoabblbbbbbJcYcZcpcpbYcpcBdabYbYbYdabYdwdycBcp
@@ -303,9 +305,9 @@ eubRbRbRbRevbNbNewcKbRcKcKfgbCbbbbbeabahahagaNafabababamamamabababalalalalalalaV
 evbRbRbRbRbRbReyewcKbRcKcKcKbCbbbbbeababababahahabababababababababagabababababagabalalalalalalalalalaValalalalalalalalalahahahalalaleoeoepbqaQaQaQaQaQaQbibialalaQaQaQaQaQbibibieoeoalalalalalalalaXahahahahahahabababababababafababababababaeabababahabababafababblbcbbcycybYbYbYbYbYcpcpcpdWdWcpbYcpdWdWcp
 evbRbRbRbRbRbRbRewcKbRcKcKbBbCbbbbbeabahahahauahahabahabababaeababamayayayayayayayababababamafabababababahahahahahahalalalalaValalahdudududhdhaQaQaQaQaQbibibibiaQaQaQaQaQbibiahdgduahahababagabahabagagaAabagagamabaeaNabanababababababalababababababababababababblbbbbbsbycpcpcpbYcpcpcpcpetcpcpbYcpcpcpcp
 dHbReMeNeNbReOePewcKbRcKcKbBbCbbbdbeahahahauauauahaeababababababababayaBaCaCaDaEaFanahabababaeababababahamaNahahaeabababababaeabababdidsdidudhaQaQaRaQaQaQbibiaQaQaRaQaQaQbibiahdudiabafahaeababababagabababababababababababababababababababahahahahalabcXababababblbbbbbJbMcpcpcpbYcpcpcpcpcpcpexcpbYcpcpcI
-erbRererererererescKezcKcKbBbCbbbcbeahauagauahaNagahababababababababayaIaCaCaCaJaFabababababababababababaeahahababababamabababababaoababagdhdhaQaQaQaRaQaQbiaQaQaQaRaQaQbibibiahdidiabamamabababababagagagabababaeababababababababababaeabababababababaoababababahblbbbbbJbMcpeAeBeCeCbYeBeDcpeEeFeGbYbYbYeH
+erbRererererererescKezcKcKbBbCbbbcbeahauagauahaNagahababababababababayaIaCaCaCaJaFabababababababababababaeahahababababamabababababaoababagdhdhaQaQaQaRaQaQbiaQaQaQaRaQaQbibibiahdidiabamamabababababagagagabababaeababababababababababaeabababababababaoababababahblbbbbbJbMcpeAeBeCeCbYeBeDcpeEbYeGbYbYbYeH
 cKcKcKcKcKcKcKcKcKcKcKbRbRdDdEbbbbbeahauauahahabababafababababanababazaOaCaCaCaOazababababanabarararararabahahanabafaNahababaeababagabababdhdhaQaQaQaRaRaQaQaQaRaRaRaQaQbibiahahdudiabababababababaeabaeababamabagababababagagababababababababababanababababababahblbbbbbJcpcpeIeBeCeCbYeBeJcpeKbYeLbYeLbYeL
-cKcKcKcKflflflflfmcKcKbRbRdJdJbbbbbeahahahaoahabababafababaeababababayaWaCaCaCaWaFcxcxcxdNababararcNararahahahahababababababababagafabababdudoaQaQaQaQaRaRaQaRaRaQaQaQbibibiaaahdidiababaeaeababahabababaeababababagagabababaeabababababababababababaeababababababblbbbbbJcpcpbYbYbYbYbYbYeDcpeQbYeLbYeLeReL
+cKcKcKcKflflflflfmcKcKbRbRdJdJbbbbbeahahahaoahabababafababaeababababayaWaCaCaCaWaFcxcxcxdNababararcNararahahahahababababababababagafabababdudoaQaQaQaQaRaRaQaRaRaQaQaQbibibiaaahdidiababaeaeababahabababaeababababagagabababaeabababababababababababaeababababababblbbbbbJcpcpbYbYbYbYbYbYeDcpbZbYeLbYeLeReL
 cKcKcKcKflflflflfncKcKcKcKbmbrbbbbbIabahanababababababamababababababayaOaCaZaCaOaFarararcGababahaharararahahahababagagagaoabababagababababdudoaQaQaQaQaRaRaRaRaRaQaQaQdhdhdudududiduababababababababababababababababakabahahababababababaoaeabababagabababababafahbVbbbbbJcpbXeSeSeTeUeUeUeUcpeVeWeWeWeWeWeX
 dDdDdDdDdDdDdDdDdDdDdDdDdDdDeYbbbbbeabahababababababababababababababayazaybjayazaFdQardQdRabahahahahahahahahahabababagaoaoaAabagaeababababdudhbibibiaQaQaQaRaRaQaQaQaQdhdudgdidididiabababababababanabahababababaeabababababababaeababababababagagagabababababababblbbbbcqcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcrcr
 bbbbbcbdbbbbbbbbbbbbbbbbbbbbbbbbbbbeabababababanabababababababababafabababahahahahahabababaoaAahabababahabafafababagagabababafafafababababdudhbibiaQaQaQaQaQaRaQaQbibidhdgaaababababababababababaeababahababababababababaeababababababafababagagabahabahahahababahblbbbbbbbbbbbbbbbcbdbbbbbbbbbbbbbbbbbbbbbb
