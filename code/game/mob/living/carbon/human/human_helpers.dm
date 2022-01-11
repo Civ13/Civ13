@@ -322,6 +322,10 @@
 			drowning = FALSE
 			return
 		else
+			for(var/obj/structure/vehicle/boat/BT in range(1,src))
+				if(src in BT.ontop)
+					drowning = FALSE
+					return
 			drowning = TRUE
 			src << "<font size='2'><span class='warning'>You are drowning!</span></font>"
 			update_fire(1)
