@@ -435,7 +435,7 @@
 	protection_chance = 90
 	New()
 		..()
-		icon_state = "debris[rand(1,3)]"
+		icon_state = "debris[rand(1,4)]"
 /obj/structure/barricade/stone_h
 	name = "stone wall"
 	desc = "A wall of stone blocks."

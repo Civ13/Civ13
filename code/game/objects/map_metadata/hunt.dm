@@ -1,7 +1,7 @@
 /obj/map_metadata/hunt
 	ID = MAP_HUNT
 	title = "Hunt"
-	lobby_icon_state = "imperial"
+	lobby_icon_state = "hunt"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
@@ -24,7 +24,7 @@
 	faction1 = INDIANS
 	faction2 = PIRATES
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Blade and Dagger:1" = 'sound/music/blade_and_dagger.ogg',)
 	gamemode = "Survival RP"
 	is_RP = TRUE
 

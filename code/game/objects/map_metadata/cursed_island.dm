@@ -2,6 +2,7 @@
 /obj/map_metadata/cursed_island
 	ID = MAP_CURSED_ISLAND
 	title = "Cursed Island"
+	lobby_icon_state = "cursed"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,
 		/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 0
