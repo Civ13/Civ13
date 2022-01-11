@@ -111,3 +111,20 @@
 	max_storage_space = 28
 
 	make_exact_fit()
+
+/obj/item/weapon/storage/firstaid/surgery_bronze
+	name = "surgery kit"
+	desc = "Contains tools for surgery."
+	icon_state = "firstaid2"
+	item_state = "firstaid_2"
+
+/obj/item/weapon/storage/firstaid/surgery_bronze/New()
+	..()
+	if (empty) return
+	new /obj/item/weapon/surgery/bonesetter/bronze(src)
+	new /obj/item/weapon/surgery/cautery/bronze(src)
+	new /obj/item/weapon/surgery/bone_saw/bronze(src)
+	new /obj/item/weapon/surgery/hemostat/bronze(src)
+	new /obj/item/weapon/surgery/retractor/bronze(src)
+	new /obj/item/weapon/surgery/scalpel/bronze(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
