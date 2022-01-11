@@ -152,7 +152,7 @@
 "eq" = (/obj/item/stack/farming/seeds/wheat,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "er" = (/obj/effect/spawner/mobspawner/rabbits,/turf/floor/grass,/area/caribbean/nomads/forest)
 "es" = (/obj/item/stack/farming/seeds/peyote,/turf/floor/dirt/dust,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
-"et" = (/mob/living/simple_animal/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
+"et" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "eu" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ev" = (/mob/living/simple_animal/turkey_f,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ew" = (/turf/floor/plating/stone_old,/area/caribbean/nomads/forest)

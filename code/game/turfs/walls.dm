@@ -16,7 +16,6 @@ var/list/global/wall_cache = list()
 	var/active
 	var/can_open = FALSE
 	var/material/material
-	var/material/reinf_material
 	var/last_state
 	var/construction_stage
 	var/hitsound = 'sound/weapons/Genhit.ogg'
@@ -105,15 +104,13 @@ var/list/global/wall_cache = list()
 	for (var/obj/O in src)
 		O.hide(1)
 
-/turf/wall/New(var/newloc, var/materialtype, var/rmaterialtype)
+/turf/wall/New(var/newloc, var/materialtype)
 	..(newloc)
 	if (!istype(src, /turf/wall/rockwall))
 		icon_state = "blank"
 		if (!materialtype)
 			materialtype = DEFAULT_WALL_MATERIAL
 		material = get_material_by_name(materialtype)
-		if (!isnull(rmaterialtype))
-			reinf_material = get_material_by_name(rmaterialtype)
 		update_material()
 		hitsound = material.hitsound
 	else
@@ -176,10 +173,6 @@ var/list/global/wall_cache = list()
 
 	var/cap = material ? material.integrity : 150
 
-	if (reinf_material)
-		cap += reinf_material.integrity
-
-
 	if (damage >= cap)
 		dismantle_wall()
 	else
@@ -195,7 +188,6 @@ var/list/global/wall_cache = list()
 		O.loc = src
 
 	material = get_material_by_name("placeholder")
-	reinf_material = null
 	//update_connections(1)
 	update_icon()
 	ChangeTurf(get_base_turf_by_area(src))

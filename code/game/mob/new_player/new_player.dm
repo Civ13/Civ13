@@ -469,14 +469,7 @@ var/global/redirect_all_players = null
 					if (HM.original_job.is_yama)
 						WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
 						return
-		/area/caribbean/houses/nml_one
-/* "Old" whitelisting proccess
-		if (actual_job.whitelisted)
-			if (!actual_job.validate(client))
-				WWalert(usr,"You need to be whitelisted to play this job. Apply in the Discord.","Error")
-				return
-*/
-		if (actual_job.whitelisted && !isemptylist(whitelist_list) && config.use_job_whitelist)
+		if (actual_job.whitelisted && !isemptylist(whitelist_list) && config.use_job_whitelist && clients.len > 12)
 			var/found = FALSE
 			for (var/i in whitelist_list)
 				var/temp_ckey = lowertext(i)

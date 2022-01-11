@@ -239,12 +239,13 @@ var/global/datum/controller/occupations/job_master
 				return
 
 	var/spawn_location = H.job_spawn_location
-	if(H.nationality == "German")
-		spawn_location = "JoinLateCivG"
-	else if(H.nationality == "Polish")
-		spawn_location = "JoinLateCivP"
-	else if(H.nationality == "Ukrainian")
-		spawn_location = "JoinLateCivU"
+	if(map.ID == MAP_GULAG13)
+		if(H.nationality == "German")
+			spawn_location = "JoinLateCivG"
+		else if(H.nationality == "Polish")
+			spawn_location = "JoinLateCivP"
+		else if(H.nationality == "Ukrainian")
+			spawn_location = "JoinLateCivU"
 	if (!spawn_location && H.original_job)
 		spawn_location = H.original_job.spawn_location
 	if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)

@@ -289,7 +289,7 @@
 /turf/floor/beach/water/proc/check_sinking(atom/movable/A)
 	if(iscovered())
 		return
-	if (!istype(A, /mob) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
+	if (!istype(A, /mob) && !istype(A, /obj/structure/vehicle) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
 		spawn(60)
 			var/turf/TF = A.loc
 			if (istype(TF,/turf/floor/beach/water/deep) && !TF.iscovered())

@@ -30,6 +30,7 @@
 		var/mob/living/human/MM = M
 		visible_message("<div class='notice'>[M] starts getting on the [src]'s back...</div>","<div class='notice'>You start going on \the [src]'s back...</div>")
 		if (do_after(MM, 40, src))
+			M.plane = GAME_PLANE
 			visible_message("<div class='notice'>[M] sucessfully climbs into the [src]'s back.</div>","<div class='notice'>You sucessfully climb into \the [src]'s back.</div>")
 			ride = TRUE
 			rider = MM

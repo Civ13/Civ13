@@ -111,7 +111,7 @@
 "cg" = (/turf/floor/dirt,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
 "ch" = (/obj/structure/closet/crate/ww2/mosin_old,/turf/floor/dirt,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
 "ci" = (/obj/structure/barricade/vertical,/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
-"cj" = (/mob/living/simple_animal/cattle,/turf/floor/winter,/area/caribbean/nomads/ice)
+"cj" = (/mob/living/simple_animal/cattle/cow,/turf/floor/winter,/area/caribbean/nomads/ice)
 "ck" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/matchbox,/turf/floor/dirt,/area/caribbean/pirates/land/inside/objective)
 "cl" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/winter,/area/caribbean/nomads/ice)
 "cm" = (/obj/covers/wood/stairs{icon_state = "wood2_stairs"; dir = 4},/turf/floor/dirt,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})

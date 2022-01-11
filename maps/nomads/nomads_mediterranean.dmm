@@ -371,7 +371,7 @@
 "hh" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/sea/sea)
 "hi" = (/obj/effect/spawner/mobspawner/buffalo,/turf/floor/grass,/area/caribbean/nomads/forest)
 "hj" = (/obj/effect/spawner/mobspawner/fox,/turf/floor/grass,/area/caribbean/nomads/forest)
-"hk" = (/obj/effect/spawner/mobspawner/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
+"hk" = (/obj/effect/spawner/mobspawner/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "hl" = (/obj/effect/spawner/mobspawner/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
 "hm" = (/obj/effect/spawner/mobspawner/crab,/turf/floor/beach/sand,/area/caribbean/nomads/semiarid)
 "hn" = (/obj/effect/spawner/mobspawner/fox,/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)

@@ -16,6 +16,9 @@
 	name = "gun spawner"
 	loot = list(/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/semiautomatic/svd,/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,/obj/item/weapon/gun/projectile/submachinegun/mp40)
 
+/obj/effect/spawner/lootdrop/guns/industrial
+	name = "gun spawner"
+	loot = list(/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/boltaction/singleshot,/obj/item/weapon/gun/projectile/leveraction/winchester,/obj/item/weapon/gun/projectile/revolver/peacemaker)
 
 /obj/effect/spawner/lootdrop/guns/medieval
 	name = "gun spawner"
@@ -34,6 +37,11 @@
 	loot = list(/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/svd)
 	nr = 2
 
+/obj/effect/spawner/lootdrop/ammo/industrial
+	name = "ammo spawner"
+	loot = list(/obj/item/ammo_magazine/sharps,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/c44,/obj/item/ammo_magazine/c45)
+	nr = 2
+
 /obj/effect/spawner/lootdrop/ammo/medieval
 	name = "ammo spawner"
 	loot = list(/obj/item/weapon/storage/backpack/quiver/medieval,/obj/item/weapon/storage/backpack/quiver/medieval,/obj/item/weapon/storage/backpack/quiver/crossbow)
@@ -42,6 +50,11 @@
 /obj/effect/spawner/lootdrop/armor
 	name = "armor spawner"
 	loot = list(/obj/item/weapon/shield/roman,/obj/item/clothing/suit/armor/ancient/scale,/obj/item/clothing/suit/armor/medieval,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/head/helmet/horned,/obj/item/clothing/head/helmet/kevlarhelmet,/obj/item/clothing/head/helmet/medieval/coif,/obj/item/clothing/head/helmet/modern/brodie,/obj/item/clothing/head/helmet/modern/stahlhelm,/obj/item/clothing/head/helmet/roman_centurion,/obj/item/clothing/accessory/armor/coldwar/flakjacket,/obj/item/clothing/accessory/armor/coldwar/pasgt)
+	nr = 2
+
+/obj/effect/spawner/lootdrop/armor/industrial
+	name = "armor spawner"
+	loot = list(/obj/item/weapon/shield/roman,/obj/item/clothing/suit/armor/ancient/scale,/obj/item/clothing/suit/armor/medieval,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/head/helmet/horned,/obj/item/clothing/head/helmet/medieval/coif,/obj/item/clothing/head/helmet/modern/stahlhelm,/obj/item/clothing/head/helmet/roman_centurion,/obj/item/clothing/suit/armor/imperial/imperial_chestplate)
 	nr = 2
 
 /obj/effect/spawner/lootdrop/armor/medieval

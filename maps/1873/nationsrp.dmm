@@ -226,7 +226,7 @@
 "er" = (/mob/living/simple_animal/turkey_m,/turf/floor/beach/sand,/area/caribbean/nomads/forest)
 "es" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/obj/covers/stone_wall/brick/archway,/obj/covers/stone_wall/brick,/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "et" = (/obj/covers/cobblestone,/obj/item/clothing/suit/storage/jacket/coveralls,/obj/item/clothing/suit/storage/jacket/coveralls,/obj/structure/closet,/obj/item/weapon/storage/toolbox/mechanical,/obj/item/weapon/storage/toolbox/mechanical,/obj/item/clothing/shoes/workboots,/obj/item/clothing/shoes/workboots,/obj/roof/clay/black,/turf/floor/grass,/area/caribbean/nomads/forest)
-"eu" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
+"eu" = (/mob/living/simple_animal/cattle/cow/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ev" = (/obj/covers/cobblestone,/obj/covers/roads/cobble,/obj/roof/clay/black,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ew" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ex" = (/mob/living/simple_animal/sheep/female,/turf/floor/grass,/area/caribbean/nomads/forest)

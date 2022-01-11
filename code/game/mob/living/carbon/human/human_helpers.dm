@@ -318,6 +318,9 @@
 		if (D.iscovered())
 			drowning = FALSE
 			return
+		else if (buckled && istype(buckled, /obj/structure/vehicle/boat))
+			drowning = FALSE
+			return
 		else
 			drowning = TRUE
 			src << "<font size='2'><span class='warning'>You are drowning!</span></font>"

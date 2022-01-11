@@ -69,11 +69,12 @@
 	if (health <= 0)
 		visible_message("<span class='warning'>\The [src] breaks down!</span>")
 		playsound(loc, 'sound/effects/grillehit.ogg', 50, TRUE)
-		if (flammable == TRUE)
+		qdel(src)
+/*		if (flammable == TRUE)
 			new /obj/item/stack/material/wood(get_turf(usr))
 		else
 			new /obj/item/stack/rods(get_turf(usr))
-		qdel(src)
+		qdel(src) */ //Disabled due to abuse in Gulag rounds, if people want to get materials from it, they'll have to use tools
 
 /obj/structure/railing/proc/NeighborsCheck(var/UpdateNeighbors = TRUE)
 	check = FALSE

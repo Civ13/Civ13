@@ -1,6 +1,6 @@
 /obj/map_metadata/battleroyale
 	ID = MAP_BATTLEROYALE_IMPERIAL
-	title = "Isla Robusta Battle Royale"
+	title = "Battle Royale: Imperial"
 	lobby_icon_state = "battleroyale"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
@@ -9,8 +9,7 @@
 
 	no_winner ="The fighting is still going."
 
-	faction_organization = list(
-		PIRATES)
+	faction_organization = list(PIRATES)
 
 	roundend_condition_sides = list(
 		list(PIRATES) = /area/caribbean/british/ship, //it isnt in the map so nobody wins by capture
@@ -80,6 +79,7 @@
 					if (H.original_job.base_type_flag() == PIRATES)
 						winner_name =  H.name
 						winner_ckey = H.ckey
+						give_award(winner_ckey,winner_name,1)
 						var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
@@ -219,6 +219,12 @@
 				ar_to_close_string = "None"
 		ar_to_close_timeleft = 30
 		world << "<big><b>The [ar_to_close_string] Area will close in 60 seconds!</big></b>"
+		spawn(275)
+			warn_closing_areas(ar_to_close,30)
+			spawn(100)
+				warn_closing_areas(ar_to_close,20)
+				spawn(100)
+					warn_closing_areas(ar_to_close,10)
 		spawn(300)
 			ar_to_close_timeleft = 15
 			world << "<big><b>The [ar_to_close_string] Area will close in 30 seconds!</big></b>"
@@ -229,6 +235,53 @@
 	else
 		return "too many areas closed"
 
+/obj/map_metadata/battleroyale/proc/warn_closing_areas(var/artc = null, var/time=30)
+	var/sound_to_play = null
+	switch(artc)
+		if ("one")
+			sound_to_play = 'sound/voice/battleroyale/close_nw.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Western Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("two")
+			sound_to_play = 'sound/voice/battleroyale/close_ne.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("three")
+			sound_to_play = 'sound/voice/battleroyale/close_w.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Western Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("four")
+			sound_to_play = 'sound/voice/battleroyale/close_e.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Eastern Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("five")
+			sound_to_play = 'sound/voice/battleroyale/close_sw.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Western Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("six")
+			sound_to_play = 'sound/voice/battleroyale/close_se.ogg'
+			for(var/mob/living/human/H in player_list)
+				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Eastern Area"))
+					playsound(H, sound_to_play, 100, FALSE, -1)
+					spawn(30)
+						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+		if ("none")
+			return
 /obj/map_metadata/battleroyale/proc/close_area(var/artc = null)
 	if (closed_areas.len >= 5)
 		return
@@ -339,7 +392,7 @@
 	maptext_x = (32*8 * -0.5)+32
 	maptext_y = 32*0.75
 	icon_state = "blank"
-
+	var/currwarning = "yellow"
 /obj/screen/areashow/New()
 	..()
 	var/area/parea = get_area(get_turf(parentmob))
@@ -348,7 +401,7 @@
 	else
 		maptext = "<center><font color='yellow'>Unknown Area</font></center>"
 	icon_state = "blank"
-	spawn(50)
+	spawn(30)
 		update()
 
 /obj/screen/areashow/proc/update()
@@ -358,10 +411,14 @@
 	if (parea)
 		maptext = "<center><font color='yellow'><b>[parea.name]</b> ([parentmob.x],[parentmob.y])</font></center>"
 		if (parea.name == "[map.ar_to_close_string] Area")
-			maptext = "<center><font color='red'><b>[parea.name]</b> ([parentmob.x],[parentmob.y]) (CLOSING!)</font></center>"
+			maptext = "<center><font color='[currwarning]'><b>[parea.name]</b> ([parentmob.x],[parentmob.y]) (CLOSING!)</font></center>"
+			if(currwarning == "yellow")
+				currwarning = "red"
+			else
+				currwarning = "yellow"
 	else
 		maptext = "<center><font color='yellow'>Unknown Area</font></center>"
-	spawn(10)
+	spawn(5)
 		update()
 
 /obj/screen/areaclosing
@@ -416,7 +473,7 @@
 
 /obj/map_metadata/battleroyale/two
 	ID = MAP_BATTLEROYALE_MODERN
-	title = "Arab Town Battle Royale"
+	title = "Battle Royale: Modern"
 	lobby_icon_state = "battleroyale_arab"
 
 	age = "2013"
@@ -448,7 +505,7 @@
 	return .
 /obj/map_metadata/battleroyale/three
 	ID = MAP_BATTLEROYALE_MEDIEVAL
-	title = "Camp Battle Royale"
+	title = "Battle Royale: Medieval"
 
 	age = "1013"
 	ordinal_age = 2
@@ -477,3 +534,60 @@
 	else
 		. = FALSE
 	return .
+
+
+/obj/map_metadata/battleroyale/four
+	ID = MAP_BATTLEROYALE_WILDWEST
+	title = "Battle Royale: Wild West"
+	age = "1873"
+	ordinal_age = 4
+	faction_distribution_coeffs = list(PIRATES = 1)
+	battle_name = "Battleroyale at Little Creek"
+	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
+
+/obj/map_metadata/battleroyale/four/job_enabled_specialcheck(var/datum/job/J)
+
+	..()
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
+		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale/wildwest))
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
+		. = TRUE
+	else
+		. = FALSE
+	return .
+
+/obj/map_metadata/battleroyale/save_awards()
+	var/F = file("SQL/awards_br.txt")
+	if (!awards.len || awards.len <= 12)
+		return
+	for (var/i = 1, i <= awards.len, i++)
+		if (awards[i][1]!="")
+			awards[i][6] =  awards.len
+			var/txtexport = list2text(awards[i])
+			text2file(txtexport,F)
+			var/place2text = ""
+			if(awards[i][3] == 1)
+				place2text = "1st"
+			else if(awards[i][3] == 2)
+				place2text = "2nd"
+			else if(awards[i][3] == 3)
+				place2text = "3rd"
+			else
+				place2text = "[awards[i][3]]th"
+			world << "[awards[i][2]] ([awards[i][1]]) placed <b>[place2text]</b>!"
+	return TRUE
+
+/obj/map_metadata/battleroyale/give_award(var/_ckey, var/charname, var/place)
+	awards += list(list(_ckey,charname,place,time2text(world.realtime, "YYYY/MM/DD"),src.title))
+	return

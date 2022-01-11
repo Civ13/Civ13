@@ -58,7 +58,7 @@
 "bf" = (/mob/living/simple_animal/chicken,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "bg" = (/obj/item/stack/farming/seeds/tobacco,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "bh" = (/obj/item/stack/farming/seeds/tea,/turf/floor/dirt/dust,/area/caribbean/nomads/desert)
-"bi" = (/mob/living/simple_animal/cattle,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"bi" = (/mob/living/simple_animal/cattle/cow,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "bj" = (/mob/living/simple_animal/cattle/bull,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "bk" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/nomads/desert)
 "bl" = (/turf/floor/dirt,/area/caribbean/nomads/desert)

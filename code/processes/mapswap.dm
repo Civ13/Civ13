@@ -39,7 +39,8 @@
 /process/epochswap/fire()
 	// no SCHECK here
 	if (is_ready())
-		map.save_awards()
+		spawn(20)
+			map.save_awards()
 		if(map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
 			nmap.show_stats()
@@ -248,6 +249,7 @@
 			maps = list(
 				MAP_BATTLEROYALE_MEDIEVAL = 0,
 				MAP_BATTLEROYALE_IMPERIAL = 0,
+				MAP_BATTLEROYALE_WILDWEST = 0,
 				MAP_BATTLEROYALE_MODERN = 0,)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
