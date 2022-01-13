@@ -164,7 +164,7 @@
 				MAP_NAVAL = 0,
 		//		MAP_ISLAND = 0,
 				MAP_CURSED_ISLAND = 0,
-		//		MAP_SUPPLY_RAID = 0,
+				MAP_SUPPLY_RAID = 0,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
