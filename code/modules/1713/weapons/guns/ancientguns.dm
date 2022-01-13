@@ -437,6 +437,11 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 		..()
 
 /obj/item/weapon/gun/projectile/ancient/special_check(mob/user)
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.faction_text == INDIANS)
+			user << "<span class='warning'>You don't know how to use this.</span>"
+			return FALSE
 	if (!gunpowder)
 		user << "<span class='warning'>You can't fire \the [src] without gunpowder!</span>"
 		return FALSE
