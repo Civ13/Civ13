@@ -419,14 +419,18 @@
 "ic" = (/obj/item/clothing/shoes/sandal,/obj/item/clothing/shoes/sandal,/obj/item/clothing/shoes/sandal,/obj/item/clothing/shoes/sandal,/obj/item/clothing/shoes/sandal,/turf/floor/grass,/area/caribbean/pirates/land/outside)
 "id" = (/obj/item/flashlight/torch/on/unlimited,/turf/floor/grass,/area/caribbean/island)
 "ie" = (/obj/structure/window/barrier/ship/wood/port2,/turf/floor/beach/water/deep/saltwater,/turf/floor/ship/wood_ship/south,/area/caribbean/british/ship{name = "British Ship"})
+"le" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/wood,/area/caribbean/british/land/inside)
 "lE" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/island)
 "ne" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/pirates/land/outside)
 "nQ" = (/obj/structure/wild/largejungle,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/island)
 "os" = (/obj/structure/wild/bush/big,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/island)
 "yH" = (/obj/structure/wild/junglebush,/obj/structure/wild/largejungle,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/island)
 "Aj" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/indians/camp)
+"FG" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Gc" = (/obj/structure/wild/bush,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/island)
+"Kg" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Nz" = (/obj/structure/wild/junglebush,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/indians/camp)
+"QE" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Tk" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 "UE" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/british/land/outside)
 "Ya" = (/obj/structure/wild/tallgrass,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/island)
@@ -488,9 +492,9 @@ aaaaahahaoaoaoaoaoahahahahahaoaoaoaoaoaoamakdKdKdKdKdKdKdKdmdKdKdKdKdKdKdKdmdmdm
 aaaaaaahahahahahahahahahahahahaoaoaoaoaoamcTdmdmdmdmdmdmdmdmdmdmdmffdmdmdmdmamakhDdFaeegegehegegegeTeUeWepegegegeheneXenehegegehegdYepepeVdXdXdXUEababaoaoahaoaoahahahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaahahahahahahahahahahaoaoaoahaoaoabcTamabakakdJdKeaebeadKdKabdKdKeaebeadKdKdsabegeYeZfafbendYeSeSepegbCfcfdbLekfeiafdfeejegeTeWepegegegegegabgkabaoaoahahahahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaahahahahahahaoahahahaoaoaoaoabaklEababdKdWdNbMdOdKabdKdMdNdNetfhdKakakegeZeZeZfifjepepepepehekfkekerekekekekekflegdXUEepegfmfgfnegabaoababaoaoaoaoahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaahahahahahahahahahahahahaoaoababaolEdKdVdNdSdNdKakdKfodNdSeEfpdKaklEegfqfrgCfteneTdYeUepegbNekekfegFfdekfwfxfyegdXdYepegfzekfnegaoaoaoabababaoaoahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaahahahahahahahahahahahahaoaoababaoabdKfAdNdNfBdKakdKfCdNdNdNdOdKcmabegegehegegegUEdXdYepeXekekekekekekbOfDfEfFegeUeVepegfmekfnegaoahaoaoaoaoaoahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaahahahahahahahahahahahahaoabababdKdLdKdKdLdKabdKdKdKdLdKdKdKakabdYdYdYdYdYdYdYeyUEepenegegehegegegehegegehegdYdXepfGekekfnegaoahahahahahahahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaahahahahahahahahahahahahaoaoababaolEdKdVdNdSdNdKakdKfodNdSeEfpdKaklEegfqfrgCfteneTdYeUepegbNekekfegFfdekfwfxfyegdXdYepegfzFGfnegaoaoaoabababaoaoahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaahahahahahahahahahahahahaoaoababaoabdKfAdNdNfBdKakdKfCdNdNdNdOdKcmabegegehegegegUEdXdYepeXekekekekekekbOfDfEfFegeUeVepegfmKgfnegaoahaoaoaoaoaoahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaahahahahahahahahahahahahaoabababdKdLdKdKdLdKabdKdKdKdLdKdKdKakabdYdYdYdYdYdYdYeyUEepenegegehegegegehegegehegdYdXepfGQElefnegaoahahahahahahahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaahahahahahahahahahahahahaoaoababaoaoabababaoakabababakababhvdHakdYeUdXdXdXeVeVeTdXhFhVdXeifXfXdXdYeidXdYdYdXeieTepegegegegegaoahahahahahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaahahahahahahahahahahahahahaoaoaoababablEababablEamablEabakhvdHfHeVfIfJfJfJfJfJfJdYhGhVeVdYfKeTfLdYegegegegegendYepdYabababaoaoahahahahahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaahahahahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoababamamaoaohvhwababaoaoahahahaohyhyhWhXabababbScXabegfMfNfMfNfOepepeTablEabaoaoaoaoahahahahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
