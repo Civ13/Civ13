@@ -405,7 +405,7 @@ var/global/list/valid_coordinates = list()
 
 	var/count = 0
 	for (var/mob/living/human/H in player_list)
-		if (H.original_job_title == ("Soviet HVT" || "US HVT"))
+		if (H.original_job_title == ("Soviet Supreme Chairman" || "US HVT"))
 			var/tdist = get_dist(src,H)
 			var/tdir = dir2text(get_dir(src,H))
 			count++
