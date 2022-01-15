@@ -619,6 +619,11 @@
 	locked = TRUE
 	health = 90000
 
+/obj/structure/simple_door/key_door/civ/police/chief
+	keyslot_type = /datum/keyslot/police/chief
+	unique_door_name = "Police Station"
+	locked = TRUE
+	health = 90000
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/police
 	unique_door_name = "jail cell"
@@ -642,7 +647,7 @@
 
 /obj/item/weapon/key/civ/mechanic
 	code = 12448
-	name = "Hospital key"
+	name = "Mechanic key"
 	health = 90000
 
 /datum/keyslot/mechanic
@@ -653,6 +658,32 @@
 	unique_door_name = "Mechanic Door"
 	locked = TRUE
 	health = 90000
+
+/obj/item/weapon/key/civ/mckellen
+	code = 211919
+	name = "McKellen's key"
+
+/datum/keyslot/mckellen
+	code = 211919
+
+/obj/structure/simple_door/key_door/civ/mckellen
+	keyslot_type = /datum/keyslot/mckellen
+	unique_door_name = "McKellen's"
+	locked = TRUE
+	health = 40000
+
+/obj/item/weapon/key/civ/mckellen/manager
+	code = 121922
+	name = "McKellen's Manager key"
+
+/datum/keyslot/mckellen/manager
+	code = 121922
+
+/obj/structure/simple_door/key_door/civ/mckellen/manager
+	keyslot_type = /datum/keyslot/mckellen/manager
+	unique_door_name = "McKellen's Manager"
+	locked = TRUE
+	health = 80000
 
 /obj/structure/simple_door/key_door/custom/jail/woodjail/tribal
 	unique_door_name = "Tribal Sealed Bars"
