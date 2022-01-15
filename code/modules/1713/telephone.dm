@@ -396,15 +396,23 @@ var/list/global/phone_numbers = list()
 /obj/item/weapon/telephone/mobile/faction/red
 	name = "Red phone"
 	phonenumber = 1111
+	desc = "Used to communicate with other telephones. Number is 1111."
 /obj/item/weapon/telephone/mobile/faction/blue
 	name = "Blue phone"
 	phonenumber = 2222
+	desc = "Used to communicate with other telephones. Number is 2222."
 /obj/item/weapon/telephone/mobile/faction/green
 	name = "Green phone"
 	phonenumber = 3333
+	desc = "Used to communicate with other telephones. Number is 3333."
 /obj/item/weapon/telephone/mobile/faction/yellow
 	name = "Yellow phone"
 	phonenumber = 4444
+	desc = "Used to communicate with other telephones. Number is 4444."
+/obj/item/weapon/telephone/mobile/faction/mckellen
+	name = "McKellen Entreprises phone"
+	phonenumber = 5555
+	desc = "Used to communicate with other telephones. Number is 5555."
 
 /obj/item/weapon/telephone/mobile/faction/red/New()
 	..()
@@ -421,6 +429,11 @@ var/list/global/phone_numbers = list()
 /obj/item/weapon/telephone/mobile/faction/yellow/New()
 	..()
 	contacts += list(list("Emergency",911))
+
+/obj/item/weapon/telephone/mobile/faction/mckellen/New()
+	..()
+	contacts += list(list("Emergency",911))
+
 
 //ROBERTS CELLPHONES//
 /obj/item/weapon/telephone/mobile/mobilefaction
@@ -457,3 +470,8 @@ var/list/global/phone_numbers = list()
 	desc = "Used to communicate with other telephones, intended for CEOs. Number: 4449."
 	phonenumber = 4449
 	color = "#FFFF00"
+
+/obj/item/weapon/telephone/mobile/mobilefaction/mckellen
+	desc = "Used to communicate with other telephones, intended for CEOs. Number: 5559."
+	phonenumber = 5559
+	color = "#FF7A00"
