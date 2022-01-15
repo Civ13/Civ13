@@ -1211,7 +1211,7 @@
 "xo" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/roofed)
 "xp" = (/obj/structure/table/wood,/obj/item/weapon/paper_bin,/obj/item/weapon/pen,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
 "xq" = (/obj/structure/table/wood,/obj/structure/closet/crate/cash_register/inn,/turf/floor/wood,/area/caribbean/roofed)
-"xr" = (/obj/structure/wild/tallgrass,/obj/effect/spawner/mobspawner/cattle/cow,/turf/floor/dirt/winter,/area/caribbean)
+"xr" = (/obj/structure/wild/tallgrass,/obj/effect/spawner/mobspawner/cattle,/turf/floor/dirt/winter,/area/caribbean)
 "xs" = (/obj/structure/wild/tallgrass,/obj/effect/spawner/mobspawner/pig/gilt,/turf/floor/dirt/winter,/area/caribbean)
 "xt" = (/obj/structure/chemical_dispenser/drinks,/turf/floor/wood,/area/caribbean/roofed)
 "xu" = (/obj/structure/reagent_dispensers/largebarrel/beer,/turf/floor/wood,/area/caribbean/roofed)
