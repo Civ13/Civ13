@@ -721,6 +721,8 @@ var/global/redirect_all_players = null
 		var/mob/living/human/H = character
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
+		if (H.original_job_title == "Rednikov Industries CEO" || H.original_job_title == "Giovanni Blu Stocks CEO" || H.original_job_title == "Kogama Kraftsmen CEO" || H.original_job_title == "Goldstein Solutions CEO" || H.original_job_title == "McKellen Manager" || H.original_job_title == "Police Supervisor")
+			H.verbs += /mob/living/human/proc/Commander_Announcement // Not the best way to fix all the roles that can't make an announcement but are leader, but it's a temporary solution
 		if (H.original_job.uses_squads)
 			H.verbs += /mob/living/human/proc/find_nco
 			if (H.original_job.is_squad_leader)
