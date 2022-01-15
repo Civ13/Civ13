@@ -142,6 +142,16 @@
 	var/full_name = "Sean Mcloughlin"
 	return full_name
 
+/datum/language/proc/get_random_irish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_irish)) + " " + capitalize(pick(last_names_irish))
+		else
+			return capitalize(pick(first_names_male_irish)) + " " + capitalize(pick(last_names_irish))
+
+	var/full_name = "Patrick McKellen"
+	return full_name
+
 /datum/language/proc/get_random_italian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
