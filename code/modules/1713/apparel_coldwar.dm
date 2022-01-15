@@ -130,6 +130,13 @@
 	item_state = "traffic_cop"
 	worn_state = "traffic_cop"
 
+/obj/item/clothing/under/traffic_police/supervisor
+	name = "police supervisor outfit"
+	desc = "An outfit composed of a blue emergency services shirt and denim trousers. It has a police supervisor badge attached"
+	icon_state = "traffic_cop_sup"
+	item_state = "traffic_cop_sup"
+	worn_state = "traffic_cop_sup"
+
 /obj/item/clothing/head/traffic_police
 	name = "police cap"
 	desc = "A blue cap often worn by members of the police and security guards."
