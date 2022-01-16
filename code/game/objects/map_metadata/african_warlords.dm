@@ -7,18 +7,18 @@
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
 
-	faction_organization = list(INDIAN)
+	faction_organization = list(INDIANS)
 
 	roundend_condition_sides = list(
-		list(INDIAN) = /area/caribbean/british,
+		list(INDIANS) = /area/caribbean/british,
 		)
 	age = "1984"
-	singlefaction = TRUE
+	is_singlefaction = TRUE
 	ordinal_age = 7
-	faction_distribution_coeffs = list(INDIAN = 1)
+	faction_distribution_coeffs = list(INDIANS = 1)
 	battle_name = "skull competition"
 	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>50 enemy skulls</b> and bring them to their shaman hut.</font>"
-	faction1 = INDIAN
+	faction1 = INDIANS
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)

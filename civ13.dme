@@ -415,6 +415,7 @@
 #include "code\game\objects\items\weapons\storage\toolbox.dm"
 #include "code\game\objects\map_metadata\_map_metadata.dm"
 #include "code\game\objects\map_metadata\abashiri.dm"
+#include "code\game\objects\map_metadata\african_warlords.dm"
 #include "code\game\objects\map_metadata\alleyway.dm"
 #include "code\game\objects\map_metadata\arab_town.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"
@@ -1020,6 +1021,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\naval.dmm"
+#include "maps\WIP\african_warlords.dmm"
 // END_INCLUDE
 
