@@ -58,6 +58,7 @@
 /datum/job/var/is_western = FALSE
 /datum/job/var/is_abashiri = FALSE
 /datum/job/var/is_nva = FALSE
+/datum/job/var/is_warlords = FALSE
 /datum/job/var/is_capitol = FALSE
 /datum/job/var/is_paratrooper = FALSE
 /datum/job/var/is_vietcong = FALSE

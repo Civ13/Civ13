@@ -50,6 +50,8 @@ obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 		else
 			. = FALSE
+		if (J.is_warlords)
+			. = FALSE
 /obj/map_metadata/hunt/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 

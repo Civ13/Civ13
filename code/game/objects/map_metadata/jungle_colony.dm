@@ -77,6 +77,8 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		else
 			. = TRUE
+		if (J.is_warlords)
+			. = FALSE
 	else
 		. = TRUE
 	if (istype(J, /datum/job/civilian/fantasy))

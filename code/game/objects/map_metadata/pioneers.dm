@@ -43,6 +43,8 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		else
 			. = FALSE
+	if (J.is_warlords)
+		. = FALSE
 
 /obj/map_metadata/pioneers/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)

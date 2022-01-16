@@ -30,6 +30,8 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
+	else if (J.is_warlords)
+		. = FALSE
 	else if (J.is_army == TRUE)
 		. = FALSE
 	else if (J.is_medieval == TRUE)

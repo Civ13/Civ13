@@ -2,7 +2,6 @@
 	faction = "Human"
 	var/tribe = "Carib"
 
-
 /datum/job/indians/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_carib_name(H.gender)
 	H.real_name = H.name
@@ -356,9 +355,6 @@ datum/job/indians/tribes/black
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND6"
-
-
-
 	min_positions = 60
 	max_positions = 300
 
@@ -390,3 +386,65 @@ datum/job/indians/tribes/black
 
 
 	return TRUE
+
+
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+/datum/job/indians/warlords
+	title = "warlord (do not use)"
+	en_meaning = FALSE
+	rank_abbreviation = ""
+	can_be_female = TRUE
+	is_coldwar = TRUE
+	is_warlords = TRUE
+	uses_squads = TRUE
+	spawn_location = "JoinLateIND1"
+	min_positions = 40
+	max_positions = 100
+
+/datum/job/indians/warlords/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.name = H.species.get_random_zulu_name(H.gender)
+	H.s_tone = rand(-155,-185)
+
+/datum/job/indians/warlords/red
+	title = "Redkantu Warband"
+	spawn_location = "JoinLateIND1"
+	selection_color = "#ac0909"
+/datum/job/indians/warlords/red/equip(var/mob/living/human/H)
+	..()
+	H.nationality = "Redkantu"
+	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+
+/datum/job/indians/warlords/blue
+	title = "Blugisi Warband"
+	spawn_location = "JoinLateIND2"
+	selection_color = "#2a28b6"
+/datum/job/indians/warlords/blue/equip(var/mob/living/human/H)
+	..()
+	H.nationality = "Blugisi"
+	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+
+/datum/job/indians/warlords/yellow
+	title = "Yellowagwana Warband"
+	spawn_location = "JoinLateIND3"
+	selection_color = "#969607"
+/datum/job/indians/warlords/yellow/equip(var/mob/living/human/H)
+	..()
+	H.nationality = "Yellowagwana"
+	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+
+/datum/job/indians/warlords/equip(var/mob/living/human/H)
+	..()
+//clothes
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/indianbl_a = new /obj/item/clothing/accessory/armband/indianbl(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(indianbl_a, H)
+
