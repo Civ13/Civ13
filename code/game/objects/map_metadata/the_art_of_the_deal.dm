@@ -136,11 +136,11 @@
 		if (clients.len <= 15)
 			if (J.title == "Paramedic" || J.title == "Legitimate Business")
 				. = FALSE
-		if (clients.len <= 20)
-			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
-				. = FALSE
 		if (clients.len <= 25)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
+				. = FALSE
+		if (clients.len <= 35)
+			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
 				. = FALSE
 	else
 		. = FALSE
