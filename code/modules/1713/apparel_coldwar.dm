@@ -476,6 +476,29 @@
 	item_state = "nva_off_cap"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/sov_ushanka_new
+	name = "soviet ushanka"
+	desc = "A soviet ushanka, used by soldiers in the Red Army."
+	icon_state = "ushanka_new_up"
+	item_state = "ushanka_new_up"
+	worn_state = "ushanka_new_up"
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/head/sov_ushanka_new/down
+	icon_state = "ushanka_new"
+	item_state = "ushanka_new"
+	worn_state = "ushanka_new"
+
+/obj/item/clothing/head/sov_ushanka_new/attack_self(mob/user as mob)
+	if (icon_state == "ushanka_new")
+		icon_state = "ushanka_new_up"
+		item_state = "ushanka_new_up"
+		user << "You raise the ear flaps on the ushanka."
+	else
+		icon_state = "ushanka_new"
+		item_state = "ushanka_new"
+		user << "You lower the ear flaps on the ushanka."
+
 /obj/item/clothing/head/ww2/nkvd_cap/kgb
 	name = "KGB cap"
 	desc = "A cap and worn by KGB."
