@@ -8,7 +8,7 @@
 	respawn_delay = 0
 
 	no_winner ="The crew is alive."
-
+	no_hardcore = TRUE
 	faction_organization = list(
 		BRITISH,)
 	roundend_condition_sides = list(
