@@ -230,9 +230,6 @@ datum/job/indians/tribes/green
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND3"
-
-
-
 	min_positions = 60
 	max_positions = 300
 
@@ -271,9 +268,6 @@ datum/job/indians/tribes/yellow
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND4"
-
-
-
 	min_positions = 60
 	max_positions = 300
 
@@ -312,9 +306,6 @@ datum/job/indians/tribes/white
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND5"
-
-
-
 	min_positions = 60
 	max_positions = 300
 
@@ -406,6 +397,17 @@ datum/job/indians/tribes/black
 	if (!H)	return FALSE
 	H.name = H.species.get_random_zulu_name(H.gender)
 	H.s_tone = rand(-155,-185)
+	//shoes
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sneakers/courier(H), slot_shoes)
+
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 
 /datum/job/indians/warlords/red
 	title = "Redkantu Warband"
@@ -415,7 +417,36 @@ datum/job/indians/tribes/black
 	..()
 	H.nationality = "Redkantu"
 	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	//hat or mask
+	if (prob(50))
+		if(prob(60))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/red(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
+	if(prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	//uniform
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband1(H), slot_w_uniform)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband2(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/red_shorts(H), slot_w_uniform)
 
+	//suit
+	var/pick2 = pick(1,2,3)
+	if (pick2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/us_jacket(H), slot_wear_suit)
+	else if (pick2 == 2)
+		if (prob(50))
+			var/obj/item/clothing/accessory/armor/coldwar/flakjacket/FJ = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(FJ, H)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+
+	//guns
 /datum/job/indians/warlords/blue
 	title = "Blugisi Warband"
 	spawn_location = "JoinLateIND2"
@@ -424,7 +455,36 @@ datum/job/indians/tribes/black
 	..()
 	H.nationality = "Blugisi"
 	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	//hat or mask
+	if (prob(50))
+		if(prob(60))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/red(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
+	if(prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/bluekerchief(H), slot_wear_mask)
+	//uniform
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband1(H), slot_w_uniform)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband2(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/blue_shorts(H), slot_w_uniform)
 
+	//suit
+	var/pick2 = pick(1,2,3)
+	if (pick2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/us_jacket(H), slot_wear_suit)
+	else if (pick2 == 2)
+		if (prob(50))
+			var/obj/item/clothing/accessory/armor/coldwar/flakjacket/FJ = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(FJ, H)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+
+	//guns
 /datum/job/indians/warlords/yellow
 	title = "Yellowagwana Warband"
 	spawn_location = "JoinLateIND3"
@@ -433,18 +493,34 @@ datum/job/indians/tribes/black
 	..()
 	H.nationality = "Yellowagwana"
 	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	//hat or mask
+	if (prob(50))
+		if(prob(60))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/red(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
+	if(prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/yellowkerchief(H), slot_wear_mask)
+	//uniform
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband1(H), slot_w_uniform)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband2(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/yellow_shorts(H), slot_w_uniform)
 
-/datum/job/indians/warlords/equip(var/mob/living/human/H)
-	..()
-//clothes
-	var/randcloth = rand(1,3)
-	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
-	var/obj/item/clothing/accessory/armband/indianbl_a = new /obj/item/clothing/accessory/armband/indianbl(null)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	uniform.attackby(indianbl_a, H)
+	//suit
+	var/pick2 = pick(1,2,3)
+	if (pick2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/us_jacket(H), slot_wear_suit)
+	else if (pick2 == 2)
+		if (prob(50))
+			var/obj/item/clothing/accessory/armor/coldwar/flakjacket/FJ = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(FJ, H)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+
+	//guns
 

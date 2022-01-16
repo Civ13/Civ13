@@ -1059,6 +1059,29 @@
 	flags_inv = 0
 	w_class = 2
 
+/obj/item/clothing/mask/shemagh/bluekerchief
+	name = "blue kerchief"
+	desc = "A piece of light cloth, worn around the neck."
+	icon_state = "bluekerchief0"
+	item_state = "bluekerchief0"
+	worn_state = "bluekerchief0"
+	usedstate = "bluekerchief1"
+	unusedstate = "bluekerchief0"
+	partscovered = FACE
+	flags_inv = 0
+	w_class = 2
+/obj/item/clothing/mask/shemagh/yellowkerchief
+	name = "yellow kerchief"
+	desc = "A piece of light cloth, worn around the neck."
+	icon_state = "yellowkerchief0"
+	item_state = "yellowkerchief0"
+	worn_state = "yellowkerchief0"
+	usedstate = "yellowkerchief1"
+	unusedstate = "yellowkerchief0"
+	partscovered = FACE
+	flags_inv = 0
+	w_class = 2
+
 /obj/item/clothing/mask/shemagh/greykerchief
 	name = "grey kerchief"
 	desc = "A piece of light cloth, worn around the neck."

@@ -1208,6 +1208,13 @@
 	icon_state = "shorts_red"
 	item_state = "shorts_red"
 	worn_state = "shorts_red"
+
+/obj/item/clothing/under/yellow_shorts
+	name = "yellow shorts"
+	desc = "Basic yellow shorts"
+	icon_state = "shorts_yellow"
+	item_state = "shorts_yellow"
+	worn_state = "shorts_yellow"
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////PHILIPPINE-AMERICAN WAR///////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/ph_us_war/filipino
