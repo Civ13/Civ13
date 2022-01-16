@@ -537,6 +537,15 @@
 /area/caribbean/no_mans_land/invisible_wall/jungle
 	climate = "jungle"
 	base_turf = /turf/floor/dirt/jungledirt
+/area/caribbean/no_mans_land/invisible_wall/jungle/one
+	climate = "jungle"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/invisible_wall/jungle/two
+	climate = "jungle"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/invisible_wall/jungle/three
+	climate = "jungle"
+	base_turf = /turf/floor/dirt
 /area/caribbean/no_mans_land/invisible_wall/sea
 	climate = "sea"
 	base_turf = /turf/floor/beach/water/deep/saltwater
