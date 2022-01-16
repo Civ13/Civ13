@@ -2054,12 +2054,14 @@
 	title = "Goldstein Solutions"
 	selection_color = "#7e7e06"
 	spawn_location = "JoinLateCivA"
+	additional_languages = list("Hebrew" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/yellow/CEO
 	title = "Goldstein Solutions CEO"
 	is_officer = TRUE
+	additional_languages = list("Hebrew" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2102,10 +2104,12 @@
 	title = "Kogama Kraftsmen"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
+	additional_languages = list("Japanese" = 70)
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
 	title = "Kogama Kraftsmen CEO"
+	additional_languages = list("Japanese" = 100)
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2150,12 +2154,14 @@
 	title = "Giovanni Blu Stocks"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
+	additional_languages = list("Italian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/blue/CEO
 	title = "Giovanni Blu Stocks CEO"
 	is_officer = TRUE
+	additional_languages = list("Italian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2198,12 +2204,14 @@
 	title = "Rednikov Industries"
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
+	additional_languages = list("Russian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/red/CEO
 	title = "Rednikov Industries CEO"
 	is_officer = TRUE
+	additional_languages = list("Russian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2243,6 +2251,116 @@
 	..()
 	return TRUE
 
+/datum/job/civilian/businessman/mckellen
+	title = "McKellen Staff"
+	selection_color = "#ff883e"
+	spawn_location = "JoinLateCivJ"
+	min_positions = 3
+	max_positions = 8
+	additional_languages = list("Gaelic" = 50)
+	can_be_female = TRUE
+	is_deal = TRUE
+
+/datum/job/civilian/businessman/mckellen/manager
+	title = "McKellen Manager"
+	is_officer = TRUE
+	spawn_location = "JoinLateCivK"
+	min_positions = 1
+	max_positions = 1
+	rank_abbreviation = "Manager"
+	whitelisted = TRUE
+	additional_languages = list("Gaelic" = 100)
+
+/datum/job/civilian/businessman/mckellen/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.add_note("Role", "You are a part of McKellen's Entreprises. Your goal is to work the restaurant and produce illegal substances secretly, while also attempting to extort other businesses for their revenue and criminal power.")
+
+
+//clothes
+	var/randclothes = rand(1,3)
+	switch(randclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+			if (prob(60))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			if (prob(50))
+				var/obj/item/clothing/accessory/suspenders/dark/ysuspenders = new /obj/item/clothing/accessory/suspenders/dark(null)
+				uniform.attackby(ysuspenders, H)
+		if (2)
+			if (prob(80))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/kilt(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/caubeen(H), slot_head)
+
+//other
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mckellen(H), slot_r_store)
+
+	H.name = H.species.get_random_irish_name(H.gender)
+	H.real_name = H.name
+	if (prob(70))
+		var/new_hair = pick("Red","Orange")
+		var/hex_hair = hair_colors[new_hair]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	spawn(50)
+		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+/datum/job/civilian/businessman/mckellen/manager/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.add_note("Role", "You are a part of McKellen's Entreprises. Your goal is to manage the restaurant and produce illegal substances secretly, while also attempting to extort other businesses for their revenue and criminal power.")
+
+
+//clothes
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/civ/mckellen/ira1 = new/obj/item/weapon/key/civ/mckellen(null)
+	var/obj/item/weapon/key/civ/mckellen/manager/ira2 = new/obj/item/weapon/key/civ/mckellen/manager(null)
+	KC.attackby(ira1,H)
+	KC.attackby(ira2,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/tie/tie = new /obj/item/clothing/accessory/custom/tie(null)
+	tie.color = "#ff883e"
+	tie.setd = TRUE
+	tie.uncolored = FALSE
+	uniform.attackby(tie, H)
+
+//other
+	H.equip_to_slot_or_del(new /obj/item/weapon/telephone/mobile/mobilefaction/mckellen(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionmckellen(H), slot_l_store)
+	H.name = H.species.get_random_irish_name(H.gender)
+	H.real_name = H.name
+	if (prob(80))
+		var/new_hair = pick("Red","Orange")
+		var/hex_hair = hair_colors[new_hair]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	spawn(50)
+		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
 /datum/job/civilian/policeofficer
 	title = "Police Officer"
 	en_meaning = ""
@@ -2257,9 +2375,25 @@
 	min_positions = 5
 	max_positions = 50
 
+/datum/job/civilian/policeofficer/supervisor
+	title = "Police Supervisor"
+	en_meaning = ""
+	rank_abbreviation = ""
+	whitelisted = TRUE
+	spawn_location = "JoinLateCivL"
+	rank_abbreviation = "Supervisor"
+	selection_color = "#4845eb"
+	can_be_female = TRUE
+	is_deal = TRUE
+	is_officer = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Police"
+	give_random_name(H)
 	H.verbs += /mob/living/human/proc/undercover
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
@@ -2295,9 +2429,59 @@
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	spawn(50)
+		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+/datum/job/civilian/policeofficer/supervisor/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Police"
+	give_random_name(H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police/supervisor(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform1.attackby(hiph, H)
+	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
+	spawn(15)
+		pb.name = "[replacetext(H.real_name,"Police Supervisor ","")] police badge"
+		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Police Supervisor ","")]</b> engraved."
+	uniform1.attackby(pb, H)
+	var/obj/item/weapon/storage/belt/keychain/KC2 = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/civ/police/po1 = new/obj/item/weapon/key/civ/police(null)
+	var/obj/item/weapon/key/civ/police/chief/po2 = new/obj/item/weapon/key/civ/police/chief(null)
+	KC2.attackby(po1,H)
+	KC2.attackby(po2,H)
+	H.equip_to_slot_or_del(KC2, slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
+	H.add_note("Role", "You are the supervisor of the police force. Your objectives are to coordinate your fellow policemen in order to arrest as many criminal businessmen as possible and seize illegal money and disks!")
+	H.add_note("Police Codes", "As an officer, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
+		<b>10-1:</b> Report in / share location.<br><br> \
+		<b>10-2:</b> Report in as being available.<br><br> \
+		<b>10-3:</b> Report in as being busy.<br><br> \
+		<b>10-4:</b> Roger that / Affirmative.<br><br> \
+		<b>10-5:</b> Negative / Impossible.<br><br> \
+		<b>10-6:</b> Returning to the Police Station.<br><br> \
+		<b>10-7:</b> Prisoner in custody / Arrested suspect.<br><br> \
+		<b>10-8:</b> Request immediate assistance / Officer injured - All non-busy units should answer with a <b>10-0</b> and proceed to location (shows current location)<br><br> \
+		<b>10-9:</b> Officer down, all units should answer with a <b>10-0</b> and proceed to location (shows current location) - This is automatically sent if an officer gets killed, no need for manual input, use <b>10-8</b> instead.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	spawn(50)

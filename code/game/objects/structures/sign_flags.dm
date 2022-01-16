@@ -346,9 +346,14 @@
 	icon_state = "flag_1stcav"
 
 /obj/structure/sign/flag/cuba
-	name = "Cubanlag"
+	name = "Cuban flag"
 	desc = "The Cuban flag."
 	icon_state = "flag_cuba"
+
+/obj/structure/sign/flag/italy
+	name = "Italian flag"
+	desc = "The Italian flag."
+	icon_state = "flag_italy"
 
 /obj/structure/sign/flag/custom
 	name = "flag"

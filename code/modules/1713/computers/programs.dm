@@ -809,6 +809,9 @@
 			var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
 			uname = replacetext(uname,"'","")
 			cname = uname
+		if (user.original_job_title == "McKellen Staff" || user.original_job_title == "McKellen Manager")
+			mdomain = "mckellens.ug"
+			cname = "mail@[mdomain]"
 		if (tmp_comp_vars["mail_snd"] == "Sender")
 			tmp_comp_vars["mail_snd"] = cname
 		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
@@ -842,6 +845,9 @@
 		var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
 		uname = replacetext(uname,"'","")
 		cname = uname
+	if (user.original_job_title == "McKellen Staff" || user.original_job_title == "McKellen Manager")
+		mdomain = "mckellens.ug"
+		cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = cname
 	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
@@ -1301,7 +1307,7 @@
 		else if  (user.civilization in map.warrants)
 			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked and the issue of new ones forbidden for murdering police officers.</font>"
 			sleep(0.5)
-			do_html(user) 
+			do_html(user)
 			return
 		else if  (user.real_name in map.warrants)
 			mainbody += "<font color='red'>You have, or had, a warrant in your name, so your request was <b>denied</b>.</font>"

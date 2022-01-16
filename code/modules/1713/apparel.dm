@@ -314,6 +314,15 @@
 	item_state = "repmedicalofficer_cap"
 	worn_state = "repmedicalofficer_cap"
 
+////////////IRISH BERET/////////////////////////////////////////////////////////////
+
+/obj/item/clothing/head/caubeen
+	name = "caubeen"
+	desc = "an Irish beret, typically in dark green color."
+	icon_state = "caubeen"
+	item_state = "caubeen"
+	worn_state = "caubeen"
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 

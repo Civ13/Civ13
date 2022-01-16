@@ -962,7 +962,8 @@
 	name = "police belt"
 	desc = "A belt that can hold the standard issue gear of police officers."
 	icon_state = "gerbelt"
-	item_state = "gerbelt"
+	item_state = "security"
+	worn_state = "security"
 	storage_slots = 10
 	max_w_class = 3
 	max_storage_space = 24

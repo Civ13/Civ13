@@ -512,6 +512,13 @@
 		else
 			return capitalize(pick(first_names_male_gaelic)) + " " + capitalize(pick(last_names_gaelic))
 
+/datum/species/proc/get_random_irish_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_irish)) + " " + capitalize(pick(last_names_irish))
+		else
+			return capitalize(pick(first_names_male_irish)) + " " + capitalize(pick(last_names_irish))
+
 /datum/species/proc/get_random_italian_name(var/gender)
 	if (!name_language)
 		if (gender==FEMALE)

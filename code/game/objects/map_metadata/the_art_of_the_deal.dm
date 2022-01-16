@@ -130,7 +130,7 @@
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
-		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate))
+		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate) && !istype(J, /datum/job/civilian/businessman/mckellen))
 			if(!findtext(J.title, "CEO"))
 				. = FALSE
 		if (clients.len <= 15)
@@ -138,6 +138,9 @@
 				. = FALSE
 		if (clients.len <= 25)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
+				. = FALSE
+		if (clients.len <= 35)
+			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
 				. = FALSE
 	else
 		. = FALSE
@@ -405,7 +408,7 @@
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 15,
 	)
 	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer")
+		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -428,7 +431,7 @@
 	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
 	)
 	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer")
+		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -454,7 +457,7 @@
 	/obj/item/ammo_magazine/tt30ll = 50,
 	)
 	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer")
+		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
 			..()
 		else
 		 user << "You do not have access to this."

@@ -57,6 +57,7 @@ var/global/FREQB = rand(21,40)
 var/global/FREQY = rand(41,60)
 var/global/FREQG = rand(61,80)
 var/global/FREQP = rand(81,100)
+var/global/FREQM = rand(101,120)
 /obj/structure/radio/transmitter_receiver/nopower/faction1/New()
 	..()
 	freq = FREQ1
@@ -723,6 +724,10 @@ var/global/FREQP = rand(81,100)
 /obj/item/weapon/radio/walkietalkie/factiongreen/New()
 	..()
 	freq = FREQG
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/item/weapon/radio/walkietalkie/factionmckellen/New()
+	..()
+	freq = FREQM
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/item/weapon/radio/walkietalkie/factionpolice/New()
 	..()
