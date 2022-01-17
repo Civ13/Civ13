@@ -25,7 +25,7 @@
 
 obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_warlords)
+	if (J.is_warlords && J.title != "warlord (do not use)")
 		. = TRUE
 	else
 		. = FALSE

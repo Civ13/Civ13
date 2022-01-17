@@ -445,8 +445,18 @@ datum/job/indians/tribes/black
 			uniform.attackby(FJ, H)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
-
 	//guns
+	var/randgun = pick(1,2,3,4)
+	switch(randgun)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
+
 /datum/job/indians/warlords/blue
 	title = "Blugisi Warband"
 	spawn_location = "JoinLateIND2"
@@ -458,7 +468,7 @@ datum/job/indians/tribes/black
 	//hat or mask
 	if (prob(50))
 		if(prob(60))
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/red(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/blue(H), slot_head)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
 	if(prob(35))
@@ -485,6 +495,17 @@ datum/job/indians/tribes/black
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
 
 	//guns
+	var/randgun = pick(1,2,3,4)
+	switch(randgun)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
+
 /datum/job/indians/warlords/yellow
 	title = "Yellowagwana Warband"
 	spawn_location = "JoinLateIND3"
@@ -496,7 +517,7 @@ datum/job/indians/tribes/black
 	//hat or mask
 	if (prob(50))
 		if(prob(60))
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/red(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/yellow(H), slot_head)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
 	if(prob(35))
@@ -523,4 +544,13 @@ datum/job/indians/tribes/black
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
 
 	//guns
-
+	var/randgun = pick(1,2,3,4)
+	switch(randgun)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
