@@ -6,7 +6,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one,/area/caribbean/no_mans_land/invisible_wall/jungle/two,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
-
+	lobby_icon_state = "africanwarlords"
 	faction_organization = list(INDIANS)
 
 	roundend_condition_sides = list(

@@ -1024,7 +1024,10 @@
 			s_tone = -90
 
 		else if (faction_text == INDIANS)
-			s_tone = -115
+			if (map.ID != MAP_AFRICAN_WARLORDS)
+				s_tone = -115
+			else
+				s_tone = rand(-155,-185)
 
 		else if (s_tone < -65)
 			s_tone = -65

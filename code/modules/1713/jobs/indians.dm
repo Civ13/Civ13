@@ -396,7 +396,6 @@ datum/job/indians/tribes/black
 /datum/job/indians/warlords/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.name = H.species.get_random_zulu_name(H.gender)
-	H.s_tone = rand(-155,-185)
 	//shoes
 	var/pick1 = pick(1,2,3)
 	if (pick1 == 1)
@@ -409,6 +408,29 @@ datum/job/indians/tribes/black
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 
+/datum/job/indians/warlords/proc/give_gun(var/mob/living/human/H)
+	var/randgun = pick(1,2,3,4)
+	switch(randgun)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+		if (2)
+			if(prob(40))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+	if (prob(33))
+		var/obj/item/clothing/accessory/storage/webbing/us_bandolier/FJ = new /obj/item/clothing/accessory/storage/webbing/us_bandolier(null)
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		uniform.attackby(FJ, H)
 /datum/job/indians/warlords/red
 	title = "Redkantu Warband"
 	spawn_location = "JoinLateIND1"
@@ -446,16 +468,7 @@ datum/job/indians/tribes/black
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
 	//guns
-	var/randgun = pick(1,2,3,4)
-	switch(randgun)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
-		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
-		if (3)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
-		if (4)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
+	give_gun(H)
 
 /datum/job/indians/warlords/blue
 	title = "Blugisi Warband"
@@ -495,16 +508,7 @@ datum/job/indians/tribes/black
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
 
 	//guns
-	var/randgun = pick(1,2,3,4)
-	switch(randgun)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
-		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
-		if (3)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
-		if (4)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
+	give_gun(H)
 
 /datum/job/indians/warlords/yellow
 	title = "Yellowagwana Warband"
@@ -544,13 +548,4 @@ datum/job/indians/tribes/black
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
 
 	//guns
-	var/randgun = pick(1,2,3,4)
-	switch(randgun)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
-		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
-		if (3)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
-		if (4)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
+	give_gun(H)
