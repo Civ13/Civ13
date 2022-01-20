@@ -42,10 +42,10 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/african_warlords/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/african_warlords/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/african_warlords/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
@@ -53,13 +53,13 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/one))
-			if (H.nationality == "Redkantu")
+			if (H.nationality !== "Redkantu")
 				return TRUE
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/two))
-			if (H.nationality == "Blugisi")
+			if (H.nationality != "Blugisi")
 				return TRUE
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/three))
-			if (H.nationality == "Yellowagwana")
+			if (H.nationality != "Yellowagwana")
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
