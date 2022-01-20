@@ -89,11 +89,13 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 			win_condition_spam_check = TRUE
 			return FALSE
 		else if (scores["Blugisi"] > scores["Yellowgwana"] && scores["Blugisi"] > scores["Redkantu"])
-			message = "The battle is over! The <font color='blue'><b>Blugisi</b></font> were victorious over the other militias!"			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			message = "The battle is over! The <font color='blue'><b>Blugisi</b></font> were victorious over the other militias!"
+			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
 		else if (scores["Redkantu"] > scores["Blugisi"] && scores["Redkantu"] > scores["Yellowgwana"])
-			message = "The battle is over! The <font color='red'><b>Redkantu</b></font> were victorious over the other militias!"			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			message = "The battle is over! The <font color='red'><b>Redkantu</b></font> were victorious over the other militias!"
+			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
 		else
