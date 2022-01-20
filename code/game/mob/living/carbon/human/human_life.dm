@@ -1432,7 +1432,7 @@
 				if (INDIANS)
 					holder2.icon_state = "ind_basic"
 					if (map.ID == MAP_AFRICAN_WARLORDS)
-						if(nationality == "Yellowgwana")
+						if(nationality == "Yellowagwana")
 							holder2.icon_state = "civ4"
 						if(nationality == "Redkantu")
 							holder2.icon_state = "civ1"

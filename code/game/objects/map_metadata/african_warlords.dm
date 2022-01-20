@@ -67,7 +67,7 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/african_warlords/proc/points_check()
 	world << "<big><b>Current Points:</big></b>"
-	world << "<big>Yellowgwana: [scores["Yellowgwana"]]</big>"
+	world << "<big>Yellowagwana: [scores["Yellowagwana"]]</big>"
 	world << "<big>Redkantu: [scores["Redkantu"]]</big>"
 	world << "<big>Blugisi: [scores["Blugisi"]]</big>"
 	spawn(300)
@@ -78,22 +78,22 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
-		if (scores["Yellowgwana"] < 25 && scores["Blugisi"] < 25 && scores["Redkantu"] < 25)
+		if (scores["Yellowagwana"] < 25 && scores["Blugisi"] < 25 && scores["Redkantu"] < 25)
 			return
 		ticker.finished = TRUE
 		var/message = ""
 		message = "The round has ended!"
-		if (scores["Yellowgwana"] > scores["Blugisi"] && scores["Yellowgwana"] > scores["Redkantu"])
-			message = "The battle is over! The <font color='yellow'><b>Yellowgwana</b></font> were victorious over the other militias!"
+		if (scores["Yellowagwana"] > scores["Blugisi"] && scores["Yellowagwana"] > scores["Redkantu"])
+			message = "The battle is over! The <font color='yellow'><b>Yellowagwana</b></font> were victorious over the other militias!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
-		else if (scores["Blugisi"] > scores["Yellowgwana"] && scores["Blugisi"] > scores["Redkantu"])
+		else if (scores["Blugisi"] > scores["Yellowagwana"] && scores["Blugisi"] > scores["Redkantu"])
 			message = "The battle is over! The <font color='blue'><b>Blugisi</b></font> were victorious over the other militias!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
-		else if (scores["Redkantu"] > scores["Blugisi"] && scores["Redkantu"] > scores["Yellowgwana"])
+		else if (scores["Redkantu"] > scores["Blugisi"] && scores["Redkantu"] > scores["Yellowagwana"])
 			message = "The battle is over! The <font color='red'><b>Redkantu</b></font> were victorious over the other militias!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
