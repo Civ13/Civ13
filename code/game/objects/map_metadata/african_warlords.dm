@@ -53,7 +53,7 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/one))
-			if (H.nationality !== "Redkantu")
+			if (H.nationality != "Redkantu")
 				return TRUE
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/two))
 			if (H.nationality != "Blugisi")
