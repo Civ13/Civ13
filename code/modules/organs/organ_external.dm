@@ -21,6 +21,8 @@
 	var/brute_mod = 1.0
 	var/burn_mod = 1.0
 
+	var/nationality = null
+
 	var/icon_name = null
 	var/body_part = null
 	var/icon_position = FALSE

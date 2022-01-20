@@ -199,6 +199,7 @@
 		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",30),
 		4 = list("/obj/item/weapon/material/battleaxe",70),
+		5 = list("/obj/item/weapon/material/machete",75),
 	)
 
 	min_duration = 110
@@ -228,6 +229,7 @@
 		user.visible_message("<span class = 'notice'>[user] amputates [target]'s [affected.name] at the [affected.amputation_point] with \the [tool].</span>", \
 		"<span class = 'notice'>You amputate [target]'s [affected.name] with \the [tool].</span>")
 		affected.droplimb(1,DROPLIMB_EDGE)
+		affected.nationality = target.nationality
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)

@@ -445,7 +445,7 @@ datum/job/indians/tribes/black
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/red(H), slot_head)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
-	if(prob(35))
+	if(prob(35) || !istype(H.head, /obj/item/clothing/head/cap/yellow))
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	//uniform
 	var/pick1 = pick(1,2,3)
@@ -466,7 +466,7 @@ datum/job/indians/tribes/black
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(FJ, H)
 		else
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
 	//guns
 	give_gun(H)
 
@@ -484,7 +484,7 @@ datum/job/indians/tribes/black
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/blue(H), slot_head)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
-	if(prob(35))
+	if(prob(35) || !istype(H.head, /obj/item/clothing/head/cap/yellow))
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/bluekerchief(H), slot_wear_mask)
 	//uniform
 	var/pick1 = pick(1,2,3)
@@ -505,7 +505,7 @@ datum/job/indians/tribes/black
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(FJ, H)
 		else
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
 
 	//guns
 	give_gun(H)
@@ -524,7 +524,7 @@ datum/job/indians/tribes/black
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/yellow(H), slot_head)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
-	if(prob(35))
+	if(prob(35) || !istype(H.head, /obj/item/clothing/head/cap/yellow))
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/yellowkerchief(H), slot_wear_mask)
 	//uniform
 	var/pick1 = pick(1,2,3)
@@ -545,7 +545,7 @@ datum/job/indians/tribes/black
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(FJ, H)
 		else
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
 
 	//guns
 	give_gun(H)

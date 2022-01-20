@@ -1431,6 +1431,13 @@
 						holder2.icon_state = "pt2_basic"
 				if (INDIANS)
 					holder2.icon_state = "ind_basic"
+					if (map.ID == MAP_AFRICAN_WARLORDS)
+						if(nationality == "Yellowgwana")
+							holder2.icon_state = "civ4"
+						if(nationality == "Redkantu")
+							holder2.icon_state = "civ1"
+						if(nationality == "Blugisi")
+							holder2.icon_state = "civ3"
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
@@ -1493,18 +1500,6 @@
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
-					else if (original_job_title == "Civilization A Citizen")
-						holder2.icon_state = "civ1"
-					else if (original_job_title == "Civilization B Citizen")
-						holder2.icon_state = "civ2"
-					else if (original_job_title == "Civilization C Citizen")
-						holder2.icon_state = "civ3"
-					else if (original_job_title == "Civilization D Citizen")
-						holder2.icon_state = "civ4"
-					else if (original_job_title == "Civilization E Citizen")
-						holder2.icon_state = "civ5"
-					else if (original_job_title == "Civilization F Citizen")
-						holder2.icon_state = "civ6"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
 					else if (original_job.is_upa && map.ID != MAP_OCCUPATION)
@@ -1520,6 +1515,18 @@
 							holder2.icon_state = "ger3_basic"
 						else if(nationality == "Ukrainian")
 							holder2.icon_state = "ukr_basic"
+					else if (original_job_title == "Civilization A Citizen")
+						holder2.icon_state = "civ1"
+					else if (original_job_title == "Civilization B Citizen")
+						holder2.icon_state = "civ2"
+					else if (original_job_title == "Civilization C Citizen")
+						holder2.icon_state = "civ3"
+					else if (original_job_title == "Civilization D Citizen")
+						holder2.icon_state = "civ4"
+					else if (original_job_title == "Civilization E Citizen")
+						holder2.icon_state = "civ5"
+					else if (original_job_title == "Civilization F Citizen")
+						holder2.icon_state = "civ6"
 //					else if (original_job_title == "Outlaw")
 //						holder2.icon_state = "civ1"
 //					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )
