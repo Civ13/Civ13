@@ -33,6 +33,12 @@
 	icon_state = "french"
 	slot = "armband"
 
+/obj/item/clothing/accessory/armband/un
+	name = "UN armband"
+	desc = "A blue UN armband."
+	icon_state = "un"
+	slot = "armband"
+
 /obj/item/clothing/accessory/armband/portuguese
 	name = "green armband"
 	desc = "A fancy green armband!"

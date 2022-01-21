@@ -2718,7 +2718,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armband/french/blue = new /obj/item/clothing/accessory/armband/french(null)
+	var/obj/item/clothing/accessory/armband/un/blue = new /obj/item/clothing/accessory/armband/un(null)
 	uniform.attackby(blue, H)
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armord = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
 	uniform.attackby(armord, H)
@@ -2755,7 +2755,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
+	var/obj/item/clothing/accessory/armband/un/white = new /obj/item/clothing/accessory/armband/un(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep both the UN troops and civilians safe!<br>Do not engage the militias (unless they breach the perimeter or fire upon you), but recover the bodies if possible and safe to do so.")
