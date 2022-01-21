@@ -76,6 +76,7 @@
 		new /obj/item/clothing/head/helmet/ww2/japhelm(src)
 		new /obj/item/weapon/grenade/ww2/type97(src)
 		new /obj/item/weapon/grenade/ww2/type97(src)
+
 /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate
 	name = "japanese ammo crate"
 	desc = "It's a crate equipped with straps for carrying, often used by assistant gunners."

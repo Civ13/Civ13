@@ -2692,3 +2692,79 @@
 	H.setStat("medical", STAT_NORMAL)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+//UN Troops//
+/datum/job/civilian/unitednations
+	title = "United Nations Soldier"
+	en_meaning = ""
+	rank_abbreviation = "UN Pvt."
+	spawn_location = "JoinLateUN"
+	is_warlords = TRUE
+	can_be_female = FALSE
+	selection_color = "#53ADD0"
+
+	min_positions = 2
+	max_positions = 12
+/datum/job/civilian/unitednations/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/blue = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(blue, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armord = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armord, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Keep both the UN troops and civilians safe!<br>Do not engage the militias (unless they breach the perimeter or fire upon you), but recover the bodies if possible and safe to do so.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+
+/datum/job/civilian/unitednations/doctor
+	title = "United Nations Doctor"
+	rank_abbreviation = "UN Dr."
+	is_medic = TRUE
+	can_be_female = TRUE
+/datum/job/civilian/unitednations/doctor/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un/medic(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Keep both the UN troops and civilians safe!<br>Do not engage the militias (unless they breach the perimeter or fire upon you), but recover the bodies if possible and safe to do so.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)

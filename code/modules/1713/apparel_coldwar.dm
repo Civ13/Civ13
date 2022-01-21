@@ -245,6 +245,20 @@
 	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
+/obj/item/clothing/head/helmet/modern/ushelmet/un
+	name = "UN helmet"
+	desc = "A typical blue UN helmet."
+	icon_state = "unitednations"
+	item_state = "unitednations"
+	worn_state = "unitednations"
+
+/obj/item/clothing/head/helmet/modern/ushelmet/un/medic
+	name = "UN medic helmet"
+	desc = "A typical blue UN helmet, with doctor markings."
+	icon_state = "unitednations_medic"
+	item_state = "unitednations_medic"
+	worn_state = "unitednations_medic"
+
 /obj/item/clothing/head/helmet/modern/ushelmet/sgt
 	name = "M1 helmet 2nd LT"
 	desc = "A typical us army helmet. With lieutenant markings."

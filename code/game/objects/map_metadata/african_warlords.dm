@@ -7,21 +7,23 @@
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
 	lobby_icon_state = "africanwarlords"
-	faction_organization = list(INDIANS)
+	faction_organization = list(INDIANS, CIVILIAN)
 
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british,
+		list(CIVILIAN) = /area/caribbean/british,
 		)
 	age = "1984"
-	is_singlefaction = TRUE
+	is_singlefaction = FALSE
 	ordinal_age = 7
-	faction_distribution_coeffs = list(INDIANS = 1)
+	faction_distribution_coeffs = list(INDIANS = 0.9, CIVILIAN = 0.1)
 	battle_name = "skull competition"
-	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>50 enemy skulls</b> and bring them to their shaman hut.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
+	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>50 enemy skulls</b> and bring them to their shaman hut. First team to reach 25 wins.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
 	faction1 = INDIANS
+	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Blade and Dagger:1" = 'sound/music/blade_and_dagger.ogg',)
 	scores = list(
 		"Blugisi" = 0,
 		"Yellowagwana" = 0,
@@ -78,7 +80,7 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
-		if (scores["Yellowagwana"] < 25 && scores["Blugisi"] < 25 && scores["Redkantu"] < 25)
+		if (scores["Yellowagwana"] >= 25 || scores["Blugisi"] >= 25 || scores["Redkantu"] >= 25)
 			return
 		ticker.finished = TRUE
 		var/message = ""
