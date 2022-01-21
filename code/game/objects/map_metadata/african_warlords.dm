@@ -2,11 +2,10 @@
 /obj/map_metadata/african_warlords
 	ID = MAP_AFRICAN_WARLORDS
 	title = "African Warlords"
-	lobby_icon_state = "coldwar"
+	lobby_icon_state = "africanwarlords"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one,/area/caribbean/no_mans_land/invisible_wall/jungle/two,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
-	lobby_icon_state = "africanwarlords"
 	faction_organization = list(INDIANS, CIVILIAN)
 
 	roundend_condition_sides = list(
@@ -23,7 +22,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Blade and Dagger:1" = 'sound/music/blade_and_dagger.ogg',)
+		"Barrington Levy - Murderer:1" = 'sound/music/murderer.ogg',)
 	scores = list(
 		"Blugisi" = 0,
 		"Yellowagwana" = 0,
