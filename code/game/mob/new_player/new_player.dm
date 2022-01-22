@@ -971,14 +971,20 @@ var/global/redirect_all_players = null
 			var/active = processes.job_data.get_active_positions(job)
 			if (job.base_type_flag() != prev_side)
 				prev_side = job.base_type_flag()
-				var/side_name = "<b><h1><big>[job.get_side_name()]</big></h1></b>&&[job.base_type_flag()]&&"
+				var/temp_name = job.get_side_name()
+				if (map && map.ID == "ARAB_TOWN" && temp_name == "American")
+					temp_name = "Israeli"
+				else if (map && map.ID == "AFRICAN_WARLORDS")
+					if (temp_name == "Indians")
+						temp_name = "Africans"
+					else if (temp_name == "Civilian")
+						temp_name = "United Nations"
+				var/side_name = "<b><h1><big>[temp_name]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
-					if (map && map.ID == "ARAB_TOWN" && side_name == "American")
-						side_name = "Israeli" //Broken code, doesn't work - 21/01/2022
-					dat += "<br><br>[side_name]<br>"
+					dat += "<br>[side_name]"
 
 			var/extra_span = "<b>"
-			var/end_extra_span = "</b><br>"
+			var/end_extra_span = "</b>"
 			if (job.is_officer && !job.is_commander)
 				extra_span = "<b><font size=2>"
 				end_extra_span = "</font></b><br>"
