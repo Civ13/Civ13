@@ -13,7 +13,7 @@
 		list(CIVILIAN) = /area/caribbean/british,
 		)
 	age = "1984"
-	is_singlefaction = FALSE
+	is_singlefaction = TRUE
 	ordinal_age = 7
 	faction_distribution_coeffs = list(INDIANS = 0.9, CIVILIAN = 0.1)
 	battle_name = "skull competition"

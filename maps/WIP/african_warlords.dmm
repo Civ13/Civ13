@@ -1,5 +1,4 @@
 "aa" = (/turf/floor/beach/water/deep/jungle,/area/caribbean/nomads/forest/Jungle)
-"ab" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "ac" = (/obj/covers/sandstone_wall,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "ad" = (/obj/covers/fancywood,/obj/structure/religious/woodcross1,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "ae" = (/obj/covers/sandstone_wall,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/roofed/jungle)
@@ -32,7 +31,7 @@
 "aF" = (/obj/covers/wood_ship,/obj/structure/bed/chair/office/light,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "aG" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "aH" = (/obj/structure/railing{dir = 8; icon_state = "railing0"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
-"aI" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
+"aI" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "aJ" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood/bleacher/l{dir = 1},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "aK" = (/obj/structure/bed/chair/wood/bleacher{dir = 1},/obj/covers/wood_ship,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "aL" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood/bleacher{dir = 1},/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -46,7 +45,7 @@
 "aT" = (/obj/structure/printingpress,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "aU" = (/obj/covers/wood_ship,/obj/structure/potted_plant{dir = 8; icon_state = "potted_plant"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "aV" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
-"aW" = (/obj/effect/landmark{name = "JoinLateIND3"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"aW" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "aX" = (/obj/covers/straw_wall,/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/roofed/jungle)
 "aY" = (/obj/covers/straw_wall,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "aZ" = (/obj/covers/dirt_wall/blocks,/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -58,7 +57,7 @@
 "bf" = (/obj/covers/wood_ship,/obj/item/weapon/stool/wood,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "bg" = (/obj/covers/wood_ship,/obj/structure/bed/bedroll,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "bh" = (/turf/floor/wood,/area/caribbean/roofed/jungle)
-"bi" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
+"bi" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "bj" = (/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "bk" = (/obj/structure/railing{dir = 4; icon_state = "railing0"},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "bl" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/bed,/obj/item/weapon/bedsheet/medical,/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -87,7 +86,7 @@
 "bI" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/storage/fancy/candle_box,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "bJ" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "bK" = (/obj/covers/wood_ship,/obj/structure/bed/bedroll,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"bL" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
+"bL" = (/obj/covers/thatch2,/obj/structure/altar/darkstone/sacrifice{faction = "Yellowagwana"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bM" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/toilet{dir = 4; icon_state = "toilet00"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "bN" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "bO" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/item/mirror{pixel_x = 32},/obj/structure/sink{dir = 4; icon_state = "sink"; pixel_x = 10},/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -137,7 +136,7 @@
 "cG" = (/obj/structure/barricade/tires,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "cH" = (/obj/covers/fancywood,/obj/structure/altar,/obj/item/weapon/storage/bible,/obj/covers/carpet/orangecarpet,/obj/covers/fancywood,/obj/covers/carpet/orangecarpet,/obj/covers/fancywood,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "cI" = (/obj/structure/vehicle/motorcycle,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"cJ" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
+"cJ" = (/obj/effect/landmark{name = "JoinLateIND3"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "cK" = (/obj/structure/bed/chair/wood,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "cL" = (/obj/structure/largecrate,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "cM" = (/obj/structure/table/wood,/obj/item/weapon/deck/cards,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
@@ -396,10 +395,11 @@
 "pi" = (/obj/structure/wild/smallbush,/obj/structure/window/barrier/rock{dir = 8; icon_state = "rock_barricade"},/obj/structure/window/barrier/rock{dir = 1; icon_state = "rock_barricade"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "pl" = (/obj/structure/barbwire{dir = 1},/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 4},/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "pq" = (/obj/structure/railing{dir = 8; icon_state = "railing0"},/obj/item/weapon/trafficcone,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
-"pw" = (/obj/structure/wild/largejungle,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"pw" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "pC" = (/obj/structure/barbwire{dir = 8},/obj/structure/barricade/antitank,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
 "pF" = (/obj/covers/thatch2,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "qh" = (/obj/effect/floor_decal/industrial/danger{dir = 4},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"qD" = (/obj/covers/thatch2,/obj/structure/altar/darkstone/sacrifice{faction = "Blugisi"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "qG" = (/obj/item/stack/farming/seeds/poppy,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "qO" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "qS" = (/obj/effect/landmark{name = "JoinLateIND1"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
@@ -426,20 +426,21 @@
 "uP" = (/mob/living/simple_animal/frog/poisonous,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "uQ" = (/obj/structure/barbwire{dir = 8},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "uU" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
-"vi" = (/obj/covers/thatch2,/obj/structure/altar/darkstone/sacrifice{faction = "Blugisi"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"vi" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "vu" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"vX" = (/obj/covers/thatch2,/obj/structure/altar/darkstone/sacrifice{faction = "Yellowagwana"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"vI" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"vX" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "wa" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "wN" = (/obj/structure/barbwire{dir = 1},/obj/structure/barbwire,/obj/structure/barricade/antitank,/obj/structure/sign/custom{desc = "NO ARMED MILITIAS ALLOWED INSIDE THE PERIMETER. TRANSGRESSORS WILL BE SHOT ON SIGHT!"; name = "United Nations demilitarized zone"},/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
-"wT" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "xh" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 "xo" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "xu" = (/obj/structure/barbwire{dir = 1},/obj/structure/barbwire,/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "xT" = (/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "xV" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "xY" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"yt" = (/obj/structure/wild/largejungle,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "yE" = (/obj/structure/barbwire{dir = 1},/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
-"yF" = (/obj/effect/landmark{name = "JoinLateIND2"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"yF" = (/obj/structure/sign/traffic/stop,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "yK" = (/mob/living/simple_animal/chicken,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "yZ" = (/mob/living/simple_animal/mouse/gray,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "zx" = (/mob/living/simple_animal/frog,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
@@ -461,8 +462,7 @@
 "CN" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Di" = (/obj/structure/window/barrier/rock{dir = 8; icon_state = "rock_barricade"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "Dp" = (/obj/structure/farming/plant/banana,/obj/structure/barbwire{dir = 1},/obj/structure/barricade/antitank,/turf/floor/dirt/ploughed/flooded,/area/caribbean/nomads/forest/Jungle)
-"DG" = (/obj/structure/sign/traffic/stop,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
-"DJ" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"DG" = (/obj/structure/gate/barrier/vertical{dir = 1; pixel_y = -15},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "DZ" = (/obj/structure/wild/largejungle,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "Er" = (/obj/structure/barbwire{dir = 4},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "EJ" = (/obj/structure/wild/palm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
@@ -477,7 +477,9 @@
 "Gg" = (/obj/structure/barricade/hescobastion,/obj/structure/sign/flag/un,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "Gn" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
 "Gp" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
+"Gu" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "GE" = (/obj/structure/wild/tallgrass,/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
+"GP" = (/obj/structure/gate/barrier,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "GS" = (/obj/covers/straw_wall,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "Hk" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "Hp" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
@@ -493,6 +495,7 @@
 "Jp" = (/obj/structure/barbwire{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Jr" = (/obj/structure/religious/impaledskull,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "JP" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
+"KA" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "KR" = (/obj/structure/barbwire{dir = 4},/obj/structure/barbwire{dir = 8},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "Ln" = (/obj/covers/brick_wall,/obj/structure/sign/flag/un,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "Lv" = (/obj/structure/barricade/hescobastion,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
@@ -501,20 +504,20 @@
 "LT" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "LW" = (/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
 "Ma" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/obj/covers/wood_ship,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"Mo" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"Mo" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "Mq" = (/obj/structure/wild/palm,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
 "Mx" = (/obj/covers/repairedfloor,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
 "MC" = (/obj/structure/wild/smallbush,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
 "MF" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "MG" = (/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"MJ" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"MJ" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "Nk" = (/obj/effect/landmark{name = "JoinLateIND1"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "No" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
 "NL" = (/obj/structure/barbwire{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "NO" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "NX" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 "Oc" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
-"Of" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"Of" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 4},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "Or" = (/obj/structure/farming/plant/banana,/obj/structure/barbwire{dir = 1},/turf/floor/dirt/ploughed/flooded,/area/caribbean/nomads/forest/Jungle)
 "OO" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "Pe" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
@@ -534,72 +537,77 @@
 "SY" = (/mob/living/simple_animal/leech,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "Tf" = (/obj/structure/wild/burnedtree,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
 "TE" = (/obj/structure/wild/rock,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
-"TK" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"TK" = (/obj/structure/window/barrier/jersey{dir = 4},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Ur" = (/obj/structure/barbwire{dir = 8},/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Uw" = (/obj/structure/barbwire{dir = 4},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "UM" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"Vd" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "Vs" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Vx" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "VN" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "VT" = (/obj/structure/window/barrier/rock{dir = 1; icon_state = "rock_barricade"},/obj/structure/window/barrier/rock{dir = 4; icon_state = "rock_barricade"},/mob/living/simple_animal/chicken,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Wc" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Wv" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "WE" = (/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
 "WW" = (/obj/structure/barricade/hescobastion,/obj/structure/sign/flag/un,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Xd" = (/obj/structure/window/barrier/jersey,/obj/structure/barbwire,/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"Xn" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "Xx" = (/obj/item/weapon/stool/wood,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "XW" = (/obj/structure/multiz/ladder/ww2/tunneltop/vietcong,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"YF" = (/obj/item/stack/farming/seeds/coffee,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"YA" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"YF" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "YG" = (/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
 "Zi" = (/obj/item/weapon/trafficcone{dir = 4},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Zm" = (/obj/item/stack/farming/seeds/hemp,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Zr" = (/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
-"ZC" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"Zt" = (/obj/effect/landmark{name = "JoinLateIND2"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"ZC" = (/obj/structure/gate/barrier/vertical{pixel_y = 15},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "ZG" = (/obj/structure/wild/burnedbush,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
 "ZP" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "ZT" = (/obj/covers/wood_ship,/obj/effect/landmark{name = "JoinLateUN"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 
 (1,1,1) = {"
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrMGZrZrZrHVZrZrZrZrZrZrZrMGZrZrMGxTPqPqPqxTWEZrFkZrZrZrEWEWEWEWZrZrMGVxMGVNMGZrMGZrVxZrZrVNMGMGVNEWaaaaEWZrZrefMGMGMGMGvuZrMGMGabMGLTZrZrMGZrMGZrZrZrMGZrZrZrZrZrMGLTxT
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrVxZrSYZrZrWEsSWEWEDZZrWEZrZrMGxTPqPqPqxTZrZrZrWEWEZrZrEWZrEWEWEWZrZrMGZrZrMGMGFkVNMGZrVxZrZrZrEWEWEWZrZrMGMGMGvuZrMGMGMGMGMGabMGMGZrMGZrZrSqZrMGMGMGPnSqSqMGMGMGxTxT
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrYGYGYGZrZrVxWEWEVxCIZrZrMGWEVNMGxTPqPqPqxTZrFkMGMGZrZrMGZrZrEWZrEWEWFkVNHVZrVNZrMGZrHVMGZrMGEWaaaaEWZrZrMGMGMGMGMGMGMGLTMGLTSqaIMGzTSqSqMGMGGSGSGSMGSqMGMGMGMGLTxTxTMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYHkZrYGZrHVZGWEWEWEZrZrWEWEZrWEWEVxxTPqPqPqxTZrZrZrZrZrVxZrMGZrZrZrEWEWEWZrZrMGMGZrZrMGZrZrZrEWEWaaEWZrZrZrMGMGMGMGLTMGMGMGMGSqMGabMGSqMGMGMGGSQPvXQPGSMGMGLTMGMGMGxTxTMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYZrZrVNVNMGWEWEMGWEWEMGMGZrZrMGCIZrxTPqPqPqxTZrZrHVZrVxVxMGMGMGMGZrZrEWEWEWZrVxuPHVMGMGFkMGZrEWaaEWEWZrZrMGMGMGMGMGMGMGSqMGHkMGPnabMGMGMGMGMGETpFpFpFETMGMGMGSqMGxTxTMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrVxZrVxVNVNVNVNZrZrZrVxZrZrMGZrZrxTPqPqPqxTVNZrZrZrHpZrZrMGZrMGZrZrZrEWEWZrVNZrVNZrMGZrZrEWEWEWEWZrMGMGMGMGvuMGSqMGHkPnSqSqMGMGabMGMGPnSqSqGSQPpFQPGSSqMGzTMGaWaWMGMGWv
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrYGDZMGYGMGYGVNMGZrWEVNVxVxZrZrZrVxZrxTPqPqPqxTWEZrVNMGZrMGZrMGMGVNZrWEZrEWEWEWZrMGZrHVZrZrEWaaEWEWZrZrZrMGMGMGMGSqvuMGMGMGMGMGMGLTabvuZrMGMGMGMGGSIeGSHkMGMGSqxTaWaWMGvuMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrZrMGYGYGYGZrMGMGMGMGMGMGHpZrZrZrYGYGYGxTPqPqPqxTMGZrZrWEWEMGZrZrHVZrZrZrZrZrEWEWZrHVZrZrZrEWaaaaEWZrZrMGMGWvvuMGLTvuMGMGMGSqSqMGMGMGabMGMGMGMGMGMGMGMGLTMGMGMGxTxTxTMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrVxFkMGZrWEWEZrZrZrZrZrZrMGWEDZMGWEWEMGZrZrZrHkZrYGZrxTPqPqPqxTZrZrWEZrWEZrZrZrZrDZZrZrMGZrZrEWZrZrZrEWEWaaaaEWZrZrZrMGMGZrMGMGMGMGMGMGPnMGMGMGLTzTabLTMGLTSqSqMGzTMGMGMGMGxTxTxTMGMGMGLTMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrMGZrZrZrFkFkVxZrVxZrZrZrZrZrZrZrWEZrZrZrZrVNVNxTPqPqPqxTZrVNVxZrMGZrYGMGZrZrZrVNZrZrZrEWEWZrEWEWaaaaEWZrZrMGMGMGWvMGLTSqMGHkMGMGMGMGMGMGMGSqabMGMGSqMGMGMGSqMGzTMGxTxTVsSqSqMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrMGWEDZZrZrFkFkZrZrCIMGZrZrNOZrzxZrWEZrZrZrVxZrZrxTPqPqPqxTMGZrZrZrZrZrMGZruPHVZrOOZrMGZrZrEWEWEWEWaaEWZrZrMGMGPnMGZrMGMGvuMGMGLTMGLTSqSqMGzTMGaIMGHkMGPnMGMGMGMGSqxTxTxTSqMGMGMGSqMGHk
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrRDZrWEWECICIDZZrOOZrZrZrZrZrVNVxZrZrZrYGDZMGYGMGxTPqPqPqxTZrZrWEWEzxZrZrZrZrVNZrWEMGMGZrZrZrEWEWEWEWEWZrMGvuZrMGMGMGSqMGMGMGMGMGMGSqMGMGMGSqZrbiZrSqMGHkMGPnMGMGxTxTxTHkMGPnMGMGMGZrZr
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrWEZrZrCIWEZrZrZrZrVxCIZrZrZrZrZrZrZrMGYGYGYGZrxTPqPqPqxTZrZrZrZrWEVxFkZrHVZrZrZrZrZrZrZrZrEWEWEWEWZrZrMGMGMGMGMGMGvuMGMGWvSqMGHkMGPnMGMGMGMGabSqMGMGMGMGMGBoMGxTxTMGMGMGMGHkMGPnMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrZrZrMGZrMGWEZrZrZrZrWEWEZrZrZrZrZrZrMGxTPqPqPqxTVxWEZrWEZrVNVxZrZrDZZrZrMGWEZrMGEWEWaaaaEWEWZrMGLTMGMGMGZrMGMGMGZrSqSqSqMGMGMGMGMGMGabLTSqMGMGMGMGMGxTxTMGPnMGMGMGSqMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrVNVNFkZrZrZrZrHpZrZrZrZrWEWEZrZrZrZrZrZrFkFkVxZrVxZrxTPqPqPqxTWEWEZrZrVxHpVxMGMGZrMGMGZrZrZrZrZrEWaaaaEWZrMGMGMGMGMGWvMGvuPnMGMGMGzTvuMGMGMGMGMGMGaISqMGMGMGMGZrHkxTxTxTMGMGMGMGLTSqMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrVxZruPWEZrYGYGYGZrMGZrZrsSZrDZZrZrFkFkZrZrCIMGxTPqPqPqxTZrWEMGZrRDMGZrMGuPMGZrOOWEZrMGZrZrEWaaaaZrZrZrSqMGMGWvZrMGMGMGMGMGMGLTMGMGMGMGMGMGMGabMGMGMGMGMGMGxTxTxTMGMGMGMGSqSqMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYZrZrZrZrWEZrZrZrZrYGYGZrZrZrZrvuWEWETfZrVxZrZrZrFktdunxTPqPqPqxTZrZrMGZrMGZrZrMGZrMGMGZrWEZrMGZrZraaaaEWZrMGZrvuMGMGZrMGvuMGMGvuMGMGMGMGWvSqSqMGvuMGabMGMGMGSqMGxTxTxTMGMGMGMGMGMGMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZroYoYoYZrZrZrZrZrZrZrMGZrZrMGWEMGZrZrDZWEZrFkZrZrZrWEWEVxZrWEZrZrZrMGxTPqPqPqxTWEZrZrZrZrVxZrWEWEMGVxMGWEWEZrMGEWaaaaEWZrMGefMGMGMGPnMGMGMGMGMGvuMGMGMGMGMGHkMGMGMGbiZrZrMGMGxTxTxTWvSqSqMGvuMGMGMGMGMGSqMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYoYoYZrZroYZrZrZrZrZrZrZrZrZrDZZrWEZrZrMGWEMGZrZrVNZrZrZrWEWEZrWEWEVxZrOOZrZrZrCIxTPqPqPqxTWEZrVNVNFkCIZrWEZrZrWEYGZrZrWEFkWEEWaaEWZrMGMGMGMGMGMGMGMGMGZrPnMGMGMGMGMGMGvuMGMGMGaIMGMGMGxTxTxTMGMGMGHkMGMGMGZrZreVMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrMGWEVNMGVNZrZrWEMGZrFkMGMGZrZrMGCIZrZrWEWEZrZrWExTPqPqPqxTWEWEZrZrZrZrozOOVNZrWEYGYGZrZrZrZrEWaaZrZrMGefMGMGMGSqMGvuMGMGMGMGMGMGMGPfMGMGMGPnMGababababbLbLababababcJabababaIababababab
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrCIZrWEWEZrWEZrZrWEWEZrMGZrZrZrZrWEWEWEMGZrZrZrZrZrZrZrZrVxacacafacacZrVxZrZrZrWExTPqPqPqxTZrZrZrZrMGZrZrZrZrZrWEZrZrZrZrZrZrEWaaEWZrMGMGMGMGMGMGMGWvSqMGvuMGMGWvBoMGMGMGMGMGMGMGMGMGxTxTMGWvMGMGMGMGMGPnMGMGMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrWEWEVxZrVxHpWEWEZrYGZrZrZrZrZrZrZrMGZrZrZrZrVNZrZracacacadahaCacacacZrVxZrZrxTPqPqPqxTWEWEDZZrOOMGozVxZrWEHVWEVNZrZrZrWEEWEWEWZrZrMGvuZrMGWvZrZrZrZrZrZrMGMGMGMGMGMGMGMGMGMGMGMGxTxTMGMGMGMGMGMGMGMGMGMGMGSqMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrWEWEZrWEWEVxZrVxZrWEZrZrYGWEZrZrZrZrFkZrZrZrZrozZrWEZrZracfrfrehehfkfrfracZrZrWEWExTPqPqPqxTWEMGZrZrZrZrMGZrZrZrZrZrZrWEWEHVZrEWEWEWZrZrMGMGMGHkMGMGMGPnSqSqMGMGZrHkPnefMGMGWvMGMGMGxTxTMGvuvuMGMGMGMGMGMGMGMGMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrMGZrZrMGCIZrZrZrZrZrVNVxZrWEWECICIDZZrOOZrZrZrZrZrZrZraeaeehehehcHehehehaeacZrVxCIxTPqPqPqxTWEMGZrZrZrzxYGZrZrZrMGZrZrZrZrZrZrZrEWEWEWZrMGLTMGMGMGvuZrMGMGMGMGLTMGMGMGMGMGMGPnSqSqxTxTMGMGvuMGMGSqMGMGMGWvMGMGMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZroYoYoYoYoYoYZrVxZrZrMGZrZrZrHVZrZrZrVxWEZrZrCIWEZrZrZrZrZrVxCIZrZrZreDehehehewcYddeheheheDMGZrZrxTPqPqPqxTVNZrZrZrZrZrYGWEZrZrZrWEMGZrMGZrDZZrEWaaEWZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGvuZrMGMGxTxTxTSqSqMGPnMGHkMGMGWvLTMGZrMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZroYoYoYZrZrVxZrZrZrVxZrSYZrZrWEsSZrZrZrZrZrZrZrMGZrMGZrWEZrZrZracaefleieqfnewfnfleieqaeacZrZrxTPqPqPqxTZrZrZrWEozZrZrWEWECIZrZrWEVxVxMGRDEWEWaaaaEWSqMGHkMGMGLTMGLTSqSqMGzTLTMGMGMGMGMGMGMGxTxTMGMGMGMGLTMGHkMGMGMGMGMGMGMGPnSqSqMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrFkZrVNZrZrZrHpZrZrZrYGYGYGZrZrVxWEWEZrZrZrZrZrHpZrZrZrZrZrWEZrZracacehehehehewewewehehehehacacZrxTPqPqPqxTZrZrZrZrZrWEWEZrZrCIZrWEZrVNWEZrZrZrEWEWaaEWvuMGMGvuZrMGMGSqMGMGMGSqZrZrZrMGLTMGLTSqxTxTMGZrZrLTLTMGMGHkHkMGMGMGMGMGMGMGMGZr
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrWEZrVNZrZrZrZrHkZrYGZrHVZGWEWEWEZrVxZruPWEZrYGYGYGZrZrZrZrZracehfleieieqewewewfleieieqezacZrxTPqPqPqxTbqcRbqZrZrZrZrZrZrZrZrZrVxHpWEMGVNMGZraaaaEWMGMGMGMGMGMGHkMGPnMGMGMGMGMGMGMGMGMGSqxTxTxTMGMGMGMGMGvuMGMGMGHkMGMGPnMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrWEWEZrZrZrZrVNVNMGWEWEMGWEWEWEZrZrZrZrYGYGZrZrZrZrZrZreDehfkehehehewewewehehehfkezeDZrxTPqPqPqxTZrZrbqWEzxZrZrZrZrZrZrZrVxZrWEZrZrZrZrEWaaEWEWZrMGLTMGMGMGMGMGMGSqzTMGSqMGSqMGHkxTxTxTxTMGMGMGMGMGMGSqMGMGHkLTMGMGMGMGWvMGzT
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNVNVNVNZrZrZrZrWEZrZrZrVxVxZrZrZrZrZracfleifmeieqfnewfnfleifmeieqacZrxTPqPqPqxTMGZrbqZrWEVxVxZruPWEVNZrWEDZZrWEWEZrZrZraaEWZrMGMGMGMGMGMGMGSqMGMGSqMGMGMGvuxTxTxTxTxTvuMGMGMGMGMGSqMGMGMGMGMGSqSqMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrVNVxZrZrZrYGDZMGYGMGYGVNMGZrWEVNZrZrZrZrVNZrHpZrZrZrZrZrZreDehfqehehehewfpewehehehfqezeDZrxTPqPqPqxTMGZrZrWEZrZrWEZrZrZrZrWEZrWEWEWEYGZrZrZrEWEWZrZrSqMGHkMGMGWvMGMGMGMGMGWvMGxTxTxTMGSqHkMGMGMGMGMGMGMGMGMGMGyZMGWvMGSqSqMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYoYZrZrZrZrZrZrZrZrMGYGYGYGZrMGMGMGMGMGMGZrZrZrZrvuVxYGZrZrZrZrZrZracfrfrfracaedyaedyaeacfrfrfracZrxTPqPqPqxTZrZrZrZrVxHpWEWEWEZrWEZrWEVNZrWEZrZrWEZrZrEWEWZrvuMGMGMGMGMGMGSqxTMGuNxTxTxTxTMGMGMGMGMGMGMGMGMGMGMGMGMGMGzTvuMGMGMGMGMGMGMG
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEDZMGWEWEMGZrMGvuZrYGZrYGZrZrZrZrbqbqacaceDaeaefsfsftfsfsaeaeeDacacdjxTPqPqPqdAZrZrZrZrVxZrWEWEHpWEDZZrZrSYZrWEZrZrWEZrZrEWEWZrMGMGMGMGWvMGMGxTxTxTxTxTxTMGMGMGMGMGMGWvMGMGMGMGMGMGMGMGMGLTMGMGMGMGzTcpMGMG
-oYoYoYoYoYoYoYoYoYoYoYZrZroYZrZrZrZrZrZrZrZrZrZrZrZrZrFkFkVxZrVxZrZrZrZrZrZrZrZrZrHVZrOOZrZrozZrxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTdDxTxTxTxTxTPqPqPqxTZrZrvuZrZrZrZrZrZrZrZrZrZrZrZrZrWEZrWEZrZrEWaaEWZrZrMGMGMGMGxTxTxTxTxTxTMGMGPnSqSqMGMGPnMGMGMGMGPfMGMGMGMGMGMGWvSqSqMGMGMGMG
-oYoYoYoYoYoYZroYZrYGYGZrZrZrZrMGWEWEZrZrZrWEsSZrDZZrZrFkFkZrZrCIMGZrZrNOZrzxZrCIZrZrZrZrYGGnVNZrxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqedPqPqPqPqPqPqPqxTozZrZrZrZrZrZrMGZrZrZrHVZrZrZrZrZrZrWEZrZrZraaEWZrZrMGSqMGMGxTxTSqMGMGMGvuMGMGMGMGMGMGMGMGMGMGBoMGMGPnMGMGMGMGMGMGMGMGMGMGMG
-oYoYoYoYoYoYZrZrZrYGYGZrZrZrVxZrZrZrNOZrZrZrZrZrZrVxZrZrMGZrZrZrZrZrZrMGZrZrYGZrZrZrVxVxZrZrZrZrxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTZrZrWEZrZrVNVNWEZrZrZrYGZrWEsSZrDZZrZrVxZrZraaaaZrZrMGMGMGxTxTxTMGxTMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGHkMGMGMGMGMG
-oYoYoYoYoYoYZrZrZrYGZrVxVxZrCIMGZrVNZrZrZrZrHVZrVxVxZrZrZrZrZrZrZrHpZrZrZrYGYGYGZrZrZrZrZrYGfvZrxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTCIZrWEWECIZrZrWEWEZrZrZrZrZrZrYGZrZrZrVNZrZrEWaaEWZrMGMGxTxTxTMGMGMGMGMGLTMGLTSqSqMGzTMGMGMGZrHkMGefefefMGMGMGMGMGMGMGPnMGZr
-oYoYoYZrCIZrZrVNZrYGZrZrZrZrWEMGZrWEFkZrVNZrZrZrHpZrZrZrYGVxZruPWEYGVNYGZrxTaiaiajanaxaxayxTaiaixTPqPqPqxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTPqPqPqxTdIZrZrZrCIWEWEZrWEWEVxZrZrWEZrZrZrVNZrWEVNZrEWaaEWZrMGxTxTxTvuMGMGMGMGMGMGMGSqMGMGMGSqMGMGMGMGMGMGMGMGzTHkMGZrMGPnvuMGSKMGZr
-oYoYZrZrZrZrZrZrVxZrVxHpZrZrZrMGMGZrZrZrWEZrVNZrZrZrZrHkZrWEZrZrZrZrZrOcZraAZrZrZraBcUcUaEZrZrZraHPqPqPqxTaZbbbbcXbeaZbbbbbbcXbeagaZaZaZxTPqPqPqxTxTZrZrZrZrZrWEZruPZrZrZrMGWEZrZrHVZrZrZrZrZrEWaaEWZrxTxTxTMGMGINMGMGMGMGMGHkMGPnMGMGMGSqMGMGMGMGMGMGMGMGMGMGhkSqSqMGMGMGMGMG
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrMGZrZrZrHVZrZrZrZrZrZrZrMGZrZrMGxTPqPqPqxTWEZrFkZrZrZrEWEWEWEWZrZrMGVxMGVNMGZrMGZrVxZrZrVNMGMGVNEWaaaaEWZrZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrVxZrSYZrZrWEsSWEWEDZZrWEZrZrMGxTPqPqPqxTZrZrZrWEWEZrZrEWZrEWEWEWZrZrMGZrZrMGMGFkVNMGZrVxZrZrZrEWEWEWZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrYGYGYGZrZrVxWEWEVxCIZrZrMGWEVNMGxTPqPqPqxTZrFkMGMGZrZrMGZrZrEWZrEWEWFkVNHVZrVNZrMGZrHVMGZrMGEWaaaaEWZrZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYHkZrYGZrHVZGWEWEWEZrZrWEWEZrWEWEVxxTPqPqPqxTZrZrZrZrZrVxZrMGZrZrZrEWEWEWZrZrMGMGZrZrMGZrZrZrEWEWaaEWZrZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYZrZrVNVNMGWEWEMGWEWEMGMGZrZrMGCIZrxTPqPqPqxTZrZrHVZrVxVxMGMGMGMGZrZrEWEWEWZrVxuPHVMGMGFkMGZrEWaaEWEWZrZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrVxZrVxVNVNVNVNZrZrZrVxZrZrMGZrZrxTPqPqPqxTVNZrZrZrHpZrZrMGZrMGZrZrZrEWEWZrVNZrVNZrMGZrZrEWEWEWEWZrMGoYoYaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrYGDZMGYGMGYGVNMGZrWEVNVxVxZrZrZrVxZrxTPqPqPqxTWEZrVNMGZrMGZrMGMGVNZrWEZrEWEWEWZrMGZrHVZrZrEWaaEWEWZrZrZroYoYaIoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrZrMGYGYGYGZrMGMGMGMGMGMGHpZrZrZrYGYGYGxTPqPqPqxTMGZrZrWEWEMGZrZrHVZrZrZrZrZrEWEWZrHVZrZrZrEWaaaaEWZrZrMGoYoYoYaIoYoYZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrVxFkMGZrWEWEZrZrZrZrZrZrMGWEDZMGWEWEMGZrZrZrHkZrYGZrxTPqPqPqxTZrZrWEZrWEZrZrZrZrDZZrZrMGZrZrEWZrZrZrEWEWaaaaEWZrZrZrMGMGoYoYaIoYZrMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrMGZrZrZrFkFkVxZrVxZrZrZrZrZrZrZrWEZrZrZrZrVNVNxTPqPqPqxTZrVNVxZrMGZrYGMGZrZrZrVNZrZrZrEWEWZrEWEWaaaaEWZrZrMGMGoYoYoYoYaIoYHkZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrMGWEDZZrZrFkFkZrZrCIMGZrZrNOZrzxZrWEZrZrZrVxZrZrxTPqPqPqxTMGZrZrZrZrZrMGZruPHVZrOOZrMGZrZrEWEWEWEWaaEWZrZrMGMGPnoYZroYoYaIoYoYLTMGLTSqoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrRDZrWEWECICIDZZrOOZrZrZrZrZrVNVxZrZrZrYGDZMGYGMGxTPqPqPqxTZrZrWEWEzxZrZrZrZrVNZrWEMGMGZrZrZrEWEWEWEWEWZrMGvuZrMGMGMGoYoYaIoYMGMGMGSqMGMGMGSqZroYoYoYoYoYoYoYoYoYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrWEZrZrCIWEZrZrZrZrVxCIZrZrZrZrZrZrZrMGYGYGYGZrxTPqPqPqxTZrZrZrZrWEVxFkZrHVZrZrZrZrZrZrZrZrEWEWEWEWZrZrMGMGMGMGMGMGoYMGaWMGLTZrZrMGZrMGZrZrZrMGZrZrZroYZrMGLTxToYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrZrZrMGZrMGWEZrZrZrZrWEWEZrZrZrZrZrZrMGxTPqPqPqxTVxWEZrWEZrVNVxZrZrDZZrZrMGWEZrMGEWEWaaaaEWEWZrMGLTMGMGMGZrMGMGaWMGMGZrMGZrZrSqZrMGMGMGPnSqSqMGMGMGxTxToYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrVNVNFkZrZrZrZrHpZrZrZrZrWEWEZrZrZrZrZrZrFkFkVxZrVxZrxTPqPqPqxTWEWEZrZrVxHpVxMGMGZrMGMGZrZrZrZrZrEWaaaaEWZrMGMGMGMGMGWvMGvuPnbiMGzTSqSqMGMGGSGSGSMGSqMGMGMGMGLTxTxToYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrVxZruPWEZrYGYGYGZrMGZrZrsSZrDZZrZrFkFkZrZrCIMGxTPqPqPqxTZrWEMGZrRDMGZrMGuPMGZrOOWEZrMGZrZrEWaaaaZrZrZrSqMGMGWvZrMGMGMGaWMGSqMGMGMGGSQPbLQPGSMGMGLTMGMGMGxTxTMGoYMGoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYZrZrZrZrWEZrZrZrZrYGYGZrZrZrZrvuWEWETfZrVxZrZrZrFktdunxTPqPqPqxTZrZrMGZrMGZrZrMGZrMGMGZrWEZrMGZrZraaaaEWZrMGZrvuMGMGZrMGvuMGMGaWMGMGMGMGMGETpFpFpFETMGMGMGSqMGxTxTMGMGMGMGoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZroYoYoYZrZrZrZrZrZrZrMGZrZrMGWEMGZrZrDZWEZrFkZrZrZrWEWEVxZrWEZrZrZrMGxTPqPqPqxTWEZrZrZrZrVxZrWEWEMGVxMGWEWEZrMGEWaaaaEWZrMGefMGMGMGPnMGMGMGMGaWMGMGPnSqSqGSQPpFQPGSSqMGzTMGcJcJMGMGWvoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYoYoYZrZroYZrZrZrZrZrZrZrZrZrDZZrWEZrZrMGWEMGZrZrVNZrZrZrWEWEZrWEWEVxZrOOZrZrZrCIxTPqPqPqxTWEZrVNVNFkCIZrWEZrZrWEYGZrZrWEFkWEEWaaEWZrMGMGMGMGMGMGMGMGMGZraWvuZrMGMGMGMGGSIeGSHkMGMGSqxTcJcJMGvuoYoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrMGWEVNMGVNZrZrWEMGZrFkMGMGZrZrMGCIZrZrWEWEZrZrWExTPqPqPqxTWEWEZrZrZrZrozOOVNZrWEYGYGZrZrZrZrEWaaZrZrMGefMGMGMGSqMGvuMGMGaWMGMGMGMGMGMGMGMGLTMGMGMGxTxTxTMGMGMGMGoYoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrCIZrWEWEZrWEZrZrWEWEZrMGZrZrZrZrWEWEWEMGZrZrZrZrZrZrZrZrVxacacafacacZrVxZrZrZrWExTPqPqPqxTZrZrZrZrMGZrZrZrZrZrWEZrZrZrZrZrZrEWaaEWZrMGMGMGMGMGMGMGWvSqMGaWLTMGLTSqSqMGzTMGMGMGMGxTxTxTMGMGMGLTMGZrZroYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrWEWEVxZrVxHpWEWEZrYGZrZrZrZrZrZrZrMGZrZrZrZrVNZrZracacacadahaCacacacZrVxZrZrxTPqPqPqxTWEWEDZZrOOMGozVxZrWEHVWEVNZrZrZrWEEWEWEWZrZrMGvuZrMGWvZrZrZrZraWMGMGSqMGMGMGSqMGzTMGxTxTVsSqSqMGMGMGMGMGZroYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrWEWEZrWEWEVxZrVxZrWEZrZrYGWEZrZrZrZrFkZrZrZrZrozZrWEZrZracfrfrehehfkfrfracZrZrWEWExTPqPqPqxTWEMGZrZrZrZrMGZrZrZrZrZrZrWEWEHVZrEWEWEWZrZrMGMGMGHkMGMGMGPnSqbiMGHkMGPnMGMGMGMGSqxTxTxTSqMGMGMGSqMGHkMGoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrMGZrZrMGCIZrZrZrZrZrVNVxZrWEWECICIDZZrOOZrZrZrZrZrZrZraeaeehehehcHehehehaeacZrVxCIxTPqPqPqxTWEMGZrZrZrzxYGZrZrZrMGZrZrZrZrZrZrZrEWEWEWZrMGLTMGMGMGvuZrMGMGpwZrSqMGHkMGPnMGMGxTxTxTHkMGPnMGMGMGZrZrMGMGZroYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZroYoYoYoYoYoYZrVxZrZrMGZrZrZrHVZrZrZrVxWEZrZrCIWEZrZrZrZrZrVxCIZrZrZreDehehehewcYddeheheheDMGZrZrxTPqPqPqxTVNZrZrZrZrZrYGWEZrZrZrWEMGZrMGZrDZZrEWaaEWZrMGMGMGMGMGMGMGMGMGaWSqMGMGMGMGMGBoMGxTxTMGMGMGMGHkMGPnMGMGMGMGZroYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZroYoYoYZrZrVxZrZrZrVxZrSYZrZrWEsSZrZrZrZrZrZrZrMGZrMGZrWEZrZrZracaefleieqfnewfnfleieqaeacZrZrxTPqPqPqxTZrZrZrWEozZrZrWEWECIZrZrWEVxVxMGRDEWEWaaaaEWSqMGHkMGMGLTMGLTSqaWLTSqMGMGMGMGMGxTxTMGPnMGMGMGSqMGMGMGMGMGoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrFkZrVNZrZrZrHpZrZrZrYGYGYGZrZrVxWEWEZrZrZrZrZrHpZrZrZrZrZrWEZrZracacehehehehewewewehehehehacacZrxTPqPqPqxTZrZrZrZrZrWEWEZrZrCIZrWEZrVNWEZrZrZrEWEWaaEWvuMGMGvuZrMGMGSqMGbiSqMGMGMGMGZrHkxTxTxTMGMGMGMGLTSqMGMGMGHkoYMGoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrWEZrVNZrZrZrZrHkZrYGZrHVZGWEWEWEZrVxZruPWEZrYGYGYGZrZrZrZrZracehfleieieqewewewfleieieqezacZrxTPqPqPqxTbqcRbqZrZrZrZrZrZrZrZrZrVxHpWEMGVNMGZraaaaEWMGMGMGMGMGMGHkMGPnaWMGMGMGMGMGMGxTxTxTMGMGMGMGSqSqMGMGMGMGMGMGZroYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrWEWEZrZrZrZrVNVNMGWEWEMGWEWEWEZrZrZrZrYGYGZrZrZrZrZrZreDehfkehehehewewewehehehfkezeDZrxTPqPqPqxTZrZrbqWEzxZrZrZrZrZrZrZrVxZrWEZrZrZrZrEWaaEWEWZrMGLTMGMGMGMGMGaWMGMGMGSqMGxTxTxTMGMGMGMGMGMGMGMGMGMGMGMGZrZrZroYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNVNVNVNZrZrZrZrWEZrZrZrVxVxZrZrZrZrZracfleifmeieqfnewfnfleifmeieqacZrxTPqPqPqxTMGZrbqZrWEVxVxZruPWEVNZrWEDZZrWEWEZrZrZraaEWZrMGMGMGMGMGMGMGSqpwZrZrMGMGxTxTxTWvSqSqMGvuMGMGMGMGMGSqMGMGZroYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrVNVxZrZrZrYGDZMGYGMGYGVNMGZrWEVNZrZrZrZrVNZrHpZrZrZrZrZrZreDehfqehehehewfpewehehehfqezeDZrxTPqPqPqxTMGZrZrWEZrZrWEZrZrZrZrWEZrWEWEWEYGZrZrZrEWEWZrZrSqMGHkMGMGWvMGbiMGMGMGxTxTxTMGMGMGHkMGMGMGZrZreVMGMGoYoYZroYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYoYZrZrZrZrZrZrZrZrMGYGYGYGZrMGMGMGMGMGMGZrZrZrZrvuVxYGZrZrZrZrZrZracfrfrfracaedyaedyaeacfrfrfracZrxTPqPqPqxTZrZrZrZrVxHpWEWEWEZrWEZrWEVNZrWEZrZrWEZrZrEWEWZrvuMGMGMGMGMGMGaWaWaWaWviviaWaWaWaWvXaWaWaWbiaWaWaWaWaIaIaIaIaIaIaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEDZMGWEWEMGZrMGvuZrYGZrYGZrZrZrZrbqbqacaceDaeaefsfsftfsfsaeaeeDacacdjxTPqPqPqdAZrZrZrZrVxZrWEWEHpWEDZZrZrSYZrWEZrZrWEZrZrEWEWZrMGMGMGMGWvMGMGxTxTxTxTxTxTMGMGMGMGMGMGWvMGMGMGMGMGMGoYoYoYoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYZrZroYZrZrZrZrZrZrZrZrZrZrZrZrZrFkFkVxZrVxZrZrZrZrZrZrZrZrZrHVZrOOZrZrozZrxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTdDxTxTxTxTxTPqPqPqxTZrZrvuZrZrZrZrZrZrZrZrZrZrZrZrZrWEZrWEZrZrEWaaEWZrZrMGMGMGMGxTxTxTxTxTxTMGMGPnSqSqMGMGPnMGMGMGMGPfMGoYoYoYoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYZroYZrYGYGZrZrZrZrMGWEWEZrZrZrWEsSZrDZZrZrFkFkZrZrCIMGZrZrNOZrzxZrCIZrZrZrZrYGGnVNZrxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqedPqPqPqPqPqPqPqxTozZrZrZrZrZrZrMGZrZrZrHVZrZrZrZrZrZrWEZrZrZraaEWZrZrMGSqMGMGxTxTSqMGMGMGvuMGMGMGMGMGMGMGMGMGMGBoMGMGPnMGMGoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYZrZrZrYGYGZrZrZrVxZrZrZrNOZrZrZrZrZrZrVxZrZrMGZrZrZrZrZrZrMGZrZrYGZrZrZrVxVxZrZrZrZrxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTZrZrWEZrZrVNVNWEZrZrZrYGZrWEsSZrDZZrZrVxZrZraaaaZrZrMGMGMGxTxTxTMGxTMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGoYoYoYoYoYoYoYoYoY
+oYoYoYoYoYoYZrZrZrYGZrVxVxZrCIMGZrVNZrZrZrZrHVZrVxVxZrZrZrZrZrZrZrHpZrZrZrYGYGYGZrZrZrZrZrYGfvZrxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTCIZrWEWECIZrZrWEWEZrZrZrZrZrZrYGZrZrZrVNZrZrEWaaEWZrMGMGxTxTxTMGMGMGMGMGLTMGLTSqSqMGzTMGMGMGZrHkMGefefefMGoYoYoYoYoYoYoYoYZr
+oYoYoYZrCIZrZrVNZrYGZrZrZrZrWEMGZrWEFkZrVNZrZrZrHpZrZrZrYGVxZruPWEYGVNYGZrxTaiaiajanaxaxayxTaiaixTPqPqPqxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTPqPqPqxTdIZrZrZrCIWEWEZrWEWEVxZrZrWEZrZrZrVNZrWEVNZrEWaaEWZrMGxTxTxTvuMGMGMGMGMGMGMGSqMGMGMGSqMGMGMGMGMGMGMGMGzTHkoYoYoYoYoYoYSKMGZr
+oYoYZrZrZrZrZrZrVxZrVxHpZrZrZrMGMGZrZrZrWEZrVNZrZrZrZrHkZrWEZrZrZrZrZrOcZraAZrZrZraBcUcUaEZrZrZraHPqPqPqxTaZbbbbcXbeaZbbbbbbcXbeagaZaZaZxTPqPqPqxTxTZrZrZrZrZrWEZruPZrZrZrMGWEZrZrHVZrZrZrZrZrEWaaEWZrxTxTxTMGMGINMGMGMGMGMGHkMGPnMGMGMGSqMGMGMGMGMGMGMGMGMGMGhkSqoYMGoYMGMGMG
 oYZrZrZrWEZrZrZrZrVxZrZrZrZrWEZrVxZrZrZrZrZrZrWEWEZrZrZrZrVNVNMGHVMGZrZrZraAZrxTxTZrxTxTxTZrYGYGaHPqPqPqxTaZatbhbhavavaTbbfwdFfxbhbhcoaZxTPqPqPqxTekZrZrZrZrZrZrZrZrZrZrZrZrZrWEZrZrDZZrZrVNZrMxMxMxxTxTxTMGMGMGhkSqSqSqSqMGMGMGMGMGMGMGLTSqMGMGMGhkZrMGMGPnSqZrMGMGZrMGMGMGPn
-ZrZrZrZrWEZrZrZrZrVxZrZrZrZrZrVxVxZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNZrYGYGZrZraAZrZrxTZrZrxTxTxTYGZraHPqPqPqxTcXdQbobhbhbhbhagbhbhdNbhdNdNbbxTPqPqPqxTbebebeaZaZaZaZbbaZaZaZZrZrZrWEZrZrZrZrVNZrxTxTMxMxxTMGMGMGMGMGLTMGMGzTvuMGMGMGMGMGMGSqSqMGMGMGMGMGhkSqMGMGMGZrzTSqMGMGHkMGMG
+ZrZrZrZrWEZrZrZrZrVxZrZrZrZrZrVxVxZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNZrYGYGZrZraAZrZrxTZrZrxTxTxTYGZraHPqPqPqxTcXdQbobhbhbhbhagbhbhdNbhdNdNbbxTPqPqPqxTbebebeaZaZaZaZbbaZaZaZZrZrZrWEZrZrZrZrVNZrxTxTMxMxxTMGMGMGMGMGLTMGMGzTvuMGMGMGMGMGMGSqSqMGMGMGMGMGhkSqMGMGMGZrzToYMGMGHkMGMG
 ZrZrZrZrWEZrZrRDozZrZrWEZrZrZrWEZrozZrZrZrVNVxZrZrZrYGDZMGYGMGYGZrZrYGZrZraAZrZrZrZrdRZrZrxTZrZraHPqPqPqxTaZbhbhbhbhbhfybbbhbhbhbhbhdTbbxTPqPqPqxTaZbGbPcwcwfzcEcFbGbGbeZrZrWEZrZruPHVZrxTxTxTxTMxMxZrMGMGMGMGMGZrMGMGLTMGMGMGMGMGMGMGMGMGMGMGMGMGSqZrMGzTMGMGZrMGMGMGMGMGMGPn
 ZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrMGYGYGYGZrMGMGZrFkYGZraAZrZrZrZrZrZrZrZrxTZraHPqPqPqxTbeaZbbagbbcXaZbbbbcXbbbecXbbbbxTPqPqPqxTaZcGbjbjbjbjbjbjbjbjbeZrxTxTFkZrZrZrxTxTxTxTZrEWaaEWWvMGPnvuMGhkMGMGMGMGWvSqSqMGvuMGMGMGMGMGSqMGMGZrzTMGzTMGMGMGPnMGMGMGMGMG
 ZrHVVxWEZrZrZrZrVxZrZrZrZrJPZrVxZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEZrZrWEFkxTaAZrxTZrZrZrZrZrZrxTZraHPqPqPqxTeAxTxTxTxTxTxTxTxTxTxTxTxTxTeBeQPqPqPqeTaZfAbjfBfCcIfCcIbjfDbbZrozxTxTxTxTxTxTxTVxZrZrEWaaEWEWMGvuHkVNMGPnMGMGMGMGMGHkMGMGMGZrZreVMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMG
@@ -627,17 +635,17 @@ ZrZrZrYGWEZrZrZrZrFkZrZrZrozZrZrZrWEsSZrDZZrZrFkFkZrZrCIMGZrZrNOZrzxZrZrZrZrxTZr
 ZrZrZrZrWEWECICIDZZrOOZrZrZrZrCIZrZrZrZrVxCIZrVxZrZrWEWEDZZrZrZrZrZrLvbqbqxTxTgldrdkdkdkdkdkdkdkjNPqPqPqxTalaoaoaoaoaododqdmaoaoaoaoaoalxTPqPqPqxTgmaoaognaogocaxTZrZrxTxTPqPqPqPqPqxTxTZrZrZrZrMGZrFkmTEWEWZrZrMGMGMGZrZrMGLTMGHkMGZrZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGZrMGMG
 ZrZrZrWEZrZrCIWEZrZrZrZrVxCIZrZrZrZrWEHVWEozZrZrozZrVxCIZrZrZrZrZrZrbqZrxTxTdsZrdpdpdpdpdpdpdpdpxTPqPqPqxTaldtaoaoaoduaUaoaUdvawaoaodtalxTPqPqPqxTacaoaogpgqgocaxTZrxTxTPqPqPqPqPqxTxTdIZrZreVozZrFkEWEWEWZrZrZrMGZrWvPnMGLTLTMGMGHkVNZrMGMGMGMGMGMGMGMGSqMGvuMGMGMGMGPnMGaVWv
 ZrZrZrZrZrZrZrZrZrMGZrMGWEZrZrWEZrvuZrZrZrZrWEWEZruQbqFbZrWEZrZrZrWEWExTxTdsdwdsgcdkdxdkdkdkdkgdxTPqJjGgfaakalaldedealalMaalaldedeakalakeBPqPqPqxTcaacacgkacaccaPexTxTPqPqPqPqPqxTxTZrZrvuDZMGMGZrEWEWEWZrZrZrMGMGMGMGMGZrMGMGMGMGHkHkMGMGPnMGMGPnMGMGPnMGSqMGMGLTWvMGMGMGSqMG
-xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTPquaqOxTxTjNxTfgfgdzcbxTcbdzfgfgxTxTeWxoPqPqPqxTeGmQfaWWDGxTxTxTxTPqPqPqPqPqxTxTZrZrZrHkMGZrZrFkEWEWZrZrZrMGZrZrMGMGMGMGZrZrMGZrVNHkaVMGMGMGMGhkhkMGEXZrMGMGMGZrzTMGSqSqSqMG
-PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxVPqPqPqPqPqARPqPqPquaMFPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqfiCgPqPqPqliPqPqPqPqPqxTxTdIZrFkZrZrZrFkEWEWEWZrZrZrMGZrZrZrZrZrSqZrDZZrZrPnZrMGZrhkhkZrZrOOVxZrMGMGMGZrZroJZrZrZrOOVxMG
-PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqMFPqPqPqPqPqARPqPqPqJjGgPqPqPqPqPqPqPqMoAGeRPqPqPqPqPqPqPqPqPqPqPqPqPqfilMPqPqPqARPqPqPqPqxTxTZrZrZrMGeVZrFkEWaaEWZrZrZrZrZrEWEWEWEWeVZrZrEWEWZrZrZrAJZrEWEWZrEWaVEWZrZrZreVZrEWEWEWZrZrMCZrZr
-PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqnaPqPqPquakJPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqfiKRPqqhhxPqPqPqtIPqPqPqxTxTZrDZZrFkZrDZZrFkEWaaaaaaaaaaEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWZrEWZrDZ
-xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTPqPqPqxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTdAxTjNxTxTxTxTxTPqPqPqPqPqPqPqxTxTxTxTdDzGxTdDlfDGxTxTxTxTxTxTxTxTZrZrZrMGDZFkZrEWaaaaEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEWEWaaaaaaEWEWEWEWaaaaaaaaEWEWEWEWEWEWEW
-ZrVxCIZrVxZrZrWEWEDZZrZrZrWEWEDZZrMGgrZrZrvuZrZrZrmTbqxTZrVxZrZrZrxTxTPqPqPqxTcacdcddBcdcdcadGxTZrZrUraZaZdCaZaZccZrxTccxTPqPqXxshududWWfafacacdcdcecdcdcdxTxTxTbVbVaYbaaYaYaYaYaYZrFkFkZraaaaEWEWEWEWEWEWEWaaaaaaEWEWaaaaaaEWEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTPquaqOxTxTjNxTfgfgdzcbxTcbdzfgfgxTxTeWxoPqPqPqxTeGmQfaWWxTxTxTyFxTPqPqPqPqPqxTxTZrZrZrHkMGZrZrFkEWEWZrZrZrMGZrZrMGMGMGMGZrZrMGZrVNHkaVMGMGMGMGhkhkMGEXZrMGMGMGZrzTMGSqSqSqMG
+PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxVPqPqPqPqPqARPqPqPquaMFPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqfiCgPqPqDGliPqPqPqPqPqxTxTdIZrFkZrZrZrFkEWEWEWZrZrZrMGZrZrZrZrZrSqZrDZZrZrPnZrMGZrhkhkZrZrOOVxZrMGMGMGZrZroJZrZrZrOOVxMG
+PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqMFPqPqPqPqPqARPqPqPqJjGgPqPqPqPqPqPqPqMoMJeRPqPqPqPqPqPqPqPqPqPqPqPqPqfilMPqPqPqARPqPqPqPqxTxTZrZrZrMGeVZrFkEWaaEWZrZrZrZrZrEWEWEWEWeVZrZrEWEWZrZrZrAJZrEWEWZrEWaVEWZrZrZreVZrEWEWEWZrZrMCZrZr
+PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqnaPqPqPquakJPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqOfKRPqqhhxPqPqPqtIPqPqPqxTxTZrDZZrFkZrDZZrFkEWaaaaaaaaaaEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWZrEWZrDZ
+xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTPqPqPqxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTdAxTjNxTxTxTxTxTPqPqPqPqPqPqPqxTxTxTxTTKzGxTdDlfxTxTZCyFxTxTxTxTxTZrZrZrMGDZFkZrEWaaaaEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEWEWaaaaaaEWEWEWEWaaaaaaaaEWEWEWEWEWEWEW
+ZrVxCIZrVxZrZrWEWEDZZrZrZrWEWEDZZrMGgrZrZrvuZrZrZrmTbqxTZrVxZrZrZrxTxTPqPqPqxTcacdcddBcdcdcadGxTZrZrUraZaZdCaZaZccZrxTccxTPqPqXxshududWWfafacacdcdcecdcdcdgAdAdAbVbVaYbaaYaYaYaYaYZrFkFkZraaaaEWEWEWEWEWEWEWaaaaaaEWEWaaaaaaEWEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ZrZrZrDZVxozZrVxCIZrZrozZrVxCIZrZrZrZrZrZrvuvuZrvuZrZrxTbVaYbcaYaYbVxTPqPqPqxTcagsgtawgugvcaZrbebecXaZbebhbhbhaZccfafaccWWAGPqheeRnoRCxuyExucdcfcgbhchcicddGxTxTaYcjgwbdaYbKckbKaYZrMGHkHkEWaaEWZrZrZrZrEWEWEWEWEWZrEWEWEWZrEWEWEWEWEWEWEWEWEWEWaaaaEWEWEWEWEWEWEWEWEWaaaaaaaa
 ZrZrozZrZrZrMGZrZrZrZrZrMGZrZrZrZrHVZrMGZrHkxTWvvuozZrokaXcxbjbjbjaYxTPqPqPqxTcaawawawawawcaxTbebhbhdEaZbhbhdOaZccplyEAgRCIjhxwNRCplxTZrxTxTclbhbhbhbhbhcexTxTdIaYcmcnbdaYbdbdbdaYFkZrHkZrEWaaEWZrMGZrZrZrZrZrEWEWZrZrZrZrefefZrZrEWEWEWZrZrhkEWEWEWEWZrZrZrZrEWZrZrEWEWEWEWEW
 ZGZrVxZrZrzxYGZrZrZrZrzxYGZrZrxTZrZrxTZrZrxTHSZrZrZrxTxTaYczcxbjbjaYxTPqPqPqxTcagxguawgugycaxTdCbhbhbhbcbhdOexaZccxTxTPqPqPqPqPqxTxTZrdGZrxTcdcobhcqbhcrcdxTxTxTbacscnbdbcbdbdbKbaFkZrHkZraaaaEWZrZrZrMGMGMGZrZrZrZrMGMGZrefefZrZrZrEWVxVxZrZrVxrVEWZrZrMGZrZrZrZrZrZrVxVxZrZr
 WEZrZrZrZrZrYGWEZrWEZrZrWEWEZrZrZrxTxTZrYGZrZrZrZrzxYGxTaYdHcxbjbjaYxTPqPqPqxTcaawawawawawcaxTaZbhbheyaZbecXaZaZxTxTedPqPqPqPqxTxTxTxTdIdJxTcdcdcdcecdcdcdevxTxTaYbdbdbdaYbdbdctaYMGZrZrZrEWEWZrZrZrZrMGMGMGMGMGMGZrZrZrZrZrefefefZrZrZrVxMGZrVxZrZrhkMGZrMGWvMGZrMGMGVxZrZrZr
-ZrWEDZZrWEYGYGWEZrZrCIYGWEWEWECICIZrZrZrYGbVaYbcaYaYcBxTaYcxbjbjcCaYxTPqPqPqxTcaguguawgzgucaxTaZaZdKaZaZdLdMdMxTdAfcsxPqPqCxCNfgxTxTevZrZrxTxTxTxTxTxTxTxTxTxTxTbcbdaocuaYbdbKbKaYZrZrZrEWEWEWZrZrZrMGZrPnMGSqMGSqZrZrZrZrZrZrefZrZrMGMGMGMGMGZrMGMGMGMGMGMGSqMGMGMGMGMGZrZrZr
+ZrWEDZZrWEYGYGWEZrZrCIYGWEWEWECICIZrZrZrYGbVaYbcaYaYcBxTaYcxbjbjcCaYxTPqPqPqxTcaguguawgzgucaxTaZaZdKaZaZdLdMdMgAdAfcsxGPPqCxCNfgxTxTevZrZrxTxTxTxTxTxTxTxTxTxTxTbcbdaocuaYbdbKbKaYZrZrZrEWEWEWZrZrZrMGZrPnMGSqMGSqZrZrZrZrZrZrefZrZrMGMGMGMGMGZrMGMGMGMGMGMGSqMGMGMGMGMGZrZrZr
 ZrZrZrZrWEYGYGZrZrCIWEWEYGZrZrCIxTZrYGZrZraXbjbjbjbjaYxTbVaYbcbcaYbVxTPqPqPqxTcacdcdcacdcdcaZraZbhbhdOaZdIZrxTxTPqPqPqPqPqxTeQZrZrxTxTxTxTxTaZaZbeaZaZaZaZFkxTxTaYaYaYbaaYaYaYaYaYZrHkEWEWEWZrZrefZrMGZrMGMGMGvuvuMGMGZrZrMGZrZrefZrZrMGMGWvMGMGMGMGMGZrMGMGMGMGMGMGMGMGMGZrMG
 ZrozVxZrWEZrZrZrDZZrZrWEZrZrZrWEZrZrZrZrZraYczcxbjbjaYxTaXbjbjbjbjaYxTPqPqPqxTxTxTxTxTxTxTxTxTcXbhbhdPaZZrxTxTnatIARtIPqxTxTaYaYaYbcaYaYxTZrcvbhgBdOdPdOaZevxTeWihdGxTxTZrZrZrZrZrEWEWEWEWZrZrefZrZrZrZrZrZrMGMGMGMGMGZrZrMGMGZrefefZrZrMGMGMGMGMGMGMGMGMGMGMGWvMGMGMGMGMGMGMG
 ZrZrSYZrZrZrZrZrZrZrHpZrZrZrHVZrHpZrZrokZrbabjbjbjbjaYxTaYbjbjbjbjcAeWPqPquyfgbeaZaZaZaZaZaZxTbebhbhdOaZxTxTPqPqPqPqPqxTxTZraXeCcxbjcyaYxTZrgCbhbhbhbhbhgCxTxTZrZrZrDZZrZrWvHkZrFkEWaaaaEWZrZrZrZrZrZrMGMGZrMGZrZrMGMGMGZrZrMGZrefefefaVSqZrMGMGMGMGPnMGSqMGSqSqMGMGPnMGMGMGMG
@@ -650,48 +658,48 @@ WEVxZrZrZrZrZrgFgFgFgFgFgFgFgFgFxTgKYGZrgNaYczcxbjbjaYxTaYaYbcaYaYaYxTPqPqPqxTaZ
 ZrZrZrZrHVZrMGgFgFgFgFgFgFgFgFgFxTgOFkYGZrbaczcxbjbjcAxTaXbjbjbjbjaYxTPqPqPqxTxTZrxTZrZrxTeQxTPqPqPqPqPqxTxTZrZraXeIbjgPeJaYZrxTaXcCbjbjbjaYMGZrdfdfZrFkEWMxMxaaaaaaEWEWFkEWEWEWZrZrZrMGMGSqPnLTMGMGMGSqMGMGGEZrVNZrfhMGZrMGZrIBZrMGMGPnMGMGMGMGZrZrMGMGPnMGMGMGMGSqMGMGMGMGvu
 EWEWEWZrZrZrWEengFgFgFgFgFgFgFgFxTgKdcZrZraYcybjbjejaYxTaYeLcxbjbjaYxTPqPqPqxTxTxTxTxTxTxTeQPqPqPqPqPqxTxTZrZrevaYbjbjbjeKaYZrxTaYbjbjbjbjaYecFkHkZrZrEWaaMxMxaaEWEWFkFkFkFkEWZrMGMGZrPnMGMGMGMGMGPnMGMGfhSqLWfhMGfhfhMGZrZrZrZrZrMGMGMGMGMGMGWvMGMGMGMGZrMGMGMGWvMGMGSqSqMGPn
 aaaaEWEWekWEWEenenenengFgFgFgFgFxTgKgHgHgKaYaYbcaYaYaYxTaYbjbjbjcCcAxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTxTeBxTZrZrbabjbjbjeJcAZrxTbacDcxbjbjcAeMFkZrZraaaaaaMxMxEWFkFkFkZrZrZrEWZrPnLTMGMGMGMGZrMGSqMGMGMGMGMGMGMGHkHkHkMGMGZrJrZrJrMGMGZrWvMGuNMGMGMGMGMGMGMGMGMGMGMGMGMGzTSqph
-EWaaaaaaEWEWenenjOenenengQgFgFgFxTxTxTgRgSaXbjbjbjbjaYxTaYerbjbjcCaYxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTxTZritxTxTZraYcybjbjeNaYxTxTaYczbjbjcyaYeOePZraaaaEWZrMxMxZrZrZrZrZrZrZrPnLTMGSqMGMGMGMGSqefefZrZrMGMGMGMGMGLTSqMGMGMGMGMGMGMGMGMGSqMGMGMGMGWvMGMGMGMGMGMGWvMGMGMGMGMGzTMG
-EWEWEWEWEWEWEWEWEWenenenengFgFgFZrxTgTxTgUaYcCbjbjcCaYxTaYaYbcbccBaYxTPqPqPqPqPqPqPqPqPqPqPqPqPqxTxTHIHIlNMGxTxTaYaYbcbccBaYxTZraYaYbcbccBaYeSZrFkaaEWZrZrxTxTZrZrxTZrZrZrZrMGMGMGvuMGMGPnMGMGefefefZrZrMGMGMGSqSqMGMGMGMGZrHkMGMGMGMGSqzTMGSqMGZrMGPnSqSqMGMGMGMGMGMGMGWvMGMG
-ZrZrEWZrZrZrEWEWEWEWenenenenengFVNxTxTxTeobacCbjbjbjcAxTZrekxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTZrZrMGMGMGMGxTxTxTxTxTxTxTxTxTxTxTxTxTZrZrZrEWaaEWEWZrZrxTxTxThmxTxTxTxTZrMGMGSqMGMGZrMGMGMGMGSqMGefZrMGPnMGMGMGMGMGMGMGMGMGMGMGSqMGMGSqMGMGMGZrMGMGMGMGWvMGSqMGzTMGMGZrMGZr
-SqMGMGMGSqMGSqZrEWEWEWenenenenenenZrZrVNdJaYcCbjbjcCaYxTxTxTxTZrZrZrZrYGZrxTxTbVbVbcbcaYaYbaaYaYMGMGMGWvMGPnvuMGhkMGMGMGMGMGLTMGZrMGMGZrZrFkEWaaaaEWZrMGxTxTxTxTxTxTxTxTxTxTxTZrZrMGMGSqMGMGMGMGMGZrefefMGvuMGMGMGMGMGSqMGMGMGMGWvMGMGMGMGMGWvMGMGMGZrMGMGMGMGZrMGZrMGSqWEMGZr
-SqMGSqSqMGMGSqZrZrEWEWaaaaDpOrOrOrOrnVVNZrbVaYbcbccBbVZrxTxTZrZrZrWvMGZrxTxTMGaYcjbdbdaYbKbdbKaYeVvuHkMGMGvuHkVNMGPnMGWvMGVNSqMGMGMGZrZrFkaaaaaaEWEWZrSqMGZrZrZrZrZrZrhkhkVsxTZrZrPnMGMGSqMGMGSqMGZrefZrMGMGMGZrZreVMGMGMGMGMGWvMGMGSqWvMGMGMGMGZrZrMGMGMGMGMGSqzTMGSqMGMGZrMG
-PnvuMGvuMGMGPnZrZrZrZrEWaaaaEWenenenenenVNeZZrxTxTZrvuVNZrxTxTeQMGetZrZrxTxTMGaYcmcnbdaYbdbdbdaYZrMGMGSqvuMGVNHkZrMGMGMGMGMGMGMGMGMGZrZraaaaEWEWZrLTZrfhZrfhfhfhfhfhfhZrZrxTxTxTZrMGMGMGSqZrZrMGMGMGZrZrMGMGMGSqMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGWvMGZrMGMGMGSqMGMGSqMGMGMGVxZrZr
-SqSqMGMGPnMGMGvuMGZrZrEWEWaaaaEWenenenenenZrgVZrxTxTxTxTxTxTxTxYHIbqbqQcxTbqHIbacscnbdbcbdbdbKbaMGMGMGMGZrZrZrLTZrMGLTMGMGMGZrZrYGZrZrEWaaEWEWZrMGZrfhZrZrLWLWLWLWLWLWLWZrxTxTLTZrMGPnMGMGZrZrPnLTMGSqMGMGPnMGMGMGMGMGMGMGPnMGMGMGSqzTMGSqMGMGMGZrWEMGMGWvMGMGMGMGMGWvMGCIZrWE
-ZrSqMGMGMGMGMGMGMGMGZrZrZrZrEWEWEWEWenenenenenVNvuHkvueVMGZrZrxTxTZrxTxTZrVNZPaYfdbdbdaYbdbdctaYMGMGzTMGMGZrLTZrZrSqMGZrMGMGZrNLNLnVEWEWEWZrZrMGvuZrfhLWGENoNoLWSHGEMGfhZrxTxTMGMGLTMGMGPnZrMGMGMGMGMGMGMGMGMGMGMGSqMGMGMGWvMGMGMGMGSqMGMGMGMGvuZrCIMGMGMGMGSqWvMGMGMGMGZrozOO
-ZrSqMGSqvuMGMGMGMGvuMGMGZrZrZrEWEWEWEWenenjOenenengWHkHkvuMGWvxTxTxTxTxTZrVNVNaYffaocuaYckbKbKaYWvMGMGMGMGMGMGMGMGZrMGMGYGZrnVNLEWEWEWZrZrZrZrMGZrZrLWLWLWLWLWLWLWLWZrfhZrxTxTMGZrZrMGLTMGMGLTMGMGSqMGSqzTMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGWvMGMGMGMGZrMGWvMGMGMGMGMGMGMGWvZrZrZr
-ZrPnvuvuMGMGMGPnvuMGMGMGMGZrZrZrEWEWEWaaEWenenenenenenMGHkMGZrZrxTxTxTDZZrZrgXaYaYbaaYaYaYbaaYaYLTHkMGSqZrMGMGYGYGMGZrZrZrZrEWEWEWEWZrZrGnLTZrZrSqZrLWNoLWSHLWLWZrGEGELWZrxTxTxTSqMGZrMGZrZrZrMGMGMGMGMGMGWvMGMGMGMGMGMGvuvuMGMGSqWvMGMGMGMGMGLTZrZrMGMGMGMGMGzTMGSqMGMGWEozVx
-MGSqSqMGMGPnMGZrMGMGMGMGMGMGWvMGZrZrEWEWaaEWEWenenenenenHkMGZrZrxTxTYGZrZrZrZrVNVNWEWEMGMGZrMGHkMGMGSqMGZrHkMGZrZrYGZrEWaaaaEWZrZrZrZrYGMGPnMGZrMGZrfhZrLWfhfhfhZrfhLWZrMGMGHkxTxTxTMGZrZrZrZrZrZrMGMGSqzTPnSqSqMGMGMGMGvuMGMGSqMGMGMGMGMGWvMGMGZrZrMGMGMGMGMGSqMGMGMGvuZruPHV
-MGMGMGzTMGSqMGMGMGPnSqSqMGMGPnMGZrZrZrZraaaaaaEWEWenenenenZrZrxTxTxTZrZrZrWEWEVNVNWEZrMGMGMGMGZrMGPnMGZrMGMGMGZrNLnVZraaaaEWZrZrZrYGZrZrZrZrZrMGLTZrZrZrZrZrZrZrZrZrZrZrZrZrZrMGxTxTxTZrMGMGZrMGMGMGMGMGMGMGMGMGMGLTSqSqMGPnMGHkMGzTMGSqMGMGMGMGzTMGMGMGMGMGHkMGSqMGMGMGZrZrZr
-SqMGMGSqMGMGMGvuZrMGMGMGMGLTMGPnZrMGZrEWEWEWaaaaEWEWenjOenenxTxTxTZrZrZrZrZrZrVNVNZrZreVZrMGLTMGMGZrMGxTMGMGMGNLNLEWEWEWZrZrZrkRYGZrLWZrfhfhfhZrZrZrZrZrZrMGHkZrZrHkZrZrefefZrMGLTZrxTxTMGMGMGPnMGMGMGMGSqzTzTMGMGMGMGMGMGLTMGHkMGSqMGMGMGvuMGMGSqMGMGMGMGMGMGMGMGMGMGLTWEWEZr
-MGMGHkMGSqMGMGMGMGMGMGMGMGSqMGMGMGSqMGMGZrEWEWaaaaaaEWenenxTxTxTZrZrWEsSZrDZZreVZrZrZrZrZrMGMGMGMGMGMGMGZrnVNLNLEWEWEWZrZrZrYGMGZrfhLWLWLWLWLWLWLWLWfhZrMGvuZrZrefefefefefefZrZrvuZrVNxTxTMGMGZrMGMGSqzTMGMGSqSqMGzTZrZrLTLTMGMGHkMGSqMGMGMGMGMGMGMGLTPnMGvuINMGMGMGMGMGWEHpHp
-MGMGMGMGMGMGMGWvMGMGMGMGMGSqMGMGMGMGMGSqZrZrEWEWEWaaaaEWxTokxTZrZrZrZrZrYGZrZrZrZrVxVxMGZrMGMGZrZrZrZrEWEWEWEWEWEWEWZrYGZrMGMGMGZrZrLWZrGESHLWLWZrGELWZrZrLTZrZrefefefefefefZrZrZrZrZrZrxTxTZrZrZrZrMGMGSqzTMGMGMGSqMGMGMGMGvuMGMGMGMGMGMGLTSqWvMGMGMGMGMGMGINMGMGMGMGMGZrZrLT
-MGMGMGPnMGSqMGMGMGPnSqSqMGPnvuMGvuMGMGPnSqZrZrZrEWEWEWaaMxMxxTZrZrZrZrWEWEZrWEZrZrWEWEMGZrMGZrZrZrZrEWaaaaEWEWEWZrZrZrZrMGZrhkMGZrfhZrLWLWLWNoLWZrLWLWZrZrPnZrZrZrefefefefefefefZrMGMGMGMGxTxTMGZrZrZrZrHkMGPnMGMGMGMGMGMGMGMGSqINMGMGMGPnMGMGMGMGMGMGWvMGMGMGSqMGMGMGSqMGMGMG
-MGMGMGSqMGMGMGvuZrMGMGMGMGSqSqMGMGMGMGZrvuMGSqMGSqZrEWEWMxMxaaEWekZrZrWEWEVxZrVxHpWEZrZrZreVZrZrEWaaaaaaEWZrZrZrZrYGMGMGZrZrMGZrZrLWZrLWLWZrZrGENoLWfhZrZrMGvuHkZrZrZrZrefefefefZrPnLTMGSqxTxTxTMGZrZrZrMGMGMGMGvuMGMGMGMGMGSqMGINMGMGMGMGMGMGzTMGSqMGMGSqMGHkMGPnMGMGMGMGPnMG
-PnMGHkMGSqMGMGMGMGMGMGMGMGMGPnvuvuMGMGMGPnSqMGMGSqZrZrxTxTMxaaaaEWZrZrWEWEVxZrVxZrWEZrZrZrZrEWaaaaaaEWEWZrZrZrZrZrYGZrZrMGMGMGMGZrLWLWLWGELWSHLWLWLWfhZrZrhkMGZrMGZrZrZrZrZrZrZrZrMGMGMGMGxTxTxTMGMGMGZrMGMGSqHkMGWvMGMGMGMGMGMGMGPnMGLTMGMGMGSqMGMGPnvuvuMGMGMGMGMGvuMGMGMGMG
-MGZrMGMGMGMGMGLTMGLTSqSqMGzTSqSqMGMGPnMGMGSqMGMGMGZrxTxTZrZrEWaaaaaaEWEWCIZrZrZrZrZrZrZrZrZraaaaEWZrZrZrZrZrYGkRvuMGZrZrPnMGMGLTZrZrfhfhZrLWLWLWfhLWZrZrMGZrZrZrZrfhLWfhfhZrfhZrPnMGMGSqMGZrxTxTxTMGMGZrMGMGMGMGMGHkMGSqMGMGMGMGMGWvMGMGMGMGHkMGSqMGMGMGMGMGMGMGSqHkMGWvMGMGMG
-MGvuINYGMGMGMGMGMGSqMGMGMGSqMGPnvuvuMGMGMGvuPnMGZrxTxTMGMGMGZrZrEWaaaaaaEWekZrHVZrZrnVNLEWEWEWEWZrZrZrZrZrZrYGMGMGMGMGMGHkMGMGZrMGZrZrZrZrZrZrZrZrZrZrMGMGZrZrZrfhLWLWZrLWLWLWZrMGMGMGMGHkZrMGxTxTMGMGZraVMGMGMGMGMGMGMGMGMGMGMGMGMGLTLTMGMGMGMGMGMGMGLTMGMGMGMGMGMGMGMGMGMGMG
-ZrZrMGvuMGMGMGMGMGSqMGSqSqMGMGSqSqMGMGPnMGZrMGxTxTxTMGMGMGMGWvMGZrEWEWaarVEWZrZrZrEWTEEWEWEWEWZrZrZrZrZrZrZrZrMGPnMGMGMGMGSqvuMGMGMGZrMGMGMGZrZrMGZrHkvuMGMGZrZrfhLWNoSHLWGEZrZrZraVHkMGMGZrLTMGxTxTMGMGMGLTPnMGvuINMGMGMGPnMGMGWvMGMGMGMGvuINMGMGMGMGMGMGMGMGMGMGMGWvMGMGMGMG
-MGMGMGvuMGLTMGWvMGPnvuvuMGMGMGPnvuvuMGMGMGMGxTxTxTMGSqMGSqSqMGMGZrZrEWaaaaEWZrZrVxWEWEEWZrZrEWZrMGZrYGYGZrYGMGLTMGMGHkMGMGMGMGZrMGMGMGMGPnMGLTSqSqMGZrMGLTZrZrZrLWLWGEGEZrLWZrZrZrMGMGZrMGMGMGMGxTxTWvMGZrMGMGMGMGINMGMGMGMGSqMGMGMGMGMGMGMGINMGMGMGMGMGSqSqMGzTZrZrLTLTMGMGHk
-MGMGzTMGSqMGMGMGPnSqSqMGMGPnMGZrZrMGMGMGvuxTxTxTWvMGPnvuvuMGMGMGZrZrZrZrEWEWHVZGWEEWEWEWZrZrZrZrZrZrMGMGMGMGMGMGzTzTMGMGWvMGMGMGMGMGMGWvMGMGMGMGMGMGMGZrMGMGZrMGfhLWZrZrZrLWZrZrZrMGMGMGMGMGMGHkMGxTxTMGaVMGMGLTMGZrMGZrZrZrriZrMGLTMGLTSqSqMGzTZrZrLTPnMGMGHkHkMGMGMGMGvuMGMG
-MGMGSqMGMGMGvuZrMGMGMGMGLTMGPnZrZrMGHkMGxTxTMGxTMGMGMGMGMGMGMGMGMGMGMGMGZrEWEWEWaaaaEWEWZrZrZrMGZrZrMGZrMGMGZrZrMGLTMGMGMGLTvuMGMGPnMGMGMGMGMGDZMGMGMGMGMGMGLTaVZrVxMGMGSqZrZrZrWvMGMGHkMGMGMGMGMGZrxTxTMGMGZrZrMGSqMGMGMGZrZrMGMGMGMGSqMGMGMGSqMGMGMGMGvuMGMGMGMGMGMGMGMGSqMG
-MGHkMGSqMGMGMGMGMGMGMGMGMGMGMGSqMGZrxTxTxTMGMGLTMGLTSqSqMGzTMGHkMGMGMGMGZrZrZrEWEWaaEWZrZrZrZrZrZrMGMGSqMGMGSqMGMGMGMGZrZrMGMGMGMGMGSqOOMGSqMGMGMGPnSqSqMGZrMGMGMGMGPnZrVNZrMGDZLTMGZrMGPnWvZrMGMGZrLTxTxTMGZrZrMGMGZrLTMGMGZrMGSqMGHkMGPnMGMGMGMGMGMGMGMGSqMGMGMGMGMGMGSqMGMG
-NXiuiuiuiuiujriujrxhxhiurbiuuUiuiuosFyYGMGMGMGMGMGSqMGMGMGSqMGSqMGMGMGMGMGZrZrZrEWaaaaEWZrZrZrZrMGMGMGMGMGMGMGMGMGMGMGPnMGMGMGMGSqMGMGSqMGMGMGvuMGMGMGMGMGvuMGMGMGMGLTMGHkMGMGMGMGMGMGMGMGLTMGZrLTZrHkMGxTxTMGZrHkZrZrZrMGMGZrMGvuMGPnwTwTwTOfwTwTwTwTwTDJwTwTwTwTwTwTwTwTwTwT
-vuINYGMGMGMGMGMGSqMGMGMGSqMGSqMGxTEJiuZrMGMGMGMGMGSqzTMGSqMGMGMGPnSqSqMGZrMGMGZrZrZraaaaEWZrEWZrMGMGMGMGSqWvMGMGMGZrMGMGMGMGMGWvZrZrMGMGMGWvMGMGZrZrMGSqHkMGWvPnMGLTLTMGZrHkHkMGMGMGMGMGMGMGMGMGMGWvMGMGMGxTxTZrZrZrZrMGHkZrMGMGMGMGMGwTSqHkMGWvMGMGMGMGMGMGMGMGMGMGMGPnMGMGMG
-MGMGPnMGPnMGMGMGWvMGMGMGMGPnMGxTxTMGGpPnMGMGMGSqMGMGSqMGMGMGvuMGMGMGMGHkMGMGMGZrMGZrZraaaaEWEWZrMGZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGZrhkWvMGuNMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGHkHkMGMGPnMGMGMGMGMGLTLTMGvuMGMGxTxTxTZrZrZrMGZrZrMGMGMGMGMGwTMGMGMGMGMGMGMGMGMGPnMGMGMGMGMGMGMGMGMG
-MGMGMGMGMGMGSqMGMGMGMGMGMGMGxTxTMGMGiuMGMGMGWvMGMGMGMGMGWvMGMGMGMGMGSqZrPnZrZrMGMGZrEWEWaaEWZrZrMGMGMGMGMGZrMGWvMGMGMGMGZrZrPnMGMGMGMGMGMGMGWvMGMGMGMGMGMGWvMGMGMGMGMGMGMGHkHkLTMGMGMGMGMGMGMGMGMGMGMGMGMGMGZrxTxTMGHkZrZrMGZrWvMGMGMGwTMGMGWvMGMGPnMGMGMGMGMGMGMGMGMGPfMGMGMG
-MGMGMGMGMGMGMGvuvuMGMGMGMGxTxTxTxTMGiuswMGMGMGMGSqWvMGMGMGMGMGMGMGMGMGMGMGZrZrMGZrZrEWZraaaaZrZrPnMGMGZrZrMGMGMGMGPnSqSqMGMGMGMGMGMGzTMGSqMGMGMGPnSqSqMGMGPnMGSqMGWvMGMGPnMGMGMGSqSqMGMGMGMGMGMGMGMGMGMGPnMGLTMGxTxTxTxTZrMGxTxTxTxTxTZCMGMGPnMGMGMGMGPfMGMGMGMGMGGSGSGSMGPnMG
-MGMGWvMGMGMGMGvuMGMGWvMGMGxTxTMGMGWviuMGMGWvMGMGMGMGMGMGMGWvMGMGMGMGMGMGHkHkMGMGZrZrZrZrEWaaEWZrZrMGMGMGMGMGMGvuMGMGMGMGMGMGZrMGMGMGSqMGMGMGvuZrMGMGMGMGLTMGPnMGMGLTMGMGMGMGyZMGWvMGSqSqWvZrMGMGMGMGMGWvMGMGMGMGMGMGMGxTxTxTxTxTxTxTxTZCxTxTMGMGMGMGBoMGMGPnMGMGGSQPviQPGSMGMG
-MGMGSqMGMGMGMGMGMGMGMGxTxTxTSqMGMGMGxhMGMGMGMGMGMGzTMGSqMGMGMGPnSqSqMGMGVxMGMGhkMGMGZrZrEWaaaaEWZrMGuNMGSqSqMGMGMGPnSqSqMGMGMGMGMGHkMGSqMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGSqMGMGzTvuMGMGMGMGMGLTvuMGMGPnMGYFMGMGMGWvZrMGMGMGMGMGHkMGMGMGMGwTxTxTxTSqMGMGMGMGMGMGMGMGETpFpFpFETefef
-MGMGMGMGMGMGMGMGMGMGvuxTxTMGMGMGMGMGiuMGMGMGMGMGMGSqMGMGMGvuMGMGMGMGMGZrMGMGMGZrMGMGZrZrZrEWaaaaEWZrZrZrMGMGMGvuMGMGMGMGMGMGMGMGZrMGMGMGMGMGLTMGLTSqSqMGzTMGHkMGZrMGPnMGMGMGLTMGMGMGMGMGZrMGMGMGMGMGSqzTMGSqMGMGZrPnSqSqMGMGHkLTMGLTSqDJMGMJxTxTxTZrHkMGefefefMGGSQPpFQPGSMGzT
-MGMGMGWvMGMGMGMGMGZrMGxTxTSqSqMGMGMGxhMGMGMGMGMGHkMGSqMGMGMGMGMGMGMGMGZrMGHkzTZrMGHkHkMGZrEWEWaaaaEWZrZrMGZrMGZrMGMGMGMGMGLTPnMGvuINYGMGMGMGMGMGSqMGMGMGSqMGSqMGMGMGZrMGMGMGMGMGMGMGMGPnMGMGMGMGSqMGMGSqMGMGZrvuMGMGMGMGMGvuMGMGMGSqMGwTMGSqMGxTxTxTMGMGMGMGzTHkMGGSIeGSHkMGMG
-SqMGSqSqMGMGPnMGMGZrxTxTMGMGvuMGMGMGiuMGMGMGMGMGMGMGMGMGMGLTMGLTSqSqMGZrSqMGMGHkMGZrMGMGZrZrZraaaaEWEWMGMGMGMGMGLTPnMGvuMGMGMGMGMGINMGYGSqSqMGHkMGPnMGMGMGSqMGMGMGMGLTMGMGSqMGMGMGMGMGzTMGSqMGWvMGMGMGMGMGWvZrMGMGMGZrSqHkZrDZMGHkMGPnwTMGMGSqMGxTxTxTxTMGMGMGMGMGMGMGhkZrMGMG
-MGvuvuMGMGMGMGMGxTxTxTMGMGMGZrMGMGMGiuMGLTPnMGvuINMGMGMGMGMGMGSqMGMGZrZrZrHSMGvuphZrZrZrZrZrZrEWaaEWZrZrPnMGMGMGMGMGMGMGMGPnMGMGMGhkSqMqMqSqMGzTMGMGMGMGMGLTSqMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGSqWvMGuNMGMGMGMGMGZrMGMGZrZrMGMGMGMGwTMGMGLTSqMGMGxTEJxTxTMGPnMGMGMGMGhkSqMG
-MGMGMGMGMGMGSqxTxTxTMGGSETGSMGMGMGMGGpMGMGMGMGMGINMGMGMGMGMGHkMGPnZrZrZrZrZrZrMGefZrZrPnMGZrZrEWaaaaEWZrMGMGMGZrPnMGMGMGMGMGMGMGMGLTMGMGzTvuMGMGteMGMGMGSqSqZrMGMGMGMGMGMGMGMGWvMGMGMGMGZrZrWvMGMGMGMGMGMGMGWvMGMGMGMGMGMGWvMGMGMGMGMGwTMGSqSqMGMGMGMGMGhkxTxTMGMGMGMGSqZrMGzT
-PnMGSqWvxTMGxTxTBjMGGSQPpFQPGSMGWvMGiuMGPnMGMGMGhkSqSqSqSqMGMGMGMGZrefefefefZrZrefMGZrZrZrozMGZrEWaaEWEWZrMGMGZrMGMGMGMGMGMGMGMGMGZrMGMGLTMGMGMGMGMGMGMGMGMGINMGMGMGMGMGHkMGPnMGMGPnSqSqMGMGMGMGMGMGzTMGSqMGMGMGPnSqSqMGMGPnMGMGMGMGMGwTMGMGMGMGMGMGMGSqZrxTxTxTMGSqMGMGZrzTMG
-MGWvMGMGxTxTxTvuMGMGIepFpFqWGSSqSqMGiuMGMGMGMGMGLTMGMGzTvuMGMGMGZrZrefefefefefefefefZrZrZrZrMGEWEWaaEWZrZrZrMGMGMGMGMGMGWvMGPnvuMGhkMGMGMGMGWvSqSqMGvuMGMGMGhkMGSqMGSqMGMGMGMGMGMGMGMGMGMGMGMGZrMGMGSqMGMGMGvuMGMGMGMGMGMGMGMGWvSqSqMGOfMGMGMGMGMGSqMGMGZrzTMGxTxTMGMGMGMGMGMG
-MGMGLTvuNkNkMGvuMGMGGSQPpFQPGSvuMGMGiuMGMGMGMGMGZrMGMGLTMGMGMGMGMGMGZrefefefefefefefefZrSqHkZrSqEWaaEWZrZrZrMGWvMGeVvuHkMGMGvuHkVNMGPnMGMGMGMGMGHkMGMGMGZrZrLTMGMGzTvuMGMGMGMGMGMGPnSqSqMGMGMGMGMGHkMGSqMGMGMGMGMGMGMGMGMGZrhkMGMGHkMGwTMGZrZreVMGMGMGMGMGMGMGMGyFyFMGMGMGMGMG
-ZrZrMGxTNkqSMGMGLHMGMGGSETGSHkMGMGMGiuWvMGPnvuMGhkMGMGMGMGWvSqSqMGZrZrefefefefefZrZrZrZrZrMGZrEWEWaaEWEWZrZrZrMGPnZrMGMGSqvuMGVNHkZrMGMGMGMGMGMGvuMGMGMGSqMGZrMGMGLTMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGLTMGLTSqSqMGzTZrZrMGMGvuMGwTMGSqMGMGMGMGMGMGMGMGMGMGyFyFpwMGMGPnMG
-PnMGxTZmMGSqMGMGMGvuMGSqvuMGVNMGPnvuuUMGMGvuHkVNMGPnMGMGMGMGMGHkMGZrZrZrefefefefefefefefZrZrZrEWEWaaEWZrZrZrZrMGMGMGMGMGMGZrZrZrLTZrMGMGWvMGMGMGMGMGPnMGMGMGhkMGMGMGMGWvSqSqMGvuMGMGMGMGMGLTPnMGvuINMGMGMGMGMGMGSqMGMGMGSqZrhkMGMGMGMGTKMGMGMGMGMGMGWvMGMGPnMGMGMGMGxTxTxTMGMG
-xTxTxTMGWvMGMGSqSqMGMGMGMGMGMGPnMGMGiuSqvuMGVNHkZrMGMGMGqGMGMGvuMGMGZrZrefefefefefefefefZrZrEWEWaaaaEWEWZrZrZrMGMGMGMGzTMGMGZrLTZrZrSqMGMGMGMGMGMGMGMGMGMGMGMGPnMGMGMGMGMGHkMGMGMGPnMGvuMGMGMGMGMGINMGMGMGMGMGHkMGPnMGMGMGSqMGMGMGMGMGwTMGMGMGSqMGMGMGMGZrMGMGWvMGMGvuxTxTxTMG
-RihmMGSqMGHkVNZrPnMGzTMGMGWvMGMGMGMGiuMGZrZrZrLTZrMGMGWvMGMGMGMGMGPnZrefefefefefefefefefefZrvuEWEWaaaaEWEWZrMGZreVMGMGMGMGMGMGMGMGLTMGvuvuMGMGMGMGMGMGMGMGMGZrMGMGMGMGMGMGvuMGMGMGMGMGMGMGPnMGMGMGhkSqMGSqSqMGMGMGMGMGMGMGLThkMGMGMGMGwTMGMGMGMGMGMGvuMGZrMGMGZrZrZrVNZrxTxTxT
+EWaaaaaaEWEWenenjOenenengQgFgFgFxTxTxTgRgSaXbjbjbjbjaYxTaYerbjbjcCaYxTPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTxTZritxTxTZraYcybjbjeNaYxTxTaYczbjbjcyaYeOePZraaaaEWZrMxMxZrZrZrZrZrZrZrPnLTMGSqMGMGMGMGSqefefZrZrMGMGMGMGMGLTSqMGMGMGMGMGMGMGMGMGSqMGMGMGMGWvMGMGMGMGMGMGWvMGMGMGMGMGoYoY
+EWEWEWEWEWEWEWEWEWenenenengFgFgFZrxTgTxTgUaYcCbjbjcCaYxTaYaYbcbccBaYxTPqPqPqPqPqPqPqPqPqPqPqPqPqxTxTHIHIlNMGxTxTaYaYbcbccBaYxTZraYaYbcbccBaYeSZrFkaaEWZrZrxTxTZrZrxTZrZrZrZrMGMGMGvuMGMGPnMGMGefefefZrZrMGMGMGSqSqMGMGMGMGZrHkMGMGMGMGSqzTMGSqMGZrMGPnSqSqMGMGMGMGMGMGoYoYoYMG
+ZrZrEWZrZrZrEWEWEWEWenenenenengFVNxTxTxTeobacCbjbjbjcAxTZrekxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTZrZrMGMGMGMGxTxTxTxTxTxTxTxTxTxTxTxTxTZrZrZrEWaaEWEWZrZrxTxTxThmxTxTxTxTZrMGMGSqMGMGZrMGMGMGMGSqMGefZrMGPnMGMGMGMGMGMGMGMGMGMGMGSqMGMGSqMGMGMGZrMGMGMGMGWvoYoYoYoYoYoYZroYoY
+SqMGMGMGSqMGSqZrEWEWEWenenenenenenZrZrVNdJaYcCbjbjcCaYxTxTxTxTZrZrZrZrYGZrxTxTbVbVbcbcaYaYbaaYaYMGMGMGWvMGPnvuMGhkMGMGMGMGMGLTMGZrMGMGZrZrFkEWaaaaEWZrMGxTxTxTxTxTxTxTxTxTxTxTZrZrMGMGSqMGMGMGMGMGZrefefMGvuMGMGMGMGMGSqMGMGMGMGWvMGMGMGMGMGWvMGMGMGZrMGMGMGoYoYoYoYoYoYoYoYoY
+SqMGSqSqMGMGSqZrZrEWEWaaaaDpOrOrOrOrnVVNZrbVaYbcbccBbVZrxTxTZrZrZrWvMGZrxTxTMGaYcjbdbdaYbKbdbKaYeVvuHkMGMGvuHkVNMGPnMGWvMGVNSqMGMGMGZrZrFkaaaaaaEWEWZrSqMGZrZrZrZrZrZrhkhkVsxTZrZrPnMGMGSqMGMGSqMGZrefZrMGMGMGZrZreVMGMGMGMGMGWvMGMGSqWvMGMGMGMGZrZrMGMGMGMGoYoYoYoYoYoYoYoYoY
+PnvuMGvuMGMGPnZrZrZrZrEWaaaaEWenenenenenVNeZZrxTxTZrvuVNZrxTxTeQMGetZrZrxTxTMGaYcmcnbdaYbdbdbdaYZrMGMGSqvuMGVNHkZrMGMGMGMGMGMGMGMGMGZrZraaaaEWEWZrLTZrfhZrfhfhfhfhfhfhZrZrxTxTxTZrMGMGMGMGINMGMGMGMGMGSqSqMGzTZrZrLTLTMGMGHkMGMGMGMGMGMGMGMGMGWvMGZrMGoYoYoYoYoYoYoYoYoYoYoYoY
+SqSqMGMGPnMGMGvuMGZrZrEWEWaaaaEWenenenenenZrgVZrxTxTxTxTxTxTxTxYHIbqbqQcxTbqHIbacscnbdbcbdbdbKbaMGMGMGMGZrZrZrLTZrMGLTMGMGMGZrZrYGZrZrEWaaEWEWZrMGZrfhZrZrLWLWLWLWLWLWLWZrxTxTLTZrMGLTSqSqMGzTZrZrLTPnMGMGHkHkMGMGMGMGvuMGMGMGMGMGSqzTMGSqoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+ZrSqMGMGMGMGMGMGMGMGZrZrZrZrEWEWEWEWenenenenenVNvuHkvueVMGZrZrxTxTZrxTxTZrVNZPaYfdbdbdaYbdbdctaYMGMGzTMGMGZrLTZrZrSqMGZrMGMGZrNLNLnVEWEWEWZrZrMGvuZrfhLWGENoNoLWSHGEMGfhZrxTxTMGMGMGSqMGMGMGSqMGMGMGMGvuMGMGMGMGMGMGMGMGSqMGMGMGMGMGSqMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+ZrSqMGSqvuMGMGMGMGvuMGMGZrZrZrEWEWEWEWenenjOenenengWHkHkvuMGWvxTxTxTxTxTZrVNVNaYffaocuaYckbKbKaYWvMGMGMGMGMGMGMGMGZrMGMGYGZrnVNLEWEWEWZrZrZrZrMGZrZrLWLWLWLWLWLWLWLWZrfhZrxTxTMGZrHkMGPnMGMGMGMGMGMGMGMGSqMGMGMGMGMGMGSqMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+ZrPnvuvuMGMGMGPnvuMGMGMGMGZrZrZrEWEWEWaaEWenenenenenenMGHkMGZrZrxTxTxTDZZrZrgXaYaYbaaYaYaYbaaYaYLTHkMGSqZrMGMGYGYGMGZrZrZrZrEWEWEWEWZrZrGnLTZrZrSqZrLWNoLWSHLWLWZrGEGELWZrxTxTxTSqPnGuGuGuvIGuGuGuGuGuVdGuGuGuGuGuGuGuGuGuGuYFYFYFYFYFYFYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGSqSqMGMGPnMGZrMGMGMGMGMGMGWvMGZrZrEWEWaaEWEWenenenenenHkMGZrZrxTxTYGZrZrZrZrVNVNWEWEMGMGZrMGHkMGMGSqMGZrHkMGZrZrYGZrEWaaaaEWZrZrZrZrYGMGPnMGZrMGZrfhZrLWfhfhfhZrfhLWZrMGMGHkxTxTMGGuSqHkMGWvMGMGMGMGMGMGMGMGMGMGMGPnMGMGMGMGSqoYoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGzTMGSqMGMGMGPnSqSqMGMGPnMGZrZrZrZraaaaaaEWEWenenenenZrZrxTxTxTZrZrZrWEWEVNVNWEZrMGMGMGMGZrMGPnMGZrMGMGMGZrNLnVZraaaaEWZrZrZrYGZrZrZrZrZrMGLTZrZrZrZrZrZrZrZrZrZrZrZrZrZrMGxTxTGuMGMGMGMGMGMGMGMGMGPnMGMGMGMGMGMGMGMGMGMGHkZrZroYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+SqMGMGSqMGMGMGvuZrMGMGMGMGLTMGPnZrMGZrEWEWEWaaaaEWEWenjOenenxTxTxTZrZrZrZrZrZrVNVNZrZreVZrMGLTMGMGZrMGxTMGMGMGNLNLEWEWEWZrZrZrkRYGZrLWZrfhfhfhZrZrZrZrZrZrMGHkZrZrHkZrZrefefZrMGxTxTGuMGMGWvMGMGPnMGMGMGMGMGMGMGMGMGPfMGMGMGMGHkMGZrZroYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGHkMGSqMGMGMGMGMGMGMGMGSqMGMGMGSqMGMGZrEWEWaaaaaaEWenenxTxTxTZrZrWEsSZrDZZreVZrZrZrZrZrMGMGMGMGMGMGMGZrnVNLNLEWEWEWZrZrZrYGMGZrfhLWLWLWLWLWLWLWLWfhZrMGvuZrZrefefefefefefZrZrvuxTKAMGMGPnMGMGMGMGPfMGMGMGMGMGGSGSGSMGPnMGMGMGHkZrZrZrYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGMGMGMGMGWvMGMGMGMGMGSqMGMGMGMGMGSqZrZrEWEWEWaaaaEWxTokxTZrZrZrZrZrYGZrZrZrZrVxVxMGZrMGMGZrZrZrZrEWEWEWEWEWEWEWZrYGZrMGMGMGZrZrLWZrGESHLWLWZrGELWZrZrLTZrZrefefefefefefZrZrZrxTKAxTxTMGMGMGMGBoMGMGPnMGMGGSQPqDQPGSMGMGvuMGMGoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGPnMGSqMGMGMGPnSqSqMGPnvuMGvuMGMGPnSqZrZrZrEWEWEWaaMxMxxTZrZrZrZrWEWEZrWEZrZrWEWEMGZrMGZrZrZrZrEWaaaaEWEWEWZrZrZrZrMGZrhkMGZrfhZrLWLWLWNoLWZrLWLWZrZrPnZrZrZrefefefefefefefZrMGGuxTxTxTSqMGMGMGMGMGMGMGMGETpFpFpFETefefMGSqINoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGSqMGMGMGvuZrMGMGMGMGSqSqMGMGMGMGZrvuMGSqMGSqZrEWEWMxMxaaEWekZrZrWEWEVxZrVxHpWEZrZrZreVZrZrEWaaaaaaEWZrZrZrZrYGMGMGZrZrMGZrZrLWZrLWLWZrZrGENoLWfhZrZrMGvuHkZrZrZrZrefefefefZrSqVdMGWcxTxTxTZrHkMGefefefMGGSQPpFQPGSMGzTSqMGINZroYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+PnMGHkMGSqMGMGMGMGMGMGMGMGMGPnvuvuMGMGMGPnSqMGMGSqZrZrxTxTMxaaaaEWZrZrWEWEVxZrVxZrWEZrZrZrZrEWaaaaaaEWEWZrZrZrZrZrYGZrZrMGMGMGMGZrLWLWLWGELWSHLWLWLWfhZrZrhkMGZrMGZrZrZrZrZrZrZrZrMGGuMGSqMGxTxTxTMGMGMGMGzTHkMGGSIeGSHkMGMGMGMGMGoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGZrMGMGMGMGMGLTMGLTSqSqMGzTSqSqMGMGPnMGMGSqMGMGMGZrxTxTZrZrEWaaaaaaEWEWCIZrZrZrZrZrZrZrZrZraaaaEWZrZrZrZrZrYGkRvuMGZrZrPnMGMGLTZrZrfhfhZrLWLWLWfhLWZrZrMGZrZrZrZrfhLWfhfhZrfhZrPnPnGuMGMGSqMGxTxTxTxTMGMGMGMGMGMGMGhkZrMGMGMGMGZrWvoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGvuINYGMGMGMGMGMGSqMGMGMGSqMGPnvuvuMGMGMGvuPnMGZrxTxTMGMGMGZrZrEWaaaaaaEWekZrHVZrZrnVNLEWEWEWEWZrZrZrZrZrZrYGMGMGMGMGMGHkMGMGZrMGZrZrZrZrZrZrZrZrZrZrMGMGZrZrZrfhLWLWZrLWLWLWZrMGMGGuMGMGLTSqMGMGxTEJxTxTMGPnMGMGMGMGhkSqMGMGMGMGZroYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+ZrZrMGvuMGMGMGMGMGSqMGSqSqMGMGSqSqMGMGPnMGZrMGxTxTxTMGMGMGMGWvMGZrEWEWaarVEWZrZrZrEWTEEWEWEWEWZrZrZrZrZrZrZrZrMGPnMGMGMGMGSqvuMGMGMGZrMGMGMGZrZrMGZrHkvuMGMGZrZrfhLWNoSHLWGEZrZrZrMGGuMGSqSqMGMGMGMGMGhkxTxTMGMGMGMGSqZrMGzTMGMGoYoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGvuMGLTMGWvMGPnvuvuMGMGMGPnvuvuMGMGMGMGxTxTxTMGSqMGSqSqMGMGZrZrEWaaaaEWZrZrVxWEWEEWZrZrEWZrMGZrYGYGZrYGMGLTMGMGHkMGMGMGMGZrMGMGMGMGPnMGLTSqSqMGZrMGLTZrZrZrLWLWGEGEZrLWZrZrZrMGGuMGMGMGMGMGMGMGSqZrxTxTxTMGSqMGMGZrzTMGSqMGMGoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGzTMGSqMGMGMGPnSqSqMGMGPnMGZrZrMGMGMGvuxTxTxTWvMGPnvuvuMGMGMGZrZrZrZrEWEWHVZGWEEWEWEWZrZrZrZrZrZrMGMGMGMGMGMGzTzTMGMGWvMGMGMGMGMGMGWvMGMGMGMGMGMGMGZrMGMGZrMGfhLWZrZrZrLWZrZrZrMGvIMGMGMGMGMGSqMGMGZrzTMGxTxTMGMGMGMGMGMGriZrMGLTZroYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGSqMGMGMGvuZrMGMGMGMGLTMGPnZrZrMGHkMGxTxTMGxTMGMGMGMGMGMGMGMGMGMGMGMGZrEWEWEWaaaaEWEWZrZrZrMGZrZrMGZrMGMGZrZrMGLTMGMGMGLTvuMGMGPnMGMGMGMGMGDZMGMGMGMGMGMGLTaVZrVxMGMGSqZrZrZrWvMGGuMGZrZreVMGMGMGMGMGMGMGMGZtZtMGMGMGMGMGZrMGMGZroYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGHkMGSqMGMGMGMGMGMGMGMGMGMGMGSqMGZrxTxTxTMGMGLTMGLTSqSqMGzTMGHkMGMGMGMGZrZrZrEWEWaaEWZrZrZrZrZrZrMGMGSqMGMGSqMGMGMGMGZrZrMGMGMGMGMGSqOOMGSqMGMGMGPnSqSqMGZrMGMGMGMGPnZrVNZrMGDZLTMGGuMGSqMGMGMGMGMGMGMGMGMGMGZtZtytMGMGPnMGZrMGSqZroYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+NXiuiuiuiuiujriujrxhxhiurbiuuUiuiuosFyYGMGMGMGMGMGSqMGMGMGSqMGSqMGMGMGMGMGZrZrZrEWaaaaEWZrZrZrZrMGMGMGMGMGMGMGMGMGMGMGPnMGMGMGMGSqMGMGSqMGMGMGvuMGMGMGMGMGvuMGMGMGMGLTMGHkMGMGMGMGMGXnMGMGMGMGMGMGWvMGMGPnMGMGMGxTxTxTxTMGMGZrMGvuoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+vuINYGMGMGMGMGMGSqMGMGMGSqMGSqMGxTEJiuZrMGMGMGMGMGSqzTMGSqMGMGMGPnSqSqMGZrMGMGZrZrZraaaaEWZrEWZrMGMGMGMGSqWvMGMGMGZrMGMGMGMGMGWvZrZrMGMGMGWvMGMGZrZrMGSqHkMGWvPnMGLTLTMGZrHkHkMGMGMGGuMGMGMGSqMGZrMGMGZrMGMGWvMGMGvuxTxTxTMGMGMGMGoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGPnMGPnMGMGMGWvMGMGMGMGPnMGxTxTMGGpPnMGMGMGSqMGMGSqMGMGMGvuMGMGMGMGHkMGMGMGZrMGZrZraaaaEWEWZrMGZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGZrhkWvMGuNMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGHkHkMGMGMGYFMGMGMGMGMGMGvuZrZrMGMGZrZrZrVNZrxTxTxTMGMGMGZroYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGMGMGMGSqMGMGMGMGMGMGMGxTxTMGMGiuMGMGMGWvMGMGMGMGMGWvMGMGMGMGMGSqZrPnZrZrMGMGZrEWEWaaEWZrZrMGMGMGMGMGZrMGWvMGMGMGMGZrZrPnMGMGMGMGMGMGMGWvMGMGMGMGMGMGWvMGMGMGMGMGMGMGHkHkLTMGMGYFMGZrMGMGoYMGMGMGZrMGZrZrxTxTMGHkZrxTxTZrWvMGMGoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGMGMGMGMGvuvuMGMGMGMGxTxTxTxTMGiuswMGMGMGMGSqWvMGMGMGMGMGMGMGMGMGMGMGZrZrMGZrZrEWZraaaaZrZrPnMGMGZrZrMGMGMGMGPnSqSqMGMGMGMGMGMGzTMGSqMGMGMGPnSqSqMGMGPnMGSqMGWvMGMGPnMGMGMGSqoYYFoYZrZroYoYZrZroYZroYMGoYMGxTxTxTxTxTxTxTxToYoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGWvMGMGMGMGvuMGMGWvMGMGxTxTMGMGWviuMGMGWvMGMGMGMGMGMGMGWvMGMGMGMGMGMGHkHkMGMGZrZrZrZrEWaaEWZrZrMGMGMGMGMGMGvuMGMGMGMGMGMGZrMGMGMGSqMGMGMGvuZrMGMGMGMGLTMGPnMGMGLTMGMGMGMGyZMGWvoYYFoYoYoYoYoYoYoYoYoYZrZrZroYoYoYoYoYoYxTxTxTxToYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGSqMGMGMGMGMGMGMGMGxTxTxTSqMGMGMGxhMGMGMGMGMGMGzTMGSqMGMGMGPnSqSqMGMGVxMGMGhkMGMGZrZrEWaaaaEWZrMGuNMGSqSqMGMGMGPnSqSqMGMGMGMGMGHkMGSqMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGSqMGMGzTvuMGoYYFYFYFYFYFYFYFYFYFYFYFYAYFYFYFYFYFYFYFYFHkMGMGoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGMGMGMGMGMGMGMGvuxTxTMGMGMGMGMGiuMGMGMGMGMGMGSqMGMGMGvuMGMGMGMGMGZrMGMGMGZrMGMGZrZrZrEWaaaaEWZrZrZrMGMGMGvuMGMGMGMGMGMGMGMGZrMGMGMGMGMGLTMGLTSqSqMGzTMGHkMGZrMGPnMGMGMGLTMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYYFYFYFYFYFYFYFYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGWvMGMGMGMGMGZrMGxTxTSqSqMGMGMGxhMGMGMGMGMGHkMGSqMGMGMGMGMGMGMGMGZrMGHkzTZrMGHkHkMGZrEWEWaaaaEWZrZrMGZrMGZrMGMGMGMGMGLTPnMGvuINYGMGMGMGMGMGSqMGMGMGSqMGSqMGMGMGZrMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+SqMGSqSqMGMGPnMGMGZrxTxTMGMGvuMGMGMGiuMGMGMGMGMGMGMGMGMGMGLTMGLTSqSqMGZrSqMGMGHkMGZrMGMGZrZrZraaaaEWEWMGMGMGMGMGLTPnMGvuMGMGMGMGMGINMGYGSqSqMGHkMGPnMGMGMGSqMGMGMGMGLTMGMGSqMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGvuvuMGMGMGMGMGxTxTxTMGMGMGZrMGMGMGiuMGLTPnMGvuINMGMGMGMGMGMGSqMGMGZrZrZrHSMGvuphZrZrZrZrZrZrEWaaEWZrZrPnMGMGMGMGMGMGMGMGPnMGMGMGhkSqMqMqSqMGzTMGMGMGMGMGLTSqMGMGMGMGMGMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGMGMGMGMGSqxTxTxTMGGSETGSMGMGMGMGGpMGMGMGMGMGINMGMGMGMGMGHkMGPnZrZrZrZrZrZrMGefZrZrPnMGZrZrEWaaaaEWZrMGMGMGZrPnMGMGMGMGMGMGMGMGLTMGMGzTvuMGMGteMGMGMGSqSqZrMGMGMGMGMGMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+PnMGSqWvxTMGxTxTBjMGGSQPpFQPGSMGWvMGiuMGPnMGMGMGhkSqSqSqSqMGMGMGMGZrefefefefZrZrefMGZrZrZrozMGZrEWaaEWEWZrMGMGZrMGMGMGMGMGMGMGMGMGZrMGMGLTMGMGMGMGMGMGMGMGMGINMGMGMGMGMGHkMGPnoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGWvMGMGxTxTxTvuMGMGIepFpFqWGSSqSqMGiuMGMGMGMGMGLTMGMGzTvuMGMGMGZrZrefefefefefefefefZrZrZrZrMGEWEWaaEWZrZrZrMGMGMGMGMGMGWvMGPnvuMGhkMGMGMGMGWvSqSqMGvuMGMGMGhkMGSqMGSqMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+MGMGLTvuNkNkMGvuMGMGGSQPpFQPGSvuMGMGiuMGMGMGMGMGZrMGMGLTMGMGMGMGMGMGZrefefefefefefefefZrSqHkZrSqEWaaEWZrZrZrMGWvMGeVvuHkMGMGvuHkVNMGPnMGMGMGMGMGHkMGMGMGZrZrLTMGMGzTvuMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+ZrZrMGxTNkqSMGMGLHMGMGGSETGSHkMGMGMGiuWvMGPnvuMGhkMGMGMGMGWvSqSqMGZrZrefefefefefZrZrZrZrZrMGZrEWEWaaEWEWZrZrZrMGPnZrMGMGSqvuMGVNHkZrMGMGMGMGMGMGvuMGMGMGSqMGZrMGMGLTMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+PnMGxTZmMGSqMGMGMGvuMGSqvuMGVNMGPnvuuUMGMGvuHkVNMGPnMGMGMGMGMGHkMGZrZrZrefefefefefefefefZrZrZrEWEWaaEWZrZrZrZrMGMGMGMGMGMGZrZrZrLTZrMGMGWvMGMGMGMGMGPnMGMGMGhkMGMGMGMGWvoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+xTxTxTMGWvMGMGSqSqMGMGMGMGMGMGPnMGMGiuSqvuMGVNHkZrMGMGMGqGMGMGvuMGMGZrZrefefefefefefefefZrZrEWEWaaaaEWEWZrZrZrMGMGMGMGzTMGMGZrLTZrZrSqMGMGMGMGMGMGMGMGMGMGMGMGPnMGMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+RihmMGSqMGHkVNZrPnMGzTMGMGWvMGMGMGMGiuMGZrZrZrLTZrMGMGWvMGMGMGMGMGPnZrefefefefefefefefefefZrvuEWEWaaaaEWEWZrMGZreVMGMGMGMGMGMGMGMGLTMGvuvuMGMGMGMGMGMGMGMGMGZrMGMGMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 "}
