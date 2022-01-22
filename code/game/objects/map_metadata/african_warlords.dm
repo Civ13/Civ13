@@ -75,12 +75,11 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 		points_check()
 
 /obj/map_metadata/african_warlords/update_win_condition()
-
-	if (world.time >= next_win && next_win != -1)
+	if (processes.ticker.playtime_elapsed > 4800)
 		if (win_condition_spam_check)
 			return FALSE
-		if (scores["Yellowagwana"] >= 25 || scores["Blugisi"] >= 25 || scores["Redkantu"] >= 25)
-			return
+		if (!(scores["Yellowagwana"] >= 25 || scores["Blugisi"] >= 25 || scores["Redkantu"] >= 25))
+			return TRUE
 		ticker.finished = TRUE
 		var/message = ""
 		message = "The round has ended!"
@@ -106,7 +105,7 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 			return FALSE
 		last_win_condition = win_condition.hash
 		return TRUE
-
+	return TRUE
 ///////////map specific objs/////////
 /obj/structure/altar/darkstone/sacrifice
 	name = "shaman's altar"

@@ -804,7 +804,8 @@
 		update_customdesc()
 
 /obj/structure/vehicle/motorcycle/proc/update_customdesc()
-	desc = "A [engine.enginesize]cc motorcycle. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
+	if(engine && fueltank)
+		desc = "A [engine.enginesize]cc motorcycle. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
 	return
 /obj/structure/vehicle/motorcycle/update_overlay()
 	if (driver)
