@@ -10,6 +10,8 @@
 #define DEBUG
 // END_PREFERENCES
 // BEGIN_INCLUDE
+#include "code\_helpers\debugger.dm" //visual studio code debugger
+
 #include "code\_macros.dm"
 #include "code\client_macros.dm"
 #include "code\global.dm"
