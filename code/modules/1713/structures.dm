@@ -746,8 +746,8 @@
 	icon_state = "torch_stand"
 	item_state = "torch_stand"
 	flammable = FALSE
-	not_movable = TRUE
-	not_disassemblable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
 	anchored = TRUE
 	density = FALSE
 	opacity = FALSE
