@@ -294,7 +294,7 @@
 	density = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	bound_width = 64
+	bound_width = 64 //shouldn't this in the previous obj?
 	bound_height = 64
 
 /obj/structure/gate/whiterun/r
@@ -356,3 +356,82 @@
 						G.icon_state = "whiterun1_open"
 						G.density = FALSE
 			return
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/obj/structure/gate/barrier
+	name = "barrier gate"
+	desc = "A long barrier gate."
+	icon = 'icons/obj/doors/gates_64x64.dmi'
+	icon_state = "barriergate"
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+	health = 100
+	maxhealth = 100
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	layer = MOB_LAYER + 0.01
+	climbable = TRUE
+	var/open = FALSE
+	var/cooldown = 0
+	bound_width = 64
+
+/obj/structure/gate/barrier/vertical
+	name = "barrier gate"
+	desc = "A long barrier gate."
+	icon = 'icons/obj/doors/gates_64x64.dmi'
+	icon_state = "barriergate_vertical_left"
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+	health = 100
+	maxhealth = 100
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	layer = MOB_LAYER + 0.01
+	climbable = TRUE
+	open = FALSE
+	cooldown = 0
+	bound_width = 32
+	bound_height = 64 // Only left facing version present because the rest of those variables, a solution would be to separate the open states from the closed states by making two separate .dmi files, where one's icon sizes are 64x32px, while the other one is 32x64px (not tested though)
+
+/obj/structure/gate/barrier/attack_hand(var/mob/user as mob)
+	if (cooldown <= world.time - 20)
+		if (open)
+			visible_message("[user] closes the barrier gate!")
+			open = FALSE
+			cooldown = world.time
+			playsound(loc, 'sound/effects/lever.ogg', 100)
+			icon_state = "barriergate"
+			density = TRUE
+			return
+		else
+			visible_message("[user] opens the barrier gate!")
+			open = TRUE
+			cooldown = world.time
+			playsound(loc, 'sound/effects/lever.ogg', 100)
+			icon_state = "barriergate_open"
+			density = FALSE
+			return
+
+/obj/structure/gate/barrier/vertical/attack_hand(var/mob/user as mob)
+	if (cooldown <= world.time - 20)
+		if (open)
+			visible_message("[user] closes the barrier gate!")
+			open = FALSE
+			cooldown = world.time
+			playsound(loc, 'sound/effects/lever.ogg', 100)
+			icon_state = "barriergate_vertical_left"
+			density = TRUE
+			return
+		else
+			visible_message("[user] opens the barrier gate!")
+			open = TRUE
+			cooldown = world.time
+			playsound(loc, 'sound/effects/lever.ogg', 100)
+			icon_state = "barriergate_vertical_left_open"
+			density = FALSE
+			return
+
+//Make it destroyable as it takes basis from the usual gates which can't be broken, using a weapon simply says "You hit the gate uselessly."
