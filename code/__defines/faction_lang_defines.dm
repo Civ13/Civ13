@@ -55,11 +55,16 @@
 			return "Red Army"
 		if (map.ID == "YELTSIN")
 			return "Militia"
+		if (map.ID == "AFRICAN_WARLORDS")
+			return "United Nations"
 		else
 			return "Colonists"
 
 	if (constant == INDIANS)
-		return "Native Tribe"
+		if (map.ID == "AFRICAN_WARLORDS")
+			return "Africans"
+		else
+			return "Native Tribe"
 
 	if (constant == PORTUGUESE)
 		return "Portuguese Empire"

@@ -396,6 +396,15 @@ datum/job/indians/tribes/black
 /datum/job/indians/warlords/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.name = H.species.get_random_zulu_name(H.gender)
+	H.real_name = H.name
+	var/new_hair = "Black"
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	//shoes
 	var/pick1 = pick(1,2,3)
 	if (pick1 == 1)

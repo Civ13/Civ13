@@ -817,10 +817,15 @@ var/global/redirect_all_players = null
 	if (PIRATES in map.faction_organization)
 		dat += "[alive_pirates.len] Pirates "
 	if (INDIANS in map.faction_organization)
-		dat += "[alive_indians.len] Natives "
+		if (map && istype(map, /obj/map_metadata/african_warlords))
+			dat += "[alive_civilians.len] Africans "
+		else
+			dat += "[alive_indians.len] Natives "
 	if (CIVILIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
 			dat += "[alive_civilians.len] Soviets "
+		if (map && istype(map, /obj/map_metadata/african_warlords))
+			dat += "[alive_civilians.len] UN Peacekeepers "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -968,8 +973,8 @@ var/global/redirect_all_players = null
 				prev_side = job.base_type_flag()
 				var/side_name = "<b><h1><big>[job.get_side_name()]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
-					if (map && map.ID== "ARAB_TOWN" && side_name == "American")
-						side_name = "Israeli"
+					if (map && map.ID == "ARAB_TOWN" && side_name == "American")
+						side_name = "Israeli" //Broken code, doesn't work - 21/01/2022
 					dat += "<br><br>[side_name]<br>"
 
 			var/extra_span = "<b>"
