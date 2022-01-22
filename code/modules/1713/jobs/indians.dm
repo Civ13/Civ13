@@ -392,6 +392,7 @@ datum/job/indians/tribes/black
 	spawn_location = "JoinLateIND1"
 	min_positions = 40
 	max_positions = 100
+	default_language = "Zulu"
 
 /datum/job/indians/warlords/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -476,6 +477,9 @@ datum/job/indians/tribes/black
 			uniform.attackby(FJ, H)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/ab = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(ab, H)
 	//guns
 	give_gun(H)
 
@@ -515,7 +519,9 @@ datum/job/indians/tribes/black
 			uniform.attackby(FJ, H)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
-
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(ab, H)
 	//guns
 	give_gun(H)
 
@@ -555,6 +561,8 @@ datum/job/indians/tribes/black
 			uniform.attackby(FJ, H)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
-
+	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(ab, H)
 	//guns
 	give_gun(H)

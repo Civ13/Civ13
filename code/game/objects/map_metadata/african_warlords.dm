@@ -7,7 +7,7 @@
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
 	faction_organization = list(INDIANS, CIVILIAN)
-
+	
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/british,
