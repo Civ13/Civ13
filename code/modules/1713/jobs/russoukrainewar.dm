@@ -272,7 +272,7 @@
 
 	spawn_location = "JoinLateRUCap"
 
-	is_rusretreat = FALSE
+	is_grozny = FALSE
 	is_officer = TRUE
 	is_commander = TRUE
 	is_modernday = FALSE
@@ -341,7 +341,7 @@
 
 	spawn_location = "JoinLateRUSgt"
 
-	is_rusretreat = FALSE
+	is_grozny = FALSE
 	is_modernday = FALSE
 	is_ww2 = FALSE
 	is_squad_leader = TRUE
@@ -420,7 +420,7 @@
 	spawn_location = "JoinLateRUMedic"
 
 	is_medic = TRUE
-	is_rusretreat = FALSE
+	is_grozny = FALSE
 	is_modernday = FALSE
 	is_ww2 = FALSE
 	is_ukrainerussowar = TRUE
@@ -487,7 +487,7 @@
 
 	spawn_location = "JoinLateRU"
 
-	is_rusretreat = FALSE
+	is_grozny = FALSE
 	is_modernday = FALSE
 	is_ww2 = FALSE
 	is_ukrainerussowar = TRUE

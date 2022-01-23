@@ -72,7 +72,7 @@
 /datum/job/var/is_kremlin = FALSE
 /datum/job/var/can_be_minor = FALSE
 /datum/job/var/is_karelina = FALSE
-/datum/job/var/is_rusretreat = FALSE
+/datum/job/var/is_grozny = FALSE
 /datum/job/var/is_skyrim = FALSE
 /datum/job/var/is_imperial = FALSE
 /datum/job/var/is_stormcloak = FALSE

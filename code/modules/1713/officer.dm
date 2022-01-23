@@ -208,7 +208,7 @@ var/global/list/valid_coordinates = list()
 		var/list/validchoices = map.valid_artillery
 		var/valid_coords_check = FALSE
 		validchoices += "Cancel"
-		if (map.ID != "RUSRETREAT")
+		if (map.ID != "GROZNY")
 			var/input1 = WWinput(src, "Which type of airstrike to request?", "Order Airstrike", "Cancel", validchoices)
 			if (input1 == "Cancel")
 				return
@@ -290,14 +290,14 @@ var/global/list/valid_coordinates = list()
 				return
 	else if (map.artillery_count <= 0)
 		map.artillery_count = 0
-		if (map.ID != "RUSRETREAT")
+		if (map.ID != "GROZNY")
 			src << "<span class='warning'>There are no more airstrikes available.</span>"
 			return
 		else
 			src << "<span class='warning'>There are no more artillery barrages available.</span>"
 			return
 	else if (world.time < map.artillery_last+map.artillery_timer)
-		if (map.ID != "RUSRETREAT")
+		if (map.ID != "GROZNY")
 			src << "<span class='warning'>You can't order an airstrike yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
 			return
 		else
@@ -310,7 +310,7 @@ var/global/list/valid_coordinates = list()
 	if (type == "White Phosphorus")
 		new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(T)
 	else if (type == "Explosive")
-		if (map.ID != "RUSRETREAT")
+		if (map.ID != "GROZNY")
 			var/xoffsetmin = inputx-6
 			var/xoffsetmax = inputx+6
 			var/yoffsetmin = inputy-6

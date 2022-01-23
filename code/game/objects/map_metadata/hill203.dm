@@ -38,7 +38,7 @@
 		else
 			. = TRUE
 	if (istype(J, /datum/job/russian))
-		if (J.is_ww2 || J.is_rcw || J.is_prison || J.is_yeltsin || J.is_rusretreat || J.is_modernday || J.is_ukrainerussowar)
+		if (J.is_ww2 || J.is_rcw || J.is_prison || J.is_yeltsin || J.is_grozny || J.is_modernday || J.is_ukrainerussowar)
 			. = FALSE
 		else
 			. = TRUE

@@ -11,7 +11,7 @@
 	en_meaning = "Warlord"
 	rank_abbreviation = "W."
 	spawn_location = "JoinLateCCWL"
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_commander = TRUE
 	is_ww2 = FALSE
 	is_modernday = TRUE
@@ -81,7 +81,7 @@
 	spawn_location = "JoinLateCC"
 	min_positions = 10
 	max_positions = 200
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_modernday = TRUE
 
 /datum/job/arab/civilian/chechen/militia/equip(var/mob/living/human/H)
@@ -262,7 +262,7 @@
 	spawn_location = "JoinLateCC"
 
 	is_medic = TRUE
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_modernday = TRUE
 	is_ww2 = FALSE
 
@@ -330,7 +330,7 @@
 
 	spawn_location = "JoinLateRUCap"
 
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	is_modernday = TRUE
@@ -399,7 +399,7 @@
 
 	spawn_location = "JoinLateRUSgt"
 
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_modernday = TRUE
 	is_ww2 = FALSE
 	is_squad_leader = TRUE
@@ -477,7 +477,7 @@
 	spawn_location = "JoinLateRUMedic"
 
 	is_medic = TRUE
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_modernday = TRUE
 	is_ww2 = FALSE
 
@@ -551,7 +551,7 @@
 
 	spawn_location = "JoinLateRURadop"
 
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_radioman = TRUE
 	uses_squads = TRUE
 	is_modernday = TRUE
@@ -644,7 +644,7 @@
 
 	spawn_location = "JoinLateRU"
 
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_modernday = TRUE
 	is_ww2 = FALSE
 
@@ -746,7 +746,7 @@
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
-	is_rusretreat = TRUE
+	is_grozny = TRUE
 	is_modernday = TRUE
 	is_ww2 = FALSE
 

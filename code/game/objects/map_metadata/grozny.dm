@@ -1,5 +1,5 @@
-/obj/map_metadata/rusretreat
-	ID = MAP_RUSRETREAT
+/obj/map_metadata/grozny
+	ID = MAP_GROZNY
 	title = "Retreat From Grozny"
 	lobby_icon_state = "grozny"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -25,7 +25,7 @@
 	artillery_count = 3 //they really need it to get anywhere, but now it's some OP shit
 	artillery_timer = 2400 //and they need it just slightly quicker. It's artillery supposedly, not CAS.
 	valid_artillery = list("Explosive","Napalm","Creeping Barrage")
-/obj/map_metadata/rusretreat/New()
+/obj/map_metadata/grozny/New()
 	..()
 	spawn(20)
 		for(var/obj/structure/lamp/O)
@@ -40,28 +40,28 @@
 				NC.opacity = FALSE
 
 
-/obj/map_metadata/rusretreat/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/grozny/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_rusretreat == TRUE)
+	if (J.is_grozny == TRUE)
 		. = TRUE
 	else
 		. = FALSE
 
-/obj/map_metadata/rusretreat/faction1_can_cross_blocks()
+/obj/map_metadata/grozny/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/rusretreat/faction2_can_cross_blocks()
+/obj/map_metadata/grozny/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 
-/obj/map_metadata/rusretreat/roundend_condition_def2name(define)
+/obj/map_metadata/grozny/roundend_condition_def2name(define)
 	..()
 	switch (define)
 		if (CHECHEN)
 			return "Chechens"
 		if (RUSSIAN)
 			return "Russians"
-/obj/map_metadata/rusretreat/roundend_condition_def2army(define)
+/obj/map_metadata/grozny/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (CHECHEN)
@@ -69,7 +69,7 @@
 		if (RUSSIAN)
 			return "Russians"
 
-/obj/map_metadata/rusretreat/army2name(army)
+/obj/map_metadata/grozny/army2name(army)
 	..()
 	switch (army)
 		if ("Chechens")
@@ -78,7 +78,7 @@
 			return "Russian"
 
 
-/obj/map_metadata/rusretreat/cross_message(faction)
+/obj/map_metadata/grozny/cross_message(faction)
 	if (faction == RUSSIAN)
 		return "<font size = 4>The Russian Federal Forces may now cross the invisible wall!</font>"
 	else if (faction == CHECHEN)
@@ -86,7 +86,7 @@
 	else
 		return ""
 
-/obj/map_metadata/rusretreat/reverse_cross_message(faction)
+/obj/map_metadata/grozny/reverse_cross_message(faction)
 	if (faction == RUSSIAN)
 		return "<span class = 'userdanger'>The Russian Federal Forces may no longer cross the invisible wall!</span>"
 	else if (faction == CHECHEN)
@@ -97,7 +97,7 @@
 
 	no_loop_ret = FALSE
 
-/obj/map_metadata/rusretreat/update_win_condition()
+/obj/map_metadata/grozny/update_win_condition()
 	if (world.time >= 18000)
 		if (win_condition_spam_check)
 			return FALSE
@@ -162,7 +162,7 @@
 	last_win_condition = win_condition.hash
 	return TRUE
 
-/obj/map_metadata/rusretreat/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/grozny/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)

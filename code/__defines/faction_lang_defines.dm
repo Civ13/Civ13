@@ -88,7 +88,7 @@
 	if (constant == RUSSIAN)
 		if (map.ID == "YELTSIN")
 			return "Russian Army"
-		if (map.ID == "RUSRETREAT")
+		if (map.ID == "GROZNY")
 			return "Russian Federal Forces"
 		else if (age >= 6)
 			return "Soviet Union"

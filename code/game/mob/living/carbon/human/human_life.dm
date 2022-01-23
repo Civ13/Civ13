@@ -1475,7 +1475,7 @@
 						holder2.icon_state = "ru_basic"
 					else if (map.ordinal_age >= 6)
 						holder2.icon_state = "sov_basic"
-					if (map.ID == MAP_YELTSIN || map.ID == MAP_RUSRETREAT || map.ID == MAP_FACTORY)
+					if (map.ID == MAP_YELTSIN || map.ID == MAP_GROZNY || map.ID == MAP_FACTORY)
 						holder2.icon_state = "ru_basic"
 				if (GERMAN)
 					if (map.ordinal_age <= 1)

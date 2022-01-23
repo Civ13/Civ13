@@ -125,7 +125,7 @@
 				MAP_ROAD_TO_DAK_TO = 0,
 				MAP_HUE = 0,
 				MAP_RETREAT = 6,
-				MAP_RUSRETREAT = 6,
+				MAP_GROZNY = 6,
 				MAP_FACTORY = 0,
 			)
 		else if (epoch == "World War II (1931-1948)")
