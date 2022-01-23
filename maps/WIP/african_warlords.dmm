@@ -82,7 +82,7 @@
 "bE" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/roofed/jungle)
 "bF" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/curtain/medical,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "bG" = (/obj/structure/shelf,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"bH" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/sign/n1{pixel_y = 32},/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"bH" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/sign/n1{pixel_y = 32},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "bI" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/storage/fancy/candle_box,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "bJ" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "bK" = (/obj/covers/wood_ship,/obj/structure/bed/bedroll,/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -102,7 +102,7 @@
 "bY" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/pen/pencil,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "bZ" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/pen/pencil,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "ca" = (/obj/covers/sandstone_wall,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"cb" = (/obj/structure/sign/greencross{pixel_y = 32},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"cb" = (/obj/structure/sign/greencross{pixel_y = 32},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "cc" = (/obj/structure/vending/sales/market_stall/prepared/gulag/food{desc = "A vending stall where fruits can be bought."; dir = 2; name = "fruit market stall"; prices = list(/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/lime = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/banana = 15); products = list(/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/lime = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/banana = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/melon = 15)},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "cd" = (/obj/covers/sandstone_wall,/turf/floor/beach/sand/desert,/area/caribbean/roofed/jungle)
 "ce" = (/obj/structure/window/classic/metal,/obj/structure/curtain/open,/turf/floor/wood,/area/caribbean/roofed/jungle)
@@ -143,7 +143,7 @@
 "cN" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "cO" = (/obj/structure/table/wood,/obj/item/weapon/telephone,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "cP" = (/obj/structure/window/classic,/obj/structure/curtain/open,/obj/covers/steelplating/white,/obj/structure/grille/ironfence,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
-"cQ" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/table/modern/table,/obj/structure/bedsheetbin,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"cQ" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/table/modern/table,/obj/structure/bedsheetbin,/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "cR" = (/obj/structure/wild/burnedbush,/obj/structure/barricade/hescobastion,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "cS" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/table/modern/table,/obj/item/weapon/storage/pill_bottle/penicillin,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "cT" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/iv_drip,/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -178,7 +178,7 @@
 "dw" = (/obj/structure/oven/fireplace,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "dx" = (/obj/structure/vending/sales/market_stall/prepared/gulag/food{desc = "A vending stall where fruits can be bought."; dir = 2; name = "fruit market stall"; prices = list(/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/lime = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/banana = 15); products = list(/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/lime = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/banana = 15, /obj/item/weapon/reagent_containers/food/snacks/grown/melon = 15)},/obj/structure/camonet,/obj/structure/camonet,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "dy" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/obj/covers/fancywood,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"dz" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"dz" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "dA" = (/obj/structure/window/barrier/jersey,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "dB" = (/obj/covers/wood_ship,/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "dC" = (/obj/structure/simple_door/key_door/anyone/rustic,/turf/floor/wood,/area/caribbean/roofed/jungle)
@@ -201,7 +201,7 @@
 "dT" = (/obj/structure/bed/chair/office/light{dir = 1; icon_state = "officechair_white"},/turf/floor/wood,/area/caribbean/roofed/jungle)
 "dU" = (/obj/covers/thatch,/obj/structure/props/sofa,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "dV" = (/obj/covers/thatch,/obj/structure/props/sofa/p2,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"dW" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/table/glass,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"dW" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/table/glass,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "dX" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "dY" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/steel,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "dZ" = (/obj/structure/meat_grinder,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed/jungle)
@@ -269,8 +269,8 @@
 "fj" = (/obj/structure/wild/largejungle,/turf/floor/beach/water/deep/jungle,/area/caribbean/nomads/forest/Jungle)
 "fk" = (/obj/covers/fancywood,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fl" = (/obj/covers/fancywood,/obj/structure/bed/chair/wood/bleacher/l{dir = 1},/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
-"fm" = (/obj/covers/fancywood,/obj/structure/bed/chair/wood/bleacher{dir = 1},/obj/structure/roof_support/admin,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
-"fn" = (/obj/covers/fancywood,/obj/covers/carpet/orangecarpet,/obj/structure/roof_support/admin,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
+"fm" = (/obj/structure/window/classic,/obj/structure/curtain/open,/obj/covers/steelplating/white,/obj/structure/grille/ironfence,/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
+"fn" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/roofed/jungle)
 "fo" = (/obj/structure/wild/jungle,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
 "fp" = (/obj/covers/fancywood,/obj/covers/carpet/orangecarpet,/obj/structure/table/fancy,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "fq" = (/obj/covers/fancywood,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/roofed/jungle)
@@ -285,15 +285,15 @@
 "fz" = (/obj/structure/shelf,/obj/item/clothing/head/helmet/motorcycle,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "fA" = (/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "fB" = (/obj/structure/vehicle/motorcycle/m125/full,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"fC" = (/obj/structure/roof_support/admin,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
+"fC" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fD" = (/obj/item/weapon/reagent_containers/glass/barrel/modern,/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"fE" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/roof_support/admin,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"fF" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/sign/n2{pixel_y = 32},/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"fE" = (/obj/structure/window/classic,/obj/covers/wood_ship,/obj/structure/curtain/open,/obj/structure/barricade/antitank,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
+"fF" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/sign/n2{pixel_y = 32},/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fG" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fH" = (/obj/covers/wood_ship,/obj/structure/bed/chair{dir = 4; icon_state = "chair"},/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "fI" = (/obj/covers/sandstone_wall,/obj/covers/dirt_wall/blocks,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fJ" = (/obj/covers/sandstone_wall,/obj/covers/dirt_wall/blocks,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"fK" = (/obj/structure/roof_support/admin,/turf/floor/wood,/area/caribbean/roofed/jungle)
+"fK" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 4},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "fL" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "fM" = (/obj/covers/wood_ship,/obj/covers/sandstone_wall,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "fN" = (/obj/structure/toilet/pit_latrine,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
@@ -302,11 +302,11 @@
 "fQ" = (/obj/structure/closet/crate/rations/beer,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "fR" = (/obj/covers/jail/steeljail,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "fS" = (/obj/structure/simple_door/key_door/custom/jail/steeljail/police,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"fT" = (/obj/covers/wood_ship,/obj/item/weapon/paper_bin{pixel_x = -2; pixel_y = 8},/obj/structure/roof_support/admin,/obj/structure/table/modern/table,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"fU" = (/obj/covers/wood_ship,/obj/structure/roof_support/admin,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"fT" = (/obj/covers/wood_ship,/obj/item/weapon/paper_bin{pixel_x = -2; pixel_y = 8},/obj/structure/table/modern/table,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"fU" = (/obj/structure/window/classic,/obj/structure/curtain/open,/obj/covers/steelplating/white,/obj/structure/grille/ironfence,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "fV" = (/obj/covers/wood_ship,/obj/structure/filingcabinet,/obj/item/weapon/paper_bundle,/obj/item/weapon/paper_bundle,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fW" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/handcuffs,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"fX" = (/obj/structure/roof_support/admin,/obj/covers/wood_ship,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"fX" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fY" = (/obj/covers/wood_ship,/obj/structure/closet,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fZ" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "ga" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/obj/item/weapon/pen/pencil,/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -316,15 +316,15 @@
 "ge" = (/obj/covers/wood_ship,/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "gf" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/key/civ/police,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "gg" = (/obj/covers/wood_ship,/obj/structure/closet,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/melee/classic_baton,/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"gh" = (/obj/structure/bed/chair/wood/bleacher,/obj/covers/wood_ship,/obj/structure/roof_support/admin,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"gi" = (/obj/covers/wood_ship,/obj/covers/carpet/redcarpet,/obj/structure/roof_support/admin,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"gj" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood/bleacher,/obj/structure/roof_support/admin,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"gh" = (/obj/covers/wood_ship,/obj/covers/steelplating/white,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"gi" = (/obj/covers/wood_ship,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"gj" = (/obj/structure/window/classic,/obj/covers/wood_ship,/obj/structure/curtain/open,/obj/structure/grille/ironfence,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "gk" = (/obj/structure/window/classic,/obj/covers/wood_ship,/obj/structure/curtain/open,/obj/covers/jail/steeljail,/turf/floor/grass/jungle,/area/caribbean/roofed/jungle)
 "gl" = (/obj/structure/oven/grill,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
-"gm" = (/obj/covers/sandstone_wall,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"gm" = (/obj/covers/wood_ship,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "gn" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/clothing/head/traffic_police,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "go" = (/obj/covers/wood_ship,/obj/structure/filingcabinet,/turf/floor/dirt,/area/caribbean/roofed/jungle)
-"gp" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/material/ashtray/bronze,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"gp" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/material/ashtray/bronze,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "gq" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "gr" = (/obj/item/stack/farming/seeds/tomato,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "gs" = (/obj/covers/wood_ship,/obj/item/weapon/stool/wood,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
@@ -341,7 +341,7 @@
 "gD" = (/obj/covers/thatch,/obj/structure/closet/cabinet{pixel_x = -4},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "gE" = (/obj/covers/thatch,/obj/structure/wallclock{pixel_x = 4},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "gF" = (/obj/structure/farming/plant/hemp,/turf/floor/dirt/ploughed,/area/caribbean/nomads/forest/Jungle)
-"gG" = (/obj/covers/thatch,/obj/structure/roof_support/admin,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
+"gG" = (/obj/covers/wood_ship,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "gH" = (/obj/structure/grille/fence{dir = 4},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "gI" = (/obj/structure/grille/fence{dir = 4},/obj/structure/simple_door/fence,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "gJ" = (/obj/structure/grille/fence{dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
@@ -368,6 +368,7 @@
 "it" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "iu" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 "iS" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 4},/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"jj" = (/obj/item/roller,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "jr" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 "jy" = (/obj/item/stack/farming/seeds/rice,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "jN" = (/obj/structure/props/junk,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
@@ -375,16 +376,19 @@
 "kt" = (/mob/living/simple_animal/rooster,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "kG" = (/obj/structure/window/barrier/rock{dir = 1; icon_state = "rock_barricade"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "kJ" = (/obj/structure/barricade/hescobastion,/obj/structure/sign/custom{desc = "NO ARMED MILITIAS ALLOWED INSIDE THE PERIMETER. TRANSGRESSORS WILL BE SHOT ON SIGHT!"; name = "United Nations demilitarized zone"},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"kP" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 4},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "kR" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
-"lf" = (/obj/structure/barbwire{dir = 4},/obj/structure/barbwire{dir = 8},/obj/structure/barricade/antitank,/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"lf" = (/obj/structure/barbwire{dir = 4},/obj/structure/barbwire{dir = 8},/obj/structure/barricade/antitank,/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "li" = (/obj/item/weapon/trafficcone{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
-"lM" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 4},/obj/structure/barricade/antitank,/obj/structure/sign/custom{desc = "NO ARMED MILITIAS ALLOWED INSIDE THE PERIMETER. TRANSGRESSORS WILL BE SHOT ON SIGHT!"; name = "United Nations demilitarized zone"},/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"lL" = (/obj/structure/sign/greencross{pixel_y = 32},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"lM" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 4},/obj/structure/barricade/antitank,/obj/structure/sign/custom{desc = "NO ARMED MILITIAS ALLOWED INSIDE THE PERIMETER. TRANSGRESSORS WILL BE SHOT ON SIGHT!"; name = "United Nations demilitarized zone"},/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "lN" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"mQ" = (/obj/structure/table/modern/table,/obj/item/weapon/key/soviet/guard{name = "UN key"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"mQ" = (/obj/covers/wood_ship,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "mT" = (/obj/structure/barbwire{dir = 8},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "na" = (/obj/item/weapon/trafficcone{dir = 4},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "ne" = (/obj/item/stack/farming/seeds/tomato,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
 "no" = (/obj/structure/barbwire{dir = 1},/obj/structure/barbwire{dir = 8},/obj/structure/barbwire,/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"nr" = (/obj/covers/wood_ship,/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "nV" = (/obj/structure/barbwire{dir = 1},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "ok" = (/obj/structure/wild/junglebush,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "os" = (/obj/structure/wild/junglebush,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
@@ -416,6 +420,7 @@
 "sZ" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "td" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
 "te" = (/mob/living/simple_animal/horse,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"tG" = (/obj/structure/bed/roller,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "tI" = (/obj/item/weapon/trafficcone,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "ua" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "ud" = (/obj/structure/barricade/hescobastion,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
@@ -431,6 +436,8 @@
 "vI" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "vX" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "wa" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"wq" = (/obj/structure/window/classic/metal,/obj/structure/curtain/open,/obj/structure/barricade/antitank,/turf/floor/wood,/area/caribbean/roofed/jungle)
+"wz" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "wN" = (/obj/structure/barbwire{dir = 1},/obj/structure/barbwire,/obj/structure/barricade/antitank,/obj/structure/sign/custom{desc = "NO ARMED MILITIAS ALLOWED INSIDE THE PERIMETER. TRANSGRESSORS WILL BE SHOT ON SIGHT!"; name = "United Nations demilitarized zone"},/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "xh" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 "xo" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
@@ -438,6 +445,7 @@
 "xT" = (/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "xV" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "xY" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"yg" = (/obj/effect/floor_decal/industrial/danger,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "yt" = (/obj/structure/wild/largejungle,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "yE" = (/obj/structure/barbwire{dir = 1},/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "yF" = (/obj/structure/sign/traffic/stop,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
@@ -510,7 +518,7 @@
 "MC" = (/obj/structure/wild/smallbush,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
 "MF" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "MG" = (/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"MJ" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"MJ" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "Nk" = (/obj/effect/landmark{name = "JoinLateIND1"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "No" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
 "NL" = (/obj/structure/barbwire{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
@@ -552,6 +560,7 @@
 "WW" = (/obj/structure/barricade/hescobastion,/obj/structure/sign/flag/un,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Xd" = (/obj/structure/window/barrier/jersey,/obj/structure/barbwire,/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "Xn" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"Xu" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "Xx" = (/obj/item/weapon/stool/wood,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "XW" = (/obj/structure/multiz/ladder/ww2/tunneltop/vietcong,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "YA" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
@@ -565,6 +574,7 @@
 "ZG" = (/obj/structure/wild/burnedbush,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
 "ZP" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "ZT" = (/obj/covers/wood_ship,/obj/effect/landmark{name = "JoinLateUN"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"ZZ" = (/obj/structure/table/modern/table,/obj/item/weapon/key/soviet/guard{name = "UN key"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 
 (1,1,1) = {"
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrMGZrZrZrHVZrZrZrZrZrZrZrMGZrZrMGxTPqPqPqxTWEZrFkZrZrZrEWEWEWEWZrZrMGVxMGVNMGZrMGZrVxZrZrVNMGMGVNEWaaaaEWZrZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
@@ -592,11 +602,11 @@ oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrWEWEVxZrVxHpWEWEZrYG
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrWEWEZrWEWEVxZrVxZrWEZrZrYGWEZrZrZrZrFkZrZrZrZrozZrWEZrZracfrfrehehfkfrfracZrZrWEWExTPqPqPqxTWEMGZrZrZrZrMGZrZrZrZrZrZrWEWEHVZrEWEWEWZrZrMGMGMGHkMGMGMGPnSqbiMGHkMGPnMGMGMGMGSqxTxTxTSqMGMGMGSqMGHkMGoYoYoYoYaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrMGZrZrMGCIZrZrZrZrZrVNVxZrWEWECICIDZZrOOZrZrZrZrZrZrZraeaeehehehcHehehehaeacZrVxCIxTPqPqPqxTWEMGZrZrZrzxYGZrZrZrMGZrZrZrZrZrZrZrEWEWEWZrMGLTMGMGMGvuZrMGMGpwZrSqMGHkMGPnMGMGxTxTxTHkMGPnMGMGMGZrZrMGMGZroYoYaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZroYoYoYoYoYoYZrVxZrZrMGZrZrZrHVZrZrZrVxWEZrZrCIWEZrZrZrZrZrVxCIZrZrZreDehehehewcYddeheheheDMGZrZrxTPqPqPqxTVNZrZrZrZrZrYGWEZrZrZrWEMGZrMGZrDZZrEWaaEWZrMGMGMGMGMGMGMGMGMGaWSqMGMGMGMGMGBoMGxTxTMGMGMGMGHkMGPnMGMGMGMGZroYoYaIoYoYoYoYoY
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZroYoYoYZrZrVxZrZrZrVxZrSYZrZrWEsSZrZrZrZrZrZrZrMGZrMGZrWEZrZrZracaefleieqfnewfnfleieqaeacZrZrxTPqPqPqxTZrZrZrWEozZrZrWEWECIZrZrWEVxVxMGRDEWEWaaaaEWSqMGHkMGMGLTMGLTSqaWLTSqMGMGMGMGMGxTxTMGPnMGMGMGSqMGMGMGMGMGoYoYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZroYoYoYZrZrVxZrZrZrVxZrSYZrZrWEsSZrZrZrZrZrZrZrMGZrMGZrWEZrZrZracaefleieqewewewfleieqaeacZrZrxTPqPqPqxTZrZrZrWEozZrZrWEWECIZrZrWEVxVxMGRDEWEWaaaaEWSqMGHkMGMGLTMGLTSqaWLTSqMGMGMGMGMGxTxTMGPnMGMGMGSqMGMGMGMGMGoYoYoYoYaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrFkZrVNZrZrZrHpZrZrZrYGYGYGZrZrVxWEWEZrZrZrZrZrHpZrZrZrZrZrWEZrZracacehehehehewewewehehehehacacZrxTPqPqPqxTZrZrZrZrZrWEWEZrZrCIZrWEZrVNWEZrZrZrEWEWaaEWvuMGMGvuZrMGMGSqMGbiSqMGMGMGMGZrHkxTxTxTMGMGMGMGLTSqMGMGMGHkoYMGoYoYaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrWEZrVNZrZrZrZrHkZrYGZrHVZGWEWEWEZrVxZruPWEZrYGYGYGZrZrZrZrZracehfleieieqewewewfleieieqezacZrxTPqPqPqxTbqcRbqZrZrZrZrZrZrZrZrZrVxHpWEMGVNMGZraaaaEWMGMGMGMGMGMGHkMGPnaWMGMGMGMGMGMGxTxTxTMGMGMGMGSqSqMGMGMGMGMGMGZroYoYaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrWEWEZrZrZrZrVNVNMGWEWEMGWEWEWEZrZrZrZrYGYGZrZrZrZrZrZreDehfkehehehewewewehehehfkezeDZrxTPqPqPqxTZrZrbqWEzxZrZrZrZrZrZrZrVxZrWEZrZrZrZrEWaaEWEWZrMGLTMGMGMGMGMGaWMGMGMGSqMGxTxTxTMGMGMGMGMGMGMGMGMGMGMGMGZrZrZroYaIoYoYoYoYoY
-oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNVNVNVNZrZrZrZrWEZrZrZrVxVxZrZrZrZrZracfleifmeieqfnewfnfleifmeieqacZrxTPqPqPqxTMGZrbqZrWEVxVxZruPWEVNZrWEDZZrWEWEZrZrZraaEWZrMGMGMGMGMGMGMGSqpwZrZrMGMGxTxTxTWvSqSqMGvuMGMGMGMGMGSqMGMGZroYoYoYaIoYoYoYoYoY
+oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNVNVNVNZrZrZrZrWEZrZrZrVxVxZrZrZrZrZracfleieieieqewewewfleieieieqacZrxTPqPqPqxTMGZrbqZrWEVxVxZruPWEVNZrWEDZZrWEWEZrZrZraaEWZrMGMGMGMGMGMGMGSqpwZrZrMGMGxTxTxTWvSqSqMGvuMGMGMGMGMGSqMGMGZroYoYoYaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrVNVxZrZrZrYGDZMGYGMGYGVNMGZrWEVNZrZrZrZrVNZrHpZrZrZrZrZrZreDehfqehehehewfpewehehehfqezeDZrxTPqPqPqxTMGZrZrWEZrZrWEZrZrZrZrWEZrWEWEWEYGZrZrZrEWEWZrZrSqMGHkMGMGWvMGbiMGMGMGxTxTxTMGMGMGHkMGMGMGZrZreVMGMGoYoYZroYoYoYaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZroYoYZrZrZrZrZrZrZrZrMGYGYGYGZrMGMGMGMGMGMGZrZrZrZrvuVxYGZrZrZrZrZrZracfrfrfracaedyaedyaeacfrfrfracZrxTPqPqPqxTZrZrZrZrVxHpWEWEWEZrWEZrWEVNZrWEZrZrWEZrZrEWEWZrvuMGMGMGMGMGMGaWaWaWaWviviaWaWaWaWvXaWaWaWbiaWaWaWaWaIaIaIaIaIaIaIoYoYoYoYoY
 oYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYZrZrZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEDZMGWEWEMGZrMGvuZrYGZrYGZrZrZrZrbqbqacaceDaeaefsfsftfsfsaeaeeDacacdjxTPqPqPqdAZrZrZrZrVxZrWEWEHpWEDZZrZrSYZrWEZrZrWEZrZrEWEWZrMGMGMGMGWvMGMGxTxTxTxTxTxTMGMGMGMGMGMGWvMGMGMGMGMGMGoYoYoYoYoYoYoYoYoYoYoYoY
@@ -610,38 +620,38 @@ oYZrZrZrWEZrZrZrZrVxZrZrZrZrWEZrVxZrZrZrZrZrZrWEWEZrZrZrZrVNVNMGHVMGZrZrZraAZrxT
 ZrZrZrZrWEZrZrZrZrVxZrZrZrZrZrVxVxZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNZrYGYGZrZraAZrZrxTZrZrxTxTxTYGZraHPqPqPqxTcXdQbobhbhbhbhagbhbhdNbhdNdNbbxTPqPqPqxTbebebeaZaZaZaZbbaZaZaZZrZrZrWEZrZrZrZrVNZrxTxTMxMxxTMGMGMGMGMGLTMGMGzTvuMGMGMGMGMGMGSqSqMGMGMGMGMGhkSqMGMGMGZrzToYMGMGHkMGMG
 ZrZrZrZrWEZrZrRDozZrZrWEZrZrZrWEZrozZrZrZrVNVxZrZrZrYGDZMGYGMGYGZrZrYGZrZraAZrZrZrZrdRZrZrxTZrZraHPqPqPqxTaZbhbhbhbhbhfybbbhbhbhbhbhdTbbxTPqPqPqxTaZbGbPcwcwfzcEcFbGbGbeZrZrWEZrZruPHVZrxTxTxTxTMxMxZrMGMGMGMGMGZrMGMGLTMGMGMGMGMGMGMGMGMGMGMGMGMGSqZrMGzTMGMGZrMGMGMGMGMGMGPn
 ZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrZrMGYGYGYGZrMGMGZrFkYGZraAZrZrZrZrZrZrZrZrxTZraHPqPqPqxTbeaZbbagbbcXaZbbbbcXbbbecXbbbbxTPqPqPqxTaZcGbjbjbjbjbjbjbjbjbeZrxTxTFkZrZrZrxTxTxTxTZrEWaaEWWvMGPnvuMGhkMGMGMGMGWvSqSqMGvuMGMGMGMGMGSqMGMGZrzTMGzTMGMGMGPnMGMGMGMGMG
-ZrHVVxWEZrZrZrZrVxZrZrZrZrJPZrVxZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEZrZrWEFkxTaAZrxTZrZrZrZrZrZrxTZraHPqPqPqxTeAxTxTxTxTxTxTxTxTxTxTxTxTxTeBeQPqPqPqeTaZfAbjfBfCcIfCcIbjfDbbZrozxTxTxTxTxTxTxTVxZrZrEWaaEWEWMGvuHkVNMGPnMGMGMGMGMGHkMGMGMGZrZreVMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMG
+ZrHVVxWEZrZrZrZrVxZrZrZrZrJPZrVxZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEZrZrWEFkxTaAZrxTZrZrZrZrZrZrxTZraHPqPqPqxTeAxTxTxTxTxTxTxTxTxTxTxTxTxTeBeQPqPqPqeTaZfAbjfBbjcIbjcIbjfDbbZrozxTxTxTxTxTxTxTVxZrZrEWaaEWEWMGvuHkVNMGPnMGMGMGMGMGHkMGMGMGZrZreVMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMG
 ZrZrWEWEZrVNVNFkCIZrWEZrZrZrVxVxZrHVZrZrZrZrZrZrZrFkFkVxZrVxZrZrZrMGZrZrxTaAxTxTxTZrZrxTxTxTZrZraHPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqlixTaZcKbjbjbjbjbjbjbjcLaZZrZrWEeUeWxTxTZrWEMGZrZrEWaaEWhkvuMGVNHkZrMGMGMGMGMGMGvuMGMGMGSqMGMGMGMGMGMGMGMGMGMGMGPnzTzTMGHkMGMGMG
 ZrZrWEWEWEZrZrZrZrozOOVNVNZrHpZrZrZrZrWEsSZrDZZrZrFkFkZrZrCIMGZrZrVxZrZrxTaAZrZrZrZrZrxTxTZrZrZraHPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqnaPqxTaZcMcNbjbjbjbjbjbjcOaZZrZrZrxTeBxTWECIMGZrZrCIEWaaaaEWEWZrZrLTZrMGMGWvMGMGMGMGMGPnMGMGMGMGMGMGWvMGMGPnMGMGMGMGMGMGMGMGMGPnMG
 xTZrOOZrZrZrZrZrZrZrZrZrvuVxYGZrZrZrVxWEWEWETfZrVxVxZrZrZrZrMGZrZrVxZrZrxTbkZrZrYGYGZrZrZrZrxTZrpqliPqtInatIPqPqPqPqPqPqPqPqPqPqPqPqPqPqtIARPqPqxTbeaZbbbjbjbjbjbjbbbbbbZrZrxTxTeBZrZrZGCIMGWEZrEWEWaaaaEWZrLTZrZrSqMGMGMGMGMGMGMGMGMGMGMGSqMGMGMGMGZrMGMGWvMGPnMGMGMGMGMGMGMG
-xTZrZrWEWEDZZrOOWEozVxZrYGZrneZrHVZGWEWEWEWEWEWECIZrWEWEDZZrWEZrZrZrFkxTxTbkZrxTZrYGZrZrZrZrxTZrFPeXPqeXeYeYxTeWxTxTxTeWxTeWxTxTxTeWxTZiWWAPAPAPLzWWiSxTxTxTxTxTxTxTxTdDxTxTxTxTxTxTxTxTxTfafafaDZZrEWaaEWEWZrMGLTMGvuvuMGMGMGMGMGMGMGMGMGMGMGMGvuMGZrMGMGZrMGMGMGMGMGMGMGMGMG
-PqVxZrVxCIZrSYZrZruPHVZrOOZrZrozZrZrWEWEWEZrZrZrZrZrVxCIZrZrMGVxZrZrFkZrxTbkZrZrZrZrZrxTZrZrZrZrfbXdPqfefgakalcPalalamcPalcPalamamcPamakxTPqPqPqPqFxCgliPqPqPqPqPqPqPqfiPqPqPqPqPqPqPqPqPqPqPqfaWEZrEWaafjfoZraVLTMGvuMGMGSqMGMGMGWvMGMGMGMGMGMGMGMGSqMGMGSqMGMGPfMGMGMGMGMGMG
-PqFkZrZrZrozZrFkZrZrZrZrZrWEJPVNZrZrOOZrZrZrFkZrZrMGZrZrZrZrWEZrWEZrZrZrxTbkZrZrZrxTxTxTZrZrZrZraHshPqfueGakblaqbmalbncQbpdWbrarblapbmamxTPqPqPqPqUMQynaPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTWEZrZrEWaaEWEWZrZrMGMGPnMGHkMGMGWvLTMGZrMGMGMGMGPnMGHkMGMGMGMGMGMGHkHkMGSqMGHk
+xTZrZrWEWEDZZrOOWEozVxZrYGZrneZrHVZGWEWEWEWEWEWECIZrWEWEDZZrWEZrZrZrFkxTxTbkZrxTZrYGZrZrZrZrxTZrFPeXPqeXeYeYxuyExuxTxuyExuyExuxTxuyExuZiWWAPAPAPLzWWiSxTxTxTxTxTxTxTxTdDxTxTxTxTxTxTxTxTxTfafafaDZZrEWaaEWEWZrMGLTMGvuvuMGMGMGMGMGMGMGMGMGMGMGMGvuMGZrMGMGZrMGMGMGMGMGMGMGMGMG
+PqVxZrVxCIZrSYZrZruPHVZrOOZrZrozZrZrWEWEWEZrZrZrZrZrVxCIZrZrMGVxZrZrFkZrxTbkZrZrZrZrZrxTZrZrZrZrfbXdPqfefgakalfmalalamfmalfmalamamfmamakfguyuyuyuyFxCgliPqPqPqPqPqPqPqfiPqPqPqPqPqPqPqPqPqPqPqfaWEZrEWaafjfoZraVLTMGvuMGMGSqMGMGMGWvMGMGMGMGMGMGMGMGSqMGMGSqMGMGPfMGMGMGMGMGMG
+PqFkZrZrZrozZrFkZrZrZrZrZrWEJPVNZrZrOOZrZrZrFkZrZrMGZrZrZrZrWEZrWEZrZrZrxTbkZrZrZrxTxTxTZrZrZrZraHshPqfueGakblfnbmalbncQbpdWbrarblfCbmamxTPqPqPqPqUMQynaPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxTWEZrZrEWaaEWEWZrZrMGMGPnMGHkMGMGWvLTMGZrMGMGMGMGPnMGHkMGMGMGMGMGMGHkHkMGSqMGHk
 PqFkWEHVWEozZrZrWEWEZrVxZrVxYGVNYGZrHpZrZrZrZrZrCIZrWEWEZrWEZrZrWEZrHVZrxTbkYGZrZrbsbtbtaEZrZrZraHPqPqPqxTakapapapalbucSapapbvasapapapalxTPqPqPqPqWWCgARPqPqPqPqPqPqPqPqedPqPqPqPqPqPqPqPqPqPqxTZrWEZrZrEWEWEWEWZrMGMGLTMGHkMGMGMGMGMGMGMGPnSqSqLTMGHkMGMGMGMGLTMGHkMGMGMGMGMG
-PqZrZrZrZrZrWEWEWEHpHpZrZrZrZrZrOcZrZrDZWEZrFkZrZrZrWEWEVxZrVxHpWEZrZrZrxTaAbwbwZrbxbybybzbAbAbAaHPqPqPqxTakblaqbmalapapapfEcTasblaqbmalxTPqPqPqxTLziSxTxTxTxTxTxTxTxTgAxTxTxTxTxTxTxTxTPqPqPqxTMGZrZrDZefZrhkhDeVZrLTLTMGMGHkHkMGMGMGMGMGMGMGMGLTMGMGMGMGMGMGMGMGMGMGMGMGMGMG
+PqZrZrZrZrZrWEWEWEHpHpZrZrZrZrZrOcZrZrDZWEZrFkZrZrZrWEWEVxZrVxHpWEZrZrZrxTaAbwbwZrbxbybybzbAbAbAaHPqPqPqxTakblaqbmalapapapapcTasblaqbmalxTPqPqPqxTLziSxTxTxTxTxTxTxTxTgAxTxTxTxTxTxTxTxTPqPqPqxTMGZrZrDZefZrhkhDeVZrLTLTMGMGHkHkMGMGMGMGMGMGMGMGLTMGMGMGMGMGMGMGMGMGMGMGMGMGMG
 PqZrZrZrZrZrZrZrZrZrWEaQZrZrMGZrZrZrZrVNZrZrZrWEWEZrWEWEVxZrVxZrWEZrZrZrZrxTZrZrxTxTZrZrZrErZrxTxTPqPqPqxTakapapapalbBbCapapbvasapapapakxTPqPqPqxTbeaZbaaZegbeaZZrZrZrZrZrZrZrZrZrZrxTxTPqPqPqxTVxZrZrMGefefVxaaaaEWZrMGMGMGHkHkMGMGPnMGMGPnSqSqMGMGMGMGMGHkMGMGMGaPMGMGMGMGMG
-xTZrWEZrWEzxZrZrZrZrZrVxZrZrWEWEMGWEWEMGZrFkMGMGZrZrMGCIZrZrZrZrZrVNVxZrZrsZxTZrZrxTxTxTxTsuxTxTxTPqPqPqxTakblapblalbDbCelapcTasblapblalxTPqPqPqxTaZcjbdbdbdbdaZSqMGpikGkGkGVTMGZrZrZrxTPqPqPqxTZrWEZrZrefefZrEWaaEWZrZrMGMGHkHkLTMGMGMGMGMGMGMGMGMGMGMGMGMGvuSqMGMGMGMGMGMGSq
-xTHVZrZrZrWEVxVxZrZrZrZrWEWEZrZrNOZrZrZrZrZrZrVxZrZrMGZrZrZrHVZrZrZrVxCIDZZrxTxTxTaZbbbbbbbebbbbxTPqPqPqxTakascVasalbEbCbCbFauauaucWaualxTPqPqPqdDbabdbdbdbdbdaZMGMGMGHkyKktAyHkZrZrZrxTPqPqPqxTMGZrZrefefefMGZrRYaahDZrMGPnMGMGMGSqSqMGMGMGMGMGMGLTMGMGvuINMGMGMGMGMGPnMGMGMG
-ZrZrZrZrWEZrZrWEWEFkZrZrVxCIZrVNZrZrZrZrHVZrVxVxZrZrZrVxZrSYZrZrWEsSZrWEZrZrZrxTZraZemepbhesesbbxTPqPqPqeBcPfFapfGapapapfGapapapfGapbHcPeQPqPqPqxTaZbdbdfHcmcnaZPnLTDiHkMGZrAyXWZrZrZrxTPqPqPqxTVxZrZrefefefefeVaaaaMCZrMGMGMGyZMGWvMGSqSqMGMGMGMGMGMGMGMGMGLTMGMGZrZrMGMGWvMG
-ZrZrDZZrZrVxVxZrZrZrZrMGZrZrZrWEFkZrVNZrZrZrHpZrFkZrYGYGYGZrZrVxWEWEZrZrZrMGZrxTZraZbhbhbhbhbhbbxTPqPqPqeBcPapapapapapapapapapapapapapcPeQPqPqPqxTfIfIfIfIfIfIfJaYaYbaaYaYbaaYaYZrZrZrxTPqPqPqxTVxZrZrMGefefefUwaaaaEWZrSqMGMGzTvuMGMGMGMGMGMGMGZrMGPnMGMGZrMGMGZrZrZrZrMGMGMG
-ZrMGRDZrZrVxZrWEWEDZZrWEZrZrMGZrZrZrWEZrVNZrZrZrZrHkZrYGZrHVZGWEWEWEZrHpZrZrZrxTxTaZeubhfKbhbhfLxTPqPqPqxTakalalasalalLnalAlakazalalalakxTPqPqPqxTacfMfMfMfMfMacaYbIbJbdbKbdbgaYZrZrZrxTPqPqPqxTZrDZZrMGMGMGzTBXEWEWZreVZrMGMGLTMGMGMGMGMGcpMGMGSqcpSqMGMGMGZrZrZrMGMGMGHkHkMG
-ZrZrZrZrZrVxZrZrZrZrMGZrZrMGVxZrZrZrZrZrZrWEWEZrZrZrZrVNVNMGWEWEMGWEWEZrYGYGZrevxTaZeubhfKbhbhfLxTPqPqPqxTakbMbNapbOalcZbQbRbSawaDaDdaalxTPqPqPqxTcafNbjbjbjcCcaaYbTbfbdbdaobdbaZrZrxTxTPqPqPqxTWEMGDZMGMGZrZrJlEWEWEWEWZrZrZrEWZrMGMGMGSqMGMGMGZrMGLTMGMGZrMGMGMGvuMGMGMGMGMG
+xTZrWEZrWEzxZrZrZrZrZrVxZrZrWEWEMGWEWEMGZrFkMGMGZrZrMGCIZrZrZrZrZrVNVxZrZrsZxTZrZrxTxTxTxTsuxTxTxTPqPqPqxTakblapblalbDbCelapcTasblapblalxTPqPqPqfaaZcjbdbdbdbdaZSqMGpikGkGkGVTMGZrZrZrxTPqPqPqxTZrWEZrZrefefZrEWaaEWZrZrMGMGHkHkLTMGMGMGMGMGMGMGMGMGMGMGMGMGvuSqMGMGMGMGMGMGSq
+xTHVZrZrZrWEVxVxZrZrZrZrWEWEZrZrNOZrZrZrZrZrZrVxZrZrMGZrZrZrHVZrZrZrVxCIDZZrxTxTxTaZbbbbbbbebbbbxTPqPqPqiSakascVasalbEbCbCbFauauaucWaualxTPqPqPqfafEbdbdbdbdbdaZMGMGMGHkyKktAyHkZrZrZrxTPqPqPqxTMGZrZrefefefMGZrRYaahDZrMGPnMGMGMGSqSqMGMGMGMGMGMGLTMGMGvuINMGMGMGMGMGPnMGMGMG
+ZrZrZrZrWEZrZrWEWEFkZrZrVxCIZrVNZrZrZrZrHVZrVxVxZrZrZrVxZrSYZrZrWEsSZrWEZrZrZrxTZraZemepbhesesbbxTPqPqPqfKfUfFapfGapapapfGapapapfGapbHcPxTPqPqPqfaaZbdbdfHcmcnaZPnLTDiHkMGZrAyXWZrZrZrxTPqPqPqxTVxZrZrefefefefeVaaaaMCZrMGMGMGyZMGWvMGSqSqMGMGMGMGMGMGMGMGMGLTMGMGZrZrMGMGWvMG
+ZrZrDZZrZrVxVxZrZrZrZrMGZrZrZrWEFkZrVNZrZrZrHpZrFkZrYGYGYGZrZrVxWEWEZrZrZrMGZrxTZraZbhbhbhbhbhbbxTPqPqPqfKfUfXapapapapapapapapapapapghcPxTPqPqPqxTfIfIfIfIfIfIfJaYaYbaaYaYbaaYaYZrZrZrxTPqPqPqxTVxZrZrMGefefefUwaaaaEWZrSqMGMGzTvuMGMGMGMGMGMGMGZrMGPnMGMGZrMGMGZrZrZrZrMGMGMG
+ZrMGRDZrZrVxZrWEWEDZZrWEZrZrMGZrZrZrWEZrVNZrZrZrZrHkZrYGZrHVZGWEWEWEZrHpZrZrZrxTxTaZeubhbhbhbhfLxTPqPqPqiSakalalasalalLnalAlakazazalalakxTPqPqPqxTacfMfMfMfMfMacaYbIbJbdbKbdbgaYZrZrZrxTPqPqPqxTZrDZZrMGMGMGzTBXEWEWZreVZrMGMGLTMGMGMGMGMGcpMGMGSqcpSqMGMGMGZrZrZrMGMGMGHkHkMG
+ZrZrZrZrZrVxZrZrZrZrMGZrZrMGVxZrZrZrZrZrZrWEWEZrZrZrZrVNVNMGWEWEMGWEWEZrYGYGZrevxTaZeubhbhbhbhfLxTPqPqPqxTakbMbNapbOalcZbQbRbSawawaDdaalxTPqPqPqxTcafNbjbjbjcCcaaYbTbfbdbdaobdbaZrZrxTxTPqPqPqxTWEMGDZMGMGZrZrJlEWEWEWEWZrZrZrEWZrMGMGMGSqMGMGMGZrMGLTMGMGZrMGMGMGvuMGMGMGMGMG
 ZrZrZrVxZrZrZrZrMGZrZrMGWEMGVxZrHVZrZrZrWEZrWEZrZrZrVxZrVxVNVNVNVNZrZrZrYGYGZrZrxTaZfObhbhbhbhaZxTPqPqPqxTalalalapbUakZTZTZTZTZTZTZTaoalxTPqPqPqxTfPbjbjbjbjcCacbVbdbdbdbdaobgaYZrxTxTPqPqPqPqxTMGMGMGFkVxMGZrEWEWEWEWEWZrMGZrZrZrMGSqSqSqMGMGMGMGMGLTMGMGZrMGMGMGMGHkMGMGMGPn
-ZrZrZrZrWEWEDZZrWEZrZrMGWEMGZrozZrZrZrVNVxZrZrZrYGDZMGYGMGYGVNMGZrWEVNMGYGFkZrdcxTaZdbbhfQfQfQaZxTPqPqPqxTalbMbNapapalaFaoaFbWZTZTZTaodeeQPqPqPqxTcafRfRfRfSfRcabVbaaYbcbcaYbaaYxTxTPqPqPqPqPqxTMGZrZrMGeVZrZraaaaEWZrZrZrMGMGMGMGMGMGMGLTMGMGMGMGMGMGSqMGMGzTPnMGMGMGMGMGMGHk
-ZrZrZrZrVxCIZrZrMGWEVNMGVNZrZrZrZrFkZrZrZrZrZrZrMGYGYGYGZrMGMGMGMGMGMGZrZrFkZrZrxTbeaZbbbbbbbbbexTPqPqPqxTalalalbXalalbYfTbZaGZTfUaoaodeeQPqPqPqxTfPfVfWfXaofYfPdfFkFkxTxTFkZrxTxTPqPqPqPqPqxTxTDZMGFkMGZrZrZraaEWEWZrZraVZrMGMGMGZrvuMGMGMGMGHkMGZrMGMGMGMGMGMGMGMGMGMGMGMGMG
-ZrZrZrMGZrZrZrZrWEWEWEMGZrZrZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEDZMGWEWEMGFkVxZrZrxTdgxTxTxTxTxTxTxTxTPqPqPqxTakdhaoawawdiaoaoaoaoZTawaoaoalxTPqPqPqxTacfZgaaoaogbcaZrZrZrxTxTZrxTxTPqPqPqPqPqxTxTMGZrVNMGZrmTEWaaaaZrZrZrZrLTZrMGMGMGMGMGZrMGMGMGHkMGMGMGMGMGwaMGMGMGMGMGMGMGMGMG
-ZrZrZrYGZrZrZrZrZrZrZrMGZrZrZrHVZrZrZrZrZrZrZrFkFkVxZrVxZrZrZrZrZrZrZrFkZrZrxTxTgcdkdldkdkdkdkgdxTPqPqPqeBdeawaJaKaLaMdmdndoaJaKaLaMaodeeQPqPqPqxTcagegfaoaoggcadGZrZrxTxTxTxTPqPqPqPqPqxTxTFkZrMGMGMGZrmTEWEWZrZrMGLTLTMGVxMGMGSqMGMGMGWvMGMGMGMGMGMGMGvuvuMGMGSqzTSqSqWvvuMG
-ZrZrZrYGWEZrZrZrZrFkZrZrZrozZrZrZrWEsSZrDZZrZrFkFkZrZrCIMGZrZrNOZrzxZrZrZrZrxTZrdpdpdpdpdpdpdpdpxTPqPqPqeBdeaoaNghaRaSgidngiaNaOgjaSaodeeQPqPqPqxTfPaoaofXaoaogkZrZrdIxTxTxTPqPqPqPqPqxTxTDZZrOOMGMGZrmTpCEWEWZrMGZrMGZrZrMGPnMGHkMGMGWvLTMGZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMG
-ZrZrZrZrWEWECICIDZZrOOZrZrZrZrCIZrZrZrZrVxCIZrVxZrZrWEWEDZZrZrZrZrZrLvbqbqxTxTgldrdkdkdkdkdkdkdkjNPqPqPqxTalaoaoaoaoaododqdmaoaoaoaoaoalxTPqPqPqxTgmaoaognaogocaxTZrZrxTxTPqPqPqPqPqxTxTZrZrZrZrMGZrFkmTEWEWZrZrMGMGMGZrZrMGLTMGHkMGZrZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGZrMGMG
-ZrZrZrWEZrZrCIWEZrZrZrZrVxCIZrZrZrZrWEHVWEozZrZrozZrVxCIZrZrZrZrZrZrbqZrxTxTdsZrdpdpdpdpdpdpdpdpxTPqPqPqxTaldtaoaoaoduaUaoaUdvawaoaodtalxTPqPqPqxTacaoaogpgqgocaxTZrxTxTPqPqPqPqPqxTxTdIZrZreVozZrFkEWEWEWZrZrZrMGZrWvPnMGLTLTMGMGHkVNZrMGMGMGMGMGMGMGMGSqMGvuMGMGMGMGPnMGaVWv
+ZrZrZrZrWEWEDZZrWEZrZrMGWEMGZrozZrZrZrVNVxZrZrZrYGDZMGYGMGYGVNMGZrWEVNMGYGFkZrdcxTaZdbbhfQfQfQaZxTPqPqPqxTalbMbNapapalaFaoaFbWZTZTZTgidexTPqPqPqxTcafRfRfRfSfRcabVbaaYbcbcaYbaaYxTxTPqPqPqPqPqxTMGZrZrMGeVZrZraaaaEWZrZrZrMGMGMGMGMGMGMGLTMGMGMGMGMGMGSqMGMGzTPnMGMGMGMGMGMGHk
+ZrZrZrZrVxCIZrZrMGWEVNMGVNZrZrZrZrFkZrZrZrZrZrZrMGYGYGYGZrMGMGMGMGMGMGZrZrFkZrZrxTbeaZbbbbbbbbbexTPqPqPqxTalalalbXalalbYfTbZaGZTaoaogidexTPqPqPqxTfPfVfWaoaofYfPdfFkFkxTxTFkZrxTxTPqPqPqPqPqxTxTDZMGFkMGZrZrZraaEWEWZrZraVZrMGMGMGZrvuMGMGMGMGHkMGZrMGMGMGMGMGMGMGMGMGMGMGMGMG
+ZrZrZrMGZrZrZrZrWEWEWEMGZrZrZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEDZMGWEWEMGFkVxZrZrxTdgxTxTxTxTxTxTxTxTPqPqPqiSakdhaoawawdiaoaoaoaoZTawaoaoalxTPqPqPqxTacfZgaaoaogbcaZrZrZrxTxTZrxTxTPqPqPqPqPqxTxTMGZrVNMGZrmTEWaaaaZrZrZrZrLTZrMGMGMGMGMGZrMGMGMGHkMGMGMGMGMGwaMGMGMGMGMGMGMGMGMG
+ZrZrZrYGZrZrZrZrZrZrZrMGZrZrZrHVZrZrZrZrZrZrZrFkFkVxZrVxZrZrZrZrZrZrZrFkZrZrxTxTgcdkdldkdkdkdkgdxTPqPqPqfKgjgmaJaKaLaMdmdndoaJaKaLaMgidexTPqPqPqxTcagegfaoaoggcadGZrZrxTxTxTxTPqPqPqPqPqxTxTFkZrMGMGMGZrmTEWEWZrZrMGLTLTMGVxMGMGSqMGMGMGWvMGMGMGMGMGMGMGvuvuMGMGSqzTSqSqWvvuMG
+ZrZrZrYGWEZrZrZrZrFkZrZrZrozZrZrZrWEsSZrDZZrZrFkFkZrZrCIMGZrZrNOZrzxZrZrZrZrxTZrdpdpdpdpdpdpdpdpxTPqPqPqfKgjgGaNaOaRaSdqdndqaNaOaRaSgidexTPqPqPqxTfPaoaoaoaogigkZrZrdIxTxTxTPqPqPqPqPqxTxTDZZrOOMGMGZrmTpCEWEWZrMGZrMGZrZrMGPnMGHkMGMGWvLTMGZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMG
+ZrZrZrZrWEWECICIDZZrOOZrZrZrZrCIZrZrZrZrVxCIZrVxZrZrWEWEDZZrZrZrZrZrLvbqbqxTxTgldrdkdkdkdkdkdkdkjNPqPqPqiSalaoaoaoaoaododqdmaoaoaoaoaoalxTPqPqPqxTdBaoaognaogocaxTZrZrxTxTPqPqPqPqPqxTxTZrZrZrZrMGZrFkmTEWEWZrZrMGMGMGZrZrMGLTMGHkMGZrZrMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGMGZrMGMG
+ZrZrZrWEZrZrCIWEZrZrZrZrVxCIZrZrZrZrWEHVWEozZrZrozZrVxCIZrZrZrZrZrZrbqZrxTxTdsZrdpdpdpdpdpdpdpdpxTPqPqPqxTaldtaomQmQduaUaoaUdvnrmQaodtalxTPqPqPqxTacaoaogpgqgocaxTZrxTxTPqPqPqPqPqxTxTdIZrZreVozZrFkEWEWEWZrZrZrMGZrWvPnMGLTLTMGMGHkVNZrMGMGMGMGMGMGMGMGSqMGvuMGMGMGMGPnMGaVWv
 ZrZrZrZrZrZrZrZrZrMGZrMGWEZrZrWEZrvuZrZrZrZrWEWEZruQbqFbZrWEZrZrZrWEWExTxTdsdwdsgcdkdxdkdkdkdkgdxTPqJjGgfaakalaldedealalMaalaldedeakalakeBPqPqPqxTcaacacgkacaccaPexTxTPqPqPqPqPqxTxTZrZrvuDZMGMGZrEWEWEWZrZrZrMGMGMGMGMGZrMGMGMGMGHkHkMGMGPnMGMGPnMGMGPnMGSqMGMGLTWvMGMGMGSqMG
-xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTPquaqOxTxTjNxTfgfgdzcbxTcbdzfgfgxTxTeWxoPqPqPqxTeGmQfaWWxTxTxTyFxTPqPqPqPqPqxTxTZrZrZrHkMGZrZrFkEWEWZrZrZrMGZrZrMGMGMGMGZrZrMGZrVNHkaVMGMGMGMGhkhkMGEXZrMGMGMGZrzTMGSqSqSqMG
-PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxVPqPqPqPqPqARPqPqPquaMFPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqfiCgPqPqDGliPqPqPqPqPqxTxTdIZrFkZrZrZrFkEWEWEWZrZrZrMGZrZrZrZrZrSqZrDZZrZrPnZrMGZrhkhkZrZrOOVxZrMGMGMGZrZroJZrZrZrOOVxMG
-PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqMFPqPqPqPqPqARPqPqPqJjGgPqPqPqPqPqPqPqMoMJeRPqPqPqPqPqPqPqPqPqPqPqPqPqfilMPqPqPqARPqPqPqPqxTxTZrZrZrMGeVZrFkEWaaEWZrZrZrZrZrEWEWEWEWeVZrZrEWEWZrZrZrAJZrEWEWZrEWaVEWZrZrZreVZrEWEWEWZrZrMCZrZr
-PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqnaPqPqPquakJPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqOfKRPqqhhxPqPqPqtIPqPqPqxTxTZrDZZrFkZrDZZrFkEWaaaaaaaaaaEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWZrEWZrDZ
-xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTPqPqPqxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTdAxTjNxTxTxTxTxTPqPqPqPqPqPqPqxTxTxTxTTKzGxTdDlfxTxTZCyFxTxTxTxTxTZrZrZrMGDZFkZrEWaaaaEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEWEWaaaaaaEWEWEWEWaaaaaaaaEWEWEWEWEWEWEW
-ZrVxCIZrVxZrZrWEWEDZZrZrZrWEWEDZZrMGgrZrZrvuZrZrZrmTbqxTZrVxZrZrZrxTxTPqPqPqxTcacdcddBcdcdcadGxTZrZrUraZaZdCaZaZccZrxTccxTPqPqXxshududWWfafacacdcdcecdcdcdgAdAdAbVbVaYbaaYaYaYaYaYZrFkFkZraaaaEWEWEWEWEWEWEWaaaaaaEWEWaaaaaaEWEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-ZrZrZrDZVxozZrVxCIZrZrozZrVxCIZrZrZrZrZrZrvuvuZrvuZrZrxTbVaYbcaYaYbVxTPqPqPqxTcagsgtawgugvcaZrbebecXaZbebhbhbhaZccfafaccWWAGPqheeRnoRCxuyExucdcfcgbhchcicddGxTxTaYcjgwbdaYbKckbKaYZrMGHkHkEWaaEWZrZrZrZrEWEWEWEWEWZrEWEWEWZrEWEWEWEWEWEWEWEWEWEWaaaaEWEWEWEWEWEWEWEWEWaaaaaaaa
+xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTPquaqOxTxTjNxTxTxTdzcbxTlLXuxTjjjjjjeWxoPqPqPqxTxTeGZZfaWWxTxTyFxTPqPqPqPqPqxTxTZrZrZrHkMGZrZrFkEWEWZrZrZrMGZrZrMGMGMGMGZrZrMGZrVNHkaVMGMGMGMGhkhkMGEXZrMGMGMGZrzTMGSqSqSqMG
+PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxVPqPqPqPqPqARPqPqPquaMFPqPqPqPqPqPqPqPqPqPqPqPqtGtGtGPqPqPqPqPqPqPqPqfikPPqPqDGliPqPqPqPqPqxTxTdIZrFkZrZrZrFkEWEWEWZrZrZrMGZrZrZrZrZrSqZrDZZrZrPnZrMGZrhkhkZrZrOOVxZrMGMGMGZrZroJZrZrZrOOVxMG
+PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqMFPqPqPqPqPqARPqPqPqJjGgPqPqPqPqPqPqshMoMJeRwzPqPqtGPqPqPqPqPqPqPqPqPqfilMPqPqPqARPqPqPqPqxTxTZrZrZrMGeVZrFkEWaaEWZrZrZrZrZrEWEWEWEWeVZrZrEWEWZrZrZrAJZrEWEWZrEWaVEWZrZrZreVZrEWEWEWZrZrMCZrZr
+PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqnaPqPqPquakJPqPqPqPqPqPqPquyuyuyPqPqPqPqPqPqPqPqPqPqOfKRPqqhhxPqPqPqtIPqPqPqxTxTZrDZZrFkZrDZZrFkEWaaaaaaaaaaEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWZrEWZrDZ
+xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTPqPqPqxTxTxTxTxTxTxTxTxTxTxTxTJpfafafafajNxTxTxTxTxTPqPqPqPqPqPqPqxTxTxTxTTKzGxTdDlfxTxTZCyFxTxTxTxTxTZrZrZrMGDZFkZrEWaaaaEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEWEWaaaaaaEWEWEWEWaaaaaaaaEWEWEWEWEWEWEW
+ZrVxCIZrVxZrZrWEWEDZZrZrZrWEWEDZZrMGgrZrZrvuZrZrZrmTbqxTZrVxZrZrZrxTxTPqPqPqxTcacdcddBcdcdcadGxTZrZrUraZaZdCaZaZccxTxTccxTPqPqXxshududWWfafacacdcdwqcdcdcdgAdAdAbVbVaYbaaYaYaYaYaYZrFkFkZraaaaEWEWEWEWEWEWEWaaaaaaEWEWaaaaaaEWEWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ZrZrZrDZVxozZrVxCIZrZrozZrVxCIZrZrZrZrZrZrvuvuZrvuZrZrxTbVaYbcaYaYbVxTPqPqPqxTcagsgtawgugvcaZrbebecXaZbebhbhbhaZfafafafaWWAGygheeRnoRCxuyExucdcfcgbhchcicddGxTxTaYcjgwbdaYbKckbKaYZrMGHkHkEWaaEWZrZrZrZrEWEWEWEWEWZrEWEWEWZrEWEWEWEWEWEWEWEWEWEWaaaaEWEWEWEWEWEWEWEWEWaaaaaaaa
 ZrZrozZrZrZrMGZrZrZrZrZrMGZrZrZrZrHVZrMGZrHkxTWvvuozZrokaXcxbjbjbjaYxTPqPqPqxTcaawawawawawcaxTbebhbhdEaZbhbhdOaZccplyEAgRCIjhxwNRCplxTZrxTxTclbhbhbhbhbhcexTxTdIaYcmcnbdaYbdbdbdaYFkZrHkZrEWaaEWZrMGZrZrZrZrZrEWEWZrZrZrZrefefZrZrEWEWEWZrZrhkEWEWEWEWZrZrZrZrEWZrZrEWEWEWEWEW
 ZGZrVxZrZrzxYGZrZrZrZrzxYGZrZrxTZrZrxTZrZrxTHSZrZrZrxTxTaYczcxbjbjaYxTPqPqPqxTcagxguawgugycaxTdCbhbhbhbcbhdOexaZccxTxTPqPqPqPqPqxTxTZrdGZrxTcdcobhcqbhcrcdxTxTxTbacscnbdbcbdbdbKbaFkZrHkZraaaaEWZrZrZrMGMGMGZrZrZrZrMGMGZrefefZrZrZrEWVxVxZrZrVxrVEWZrZrMGZrZrZrZrZrZrVxVxZrZr
 WEZrZrZrZrZrYGWEZrWEZrZrWEWEZrZrZrxTxTZrYGZrZrZrZrzxYGxTaYdHcxbjbjaYxTPqPqPqxTcaawawawawawcaxTaZbhbheyaZbecXaZaZxTxTedPqPqPqPqxTxTxTxTdIdJxTcdcdcdcecdcdcdevxTxTaYbdbdbdaYbdbdctaYMGZrZrZrEWEWZrZrZrZrMGMGMGMGMGMGZrZrZrZrZrefefefZrZrZrVxMGZrVxZrZrhkMGZrMGWvMGZrMGMGVxZrZrZr
@@ -651,7 +661,7 @@ ZrozVxZrWEZrZrZrDZZrZrWEZrZrZrWEZrZrZrZrZraYczcxbjbjaYxTaXbjbjbjbjaYxTPqPqPqxTxT
 ZrZrSYZrZrZrZrZrZrZrHpZrZrZrHVZrHpZrZrokZrbabjbjbjbjaYxTaYbjbjbjbjcAeWPqPquyfgbeaZaZaZaZaZaZxTbebhbhdOaZxTxTPqPqPqPqPqxTxTZraXeCcxbjcyaYxTZrgCbhbhbhbhbhgCxTxTZrZrZrDZZrZrWvHkZrFkEWaaaaEWZrZrZrZrZrZrMGMGZrMGZrZrMGMGMGZrZrMGZrefefefaVSqZrMGMGMGMGPnMGSqMGSqSqMGMGPnMGMGMGMG
 ZrDZZrZrVxHpWEWEZrZrZrVNVNZrZrZrZrZrZrZrZraYcybjbjcCaYxTaYczcxbjbjaYxTPqPqPqxTaZgDdSdUdVgEaZxTaZbedCbeaZfaPqPqPqPqPqxTxTxTZraYczbjbjbjaYxTxTcvdXdYdZbhbhaZxTeBZrZrvuSqMGMGSqZrZrEWaaaaEWZrZrefZrZrMGZrMGMGZrMGZrZrMGzTMGZrZrMGZrZrZrZrZrZrMGMGMGPnMGMGMGMGvuvuMGMGMGMGMGPnMGMG
 MGRDZrZrVxZrWEZrWEWEWEWEZrZrZrZrZrZrZrYGozcBaYbcbccBbVxTaYcybjbjcCaYxTPqPqPqxTaZdSeEeFdSdSaZxTxTxTxTxTxTudPqPqPqPqxTxTxTdsZrcAbjbjbjbjcAHkxTcvcvcvcvcvaZaZeWqUxTZrHkZrvuZrZrFkEWEWaaEWFkZrZrZrZrZrZrMGMGMGMGMGMGMGMGzTMGMGZrMGMGMGMGZrZrZrMGMGMGZrMGMGMGMGMGMGMGMGMGSqMGMGMGMG
-ZrZrZrZrZrZrZrZrZrWEWEgFgFgFgFgFxTxTxTxTxTxTxTxTxTxTxTxTbVaYaYbccBbVxTPqPqPqxTeadSdSgGdSdSeedGZrZrxTxTPqPqPqPqPqxTxTxTeGebdsaYbjbjbjeHaYxTxTZrZrFkHkececxTxTxTMGMGMGFkZrFkFkEWaaaaEWZrFkZrPnLTMGSqSqMGMGfhLWGEMGLWfhfhMGHkZrZrPnMGhkMGSqMGMGMGZrWvMGMGMGPnMGSqWvMGMGMGMGBjMGMG
+ZrZrZrZrZrZrZrZrZrWEWEgFgFgFgFgFxTxTxTxTxTxTxTxTxTxTxTxTbVaYaYbccBbVxTPqPqPqxTeadSdSdSdSdSeedGZrZrxTxTPqPqPqPqPqxTxTxTeGebdsaYbjbjbjeHaYxTxTZrZrFkHkececxTxTxTMGMGMGFkZrFkFkEWaaaaEWZrFkZrPnLTMGSqSqMGMGfhLWGEMGLWfhfhMGHkZrZrPnMGhkMGSqMGMGMGZrWvMGMGMGPnMGSqWvMGMGMGMGBjMGMG
 MGZrZrZrHVZrZrZrZrgFgFgFgFgFgFgFxTgHgHgIgJbVaYbcbcaYbVxTxTxTxTxTxTxTxTPqPqPqxTaZdSdSdSdSdSaZevZrxTxTPqPqPqPqPqfafaZrxTxTxTxTaYaYbcbccBaYZrxTMGSqMGZrZrZrxTxTxTSqZrZrZrFkEWEWaaaaEWFkFkZrZrMGMGMGMGMGMGMGMGGEuFMGLWVNzTMGMGMGZrZrMGMGvuvuMGMGMGZrMGzTzTMGMGWvMGMGMGMGMGvuMGMGMG
 WEZrZrZrZrZrWEgFgFgFgFgFgFgFgFgFxTgKYGjyZraXcxbjbjbjaYxTxTxTxTxTxTxTxTPqPqPqxTaZgLdSdSdSgMaZZrxTxTPqPqPqPqPqxTxTbqZrZrZrxTxTxTxTxTxTxTxTxTxTMGMGxTZrZrFkxTxTZrbqbqbqFkEWEWEWEWEWFkZrZrvuMGMGMGSqMGvuMGMGfhZrLTLWZrLWLWZrHkMGZrZrMGMGMGMGMGMGMGMGMGMGLTMGMGMGLTvuMGzTMGvuMGMGPn
 WEVxZrZrZrZrZrgFgFgFgFgFgFgFgFgFxTgKYGZrgNaYczcxbjbjaYxTaYaYbcaYaYaYxTPqPqPqxTaZaZaZeeaZaZaZxTxTPqPqPqPqPqxTxTZraYaYbcaYaYaYxTxTaYaYaYbcaYaYxTxTxTxTfafaxTxTxTbqFkaaaaEWEWEWEWFkZrZrZrMGMGZrZrZrZrMGMGZrfhMGLWMGVNGEZrZrVNMGJrZrJrMGMGMGSqSqZrZrMGMGMGMGZrZrMGMGMGMGMGMGLHMGMG
@@ -665,7 +675,7 @@ SqMGMGMGSqMGSqZrEWEWEWenenenenenenZrZrVNdJaYcCbjbjcCaYxTxTxTxTZrZrZrZrYGZrxTxTbV
 SqMGSqSqMGMGSqZrZrEWEWaaaaDpOrOrOrOrnVVNZrbVaYbcbccBbVZrxTxTZrZrZrWvMGZrxTxTMGaYcjbdbdaYbKbdbKaYeVvuHkMGMGvuHkVNMGPnMGWvMGVNSqMGMGMGZrZrFkaaaaaaEWEWZrSqMGZrZrZrZrZrZrhkhkVsxTZrZrPnMGMGSqMGMGSqMGZrefZrMGMGMGZrZreVMGMGMGMGMGWvMGMGSqWvMGMGMGMGZrZrMGMGMGMGoYoYoYoYoYoYoYoYoY
 PnvuMGvuMGMGPnZrZrZrZrEWaaaaEWenenenenenVNeZZrxTxTZrvuVNZrxTxTeQMGetZrZrxTxTMGaYcmcnbdaYbdbdbdaYZrMGMGSqvuMGVNHkZrMGMGMGMGMGMGMGMGMGZrZraaaaEWEWZrLTZrfhZrfhfhfhfhfhfhZrZrxTxTxTZrMGMGMGMGINMGMGMGMGMGSqSqMGzTZrZrLTLTMGMGHkMGMGMGMGMGMGMGMGMGWvMGZrMGoYoYoYoYoYoYoYoYoYoYoYoY
 SqSqMGMGPnMGMGvuMGZrZrEWEWaaaaEWenenenenenZrgVZrxTxTxTxTxTxTxTxYHIbqbqQcxTbqHIbacscnbdbcbdbdbKbaMGMGMGMGZrZrZrLTZrMGLTMGMGMGZrZrYGZrZrEWaaEWEWZrMGZrfhZrZrLWLWLWLWLWLWLWZrxTxTLTZrMGLTSqSqMGzTZrZrLTPnMGMGHkHkMGMGMGMGvuMGMGMGMGMGSqzTMGSqoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
-ZrSqMGMGMGMGMGMGMGMGZrZrZrZrEWEWEWEWenenenenenVNvuHkvueVMGZrZrxTxTZrxTxTZrVNZPaYfdbdbdaYbdbdctaYMGMGzTMGMGZrLTZrZrSqMGZrMGMGZrNLNLnVEWEWEWZrZrMGvuZrfhLWGENoNoLWSHGEMGfhZrxTxTMGMGMGSqMGMGMGSqMGMGMGMGvuMGMGMGMGMGMGMGMGSqMGMGMGMGMGSqMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+ZrSqMGMGMGMGMGMGMGMGZrZrZrZrEWEWEWEWenenenenenVNvuHkvueVMGZrZrxTxTZrxTxTZrVNZPaYfdbdbdaYbdbdckaYMGMGzTMGMGZrLTZrZrSqMGZrMGMGZrNLNLnVEWEWEWZrZrMGvuZrfhLWGENoNoLWSHGEMGfhZrxTxTMGMGMGSqMGMGMGSqMGMGMGMGvuMGMGMGMGMGMGMGMGSqMGMGMGMGMGSqMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 ZrSqMGSqvuMGMGMGMGvuMGMGZrZrZrEWEWEWEWenenjOenenengWHkHkvuMGWvxTxTxTxTxTZrVNVNaYffaocuaYckbKbKaYWvMGMGMGMGMGMGMGMGZrMGMGYGZrnVNLEWEWEWZrZrZrZrMGZrZrLWLWLWLWLWLWLWLWZrfhZrxTxTMGZrHkMGPnMGMGMGMGMGMGMGMGSqMGMGMGMGMGMGSqMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 ZrPnvuvuMGMGMGPnvuMGMGMGMGZrZrZrEWEWEWaaEWenenenenenenMGHkMGZrZrxTxTxTDZZrZrgXaYaYbaaYaYaYbaaYaYLTHkMGSqZrMGMGYGYGMGZrZrZrZrEWEWEWEWZrZrGnLTZrZrSqZrLWNoLWSHLWLWZrGEGELWZrxTxTxTSqPnGuGuGuvIGuGuGuGuGuVdGuGuGuGuGuGuGuGuGuGuYFYFYFYFYFYFYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 MGSqSqMGMGPnMGZrMGMGMGMGMGMGWvMGZrZrEWEWaaEWEWenenenenenHkMGZrZrxTxTYGZrZrZrZrVNVNWEWEMGMGZrMGHkMGMGSqMGZrHkMGZrZrYGZrEWaaaaEWZrZrZrZrYGMGPnMGZrMGZrfhZrLWfhfhfhZrfhLWZrMGMGHkxTxTMGGuSqHkMGWvMGMGMGMGMGMGMGMGMGMGMGPnMGMGMGMGSqoYoYoYoYYFoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
