@@ -818,7 +818,7 @@ var/global/redirect_all_players = null
 		dat += "[alive_pirates.len] Pirates "
 	if (INDIANS in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "[alive_civilians.len] Africans "
+			dat += "[alive_indians.len] Africans "
 		else
 			dat += "[alive_indians.len] Natives "
 	if (CIVILIAN in map.faction_organization)
