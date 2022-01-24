@@ -62,8 +62,7 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/three))
 			if (H.nationality != "Yellowagwana")
 				return TRUE
-		else
-			return !faction1_can_cross_blocks()
+		return !faction1_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/african_warlords/proc/points_check()
