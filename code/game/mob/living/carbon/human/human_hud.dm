@@ -171,21 +171,25 @@ the HUD updates properly! */
 		else if (viewer.original_job.base_type_flag() == perp.original_job.base_type_flag())
 			shared_job_check = TRUE
 		if (istype(src, /mob/living/human))
-			var/mob/living/human/HM = src
-			if (HM.original_job_title != perp.original_job_title && map.civilizations == TRUE)
+			if (M.original_job_title != perp.original_job_title && map.civilizations == TRUE)
 				shared_job_check = FALSE
-			else if (HM.original_job_title == perp.original_job_title && map.civilizations == TRUE && perp.original_job_title != "Nomad")
+			else if (M.original_job_title == perp.original_job_title && map.civilizations == TRUE && perp.original_job_title != "Nomad")
 				shared_job_check = TRUE
-			if (((perp.original_job_title == "Nomad" && HM.civilization == perp.civilization)) && !perp.civilization == "none")
+			if (((perp.original_job_title == "Nomad" && viewer.civilization == perp.civilization)) && !perp.civilization == "none")
 				shared_job_check = TRUE
 			else
 				shared_job_check = FALSE
 		if(!map.nomads)
+			if (map.ID == MAP_AFRICAN_WARLORDS)
+				if(viewer.nationality == perp.nationality)
+					shared_job_check = TRUE
+				else
+					shared_job_check = FALSE
 			if (shared_job_check)
 				P.Client.images += perp.hud_list[BASE_FACTION]
 			else
 				P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
-		if (map.nomads == TRUE)
+		else
 			var/image/holderf = perp.hud_list[BASE_FACTION]
 			holderf.icon = 'icons/mob/hud_1713.dmi'
 			holderf.plane = HUD_PLANE

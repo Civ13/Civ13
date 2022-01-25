@@ -388,7 +388,7 @@ datum/job/indians/tribes/black
 	can_be_female = TRUE
 	is_coldwar = TRUE
 	is_warlords = TRUE
-	uses_squads = TRUE
+	uses_squads = FALSE
 	spawn_location = "JoinLateIND1"
 	min_positions = 40
 	max_positions = 100
@@ -482,6 +482,35 @@ datum/job/indians/tribes/black
 	uniform.attackby(ab, H)
 	//guns
 	give_gun(H)
+/datum/job/indians/warlords/proc/equip_shaman(mob/living/human/H)
+	if (!H)	return FALSE
+	H.name = H.species.get_random_zulu_name(H.gender)
+	H.real_name = H.name
+	var/new_hair = "Black"
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/zulu_slene(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/shaman(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
+/datum/job/indians/warlords/red/shaman
+	title = "Redkantu Shaman"
+/datum/job/indians/warlords/red/shaman/equip(mob/living/human/H)
+	equip_shaman(H)
+	H.nationality = "Redkantu"
+	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/ab = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(ab, H)
 
 /datum/job/indians/warlords/blue
 	title = "Blugisi Warband"
@@ -524,7 +553,16 @@ datum/job/indians/tribes/black
 	uniform.attackby(ab, H)
 	//guns
 	give_gun(H)
+/datum/job/indians/warlords/blue/shaman
+	title = "Blugisi Shaman"
+/datum/job/indians/warlords/blue/shaman/equip(mob/living/human/H)
+	equip_shaman(H)
+	H.nationality = "Blugisi"
+	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
 
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(ab, H)
 /datum/job/indians/warlords/yellow
 	title = "Yellowagwana Warband"
 	spawn_location = "JoinLateIND3"
@@ -566,3 +604,13 @@ datum/job/indians/tribes/black
 	uniform.attackby(ab, H)
 	//guns
 	give_gun(H)
+/datum/job/indians/warlords/yellow/shaman
+	title = "Yellowagwana Shaman"
+/datum/job/indians/warlords/yellow/shaman/equip(mob/living/human/H)
+	equip_shaman(H)
+	H.nationality = "Yellowagwana"
+	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
+	uniform.attackby(ab, H)

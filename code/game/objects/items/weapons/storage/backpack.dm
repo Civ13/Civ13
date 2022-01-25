@@ -216,3 +216,17 @@ obj/item/weapon/storage/backpack/ww2/american
 	base_icon = "us_buttpack"
 	slot_flags = SLOT_BACK
 	max_storage_space = 12
+
+/obj/item/weapon/storage/backpack/duffel/shaman
+	name = "shaman's duffel bag"
+	desc = "A duffel bag full of \"medical supplies\"."
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
+		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
+		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
+		new /obj/item/weapon/pill_pack/pervitin(src)
+		new /obj/item/weapon/reagent_containers/pill/opium(src)
+		new /obj/item/weapon/reagent_containers/pill/opium(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(src)
+		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)

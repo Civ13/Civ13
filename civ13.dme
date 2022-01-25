@@ -10,8 +10,6 @@
 #define DEBUG
 // END_PREFERENCES
 // BEGIN_INCLUDE
-#include "code\_helpers\debugger.dm" //visual studio code debugger
-
 #include "code\_macros.dm"
 #include "code\client_macros.dm"
 #include "code\global.dm"
@@ -438,6 +436,7 @@
 #include "code\game\objects\map_metadata\four_colonies.dm"
 #include "code\game\objects\map_metadata\four_kingdoms.dm"
 #include "code\game\objects\map_metadata\gladiators.dm"
+#include "code\game\objects\map_metadata\grozny.dm"
 #include "code\game\objects\map_metadata\gulag13.dm"
 #include "code\game\objects\map_metadata\heraclea.dm"
 #include "code\game\objects\map_metadata\hill203.dm"
@@ -489,7 +488,6 @@
 #include "code\game\objects\map_metadata\rizal_stadium.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
-#include "code\game\objects\map_metadata\grozny.dm"
 #include "code\game\objects\map_metadata\sammirhayeed.dm"
 #include "code\game\objects\map_metadata\santo_tomas.dm"
 #include "code\game\objects\map_metadata\save_awards.dm"
@@ -698,6 +696,7 @@
 #include "code\modules\1713\jobs\finnish.dm"
 #include "code\modules\1713\jobs\french.dm"
 #include "code\modules\1713\jobs\german.dm"
+#include "code\modules\1713\jobs\grozny.dm"
 #include "code\modules\1713\jobs\helpers.dm"
 #include "code\modules\1713\jobs\indians.dm"
 #include "code\modules\1713\jobs\japanese.dm"
@@ -710,7 +709,6 @@
 #include "code\modules\1713\jobs\pirates.dm"
 #include "code\modules\1713\jobs\portuguese.dm"
 #include "code\modules\1713\jobs\prison.dm"
-#include "code\modules\1713\jobs\grozny.dm"
 #include "code\modules\1713\jobs\russian.dm"
 #include "code\modules\1713\jobs\russoukrainewar.dm"
 #include "code\modules\1713\jobs\samurai.dm"
