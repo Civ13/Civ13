@@ -50,6 +50,7 @@
 #include "code\_helpers\areas.dm"
 #include "code\_helpers\cmp.dm"
 #include "code\_helpers\datum_pool.dm"
+#include "code\_helpers\debugger.dm"
 #include "code\_helpers\directions.dm"
 #include "code\_helpers\distance.dm"
 #include "code\_helpers\files.dm"
