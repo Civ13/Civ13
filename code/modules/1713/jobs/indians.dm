@@ -503,6 +503,8 @@ datum/job/indians/tribes/black
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
 /datum/job/indians/warlords/red/shaman
 	title = "Redkantu Shaman"
+	min_positions = 5
+	max_positions = 15
 /datum/job/indians/warlords/red/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
 	H.nationality = "Redkantu"
@@ -555,6 +557,8 @@ datum/job/indians/tribes/black
 	give_gun(H)
 /datum/job/indians/warlords/blue/shaman
 	title = "Blugisi Shaman"
+	min_positions = 5
+	max_positions = 15
 /datum/job/indians/warlords/blue/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
 	H.nationality = "Blugisi"
@@ -606,6 +610,8 @@ datum/job/indians/tribes/black
 	give_gun(H)
 /datum/job/indians/warlords/yellow/shaman
 	title = "Yellowagwana Shaman"
+	min_positions = 5
+	max_positions = 15
 /datum/job/indians/warlords/yellow/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
 	H.nationality = "Yellowagwana"
