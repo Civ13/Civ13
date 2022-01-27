@@ -680,6 +680,8 @@
 			stat("")
 			stat("Players Online (Playing, Observing, Lobby):", "[clients.len] ([human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len])")
 			stat("Round Duration:", roundduration2text_days())
+			stat("Game ID:", "<b>[game_id]</b>")
+			stat("")
 
 			if (map && !map.civilizations)
 				var/grace_period_string = ""
