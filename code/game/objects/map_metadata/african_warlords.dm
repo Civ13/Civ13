@@ -12,6 +12,7 @@
 		list(INDIANS) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/british,
 		)
+	no_hardcore = TRUE
 	age = "1984"
 	is_singlefaction = TRUE
 	ordinal_age = 7
