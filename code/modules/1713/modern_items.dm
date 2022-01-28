@@ -225,15 +225,6 @@
 	powerneeded = 0
 	on = TRUE
 
-/obj/structure/lamp/lamppost_small
-	name = "small lamp post"
-	desc = "A small lamp post, good for outdoor illumination."
-	icon_state = "lamppost_small"
-	powerneeded = 2
-	light_amt = 6
-/obj/structure/lamp/lamppost_small/alwayson
-	powerneeded = 0
-	on = TRUE
 /obj/structure/lamp/lamp_small
 	name = "small lightbulb"
 	desc = "A small lightbulb."
@@ -995,3 +986,33 @@
 /obj/structure/katana_stand/full/New()
 	..()
 	new /obj/item/weapon/material/sword/katana(src)
+
+/obj/structure/floodlight //Works in the basic way, will need more coding for powersupply, being destroyable, etc.
+	name = "floodlight"
+	desc = "A floodlight, good for outdoor illumination in dark conditions."
+	icon ='icons/obj/lighting.dmi'
+	icon_state = "floodlight"
+	var/floodlighton = 0
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+	powerneeded = 0
+
+/obj/structure/floodlight/Destroy()
+	set_light (0)
+	..()
+
+/obj/structure/floodlight/attack_hand(var/mob/living/human/H)
+	if (floodlighton == 0)
+		floodlighton = 1
+		set_light (8)
+		icon_state ="floodlight_on"
+		playsound (loc, 'sound/effects/Custom_flashlight.ogg', 75, TRUE)
+	else
+		floodlighton = 0
+		set_light (0)
+		icon_state ="floodlight"
+		playsound (loc, 'sound/effects/Custom_flashlight.ogg', 75, TRUE)
