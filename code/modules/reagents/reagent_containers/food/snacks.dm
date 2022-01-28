@@ -172,9 +172,9 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	var/mob/living/human/H = M
 	if (ishuman(H))
 		if (H.orc || H.crab || H.wolfman)
-			H.mood += abs(satisfaction*bitesize) //orcs, crabs and wolfmans will be get satisfaction positive anyway from any food
+			H.mood += abs(ceil(satisfaction/biteamount)) //orcs, crabs and wolfmans will be get satisfaction positive anyway from any food
 		else
-			H.mood += satisfaction*bitesize //standard humans and other human-races reactions
+			H.mood += ceil(satisfaction/biteamount) //standard humans and other human-races reactions
 		if (raw)
 			if (!H.orc && !H.crab && !H.wolfman && !H.lizard)
 				H.reagents.add_reagent("food_poisoning", pick(0,0,1)) //1/3 chance to be poisoned if you are not orc, crab, wolfman or lizard
