@@ -515,7 +515,8 @@ var/list/coefflist = list()
 	species.create_organs(src)
 
 	losebreath = FALSE
-
+	rotting_stage = 0
+	do_rotting = 0
 	shock_stage = 0
 	nutrition = max_nutrition
 	water = max_water
