@@ -18,7 +18,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(INDIANS = 0.9, CIVILIAN = 0.1)
 	battle_name = "skull competition"
-	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>50 enemy skulls</b> and bring them to their shaman hut. First team to reach 25 wins.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
+	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>50 enemy skulls</b> and bring them to their shaman hut. First team to reach <b>35 points</b> wins.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -78,7 +78,7 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	if (processes.ticker.playtime_elapsed > 4800)
 		if (win_condition_spam_check)
 			return FALSE
-		if (!(scores["Yellowagwana"] >= 25 || scores["Blugisi"] >= 25 || scores["Redkantu"] >= 25))
+		if (!(scores["Yellowagwana"] >= 35 || scores["Blugisi"] >= 35 || scores["Redkantu"] >= 35))
 			return TRUE
 		ticker.finished = TRUE
 		var/message = ""
@@ -121,16 +121,24 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 		var/obj/map_metadata/african_warlords/AW = map
 		if (!W)
 			return
-		qdel(W)
 		var/obj/item/organ/external/head/HD = W
-		if (faction == HD.nationality || faction != user.nationality)
+		var/head_nationality = HD.nationality
+		qdel(W)
+		if (faction == head_nationality || faction != user.nationality)
 			return
 		switch(faction)
 			if("Blugisi")
-				AW.scores["Blugisi"] += 1
+				AW.scores["Blugisi"] += 2
 			if("Yellowagwana")
-				AW.scores["Yellowagwana"] += 1
+				AW.scores["Yellowagwana"] += 2
 			if("Redkantu")
-				AW.scores["Redkantu"] += 1
+				AW.scores["Redkantu"] += 2
+		switch(head_nationality)
+			if("Blugisi")
+				AW.scores["Blugisi"] -= 1
+			if("Yellowagwana")
+				AW.scores["Yellowagwana"] -= 1
+			if("Redkantu")
+				AW.scores["Redkantu"] -= 1
 		user << "You place the head on the shaman's altar."
 		return

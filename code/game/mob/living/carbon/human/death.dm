@@ -124,6 +124,11 @@
 					map.scores["Eastern Army"] += 5
 				else
 					map.scores["Eastern Army"] += 1
+	else if (map && map.ID == MAP_AFRICAN_WARLORDS)
+		if (faction_text == CIVILIAN && original_job_title == "United Nations Doctor" && ishuman(last_harmed))
+			var/mob/living/human/killer = last_harmed
+			if (killer.nationality && killer.nationality in map.scores)
+				map.scores[killer.nationality] -=10
 
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
