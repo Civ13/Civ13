@@ -18,7 +18,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(INDIANS = 0.9, CIVILIAN = 0.1)
 	battle_name = "skull competition"
-	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>50 enemy skulls</b> and bring them to their shaman hut. First team to reach <b>35 points</b> wins.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
+	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>enemy skulls</b> and bring them to their shaman hut. First team to reach <b>35 points</b> wins.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
