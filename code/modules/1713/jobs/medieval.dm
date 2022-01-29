@@ -356,6 +356,8 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
 
 
 	return TRUE
@@ -401,6 +403,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -446,6 +449,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -496,6 +500,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -535,6 +540,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
+	give_random_name(H)
 
 
 	return TRUE
@@ -587,6 +593,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 	return TRUE
 
@@ -627,6 +634,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -673,6 +681,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -728,6 +737,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -777,6 +787,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 	return TRUE
 
@@ -842,6 +853,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	give_random_name(H)
 
 	return TRUE
 
