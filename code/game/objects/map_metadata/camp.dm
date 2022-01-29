@@ -4,7 +4,7 @@
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
-
+	var/victory_time = 15000
 	no_winner = "No faction controls the Castle."
 
 	faction_organization = list(
@@ -93,7 +93,15 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		return ""
 
 /obj/map_metadata/camp/update_win_condition()
-
+	if (world.time >= victory_time)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		return FALSE
 	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
