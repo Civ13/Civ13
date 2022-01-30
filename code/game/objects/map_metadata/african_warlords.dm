@@ -126,6 +126,8 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 		qdel(W)
 		if (faction == head_nationality || faction != user.nationality)
 			return
+		if (!head_nationality || head_nationality == "none")
+			return
 		switch(faction)
 			if("Blugisi")
 				AW.scores["Blugisi"] += 2
