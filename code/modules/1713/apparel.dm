@@ -449,3 +449,24 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/suit/storage/hazard
+	name = "hazard vest"
+	desc = "A vest used for high visibility and reflectivity."
+	icon_state = "hazard"
+	item_state = "hazard"
+	worn_state = "hazard"
+
+/obj/item/clothing/suit/storage/hazard/blue
+	name = "blue hazard vest"
+	desc = "A vest used for high visibility and reflectivity."
+	icon_state = "hazard_b"
+	item_state = "hazard_b"
+	worn_state = "hazard_b"
+
+/obj/item/clothing/suit/storage/hazard/green
+	name = "green hazard vest"
+	desc = "A vest used for high visibility and reflectivity."
+	icon_state = "hazard_g"
+	item_state = "hazard_g"
+	worn_state = "hazard_g"
