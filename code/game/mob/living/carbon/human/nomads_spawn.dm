@@ -1028,7 +1028,8 @@
 				s_tone = -115
 			else
 				s_tone = rand(-155,-185)
-
+		else if (faction_text == CIVILIAN && map.ID == MAP_AFRICAN_WARLORDS && original_job_title == "Local Policeman")
+			s_tone = rand(-155,-185)
 		else if (s_tone < -65)
 			s_tone = -65
 
