@@ -144,6 +144,13 @@
 	item_state = "traffic_cop"
 	worn_state = "traffic_cop"
 
+/obj/item/clothing/head/beret_black
+	name = "black beret"
+	desc = "A black beret with golden insignia."
+	icon_state = "beret_black"
+	item_state = "beret_black"
+	body_parts_covered = HEAD
+
 /* US Army Clothes*/
 
 /obj/item/clothing/under/us_uni
@@ -1056,6 +1063,8 @@
 	ripable = FALSE
 
 /* Miscallaneous*/
+
+
 
 	/* John Toughguy - Jungle Commando defintiely does not rhyme with a certain movie franchise*/
 
