@@ -393,6 +393,7 @@ datum/job/indians/tribes/black
 	min_positions = 40
 	max_positions = 100
 	default_language = "Zulu"
+	additional_languages = list("Swahili" = 80, "English" = 10)
 
 /datum/job/indians/warlords/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
