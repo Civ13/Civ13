@@ -230,3 +230,6 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/weapon/reagent_containers/pill/opium(src)
 		new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(src)
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
