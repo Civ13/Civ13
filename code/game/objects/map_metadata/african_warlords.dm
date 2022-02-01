@@ -7,7 +7,7 @@
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
 	faction_organization = list(INDIANS, CIVILIAN)
-	
+
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/british,
@@ -143,4 +143,24 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 			if("Redkantu")
 				AW.scores["Redkantu"] -= 1
 		user << "You place the head on the shaman's altar."
+		if	(prob(25))
+			new/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(user.loc)
+		else if (prob (25))
+			new/obj/item/weapon/reagent_containers/food/drinks/bottle/small/stamina/minor(user.loc)
+		else if (prob (40))
+			new/obj/item/stack/medical/advanced/herbs(user.loc)
+		else if (prob (20))
+			new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+			new/obj/item/ammo_magazine/ak74(user.loc)
+			new/obj/item/ammo_magazine/ak74(user.loc)
+		else if (prob (15))
+			new/obj/item/weapon/grenade/modern/f1(user.loc)
+		else if (prob (15))
+			new/obj/item/weapon/grenade/incendiary/anm14(user.loc)
+		else if (prob (12))
+			new/obj/item/weapon/gun/projectile/semiautomatic/svd(user.loc)
+			new /obj/item/ammo_magazine/svd(user.loc)
+		else if (prob (10))
+			new/obj/item/weapon/gun/launcher/rocket/rpg7(user.loc)
+			new/obj/item/ammo_casing/rocket/pg7v(user.loc)
 		return
