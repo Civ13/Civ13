@@ -2702,6 +2702,7 @@
 	is_warlords = TRUE
 	can_be_female = FALSE
 	selection_color = "#53ADD0"
+	additional_languages = list("Zulu" = 10)
 
 	min_positions = 2
 	max_positions = 8
@@ -2741,6 +2742,7 @@
 	can_be_female = TRUE
 	min_positions = 2
 	max_positions = 8
+	additional_languages = list("Zulu" = 20)
 
 /datum/job/civilian/unitednations/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2782,6 +2784,7 @@
 	is_warlords = TRUE
 	can_be_female = FALSE
 	selection_color = "#53ADD0"
+	additional_languages = list("Zulu" = 10)
 
 	min_positions = 2
 	max_positions = 4
@@ -2793,10 +2796,12 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/shovel/steel(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/un/blue = new /obj/item/clothing/accessory/armband/un(null)
