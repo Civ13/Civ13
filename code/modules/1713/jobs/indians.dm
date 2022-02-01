@@ -442,7 +442,7 @@ datum/job/indians/tribes/black
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(FJ, H)
 /datum/job/indians/warlords/red
-	title = "Redkantu Warband"
+	title = "Redkantu Warband Warrior"
 	spawn_location = "JoinLateIND1"
 	selection_color = "#ac0909"
 /datum/job/indians/warlords/red/equip(var/mob/living/human/H)
@@ -518,7 +518,7 @@ datum/job/indians/tribes/black
 	uniform.attackby(ab, H)
 
 /datum/job/indians/warlords/blue
-	title = "Blugisi Warband"
+	title = "Blugisi Warband Warrior"
 	spawn_location = "JoinLateIND2"
 	selection_color = "#2a28b6"
 /datum/job/indians/warlords/blue/equip(var/mob/living/human/H)
@@ -573,7 +573,7 @@ datum/job/indians/tribes/black
 	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(ab, H)
 /datum/job/indians/warlords/yellow
-	title = "Yellowagwana Warband"
+	title = "Yellowagwana Warband Warrior"
 	spawn_location = "JoinLateIND3"
 	selection_color = "#969607"
 /datum/job/indians/warlords/yellow/equip(var/mob/living/human/H)
