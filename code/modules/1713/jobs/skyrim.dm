@@ -17,6 +17,53 @@
 	H.name = H.species.get_random_roman_name(H.gender)
 	H.real_name = H.name
 
+/datum/job/roman/skyrim/imperial/balgruuf	//imperial - captain
+	title = "Jarl Balgruuf"
+	rank_abbreviation = "Jarl"
+
+	spawn_location = "JoinLateRUCap"
+
+	is_commander = TRUE
+	is_officer = TRUE
+	is_skyrim = TRUE
+	is_imperial = TRUE
+	is_medieval = TRUE
+	selection_color = "#9A662C"
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/roman/skyrim/imperial/balgruuf/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial/bolgruf(H), slot_w_uniform)
+		//head
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel/balgruuf(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught(H), slot_belt)
+	H.add_note("Role", "You are <b>[title]</b>, the Jarl of the <b>Whiterun</b>, an imperial aligned city. Organize your men and lead the defense to victory, for the Empire and all her people!</b>.")
+	H.setStat("strength", STAT_MAX)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_MAX)
+	H.setStat("swords", STAT_MAX)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MAX)
+	H.setStat("medical", STAT_MAX)
+	H.real_name = "Balgruuf"
+	H.h_style = "Flaired Hair"
+	H.f_style = "Goatee"
+	H.b_hair = 120
+	H.g_hair = 151
+	H.r_hair = 184
+	H.b_facial = 120
+	H.g_facial = 151
+	H.r_facial = 184
+
+	return TRUE
+
 /datum/job/roman/skyrim/imperial/captain	//imperial - captain
 	title = "Imperial Captain"
 	rank_abbreviation = "Cen."
@@ -27,6 +74,7 @@
 	is_skyrim = TRUE
 	is_imperial = TRUE
 	is_officer = TRUE
+	selection_color = "#7c0006"
 
 	min_positions = 1
 	max_positions = 1
@@ -67,6 +115,7 @@
 	is_skyrim = TRUE
 	is_imperial = TRUE
 	is_officer = TRUE
+	selection_color = "#7c0006"
 
 	min_positions = 1
 	max_positions = 1
@@ -98,16 +147,17 @@
 	return TRUE
 
 /datum/job/roman/skyrim/imperial/sergeant	//imperial - sergeant
-	title = "Imperial squad leader"
+	title = "Imperial Squad Leader"
 	rank_abbreviation = "Vex."
 
 	spawn_location = "JoinLateRO"
 
-	is_commander = TRUE
 	is_skyrim = TRUE
 	is_imperial = TRUE
 	is_squad_leader = TRUE
+	is_officer = TRUE
 	uses_squads = TRUE
+	selection_color = "#7c0006"
 
 	min_positions = 1
 	max_positions = 4
@@ -138,7 +188,7 @@
 	return TRUE
 
 /datum/job/roman/skyrim/imperial/soldier //imperial - soldier
-	title = "Imperial soldier"
+	title = "Imperial Soldier"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRO"
@@ -146,6 +196,7 @@
 	is_skyrim = TRUE
 	is_imperial = TRUE
 	uses_squads = TRUE
+	selection_color = "#7c0006"
 
 	min_positions = 1
 	max_positions = 200
@@ -176,7 +227,7 @@
 	return TRUE
 
 /datum/job/roman/skyrim/imperial/archer //imperial - soldier
-	title = "Imperial archer"
+	title = "Imperial Archer"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRO"
@@ -184,6 +235,7 @@
 	is_skyrim = TRUE
 	is_imperial = TRUE
 	uses_squads = TRUE
+	selection_color = "#7c0006"
 
 	min_positions = 1
 	max_positions = 200
@@ -214,51 +266,6 @@
 
 	return TRUE
 //////////////////////WHITERUN GARRISON///////////////////////////////////////////
-/datum/job/roman/skyrim/imperial/balgruuf	//imperial - captain
-	title = "Jarl Balgruuf"
-	rank_abbreviation = "Jarl"
-
-	spawn_location = "JoinLateRUCap"
-
-	is_commander = TRUE
-	is_skyrim = TRUE
-	is_imperial = TRUE
-	is_officer = TRUE
-
-	min_positions = 1
-	max_positions = 1
-
-/datum/job/roman/skyrim/imperial/balgruuf/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial/bolgruf(H), slot_w_uniform)
-		//head
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel/balgruuf(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught(H), slot_belt)
-	H.add_note("Role", "You are <b>[title]</b>, the Jarl of the <b>Whiterun</b>, an imperial aligned city. Organize your men and lead the defense to victory, for the Empire and all her people!</b>.")
-	H.setStat("strength", STAT_MAX)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_MAX)
-	H.setStat("swords", STAT_MAX)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MAX)
-	H.setStat("medical", STAT_MAX)
-	H.real_name = "Balgruuf"
-	H.h_style = "Flaired Hair"
-	H.f_style = "Goatee"
-	H.b_hair = 120
-	H.g_hair = 151
-	H.r_hair = 184
-	H.b_facial = 120
-	H.g_facial = 151
-	H.r_facial = 184
-
-	return TRUE
 
 /datum/job/roman/skyrim/imperial/guard_captain
 	title = "Whiterun Head Guard"
@@ -269,7 +276,8 @@
 	is_medieval = TRUE
 	is_skyrim = TRUE
 	is_imperial = TRUE
-
+	selection_color = "#9A662C"
+	is_officer = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -317,7 +325,7 @@
 	is_medieval = TRUE
 	is_skyrim = TRUE
 	is_imperial = TRUE
-
+	selection_color = "#9A662C"
 
 	min_positions = 5
 	max_positions = 25
@@ -367,12 +375,13 @@
 	title = "Ulfric Stormcloak"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateGE"
+	spawn_location = "JoinLateGECap"
 
 	is_commander = TRUE
 	is_skyrim = TRUE
 	is_stormcloak = TRUE
 	is_officer = TRUE
+	selection_color = "#315972"
 
 	min_positions = 1
 	max_positions = 1
@@ -419,6 +428,7 @@
 	is_skyrim = TRUE
 	is_officer = TRUE
 	is_stormcloak = TRUE
+	selection_color = "#315972"
 
 	min_positions = 1
 	max_positions = 1
@@ -449,16 +459,18 @@
 	return TRUE
 
 /datum/job/civilian/skyrim/stormcloak/sergeant	//imperial - sergeant
-	title = "stormcloak squad leader"
+	title = "Stormcloak Squad Leader"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGE"
 
-	is_commander = TRUE
 	is_skyrim = TRUE
 	is_stormcloak = TRUE
+	is_imperial = FALSE
 	is_squad_leader = TRUE
+	is_officer = TRUE
 	uses_squads = TRUE
+	selection_color = "#315972"
 
 	min_positions = 1
 	max_positions = 4
@@ -485,7 +497,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_back)
-	H.add_note("Role", "You are a <b>[title]</b>, the squad leader <b>sergeant</b>, a squad of Legionaries. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
+	H.add_note("Role", "You are a <b>[title]</b>. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW)
@@ -499,7 +511,7 @@
 	return TRUE
 
 /datum/job/civilian/skyrim/stormcloak/soldier //imperial - soldier
-	title = "Stormcloak soldier"
+	title = "Stormcloak Soldier"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGE"
@@ -507,6 +519,7 @@
 	is_skyrim = TRUE
 	is_stormcloak = TRUE
 	uses_squads = TRUE
+	selection_color = "#315972"
 
 	min_positions = 1
 	max_positions = 200
@@ -533,7 +546,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
-	H.add_note("Role", "You are a <b>[title]</b>, a rebel soldier. Fight the empire and liberate Skyrim!")
+	H.add_note("Role", "You are a <b>[title]</b>, a rebel soldier. Fight the Empire and liberate Skyrim!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -547,7 +560,7 @@
 	return TRUE
 
 /datum/job/civilian/skyrim/stormcloak/archer //imperial - soldier
-	title = "Stormcloak archer"
+	title = "Stormcloak Archer"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGE"
@@ -555,6 +568,7 @@
 	is_skyrim = TRUE
 	is_stormcloak = TRUE
 	uses_squads = TRUE
+	selection_color = "#315972"
 
 	min_positions = 1
 	max_positions = 200
@@ -581,7 +595,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/medieval(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
-	H.add_note("Role", "You are a <b>[title]</b>, the ranged support of the Empire. Keep the enemy full of arrows and allow the infantry to charge in!</b>.")
+	H.add_note("Role", "You are a <b>[title]</b>, the ranged support of the Stormcloaks. Keep the enemy full of arrows and allow the infantry to charge in!</b>.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW)

@@ -57,6 +57,8 @@
 			return "Militia"
 		if (map.ID == "AFRICAN_WARLORDS")
 			return "United Nations"
+		if (map.ID == "WHITERUN")
+			return "Stormcloaks"
 		else
 			return "Colonists"
 
