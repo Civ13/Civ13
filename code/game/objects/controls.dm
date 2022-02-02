@@ -249,7 +249,7 @@
 		..()
 
 /obj/structure/gate/whiterun
-	name = "whiterun gate"
+	name = "Whiterun gate"
 	desc = "A large wooden double door"
 	icon = 'icons/obj/doors/gates_64x96.dmi'
 	icon_state = "whiterun1"
@@ -260,6 +260,8 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	layer = MOB_LAYER + 0.01
+	bound_width = 64
+	bound_height = 64
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the doors uselessly!"//sucker
@@ -282,25 +284,12 @@
 	else
 		..()
 
-/obj/structure/gatecontrol/whiterun
-	name = "gate control"
-	desc = "Controls nearby gates."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "gate_control"
-	anchored = TRUE
-	open = FALSE
-	cooldown = 0
-	distance = 6
-	density = TRUE
-	not_movable = TRUE
-	not_disassemblable = TRUE
-	bound_width = 64 //shouldn't this in the previous obj?
-	bound_height = 64
-
 /obj/structure/gate/whiterun/r
+	name = "Whiterun gate"
 	icon_state = "whiterun2"
 
 /obj/structure/gate/whiterun/l
+	name = "Whiterun gate"
 	icon_state = "whiterun1"
 
 /obj/structure/gate/ex_act(severity)
@@ -316,6 +305,19 @@
 		qdel(src)
 		return
 
+/obj/structure/gatecontrol/whiterun
+	name = "gate control"
+	desc = "Controls nearby gates."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "gate_control"
+	anchored = TRUE
+	open = FALSE
+	cooldown = 0
+	distance = 6
+	density = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/gatecontrol/whiterun/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time - 60)
 		if (open)
@@ -323,14 +325,14 @@
 			open = FALSE
 			cooldown = world.time
 			for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
-				if (G.name == "whiterun gate")
+				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 					G.icon_state = "whiterun2_closing"
 					spawn(30)
 						G.icon_state = "whiterun2"
 						G.density = TRUE
 			for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
-				if (G.name == "whiterun gate")
+				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 					G.icon_state = "whiterun1_closing"
 					spawn(30)
@@ -342,14 +344,14 @@
 			open = TRUE
 			cooldown = world.time
 			for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
-				if (G.name == "whiterun gate")
+				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 					G.icon_state = "whiterun2_opening"
 					spawn(30)
 						G.icon_state = "whiterun2_open"
 						G.density = FALSE
 			for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
-				if (G.name == "whiterun gate")
+				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 					G.icon_state = "whiterun1_opening"
 					spawn(30)

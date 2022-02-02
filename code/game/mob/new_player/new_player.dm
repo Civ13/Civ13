@@ -979,6 +979,12 @@ var/global/redirect_all_players = null
 						temp_name = "Africans"
 					else if (temp_name == "Civilian")
 						temp_name = "United Nations"
+				else if (map && map.ID == "WHITERUN")
+					if (temp_name == "Roman")
+						temp_name = "Imperials"
+					if (temp_name == "Civilian")
+						temp_name = "Stormcloaks"
+
 				var/side_name = "<b><h1><big>[temp_name]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
 					dat += "<br>[side_name]"
