@@ -131,10 +131,25 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 		switch(faction)
 			if("Blugisi")
 				AW.scores["Blugisi"] += 2
+				if (head_nationality == "Exiled")
+					AW.scores["Blugisi"] += 4
+					new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
 			if("Yellowagwana")
 				AW.scores["Yellowagwana"] += 2
+				if (head_nationality == "Exiled")
+					AW.scores["Yellowagwana"] += 4
+					new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
 			if("Redkantu")
 				AW.scores["Redkantu"] += 2
+				if (head_nationality == "Exiled")
+					AW.scores["Redkantu"] += 4
+					new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
 		switch(head_nationality)
 			if("Blugisi")
 				AW.scores["Blugisi"] -= 1

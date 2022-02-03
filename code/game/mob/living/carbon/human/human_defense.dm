@@ -81,6 +81,16 @@ bullet_act
 				else
 					last_harmed = H
 					H.civilization = "Killer"
+
+	else if (map.ID == MAP_AFRICAN_WARLORDS)
+		var/mob/living/human/H = user
+		if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && istype(W))
+			if (src.stat != DEAD && H.civilization != "CIVILIAN")
+				if (H.civilization == "CIVILIAN")
+					return ..(W, user)
+				else
+					last_harmed = H
+
 	else
 		return ..(W, user)
 
@@ -123,6 +133,13 @@ bullet_act
 					SW2.reason = reason
 					map.pending_warrants += SW2
 					SW2.forceMove(null)
+
+		else if (map.ID == MAP_AFRICAN_WARLORDS)
+			var/mob/living/human/Huser = P.firer
+			if (src.stat != DEAD && (Huser.civilization != "CIVILIAN"))
+				if (Huser.civilization != "CIVILIAN")
+					last_harmed = Huser
+
 
 		else if (!map.civilizations && !map.nomads && !map.is_RP)
 			var/mob/living/human/Huser = P.firer

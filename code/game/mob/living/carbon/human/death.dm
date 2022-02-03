@@ -124,11 +124,21 @@
 					map.scores["Eastern Army"] += 5
 				else
 					map.scores["Eastern Army"] += 1
+
 	else if (map && map.ID == MAP_AFRICAN_WARLORDS)
-		if (faction_text == CIVILIAN && original_job_title == "United Nations Doctor" && ishuman(last_harmed))
+		if (faction_text == CIVILIAN && original_job_title == "United Nations Doctor")
 			var/mob/living/human/killer = last_harmed
-			if (killer.nationality && killer.nationality in map.scores)
-				map.scores[killer.nationality] -=10
+			if (ishuman(killer))
+				map.scores[killer.nationality] -= 12
+				world << "<b><big>A United Nations Doctor has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>"
+				killer.nationality = "Exiled"
+		if (faction_text == CIVILIAN && original_job_title == "United Nations Engineer")
+			var/mob/living/human/killer = last_harmed
+			if (ishuman(killer))
+				map.scores[killer.nationality] -= 10
+				killer.nationality = "Exiled"
+				world << "<b><big>A United Nations Engineer has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>"
+
 
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
