@@ -55,7 +55,7 @@
 	return
 
 /obj/structure/bookcase/update_icon()
-	if (map.ordinal_age >= 3)
+	if (map && map.ordinal_age >= 3)
 		if (contents.len < 5)
 			icon_state = "book-[contents.len]"
 		else
