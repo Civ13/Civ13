@@ -2821,8 +2821,8 @@
 /datum/job/civilian/unitednations/localpoliceman
 	title = "Local Policeman"
 	en_meaning = ""
-	rank_abbreviation = ""
-	spawn_location = "JoinLateUN"
+	rank_abbreviation = "Officer"
+	spawn_location = "JoinLateLP"
 	is_warlords = TRUE
 	can_be_female = FALSE
 	selection_color = "#007f00"
@@ -2837,7 +2837,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
 //back
@@ -2848,9 +2848,10 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 
-	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/under/ww2/british/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/un/blue = new /obj/item/clothing/accessory/armband/un(null)
 	uniform.attackby(blue, H)
+	uniform.roll_sleeves()
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 
