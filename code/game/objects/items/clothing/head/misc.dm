@@ -45,6 +45,7 @@
 	siemens_coefficient = 2.0
 	body_parts_covered = FALSE
 	force = WEAPON_FORCE_PAINFUL
+	metallic = TRUE
 
 /obj/item/clothing/head/pirate
 	name = "pirate hat"

@@ -2201,6 +2201,7 @@ obj/item/clothing/head/helmet/samurai/black
 	item_state = "samurai1"
 	worn_state = "samurai1"
 	body_parts_covered = FACE|EYES
+	metallic = TRUE
 	flags_inv = 0
 	w_class = 2
 	armor = list(melee = 20, arrow = 15, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE) //nerfed, armor stacking bad.

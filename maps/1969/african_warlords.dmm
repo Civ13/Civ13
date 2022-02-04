@@ -385,7 +385,7 @@
 "hu" = (/obj/structure/window/classic,/obj/covers/wood_ship,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "hv" = (/obj/covers/wood_ship,/obj/structure/lamp/lamp_small/alwayson{dir = 1; icon_state = "bulb"},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "hw" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/structure/closet/crate/cash_register{dir = 4; icon_state = "cash_register"},/obj/structure/curtain/open{pixel_y = 32},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"hx" = (/obj/structure/simple_door/key_door/custom/jail/steeljail/guard,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
+"hx" = (/obj/structure/simple_door/key_door/custom/jail/steeljail/guard,/obj/structure/metal_detector,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "hy" = (/obj/covers/wood_ship,/obj/structure/shelf,/obj/structure/curtain/open{pixel_y = 32},/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "hz" = (/obj/structure/window/classic,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "hA" = (/obj/covers/wood_ship,/obj/structure/closet,/obj/item/clothing/suit/storage/hazard/blue,/obj/item/clothing/suit/storage/hazard/blue,/obj/item/clothing/suit/storage/hazard/blue,/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -609,6 +609,7 @@
 "zG" = (/obj/structure/barbwire{dir = 4},/obj/structure/barbwire{dir = 8},/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "zT" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "Al" = (/obj/covers/brick_wall,/obj/structure/sign/flag/medical,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
+"Aq" = (/obj/covers/wood_ship,/obj/structure/metal_detector,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "Ay" = (/obj/structure/window/barrier/rock{dir = 4; icon_state = "rock_barricade"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "AG" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "AJ" = (/obj/structure/gate/barrier/vertical{pixel_y = 15},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
@@ -777,7 +778,7 @@ ZrZrZrMGZrZrZrZrWEWEWEMGZrZrZrZrZrZrZrZrWEWEZrZrZrZrZrZrMGWEwaeCcxbjcyuFZrZrZrxT
 ZrZrZrYGZrZrZrZrZrZrZrMGZrZrZrHVZrZrZrZrZrZrZrFkFkVxZrVxZrZruFczbjbjbjuFZrZrxTgkgcgpgtgFgpgQgpgdxTPqPqPqNkgYgZaJaKaLaMdmdndoaJaKaLaMeeelxTPqPqPqxThahbgfaoaoggcadGZrZrxTxTxTxTPqPqPqPqPqxTxTFkZrMGMGMGZrmTEWEWZrZrMGLTLTMGVxMGMGZrMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 ZrZrZrYGWEZrZrZrZrFkZrZrZrozZrZrZrWEsSZrDZZrZrFkFkZrZrCIMGZrhchdbjbjhfhcZrxTxTZrdpdpdpdpdpdpdpdpxTPqPqPqNkgYhgaNaOaRiqdqdndqaNaOaRaSeeelxTPqPqPqxTfPgeaoaoaohhhaZrZrdIxTxTxTPqPqPqPqPqxTxTDZZrOOMGMGZrmTpCEWEWZrMGZrMGZrZrMGPnMGZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 ZrZrZrZrWEWECICIDZZrOOZrZrZrZrCIZrZrZrZrVxCIZrVxZrZrWEWEDZZruFjMbjbjeHuFxTxTxTglgpgFgFgpgpgpgQgpjNPqPqPqiSalaoaoaoaoaododqdmaoaoaoaoaoalxTPqPqPqxTdBaoaognaogocaxTZrZrxTxTPqPqPqPqPqxTxTZrZrZrZrMGZrFkmTEWEWZrZrMGMGMGZrZrMGLTMGZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
-ZrZrZrWEZrZrCIWEZrZrZrZrVxCIZrZrZrZrWEHVWEozZrZrozZrbqbqbqbquFuFbcbcbeuFxTxTdsZrdpdpdpdpdpdpdpdpxTPqPqPqxTaldtaohihiduaUaoaUdvhjhiaodtalxTPqPqPqiDachAaohliEgocaxTZrxTxTPqPqPqPqPqxTxTdIZrZreVozZrFkEWEWEWZrZrZrMGZrWvPnMGLTLTMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
+ZrZrZrWEZrZrCIWEZrZrZrZrVxCIZrZrZrZrWEHVWEozZrZrozZrbqbqbqbquFuFbcbcbeuFxTxTdsZrdpdpdpdpdpdpdpdpxTPqPqPqxTaldtaohihiduaUAqaUdvhjhiaodtalxTPqPqPqiDachAaohliEgocaxTZrxTxTPqPqPqPqPqxTxTdIZrZreVozZrFkEWEWEWZrZrZrMGZrWvPnMGLTLTMGMGoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 ZrZrZrZrZrZrZrZrZrMGZrMGWEZrZrWEZrvuZrZrZrZrWEWEZruQbqFbZrWEZrZrxTxTxTjNxTdsdwdsgcgQhngQgFgpgpgdxTPqPqPqxTakalalelelalalkfalalelelakalakeBPqPqPqxTcaacachaacaccaPexTxTPqPqPqPqPqxTxTZrZrvuDZMGMGZrEWEWEWZrZrZrMGMGMGMGMGZrMGZrMGZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 xTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTJpfaxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTxTPqPqPqknGgjNxTxTxTdzkhkikjkkhohpxTxTeWxoPqPqPqxTxTeGXjklWWxTxTyFxTPqPqPqPqPqxTxTZrZrZrHkMGZrZrFkEWEWZrZrZrMGZrZrMGMGMGMGZrZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY
 PqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqPqxVPqPqPqPqPqPqPqPqPqPqARkpxVPqPqPqPqPqPqPqPqPqPqUsPqPqPqPqPqPqPqPqPqPqfikqPqPqDGliPqPqPqPqPqxTxTdIZrFkZrZrZrFkEWEWEWZrZrZrMGZrZroYZroYoYZrDZoYZroYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoY

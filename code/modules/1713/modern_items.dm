@@ -1030,9 +1030,28 @@
 	anchored = TRUE
 	density = FALSE
 	opacity = FALSE
+	layer = 2.99 //below doors
 	powerneeded = 0
+	var/on = TRUE
+
+	New()
+		..()
+		if (on)
+			set_light(2, 0.5, "#62cc53")
+		else
+			set_light(0)
+
+	proc/toggle()
+		if (on)
+			on = FALSE
+			icon_state = "metal_detector"
+		else
+			on = TRUE
+			icon_state = "metal_detector1"
 
 	proc/checkmob(mob/living/human/H)
+		if (!on)
+			return FALSE
 		if (!H)
 			return FALSE
 		for(var/obj/item/I in H)
@@ -1070,5 +1089,19 @@
 	proc/bleep()
 		icon_state = "metal_detector2"
 		playsound(loc, 'sound/machines/metal_detector.ogg', 100, 0)
+		set_light(2, 0.5,"#ce3535")
 		spawn(30)
 			icon_state = "metal_detector1"
+			set_light(2, 0.5, "#62cc53")
+
+	attack_hand(mob)
+		if (!ishuman(mob))
+			return
+		if(!on)
+			on = TRUE
+			visible_message("[mob] turns the metal detector on.","You turn the metal detector on.")
+			set_light(2, 0.5, "#62cc53")
+		else
+			visible_message("<span class='warning'>[mob] is trying to turn the metal detector off!</span>","You start turning the metal detector off...")
+			if(do_after(mob, 50, src))
+				visible_message("<span class='warning'>[mob] turns the metal detector off.</span>","You turn the metal detector off.")

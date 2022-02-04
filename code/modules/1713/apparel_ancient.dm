@@ -1240,6 +1240,7 @@
 	blocks_scope = TRUE
 	restricts_view = 1
 	heat_protection = FACE|EYES
+	metallic = TRUE
 
 /obj/item/clothing/mask/osiris
 	name = "osiris mask"
@@ -1247,6 +1248,7 @@
 	icon_state = "osiris"
 	item_state = "osiris"
 	flags_inv = HIDEFACE
+	metallic = TRUE
 	body_parts_covered = FACE
 	w_class = 1
 	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 45, bio = FALSE, rad = FALSE)

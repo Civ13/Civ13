@@ -357,6 +357,7 @@
 	desc = "two leather belts with small pouches for ammunition."
 	icon_state = "bandolier"
 	item_state = "bandolier"
+	metallic = TRUE
 	slots = 8
 	slot = "utility"
 	New()

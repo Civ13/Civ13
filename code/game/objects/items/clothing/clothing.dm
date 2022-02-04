@@ -89,6 +89,7 @@
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
 	ripable = FALSE
+	metallic = TRUE
 
 /obj/item/clothing/ears
 	name = "ears"

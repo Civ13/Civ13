@@ -777,6 +777,7 @@ obj/item/clothing/accessory/harness
 	item_state = "jap_harn"
 	worn_state = "jap_harn"
 	ripable = FALSE
+	metallic = TRUE
 
 /obj/item/clothing/suit/storage/coat/ww2/japcoat
 	name = "japanese coat"
@@ -821,6 +822,7 @@ obj/item/clothing/head/ww2/jap_pilotcap
 	icon_state = "jappilotcap"
 	item_state = "jappilotcap"
 	worn_state = "jappilotcap"
+	metallic = TRUE
 
 obj/item/clothing/head/ww2/jap_mp
 	name = "Kenpeitai cap"
@@ -1691,6 +1693,7 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "ustanker"
 	item_state = "ustanker"
 	worn_state = "ustanker"
+	metallic = TRUE
 
 /obj/item/clothing/head/ww2/us_sailor_hat
 	name = "us sailor hat"
@@ -1705,6 +1708,7 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
+	metallic = TRUE
 
 /obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
@@ -1726,6 +1730,7 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "ger_officercap_tanker"
 	item_state = "ger_officercap_tanker"
 	worn_state = "ger_officercap_tanker"
+	metallic = TRUE
 
 /obj/item/clothing/head/ww2/sov_officercap
 	name = "soviet officer cap"
