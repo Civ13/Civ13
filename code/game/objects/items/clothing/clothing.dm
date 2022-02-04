@@ -178,6 +178,7 @@ BLIND	 // can't see anything
 	var/see_invisible = -1
 	var/obj/screen/overlay = null
 	ripable = FALSE
+	metallic = TRUE
 /obj/item/clothing/glasses/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc

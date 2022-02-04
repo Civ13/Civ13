@@ -302,6 +302,7 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	metallic = TRUE
 
 /obj/item/clothing/shoes/leatherboots1
 	name = "leather boots"
@@ -530,6 +531,7 @@
 	item_state = "paper"
 	throwforce = FALSE
 	w_class = TRUE
+	metallic = FALSE
 	throw_range = TRUE
 	throw_speed = TRUE
 	attack_verb = list("bapped")

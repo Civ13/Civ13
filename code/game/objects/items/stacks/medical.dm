@@ -332,6 +332,7 @@
 	icon_state = "splint"
 	amount = 5
 	max_amount = 5
+	metallic = TRUE
 
 /obj/item/stack/medical/splint/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())

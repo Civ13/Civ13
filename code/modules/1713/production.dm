@@ -263,6 +263,7 @@
 	var/fermenting = 0
 	var/fermenting_timer = 0
 	var/fermenting_contents = 0
+	metallic = FALSE
 /obj/item/weapon/starterjar/New()
 	..()
 
@@ -347,6 +348,7 @@
 	item_state = "backpack"
 	var/active = FALSE
 	w_class = 4
+	metallic = FALSE
 	slot_flags = SLOT_BACK
 	max_w_class = 2
 	max_storage_space = 45 // can hold 2 w_class 4 items. 28 let it hold 3
@@ -483,6 +485,7 @@
 	item_state = "produce_basket"
 	var/active = FALSE
 	w_class = 4
+	metallic = FALSE
 	max_w_class = 3
 	max_storage_space = 30 //lots of fruits and veggies
 	can_hold = list(

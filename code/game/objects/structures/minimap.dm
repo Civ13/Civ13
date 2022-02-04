@@ -117,6 +117,7 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	force = WEAPON_FORCE_HARMLESS
 	w_class = 1.0
+	metallic = FALSE
 
 /obj/item/weapon/map/New()
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
@@ -145,6 +146,7 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	force = WEAPON_FORCE_HARMLESS
 	w_class = 1.0
+	metallic = FALSE
 
 /obj/item/weapon/map_abashiri/examine(mob/user)
 	update_icon()

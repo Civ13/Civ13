@@ -174,6 +174,7 @@
 	opacity = FALSE
 	var/broken = FALSE
 	var/ltype = "lbulb"
+	metallic = TRUE
 
 /obj/item/lightbulb/broken
 	name = "broken lightbulb"
@@ -1016,3 +1017,58 @@
 		set_light (0)
 		icon_state ="floodlight"
 		playsound (loc, 'sound/effects/Custom_flashlight.ogg', 75, TRUE)
+
+
+/obj/structure/metal_detector
+	name = "walkthrough metal detector"
+	desc = "Detects metallic objects when people pass through it."
+	icon ='icons/obj/modern_structures.dmi'
+	icon_state = "metal_detector1"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	powerneeded = 0
+
+	proc/checkmob(mob/living/human/H)
+		if (!H)
+			return FALSE
+		for(var/obj/item/I in H)
+			if(I.metallic)
+				return TRUE
+			for(var/obj/item/I1	in I)
+				if(I1.metallic)
+					return TRUE
+				for(var/obj/item/I2	in I1)
+					if(I2.metallic)
+						return TRUE
+					for(var/obj/item/I3	in I2)
+						if(I3.metallic)
+							return TRUE
+		return FALSE
+
+	Crossed(AM as mob)
+		if (isobserver(AM)) return
+		if (istype(AM, /obj/item/projectile)) return
+		if (ishuman(AM))
+			trigger(AM)
+
+	Bumped(AM as mob)
+		if (isobserver(AM)) return
+		if (istype(AM, /obj/item/projectile)) return
+		if (ishuman(AM))
+			trigger(AM)
+
+	proc/trigger(mob/living/human/H)
+		if (!H)
+			return
+		if (checkmob(H))
+			bleep()
+	
+	proc/bleep()
+		icon_state = "metal_detector2"
+		playsound(loc, 'sound/machines/metal_detector.ogg', 100, 0)
+		spawn(30)
+			icon_state = "metal_detector1"

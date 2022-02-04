@@ -9,5 +9,6 @@ obj/item/weapon/snowball
 	throw_speed = TRUE
 	throw_range = 7
 	w_class = 1.0
+	metallic = FALSE
 
 	flammable = FALSE

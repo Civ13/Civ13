@@ -722,6 +722,7 @@
 /obj/item/clothing/accessory/armor
 	icon = 'icons/obj/clothing/suits.dmi'
 	slot = "armor"
+	metallic = TRUE
 /obj/item/clothing/accessory/armor/get_mob_overlay()
 	if (!mob_overlay)
 		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"

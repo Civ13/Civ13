@@ -6,6 +6,7 @@
 	w_class = TRUE
 	var/sides = 6
 	attack_verb = list("diced")
+	metallic = FALSE
 
 /obj/item/weapon/dice/New()
 	icon_state = "[name][rand(1,sides)]"

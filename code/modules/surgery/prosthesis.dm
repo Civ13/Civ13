@@ -10,6 +10,7 @@
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 	var/limb_type = "none"
+	metallic = FALSE
 
 /obj/item/weapon/prosthesis/pegleg
 	name = "wooden pegleg"

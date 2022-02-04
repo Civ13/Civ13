@@ -306,6 +306,7 @@
 	slot_flags = SLOT_BELT
 	var/maxcap = 10
 	var/currcap = 10
+	metallic = FALSE
 	New()
 		..()
 		currcap = maxcap

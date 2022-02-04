@@ -35,7 +35,7 @@
 	name = "MRE"
 	opens = FALSE
 	trash = /obj/item/weapon/generic_MRE_trash
-
+	metallic = FALSE
 /obj/item/weapon/generic_MRE_trash
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "mre_food_trash"

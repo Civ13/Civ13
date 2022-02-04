@@ -15,7 +15,7 @@
 	flammable = TRUE
 	var/const/deffont = "Verdana"
 	var/const/signfont = "Times New Roman"
-
+	metallic = FALSE
 /obj/item/weapon/book/attack_self(var/mob/user as mob)
 	if (dat)
 		user.examinate(src)

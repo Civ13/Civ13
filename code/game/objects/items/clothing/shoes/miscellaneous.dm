@@ -18,7 +18,7 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-
+	metallic = TRUE
 /obj/item/clothing/shoes/swat
 	name = "SWAT boots"
 	desc = "When you want to turn up the heat."
@@ -29,6 +29,7 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	metallic = TRUE
 
 /obj/item/clothing/shoes/combat
 	name = "combat boots"
@@ -38,6 +39,7 @@
 	armor = list(melee = 80, arrow = 30, gun = 10, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
+	metallic = TRUE
 
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
@@ -53,7 +55,7 @@
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	body_parts_covered = FEET
-
+	metallic = TRUE
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	heat_protection = FEET

@@ -242,6 +242,7 @@
 /obj/item/clothing/suit/armor
 	health = 40
 	ripable = FALSE
+	metallic = TRUE
 
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "segmented armor"
@@ -278,6 +279,7 @@
 	value = 40
 	slowdown = 0.2
 	health = 28
+	metallic = FALSE
 
 /obj/item/clothing/suit/armor/ancient/bronze_lamellar
 	name = "bronze egyptian lamellar"

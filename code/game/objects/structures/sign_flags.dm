@@ -197,6 +197,7 @@
 	icon_state = "cone1"
 	anchored = FALSE
 	w_class = 4
+	metallic = FALSE
 
 /obj/item/weapon/trafficcone/New()
 	..()

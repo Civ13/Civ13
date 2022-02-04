@@ -473,6 +473,7 @@
 	opacity = FALSE
 	force = 9.0
 	throwforce = 10.0
+	metallic = FALSE
 
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE

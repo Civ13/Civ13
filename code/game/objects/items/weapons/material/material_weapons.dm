@@ -45,6 +45,7 @@
 		if (material)
 			if (get_material_name() == "wood")
 				flammable = TRUE
+				metallic = FALSE
 /obj/item/weapon/material/get_material()
 	return material
 

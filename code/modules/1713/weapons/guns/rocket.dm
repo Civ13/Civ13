@@ -264,6 +264,7 @@
 	heavy_armor_penetration = 12
 	allow_spin = FALSE
 	var/explosive = TRUE
+	metallic = TRUE
 	throw_impact(atom/hit_atom)
 		if(primed)
 			if (explosive)

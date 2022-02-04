@@ -50,6 +50,7 @@
 	force = WEAPON_FORCE_WEAK+1
 	weakens = 3
 	flammable = TRUE
+	metallic = FALSE
 
 /obj/item/weapon/melee/classic_baton/guard
 	name = "heavy baton"
@@ -72,6 +73,7 @@
 	force = WEAPON_FORCE_WEAK+2
 	weakens = 6
 	flammable = TRUE
+	metallic = FALSE
 
 /obj/item/weapon/melee/nightbaton/sandman
     name = "Heavy duty"
@@ -297,10 +299,6 @@
 
 		return FALSE
 
-
-
-
-
 /obj/item/weapon/melee/telebaton
 	name = "telescopic baton"
 	desc = "A compact yet rebalanced personal defense weapon. Can be concealed when folded."
@@ -309,6 +307,7 @@
 	item_state = "telebaton_0"
 	slot_flags = SLOT_BELT
 	var/on = 0
+	metallic = FALSE
 
 
 /obj/item/weapon/melee/telebaton/attack_self(mob/user as mob)

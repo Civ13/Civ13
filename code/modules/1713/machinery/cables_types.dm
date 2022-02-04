@@ -27,6 +27,7 @@
 	w_class = 2
 	var/usesound = 'sound/items/deconstruct.ogg'
 	value = 0.25
+	metallic = TRUE
 /obj/item/stack/cable_coil/New()
 	..()
 	pixel_x = rand(-2,2)
@@ -43,6 +44,7 @@
 	var/list/connections = list()
 	var/list/turflist = list()
 	var/tilepos = "over"
+	metallic = TRUE
 
 /obj/item/connector/verb/hiding()
 	set category = null
