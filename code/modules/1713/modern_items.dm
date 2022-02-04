@@ -1105,3 +1105,5 @@
 			visible_message("<span class='warning'>[mob] is trying to turn the metal detector off!</span>","You start turning the metal detector off...")
 			if(do_after(mob, 50, src))
 				visible_message("<span class='warning'>[mob] turns the metal detector off.</span>","You turn the metal detector off.")
+				on = FALSE
+				set_light(0)
