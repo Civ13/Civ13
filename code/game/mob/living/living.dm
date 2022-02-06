@@ -670,11 +670,6 @@ default behaviour is:
 	if (!possession_candidate)
 		possessor << "<span class='warning'>That animal cannot be possessed.</span>"
 		return FALSE
-	/*
-	if (jobban_isbanned(possessor, "Animal"))
-		possessor << "<span class='warning'>You are banned from animal roles.</span>"
-		return FALSE
-	*/
 	if (!possessor.MayRespawn(1,0))
 		return FALSE
 	return TRUE

@@ -840,13 +840,8 @@
 
 	switch(mob.incorporeal_move)
 		if (1)
-			var/turf/T = get_step(mob, direct)
-			if (mob.check_holy(T))
-				mob << "<span class='warning'>You cannot get past holy grounds while you are in this plane of existence!</span>"
-				return
-			else
-				mob.forceMove(get_step(mob, direct))
-				mob.dir = direct
+			mob.forceMove(get_step(mob, direct))
+			mob.dir = direct
 		if (2)
 			if (prob(50))
 				var/locx

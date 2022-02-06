@@ -272,7 +272,6 @@
 #include "code\game\mob\new_player\logout.dm"
 #include "code\game\mob\new_player\new_player.dm"
 #include "code\game\mob\new_player\preferences_setup.dm"
-#include "code\game\mob\observer\helpers.dm"
 #include "code\game\mob\observer\observer.dm"
 #include "code\game\mob\observer\ghost\ghost.dm"
 #include "code\game\mob\observer\ghost\login.dm"

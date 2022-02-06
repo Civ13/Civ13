@@ -3,6 +3,10 @@ var/const/GHOST_IMAGE_DARKNESS = TRUE
 var/const/GHOST_IMAGE_SIGHTLESS = 2
 var/const/GHOST_IMAGE_ALL = ~GHOST_IMAGE_NONE
 
+/proc/updateallghostimages()
+	for (var/mob/observer/ghost/O in player_list)
+		O.updateghostimages()
+
 /mob/observer
 	density = FALSE
 	invisibility = INVISIBILITY_OBSERVER
@@ -35,10 +39,7 @@ var/const/GHOST_IMAGE_ALL = ~GHOST_IMAGE_NONE
 		ghost_image = null
 		updateallghostimages()
 	. = ..()
-/*
-mob/observer/check_airflow_movable()
-	return FALSE
-*/
+
 /mob/observer/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	return TRUE
 
