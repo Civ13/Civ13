@@ -82,15 +82,6 @@ bullet_act
 					last_harmed = H
 					H.civilization = "Killer"
 
-	else if (map.ID == MAP_AFRICAN_WARLORDS)
-		var/mob/living/human/H = user
-		if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && istype(W))
-			if (src.stat != DEAD && H.civilization != "CIVILIAN")
-				if (H.civilization == "CIVILIAN")
-					return ..(W, user)
-				else
-					last_harmed = H
-
 	else
 		return ..(W, user)
 
