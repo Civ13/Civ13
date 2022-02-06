@@ -302,7 +302,6 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-	metallic = TRUE
 
 /obj/item/clothing/shoes/leatherboots1
 	name = "leather boots"
@@ -357,7 +356,6 @@
 	desc = "two leather belts with small pouches for ammunition."
 	icon_state = "bandolier"
 	item_state = "bandolier"
-	metallic = TRUE
 	slots = 8
 	slot = "utility"
 	New()
