@@ -362,6 +362,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return
 
 	stop_following()
+	if (istype(target, /mob/observer/ghost))
+		return
 	following = target
 	moved_event.register(following, src, /atom/movable/proc/move_to_destination)
 	dir_set_event.register(following, src, /atom/proc/recursive_dir_set)
