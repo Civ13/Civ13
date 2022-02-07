@@ -1211,12 +1211,20 @@
 	new/obj/item/weapon/grenade/coldwar/m67
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
-/obj/item/weapon/storage/belt/smallpouches/olive/us_off
-/obj/item/weapon/storage/belt/smallpouches/olive/us_off/New()
+/obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
+/obj/item/weapon/storage/belt/smallpouches/olive/us_sgt/New()
 	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/us_lt
+/obj/item/weapon/storage/belt/smallpouches/olive/us_lt/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new/obj/item/ammo_magazine/greasegun(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/m14
