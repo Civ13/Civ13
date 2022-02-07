@@ -447,6 +447,7 @@
 "iE" = (/obj/item/weapon/stool/wood,/obj/effect/landmark{name = "JoinLateRNSL"},/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 "iF" = (/obj/structure/barbwire,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 "iG" = (/obj/structure/table/wood,/obj/item/weapon/flame/lighter,/obj/item/weapon/storage/fancy/cigarettes/marlboro,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
+"iH" = (/obj/structure/gate/barrier,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 
 (1,1,1) = {"
 aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeahahahahahahahaeaeaeaeaeaeaeaeaeae
@@ -740,8 +741,8 @@ abalababababgnaGaGcbccfseFeFeFapabababdhcocpbnabababababafamamgBgfgfgfgdamamabab
 adabbpajabajgnaGaGcfcgckcqerdieFababadabamagabababajababababamamauaugegfgegdamam
 abagabababbnamaGaGaGaGaGaGaGaGamabbnababababababbpababbnababababamamamgfgegegege
 gnabbnababceadgnaGaGaGaGaGinctctcvcvcvcvcvcvcvcwababbpabababababbnabasamamgegege
-ababcxajababababgngnaGcacairchcAcPhXdYieieedimeeamabababababadbpababadamamamasam
-grabefebebebecebebebebcacaiFfecaczhHfmiofmioipeeamamabagabajababababababamamamam
+ababcxajababababgngnaGaGaGirchcAcPhXdYieieedimeeamabababababadbpababadamamamasam
+grabefebebebecebebebebiHcaiFfecaczhHfmiofmioipeeamamabagabajababababababamamamam
 goabekeMcyhYeNcBgYeZijfecaeRiqcaczeKgFgFgFhWipeeamamadabababababababababadababab
 agbpekfeczcCcaeacacaeldleueucacaczisfmgFgFitiucEdXfedXcwababbnabgnajababababajab
 ababhIfeczcQcacaeicaejeMeReRiqcacaeReRcacaeRiveMcyfeehesajabababgoabbpabababajab

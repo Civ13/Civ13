@@ -2762,8 +2762,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/un/white = new /obj/item/clothing/accessory/armband/un(null)
 	uniform.attackby(white, H)
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep both the UN troops and civilians in good health!<br> <b>You are a noncombative role, you may not engage in combat situations</b>.Do not engage the militias (unless they breach the perimeter or fire upon you), but recover the bodies if it's possible and safe to do so.")
 
