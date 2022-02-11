@@ -122,7 +122,7 @@
 		return
 	else
 		for (var/obj/item/weapon/book/research/RB in contents)
-			if (RB.completed)
+			if (RB.completed.len)
 				if (RB.k_class == "medicine" || RB.k_class == "anatomy")
 					sum_h += RB.k_level
 				if (RB.k_class == "gunpowder" || RB.k_class == "fencing" || RB.k_class == "archery")
