@@ -174,7 +174,7 @@
 	opacity = FALSE
 	var/broken = FALSE
 	var/ltype = "lbulb"
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/lightbulb/broken
 	name = "broken lightbulb"
@@ -1055,16 +1055,16 @@
 		if (!H)
 			return FALSE
 		for(var/obj/item/I in H)
-			if(I.metallic)
+			if(I.flags & CONDUCT)
 				return TRUE
 			for(var/obj/item/I1	in I)
-				if(I1.metallic)
+				if(I1.flags & CONDUCT)
 					return TRUE
 				for(var/obj/item/I2	in I1)
-					if(I2.metallic)
+					if(I2.flags & CONDUCT)
 						return TRUE
 					for(var/obj/item/I3	in I2)
-						if(I3.metallic)
+						if(I3.flags & CONDUCT)
 							return TRUE
 		return FALSE
 

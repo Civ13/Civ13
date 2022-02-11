@@ -481,7 +481,7 @@ obj/item/clothing/under/confederate_uniform/New()
 	armor = list(melee = 70, arrow = 40, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 25)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/shoes/riding2
 	name = "leather riding boots"
@@ -493,7 +493,7 @@ obj/item/clothing/under/confederate_uniform/New()
 	armor = list(melee = 70, arrow = 40, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 25)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/shoes/riding1/gator_cowboy
 	name = "alligator scale riding boots"

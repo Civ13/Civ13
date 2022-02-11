@@ -24,7 +24,7 @@
 	embed = TRUE
 	sharp = TRUE
 	var/volume = 5
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/projectile/arrow/flint
 	damage = DAMAGE_MEDIUM-10

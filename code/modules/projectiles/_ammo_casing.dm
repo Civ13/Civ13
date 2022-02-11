@@ -352,7 +352,7 @@
 	max_amount = 20
 	singular_name = "projectile"
 	value = 0
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/ammopart/stoneball
 	name = "stone projectile"
@@ -366,7 +366,7 @@
 	weight = 0.15
 	max_amount = 5
 	w_class = 3
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/stack/ammopart/musketball
 	name = "musketball projectiles"

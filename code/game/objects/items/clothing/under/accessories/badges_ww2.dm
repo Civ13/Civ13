@@ -2,7 +2,7 @@
 	icon = 'icons/obj/clothing/badges.dmi'
 	ripable = FALSE
 	item_icons = 'icons/mob/badge.dmi'
-	metallic = TRUE
+	flags = CONDUCT
 	
 /obj/item/clothing/accessory/medal/bronze
 	icon_state = "bronze"

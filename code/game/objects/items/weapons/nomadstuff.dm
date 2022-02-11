@@ -7,7 +7,7 @@
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 3.0
-	metallic = FALSE
+	flags = FALSE
 
 	attack_verb = list("battered","whacked")
 	flammable = TRUE
@@ -94,7 +94,7 @@
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 4.0
-	metallic = FALSE
+	flags = FALSE
 
 	attack_verb = list("battered","whacked")
 	flammable = TRUE
@@ -218,7 +218,7 @@
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	w_class = 2.0
-	metallic = FALSE
+	flags = FALSE
 
 	attack_verb = list("whipped")
 	var/mob/living/simple_animal/S1 = null

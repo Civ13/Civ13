@@ -16,7 +16,7 @@ LINEN BINS
 	throw_range = 2
 	w_class = 2.0
 	flammable = TRUE
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/bedsheet/attack_self(mob/user as mob)
 	user.drop_item()

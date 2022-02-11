@@ -13,7 +13,7 @@
 	icon_state ="orthodoxbible"
 	item_state = "orthodoxbible"
 	desc = "The orthodox bible."
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/storage/bible/quran
 	name = "The Quran"

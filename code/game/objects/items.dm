@@ -73,8 +73,6 @@
 	var/weight = 0
 	var/heavy = FALSE
 
-	var/metallic = FALSE //used for metal detectors
-
 	var/list/basematerials = list()
 
 	var/equiptimer = 0 //if it takes some time to equip to a active hand (e.g. guns)

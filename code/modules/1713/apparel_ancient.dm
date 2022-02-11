@@ -242,7 +242,7 @@
 /obj/item/clothing/suit/armor
 	health = 40
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "segmented armor"
@@ -279,7 +279,7 @@
 	value = 40
 	slowdown = 0.2
 	health = 28
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/clothing/suit/armor/ancient/bronze_lamellar
 	name = "bronze egyptian lamellar"
@@ -1240,7 +1240,7 @@
 	blocks_scope = TRUE
 	restricts_view = 1
 	heat_protection = FACE|EYES
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/mask/osiris
 	name = "osiris mask"
@@ -1248,7 +1248,7 @@
 	icon_state = "osiris"
 	item_state = "osiris"
 	flags_inv = HIDEFACE
-	metallic = TRUE
+	flags = CONDUCT
 	body_parts_covered = FACE
 	w_class = 1
 	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 45, bio = FALSE, rad = FALSE)

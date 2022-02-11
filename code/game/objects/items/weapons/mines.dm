@@ -14,7 +14,7 @@
 	throw_range = 6
 	throw_speed = 3
 	anchored = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 	var/triggered = FALSE
 	var/triggertype = "explosive" //Calls that proc
 	/*

@@ -530,7 +530,7 @@
 	item_state = "paper"
 	throwforce = FALSE
 	w_class = TRUE
-	metallic = FALSE
+	flags = FALSE
 	throw_range = TRUE
 	throw_speed = TRUE
 	attack_verb = list("bapped")

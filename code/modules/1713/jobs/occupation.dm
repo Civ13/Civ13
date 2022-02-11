@@ -5,7 +5,7 @@
 	icon_state = "passport"
 	item_state = "paper"
 	throwforce = FALSE
-	metallic = FALSE
+	flags = FALSE
 	w_class = TRUE
 	slot_flags = SLOT_ID | SLOT_POCKET
 	throw_range = TRUE

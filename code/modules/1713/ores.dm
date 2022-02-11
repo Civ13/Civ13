@@ -29,7 +29,7 @@
 /obj/item/stack/ore/iron
 	name = "iron ore"
 	icon_state = "ore_iron"
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -52,7 +52,7 @@
 	name = "sponge iron"
 	desc = "Very crude iron, can be further refined into wrought iron in an anvil."
 	icon_state = "ore_sponge_iron"
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -74,7 +74,7 @@
 	name = "pig iron"
 	desc = "A soft iron with a high carbon content. Used to make steel using an anvil."
 	icon_state = "ore_pig_iron"
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -101,7 +101,7 @@
 	name = "silver ore"
 	icon_state = "ore_silver"
 	value = 5
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -123,7 +123,7 @@
 	name = "gold ore"
 	value = 10
 	icon_state = "ore_gold"
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -144,7 +144,7 @@
 /obj/item/stack/ore/copper
 	name = "copper ore"
 	icon_state = "ore_copper"
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -165,7 +165,7 @@
 /obj/item/stack/ore/tin
 	name = "tin ore"
 	icon_state = "ore_tin"
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -214,7 +214,7 @@
 	radioactive_amt = 7
 	flammable = FALSE
 	value = 5
-	metallic = TRUE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -331,7 +331,7 @@
 	desc = "A rock of very dense lead ore."
 	icon_state = "ore_lead"
 	singular_name = "rock"
-	metallic = TRUE
+	flags = CONDUCT
 	flammable = FALSE
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))

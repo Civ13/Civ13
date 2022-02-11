@@ -878,7 +878,7 @@
 	var/fermenting = 0
 	var/fermenting_timer = 0
 	var/fermenting_contents = 0
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/starterjar/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (fermenting != 0)
@@ -991,7 +991,7 @@
 	icon_state = "seed_collector"
 	item_state = "backpack"
 	w_class = 4
-	metallic = FALSE
+	flags = FALSE
 	slot_flags = SLOT_BACK
 	max_storage_space = 50000 //we don't worry that, yes, all calculated by slots
 	storage_slots = 21 //we need stop the mess of seeds in one bag
@@ -1170,7 +1170,7 @@
 	icon_state = "produce_basket"
 	item_state = "produce_basket"
 	w_class = 4
-	metallic = FALSE
+	flags = FALSE
 	max_w_class = 3
 	max_storage_space = 30
 	storage_slots = 30

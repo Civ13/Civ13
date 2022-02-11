@@ -89,7 +89,7 @@
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/ears
 	name = "ears"
@@ -179,7 +179,7 @@ BLIND	 // can't see anything
 	var/see_invisible = -1
 	var/obj/screen/overlay = null
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/clothing/glasses/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc

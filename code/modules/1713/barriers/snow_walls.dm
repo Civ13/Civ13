@@ -167,7 +167,7 @@
 	w_class = TRUE
 	var/sand_amount = FALSE
 	flammable = FALSE
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/snowwall/attack_self(mob/user)
 	user << "You start building the snow blocks wall..."

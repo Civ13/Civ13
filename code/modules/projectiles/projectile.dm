@@ -7,7 +7,7 @@
 	pass_flags = PASSTABLE
 	mouse_opacity = FALSE
 	value = 0
-	metallic = TRUE
+	flags = CONDUCT
 	var/bumped = FALSE //Prevents it from hitting more than one guy at once
 	var/hitsound_wall = ""//"ricochet"
 	var/def_zone = ""	//Aiming at

@@ -11,7 +11,7 @@
 	flammable = TRUE
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;cards"
 	safe_list_vars = "cards"
-	metallic = FALSE
+	flags = FALSE
 	
 /obj/item/weapon/deck/cards
 	name = "deck of cards"
@@ -176,7 +176,7 @@
 	icon = 'icons/obj/playing_cards.dmi'
 	w_class = TRUE
 	var/list/cards = list()
-	metallic = FALSE
+	flags = FALSE
 
 
 /obj/item/weapon/pack/attack_self(var/mob/user as mob)

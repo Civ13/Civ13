@@ -122,7 +122,7 @@
 	var/sealed = FALSE
 	var/addressee = null
 	var/sender = null
-	metallic = FALSE
+	flags = FALSE
 
 
 /obj/item/weapon/storage/envelope/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)

@@ -20,8 +20,6 @@
 	var/mob/living/affecting = null
 	var/mob/living/human/assailant = null
 	var/state = GRAB_PASSIVE
-	metallic = FALSE
-
 	var/allow_upgrade = TRUE
 	var/last_action = FALSE
 	var/last_hit_zone = FALSE

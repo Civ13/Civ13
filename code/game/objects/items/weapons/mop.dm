@@ -12,7 +12,7 @@
 	var/mopping = FALSE
 	var/mopcount = FALSE
 	flammable = TRUE
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/mop/New()
 	create_reagents(30)

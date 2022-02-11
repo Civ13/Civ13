@@ -88,7 +88,7 @@
 	default_type = "iron"
 	apply_colour = TRUE
 	value = 3
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/iron/twentyfive
 	amount = 25
@@ -98,7 +98,7 @@
 	icon_state = "barbwire_stack"
 	default_type = "barbedwire"
 	value = 2
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/barbwire/ten
 	name = "Barbwire"
@@ -113,7 +113,7 @@
 	default_type = "bronze"
 	apply_colour = TRUE
 	value = 2
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/copper
 	name = "copper"
@@ -121,7 +121,7 @@
 	default_type = "copper"
 	apply_colour = TRUE
 	value = 1
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/tin
 	name = "tin"
@@ -129,7 +129,7 @@
 	default_type = "tin"
 	apply_colour = TRUE
 	value = 3
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/plastic
 	name = "plastic"
@@ -192,7 +192,7 @@
 	icon_state = "sheet-electronics"
 	default_type = "electronic"
 	value = 5
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/marble
 	name = "marble block"
@@ -361,14 +361,14 @@
 	icon_state = "sheet-gold"
 	default_type = "gold"
 	value = 40
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/silver
 	name = "silver"
 	icon_state = "sheet-silver"
 	default_type = "silver"
 	value = 20
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/steel
 	name = "steel"
@@ -376,7 +376,7 @@
 	default_type = "steel"
 	value = 5
 	max_amount = 2000
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/material/steel/twentyfive
 	amount = 25

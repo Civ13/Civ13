@@ -204,7 +204,7 @@
 	throwforce = WEAPON_FORCE_WEAK
 	item_state = "zippo"
 	w_class = 2.0
-	metallic = FALSE
+	flags = FALSE
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 	var/cooldown_horn = FALSE
@@ -251,7 +251,7 @@
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 4.0
-	metallic = FALSE
+	flags = FALSE
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	var/deployed = FALSE
@@ -323,7 +323,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 3.0
-	metallic = FALSE
+	flags = FALSE
 
 	attack_verb = list("bashed", "whacked")
 	flammable = TRUE
@@ -374,7 +374,7 @@
 	icon_state = "shears"
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
-	metallic = TRUE
+	flags = CONDUCT
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
@@ -544,7 +544,7 @@
 	flags = CONDUCT
 	sharp = FALSE
 	edge = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 	nothrow = TRUE
 	attack_verb = list("bashed", "hit")
 	force = WEAPON_FORCE_WEAK

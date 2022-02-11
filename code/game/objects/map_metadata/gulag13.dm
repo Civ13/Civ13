@@ -196,7 +196,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	var/list/document_details = list()
 	var/list/guardnotes = list()
 	secondary_action = TRUE
-	metallic = FALSE
+	flags = FALSE
 	New()
 		..()
 		spawn(20)

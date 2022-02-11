@@ -112,7 +112,7 @@
 	armor = list(melee = 105, arrow = 80, gun = 116, energy = 70, bomb = 74, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/suit/police
 	name = "police bulletproof vest"
@@ -703,7 +703,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
 	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"
@@ -1209,7 +1209,7 @@
 	armor = list(melee = 103, arrow = 110, gun = 110, energy = 67, bomb = 70, bio = 40, rad = 36)
 	var/slots = 4
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/suit/heavyvest1 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "heavy vest"
@@ -1221,7 +1221,7 @@
 	armor = list(melee = 50, arrow = 40, gun = 112, energy = 68, bomb = 40, bio = 32, rad = 20)
 	var/slots = 6
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/suit/medvest // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "medium vest"
@@ -1233,7 +1233,7 @@
 	armor = list(melee = 30, arrow = 40, gun = 84, energy = 47, bomb = 35, bio = 29, rad = 10)
 	var/slots = 6
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/suit/a6b44 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "6B44 vest"
@@ -1245,7 +1245,7 @@
 	armor = list(melee = 80, arrow = 100, gun = 93, energy = 56, bomb = 64, bio = 40, rad = 36)
 	var/slots = 4
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/suit/a6b28 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "6B28 plate carrier"
@@ -1257,7 +1257,7 @@
 	armor = list(melee = 74, arrow = 87, gun = 83, energy = 67, bomb = 56, bio = 40, rad = 36)
 	var/slots = 3
 	ripable = FALSE
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/clothing/head/helmet/modern/vchelmet
 	name = "viet pith helmet"

@@ -46,7 +46,7 @@
 	icon_state = "dollar" //Damn jerry rig
 	amount = 1
 	value = 1
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/stack/money/real/New()
 	if (map.ordinal_age >= 4)
 		name = "Dollar Bill"
@@ -55,7 +55,7 @@
 		icon_state = "dollar"
 		value = 4
 		novariants = FALSE
-		metallic = FALSE
+		flags = FALSE
 		update_icon()
 		return ..()
 	else if (map.ordinal_age == 3)
@@ -87,7 +87,7 @@
 	amount = 1
 	value = 0.01
 	max_amount = 2500
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/stack/money/yen/New()
 	if(amount == 2)
 		icon_state = "yen_2"
@@ -156,7 +156,7 @@
 	icon_state = "5dollar"
 	amount = 1
 	value = 8
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/stack/money/dollar/New()
 	if (map && map.ordinal_age >= 4)
 		name = "5 Dollar Bills"
@@ -165,7 +165,7 @@
 		icon_state = "5dollar"
 		value = 20
 		novariants = FALSE
-		metallic = FALSE
+		flags = FALSE
 		update_icon()
 		return ..()
 	else if (map.ordinal_age == 3)
@@ -190,7 +190,7 @@
 	icon_state = "20dollar"
 	amount = 1
 	value = 16
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/stack/money/escudo/New()
 	if (map.ordinal_age >= 4) //Not being called
 		name = "20 Dollar Bill"
@@ -198,7 +198,7 @@
 		icon_state = "20dollar"
 		value = 80
 		novariants = FALSE
-		metallic = FALSE
+		flags = FALSE
 		update_icon()
 		return ..()
 	else if (map.ordinal_age == 3)
@@ -222,14 +222,14 @@
 	icon_state = "50dollar"
 	amount = 1
 	value = 32
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/stack/money/doubloon/New()
 	if (map.ordinal_age >= 4)
 		name = "50 Dollar Bill"
 		desc = "Paper bank note valued at fifty dollars."
 		singular_name = "50 Dollar Bill"
 		icon_state = "50dollar"
-		metallic = FALSE
+		flags = FALSE
 		value = 200
 		novariants = FALSE
 		update_icon()
@@ -260,7 +260,7 @@
 	amount = 1
 	max_amount = 3
 	value = 96
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/cursedtreasure
 	name = "cursed treasure"
@@ -271,7 +271,7 @@
 	throw_speed = 5
 	throw_range = 7
 	value = 0
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/cursedtreasure/New()
 	..()
 	icon_state = "goldstuff[rand(1,3)]"
@@ -419,7 +419,7 @@
 	amount = 1
 	max_amount = 5
 	value = 48
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/money/goldvaluables/New()
 	..()
@@ -467,7 +467,7 @@
 	icon_state = "coppercoin_pile"
 	amount = 1
 	value = 0.1
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/money/coppercoin/twohundred
 	amount = 20
@@ -479,7 +479,7 @@
 	icon_state = "silvercoin_pile"
 	amount = 1
 	value = 1
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/money/silvercoin/twohundred
 	amount = 20
@@ -491,7 +491,7 @@
 	icon_state = "goldcoin_pile"
 	amount = 1
 	value = 4
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/stack/money/bitcoin
 	name = "bitcoin"
@@ -534,7 +534,7 @@
 	amount = 1
 	value = 1
 	max_amount = 500
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/stack/money/septim/New()
 	if(amount == 2)
 		icon_state = "septim_2"

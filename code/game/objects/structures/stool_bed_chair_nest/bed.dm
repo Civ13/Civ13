@@ -290,7 +290,7 @@
 	icon = 'icons/obj/rollerbed.dmi'
 	icon_state = "folded"
 	w_class = 4.0 // Can't be put in backpacks. Oh well.
-	metallic = TRUE
+	flags = CONDUCT
 /obj/item/roller/attack_self(mob/user)
 		var/obj/structure/bed/roller/R = new /obj/structure/bed/roller(user.loc)
 		R.add_fingerprint(user)
@@ -314,7 +314,7 @@
 	icon = 'icons/obj/rollerbed.dmi'
 	icon_state = "folded"
 	var/obj/item/roller/held
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/roller_holder/New()
 	..()

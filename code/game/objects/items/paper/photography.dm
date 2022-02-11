@@ -28,7 +28,7 @@ var/global/photo_count = 0
 	icon = 'icons/obj/device.dmi'
 	icon_state = "photo"
 	item_state = "paper"
-	metallic = FALSE
+	flags = FALSE
 	w_class = 1.0
 	var/id
 	var/icon/img	//Big photo image
@@ -112,7 +112,7 @@ var/global/photo_count = 0
 	w_class = 2.0 //same as book
 	storage_slots = 8 //yes, that's storage_slots. Photos are w_class 1 so this has as many slots equal to the number of photos you could put in a box
 	can_hold = list(/obj/item/weapon/photo)
-	metallic = FALSE
+	flags = FALSE
 /obj/item/weapon/storage/photo_album/MouseDrop(obj/over_object as obj)
 
 	if((istype(usr, /mob/living/human)))
@@ -147,7 +147,7 @@ var/global/photo_count = 0
 	icon_state = "camera_modern"
 	item_state = "camera"
 	w_class = 2
-	metallic = TRUE
+	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	var/pictures_max = 10
 	var/pictures_left = 0

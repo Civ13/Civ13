@@ -3,7 +3,7 @@
 	desc = "A secure box containing your sidearm."
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "ammo_can" //temp
-	metallic = TRUE
+	flags = CONDUCT
 
 /obj/item/gunbox/attack_self(mob/living/user)
 	var/list/options = list()

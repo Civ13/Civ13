@@ -50,7 +50,7 @@
 	icon = 'icons/obj/complex_foods.dmi'
 	icon_state = "bloody_ham"
 	force = WEAPON_FORCE_WEAK+5
-	metallic = FALSE
+	flags = FALSE
 	throw_range = 2
 	w_class = 4.0
 	flammable = TRUE
@@ -315,7 +315,7 @@
 	w_class = 3.0
 	flammable = TRUE
 	var/rotten = FALSE
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/chicken_carcass/New()
 	..()

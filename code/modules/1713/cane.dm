@@ -8,7 +8,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 2.0
-	metallic = FALSE
+	flags = FALSE
 
 	attack_verb = list("bludgeoned", "whacked", "disciplined")
 	flammable = TRUE

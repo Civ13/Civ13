@@ -217,7 +217,7 @@
 	nothrow = TRUE
 	nodrop = TRUE
 	w_class = 5
-	metallic = TRUE
+	flags = CONDUCT
 	secondary_action = TRUE
 	var/obj/structure/vehicle/origin = null
 

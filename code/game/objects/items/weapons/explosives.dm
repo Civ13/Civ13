@@ -5,7 +5,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "plastic-explosive0"
 	item_state = "zippo"
-	flags = NOBLUDGEON
+	flags = NOBLUDGEON | CONDUCT
 	w_class = 2.0
 	var/timer = 10
 	var/atom/target = null

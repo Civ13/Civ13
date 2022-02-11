@@ -13,7 +13,7 @@
 /obj/item/weapon/lipstick/purple
 	name = "purple lipstick"
 	colour = "purple"
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/lipstick/jade
 	name = "jade lipstick"
@@ -78,7 +78,7 @@
 	icon_state = "purplecomb"
 	item_state = "comb"
 	flammable = TRUE
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/haircomb/attack_self(mob/user)
 	user.visible_message("<span class='notice'>[user] uses [src] to comb their hair neatly a [user.gender == FEMALE ? "lady" : "guy"].</span>")

@@ -446,7 +446,7 @@
 	var/bstyle = "prop_lead"
 	flammable = TRUE
 	force = 0
-	metallic = FALSE
+	flags 
 
 /obj/item/weapon/poster/faction/lead
 	bstyle = "prop_lead"

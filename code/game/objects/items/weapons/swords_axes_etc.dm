@@ -50,7 +50,7 @@
 	force = WEAPON_FORCE_WEAK+1
 	weakens = 3
 	flammable = TRUE
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/melee/classic_baton/guard
 	name = "heavy baton"
@@ -73,7 +73,7 @@
 	force = WEAPON_FORCE_WEAK+2
 	weakens = 6
 	flammable = TRUE
-	metallic = FALSE
+	flags = FALSE
 
 /obj/item/weapon/melee/nightbaton/sandman
     name = "Heavy duty"
@@ -307,7 +307,7 @@
 	item_state = "telebaton_0"
 	slot_flags = SLOT_BELT
 	var/on = 0
-	metallic = FALSE
+	flags = FALSE
 
 
 /obj/item/weapon/melee/telebaton/attack_self(mob/user as mob)

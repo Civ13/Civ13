@@ -8,7 +8,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 0
-	metallic = FALSE
+	flags = FALSE
 	
 /obj/covers/repairedfloor
 	name = "repaired floor"
