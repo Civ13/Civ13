@@ -20,8 +20,6 @@
 
 
 /mob/observer/ghost/emote(var/act, var/type, var/message)
-	//message = sanitize(message) - already sanitized in verb/me_verb()
-
 	if (!message)
 		return
 
@@ -39,29 +37,3 @@
 			return
 
 	. = emote_dead(message)
-
-/*
-	for (var/mob/M in hearers(null, null))
-		if (!M.stat)
-			if (M.job == "Monochurch Preacher")
-				if (prob (49))
-					M.show_message("<span class='game'><i>You hear muffled speech... but nothing is there...</i></span>", 2)
-					if (prob(20))
-						playsound(loc, pick('sound/effects/ghost.ogg','sound/effects/ghost2.ogg'), 10, TRUE)
-				else
-					M.show_message("<span class='game'><i>You hear muffled speech... you can almost make out some words...</i></span>", 2)
-//				M.show_message("<span class='game'><i>[stutter(message)]</i></span>", 2)
-					if (prob(30))
-						playsound(loc, pick('sound/effects/ghost.ogg','sound/effects/ghost2.ogg'), 10, TRUE)
-			else
-				if (prob(50))
-					return
-				else if (prob (95))
-					M.show_message("<span class='game'><i>You hear muffled speech... but nothing is there...</i></span>", 2)
-					if (prob(20))
-						playsound(loc, pick('sound/effects/ghost.ogg','sound/effects/ghost2.ogg'), 10, TRUE)
-				else
-					M.show_message("<span class='game'><i>You hear muffled speech... you can almost make out some words...</i></span>", 2)
-//				M.show_message("<span class='game'><i>[stutter(message)]</i></span>", 2)
-					playsound(loc, pick('sound/effects/ghost.ogg','sound/effects/ghost2.ogg'), 10, TRUE)
-*/

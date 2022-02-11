@@ -174,6 +174,7 @@
 	opacity = FALSE
 	var/broken = FALSE
 	var/ltype = "lbulb"
+	metallic = TRUE
 
 /obj/item/lightbulb/broken
 	name = "broken lightbulb"
@@ -1016,3 +1017,93 @@
 		set_light (0)
 		icon_state ="floodlight"
 		playsound (loc, 'sound/effects/Custom_flashlight.ogg', 75, TRUE)
+
+
+/obj/structure/metal_detector
+	name = "walkthrough metal detector"
+	desc = "Detects metallic objects when people pass through it."
+	icon ='icons/obj/modern_structures.dmi'
+	icon_state = "metal_detector1"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	layer = 2.99 //below doors
+	powerneeded = 0
+	var/on = TRUE
+
+	New()
+		..()
+		if (on)
+			set_light(2, 0.5, "#62cc53")
+		else
+			set_light(0)
+
+	proc/toggle()
+		if (on)
+			on = FALSE
+			icon_state = "metal_detector"
+		else
+			on = TRUE
+			icon_state = "metal_detector1"
+
+	proc/checkmob(mob/living/human/H)
+		if (!on)
+			return FALSE
+		if (!H)
+			return FALSE
+		for(var/obj/item/I in H)
+			if(I.metallic)
+				return TRUE
+			for(var/obj/item/I1	in I)
+				if(I1.metallic)
+					return TRUE
+				for(var/obj/item/I2	in I1)
+					if(I2.metallic)
+						return TRUE
+					for(var/obj/item/I3	in I2)
+						if(I3.metallic)
+							return TRUE
+		return FALSE
+
+	Crossed(AM as mob)
+		if (isobserver(AM)) return
+		if (istype(AM, /obj/item/projectile)) return
+		if (ishuman(AM))
+			trigger(AM)
+
+	Bumped(AM as mob)
+		if (isobserver(AM)) return
+		if (istype(AM, /obj/item/projectile)) return
+		if (ishuman(AM))
+			trigger(AM)
+
+	proc/trigger(mob/living/human/H)
+		if (!H)
+			return
+		if (checkmob(H))
+			bleep()
+	
+	proc/bleep()
+		icon_state = "metal_detector2"
+		playsound(loc, 'sound/machines/metal_detector.ogg', 100, 0)
+		set_light(2, 0.5,"#ce3535")
+		spawn(30)
+			icon_state = "metal_detector1"
+			set_light(2, 0.5, "#62cc53")
+
+	attack_hand(mob)
+		if (!ishuman(mob))
+			return
+		if(!on)
+			on = TRUE
+			visible_message("[mob] turns the metal detector on.","You turn the metal detector on.")
+			set_light(2, 0.5, "#62cc53")
+		else
+			visible_message("<span class='warning'>[mob] is trying to turn the metal detector off!</span>","You start turning the metal detector off...")
+			if(do_after(mob, 50, src))
+				visible_message("<span class='warning'>[mob] turns the metal detector off.</span>","You turn the metal detector off.")
+				on = FALSE
+				set_light(0)

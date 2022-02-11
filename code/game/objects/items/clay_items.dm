@@ -13,6 +13,7 @@
 	var/result = "none"
 	var/base_icon = "claylump"
 	value = 1
+	metallic = FALSE
 
 /obj/item/weapon/clay/roofing
 	name = "unfired clay roof tiles"
@@ -417,6 +418,7 @@
 	w_class = 1
 	throw_speed = 5
 	throw_range = 8
+	metallic = FALSE
 
 
 /obj/item/weapon/stucco
@@ -425,6 +427,7 @@
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "stucco"
 	item_state = "stucco"
+	metallic = FALSE
 	throwforce = WEAPON_FORCE_WEAK
 	force = WEAPON_FORCE_WEAK
 	w_class = 2

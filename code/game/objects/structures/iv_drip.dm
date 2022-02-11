@@ -231,6 +231,12 @@
 /obj/item/weapon/reagent_containers/blood/OMinus
 	blood_type = "O-"
 
+/obj/item/weapon/reagent_containers/blood/ABPlus
+	blood_type = "AB+"
+
+/obj/item/weapon/reagent_containers/blood/ABMinus
+	blood_type = "AB-"
+
 /obj/item/weapon/reagent_containers/blood/empty
 	name = "empty blood pack"
 	desc = "Seems pretty useless... Maybe if there were a way to fill it?"

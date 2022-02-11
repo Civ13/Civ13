@@ -1382,7 +1382,7 @@
 			if (user.civilization != "Police" && user.civilization != "Paramedics")
 				var/done = FALSE
 				var/found = FALSE
-				for (var/mob/living/human/S in range(2,src))
+				for (var/mob/living/human/S in range(2,user))
 					if (S.civilization != user.civilization && S.handcuffed && S != user)
 						found = TRUE
 						for(var/obj/item/weapon/paper/police/warrant/SW in map.pending_warrants)
@@ -1411,7 +1411,7 @@
 			else
 				var/done = FALSE
 				var/found = FALSE
-				for (var/mob/living/human/S in range(2,src))
+				for (var/mob/living/human/S in range(2,user))
 					found = TRUE
 					for(var/obj/item/weapon/paper/police/warrant/SW in map.pending_warrants)
 						if (SW.tgt_mob == S)

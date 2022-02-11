@@ -1,6 +1,6 @@
 /obj/item/shamisen
 	name = "Shamisen"
-	desc = "A japanese shamisen. "
+	desc = "A japanese shamisen."
 	icon = 'icons/obj/musician.dmi'
 	icon_state = "shamisen"
 	item_state = "shamisen"

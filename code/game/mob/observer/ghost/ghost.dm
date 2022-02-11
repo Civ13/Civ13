@@ -26,6 +26,10 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	var/original_icon = null
 	var/list/original_overlays = list()
 
+	//ghostcombat stuff
+	var/combatmode = "melee"
+	var/ghostlife = 100
+
 /mob/observer/ghost/New(mob/body)
 	see_in_dark = 100
 
@@ -91,10 +95,39 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/observer/ghost/attackby(obj/item/W, mob/user)
 	return FALSE
-/*
-Transfer_mind is there to check if mob is being deleted/not going to have a body.
-Works together with spawning an observer, noted above.
-*/
+
+/mob/observer/ghost/attack_ghost(mob/observer/ghost/user as mob)
+	if (user.client && istype(user, /mob/observer/ghost))
+		src.attack_hand(user)
+		return
+	..()
+
+/mob/observer/ghost/attack_hand(mob/user)
+	if (istype(user, /mob/observer/ghost))
+		var/mob/observer/ghost/G = user
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		var/attverb = pick("punches", "kicks", "slaps")
+		for(var/mob/observer/ghost/NG in range(7,src))
+			NG << "<span class='notice'>[G] [attverb] \the [src]!</span>"
+		user.do_attack_animation(src)
+		src.ghostlife = max(0, src.ghostlife - 15)
+		if (src.ghostlife <= 0)
+			var/anim = "dust-ghost"
+			src << "<span class='warning'>Your ethereal self vaporizes!</span>"
+			var/atom/movable/overlay/animation = null
+			animation = new(loc)
+			animation.icon_state = "blank"
+			animation.icon = 'icons/mob/mob.dmi'
+			animation.master = src
+			animation.invisibility = 60
+			flick(anim, animation)
+			src.forceMove(locate(1,1,1))
+			src.ghostlife = 100
+			spawn(15)
+				if (animation)
+					qdel(animation)
+	else
+		..()
 
 /mob/observer/ghost/Life()
 	..()
@@ -132,59 +165,6 @@ Works together with spawning an observer, noted above.
 			if (human_clients_mob_list.Find(src))
 				human_clients_mob_list -= src
 		return ghost
-
-/*
-This is the proc mobs get to turn into a ghost. Forked from ghostize due to compatibility issues.
-*/
-/mob/living/verb/ghost()
-	set category = "OOC"
-	set name = "Ghost"
-	set desc = "Relinquish your life and enter the land of the dead."
-
-	if (stat == DEAD)
-		if (client)
-			client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
-			client << RESPAWN_MESSAGE
-		if (ishuman(src))
-			var/mob/living/human/H = src
-			H.handle_look_stuff(TRUE)
-			if (human_clients_mob_list.Find(H))
-				human_clients_mob_list -= H
-		announce_ghost_joinleave(ghostize(1))
-	else
-		var/response
-		if (client && client.holder)
-			response = WWinput(src, "You have the ability to Admin-Ghost. The regular Ghost verb will announce your presence to dead chat. Both variants will allow you to return to your body using 'aghost'.\n\nWhat do you wish to do?", "Are you sure you want to ghost?", "Ghost", list("Ghost", "Admin Ghost", "Stay in body"))
-			if (response == "Admin Ghost")
-				if (!client)
-					return
-				if (ishuman(src))
-					var/mob/living/human/H = src
-					H.handle_look_stuff(TRUE)
-				client.admin_ghost()
-		else
-			response = WWinput(src, "Are you sure you want to ghost?\n(You may respawn with the 'Respawn' verb in the IC tab)", "Are you sure you want to ghost?", "Ghost", list("Ghost", "Stay in body"))
-		if (response != "Ghost")
-			return
-		if (getTotalLoss() < (DAMAGE_HIGH*2) || restrained() || stat == CONSCIOUS)
-			src << "<span class = 'warning'>You can't ghost right now.</span>"
-			return
-		resting = TRUE
-		var/turf/location = get_turf(src)
-		if (ishuman(src))
-			var/mob/living/human/H = src
-			H.handle_look_stuff(TRUE)
-			if (human_clients_mob_list.Find(H))
-				human_clients_mob_list -= H
-		if (client)
-			client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
-			client << RESPAWN_MESSAGE
-		message_admins("[key_name_admin(usr)] has ghosted. (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[location.x];Y=[location.y];Z=[location.z]'>JMP</a>)")
-		log_game("[key_name_admin(usr)] has ghosted.")
-		var/mob/observer/ghost/ghost = ghostize(0)	//0 parameter is so we can never re-enter our body, "Charlie, you can never come baaaack~" :3
-		if (ghost)
-			ghost.timeofdeath = world.time // Because the living mob won't have a time of death and we want the respawn timer to work properly.
-			announce_ghost_joinleave(ghost)
 
 /mob/observer/ghost/can_use_hands()	return FALSE
 /mob/observer/ghost/is_active()		return FALSE
@@ -382,6 +362,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		return
 
 	stop_following()
+	if (istype(target, /mob/observer/ghost))
+		return
 	following = target
 	moved_event.register(following, src, /atom/movable/proc/move_to_destination)
 	dir_set_event.register(following, src, /atom/proc/recursive_dir_set)
@@ -399,21 +381,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		destroyed_event.unregister(following, src)
 		following = null
 
-/mob/observer/ghost/move_to_destination(var/atom/movable/am, var/old_loc, var/new_loc)
-	var/turf/T = get_turf(new_loc)
-	if (check_holy(T))
-		usr << "<span class='warning'>You cannot follow something standing on holy grounds!</span>"
-		return
-	..()
-
-/mob/proc/check_holy(var/turf/T)
-	return FALSE
-
-/mob/observer/ghost/check_holy(var/turf/T)
-	if (check_rights(R_ADMIN|R_FUN, FALSE, src))
-		return FALSE
-	return FALSE
-
 /mob/observer/ghost/verb/jumptomob(target in getfitmobs() + "Cancel") //Moves the ghost instead of just changing the ghosts's eye -Nodrak
 	set category = "Ghost"
 	set name = "Jump to Mob"
@@ -429,12 +396,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		else
 			var/mob/M = getfitmobs()[target] //Destination mob
 			var/turf/T = get_turf(M) //Turf of the destination mob
-
-		//	if (T && isturf(T))	//Make sure the turf exists, then move the source to that destination.
 			stop_following()
 			forceMove(T)
-		//	else
-		//		src << "This mob is not located in the game world."
 
 /mob/observer/ghost/memory()
 	set hidden = TRUE
@@ -459,18 +422,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set category = "Ghost"
 	set name = "Point To"
 	return TRUE
-
-
-/mob/observer/ghost/verb/toggle_anonsay()
-	set category = "Ghost"
-	set name = "Toggle Anonymous Chat"
-	set desc = "Toggles showing your key in dead chat."
-
-	anonsay = !anonsay
-	if (anonsay)
-		src << "<span class='info'>Your key won't be shown when you speak in dead chat.</span>"
-	else
-		src << "<span class='info'>Your key will be publicly visible again.</span>"
 
 /mob/observer/ghost/canface()
 	return TRUE
@@ -536,9 +487,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	return
 
 /mob/extra_ghost_link(var/atom/ghost)
-/*	if (client && eyeobj)
-		return "|<a href='byond://?src=\ref[ghost];track=\ref[eyeobj]'>eye</a>"
-*/
 	return null
 
 /mob/observer/ghost/extra_ghost_link(var/atom/ghost)

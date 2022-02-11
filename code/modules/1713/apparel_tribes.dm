@@ -231,6 +231,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "bossjaw"
 	worn_state = "bossjaw"
 	body_parts_covered = FACE
+	metallic = TRUE
 	flags_inv = 0
 	w_class = 2
 	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)

@@ -135,6 +135,9 @@ note dizziness decrements automatically in the mob's Life() proc.
 	var/pixel_y_diff = FALSE
 	var/direction = get_dir(src, A)
 	switch(direction)
+		if (0)
+			pixel_y_diff = pick(0, -8, 8)
+			pixel_x_diff = pick(0, -8, 8)
 		if (NORTH)
 			pixel_y_diff = 8
 		if (SOUTH)

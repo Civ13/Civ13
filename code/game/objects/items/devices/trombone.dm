@@ -12,6 +12,7 @@
 	var/repeat = FALSE
 	flammable = TRUE
 	value = 0
+	metallic = TRUE
 
 /obj/item/trombone/proc/playnote(var/note as text)
 	//world << "Note: [note]"

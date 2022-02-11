@@ -12,6 +12,7 @@
 	var/used = 0 //Times it have been used
 	var/mood_boost_wait = 9000 //Around 15 minutes
 	var/washing = FALSE
+	metallic = FALSE
 
 /obj/item/weapon/soap/deluxe
 	icon_state = "soapdeluxe"

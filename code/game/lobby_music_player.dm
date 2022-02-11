@@ -23,7 +23,9 @@
 
 	var/last_song_title = song_title
 	var/list/random_order_songs = shuffle(songs)
-	var/default_prob = ceil(100/songs.len)
+	var/default_prob = 0
+	if (songs.len > 0)
+		default_prob = ceil(100/songs.len)
 
 	for (var/title_mult in random_order_songs)
 		var/split_title_mult = splittext(title_mult, ":")

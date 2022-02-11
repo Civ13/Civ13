@@ -31,6 +31,7 @@
 	icon_state = "leech_h"
 	var/fill = 0
 	value = 0
+	metallic = FALSE
 /obj/item/weapon/leech/New()
 	..()
 	if (fill)

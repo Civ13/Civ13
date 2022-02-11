@@ -388,7 +388,11 @@ var/list/vocal_emotes = list(
 								if (PORTUGUESE)
 									playsound(get_turf(src), "charge_PORTUGUESE", 100)
 								if (INDIANS)
-									playsound(get_turf(src), "charge_INDIANS", 100)
+									if (original_job.is_warlords)
+										playsound(get_turf(src), "charge_AFRICAN", 100)
+									else
+										playsound(get_turf(src), "charge_INDIANS", 100)
+
 								if (DUTCH)
 									playsound(get_turf(src), "charge_DUTCH", 100)
 								if (ROMAN)

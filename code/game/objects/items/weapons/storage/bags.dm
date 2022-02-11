@@ -21,6 +21,7 @@
 	display_contents_with_number = FALSE // UNStABLE AS FuCK, turn on when it stops crashing clients
 	use_to_pickup = TRUE
 	slot_flags = SLOT_BELT
+	metallic = FALSE
 
 // -----------------------------
 //		  Trash bag

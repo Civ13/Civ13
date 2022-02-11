@@ -396,7 +396,8 @@
 	granivore = 1
 	carnivore = 1
 	scavenger = 1
-	behaviour = "wander"
+	density = 0
+	behaviour = "scared"
 	melee_damage_lower = 3
 	melee_damage_upper = 7
 	wandersounds = list('sound/animals/bird/crow_1.ogg','sound/animals/bird/crow_2.ogg','sound/animals/bird/crow_3.ogg')

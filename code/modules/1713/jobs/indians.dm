@@ -393,6 +393,7 @@ datum/job/indians/tribes/black
 	min_positions = 40
 	max_positions = 100
 	default_language = "Zulu"
+	additional_languages = list("Swahili" = 80, "English" = 10)
 
 /datum/job/indians/warlords/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -442,13 +443,15 @@ datum/job/indians/tribes/black
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(FJ, H)
 /datum/job/indians/warlords/red
-	title = "Redkantu Warband"
+	title = "Redkantu Warband Warrior"
 	spawn_location = "JoinLateIND1"
 	selection_color = "#ac0909"
 /datum/job/indians/warlords/red/equip(var/mob/living/human/H)
 	..()
 	H.nationality = "Redkantu"
 	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
+
 	//hat or mask
 	if (prob(50))
 		if(prob(60))
@@ -509,19 +512,21 @@ datum/job/indians/tribes/black
 	equip_shaman(H)
 	H.nationality = "Redkantu"
 	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/ab = new /obj/item/clothing/accessory/armband/british(null)
 	uniform.attackby(ab, H)
 
 /datum/job/indians/warlords/blue
-	title = "Blugisi Warband"
+	title = "Blugisi Warband Warrior"
 	spawn_location = "JoinLateIND2"
 	selection_color = "#2a28b6"
 /datum/job/indians/warlords/blue/equip(var/mob/living/human/H)
 	..()
 	H.nationality = "Blugisi"
 	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
 	//hat or mask
 	if (prob(50))
 		if(prob(60))
@@ -563,18 +568,20 @@ datum/job/indians/tribes/black
 	equip_shaman(H)
 	H.nationality = "Blugisi"
 	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(ab, H)
 /datum/job/indians/warlords/yellow
-	title = "Yellowagwana Warband"
+	title = "Yellowagwana Warband Warrior"
 	spawn_location = "JoinLateIND3"
 	selection_color = "#969607"
 /datum/job/indians/warlords/yellow/equip(var/mob/living/human/H)
 	..()
 	H.nationality = "Yellowagwana"
 	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
 	//hat or mask
 	if (prob(50))
 		if(prob(60))
@@ -616,6 +623,7 @@ datum/job/indians/tribes/black
 	equip_shaman(H)
 	H.nationality = "Yellowagwana"
 	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)

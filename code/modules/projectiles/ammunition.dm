@@ -8,6 +8,7 @@
 	throwforce = TRUE
 	w_class = TRUE
 	flammable = TRUE
+	metallic = TRUE
 	var/leaves_residue = TRUE
 	var/caliber = ""					//Which kind of guns it can be loaded into
 	var/projectile_type					//The bullet type to create when New() is called
@@ -64,6 +65,7 @@
 	name = "ammo magazine"
 	var/pouch = FALSE
 	var/opened = FALSE
+	metallic = TRUE
 	desc = "A magazine for some kind of gun."
 	icon_state = "357"
 	icon = 'icons/obj/ammo.dmi'

@@ -9,6 +9,7 @@
 	throwforce = 3.0
 	item_state = "plough"
 	w_class = 3.0
+	metallic = FALSE
 
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
@@ -31,6 +32,7 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = TRUE
 	usespeed = 2.1
+	metallic = TRUE
 
 /obj/item/weapon/type89_mortar
 	name = "Type 89 Mortar"
@@ -215,6 +217,7 @@
 	sharp = FALSE
 	edge = FALSE
 	flammable = TRUE
+	metallic = FALSE
 
 /obj/item/weapon/chisel
 	name = "stone chisel"

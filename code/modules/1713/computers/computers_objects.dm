@@ -336,6 +336,7 @@
 	value = 400
 	w_class = 1.0
 	max_amount = 20
+	metallic = TRUE
 
 /obj/item/stack/component/red
 	name = "RDKV S-445 chip"

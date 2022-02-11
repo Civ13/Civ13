@@ -7,7 +7,7 @@
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
 	faction_organization = list(INDIANS, CIVILIAN)
-	
+
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/british,
@@ -18,7 +18,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(INDIANS = 0.9, CIVILIAN = 0.1)
 	battle_name = "skull competition"
-	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>50 enemy skulls</b> and bring them to their shaman hut. First team to reach 25 wins.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
+	mission_start_message = "<font size=4>Three African warlords are fighting for the control of this area. They will need to collect <b>enemy skulls</b> and bring them to their shaman hut. First team to reach <b>35 points</b> wins.<br><b>DO NOT KILL THE UN DOCTORS!</b></font>"
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -78,7 +78,7 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	if (processes.ticker.playtime_elapsed > 4800)
 		if (win_condition_spam_check)
 			return FALSE
-		if (!(scores["Yellowagwana"] >= 25 || scores["Blugisi"] >= 25 || scores["Redkantu"] >= 25))
+		if (!(scores["Yellowagwana"] >= 35 || scores["Blugisi"] >= 35 || scores["Redkantu"] >= 35))
 			return TRUE
 		ticker.finished = TRUE
 		var/message = ""
@@ -121,16 +121,77 @@ obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 		var/obj/map_metadata/african_warlords/AW = map
 		if (!W)
 			return
-		qdel(W)
 		var/obj/item/organ/external/head/HD = W
-		if (faction == HD.nationality || faction != user.nationality)
+		var/head_nationality = HD.nationality
+		qdel(W)
+		if (faction == head_nationality || faction != user.nationality)
+			return
+		if (!head_nationality || head_nationality == "none")
 			return
 		switch(faction)
 			if("Blugisi")
-				AW.scores["Blugisi"] += 1
+				AW.scores["Blugisi"] += 2
+				if (head_nationality == "Exiled")
+					AW.scores["Blugisi"] += 4
+					new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
 			if("Yellowagwana")
-				AW.scores["Yellowagwana"] += 1
+				AW.scores["Yellowagwana"] += 2
+				if (head_nationality == "Exiled")
+					AW.scores["Yellowagwana"] += 4
+					new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
 			if("Redkantu")
-				AW.scores["Redkantu"] += 1
+				AW.scores["Redkantu"] += 2
+				if (head_nationality == "Exiled")
+					AW.scores["Redkantu"] += 4
+					new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
+					new/obj/item/ammo_magazine/ak74(user.loc)
+		switch(head_nationality)
+			if("Blugisi")
+				AW.scores["Blugisi"] -= 1
+			if("Yellowagwana")
+				AW.scores["Yellowagwana"] -= 1
+			if("Redkantu")
+				AW.scores["Redkantu"] -= 1
 		user << "You place the head on the shaman's altar."
+		if	(prob(25))
+			new/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(user.loc)
+		else if (prob (25))
+			new/obj/item/weapon/reagent_containers/food/drinks/bottle/small/stamina/minor(user.loc)
+		else if (prob (40))
+			new/obj/item/stack/medical/advanced/herbs(user.loc)
+		else if (prob (20))
+			var/randcloth = rand(1,6)
+			switch(randcloth)
+				if (1)
+					new/obj/item/clothing/head/pimphat(user.loc)
+					new/obj/item/clothing/suit/pimpsuit(user.loc)
+				if (2)
+					new/obj/item/clothing/head/lionpelt(user.loc)
+				if (3)
+					new/obj/item/clothing/head/gatorpelt(user.loc)
+				if (4)
+					new/obj/item/clothing/mask/wooden/african(user.loc)
+				if (5)
+					new/obj/item/clothing/suit/zulu_mbata(user.loc)
+				if (6)
+					new/obj/item/clothing/head/top_hat(user.loc)
+		else if (prob (20))
+			new/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(user.loc)
+			new/obj/item/ammo_magazine/ak74(user.loc)
+			new/obj/item/ammo_magazine/ak74(user.loc)
+		else if (prob (15))
+			new/obj/item/weapon/grenade/modern/f1(user.loc)
+		else if (prob (15))
+			new/obj/item/weapon/grenade/incendiary/anm14(user.loc)
+		else if (prob (12))
+			new/obj/item/weapon/gun/projectile/semiautomatic/svd(user.loc)
+			new /obj/item/ammo_magazine/svd(user.loc)
+		else if (prob (10))
+			new/obj/item/weapon/gun/launcher/rocket/rpg7(user.loc)
+			new/obj/item/ammo_casing/rocket/pg7v(user.loc)
 		return

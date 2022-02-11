@@ -9,6 +9,7 @@
 	w_class = 2
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
+	metallic = TRUE
 
 	var/on = FALSE
 	var/brightness_on = 5 //luminosity when on

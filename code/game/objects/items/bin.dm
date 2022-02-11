@@ -11,6 +11,7 @@
 	amount = 30					//How much paper is in the bin.
 	var/list/papers = new/list()	//List of papers put in the bin for reference.
 	flammable = TRUE
+	metallic = FALSE
 
 /obj/item/weapon/paper_bin/MouseDrop(mob/user as mob)
 	if ((user == usr && (!( usr.restrained() ) && (!( usr.stat ) && (usr.contents.Find(src) || in_range(src, usr))))))

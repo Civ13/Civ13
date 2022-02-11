@@ -33,12 +33,12 @@
 /obj/map_metadata/port_arthur/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/japanese))
-		if (J.is_coldwar || J.is_ww2|| J.is_prison || J.is_yakuza || J.is_samurai == TRUE)
+		if (J.is_coldwar || J.is_ww2 || J.is_prison || J.is_yakuza || J.is_samurai == TRUE)
 			. = FALSE
 		else
 			. = TRUE
 	if (istype(J, /datum/job/russian))
-		if (J.is_ww2 || J.is_rcw || (J.is_prison || J.is_yeltsin || J.is_grozny || J.is_modernday))
+		if (J.is_ww2 || J.is_rcw || J.is_prison || J.is_yeltsin || J.is_grozny || J.is_modernday || J.is_ukrainerussowar)
 			. = FALSE
 		else
 			. = TRUE

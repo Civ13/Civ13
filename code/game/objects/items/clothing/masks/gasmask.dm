@@ -15,6 +15,7 @@
 	slot_flags = SLOT_BELT|SLOT_MASK
 	blocks_scope = TRUE
 	restricts_view = 2
+	metallic = TRUE
 	armor = list(melee = 10, arrow = FALSE, gun = FALSE, energy = 35, bomb = 15, bio = 100, rad = 80)
 
 /obj/item/clothing/mask/gas/filter_air(datum/gas_mixture/air)

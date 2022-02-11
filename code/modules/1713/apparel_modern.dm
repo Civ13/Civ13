@@ -985,7 +985,8 @@
 		/obj/item/stack/money,
 		/obj/item/weapon/key,
 		)
-/obj/item/weapon/storage/belt/police/New()
+/obj/item/weapon/storage/belt/police/modern
+/obj/item/weapon/storage/belt/police/modern/New()
 	..()
 	new /obj/item/weapon/melee/nightbaton(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
@@ -994,8 +995,17 @@
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/whistle(src)
-	new /obj/item/ammo_magazine/glock17(src)
-	new /obj/item/ammo_magazine/glock17(src)
+
+/obj/item/weapon/storage/belt/police/old
+/obj/item/weapon/storage/belt/police/old/New()
+	..()
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/whistle(src)
 
 /* Miscallenous*/
 

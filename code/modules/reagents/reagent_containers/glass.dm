@@ -13,6 +13,7 @@
 	possible_transfer_amounts = list(5,10,15,25,30,60)
 	volume = 60
 	w_class = 2
+	metallic = FALSE
 	flags = OPENCONTAINER
 
 	var/label_text = ""

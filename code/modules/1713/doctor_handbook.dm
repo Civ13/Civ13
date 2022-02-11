@@ -16,6 +16,7 @@
 	flammable = TRUE
 	var/list/severity_adj = list("minor", "moderate", "serious", "severe", "critical") // do not touch this
 	var/sev_factor
+	metallic = FALSE
 
 /obj/item/weapon/doctor_handbook/attack(mob/living/victim as mob, mob/living/user as mob)
 	if (user.a_intent == I_HARM)

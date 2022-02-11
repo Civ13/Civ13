@@ -4,7 +4,7 @@
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
-
+	var/victory_time = 15000
 	no_winner = "No faction controls the Castle."
 
 	faction_organization = list(
@@ -21,7 +21,7 @@
 	songs = list(
 		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	battle_name = "battle of Normandy"
-	mission_start_message = "<font size=4>The <b>French</b> and <b>English</b> armies are facing each other in Northern France! There is a <b>Castle</b> in the middle of the map, that must be captured and held for 8 minutes! The battle will start in <b>6 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>French</b> and <b>English</b> armies are facing each other in Northern France! There is a <b>Castle</b> in the middle of the map, that must be captured and held for 8 minutes! The battle will start in <b>4 minutes</b>.</font>"
 	faction1 = BRITISH
 	faction2 = FRENCH
 	ambience = list('sound/ambience/jungle1.ogg')
@@ -36,22 +36,22 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 
 /obj/map_metadata/camp/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/camp/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/camp/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 4800 // 8 minutes
+		return 3000 // 5 minutes
 
 /obj/map_metadata/camp/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 4800 // 8 minutes
+		return 3000 // 5 minutes
 
 /obj/map_metadata/camp/roundend_condition_def2name(define)
 	..()
@@ -93,7 +93,15 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		return ""
 
 /obj/map_metadata/camp/update_win_condition()
-
+	if (world.time >= victory_time)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		return FALSE
 	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE

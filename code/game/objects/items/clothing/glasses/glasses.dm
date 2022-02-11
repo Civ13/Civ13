@@ -76,6 +76,7 @@
 	icon_state = "eyepatch"
 	item_state = "eyepatch"
 	body_parts_covered = FALSE
+	metallic = FALSE
 
 /obj/item/clothing/glasses/monocle
 	name = "monocle"

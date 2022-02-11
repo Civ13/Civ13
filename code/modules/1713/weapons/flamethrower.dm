@@ -187,6 +187,7 @@
 	sharp = FALSE
 	edge = FALSE
 	nothrow = TRUE
+	metallic = TRUE
 	attack_verb = list("bashed", "hit")
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK

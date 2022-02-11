@@ -4,6 +4,7 @@
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "folder"
 	w_class = 2
+	metallic = FALSE
 
 /obj/item/weapon/folder/blue
 	desc = "A blue folder."

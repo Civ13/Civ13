@@ -129,6 +129,7 @@
 	w_class = 3
 	flammable = TRUE
 	var/deployed = FALSE
+	metallic = FALSE
 
 /obj/item/weapon/punji_sticks/proc/can_use(mob/user)
 	return (user.IsAdvancedToolUser() && !user.stat && !user.restrained())

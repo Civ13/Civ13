@@ -2409,7 +2409,7 @@
 	uniform1.attackby(pb, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
 	H.add_note("Role", "You are a member of the police force. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
@@ -2460,7 +2460,7 @@
 	H.equip_to_slot_or_del(KC2, slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
 	H.add_note("Role", "You are the supervisor of the police force. Your objectives are to coordinate your fellow policemen in order to arrest as many criminal businessmen as possible and seize illegal money and disks!")
@@ -2702,9 +2702,11 @@
 	is_warlords = TRUE
 	can_be_female = FALSE
 	selection_color = "#53ADD0"
+	additional_languages = list("Zulu" = 10)
+	whitelisted = TRUE
 
 	min_positions = 2
-	max_positions = 12
+	max_positions = 6
 /datum/job/civilian/unitednations/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -2739,6 +2741,10 @@
 	rank_abbreviation = "UN Dr."
 	is_medic = TRUE
 	can_be_female = TRUE
+	min_positions = 2
+	max_positions = 4
+	additional_languages = list("Zulu" = 20)
+
 /datum/job/civilian/unitednations/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -2752,15 +2758,12 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/un/white = new /obj/item/clothing/accessory/armband/un(null)
 	uniform.attackby(white, H)
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep both the UN troops and civilians safe!<br>Do not engage the militias (unless they breach the perimeter or fire upon you), but recover the bodies if possible and safe to do so.")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep both the UN troops and civilians in good health!<br> <b>You are a noncombative role, you may not engage in combat situations</b>.Do not engage the militias (unless they breach the perimeter or fire upon you), but recover the bodies if it's possible and safe to do so.")
 
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2770,3 +2773,108 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
+
+/datum/job/civilian/unitednations/engineer
+	title = "United Nations Engineer"
+	en_meaning = ""
+	rank_abbreviation = "UN Eng."
+	spawn_location = "JoinLateUN"
+	is_warlords = TRUE
+	can_be_female = FALSE
+	selection_color = "#53ADD0"
+	additional_languages = list("Zulu" = 10)
+
+	min_positions = 2
+	max_positions = 2
+
+/datum/job/civilian/unitednations/engineer/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/shovel/steel(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/un/blue = new /obj/item/clothing/accessory/armband/un(null)
+	uniform.attackby(blue, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. <b>You are a noncombative role, you may not engage in combat situations</b>.<br>Keep the hospital infrastructure intact and develop surrounding areas if it's safe to do so.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
+
+/datum/job/civilian/unitednations/localpoliceman
+	title = "Local Policeman"
+	en_meaning = ""
+	rank_abbreviation = "Officer"
+	spawn_location = "JoinLateLP"
+	is_warlords = TRUE
+	can_be_female = FALSE
+	selection_color = "#007f00"
+	additional_languages = list("Zulu" = 100, "Swahili" = 80)
+	whitelisted = TRUE
+
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/civilian/unitednations/localpoliceman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/old(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_l_hand)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+
+	var/obj/item/clothing/under/ww2/british/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/un/blue = new /obj/item/clothing/accessory/armband/un(null)
+	uniform.attackby(blue, H)
+	uniform.roll_sleeves()
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+
+	var/obj/item/weapon/storage/belt = H.belt
+	var/obj/item/weapon/key/civ/police/pk = new /obj/item/weapon/key/civ/police(null)
+	belt.attackby(pk, H)
+
+	H.name = H.species.get_random_zulu_name(H.gender)
+	H.real_name = H.name
+	H.s_tone = rand(-170,-150)
+	var/new_hair = pick("Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	H.add_note("Role", "You are a <b>[title]</b>. You're the liaison between the local population and UN. Use your language knowledge to act as an interprator.<br>Do not kill the militias, instead, try to arrest them (unless they breach the perimeter or fire upon you).")
+
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)

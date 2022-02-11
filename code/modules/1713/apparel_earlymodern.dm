@@ -1195,6 +1195,55 @@
 	icon_state = "smallpouches_olive"
 	item_state = "smallpouches_olive"
 
+/obj/item/weapon/storage/belt/smallpouches/olive/m16
+/obj/item/weapon/storage/belt/smallpouches/olive/m16/New()
+	..()
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/m16/sf
+/obj/item/weapon/storage/belt/smallpouches/olive/m16/sf/New()
+	..()
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/weapon/grenade/coldwar/m67
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
+/obj/item/weapon/storage/belt/smallpouches/olive/us_sgt/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/us_lt
+/obj/item/weapon/storage/belt/smallpouches/olive/us_lt/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/m14
+/obj/item/weapon/storage/belt/smallpouches/olive/m14/New()
+	..()
+	new/obj/item/ammo_magazine/m14(src)
+	new/obj/item/ammo_magazine/m14(src)
+	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/greasegun
+/obj/item/weapon/storage/belt/smallpouches/olive/greasegun/New()
+	..()
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+
 /obj/item/clothing/under/blue_shorts
 	name = "blue shorts"
 	desc = "Basic blue shorts."
