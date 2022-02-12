@@ -138,7 +138,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			else	
 				//Let's take as the norm a volume equal to 35 milliliters per bite/drink
 				biteamount = ceil(appraise_volume_in_milliliters/35)
-		if(!bitesize)
+		if(!bitesize && biteamount)
 			bitesize = ceil(reagents.total_volume*10/biteamount)/10
 
 /obj/item/weapon/reagent_containers/food/snacks/New() 
