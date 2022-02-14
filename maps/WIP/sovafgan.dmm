@@ -81,7 +81,7 @@
 "bC" = (/obj/structure/window/classic/sandstonefull,/obj/covers/sandstone,/obj/structure/curtain/leather,/turf/floor/beach/sand/desert,/area/caribbean)
 "bD" = (/obj/covers/sandstone,/obj/structure/bed/chair/wood,/turf/floor/beach/sand,/area/caribbean)
 "bE" = (/obj/structure/closet/crate/cart/wooden,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/tea,/turf/floor/beach/sand/desert,/area/caribbean)
-"bF" = (/obj/structure/closet/crate/cart/wooden,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/flax,/obj/item/stack/farming/seeds/coca,/turf/floor/beach/sand/desert,/area/caribbean)
+"bF" = (/obj/structure/closet/crate/cart/wooden,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/watermelon,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/flax,/obj/item/stack/farming/seeds/coca,/turf/floor/beach/sand/desert,/area/caribbean)
 "bG" = (/obj/covers/sandstone/brick,/obj/structure/table/wood,/obj/item/weapon/pigleg/salted/dried,/turf/floor/beach/sand/desert,/area/caribbean)
 "bH" = (/obj/covers/sandstone/brick,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean)
 "bI" = (/obj/covers/sandstone/brick,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean)

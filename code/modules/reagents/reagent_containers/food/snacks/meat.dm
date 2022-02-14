@@ -1,3 +1,9 @@
+#define SEAFOOD_DRY_MODIFIER 19 //temporary it placed here. TO DO - move after categorising snacks to snacks.dm
+#define MEAT_DRY_MODIFIER 17 //temporary it placed here. TO DO - move after categorising snacks to snacks.dm
+#define SALT_MODIFIER 10 //temporary it placed here. TO DO - move after categorising snacks and reworking salting to snacks.dm
+#define DRY_MODIFIER 15 //temporary it placed here. TO DO - move after categorising snacks to snacks.dm
+#define GROWN_DRY_MODIFIER 21 //temporary it placed here. TO DO - move after categorising snacks to snacks.dm
+
 /obj/item/weapon/reagent_containers/food/snacks/meat
 	name = "meat"
 	desc = "A slab of meat."
@@ -202,7 +208,6 @@
 	desc = "A dead cockroach. No, please don't make me eat it..."
 	icon_state = "cockroach"
 	rotten_icon_state = "rotten_cockroach"
-	health = 180
 	filling_color = "#773B00"
 	raw = TRUE
 	disgusting = TRUE
@@ -219,7 +224,6 @@
 	name = "octopus"
 	desc = "A fresh octopus. Yum!"
 	icon_state = "purple_octopus"
-	health = 130
 	filling_color = "#7F0000"
 	center_of_mass = list("x"=16, "y"=14)
 	raw = TRUE
@@ -227,11 +231,31 @@
 	rots = TRUE
 	non_vegetarian = TRUE
 	satisfaction = -10
+	dried_type = /obj/item/weapon/reagent_containers/food/snacks/octopus/dried
+	dry_size = 7
 	New()
 		..()
-		reagents.add_reagent("protein", 3)
-		reagents.add_reagent("food_poisoning", 1)
-		bitesize = 3
+		icon_state = pick("purple_octopus", "red_octopus")
+		reagents.add_reagent("protein", 1)
+		reagents.add_reagent("nutriment", 5, list("seafood"=3))
+		reagents.add_reagent("food_poisoning", pick(0,1,1,2)) //25% chance not poison, 50% poison, 25% double poison
+		
+/obj/item/weapon/reagent_containers/food/snacks/octopus/dried
+	icon = 'icons/obj/food/dryed.dmi'
+	name = "dried octopus rings"
+	desc = "Good snack, where to get a beer?"
+	filling_color = "#9b5a1d"
+	center_of_mass = list("x"=16, "y"=16)
+	rots = FALSE
+	raw = FALSE
+	dried_type = null
+	satisfaction = 9
+	biteamount = 6
+	New()
+		..()
+		icon_state = "octopus_rings"
+		reagents.del_reagent("food_poisoning")
+		decay *= SEAFOOD_DRY_MODIFIER
 
 /obj/item/weapon/reagent_containers/food/snacks/cracked_shellfish
 	name = "cracked shellfish"

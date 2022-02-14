@@ -47,6 +47,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	rots = FALSE //Is it have rot mechanics in food_decay(). See details at food.dm
 	rotten = FALSE //Is it rotten or not. 
 	rotten_icon_state = "" //Icon state for rotten product. Must be at same icons .dmi file!!!
+	flags = USEDELAY //see more at predefines.dm and atoms.dm
 
 //Items in the "Snacks" subcategory are food items that people actually eat. The key points are that they are created
 //	already filled with reagents and are destroyed when empty. Additionally, they make a "munching" noise when eaten.
@@ -75,15 +76,15 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/nutriments_value() //return nutrition factor of food
 	var/NV = 0
-	if(reagents)
+	if (reagents)
 		var/datum/reagent/nutriment/thisN
 		var/datum/reagent/drink/thisD
-		for(var/datum/reagent/R in reagents.reagent_list)
-			if(istype(R,/datum/reagent/nutriment))
+		for (var/datum/reagent/R in reagents.reagent_list)
+			if (istype(R,/datum/reagent/nutriment))
 				thisN = R
 				NV += thisN.nutriment_factor*R.volume
 				continue
-			if(istype(R,/datum/reagent/drink))
+			if (istype(R,/datum/reagent/drink))
 				thisD = R
 				NV += thisD.nutrition*R.volume
 				continue
@@ -91,77 +92,78 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/water_value(with_water = TRUE) //return watering of all reagents with water reagent or without it
 	var/WV = 0
-	if(reagents)
-		for(var/datum/reagent/R in reagents.reagent_list)
-			if(istype(R,/datum/reagent/drink/quinine))
+	if (reagents)
+		for (var/datum/reagent/R in reagents.reagent_list)
+			if (istype(R,/datum/reagent/drink/quinine))
 				continue
-			if(istype(R,/datum/reagent/drink/health))
+			if (istype(R,/datum/reagent/drink/health))
 				continue
-			if(istype(R,/datum/reagent/drink/stamina))
+			if (istype(R,/datum/reagent/drink/stamina))
 				continue
-			if(istype(R,/datum/reagent/water))
-				if(with_water)
+			if (istype(R,/datum/reagent/water))
+				if (with_water)
 					WV += R.volume * 15
-			if(istype(R,/datum/reagent/drink/milk)) //yes, no continue here, because milk do it in two places of code at this moment
+			if (istype(R,/datum/reagent/drink/milk)) //yes, no continue here, because milk do it in two places of code at this moment
 				WV += R.volume * 10
-			if(istype(R,/datum/reagent/drink))
+			if (istype(R,/datum/reagent/drink))
 				WV += R.volume * 15
 				continue
-			if(istype(R,/datum/reagent/ethanol/mead)) //mead inherit watering
+			if (istype(R,/datum/reagent/ethanol/mead)) //mead inherit watering
 				continue
-			if(istype(R,/datum/reagent/ethanol))
+			if (istype(R,/datum/reagent/ethanol))
 				WV += R.volume * 40
 	return WV
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/appraise() 
 //Calculate value for trading system if not set. If you want to recalculate it, set it to null before calling proc
-	if(value == null)
-		if(reagents)
+	if (value == null)
+		if (reagents)
 			value = max(0, ceil((nutriments_value()*2 + water_value(FALSE)*0.5)/30 + satisfaction/2  - 0.5))
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/AVim()  
 //Appraise volume in milliliters. This is a very empirical approximation, but we have what we have at this moment
 //nutriments have "magical" volume, that not are visible at first look, watering reagents too have this "magic"
-	return reagents.total_volume + nutriments_value()/30*2 + water_value()/20*2
+	return reagents.total_volume + nutriments_value()*1.5 + water_value()
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/recalculate_bitesize()
 //Calculating biteamount if not set and 
-	if(reagents)
+	if (reagents)
 		var/appraise_volume_in_milliliters = AVim()
-		if(appraise_volume_in_milliliters<100)
-			w_class = 1
-		else
-			w_class = 2
-		if(!biteamount)
-			if(bitesize)
+		switch (appraise_volume_in_milliliters)
+			if (0 to 100)	w_class = 1
+			if (100 to 500)	w_class = 2
+			else			w_class = 3
+		if (!biteamount)
+			if (bitesize)
 				biteamount = ceil(reagents.total_volume/bitesize)
 			else	
-				//Let's take as the norm a volume equal to 35 milliliters per bite/drink
-				biteamount = ceil(appraise_volume_in_milliliters/35)
-		if(!bitesize)
+				biteamount = ceil(appraise_volume_in_milliliters/35) //Let's take as the norm a volume equal to 35 milliliters per bite/drink
+		if (!biteamount || biteamount<0) //we must have a value for next step calc if happens 0
+			biteamount = 1 
+		if (!bitesize)
 			bitesize = ceil(reagents.total_volume*10/biteamount)/10
 
 /obj/item/weapon/reagent_containers/food/snacks/New() 
 	..()
-	if(nutriment_amt>0)
+	if (nutriment_amt>0)
 		reagents.add_reagent("nutriment", nutriment_amt, nutriment_desc)
 	spawn(1) //because we need to work new() proc of child before this calculations
 		recalculate_bitesize()
 		appraise()
-		if(debug_snacks) //for debugging log of calculated values snacks creating on/off it by set TRUE/FALSE at begining of snacks.dm (this file)
+		if (debug_snacks) //for debugging log of calculated values snacks creating on/off it by set TRUE/FALSE at begining of snacks.dm (this file)
 			message_admins("Created snack: [name]. Bite amount: [biteamount], bite size: [bitesize]. Value: [value].")
-			if(reagents)
+			if (reagents)
 				message_admins("Size: [round((AVim()*100)/100)] milliliters")
 			else
 				message_admins("SIZE NOT DEFINED! NO REAGENTS!!!")
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/over(var/mob/M) //end of snack
 	usr.drop_from_inventory(src)	//so icons update :[
-	if(trash)
-		if(ispath(trash,/obj/item))
+	if (trash)
+		if (ispath(trash,/obj/item))
 			var/obj/item/TrashItem = new trash(usr)
 			usr.put_in_hands(TrashItem)
-		else if(istype(trash,/obj/item))
+		else if (istype(trash,/obj/item))
 			usr.put_in_hands(trash)
 	qdel(src)
 
@@ -276,18 +278,18 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	return (slices_num && slice_path > 0)
 
 /obj/item/weapon/reagent_containers/food/snacks/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weapon/storage) && user.a_intent != I_HARM)
+	if (istype(W,/obj/item/weapon/storage) && user.a_intent != I_HARM)
 		..() // -> item/attackby()
 		return
 	//cutting sliceable items with blades 
-	if(W.edge)
-		if(!is_sliceable())
+	if (W.edge)
+		if (!is_sliceable())
 			..()
 			return
-		if(istype(W, /obj/item/weapon/reagent_containers/food/drinks))
+		if (istype(W, /obj/item/weapon/reagent_containers/food/drinks))
 			..()
 			return
-		if(istype(W, /obj/item/weapon/reagent_containers/glass))
+		if (istype(W, /obj/item/weapon/reagent_containers/glass))
 			..()
 			return
 		var/slices_lost = 0
@@ -297,13 +299,14 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		else
 			user.visible_message("<span class='notice'>\The [user] slices \the [src]!</span>", "<span class='notice'>You slice \the [src]!</span>")
 		var/reagents_per_slice = reagents.total_volume/slices_num
-		for (var/i=1 to (slices_num-slices_lost))
-			var/obj/slice = new slice_path (loc)
+		for (var/i=1 to (slices_num - slices_lost))
+			var/obj/item/weapon/reagent_containers/food/snacks/slice = new slice_path(loc)
 			reagents.trans_to_obj(slice, reagents_per_slice)
+			slice.satisfaction = src.satisfaction / slices_num
 		qdel(src)
 		return
 	// Eating with forks, spoons, chopsticks (utensil, but not knives, that have edge and worked above)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil))
+	if (istype(W,/obj/item/weapon/material/kitchen/utensil))
 		var/obj/item/weapon/material/kitchen/utensil/U = W
 		if (U.scoop_food)
 			if (!U.reagents)
@@ -644,30 +647,37 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	center_of_mass = list("x"=17, "y"=13)
 	rotten_icon_state = "pink_squid_rotten"
 	nutriment_amt = 3
-	nutriment_desc = list("slippery" = 2, "seafood" = 1)
+	nutriment_desc = list("slippery" = 2, "seafood" = 2)
 	rots = TRUE
+	rotten_icon_state = "rotten_squid"
 	non_vegetarian = TRUE
 	decay = 12*600
 	satisfaction = 10
-	dry_size = 3
-	dried_type = /obj/item/weapon/reagent_containers/food/snacks/driedsquid
+	dry_size = 13
+	dried_type = /obj/item/weapon/reagent_containers/food/snacks/pink_squid/dried
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
 		reagents.add_reagent("food_poisoning", pick(0,0,0,0,0,0,0,1,1,2))
 
-/obj/item/weapon/reagent_containers/food/snacks/driedsquid
+/obj/item/weapon/reagent_containers/food/snacks/pink_squid/dried
 	name = "dried squid"
-	desc = "A sun dried squid rings."
+	desc = "A sun dried squid rings. Snack for beer."
+	icon = 'icons/obj/food/dryed.dmi'
 	icon_state = "squid_rings"
-	center_of_mass = list("x"=17, "y"=18)
-	nutriment_amt = 4
-	nutriment_desc = list("seafood" = 1)
+	center_of_mass = list("x"=16, "y"=16)
 	non_vegetarian = TRUE
-	satisfaction = 10
+	satisfaction = 12
 	biteamount = 4
 	decay = 200*600
-	value = 9
+	rots = FALSE
+	raw = FALSE
+	dried_type = null
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("protein", 1)
+		reagents.add_reagent("nutriment", 3, list("seafood"=2))
 
 /obj/item/weapon/reagent_containers/food/snacks/salmonfillet
 	name = "salmon fillet"
@@ -923,7 +933,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	filling_color = "#AFC4B5"
 	center_of_mass = list("x"=16, "y"=8)
 	nutriment_amt = 8
-	nutriment_desc = list("carot" = 2, "corn" = 2, "eggplant" = 2, "potato" = 2)
+	nutriment_desc = list("carot" = 2, "corn" = 2, "cabbage" = 2, "potato" = 2)
 	decay = 20*600
 	New()
 		..()
@@ -1008,7 +1018,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	center_of_mass = list("x"=16, "y"=5)
 	trash = /obj/item/kitchen/snack_bowl
 	nutriment_amt = 10
-	nutriment_desc = list("tomato" = 2, "potato" = 2, "carrot" = 2, "eggplant" = 2, "mushroom" = 2)
+	nutriment_desc = list("tomato" = 2, "potato" = 2, "carrot" = 2, "meat" = 2, "mushroom" = 2)
 	satisfaction = 4
 	decay = 16*600
 	New()
@@ -1736,12 +1746,12 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/cutlet/attack_self(mob/user)
 	if (istype(user.l_hand, /obj/item/weapon/reagent_containers/glass) || istype(user.r_hand, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/G
-		if(istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
 			G  = user.l_hand
 		else
 			G  = user.r_hand
 		if (G.reagents.get_reagent_amount("flour") >= 5)
-			if(do_after(user, 90))
+			if (do_after(user, 90))
 				visible_message("[user.name] pours the [src.name] onto the [G.name], covering it.")
 				G.reagents.remove_reagent("flour", 5)
 				new/obj/item/weapon/reagent_containers/food/snacks/rawschnitzel(user.loc)
