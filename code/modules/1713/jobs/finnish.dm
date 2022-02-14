@@ -1,6 +1,10 @@
 /datum/job/finnish
 	faction = "Human"
 
+/datum/job/finnish/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_finnish_name(H.gender)
+	H.real_name = H.name
+
 /datum/job/finnish/kapteeni
 	title = "Kapteeni"
 	en_meaning = "Captain"
@@ -50,7 +54,7 @@
 /datum/job/finnish/luutnantti
 	title = " Luutnantti"
 	en_meaning = "First Lieutenant"
-	rank_abbreviation = "luut."
+	rank_abbreviation = "Luut."
 
 
 	spawn_location = "JoinLateGECap"
@@ -95,7 +99,7 @@
 /datum/job/finnish/vanrikki
 	title = "Vanrikki"
 	en_meaning = "Second Lieutenant"
-	rank_abbreviation = "lt."
+	rank_abbreviation = "Lt."
 
 
 	spawn_location = "JoinLateGECap"
