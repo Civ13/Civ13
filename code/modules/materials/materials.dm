@@ -88,7 +88,7 @@ var/list/name_to_material
 	var/integrity = 150		  // General-use HP value for products.
 	var/opacity = TRUE			  // Is the material transparent? 0.5< makes transparent walls/doors.
 	var/explosion_resistance = 5 // Only used by walls currently.
-	var/conductive = TRUE		   // Objects with this var add CONDUCTS to flags on spawn.
+	//var/conductive = TRUE		   // Objects with this var add CONDUCTS to flags on spawn. NEVER USED!
 	var/list/composite_material  // If set, object matter var will be a list containing these values.
 
 	// Placeholder vars for the time being, todo properly integrate windows/light tiles/rods.

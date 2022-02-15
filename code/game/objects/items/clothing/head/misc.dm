@@ -120,7 +120,6 @@
 		slot_r_hand_str = "pwig",
 		)
 	flags_inv = BLOCKHAIR
-	siemens_coefficient = 2.0 //why is it so conductive?!
 	body_parts_covered = FALSE
 
 /obj/item/clothing/head/orangebandana //themij: Taryn Kifer
