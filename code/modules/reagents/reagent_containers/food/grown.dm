@@ -26,7 +26,7 @@
 	name = "peyote cactus"
 	icon_state = "peyote"
 	desc = "A potent hallucinogenic."
-	color = "#6AAF6A"
+	filling_color = "#6AAF6A"
 	decay = 120*600
 	New()
 		..()
@@ -36,7 +36,7 @@
 	name = "juniper berry"
 	icon_state = "juniper_berry"
 	desc = "A normal looking berry."
-	color = "#6AAF6A"
+	filling_color = "#6AAF6A"
 	decay = 60*600
 	New()
 		..()
@@ -56,7 +56,7 @@
 	name = "parsnip root"
 	icon_state = "parsnip"
 	desc = "A useful sweetner for food."
-	color = "#7f7053"
+	filling_color = "#dad0bc"
 	decay = 60*600
 	New()
 		..()
@@ -66,7 +66,7 @@
 	name = "Zucchini gourd"
 	icon_state = "zucchini"
 	desc = "A straight gourd plant."
-	color = "#6AAF6A"
+	filling_color = "#6AAF6A"
 	decay = 60*600
 	New()
 		..()
@@ -139,8 +139,8 @@
 // fruit
 /obj/item/weapon/reagent_containers/food/snacks/grown/grapes
 	name = "bunch of grapes"
-	icon_state = "grapes"
-	color = "#7a378b"
+	icon_state = "grapes_b"
+	filling_color = "#7a378b"
 	satisfaction = 4
 	decay = 12*600
 /obj/item/weapon/reagent_containers/food/snacks/grown/olives
@@ -163,53 +163,72 @@
 	satisfaction = 4
 	decay = 30*600
 
-/obj/item/weapon/reagent_containers/food/snacks/grown/melon
-	name = "melon"
-	icon_state = "melon"
+/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon
+	name = "watermelon"
+	icon_state = "watermelon"
 	satisfaction = 4
-	//color = "#f08080"
+	filling_color = "#f08080"
 	decay = 20*600
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/watermelonslice
+	slices_num = 12
+
+/obj/item/weapon/reagent_containers/food/snacks/watermelonslice
+	name = "watermelon slice"
+	desc = "Slice of juicy watermelon."
+	icon_state = "watermelonslice"
+	filling_color = "#f08080"
+	decay = 18*600
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin
 	name = "pumpkin"
 	icon_state = "pumpkin"
 	satisfaction = 4
-//	color = "#f08080"
+	filling_color = "#eb9e45"
 	decay = 100*600
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pumpkinslice
+	slices_num = 12
+
+/obj/item/weapon/reagent_containers/food/snacks/pumpkinslice
+	name = "pumpkin slice"
+	desc = "Slice of pumpkin."
+	icon_state = "pumpkinslice"
+	filling_color = "#eb9e45"
+	decay = 20*600
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/lemon
 	name = "lemon"
 	icon_state = "lemon"
 	satisfaction = 1
 	decay = 100*600
-//	color = "#eedd82"
+	filling_color = "#eedd82"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/lime
 	name = "lime"
 	icon_state = "lime"
 	satisfaction = 1
 	decay = 100*600
-//	color = "#32cd32"
+	filling_color = "#a7ce68"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/orange
 	name = "orange"
 	icon_state = "orange"
 	satisfaction = 3
 	decay = 100*600
-//	color = "#ffa500"
+	filling_color = "#ffae00"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/apple
 	name = "apple"
-	icon_state = "apple"
+	icon_state = "apple_green"
 	satisfaction = 3
 	decay = 50*600
-//	color = "#ff0000"
+	filling_color = "#dfffaa"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/banana
 	name = "banana"
 	icon_state = "banana"
 	satisfaction = 6
 	decay = 15*600
+	filling_color = "#fff896"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/apricot
 	name = "apricot"
@@ -236,7 +255,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/grown/rice
 	name = "rice stalk"
 	icon_state = "rice"
-	color = "#dcdcdc"
+	filling_color = "#dcdcdc"
 	nutriment_desc = list("rice" = TRUE)
 	decay = 0
 	satisfaction = -2
@@ -244,7 +263,7 @@
 	name = "wheat"
 	icon_state = "wheat"
 	desc = "wheat. Can be milled."
-	color = "#fffaf0"
+	filling_color = "#fffaf0"
 	nutriment_desc = list("wheat" = TRUE)
 	decay = 500*6000
 	satisfaction = -2
@@ -252,7 +271,7 @@
 	name = "oat"
 	icon_state = "oat"
 	desc = "oats. Can be milled."
-	color = "#fffaf0"
+	filling_color = "#fffaf0"
 	nutriment_desc = list("oats" = TRUE)
 	decay = 200*6000
 	satisfaction = -2
@@ -260,49 +279,53 @@
 	name = "barley"
 	icon_state = "barley"
 	desc = "barley. Can be milled."
-	color = "#fffaf0"
+	filling_color = "#fffaf0"
 	nutriment_desc = list("barley" = TRUE)
 	decay = 200*6000
 	satisfaction = -2
 /obj/item/weapon/reagent_containers/food/snacks/grown/tomato
 	name = "tomato"
 	icon_state = "tomato"
-	color = "#ff0000"
+	filling_color = "#eb2535"
 	nutriment_desc = list("tomato" = TRUE)
 	decay = 15*600
 	satisfaction = 3
 /obj/item/weapon/reagent_containers/food/snacks/grown/potato
 	name = "potato"
 	icon_state = "potato"
-	color = "#8b7355"
+	filling_color = "#fce4c0"
 	nutriment_desc = list("potato" = TRUE)
 	decay = 70*6000
 	satisfaction = -3
 /obj/item/weapon/reagent_containers/food/snacks/grown/beans
 	name = "beans"
-	icon_state = "beans"
-	color = "#8b7355"
+	icon_state = "beans_brownred"
+	filling_color = "#a14130"
 	nutriment_desc = list("beans" = TRUE)
 	decay = 100*6000
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/cabbage
 	name = "head of cabbage"
 	icon_state = "cabbage"
-	color = "#caff70"
+	filling_color = "#caff70"
 	nutriment_desc = list("cabbage" = TRUE)
 	decay = 20*600
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/carrot
 	name = "carrot"
 	icon_state = "carrot"
-	color = "#ff8c00"
+	filling_color = "#ff5e00"
 	nutriment_desc = list("carrot" = TRUE)
 	decay = 25*600
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/corn
 	name = "corn"
 	icon_state = "corn"
-	color = "#8b7355"
+	filling_color = "#cebb4f"
 	nutriment_desc = list("corn" = TRUE)
 	decay = 10*600
 	satisfaction = 2
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/corn/attack_self(mob/user as mob)
 	if (do_after(user, 120, user.loc))
 		new/obj/item/clothing/mask/smokable/pipe/cobpipe(user.loc)

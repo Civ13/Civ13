@@ -56,7 +56,7 @@
 /obj/structure/chemical_dispenser/drinks
 	New()
 		..()
-		var/list/elements = list("honey", "cola", "mint", "banana", "grapejuice", "grapejuice", "milk", "coffee", "tonic", "milkshake", "cognac", "gin", "kahlua", "melonliquor", "rum", "tequilla", "vodka", "whiskey")
+		var/list/elements = list("honey", "cola", "mint", "banana", "grapejuice", "grapejuice", "milk", "coffee", "tonic", "milkshake", "cognac", "gin", "kahlua", "watermelonliquor", "rum", "tequilla", "vodka", "whiskey")
 		for (var/i in elements)
 			dispensable_reagents += list(list(i,400))
 

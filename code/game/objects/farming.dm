@@ -47,13 +47,13 @@
 	name = "liquorice seeds"
 	plant = "liquorice"
 	color = "#191919"
-	biomes = list("desert","semi-arid","temperate")
+	biomes = list("desert","semiarid","temperate")
 
 /obj/item/stack/farming/seeds/celery
 	name = "celery seeds"
 	plant = "celery"
 	color = "#c38452"
-	biomes = list("semi-arid","temperate")
+	biomes = list("semiarid","temperate")
 
 /obj/item/stack/farming/seeds/sapote
 	name = "sapote seeds"
@@ -270,9 +270,9 @@
 	color = "#ffff00" //yellow
 	biomes = list("temperate", "desert", "sea","semiarid", "jungle")
 
-/obj/item/stack/farming/seeds/melon
-	name = "melon seeds"
-	plant = "melon"
+/obj/item/stack/farming/seeds/watermelon
+	name = "watermelon seeds"
+	plant = "watermelon"
 	color = "#26241d" //black
 	biomes = list("desert", "semiarid","jungle")
 
@@ -647,12 +647,12 @@
 	biomes = list("temperate","desert","sea","semiarid","jungle")
 	max_water = 75
 
-/obj/structure/farming/plant/melon
-	name = "melon vine"
-	desc = "A melon vine."
+/obj/structure/farming/plant/watermelon
+	name = "watermelon vine"
+	desc = "A watermelon vine."
 	icon = 'icons/farming/fruits.dmi'
-	icon_state = "melon-grow1"
-	plant = "melon"
+	icon_state = "watermelon-grow1"
+	plant = "watermelon"
 	biomes = list("desert","semiarid","jungle")
 	seasons = list( "SUMMER", "SPRING", "Wet Season")
 	max_water = 90

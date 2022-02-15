@@ -352,7 +352,7 @@
 "hc" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/tribes/swamp)
 "hd" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/beans,/obj/item/weapon/reagent_containers/food/snacks/grown/beans,/obj/item/weapon/reagent_containers/food/snacks/grown/beans,/turf/floor/wood,/area/caribbean/houses/nml_three{name = "Shop"})
 "he" = (/turf/floor/wood,/area/caribbean/houses/nml_three{name = "Shop"})
-"hf" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/melon,/obj/item/weapon/reagent_containers/food/snacks/grown/melon,/obj/item/weapon/reagent_containers/food/snacks/grown/melon,/turf/floor/wood,/area/caribbean/houses/nml_three{name = "Shop"})
+"hf" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/turf/floor/wood,/area/caribbean/houses/nml_three{name = "Shop"})
 "hg" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/tribes/swamp)
 "hh" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/turf/floor/wood,/area/caribbean/houses/nml_three{name = "Shop"})
 "hi" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/turf/floor/wood,/area/caribbean/houses/nml_three{name = "Shop"})

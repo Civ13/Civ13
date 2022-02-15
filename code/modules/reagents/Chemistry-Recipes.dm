@@ -859,10 +859,10 @@ datum/admins/proc/print_chemical_reactions()
 	catalysts = list("enzyme" = 5)
 	result_amount = 10
 
-/datum/chemical_reaction/melonliquor
-	name = "Melon Liquor"
-	id = "melonliquor"
-	result = "melonliquor"
+/datum/chemical_reaction/watermelonliquor
+	name = "Watermelon Liquor"
+	id = "watermelonliquor"
+	result = "watermelonliquor"
 	required_reagents = list("watermelonjuice" = 10)
 	catalysts = list("enzyme" = 5)
 	result_amount = 5
