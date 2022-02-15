@@ -1458,7 +1458,7 @@
 				if (CHECHEN)
 					holder2.icon_state = "chechen_basic"
 				if (FINNISH)
-					holder2.icon_state = "ger0_basic"
+					holder2.icon_state = "finnish_basic"
 				if (JAPANESE)
 					if (original_job.is_yakuza && original_job.is_yama)
 						holder2.icon_state = "yamaguchi"

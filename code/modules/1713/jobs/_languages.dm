@@ -99,8 +99,8 @@
 	female_tts_voice = "Tatyana"
 
 /datum/job/finnish
-	default_language = "Russian"
-	additional_languages = list("Russian" = 75)
+	default_language = "Old Norse"
+	additional_languages = list("Russian" = 70)
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
 

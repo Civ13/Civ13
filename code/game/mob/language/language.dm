@@ -173,6 +173,16 @@
 	var/full_name = "Dovahkiin"
 	return full_name
 
+/datum/language/proc/get_random_finnish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+
+	var/full_name = "Nokia Kuoma"
+	return full_name
+
 /datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)

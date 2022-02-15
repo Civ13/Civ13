@@ -533,6 +533,13 @@
 		else
 			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
 
+/datum/species/proc/get_random_finnish_name(var/gender) //To be changed to more appropriate one in the future
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+
 /datum/species/proc/get_random_inuit_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)
