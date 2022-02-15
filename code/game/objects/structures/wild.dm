@@ -49,6 +49,7 @@ var/list/seed_list_jungle
 	var/obj/item/stack/farming/seeds/seed_check 
 	s_list = typesof(/obj/item/stack/farming/seeds)
 	s_list -= /obj/item/stack/farming/seeds
+	s_list -= /obj/item/stack/farming/seeds/herbs //Technically it's not a seed
 	if (biome <> "")
 		for (var/S in s_list)
 			seed_check = new S
@@ -710,6 +711,7 @@ var/list/seed_list_jungle
 			else
 				user << "You couldn't find any good leaves in this plant."
 				healthamount = 0
+			regrow()
 		else
 			user << "There are no leaves to harvest here."
 			return
