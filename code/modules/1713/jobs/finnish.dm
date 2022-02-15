@@ -1,5 +1,8 @@
+/datum/job/finnish
+	faction = "Human"
+
 /datum/job/finnish/kapteeni
-	title = "kapteeni"
+	title = "Kapteeni"
 	en_meaning = "Captain"
 	rank_abbreviation = "Kap."
 
@@ -45,7 +48,7 @@
 	return TRUE
 
 /datum/job/finnish/luutnantti
-	title = " luutnantti"
+	title = " Luutnantti"
 	en_meaning = "First Lieutenant"
 	rank_abbreviation = "luut."
 
@@ -90,7 +93,7 @@
 	return TRUE
 
 /datum/job/finnish/vanrikki
-	title = "vänrikki"
+	title = "Vanrikki"
 	en_meaning = "Second Lieutenant"
 	rank_abbreviation = "lt."
 
@@ -138,7 +141,7 @@
 	return TRUE
 
 /datum/job/finnish/kersantti
-	title = "kersantti"
+	title = "Kersantti"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Ker."
 
@@ -180,7 +183,7 @@
 	return TRUE
 
 /datum/job/finnish/sotamies
-	title = "sotamies"
+	title = "Sotamies"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
 
@@ -229,7 +232,7 @@
 	return TRUE
 
 /datum/job/finnish/salaampuja
-	title = "ampuja"
+	title = "Ampuja"
 	en_meaning = "Sniper"
 	rank_abbreviation = ""
 
@@ -278,7 +281,7 @@
 	return TRUE
 
 /datum/job/finnish/itpar
-	title = "itsenäisyyspäivänparaatissa"
+	title = "Taistelulaakari"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Dr."
 
