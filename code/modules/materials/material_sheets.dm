@@ -8,33 +8,28 @@
 	throw_range = 3
 	max_amount = 50
 	can_stack = TRUE
-
 	var/default_type = DEFAULT_WALL_MATERIAL
 	var/material/material
 	var/perunit = SHEET_MATERIAL_AMOUNT
 	var/apply_colour //temp pending icon rewrite
-
 	icon = 'icons/obj/materials.dmi'
 
 /obj/item/stack/material/New()
 	..()
 	pixel_x = rand(0,4)-4
 	pixel_y = rand(0,4)-4
-
 	if (!default_type)
 		default_type = DEFAULT_WALL_MATERIAL
 	material = get_material_by_name("[default_type]")
 	if (material)
 		recipes = material.get_recipes_civs(forced=TRUE)
 		stacktype = material.stack_type
-
-
 		if (apply_colour)
 			color = material.icon_colour
-
+		/* // NEVER USED!
 		if (material.conductive)
 			flags |= CONDUCT
-
+		*/ 
 		matter = material.get_matter()
 	update_strings()
 	return TRUE
@@ -46,7 +41,6 @@
 	// Update from material datum.
 	if (material)
 		singular_name = material.sheet_singular_name
-
 		if (amount>1)
 			name = "[material.use_name] [material.sheet_plural_name]"
 			desc = "A stack of [material.use_name] [material.sheet_plural_name]."
@@ -144,6 +138,7 @@
 	default_type = "lead"
 	apply_colour = TRUE
 	value = 3
+	flags = CONDUCT
 
 /obj/item/stack/material/sandstone
 	name = "sandstone"
@@ -169,6 +164,7 @@
 	icon_state = "claylump"
 	default_type = "clay"
 	value = 2
+
 /obj/item/stack/material/clay/attackby(obj/item/W as obj, mob/user as mob)
 	if (map.ID == MAP_GULAG13)
 		if (!istype(W)) return//I really don't understand why this check is needed
@@ -247,8 +243,8 @@
 	decay = 80*600
 
 /obj/item/stack/material/leaf/New()
-		..()
-		food_decay()
+	..()
+	food_decay()
 
 /obj/item/stack/material/leaf/proc/food_decay()
 	spawn(600)
@@ -257,7 +253,6 @@
 		if (istype(loc, /obj/structure/vending))
 			food_decay()
 			return
-
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
 			if (F.powersource && F.powersource.powered)
@@ -355,7 +350,6 @@
 			if (amount < 1)
 				qdel(src)
 
-
 /obj/item/stack/material/gold
 	name = "gold"
 	icon_state = "sheet-gold"
@@ -405,12 +399,10 @@
 			qdel(NF)
 			qdel(src)
 
-
 /obj/item/stack/material/wood/attackby(obj/item/T as obj, mob/user as mob)
 	if (istype(T, /obj/item/flashlight))
 		var/obj/item/flashlight/F = T
 		if(user.a_intent == "harm" && F.on && !onfire)
-
 			visible_message("<span class = 'red'>[user.name] tries to set the [src] on fire.</span>")
 			if(prob(30))
 				ash_production = 1
@@ -418,9 +410,7 @@
 				start_fire()
 				visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
 				return
-
 	return ..()
-
 
 /obj/item/stack/material/bamboo
 	name = "bamboo bundle"
@@ -483,7 +473,6 @@
 	w_class = 1.0
 	flammable = TRUE
 
-
 /obj/item/stack/material/wool
 	name = "wool pile"
 	icon_state = "woolpile"
@@ -491,7 +480,6 @@
 	value = 2
 	w_class = 2.0
 	flammable = TRUE
-
 
 /obj/item/stack/material/woolcloth
 	name = "wool cloth"
@@ -543,6 +531,7 @@
 	icon_state = "sheet-brownbearpelt"
 	default_type = "brownbearpelt"
 	value = 3
+
 /obj/item/stack/material/pelt/bearpelt/white
 	name = "white bear pelt"
 	desc = "A pelt from a skinned bear."
@@ -584,6 +573,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
 /obj/item/stack/material/pelt/lionpelt
 	name = "lion pelt"
 	desc = "A pelt from a skinned lion."
@@ -695,7 +685,6 @@
 	..()
 	if (map && !map.civilizations)
 		qdel(src)
-		return
 
 /obj/item/stack/material/pelt/antpelt
 	name = "ant pelt"
@@ -714,7 +703,6 @@
 	flammable = TRUE
 	value = 4
 	w_class = 2.0
-
 
 /obj/item/stack/material/pelt/orcpelt
 	name = "orc skin"
@@ -746,6 +734,7 @@
 	icon_state = "sheet-rglass"
 	default_type = "rglass"
 	value = 6
+	flags = CONDUCT
 
 /obj/item/stack/material/bone
 	name = "bones"
@@ -755,11 +744,13 @@
 	w_class = 2.0
 	value = 0
 	singular_name = "bone"
+
 /obj/item/stack/material/bone/New()
 	..()
 	spawn(7200)
 		if (isturf(loc))
 			qdel(src)
+
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
 	var/mob/living/human/U = user
 	recipes = material.get_recipes_civs(U)
