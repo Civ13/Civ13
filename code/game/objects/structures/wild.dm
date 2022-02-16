@@ -1,3 +1,13 @@
+var/list/seed_list
+var/list/seed_list_sea
+var/list/seed_list_temperate
+var/list/seed_list_tundra
+var/list/seed_list_taiga
+var/list/seed_list_desert
+var/list/seed_list_semiarid
+var/list/seed_list_savanna
+var/list/seed_list_jungle
+
 /obj/structure/wild
 	icon = 'icons/obj/flora/wild.dmi'
 	icon_state = "tree"
@@ -14,7 +24,6 @@
 	not_disassemblable = TRUE
 	var/seedtimer = 1
 	var/mob/living/human/stored_unit = null
-
 	var/edible = FALSE
 	var/leaves = 0
 	var/max_leaves = 0
@@ -28,47 +37,85 @@
 		if (src && branches < max_branches)
 			branches = min(branches+1, max_branches)
 		return
+
 /obj/structure/wild/proc/seedtimer_proc()
 	spawn(6000)
 		seedtimer = 1
 		return
-//picks a biome appropriate seed
+
+/obj/structure/wild/proc/generate_seed_list(var/biome)
+	//generate seed list for empty list, called once per first empty entry in pick_seed_by_biome()
+	var/list/s_list
+	var/obj/item/stack/farming/seeds/seed_check 
+	s_list = typesof(/obj/item/stack/farming/seeds)
+	s_list -= /obj/item/stack/farming/seeds
+	s_list -= /obj/item/stack/farming/seeds/herbs //Technically it's not a seed
+	if (biome <> "")
+		for (var/S in s_list)
+			seed_check = new S
+			if (!(biome in seed_check.biomes))
+				s_list -= S
+			qdel(seed_check)
+	switch (biome)
+		if ("sea")				seed_list_sea = s_list
+		if ("temperate")		seed_list_temperate = s_list
+		if ("tundra")			seed_list_tundra = s_list
+		if ("taiga")			seed_list_taiga = s_list
+		if ("desert")			seed_list_desert = s_list
+		if ("semiarid")			seed_list_semiarid = s_list
+		if ("savanna")			seed_list_savanna = s_list
+		if ("jungle")			seed_list_jungle = s_list
+		else 					seed_list = s_list
+
+/obj/structure/wild/proc/pick_seed_by_biome(var/biome = "")
+	biome = ckey(biome)
+	switch (biome)
+		if ("sea")
+			if (!seed_list_sea)
+				generate_seed_list(biome)
+			return pick(seed_list_sea)
+		if ("temperate")	
+			if (!seed_list_temperate)
+				generate_seed_list(biome)
+			return pick(seed_list_temperate)
+		if ("tundra")
+			if (!seed_list_tundra)
+				generate_seed_list(biome)
+			return pick(seed_list_tundra)
+		if ("taiga")
+			if (!seed_list_taiga)
+				generate_seed_list(biome)
+			return pick(seed_list_taiga)
+		if ("desert")
+			if (!seed_list_desert)
+				generate_seed_list(biome)
+			return pick(seed_list_desert)
+		if ("semiarid")
+			if (!seed_list_semiarid)
+				generate_seed_list(biome)
+			return pick(seed_list_semiarid)
+		if ("savanna")
+			if (!seed_list_savanna)
+				generate_seed_list(biome)
+			return pick(seed_list_savanna)
+		if ("jungle")
+			if (!seed_list_jungle)
+				generate_seed_list(biome)
+			return pick(seed_list_jungle)
+		else
+			if (!seed_list)
+				generate_seed_list(biome)
+			return pick(seed_list)
+
 /obj/structure/wild/proc/pickseed()
 	var/area/caribbean/A = get_area(get_turf(src))
 	if (!A)
 		return
-	var/picked = pick(/obj/item/stack/farming/seeds/agave,/obj/item/stack/farming/seeds/celery,/obj/item/stack/farming/seeds/parsnip,/obj/item/stack/farming/seeds/redpepper,/obj/item/stack/farming/seeds/liquorice,/obj/item/stack/farming/seeds/zucchini,/obj/item/stack/farming/seeds/juniper,/obj/item/stack/farming/seeds/sapodilla,/obj/item/stack/farming/seeds/sapote,/obj/item/stack/farming/seeds/barley,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/beans,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/peyote,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/coca,/obj/item/stack/farming/seeds/lime,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot,/obj/item/stack/farming/seeds/coconut,/obj/item/stack/farming/seeds/flax,/obj/item/stack/farming/seeds/bamboo,)
 	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN)
-		return picked
+		return pick_seed_by_biome()
 	else
-		if (A.climate == "sea")
-			picked = pick(/obj/item/stack/farming/seeds/zucchini,/obj/item/stack/farming/seeds/barley,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/beans,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/lime,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/coconut,/obj/item/stack/farming/seeds/bamboo)
-
-		else if (A.climate == "temperate")
-			picked = pick(/obj/item/stack/farming/seeds/juniper,/obj/item/stack/farming/seeds/beans,/obj/item/stack/farming/seeds/barley,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/lime,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot,/obj/item/stack/farming/seeds/flax)
-
-		else if (A.climate == "tundra")
-			picked = pick(/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/flax)
-
-		else if (A.climate == "taiga")
-			picked = pick(/obj/item/stack/farming/seeds/juniper,/obj/item/stack/farming/seeds/barley,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/flax)
-
-		else if (A.climate == "desert")
-			picked = pick(/obj/item/stack/farming/seeds/liquorice,/obj/item/stack/farming/seeds/redpepper,/obj/item/stack/farming/seeds/agave,/obj/item/stack/farming/seeds/beans,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/peyote,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot)
-
-		else if (A.climate == "semiarid")
-			picked = pick(/obj/item/stack/farming/seeds/parsnip,/obj/item/stack/farming/seeds/celery,/obj/item/stack/farming/seeds/parsley,/obj/item/stack/farming/seeds/beans,/obj/item/stack/farming/seeds/barley,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot)
-
-		else if (A.climate == "savanna")
-			picked = pick(/obj/item/stack/farming/seeds/beans,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/coca,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot)
-
-		else if (A.climate == "jungle")
-			picked = pick(/obj/item/stack/farming/seeds/sapodilla,/obj/item/stack/farming/seeds/sapote,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/coca,/obj/item/stack/farming/seeds/lime,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/coconut,/obj/item/stack/farming/seeds/bamboo)
-
-		else
-			picked = pick(/obj/item/stack/farming/seeds/barley,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/beans,/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/peyote,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/coca,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/coconut,/obj/item/stack/farming/seeds/flax,/obj/item/stack/farming/seeds/bamboo,)
-		return picked
-
+		return pick_seed_by_biome(A.climate)
+		
 /obj/structure/wild/Destroy()
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
@@ -100,15 +147,14 @@
 			return TRUE
 	else
 		return ..()
+
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/hatchet) ||istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe))
+	if (istype(W,/obj/item/weapon/material/hatchet) ||istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe))
 		var/obj/item/weapon/material/HT = W
-
 		visible_message("<span class='danger'>[user] begins to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
-
 		if (do_after(user, 50*HT.chopping_speed, user.loc))
 			health = 0
 			try_destroy()
@@ -128,7 +174,6 @@
 					health -= W.force * 0.2
 				else
 					health -= W.force * 0.20
-
 	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 	user.do_attack_animation(src)
 	try_destroy()
@@ -141,7 +186,6 @@
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		qdel(src)
 		return
-
 
 /obj/structure/wild/bullet_act(var/obj/item/projectile/proj)
 	if (proj.damage > 200 && prob(33)) // makes shrapnel unable to take down trees
@@ -160,7 +204,6 @@
 	sways = TRUE
 	amount = 5
 	layer = 5.11
-
 
 /obj/structure/wild/tree/cactus
 	name = "cactus"
@@ -228,7 +271,6 @@
 	pixel_x = -16
 	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
 
-
 /obj/structure/wild/tree/live_tree/snow
 	name = "tree"
 	icon = 'icons/obj/flora/bigtrees_winter.dmi'
@@ -245,6 +287,7 @@
 	branches = 3
 	max_branches = 3
 	current_icon = 'icons/obj/flora/bigtrees_winter.dmi'
+
 /obj/structure/wild/tree/live_tree/snow/update_icon()
 	..()
 	icon = 'icons/obj/flora/bigtrees_winter.dmi'
@@ -281,6 +324,7 @@
 			else
 				current_icon = 'icons/obj/flora/bigtrees.dmi'
 		update_icon()
+
 /obj/structure/wild/tree/live_tree/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
@@ -358,6 +402,7 @@
 		else if (season in list("FALL","SPRING","Dry Season"))
 			current_icon = 'icons/obj/flora/pinetrees.dmi'
 		update_icon()
+
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
@@ -431,9 +476,9 @@
 					spawn(3000)
 						cooldown_sap = FALSE
 				done = TRUE
-
 	else
 		..()
+
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(45 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
@@ -457,6 +502,7 @@
 		new/obj/item/stack/material/leaf/palm(get_turf(src))
 		qdel(src)
 		return
+
 /obj/structure/wild/palm/New()
 	..()
 	icon_state = pick("palm1","palm2")
@@ -527,6 +573,7 @@
 	density = FALSE
 	health = 20
 	maxhealth = 20
+
 /obj/structure/wild/smallbush/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
@@ -541,10 +588,12 @@
 			user << "There are no seeds to collect here."
 	else
 		..()
+
 /obj/structure/wild/smallbush/fire_act(temperature)
 	if (prob(65 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
 		qdel(src)
+
 /obj/structure/wild/smallbush/New()
 	..()
 	icon_state = "smallbush[rand(1,42)]"
@@ -557,6 +606,7 @@
 	density = FALSE
 	health = 20
 	maxhealth = 20
+
 /obj/structure/wild/smallbush/winter/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
@@ -638,7 +688,6 @@
 	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "tall_grass_[rand(6,9)]"
 
-
 /obj/structure/wild/burnedbush/New()
 	..()
 	icon_state = "burnedbush[rand(1,9)]"
@@ -662,10 +711,10 @@
 			else
 				user << "You couldn't find any good leaves in this plant."
 				healthamount = 0
+			regrow()
 		else
 			user << "There are no leaves to harvest here."
 			return
-
 	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
 		H << "You start foraging for fern leaves..."
 		if (do_after(user, 80, src))
@@ -728,6 +777,7 @@
 	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
+
 //these are under the jungle subtype so they dont change sprites during the winter.
 /obj/structure/wild/jungle/acacia
 	name = "acacia tree"
@@ -740,6 +790,7 @@
 	max_leaves = 1
 	branches = 2
 	max_branches = 2
+
 /obj/structure/wild/jungle/acacia/dead
 	name = "dead acacia tree"
 	icon_state = "african_acacia_dead"
@@ -749,14 +800,17 @@
 	max_leaves = 0
 	branches = 2
 	max_branches = 2
+
 /obj/structure/wild/jungle/acacia/New()
 	..()
 	icon_state = "african_acacia"
 	deadicon_state = "african_acacia_dead"
+
 /obj/structure/wild/jungle/acacia/dead/New()
 	..()
 	icon_state = "african_acacia_dead"
 	deadicon_state = "african_acacia_dead"
+
 /obj/structure/wild/jungle/New()
 	..()
 	icon_state = "tree[rand(1,7)]"
@@ -774,6 +828,7 @@
 	max_leaves = 0
 	branches = 2
 	max_branches = 2
+
 /obj/structure/wild/jungle/medpine/dead
 	name = "dead mediterranean pine tree"
 	icon_state = "med_pine_dead"
@@ -784,10 +839,12 @@
 	max_leaves = 0
 	branches = 2
 	max_branches = 2
+
 /obj/structure/wild/jungle/medpine/New()
 	..()
 	icon_state = "med_pine"
 	deadicon_state = "med_pine_dead"
+
 /obj/structure/wild/jungle/medpine/dead/New()
 	..()
 	icon_state = "med_pine_dead"
@@ -809,7 +866,6 @@
 			new/obj/item/stack/material/leaf(get_turf(src))
 			new/obj/item/stack/material/leaf(get_turf(src))
 		qdel(src)
-		return
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
@@ -866,7 +922,6 @@
 		icon_state = "bush[rand(1,6)]"
 	else
 		icon_state = "rocks[rand(1,3)]"
-
 
 /obj/structure/wild/junglebush/chinchona
 	name = "chinchona"
@@ -944,7 +999,6 @@
 	else
 		..()
 
-
 /obj/structure/wild/jungle/MouseDrop_T(var/mob/living/human/user as mob)
 	if (istype(user, /mob/living/human))
 		if (stored_unit)
@@ -972,6 +1026,7 @@
 			release_stored()
 	else
 		..()
+
 /obj/structure/wild/proc/release_stored()
 	if (stored_unit)
 		if (stored_unit.client)
@@ -1006,4 +1061,3 @@
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/bamboo(get_turf(src))
 		dropwood.amount = 5
 		qdel(src)
-		return

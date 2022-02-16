@@ -1166,7 +1166,7 @@
 /obj/item/weapon/storage/produce_basket
 	name = "produce basket"
 	icon = 'icons/obj/storage.dmi'
-	desc = "A woven basket, used to collect fruits and vegitables."
+	desc = "A woven basket, used to collect fruits and vegetables."
 	icon_state = "produce_basket"
 	item_state = "produce_basket"
 	w_class = 4
@@ -1731,6 +1731,7 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	flags = CONDUCT
 
 /obj/structure/canner/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/can))
@@ -1778,6 +1779,8 @@
 	var/customcolor1 = null
 	var/customcolor2 = null
 	basematerials = list("tin", 0.45)
+	New()
+		flags |= CONDUCT
 
 /obj/item/weapon/can/small
 	name = "empty small can"
@@ -1882,7 +1885,7 @@
 	)
 	var/list/filllist = list(
 		/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives, 
-		/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom,	/obj/item/weapon/reagent_containers/food/snacks/grown/melon, 
+		/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom,	/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon, 
 		/obj/item/weapon/reagent_containers/food/snacks/grown/orange, /obj/item/weapon/reagent_containers/food/snacks/grown/apple, 
 		/obj/item/weapon/reagent_containers/food/snacks/grown/banana, /obj/item/weapon/reagent_containers/food/snacks/grown/coconut, 
 		/obj/item/weapon/reagent_containers/food/snacks/grown/tomato, /obj/item/weapon/reagent_containers/food/snacks/grown/beans, 

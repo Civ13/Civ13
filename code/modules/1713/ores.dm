@@ -356,6 +356,7 @@
 	icon_state = "ore_mercury"
 	singular_name = "rock"
 	flammable = FALSE
+	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W

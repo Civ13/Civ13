@@ -356,6 +356,11 @@
 	desc = "The Italian flag."
 	icon_state = "flag_italy"
 
+/obj/structure/sign/flag/finland
+	name = "Finnish flag"
+	desc = "The flag of Finland."
+	icon_state = "flag_finland"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."

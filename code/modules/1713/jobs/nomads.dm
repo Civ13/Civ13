@@ -20,6 +20,8 @@
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
 			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
 			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
+	if (map.chad_mode)
+		add_note("Chad Mode", "Starting epoch is the Stone Age, research is done by sacrificing players <b>Sacrificing someone from your own faction will reduce the research level!</b>. Reduced starting items and more hostile conditions.")
 	if (!map.chad_mode)
 
 //knives and other tools/////////////////////////////////////////////////

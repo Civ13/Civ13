@@ -1043,9 +1043,9 @@
 	color = "#562E00D9"
 	strength = 15
 
-/datum/reagent/ethanol/melonliquor
-	name = "Melon Liquor"
-	id = "melonliquor"
+/datum/reagent/ethanol/watermelonliquor
+	name = "Watermelon Liquor"
+	id = "watermelonliquor"
 	description = "A relatively sweet and fruity 46 proof liquor."
 	taste_description = "fruity alcohol"
 	color = "#138808" // rgb: 19, 136, 8
