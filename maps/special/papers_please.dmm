@@ -5,6 +5,27 @@
 "e" = (/turf/floor/plating/road/yellowline,/area/caribbean)
 "f" = (/obj/structure/post_execution,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "g" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean)
+"h" = (/obj/structure/window/barrier/concrete,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"i" = (/obj/covers/cement_wall,/turf/floor/wood,/area/caribbean)
+"j" = (/turf/floor/wood,/area/caribbean)
+"k" = (/obj/effect/floor_decal/industrial/hatch,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"l" = (/obj/structure/gate/blast,/turf/floor/wood,/area/caribbean)
+"m" = (/obj/structure/simple_door/key_door/soviet,/turf/floor/wood,/area/caribbean)
+"n" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/wood,/area/caribbean)
+"o" = (/obj/structure/metal_detector,/turf/floor/wood,/area/caribbean)
+"p" = (/obj/structure/closet,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/wood,/area/caribbean)
+"q" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/wood,/area/caribbean)
+"r" = (/obj/structure/gatecontrol/blastcontrol,/turf/floor/wood,/area/caribbean)
+"s" = (/obj/effect/floor_decal/industrial/hatch,/obj/effect/floor_decal/industrial/hatch,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"t" = (/obj/structure/window/clean/reinforced,/obj/covers/jail/steeljail,/turf/floor/wood,/area/caribbean)
+"u" = (/obj/structure/table/modern/retable,/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"},/turf/floor/wood,/area/caribbean)
+"v" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"w" = (/obj/structure/lamp/lamp_small/alwayson{dir = 1; icon_state = "bulb"},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"x" = (/obj/effect/floor_decal/industrial/danger,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"y" = (/obj/effect/floor_decal/industrial/outline,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"z" = (/obj/structure/window/barrier/railing,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"A" = (/obj/structure/window/barrier/railing{dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"B" = (/obj/item/weapon/grenade/suicide_vest,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -37,6 +58,9 @@ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbhhhhhhhhhhhhhhhhaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkkkkkkaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkkkkkkaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -63,34 +87,31 @@ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cccccccafacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaiiiliiiiimbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaainjoipjjjqbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkkkkkijjjirjjjjbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkksssijjjtjjjjjbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbhhhhhhhhhhhhhhhijjjujjjjqbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkkkkkijjjtjjjjjbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkkkkkijjjirjjjjbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaainjjijjjjqbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaavvvaaavvvaaaiiiliiiiiibbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaawaaaaaawaaaaaw
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxxxaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayyyaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyyyyyaayyyyyyaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyyyyyaayyyyyyaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyaayyaayyaayyaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyaayyaayyaayyaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyaayyaayyaayyaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyaayyaayyaayyaayyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyaayyyyyyaayyyyyyyaaaaaaaaa
+cccccccaaacccccccccccccccccccccayyaayyyyyyaayyyyyyyaaaaaaaaa
+cccccccaaaccccccccccccccccccccczyyzzzzzzzzzzzzzzzzzzzzzzzzzz
+cccccccafacccccccccccccccccccccAaaAAAAAAAAAAAAAAAAAAAAAAAAAA
 cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 cccccccaaacccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 cccccccccccccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -101,7 +122,7 @@ cccccccgggcccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 cccccccgggcccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 cccccccgggcccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 gggggggggggggggggggggggggggggggaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-gggggggggggggggggggggggggggggggaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+gggggggggggggggggggggggggggggggaaaaaaaaaaaaBaaaaaaaaaaaaaaaa
 gggggggggggggggggggggggggggggggaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 gggggggggggggggggggggggggggggggaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 gggggggggggggggggggggggggggggggaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
