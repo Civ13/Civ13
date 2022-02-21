@@ -50,7 +50,7 @@ var/list/seed_list_jungle
 	s_list = typesof(/obj/item/stack/farming/seeds)
 	s_list -= /obj/item/stack/farming/seeds
 	s_list -= /obj/item/stack/farming/seeds/herbs //Technically it's not a seed
-	if (biome <> "")
+	if (biome)
 		for (var/S in s_list)
 			seed_check = new S
 			if (!(biome in seed_check.biomes))

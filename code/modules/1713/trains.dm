@@ -56,7 +56,8 @@
 				if (R.dir == EAST)
 					icon_state = "rails_split1"
 					dir = OPPOSITE_DIR(R.dir)
-	update_icon()
+	spawn(10) 
+		update_icon()
 
 /obj/structure/rails/regular/horizontal/New()
 	..()
