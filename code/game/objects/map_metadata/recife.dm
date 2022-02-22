@@ -8,20 +8,20 @@
 	respawn_delay = 900
 	no_hardcore = TRUE
 	faction_organization = list(
-		DUTCH,
-		PORTUGUESE)
+		PORTUGUESE,
+		DUTCH)
 
 	roundend_condition_sides = list(
+		list(PORTUGUESE) = /area/caribbean/colonies/portuguese,
 		list(DUTCH) = /area/caribbean/colonies/spanish, //on purpose, to prevent capture
-		list(PORTUGUESE) = /area/caribbean/colonies/portuguese
 		)
 	age = "1713"
 	ordinal_age = 3
-	faction_distribution_coeffs = list(DUTCH = 0.6, PORTUGUESE = 0.4)
+	faction_distribution_coeffs = list(PORTUGUESE = 0.4, DUTCH = 0.6)
 	battle_name = "Battle of Recife"
 	mission_start_message = "<font size=4>Dutch forces are sieging the Portuguese town of Recife! They have <b>40 minutes</b> to capture it. Dutch may attack after <b>10 minutes</b>.</font><br><font size=2>The key points that need to be captured are: <b>Governors Office, Army Barracks (Fortress)</b></font>"
-	faction1 = DUTCH
-	faction2 = PORTUGUESE
+	faction1 = PORTUGUESE
+	faction2 = DUTCH
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "Siege"
 obj/map_metadata/recife/job_enabled_specialcheck(var/datum/job/J)

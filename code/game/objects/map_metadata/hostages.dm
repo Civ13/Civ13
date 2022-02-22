@@ -9,8 +9,8 @@
 	min_autobalance_players = 100
 	no_winner ="The operation is still underway."
 	faction_organization = list(
-		AMERICAN,
-		ARAB)
+		ARAB,
+		AMERICAN)
 
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/greek,
@@ -18,11 +18,11 @@
 		)
 	age = "2014"
 	ordinal_age = 8
-	faction_distribution_coeffs = list(AMERICAN = 0.4, ARAB = 0.6)
+	faction_distribution_coeffs = list(ARAB = 0.6, ARAB = 0.6)
 	battle_name = "hostage rescue"
 	mission_start_message = "<font size=4>The insurgents are holding <b>American</b> embassy staff hostage! The Special Forces must rescue them within <b>35 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>1</b> point per hostage kept alive and in their control by the end of the 20 minutes.</font>"
-	faction1 = AMERICAN
-	faction2 = ARAB
+	faction1 = ARAB
+	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
@@ -57,10 +57,10 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 
-/obj/map_metadata/hostages/faction2_can_cross_blocks()
+/obj/map_metadata/hostages/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/hostages/faction1_can_cross_blocks()
+/obj/map_metadata/hostages/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 

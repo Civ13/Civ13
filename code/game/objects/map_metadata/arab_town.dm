@@ -7,20 +7,20 @@
 	no_winner = "The operation is still underway."
 
 	faction_organization = list(
-		AMERICAN,
-		ARAB)
+		ARAB,
+		AMERICAN)
 
 	roundend_condition_sides = list(
-		list(AMERICAN) = /area/caribbean/british,
-		list(ARAB) = /area/caribbean/arab
+		list(ARAB) = /area/caribbean/arab,
+		list(AMERICAN) = /area/caribbean/british
 		)
 	age = "2006"
 	ordinal_age = 8
-	faction_distribution_coeffs = list(AMERICAN = 0.5, ARAB = 0.5)
+	faction_distribution_coeffs = list(ARAB = 0.5, AMERICAN = 0.5)
 	battle_name = "battle for the town"
 	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within <b>40 minutes</b>!</font>"
-	faction1 = AMERICAN
-	faction2 = ARAB
+	faction1 = ARAB
+	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
@@ -33,10 +33,10 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/arab_town/faction2_can_cross_blocks()
+/obj/map_metadata/arab_town/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/arab_town/faction1_can_cross_blocks()
+/obj/map_metadata/arab_town/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 

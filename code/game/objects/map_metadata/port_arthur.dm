@@ -7,27 +7,27 @@
 	no_hardcore = TRUE
 
 	faction_organization = list(
-		JAPANESE,
-		RUSSIAN)
+		RUSSIAN,
+		JAPANESE)
 
 	roundend_condition_sides = list(
-		list(JAPANESE) = /area/caribbean/island,
 		list(RUSSIAN) = /area/caribbean/russian/land/inside/command,
+		list(JAPANESE) = /area/caribbean/island,
 		)
 	age = "1905"
-	faction_distribution_coeffs = list(JAPANESE = 0.7, RUSSIAN = 0.3)
+	faction_distribution_coeffs = list(RUSSIAN = 0.3, JAPANESE = 0.7)
 	battle_name = "Siege of Port Arthur"
 	mission_start_message = "<font size=3>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Port Arthur! The Russians will win if they hold the fort for <b>30 minutes</b> The Japanese will win if the manage to hold the fort for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
-	faction1 = JAPANESE
-	faction2 = RUSSIAN
+	faction1 = RUSSIAN
+	faction2 = JAPANESE
 	ordinal_age = 5
 	songs = list(
 		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
 	gamemode = "Siege"
-/obj/map_metadata/port_arthur/faction2_can_cross_blocks()
+/obj/map_metadata/port_arthur/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/port_arthur/faction1_can_cross_blocks()
+/obj/map_metadata/port_arthur/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/port_arthur/job_enabled_specialcheck(var/datum/job/J)
