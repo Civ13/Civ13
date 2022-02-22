@@ -277,37 +277,28 @@
 
 /datum/reagents/proc/remove_any(var/amount = 1) // Removes up to [amount] of reagents from [src]. Returns actual amount removed.
 	amount = min(amount, total_volume)
-
 	if (!amount)
-		return
-
+		return 0
 	var/part = amount / total_volume
-
 	for (var/datum/reagent/current in reagent_list)
 		var/amount_to_remove = current.volume * part
 		remove_reagent(current.id, amount_to_remove, TRUE)
-
 	update_total()
 	handle_reactions()
 	return amount
 
 /datum/reagents/proc/trans_to_holder(var/datum/reagents/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE) // Transfers [amount] reagents from [src] to [target], multiplying them by [multiplier]. Returns actual amount removed from [src] (not amount transferred to [target]).
 	if (!target || !istype(target))
-		return
-
+		return 0
 	amount = max(0, min(amount, total_volume, target.get_free_space() / multiplier))
-
 	if (!amount)
-		return
-
+		return 0
 	var/part = amount / total_volume
-
 	for (var/datum/reagent/current in reagent_list)
 		var/amount_to_transfer = current.volume * part
 		target.add_reagent(current.id, amount_to_transfer * multiplier, current.get_data(), safety = TRUE) // We don't react until everything is in place
 		if (!copy)
 			remove_reagent(current.id, amount_to_transfer, TRUE)
-
 	if (!copy)
 		handle_reactions()
 	target.handle_reactions()
@@ -328,7 +319,7 @@
 		return trans_to_turf(target, amount, multiplier, copy)
 	if (isobj(target) && target.is_open_container())
 		return trans_to_obj(target, amount, multiplier, copy)
-	return FALSE
+	return 0
 
 //Splashing reagents is messier than trans_to, the target's loc gets some of the reagents as well.
 /datum/reagents/proc/splash(var/atom/target, var/amount = TRUE, copy = FALSE)
@@ -435,17 +426,13 @@
 
 /datum/reagents/proc/trans_to_obj(var/obj/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE) // Objects may or may not; if they do, it's probably a beaker or something and we need to transfer properly; otherwise, just touch.
 	if (!target || !target.simulated)
-		return
-
+		return 0
 	if (!target.reagents)
 		var/datum/reagents/R = new /datum/reagents(amount * multiplier)
 		. = trans_to_holder(R, amount, multiplier, copy)
 		R.touch_obj(target)
-		return
-
+		return 0
 	return trans_to_holder(target.reagents, amount, multiplier, copy)
 
-/* Atom reagent creation - use it all the time */
-
-/atom/proc/create_reagents(var/max_vol)
+/atom/proc/create_reagents(var/max_vol) /* Atom reagent creation - use it all the time */
 	reagents = new/datum/reagents(max_vol, src)

@@ -31,7 +31,7 @@
 		H.remove_from_mob(POT)
 		POT.loc = src.loc
 		POT.on_stove = TRUE
-		return
+		return TRUE
 
 	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
 		fuel += I.amount

@@ -1,3 +1,5 @@
+//TO DO TODO: CHECK ALL attack_by it MUST return TRUE or FALSE if we don't want after_atttack call 
+
 //var/const/MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK = 0.1 //it's good values, but if no restoration of mood by resting - no way to use it
 //var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0.05
 /var/const/MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK = 0 //setting it to 0, because have no normal mood restoration TO DO TODO: make some mood restoration on resting and sleeping, also make meditation (religion?)
@@ -693,32 +695,32 @@
 		if (!D.dried_type)
 			if (H) 
 				H << "<span class='warning'>\The [D.name] is not for drying.</span>"
-			return //This can't be dryed
+			return TRUE//This can't be dryed
 		if (!D.dry_size)
-			return //ERROR
+			return TRUE//ERROR
 		if (D.rotten)
 			if (H) 
 				H << "<span class='warning'>\The [D.name] is rotten.</span>"
-			return
+			return TRUE
 		if (D.dry_size>15)
 			if (H) 
 				H << "<span class='warning'>\The [D.name] not fit here!</span>"
-			return
+			return TRUE
 		if (!hang_on(D))
 			if (H) 
 				H << "<span class='warning'>Not enough room for one more [D.name]!</span>"
-			return
+			return TRUE
 		if (H) 
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(D)] to dry.</span>", 
 				"<span class='notice'>You hang \a [normal_item_name(D)] to dry.")
-			return
+			return TRUE
 	if (istype(W,/obj/item/weapon/wrench))
 		wrench_action(H)
-		return
+		return TRUE
 	if (istype(W,/obj/item/weapon/hammer))
 		hammer_action(H, W, 110, list("/obj/item/stack/material/wood"), list(4))
-		return
+		return TRUE
 	..(W, H)
 
 /obj/structure/dehydrator/proc/dry_process(var/this_process = null)
@@ -1053,7 +1055,6 @@
 		L.orient2hud(user)
 
 /obj/item/weapon/storage/seed_collector/slot_orient_objs(rows, cols, list/obj/item/display_contents, Xcord, Ycord)
-	//TO DO TODO: Add dark seeds in .dmi, because seeds with dark color gave very dark and low readable text
 	..()
 	for (var/obj/item/stack/farming/seeds/S in contents)
 		S.maptext = "<font style='text-color: white; font-size: 8pt; font-family: sans-serif; -dm-text-outline: 1px black; vertical-align: top; text-align: right'>[S.amount]</font><br>"
@@ -1063,8 +1064,7 @@
 //  Ore collector  /////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 // TO DO TODO: save-load mechanics MUST be in storage.dm - check it and fix it if needs.
-// TO DO TODO: check CONDUIT flag changing in storage.dm, implement it here if not.
-// TO DO TODO: Maybe need dirt collector? What about other raw materials collectors? But: think for balance before.
+// TO DO TODO: Maybe need dirt collector, cotton collector and so on? What about other raw materials collectors? But: think for balance before.
 /obj/item/weapon/storage/ore_collector
 	name = "ore collector"
 	icon = 'icons/obj/storage.dmi'
@@ -1239,6 +1239,9 @@
 //TO DO TODO: Some kind of mechanical energy must be needed to work.
 //TO DO TODO: Check /obj/structure/oil_spring in code... it's need to be cleaned! BTW, all oil_fires.dm must be cleaned
 //TO DO TODO: Make petroleum production more realistic.... maybe, or not
+//TO DO TODO: Clean fuckups in oil_fires.dm 
+//TO DO TODO: Make different types of blood/oil (look at glass.dm)
+//TO DO TODO: Clean fuckups with item/flashlight
 /obj/structure/oilwell
 	name = "wooden oil well"
 	desc = "An oil well, extracting petroleum to a barrel."
@@ -1359,7 +1362,7 @@
 //TO DO TODO: Rework books crafting, they must be crafted from paper or parchments (if it is a book). Parchments book is a different item from paper book.
 //TO DO TODO: Rework paper crafting. It's must be different from age to age.
 //TO DO TODO: below are not completed rework of printing press... Complete it LATER, not now. 
-//TO DO TODO: Completely rework book "eating"... and stones eating, yes, too. After researching book don't explodes or something other.
+//TO DO TODO: languages for text... many work at /obj/item/weapon/pen , languages for books, languages for all what may be wroten. 
 /*
 /obj/structure/printingpress
 	name = "printing press"

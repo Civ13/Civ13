@@ -318,7 +318,7 @@
 	L.reveal_blood()
 
 /datum/reagent/petroleum
-	name = "Petroleoum"
+	name = "Petroleum"
 	id = "petroleum"
 	description = "Unrefined crude oil. Sticky and flammable."
 	taste_description = "oil"

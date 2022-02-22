@@ -208,6 +208,7 @@
 	var/sand_amount = FALSE
 	value = 0
 	flags = FALSE
+
 /obj/item/weapon/barrier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		if (W.reagents.has_reagent("water", 10))
@@ -215,7 +216,7 @@
 			user << "You mold the dirt and water into clay."
 			new/obj/item/stack/material/clay(user.loc, 2)
 			qdel(src)
-			return
+			return TRUE //resolving attack
 
 /obj/item/weapon/barrier/attack_self(mob/user)
 	user << "You start building the dirt blocks wall..."

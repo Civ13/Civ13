@@ -33,7 +33,7 @@ var/global/list/image/splatter_cache=list()
 //	fluorescent = FALSE
 	if (invisibility != 100)
 		invisibility = 100
-		amount = FALSE
+		amount = 0
 		processing_objects -= src
 	..(ignore=1)
 
