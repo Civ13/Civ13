@@ -2137,7 +2137,7 @@ RECIPE: /material/wood/,campfire,/obj/structure/oven/fireplace,4,140,1,1,kitchen
 RECIPE: /material/wood/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/wood/,wood bowl,/obj/item/kitchen/wood_bowl,1,40,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,1,kitchen,19,0,0,8,null
-RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel/empty,5,75,1,1,kitchen,19,0,0,8,null
+RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel,5,75,1,1,kitchen,19,0,0,8,null
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,kitchen,20,0,0,8,null
 RECIPE: /material/wood/,paper cup,/obj/item/weapon/reagent_containers/food/drinks/sillycup,1,30,0,1,kitchen,105,0,0,8,null
 

@@ -1,22 +1,10 @@
-/*
-	Click code cleanup
-	~Sayu
-*/
+// decisecond click delay (above and beyond mob/next_move)
+/mob/var/next_click = 0
 
-// TRUE decisecond click delay (above and beyond mob/next_move)
-/mob/var/next_click = FALSE
-
-/*
-	Before anything else, defer these calls to a per-mobtype handler.  This allows us to
-	remove istype() spaghetti code, but requires the addition of other handler procs to simplify it.
-
-	Alternately, you could hardcode every mob's variation in a flat ClickOn() proc; however,
+/*	Alternately, you could hardcode every mob's variation in a flat ClickOn() proc; however,
 	that's a lot of code duplication and is hard to maintain.
-
-	Note that this proc can be overridden, and is in the case of screen objects.
-*/
-
-/atom/Click(var/location, var/control, var/params) // This is their reaction to being clicked on (standard proc)
+	Note that this proc can be overridden, and is in the case of screen objects.*/
+/atom/Click(var/location, var/control, var/params) 
 	if (src)
 		usr.ClickOn(src, params)
 
@@ -24,109 +12,98 @@
 	if (src)
 		usr.DblClickOn(src, params)
 
-/*
-	Standard mob ClickOn()
+/*	Standard mob ClickOn()
 	Handles exceptions: Buildmode, middle click, modified clicks, mech actions
-
-	After that, mostly just check your state, check whether you're holding an item,
-	check whether you're adjacent to the target, then pass off the click to whoever
-	is recieving it.
+	  After that, mostly just check your state, check whether you're holding an item,
+	  check whether you're adjacent to the target, then pass off the click to whoever
+	  is recieving it.
 	The most common are:
 	* mob/UnarmedAttack(atom,adjacent) - used here only when adjacent, with no item in hand; in the case of humans, checks gloves
 	* atom/attackby(item,user) - used only when adjacent
 	* item/afterattack(atom,user,adjacent,params) - used both ranged and adjacent
-	* mob/RangedAttack(atom,params) - used only ranged, only used for tk and laser eyes but could be changed
-*/
-
+	* mob/RangedAttack(atom,params) - used only ranged, only used for tk and laser eyes but could be changed */
 /mob/proc/ClickOn(var/atom/A, var/params)
-
 	if (world.time <= next_click) // Hard check, before anything else, to avoid crashing
-		return
-
+		return 
 	next_click = world.time + 1
-
-	/*if (client.buildmode)
+	/*if (client.buildmode)  //unused now
 		build_click(src, client.buildmode, params, A)
 		return*/
-
 	var/list/modifiers = params2list(params)
+	var/icon_x = text2num(modifiers["icon-x"])
+	var/icon_y = text2num(modifiers["icon-y"])
 	if (modifiers["shift"] && modifiers["ctrl"])
 		CtrlShiftClickOn(A)
-		return TRUE
+		return 
 	if (modifiers["middle"])
 		MiddleClickOn(A)
-		return TRUE
+		return 
 	if (modifiers["shift"])
 		ShiftClickOn(A)
-		return FALSE
-	if (modifiers["alt"]) // alt and alt-gr (rightalt)
+		return 
+	if (modifiers["alt"])
 		AltClickOn(A)
-		return TRUE
+		return 
 	if (modifiers["ctrl"])
 		CtrlClickOn(A)
-		return TRUE
-
-	// can't click on stuff when we're lying, unless it's a bed
-	if (ishuman(src))
+		return 
+	if (ishuman(src)) //src is user who is click and human
 		var/mob/living/human/H = src
-		if (H.football && istype(H.shoes, /obj/item/clothing/shoes/football))
-			var/obj/item/football/FB = H.football
-			H.do_attack_animation(H.football)
-			H.football = null
-			FB.owner = null
-			FB.last_owner = H
-			FB.throw_at(A, FB.throw_range, FB.throw_speed, H)
-			FB.owner = null
-			H.football = null
-			H.do_attack_animation(get_step(H,H.dir))
-			playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
-			visible_message("[src] kicks \the [FB.name].")
-			return
-		else if (!H.football && ishuman(A) && get_dist(H,A) <= 1 && istype(H.shoes, /obj/item/clothing/shoes/football)) //if we dont have the ball, try to apply pressure and take the ball without tackling
-			var/mob/living/human/HM = A
-			if (HM.civilization != H.civilization && H.stats["stamina"][1] >= 7) //no pressure on same team
-				H.setClickCooldown(10)
-				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 7, 0)
-				H.do_attack_animation(HM)
-				var/obj/item/football/opponent_has_ball = null
-				if (HM.football)
-					opponent_has_ball = HM.football
-				if (prob(35) && opponent_has_ball)
-					H.visible_message("<font color='red'>[H] takes the ball from [HM]!</font>")
-					playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
-					HM.football = null
-					opponent_has_ball.last_owner = H
-					opponent_has_ball.owner = H
-					H.football = opponent_has_ball
-					opponent_has_ball.forceMove(H.loc)
-				else
-					H.visible_message("<font color='yellow'>[H] pressures [HM]!</font>")
-					H.do_attack_animation(HM)
-					playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+		if (istype(H.shoes, /obj/item/clothing/shoes/football)) //TODO TO DO: move it to football.dm
+			if (H.football)  
+				var/obj/item/football/FB = H.football
+				H.do_attack_animation(H.football)
+				H.football = null
+				FB.owner = null
+				FB.last_owner = H
+				FB.throw_at(A, FB.throw_range, FB.throw_speed, H)
+				FB.owner = null
+				H.football = null
+				H.do_attack_animation(get_step(H,H.dir))
+				playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
+				visible_message("[src] kicks \the [FB.name].")
 				return
-		if (istype(H.get_active_hand(),/obj/item/weapon/flamethrower))
-			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
-			var/cdir = get_dir(H,A)
-			FL.fire(H,cdir)
-
-		if (istype(H.buckled, /obj/structure/bed/chair/commander))
-			if (istype(H.r_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
-				var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P = H.r_hand
-				P.rangecheck(H,A)
-			else if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
-				var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P = H.l_hand
-				P.rangecheck(H,A)
-
-	// can't click on anything when we're hanged
-	for (var/obj/structure/noose/N in get_turf(src))
+			else if (ishuman(A) && get_dist(H,A) <= 1) //if we dont have the ball, try to apply pressure and take the ball without tackling
+				var/mob/living/human/HM = A
+				if (HM.civilization != H.civilization && H.stats["stamina"][1] >= 7) //no pressure on same team
+					H.setClickCooldown(10)
+					H.stats["stamina"][1] = max(H.stats["stamina"][1] - 7, 0)
+					H.do_attack_animation(HM)
+					var/obj/item/football/opponent_has_ball = null
+					if (HM.football)
+						opponent_has_ball = HM.football
+					if (prob(35) && opponent_has_ball)
+						H.visible_message("<font color='red'>[H] takes the ball from [HM]!</font>")
+						playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
+						HM.football = null
+						opponent_has_ball.last_owner = H
+						opponent_has_ball.owner = H
+						H.football = opponent_has_ball
+						opponent_has_ball.forceMove(H.loc)
+					else
+						H.visible_message("<font color='yellow'>[H] pressures [HM]!</font>")
+						H.do_attack_animation(HM)
+						playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+					return
+			if (istype(H.get_active_hand(), /obj/item/weapon/flamethrower)) //TO DO TODO: move it to flamethrower.dm
+				var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
+				var/cdir = get_dir(H,A)
+				FL.fire(H,cdir)
+			if (istype(H.buckled, /obj/structure/bed/chair/commander)) //TO DO TODO: move it to wheels.dm
+				var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P
+				if (istype(H.r_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
+					P = H.r_hand
+					P.rangecheck(H,A)
+				else if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
+					P = H.l_hand
+					P.rangecheck(H,A)
+	for (var/obj/structure/noose/N in get_turf(src)) // can't click on anything when we're hanged
 		if (N.hanging == src)
 			return
-
 	if (lying && istype(A, /turf/floor))
 		if (A.Adjacent(src))
 			scramble(A)
 			return
-
 	if (stat || paralysis || stunned || weakened)
 		return
 	if (!prone)
@@ -147,41 +124,29 @@
 			transform = M
 	if (!canClick()) // in the year 2000...
 		return
-
-	// stop looking down a ladder
-	if (istype(A, /obj/structure/multiz/ladder/ww2))
+	if (istype(A, /obj/structure/multiz/ladder/ww2)) // stop looking down a ladder 
 		var/mob/living/human/H = src
 		if (istype(H) && H.laddervision)
 			H.update_laddervision(null)
 			H.visible_message("<span class = 'notice'>[H] stops looking [H.laddervision_direction()] the ladder.</span>")
 			return
-
 	if (restrained())
 		setClickCooldown(10)
 		RestrainedClickOn(A)
-		return TRUE
-
+		return
 	if (in_throw_mode)
 		if (isturf(A) || isturf(A.loc))
 			throw_item(A)
-			return TRUE
+			return
 		throw_mode_off()
-
-	var/obj/item/W = get_active_hand()
-
+	var/obj/item/W = get_active_hand() //trying to resolve an item in hand
 	if (!W)
-
 		var/atom/movable/special_MG = null
-
-		if (using_MG)
+		if (using_MG) //TO DO TODO: move to mg.dm
 			special_MG = using_MG
-
 		if (special_MG && special_MG.loc)
-
 			var/obj/item/weapon/gun/projectile/automatic/stationary/MG = special_MG
-
 			var/can_fire = FALSE
-
 			switch (MG.dir)
 				if (EAST)
 					if (A.x > MG.x)
@@ -203,24 +168,16 @@
 						can_fire = TRUE
 					else
 						can_fire = FALSE
-
-			if (!can_fire)
-				goto skip
-
-			MG.Fire(A, src, force = TRUE)
-
-			skip
-
-
-	if (W && W == A) // Handle attack_self
+			if (can_fire)
+				MG.Fire(A, src, force = TRUE)
+	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src)
 		if (hand)
 			update_inv_l_hand(0)
 		else
 			update_inv_r_hand(0)
 		return TRUE
-
-	for(var/obj/structure/vehicleparts/frame/F in src.loc)
+	for(var/obj/structure/vehicleparts/frame/F in src.loc) 
 		var/found = FALSE
 		if(istype(F, /obj/structure/vehicleparts/frame/ship))
 			continue
@@ -232,13 +189,12 @@
 				found = TRUE
 		if (!found)
 			return
-
 	//Atoms on your person
 	// A is your location but is not a turf; or is on you (backpack); or is on something on you (box in backpack); sdepth is needed here because contents depth does not equate inventory storage depth.
 	var/sdepth = A.storage_depth(src)
 	if ((!isturf(A) && A == loc) || (sdepth != -1 && sdepth <= 1))
 		if (W)
-			var/resolved = W.resolve_attackby(A, src)
+			var/resolved = W.resolve_attackby(A, src, icon_x, icon_y) // Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
 			if (!resolved && A && W)
 				if (istype(W, /obj/item/weapon/gun))
 					var/obj/item/weapon/gun/G = W
@@ -254,40 +210,29 @@
 			if (ismob(A)) // No instant mob attacking
 				setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			UnarmedAttack(A, TRUE)
-		return TRUE
-
+		return
 	if (!isturf(loc)) // This is going to stop you from telekinesing from inside a closet, but I don't shed many tears for that
 		return
-
 	//Atoms on turfs (not on your person)
 	// A is a turf or is on a turf, or in something on a turf (pen in a box); but not something in something on a turf (pen in a box in a backpack)
 	sdepth = A.storage_depth_turf()
 	if (isturf(A) || isturf(A.loc) || (sdepth != -1 && sdepth <= 1))
 		if (A.Adjacent(src) || (W && W == get_active_hand() && (istype(W, /obj/item/weapon/barrier))) && A.rangedAdjacent(src)) // see adjacent.dm
-
 			dir = get_dir(src, A)
-
 			if (W && istype(W, /obj/item/weapon/barrier) && A.rangedAdjacent(src) && (isturf(A) || istype(A, /obj/structure/window/barrier/incomplete)))
 				if (get_active_hand() != W)
 					return
-
 				if (!istype(A, /obj/structure/window/barrier/incomplete))
 					A = get_turf(A)
 				else
 					if (!A.Adjacent(src)) // if we're adding to a sandbag wall, let us stand anywhere in range(1)
 						return
-
 				var/needs_to_be_in_front = istype(A, /turf)
-
 				if (needs_to_be_in_front) // but if we're making a new sandbag wall, we have to click right in front of us.
 					if (A != get_step(src, dir))
 						return
-
-
-		//	setMoveCooldown(5)
 			if (W)
-				// Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
-				var/resolved = W.resolve_attackby(A,src)
+				var/resolved = W.resolve_attackby(A, src, icon_x, icon_y) // Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
 				if (!resolved && A && W)
 					if (istype(W, /obj/item/weapon/gun))
 						var/obj/item/weapon/gun/G = W
@@ -318,7 +263,7 @@
 					W.afterattack(A, src, FALSE, params)
 			else
 				RangedAttack(A, params)
-	return TRUE
+	return
 
 /mob/proc/setClickCooldown(var/timeout)
 	next_move = max(world.time + timeout, next_move)

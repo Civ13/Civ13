@@ -19,23 +19,45 @@ item/apply_hit_effect() can be overriden to do whatever you want. However "stand
 avoid code duplication. This includes items that may sometimes act as a standard weapon in addition to having other effects (e.g. stunbatons on harm intent).
 */
 
-// Called when the item is in the active hand, and clicked; alternately, there is an 'activate held object' verb or you can hit pagedown.
-/obj/item/proc/attack_self(mob/user)
-	return
+/atom/proc/resolve_attack_obj(atom/A, mob/user, icon_x, icon_y)
+	return src.attack_obj(A, user, icon_x, icon_y)
 
-//I would prefer to rename this to attack(), but that would involve touching hundreds of files.
-/obj/item/proc/resolve_attackby(atom/A, mob/user)
+/atom/proc/resolve_attack_turf(atom/A, mob/user, icon_x, icon_y)
+	return src.attack_turf(A, user, icon_x, icon_y)
+
+/obj/item/proc/resolve_attackby(atom/A, mob/user, icon_x, icon_y) //resolving attack of atom A by src item in active hand of user
+	var/resolved = FALSE
 	add_fingerprint(user)
-	return A.attackby(src, user)
+	if (isturf(A))
+		resolved = src.resolve_attack_turf(A, user, icon_x, icon_y)
+		if (resolved)
+			return TRUE
+	resolved = A.attackby(src, user, icon_x, icon_y)
+	if (resolved)
+		return TRUE
+	if (isobj(A))
+		resolved = src.resolve_attack_obj(A, user, icon_x, icon_y)
+		if (resolved)
+			return TRUE
+	return FALSE
 
-// No comment
-/atom/proc/attackby(obj/item/W, mob/user)
-	return
+/obj/item/proc/attack_self(mob/user) // called when the item is in the active hand, and clicked; alternately, there is an 'activate held object' verb or you can hit Z.
+	return FALSE //procedure prototype; if not defined in the child object, it returns FALSE, as it does not resolve the action to complete
+
+/atom/proc/attackby(obj/item/W, mob/user, icon_x, icon_y) 
+	return FALSE //procedure prototype; if not defined in the child object, it returns FALSE, as it does not resolve the action to complete
+
+/atom/proc/attack_turf(turf/attacked, mob/user, icon_x, icon_y) 
+	return FALSE //procedure prototype; if not defined in the child object, it returns FALSE, as it does not resolve the action to complete
+
+/atom/proc/attack_obj(obj/attacked, mob/user, icon_x, icon_y) 
+	return FALSE //procedure prototype; if not defined in the child object, it returns FALSE, as it does not resolve the action to complete
 
 /atom/movable/attackby(obj/item/W, mob/user)
 	if (!(W.flags & NOBLUDGEON) && !(istype(W, /obj/item/weapon/covers)))
 		visible_message("<span class='danger'>[src] has been hit by [user] with [W].</span>")
 	return
+
 /mob/living/attackby(obj/item/I, mob/user)
 	if (!ismob(user))
 		return FALSE
@@ -55,7 +77,6 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		pixel_x = (text2num(click_params["icon-x"]) - 16)
 		pixel_y = (text2num(click_params["icon-y"]) - 16)
 		layer = user.layer + 0.1
-
 		if (!isnum(click_params))
 			return
 	return
@@ -73,28 +94,21 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		else
 			H << "<span class='warning'>You need to catch your breath!</span>"
 			return
-	/////////////////////////
 	user.lastattacked = M
 	M.lastattacker = user
-
 	if (!no_attack_log)
 		user.attack_log += "\[[time_stamp()]\]<font color='red'> Attacked [M.name] ([M.ckey])([M.stat]) with [name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(damtype)])</font>"
 		M.attack_log += "\[[time_stamp()]\]<font color='orange'> Attacked by [user.name] ([user.ckey]) with [name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(damtype)])</font>"
 		msg_admin_attack("[key_name(user)] attacked [key_name(M)] with [name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(damtype)])" )
-	/////////////////////////
 	user.setClickCooldown(cooldownw)
 	user.do_attack_animation(M)
-
 	var/hit_zone = M.resolve_item_attack(src, user, target_zone)
 	if (hit_zone)
 		apply_hit_effect(M, user, hit_zone)
-
 	return TRUE
 
-//Called when a weapon is used to make a successful melee attack on a mob. Returns the blocked result
-/obj/item/proc/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone)
+/obj/item/proc/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone) //Called when a weapon is used to make a successful melee attack on a mob. Returns the blocked result
 	if (hitsound)
 		playsound(loc, hitsound, 50, TRUE, -1)
-
 	var/power = force
 	return target.hit_with_weapon(src, user, power, hit_zone)

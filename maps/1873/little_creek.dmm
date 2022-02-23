@@ -18,7 +18,7 @@
 "ar" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "as" = (/turf/floor/beach/sand/desert,/area/caribbean/desert/escape)
 "at" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
-"au" = (/obj/item/weapon/reagent_containers/glass/barrel/empty,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"au" = (/obj/item/weapon/reagent_containers/glass/barrel,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "av" = (/obj/item/weapon/barrier,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "aw" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "ax" = (/mob/living/simple_animal/rabbit,/turf/floor/dirt,/area/caribbean/desert)

@@ -1020,21 +1020,16 @@
 	New()
 		..()
 		spawn(30)
-			var/found = FALSE
-			for(var/obj/covers/CV in loc)
-				found = TRUE
-				break
-			if (found)
-				for(var/obj/effect/flooding/FLD in loc)
-					if (src != FLD)
-						flood_level = min(3,flood_level+FLD.flood_level)
-						qdel(FLD)
-						update_icon()
-			else
-				qdel(src)
-		spawn(12000)
+			for(var/obj/effect/flooding/FLD in loc)
+				if (src != FLD)
+					flood_level = min(3,flood_level+FLD.flood_level)
+					qdel(FLD)
+					update_icon()
+		spawn(6000)
 			if (src)
-				qdel(src)
+				flood_level--
+				if (flood_level <= 0)
+					qdel(src)
 	update_icon()
 		icon_state = "flood_overlay[flood_level]"
 		desc = "The water seems to be about [flood_level*50]cm deep."
@@ -1054,3 +1049,4 @@
 							qdel(src)
 			else
 				user << "<span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
+		return TRUE
