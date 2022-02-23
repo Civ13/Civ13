@@ -99,7 +99,6 @@
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_ww2 = TRUE
-	is_officer = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -633,7 +632,7 @@
 	spawn_location = "JoinLateRNCap"
 
 	is_officer = TRUE
-	is_commander = FALSE
+	is_commander = TRUE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_korean_war = TRUE
@@ -728,7 +727,6 @@
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_korean_war = TRUE
-	is_officer = TRUE
 
 	min_positions = 2
 	max_positions = 10

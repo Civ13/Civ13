@@ -94,7 +94,6 @@
 	is_radioman = FALSE
 	can_get_coordinates = FALSE
 	is_ww2 = FALSE
-	is_officer = TRUE
 	is_civil_war = TRUE
 
 	min_positions = 2
@@ -333,7 +332,6 @@
 	is_radioman = FALSE
 	can_get_coordinates = FALSE
 	is_ww2 = FALSE
-	is_officer = TRUE
 	is_civil_war = TRUE
 
 	min_positions = 2

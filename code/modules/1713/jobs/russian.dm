@@ -156,7 +156,6 @@
 	rank_abbreviation = "Fv."
 
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -425,7 +424,6 @@
 	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = TRUE
@@ -678,7 +676,6 @@
 	rank_abbreviation = "Fv."
 
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -969,7 +966,6 @@
 	uses_squads = TRUE
 	is_rcw = TRUE
 	is_squad_leader = TRUE
-	is_officer = TRUE
 
 
 	min_positions = 2
@@ -1217,7 +1213,6 @@
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_officer = TRUE
 
 	min_positions = 2
 	max_positions = 6
