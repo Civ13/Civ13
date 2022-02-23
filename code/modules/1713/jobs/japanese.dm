@@ -180,7 +180,6 @@
 	rank_abbreviation = "Gunso"
 
 	spawn_location = "JoinLateJP"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -608,7 +607,6 @@
 	rank_abbreviation = "Gu."
 
 	spawn_location = "JoinLateJP"
-	is_officer = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_ww2 = TRUE
@@ -1510,7 +1508,6 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateJP"
-	is_officer = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_ww2 = TRUE
@@ -2047,7 +2044,6 @@
 	rank_abbreviation = "Niso."
 
 	spawn_location = "JoinLateJP"
-	is_officer = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_ww2 = TRUE

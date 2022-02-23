@@ -131,7 +131,6 @@
 	rank_abbreviation = "Shi."
 
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -450,7 +449,6 @@
 	rank_abbreviation = "Shi."
 
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_korean_war = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE

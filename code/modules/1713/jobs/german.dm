@@ -156,7 +156,6 @@
 	rank_abbreviation = "Uffz."
 
 	spawn_location = "JoinLateGE"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww1 = TRUE
@@ -386,7 +385,6 @@
 	rank_abbreviation = "Uffz."
 
 	spawn_location = "JoinLateGE"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = TRUE
@@ -873,7 +871,6 @@
 	rank_abbreviation = "Uffz."
 
 	spawn_location = "JoinLateGE"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
