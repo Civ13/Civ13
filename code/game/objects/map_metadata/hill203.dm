@@ -33,15 +33,17 @@
 /obj/map_metadata/hill203/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/japanese))
-		if (J.is_coldwar || J.is_ww2 || J.is_yakuza || J.is_samurai == TRUE || J.is_prison)
-			. = FALSE
-		else
+		if (J.is_russojapwar)
 			. = TRUE
-	if (istype(J, /datum/job/russian))
-		if (J.is_ww2 || J.is_rcw || J.is_prison || J.is_yeltsin || J.is_grozny || J.is_modernday || J.is_ukrainerussowar)
-			. = FALSE
 		else
+			. = FALSE
+	else if (istype(J, /datum/job/russian))
+		if (J.is_russojapwar)
 			. = TRUE
+		else
+			. = FALSE
+	else
+		. = FALSE
 
 /obj/map_metadata/hill203/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

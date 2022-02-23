@@ -20,7 +20,7 @@
 	title = "Rikugun-Tai-i"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Ri-Tai"
-
+	is_russojapwar = TRUE
 
 	spawn_location = "JoinLateJPCap"
 	is_officer = TRUE
@@ -64,15 +64,13 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
 
 /datum/job/japanese/lieutenant
 	title = "Rikugun-Chui"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "1lt."
-
+	is_russojapwar = TRUE
 
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
@@ -117,15 +115,13 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
 
 /datum/job/japanese/lieutenant2
 	title = "Rikugun-Shoi"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "2lt."
-
+	is_russojapwar = TRUE
 
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
@@ -170,15 +166,13 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
 
 /datum/job/japanese/sergeant
 	title = "Gunso"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Gunso"
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateJP"
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -219,15 +213,13 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
 
 /datum/job/japanese/doctor
 	title = "Gun-i"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateJPDoc"
 
 	is_medic = TRUE
@@ -262,8 +254,6 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-
-
 	return TRUE
 /*
 /datum/job/japanese/cook
@@ -356,7 +346,7 @@
 	title = "Ittohei"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Itto."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 
@@ -395,15 +385,13 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
 
 /datum/job/japanese/whitesash_infantry
 	title = "Shiro Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 
@@ -442,9 +430,8 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
+
 //////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////WW2///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////

@@ -33,25 +33,7 @@
 
 /obj/map_metadata/bohemia/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/german))
+	if ((istype(J, /datum/job/german)) && (J.is_medieval == TRUE) && (J.is_rp == TRUE))
 		. = TRUE
-		if (J.is_nomad == TRUE)
-			. = FALSE
-		if (J.is_medieval == TRUE)
-			. = TRUE
-		if (J.is_rp == TRUE)
-			. = TRUE
-		if (J.is_tanker == TRUE)
-			. = FALSE
-		if (J.is_occupation == TRUE)
-			. = FALSE
-		if (J.is_reichstag == TRUE)
-			. = FALSE
-		if (J.is_ww2 == TRUE)
-			. = FALSE
-		if (J.is_ww1 == TRUE)
-			. = FALSE
-		if (J.is_ancient == TRUE)
-			. = FALSE
-
-
+	else
+		. = FALSE

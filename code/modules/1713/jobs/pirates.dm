@@ -11,7 +11,7 @@
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Captain"
 
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -53,7 +53,7 @@
 	title = "Pirate Quartermaster"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Quartermaster"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirateQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -93,7 +93,7 @@
 	title = "Pirate Boatswain"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
-
+	is_1713 = TRUE
 
 	spawn_location = "JoinLatePirateBoatswain"
 	whitelisted = TRUE
@@ -136,7 +136,7 @@
 	title = "Pirate Mate"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Mate"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirateMidshipman"
 	is_officer = TRUE
 	can_be_female = TRUE
@@ -175,7 +175,7 @@
 	rank_abbreviation = "Surgeon"
 	can_be_female = TRUE
 	spawn_location = "JoinLatePirateSurgeon"
-
+	is_1713 = TRUE
 	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
@@ -211,7 +211,7 @@
 	title = "Pirate Carpenter"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpenter"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCarpenter"
 	can_be_female = TRUE
 
@@ -263,7 +263,7 @@
 	title = "Pirate Cook"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cook"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCook"
 	can_be_female = TRUE
 
@@ -319,7 +319,7 @@
 	title = "Pirate"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 	can_be_female = TRUE
 

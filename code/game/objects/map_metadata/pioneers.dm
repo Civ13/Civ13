@@ -20,19 +20,20 @@
 	ordinal_age = 4
 	faction_distribution_coeffs = list( CIVILIAN = 0.8,INDIANS = 0.2)
 	battle_name = "new frontier"
-	mission_start_message = "<big>Pioneers</b> have reached the frontier! The <b>Pioneers</b> must build their town. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - PIONEERS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
+	mission_start_message = "<big>Pioneers</b> have reached the frontier! The <b>Pioneers</b> must build their town. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - PLAYERS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
+	faction2 = INDIANS
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Pioneer Building RP"
-	is_singlefaction = TRUE
+
 
 /obj/map_metadata/pioneers/New()
 	..()
 	spawn(18000)
 		seasons()
-	civilians_forceEnabled = TRUE
+
 
 obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -43,10 +44,18 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		else
 			. = FALSE
-	if (J.is_warlords)
+	else if (istype(J, /datum/job/indians))
+		if (J.is_1713 == TRUE)
+			. = TRUE
+		else
+			. = FALSE
+	else
 		. = FALSE
 
 /obj/map_metadata/pioneers/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/pioneers/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/pioneers/cross_message(faction)

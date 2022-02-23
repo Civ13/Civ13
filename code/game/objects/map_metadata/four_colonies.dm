@@ -52,22 +52,11 @@
 		score()
 /obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/civilian/fantasy))
-		. = FALSE
-	if (J.is_RP == FALSE)
-		. = FALSE
-	else if (J.is_army == TRUE)
-		. = FALSE
-	else if (J.is_medieval == TRUE)
-		. = FALSE
-	else if (J.is_ww1 == TRUE)
-		. = FALSE
-	else if (J.is_civil_war == TRUE)
-		. = FALSE
-	else if (J.is_football == TRUE)
-		. = FALSE
-	else
+	if (J.is_1713 == TRUE)
 		. = TRUE
+	else
+		. = FALSE
+
 /obj/map_metadata/four_colonies/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
 

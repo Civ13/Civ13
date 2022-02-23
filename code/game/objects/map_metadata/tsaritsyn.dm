@@ -29,18 +29,18 @@
 	gamemode = "Siege"
 obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/civilian/fantasy))
-		. = FALSE
 	if (istype(J, /datum/job/russian))
 		if (J.is_rcw == TRUE)
 			. = TRUE
 		else
 			. = FALSE
-	else
+	else if (istype(J, /datum/job/civilian))
 		if (J.is_rcw == TRUE)
 			. = TRUE
 		else
 			. = FALSE
+	else
+		. = FALSE
 
 /obj/map_metadata/tsaritsyn/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)

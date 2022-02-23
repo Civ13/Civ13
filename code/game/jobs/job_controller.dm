@@ -160,6 +160,10 @@ var/global/datum/controller/occupations/job_master
 		pirates_toggled = FALSE
 		spanish_toggled = FALSE
 		civilians_forceEnabled = TRUE
+	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_PIONEERS || map.ID == MAP_PIONEERS_WASTELAND_2))
+		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Pioneers</b> start disabled by default. Admins can enable them.</i></span></font>"
+		indians_toggled = FALSE
+		civilians_forceEnabled = TRUE
 	if (map && map.faction_organization.Find(CIVILIAN) && (map.ID == MAP_FOREST))
 		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>UPA</b> start enabled by default. Admins can enable the UPA.</i></span></font>"
 		civilians_toggled = FALSE
