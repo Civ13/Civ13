@@ -218,7 +218,7 @@
 "ej" = (/obj/covers/marbletile,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "ek" = (/obj/covers/cobblestone,/obj/roof/clay/blue,/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "el" = (/mob/living/simple_animal/chicken,/turf/floor/dirt/ploughed,/area/caribbean/nomads/semiarid)
-"em" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/cattle/cow/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
+"em" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 "en" = (/obj/structure/furnace/kiln,/obj/covers/cobblestone,/obj/roof/clay/blue,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "eo" = (/obj/covers/roads/roman,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 "ep" = (/obj/structure/grille/fence{icon_state = "1"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
@@ -506,7 +506,7 @@
 "jM" = (/obj/covers/sandstone,/obj/roof/clay,/mob/living/simple_animal/cat,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "jN" = (/obj/covers/carpet,/obj/structure/table/modern/table,/obj/roof/clay,/obj/structure/voting/civb,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "jO" = (/obj/covers/wood,/obj/roof/clay/blue,/obj/effect/spawner/mobspawner/mouse/sm,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
-"jP" = (/mob/living/simple_animal/cattle/cow/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
+"jP" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababaaacacacacacadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaa
