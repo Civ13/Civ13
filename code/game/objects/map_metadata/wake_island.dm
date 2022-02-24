@@ -45,11 +45,13 @@
 			. = TRUE
 		else
 			. = FALSE
-	if (istype(J, /datum/job/japanese))
+	else if (istype(J, /datum/job/japanese))
 		if (J.is_ww2 == TRUE && J.is_navy == TRUE || (istype(J, /datum/job/japanese/ija_ww2_tanker)))
 			. = TRUE
 		else
 			. = FALSE
+	else
+		. = FALSE
 
 /obj/map_metadata/wake_island/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)

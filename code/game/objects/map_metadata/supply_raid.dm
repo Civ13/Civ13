@@ -27,26 +27,19 @@
 
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_RP == TRUE)
-		. = FALSE
-	else if (J.is_army == TRUE)
-		. = FALSE
-	else if (J.is_coldwar == TRUE)
-		. = FALSE
-	else if (J.is_medieval == TRUE)
-		. = FALSE
-	else if (J.is_ww1 == TRUE)
-		. = FALSE
-	else if (J.is_ww2 == TRUE)
-		. = FALSE
-	else if (J.is_warlords)
-		. = FALSE
-	else if (istype(J, /datum/job/pirates/battleroyale))
-		. = FALSE
-	else if (istype(J, /datum/job/indians/tribes))
-		. = FALSE
+	if (istype(J, /datum/job/indians))
+		if (J.is_1713)
+			. = TRUE
+		else
+			. = FALSE
+	else if (istype(J, /datum/job/british))
+		if (J.is_navy)
+			. = TRUE
+		else
+			. = FALSE
 	else
-		. = TRUE
+		. = FALSE
+
 /obj/map_metadata/supply_raid/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 

@@ -9,7 +9,7 @@
 	title = "Kapitan"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Kpt."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -56,7 +56,7 @@
 	title = "Poruchik"
 	en_meaning = "Lieutenant"
 	rank_abbreviation = "Po."
-
+	is_russojapwar = TRUE
 
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
@@ -108,7 +108,7 @@
 	rank_abbreviation = "Ppo."
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-
+	is_russojapwar = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -154,7 +154,7 @@
 	title = "Feldvebel"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Fv."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU"
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -200,7 +200,7 @@
 	title = "Medik"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRUDoc"
 
 	is_medic = TRUE
@@ -239,7 +239,7 @@
 	title = "Yefreytor"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Ye."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 
@@ -281,7 +281,7 @@
 	title = "Ryadovoy"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ry."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 

@@ -31,11 +31,13 @@ obj/map_metadata/teutoburg/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		else
 			. = TRUE
-	else
+	else if (istype(J, /datum/job/german))
 		if (J.is_ancient == TRUE)
 			. = TRUE
 		else
 			. = FALSE
+	else
+		. = FALSE
 /obj/map_metadata/teutoburg/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 

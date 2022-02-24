@@ -34,55 +34,11 @@
 	gamemode = "Colony Building RP"
 obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/civilian))
+	if (J.is_1713 == TRUE)
 		. = TRUE
-		if (J.is_nomad == TRUE)
-			. = FALSE
-		else if (J.is_cowboy == TRUE)
-			. = FALSE
-		else if (J.is_civilizations == TRUE)
-			. = FALSE
-		else if (J.is_rcw == TRUE)
-			. = FALSE
-		else if (J.is_pioneer == TRUE)
-			. = FALSE
-		else if (J.is_deal == TRUE)
-			. = FALSE
-		else if (J.is_prison == TRUE)
-			. = FALSE
-		else if (J.is_civil_war == TRUE)
-			. = FALSE
-		else if (J.is_football == TRUE)
-			. = FALSE
-		if (J.is_capitol == TRUE)
-			. = FALSE
-		if (J.is_occupation == TRUE)
-			. = FALSE
-		if (J.is_upa == TRUE)
-			. = FALSE
-		if (J.is_yeltsin == TRUE)
-			. = FALSE
-	else if (istype(J, /datum/job/spanish/civilian))
-		. = FALSE
-	else if (J.is_medieval == TRUE)
-		. = FALSE
-	else if (istype(J, /datum/job/pirates/battleroyale))
-		. = FALSE
-	else if (J.is_army == TRUE)
-		. = FALSE
-	else if (J.is_marooned == TRUE)
-		. = FALSE
-	else if (istype(J, /datum/job/indians))
-		if (istype(J, /datum/job/indians/tribes))
-			. = FALSE
-		else
-			. = TRUE
-		if (J.is_warlords)
-			. = FALSE
 	else
-		. = TRUE
-	if (istype(J, /datum/job/civilian/fantasy))
 		. = FALSE
+
 /obj/map_metadata/jungle_colony/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 

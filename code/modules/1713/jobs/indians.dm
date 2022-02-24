@@ -14,6 +14,7 @@
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
 	is_officer = TRUE
+	is_1713 = TRUE
 
 
 	min_positions = 2
@@ -55,7 +56,7 @@
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
-
+	is_1713 = TRUE
 
 	min_positions = 2
 	max_positions = 30
@@ -98,7 +99,7 @@
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
-
+	is_1713 = TRUE
 
 	min_positions = 20
 	max_positions = 300

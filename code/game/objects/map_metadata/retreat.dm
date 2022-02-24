@@ -18,8 +18,8 @@
 	faction_distribution_coeffs = list(CHINESE = 0.6, AMERICAN = 0.4)
 	battle_name = "Retreat"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Chinese Army will win if they hold out for <b>30 minutes</b>. The Americans will win if they manage to cross the bridge to friendly territory!</font>"
-	faction1 = AMERICAN
-	faction2 = CHINESE
+	faction1 = CHINESE
+	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)

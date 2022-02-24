@@ -4,7 +4,7 @@
 	title = "British Governor"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governor"
-
+	is_1713 = TRUE
 
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
@@ -43,14 +43,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/british/civilian/architect
 	title = "British Architect"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architect"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_commander = TRUE
@@ -109,14 +108,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/british/civilian/officer
 	title = "British Town Guard Officer"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officer"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_officer = TRUE
@@ -156,15 +154,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
 
 /datum/job/british/civilian/veteran
 	title = "British Town Guard"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -201,16 +197,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/british/civilian/medic
 	title = "British Doctor"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -265,13 +258,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
+
 /datum/job/british/civilian/merchant
 	title = "British Merchant"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Merchant"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 	can_be_female = TRUE
 	is_RP = TRUE
@@ -328,11 +321,12 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
+
 /datum/job/british/civilian/priest
 	title = "British Priest"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -374,7 +368,7 @@
 	title = "British Prospector"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -432,7 +426,7 @@
 	title = "British Farmer"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -488,11 +482,12 @@
 	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
+
 /datum/job/british/civilian/carpenter
 	title = "British Carpenter"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -560,14 +555,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/british/civilian/blacksmith
 	title = "British Blacksmith"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Blacksmith"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 	can_be_female = TRUE
 	whitelisted = TRUE
@@ -643,7 +637,7 @@
 	title = "British Inkeeper"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 	can_be_female = TRUE
 	is_RP = TRUE
@@ -711,16 +705,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/british/civilian/worker
 	title = "British Colonist"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
 	can_be_female = TRUE
 	is_RP = TRUE
@@ -786,7 +777,6 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 ////////////////////////////////////////////SPANISH///////////////////////////////////////////////////////
@@ -795,7 +785,7 @@
 	title = "Gobernador"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Gobernador"
-
+	is_1713 = TRUE
 
 	spawn_location = "JoinLateSP"
 	is_officer = TRUE
@@ -834,14 +824,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/spanish/civilian/architect
 	title = "Arquitecto"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Arquitecto"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_commander = TRUE
@@ -900,14 +889,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/spanish/civilian/officer
 	title = "Oficial de la Milicia"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Oficial"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_officer = TRUE
@@ -947,15 +935,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
 
 /datum/job/spanish/civilian/veteran
 	title = "Milicia"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -992,16 +978,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/spanish/civilian/medic
 	title = "Curandero"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_medic = TRUE
@@ -1056,13 +1039,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
+
 /datum/job/spanish/civilian/merchant
 	title = "Comerciante"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Comerciante"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
 	is_RP = TRUE
@@ -1117,11 +1100,12 @@
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
+
 /datum/job/spanish/civilian/priest
 	title = "Cura"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1163,7 +1147,7 @@
 	title = "Minero"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1222,7 +1206,7 @@
 	title = "Granjero"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1278,11 +1262,12 @@
 	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
+
 /datum/job/spanish/civilian/carpenter
 	title = "Carpintero"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1350,13 +1335,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
+
 /datum/job/spanish/civilian/blacksmith
 	title = "Ferrero"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferrero"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 
 	whitelisted = TRUE
@@ -1432,7 +1417,7 @@
 	title = "Ventero"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Ventero"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
 	is_RP = TRUE
@@ -1500,16 +1485,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/spanish/civilian/worker
 	title = "Colonista"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
 	is_RP = TRUE
@@ -1575,10 +1557,7 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 ////////////////////////////////////////////PORTUGUESE///////////////////////////////////////////////////////
 
@@ -1586,7 +1565,7 @@
 	title = "Governador"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governador"
-
+	is_1713 = TRUE
 
 	spawn_location = "JoinLatePT"
 	is_officer = TRUE
@@ -1625,14 +1604,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/portuguese/civilian/architect
 	title = "Arquiteto"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Arquiteto"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_commander = TRUE
@@ -1691,14 +1669,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/portuguese/civilian/officer
 	title = "Comandante da Milicia"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Comandante"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_officer = TRUE
@@ -1738,15 +1715,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
 
 /datum/job/portuguese/civilian/veteran
 	title = "Miliciano"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -1783,16 +1758,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/portuguese/civilian/medic
 	title = "Medico"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Medico"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_medic = TRUE
@@ -1847,13 +1819,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
+
 /datum/job/portuguese/civilian/merchant
 	title = "Mercador"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Mercador"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -1909,11 +1881,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	H.make_businessman()
 	return TRUE
+
 /datum/job/portuguese/civilian/priest
 	title = "Padre"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_religious = TRUE
@@ -1955,7 +1928,7 @@
 	title = "Mineiro"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2014,7 +1987,7 @@
 	title = "Fazendeiro"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2070,11 +2043,12 @@
 	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
+
 /datum/job/portuguese/civilian/carpenter
 	title = "Carpinteiro"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpinteiro"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2142,14 +2116,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/portuguese/civilian/blacksmith
 	title = "Ferreiro"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferreiro"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 	whitelisted = TRUE
 
@@ -2225,7 +2198,7 @@
 	title = "Taberneiro"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Taberneiro"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2293,16 +2266,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/portuguese/civilian/worker
 	title = "Colono"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2368,7 +2338,6 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 
@@ -2378,7 +2347,7 @@
 	title = "Governeur"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governeur"
-
+	is_1713 = TRUE
 
 	spawn_location = "JoinLatePirate"
 	is_officer = TRUE
@@ -2417,14 +2386,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/french/civilian/architect
 	title = "Architecte"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architecte"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_commander = TRUE
@@ -2483,14 +2451,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/french/civilian/officer
 	title = "Officier de la Garde"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officier"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_officer = TRUE
@@ -2530,15 +2497,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
 
 /datum/job/french/civilian/veteran
 	title = "Garde"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2575,16 +2540,13 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/french/civilian/medic
 	title = "Docteur"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Docteur"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_medic = TRUE
@@ -2639,13 +2601,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
+
 /datum/job/french/civilian/merchant
 	title = "Marchand"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Marchand"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_merchant = TRUE
@@ -2701,11 +2663,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	H.make_businessman()
 	return TRUE
+
 /datum/job/french/civilian/priest
 	title = "Pretre"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2747,7 +2710,7 @@
 	title = "Mineur"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2806,7 +2769,7 @@
 	title = "Fermier"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2862,11 +2825,12 @@
 	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
+
 /datum/job/french/civilian/carpenter
 	title = "Charpentier"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Charpentier"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2934,14 +2898,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 
 /datum/job/french/civilian/blacksmith
 	title = "Forgeron"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Forgeron"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 	whitelisted = TRUE
 
@@ -3017,7 +2980,7 @@
 	title = "Aubergiste"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Aubergiste"
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -3085,16 +3048,13 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
-
-
 
 /datum/job/french/civilian/worker
 	title = "Coloniste"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-
+	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -3160,6 +3120,5 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
-
 	return TRUE
 

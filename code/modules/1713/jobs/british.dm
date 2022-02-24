@@ -13,7 +13,7 @@
 	title = "Royal Navy Captain"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Captain"
-
+	is_navy = TRUE
 
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
@@ -56,7 +56,7 @@
 	title = "Royal Navy Quartermaster"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Quartermaster"
-
+	is_navy = TRUE
 	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -97,7 +97,7 @@
 	title = "Royal Navy Boatswain"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
-
+	is_navy = TRUE
 
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
@@ -141,7 +141,7 @@
 	title = "Royal Navy Midshipman"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Midshipman"
-
+	is_navy = TRUE
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
 
@@ -179,7 +179,7 @@
 	title = "Royal Navy Surgeon"
 	en_meaning = "Medic"
 	rank_abbreviation = "Surgeon"
-
+	is_navy = TRUE
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
 
@@ -216,7 +216,7 @@
 	title = "Royal Navy Carpenter"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpenter"
-
+	is_navy = TRUE
 	spawn_location = "JoinLateRNCarpenter"
 
 
@@ -264,7 +264,7 @@
 	title = "Royal Navy Cook"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cook"
-
+	is_navy = TRUE
 	spawn_location = "JoinLateRNCook"
 
 
@@ -313,7 +313,7 @@
 	title = "Royal Navy Seaman"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-
+	is_navy = TRUE
 	spawn_location = "JoinLateRN"
 
 
