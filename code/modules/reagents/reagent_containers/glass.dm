@@ -696,12 +696,12 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		reagents.add_reagent("fat_oil",250)
 
 /obj/item/weapon/reagent_containers/glass/barrel/ethanol
-	name = "wood barre (ethanol)"
+	name = "wood barrel (ethanol)"
 	label_text = "ethanol"
 	New()
 		..()
 		flags &= ~OPENCONTAINER
-		base_name = "wood barre"
+		base_name = "wood barrel"
 		reagents.add_reagent("ethanol",250)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern
