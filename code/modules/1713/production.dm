@@ -677,7 +677,8 @@
 		if (0.6 to 0.85) return "three quarters dry"
 		if (1 to INFINITY)
 			if (!findtext(normal_item_name(I),"dried"))
-				return "dried"
+				if (!findtext(normal_item_name(I),"dry"))
+					return "dried"
 			else
 				return ""
 		else return "almost dry"
@@ -2025,19 +2026,19 @@
 		return
 	var/list/allow_types = list(/obj/item/weapon/reagent_containers/food, /obj/item/stack/material/leaf, /obj/item/stack/farming/seeds, 
 		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/coca, 
-		/obj/item/stack/material/flax, /obj/item/stack/material/hemp, /obj/item/stack/material/rettedfabric
+		/obj/item/stack/material/flax, /obj/item/stack/material/hemp, /obj/item/stack/material/rettedfabric, 
+		/obj/item/stack/dung
 	)
-	//if (!is_type_in_list(W, allow_types))
-	if (W.type in allow_types)
+	if (is_type_in_list(W, allow_types))
 		H.drop_item(src.loc)
 		auto_load(H)
-		return
+		return TRUE
 	if (istype(W,/obj/item/weapon/wrench))
 		wrench_action(H)
-		return
+		return TRUE
 	if (istype(W,/obj/item/weapon/hammer))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(7))
-		return
+		return TRUE
 	H << "<span class='warning'>\the [W] is not suitable for compost.</span>"
 
 /obj/structure/compost/proc/auto_load(var/mob/living/human/H)
@@ -2047,9 +2048,17 @@
 				H << "<span class='warning'>The compost bin is full!</span>"
 			break
 		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo)) //poo and fertilizer not need compost, but we have now storage for poo
+			if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
+				continue
+			if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo/animal))
+				continue
+			add(W, H, 0.75) //human poo is near fertilizer, but need composting first
+			continue
+		if (istype(W, /obj/item/stack/dung))
 			continue
 		if (W.type == /obj/item/stack/ore)
 			add(W, H, W.amount*10) //It's not obtainable item now, we used it for save/load current values
+			continue
 		if (istype(W, /obj/item/weapon/reagent_containers/food))
 			add(W, H, 0.5)
 			continue
