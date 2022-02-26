@@ -41,7 +41,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 			return TRUE
 	return FALSE
 
-/obj/item/proc/attack_self(mob/user) // called when the item is in the active hand, and clicked; alternately, there is an 'activate held object' verb or you can hit Z.
+/obj/item/proc/attack_self(mob/user, icon_x, icon_y) // called when the item is in the active hand, and clicked; alternately, there is an 'activate held object' verb or you can hit Z.
 	return FALSE //procedure prototype; if not defined in the child object, it returns FALSE, as it does not resolve the action to complete
 
 /atom/proc/attackby(obj/item/W, mob/user, icon_x, icon_y) 
@@ -53,12 +53,12 @@ avoid code duplication. This includes items that may sometimes act as a standard
 /atom/proc/attack_obj(obj/attacked, mob/user, icon_x, icon_y) 
 	return FALSE //procedure prototype; if not defined in the child object, it returns FALSE, as it does not resolve the action to complete
 
-/atom/movable/attackby(obj/item/W, mob/user)
+/atom/movable/attackby(obj/item/W, mob/user, icon_x, icon_y)
 	if (!(W.flags & NOBLUDGEON) && !(istype(W, /obj/item/weapon/covers)))
 		visible_message("<span class='danger'>[src] has been hit by [user] with [W].</span>")
 	return
 
-/mob/living/attackby(obj/item/I, mob/user)
+/mob/living/attackby(obj/item/I, mob/user, icon_x, icon_y)
 	if (!ismob(user))
 		return FALSE
 	if (can_operate(src) && do_surgery(src,user,I)) //Surgery

@@ -8,7 +8,7 @@
 
 	Otherwise pretty standard.
 */
-/mob/living/human/UnarmedAttack(var/atom/A, var/proximity)
+/mob/living/human/UnarmedAttack(var/atom/A, var/proximity, icon_x, icon_y)
 
 	if (!..())
 		return
@@ -20,9 +20,9 @@
 	if (istype(G) && G.Touch(A,1))
 		return
 
-	A.attack_hand(src)
+	A.attack_hand(src, icon_x, icon_y)
 
-/atom/proc/attack_hand(mob/user as mob)
+/atom/proc/attack_hand(mob/user as mob, icon_x, icon_y)
 	return
 
 /mob/living/human/RestrainedClickOn(var/atom/A)

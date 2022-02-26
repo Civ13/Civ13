@@ -171,7 +171,7 @@
 			if (can_fire)
 				MG.Fire(A, src, force = TRUE)
 	if (W && W == A) // Handle attack_self (using item in hand)
-		W.attack_self(src)
+		W.attack_self(src, icon_x, icon_y)
 		if (hand)
 			update_inv_l_hand(0)
 		else
@@ -209,7 +209,7 @@
 		else
 			if (ismob(A)) // No instant mob attacking
 				setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			UnarmedAttack(A, TRUE)
+			UnarmedAttack(A, TRUE, icon_x, icon_y)
 		return
 	if (!isturf(loc)) // This is going to stop you from telekinesing from inside a closet, but I don't shed many tears for that
 		return
@@ -247,7 +247,7 @@
 			else
 				if (ismob(A)) // No instant mob attacking
 					setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-				UnarmedAttack(A, TRUE)
+				UnarmedAttack(A, TRUE, icon_x, icon_y)
 			return
 		else // non-adjacent click
 			if (W)
@@ -287,18 +287,15 @@
 	proximity_flag is not currently passed to attack_hand, and is instead used
 	in human click code to allow glove touches only at melee range.
 */
-/mob/proc/UnarmedAttack(var/atom/A, var/proximity_flag)
+/mob/proc/UnarmedAttack(var/atom/A, var/proximity_flag, icon_x, icon_y)
 	return
 
-/mob/living/UnarmedAttack(var/atom/A, var/proximity_flag)
-
+/mob/living/UnarmedAttack(var/atom/A, var/proximity_flag, icon_x, icon_y)
 	if (!ticker)
 		src << "You cannot attack people before the game has started."
 		return FALSE
-
 	if (stat)
 		return FALSE
-
 	return TRUE
 
 /*

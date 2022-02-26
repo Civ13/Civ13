@@ -4,22 +4,24 @@
 //var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0.05
 /var/const/MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK = 0 //setting it to 0, because have no normal mood restoration TO DO TODO: make some mood restoration on resting and sleeping, also make meditation (religion?)
 /var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0 //setting it to 0, because have no normal mood restoration 
-//TO DO TODO: Make some normalization of mood to normal state (not 100, but 75 for full water and food lvl) with time depending on the state: rest, sleep, awake
+//TO DO TODO: Make some normalization of mood to normal state (not 100, but 50 for full water and food lvl) with time depending on the state: rest, sleep, awake
 /var/const/STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK = 0.2 //(summ of used strength, dexterity and stamina itself in deciseconds)
 /var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items. 
 //TO DO TODO: Make this proc global using
 /mob/living/human/var/tmp/last_mood_check = 0
-/mob/living/human/proc/in_mood()
+/mob/living/human/proc/in_mood(no_mood_check_treshold = 60)
 	//checking mood for doing anything
 	if (world.timeofday<src.last_mood_check) //prevent mood check spam
 		src.mood -= 0.25
 		src << "<span class='warning'>You are even a little upset! Restore your mood first! Wait 5 seconds at minimum.</span>"
 		return FALSE
-	if(prob(src.mood))
+	if (src.mood > no_mood_check_treshold)
+		return TRUE
+	if (prob(src.mood * 1.5))
 		return TRUE
 	else
 		src << "<span class='warning'>You are not in the mood to do this. Relax first.</span>"
-		src.last_mood_check = world.timeofday + 50
+		src.last_mood_check = world.timeofday + 45
 		return FALSE
 
 // TO DO TODO: Make this universal proc for all expirience gains 
@@ -544,7 +546,7 @@
 ////////////////////////////////////////////////////////////////////////
 // Dehydrator //////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-// Accepts food/snacks items with the dry_type path set, converting them to that path after the drying process is complete.
+// Accepts items with the dry_type path set, converting them to that path after the drying process is complete.
 // Dehydrator have 3x4 size, or 3 collums on 4 rows.  
 // By default dry_size=2 - this means that the item will take up two slots from left to right in the first empty space on the dehydrator.
 // With dry_size values of 1, 2 and 3, an item will take up the corresponding number of slots. For dry_size=4 only turned position will be used, better use dry_size=13 (see below).
@@ -555,12 +557,13 @@
 // ====================================================================
 // Items must have an icon in 'icons/obj/food/dryer.dmi' named the same as icon_state of drying product
 // Items must have an icon in 'icons/obj/food/dryer.dmi' named as icon_state of drying product with additional "R" at end. For exapmle "rawcutletR"
-// Items with size of 4 rows (dry_size=13..15) may not have an icon with additional "R".
+// Product (dried and ready) items must have an icons with normal and rotated states in 'icons/obj/food/dryer.dmi'
+// Items with size of 4 rows (dry_size=13..15) or equal side sizes (1x1, 2x2, 3x3) may not have an icon with additional "R".
 // For optimization try don't use dry_size 4, 8 and 12. Use instead 13, 14 and 15. Also, this will save you from having to draw two icons: straight and rotated; it will be enough to draw only one straight icon.
 // If dehydrator will be dismantled or destroyed all items are dryed will be drop at place, where dehydrator was.
+// Ready dried products may have another dry_type (for example, a half-dried item as the dry_type of a fresh item may have a fully dried item as the dry_type)
 // ====================================================================
 // TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items.
-// TO DO: Add functional for take-off items from dehydrator. And not drop to dirty floor!. Changed items must stay on dehydrator
 /obj/structure/dehydrator
 	name = "dehydrator"
 	desc = "A wood structure used to dry meat, fish, tobacco, and so on."
@@ -595,18 +598,22 @@
 		return list(columns, rows)
 	return list(rows, columns)
 
-/obj/structure/dehydrator/proc/put_in_place(var/obj/item/weapon/reagent_containers/food/snacks/D, var/list/pos = list(1, 1), var/list/sizeHV = list(1, 1), is_rotated = FALSE, init = FALSE)
+/obj/structure/dehydrator/proc/put_in_place(var/obj/item/W, var/list/pos = list(1, 1), var/list/sizeHV = list(1, 1), is_rotated = FALSE, init = FALSE)
 	if (!init)
-		D.name = "[D.name]ON_DEHYDRATOR[is_rotated ? "_ROTATED_" : "_STRAIGHT_"]DECAY_[num2text(D.decay, 8, 10)]POS_[num2text(pos[1]+(pos[2]-1)*4, 1, 16)]TIMER_00000000"
-		D.decay = 0 //stop decaying when on dehydrator
-	slots[pos[1]][pos[2]] = D
-	storage.handle_item_insertion(D, TRUE) //put to storage for preparing to destroy, or for map save when it happens 
-	for (var/W=0, W<sizeHV[1], W++)
-		for (var/H=0, H<sizeHV[2], H++)
-			if (W==0)
-				if (H==0)
+		if (istype(W, /obj/item/weapon/reagent_containers/food))
+			var/obj/item/weapon/reagent_containers/food/D = W
+			D.name = "[D.name]ON_DEHYDRATOR[is_rotated ? "_ROTATED_" : "_STRAIGHT_"]DECAY_[num2text(D.decay, 8, 10)]POS_[num2text(pos[1]+(pos[2]-1)*4, 1, 16)]TIMER_00000000"
+			D.decay = 0 //stop decaying when on dehydrator
+		else
+			W.name = "[W.name]ON_DEHYDRATOR[is_rotated ? "_ROTATED_" : "_STRAIGHT_"]DECAY_[num2text(0, 8, 10)]POS_[num2text(pos[1]+(pos[2]-1)*4, 1, 16)]TIMER_00000000"
+	slots[pos[1]][pos[2]] = W
+	storage.handle_item_insertion(W, TRUE) //put to storage for preparing to destroy, or for map save when it happens 
+	for (var/P=0, P<sizeHV[1], P++)
+		for (var/R=0, R<sizeHV[2], R++)
+			if (P==0)
+				if (R==0)
 					continue
-			slots[pos[1]+H][pos[2]+W] = "busy"+num2text(pos[1],1)+num2text(pos[2],1)
+			slots[pos[1]+R][pos[2]+P] = "busy"+num2text(pos[1],1)+num2text(pos[2],1)
 	update_icon()
 
 /obj/structure/dehydrator/proc/clean_by(slot_row, slot_pos)
@@ -622,7 +629,7 @@
 		for (var/H=0, H<sizeHV[2], H++)
 			slots[slot_row+H][slot_pos+W] = null
 
-/obj/structure/dehydrator/proc/hang_on(var/obj/item/weapon/reagent_containers/food/snacks/D, var/list/sizeHV = list())
+/obj/structure/dehydrator/proc/hang_on(var/obj/item/D, var/list/sizeHV = list())
 	var/is_rotated = TRUE
 	var/place_found = FALSE
 	if (sizeHV.len == 0)
@@ -660,7 +667,7 @@
 			return FALSE
 		else
 			sizeHV.Swap(1, 2)
-			return hang_on(D, sizeHV) //tryin to hang this item rotated
+			return hang_on(D, sizeHV) //trying to hang this item rotated
 
 /obj/structure/dehydrator/proc/dry_as_text(var/obj/item/I)
 	switch(get_dry_timer(I)/TIME_TO_DRY)
@@ -668,7 +675,11 @@
 		if (0.15 to 0.4) return "a quarter dry"
 		if (0.4 to 0.6) return "half dried"
 		if (0.6 to 0.85) return "three quarters dry"
-		if (1 to INFINITY) return "dried"
+		if (1 to INFINITY)
+			if (!findtext(normal_item_name(I),"dried"))
+				return "dried"
+			else
+				return ""
 		else return "almost dry"
 
 /obj/structure/dehydrator/examine(mob/user, distance)
@@ -689,45 +700,59 @@
 /obj/structure/dehydrator/proc/set_dry_timer(var/obj/item/I, new_timer)
 	I.name = splicetext(I.name, findtext(I.name,"TIMER_")+6, findtext(I.name,"TIMER_")+14, num2text(new_timer, 8, 10))
 
-/obj/structure/dehydrator/attackby(var/obj/W as obj, var/mob/living/human/H as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
-		var/obj/item/weapon/reagent_containers/food/snacks/D = W
-		if (!D.dried_type)
-			if (H) 
-				H << "<span class='warning'>\The [D.name] is not for drying.</span>"
-			return TRUE//This can't be dryed
-		if (!D.dry_size)
-			return TRUE//ERROR
+/obj/structure/dehydrator/attackby(var/obj/item/W, var/mob/living/human/H as mob, icon_x, icon_y)
+	if (istype(W, /obj/item/weapon/wrench))
+		if (H)
+			wrench_action(H)
+			return TRUE
+	if (istype(W, /obj/item/weapon/hammer))
+		if (H)
+			hammer_action(H, W, 110, list("/obj/item/stack/material/wood"), list(4))
+			return TRUE
+	if (!W.dried_type || !W.dry_size)
+		if (H) 
+			H << "<span class='warning'>\The [W.name] is not for drying.</span>"
+		return TRUE//This can't be dryed
+	if (!W.dry_size)
+		return TRUE//ERROR
+	if (istype(W, /obj/item/weapon/reagent_containers/food))
+		var/obj/item/weapon/reagent_containers/food/D = W
 		if (D.rotten)
 			if (H) 
-				H << "<span class='warning'>\The [D.name] is rotten.</span>"
+				H << "<span class='warning'>\The [W.name] is rotten.</span>"
 			return TRUE
-		if (D.dry_size>15)
-			if (H) 
-				H << "<span class='warning'>\The [D.name] not fit here!</span>"
-			return TRUE
-		if (!hang_on(D))
-			if (H) 
-				H << "<span class='warning'>Not enough room for one more [D.name]!</span>"
-			return TRUE
+	if (W.dry_size>15)
 		if (H) 
-			H.visible_message(
-				"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(D)] to dry.</span>", 
-				"<span class='notice'>You hang \a [normal_item_name(D)] to dry.")
-			return TRUE
-	if (istype(W,/obj/item/weapon/wrench))
-		wrench_action(H)
+			H << "<span class='warning'>\The [W.name] not fit here!</span>"
 		return TRUE
-	if (istype(W,/obj/item/weapon/hammer))
-		hammer_action(H, W, 110, list("/obj/item/stack/material/wood"), list(4))
+	if (!hang_on(W))
+		if (H) 
+			H << "<span class='warning'>Not enough room for one more [W.name]!</span>"
 		return TRUE
-	..(W, H)
+	if (H) 
+		H.visible_message(
+			"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(W)] to dry.</span>", 
+			"<span class='notice'>You hang \a [normal_item_name(W)] to dry.")
+		return TRUE
+	..(W, H, icon_x, icon_y)
+
+/obj/structure/dehydrator/attack_hand(mob/H, icon_x, icon_y)
+	var/obj/item/S = take_product_by_x_y(icon_x, icon_y, H)
+	if (S)
+		if (!H.put_in_any_hand_if_possible(S, FALSE, TRUE, TRUE, TRUE))
+			H.drop_item(S)
+		H.visible_message(
+			"<span class='notice'>You can see how [H.name] removes \a [S.name] from \the [src].</span>", 
+			"<span class='notice'>You remove \a [S.name] from \the [src].")
+	return TRUE
 
 /obj/structure/dehydrator/proc/dry_process(var/this_process = null)
 	var/list/pos
-	var/obj/item/weapon/reagent_containers/food/snacks/P
-	var/obj/item/weapon/reagent_containers/food/snacks/I
+	var/obj/item/P
+	var/obj/item/I
 	var/dry_timer
+	var/list/sizeHV
+	var/is_rotated
 	if (!isturf(src.loc)) //if dehydrator location is gone, or dehydrator is gone, process must die
 		return
 	if (this_process==null) //initial call
@@ -739,22 +764,46 @@
 			return
 		if (storage.contents.len>0)
 			for (I in storage.contents)
-				dry_timer = get_dry_timer(I)
-				dry_timer += 150
-				set_dry_timer(I, dry_timer)
-				if (dry_timer >= TIME_TO_DRY)
-					pos = split_size(text2num(copytext(I.name, findtext(I.name,"POS_")+4, findtext(I.name,"POS_")+5), 16))
-					P = new I.dried_type(src.loc)
-					clean_from(pos[1], pos[2])
-					qdel(I)
-					P.visible_message("[P.name] finishes drying.")
-					update_icon()
+				if (I.dried_type)
+					dry_timer = get_dry_timer(I)
+					dry_timer += 150
+					set_dry_timer(I, dry_timer)
+					if (dry_timer >= TIME_TO_DRY)
+						pos = split_size(text2num(copytext(I.name, findtext(I.name,"POS_")+4, findtext(I.name,"POS_")+5), 16))
+						P = new I.dried_type(null)
+						is_rotated = !!findtext(slots[pos[1]][pos[2]].name, "_ROTATED_")
+						sizeHV = split_size(slots[pos[1]][pos[2]].dry_size, is_rotated)
+						put_in_place(P, pos, sizeHV, is_rotated)
+						if (!P.dried_type)
+							set_dry_timer(P, TIME_TO_DRY+1)
+						qdel(I)
+						P.visible_message("[normal_item_name(P)] finishes drying.")
+						update_icon()
 		dry_process(this_process)
+
+/obj/structure/dehydrator/proc/take_product_by_x_y(icon_x, icon_y, new_location)
+	var/row = max(1,min(5-ceil((icon_y-3)/6),4))
+	var/pos = max(1,min(ceil((icon_x-8)/5),3))
+	var/real_row
+	var/real_pos
+	var/obj/item/S
+	if (slots[row][pos] == null)
+		return FALSE //no items here
+	if (findtext(slots[row][pos],"busy")) //drying object is in another slot
+		real_row = text2num(copytext(slots[row][pos],5,6))
+		real_pos = text2num(copytext(slots[row][pos],6,7))
+	else
+		real_row = row
+		real_pos = pos
+	S = remove_from_dehydrator(real_row, real_pos, new_location)
+	clean_by(real_row, real_pos)
+	update_icon()
+	return S
 
 /obj/structure/dehydrator/bullet_act(var/obj/item/projectile/P, def_zone)
 	var/shoot_x = rand(1,32)
 	var/shoot_y = rand(1,32)
-	var/obj/item/weapon/reagent_containers/food/snacks/S
+	var/obj/item/S
 	if (shoot_x>6 && shoot_x<26)
 		if (shoot_y>3 && shoot_y<30) //in hitbox
 			if (shoot_x==7 || shoot_x==8 || shoot_x==24 || shoot_x==25) 
@@ -762,30 +811,22 @@
 			if (shoot_y==4 || shoot_y==5 || shoot_y==10 || shoot_y==11 || shoot_y==16 || shoot_y==17 || shoot_y==22 || shoot_y==23 || shoot_y==28 || shoot_y==29)
 				return ..(P, def_zone) //hit to dehydrator horizontal frame
 			//shoot throw slots, checking
-			var/row = 5-ceil((shoot_y-3)/6)
-			var/pos = ceil((shoot_x-8)/5)
-			if (slots[row][pos] == null)
-				return FALSE //miss
-			if (findtext(slots[row][pos],"busy")) //drying object is in another slot
-				shoot_x = text2num(copytext(slots[row][pos],5,6))
-				shoot_y = text2num(copytext(slots[row][pos],6,7))
-				row = shoot_x
-				pos = shoot_y
-			S = remove_from_dehydrator(row, pos)
-			clean_by(row, pos)
-			update_icon()
-			S.visible_message("<span class = 'warning'>\The [S.name] gets pierced!</span>")
-			P.do_bullet_act(S, def_zone) //bullet hit to product
-			return FALSE
+			S = take_product_by_x_y(shoot_x, shoot_y)
+			if (S)
+				S.visible_message("<span class = 'warning'>\The [S.name] gets pierced!</span>")
+				P.do_bullet_act(S, def_zone) //bullet hit to product
+				return FALSE
+			else
+				return PROJECTILE_CONTINUE //miss
 	else if (shoot_y==3)
 		if ((shoot_x>5 && shoot_x<9) || (shoot_x>23 && shoot_x<27))
 			return ..(P, def_zone) //hit to dehydrator leg
 	else if (shoot_y==2)
 		if ((shoot_x>4 && shoot_x<7) || (shoot_x>25 && shoot_x<28))
 			return ..(P, def_zone) //hit to dehydrator leg
-	return FALSE //miss
+	return PROJECTILE_CONTINUE //miss
 
-/obj/structure/dehydrator/proc/clean_drop_slots() //Drop all items out without changing names, they wiil be restored on reinit()
+/obj/structure/dehydrator/proc/clean_drop_slots() //Drop all items out without changing names, they will be restored on reinit()
 	for (var/R=1, R<5, R++) 
 		for (var/P=1, P<4, P++)
 			if (slots[R][P]<>null)
@@ -826,16 +867,19 @@
 	spawn(rand(5,15))
 		reinit()
 
-/obj/structure/dehydrator/proc/remove_from_dehydrator(row, pos)
-	var/obj/item/weapon/reagent_containers/food/snacks/S
+/obj/structure/dehydrator/proc/remove_from_dehydrator(row, pos, new_location)
+	var/obj/item/S
 	var/T
 	S = slots[row][pos]
-	storage.remove_from_storage(S) //placing item from dehydrator storage to turf
-	T = findtext(S.name,"DECAY_") + 6
-	S.decay = text2num(copytext(S.name, T, T+8)) //restoring decay value
+	storage.remove_from_storage(S, new_location) //placing item from dehydrator storage to turf or into user
+	if (istype(S, /obj/item/weapon/reagent_containers/food))
+		var/obj/item/weapon/reagent_containers/food/D = S
+		T = findtext(S.name,"DECAY_") + 6
+		D.decay = text2num(copytext(S.name, T, T+8)) //restoring decay value
+		spawn(600+rand(1, 50)) //in order not to create a duplicate process, we wait until the old process dies
+			if (D)
+				D.food_decay() //restarting decay process
 	S.name = normal_item_name(S)
-	spawn(600+rand(1, 50)) //in order not to create a duplicate process, we wait until the old process dies
-		S.food_decay() //restarting decay process
 	return S
 
 /obj/structure/dehydrator/Destroy()
@@ -844,7 +888,7 @@
 		for (var/P=1, P<4, P++)
 			if (slots[R][P]<>null)
 				if (!findtext(slots[R][P],"busy"))
-					remove_from_dehydrator(R, P)
+					remove_from_dehydrator(R, P, src.loc)
 	qdel(storage)
 	storage = null
 	..()
@@ -2002,6 +2046,8 @@
 			if (H)
 				H << "<span class='warning'>The compost bin is full!</span>"
 			break
+		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo)) //poo and fertilizer not need compost, but we have now storage for poo
+			continue
 		if (W.type == /obj/item/stack/ore)
 			add(W, H, W.amount*10) //It's not obtainable item now, we used it for save/load current values
 		if (istype(W, /obj/item/weapon/reagent_containers/food))

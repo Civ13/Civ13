@@ -13,7 +13,7 @@
 	var/boiled = FALSE
 	var/raw = FALSE
 	var/decay = 0 //Decay time limit, in deciseconds. 0 means it doesn't decay.
-	var/decaytimer = 0
+	var/decaytimer = 0 //counter of decay
 	var/satisfaction = 0
 	var/disgusting = FALSE
 
@@ -52,7 +52,7 @@
 
 
 /obj/item/weapon/reagent_containers/food/proc/food_decay()
-	spawn(600)
+	spawn(rand(590,610)) //some spreading and randomness
 		if (decay == 0)
 			return
 		if (istype(loc, /obj/structure/vending))
@@ -73,9 +73,9 @@
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
 			if (F.powersource && F.powersource.powered)
-				decaytimer *= 7 //much slower
+				decaytimer += 75 //much slower
 			else
-				decaytimer *= 2
+				decaytimer += 200 //unpowered fridge still better, than storage container
 		else if (isturf(loc)) //if on the floor (i.e. not stored inside something), decay faster
 			decaytimer += 600
 		else if (!istype(loc, /obj/item/weapon/can)) //if not canned, since canned food doesn't spoil
@@ -85,11 +85,7 @@
 			return
 		else if (decaytimer >= decay/2 && !rotten && rots)
 			rot()
-			food_decay()
-			return
-		else
-			food_decay()
-			return
+		food_decay()
 
 /obj/item/weapon/reagent_containers/food/afterattack(atom/A, mob/user, proximity, params)
 	if (center_of_mass.len && proximity && params && istype(A, /obj/structure/table))
