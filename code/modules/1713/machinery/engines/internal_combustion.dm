@@ -68,6 +68,9 @@
 	set name = "Remove Fueltank"
 	set src in range(1, usr)
 
+	if (!ishuman(usr))
+		return
+
 	if (fueltank == null)
 		return
 	else
