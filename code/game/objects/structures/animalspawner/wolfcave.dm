@@ -8,10 +8,10 @@
 	src.males = pick(1, 2, 3) //Initialize with some random amount of wolves, from 2 to 6
 	src.females = pick(1, 2, 3)
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
-	empty = FALSE
+	src.empty = FALSE
 	src.set_cavetype()
-	if(!wolfcave_ticking) //Checks if the wolfcave tick havent been started yet
-		wolfcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
+	if(!src.ticking) // ticks the tick if the tick havent been ticked yet
+		src.ticking = TRUE
 		Tick()
 	..()
 
@@ -65,17 +65,25 @@
 	else
 		src.desc += pick("You maybe have seen one pair of eyes, but it looks empty.", "You dont see anything inside it.")
 //################## Description Ticker Settings Output #################
-	if(!wanderer_cooldown) //Configurations for wanderer bears
-		if(prob(18))
+	if(!src.wanderer_cooldown) // checks if there was a wanderer going out
+		var/nearbyObjects = range(6,src) // 36 square area around the wolfcave
+		var/wolfsAround = FALSE
+		for(var/mob/living/simple_animal/hostile/wolf/W in nearbyObjects)
+			if (W.stat == CONSCIOUS) {
+				wolfsAround = TRUE // checks if there are wolfs around before spitting mobs out
+				break
+			}
+		if(prob(18) && !wolfsAround) {// 18% chance to spawn and there are no wolves around
 			wolf_out()
-		wanderer_cooldown = TRUE
-		spawn(wanderer_holder)
-			wanderer_cooldown = FALSE
+			src.wanderer_cooldown = TRUE
+			spawn(wanderer_holder)
+				src.wanderer_cooldown = FALSE
+		}
 	if(src.males && src.females)
 		src.reproduction() //Couples the couple
 	if(src.cubs && !cub_growing)
-		cub_growing = TRUE
-		spawn(4500)
+		src.cub_growing = TRUE
+		spawn(4500) // waits 7.5 minutes before a cub can turn into adult
 			cubs--
 			cub_growing = FALSE
 			if(prob(50))
@@ -89,9 +97,9 @@
 		src.empty = FALSE
 		src.set_cavetype()
 
-/obj/structure/animalspawner/wolfcave/proc/process_cub(var/is_cub = FALSE, var/mob/living/simple_animal/hostile/wolf/C)
+/obj/structure/animalspawner/wolfcave/proc/process_cub(var/is_cub = FALSE, var/mob/living/simple_animal/hostile/wolf/C, var/loc)
 	if(is_cub)
-		C.cub = TRUE
+		new/mob/living/simple_animal/hostile/wolf{cub = TRUE}(loc)
 	return
 
 /obj/structure/animalspawner/wolfcave/proc/wolf_out()
@@ -121,13 +129,16 @@
 					B = new/mob/living/simple_animal/hostile/wolf/white(loc)
 				else
 					B = new/mob/living/simple_animal/hostile/wolf/white/female(loc)
-		if(!is_cub)
+		if(!is_cub) // default spawn if their climates were not matched in the previous switch
 			if(type_roll == "wolf")
 				src.males--
+				B = new/mob/living/simple_animal/hostile/wolf(loc)
 			else
 				src.females--
+				B = new/mob/living/simple_animal/hostile/wolf/female(loc)
+
 		else
-			process_cub(is_cub, B)
+			process_cub(is_cub, B, loc) // spawns a cub setting it's src.cub var to 1
 			src.cubs--
 	else
 		return
@@ -144,13 +155,13 @@
 				wolf_out()
 		else if(src.total_population == 1)
 			wolf_out()
-		aggroed = TRUE
+		src.aggroed = TRUE
 		spawn(50) //No spamclick
-			aggroed = FALSE
+			src.aggroed = FALSE
 
 /obj/structure/animalspawner/wolfcave/attackby(obj/W as obj, mob/user as mob)
-	if(!aggroed)
-		src.aggro()
+	if(!src.aggroed)
+		aggro()
 	if(istype(W,/obj/item/weapon/material/pickaxe) && empty)
 		if (do_after(user,65,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
@@ -168,24 +179,19 @@
 	..()
 
 /obj/structure/animalspawner/wolfcave/attack_hand(mob/living/human/M as mob)
-	if(!aggroed)
-		src.aggro()
+	if(!src.aggroed)
+		aggro()
 	..()
 
 /obj/structure/animalspawner/wolfcave/Crossed(mob/living/human/M as mob)
 	if(istype(M, /mob/living/human))
-		if(!aggroed)
-			src.aggro()
+		if(!src.aggroed)
+			aggro()
 	..()
 
-/obj/structure/animalspawner/wolfcave/full
+/obj/structure/animalspawner/wolfcave/full // initializes defaultly with 5 males and 5 females
 
 /obj/structure/animalspawner/wolfcave/full/New()
+	..()
 	src.males = 5
 	src.females = 5
-	src.total_population = src.males + src.females + src.cubs //Initializes the local population
-	empty = FALSE
-	if(!wolfcave_ticking) //Checks if the bearcave tick havent been started yet
-		wolfcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
-		Tick()
-	..()
