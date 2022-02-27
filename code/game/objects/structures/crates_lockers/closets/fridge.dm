@@ -64,3 +64,7 @@
 		user << "You connect the cable to the [src]."
 	else
 		..()
+
+	/obj/structure/closet/fridge/icebox
+	name = "ice box"
+	powerneeded = 0
