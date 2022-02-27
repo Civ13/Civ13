@@ -110,14 +110,19 @@
 				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
 	if (istype(src, /turf/floor/dirt/ploughed))
-		if ((istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) || istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)))
+		if ((istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) || istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer) || istype(C, /obj/item/stack/dung)))
 			user << "You start fertilizing the ploughed field..."
 			var/mob/living/human/H = user
 			if (do_after(user, 60/H.getStatCoeff("farming"), src))
 				user << "You fertilize the ploughed field around this plot."
 				for (var/obj/structure/farming/plant/P in range(1,src))
 					P.fertilized = TRUE
-				qdel(C)
+				if (istype(C, /obj/item/stack/dung))
+					C.amount--
+					if (C.amount <= 0)
+						qdel(C)
+				else
+					qdel(C)
 				if (ishuman(user))
 					H.adaptStat("farming", 1)
 				return
