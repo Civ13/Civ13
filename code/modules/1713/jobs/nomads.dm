@@ -525,25 +525,25 @@
 			spawn(5)
 				//west
 				if (x<75)
-					add_language("German",TRUE)
+					add_language("Gaelic",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
-					for (var/datum/language/german/A in languages)
+					for (var/datum/language/gaelic/A in languages)
 						default_language = A
-					name = species.get_random_german_name(gender)
+					name = species.get_random_gaelic_name(gender)
 					real_name = name
-					add_note("Known Languages", "German")
+					add_note("Known Languages", "Gaelic")
 					return
 				//EAST
 				else
-					add_language("Russian",TRUE)
+					add_language("Latin",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
-					for (var/datum/language/russian/A in languages)
+					for (var/datum/language/latin/A in languages)
 						default_language = A
-					name = species.get_random_russian_name(gender)
+					name = species.get_random_roman_name(gender)
 					real_name = name
-					add_note("Known Languages", "Russian")
+					add_note("Known Languages", "Latin")
 					return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
