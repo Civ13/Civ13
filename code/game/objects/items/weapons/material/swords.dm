@@ -189,22 +189,18 @@ obj/item/weapon/material/sword/wakazashi
 		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
 		suicide = FALSE
 
-/obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, def_zone)
-	..()
-	var/mob/living/human/H = user
-	if(istype(A, H))
-		if (istype(H) && (H.faction_text == "INDIANS"))
-			user << "<span class = 'danger'>You have no idea how to do this.</span>"
-			return
-		if (A == user)
-			var/tgt = user.targeted_organ
-			if (user.targeted_organ == "random")
-				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-			if (tgt == "groin" && !suicide)
-				handle_suicide(user)
-			else if (user.a_intent == I_HARM && do_after(user, 2, get_turf(user)))
-				attackby(user)
-			return
+/obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, target_zone)
+	if (A == user)
+		if (target_zone == "groin" && !suicide)
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				if (H.faction_text == "INDIANS")
+					user << "<span class = 'danger'>You have no idea how to do this.</span>"
+					return TRUE
+			handle_suicide(user)
+			return TRUE
+	return ..(A, user, target_zone)
+
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"
 

@@ -798,7 +798,6 @@ default behaviour is:
 		var/mob/pulled = AM
 		pulled.inertia_dir = FALSE
 
-
 /atom/movable/proc/receive_damage(atom/A)
 	var/pixel_x_diff = rand(-3,3)
 	var/pixel_y_diff = rand(-3,3)
@@ -807,10 +806,6 @@ default behaviour is:
 
 /mob/living/receive_damage(atom/A)
 	..()
-
-///This is a horrible hack but might be needed until I figure out whats wrong with the Life proc bug
-/mob/living
-	var/life_forced = FALSE
 
 /mob/living/proc/forcelife()
 	if (src && stat != DEAD)

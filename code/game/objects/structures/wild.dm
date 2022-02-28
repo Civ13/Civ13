@@ -699,7 +699,8 @@ var/list/seed_list_jungle
 	deadicon = 'icons/obj/flora/dead_jungleflora.dmi'
 	deadicon_state = "[rand(1,30)]"
 
-/obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob, var/mob/living/human/H = user)
+/obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
+	var/mob/living/human/H = user
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		user.do_attack_animation(src)
@@ -890,7 +891,8 @@ var/list/seed_list_jungle
 	leaves = 4
 	max_leaves = 4
 
-/obj/structure/wild/largejungle/attackby(obj/item/W as obj, mob/user as mob, var/mob/living/human/H = user)
+/obj/structure/wild/largejungle/attackby(obj/item/W as obj, mob/user as mob)
+	var/mob/living/human/H = user
 	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
 		H << "You start foraging for fern leaves..."
 		if (do_after(user, 80, src))
