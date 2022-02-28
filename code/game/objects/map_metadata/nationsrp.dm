@@ -39,10 +39,10 @@
 
 /obj/map_metadata/nationsrp/New()
 	..()
-	civname_a = "German Nation"
-	civname_b = "Russian Nation"
-	var/newnamea = list("German Nation" = list(default_research,default_research,default_research,null,0,"cross","#D4AF37","#660000"))
-	var/newnameb = list("Russian Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
+	civname_a = "Latin Nation"
+	civname_b = "Gaelic Nation"
+	var/newnamea = list("Latin Nation" = list(default_research,default_research,default_research,null,0,"cross","#D4AF37","#660000"))
+	var/newnameb = list("Gaelic Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
