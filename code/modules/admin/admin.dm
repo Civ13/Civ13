@@ -1139,11 +1139,10 @@ client/proc/debug_variables_map()
 			var/list/craftlist_temp = file2list(F3,"\n")
 			craftlist_lists[current_list] = list()
 			for (var/j in craftlist_temp)
-				if (findtext(j, ",") && findtext(j,"RECIPE: "))
+				if (findtext(j, ",") && findtext(j,"RECIPE: ") && !(findtext(j,"//")))
 					var/tmpj = replacetext(j, "RECIPE: ", "")
 					var/list/current = splittext(tmpj, ",")
 					craftlist_lists[current_list] += list(current)
-					world.log << "LOADED: [current_list]"
 					if (current.len != 13)
 						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 		else

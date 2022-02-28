@@ -452,26 +452,12 @@
 	gen_ship(sfaction = "spanish", ssize = 5, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 6, slat = 0, slon = 0)
 	spawn(100)
-		load_new_recipes()
+		load_new_recipes("config/crafting/material_recipes_voyage.txt")
 		config.no_respawn_delays = FALSE
 /obj/map_metadata/voyage/cross_message()
 	return ""
 /obj/map_metadata/voyage/reverse_cross_message()
 	return ""
-
-
-/obj/map_metadata/voyage/load_new_recipes()
-	var/F3 = file("config/crafting/material_recipes_voyage.txt")
-	if (fexists(F3))
-		var/list/craftlist_temp = file2list(F3,"\n")
-		craftlist_lists["global"] = list()
-		for (var/i in craftlist_temp)
-			if (findtext(i, ","))
-				var/tmpi = replacetext(i, "RECIPE: ", "")
-				var/list/current = splittext(tmpi, ",")
-				craftlist_lists["global"] += list(current)
-				if (current.len != 13)
-					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 
 ///////////////Specific objects////////////////////
 /obj/structure/voyage
