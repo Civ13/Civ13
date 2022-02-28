@@ -1010,7 +1010,7 @@ RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,1
 
 RECIPE: /material/bearpelt/brown/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,3,null
 RECIPE: /material/bearpelt/brown/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,102,8,null
-RECIPE: /material/bearpelt/brown/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,0,102,null
+RECIPE: /material/bearpelt/brown/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fancy_fur_coat,10,200,0,1,none,0,0,0,102,null
 RECIPE: /material/bearpelt/brown/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/brown/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/brown/,bear pelt headcover,/obj/item/clothing/head/bearpelt/brown,4,150,0,1,none,0,0,0,8,null
@@ -1161,7 +1161,7 @@ RECIPE: /material/bisonpelt/,bisonhead furhat,/obj/item/clothing/head/furhat/bis
 
 RECIPE: /material/bisonpelt/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/brown,6,125,0,1,none,0,0,0,3,null
 RECIPE: /material/bisonpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,102,8,null
-RECIPE: /material/bisonpelt/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,102,8,null
+RECIPE: /material/bisonpelt/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fancy_fur_coat,10,200,0,1,none,0,0,102,8,null
 RECIPE: /material/bisonpelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bisonpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 
