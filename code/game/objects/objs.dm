@@ -26,6 +26,15 @@
 	var/quality = 0
 	var/unacidable = FALSE	//For acids interactions, called at Chemistry-Reagents-Compounds.dm
 
+	var/can_buckle = FALSE
+	var/buckle_movable = FALSE
+	var/buckle_dir = FALSE
+	var/buckle_lying = -1 //bed-like behavior, forces mob.lying = buckle_lying if != -1
+	var/buckle_require_restraints = FALSE //require people to be handcuffed before being able to buckle. eg: pipes
+	var/mob/living/buckled_mob = null
+
+	var/explosion_resistance
+
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)

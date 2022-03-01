@@ -1,11 +1,3 @@
-/obj
-	var/can_buckle = FALSE
-	var/buckle_movable = FALSE
-	var/buckle_dir = FALSE
-	var/buckle_lying = -1 //bed-like behavior, forces mob.lying = buckle_lying if != -1
-	var/buckle_require_restraints = FALSE //require people to be handcuffed before being able to buckle. eg: pipes
-	var/mob/living/buckled_mob = null
-
 /obj/attack_hand(mob/living/user)
 	. = ..()
 	if (can_buckle && buckled_mob)

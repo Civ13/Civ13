@@ -658,7 +658,12 @@
 							place_found = FALSE
 							break
 				if (place_found)
-					put_in_place(D, list(R, P), sizeHV, is_rotated)
+					if (!istype(D, /obj/item/stack) || D.amount == 1)
+						put_in_place(D, list(R, P), sizeHV, is_rotated)
+					else
+						var/obj/item/stack/S0 = D
+						var/obj/item/stack/S1 =	S0.split(1)
+						put_in_place(S1, list(R, P), sizeHV, is_rotated)
 					break
 	if (place_found)
 		return TRUE
@@ -677,7 +682,7 @@
 		if (0.6 to 0.85) return "three quarters dry"
 		if (1 to INFINITY)
 			if (!findtext(normal_item_name(I),"dried"))
-				if (!findtext(normal_item_name(I),"dry"))
+				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose
 					return "dried"
 			else
 				return ""
@@ -710,7 +715,7 @@
 		if (H)
 			hammer_action(H, W, 110, list("/obj/item/stack/material/wood"), list(4))
 			return TRUE
-	if (!W.dried_type || !W.dry_size)
+	if (!W.dried_type)
 		if (H) 
 			H << "<span class='warning'>\The [W.name] is not for drying.</span>"
 		return TRUE//This can't be dryed

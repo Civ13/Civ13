@@ -27,9 +27,6 @@
 
 	return data
 
-/obj
-	var/explosion_resistance
-
 /turf
 	var/explosion_resistance
 
