@@ -867,7 +867,7 @@ obj/structure/religious/monument
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
 			return
-		else if (istype(I, /obj/item/stack/teeth) || istype(I, /obj/item/stack/material/tobacco))
+		else if (istype(I, /obj/item/stack/teeth) || istype(I, /obj/item/stack/material/tobacco_green) || istype(I, /obj/item/stack/material/tobacco))
 			power = (power + (I.amount*12))
 			if (reltype == "tribal")
 				visible_message("The gods take [user]'s offering of \the [I]! They are pleased!")

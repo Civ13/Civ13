@@ -295,8 +295,17 @@
 		..()
 		icon_state = pick("fernleaves1","fernleaves2")
 
+/obj/item/stack/material/tobacco_green
+	name = "fresh tobacco leaves"
+	icon_state = "tobacco_green"
+	default_type = "tobacco"
+	value = 2
+	w_class = 1.0
+	dried_type = /obj/item/stack/material/tobacco
+	dry_size = 9
+
 /obj/item/stack/material/tobacco
-	name = "tobacco leaves"
+	name = "dried tobacco leaves"
 	icon_state = "tobacco"
 	default_type = "tobacco"
 	value = 3

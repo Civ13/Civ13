@@ -24,7 +24,7 @@
 	var/obj/item/master = null
 	var/list/attack_verb = list() //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/force = FALSE
-	var/amount = TRUE
+	var/amount = 1
 	var/value = 0 //the cost of an item.
 
 	var/sharpness = 0
