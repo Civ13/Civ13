@@ -2030,7 +2030,7 @@
 		H << "<span class='warning'>The compost bin is full!</span>"
 		return
 	var/list/allow_types = list(/obj/item/weapon/reagent_containers/food, /obj/item/stack/material/leaf, /obj/item/stack/farming/seeds, 
-		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/coca, 
+		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/tobacco_green, /obj/item/stack/material/coca, 
 		/obj/item/stack/material/flax, /obj/item/stack/material/hemp, /obj/item/stack/material/rettedfabric, 
 		/obj/item/stack/dung
 	)
@@ -2073,7 +2073,7 @@
 		if (istype(W, /obj/item/stack/farming/seeds))
 			add(W, H, W.amount/10) //divides (using /) by tenths from each plant input of 1, 0.10 gain per seed, 10 seeds = 1 unit. 100 seeds = 10
 			continue
-		if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca))
+		if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco_green) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca))
 			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
 			continue
 		if (istype(W, /obj/item/stack/material/flax) || istype(W, /obj/item/stack/material/hemp) || istype(W, /obj/item/stack/material/rettedfabric))
