@@ -250,6 +250,11 @@
 	volume = 60
 	center_of_mass = list("x"=17, "y"=7)
 
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/schnapps
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/schnapps/New()
+	..()
+	reagents.add_reagent("goldschlager", 60)
+
 /obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka
 /obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka/New()
 	..()

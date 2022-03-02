@@ -325,7 +325,7 @@
 
 	return TRUE
 
-////////////////////////////WW2//////////////////////////////////////////////
+////////////////////////////WW2  Reichstag//////////////////////////////////////////////
 /datum/job/german/captain_reichstag
 	title = "Waffen-SS Hauptsturmfuhrer"
 	en_meaning = "SS Captain"
@@ -730,6 +730,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
@@ -737,7 +738,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german_officer(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
@@ -792,7 +792,7 @@
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german_officer(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -844,7 +844,7 @@
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german_officer(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -888,7 +888,8 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
@@ -1258,8 +1259,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_tanker(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap_tanker(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
@@ -1351,13 +1353,13 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
