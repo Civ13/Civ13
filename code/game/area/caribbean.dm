@@ -328,6 +328,11 @@
 /area/caribbean/sea/shallow/temperate
 	climate = "temperate"
 
+/area/caribbean/sea/cobblebridge
+	name = "Bridge"
+	base_turf = /turf/floor/plating/cobblestone
+	icon_state = "purple2"
+
 /area/caribbean/sea/sea
 	name = "Sea"
 	base_turf = /turf/floor/beach/water/deep
@@ -604,6 +609,11 @@
 	icon_state = "purple1"
 	base_turf = /turf/floor/grass
 	climate = "temperate"
+
+/area/caribbean/forest/cobbleroad
+	name = "Road"
+	icon_state = "purple2"
+	base_turf = /turf/floor/plating/cobblestone
 
 /area/caribbean/forest/dirt
 	name = "The Forest"
