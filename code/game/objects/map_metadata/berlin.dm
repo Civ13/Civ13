@@ -16,7 +16,7 @@
 		)
 	age = "1945"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(GERMAN = 0.3, RUSSIAN = 0.7)
+	faction_distribution_coeffs = list(GERMAN = 0.4, RUSSIAN = 0.6)
 	battle_name = "Battle of the Berlin Gate"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Soviets will win if they manage to reach and hold past the Berlin Gate for 5 minutes.</font>"
 	faction1 = GERMAN
