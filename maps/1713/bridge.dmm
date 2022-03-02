@@ -1,0 +1,259 @@
+"aa" = (/turf/floor/dirt,/area/caribbean)
+"ab" = (/turf/floor/grass,/area/caribbean/forest)
+"ac" = (/turf/floor/dirt,/area/caribbean/forest)
+"ad" = (/turf/wall/stone/stonebrick,/area/caribbean/forest/cobbleroad)
+"ae" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/forest)
+"af" = (/turf/floor/beach/water/coastwater{dir = 4},/area/caribbean/sea/shallow)
+"ag" = (/turf/floor/beach/water,/area/caribbean/sea/shallow)
+"ah" = (/turf/floor/beach/water/deep,/area/caribbean/sea/sea)
+"ai" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"aj" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"ak" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
+"al" = (/turf/floor/dirt/dust,/area/caribbean/forest)
+"am" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"an" = (/turf/floor/grass,/area/caribbean)
+"ao" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/forest)
+"ap" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass,/area/caribbean/forest)
+"aq" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
+"ar" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/forest)
+"as" = (/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/forest)
+"at" = (/obj/structure/wild/rock,/obj/structure/flag/french,/turf/floor/grass,/area/caribbean/forest)
+"au" = (/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"av" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aw" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"ax" = (/obj/item/weapon/storage/firstaid/surgery,/obj/structure/table/wood,/obj/item/weapon/doctor_handbook,/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"ay" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"az" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aA" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aB" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/forest)
+"aC" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aD" = (/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aE" = (/obj/structure/bed/wood,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aF" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aG" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/forest)
+"aH" = (/obj/item/weapon/barrier,/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aI" = (/obj/structure/flag/british,/turf/floor/grass,/area/caribbean/forest)
+"aJ" = (/obj/structure/wild/tree/dead_tree,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"aK" = (/obj/structure/closet/crate/bayonets,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aL" = (/obj/item/weapon/wrench,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aM" = (/obj/item/weapon/material/hatchet,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aN" = (/obj/item/weapon/material/shovel,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aO" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"aP" = (/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"aQ" = (/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"aR" = (/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"aS" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"aT" = (/obj/structure/closet/crate/musketball,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aU" = (/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aV" = (/obj/structure/vending/muskets/french,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aW" = (/obj/structure/cannon{dir = 4; icon = 'icons/obj/cannon_h.dmi'; icon_state = "cannon"},/turf/floor/grass,/area/caribbean/forest)
+"aX" = (/obj/structure/cannon{dir = 8; icon = 'icons/obj/cannon_h.dmi'; icon_state = "cannon"},/turf/floor/grass,/area/caribbean/forest)
+"aY" = (/obj/structure/barricade/vertical,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"aZ" = (/obj/item/weapon/attachment/scope/adjustable/binoculars,/obj/structure/table/wood,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"ba" = (/obj/structure/closet/crate/musketball,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bb" = (/obj/structure/closet/crate/bayonets,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bc" = (/obj/structure/wild/tallgrass,/obj/structure/closet/crate/musketball,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bd" = (/obj/structure/vending/muskets/english,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"be" = (/obj/structure/window/barrier,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bf" = (/obj/structure/window/barrier,/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bg" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/obj/structure/window/barrier,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bh" = (/turf/floor/dirt/dust,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bi" = (/obj/structure/closet/crate/cannonball,/turf/floor/grass,/area/caribbean/forest)
+"bj" = (/turf/wall/stone/stonebrick,/area/caribbean/sea/cobblebridge)
+"bk" = (/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
+"bl" = (/turf/floor/beach/water/coastwater{dir = 8},/area/caribbean/sea/shallow)
+"bm" = (/turf/floor/beach/sand/desert{name = "sand"},/area/caribbean/sea/beach)
+"bn" = (/obj/structure/window/barrier/rock,/turf/floor/beach/water/coastwater{dir = 4},/area/caribbean/sea/shallow)
+"bo" = (/obj/structure/window/barrier/rock,/turf/floor/beach/water,/area/caribbean/sea/shallow)
+"bp" = (/obj/covers/roads/cobble,/turf/wall/stone/stonebrick,/area/caribbean/forest/cobbleroad)
+"bq" = (/obj/structure/window/barrier/rock,/turf/floor/grass,/area/caribbean/forest)
+"br" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bs" = (/obj/effect/landmark{name = "JoinLateRNBoatswain"},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bt" = (/obj/effect/landmark{name = "JoinLateRNQM"},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bu" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bv" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePT"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bw" = (/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bx" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTBoatswain"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"by" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTCook"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bz" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTMidshipman"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bA" = (/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/sea/cobblebridge)
+"bB" = (/obj/covers/roads/cobble,/turf/wall/stone/stonebrick,/area/caribbean/sea/cobblebridge)
+"bC" = (/obj/structure/barricade/horizontal,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
+"bD" = (/obj/structure/barricade/vertical,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bE" = (/obj/item/flashlight/lantern/on/anchored,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bF" = (/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bG" = (/obj/effect/landmark{name = "JoinLateRNBoatswain"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bH" = (/obj/effect/landmark{name = "JoinLateRNQM"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bI" = (/obj/effect/landmark{name = "JoinLateRN"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bJ" = (/obj/item/flashlight/lantern/on/anchored,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bK" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
+"bL" = (/obj/structure/barricade/vertical,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
+"bM" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bN" = (/obj/structure/barricade/horizontal,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bO" = (/obj/covers/roads/cobble,/obj/item/weapon/barrier,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bP" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bQ" = (/obj/effect/landmark{name = "JoinLateRNSurgeon"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bR" = (/obj/structure/window/barrier/rock,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
+"bS" = (/obj/item/weapon/material/shovel,/obj/item/weapon/material/hatchet,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bT" = (/obj/effect/landmark{name = "JoinLateRNCap"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bU" = (/obj/covers/roads/cobble,/obj/structure/closet/crate/webbings,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bV" = (/obj/covers/roads/cobble,/obj/structure/closet/crate/musketball,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bW" = (/obj/covers/roads/cobble,/obj/structure/closet/crate/bayonets,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bX" = (/obj/item/weapon/barrier,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bY" = (/obj/structure/flag/french,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bZ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTCap"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"ca" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTCarpenter"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cb" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cc" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cd" = (/obj/effect/landmark{name = "JoinLateRNCook"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"ce" = (/obj/item/flashlight/lantern/on/anchored,/obj/structure/table/wood,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cf" = (/obj/item/weapon/attachment/scope/adjustable/binoculars,/obj/structure/table/wood,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cg" = (/obj/item/weapon/material/hatchet,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"ch" = (/obj/item/weapon/wrench,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"ci" = (/obj/effect/landmark{name = "JoinLateRNCarpenter"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cj" = (/obj/structure/closet/crate/musketball,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"ck" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTQM"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cl" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTSurgeon"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cm" = (/obj/structure/wild/tree/dead_tree,/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTSurgeon"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cn" = (/obj/item/weapon/material/shovel,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"co" = (/obj/structure/window/barrier/rock,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/sea/cobblebridge)
+"cp" = (/obj/structure/wild/tallgrass,/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/forest)
+"cq" = (/obj/structure/closet/crate/bayonets,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cr" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePT"},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cs" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTQM"},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"ct" = (/obj/structure/wild/tallgrass,/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTQM"},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cu" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTSurgeon"},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cv" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cw" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cx" = (/obj/structure/closet/crate/cannonball,/turf/floor/dirt,/area/caribbean/forest)
+"cy" = (/obj/structure/window/barrier/rock,/turf/floor/beach/water/deep,/area/caribbean/sea/sea)
+"cz" = (/obj/structure/window/barrier/rock,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"cA" = (/obj/structure/window/barrier/rock,/turf/floor/beach/water/coastwater{dir = 8},/area/caribbean/sea/shallow)
+"cB" = (/obj/structure/window/barrier/rock,/turf/floor/beach/sand/desert{name = "sand"},/area/caribbean/sea/beach)
+"cC" = (/obj/structure/closet/crate/cannonball,/turf/floor/dirt,/area/caribbean)
+"cD" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cE" = (/obj/structure/pot,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cF" = (/obj/structure/closet/crate/webbings,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cG" = (/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cH" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cI" = (/turf/floor/dirt,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cJ" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cK" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/doctor_handbook,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cL" = (/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cM" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cN" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/table/wood,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cO" = (/obj/structure/bed/wood,/turf/floor/dirt,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cP" = (/obj/structure/bed/wood,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cQ" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cR" = (/obj/structure/flag/british,/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cS" = (/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cT" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cU" = (/obj/structure/closet/crate/rations/meat,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cV" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cW" = (/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/dirt,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cX" = (/obj/item/weapon/wrench,/obj/item/weapon/material/shovel,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cY" = (/obj/structure/window/barrier/rock,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cZ" = (/obj/structure/window/barrier/rock,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"da" = (/obj/structure/window/barrier/rock,/obj/structure/wild/tree/dead_tree,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"db" = (/obj/structure/window/barrier/rock,/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"dc" = (/obj/structure/barricade/vertical,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dd" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"de" = (/obj/structure/sink/well,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"df" = (/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"dg" = (/obj/structure/closet/crate/rations/meat,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dh" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"di" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dj" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dk" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dl" = (/obj/structure/pot,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dm" = (/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dn" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"do" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/forest)
+"dp" = (/obj/structure/wild/burnedbush,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"dq" = (/obj/covers/stone_wall/brick/archway,/turf/floor/beach/water/coastwater{dir = 4},/area/caribbean/sea/shallow)
+"dr" = (/obj/covers/stone_wall/brick/archway,/turf/floor/beach/water,/area/caribbean/sea/shallow)
+"ds" = (/obj/covers/stone_wall/brick/archway,/turf/floor/beach/water/deep,/area/caribbean/sea/sea)
+"dt" = (/obj/covers/stone_wall/brick/archway,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/bottom)
+"du" = (/obj/covers/stone_wall/brick/archway,/turf/floor/beach/water/coastwater{dir = 8},/area/caribbean/sea/shallow)
+"dv" = (/turf/floor/dirt/underground,/area/caribbean/forest)
+"dw" = (/turf/floor/dirt/underground{name = "rock"},/area/caribbean/forest)
+"dx" = (/turf/wall/rockwall,/area/caribbean/void/caves)
+"dy" = (/obj/structure/wild/rock,/turf/floor/dirt/underground,/area/caribbean/forest)
+"dz" = (/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"dA" = (/turf/wall/indestructable/black,/area/caribbean/admin)
+"dB" = (/obj/map_metadata/fields/bridge,/turf/wall/indestructable/black,/area/caribbean/admin)
+"dC" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"dD" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"dE" = (/obj/covers/roads/cobble,/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"dF" = (/obj/covers/roads/cobble,/obj/structure/closet/crate/musketball_pistol,/turf/floor/plating/cobblestone,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"dG" = (/obj/structure/sink/well,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"dH" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"dI" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/forest)
+"dJ" = (/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/sea)
+"dK" = (/obj/structure/window/barrier/rock,/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/sea)
+"dL" = (/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/no_mans_land/invisible_wall)
+"dM" = (/obj/structure/window/barrier/rock,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/no_mans_land/invisible_wall)
+"dN" = (/obj/covers/stone_wall/brick/archway,/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/sea)
+
+(1,1,1) = {"
+ababababacababababababababacacabababbmabbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmabababababajabababababababababababababababacacabababab
+abaeaeabababakabababababababalamababbmbmbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahagagagagblbmbmbmabababababaoajajajababababababababababababababapaqaqabab
+ababababababapacababababaeabababababbmabbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmabababababababababamabababababababamabababababarababab
+ababababamabababababababababacacababababanbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmabababacabababababababababaeacabababababababababababab
+ababaeabababababababababababababababababanbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmbmababababababababababababacacabababababababababababab
+abababababababababababababababaeababababananbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmababababapabacabababababaqaqababababababababababababab
+ababababababababaqabababababababababababanbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmabababababababacababababababababababababajababababababab
+abababababababababaeabaqaqabababababbmabbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmbmababababababababababajabapababakababababamababababae
+ababababababababababababaqabababababbmbmbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahagagagagblbmbmbmbmabababababababababacabakabababababababababamababababab
+ababcpababababababababababaeacabababbmbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmabababababababababacababababababababababamamababababab
+ababababababababababababababacabababacbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmabababacabababababababababababababababababamababababababab
+abajababababababababababababacacacabababbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmabbmababababababaeabababababababababababababacabababababab
+abajabababababaeababapabababababababababanbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmbmababababababababababababababamababacabababababababab
+abababajabajabababasababababababaeabababbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmbmbmababababababababababababamabababababababaeacababab
+abababajababababababatabababababababababbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmabababababababababababababababababababababababacacabab
+auauauavawaxayazazazaAauapababababbmbmbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmababababaqabababajabababaeababababababaBababababacabab
+auaucLaCaDauauaEauaEaFauababajajabababbmbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmabababapababababajajababababababababababababamabababab
+aucMauauauauauaEauaEaFauabababaqaqabababbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmabababajaGababababajababacacababababababababamabababab
+auauauaHauauauaEauaEaFauamababaaaaabababbmbmbmbmafagagagagagahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmbmbmababababababababaIacalabababababababaJabamabababab
+aKauaLaMaNaKauaEauaEaFauababaeaaaaabababanbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmbmbmbmacabaeababababaOaPaPaQaQaQaQaRaQaQaSaSaQaQaQaQaQ
+aTauauauaUaVauaEauaEaFauababaWabababaaaaanbmbmbmafagagagagagahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmabbmababaqabaXabababaYaZaQaQbabbaQaQaQaQbbbcaQbdaQaQaQ
+aVaudDdDauaTaubebebfbgbhababbiabababadadcBcBcBcBbnbobobjbjbocycycycycybjbjdKdKdKcycycycybjbjczczczczczczczbjbjczczczczczczczbjbjczczczczczczczbjbjczczczczczczczbjbjczczczczczczczbjbjcycycycydKdKdKbjbjcycycycycycybjbjcAcBcBcBcBbqbqadadaqababbiababaYbrbraQbraQaQaQaQbsbtaQaQaQbubuaQ
+bvbvbwbxbxbybzbwbwbwbwbwbkbkbkbkbkbkbpbpbkbkbkbkbAbAbAbBbBbAbAbAbAbAbAbBbBdLdLdLbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAdLdLdLbBbBbAbAbAbAbAbAbBbBbAbkbkbkbkbkbkbpbpbkbkbkbkbkbkbDbEbFbFbFbFbFbFbFbGbHbFbFbFbIbIdE
+bvbvbJbxbxbybzbwbwbwbwbwbkbCbCbKbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbKbCbkbkbMbNbNbFbFbFbObFbFbGbPbQbQbFbIbIdF
+bvbvbwbwbwbwbzbwbwbwbwbwbkbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbSbFbFbFbFbFbFbFbTbPbQbQbFbIbIbF
+bvbvbUbVbWbwbzbwbXbwbwbYbkbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbFbFbFbFbFbFbFbFbTbPbQbQbFbIbIbF
+bvbvbwbZbZcabzcbcbcbcbccbkbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbFbFbFbFbFbFbFbFbTcdbQbQbFbIbIbF
+bvbvbJbZbZcabzbwbwcecfccbkbCbCbKbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbKbCbkbkbFbFcgchbFbFbFbFbFcicdbQbQbFbIbIcj
+bvbvbwckckclcmbwbwcnbwccbkbkbkbkbkbkbpbpbRbRbRbRcococobBbBcocococococobBbBdMdMdMcocococobBbBcococococococobBbBcococococococobBbBcococococococobBbBcococococococobBbBcococococococobBbBcocococodMdMdMbBbBcocococococobBbBcobRbRbRbRbRbRbpbpbkbkbkbkbkbkbFbFbMbNbNbFbFbFbFcicdbFbFbFbIbIcq
+crcraucsctcucucvauauaucwababcxabababadadbmbmbmbmdqdrdrbjbjdsdsdsdsdsdsbjbjdNdNdNdsdsdsdsbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdsdsdsdsdNdNdNbjbjdsdsdsdsdsdsbjbjdubmbmbmbmababadadabababcCababaQaQaYcDcEaQbabbaQaQbdaQaQcFaQaQbd
+auaTaKcGaVauaubebebebecwababaWamababaaaabmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmababamacabacaXacajabaSaQaYcHaQcIcIcJaQaQcKaQaQaQcWaQaS
+auauauauauauaucGauauaLaMababaqaaaaababbmbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmapbmababababababababaSaQaYdGaQaQcIcIdHaQcNaQcOaQcPdCcP
+auauauauauauauauauauauauabaeabaaaaabababbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmabbmababababababababaQaQcRaPaPcScTcUaQaQcVaQcPaQcOcQcP
+aucMauauauauauauauauauauabacajabapababacbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahagahagagblbmbmbmbmbmbmabababaeababababaQaSaQaQaQaQaQaQaRcXcYcZcZdacZcZdb
+auauauauaudcauauayauauauababababababbmbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahagahagagblbmbmbmabalababababababababababababababababababababamababababaj
+ddauauaudedcauauauaucvauababababababacdfbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahagagagagblbmbmbmababaqababababababaeabababapabacdIabababasabababababajab
+dgauauaudhdcaucMdiauauauabababababacacdfbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahagagagagblbmbmbmabababaeababababababamababababababababababababababababab
+ayaudjdkdldcaudidiauaucGabababacabacacbmbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmababababababababababababababababababababaeakacabaeabababab
+dmdmdmdmdmdnauauauauauauababababababbmbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmbmabababababababababababababaeababababababaqabababajab
+abababababababababababababababababababbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmabababababababacababababababababababapabababababababaj
+abababababababababababababababaeabababbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmbmbmacababaeabacabababababababababajabababababababaeab
+ababababababaeacabababakabababababajajabbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmajbmabababababababababaeabaqabababababaeababababababab
+ababacajajababababababakakabababababababananbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmajababacabababababababababaqababababababababababababab
+aeabababababababababababababababaeabababanbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmakababacababababababababababababababababababacabababab
+abababababababababapababamabababababababanbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmababababababababababababababababababababababababababababab
+ababababababaqabababababamabababababababbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmababaoababapabalabababababababababababacababababababab
+abajabababababajajababababababababababbmbmbmbmbmafagagagagagahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmabacacacabababababababababababababababababababababajamab
+ababababababababababababababaeabamabajbmbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmbmdfacacabababajabababamababababamababababababababamab
+ababababababababaeabababababaeabababbmbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmdfdfacacabababacabababajababababababacabababababababab
+ababaeabababababababajabacacabababababbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahagagagagblbmbmababacacacabababababababababakacacabababacabababababababab
+ababababamamababababababacacababajabababbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmabacacababababababababababababababababababababababababab
+abababababababababababacamababababajajabbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmbmababababababababababababababababababajababababababab
+dvabababababababababababababababababakabanbmbmbmafagagagagagahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmabajababababababamababababababababababababacababapababab
+dvdvabacacababaeababababababababababababananbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmababababacababababababacabababababababacacabajabababab
+dwdvdvababababababababababababaeababababanbmbmbmafagagagagagahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmajajdoajajajajababababacabakababababababacabajabababab
+dxdzdvdyabamabababababaqababababababababanbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahahblbmbmbmbmbmaqababajabajababapamabababababababacacdfacajabacabab
+dxdxdzdvababababapabababababababababababbmbmbmbmafagagagahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahahblbmbmababababaqdpajajajababababababababababacacdfdfdfacabababab
+dxdxdxdzdvajababababaeabababaeababababambmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahahblbmbmbmabababababababababababababababababababacdfdfdfacabababab
+dAdAdxdxdvdvababababamabacabababababababanbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmabababababababababababababababababababacacacacacabababab
+dBdAdxdxdxdvdvababababababababababababbmbmbmbmbmafagagahahahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahagagagblbmbmbmbmabababababababababababababababababababacacababacababab
+"}

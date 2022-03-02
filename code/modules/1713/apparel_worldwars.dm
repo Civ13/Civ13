@@ -2327,8 +2327,8 @@ obj/item/clothing/head/ww2/chicap2
 	value = 150
 
 /obj/item/weapon/storage/belt/gulagguard
-	name = "GULAG guard belt"
-	desc = "A belt that can hold the standard issue gear of GULAG guards."
+	name = "guard belt"
+	desc = "A belt that can hold the standard issue gear of guards."
 	icon_state = "japbelt"
 	item_state = "japbelt"
 	storage_slots = 10
@@ -2447,3 +2447,15 @@ obj/item/clothing/head/ww2/chicap2
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/whistle(src)
 	new /obj/item/weapon/pen(src)
+
+/obj/item/weapon/storage/belt/smallpouches/gerbelt
+	icon_state = "gerbelt"
+	item_state = "gerbelt"
+	worn_state = "gerbelt"
+
+/obj/item/weapon/storage/belt/smallpouches/gerbelt/officer
+/obj/item/weapon/storage/belt/smallpouches/gerbelt/officer/New()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/horn(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/schnapps(src)
