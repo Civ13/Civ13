@@ -176,52 +176,29 @@ obj/structure/boiling_oil/proc/splash()
 			new/obj/effect/oil(locate(x-2,y+1,z))
 			return
 
-obj/structure/boiling_oil/attackby(obj/item/weapon/oilbarrel/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers))
+obj/structure/boiling_oil/attackby(var/obj/item/O, mob/user)
+	if (istype(O, /obj/item/weapon/reagent_containers))
+		var/obj/item/weapon/reagent_containers/W = O
 		if (W.reagents.has_reagent("olive_oil", 50))
 			W.reagents.remove_reagent("olive_oil", 50)
 			timer = 1
 			visible_message("[user] fills the pot with oil and starts heating it!")
 			icon_state = "oil_pot1"
 			boil()
-			return
+			return TRUE
 		else if (W.reagents.has_reagent("fat_oil", 50))
 			W.reagents.remove_reagent("fat_oil", 50)
 			timer = 1
 			visible_message("[user] fills the pot with oil and starts heating it!")
 			icon_state = "oil_pot1"
 			boil()
-			return
+			return TRUE
 		else
 			user << "This barrel has no olive oil inside!"
-			return
-
-	if (istype(W, /obj/item/weapon/oilbarrel))
-		if (W.full > 0 && timer == 0)
-			W.full -= 1
-			timer = 1
-			visible_message("[user] fills the pot with oil and starts heating it!")
-			icon_state = "oil_pot1"
-			boil()
-			return
-		else if (timer > 0)
-			user << "The pot is already filled!"
-			return
-		else if (W.full <= 0)
-			user << "This barrel is empty!"
-			W.name = "empty olive oil barrel"
-			return
+			return TRUE
 	else
-		..()
+		return ..()
 
-/obj/item/weapon/oilbarrel
-	name = "olive oil barrel"
-	desc = "A barrel of olive oil."
-	icon = 'icons/obj/barrel.dmi'
-	icon_state = "barrel_wood_drinks"
-	density = TRUE
-	var/full = 3
-	flammable = TRUE
 obj/structure/boiling_oil/west
 	direction = WEST
 obj/structure/boiling_oil/east
