@@ -100,7 +100,7 @@
 "bV" = (/obj/covers/roads/cobble,/obj/structure/closet/crate/musketball,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bW" = (/obj/covers/roads/cobble,/obj/structure/closet/crate/bayonets,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bX" = (/obj/item/weapon/barrier,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
-"bY" = (/obj/covers/roads/cobble,/obj/item/ammo_casing/blunderbuss,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bY" = (/obj/structure/flag/french,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bZ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTCap"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "ca" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTCarpenter"},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "cb" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
@@ -194,14 +194,6 @@
 "dL" = (/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/no_mans_land/invisible_wall)
 "dM" = (/obj/structure/window/barrier/rock,/obj/covers/roads/cobble,/turf/floor/plating/cobblestone,/area/caribbean/no_mans_land/invisible_wall)
 "dN" = (/obj/covers/stone_wall/brick/archway,/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/sea)
-"dO" = (/obj/covers/roads/cobble,/obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
-"dP" = (/obj/covers/roads/cobble,/obj/item/ammo_casing/musketball_pistol,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
-"dQ" = (/obj/covers/roads/cobble,/obj/item/weapon/gun/projectile/flintlock/duellingpistol,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
-"dR" = (/obj/covers/roads/cobble,/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
-"dS" = (/obj/structure/flag/french,/obj/covers/roads/cobble,/obj/item/ammo_casing/musketball_pistol,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
-"dT" = (/obj/covers/roads/cobble,/obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
-"dU" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/covers/roads/cobble,/obj/item/ammo_casing/musketball_pistol,/turf/floor/plating/cobblestone,/area/caribbean/colonies/french{location = 1; name = "French Base"})
-"dV" = (/obj/covers/roads/cobble,/obj/item/weapon/gun/projectile/flintlock/pistoletmodeleanxiii,/turf/floor/plating/cobblestone,/area/caribbean/forest/cobbleroad)
 
 (1,1,1) = {"
 ababababacababababababababacacabababbmabbmbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmabababababajabababababababababababababababacacabababab
@@ -226,11 +218,11 @@ auauauaHauauauaEauaEaFauamababaaaaabababbmbmbmbmafagagagagagahahahahahahahdJdJdJ
 aKauaLaMaNaKauaEauaEaFauababaeaaaaabababanbmbmbmafagagagagahahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahagagblbmbmbmbmbmbmbmacabaeababababaOaPaPaQaQaQaQaRaQaQaSaSaQaQaQaQaQ
 aTauauauaUaVauaEauaEaFauababaWabababaaaaanbmbmbmafagagagagagahahahahahahahdJdJdJahahahahaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiahahahahahdJdJdJahahahahahahahahahagblbmbmbmbmabbmababaqabaXabababaYaZaQaQbabbaQaQaQaQbbbcaQbdaQaQaQ
 aVaudDdDauaTaubebebfbgbhababbiabababadadcBcBcBcBbnbobobjbjbocycycycycybjbjdKdKdKcycycycybjbjczczczczczczczbjbjczczczczczczczbjbjczczczczczczczbjbjczczczczczczczbjbjczczczczczczczbjbjcycycycydKdKdKbjbjcycycycycycybjbjcAcBcBcBcBbqbqadadaqababbiababaYbrbraQbraQaQaQaQbsbtaQaQaQbubuaQ
-bvbvbwbxbxbybzbwbwbwbwbYdObkbkbkbkbkbpbpbkbkbkbkbAbAbAbBbBbAbAbAbAbAbAbBbBdLdLdLbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAdLdLdLbBbBbAbAbAbAbAbAbBbBbAbkbkbkbkbkbkbpbpbkbkbkbkbkbkbDbEbFbFbFbFbFbFbFbGbHbFbFbFbIbIdE
-bvbvbJbxbxbybzbwbwbwbwdPdQbCbCbKbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbKbCbkbkbMbNbNbFbFbFbObFbFbGbPbQbQbFbIbIdF
-bvbvbwbwbwbwbzbwbwbwbwdPdRbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbSbFbFbFbFbFbFbFbTbPbQbQbFbIbIbF
-bvbvbUbVbWbwbzbwbXbwbwdSdTbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbFbFbFbFbFbFbFbFbTbPbQbQbFbIbIbF
-bvbvbwbZbZcabzcbcbcbcbdUdVbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbFbFbFbFbFbFbFbFbTcdbQbQbFbIbIbF
+bvbvbwbxbxbybzbwbwbwbwbwbkbkbkbkbkbkbpbpbkbkbkbkbAbAbAbBbBbAbAbAbAbAbAbBbBdLdLdLbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAbAbAbAbBbBbAbAbAbAdLdLdLbBbBbAbAbAbAbAbAbBbBbAbkbkbkbkbkbkbpbpbkbkbkbkbkbkbDbEbFbFbFbFbFbFbFbGbHbFbFbFbIbIdE
+bvbvbJbxbxbybzbwbwbwbwbwbkbCbCbKbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbKbCbkbkbMbNbNbFbFbFbObFbFbGbPbQbQbFbIbIdF
+bvbvbwbwbwbwbzbwbwbwbwbwbkbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbSbFbFbFbFbFbFbFbTbPbQbQbFbIbIbF
+bvbvbUbVbWbwbzbwbXbwbwbYbkbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbFbFbFbFbFbFbFbFbTbPbQbQbFbIbIbF
+bvbvbwbZbZcabzcbcbcbcbccbkbkbkbLbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbLbkbkbkbFbFbFbFbFbFbFbFbFbTcdbQbQbFbIbIbF
 bvbvbJbZbZcabzbwbwcecfccbkbCbCbKbkbkbkbkbkbkbkbkbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAbAdLdLdLbAbAbAbAbAbAbAbAbAbAbAbkbkbkbkbkbkbkbkbkbkbKbCbkbkbFbFcgchbFbFbFbFbFcicdbQbQbFbIbIcj
 bvbvbwckckclcmbwbwcnbwccbkbkbkbkbkbkbpbpbRbRbRbRcococobBbBcocococococobBbBdMdMdMcocococobBbBcococococococobBbBcococococococobBbBcococococococobBbBcococococococobBbBcococococococobBbBcocococodMdMdMbBbBcocococococobBbBcobRbRbRbRbRbRbpbpbkbkbkbkbkbkbFbFbMbNbNbFbFbFbFcicdbFbFbFbIbIcq
 crcraucsctcucucvauauaucwababcxabababadadbmbmbmbmdqdrdrbjbjdsdsdsdsdsdsbjbjdNdNdNdsdsdsdsbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdtdtdtdtdtdtdtbjbjdsdsdsdsdNdNdNbjbjdsdsdsdsdsdsbjbjdubmbmbmbmababadadabababcCababaQaQaYcDcEaQbabbaQaQbdaQaQcFaQaQbd
