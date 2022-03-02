@@ -371,10 +371,18 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_french(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_back)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball_pistol(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball_pistol(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733(H), slot_shoulder)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/officer/h = new /obj/item/clothing/accessory/storage/sheath/longer/officer/(null)
+	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the commander or this company. Organize your <b>Sergent</b> and lead your country to victory!")
 	H.setStat("strength", STAT_NORMAL)
@@ -388,6 +396,7 @@
 	give_random_name(H)
 
 	return TRUE
+
 /datum/job/french/army_officer
 	title = "Sergent"
 	en_meaning = "Infantry Squad Leader"
@@ -397,7 +406,7 @@
 	is_officer = TRUE
 
 	is_army = TRUE
-
+	uses_squads = TRUE
 
 	min_positions = 2
 	max_positions = 20
@@ -411,9 +420,17 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/french_soldier(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/french_officer(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/blunderbuss(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/blunderbuss(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_belt)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/officer/h = new /obj/item/clothing/accessory/storage/sheath/longer/officer/(null)
+	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, squad leader. Organize your group of <b>Soldat</b> according to your <b>Lieutenant</b>'s orders!")
 	H.setStat("strength", STAT_NORMAL)
@@ -453,6 +470,12 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_l_ear)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin(H), slot_r_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
+	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the infantry healthy.")
 	H.setStat("strength", STAT_NORMAL)
@@ -473,7 +496,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePT"
-
+	uses_squads = TRUE
 	is_army = TRUE
 
 
@@ -489,9 +512,15 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/french_soldier(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/french_officer_army(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/charleville(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
+	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a basic infantry soldier of the French Colonial Army. Follow your Officer's orders!")
 	H.setStat("strength", STAT_NORMAL)
@@ -513,7 +542,7 @@
 	rank_abbreviation = "Cha."
 
 	spawn_location = "JoinLatePT"
-
+	uses_squads = TRUE
 	is_army = TRUE
 
 
@@ -534,6 +563,13 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/sabre(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
+	uniform.attackby(h, H)
+
 	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
