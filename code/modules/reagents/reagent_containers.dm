@@ -127,6 +127,10 @@
 		return TRUE
 
 /obj/item/weapon/reagent_containers/proc/proper_spill(target, spill_amount) //puts water on the floor
+	if (!reagents)
+		return
+	if (reagents.total_volume == 0)
+		return
 	var/turf/TGT = get_turf(target)
 	var/watercount = reagents.get_reagent_amount("water") * spill_amount / reagents.total_volume
 	watercount = round(watercount / 42)

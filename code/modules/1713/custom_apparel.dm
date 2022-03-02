@@ -151,6 +151,7 @@
 	item_state = "customponcho"
 	worn_state = "customponcho"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
+	uncolored = TRUE
 
 /obj/item/clothing/under/customren
 	name = "renaissance outfit"
