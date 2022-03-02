@@ -24,7 +24,7 @@
 	var/obj/item/master = null
 	var/list/attack_verb = list() //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/force = FALSE
-	var/amount = TRUE
+	var/amount = 1
 	var/value = 0 //the cost of an item.
 
 	var/sharpness = 0
@@ -76,6 +76,9 @@
 	var/list/basematerials = list()
 
 	var/equiptimer = 0 //if it takes some time to equip to a active hand (e.g. guns)
+
+	var/dried_type = null //Item, that will appear after drying (or dehydrating) process
+	var/dry_size = null //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
 
 /obj/item/New()
 	maxhealth = health

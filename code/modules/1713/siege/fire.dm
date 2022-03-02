@@ -59,7 +59,7 @@
 			user << "You refuel the [src]."
 			qdel(W)
 			return
-		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo))
+		else if(istype(W, /obj/item/stack/dung))
 			fuel += (90)*W.amount
 			user << "You refuel the [src]."
 			qdel(W)

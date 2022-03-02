@@ -67,12 +67,12 @@
 		if (fexists(F3) && findtext(i,"material_recipes"))
 			var/list/craftlist_temp = file2list(F3,"\n")
 			for (var/j in craftlist_temp)
-				if (findtext(j, ",") && findtext(j,"RECIPE: "))
+				if (findtext(j, ",") && findtext(j,"RECIPE: ") && !(findtext(j,"//")))
 					var/tmpj = replacetext(j, "RECIPE: ", "")
 					var/list/current = splittext(tmpj, ",")
 					craftlist_lists[current_list] += list(current)
 					if (current.len != 13)
-						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13) ([current_list])."
 		else
 			admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
 

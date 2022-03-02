@@ -220,7 +220,7 @@
 "el" = (/obj/effect/area_teleporter{id = "three"; id_target = null; name = "three_t"; timer = 0},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "em" = (/obj/effect/area_teleporter{id = "one"; id_target = null; name = "one_t"; timer = 0},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "en" = (/obj/effect/area_teleporter{id = "two"; id_target = null; name = "two_t"; timer = 0},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
-"eo" = (/obj/map_metadata/island,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
+"eo" = (/obj/map_metadata/skullisland,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "ep" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/grass,/area/caribbean/island)
 "eq" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/grass,/area/caribbean/island)
 "er" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)

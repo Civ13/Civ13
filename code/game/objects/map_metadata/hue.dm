@@ -34,12 +34,13 @@
 			. = FALSE
 		else
 			. = TRUE
-	if (istype(J, /datum/job/american))
+	else if (istype(J, /datum/job/american))
 		if (J.is_coldwar && !J.is_specops && !J.is_modernday)
 			. = TRUE
 		else
 			. = FALSE
-
+	else
+		. = FALSE
 
 /obj/map_metadata/hue/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"

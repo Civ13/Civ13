@@ -294,7 +294,6 @@
 		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
 	force = 20
-	slot_flags = SLOT_SHOULDER
 	nothrow = TRUE
 	throwforce = 30
 	equiptimer = 25

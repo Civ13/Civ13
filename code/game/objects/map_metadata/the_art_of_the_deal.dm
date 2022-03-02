@@ -74,6 +74,8 @@
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
+	spawn(100)
+		load_new_recipes("config/crafting/material_recipes_camp.txt")
 	spawn(15000)
 		spawn_disks(TRUE)
 	spawn(100)
@@ -154,18 +156,6 @@
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
-/obj/map_metadata/the_art_of_the_deal/load_new_recipes() //bow ungas BTFO
-	var/F3 = file("config/crafting/material_recipes_camp.txt")
-	if (fexists(F3))
-		var/list/craftlist_temp = file2list(F3,"\n")
-		craftlist_lists["global"] = list()
-		for (var/i in craftlist_temp)
-			if (findtext(i, ","))
-				var/tmpi = replacetext(i, "RECIPE: ", "")
-				var/list/current = splittext(tmpi, ",")
-				craftlist_lists["global"] += list(current)
-				if (current.len != 13)
-					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
 	for(var/obj/structure/closet/safe/SF in world)

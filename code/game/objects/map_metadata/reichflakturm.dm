@@ -12,16 +12,16 @@
 		AMERICAN)
 
 	roundend_condition_sides = list(
-		list(AMERICAN) = /area/caribbean/british,
 		list(GERMAN) = /area/caribbean/german/inside/roof/objective,
+		list(AMERICAN) = /area/caribbean/british,
 		)
 	age = "1944"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.35, AMERICAN = 0.65)
 	battle_name = "Battle of the Reichflakturm"
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the battle begins!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture the anti-air guns at the top of the tower!</font>"
-	faction2 = GERMAN
-	faction1 = AMERICAN
+	faction1 = GERMAN
+	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
@@ -35,10 +35,10 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/reichflakturm/faction1_can_cross_blocks()
+/obj/map_metadata/reichflakturm/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/reichflakturm/faction2_can_cross_blocks()
+/obj/map_metadata/reichflakturm/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 26000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/reichflakturm/short_win_time(faction)

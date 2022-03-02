@@ -13,6 +13,7 @@
 	var/mob/living/swirlie = null	//the mob being given a swirlie
 	not_movable = TRUE
 	not_disassemblable = FALSE
+
 /obj/structure/toilet/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -34,7 +35,6 @@
 		usr.visible_message("<span class='danger'>[user] slams the toilet seat onto [swirlie.name]'s head!</span>", "<span class='notice'>You slam the toilet seat onto [swirlie.name]'s head!</span>", "You hear reverberating porcelain.")
 		swirlie.adjustBruteLoss(8)
 		return
-
 	if (cistern && !open)
 		if (!contents.len)
 			user << "<span class='notice'>The cistern is empty.</span>"
@@ -48,7 +48,6 @@
 			user << "<span class='notice'>You find \an [I] in the cistern.</span>"
 			w_items -= I.w_class
 			return
-
 	open = !open
 	update_icon()
 
@@ -63,7 +62,6 @@
 			visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 			qdel(src)
 			return
-
 	if (istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
 		if (istype(src, /obj/structure/toilet/outhouse))
 			if (open == FALSE)
@@ -76,7 +74,6 @@
 			if (!istype(src, /obj/structure/toilet/pit_latrine) && !istype(src, /obj/structure/toilet/outhouse))
 				update_icon()
 			return
-
 	if (istype(src, /obj/structure/toilet/pit_latrine))
 		if (istype(I, /obj/item/weapon/barrier))
 			var/obj/structure/toilet/pit_latrine/PT = src
@@ -87,13 +84,10 @@
 				visible_message("The pit latrine gets covered.")
 				qdel(src)
 				return
-
 	if (istype(I, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = I
-
 		if (isliving(G.affecting))
 			var/mob/living/GM = G.affecting
-
 			if (G.state>1)
 				if (!GM.loc == get_turf(src))
 					user << "<span class='notice'>[GM.name] needs to be on the toilet.</span>"
@@ -110,7 +104,6 @@
 					GM.adjustBruteLoss(8)
 			else
 				user << "<span class='notice'>You need a tighter grip.</span>"
-
 	if (cistern)
 		if (I.w_class > 3)
 			user << "<span class='notice'>\The [I] does not fit.</span>"
@@ -195,7 +188,6 @@
 			icon_state = icon_state_closed
 			store_mobs()
 			stored_units += store_mobs(stored_units)
-
 	if (cistern && open)
 		if (!contents.len)
 			user << "<span class='notice'>The cistern is empty.</span>"
@@ -844,13 +836,13 @@
 				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 				user.setClickCooldown(5)
 				return TRUE
-
 			else
 				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
 					var/dirty = FALSE
 					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
 						if (PP)
-							dirty = TRUE
+							if (!istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)) //only animal or human poo, not compost
+								dirty = TRUE
 					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)

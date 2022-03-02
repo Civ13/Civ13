@@ -9,7 +9,7 @@
 	title = "Kapitan"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Kpt."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -56,7 +56,7 @@
 	title = "Poruchik"
 	en_meaning = "Lieutenant"
 	rank_abbreviation = "Po."
-
+	is_russojapwar = TRUE
 
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
@@ -108,7 +108,7 @@
 	rank_abbreviation = "Ppo."
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-
+	is_russojapwar = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -154,9 +154,8 @@
 	title = "Feldvebel"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Fv."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -201,7 +200,7 @@
 	title = "Medik"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRUDoc"
 
 	is_medic = TRUE
@@ -240,7 +239,7 @@
 	title = "Yefreytor"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Ye."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 
@@ -282,7 +281,7 @@
 	title = "Ryadovoy"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ry."
-
+	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 
@@ -425,7 +424,6 @@
 	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = TRUE
@@ -448,7 +446,7 @@
 	if (map.ID == MAP_KHALKHYN_GOL)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/pps(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 	if (map.ID == MAP_STALINGRAD)
@@ -594,14 +592,20 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	if (map.ID == MAP_REICHSTAG)
 		if (prob(15))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/pps(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
 		else
 			if (prob(15))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+		else
+			if (prob(10))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(webbing, H)
@@ -678,7 +682,6 @@
 	rank_abbreviation = "Fv."
 
 	spawn_location = "JoinLateRU"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -969,7 +972,6 @@
 	uses_squads = TRUE
 	is_rcw = TRUE
 	is_squad_leader = TRUE
-	is_officer = TRUE
 
 
 	min_positions = 2
@@ -1217,7 +1219,6 @@
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_officer = TRUE
 
 	min_positions = 2
 	max_positions = 6

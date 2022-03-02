@@ -1,5 +1,4 @@
 /////MAILBOXES/////
-
 /obj/structure/closet/crate/wall_mailbox
 	name = "wall mailbox"
 	desc = "A mail box fastened on walls."
@@ -17,7 +16,6 @@
 /obj/structure/closet/crate/wall_mailbox/open()
 	..()
 	contents_stored = 0
-
 	return TRUE
 
 /obj/structure/closet/crate/wall_mailbox/close(mob/user as mob)
@@ -25,7 +23,6 @@
 		return FALSE
 	if (!can_close())
 		return FALSE
-
 	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
 	var/itemcount = FALSE
 	for (var/obj/O in get_turf(src))
@@ -44,7 +41,6 @@
 		O.forceMove(src)
 		itemcount++
 		contents_stored = itemcount
-
 	icon_state = icon_closed
 	opened = FALSE
 	return TRUE
@@ -56,7 +52,6 @@
 			var/image/mailbox_open_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_open")
 			mailbox_open_color_overlay.color = mailbox_color
 			overlays += mailbox_open_color_overlay
-
 		if (!opened)
 			var/image/mailbox_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_closed")
 			mailbox_color_overlay.color = mailbox_color
@@ -66,36 +61,30 @@
 /obj/structure/closet/crate/wall_mailbox/attackby(var/obj/item/W as obj, mob/user as mob)
 	if (!istype(W, /obj/item/weapon/storage/envelope) && !istype(W, /obj/item/weapon/paper) && !istype(W, /obj/item/weapon/key) && !istype(W, /obj/item/weapon/storage/belt/keychain) && !istype(W, /obj/item/weapon/photo) && !istype(W, /obj/item/weapon/hammer))
 		user << "<span class='notice'>You can't put it in the mailbox!</span>"
-		return
-
+		return TRUE
 	if (istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/photo) || istype(W, /obj/item/weapon/storage/envelope))
 		if(!opened)
 			if (contents_stored >= storagecap)
 				user << "<span class='notice'>The mailbox is full!</span>"
-				return
+				return TRUE
 			else
 				if (istype(W, /obj/item/weapon/storage/envelope))
 					var/obj/item/weapon/storage/envelope/E = W
 					if (E.opened == TRUE || E.knifed == TRUE)
 						user << "<span class='notice'>You change your mind about sending an opened envelope - better use a closed one instead.</span>"
-						return
+						return TRUE
 				user.remove_from_mob(W)
 				user << "<span class='notice'>You slip the [W.name] into the mailbox slot.</span>"
 				W.forceMove(src)
 				contents_stored++
-				return
-
+				return TRUE
 	if (istype(W, /obj/item/weapon/key))
-		..()
-		return
-
+		return ..()
 	if (istype(W, /obj/item/weapon/storage/belt/keychain) && custom_code != 0)
-		..()
-		return
-
+		return ..()
 	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
-		..()
-		return
+		return ..()
+	return FALSE
 
 /obj/structure/closet/crate/wall_mailbox/wood_mailbox
 	name = "wood mailbox"
@@ -107,7 +96,6 @@
 	density = TRUE
 
 /////ENVELOPE/////
-
 /obj/item/weapon/storage/envelope
 	name = "envelope"
 	icon = 'icons/obj/mail.dmi'
@@ -122,12 +110,9 @@
 	var/sealed = FALSE
 	var/addressee = null
 	var/sender = null
-	flags = FALSE
-
 
 /obj/item/weapon/storage/envelope/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)
 	..()
-
 	if(knifed)
 		icon_state = "envelope_knifed"
 	else
@@ -145,7 +130,6 @@
 
 /obj/item/weapon/storage/envelope/remove_from_storage(obj/item/W as obj, prevent_warning = FALSE)
 	..()
-
 	if(knifed)
 		icon_state = "envelope_knifed"
 	else
@@ -173,8 +157,7 @@
 			user << "You close the envelope."
 			opened = FALSE
 			icon_state = "envelope_closed"
-			return
-
+			return TRUE
 	if(!opened && user.a_intent == I_HARM)
 		usr << "<span class='warning'>You start tearing up the envelope...</span>"
 		playsound(loc,'sound/items/poster_ripped.ogg',100, TRUE)
@@ -184,7 +167,8 @@
 			usr << "<span class='warning'>You tear the envelope into pieces!</span>"
 			visible_message("[user] tears the envelope into pieces!")
 			qdel(src)
-			return
+			return TRUE
+	return FALSE
 
 /obj/item/weapon/storage/envelope/attack_hand(mob/user as mob)
 	if (ishuman(user) && !opened)
@@ -192,25 +176,24 @@
 		if (H.l_store == src && !H.get_active_hand())	//Prevents opening if it's in a pocket.
 			H.put_in_hands(src)
 			H.l_store = null
-			return
+			return TRUE
 		if (H.r_store == src && !H.get_active_hand())
 			H.put_in_hands(src)
 			H.r_store = null
-			return
-
+			return TRUE
 	if (loc == user)
 		if (opened)
 			open(user)
 		else
 			usr << "<span class='warning'>The envelope is closed! Use a knife to open it.</span>"
-			return
+			return TRUE
 	else
 		..()
 		for (var/mob/M in range(1))
 			if (M.s_active == src)
 				close(M)
 	add_fingerprint(user)
-	return
+	return TRUE
 
 /obj/item/weapon/storage/envelope/attackby(obj/item/W as obj, mob/user as mob)
 	if(!opened)
@@ -220,12 +203,11 @@
 				opened = TRUE
 				knifed = TRUE
 				icon_state = "envelope_knifed"
-				return
-
+				return TRUE
 		if(istype(W, /obj/item/weapon/pen))
 			if(addressee && sender)
 				usr << "<span class='warning'>The addressee and sender fields are already filled!</span>"
-				return
+				return TRUE
 			else
 				var/write_to = sanitize(input(user, "TO: Who is the addressee?", "Addressee", null)  as text, 128)
 				addressee = write_to
@@ -236,15 +218,14 @@
 					usr << "<span class='warning'>You need to fill both fields at the same time!</span>"
 				else
 					desc += "<br>= = = = =<br><u><b>TO:</b></u> [addressee]<br>- - - - -<br><u><b>FROM:</b></u> [sender]<br>= = = = ="
-				return
-
+				return TRUE
 		if(istype(W, /obj/item/weapon/stamp/mail))
 			if(sealed)
 				usr << "<span class='warning'>There is a wax seal already!</span>"
-				return
+				return TRUE
 			var/wax = WWinput(user, "What color should the wax seal be?","Wax seal","Normal",list("cancel", "red", "black", "blue", "green", "pink", "white"))
 			if (wax == "cancel")
-				return
+				return TRUE
 			if (wax != "cancel")
 				var/image/wax_seal = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wax_seal_[wax]")
 				overlays += wax_seal
@@ -252,10 +233,11 @@
 				sealed = TRUE
 			var/add_name = WWinput(user, "Would you like the seal to bear your name?","Wax seal","Normal",list("yes", "no"))
 			if (add_name == "no")
-				return
+				return TRUE
 			else
 				desc += "<br>There is a name on the seal - <b>[usr.real_name]</b>."
-			return
+			return TRUE
 		usr << "<span class='warning'>The envelope is closed! Use a knife to open it.</span>"
-		return
-	..()
+		return TRUE
+	return..()
+ 

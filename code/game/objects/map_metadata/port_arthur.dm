@@ -7,41 +7,43 @@
 	no_hardcore = TRUE
 
 	faction_organization = list(
-		JAPANESE,
-		RUSSIAN)
+		RUSSIAN,
+		JAPANESE)
 
 	roundend_condition_sides = list(
-		list(JAPANESE) = /area/caribbean/island,
 		list(RUSSIAN) = /area/caribbean/russian/land/inside/command,
+		list(JAPANESE) = /area/caribbean/island,
 		)
 	age = "1905"
-	faction_distribution_coeffs = list(JAPANESE = 0.7, RUSSIAN = 0.3)
+	faction_distribution_coeffs = list(RUSSIAN = 0.3, JAPANESE = 0.7)
 	battle_name = "Siege of Port Arthur"
 	mission_start_message = "<font size=3>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Port Arthur! The Russians will win if they hold the fort for <b>30 minutes</b> The Japanese will win if the manage to hold the fort for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
-	faction1 = JAPANESE
-	faction2 = RUSSIAN
+	faction1 = RUSSIAN
+	faction2 = JAPANESE
 	ordinal_age = 5
 	songs = list(
 		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
 	gamemode = "Siege"
-/obj/map_metadata/port_arthur/faction2_can_cross_blocks()
+/obj/map_metadata/port_arthur/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/port_arthur/faction1_can_cross_blocks()
+/obj/map_metadata/port_arthur/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/port_arthur/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/japanese))
-		if (J.is_coldwar || J.is_ww2 || J.is_prison || J.is_yakuza || J.is_samurai == TRUE)
-			. = FALSE
-		else
+		if (J.is_russojapwar)
 			. = TRUE
-	if (istype(J, /datum/job/russian))
-		if (J.is_ww2 || J.is_rcw || J.is_prison || J.is_yeltsin || J.is_grozny || J.is_modernday || J.is_ukrainerussowar)
-			. = FALSE
 		else
+			. = FALSE
+	else if (istype(J, /datum/job/russian))
+		if (J.is_russojapwar)
 			. = TRUE
+		else
+			. = FALSE
+	else
+		. = FALSE
 
 /obj/map_metadata/port_arthur/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -167,11 +169,11 @@
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.faction_text == faction2)
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction1)
+				return TRUE
 		else
-			return !faction1_can_cross_blocks()
+			return !faction2_can_cross_blocks()
 	return FALSE

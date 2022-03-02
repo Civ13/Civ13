@@ -30,8 +30,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	var/trash = null //Trash item, that will appear in hand after full consume of snack
 	var/slice_path = null //Sliced item, that will appear after "slicing"
 	var/slices_num = 0 //Count of slices at item, for example pie, that may sliced at 4 parts must have slices_num = 4 reagents will be transferred to sliced item
-	var/dried_type = null //Item, that will appear after drying (or dehydrating) process
-	var/dry_size = 2 //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
+	dried_type = null //Item, that will appear after drying (or dehydrating) process
+	dry_size = 2 //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
 	var/dry = FALSE //That this must be used for smoking not usual snack... think about it!
 	w_class = 2 //Size of the object, used in sized storage system
 	decay = 15*600 //Decay time limit, in deciseconds. 0 means it doesn't decay. See details at food.dm in food_decay()
@@ -275,7 +275,10 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		user << "<span class='notice'>\The [src] was bitten multiple times!</span>"
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/is_sliceable()
-	return (slices_num && slice_path > 0)
+	if (slice_path)
+		if (slices_num > 0)
+			return TRUE
+	return FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon/storage) && user.a_intent != I_HARM)

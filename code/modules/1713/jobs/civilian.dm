@@ -2744,6 +2744,7 @@
 	min_positions = 2
 	max_positions = 4
 	additional_languages = list("Zulu" = 20)
+	whitelisted = FALSE
 
 /datum/job/civilian/unitednations/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2783,6 +2784,7 @@
 	can_be_female = FALSE
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 10)
+	whitelisted = FALSE
 
 	min_positions = 2
 	max_positions = 2

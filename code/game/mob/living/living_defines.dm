@@ -16,8 +16,6 @@
 	var/cloneloss = FALSE	//Damage caused by being cloned or ejected from the cloner early. slimes also deal cloneloss damage to victims
 	var/brainloss = FALSE	//'Retardation' damage caused by someone hitting you in the head with a bible or being infected with brainrot.
 	var/halloss = FALSE		//Hallucination damage. 'Fake' damage obtained through hallucinating or the holodeck. Sleeping should cause it to wear off.
-
-
 	var/hallucination = FALSE //Directly affects how long a mob will hallucinate for
 	var/list/atom/hallucinations = list() //A list of hallucinated people that try to attack the mob. See /obj/effect/fake_attacker in hallucinations.dm
 
@@ -56,3 +54,5 @@
 	var/takes_less_damage = FALSE
 
 	var/tactic = "charge"
+	var/life_forced = FALSE
+	var/datum/language/default_language

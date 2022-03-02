@@ -452,26 +452,12 @@
 	gen_ship(sfaction = "spanish", ssize = 5, slat = 0, slon = 0)
 	gen_ship(sfaction = "spanish", ssize = 6, slat = 0, slon = 0)
 	spawn(100)
-		load_new_recipes()
+		load_new_recipes("config/crafting/material_recipes_voyage.txt")
 		config.no_respawn_delays = FALSE
 /obj/map_metadata/voyage/cross_message()
 	return ""
 /obj/map_metadata/voyage/reverse_cross_message()
 	return ""
-
-
-/obj/map_metadata/voyage/load_new_recipes()
-	var/F3 = file("config/crafting/material_recipes_voyage.txt")
-	if (fexists(F3))
-		var/list/craftlist_temp = file2list(F3,"\n")
-		craftlist_lists["global"] = list()
-		for (var/i in craftlist_temp)
-			if (findtext(i, ","))
-				var/tmpi = replacetext(i, "RECIPE: ", "")
-				var/list/current = splittext(tmpi, ",")
-				craftlist_lists["global"] += list(current)
-				if (current.len != 13)
-					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 
 ///////////////Specific objects////////////////////
 /obj/structure/voyage
@@ -1020,21 +1006,16 @@
 	New()
 		..()
 		spawn(30)
-			var/found = FALSE
-			for(var/obj/covers/CV in loc)
-				found = TRUE
-				break
-			if (found)
-				for(var/obj/effect/flooding/FLD in loc)
-					if (src != FLD)
-						flood_level = min(3,flood_level+FLD.flood_level)
-						qdel(FLD)
-						update_icon()
-			else
-				qdel(src)
-		spawn(12000)
+			for(var/obj/effect/flooding/FLD in loc)
+				if (src != FLD)
+					flood_level = min(3,flood_level+FLD.flood_level)
+					qdel(FLD)
+					update_icon()
+		spawn(6000)
 			if (src)
-				qdel(src)
+				flood_level--
+				if (flood_level <= 0)
+					qdel(src)
 	update_icon()
 		icon_state = "flood_overlay[flood_level]"
 		desc = "The water seems to be about [flood_level*50]cm deep."
@@ -1054,3 +1035,4 @@
 							qdel(src)
 			else
 				user << "<span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
+		return TRUE

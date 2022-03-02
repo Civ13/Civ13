@@ -62,7 +62,7 @@
 			user << "You place \the [W] in \the [src], refueling it."
 			qdel(W)
 			return
-		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo))
+		else if (istype(W, /obj/item/stack/dung))
 			fuel += (60)*W.amount
 			user << "You place \the [W] in \the [src], refueling it."
 			qdel(W)

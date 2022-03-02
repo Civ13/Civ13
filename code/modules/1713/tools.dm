@@ -272,6 +272,8 @@
 
 /obj/item/weapon/material/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
+	if (istype(TB, /turf/floor/beach/water))
+		return
 	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine","Cancel")
 	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
 	if (input == "Cancel")

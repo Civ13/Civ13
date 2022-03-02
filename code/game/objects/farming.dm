@@ -397,7 +397,7 @@
 	desc = "A tobacco plant."
 	icon_state = "tobacco-grow1"
 	plant = "tobacco"
-	stack = "material/tobacco"
+	stack = "material/tobacco_green"
 	biomes = list("desert", "jungle", "savanna", "semiarid")
 	max_water = 55
 

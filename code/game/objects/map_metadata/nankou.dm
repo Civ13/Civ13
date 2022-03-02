@@ -6,20 +6,20 @@
 	no_hardcore = TRUE
 	respawn_delay = 1200
 	faction_organization = list(
-		JAPANESE,
-		CHINESE)
+		CHINESE,
+		JAPANESE)
 
 	roundend_condition_sides = list(
-		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		list(CHINESE) = /area/caribbean/russian/land/inside/command,
+		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		)
 	age = "1937"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(JAPANESE = 0.4, CHINESE = 0.6)
+	faction_distribution_coeffs = list(CHINESE = 0.6, JAPANESE = 0.4)
 	battle_name = "battle of Nankou"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Train Station</b>. The Chinese will win if they manage to defend their command for <b>20 minutes!</b>.</font>"
-	faction1 = JAPANESE
-	faction2 = CHINESE
+	faction1 = CHINESE
+	faction2 = JAPANESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
@@ -156,11 +156,11 @@ var/no_loop_nk = FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
 			if (H.faction_text == faction2)
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction1)
+				return TRUE
 		else
-			return !faction1_can_cross_blocks()
+			return !faction2_can_cross_blocks()
 	return FALSE

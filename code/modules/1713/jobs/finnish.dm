@@ -150,7 +150,6 @@
 	rank_abbreviation = "Ker."
 
 	spawn_location = "JoinLateGE"
-	is_officer = TRUE
 	is_squad_leader = TRUE
 	is_karelina = TRUE
 	uses_squads = TRUE

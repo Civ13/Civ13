@@ -6,7 +6,6 @@
 */
 
 //####DEFINES####
-
 /mob
 	var/bladder = 0
 	var/bowels = 0
@@ -36,7 +35,6 @@
 		name = "dried poo stain"
 		desc = "It's a dried poo stain..."
 
-
 /obj/effect/decal/cleanable/poo/tracks
 	icon_state = "tracks"
 	random_icon_states = null
@@ -51,16 +49,13 @@
 	icon_state = "drip1"
 	random_icon_states = list("drip1", "drip2", "drip3", "drip4", "drip5")
 
-
 /obj/effect/decal/cleanable/poo/Crossed(AM as mob|obj, var/forceslip = 0)
 	if (istype(AM, /mob/living/human) && src.dried == 0)
 		var/mob/living/human/M = AM
 		if (M.m_intent == "walk")
 			return
-
 		if(prob(5))
 			M.slip("poo")
-
 
 /obj/effect/decal/cleanable/urine
 	name = "urine stain"
@@ -79,7 +74,6 @@
 		var/mob/living/human/M =	AM
 		if (ishuman(M) && M.m_intent == "walk")
 			return
-
 		if((!dried) && prob(5))
 			M.slip("urine")
 
@@ -90,15 +84,12 @@
 	for(var/obj/effect/decal/cleanable/urine/piss in src.loc)
 		if(piss != src)
 			qdel(piss)
-
 	spawn(800)
 		dried = 1
 		name = "dried urine stain"
 		desc = "That's a dried crusty urine stain. Fucking janitors."
 
-
 //#####REAGENTS#####
-
 //SHIT
 /datum/reagent/poo
 	name = "poo"
@@ -107,7 +98,6 @@
 	reagent_state = LIQUID
 	color = "#643200"
 	taste_description = "literal shit"
-
 
 /datum/reagent/poo/on_mob_life(var/mob/living/M)
 	if(!M)
@@ -135,6 +125,8 @@
 	src = null
 	new /obj/effect/decal/cleanable/urine(T)
 
+//#####ITEMS#####
+//SHIT
 /obj/item/weapon/reagent_containers/food/snacks/poo
 	name = "poo"
 	desc = "A chocolately surprise!"
@@ -144,38 +136,46 @@
 	satisfaction = -25 //tastes like shit
 	disgusting = TRUE
 	decay = 20*600
-
-/obj/item/weapon/reagent_containers/food/snacks/poo/New()
-	..()
-	icon_state = pick("poop1", "poop2", "poop3", "poop4", "poop5", "poop6", "poop7")
-	reagents.add_reagent("poo", 10)
-	bitesize = 3
+	New()
+		..()
+		icon_state = pick("poop1", "poop2", "poop3", "poop4", "poop5", "poop6", "poop7")
+		reagents.add_reagent("poo", 10)
+		biteamount = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/animal
 	name = "manure"
 	desc = "Makes good fertilizer at least."
-	icon_state = "animal1"
+	dry_size = 6
+	dried_type = /obj/item/stack/dung
+	New()
+		..()
+		icon_state = pick("animal1", "animal2", "animal3")
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer
-	name = "fertilizer"
-	desc = "Natural fertilizer for your plants (or bombs)."
-	icon_state = "fertilizer"
+	name = "compost"
+	desc = "Natural fertilizer for your plants."
 	decay = 120*600
+	dry_size = 6
+	dried_type = /obj/item/stack/dung
+	New()
+		..()
+		icon_state = pick("animal1", "animal2", "animal3")
 
-/obj/item/weapon/reagent_containers/food/snacks/poo/animal/New()
-	..()
-	icon_state = pick("animal1", "animal2", "animal3")
+/obj/item/stack/dung
+	icon = 'icons/effects/pooeffect.dmi'
+	icon_state = "dry_dung"
+	name = "dry dung"
+	desc = "Fertilizer for your plants (or fuel)."
+	value = 0
+	can_stack = TRUE
+	singular_name = "dry dung"
+	max_amount = 40
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/throw_impact(atom/hit_atom)
-	//if(prob(50)) //this is so we actually have a chance of recovering some from disposal.
-	//	return
 	playsound(src.loc, "sound/effects/squishy.ogg", 40, 1)
 	var/turf/T = src.loc
 	new /obj/effect/decal/cleanable/poo(T)
-	//qdel(src) THIS IS BAD AND YOU SHOULD FEEL BAD.
 	..()
-
-//#####BOTTLES#####
 
 //PISS
 /obj/item/weapon/reagent_containers/glass/bottle/urine
@@ -183,11 +183,9 @@
 	desc = "A small bottle. Contains urine."
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "bottle15"
-
 	New()
 		..()
 		reagents.add_reagent("urine", 30)
-
 
 //#####LIFE PROCS#####
 /mob/living/human/proc/print_excrement()
@@ -201,7 +199,6 @@
 				to_chat(src, "<span class='warning'><b>You're about to shit yourself!</b></span>")
 			if(500 to INFINITY)
 				to_chat(src, "<span class='danger'><b>OH MY GOD YOU HAVE TO SHIT!</b></span>")
-
 	if(bladder >= 100)//Your bladder is smaller than your colon
 		switch(bladder)
 			if(100 to 250)
@@ -220,15 +217,14 @@
 		bowels = 0
 	if(bladder <= 0)
 		bladder = 0
-
 	if(bowels >= 250)
 		switch(bowels)
 			if(250 to 400)
 				if(prob(5))
 					to_chat(src, "<b>You need to use the bathroom.</b>")
-					bowels += 15
+					bowels += 10
 			if(400 to 450)
-				if(prob(5))
+				if(prob(7))
 					to_chat(src, "<span class='danger'>You really need to use the restroom!</span>")
 					bowels += 15
 			if(450 to 500)
@@ -245,15 +241,14 @@
 					bowels += 35
 			if(550 to INFINITY)
 				handle_shit()
-
 	if(bladder >= 100)//Your bladder is smaller than your colon
 		switch(bladder)
 			if(100 to 250)
 				if(prob(5))
 					to_chat(src, "<b>You need to use the bathroom.</b>")
-					bladder += 15
+					bladder += 10
 			if(250 to 400)
-				if(prob(5))
+				if(prob(7))
 					to_chat(src, "<span class='danger'>You really need to use the restroom!</span>")
 					bladder += 15
 			if(400 to 500)
@@ -275,7 +270,6 @@
 /mob/living/human/proc/handle_shit()
 	var/message = null
 	if (src.bowels >= 30)
-
 		//Poo in the loo.
 		var/obj/structure/toilet/T = locate() in src.loc
 		var/mob/living/M = locate() in src.loc
@@ -287,9 +281,7 @@
 			var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
 			if(reagents)
 				reagents.trans_to(V, rand(1,5))
-
 			V.forceMove(T)
-
 		else if(w_uniform)
 			message = "<B>[src]</B> shits \his pants."
 			reagents.add_reagent("poo", 10)
@@ -299,27 +291,22 @@
 			w_uniform.overlays += w_uniform.shit_overlay
 			w_uniform.update_icon()
 			update_icons()
-
 		//Poo on the face.
-		else if(M != src && M.lying)//Can only shit on them if they're lying down.
+		else if(M != src && M.lying) //Can only shit on them if they're lying down.
 			message = "<span class='danger'><b>[src]</b> shits right on <b>[M]</b>'s face!</span>"
 			if (M && M.reagents)
 				M.reagents.add_reagent("poo", 10)
-
 		//Poo on the floor.
 		else
 			message = "<B>[src]</B> [pick("shits", "craps", "poops")]."
 			var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
 			if(reagents)
 				reagents.trans_to(V, rand(1,5))
-
 		playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
 		bowels -= rand(120,150)
-
 	else
 		to_chat(src, "You don't have to.")
 		return
-
 	visible_message("[message]")
 
 //Peeing
@@ -328,7 +315,6 @@
 	if (bladder < 30)
 		to_chat(src, "You don't have to.")
 		return
-
 	var/mob/living/M = locate() in src.loc
 	var/obj/structure/toilet/T = locate() in src.loc
 	var/obj/structure/toilet/T2 = locate() in src.loc
@@ -337,15 +323,12 @@
 	if((S) && gender != FEMALE)//In the urinal or sink.
 		message = "<B>[src]</B> urinates into [S]."
 		reagents.remove_any(rand(5,10))
-
 	else if( (T && T.open) || (T2 && T2.open) )//In the toilet.
 		message = "<B>[src]</B> urinates into [T]."
 		reagents.remove_any(rand(5,10))
-
 	else if (M.crap_inside) //Into the hole inside the outhouse.
 		message = "<B>[src]</B> urinates into the hole."
 		reagents.remove_any(rand(5,10))
-
 	else if(RC && (istype(RC,/obj/item/weapon/reagent_containers/food/drinks || istype(RC,/obj/item/weapon/reagent_containers/glass))))
 		if(RC.is_open_container())
 			//Inside a beaker, glass, drink, etc.
@@ -354,7 +337,6 @@
 			RC.reagents.add_reagent("urine", amount)
 			if(reagents)
 				reagents.trans_to(RC, amount)
-
 	else if(w_uniform)//In your pants.
 		message = "<B>[src]</B> pisses \his pants."
 		adjust_hygiene(-25)
@@ -363,14 +345,11 @@
 		w_uniform.overlays += w_uniform.piss_overlay
 		w_uniform.update_icon()
 		update_icons()
-
 	else//On the floor.
 		var/turf/TT = src.loc
 		var/obj/effect/decal/cleanable/urine/D = new/obj/effect/decal/cleanable/urine(src.loc)
 		if(reagents)
 			reagents.trans_to(D, rand(5,10))
 		message = "<B>[src]</B> pisses on the [TT.name]."
-
-	bladder -= 120
+	bladder -= rand(100,130)
 	visible_message("[message]")
-
