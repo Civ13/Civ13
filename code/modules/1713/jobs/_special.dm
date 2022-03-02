@@ -78,7 +78,7 @@
 /datum/job/var/is_stormcloak = FALSE
 /datum/job/var/is_ukrainerussowar = FALSE
 /datum/job/var/is_russojapwar = FALSE
-
+/datum/job/var/is_smallsiegemoscow = FALSE
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
