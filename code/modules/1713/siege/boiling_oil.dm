@@ -177,27 +177,28 @@ obj/structure/boiling_oil/proc/splash()
 			return
 
 obj/structure/boiling_oil/attackby(var/obj/item/O, mob/user)
-	if (istype(O, /obj/item/weapon/reagent_containers))
-		var/obj/item/weapon/reagent_containers/W = O
-		if (W.reagents.has_reagent("olive_oil", 50))
-			W.reagents.remove_reagent("olive_oil", 50)
-			timer = 1
-			visible_message("[user] fills the pot with oil and starts heating it!")
-			icon_state = "oil_pot1"
-			boil()
-			return TRUE
-		else if (W.reagents.has_reagent("fat_oil", 50))
-			W.reagents.remove_reagent("fat_oil", 50)
-			timer = 1
-			visible_message("[user] fills the pot with oil and starts heating it!")
-			icon_state = "oil_pot1"
-			boil()
-			return TRUE
-		else
-			user << "This barrel has no olive oil inside!"
-			return TRUE
-	else
+	if (!istype(O, /obj/item/weapon/reagent_containers))
 		return ..()
+	if (timer <> 0)
+		user << "<span class='warning'>The oil is already in the pot!</span>"
+		return ..()
+	var/obj/item/weapon/reagent_containers/W = O
+	var/total_oil = W.reagents.get_reagent_amount("olive_oil") + W.reagents.get_reagent_amount("fat_oil")
+	if (total_oil == 0)
+		user << "<span class='warning'>This barrel has no any oil inside!</span>"
+		return TRUE
+	if (total_oil < 50)
+		user << "<span class='warning'>There isn't enough oil in this barrel! Minimum is 50.</span>"
+		return TRUE
+	var/part = total_oil / 50
+	W.reagents.remove_reagent("olive_oil", W.reagents.get_reagent_amount("olive_oil") / part)
+	W.reagents.remove_reagent("fat_oil", W.reagents.get_reagent_amount("fat_oil") / part)
+	timer = 1
+	user.visible_message("<span class='warning'>[user] fills the pot with oil and starts heating it!</span>", 
+		"<span class='notify'>You fill the pot with oil and start heating it.</span>")
+	icon_state = "oil_pot1"
+	boil()
+	return TRUE
 
 obj/structure/boiling_oil/west
 	direction = WEST
