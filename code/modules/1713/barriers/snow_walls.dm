@@ -4,6 +4,7 @@
 /obj/structure/window/barrier/snowwall
 	name = "snow barricade"
 	icon_state = "snow_wall"
+	desc = "That's a snow barricade."
 	icon = 'icons/obj/structures.dmi'
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
@@ -27,48 +28,10 @@
 						new /obj/item/weapon/snowwall(turf)
 				qdel(src)
 
-/obj/structure/window/barrier/snowwall/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			qdel(src)
-			return
-		if (2.0)
-			qdel(src)
-			return
-		else
-			if (prob(50))
-				return ex_act(2.0)
-	return
-
-/obj/structure/window/barrier/snowwall/New(location, var/mob/creator)
-	loc = location
-	flags |= ON_BORDER
-
-	if (creator && ismob(creator))
-		dir = creator.dir
-	else
-		var/ndir = creator
-		dir = ndir
-
-	set_dir(dir)
-
-	switch (dir)
-		if (NORTH)
-			layer = MOB_LAYER - 0.01
-			pixel_y = FALSE
-		if (SOUTH)
-			layer = MOB_LAYER + 0.01
-			pixel_y = FALSE
-		if (EAST)
-			layer = MOB_LAYER - 0.05
-			pixel_x = FALSE
-		if (WEST)
-			layer = MOB_LAYER - 0.05
-			pixel_x = FALSE
-
 //incomplete snowwall structures
 /obj/structure/window/barrier/snowwall/incomplete
 	name = "incomplete snow barricade"
+	desc = "This snow barricade is unfinished. Add few more snow."
 	icon_state = "snow_wall_33%"
 	flammable = FALSE
 	incomplete = TRUE
@@ -91,74 +54,6 @@
 			qdel(O)
 	else
 		return
-
-/obj/structure/window/barrier/snowwall/set_dir(direction)
-	dir = direction
-
-// snowwall window overrides
-
-/obj/structure/window/barrier/snowwall/attackby(obj/O as obj, mob/user as mob)
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/examine(mob/user)
-	user << "That's a snow barricade."
-	return TRUE
-
-/obj/structure/window/barrier/snowwall/take_damage(var/damage = FALSE, var/sound_effect = TRUE)
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/apply_silicate(var/amount)
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/updateSilicate()
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/shatter(var/display_message = TRUE)
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/bullet_act(var/obj/item/projectile/Proj)
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			qdel(src)
-			return
-		if (2.0)
-			qdel(src)
-			return
-		if (3.0)
-			if (prob(50))
-				qdel(src)
-
-/obj/structure/window/barrier/snowwall/is_full_window()
-	return FALSE
-
-/obj/structure/window/hitby(AM as mob|obj)
-	return FALSE // don't move
-
-/obj/structure/window/barrier/snowwall/attack_generic(var/mob/user, var/damage)
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/rotate()
-	return
-
-/obj/structure/window/barrier/snowwall/revrotate()
-	return
-
-/obj/structure/window/barrier/snowwall/is_fulltile()
-	return FALSE
-
-/obj/structure/window/barrier/snowwall/update_verbs()
-	verbs -= /obj/structure/window/proc/rotate
-	verbs -= /obj/structure/window/proc/revrotate
-
-//merges adjacent full-tile windows into one (blatant ripoff from game/smoothwall.dm)
-/obj/structure/window/barrier/snowwall/update_icon()
-	return
-
-/obj/structure/window/barrier/snowwall/fire_act(temperature)
-	return
 
 /obj/item/weapon/snowwall
 	name = "snow pile"
