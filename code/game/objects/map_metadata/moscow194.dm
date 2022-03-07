@@ -28,7 +28,7 @@
 
 obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_reichstag == FALSE && J.is_occupation == FALSE/* && J.is_SmallSiegeMoscow == TRUE*/)
+	if ((J.is_ww2 == TRUE && J.is_reichstag == FALSE && J.is_occupation == FALSE) || J.is_smallsiegemoscow == TRUE)
 		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
 		. = TRUE
