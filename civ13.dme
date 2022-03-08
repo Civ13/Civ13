@@ -455,6 +455,7 @@
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\missionary_ridge.dm"
+#include "code\game\objects\map_metadata\moscow194.dm"
 #include "code\game\objects\map_metadata\nanjing.dm"
 #include "code\game\objects\map_metadata\nankou.dm"
 #include "code\game\objects\map_metadata\nationsrp.dm"
