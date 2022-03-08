@@ -2451,10 +2451,10 @@ obj/item/clothing/head/ww2/chicap2
 /obj/item/weapon/storage/belt/smallpouches/gerbelt
 	icon_state = "gerbelt"
 	item_state = "gerbelt"
-	worn_state = "gerbelt"
 
 /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer
 /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer/New()
+	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/weapon/horn(src)
