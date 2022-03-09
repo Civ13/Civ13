@@ -17,7 +17,7 @@
 		)
 	age = "1943"
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5, CIVILIAN = 0.2)
 	battle_name = "Forest"

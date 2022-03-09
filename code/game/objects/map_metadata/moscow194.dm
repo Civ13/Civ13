@@ -18,12 +18,12 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(russian = 0.4, German = 0.6)
 	battle_name = "Battle for Moscow"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach ´The Politburo in the Administration building!.</font>"
+	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach the Politburo in the Administration building!.</font>"
 	faction1 = RUSSIAN
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 	gamemode = "Siege"
 
 obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
