@@ -312,7 +312,7 @@
 										H.name = H.species.get_random_chechen_name(H.gender)
 										H.real_name = H.name
 									if ("Finnish")
-										H.name = H.species.get_random_oldnorse_name(H.gender)
+										H.name = H.species.get_random_finnish_name(H.gender)
 										H.real_name = H.name
 									if ("Ukrainian")
 										H.name = H.species.get_random_ukrainian_name(H.gender)

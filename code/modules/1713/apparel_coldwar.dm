@@ -1296,10 +1296,3 @@
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
-
-/obj/item/clothing/under/customuniform/fins
-    name = "finnish uniform"
-    desc = "A finnish winter uniform."
-    shirtcolor = "#FFFFFF"
-    pantscolor = "#FFFFFF"
-    color = "#FFFFFF"

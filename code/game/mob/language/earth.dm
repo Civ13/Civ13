@@ -31,6 +31,7 @@
 #define FILIPINO_SYLLABLES list("a", "b", "da", "fa", "ga", "gra", "ha", "han", "hon", "ka", "la", "lat", "ma", "na", "nga", "pa", "pra", "ra", "sa", "sal", "ta", "tra", "wa", "e", "be", "bre", "de", "dre", "ge", "he", "ke", "le", "me", "ne", "pe", "pre", "re", "se", "te", "tre", "i", "bi", "di", "fi", "gi", "hi", "ki", "li", "mi", "ni", "pi", "pri", "ri", "si", "ti", "o", "ong", "oo", "bo", "bro", "do", "dro", "go", "ho", "ko", "lo", "mo", "no", "ngo", "po", "pro", "ro", "so", "to", "tro", "yo", "u", "bu", "du", "gu", "hu", "ku", "lu", "mu", "pu", "yu")
 #define ITALIAN_SYLLABLES list("pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va", "ta", "ra", "ga", "da", "na", "sa", "la", "te", "re", "ge", "de", "ne", "se", "le", "ti", "ri", "gi", "di", "ni", "si")
 #define CHECHEN_SYLLABLES list("la", "ma", "nakh", "dukh", "duy", "lu", "sal", "shi", "shov", "dansh", "en", "be", "kha", "ja", "bal", "tsa", "mol", "ush", "jin", "khor", "gie", "buylsh", "or", "ga", "tha", "zan", "dakh", "gash", "det", "mekh", "sa", "salam", "al", "kum", "ha", "at", "qo", "di", "ste", "aid")
+#define FINNISH_SYLLABLES list ("a", "an", "del", "des", "er", "gas", "go", "he", "ik", "il", "ja", "jar", "jes", "jat", "ka", "kai", "ku", "la", "las", "lat", "lem", "let", "li", "lis", "ma", "mal", "mas", "mat", "me", "mel", "mer", "mi", "min", "mis", "moit", "myy", "nen", "ni", "nin", "nit", "no", "nos", "o", "on", "pe", "pet", "pis", "pu", "ra", "ri", "sa", "ses", "struk", "syy", "ta", "tau", "te", "tel", "ti", "to", "tu", "jar", "tan", "to", "ton", "vin", "voi")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -353,6 +354,17 @@
 	/datum/language/english = 10,
 	/datum/language/blackspeech=10,
 	/datum/language/danish = 25)
+
+/datum/language/finnish
+	name = "Finnish"
+	desc = "Mamme!"
+	key = "fi"
+	colour = "Finnish"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = FINNISH_SYLLABLES
+	mutual_intelligibility = list(/datum/language/oldnorse = 25,
+	/datum/language/danish = 20,
+	/datum/language/russian = 10)
 
 /datum/language/egyptian
     name = "Egyptian"

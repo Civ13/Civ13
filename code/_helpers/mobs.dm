@@ -145,9 +145,9 @@ proc/random_finnish_name(gender, species = "Human")
 
 	if (!current_species || current_species.name_language == null)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+			return capitalize(pick(first_names_female_finnish)) + " " + capitalize(pick(last_names_finnish))
 		else
-			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+			return capitalize(pick(first_names_male_finnish)) + " " + capitalize(pick(last_names_finnish))
 	else
 		return current_species.get_random_oldnorse_name(gender)
 

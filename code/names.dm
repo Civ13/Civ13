@@ -109,6 +109,9 @@ var/list/first_names_male_italian = file2list("config/names/first_male_italian.t
 var/list/first_names_female_italian = file2list("config/names/first_female_italian.txt")
 var/list/last_names_italian  = file2list("config/names/last_italian.txt")
 
+var/list/first_names_male_finnish = file2list("config/names/first_male_finnish.txt")
+var/list/first_names_female_finnish = file2list("config/names/first_female_finnish.txt")
+var/list/last_names_finnish  = file2list("config/names/last_finnish.txt")
 
 var/list/first_names_male_oldnorse = file2list("config/names/first_male_oldnorse.txt")
 var/list/first_names_female_oldnorse  = file2list("config/names/first_female_oldnorse.txt")
