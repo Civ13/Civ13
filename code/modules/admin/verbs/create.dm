@@ -2,7 +2,7 @@
 	set name = "Create Custom Crate"
 	set category = "Admin"
 
-	if (!check_rights(R_MOD))
+	if (!check_rights(R_SPAWN))
 		return
 
 	if (!mob || !mob.loc)
