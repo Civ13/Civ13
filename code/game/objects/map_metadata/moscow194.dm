@@ -9,16 +9,15 @@
 	faction_organization = list(
 		RUSSIAN,
 		GERMAN)
-
 	roundend_condition_sides = list(
-		list(GERMAN) = /area/caribbean/british,
 		list(RUSSIAN) = /area/caribbean/no_mans_land/capturable,
+		list(GERMAN) = /area/caribbean/british,
 		)
 	age = "1943"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(russian = 0.4, German = 0.6)
 	battle_name = "Battle for Moscow"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach the Politburo in the Administration building!.</font>"
+	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach and hold the Politburo in the Administration building!.</font>"
 	faction1 = RUSSIAN
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
