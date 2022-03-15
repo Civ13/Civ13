@@ -92,7 +92,8 @@
 		if (!(riding_mob in range(1,src)))
 			riding = FALSE
 			riding_mob = null
-			forceMove(locate(x+1,y,z))
+			var/mob/living/human/H = src
+			forceMove(H.loc)
 			if (riding_mob)
 				riding_mob.ride = FALSE
 				riding_mob.rider = null

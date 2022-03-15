@@ -34,11 +34,11 @@
 			visible_message("<div class='notice'>[M] sucessfully climbs into the [src]'s back.</div>","<div class='notice'>You sucessfully climb into \the [src]'s back.</div>")
 			ride = TRUE
 			rider = MM
-			MM.forceMove(locate(x+1,y+1,z))
+			MM.forceMove(src.loc)
 			MM.riding = TRUE
 			MM.riding_mob = src
-			MM.pixel_x = -19
-			MM.pixel_y = -11
+			src.pixel_x = -13
+			src.pixel_y = -21
 			update_icons()
 			stop_automated_movement = TRUE
 			return
@@ -50,10 +50,9 @@
 		if (rider == M)
 			visible_message("<div class='notice'>[M] starts to get off \the [src]...</div>","<div class='notice'>You start to get off \the [src]...</div>")
 			if (do_after(M, 40, src))
-				visible_message("<div class='danger'>[M] gets out of \the [src].</div>","<div class='danger'>You get out of \the [src].</div>")
+				visible_message("<div class='danger'>[M] gets off \the [src].</div>","<div class='danger'>You get off \the [src].</div>")
 				M.riding = FALSE
 				M.riding_mob = null
-				M.forceMove(locate(x+1,y,z))
 				ride = FALSE
 				rider = null
 				M.pixel_x = 0
