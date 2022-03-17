@@ -696,6 +696,7 @@
 	gtype = "pistol"
 	gun_type = GUN_TYPE_PISTOL
 	weight = 2.5
+	w_class = 2
 	value = 80
 	effectiveness_mod = 0.6
 	attachment_slots = ATTACH_IRONSIGHTS

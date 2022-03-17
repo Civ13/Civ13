@@ -90,7 +90,7 @@ default behaviour is:
 							step(tmob, t)
 						if (HR.loc != H.loc)
 							HR.loc = H.loc
-							H.forceMove(locate(x+1,y+1,z))
+							HR.forceMove(H.loc)
 							HR.trample(tmob)
 						H.riding_mob.update_icons()
 					else
