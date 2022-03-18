@@ -6,6 +6,7 @@
 	caribbean_blocking_area_types = list(	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two))
 	respawn_delay = 1200
 	no_winner ="The Politburo is under Soviet control."
+	no_hardcore = TRUE
 	faction_organization = list(
 		RUSSIAN,
 		GERMAN)
@@ -156,11 +157,11 @@ obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/two))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
 			if (H.faction_text == faction2)
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
+			if (H.faction_text == faction1)
+				return TRUE
 		else
-			return !faction1_can_cross_blocks()
+			return !faction2_can_cross_blocks()
 	return FALSE

@@ -4,7 +4,7 @@
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 1200
-
+	no_hardcore = TRUE
 	faction_organization = list(
 		RUSSIAN,
 		FINNISH)

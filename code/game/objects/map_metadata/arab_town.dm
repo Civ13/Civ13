@@ -16,6 +16,7 @@
 		)
 	age = "2006"
 	ordinal_age = 8
+	no_hardcore = TRUE
 	faction_distribution_coeffs = list(ARAB = 0.5, AMERICAN = 0.5)
 	battle_name = "battle for the town"
 	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within <b>40 minutes</b>!</font>"
@@ -26,6 +27,7 @@
 		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
+
 /obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_modernday == TRUE && (istype(J, /datum/job/american/idf) || istype(J, /datum/job/arab/hezbollah)))
@@ -155,7 +157,7 @@ var/no_loop_arab = FALSE
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
-
+	no_hardcore = FALSE
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
@@ -176,6 +178,7 @@ var/no_loop_arab = FALSE
 		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
+
 /obj/map_metadata/arab_town_2/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_modernday && istype(J, /datum/job/american) && !istype(J, /datum/job/american/idf))
@@ -225,4 +228,3 @@ var/no_loop_arab = FALSE
 		return ""
 	else
 		return ""
-
