@@ -239,7 +239,7 @@
 		if (H.riding == TRUE && !isnull(H.riding_mob))
 			if (H.pulling)
 				H.stop_pulling()
-			H.riding_mob.forceMove(locate(x-1,y-1,z))
+			H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
 	return
 
