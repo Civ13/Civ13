@@ -157,11 +157,11 @@ var/no_loop_n = FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.faction_text == faction1)
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction2)
+				return TRUE
 		else
-			return !faction2_can_cross_blocks()
+			return !faction1_can_cross_blocks()
 	return FALSE
