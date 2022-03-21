@@ -353,7 +353,7 @@
 	magazine_type = /obj/item/ammo_magazine/c41
 	weight = 2.3
 	single_action = TRUE
-	blackpowder = TRUE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/webley4
@@ -368,8 +368,8 @@
 	magazine_type = /obj/item/ammo_magazine/c455
 	ammo_type = /obj/item/ammo_casing/a455
 	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/frontier

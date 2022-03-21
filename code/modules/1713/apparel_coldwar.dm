@@ -846,7 +846,7 @@
 	..()
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/ammo_magazine/tt30(src)
+	new /obj/item/ammo_magazine/makarov(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)

@@ -399,7 +399,8 @@
 	throw_range = 5
 	w_class = 3.0
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
-	var/welding = FALSE
+/*	var/welding = FALSE
+
 /obj/item/weapon/weldingtool/process(var/mob/living/human/L, var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = null)
 	if (welding)
 		if (!L.back || !istype(L.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
@@ -562,7 +563,7 @@
 	..()
 	reagents.add_reagent("gasoline",100)
 ///////////////////////////////////////END OF WELDER/////////////////////////////////////////////////////////////////////////
-
+Shinobi's unfinished welder stuff - siro*/
 
 
 /obj/item/weapon/gongmallet
