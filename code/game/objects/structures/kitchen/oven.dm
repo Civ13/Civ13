@@ -255,6 +255,7 @@
 		on = FALSE
 		set_light(0)
 		return
+
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] lights \the [name].</span>")
@@ -299,6 +300,18 @@
 		M.apply_damage(rand(2,4), BURN, "r_leg")
 		visible_message("<span class = 'warning'>[M] gets burnt by the [name]!</span>")
 
+/obj/structure/oven/fireplace/pit
+	name = "fire pit"
+	desc = "A small pit surrounded by stones used for housing fires."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "ringed_campfire"
+	density = TRUE
+	anchored = TRUE
+	base_state = "ringed_campfire"
+	consume_itself = FALSE
+	cooking_time = 150
+	light_power = 0.85
+	light_color = "#E38F46"
 
 /obj/structure/oven/verb/empty()
 	set category = null
