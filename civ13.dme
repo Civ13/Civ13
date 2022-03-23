@@ -689,6 +689,7 @@
 #include "code\modules\1713\jobs\american.dm"
 #include "code\modules\1713\jobs\ancient.dm"
 #include "code\modules\1713\jobs\british.dm"
+#include "code\modules\1713\jobs\campaign_jobs.dm"
 #include "code\modules\1713\jobs\capitol.dm"
 #include "code\modules\1713\jobs\chinese.dm"
 #include "code\modules\1713\jobs\civ_factions.dm"
