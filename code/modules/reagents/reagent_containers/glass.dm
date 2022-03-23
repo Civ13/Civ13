@@ -846,10 +846,10 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	icon_state = "fueltank_large"
 	volume = 250
 	density = TRUE
-	flags = OPENCONTAINER
+	
 	New()
 		..()
-
+		flags |= OPENCONTAINER
 		flags |= CONDUCT
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/update_icon()
