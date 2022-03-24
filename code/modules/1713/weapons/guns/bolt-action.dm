@@ -331,7 +331,6 @@
 	load_delay = 10
 	bolt_open = FALSE
 	bolt_safety = FALSE
-	
 /obj/item/weapon/gun/projectile/boltaction/singleshot/50cal/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
