@@ -26,7 +26,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
@@ -71,7 +71,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
@@ -116,7 +116,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	if (prob(20))
@@ -162,7 +162,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	if (prob(25))
@@ -204,7 +204,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 //head
 	if (prob(50))
@@ -252,7 +252,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 
 //head
@@ -302,7 +302,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 //head
 	if (prob(25))
@@ -348,7 +348,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/customuniform/fins(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/finnish(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/white(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
 //head

@@ -6,6 +6,7 @@
 /obj/structure/window/barrier
 	icon = 'icons/obj/structures.dmi'
 	name = "dirt wall"
+	desc = "That's a barricade from dirt."
 	icon_state = "dirt_wall"
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
@@ -20,6 +21,7 @@
 
 /obj/structure/window/barrier/sandbag
 	name = "sandbag wall"
+	desc = "That's a sandbag barricade."
 	icon_state = "sandbag"
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
@@ -95,12 +97,14 @@
 //incomplete sandbag structures
 /obj/structure/window/barrier/incomplete
 	name = "incomplete dirt barricade"
+	desc = "This dirt barricade is unfinished. Add few more dirt."
 	icon_state = "dirt_wall_33%"
 	var/progress = FALSE
 	incomplete = TRUE
 
 /obj/structure/window/barrier/sandbag/incomplete
 	name = "incomplete sandbag wall"
+	desc = "This sandbag wall is unfinished. Add a few more sandbags."
 	icon_state = "sandbag_33%"
 	var/progress = FALSE
 	incomplete = TRUE
@@ -236,6 +240,7 @@
 		return
 /obj/structure/window/barrier/rock
 	name = "rock wall"
+	desc = "That's a barricade from rocks."
 	icon_state = "rock_barricade"
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
@@ -244,6 +249,7 @@
 
 /obj/structure/window/barrier/sandstone
 	name = "sandstone wall"
+	desc = "That's a barricade from sandstone."
 	icon_state = "sandstone_barricade"
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
@@ -281,7 +287,6 @@
 		if (O.amount<=0)
 			qdel(O)
 		return
-
 	else
 		..()
 
@@ -345,6 +350,7 @@
 
 /obj/structure/window/barrier/railing
 	name = "railing"
+	desc = "It's a sandstone railing to keep you from falling where you shouldn't."
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "sandstone"
 	layer = MOB_LAYER + 0.01 //just above mobs
@@ -354,6 +360,7 @@
 
 /obj/structure/window/barrier/railing/stone
 	name = "railing"
+	desc = "It's a stone railing to keep you from falling where you shouldn't."
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "stone"
 	layer = MOB_LAYER + 0.01 //just above mobs
@@ -363,6 +370,7 @@
 
 /obj/structure/window/barrier/railing/brick
 	name = "Brick Wall"
+	desc = "It's a railing from bricks to keep you from falling where you shouldn't."
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "brick"
 	layer = MOB_LAYER + 0.01 //just above mobs
@@ -376,6 +384,7 @@
 
 /obj/structure/window/barrier/jersey
 	name = "jersey barrier"
+	desc = "Barrier employed to separate lanes of traffic."
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
 	maxhealth = 80

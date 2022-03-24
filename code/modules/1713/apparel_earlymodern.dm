@@ -1191,6 +1191,14 @@
 	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
 
+/obj/item/weapon/storage/belt/smallpouches/rusoff
+/obj/item/weapon/storage/belt/smallpouches/rusoff/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/whistle(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+
 /obj/item/weapon/storage/belt/smallpouches/olive
 	icon_state = "smallpouches_olive"
 	item_state = "smallpouches_olive"

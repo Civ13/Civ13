@@ -1428,7 +1428,7 @@ obj/item/clothing/head/ww2/chicap2
 
 /obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
-	desc = "A soviet uniform, used by infantry in the red army."
+	desc = "A soviet uniform, used by infantry in the Red Army."
 	icon_state = "sovuni"
 	item_state = "sovuni"
 	worn_state = "sovuni"
@@ -1500,11 +1500,18 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "sovuni_officer"
 
 /obj/item/clothing/under/ww2/soviet_nkvd
-	name = "nkvd uniform"
+	name = "NKVD uniform"
 	desc = "A soviet nkvd uniform, used by nkvd."
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
+
+/obj/item/clothing/under/ww2/soviet_berezka
+	name = "soviet berezka uniform"
+	desc = "A soviet berezka uniform, adapted to the winter wilderness."
+	icon_state = "berezka"
+	item_state = "berezka"
+	worn_state = "berezka"
 
 /obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
@@ -1568,6 +1575,13 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "us_shirtless"
 	item_state = "us_shirtless"
 	worn_state = "us_shirtless"
+
+/obj/item/clothing/under/ww2/finnish
+	name = "finnish uniform"
+	desc = "A finnish winter uniform."
+	icon_state = "geruni_ww2_winter"
+	item_state = "geruni_ww2_winter"
+	worn_state = "geruni_ww2_winter"
 
 /obj/item/clothing/suit/storage/coat/ww2/german
 	name = "german parka"
@@ -2327,8 +2341,8 @@ obj/item/clothing/head/ww2/chicap2
 	value = 150
 
 /obj/item/weapon/storage/belt/gulagguard
-	name = "GULAG guard belt"
-	desc = "A belt that can hold the standard issue gear of GULAG guards."
+	name = "guard belt"
+	desc = "A belt that can hold the standard issue gear of guards."
 	icon_state = "japbelt"
 	item_state = "japbelt"
 	storage_slots = 10
@@ -2447,3 +2461,15 @@ obj/item/clothing/head/ww2/chicap2
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/whistle(src)
 	new /obj/item/weapon/pen(src)
+
+/obj/item/weapon/storage/belt/smallpouches/gerbelt
+	icon_state = "gerbelt"
+	item_state = "gerbelt"
+
+/obj/item/weapon/storage/belt/smallpouches/gerbelt/officer
+/obj/item/weapon/storage/belt/smallpouches/gerbelt/officer/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/horn(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/schnapps(src)

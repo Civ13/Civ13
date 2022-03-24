@@ -24,7 +24,8 @@
 	var/glassed = FALSE
 /obj/structure/window/examine(mob/user)
 	. = ..(user)
-
+	if (istype(src, /obj/structure/window/barrier))
+		return
 	if (health == maxhealth)
 		user << "<span class='notice'>It looks fully intact.</span>"
 	else

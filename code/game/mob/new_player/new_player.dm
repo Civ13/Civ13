@@ -123,7 +123,10 @@ var/global/redirect_all_players = null
 		else if (map.nomads == TRUE)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
+			if(map.ID == MAP_CAMPAIGN)
+				output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
+			else
+				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
 
@@ -383,6 +386,57 @@ var/global/redirect_all_players = null
 		AttemptLateSpawn("Nomad")
 		return TRUE
 
+	if (href_list["join_campaign"])
+
+		if (check_trait_points(client.prefs.traits) > 0)
+			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+			return FALSE
+
+		if (client && client.quickBan_isbanned("Playing"))
+			WWalert(src,"You're banned from playing.","Error")
+			return TRUE
+
+		if (!ticker.players_can_join)
+			WWalert(src,"You can't join the game yet.","Error")
+			return TRUE
+
+		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			WWalert(src,"The round is either not ready, or has already finished.","Error")
+			return
+
+		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
+			if (check_rights(R_ADMIN, FALSE, src))
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+					log_admin(msg)
+					message_admins(msg)
+					LateChoices()
+					return TRUE
+			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
+			return FALSE
+
+		var/factjob = "null"
+		for (var/i in faction_list_red)
+			var/temp_ckey = lowertext(i)
+			temp_ckey = replacetext(temp_ckey," ", "")
+			temp_ckey = replacetext(temp_ckey,"_", "")
+			if (temp_ckey == client.ckey)
+				factjob = "Red Faction"
+		if (factjob == "null")
+			for (var/i in faction_list_blue)
+				var/temp_ckey = lowertext(i)
+				temp_ckey = replacetext(temp_ckey," ", "")
+				temp_ckey = replacetext(temp_ckey,"_", "")
+				if (temp_ckey == client.ckey)
+					factjob = "Blue Faction"
+
+		if (factjob != "null")
+			AttemptLateSpawn(factjob)
+		else
+			WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Check the discord for more information.")
+			return
+		return TRUE
 
 	if (href_list["late_join"])
 
@@ -987,7 +1041,11 @@ var/global/redirect_all_players = null
 						temp_name = "Imperials"
 					if (temp_name == "Civilian")
 						temp_name = "Stormcloaks"
-
+				else if (map && map.ID == MAP_CAMPAIGN)
+					if (temp_name == "Civilian")
+						temp_name = "Red"
+					if (temp_name == "Pirates")
+						temp_name = "Blue"
 				var/side_name = "<b><h1><big>[temp_name]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
 					dat += "<br>[side_name]"

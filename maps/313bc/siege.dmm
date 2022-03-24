@@ -152,7 +152,7 @@
 "cV" = (/obj/structure/wild/tallgrass2,/obj/item/weapon/material/pilum,/turf/floor/dirt,/area/caribbean/forest/dirt)
 "cW" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing,/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Walls"})
 "cX" = (/obj/structure/window/barrier/railing,/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Walls"})
-"cY" = (/obj/item/weapon/oilbarrel,/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Inner Fortress"})
+"cY" = (/obj/item/weapon/reagent_containers/glass/barrel/fat_oil,/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Inner Fortress"})
 "cZ" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/beach/water,/area/caribbean/forest/dirt)
 "da" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 "db" = (/obj/item/weapon/material/pilum,/turf/floor/beach/water,/area/caribbean/forest/dirt)

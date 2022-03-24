@@ -40,10 +40,12 @@
 "aN" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "aO" = (/obj/structure/bed/wood,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "aP" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aQ" = (/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "aR" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "aS" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "aT" = (/obj/structure/window/barrier,/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "aU" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"aV" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "aW" = (/obj/structure/flag/british,/turf/floor/grass,/area/caribbean/forest)
 "aX" = (/obj/structure/wild/tree/dead_tree,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
 "aY" = (/obj/structure/wild/tree,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
@@ -56,15 +58,18 @@
 "bf" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bg" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/forest)
 "bh" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"bi" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bj" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/forest)
 "bk" = (/obj/structure/closet/crate/musketball,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bl" = (/obj/item/weapon/wrench,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bm" = (/obj/item/weapon/material/hatchet,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bn" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"bo" = (/obj/structure/vending/muskets/french,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bp" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/forest)
 "bq" = (/obj/item/weapon/material/shovel,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "br" = (/obj/item/weapon/barrier,/obj/item/weapon/barrier,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bs" = (/obj/structure/closet/crate/cannonball,/turf/floor/grass,/area/caribbean/forest)
+"bt" = (/obj/structure/vending/muskets/english,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bu" = (/obj/structure/barricade/vertical,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bv" = (/obj/item/weapon/attachment/scope/adjustable/binoculars,/obj/structure/table/wood,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bw" = (/obj/structure/closet/crate/bayonets,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
@@ -84,7 +89,7 @@
 "bK" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTMidshipman"},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bL" = (/obj/structure/wild/tree,/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
 "bM" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
-"bN" = (/obj/structure/vending/muskets,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"bN" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bO" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTMidshipman"},/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bP" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bQ" = (/obj/effect/landmark{name = "JoinLateRNSurgeon"},/turf/floor/dirt,/area/caribbean/colonies/british{location = 1; name = "British Base"})
@@ -94,9 +99,11 @@
 "bU" = (/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bV" = (/obj/structure/wild/burnedbush,/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bW" = (/obj/structure/flag/french,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"bX" = (/obj/structure/vending/muskets/french,/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bY" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTCap"},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bZ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLatePTCarpenter"},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "ca" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cb" = (/obj/structure/wild/tallgrass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "cc" = (/obj/structure/wild/burnedbush,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
 "cd" = (/turf/floor/dirt/ploughed,/area/caribbean/forest)
 "ce" = (/obj/structure/wild/tallgrass,/obj/effect/landmark{name = "JoinLateRNCook"},/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
@@ -122,11 +129,10 @@
 "cy" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "cz" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "cA" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/doctor_handbook,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
-"cB" = (/obj/structure/vending/muskets,/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
-"cC" = (/obj/structure/wild/tallgrass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
+"cB" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
+"cC" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/dirt,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "cD" = (/obj/structure/closet/crate/bayonets,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "cE" = (/obj/structure/bed/wood,/turf/floor/dirt,/area/caribbean/colonies/british{location = 1; name = "British Base"})
-"cF" = (/obj/structure/vending/muskets,/turf/floor/grass,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "cG" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "cH" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/table/wood,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "cI" = (/obj/structure/bed/wood,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
@@ -213,20 +219,20 @@ aaaaaaaeaaaaaaaaaaaaaCaaaaaaaaaaaaaaacaaaeaDaeaaaaaaaabgaeaaaaaaaaaaaaaaaaababab
 aEaEaEaFaEawaGaHaHaHaIaEaFaEaEaaaaaaaaaaaaaeaaaaaaaaacaaaeaaaaaaaaaaaeaaaaabababababababababababababababababababababababajavavanababababagagababababababababababaaaaaaanaacWdocYdocWararaaaaaaarararaacVcWdpdpcWdbaxaxaxaKaaaaaaaaaaaaaaaaanaaaaaaaeaaaaaaaaaaadadaaaaaaaLaaaaaaaaaraaaa
 aEaEaEaEaMaNaEaOaEaOaPaEaEaEaRaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiaiacaaaaaaabababababababababababababababababababababababavaaaaanababababagagababababababababababaaaaaaaaancVdmcYcYdparaabgaearararararararararararaaaaaaaaakaaaaaaacaaaaakaaaaaaaaaeaeaaaaaaaaaaaaaaaaaaaaaaaaajaaaaaaaa
 aEaEaEaEaEaSaEaOaEaOaPaEaUaEaEananaaaaaaaaaaaaaaaraeaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababababababababarbpaaaaababababagagababababababababababaaaaacaaaacVcYdrdadpardsbgbgarardtarbgbgarararaaaraaaraaaaaaaaacaaaaaaaaaebgaaaaaaaaaeaaaaararacaaaaaaaaaaaaaaajaaaaaaaa
-aEaEaEaUaEaEaEaOaEaOaPaEchaEaEaaaaaaaaacaaaaaaaaakaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababababababababaaahajaaababababagagababababababababababaaaaaaaeancWdocYducWardsararbgbgarararbparardlararaaaaadaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaWarahaaaaaaaaaaaaaaaXaaajaaacaaaa
-aEaEaEcMaYaEaEaZaZaTbaaEaEaEaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaakaaaaaaaaaaabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaeaaaaanajcVcYcYdecVdsdsarararaibgdsbgararaaarararararadaeacaaaaaaaaaaaaaraaacaaaaaaaabbbcbcbdbdbdbdbebdbdbfbfbdbdbdbdeb
+aEaEaEaUaEaQaEaOaEaOaPaEchaEaEaaaaaaaaacaaaaaaaaakaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababababababababaaahajaaababababagagababababababababababaaaaaaaeancWdocYducWardsararbgbgarararbparardlararaaaaadaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaWarahaaaaaaaaaaaaaaaXaaajaaacaaaa
+aEaEaEcMaYaEaEaZaZaTbaaEaEaEaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaakaaaaaaaaaaabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaeaaaaanajcVcYcYdecVdsdsarararaibgdsbgararaaarararararadaeacaaaaaaaaaaaaaraaacaaaaaaaabbbcbcbdbdbdbdbebdbdbfbfaVbibdbdeb
 aEaEaEaEaEaEaEblbmbqbraEaEaEaRaraaaabsaaaaaaaaaaaaaaahaaajaaaaararaaaaaaaaabababababababababababababababababababababababaaararaaababababagagababababababababababaaaaajaaaacVcVcVcVcVaaaaaBaBaraaaBdsbgarararararararacaaaaaaaaaaaaaabsaaaaanaaaaaaaaadbubvbdbdbdbdbdbdbdbdbdbfbdbdbdbdbw
-bkbkbkecaEaEaEaEaEbxbybCaEaEaEadaaaabzaaaaadadaaaaaaaaaaaaaaaaaaaaaaaaajaaabababababababababababababababababababababababaaaaacaaababababagagababababababababababaaaaaaaaadaaaaacaaaaaaaaararaaararacaaarararararasaaaaaaaaaaaaaaaabAaaaaananaaaaaaaaaabubBbBbdbBbdbdbdbDbEbFbdbdbdbGbGbw
-bHbHaEbIbIbJbKaEaEaEbyaEaEaEaRaaacaaaaaaaaaaadakaaacaaaaaaaaaaaaaaaaadaaaaabababababababababababababababababababababababadaaaaaaababababagagababababababababababaaacaaaaaaaaaaaaaaaaacacaaaraaararararararararararadaaaaaaaaaaaaaaaaaaadbLaaaaaaaaaaaabubMbdbdbdbDbdbdbdbEbFbdbdbdbGbGbN
-bHbHaGbIbIbJbOaEaEaRaEaEaEaEaRaaaaaaaaaaaaaaaaaaaaaraaaaaaaeaaacaaaaadaraaabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaaaaajaaaeaaaaakaaaaaaaaaaaracaaarbgbgaaarararaaararaaaaajaraaaaaaaaaaaaaaaiaaaaaracaabbbcbcbdbdbdbdbdbdbEbPbQbRbdbGbGbN
-bHbHaEaYaYaEbKaEaUaEaEaEaYaEaEaaaaaaacaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaaaaaaaaaaaaaaaaaaaaaaakararaaaaarararaaaraaaaaaararaaaaaaaaaaaaaaaraaaraaaraaararaaaabfbSbdbebdbTbdbdbdbUbVbRbRbMbGbGbN
-bHbHaEaYaYaYbKaEaEaEaEbxaUaEbWaaaaaeaeaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaeabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaaaaaaaaaacdcdaaaaaaaaaaararaaanaaaaaaaaaaaaaaaaaaaraaaaacaaaaaaajanaiararararararaaaabdbdbdbdbdbdbdbdbdbUbVbRbRbdbGbGbd
-bHbHaEbYbYbZbKaEaEaEaHaHaHaHcaaaaaaiaaaaaaajaaaaaaaeaaaaacadaaccaaaaaaaaaaabababababababababababababababababababababababaaaraaaaababababagagababababababababababaaaaaeaaaacdcdaeaeaaaaaaaBacaaaaacaaaaaaaaaeaaaaarajaaaaaaaaaaaaaaadaeaearalalaraaaaaabDbdbdbdbdbdbdbdbdbUcebQbRbDbGbGcf
+bkbkbkecaEaEboaEaEbxbybCaEaEaEadaaaabzaaaaadadaaaaaaaaaaaaaaaaaaaaaaaaajaaabababababababababababababababababababababababaaaaacaaababababagagababababababababababaaaaaaaaadaaaaacaaaaaaaaararaaararacaaarararararasaaaaaaaaaaaaaaaabAaaaaananaaaaaaaaaabubBbBbdbBbdbdbdbDbEbFbdbdbdbGbGbw
+bHbHaEbIbIbJbKaEaEaEbyaEaEaEaRaaacaaaaaaaaaaadakaaacaaaaaaaaaaaaaaaaadaaaaabababababababababababababababababababababababadaaaaaaababababagagababababababababababaaacaaaaaaaaaaaaaaaaacacaaaraaararararararararararadaaaaaaaaaaaaaaaaaaadbLaaaaaaaaaaaabubMbdbdbdbDbdbdbdbEbFbdbdbdbGbGbt
+bHbHaGbIbIbJbOaEaEaRaEaEaEaEaRaaaaaaaaaaaaaaaaaaaaaraaaaaaaeaaacaaaaadaraaabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaaaaajaaaeaaaaakaaaaaaaaaaaracaaarbgbgaaarararaaararaaaaajaraaaaaaaaaaaaaaaiaaaaaracaabbbcbcbdbdbdbdbdbdbEbPbQbRbdbGbGbt
+bHbHaEaYaYaEbKaEaUaEaEaEaYaEaEaaaaaaacaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaaaaaaaaaaaaaaaaaaaaaaakararaaaaarararaaaraaaaaaararaaaaaaaaaaaaaaaraaaraaaraaararaaaabfbSbdbebdbTbdbdbdbUbVbRbRbMbGbGbt
+bHbHcDaYaYaYbKaEaEaEaEbxaUaEbWaaaaaeaeaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaeabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaaaaaaaaaacdcdaaaaaaaaaaararaaanaaaaaaaaaaaaaaaaaaaraaaaacaaaaaaajanaiararararararaaaabdbdbdbdbdbdbdbdbdbUbVbRbRbdbGbGbd
+bHbHcDbYbYbZbKaEaEaEaHaHaHaHcaaaaaaiaaaaaaajaaaaaaaeaaaaacadaaccaaaaaaaaaaabababababababababababababababababababababababaaaraaaaababababagagababababababababababaaaaaeaaaacdcdaeaeaaaaaaaBacaaaaacaaaaaaaaaeaaaaarajaaaaaaaaaaaaaaadaeaearalalaraaaaaabDbdbdbdbdbdbdbdbdbUcebQbRbDbGbGcf
 bHbHaGbYcgbZbKaEaEaEchaYcjckcaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaanaaaaaaaaaaabababababababababababababababababababababababaaaaararababababagagababababababababababaaaaaaaeaecdcdaaacaabpaaaraBaaakaaaaaiaaaaaaaaajaaajadaaadaaaaaeaeaeaeaaaralararaaaaaabdbdcmclbdbdbdbebdcncebQbRbdbGbGcf
 bHbHaEcococpcqaEaEaEaEaEbqaEcabpaaaaaaaaaaaaaaakaaaaaraaaiaaacaaaaaaaaadaaabababababababababababababababababababababababaaacaaaaababababagagababababababababababaaaaaaaaaicdcdcdcdcdaaaaaaarbpaaaaaaaaaaaaaaaaajaaaraaaaaaaeaeaaaaaaciaaarararaaaaaaaabfbdbbbccrbdbdbdbdcncsbdbdbdbGbGcf
 bHbHaEcoctcpcpaEaEaEchaEaEaEcaaaaaaaciaaaaaaaaaaaaaaarasaaaaaaaaaaaeaaadaaabababababababababababababababababababababababaaaaaaaaababababagagababababababababababaaaaaaaaaacdcdcdcdcdaaacanararaaaaaaaaaaaaacajajaaaraaaaaaaaaeaeaabAaraaaaaaaaaraaacaabdbdbucucvbdbdbdbdbdbdbdbdbdbdbdcx
-cDcDcFcBcFaEaEaEaEaEaZaZaZaZcaaaaaaabzajaaaeaaaaaaaaaaaraaaaaaaaaaaaacaaadabababababababababababababababababababababababaaakaaaaababababagagababababababababababaaaaaaaraacdcdcdcdcdaaaraaarararaaaaaaaaaraaaaaaaaaaaaaaaaaaaaaaaaaaaaajaraaaracaaaeaabfbdbucybdcwcwczbdbdcAbdbebdcwbdcC
-aEaEaEaEaEcMaEcMaEaEblbmaYaYbyanaaaaaaaaaaaeasadaaaaaaajajajaaaaaaaaaaararaaaaaeaaaaaeaaaaaabjaaaaaaaaaaaaaaaaaaaaaraaaraaaaaraaarararardJdJararararararararararavarararararavaaarararararararaaadaaaaacaaaaaaaaacaaaaaaaaaaaaaaaaakaaaaaaaaaaaaaaaaaabfbdbucGbdcwcwcwbdbdcHbdcEbdcIbdcI
+bNaEaEbXboaEaEaEaEaEaZaZaZaZcaaaaaaabzajaaaeaaaaaaaaaaaraaaaaaaaaaaaacaaadabababababababababababababababababababababababaaakaaaaababababagagababababababababababaaaaaaaraacdcdcdcdcdaaaraaarararaaaaaaaaaraaaaaaaaaaaaaaaaaaaaaaaaaaaaajaraaaracaaaeaabfbdbucybdcwcwczbdbdcAbdbebdcwbdcb
+cBaEaEaEaEcMbNcCaEaEblbmaYaYbyanaaaaaaaaaaaeasadaaaaaaajajajaaaaaaaaaaararaaaaaeaaaaaeaaaaaabjaaaaaaaaaaaaaaaaaaaaaraaaraaaaaraaarararardJdJararararararararararavarararararavaaarararararararaaadaaaaacaaaaaaaaacaaaaaaaaaaaaaaaaakaaaaaaaaaaaaaaaaaabfbdbucGbdcwcwcwbdbdcHbdcEbdcIbdcI
 aEaEaYaEaEaEaEaEaEaEaEaEaEaEaEaaaaaaaaaaaaaaararaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaeaaararaaaaarararararararararararardJdJarararararararararararararararararbgararararararaaaaaaaaaaaaaaadaaaaaaaaaaaaacaaaaaaaraaaaaaadaaaaaaaaaaaabdbdcJbcbccKcLcNbdbdcObdcIbdcEcPcI
 aEaEaYaEaEaEaEaEaEaEaUaEaEcMaRaaakaaaaarararalararaaaraaaaaaacaaaaajcVcVcVcVcVcVcVaaaaaaaaajadaaaaaaaaaaarasararbgaraaaaarbgaeaaarararardJdJararararararararararararaaaaaeaaaraaaeaeaBaaaeaeajaaaeasaaakaaaaaaaaaaaaahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadbdbfbdbdbdbdbdbdbdcQcRcScScScScScT
 aEaEaEaEaEdcaUaEaGaEaEaEaEaEaEaaaaaaarararalalalaracaaaaaaaaaaaaaaaacVcXcYcYcZdadbakaraaaaaaaaaaaaaaaaarajadararaaaeaeaaaaaaacaeababababagagababababababababababaaadaracaaaaaaabababababababababababababababababababaaaaararararaaahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaajaaaaaaaaae

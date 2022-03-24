@@ -383,8 +383,8 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	slowdown = 0.35
 
 /obj/item/weapon/shield/balistic
-	name = "balistic shield"
-	desc = "A sheild designed to be excellent in blocking projectiles."
+	name = "ballistic shield"
+	desc = "A shield designed to be excellent in blocking projectiles."
 	icon_state = "metal_riot"
 	item_state = "metal_riot"
 	material = "steel"

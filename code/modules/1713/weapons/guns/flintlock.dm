@@ -114,7 +114,7 @@
 	if (!cocked)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
-	if (!(user.has_empty_hand(both = FALSE)) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/pistol))
+	if (!(user.has_empty_hand(both = FALSE)) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/pistol) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/duellingpistol) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/pistoletmodeleanxiii))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	return ..()
@@ -696,6 +696,7 @@
 	gtype = "pistol"
 	gun_type = GUN_TYPE_PISTOL
 	weight = 2.5
+	w_class = 2
 	value = 80
 	effectiveness_mod = 0.6
 	attachment_slots = ATTACH_IRONSIGHTS

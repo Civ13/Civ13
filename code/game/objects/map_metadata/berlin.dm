@@ -16,14 +16,14 @@
 		)
 	age = "1945"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(GERMAN = 0.3, RUSSIAN = 0.7)
+	faction_distribution_coeffs = list(GERMAN = 0.4, RUSSIAN = 0.6)
 	battle_name = "Battle of the Berlin Gate"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Soviets will win if they manage to reach and hold past the Berlin Gate for 5 minutes.</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 	gamemode = "Siege"
 
 obj/map_metadata/berlin/job_enabled_specialcheck(var/datum/job/J)

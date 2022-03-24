@@ -4,7 +4,7 @@
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 1200
-
+	no_hardcore = TRUE
 	faction_organization = list(
 		RUSSIAN,
 		FINNISH)
@@ -16,12 +16,12 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(FINNISH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Battle of Karelina"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br></font>"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the ceasefire ends!<br><br>The Soviet Army has to capture the Warehouse North-East of the region.<br><br>The Finnish Army has to capture the Soviet HQ South-West of the region!</font>"
 	faction1 = FINNISH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 
 /obj/map_metadata/karelina/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -32,10 +32,10 @@
 
 
 /obj/map_metadata/karelina/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/karelina/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/karelina/roundend_condition_def2name(define)
 	..()
