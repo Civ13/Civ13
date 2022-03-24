@@ -80,7 +80,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			else if (istype(attacked, /turf/floor/dirt))
 				if (locate(/obj/structure/farming/plant) in attacked)
 					user.visible_message("<span class='notice'>[user] pours the contents of [src] onto [attacked]!</span>", \
-										"<span class='notice'>You pours the contents of [src] onto [attacked].</span>")
+										"<span class='notice'>You pour the contents of [src] onto [attacked].</span>")
 					proper_spill(attacked, amount_per_transfer_from_this)
 				return TRUE
 	return FALSE
@@ -92,7 +92,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		standard_splash_mob(user, M)
 	else
 		standard_feed_mob(user, M)
-	return TRUE //if opened attack resolved
+	return TRUE //open container attack will resolved anyway
 
 /obj/item/weapon/reagent_containers/glass/attack_obj(obj/attacked, mob/user, icon_x, icon_y)
 	for (var/type in not_resolved_in_attackby_objects) //Old code artefact. TO DO TODO: resolve theese objects attackby procedures (they must return TRUE for interrupt attack chain)
