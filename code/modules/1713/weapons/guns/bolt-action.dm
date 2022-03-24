@@ -299,6 +299,44 @@
 	max_shells = 1
 	load_delay = 7
 
+/obj/item/weapon/gun/projectile/boltaction/singleshot/50cal
+	name = "Barrett M99"
+	icon = 'icons/obj/guns/rifles.dmi'
+	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
+	icon_state = "50calbolt"
+	item_state = "50calbolt"
+	base_icon = "50calbolt"
+	w_class = 4
+	force = 10
+	throwforce = 5
+	max_shells = 1
+	slot_flags = SLOT_SHOULDER
+	caliber = "a50cal"
+	recoil = 8
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a50cal
+	magazine_type = /obj/item/ammo_magazine/mosin
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
+	accuracy = TRUE
+	gun_type = GUN_TYPE_RIFLE
+	accuracy_increase_mod = 2.00
+	accuracy_decrease_mod = 6.00
+	KD_chance = KD_CHANCE_HIGH
+	move_delay = 4
+	fire_delay = 4
+	equiptimer = 15
+	gun_safety = TRUE
+	load_delay = 10
+	bolt_open = FALSE
+	bolt_safety = FALSE
+	
+/obj/item/weapon/gun/projectile/boltaction/singleshot/50cal/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the breech is open!</span>"
@@ -1076,54 +1114,6 @@
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/boltaction/springfield/sniper/New()
-	..()
-	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
-	SP.attached(null,src,TRUE)
-
-/obj/item/weapon/gun/projectile/boltaction/50cal
-	name = "Barrett M99"
-	icon = 'icons/obj/guns/rifles.dmi'
-	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
-	icon_state = "50calbolt"
-	item_state = "50calbolt"
-	base_icon = "50calbolt"
-	w_class = 4
-	force = 10
-	throwforce = 5
-	max_shells = 1
-	slot_flags = SLOT_SHOULDER
-	caliber = "a50cal"
-	recoil = 8
-	handle_casings = HOLD_CASINGS
-	load_method = SINGLE_CASING
-	ammo_type = /obj/item/ammo_casing/a50cal
-	magazine_type = /obj/item/ammo_magazine/mosin
-	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
-	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
-	accuracy = TRUE
-	gun_type = GUN_TYPE_RIFLE
-	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
-	KD_chance = KD_CHANCE_HIGH
-	move_delay = 4
-	fire_delay = 4
-	equiptimer = 15
-	gun_safety = TRUE
-	load_delay = 10
-	bolt_open = FALSE
-	bolt_safety = FALSE
-/obj/item/weapon/gun/projectile/boltaction/50cal/update_icon(var/add_scope = FALSE)
-	if (bolt_open)
-		if (!findtext(icon_state, "_open"))
-			icon_state = addtext(icon_state, "_open") //open
-	else if (icon_state == "50calbolt_open") //closed
-		icon_state = "50calbolt"
-	else if (icon_state == "50calbolt")
-		return
-	else
-		icon_state = "50calbolt"
-	
-/obj/item/weapon/gun/projectile/boltaction/50cal/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
