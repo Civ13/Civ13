@@ -299,7 +299,7 @@
 	max_shells = 1
 	load_delay = 7
 
-/obj/item/weapon/gun/projectile/boltaction/singleshot/50cal
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal
 	name = "Barrett M99"
 	icon = 'icons/obj/guns/rifles.dmi'
 	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
@@ -331,7 +331,7 @@
 	load_delay = 10
 	bolt_open = FALSE
 	bolt_safety = FALSE
-/obj/item/weapon/gun/projectile/boltaction/singleshot/50cal/New()
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
