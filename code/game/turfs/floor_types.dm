@@ -296,6 +296,10 @@
 				qdel(A)
 	if(istype(A, /mob/living))
 		var/mob/living/ML = A
+		if (ishuman(ML))
+			var/mob/living/human/H = ML
+			if (H.driver_vehicle)
+				return
 		if (ML && ML.stat == DEAD)
 			spawn(60)
 				if (A && A.loc == src)

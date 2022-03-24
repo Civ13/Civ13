@@ -286,7 +286,7 @@
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 3.03
+	effectiveness_mod = 1.03
 
 /obj/item/weapon/gun/projectile/submachinegun/type100
 	name = "Type-100"
@@ -671,7 +671,7 @@
 	effectiveness_mod = 1.02
 	damage_modifier = 0.95
 	equiptimer = 12
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL|ATTACH_ADV_SCOPE
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
 	if (folded)
@@ -900,7 +900,7 @@
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		)
-	effectiveness_mod = 1.12
+	effectiveness_mod = 1.03
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	accuracy_list = list(
@@ -968,6 +968,17 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2
+	name = "M16A2"
+	base_icon = "m16"
+	icon_state = "m16"
+	desc = "A modernized version of the M16, with burst fire instead of full auto."
+	full_auto = FALSE
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4
@@ -1118,10 +1129,10 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="semi auto",	burst=1, burst_delay=0.9, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
 		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
 		)
-	effectiveness_mod = 1.07
+	effectiveness_mod = 1.03
 	sel_mode = 1
 	accuracy_list = list(
 
