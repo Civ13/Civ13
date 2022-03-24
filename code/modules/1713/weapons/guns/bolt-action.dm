@@ -1086,7 +1086,7 @@
 	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
 	icon_state = "50calbolt"
 	item_state = "50calbolt"
-	base_icon = "50calbolt"
+	base_icon = "50calbolt"_open
 	w_class = 4
 	force = 10
 	throwforce = 5
@@ -1110,10 +1110,19 @@
 	equiptimer = 15
 	gun_safety = TRUE
 	load_delay = 10
-
 	bolt_open = FALSE
 	bolt_safety = FALSE
-
+/obj/item/weapon/gun/projectile/boltaction/50cal/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "50calbolt_open") //closed
+		icon_state = "50calbolt"
+	else if (icon_state == "50calbolt")
+		return
+	else
+		icon_state = "50calbolt"
+	
 /obj/item/weapon/gun/projectile/boltaction/50cal/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
