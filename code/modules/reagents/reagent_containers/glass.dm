@@ -1,13 +1,13 @@
-//TO DO TODO: global obj/item pickup_sound, drop_sound, pickup_volume, drop_volume 
-//TO DO TODO: unify all food/drinks act as /glass, all /glass act as food/drinks 
-//TO DO TODO: fix code\game\objects\items.dm , code\modules\lighting\lighting_atom.dm 
+//TO DO TODO: global obj/item pickup_sound, drop_sound, pickup_volume, drop_volume
+//TO DO TODO: unify all food/drinks act as /glass, all /glass act as food/drinks
+//TO DO TODO: fix code\game\objects\items.dm , code\modules\lighting\lighting_atom.dm
 //TO DO TODO: /obj/effect/flooding need to be fixed
 //TO DO TODO: Painstaking checking and possibly redrawing icons of small versions of items. Checking for compliance with item_state and icons in them.
-//TO DO TODO: Think about transfer accuracy. For example, there is no such thing as the exact amount that can be poured out of a bucket! 
+//TO DO TODO: Think about transfer accuracy. For example, there is no such thing as the exact amount that can be poured out of a bucket!
 //TO DO TODO: CHECK:   /obj/item/weapon/reagent_containers/glass/small_pot/german_kit_lid it may have bugs
 //TO DO TODO: Re-Check all /obj/item/weapon/reagent_containers/glass/ items, that not in this file
-//TO DO TODO: Think about concept: all /glass objects are storage, with watertight vessel sides. 
-//             All storages are vessels with non-waterproof sides and will lose liquids differs with liquid viscosity and pore size of the vessel. 
+//TO DO TODO: Think about concept: all /glass objects are storage, with watertight vessel sides.
+//             All storages are vessels with non-waterproof sides and will lose liquids differs with liquid viscosity and pore size of the vessel.
 //             I.e. /glass items have pore_size = 0 on sides and pore_size=100(?) on top of it (for vaporing).
 //             Lids have own pore_size. For example beakers lid must (may) have pore_size=0
 //TO DO TODO: Why not all pots from 'icons/obj/claystuff.dmi' are /glass objects??? Need reworking to usual concept!
@@ -145,7 +145,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		reagents.add_reagent("olive_oil", 6)
 		qdel(W)
 		return
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/juniper))  //liquid transfer? 
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/juniper))  //liquid transfer?
 		if (!is_open_container())
 			user << "<span class='notice'>\The [src] is closed.</span>"
 			return
@@ -376,7 +376,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	if (!can_explode)
 		if (prob(30))
 			pierced_reagent_lost(15)
-			return TRUE		
+			return TRUE
 		else
 			return FALSE
 	if (istype(proj, /obj/item/projectile/shell))
@@ -402,7 +402,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			qdel(src)
 		else if (prob(30))
 			pierced_reagent_lost(15)
-	return TRUE		
+	return TRUE
 
 /obj/item/weapon/reagent_containers/glass/beaker
 	name = "beaker"
@@ -846,9 +846,10 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	icon_state = "fueltank_large"
 	volume = 250
 	density = TRUE
+	
 	New()
 		..()
-		flags &= ~OPENCONTAINER
+		flags |= OPENCONTAINER
 		flags |= CONDUCT
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/update_icon()
@@ -921,7 +922,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		reagents.add_reagent("diesel",180)
 
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
-	//TO DO TODO: REWORK IT'S BUGGY THING LATER!!! 
+	//TO DO TODO: REWORK IT'S BUGGY THING LATER!!!
 	name = "gunpowder barrel"
 	desc = "A barrel of gunpowder. Don't light it on fire."
 	icon_state = "barrel_wood_gunpowder"
@@ -956,7 +957,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 
 /obj/item/weapon/reagent_containers/glass/extraction_kit
 	//TO DO TO DO: Unify to one procedure all using of extraction kit
-	//             Add restart process (by atack_self if not empty)	
+	//             Add restart process (by atack_self if not empty)
 	name = "extraction kit"
 	desc = "A professional kit for extracting elements from raw ores."
 	icon_state = "extraction_kit"

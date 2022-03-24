@@ -1,20 +1,20 @@
-//TO DO TODO: CHECK ALL attack_by it MUST return TRUE or FALSE if we don't want after_atttack call 
+//TO DO TODO: CHECK ALL attack_by it MUST return TRUE or FALSE if we don't want after_atttack call
 
 //var/const/MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK = 0.1 //it's good values, but if no restoration of mood by resting - no way to use it
 //var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0.05
 /var/const/MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK = 0 //setting it to 0, because have no normal mood restoration TO DO TODO: make some mood restoration on resting and sleeping, also make meditation (religion?)
-/var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0 //setting it to 0, because have no normal mood restoration 
+/var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0 //setting it to 0, because have no normal mood restoration
 //TO DO TODO: Make some normalization of mood to normal state (not 100, but 50 for full water and food lvl) with time depending on the state: rest, sleep, awake
 /var/const/STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK = 0.2 //(summ of used strength, dexterity and stamina itself in deciseconds)
-/var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items. 
+/var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items.
 //TO DO TODO: Make this proc global using
 /mob/living/human/var/tmp/last_mood_check = 0
-/mob/living/human/proc/in_mood(no_mood_check_treshold = 60)
-	return TRUE //This is temporary! TO DO TODO: Return this function after reworking mood restoration and mood buff/debuff system
+
+/mob/living/human/proc/in_mood(no_mood_check_treshold = 38.5)
 	//checking mood for doing anything
 	if (world.timeofday<src.last_mood_check) //prevent mood check spam
 		src.mood -= 0.25
-		src << "<span class='warning'>You are even a little upset! Restore your mood first! Wait 5 seconds at minimum.</span>"
+		src << "<span class='warning'>You are far too upset to work, restore your mood first! Wait 5 seconds at minimum before trying again.</span>"
 		return FALSE
 	if (src.mood > no_mood_check_treshold)
 		return TRUE
@@ -25,7 +25,7 @@
 		src.last_mood_check = world.timeofday + 45
 		return FALSE
 
-// TO DO TODO: Make this universal proc for all expirience gains 
+// TO DO TODO: Make this universal proc for all expirience gains
 /mob/living/human/proc/give_exp(var/list/exp_skills_list, var/list/exp_skills_percent = list(), work_amount = 10, no_emotes = FALSE, no_msg = FALSE, change_mood_coefficient = 1, EUREKA_chance = 0.5, breakthrough_chance = 5 , fail_chance = 5, EPIC_fail_chance = 0.5)
 	// returns 0 - nothing happens, 1 - breaktrough, 2 - EUREKA, -1 - fail, -2 - EPIC fail
 	// exp_skills_list - list of skills how it declared in human_defines.dm, f.e. list("swords","strength","dexterity","stamina") or empty list if you want simply generate chance
@@ -34,7 +34,7 @@
 	// work_amount - in deciseconds work amount
 	// no_emotes - set it to TRUE if no emotes when procedure work
 	// no_msg - set it to TRUE if no messages to user when procedure work
-	// change_mood_coefficient - set this multiplicator not 1 if you want greater or less effect to mood 
+	// change_mood_coefficient - set this multiplicator not 1 if you want greater or less effect to mood
 	// EUREKA_chance, breakthrough_chance, fail_chance, EPIC_fail_chance - in percents, by default they are 0.5, 5, 5 and 0.5
 	var/equal_distribution = 0
 	var/exp_gain = work_amount/10/2 //1 exp for every 2 seconds of work
@@ -56,7 +56,7 @@
 		result = 1
 	else if (s_c >= 10000-c_c) // EPIC fail
 		if (!no_emotes)
-			src.emote(pick("cry", "scream")) 
+			src.emote(pick("cry", "scream"))
 		result = -1
 	else if (s_c >= 10000-c_c-f_c) // fail
 		if (!no_emotes)
@@ -103,7 +103,7 @@
 							src << "<span class='notice'>You learned little more about medicine.</span>"
 				if (-1) // fail
 					src.adaptStat(exp_skills_list[I],this_exp/2) //small mood decreasing, 1/2 exp gain
-					src.mood -= this_exp * change_mood_coefficient / 5 
+					src.mood -= this_exp * change_mood_coefficient / 5
 				if (-2) // EPIC fail
 					if (exp_skills_list[I] in list ("strength", "dexterity", "stamina"))
 						src.mood -= this_exp * change_mood_coefficient / 5 //small mood decreasing for physical stats
@@ -127,7 +127,7 @@
 	if(!not_movable)
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] [anchored ? "un" : ""]fasten [src].</span>", 
+			"<span class='notice'>You can see how [H.name] [anchored ? "un" : ""]fasten [src].</span>",
 			"<span class='notice'>You [anchored ? "un" : ""]fasten [src].</span>",
 			"<span class='notice'>Somebody fasten or unfasten something.</span>")
 		anchored = !anchored
@@ -137,7 +137,7 @@
 //TO DO TODO: make this procedure global using
 /obj/structure/proc/hammer_action(var/mob/living/human/H, var/obj/item/weapon/W, var/work_amount = 50, var/list/components = list(), var/list/quantities = list())
 	// Dismantling procedure
-	// Good: when set work_amount as time of creation, quantities as 75% of used items 
+	// Good: when set work_amount as time of creation, quantities as 75% of used items
 	if(!not_disassemblable)
 		if (!H.in_mood())
 			return
@@ -148,12 +148,12 @@
 			I /= 1.5
 		I = clamp(I, 10, 300)
 		if (H.stats["stamina"][1]<H.stats["stamina"][2])
-			if (H.stats["stamina"][1]<I*STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK) 
+			if (H.stats["stamina"][1]<I*STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK)
 				H << "<span class='warning'>You must restore your stamina before dismantling [src].</span>"
 				return
 		playsound(src.loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] begin dismantling \the [src].</span>", 
+			"<span class='notice'>You can see how [H.name] begin dismantling \the [src].</span>",
 			"<span class='notice'>You begin dismantling \the [src].</span>",
 			"<span class='notice'>Somebody dismantling something.</span>")
 		if (do_after(H, I , src))
@@ -161,7 +161,7 @@
 			H.mood -= I*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.15
 			H.mood -= I*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.85
 			H.visible_message(
-				"<span class='notice'>You can see how [H.name] dismantled \the [src].</span>", 
+				"<span class='notice'>You can see how [H.name] dismantled \the [src].</span>",
 				"<span class='notice'>You dismantle \the [src].</span>",
 				"<span class='notice'>Somebody dismantled something.</span>")
 			H.give_exp(list("crafting","strength","dexterity","stamina"), list(85,5,5,5), I)
@@ -174,7 +174,7 @@
 			qdel(src)
 		else
 			H.visible_message(
-				"<span class='notice'>You can see how [H.name] stops dismantling \the [src].</span>", 
+				"<span class='notice'>You can see how [H.name] stops dismantling \the [src].</span>",
 				"<span class='notice'>You stops dismantling \the [src].</span>",
 				"<span class='notice'>Dismantling sounds are gone.</span>")
 	else
@@ -183,7 +183,7 @@
 ////////////////////////////////////////////////////////////////////////
 //  Loom  //////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-// TO DO TODO: Reconsider the weaving process in a more realistic way (different technological levels 
+// TO DO TODO: Reconsider the weaving process in a more realistic way (different technological levels
 //  	of weaving, a more detailed process: material -> threads -> fabric) e t.c.
 /obj/structure/loom
 	name = "loom"
@@ -203,7 +203,7 @@
 /obj/structure/loom/proc/finish_work()
 	if (current_work)
 		current_user.visible_message(
-			"<span class='notice'>You can see how [current_user.name] made [current_work.name] on \a [src.name].</span>", 
+			"<span class='notice'>You can see how [current_user.name] made [current_work.name] on \a [src.name].</span>",
 			"<span class='notice'>You finish producing \the [current_work.name].</span>",
 			"<span class='notice'>The sounds of \the [src.name] were gone.</span>")
 		icon_state = "loom"
@@ -237,7 +237,7 @@
 	current_material = W
 	current_user = H
 	H.visible_message(
-		"<span class='notice'>You can see how [H.name] began to weave [W.name] on \a [src.name].</span>", 
+		"<span class='notice'>You can see how [H.name] began to weave [W.name] on \a [src.name].</span>",
 		"<span class='notice'>You start to produce \the [current_work.name].</span>",
 		"<span class='notice'>You hear someone begin to weave on \the [src.name].</span>")
 	icon_state = "loom1"
@@ -247,12 +247,12 @@
 		finish_work()
 	else
 		icon_state = "loom"
-		//20% - with no penalty, 30% - little mood decreasing, 25% - mood decreasing, 
+		//20% - with no penalty, 30% - little mood decreasing, 25% - mood decreasing,
 		//15% - to lose some material and mood decreasing, 10% to lose all material and great mood decreasing
 		switch (rand(1,100)) //here are another algorithm because we don't know how much work was really done
 			if (1 to 20) //20% with no penalty... almost
 				H.visible_message(
-					"<span class='notice'>You see how [H.name] pulls [W.name] out of [src.name], stopping work.</span>", 
+					"<span class='notice'>You see how [H.name] pulls [W.name] out of [src.name], stopping work.</span>",
 					"<span class='notice'>You safely pull \the [W.name] from \the [src.name], stopping work.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				if (prob(25)) //5% to lose or gain some skill
@@ -260,26 +260,26 @@
 						H.emote("sigh")
 						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
 						H.adaptStat("crafting", -1)
-					else //1% to gain 
+					else //1% to gain
 						H.emote("giggle")
 						H << "<span class='notice'>You learned a little more about the craft.</span>"
 						H.adaptStat("crafting", 1)
 			if (21 to 50) //30% little mood decreasing
 				H.visible_message(
-					"<span class='notice'>You see how [H.name] sighs and pulls [W.name] out of [src.name], stopping work.</span>", 
+					"<span class='notice'>You see how [H.name] sighs and pulls [W.name] out of [src.name], stopping work.</span>",
 					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are a little upset.</span>",
 					"<span class='notice'>You hear an irritated murmur. The sounds of \the [src.name] gone.</span>")
 				H.mood -= 2
 			if (51 to 75) //25% nervously
 				H.visible_message(
-					"<span class='notice'>You see how [H.name] nervously plucks [W.name] from \the [src.name], stopping work.</span>", 
+					"<span class='notice'>You see how [H.name] nervously plucks [W.name] from \the [src.name], stopping work.</span>",
 					"<span class='notice'>You nervously pluck \the [W.name] from \the [src.name], stopping work. You are a some upset.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				H.emote("sigh")
 				H.mood -= 4
 			if (76 to 90) //15% losing some material
 				H.visible_message(
-					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>", 
+					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>",
 					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are upset.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				W.amount = round(W.amount/2 + W.amount/10*rand(1,10))
@@ -290,12 +290,12 @@
 					if (prob(80)) //4% to gain
 						H << "<span class='notice'>You learned a little more about the craft.</span>"
 						H.adaptStat("crafting", rand(1, clamp(current_work.amount-W.amount,1,5)))
-					else //1% to lose 
+					else //1% to lose
 						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
 						H.adaptStat("crafting", -1)
 			else //10% to lose all material
 				H.visible_message(
-					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>", 
+					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>",
 					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are very upset.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				if (prob(50)) //5% to breakthrough
@@ -314,7 +314,7 @@
 		current_material = null
 		current_user = null
 
-/obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob) 
+/obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/material/cotton) || istype(W, /obj/item/stack/material/rettedfabric))
 		produce(W, H, /obj/item/stack/material/cloth)
 		return
@@ -390,7 +390,7 @@
 
 /obj/structure/mill/proc/finish_work()
 	if (current_work)
-		if (istype(src, /obj/structure/mill/large))				
+		if (istype(src, /obj/structure/mill/large))
 			icon_state = "mill_large"
 			visible_message("<span class='notice'>You can see how [src.name] finish grind [current_material.name] to [current_work.name]</span>",
 				"<span class='notice'>The grinding sounds are gone.</span>")
@@ -427,12 +427,12 @@
 			return
 		if (workers_list.len == 0)
 			H.visible_message(
-				"<span class='notice'>You can see how [H.name] continue grind [current_work.name] in \the [src.name].</span>", 
+				"<span class='notice'>You can see how [H.name] continue grind [current_work.name] in \the [src.name].</span>",
 				"<span class='notice'>You continue produce \a [current_work.name].</span>",
 				"<span class='notice'>You hear how someone starts to grind something in [src].</span>")
 		else
 			H.visible_message(
-				"<span class='notice'>You can see how [H.name] started to help grind [current_work.name] in \the [src.name].</span>", 
+				"<span class='notice'>You can see how [H.name] started to help grind [current_work.name] in \the [src.name].</span>",
 				"<span class='notice'>You started helping produce \a [current_work.name].</span>",
 				"<span class='notice'>The grinding sounds became more frequent.</span>")
 	else
@@ -441,7 +441,7 @@
 		H.drop_item()
 		W.loc = null
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] began to grind [current_work.name] [istype(src, /obj/structure/mill/large) ? "on" : "in"] \the [src.name].</span>", 
+			"<span class='notice'>You can see how [H.name] began to grind [current_work.name] [istype(src, /obj/structure/mill/large) ? "on" : "in"] \the [src.name].</span>",
 			"<span class='notice'>You [istype(src, /obj/structure/mill/large) ? "put [current_work.name] to [src] for" : "start to"] produce \a [current_work.name].</span>",
 			"<span class='notice'>You hear how someone starts to grind something in [src].</span>")
 	if (istype(src, /obj/structure/mill/large))
@@ -485,12 +485,12 @@
 			if (workers_list.len == 0)
 				icon_state = "flour_mill"
 				H.visible_message(
-					"<span class='notice'>You can see that [H.name] stops grinding [current_work.name] in [src.name].</span>", 
+					"<span class='notice'>You can see that [H.name] stops grinding [current_work.name] in [src.name].</span>",
 					"<span class='notice'>You [reason] grind \a [current_work.name].</span>",
 					"<span class='notice'>The grinding sounds are gone.</span>")
 			else
 				H.visible_message(
-					"<span class='notice'>You can see that [H.name] stops helping to grind [current_work.name] in [src.name].</span>", 
+					"<span class='notice'>You can see that [H.name] stops helping to grind [current_work.name] in [src.name].</span>",
 					"<span class='notice'>You [reason] helping grind \a [current_work.name].</span>",
 					"<span class='notice'>The grinding sounds have become more rare.</span>")
 		if (complete_percent>=100)
@@ -548,7 +548,7 @@
 // Dehydrator //////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 // Accepts items with the dry_type path set, converting them to that path after the drying process is complete.
-// Dehydrator have 3x4 size, or 3 collums on 4 rows.  
+// Dehydrator have 3x4 size, or 3 collums on 4 rows.
 // By default dry_size=2 - this means that the item will take up two slots from left to right in the first empty space on the dehydrator.
 // With dry_size values of 1, 2 and 3, an item will take up the corresponding number of slots. For dry_size=4 only turned position will be used, better use dry_size=13 (see below).
 // Values of +4 will occupy two rows, for example 6 will occupy 2 slots of 2 rows (2x2); 5: 1x2; 6: 2x2; 7: 3x2; 8 will fit only rotated 2x4, better use dry_size=14 (see below).
@@ -575,7 +575,7 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/tmp/slots[4][3] //[row][slot in row] - food/snacks item list which dries 
+	var/tmp/slots[4][3] //[row][slot in row] - food/snacks item list which dries
 	var/tmp/obj/item/weapon/storage/internal/storage //storage for dryed raw items (for algorithm purpose)
 	var/tmp/current_process_id = "" //for control of only one process at time to one dehydrator
 
@@ -608,7 +608,7 @@
 		else
 			W.name = "[W.name]ON_DEHYDRATOR[is_rotated ? "_ROTATED_" : "_STRAIGHT_"]DECAY_[num2text(0, 8, 10)]POS_[num2text(pos[1]+(pos[2]-1)*4, 1, 16)]TIMER_00000000"
 	slots[pos[1]][pos[2]] = W
-	storage.handle_item_insertion(W, TRUE) //put to storage for preparing to destroy, or for map save when it happens 
+	storage.handle_item_insertion(W, TRUE) //put to storage for preparing to destroy, or for map save when it happens
 	for (var/P=0, P<sizeHV[1], P++)
 		for (var/R=0, R<sizeHV[2], R++)
 			if (P==0)
@@ -696,7 +696,7 @@
 	if (storage.contents.len>0)
 		for(var/obj/item/I in storage.contents)
 			dryed_now += "[additional_info ? "[dry_as_text(I)] " : ""][normal_item_name(I)]"
-		user << "<span class='notice'>There [storage.contents.len == 1 ? "is dries" : "are drying"] [english_list(dryed_now, "")].</span>"	
+		user << "<span class='notice'>There [storage.contents.len == 1 ? "is dries" : "are drying"] [english_list(dryed_now, "")].</span>"
 
 /obj/structure/dehydrator/proc/normal_item_name(var/obj/item/I)
 	return copytext(I.name, 1, findtext(I.name, "ON_DEHYDRATOR"))
@@ -717,7 +717,7 @@
 			hammer_action(H, W, 110, list("/obj/item/stack/material/wood"), list(4))
 			return TRUE
 	if (!W.dried_type)
-		if (H) 
+		if (H)
 			H << "<span class='warning'>\The [W.name] is not for drying.</span>"
 		return TRUE//This can't be dryed
 	if (!W.dry_size)
@@ -725,20 +725,20 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/food))
 		var/obj/item/weapon/reagent_containers/food/D = W
 		if (D.rotten)
-			if (H) 
+			if (H)
 				H << "<span class='warning'>\The [W.name] is rotten.</span>"
 			return TRUE
 	if (W.dry_size>15)
-		if (H) 
+		if (H)
 			H << "<span class='warning'>\The [W.name] not fit here!</span>"
 		return TRUE
 	if (!hang_on(W))
-		if (H) 
+		if (H)
 			H << "<span class='warning'>Not enough room for one more [W.name]!</span>"
 		return TRUE
-	if (H) 
+	if (H)
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(W)] to dry.</span>", 
+			"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(W)] to dry.</span>",
 			"<span class='notice'>You hang \a [normal_item_name(W)] to dry.")
 		return TRUE
 	..(W, H, icon_x, icon_y)
@@ -749,7 +749,7 @@
 		if (!H.put_in_any_hand_if_possible(S, FALSE, TRUE, TRUE, TRUE))
 			H.drop_item(S)
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] removes \a [S.name] from \the [src].</span>", 
+			"<span class='notice'>You can see how [H.name] removes \a [S.name] from \the [src].</span>",
 			"<span class='notice'>You remove \a [S.name] from \the [src].")
 	return TRUE
 
@@ -813,7 +813,7 @@
 	var/obj/item/S
 	if (shoot_x>6 && shoot_x<26)
 		if (shoot_y>3 && shoot_y<30) //in hitbox
-			if (shoot_x==7 || shoot_x==8 || shoot_x==24 || shoot_x==25) 
+			if (shoot_x==7 || shoot_x==8 || shoot_x==24 || shoot_x==25)
 				return ..(P, def_zone) //hit to dehydrator vertical frame
 			if (shoot_y==4 || shoot_y==5 || shoot_y==10 || shoot_y==11 || shoot_y==16 || shoot_y==17 || shoot_y==22 || shoot_y==23 || shoot_y==28 || shoot_y==29)
 				return ..(P, def_zone) //hit to dehydrator horizontal frame
@@ -834,19 +834,19 @@
 	return PROJECTILE_CONTINUE //miss
 
 /obj/structure/dehydrator/proc/clean_drop_slots() //Drop all items out without changing names, they will be restored on reinit()
-	for (var/R=1, R<5, R++) 
+	for (var/R=1, R<5, R++)
 		for (var/P=1, P<4, P++)
 			if (slots[R][P]<>null)
 				if (!findtext(slots[R][P],"busy"))
-					storage.remove_from_storage(slots[R][P]) 
+					storage.remove_from_storage(slots[R][P])
 				slots[R][P] = null
 
 /obj/structure/dehydrator/proc/refill()
 	var/is_rotated
 	var/obj/item/weapon/reagent_containers/food/snacks/S
 	var/T
-	var/list/pos 
-	var/list/sizeHV 
+	var/list/pos
+	var/list/sizeHV
 	clean_drop_slots()
 	//place temporary dropped or saved items back in place
 	for (S in src.loc)
@@ -921,7 +921,7 @@
 //  Fermentation jar  //////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 // TO DO TODO: Rework this vague mechanism into a chemical reaction, and remake the jar itself into reagents_container like a large beaker, but with much less accurate transfer amounts
-// At this time it's infinity yeast generator... o_O ... yes. 
+// At this time it's infinity yeast generator... o_O ... yes.
 /obj/item/weapon/starterjar
 	name = "fermentation starter jar"
 	icon = 'icons/obj/drinks.dmi'
@@ -938,7 +938,7 @@
 		user << "<span class='warning'>This jar already has a starter culture inside!</span>"
 		return
 	if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/flour))
-		user.visible_message("<span class='notice'>[user.name] adds some flour to the jar.</span>", 
+		user.visible_message("<span class='notice'>[user.name] adds some flour to the jar.</span>",
 			"<span class='notice'>You add [O.name] to the jar.</span>")
 		fermenting = 1
 		icon_state = "jarF"
@@ -947,7 +947,7 @@
 		fermenting_process()
 		return
 	if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/oat) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/rice) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/barley))
-		user.visible_message("<span class='notice'>[user.name] adds some grain to the jar.</span>", 
+		user.visible_message("<span class='notice'>[user.name] adds some grain to the jar.</span>",
 			"<span class='notice'>You add [O.name] to the jar.</span>")
 		fermenting = 1
 		icon_state = "jarG"
@@ -956,7 +956,7 @@
 		fermenting_process()
 		return
 	else if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/enzyme))
-		user.visible_message("<span class='notice'>[user.name] adds [O.name] to the jar.</span>", 
+		user.visible_message("<span class='notice'>[user.name] adds [O.name] to the jar.</span>",
 			"<span class='notice'>You add [O.name] to the jar.</span>")
 		fermenting = 2
 		fermenting_contents++
@@ -1085,7 +1085,7 @@
 				some_not_collected = TRUE
 	if (some_not_collected)
 		user << "<span class='warning'>Some seeds not fit into [src], make some space.</span>"
-	if (src == user.s_active) 
+	if (src == user.s_active)
 		orient2hud(user)
 	return some_collected || some_not_collected
 
@@ -1178,7 +1178,7 @@
 						not_collected += "stone"
 	if (some_not_collected)
 		user << "<span class='warning'>Some [english_list(not_collected)] not fit into [src], make some space.</span>"
-	if (src == user.s_active) 
+	if (src == user.s_active)
 		orient2hud(user)
 	return some_collected || some_not_collected
 
@@ -1225,7 +1225,7 @@
 	max_w_class = 3
 	max_storage_space = 30
 	storage_slots = 30
-	display_contents_with_number = TRUE //visually stack unstackable! 
+	display_contents_with_number = TRUE //visually stack unstackable!
 	can_hold = list(/obj/item/weapon/reagent_containers/food/snacks/grown)
 	flammable = TRUE
 	var/tmp/next_usage = 0 //for prevent spam clicks
@@ -1255,8 +1255,8 @@
 					to_loc = target
 				if (istype(target, /obj/item/weapon/storage))
 					to_storage = target
-					to_loc = target.contents 
-				if (!attack_self(user, to_loc, to_storage)) 
+					to_loc = target.contents
+				if (!attack_self(user, to_loc, to_storage))
 					//no items here? try unloading!
 					var/some_items = FALSE
 					for (var/obj/item/weapon/reagent_containers/food/snacks/grown/G in contents)
@@ -1272,13 +1272,13 @@
 					if (some_items)	//items was unloaded
 						if (to_storage)
 							to_storage.update_icon()
-						if (src.loc <> user) //returning back in hand! 
+						if (src.loc <> user) //returning back in hand!
 							user.put_in_active_hand(src)
 						return
 				else //after loading items
 					if (to_storage)
 						to_storage.update_icon()
-					if (src.loc <> user) //returning back in hand! 
+					if (src.loc <> user) //returning back in hand!
 						user.put_in_active_hand(src)
 					return
 	..(target, user, proximity_flag, params)
@@ -1290,7 +1290,7 @@
 //TO DO TODO: Some kind of mechanical energy must be needed to work.
 //TO DO TODO: Check /obj/structure/oil_spring in code... it's need to be cleaned! BTW, all oil_fires.dm must be cleaned
 //TO DO TODO: Make petroleum production more realistic.... maybe, or not
-//TO DO TODO: Clean fuckups in oil_fires.dm 
+//TO DO TODO: Clean fuckups in oil_fires.dm
 //TO DO TODO: Make different types of blood/oil (look at glass.dm)
 //TO DO TODO: Clean fuckups with item/flashlight
 /obj/structure/oilwell
@@ -1331,7 +1331,7 @@
 		need_extract = FALSE
 		if (work_barrel)
 			if (work_barrel.reagents.total_volume < work_barrel.reagents.maximum_volume)
-				if (base.counter>0)			
+				if (base.counter>0)
 					work_barrel.reagents.add_reagent("petroleum", min(work_barrel.reagents.get_free_space(), 10))
 					base.counter --
 					need_extract = TRUE
@@ -1344,7 +1344,7 @@
 				base.timeout = world.time + 600 //give default timeout
 				base.refill()
 		if (need_extract)
-			extract() 
+			extract()
 		else
 			extracting_now = FALSE
 
@@ -1369,7 +1369,7 @@
 					"<span class='notice'>You put \the [W] in \the [src].</span>")
 				load_barrel()
 		else
-			user << "<span class='warning'>There is already a connected [work_barrel].</span>"			
+			user << "<span class='warning'>There is already a connected [work_barrel].</span>"
 		return
 	if (istype(W,/obj/item/weapon/hammer))
 		hammer_action(user, W, 270, list("/obj/item/stack/material/wood"), list(30))
@@ -1400,7 +1400,7 @@
 
 /obj/structure/oilwell/after_load()
 	. = ..()
-	link_to_spring()		
+	link_to_spring()
 
 ////////////////////////////////////////////////////////////////////////
 //  Printing press  ////////////////////////////////////////////////////
@@ -1408,12 +1408,12 @@
 //TO DO TODO: FIX books at maps!
 //TO DO TODO: Fix Chemistry-Reagents-Compounds.dm for compound reactions to books
 //TO DO TODO: Fix books recipes. Book is book! Why is 15 wood for book? It's a house? WALL?
-//TO DO TODO: Split research "books" to different items types. Stone must be stone. Scroll must be scroll. Paper must be paper. Wood must be wood... Yes, create another type of book: Waxed tablet. 
+//TO DO TODO: Split research "books" to different items types. Stone must be stone. Scroll must be scroll. Paper must be paper. Wood must be wood... Yes, create another type of book: Waxed tablet.
 //TO DO TODO: Make a parchments (paper from leather) ? Think about it wisely...
 //TO DO TODO: Rework books crafting, they must be crafted from paper or parchments (if it is a book). Parchments book is a different item from paper book.
 //TO DO TODO: Rework paper crafting. It's must be different from age to age.
-//TO DO TODO: below are not completed rework of printing press... Complete it LATER, not now. 
-//TO DO TODO: languages for text... many work at /obj/item/weapon/pen , languages for books, languages for all what may be wroten. 
+//TO DO TODO: below are not completed rework of printing press... Complete it LATER, not now.
+//TO DO TODO: languages for text... many work at /obj/item/weapon/pen , languages for books, languages for all what may be wroten.
 /*
 /obj/structure/printingpress
 	name = "printing press"
@@ -1425,7 +1425,7 @@
 	flammable = TRUE
 	var/tmp/obj/item/weapon/base = null
 	var/tmp/obj/item/weapon/copy = null
-	var/tmp/obj/item/weapon/storage/internal/storage //for store copy and original and not drop it on ground 
+	var/tmp/obj/item/weapon/storage/internal/storage //for store copy and original and not drop it on ground
 	var/tmp/list/obj/item/weapon/copies = list()
 	var/tmp/copying = FALSE
 	not_movable = FALSE
@@ -1454,7 +1454,7 @@
 			msg += "is empty.\n\n"
 		else
 		    msg += "contains [copies.len] exemplar[copies.len>1 : "s" : ""].\n\n"
-		if (copies.len<10) 
+		if (copies.len<10)
 			msg += "\nAdd [W.name] to original slot, copy slot or store it?\n"
 			tolist += "Store"
 		else
@@ -1500,10 +1500,10 @@
 	if (base && copy)
 		if (istype(base, /obj/item/weapon/paper) || istype(copy, /obj/item/weapon/paper))
 			if (base.type == copy.type)
-				PO = copy	
+				PO = copy
 				if (!PO.info)
 					tolist += "Begin copy from [base.name]"
-				else 
+				else
 					msg += "Copying process can't be started, because [base.name] not clean.\n"
 			else
 				msg += "Copying process can't be started, because both documents must be of the same type.\n"
@@ -1565,10 +1565,10 @@
 			else if (istype(base, /obj/item/weapon/book/research))
 				var/obj/item/weapon/book/research/RO = base
 				var/obj/item/weapon/book/research/RN = new/obj/item/weapon/book/research(src.loc)
-				RN.completed = RO.completed 
-				RN.k_class = RO.k_class 
-				RN.k_level = RO.k_level 
-				RN.styleb = RO.styleb 
+				RN.completed = RO.completed
+				RN.k_class = RO.k_class
+				RN.k_level = RO.k_level
+				RN.styleb = RO.styleb
 				BN = RN
 			else if (istype(base, /obj/item/weapon/book))
 				BN = new/obj/item/weapon/book(src.loc)
@@ -1770,7 +1770,7 @@
 				icon_state = "printingpress0"
 				return
 	return
-	
+
 ////////////////////////////////////////////////////////////////////////
 //  Canning  ///////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -1927,23 +1927,23 @@
 
 /obj/item/weapon/can/filled
 	var/list/randbrand = list(
-		"Master Taislin", "Metsobeshi", "Old Man", "Welmert", 
-		"McDonohugh", "McKellen's Delight",	"Freeman", "Kostas Finest", 
-		"Slowman", "Pajeet Special", "Toyoda", "Uma Delicia", 
+		"Master Taislin", "Metsobeshi", "Old Man", "Welmert",
+		"McDonohugh", "McKellen's Delight",	"Freeman", "Kostas Finest",
+		"Slowman", "Pajeet Special", "Toyoda", "Uma Delicia",
 		"Ooga's Cuisine", "Burner King"
 	)
 	var/list/custcolor = list(
-		"#e6194b",	"#3cb44b",	"#ffe119",	"#4363d8", "#f58231",	"#911eb4",	"#46f0f0",	"#f032e6", 
-		"#bcf60c",	"#fabebe",	"#008080",	"#e6beff",	"#9a6324", "#fffac8", "#800000", "#aaffc3", 
+		"#e6194b",	"#3cb44b",	"#ffe119",	"#4363d8", "#f58231",	"#911eb4",	"#46f0f0",	"#f032e6",
+		"#bcf60c",	"#fabebe",	"#008080",	"#e6beff",	"#9a6324", "#fffac8", "#800000", "#aaffc3",
 		"#808000", "#ffd8b1", "#000075", "#808080", "#ffffff", "#000000"
 	)
 	var/list/filllist = list(
-		/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives, 
-		/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom,	/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon, 
-		/obj/item/weapon/reagent_containers/food/snacks/grown/orange, /obj/item/weapon/reagent_containers/food/snacks/grown/apple, 
-		/obj/item/weapon/reagent_containers/food/snacks/grown/banana, /obj/item/weapon/reagent_containers/food/snacks/grown/coconut, 
-		/obj/item/weapon/reagent_containers/food/snacks/grown/tomato, /obj/item/weapon/reagent_containers/food/snacks/grown/beans, 
-		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage, /obj/item/weapon/reagent_containers/food/snacks/grown/carrot, 
+		/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom,	/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/orange, /obj/item/weapon/reagent_containers/food/snacks/grown/apple,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/banana, /obj/item/weapon/reagent_containers/food/snacks/grown/coconut,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/tomato, /obj/item/weapon/reagent_containers/food/snacks/grown/beans,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage, /obj/item/weapon/reagent_containers/food/snacks/grown/carrot,
 		/obj/item/weapon/reagent_containers/food/snacks/grown/corn
 	)
 	var/currspawn = null
@@ -2030,9 +2030,9 @@
 	if (current>=10)
 		H << "<span class='warning'>The compost bin is full!</span>"
 		return
-	var/list/allow_types = list(/obj/item/weapon/reagent_containers/food, /obj/item/stack/material/leaf, /obj/item/stack/farming/seeds, 
-		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/tobacco_green, /obj/item/stack/material/coca, 
-		/obj/item/stack/material/flax, /obj/item/stack/material/hemp, /obj/item/stack/material/rettedfabric, 
+	var/list/allow_types = list(/obj/item/weapon/reagent_containers/food, /obj/item/stack/material/leaf, /obj/item/stack/farming/seeds,
+		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/tobacco_green, /obj/item/stack/material/coca,
+		/obj/item/stack/material/flax, /obj/item/stack/material/hemp, /obj/item/stack/material/rettedfabric,
 		/obj/item/stack/dung
 	)
 	if (is_type_in_list(W, allow_types))
