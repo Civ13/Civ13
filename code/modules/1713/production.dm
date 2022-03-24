@@ -10,6 +10,7 @@
 //TO DO TODO: Make this proc global using
 /mob/living/human/var/tmp/last_mood_check = 0
 /mob/living/human/proc/in_mood(no_mood_check_treshold = 60)
+	return TRUE //This is temporary! TO DO TODO: Return this function after reworking mood restoration and mood buff/debuff system
 	//checking mood for doing anything
 	if (world.timeofday<src.last_mood_check) //prevent mood check spam
 		src.mood -= 0.25
