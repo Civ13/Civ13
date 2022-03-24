@@ -1086,7 +1086,7 @@
 	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
 	icon_state = "50calbolt"
 	item_state = "50calbolt"
-	base_icon = "50calbolt"_open
+	base_icon = "50calbolt"
 	w_class = 4
 	force = 10
 	throwforce = 5
