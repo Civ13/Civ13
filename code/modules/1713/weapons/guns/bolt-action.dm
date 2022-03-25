@@ -301,7 +301,6 @@
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal
 	name = "Barrett M99"
-	icon = 'icons/obj/guns/rifles.dmi'
 	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
 	icon_state = "a50calbolt"
 	item_state = "a50calbolt"
@@ -312,7 +311,8 @@
 	max_shells = 1
 	slot_flags = SLOT_SHOULDER
 	caliber = "a50cal"
-	recoil = 5
+	weight = 8
+	recoil = 3
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a50cal
@@ -328,7 +328,7 @@
 	fire_delay = 4
 	equiptimer = 15
 	gun_safety = TRUE
-	load_delay = 10
+	load_delay = 20
 	bolt_open = FALSE
 	bolt_safety = FALSE
 /obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/New()
