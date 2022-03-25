@@ -32,7 +32,18 @@
 				qdel(animation)
 			if (client)
 				client.movement_busy = FALSE
-				ghostize()
+				if (map.ID == MAP_CAMPAIGN)
+					src << browse(null, "window=memory")
+					stop_ambience(src)
+					client.screen.Cut()
+					var/mob/new_player/M = new /mob/new_player()
+					M.key = key
+					spawn(5)
+						M << "<font size=4>You have died!</font>"
+					if (M.mind)
+						M.mind.reset()
+				else
+					ghostize()
 			if (src)
 				qdel(src)
 
@@ -72,7 +83,18 @@
 				qdel(src)
 			if (client)
 				client.movement_busy = FALSE
-				ghostize()
+				if (map.ID == MAP_CAMPAIGN)
+					src << browse(null, "window=memory")
+					stop_ambience(src)
+					client.screen.Cut()
+					var/mob/new_player/M = new /mob/new_player()
+					M.key = key
+					spawn(5)
+						M << "<font size=4>You have died!</font>"
+					if (M.mind)
+						M.mind.reset()
+				else
+					ghostize()
 			if (src)
 				qdel(src)
 /mob/proc/maim()
@@ -122,6 +144,18 @@
 
 	if (client)
 		client.movement_busy = FALSE
-		ghostize()
+		if (map.ID == MAP_CAMPAIGN)
+			src << browse(null, "window=memory")
+			stop_ambience(src)
+			client.screen.Cut()
+			var/mob/new_player/M = new /mob/new_player()
+			M.key = key
+			spawn(5)
+				M << "<font size=4>You have died!</font>"
+			if (M.mind)
+				M.mind.reset()
+		else
+			ghostize()
+	announce_ghost_joinleave(client, FALSE)
 
 	return TRUE

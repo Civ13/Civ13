@@ -3,8 +3,8 @@
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRed"
 	is_event = TRUE
-	uses_squads = TRUE
-
+	uses_squads = FALSE
+	additional_languages = list("Russian" = 15)
 	min_positions = 999
 	max_positions = 999
 
@@ -19,9 +19,12 @@
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	var/obj/item/clothing/accessory/storage/webbing/green_webbing/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing(null)
 	uniform.attackby(pasgt_armor, H)
+	uniform.attackby(webbing, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -31,6 +34,7 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
+	H.make_artillery_scout()
 	return TRUE
 
 /datum/job/civilian/bluefaction
@@ -38,7 +42,7 @@
 	rank_abbreviation = ""
 	spawn_location = "JoinLateBlue"
 	is_event = TRUE
-	uses_squads = TRUE
+	uses_squads = FALSE
 
 	min_positions = 999
 	max_positions = 999
@@ -54,9 +58,13 @@
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/green/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/green(null)
+	var/obj/item/clothing/accessory/storage/webbing/green_webbing/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing(null)
 	uniform.attackby(pasgt_armor, H)
+	uniform.attackby(webbing, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks/sksm(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -66,4 +74,5 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
+	H.make_artillery_scout()
 	return TRUE

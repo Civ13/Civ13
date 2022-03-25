@@ -414,7 +414,26 @@ var/global/redirect_all_players = null
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg)
-					LateChoices()
+					var/factjob = "null"
+					for (var/i in faction_list_red)
+						var/temp_ckey = lowertext(i)
+						temp_ckey = replacetext(temp_ckey," ", "")
+						temp_ckey = replacetext(temp_ckey,"_", "")
+						if (temp_ckey == client.ckey)
+							factjob = "Red Faction"
+					if (factjob == "null")
+						for (var/i in faction_list_blue)
+							var/temp_ckey = lowertext(i)
+							temp_ckey = replacetext(temp_ckey," ", "")
+							temp_ckey = replacetext(temp_ckey,"_", "")
+							if (temp_ckey == client.ckey)
+								factjob = "Blue Faction"
+
+					if (factjob != "null")
+						AttemptLateSpawn(factjob)
+					else
+						WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Check the discord for more information.")
+						return
 					return TRUE
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE

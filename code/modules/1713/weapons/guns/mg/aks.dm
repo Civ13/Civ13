@@ -8,6 +8,8 @@
 	var/folded = FALSE
 	effectiveness_mod = 1.11
 	caliber = "a556x45"
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak101
 	good_mags = list(/obj/item/ammo_magazine/ak101)
 	equiptimer = 15
@@ -123,7 +125,7 @@
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103
-	name = "AK-102"
+	name = "AK-103"
 	desc = "A modern Russian AK variant, chambered in 7.62x39mm."
 	icon_state = "ak101"
 	item_state = "ak101"

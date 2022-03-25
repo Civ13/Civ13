@@ -1555,11 +1555,14 @@
 						holder2.overlays += icon(holder2.icon,"role_builder")
 					if ("Logger")
 						holder2.overlays += icon(holder2.icon,"role_logger")
-			if (original_job.uses_squads && squad > 0)
+			if ((original_job.uses_squads || map.ID == MAP_CAMPAIGN) && squad > 0)
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 				else
 					holder2.overlays += icon(holder2.icon,"squad_[squad]")
+					if(map.ID == MAP_CAMPAIGN && original_job_title == "Squad Leader")
+						holder2.overlays += icon(holder2.icon,"officer")
+
 			if (original_job.is_commander)
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
