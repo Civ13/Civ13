@@ -414,13 +414,9 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/spas(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_r_store)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/saiga12(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_r_store)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
