@@ -39,7 +39,7 @@
 					var/mob/new_player/M = new /mob/new_player()
 					M.key = key
 					spawn(5)
-						M << "<font size=4>You have died!</font>"
+						M << "<font size=6>You have died!</font>"
 					if (M.mind)
 						M.mind.reset()
 				else
@@ -90,7 +90,7 @@
 					var/mob/new_player/M = new /mob/new_player()
 					M.key = key
 					spawn(5)
-						M << "<font size=4>You have died!</font>"
+						M << "<font size=6>You have died!</font>"
 					if (M.mind)
 						M.mind.reset()
 				else
@@ -151,7 +151,7 @@
 			var/mob/new_player/M = new /mob/new_player()
 			M.key = key
 			spawn(5)
-				M << "<font size=4>You have died!</font>"
+				M << "<font size=6>You have died!</font>"
 			if (M.mind)
 				M.mind.reset()
 		else

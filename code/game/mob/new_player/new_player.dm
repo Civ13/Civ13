@@ -793,7 +793,7 @@ var/global/redirect_all_players = null
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
 
 	//squads
-	if (ishuman(character))
+	if (ishuman(character) && map.ID != MAP_CAMPAIGN)
 		var/mob/living/human/H = character
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt

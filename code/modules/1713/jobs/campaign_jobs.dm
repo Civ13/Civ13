@@ -3,7 +3,7 @@
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRed"
 	is_event = TRUE
-	uses_squads = FALSE
+	uses_squads = TRUE
 	additional_languages = list("Russian" = 15)
 	min_positions = 999
 	max_positions = 999
@@ -24,7 +24,7 @@
 	uniform.attackby(webbing, H)
 //equipment
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -42,7 +42,7 @@
 	rank_abbreviation = ""
 	spawn_location = "JoinLateBlue"
 	is_event = TRUE
-	uses_squads = FALSE
+	uses_squads = TRUE
 
 	min_positions = 999
 	max_positions = 999
@@ -64,7 +64,7 @@
 //equipment
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks/sksm(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
