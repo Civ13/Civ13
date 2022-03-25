@@ -375,6 +375,13 @@
 	item_state = "pasgt_desert"
 	worn_state = "pasgt_desert"
 
+/obj/item/clothing/head/helmet/modern/pasgt/reddish
+	name = "Red PASGT helmet"
+	desc = "A typical US Army PASGT helmet. This one has a red dye."
+	icon_state = "pasgt_reddish"
+	item_state = "pasgt_reddish"
+	worn_state = "pasgt_reddish"
+
 /obj/item/clothing/head/helmet/modern/pasgt/desert/New()
 	..()
 	if (prob(50))
@@ -402,6 +409,13 @@
 	icon_state = "pasgt_khaki"
 	item_state = "pasgt_khaki"
 	worn_state = "pasgt_khaki"
+
+/obj/item/clothing/accessory/armor/coldwar/pasgt/green
+	name = "green PASGT body armor"
+	desc = "Wearable armor that can stop most pistol rounds. This one is green colored."
+	icon_state = "pasgt_green"
+	item_state = "pasgt_green"
+	worn_state = "pasgt_green"
 
 		/* US Lightwieght Helmets*/
 
@@ -431,6 +445,12 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/ach/green
+	name = "ACH helmet"
+	desc = "A typical US Army Advanced Combat Helmet. This one is in green."
+	icon_state = "ach_green"
+	item_state = "ach_green"
+	worn_state = "ach_green"
 	/* US Army Clothing*/
 
 /obj/item/clothing/under/us_uni/us_camo_dcu

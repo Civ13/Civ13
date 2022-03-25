@@ -1043,8 +1043,8 @@ var/list/atom_types = null
 		faction_list_red = list()
 		var/list/flist_temp = file2list(F3,"\n")
 		for (var/i in flist_temp)
-			if (findtext(i, "="))
-				var/list/current = splittext(i, "=")
+			if (findtext(i, ";"))
+				var/list/current = splittext(i, ";")
 				if (current[2] == "red")
 					faction_list_red += current[1]
 				else if (current[2] == "blue")

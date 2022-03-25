@@ -79,10 +79,19 @@
 "bA" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/tundra)
 "bB" = (/turf/floor/winter/grass{icon_state = "dirt"},/area/caribbean/no_mans_land/invisible_wall/tundra)
 "bC" = (/turf/floor/dirt,/area/caribbean/nomads/forest/snow)
+"bD" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/three)
+"bE" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/wood{icon_state = "wood-broken5"},/area/caribbean/no_mans_land/capturable/four)
+"bF" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/four)
 "bG" = (/obj/item/weapon/reagent_containers/glass/barrel/modern,/turf/floor/wood,/area/caribbean/houses)
 "bH" = (/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
 "bI" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/nomads/forest/snow)
+"bJ" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/wood{icon_state = "wood-broken2"},/area/caribbean/no_mans_land/capturable/four)
+"bK" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
+"bL" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
 "bM" = (/obj/structure/barricade/vertical,/turf/floor/dirt/burned,/area/caribbean/houses)
+"bN" = (/obj/structure/window/barrier/sandbag,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/four)
+"bO" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/four)
+"bP" = (/obj/structure/barbwire,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/four)
 "bV" = (/obj/item/weapon/material/kitchen/rollingpin,/turf/floor/dirt/burned,/area/caribbean/houses)
 "cb" = (/obj/structure/wild/tree/live_tree/pine/snow,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "cc" = (/mob/living/simple_animal/mouse/white,/turf/floor/wood,/area/caribbean/nomads/forest/snow)
@@ -254,7 +263,6 @@
 "iI" = (/obj/structure/window/barrier/sandbag,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/three)
 "iJ" = (/obj/structure/window/classic/reinforced,/obj/structure/grille/ironfence,/obj/structure/curtain/leather/open,/turf/floor/dirt/burned,/area/caribbean/houses)
 "iL" = (/obj/covers/brick_wall,/turf/wall/brick{icon_state = "newbrick0"},/area/caribbean/no_mans_land/capturable/three)
-"iM" = (/obj/structure/curtain/leather/open,/obj/structure/window_frame,/obj/item/weapon/material/shard{material = "glass"},/obj/structure/window/barrier/sandbag,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/three)
 "iN" = (/turf/floor/wood{icon_state = "wood-broken3"},/area/caribbean/houses)
 "iO" = (/turf/floor/wood_broken,/area/caribbean/no_mans_land/capturable/three)
 "iP" = (/obj/structure/simple_door/key_door/soviet,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/three)
@@ -376,7 +384,6 @@
 "nr" = (/obj/covers/wood_wall,/turf/wall/brick,/area/caribbean/no_mans_land/capturable/four)
 "nw" = (/obj/structure/wild/burnedbush,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "ny" = (/obj/structure/lamp/lamppost_small/alwayson,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
-"nz" = (/obj/structure/lamp/lamppost_small/alwayson,/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "nA" = (/turf/floor/wood{icon_state = "wood-broken3"},/area/caribbean/no_mans_land/capturable/four)
 "nB" = (/turf/floor/wood{icon_state = "wood-broken7"},/area/caribbean/no_mans_land/capturable/four)
 "nC" = (/turf/floor/wood{icon_state = "wood-broken4"},/area/caribbean/no_mans_land/capturable/four)
@@ -387,7 +394,6 @@
 "nM" = (/obj/structure/props/stove,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
 "nO" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "nR" = (/obj/structure/barricade/vertical,/obj/structure/bookcase,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
-"nY" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "nZ" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood{icon_state = "wood-broken4"},/area/caribbean/no_mans_land/capturable/four)
 "ob" = (/obj/structure/barricade/antitank,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "od" = (/obj/structure/bed/chair{dir = 8; icon_state = "chair"},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/four)
@@ -405,7 +411,6 @@
 "ox" = (/obj/structure/roof_support,/turf/floor/wood,/area/caribbean/nomads/forest/snow)
 "oy" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
 "oz" = (/obj/structure/sign/traffic/zebracrossing,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
-"oB" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/obj/structure/optable,/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
 "oC" = (/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean/no_mans_land/capturable/four)
 "oD" = (/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/no_mans_land/capturable/four)
 "oG" = (/obj/structure/curtain/medical,/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
@@ -440,7 +445,6 @@
 "qb" = (/obj/structure/bed/chair{dir = 4; icon_state = "wooden_chair"},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/four)
 "qc" = (/obj/structure/oven{fuel = 1000},/turf/floor/wood,/area/caribbean/houses)
 "qe" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
-"qi" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/optable,/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
 "qj" = (/obj/structure/rails/regular,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "ql" = (/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
 "qm" = (/obj/effect/decal/cleanable/blood,/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
@@ -458,7 +462,6 @@
 "qG" = (/obj/structure/props/junk{icon_state = "Junk_2"},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "qI" = (/obj/structure/window/barrier/sandbag,/turf/floor/wood{icon_state = "damaged2"},/area/caribbean/no_mans_land/capturable/four)
 "qM" = (/obj/covers/brick_wall,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/four)
-"qN" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/four)
 "qO" = (/obj/structure/props/junk{icon_state = "jerseybarrier1X"},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "qP" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean/no_mans_land/capturable/four)
 "qQ" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
@@ -792,9 +795,9 @@ qnqeajauhEisushLauhMhOesRkhRdFhjuqiOhShUjFjFhVjbhjgHvLvvqnbCqnqnqnqnqnqnqnqnqnqn
 qniDaieEauauifaihpjUigaiRkvLgHhjijilduduiOjFipjFjFhljfvvqnbCaaqeqeqeqeqeaaqnqnqnqnrdrdqnqn
 qnckaiaiaifKaiajajajaiaiRkjZiLiqiOiahjhjiritjFhigDhIjfvvbCbCqeafafafafafqeqnqnqnaaqeqeqeqe
 qniDajiuajauauauiyauepaiRkjZjbjFhjjFgDjFjFiaiOjFjFiLjfvvbCqnqeafizZuafafqeqnqnqnqefLaffLas
-qnqeajiAiBusiHajajaueEaiRkjZiLjFhjjFiIiIiIiIjFjFjFiLjfvvbCqnqeafafdqafafqeqnqnRkRkasafZuas
-qnqeaiaiiJiJiJaiaihfaiaiRkjZhIejiMgBkaiPiPkaiMiMiTiLjfvviYiYRkRkafjaafRkRkRkRkRkawasasafaf
-qnjgqeqeSlSlSlqeqeqeqebCqUjhfyqeqejjqeqefyfyfyfyfyfyjmvvbIbIBfRkRkdqafRkawFRFRFRNkpSjopSjq
+qnqeajiAiBusiHajajaueEaiRkjZiLjFgBiIiIiIiIiIiIiIjFiLjfvvbCqnqeafafdqafafqeqnqnRkRkasafZuas
+qnqeaiaiiJiJiJaiaihfaiaiRkjZhIejfSbDkaiPiPkafSfSiTiLjfvviYiYRkRkafjaafRkRkRkRkRkawasasafaf
+qnjgqeqeSlSlSlqeqeqeqebCqUjhfyqeqeqeqeqefyfyfyfyfyfyjmvvbIbIBfRkRkdqafRkawFRFRFRNkpSjopSjq
 qnqnqnjyqnqnqnqnjzqnvebCqwvLvvjXjXjXRkjXqUvLvLvLvLvLvLgoePbCqecQRkRkRkRklwqnXxqnHdjBcijBjC
 jVIUIUIUjVqnqnqnjKqnqnbCbClSvLvLvLvLvLvLvLsBbCbCbCbCbCbCbCqnaaqejjjjjjjjaajMjMqnqejNSkjNjO
 qnjPqnqnqnqnqnjVIUIUIUjVqnbCbCbCjWbCbCbCbCbCbCbCbCbCbCbCqnqnqnqnqnqnqnqnqnqnqnqnqekcdhkckd
@@ -806,16 +809,16 @@ aukEogkIkJauaumqksmGqnkPkQkyvlvlpNvlnrvlpNvlpNnrvlmJpNvlkTpNpNkUpNqeasqnqnqnqnqn
 aukVogkZlbauaukbkslcveqnqnqemOlflhpNnrpNljvlpNnrlkpNpNvlpNpNpNllmOqeqnqnoWqnoWverdrdqnqnas
 auogogogogauaumqmUmGqnoWoWqemOpNpNlpnrpNpNpNlpnrvlvlpNvlpNpNpNlqmOqeqeqnqnqnoWqnrdrdoWasoW
 aulrkZlvlbauaumtmUlwsWIUIUSlmOnrlxnrlynrlxnrnrnrlzvllAvlljmJpNpNsxlCoWbHbHoWlGlHlNbHlUqumc
-DDogmfogmiaulEmlksmGmBqnoWrPommFpNpNmMvlpNmWpNkCpNmJpNpNpNmXpNpNnflHmxnhbHmxqulCnjnllGnnlN
-auaueEauauauaumqksnyqnqnmInzompNnAmJnBnCnCpNpNpNpNlqpNvlvlmPmPllsxnFlGlCnKmRlUlHnLnMnRmRlH
-mUmUmUmUmUmUmUmUmUSlIUsWqnnYommWpNpNnZvlvlvlpNiQmPpNpNodvlpNpNpNomoenFofoWasbHafafoWoWasbH
+DDogmfogmiaulEmlksmGmBqnoWqeombEpNpNmMvlpNmWpNkCpNmJpNpNpNmXpNpNnflHmxnhbHmxqulCnjnllGnnlN
+auaueEauauauaumqksnyqnqnmIaaombFnAmJnBnCnCpNpNpNpNlqpNvlvlmPmPllsxnFlGlCnKmRlUlHnLnMnRmRlH
+mUmUmUmUmUmUmUmUmUSlIUsWqnqeombJpNpNnZvlvlvlpNiQmPpNpNodvlpNpNpNomoenFofoWasbHafafoWoWasbH
 DDojnpnpnpDDepolmUqemhmhmhqemOnrvlnrnrnrnrvlnrnrnrnrnrmFvlpNoqpNorowkmoWnwqeoWmjafoWasbHoW
-aulEogogogauoxogmUlwmhmhozZmmOoBoClooDoGoHoIoIoJoKlonrpNvloOpNpNomoWqeqeqeoWqeqeqeqeqeoWaf
+aulEogogogauoxogmUlwmhmhozZmmObKoClooDoGoHoIoIoJoKlonrpNvloOpNpNomoWqeqeqeoWqeqeqeqeqeoWaf
 auaulvoPogoUauogmUmGoWqGqnqemOoYohohoCoGpbpnpsohoDpunrvlpNpNpNllpwqepDokokokpEokpEokokokpF
 auoxnpnpauaulEogmUqXpMpRpMqXmOoYoCpspUoGohpYoDohpZohnrpNmWpNqbpNmOqeqjqeqeqeqeqeqeqeqeqedq
-aueEauauauaueEqcajRkRkRkRkRkvlqiqloCqmoGqPqoqpqsohqonrqDpNpNpNororqeqjqepDpEokokokokokokqF
-mUmUmUmUmUmUmUmUmUqeRkqnRkqemOmOqIsxmOmOmOmOoDsxqMmOmOmOsxqNqNsxmOqeqjqeqjqeqeqeqeqeqeqeZu
-qeqeqeqeqeqeqeqeqeqeqOqOqnqeqeqeqQqeqepVqeqeqeqeqeqeqeqeqeqQHdqepDokqRqeqjqeqeqeqeqeqeqedq
+aueEauauauaueEqcajRkRkRkRkRkvlbLqloCqmoGqPqoqpqsohqonrqDpNbNbNororqeqjqepDpEokokokokokokqF
+mUmUmUmUmUmUmUmUmUqeRkqnRkqemOmOqIsxmOmOmOmOoDsxqMmOmOmOsxbObPsxmOqeqjqeqjqeqeqeqeqeqeqeZu
+qeqeqeqeqeqeqeqeqeqeqOqOqnqeqeqeqQqeqepVqeqeqeqeqeqeqeqeqeqeqeqepDokqRqeqjqeqeqeqeqeqeqedq
 qeqeqeqeqeqeqeqeqeaaqnqnqnaaqeqeqeqeqeqeqeqeqeqeaaqeqeqeqeqeqeaaqjqeqeqeqjqeqeqeqeqSqeqeZu
 qnqnrdrdqnqnqnqnqnqnoWqnqnqnqnqnqnqnqnqnrdrdqnqnqnqnqnqnqnqnqnqnqWqnqnqnqWqnqnqnqnqnqnqedq
 qnqnrdrdqnqnqnqnqnqnqnkPqnqnqnqZqnvercqnrdrdqnqnqnqnqnveqnqnqnqnqWqnqGqnqWqnveqnqnqnqnqeaf
@@ -864,7 +867,7 @@ veqeqeAAukafafafZudqSRqewyOALzVZtLGatLtLtLtLtLtLtLLtVZtLVZGatLtLUeQbqeqnqnqnqeai
 qnqeqeAAukafafafafafSRqeqetXvytKtKtLZPtKVZVZtLtKtKtLOEtLtKentKtLQRqeqeqnqnqnqeaiOLOMOMPFai
 qnqeqexEukukafafafafxEqeqeQRtLtLtLtLLttLtLPJPJPKtLtLMBtLtLLztLtLQRqeqeqnqnqnqeaiPYfIfIQcai
 dnhGhGhGbjbobobobobphGhGhGQRQRQRtXyJVZVZyJTdTKQRQRtXQRQRQRQRQRQRtXqeqeqnqnqnqeaiauauauauai
-dnhGhGhGhGhGhGhGhGhGhGhGhGbqhGhGbrbtbqbvbwbrbrhGhGhGhGhGhGhGhGhGhGhGhGdndndnhGfKauauauUQai
+dnhGhGhGhGhGhGhGhGhGhGhGhGbqhGhGbrbtbqbvbwhGhGhGhGhGhGhGhGhGhGhGhGhGhGdndndnhGfKauauauUQai
 dnadhGhGhGhGhGhGhGhGhGhGhGbzhGhGhGhGhGhGhGhGhGhGhGhGhGhGhGhGhGhGhGhGaddndndnhGaiauauauauau
 qnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnveqnqnqnqnqnqnqnqnqnqnqnqndnhGVeauWbWbauau
 qnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqndnhGWoauususUQai
