@@ -129,8 +129,8 @@ var/global/redirect_all_players = null
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
-
-	output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
+	if (map.ID != MAP_CAMPAIGN)
+		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
 
@@ -182,6 +182,9 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
+		if (map.ID == MAP_CAMPAIGN)
+			WWalert(src,"You cannot observe during this round.","Error")
+			return TRUE
 
 		if (client && client.quickBan_isbanned("Observe"))
 			WWalert(src,"You're banned from observing.","Error")

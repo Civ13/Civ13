@@ -54,8 +54,8 @@
 	if (fexists(F6))
 		var/list/flist_temp = file2list(F6,"\n")
 		for (var/i in flist_temp)
-			if (findtext(i, "="))
-				var/list/current = splittext(i, "=")
+			if (findtext(i, ";"))
+				var/list/current = splittext(i, ";")
 				if (current[2] == "red")
 					faction_list_red += current[1]
 				else if (current[2] == "blue")
