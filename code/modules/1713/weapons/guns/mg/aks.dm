@@ -2,12 +2,14 @@
 	name = "AK-101"
 	desc = "A modern Russian AK variant, chambered in NATO 5.56x45mm."
 	icon_state = "ak101"
-	item_state = "ak101"
+	item_state = "ak74m"
 	base_icon = "ak101"
 	weight = 3.6
 	var/folded = FALSE
 	effectiveness_mod = 1.11
 	caliber = "a556x45"
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak101
 	good_mags = list(/obj/item/ammo_magazine/ak101)
 	equiptimer = 15
@@ -114,7 +116,7 @@
 	name = "AK-102"
 	desc = "A modern Russian AK variant, chambered in NATO 5.56x45mm. This is a carbine version of the AK-101."
 	icon_state = "ak101"
-	item_state = "ak101"
+	item_state = "ak74m"
 	base_icon = "ak101"
 	weight = 3
 	effectiveness_mod = 1.09
@@ -123,7 +125,7 @@
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103
-	name = "AK-102"
+	name = "AK-103"
 	desc = "A modern Russian AK variant, chambered in 7.62x39mm."
 	icon_state = "ak101"
 	item_state = "ak101"
@@ -139,7 +141,7 @@
 	name = "AK-104"
 	desc = "A modern Russian AK variant, chambered in 7.62x39mm. This is a carbine version of the AK-103."
 	icon_state = "ak101"
-	item_state = "ak101"
+	item_state = "ak74m"
 	base_icon = "ak101"
 	weight = 3.2
 	effectiveness_mod = 1.07
@@ -149,7 +151,7 @@
 	name = "AK-105"
 	desc = "A modern Russian AK variant, chambered in 5.45x39mm. This is a carbine version of the AK-74M."
 	icon_state = "ak101"
-	item_state = "ak101"
+	item_state = "ak74m"
 	base_icon = "ak101"
 	caliber = "a545x39"
 	weight = 3.2

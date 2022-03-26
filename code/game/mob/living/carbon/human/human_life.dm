@@ -1408,8 +1408,6 @@
 				if (PIRATES)
 					if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
-					if (map.ID == MAP_CAMPAIGN)
-						holder2.icon_state = "civ1"
 				if (BRITISH)
 					if (map.ordinal_age >= 4)
 						holder2.icon_state = "brit_basic"
@@ -1532,10 +1530,6 @@
 						holder2.icon_state = "civ5"
 					else if (original_job_title == "Civilization F Citizen")
 						holder2.icon_state = "civ6"
-//					else if (original_job_title == "Outlaw")
-//						holder2.icon_state = "civ1"
-//					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )
-//						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = ""
 					if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN)
@@ -1555,11 +1549,15 @@
 						holder2.overlays += icon(holder2.icon,"role_builder")
 					if ("Logger")
 						holder2.overlays += icon(holder2.icon,"role_logger")
-			if (original_job.uses_squads && squad > 0)
+			if (original_job.uses_squads)
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 				else
 					holder2.overlays += icon(holder2.icon,"squad_[squad]")
+					if(original_job_title == "Squad Leader")
+						holder2.overlays += icon(holder2.icon,"officer")
+
+
 			if (original_job.is_commander)
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""

@@ -633,7 +633,7 @@ obj/structure/closet/crate/coldwar/m18
 
 obj/structure/closet/crate/ww2/mortar_shells
 	name = "mortar shells"
-	paths = list(/obj/item/cannon_ball/mortar_shell = 15)
+	paths = list(/obj/item/cannon_ball/mortar_shell = 18)
 
 obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"

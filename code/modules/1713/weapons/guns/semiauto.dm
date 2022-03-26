@@ -213,6 +213,12 @@
 	effectiveness_mod = 1.02
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/semiautomatic/sks/sksm
+	name = "SKS-M"
+	desc = "Soviet semi-automatic rifle chambered in 7.62x39mm. This is the updated version that is compatible with AK-47 magazines."
+	effectiveness_mod = 1.04
+	good_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/ak47)
+
 /obj/item/weapon/gun/projectile/semiautomatic/svd
 	name = "SVD"
 	desc = "Soviet designated marksman's rifle, feeding from detachable 10-round magazines. Chambered in 7.62x54mmR."
