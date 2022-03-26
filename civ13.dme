@@ -1027,6 +1027,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1969\african_warlords.dmm"
+#include "maps\WIP\campaign1.dmm"
 // END_INCLUDE
 

@@ -12,9 +12,9 @@
 		PIRATES)
 
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/british/land/outside,
-		list(PIRATES) = /area/caribbean/british/land/inside,
-		list(CIVILIAN) = /area/caribbean/japanese
+		list(CIVILIAN) = /area/caribbean/british/land/outside,
+		list(CIVILIAN) = /area/caribbean/british/land/inside,
+		list(PIRATES) = /area/caribbean/japanese
 		)
 	age = "2022"
 	ordinal_age = 8
