@@ -8,6 +8,16 @@
 	weight = 0.7
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/sksm
+	name = "SKS-M Magazine (7.62x39mm)"
+	icon_state = "sksm"
+	mag_type = MAGAZINE
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 20
+	weight = 0.5
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ak74
 	name = "AK-74 Magazine (5.45x39mm)"
 	icon_state = "ak74"

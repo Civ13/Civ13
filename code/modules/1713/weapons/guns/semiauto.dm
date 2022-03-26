@@ -215,10 +215,16 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/sks/sksm
 	name = "SKS-M"
-	desc = "Soviet semi-automatic rifle chambered in 7.62x39mm. This is the updated version that is compatible with AK-47 magazines."
+	desc = "Soviet semi-automatic rifle chambered in 7.62x39mm. This is the updated version based on the Type 63 that is compatible with AK-47 magazines."
+	icon_state = "sksm"
+	item_state = "sks"
+	base_icon = "sksm"
+	weight = 3.8
 	effectiveness_mod = 1.04
-	good_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/ak47)
-
+	max_shells = 0
+	magazine_type = /obj/item/ammo_magazine/sksm
+	good_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/sksm, /obj/item/ammo_magazine/ak47)
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 /obj/item/weapon/gun/projectile/semiautomatic/svd
 	name = "SVD"
 	desc = "Soviet designated marksman's rifle, feeding from detachable 10-round magazines. Chambered in 7.62x54mmR."
