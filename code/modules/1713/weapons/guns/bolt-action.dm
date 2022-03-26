@@ -309,7 +309,7 @@
 	force = 10
 	throwforce = 5
 	max_shells = 1
-	slot_flags = SLOT_SHOULDER
+	slot_flags = null
 	caliber = "a50cal"
 	weight = 8
 	recoil = 3
@@ -318,7 +318,7 @@
 	ammo_type = /obj/item/ammo_casing/a50cal
 	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
-	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	accuracy = TRUE
 	gun_type = GUN_TYPE_RIFLE
 	accuracy_increase_mod = 2.00
