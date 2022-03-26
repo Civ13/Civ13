@@ -854,8 +854,12 @@ var/civmax_research = list(230,230,230)
 		if (BRITISH)
 			return "British Empire"
 		if (PIRATES)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Redmenia"
 			return "Pirate crew"
 		if (CIVILIAN)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Blugoslavia"
 			return "Colonists"
 		if (INDIANS)
 			return "Native Tribe"
