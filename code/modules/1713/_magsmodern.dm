@@ -327,3 +327,14 @@
 	max_ammo = 10
 	weight = 0.32
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/a50cal
+	name = "heavy bullet pouch (.50 BMG)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a50cal
+	caliber = "a50cal"
+	max_ammo = 12
+	weight = 0.8
+	multiple_sprites = TRUE
+
+	pouch = TRUE

@@ -516,7 +516,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a50cal
-	name = ".50 caliber cartridge"
+	name = ".50 BMG cartridge"
 	desc = "A big heavy brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
