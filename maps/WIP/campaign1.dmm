@@ -1,0 +1,423 @@
+"am" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"aw" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ax" = (/obj/structure/wild/tree/live_tree/pine,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"aA" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Croze"})
+"aE" = (/obj/covers/brick_wall,/obj/structure/simple_door/key_door/anyone/doubledoor,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"aM" = (/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/structure/closet/crate/footlocker,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Croze"})
+"aW" = (/obj/covers/tatami,/obj/structure/brazier/potbellystove,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"bf" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"bg" = (/obj/structure/closet/crate/empty,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"bD" = (/obj/structure/railing/steel,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1; icon_state = "tube"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"bM" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/forest)
+"bO" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"bS" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"bV" = (/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"cc" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"cl" = (/obj/structure/wild/rock,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"cm" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/turf/floor/dirt,/area/caribbean/forest)
+"cn" = (/turf/floor/dirt,/area/caribbean/forest)
+"cv" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"cz" = (/obj/covers/carpet/blackcarpet,/obj/structure/bed/modern,/obj/item/weapon/bedsheet/orange,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"cG" = (/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"cM" = (/obj/structure/simple_door/key_door/anyone,/obj/covers/tatami,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"dp" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/forest)
+"dD" = (/obj/item/weapon/gun/projectile/automatic/dp28,/obj/item/weapon/gun/projectile/automatic/dp28,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean/forest)
+"dM" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ep" = (/obj/covers/brick_wall,/obj/structure/sign/painting2,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"eF" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"eH" = (/obj/structure/wild/bush,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"eK" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"eR" = (/obj/covers/wood_wall/log/corner,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"eY" = (/obj/covers/wood_wall/log{dir = 4},/turf/floor/grass,/area/caribbean/roofed/temperate)
+"eZ" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"fl" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/dirt/dust,/area/caribbean/forest)
+"fm" = (/obj/covers/wood,/obj/structure/bed/modern,/obj/item/weapon/bedsheet/brown,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"fq" = (/obj/structure/railing/steel,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"fr" = (/obj/covers/wood,/obj/structure/window/classic,/obj/structure/curtain/leather/open,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"fu" = (/obj/structure/window/classic/brickfull,/obj/covers/tatami,/obj/structure/curtain/open/yellow,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"fy" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/forest)
+"fB" = (/turf/wall/rockwall,/area/caribbean/forest)
+"fC" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/dirt,/area/caribbean/forest)
+"fE" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"fH" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/forest)
+"gc" = (/obj/covers/wood_wall/log,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"gf" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/forest)
+"gl" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/obj/structure/railing/steel{dir = 8; icon_state = "railing0"},/turf/floor/grass,/area/caribbean/forest)
+"gr" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/forest)
+"gy" = (/obj/structure/closet/crate/empty,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/turf/floor/dirt/dust,/area/caribbean/forest)
+"gK" = (/obj/covers/wood,/obj/structure/bed/wood,/obj/item/weapon/bedsheet/brown,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"gL" = (/obj/covers/wood,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"gT" = (/obj/covers/brick_wall,/obj/structure/sign/painting4,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"gY" = (/obj/covers/wood,/obj/structure/table/rack/coatrack,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"hc" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/camonet,/turf/floor/dirt,/area/caribbean/forest)
+"hg" = (/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"hv" = (/obj/covers/wood_wall/log,/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"hI" = (/obj/covers/carpet/blackcarpet,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"hM" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"hO" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/computer/nopower,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"hT" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"hU" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Croze"})
+"ip" = (/obj/structure/railing/steel,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/forest)
+"iN" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"jo" = (/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"ju" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"jv" = (/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/structure/closet/crate/ww2,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"jP" = (/obj/structure/simple_door/key_door/anyone/rustic,/obj/covers/wood,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"jR" = (/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"kp" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/mil2,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"kq" = (/obj/covers/tatami,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"kr" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"ks" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"ku" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/forest)
+"kw" = (/obj/structure/wild/tallgrass,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"kC" = (/obj/structure/wild/smallbush,/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/forest)
+"kM" = (/obj/structure/railing/steel,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"lb" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/forest)
+"ld" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/forest)
+"le" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Croze"})
+"ly" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"lD" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"lJ" = (/obj/structure/railing/steel,/obj/structure/sign/traffic/waysign,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"lR" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"lY" = (/obj/structure/bed/roller,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"mk" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/turf/floor/dirt/dust,/area/caribbean/forest)
+"ml" = (/obj/covers/wood,/obj/structure/oven,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"my" = (/turf/floor/beach/water/deep,/area/caribbean/forest)
+"mJ" = (/obj/item/stack/material/barbwire/ten,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"mM" = (/turf/floor/plating/road/whiteline{dir = 1},/area/caribbean/forest)
+"mR" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"nA" = (/obj/covers/wood,/obj/structure/bed/sofa/left,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"nD" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"nQ" = (/obj/structure/window/classic/brickfull,/obj/covers/wood,/obj/structure/curtain/open/red,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"nU" = (/obj/structure/wild/tree/live_tree/pine,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"oc" = (/obj/structure/wild/flowers,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"oe" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/survival,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"op" = (/obj/covers/wood,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"oD" = (/obj/covers/carpet/blackcarpet,/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"oP" = (/turf/floor/grass,/area/caribbean/forest)
+"oR" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"oS" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"oY" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Croze"})
+"pb" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/forest)
+"pg" = (/obj/structure/simple_door/key_door/anyone/doubledoor,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"pr" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/forest)
+"pA" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/dirt,/area/caribbean/forest)
+"pL" = (/obj/structure/wild/bush,/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/forest)
+"pQ" = (/turf/floor/plating/road,/area/caribbean/forest)
+"pU" = (/obj/structure/wild/bush,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"pV" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/grass,/area/caribbean/forest)
+"qa" = (/turf/floor/plating/road/whiteline{dir = 8},/area/caribbean/forest)
+"qg" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"qz" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean/forest)
+"qI" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"qK" = (/obj/covers/brick_wall,/obj/structure/sign/flag/red2,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"qM" = (/obj/structure/wild/tree/live_tree/pine,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"qP" = (/obj/covers/wood,/obj/structure/bed/chair/comfy/beige,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"qS" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Croze"})
+"qZ" = (/obj/covers/brick_wall,/obj/structure/sign/painting1,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"rg" = (/obj/covers/wood,/obj/structure/table/rack/coatrack,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"rj" = (/obj/covers/tatami,/obj/structure/closet/fridge,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"rr" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/mil2,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"rs" = (/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"ru" = (/obj/covers/wood,/obj/structure/lamp/lamp_small/alwayson{dir = 1; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"rE" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sb" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sg" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sj" = (/obj/covers/steelplating/white,/obj/structure/toilet{dir = 4; icon_state = "toilet00"},/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"sl" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sm" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sE" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/roofed/temperate)
+"sI" = (/obj/covers/wood,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"sN" = (/obj/covers/steelplating/white,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"sO" = (/obj/structure/window/classic,/obj/structure/curtain/closed/red,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"sP" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sS" = (/obj/structure/wild/smallbush,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"sX" = (/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/road/yellowline,/area/caribbean/roofed/temperate)
+"tf" = (/obj/covers/wood,/obj/structure/bed/sofa,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"tk" = (/turf/floor/plating/road/whiteline{dir = 5},/area/caribbean/forest)
+"tA" = (/obj/covers/brick_wall,/obj/structure/sign/painting9,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"tC" = (/obj/structure/sign/flag/red,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/roofed/temperate)
+"tD" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"tI" = (/obj/structure/table,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"tJ" = (/obj/structure/closet/crate/sandbags,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Croze"})
+"tM" = (/obj/structure/railing/steel,/turf/floor/dirt,/area/caribbean/forest)
+"tX" = (/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"tZ" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"uy" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"uR" = (/turf/floor/plating/road/whiteline{dir = 9},/area/caribbean/forest)
+"uV" = (/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"ve" = (/obj/covers/wood,/obj/structure/lamp/lamp_small/alwayson{dir = 1; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"vp" = (/obj/structure/table,/obj/structure/closet/crate/cash_register{dir = 8; icon_state = "cash_register"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"vI" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/lead,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"vM" = (/obj/covers/tatami,/obj/structure/potted_plant{dir = 1; icon_state = "potted_plant"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"vO" = (/obj/structure/mine_support/stone/concrete,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"wg" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/drinks/bottle/gin,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"wq" = (/obj/structure/wild/bush,/turf/floor/dirt/dust,/area/caribbean/forest)
+"wB" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/clothing/head/ghillie,/obj/item/clothing/suit/storage/ghillie,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"wY" = (/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"xp" = (/obj/structure/table,/obj/item/weapon/telephone/mobile,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"xx" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"xU" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"yf" = (/obj/item/weapon/gun/projectile/automatic/dp28,/obj/item/weapon/gun/projectile/automatic/dp28,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"yp" = (/obj/structure/closet/crate/bayonets,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"yt" = (/turf/floor/grass,/area/caribbean/british/land/outside{name = "Croze"})
+"yv" = (/obj/structure/wild/tree/live_tree/pine,/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/forest)
+"yw" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/forest)
+"yF" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"ze" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/lead,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"zg" = (/obj/covers/tatami,/obj/structure/bed/modern,/obj/item/weapon/bedsheet/blue,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"zw" = (/obj/covers/brick_wall,/obj/structure/sign/flag/red2,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"zA" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/work,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"zJ" = (/turf/floor/plating/road/whiteline{dir = 6},/area/caribbean/forest)
+"Ao" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/forest)
+"Ar" = (/obj/structure/wild/tallgrass,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"At" = (/turf/floor/beach/water,/area/caribbean/forest)
+"AK" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"AQ" = (/obj/covers/wood,/obj/structure/bed/sofa/right,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"AU" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"AX" = (/obj/structure/railing/steel,/obj/structure/sign/traffic/stop,/turf/floor/plating/road,/area/caribbean/forest)
+"Be" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"Bf" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4; icon_state = "warning_dust"; layer = 3},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"Bl" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"Bo" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"Bs" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"Bw" = (/obj/covers/tatami,/obj/structure/table/rack/coatrack,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"BD" = (/obj/structure/wild/rock,/turf/floor/dirt/underground,/area/caribbean/forest)
+"BH" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"BU" = (/obj/structure/window/classic,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"Cl" = (/obj/covers/tatami,/obj/structure/toilet{dir = 8; icon_state = "toilet00"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Cm" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"Cq" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"Cv" = (/obj/covers/wood,/obj/structure/bed/chair/comfy/green{dir = 4},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"De" = (/turf/floor/plating/road/whiteline{dir = 4},/area/caribbean/forest)
+"Dh" = (/turf/floor/plating/road/yellowline{dir = 9},/area/caribbean/roofed/temperate)
+"Dq" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 1; icon_state = "tube"},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/roofed/temperate)
+"DJ" = (/obj/structure/sink/well/marble,/obj/structure/mine_support,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/stack/material/rope,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"DX" = (/obj/covers/wood,/obj/structure/bed/modern,/obj/item/weapon/bedsheet/red,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"Ej" = (/turf/floor/plating/road/whiteline,/area/caribbean/forest)
+"EJ" = (/turf/floor/plating/road,/area/caribbean/roofed/temperate)
+"EY" = (/obj/covers/wood,/obj/structure/table,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Fm" = (/obj/covers/carpet/blackcarpet,/obj/structure/closet/fridge,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Fu" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/roofed/temperate)
+"FA" = (/obj/structure/iv_drip,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"FN" = (/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/structure/closet/crate/footlocker,/turf/floor/dirt,/area/caribbean/forest)
+"FR" = (/obj/structure/iv_drip,/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/forest)
+"FW" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"GD" = (/obj/structure/wild/smallbush,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"Hg" = (/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Hj" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean/forest)
+"Hv" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"HN" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/dirt/dust,/area/caribbean/forest)
+"If" = (/obj/structure/camonet,/obj/item/weapon/material/shovel,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Ii" = (/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Croze"})
+"Ir" = (/obj/covers/carpet/blackcarpet,/obj/structure/bed/chair/comfy/brown{dir = 8},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Iy" = (/obj/structure/window/classic/brickfull,/obj/covers/wood,/obj/structure/curtain/open/blue,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"IQ" = (/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Jh" = (/obj/structure/railing/steel,/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/forest)
+"JB" = (/obj/structure/camonet,/turf/floor/dirt,/area/caribbean/forest)
+"JF" = (/obj/effect/landmark{name = "JoinLateBlue"},/obj/structure/camonet,/turf/floor/grass,/area/caribbean/forest)
+"JG" = (/obj/structure/railing/steel,/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean/forest)
+"JW" = (/turf/floor/plating/road/yellowline,/area/caribbean/roofed/temperate)
+"JZ" = (/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Ko" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/forest)
+"Ku" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/forest)
+"KP" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"KQ" = (/obj/item/weapon/material/shovel,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Croze"})
+"KS" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/dirt/dust,/area/caribbean/forest)
+"KT" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag,/obj/structure/camonet,/turf/floor/grass,/area/caribbean/forest)
+"KW" = (/obj/item/weapon/wrench,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Li" = (/obj/structure/sign/flag/red,/obj/structure/roof_support/admin,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/roofed/temperate)
+"Lv" = (/obj/structure/cannon/mortar,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"LF" = (/obj/structure/simple_door/key_door/anyone,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"LL" = (/obj/covers/wood,/obj/structure/oven/stove,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"LV" = (/turf/floor/plating/road/yellowline{dir = 5},/area/caribbean/roofed/temperate)
+"LW" = (/obj/effect/landmark{name = "JoinLateBlue"},/obj/structure/camonet,/turf/floor/dirt,/area/caribbean/forest)
+"Mk" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"Mw" = (/obj/covers/wood,/obj/structure/potted_plant{dir = 9; icon_state = "potted_plant"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"MD" = (/obj/covers/wood,/obj/structure/bed/chair/wood/red,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"MT" = (/obj/item/stack/material/barbwire/ten,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"MU" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"MY" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/dirt,/area/caribbean/forest)
+"Na" = (/obj/covers/wood,/obj/structure/potted_plant,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Nc" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Nj" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/camonet,/turf/floor/dirt,/area/caribbean/forest)
+"Nr" = (/obj/covers/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Ns" = (/obj/structure/closet/crate/ww2/mortar_shells,/obj/structure/camonet,/turf/floor/dirt,/area/caribbean/forest)
+"ND" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"NK" = (/obj/covers/carpet/blackcarpet,/obj/structure/table/rack/coatrack,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"NN" = (/obj/covers/wood,/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"NQ" = (/turf/floor/plating/road/yellowline{dir = 10},/area/caribbean/roofed/temperate)
+"NV" = (/obj/structure/wild/tree/live_tree/pine,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"NY" = (/obj/structure/wild/smallbush,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Oh" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
+"Oj" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/turf/floor/grass,/area/caribbean/forest)
+"Ok" = (/obj/structure/wild/bush,/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Oo" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"OJ" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/grass,/area/caribbean/forest)
+"OZ" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/obj/structure/sign/traffic/stop,/turf/floor/grass,/area/caribbean/forest)
+"Pa" = (/obj/structure/closet/crate/sandbags,/turf/floor/dirt,/area/caribbean/forest)
+"Pp" = (/obj/structure/railing/steel,/obj/structure/sign/traffic/waysign,/turf/floor/plating/road,/area/caribbean/forest)
+"PJ" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/grass,/area/caribbean/forest)
+"PL" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Croze"})
+"PM" = (/turf/floor/plating/road/whiteline{dir = 10},/area/caribbean/forest)
+"Qb" = (/obj/covers/brick_wall,/obj/structure/sink,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"Qk" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"Qs" = (/obj/map_metadata/campaign,/turf/wall/rockwall,/area/caribbean/forest)
+"Qz" = (/obj/covers/steelplating/white,/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"QG" = (/obj/structure/railing/steel,/turf/floor/plating/road,/area/caribbean/forest)
+"QV" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/forest)
+"Ra" = (/obj/structure/railing/steel,/obj/structure/sign/traffic/noentry,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"Rd" = (/obj/structure/railing/steel,/obj/structure/sign/traffic/gas,/turf/floor/grass,/area/caribbean/forest)
+"Rf" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/structure/camonet,/turf/floor/dirt,/area/caribbean/forest)
+"Rr" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"RI" = (/obj/covers/tatami,/obj/structure/potted_plant,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"RJ" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/forest)
+"RL" = (/obj/structure/railing/steel,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"RU" = (/obj/covers/steelplating/white,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Sh" = (/obj/structure/railing/steel,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Si" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Sj" = (/obj/covers/wood,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Sm" = (/turf/floor/plating/road/yellowline{dir = 6},/area/caribbean/roofed/temperate)
+"Sr" = (/obj/structure/fuelpump/premade/yamaha/gasoline,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed/temperate)
+"St" = (/obj/structure/bed/roller,/turf/floor/plating/road,/area/caribbean/forest)
+"SE" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"SI" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"SK" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean/forest)
+"SX" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Tn" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"Tq" = (/obj/covers/wood,/obj/structure/TV/television/active,/obj/structure/table/glass,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"TB" = (/obj/structure/closet/crate/bayonets,/turf/floor/dirt/dust,/area/caribbean/forest)
+"TH" = (/turf/floor/plating/road/whiteline,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"TP" = (/obj/structure/wild/smallbush,/turf/floor/dirt/underground,/area/caribbean/forest)
+"UG" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Croze"})
+"UV" = (/obj/covers/carpet/blackcarpet,/obj/structure/oven/stove,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Va" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean/forest)
+"VO" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/forest)
+"VW" = (/obj/covers/carpet/blackcarpet,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"VY" = (/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/plating/road,/area/caribbean/forest)
+"WK" = (/obj/structure/wild/tree/live_tree/pine,/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/forest)
+"WN" = (/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/dirt/dust,/area/caribbean/forest)
+"WS" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Xm" = (/obj/structure/wild/rock,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Xv" = (/turf/floor/plating/road/whiteline{dir = 9; icon_state = "road_line"},/area/caribbean/forest)
+"XK" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/road/whiteline,/area/caribbean/forest)
+"XL" = (/obj/covers/brick_wall,/obj/structure/sign/painting8,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"XU" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/forest)
+"XX" = (/obj/structure/window/classic/brickfull,/obj/covers/wood,/obj/structure/curtain/open/blue,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Yb" = (/obj/covers/wood,/obj/structure/potted_plant{dir = 1; icon_state = "potted_plant"},/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"Yc" = (/obj/covers/tatami,/obj/structure/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"Yn" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road,/area/caribbean/forest)
+"Yr" = (/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Croze"})
+"YV" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Zd" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/forest)
+"Ze" = (/obj/structure/barbwire{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/plating/road,/area/caribbean/forest)
+"Zr" = (/turf/floor/dirt/underground,/area/caribbean/forest)
+"ZC" = (/obj/covers/steelplating/white,/obj/structure/toilet{dir = 4; icon_state = "toilet00"},/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"ZG" = (/turf/floor/dirt/dust,/area/caribbean/forest)
+"ZI" = (/obj/structure/wild/flowers,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ZQ" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/forest)
+"ZY" = (/obj/covers/tatami,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
+"ZZ" = (/obj/covers/wood,/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/obj/structure/bed/chair/wood/red,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+
+(1,1,1) = {"
+oPoPoPoPoPcnAtcncnoPoPoPoPoPoPoPoPoPoPoPoPoPjojooPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPeZoPQVAocnoPoPoPoPoPZroPeZoPjooPcncncnoPoPoPoPoPoPoPcncncnoPoPoPoPoPjojojojooPoPoPoPoPoPjojooPoPoPoPoPcnoPhMoPoPoPoPoPoPoPoPhMamawambfamamamambOambSamamamamamamamamamamamamamamamambVamamamamawcnAtmyAtcnoPoPoPoPoP
+oPoPoPoPoPcnAtAtcnoPoPoPoPoPoPoPoPoPlboPoPoPjooPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPZrcnoPoPoPoPAooPoPAooPoPoPoPoPoPeZeZoPcnoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPjojooPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPcncncnoPoPoPoPoPamamamamamamamamamambSamamamccamamamamamawawccamawawawamamamamawawAtmyAtAtcnoPoPoPoPoP
+oPoPoPoPoPcncnAtAtcnoPoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnhMhMZrcnoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPpUoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZAooPoPoPoPoPeZeZeZeZamamamamamamamambOamamambfamamambObOamamawamamamamamawamamamawawcvAtmycncncnoPoPcncnoP
+oPeZoPoPoPoPcncnAtcncncnoPAooPoPoPoPoPoPoPoPoPoPoPoPAooPeZoPoPoPoPoPoPoPoPoPoPoPoPoPZrcnoPoPoPoPoPeZoPoPoPoPAooPoPoPcnoPeZoPoPoPoPoPoPoPoPcnoPZroPAooPoPoPoPoPoPoPoPAooPoPoPoPoPoPoPAooPoPoPoPoPhMoPcnoPeZoPXUoPoPAooPbSawawawamamamamamambSbSamamamamamamamamamamamamamamambSamawawcvcvAtAtcnoPoPoPoPoPoPlb
+oPoPoPoPoPoPoPcncnAtAtcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPXUZrZrhMoPoPAooPoPoPoPoPeZoPoPoPoPcnoPoPoPoPoPoPoPoPcnoPAoQVQVZrlbAooPoPcnoPhMhMoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPcnoPeZcnoPoPoPoPoPbSamamamambSbSbSbSamamamamamamamawccamamamccambSbSamamamawawcGcGcvAtcncnoPoPoPoPoPdpoP
+oPoPlboPoPoPoPoPcncnAtAtcncncnoPoPoPoPoPoPoPlboPoPoPoPoPoPoPoPoPAoAooPoPOhAooPoPoPoPOhoPoPcncnoPoPZGoPoPeZoPoPoPoPoPeZAooPoPoPQVoPQVQVQVoPZrZrZroPcncnoPoPoPhMlboPoPoPoPoPoPoPlboPoPoPoPoPoPoPoPoPoPoPhMoPcnoPoPoPoPoPamambSambfamamccambSamamawawamamawamamamamamamawamawawawawcvcvcvcvcncnoPoPoPoPoPoPoPoP
+oPoPlboPoPoPoPoPoPcnAtAtAtAtcnproPoPAooPoPoPoPoPoPoPoPoPeZoPoPoPAooPoPoPoPcnoPhMcnoPoPAooPoPoPoPoPeZoPoPeZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZroPZroPoPoPoPoPoPoPcncncncncnAooPoPcncncncncnAooPoPoPcnoPeZoPcnhMoPoPcnoPawambSawamamamamambSamamamamamdMdMamamamamamamamawawcvcvcvcvcvcvawcnoPoPoPoPoPeZcncnoP
+oPoPoPoPoPoPoPoPoPcncnAtAtAtAtcnproPoPoPoPoPoPoPoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPeZoPoPoPoPoPeZoPoPoPoPoPoPoPcnhMhMoPoPoPcnoPoPoPoPoPoPoPoPoPoPcnoPcncnAtAtAtcnoPoPoPjojooPoPoPoPoPAooPoPAoeZcnoPXUoPoPoPoPbObOamawamamamamamamamamambSameFambOeKamamamamawawcvcGcGcvcvawawawlboPoPoPoPoPeZoPoPoP
+oPoPoPoPoPAooPoPoPoPcncncnAtAtAtcnoPoPoPoPoPoPoPoPKucnoPoPoPhMeHoPoPoPoPAooPoPoPcnoPAooPoPoPeZcnoPoPoPoPoPcncncnpAoPZGoPoPoPoPoPAolbcncncncncncncnoPoPAocncncncnAtmymycncnoPfyQVoPoPoPoPoPoPcnoPoPoPoPeZoPoPoPoPoPcnoPambSamawbOamamawamawamamamamamawambOambfamamawawcvcvcvcvawawawamamZGoPoPoPoPoPoPcnoPoP
+oPcnoPoPoPoPoPoPoPoPoPcncncnAtAtcncnhMoPoPoPoPoPoPZGoPcncnoPoPoPoPoPoPoPoPoPlboPhMoPoPoPoPhMoPcnoPoPoPoPoPeReYfreYeRoPoPoPXUZroPoPcncncnAtAtcnAtcnoPoPoPoPoPcncnAtmyAtcnoPoPoPZGfHhMoPoPcncndpoPoPlboPoPoPcnoPoPAooPoPccbSawambfamamamambOamamamamamawccbOamamamawawcvcGcvcvawawawamamawcnoPoPoPoPoPcnoPoPoP
+cncnoPoPoPoPhMoPoPoPoPoPoPcncnAtAtcncnprhMoPAoAooPoPoPoPcnoPQVoPoPoPlboPoPoPoPoPoPoPeZcnoPeZoPcnhMoPqgcnQVgcgKgLgYhvjojooPoPoPcncncnAtAtmyAtAtAtcnoPoPoPoPoPcnAtkucncncnAooPoPoPoPoPcnoPoPoPAooPoPAooPeZoPoPlboPoPoPoPambSamamamamamjuamambSamameKawamamamamamawawcvcvcGcvawawamamamamamcnoPQVoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPocoPoPoPoPoPoPcncnAtmyAtcncnoPoPoPoPoPoPoPoPoPjoQVoPoPoPoPoPoPoPoPoPoPjoQVoPoPoPoPoPoPcncncnjPgLopgLfrjooPhMcnoPcncnAtmymymyAtAtcncnoPcnAooPoPprAtprcnoPoPoPoPoPeZoPoPcncnoPoPcnoPproPoPoPoPeZoPoPoPZroPamambSbSbSbSamjujuamamamamamamawamamamamawcvcvcGcvawawamamamamamamoPoPoPAooPoPoPoPoPAo
+oPoPoPoPcncncnfyoPlbcncnoPoPoPcncnAtAtAtcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncngcgLksgLhvoPjooPcnoPAtAtAtAtAtAtAtcncnoPoPcnoPoPoPcncncnoPoPoPoPcnoPcncnoPoPoPoPoPoPcncnywoPoPoPoPoPXUoPoPeZamamamamccambSamamamjulDlRjuamawambSbSamawcvcvcvawawamambObOamamampUjooPoPoPoPoPeZoPoP
+oPoPoPAooPcnoPcnoPoPoPoPoPoPoPoPcnAtmymyAtcnoPoPhMhMOhOhcnoPoPoPoPoPoPoPoPhMOhOhcnoPoPoPoPoPoPoPoPlboPoPoPgcmlnDoegcoPoPoPcnoPcncncncncncncncnoPoPoPoPoPoPoPoPoPoPoPOhoPoPoPoPyvoPoPOhoPhMoPoPyvoPoPoPoPoPoPhMoPoPoPeZawamamamamambSambSamamccjuambSamamamawawawcvcvawawamamambOamamamamcnjojooPoPoPoPoPlboP
+oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnAtAtAtcncnoPoPhMoPoPoPoPAooPoPoPoPoPoPhMoPoPoPoPAooPoPoPoPoPoPlbQVoPAoeReYfreYeRoPoPoPhMoPcncncncncncnoPoPAooPoPoPoPcnoPjojooPoPoPoPoPoPcncnoPoPoPoPoPoPcncnhMoPAoeZoPproPoPoPhMoPawamamamamamamamamoRamjujuamamamamamamawawcvcvawawamamambOamamamamcnoPjooPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPoPoPoPhMhMoPoPeZoPcncnoPAtAtcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPQVQVoPoPoPoPoPcncncncnoPoPoPoPoPoPoPoPjojooPoPoPoPoPoPoPjojooPoPoPcncnQVoPcnoPoPoPAocnQVoPcnoPoPcnAooPeZoPoPVaoPeZoPawbOamamoSamamamccamjuamamamamamamamawawcvcvcvcvawamamambOamamamamoPoPZGcnoPoPoPoPoPoP
+oPoPoPoPoPlboPoPoPoPeZlblblbOhoPoPoPcnpAoPmyAtcncnoPoPcnoPsSjooPAooPAooPoPoPoPcnoPsSjooPAooPAooPoPoPoPZroPhMoPcnjojojocnOhoPoPoPAooPfyQVoPoPoPoPoPoPcncnjooPoPoPAocnAoQVQVoPlboPAooPAoQVQVoPlboPcncnoPeZoPoPoPZrAoeZcnambfamamamambOoSamamawawoRawawawawawawcvcGcvcvawawamamccawamamamamoPoPZGoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPoPoPeZoPoPoPcnoPoPoPoPcncncnAtAtcncnoPoPoPoPoPjooPoPcnoPoPcnoPoPoPoPoPjooPoPcnoPoPoPoPoPoPZQcncnjojojocnoPoPoPZroPoPoPZGfHhMoPoPcncndpoPcncnoPoPoPoPoPoPoPoPhMcnoPoPhMoPoPoPhMoPoPoPoPoPoPoPoPZroPeZoPamamamamamamamamamawawjuawawcvcvcvcvcvcGcGcvawawamamamamamambfamamoPoPZGhMoPoPoPoPoPoP
+oPcncnoPhMoPjojooPoPNVoPcnoPoPoPoPeZoPoPcncncnAtAtcncneZeZoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPeZoPoPjoeZoPcnhMjooPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPhMoPoPlboPoPoPoPoPQVoPoPoPoPhMoPcnoPoPoPoPoPoPoPoPoPoPoPhMoPoPamawawawamawlDawawawcvcvcvcvcGcvcvcGcvcvcvawawamamameKamamamamamamoPoPoPhMoPoPoPoPoPoP
+oPcnoPoPoPoPoPjojooPoPoPcnoPoPoPlboPoPoPcncncncnAtAtcncnoPoPoPoPoPqgoPoPoPoPoPoPoPoPoPoPoPqgoPoPoPcnjoeZcnoPXUoPoPoPcnAooPoPoPoPoPoPoPeZoPoPcncnoPoPcnoPoPoPoPoPoPoPoPcnoPoPoPcnoPoPoPcnoPoPoPcnoPoPoPoPcndpcncncncncnawawcvawawawcvcvawcvcvcGcGcvcvcvcvcvcvawawawamamamamawamccamamawamoPoPoPoPQVQVcnoPoPoP
+cncnoPoPAooPoPoPjooPoPcncnoPoPlboPoPQVoPoPcnoPcncnAtAtcncncnoPhMoPoPoPoPoPoPhMoPeZoPoPhMoPoPoPoPoPoPcneZoPoPoPoPoPoPoPoPoPhMcnoPpLhMoPoPoPoPcncncnoPoPoPoPoPoPcnoPcndpcncncncncnAtcndpcncncncncncncncnpAcnAtAtcnAtcncnawcvcvcvcvcvcvcGcvcGcGcvcvcvcvcvcvawawawamamamamamamawamamamamamamAooPQVoPoPAooPcnoPoP
+oPoPoPoPAoAooPoPjolboPoPoPcncnoPoPoPcnoPoPoPoPoPZQcnAtmymycncncnhMoPoPoPoPoPhMoPoPoPoPoPoPoPcnoPoPAooPoPoPoPoPoPoPhMoPoPoPoPoPZroPoPAooPoPoPoPoPoPoPoPoPcncncncncncncnAtAtAtmyAtAtAtcnAtAtAtmyAtAtAtAtcnAtAtmyAtAtAtmycGcvcGcvcvcGcvcvawcvcvawcvcvcvawawqIamawamamccamamamamawawamamamamoPoPoPhMoPoPoPcneZoP
+oPoPoPoPoPoPoPoPoPoPeZcnoPAopAoPoPoPoPoPcnoPhMhMoPcncnAtmyAtcncncnoPoPhMoPcncnAohMoPoPoPoPoPoPhMoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPcncncnAtAtAtAtmyAtAtmyAtAtAtAtmyAtAtmyAtAtAtAtAtmyAtmymyAtAtcnAtAtcvcvcvawcvcvcvamawawawawawawawawawamamawamamamamamamamamamawawawawoPoPhMhMoPoPoPoPeZoP
+oPcncncncncncnoPoPoPhMoPoPoPoPoPoPoPoPoPoPAooPhMhMoPcncnAtAtAtcncncnoPoPoPoPcncnoPoPhMoPoPcnoPoPoPoPeZoPAooPoPeZoPeZQVoPoPoPoPoPoPoPoPoPcnoPoPoPoPprcnAtAtAtmymyAtAtAtAtcncnAtAtAtAtAtAtcncnAtcncnAtAtAtAtcnAtcncncncnawawawawawawawamamawjuambSamawamawawawawamamamamccamamamawawcvcvawoPoPoPoPoPlboPoPoPoP
+cncnAtcncnAtcncncncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnAtAtAtAtcncncnoPoPoPcnoPoPoPoPoPAooPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPXUcncnAtmyAtAtmyAtAtAtAtcncncncncnAtAtAtcncncncncncncncnjojocncnoPoPoPoPamawamamamamawccamawamamamambSbSamawamawamamamamawamamamawawawcvawoPoPoPoPoPoPoPoPlboP
+AtAtAtAtAtAtAtAtAtcncncnoPcnoPeZoPAooPoPoPoPoPoPlboPoPoPcncncnAtAtAtAtcncnoPoPoPoPhMoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPAooPoPAoAooPoPZrZroPoPoPcncncnAtAtmyAtAtAtAtcncncncnoPoPoPoPcncncncnoPoPoPoPcnfyQVcnoPcnoPoPoPcncnamamamamccccamambSamamamamamamamawamamawawawamamamamamawawcvcvcvawoPoPoPOhoPoPoPoPoPcn
+cncnAtAtAtAtAtmymyAtAtcncncnoPcnoPcncncncnoPoPhMoPoPoPoPoPoPcncnAtmymyAtAtoPoPoPoPoPcnoPhMoPoPcneZcnoPoPoPoPoPoPoPoPoPoPoPoPoPcnZrcncncncncncnAtAtAtAtAtcnywcncncnoPVaoPhMoPAooPcnoPVaoPhMoPAooPoPoPZGfHhMoPoPcncndpoPawawamamamamccamamamccamamamawambSamamawameKamawamamawawawcvcGcvawhMlboPoPoPoPoPoPoPoP
+oPcncncncncnAtAtAtAtAtAtAtcncncncncnAtAtcnoPeZoPoPoPoPWKoPoPoPcncncnAtmymyoPoPWKoPoPoPcncncnoPoPhMoPoPcncncncncncnoPoPoPcncncncncncncnAtAtAtAtAtAtcncncncncncnoPoPoPoPoPoPoPAooPoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPAooPbOamameKamamamambSamamamamawamamamamamawamamamamamamawcvcvcGcvawawoPoPoPoPoPcncnoPcnoP
+oPoPoPoPoPcncncncncnAtAtAtAtAtAtAtAtAtAtcncncncncncncncnZQoPoPoPoPcncncnAtcncncnZQoPoPoPoPcncnAooPoPoPcncncncncncncnAtAtAtcnAtAtAtAtAtAtAtcncncncncnoPoPoPoPoPhMoPeZoPoPoPoPoPoPoPeZoPoPoPoPoPjooPoPeZoPoPcncnoPoPcnoPamamamamamamamambSamamamamambSccamamamawamawamamamawawcvcGcGcvawamoPoPoPoPcncnoPcncnoP
+oPoPoPoPoPoPoPoPoPcncncncncnAtAtAtAtmymyAtAtAtAtAtkuAtcncnoPoPoPoPhMoPcncnkuAtcncnoPoPoPoPhMeZoPhMcncncncnAtcncnAtAtAtAtAtAtAtAtmyAtAtcncncncnoPoPAooPoPoPoPhMoPoPoPoPcncnoPoPhMoPoPoPcncnoPoPjojooPeZoPoPcncnoPoPcnoPamamamamamamccamamamamamamamamamamamamawamawamamamawcvcGcvcvawawawoPoPAoAooPoPoPoPoPoP
+oPoPeZoPZrcncneZoPcncnoPoPcncncncncncncncnAtmymymyAtcncnoPlboPAooPoPoPoPoPAtcncnoPlboPAooPoPoPoPoPcnAtcnAtAtAtAtAtAtAtmyAtAtAtAtAtcncncnAooPoPoPoPoPoPoPoPoPoPcnoPoPoPAooPoPoPoPcnoPoPeZoPcnoPoPjoAooPoPoPoPoPeZeZeZeZamamamamawawamamqMamamamamamamamawbObOawamsbeKamamawawcvawcvawamawoPoPoPoPoPoPoPoPeZoP
+oPoPoPoPZroPoPeZoPoPoPoPoPoPoPoPoPoPoPcncncnAtAtAtAtAtcncncncnoPoPcncncncnAtAtcncncncnoPoPcncncncncnAtAtAtAtmymymymyAtAtAtcnAtcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPAooPoPoPoPoPeZoPoPoPoPZreZoPoPoPoPAooPbSamamamawamamambOawawawsgamoSamamamamawamawamamamamawawawawawamawoPoPAooPoPoPoPoPoPoP
+cneZoPoPZrZrhMoPoPoPlboPoPoPcncnZQoPoPcnAocncncncnAtAtAtAtAtcncncncncnAtAtAtAtAtAtAtcncncncncnAtAtmyAtmyAtAtmyAtAtAtAtcncncncncnoPoPoPoPoPoPoPoPcnoPoPoPoPcnAooPoPoPoPoPoPoPAooPoPoPoPeZoPoPoPoPoPoPZrZreZcnoPoPoPoPoPbSambSamamambOamamawawamamamamamambfjuawamamamamamamamawambSbSbSawoPoPoPoPoPoPoPcnZGoP
+flcnoPoPoPoPoPoPoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPcncncncncnAtAtAtAtAtAtAtAtcncncncnAtAtAtAtAtAtAtAtAtcncncncnAtcncncncncnoPoPoPoPoPoPcnAooPoPoPoPoPoPoPAohMhMoPoPoPcnoPoPoPoPoPoPoPoPoPXUcncnoPoPaxoPoPhMoPcnoPoPoPoPoPamamamoRbSamamamamslawamamamamamamamamamdMamamamamamamamamawamamamoPcnoPoPoPoPcncnoPoP
+fCcnoPoPoPoPoPoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPcncncncncnAtAtmymyAtAtcncncncncncnAtAtmymyAtAtcncnoPcncncncncncncnoPoPoPZGZGoPoPoPoPoPoPAooPcnoPoPOhoPhMoPoPoPoPcnjojooPoPoPoPoPoPhMoPcnoPoPoPhMcnoPeZoPcnhMoPoPZGoPamsmamamambSamawccamamamamamamambOawamamamamamamamamamawamawamamamoPoPoPoPoPoPcnoPoPoP
+fCoPoPoPoPoPoPoPoPoPoPoPoPeZoPeZoPoPoPoPcncncncnoPoPoPoPoPcnAtAtAtAtcncncnoPoPoPoPcnAtAtAtAtcncncnoPoPcncncncnjojocnoPoPZGoPoPoPoPlboPoPoPoPoPcneZoPoPoPoPoPoPoPoPcncnjojojooPoPoPZGoPoPoPoPhMoPoPoPAoeZcnoPXUcnAooPoPbOambVamambSamamawamamambObOamamamawamamsmamamamamamamccamamamamamoPoPoPoPoPcnoPoPZGax
+floPoPoPeZCmCmQbCmoPZGoPoPeZoPoPoPeZoPoPoPoPoPcncnoPjooPoPcncncncncncnoPoPoPjooPoPcncncncncncnoPoPoPoPcncncneZjooPeZoPZGZGoPcnAooPlboPoPoPoPeZoPcnoPZGoPoPcnoPcncnoPoPoPjojooPcnoPeZeZeZeZoPoPoPoPoPoPeZoPoPoPcncnoPoPamamamamamamamamamamamamamccamamamawamamsmoSamamambSamamamamamamamoPeZoPpLoPcnoPoPoPax
+fCoPoPAoeZCmZCQzCmoPoPAooPeZoPoPoPoPhMoPlboPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcneZcnjooPcnoPoPoPoPoPcnoPoPeZoPsEsOsOsEsEsOsOsEcncnZroPoPeZoPoPoPoPoPoPoPoPoPAooPeZoPcnAooPhMoPoPoPjojocnoPoPbOamamamoSamamamamamamamamamamamambOamamamamamamamamamamamamamamamoPoPoPQVoPoPcnoPoPoP
+fCoPlyCmCmCmtAsNCmQVoPcncnoPoPoPoPcnhMoPAooPeZoPoPlboPoPoPoPeZoPoPAoAooPoPlboPoPoPoPeZoPoPAoAooPoPoPoPcnoPcnjojocnZrZroPoPeZoPoPeZeZoPXUtCtDtItXtXtXuytCcncnZrZroPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPcncnoPoPcnoPZGjocnoPoPamamamamamjuamamamamamamawawawawamamamamccamamamamamamamamoSoSamamoPoPQVoPoPoPoPoPoPoP
+oPoPlyCmDXruqPopCmoPlboPoPoPoPoPoPcncnproPoPoPoPeZoPoPoPoPoPXUoPoPoPoPoPoPoPoPoPoPoPXUoPoPoPoPoPoPoPAoeZcncnjocnZreZcnoPoPoPQVoPoPoPoPlysOtXvptXvOtXwgsOlyoPhMZroPAohMoPaxoPoPoPoPjooPoPoPoPoPoPoPhMhMhMhMoPoPeZeZoPoPbSccamamamawamjuambOamawbVbVbVawsmamamamamamamamamamamamawawamamamoPoPoPoPoPoPoPoPoPoP
+lylylyIyopopopopIyoPoPoPoPoPoPZrZroPoPcnywoPoPoPoPoPXUoPoPoPoPoPoPoPoPoPoPoPXUoPoPoPoPoPoPoPoPoPoPoPAooPoPcncncnZrcneZoPcnoPoPoPoPoPoPlysOtXxptXxxtXxUsOlyoPoPZroPoPoPoPhMAroPoPcncnoPoPZGoPoPoPoPhMoPoPhMoPoPoPOheZoPbSamamamccamamamamoRawawbVbVbVawamamamamamawamamamamamamamAKsmamamoPoPAooPoPoPoPZGpAcn
+pQlylyCmDXopMDZZCmoPoPoPoPoPoPoPZrZroPoPoPoPoPoPoPhMoPoPeHoPoPoPoPoPjojojohMoPoPeHoPoPoPoPoPjojojooPoPoPoPcncnZrZreZcnoPeZcnoPoPoPlylylytCtDBftXBltXBstClylylyBDZroPoPoPoPeZAooPoPoPoPoPeZeZeZeZoPoPoPAohMoPoPoPAooPcnbSamamamamamambSamawbObVamamawawamamamamawawdMdMamamamamamamamameKoPoPoPoPoPeZZGBHBHBH
+PMpQQkkpYbopsIsICmoPoPoPoPoPoPoPoPZrZrhMoPAoeZoPproPoPoPoPoPoPoPoPcnoPoPjooPoPoPoPoPoPoPoPcnoPoPjooPoPoPoPAooPeZoPoPeZXUoPAooPoPlylylylysEBUBUCqCqBUBUsElylylylyoPoPoPoPoPoPoPoPoPeZoPoPoPoPAooPeZoPoPoPoPcnoPjooPoPXUawawamamamamawbSawambfamamamawccamamamawamamamambSamamamambVamamamoPoPeZoPoPKuZGZGcnZG
+tkqapQCmqKLFzeIyCmoPoPoPoPoPAooPZGoPoPoPcnAooPeZoPoPVaZroPoPlbQVoPoPAooPoPoPVaZroPoPlbQVoPoPoPoPoPoPoPeZeZoPoPeZoPoPeZoPoPoPZrlylypQpQpQDqFuFuFuFuFuFuDqpQpQpQlylyoPoPcncnoPoPoPoPeZcnoPoPoPoPoPeZoPeZoPoPoPoPjojooPoPawamamamamamambSamamamamamamamamambOawamamamamamamccamambVFWamamjuoPoPoPoPZGcnZGcnZGFN
+pQDePMpQlylylylylyoPoPoPoPoPoPoPoPoPoPcncnoPeZoPoPoPZrZroPoPAooPoPZGZGoPoPoPZrZroPoPAooPoPZGZGoPoPoPoPAooPhMoPoPoPcncnoPoPoPZrlypQDeqapQEJDhLVEJEJDhLVEJpQDeqapQGDoPoPoPcncnoPoPhMoPcnoPoPAooPoPoPoPoPZQoPeZoPoPoPcncnawamamamjuambSamamamamamambOamamamamamamamamamamawawawambOamamjujuoPoPoPZGoPHjHvIQJBJF
+pQpQtkqapQlylyoPoPoPfyoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPZroPoPoPoPoPoPoPoPoPoPoPZroPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPcneZoPoPZroPlypQpQpQpQJWNQSmJWJWNQSmJWpQpQpQpQGDoPoPoPoPoPcnoPeZoPcnhMoPoPZGoPoPOhoPoPAooPoPeZeZoPcnamccamamamamamamamamamamamamamamamamamamccamamamambOambOamdMamjuamoPoPoPoPoPKoKPKWJBJF
+lypQpQDePMpQlylyoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPXUeZoPoPoPoPoPoPoPoPoPoPXUeZoPZGoPoPoPZQoPoPoPjojojojolboPoPoPlypQDeqapQLiSrSrLiLiSrSrLipQDeqapQlyoPoPoPoPAooPAoeZcnoPXUoPoPoPoPhMoPjooPoPoPoPoPoPcnoPamambSamamamamamccamambSambSdMamamamamamamamambOamamamamamdMdMamamcnoPAooPoPKoKPLvIQLW
+lylypQpQtkqapQlylyoPoPoPAooPhMoPoPcncnoPoPoPoPoPlboPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPAooPeZoPjojooPoPoPoPoPoPlblypQpQpQpQFuDhLVFuFuDhLVFupQpQpQpQlyoPcnoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPeZoPamamamamccamamamawamamamamamamamamamamamamambOamamamamamamamamamamoPoPoPoPZGHjNjNsNYLW
+eZlylypQpQDePMpQQklyoPoPAooPoPoPoPoPcnoPoPoPAooPoPoPoPoPeZoPoPlblboPoPoPcnoPoPoPeZoPoPlblboPoPoPcncnlboPeZoPpUoPoPoPoPoPoPoPoPlypQDeqapQEJNQSmEJEJNQSmEJpQDeqapQlyoPcncnlblboPhMoPoPoPoPXUoPoPoPhMoPoPoPcnoPcnoPoPoPoPamambSamamamamamamjuamawamamccamamccccamamamamamamawamamamamccamamhMoPAoAoZGHjOoIQIQLW
+oPZGlyQkpQpQtkqapQlylyoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPeZoPoPoPjooPoPoPoPoPoPoPeZoPoPoPjooPoPoPoPoPoPoPoPoPOhoPoPoPoPoPoPoPoPoPlylypQpQpQpQsXJWJWsXsXJWJWsXpQpQpQpQlylyoPoPoPoPcnoPoPcncncnoPZGeZAooPoPhMhMZroPoPeZAooPoPamambSamamamamamjuamamamamamamamamamamamawawamamamamamambfamamawamoPoPoPoPZGPaPaZGcncn
+cnoPZGlylypQpQDePMpQlylyoPoPoPoPoPeZoPoPcnoPoPoPcnoPoPoPoPcnoPoPoPAooPoPAooPoPoPoPlboPoPoPoPoPoPoPXUoPoPAocnoPhMhMoPoPoPoPlylypQzJqapQpQLiEJEJLiLiEJEJLipQpQDePMpQlylyoPoPoPoPcnoPoPeZoPcncnoPoPoPoPeZZrZreZoPoPoPoPoPamambSamamamamawawawawawawamamamawamamamamamamamamawamamamambSambOoPoPoPZGZGgyTBcncnZG
+ShShShJhfqfqpQpQtkqapQlJbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMtMbMtMbMbMbMbMbMbMbMbMbMtMtMtMbMbMbMtMbMtMtMtMbMbMbMRapQDeuRpQRafqbDfqfqbDbDfqfqbDfqfqpQtkqapQfqRdbMbMbMtMbMbMbMbMbMbMbMbMbMtMtMtMbMtMbMbMbMbMbMRrRrRrRrRrRrRrRrRLRLRLRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrRrbMbMbMbMShShShZGZGZG
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSipQpQpQSKStStStStZGZG
+EjEjpQEjEjpQEjEjpQzJPMpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQzJqaEjpQEjpQEjpQEjpQEjpQEjpQEjpQzJPMpQEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHpQEjEjpbXKVYWNWSZGYn
+RJRJpQRJRJpQRJRJpQtkuRpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJpQRJpQRJpQRJpQRJpQRJpQRJpQRJpQtkuRpQRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVZegrRJpQFRWNHNZGZGYn
+QGQGQGQGQGQGQGQGQGpQEjAXQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGEjEjAXQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMJGipQGQGQGQGZGZGQGQG
+fEfEPJfEfEfEPJfEOZzJXvglPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEOjRJRJglfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfEfEPJfEfErEtZrErErEtZrErErEtZrErErEtZrErErEtZrErErEtZrErErEtZrErErEtZrErErEPJfEfEfEPJfEZGZGPJfE
+pQpQpQpQpQpQpQpQpQmMpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSiSipQpQpQSKpQZGZGZGZGpQ
+EjEjpQEjEjpQEjEjpQzJPMpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjpQEjEjSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHSiTHTHpQEjEjpbEjZGZGZGEjYn
+RJRJpQRJRJpQRJRJpQtkuRpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJpQRJRJSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVSiYVYVpQRJRJpQRJZeZdZGRJYn
+QGQGQGQGQGQGQGPppQpQpQpQpQQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGQGkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMkMQGQGQGQGQGJGZdZGQGQG
+cnoPoPhMoPoPlylypQpQpQpQpQlyoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPcncnoPcncnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPhMoPoPoPcneZoPoPoPoPoPcneZoPoPoPoPcncncnoPXUcncnXUoPoPoPoPoPoPamamamamamamjuambOamamawamamamameKamamamamamamamamamamamamamamamamoPoPoPoPoPHgZGZGZGcm
+oPeZoPoPeZlylypQpQpQpQpQlylyoPeZcnoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPcncncncnoPoPoPoPoPoPoPNVcnoPoPoPoPoPoPoPoPcnoPoPhMoPhMoPoPlboPoPhMoPcncnoPoPoPoPoPoPoPoPlbAoeZoPoPcnoPcncneZoPeZeZoPoPeZeZoPccbSamamamamawamambSamamawccamamamamamamamamamamamambSambSamawamamcnoPoPoPoPZGZGcncndD
+ytytaAytytSIhghghghghghgSISISISISISISISIoPcneZoPoPoPoPAooPZroPoPoPoPoPoPoPoPoPAooPZroPoPoPXUeZcnoPoPcnoPoPoPcnXUeZoPeZeZcnhMhMcnoPoPeZoPoPAooPoPoPoPcnoPoPoPcncnoPoPoPeZoPoPhMoPoPoPoPoPoPoPoPoPcneZoPoPoPoPoPoPoPOheZambSamamamdMamamamamamambSamamamamamamamamamawamamamamamamamamamawoPcnoPoPpVVOrscnZGMY
+SISISISIBoSIhghghghghghghghghghghghghgSIcncnoPcnoPoPZGoPoPZrZreZoPoPoPoPoPoPZGoPoPZrZreZoPcncnoPoPoPoPNVcnoPoPoPoPoPoPoPoPoPoPcncneZoPoPcncnoPoPZGoPoPoPoPhMoPoPoPoPeZoPoPoPoPoPcnoPoPoPcncnNVcnoPoPoPoPoPoPXUoPoPZroPawbSamamamamamamamamamamamambOamamamambSamamamamamamambOamamamamawoPcnoPAoKoKPJZwqdpOJ
+hghghghghghghghghghghghghghghghghghghgSIeZoPoPoPoPoPoPoPoPoPZroPoPoPoPoPoPoPoPoPoPoPZroPcnoPeZoPoPcnXUeZoPeZeZoPoPeZoPAoeZoPoPcnoPoPcnoPoPoPoPoPeZeZeZeZoPoPAooPoPoPcnoPoPoPoPoPcnoPTPZrZroPeZoPeZeZoPoPeZoPoPcnoPcnoPbfawawamamamamawamccamamamamamamamamambSamamamamamamamamamamamamamoPoPoPoPgfKPIfcncnMY
+hghghghghghghghghghghgBoSISISISIBohghgBooPoPoPhMoPeZoPoPoPoPcnoPoPeZeZoPoPeZoPoPoPoPcnoPoPeZeZoPoPoPoPoPoPoPOheZoPeZoPoPhMoPcncncnoPoPcnoPeZoPoPoPoPAooPeZoPoPoPoPcnoPoPoPpAoPoPlblbAocncnoPoPoPoPOheZoPeZoPoPoPQVoPoPamawamamamamamamamamamawawbSamamamamccambSamamamamamsmamamamamamamoPoPcncnpVhcJBZGZGKS
+hghghghghghghghghghgSIDJhUqShUqSSIhghgSIoPoPhMoPoPeZoPoPoPQVoPoPoPoPOheZoPjooPoPoPQVoPoPoPoPOheZoPoPoPoPoPoPAooPcneZoPoPoPeZoPoPcnoPoPoPoPeZcnoPoPoPoPoPeZoPeZoPoPlboPoPcncnoPoPXUcnoPoPcncnoPoPoPAooPcneZoPoPoPoPoPoPawawamamamjuambSamamawamawamawawjujuamamamccccamamawbOamamamccamjuoPoPZGoPHjhcRfywcnKS
+SISISISIBoSIhghghgSISIkwSISISISISIhghgSIoPoPhMoPoPeZoPoPoPoPoPoPoPoPAooPcneZoPoPoPoPoPoPoPoPAooPcnoPoPcnoPoPoPoPXUcncnoPoPoPoPoPoPoPoPoPhMoPcnoPoPoPoPoPoPoPoPZQoPoPoPcnoPoPoPoPoPeZoPQVfycncnoPoPoPoPXUcncnoPoPoPoPcnawamccamamamamamamamamamamamamamamjuamamamamamamambOamamamamamamjuZroPoPoPHjOoKTywcnSX
+iNXXiNiNzASIhghghgSIiNiNnQvIiNiNSIhghgSIhMcnoPoPoPcncnoPoPoPoPcnoPoPoPoPXUcncnoPoPoPjocnoPjooPoPXUoPoPoPoPjojooPoPcnoPoPoPoPoPoPoPoPcnoPeZoPcnhMoPoPZGoPoPOhoPoPoPoPQVQVoPoPoPoPcnoPoPoPoPoPoPoPjojooPoPcnoPoPoPoPoPoPjuamambSamamamamawamamamccccamamamamamamamdMamamamamamambOamamjujuoPoPoPoPoPfHZGZGcnmk
+nAtfAQNaXXSIhghghgSIiNczhIFmUViNSIhghgSIoPcnoPoPoPcnoPoPoPoPoPoPoPjojooPjocnoPoPoPoPoPoPoPjojooPoPoPcneZoPoPoPjocncnoPcncncncnoPoPoPoPAoeZcnoPXUoPoPoPoPhMoPjooPoPcnoPoPoPoPhMoPcnoPoPoPoPoPeZoPoPoPcncncnoPoPoPZroPeZjujuamamamccamamamamamamamambOamamamamamamdMdMamamamamamambSamjuamoPeZoPoPoPZGZGZGldld
+NrNrNrNrXXSIhghghgSIzwhIhIhIoDiNSIhghgSIoPoPoPoPpAcnoPoPoPZroPeZoPoPjocncncnoPoPoPZrjoeZoPjooPcncncncnoPoPeZeZoPcnoPAoAtAtcncncncnoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPcncnoPoPoPoPoPoPoPeZeZoPcnoPAooPoPoPoPoPamamambSamamamamamccamawamamambOambSamamamccamdMoSoSamamamamamjuamoPoPoPoPoPoPZGZGZGZG
+NrNrNrNrpgSIhghghgSIhThIhIhIhInQSIhghgSIoPhMoPoPcnoPAooPoPoPoPoPoPeZeZoPcnoPAooPoPoPjojooPeZeZoPcnoPcnoPoPoPoPcnoPoPoPcnAtAtAtAtcncnoPhMoPoPoPoPoPoPoPoPhMoPoPoPoPAooPoPoPoPoPoPhMoPoPAooPoPoPoPoPoPcnoPoPoPeZoPoPoPoPamamambSamamamamamamamamameKamamamamamamamamccccdMamamamamamamamamoPoPoPoPoPoPZGZGZGoP
+rgTqNrNNiNSIhghghgSIzwNKhIVWIriNSIhghgSIcnoPoPoPoPoPoPeZoPoPoPoPoPoPoPcnoPoPoPeZoPoPoPjojooPoPcnoPoPoPoPoPcnoPeZoPoPoPcncnAtmymyAtcncnoPoPcncncnoPoPoPoPoPoPhMoPcncnoPoPoPAooPoPoPoPhMoPoPoPoPoPcnoPeZoPoPoPoPoPAooPoPamsgambSamamamamamamccamambOamamamamamamamamamamamamawamamamawamamoPoPoPoPAooPoPoPZGoP
+iNiNiNRUiNBohghghgBoiNiNnQepiNrrBohghgBocncnAooPcnoPoPoPoPAooPoPoPcnoPeZoPoPcnoPoPAooPoPoPcnoPeZoPoPoPoPcnoPoPoPoPoPoPoPcncnAtmymyAtcncncnoPoPoPcnoPlbAoeZoPoPcnoPoPcnoPoPoPcncncnoPoPoPoPoPoPcnoPoPoPoPoPoPhMoPoPoPoPbVbVawambSawbSamamamambVawamamamamamccamamamamamamamawamamamamamamAooPoPoPlbcnoPoPoPoP
+iNsjRUNNrrSIhghghgSISISISISISISISIhghgSIoPoPAooPoPoPoPeZoPoPoPoPcnoPoPoPoPoPcncnoPoPoPoPcnoPoPoPoPoPcnXUcnoPoPcnAooPoPoPoPcnAtAtAtAtAtcncnoPoPeZoPoPoPoPoPoPoPoPoPcncnoPoPcncnAtAtcnoPoPhMcnXUcnoPoPcnAooPoPhMoPoPoPoPbVbVbVawambOamawawameKbVbVbVambOamamamambVambSamamamawamamccawawamoPoPcnoPoPoPoPoPoPoP
+iNXLiNNraESIhghghgSIiNiNnQiNiNiNSIhghgSIoPoPlbcnoPoPoPcnoPoPoPoPoPeZAooPoPoPoPeZoPoPoPoPoPeZAooPoPoPoPoPeZoPQVAocnoPoPoPoPcnAtAtcncncncnoPoPoPeZoPcnoPoPoPcncnNVcnoPoPjooPcnAtAtAtcncnoPhMcnoPeZoPQVAocnoPoPeZoPcnoPoPamambVbVamamawamameKawbVbVbVambOamambVbVbVamamamamamambOamamamawamoPeZoPcnoPZGoPoPoPoP
+LLEYEYNriNSIhghghgSIzwCvhOvefmiNSIhghgSIeZoPoPeZoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPZrcnoPoPoPoPAooPoPoPlbcncncnoPcncnoPoPeZcncnAocnoPTPZrZroPeZoPoPoPoPcnAtAtAtAtAtcncnoPoPcnoPoPoPoPAooPoPoPoPoPeZeZbSbSamambfamamamamamawawbVawawamambVbVamamamamnUamamambOamamawamamoPoPoPcnoPoPcnoPoPoP
+NrNrNrNrXXSIhghghgSINcNrNrNrNriNSIhghgSIcnoPoPeZoPhMoPeZoPoPoPoPoPoPoPcnhMhMoPeZoPoPoPoPoPoPoPcnhMhMZrcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPeZZrZroPoPoPoPoPoPcnAtAtAtAtAtcnoPoPoPcnoPoPoPoPoPoPoPeZoPoPoPoPccambSamamawbOawamamawbVbVawamamambVamamamamamamambSamamamamslbSamoPoPoPoPoPoPoPoPoPoP
+iNiNiNiNiNSIhghghgSIzwiNgTNrNrnQSIhghgSIcnoPoPoPoPoPoPoPcncncnpAoPZGoPoPoPoPoPoPcncncnpAoPZGoPoPoPoPZrcnoPoPoPoPoPoPoPoPoPoPhMoPoPeZoPoPoPoPcnoPoPoPoPoPoPZroPoPoPoPcncncnAtmymyAtAtcncnoPoPcnoPoPoPoPoPoPoPXUcncnoPoPamambSambSamamamamawawbVbVawawameKamamamawawawoRamamamambSamZIamamoPoPoPoPoPoPoPoPoPoP
+ythUhUMTMThghghghgjviNsjRUSjMwzASIhghgSIoPoPoPoPoPcnoPoPcncnoPoPoPoPoPoPXUcnoPoPcncnoPoPoPoPoPoPXUZrZrhMoPoPAooPoPoPhMAohMoPoPoPoPoPQVpLoPoPcneZoPoPoPoPoPoPcnoPlbcncnAtAtmymymyAtAtAtAtcnoPhMoPoPAooPoPoPhMoPcnoPoPoPamambSbSamoRamawbVbVbVbVbVbVbVawamamamccawbSawamamambfamamamdMamamoPoPoPoPoPoPoPAooPoP
+yttJBeMTmJhghghghgjvvIiNiNiNiNiNSIhghgSIZGoPoPoPoPeZoPQVfycnoPoPoPoPoPoPoPeZoPQVfycnoPoPoPoPoPoPoPoPOhoPoPcncnoPoPZGoPOhoPoPoPcnoPoPoPoPoPoPoPZGoPoPoPoPoPoPcncncncnAtAtAtmymyAtAtAtAtcncnoPoPoPcncnoPoPZGoPoPoPoPhMoPamamccambSamambSawbVbVcvbVbVawawamamamamamamamamsmamamamamamccamamAooPoPAooPoPoPoPoPoP
+BeBeBemJuVhghghghgSISISISIBoSISISIhghgBoZGZGoPAooPoPoPoPoPoPoPoPoPoPoPhMcnoPoPoPoPoPoPoPoPoPoPhMcnoPoPAooPoPoPoPoPeZeZlboPcnoPoPcncnoPoPoPoPoPoPoPoPoPAooPoPcncnAtAtAtAtmymymyAtAtAtcncnoPoPAooPoPoPoPoPeZeZeZeZoPoPoPbSbSamambSamambSbOawbVbVbVbVawambSbOamdMamamamamamamamamamamccamamoPoPoPoPoPoPoPoPoPoP
+BeBeKQhghghghghghghghghghghghghghghghgSIoPZGoPoPoPoPoPoPoPoPoPhMhMoPoPoPcnoPoPoPoPoPoPhMhMoPoPoPcnoPoPoPoPoPeZoPoPeReYfreYeRcncncnXUoPoPoPQVcnoPoPoPoPoPoPcncnAtAtAtAtAtmymyAtAtcncncnoPoPoPoPoPoPeZoPoPoPoPAooPeZoPoPccambOamamamawawambSbVawawawamamamamamamamamawamamdMamambVamamamawcnoPoPoPoPoPoPoPoPoP
+hghghghghghghghghghghghghghghghghghghgSIoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPAooPoPoPcnoPAooPoPoPeZcnoPgcgKgLgYhvcncncnoPZroPoPQVoPoPlboPoPoPcncnAtAtAtAtmymymyAtAtcncnoPoPoPeZoPoPoPoPeZcnoPoPoPoPoPeZoPeZamambSamamamawbSbObOawawccamambSbOamamoSamamamamccccamambVbVbVamamoPcnoPoPjooPoPoPoPoP
+lYlYlYlYhghgSIMUMUSESESISIBoSISISISISIBooPoPoPhMcnoPoPAooPoPoPoPoPoPoPoPhMoPoPAooPoPoPoPoPZGoPoPhMoPoPoPoPhMoPcnoPfrgLopgLjPcncncnoPZroPoPQVAooPoPAooPcncnAtAtAtAtmymymymyAtAtcnoPoPoPjooPjooPoPhMoPcnoPoPoPoPoPoPoPoPoRamamambVbVbVbVamamamamamamamambOamamamamamamamccamambSbVamamamawywcnoPoPjojooPpAoPoP
+yFjRjRAUhgSISIYriNiNzwcMzwiNZGoPoPoPeZoPoPoPoPoPoPZroPoPoPoPoPcncncncnoPoPZroPoPoPoPoPcncncncnoPoPoPeZcnoPeZoPcnhMgcgLksgLhvoPcnoPoPoPoPoPoPoPoPeZAocncnAtAtAtmymymymyAtAtAtcncncnOhoPoPjooPcnoPeZoPcnhMoPoPZGAooPOhoPambSambVbVamamamamamamamsmamamamawbSamamamamamamamjujubSbVbVbVawawoPcnoPoPoPjooPlboPoP
+FAjRkrhgSISIwBYrrraWBwkqRIiNoPoPoPhMoPcnpAAooPcnQVZrZroPhMoPcncnAtAtcnOhoPZrZroPhMoPcnjojojocnOhoPoPoPoPAoeZcnoPXUgcmlnDTngcAooPoPoPoPeZoPoPoPoPoPoPcnAtAtAtmymymymyAtAtAtAtcncnoPcloPlboPoPoPAoeZcnoPXUoPoPoPoPhMoPjoambSamOkamamamamamamamamXmameKamamamamamccamamamamamjujuamambVameKcncnoPoPoPoPoPoPoPoP
+SISISISISIyfleytfuYckqkqClfuoPoPoPoPkCcnoPoPoPcnZrZroPoPZQcncnAtAtAtcnoPoPZroPoPZQcncnjojojocnoPoPoPoPoPoPeZoPoPoPeReYfreYeRoPoPoPoPeZoPcnoPoPVaoPoPcnAtAtmymymyAtAtAtAtAtAtcnoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPamsmamamamamamamccamamamamamamamamamamamamamamamambOamjuamamamamlDcnoPAoAooPcncncnoPoP
+wYypIiYrUGNDYrytvIrjkqkqzgqZoPoPoPoPoPoPoPoPoPoPhMhMoPoPcnAtAtmyAtcncnoPoPhMeZoPcnhMjojooPcncnoPoPoPoPoPhMoPoPoPoPoPoPhMoPoPoPoPoPAoeZoPcnjojooPoPoPcnAtAtmymyAtAtAtAtAtcncncnoPoPoPcnAooPcnoPhMoPoPoPoPoPoPoPoPhMoPoPamccawambObOamamamambSbSamawccamamamamamambSamamambOamamamamamambOAooPoPoPcncncncnoPoP
+bgaMIiIiPLoYYrytfuvMkqZYzgfuoPoPoPoPoPoPoPoPoPoPeZoPcncnAtmymymycncnAooPoPoPeZcnoPXUoPjojocnAooPoPoPcncnoPoPcncncnoPoPoPoPlboPoPoPoPoPoPoPoPjojooPoPcnAtAtAtAtAtAtAtAtcncncnoPoPoPoPoPpAoPcncnoPoPcncncnoPoPoPoPoPoPhMamamamambOeKamamamamccambSamsgamamambfamamawamamamlDamamambSamamamoPoPoPoPoPcncnoPoPoP
+IiIiIiYrYrIiMkytiNiNiNiNiNiNoPoPoPAooPoPoPeZoPoPoPoPcnAtAtprcncncnoPoPoPhMoPeZoPoPoPjojooPoPoPoPhMcncneZAooPoPoPoPoPeZoPoPoPoPoPZGZGoPoPoPjojojooPoPcncnAtcncnAtAtcncncnoPAoeZhMhMoPoPhMoPoPeZAooPoPoPoPoPeZeZeZeZoPoPamamccamamamawawawawamambSambOamamambSamamawamamawamamamamamamammRoPoPoPoPoPoPoPoPoPoP
+oPoPoPcncnoPAooPoPQVcnoPoPoPoPoPAoAooPoPoPeZoPoPoPoPcncncncncnoPoPoPoPoPoPoPoPoPoPoPjojohMjooPoPoPoPcnhMoPcnoPeZoPXUoPoPoPoPoPQVoPoPcnoPoPjojojooPoPoPcncncncncncncnoPoPoPoPoPoPoPoPoPhMAooPhMoPcnoPeZoPXUoPoPAooPeZoPamamamawamawawcvcvcvawamamambOccbSamamamawawamamamamdMamambSamamamoPoPoPoPoPoPAooPcnoP
+oPAocnoPoPoPeZoPoPoPoPOhoPoPoPoPoPoPQVoPoPoPAooPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPjooPoPoPoPoPoPoPlbeZoPcnoPeZcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPcncncnoPoPoPoPoPoPoPcnoPZrZroPhMeZoPeZoPcnoPeZcnoPoPoPoPoPeZoPbSamawawawawcvcGcGawawjujuambObSamamamamawawamameKccamdMdMbSamamamoPoPoPoPoPoPoPcncncn
+oPcneZZGoPoPoPoPeZoPoPoPoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPAooPoPeZoPeZQVoPoPoPoPoPAooPoPeZoPeZQVoPoPoPoPcnoPoPoPhMoPcnoPoPAooPcnqzeZoPoPoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZroPoPoPoPoPoPoPhMoPcnoPoPoPoPoPoPoPamoRamamawawcvcGcvawamamjuamamamambOamawawawamsmamamamamamamamamamoPoPoPoPoPoPoPcncnAt
+oPeZoPoPZGcnoPoPhMoPhMoPoPoPoPoPhMaxoPoPoPoPhMoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPcnoPeZoPcnhMoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPhMhMhMeZoPoPoPoPoPZGZGoPoPoPZroPoPeZoPoPcnoPeZoPcnhMoPoPcnoPcnOhamamamamawcvsPawawawamamjuamambSamamamambVbVamambSamamamamamamamccoPoPoPoPAocncncncnAt
+cnZGoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPAooPoPoPoPoPcnoPoPAooPoPAoAooPoPoPAoeZcnoPXUoPcncncnhMoPoPoPoPoPoPoPoPoPeZcnoPlboPeZoPoPeZoPoPcnoPoPoPoPoPeZoPoPeZAooPoPAoeZcnoPXUoPoPoPoPhMoPbVamawamlDcvlDawamamamambSamambSambfamambVbVbVamamamamawamamamOkamoPoPoPoPcncncncnAtAt
+oPoPoPoPoPAooPoPoPZQcnoPoPoPAooPoPcncncneZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPeZoPoPoPoPcnoPcnoPoPoPOhoPoPAoAocncncncnoPeZeZoPoPAoAooPoPoPoPoPoPoPhMhMoPoPoPoPoPoPoPeZoPoPoPoPoPcnoPoPoPamamawamawawawamamccambObOamamamamamamamamambSamamamawbOamamamawawcncncnoPoPcncnAtAtmy
+fBfBoPoPoPoPoPhMhMcnoPoPoPhMoPoPoPcnoPoPoPoPoPoPoPoPcncncncncncnoPoPoPcnoPoPcncncncncncnoPoPoPcnoPoPoPAooPhMoPoPoPoPoPoPoPlboPoPoPAooPoPeZoPoPeZcncnoPoPoPoPoPoPoPoPoPoPoPoPoPAocnproPeZoPAoAooPhMoPoPoPoPoPoPcnoPAooPamawawamamamamamsmamamawlDambSamamamamamamamamamamamamamamamamamamoPoPoPoPcncnAtAtmymy
+QsfBoPoPoPoPhMoPoPoPcnoPoPoPoPoPoPhMoPoPoPoPoPhMoPoPoPAooPcncnoPoPoPoPoPoPoPoPAooPcncnoPoPoPoPoPoPoPoPoPcnoPoPcncncnAooPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPcncncnoPAooPoPoPoPoPcncncnoPeZoPcnoPoPcncncnAooPoPoPcnoPbOamawamamamamamamamamamawawawamamamccamamamamamambOamamamamamamccoPoPoPcncnAtAtmymymy
+"}

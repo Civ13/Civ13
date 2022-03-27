@@ -12,7 +12,8 @@
 		PIRATES)
 
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british,
+		list(CIVILIAN) = /area/caribbean/british/land/outside,
+		list(CIVILIAN) = /area/caribbean/british/land/inside,
 		list(PIRATES) = /area/caribbean/japanese
 		)
 	age = "2022"
@@ -65,3 +66,15 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+/obj/map_metadata/campaign/short_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 1200
+	else
+		return 3000 // 5 minutes
+
+/obj/map_metadata/campaign/long_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 1200
+	else
+		return 4200 // 7 minutes

@@ -809,8 +809,12 @@ var/civmax_research = list(230,230,230)
 		if (BRITISH)
 			return "British"
 		if (PIRATES)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Redmenian"
 			return "Pirate"
 		if (CIVILIAN)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Blugoslavian"
 			return "Colonist"
 		if (INDIANS)
 			return "Native"
@@ -854,8 +858,12 @@ var/civmax_research = list(230,230,230)
 		if (BRITISH)
 			return "British Empire"
 		if (PIRATES)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Redmenia Defence Force"
 			return "Pirate crew"
 		if (CIVILIAN)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Blugoslavian Armed Forces"
 			return "Colonists"
 		if (INDIANS)
 			return "Native Tribe"
@@ -900,6 +908,10 @@ var/civmax_research = list(230,230,230)
 			return "British"
 		if ("Pirate crew")
 			return "Pirate"
+		if ("Redmenia Defence Force")
+			return "Redmenian"
+		if ("Blugoslavian Armed Forces")
+			return "Blugoslavian"
 		if ("Colonists")
 			return "Colonist"
 		if ("Native Tribe")

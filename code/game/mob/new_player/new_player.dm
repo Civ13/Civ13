@@ -129,7 +129,7 @@ var/global/redirect_all_players = null
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
-	if (map.ID != MAP_CAMPAIGN)
+	if (map.ID != MAP_CAMPAIGN || client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -182,7 +182,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if (map.ID == MAP_CAMPAIGN)
+		if (map.ID == MAP_CAMPAIGN && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -405,7 +405,7 @@ var/global/redirect_all_players = null
 
 		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
-			return
+			return TRUE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
@@ -430,6 +430,13 @@ var/global/redirect_all_players = null
 								factjob = "Blue Faction"
 
 					if (factjob != "null")
+						if (factjob == "Blue Faction" && !civilians_toggled)
+							WWalert(src, "Your faction is currently admin disabled.")
+							return TRUE
+
+						if (factjob == "Red Faction" && !pirates_toggled)
+							WWalert(src, "Your faction is currently admin disabled.")
+							return TRUE
 						AttemptLateSpawn(factjob)
 					else
 						WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Check the discord for more information.")
