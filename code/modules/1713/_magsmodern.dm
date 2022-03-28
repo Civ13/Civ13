@@ -343,7 +343,7 @@
 	icon_state = "pouch_closed"
 	ammo_type = /obj/item/ammo_casing/a50cal
 	caliber = "a50cal"
-	max_ammo = 12
+	max_ammo = 10
 	weight = 0.8
 	multiple_sprites = TRUE
 
