@@ -518,8 +518,8 @@
 /obj/item/ammo_casing/a50cal
 	name = ".50 BMG cartridge"
 	desc = "A big heavy brass casing."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a50cal
 	caliber = "a50cal"

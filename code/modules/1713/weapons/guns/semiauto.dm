@@ -346,8 +346,8 @@
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a556x45
-	magazine_type = /obj/item/ammo_magazine/m16
-	good_mags = list(/obj/item/ammo_magazine/m16)
+	magazine_type = /obj/item/ammo_magazine/ar15
+	good_mags = list(/obj/item/ammo_magazine/ar15)
 	weight = 4.9
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
