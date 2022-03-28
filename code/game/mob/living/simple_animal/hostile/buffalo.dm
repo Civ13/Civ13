@@ -59,9 +59,9 @@
 	name = "bison bull"
 	desc =  "A large member of the bovine family, they are grazers commonly found in herds and will be hostile if harmed."
 	icon = 'icons/mob/animal_64.dmi'
-	icon_state = "bison_bull"
-	icon_living = "bison_bull"
-	icon_dead = "bison_bull_dead"
+	icon_state = "bisonbull"
+	icon_living = "bisonbull"
+	icon_dead = "bisonbull_dead"
 	speak_emote = list("Gnnnnnrrrr", "Moooooo", "Pnhhhh")
 	emote_hear = list("Grunts", "Puffs")
 	emote_see = list("stomps")
