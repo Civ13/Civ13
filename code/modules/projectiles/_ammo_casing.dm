@@ -517,11 +517,31 @@
 
 /obj/item/ammo_casing/a50cal
 	name = ".50 BMG cartridge"
-	desc = "A big heavy brass casing."
+	desc = "A big heavy brass casing designed to take out unarmored targets."
 	icon_state = "big-bullet"
 	spent_icon = "big-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a50cal
+	caliber = "a50cal"
+	value = 7
+
+/obj/item/ammo_casing/a50cal_ap
+	name = ".50 BMG AP cartridge"
+	desc = "A big heavy brass casing designed to penetrate armor."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal_ap
+	caliber = "a50cal"
+	value = 7
+
+/obj/item/ammo_casing/a50cal_he
+	name = ".50 BMG HE cartridge"
+	desc = "A big heavy brass casing designed to explode on impact."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal_he
 	caliber = "a50cal"
 	value = 7
 
