@@ -1,0 +1,351 @@
+"at" = (/obj/structure/wild/tallgrass,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"aH" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"bp" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"bz" = (/obj/structure/railing/steel{dir = 8},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"bQ" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"bY" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"ce" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"cp" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/weapon/reagent_containers/glass/barrel/modern/water,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"cq" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cy" = (/obj/structure/iv_drip,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"cH" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"cL" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/weapon/reagent_containers/glass/barrel/modern/water,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"dg" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/roof_support,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"dm" = (/obj/structure/wild/palm,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
+"dt" = (/obj/structure/wild/tallgrass,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dy" = (/obj/structure/wild/tallgrass,/obj/structure/barricade/antitank,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"dB" = (/obj/structure/roof_support{pixel_x = 6},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"dF" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/structure/bed/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"dY" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/floodlight{density = 0; floodlighton = 1; layer = 6.1},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"dZ" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"ed" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/obj/structure/floodlight{pixel_y = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"eh" = (/obj/structure/wild/junglebush,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"en" = (/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"ep" = (/obj/covers/wood/stairs,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"es" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"eu" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"eI" = (/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"eO" = (/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"fk" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barricade/antitank,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"fs" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"fD" = (/obj/structure/wild/junglebush,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"fG" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"fT" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/weapon/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"gk" = (/obj/structure/gate/barrier/vertical{dir = 2; pixel_x = 6},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"gy" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"gK" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/structure/roof_support{layer = 6.1},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"gO" = (/turf/floor/dirt/dust{name = "dry dirt"},/area/caribbean/nomads/taiga)
+"hc" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"ht" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"hB" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"hM" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/pen/pencil,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"hN" = (/obj/effect/floor_decal/industrial/warning/full,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"hX" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"io" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"iv" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"iF" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{anchored = 1; icon_state = "radio_transmitter"; name = "HQ Radio"; not_movable = 1},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"iQ" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"jc" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"js" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/structure/roof_support{layer = 6.1},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"jR" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1; pixel_x = 4},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"jZ" = (/obj/structure/barricade,/obj/structure/sign/flag/medical,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"kA" = (/obj/structure/window/barrier/sandbag,/obj/structure/toilet/outhouse{pixel_y = 6},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"kL" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"kQ" = (/obj/structure/wild/tallgrass,/obj/structure/barricade/antitank,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"kZ" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"le" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"lg" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"lq" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barricade/antitank,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"lM" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1; pixel_x = 4},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"lO" = (/obj/structure/practice_dummy/indestructible,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"lY" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"mc" = (/obj/structure/roof_support,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"ml" = (/obj/effects/premadevehicles/tank/panzeriv,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"mm" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/structure/closet/crate/empty,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"mo" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"mM" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"np" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"ny" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"nJ" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/ammo_magazine/browning,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/ammo_magazine/browning,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"nL" = (/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"nQ" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/structure/closet/crate,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"op" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"ox" = (/obj/covers/wood/stairs,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"oy" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"oG" = (/obj/effect/floor_decal/industrial/warning/full,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"oU" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"pm" = (/obj/structure/railing/steel{dir = 1},/obj/structure/railing/steel{dir = 4},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"pq" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
+"pT" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"pW" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"ql" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"qm" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"qE" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"qI" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"qL" = (/obj/structure/table/wood,/obj/item/clothing/mask/smokable/cigarette/cigar,/obj/item/weapon/material/ashtray/bronze,/obj/item/weapon/pen/pencil,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"ro" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"rA" = (/obj/structure/roof_support{pixel_x = 6},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"rF" = (/obj/item/weapon/key/german,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"rP" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"rY" = (/obj/structure/window/barrier/sandbag,/obj/structure/roof_support{pixel_x = 10},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"sf" = (/obj/structure/bed/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"si" = (/obj/structure/railing/steel{dir = 4},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"sr" = (/obj/structure/window/barrier/sandbag,/obj/structure/roof_support{pixel_x = 10},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"sU" = (/obj/structure/barricade/antitank,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"tj" = (/obj/structure/wild/rock,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"tE" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/obj/structure/floodlight{pixel_y = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"tL" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"ua" = (/obj/structure/cannon/mortar,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"ue" = (/obj/item/clothing/suit/storage/ghillie,/obj/structure/table/rack,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"ut" = (/obj/item/clothing/suit/storage/ghillie,/obj/structure/table/rack,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"uG" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/ammo_magazine/browning,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/ammo_magazine/browning,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"uS" = (/obj/item/weapon/stool/wood,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"uY" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"uZ" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barricade/antitank,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"vd" = (/obj/item/weapon/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"vg" = (/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/structure/closet/crate/empty,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"vm" = (/obj/item/stack/farming/seeds/banana,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"vo" = (/obj/structure/roof_support,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"vF" = (/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"wx" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"wI" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/floodlight{density = 0; floodlighton = 0; layer = 6.1},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"wY" = (/obj/structure/railing/steel{dir = 1},/obj/structure/railing/steel{dir = 4},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"xe" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"xh" = (/obj/structure/cannon/mortar,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"xk" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"xz" = (/obj/structure/barricade,/obj/structure/sign/flag/medical,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"xO" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/floodlight{density = 0; floodlighton = 0; layer = 6.1},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"xY" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"yd" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/obj/structure/floodlight{pixel_y = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"yw" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"yE" = (/obj/structure/railing/steel{dir = 8},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"yI" = (/obj/structure/window/barrier/sandbag,/obj/structure/toilet/outhouse{pixel_y = 6},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"yN" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"yT" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"zb" = (/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"zi" = (/obj/structure/table/wood,/obj/item/clothing/mask/smokable/cigarette/cigar,/obj/item/weapon/material/ashtray/bronze,/obj/item/weapon/pen/pencil,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"zy" = (/obj/structure/practice_dummy/indestructible,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"zD" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/floodlight{density = 0; floodlighton = 1; layer = 6.1},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"zR" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"zX" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"As" = (/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/structure/closet/crate/empty,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"AA" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"AC" = (/obj/structure/railing/steel{dir = 1},/obj/structure/railing/steel{dir = 8},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"AQ" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"Bb" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/weapon/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Bc" = (/obj/structure/railing/steel{dir = 4},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"Bd" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/obj/structure/floodlight{pixel_y = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Bj" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"BU" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"BW" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"BY" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Cq" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"CF" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/obj/structure/roof_support{layer = 6.1; pixel_x = 6},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"CI" = (/obj/structure/window/barrier/sandbag,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"CJ" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"CO" = (/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
+"CU" = (/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Di" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{anchored = 1; icon_state = "radio_transmitter"; name = "HQ Radio"; not_movable = 1},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"DM" = (/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"Ea" = (/obj/structure/table/wood,/obj/item/weapon/newspaper,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"Eg" = (/obj/structure/wild/rock,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"Ev" = (/turf/floor/dirt/jungledirt,/area/caribbean/nomads/taiga)
+"EG" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/taiga)
+"ET" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"Fb" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"Fc" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Fd" = (/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"Fg" = (/obj/structure/railing/steel{dir = 8},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"Fw" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Fx" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"FJ" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"FR" = (/obj/item/weapon/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Gm" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Gn" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"GR" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"GS" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Hh" = (/obj/structure/wild/tallgrass,/obj/structure/barricade/antitank,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
+"Hp" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"HC" = (/turf/floor/dirt/dust{name = "dry dirt"},/area/caribbean/nomads/forest/Jungle)
+"HH" = (/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"HV" = (/obj/structure/railing/steel{dir = 8},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"HY" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/item/weapon/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Ii" = (/obj/effects/premadevehicles/tank/t34,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"Ij" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Ip" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"Ir" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/storage/fancy/cigarettes/marlboro,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"ID" = (/obj/structure/railing/steel{dir = 1},/obj/structure/railing/steel{dir = 8},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"IK" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/pen/pencil,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"IN" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/floodlight{density = 0; floodlighton = 0; layer = 6.2},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"JD" = (/turf/floor/trench,/area/caribbean/nomads/taiga)
+"JG" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"JR" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"JU" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"JZ" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/iv_drip,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"Kg" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Kp" = (/turf/floor/winter,/area/caribbean/nomads/taiga)
+"KC" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"KG" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barricade/antitank,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"KO" = (/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"Lp" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1; pixel_x = 12},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"LD" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/obj/structure/roof_support{layer = 6.1; pixel_x = 6},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"LL" = (/obj/structure/bed/roller,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"LW" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"LX" = (/obj/structure/table/wood,/obj/item/weapon/newspaper,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"MY" = (/obj/structure/window/barrier/sandbag,/obj/structure/oven/grill,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Nd" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1; pixel_x = 4},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"Nz" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"NW" = (/obj/item/weapon/stool/wood,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"Oh" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/storage/fancy/cigarettes/marlboro,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Oj" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"OE" = (/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"OF" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/structure/closet/crate/empty,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"OK" = (/turf/wall/indestructable/black,/area/caribbean/no_mans_land/invisible_wall/temperate)
+"Pu" = (/obj/structure/gate/barrier/vertical{dir = 2; pixel_x = 6},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Pz" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"PD" = (/obj/item/stack/farming/seeds/banana,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"PG" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"PW" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"Ql" = (/obj/structure/bed/roller,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"QE" = (/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"QU" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"Re" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Rl" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Rm" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Rr" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/item/weapon/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Rs" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"RD" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/taiga)
+"RF" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"RH" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"RO" = (/obj/effects/premadevehicles/tank/t34,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"RY" = (/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"Sk" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"Sl" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1; pixel_x = 4},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"Sz" = (/obj/structure/iv_drip,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"SH" = (/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"SK" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"SR" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"SS" = (/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Ta" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"Tk" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Tq" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"TK" = (/obj/structure/barricade/antitank,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"TP" = (/obj/structure/bed/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"TX" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"TZ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Ua" = (/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Um" = (/obj/effects/premadevehicles/tank/panzeriv,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Up" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/structure/bed/bedroll,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"Uy" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/structure/closet/crate,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"UA" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"UB" = (/obj/structure/railing/steel{dir = 4},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"UC" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1},/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"UD" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/floodlight{density = 0; floodlighton = 0; layer = 6.2},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"UE" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1; pixel_x = 12},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"UV" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Ve" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"Vk" = (/obj/structure/railing/steel{dir = 4},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"Vl" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Vu" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"VA" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"VM" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"VN" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/roof_support,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"VR" = (/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"VT" = (/obj/structure/wild/tallgrass,/obj/structure/barricade/antitank,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/taiga)
+"Wd" = (/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"We" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"Wn" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"Wx" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"WB" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"WS" = (/obj/structure/window/barrier/sandbag,/obj/structure/oven/grill,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Xe" = (/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"Xj" = (/obj/item/weapon/key/german,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"Xx" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barricade/antitank,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Xy" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.1},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"XJ" = (/obj/structure/barricade/antitank,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"XM" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Yx" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/iv_drip,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"YL" = (/obj/structure/window/barrier/sandbag,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"YZ" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"Zl" = (/obj/map_metadata/campaign,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"Zr" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/trench,/area/caribbean/nomads/forest/Jungle)
+"Zy" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"ZM" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+
+(1,1,1) = {"
+CUCUCUKOCUCOfGCUCUCUCUCUCUCUCUCUCUvmCUCUCUCUCUCUCOCUKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUZMpWCUoUHCCUOKOKOKeIeIDMeIEvBUeIeIeIeIeIeIeIeIeIeIPDeIeIeIeIeIeIEvDMeIesDMDMDMDMDMDMDMDMDMDMDMDMeIeIeIesBjeIfDgOeI
+CUCUCUpWCUCUCUCUCUXMCUCUCUpWCUoUCUCUCUCUCUHCCUXJKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUHCCUOKOKOKeIeIBjeIeIeIeIeIateIeIeIBjeIfDeIeIeIKpKpKpKpTKKpKpDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIeheIeIeIeIeIgOeI
+CUCUCOCUCUCUCUCUCUoUCUCUCUCUCUCUCUpWCUCUCUdmfGCUKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUdmfGOKOKOKeIEveIeIeIKpKpKpfDeIeIeIeIeIeIeIBjKpKpKpEGywKpBUywDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMBjeIeIeIEGBU
+CUCUCOCUCUJGCUCUCUCUCUpWCUCUKOCUCUCUCUCUCUZMCUXJRsKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUZMCUOKOKOKeIEveIeIeIeIKpeIeIeIBjeIeIDMeIeIeIKpeIeIhXKpTKtjfDDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIDMDMDMeIDMeIeseI
+KOCUCOfGCUCUCUCUCUCUCUCUCUCUvmCUCUCUCUCUCUCOCUCUZMKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUCUCUCUCOCUOKOKOKeIEvBUeIeIKpeIeIeIeIeIeIeIPDeIeIeIeIeIeIKpKpeIhXeIDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIKpeIeIEveI
+CUCUJGCUCUCUCUCUCUoUCUKOCUCUCUCUJGCUpWoUCUdmCUXJCUKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUJGCUpWoUCUdmCUOKOKOKeIeIeIeIKpeIeIeIfDeIDMeIeIeIeIeIeIBjfDeIyweIsUKpDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMcqfDeIEGeI
+ZMZMCUoUCUCUfGCUCUCUJGCUCUCUoUXMCUCUoUXMpqCUpWCUCUKOKOKOKOKOIiKOKOKOKOKOKOKOKOKOKOKOKOCUoUXMpqCUpWOKOKOKeseIfDKpeIBUeIeIeIeIeIeIeIfDateIeIfDatRDeIBjeIKpKpDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMKpeIfDatRDeIBj
+CUCUCUCUpWCUXMCUCUJGZMCUKOCUCUCUfGoUCUpqXMCOCUXJCUKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOoUCUpqXMCOCUOKOKOKKpKpeIBjeIateIeIeIeseIDMeIeIeIBUfDeIRDatEveIsUKpeIDMDMDMDMRODMDMDMDMDMDMDMDMDMDMDMBUfDeIRDatEveI
+CUCUCUCUZMCUXMCUCUCUCUCUCUCUCUCUCUCOCOCOZMCOCUCUJGKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCOCOCOZMCOCUOKOKOKKpeIeIeseIateIeIeIeIeIeIeIeIeIeIEvEvEvesEveIeIDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMKpeIEvEvEvesEveI
+CUCUCUCUCUCUCUCUKOKOKOKOKOKOKOKOKOKOKOKOKOKOKORYKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKORsCUCUCOZMCOCOfGOKOKOKKpKpeIeIeIeIeIDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMVRDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMKpEgeIeIEvesEvEvBU
+fGCUCUCUKOoUCUACSkSkSkSkSkSkSkSkSkSkSkSkSkSkwYKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUCUCUCUZMCUOKOKOKeIKpKpKpfDeIIDYZYZYZYZYZYZYZYZYZYZYZYZYZYZpmDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMKpeIKpeIeIeIeIeseI
+CUCUCUCUCUCUCUFgKOKOKOKOKOKOKOKOKOKOKOzyKOKOsiRYKOhNKOKOKOhNKOKOKOhNKOKOKOhNKOKOKOfGCUJGpWCUZMZMCUOKOKOKeIeIeIKpeIeIyEDMDMDMDMDMDMDMDMDMDMDMlODMDMVkVRDMoGDMDMDMoGDMDMDMoGDMDMDMoGDMDMDMBUKpeIcqeIeseseI
+CUCUpqKOCUCUCUFgKOKOKOKOKOKOKOKOKOKOKOKOKOKOsiKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUCUCUCUCUCUOKOKOKeIRDDMKpeIeIyEDMDMDMDMDMDMDMDMDMDMDMDMDMDMVkDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIKpeIKpKpeIeIeI
+CUCUCUKOCUCUCUFgKOKOKOKOKOKOKOzyKOKOKOKOKOKOsiRYKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUCUCUCUCUCUCUOKOKOKeIeIDMKpeIeIyEDMDMDMDMDMDMDMlODMDMDMDMDMDMVkVRDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIeIKpKpeIKpeIeIeI
+CUoUCUCUCUKOCUFgKOKOKOKOKOKOKOKOKOKOKOKOKOKOsiKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUCUCUCUfGJGpWCUOKOKOKfDeIeIKpDMeIyEDMDMDMDMDMDMDMDMDMDMDMDMDMDMVkDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIeIeIKpeIeIBUKpcqeI
+CUCUCUKOJGpWCUFgKOKOKOKOKOKOKOKOKOKOKOKOKOKOsiRYKOhNKOKOKOhNKOKOKOhNKOKOKOhNKOCUCUfGCUKOCUoUCUCUCUOKOKOKeIeIKpKpBjeIyEDMDMDMDMDMDMDMDMDMDMDMDMDMDMVkVRDMoGDMDMDMoGDMDMDMoGDMDMDMoGDMeIeIBUKpDMeIfDeIKpeI
+CUCUCUoUCUCUCUFgKOKOKOKOKOKOKOKOKOKOKOKOKOzysiKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCOCUCUCUCUCUCUOKOKOKeIeIeheIeIeIyEDMDMDMDMDMDMDMDMDMDMDMDMDMlOVkDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIeIKpeIeIeIeIKpeI
+CUfGCUfGCUKOCUFgKOKOKOKOKOKOKOKOKOKOKOKOKOKOsiRYKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUCUCUCUfGCUOKOKOKBUeIyweIDMeIyEDMDMDMDMDMDMDMDMDMDMDMDMDMDMVkVRDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIeIKpeIeIeIyweI
+CUCUoUCUCUfGCUFgKOKOKOzyKOKOKOKOKOKOKOKOKOKOsiKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUKOCUCUfGCUpWCUCUOKOKOKeIfDKpeIBUeIyEDMDMDMlODMDMDMDMDMDMDMDMDMDMVkDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIeIDMKpKpyweIBjKpeI
+CUCUfGCUpWCUCUFgKOKOKOKOKOKOKOKOKOzyKOKOKOKOsiRYKOhNKOKOKOhNKOKOKOhNKOKOKOhNKOCUKOCUfGCUCUCUCUCUXMOKOKOKeIBUeIBjeIeIyEDMDMDMDMDMDMDMDMDMlODMDMDMDMVkVRDMoGDMDMDMoGDMDMDMoGDMDMDMoGDMeIDMeIyweIeIeIeIKpat
+CUCUCUCUCUCUXMFgKOKOzyKOKOKOKOKOKOKOKOKOKOKOsiKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOCUCUCUCUCUCUCUCUCUOKOKOKeIeIKpeIeIatyEDMDMlODMDMDMDMDMDMDMDMDMDMDMVkDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMDMeIKpeIeIeIeIeIKpeI
+CUCUCUCUCUCUXMFgKOKOKOKOKOKOzyKOKOKOKOKOKOKOsiRYKOKOKOKOOEKOKOKOKOKOKOKOKOOEKOKOCUCUCUCUZMpWCUoUHCOKOKOKeIeIKpeIeIatyEDMDMDMDMDMDMlODMDMDMDMDMDMDMVkVRDMDMDMDMUaDMDMDMDMDMDMDMDMUaDMDMeIKpeIeIesBjKpehgO
+CUCUZMpWCUoUHCFgKOzyKOKOKOKOKOKOKOKOKOKOKOKOsiKOKOKOKOKOKOKOKOKOKOKOKOKOKOOEKOKOKOCUoUCUCUCUCUCUHCOKOKOKeIescqeIfDgOyEDMlODMDMDMDMDMDMDMDMDMDMDMDMVkDMDMDMDMDMDMDMDMDMDMDMDMDMDMUaKpDMDMKpfDeIeIKpKpeIgO
+CUCUCUCUCUCUHCFgKOKOKOKOKOKOKOKOKOKOKOKOzyKOsiRYKOOEOEKOKOOEOEOEKOKOKOKOOEKOKOKOCUCUCUCUpWCUCUCUdmOKOKOKeIeIKpeIeIgOyEDMDMDMDMDMDMDMDMDMDMDMDMlODMVkVRDMUaUaDMDMUaUaUaDMDMDMDMUaDMDMDMeIKpKpKpcqKpeIeIEG
+CUCUpWCUCUCUdmFgzyKOKOKOKOKOKOKOKOKOKOKOKOKOsiKOKOKOKOKOKOKOOEOEOEKOKOKOKOKOKOKOKOCUCUCUCUCUCUCUZMOKOKOKKpBjeIeIeIEGyElODMDMDMDMDMDMDMDMDMDMDMDMDMVkDMDMDMDMDMDMDMUaUaUaDMDMDMDMDMDMDMDMeIKpeIeIeIeIeIes
+CUCUCUCUCUCUZMFgKOKOKOKOKOKOKOKOKOKOKOKOKOKOsiRYKOKOKOKOOEOEOEOEOEOEKOKOKOKOKOOECUCUCUCUCUCUCUCUCOOKOKOKKpeIeIeIeIesyEDMDMDMDMDMDMDMDMDMDMDMDMDMDMVkVRDMDMDMDMUaUaUaUaUaUaDMDMDMDMDMUaeIeIeIeIeIeIeIeIEv
+CUCUCUCUCUCUCOFgKOKOKOKOKOKOKOKOKOKOKOKOKOKOsiKOKOOEKOKOOEOEOEOEOEOEKOOEKOKOKOKOCUCUCUfGCUpWoUCUdmOKOKOKeIeIeIeIeIEvyEDMDMDMDMDMDMDMDMDMDMDMDMDMDMVkDMDMUaDMDMUaUaUaUaUaUaDMUaDMDMDMDMeIeIeIyweIBjfDeIEG
+CUJGCUpWoUCUnybzbpbpbpbpbpbpbpbpbpbpbpbpbpbpUBRYKOKOKOOEOEOEOEOEOEOEKOKOKOOEKOKOCUCUCUKOCUoUXMpqCUOKOKOKeIeIBjfDeIgyHVuYuYuYuYuYuYuYuYuYuYuYuYuYuYBcVRDMDMDMUaUaUaUaUaUaUaDMDMDMUaDMDMeIeIeIKpeIfDatRDeI
+CUCUCUoUXMpqKgUDOEOEOEOEOEOEOEOEOEOEOEOEOEOEopVeVlKOKOOEOEOEOEOEOEOEOEOEKOKOOECUCUKOCUCUCUCUpqXMCOOKOKOKeIeIfDatRDTXINUaUaUaUaUaUaUaUaUaUaUaUaUaUaiQqEbYKpKpUaUaUaUaUaUaUaUaUaDMDMUaeIeIDMeIKpKpeIRDatEv
+CUfGoUCUpqXMKgCqOEOEOEOEOEOEOEOEOEOEOEOEOEOEHHwIzXKOKOKOOEOEOEOEOEOEOEOEKOOEOECUCUCUCUZMpWCOCOZMCOOKOKOKBUfDeIRDatTXWxUaUaUaUaUaUaUaUaUaUaUaUaUaUaSSxOnpDMKpDMUaUaUaUaUaUaUaUaDMUaUaeIeIeIeIesBjEvEvesEv
+CUCUCOCOCOZMKgCqVAhctLOFtLlMCqOEOEOEOEOEOEOEnLwxFJKOKOKOOEOEOEOEOEOEOEOEKOKOKOCUKOCUCUCUCUCOZMCOCOOKOKOKeIEvEvEvesTXWxFwxeyTmmyTSlWxUaUaUaUaUaUaUazbpTETDMXeXeUaUaUaUaUaUaUaUaDMDMDMeIDMeIeIeIeIEvesEvEv
+CUCUCUCOZMCOKgCqVAAAZruaZrroCqOEOEOEOEOEOEIjYLCJzXKOKOKOOEOEOEOEOEOEOEOEKOKOKOKOCUCUCUpWCUCUCUCUZMOKOKOKeIeIEvesEvTXWxFwyNWexhWeVuWxUaUaUaUaUaUafsCIBYnpDMXeXeUaUaUaUaUaUaUaUaDMDMDMDMeIeIeIBjeIeIeIeIes
+CUCUCUCUCUCUKgCqVAUCQEQEQENdCqOEOEOEOEOEOEOEOEvgFJKOKOKOOEOEOEOEOEOENzOEOEOEKOKOKOCUfGCUJGpWCUZMZMOKOKOKeIeIeIeIeITXWxFwbQJDJDJDjRWxUaUaUaUaUaUaUaUaAsETDMXeDMUaUaUaUaUaUaSRUaUaUaDMDMDMeIBUeIeIcqeIeses
+CUCUJGpWCUZMKgCqOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEKOKOOEOEOEOEOEOEOENzOEKOKOKOKOCUKOCUCUCUCUCUCUOKOKOKeIeIBjeIesTXWxUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaXeDMUaUaUaUaUaUaUaSRUaDMDMDMDMeIDMKpeIKpeIeIeI
+CUCUCUfGCUCUKgCqVACqOEOEOEutOEOECqOEOEOEOEOEOEOEOEOEKOKOOEOEOEOEOEKOOEOENzKOKOKOKOCUCUCUCUCUCUCUCUOKOKOKeIeIBUeIeITXWxFwWxUaUaUaueUaUaWxUaUaUaUaUaUaUaUaUaDMDMUaUaUaUaUaDMUaUaSRDMDMDMDMeIeIeIeIKpeIeIeI
+CUCUCUCUCUCUKgCqVAXyOEOELpgKtLeptLCFGROEOEOERFFJKOKOOEOEOEOEOEOEOEOEOEKOOERYKOKOCUCUpWCUCUCUfGJGpWOKOKOKeIeIeIeIeITXWxFwFxUaUaUEjsyToxyTLDUVUaUaUahBETDMDMUaUaUaUaUaUaUaUaUaDMUaVRDMDMeIeIBjeIeIeIBUeIBj
+CUCUoUCUCUJGKgCqVAUpOERevdAAQEQEQEroOExkxkxkVAFJKOKOOEOEOEOEOEOEOEOEOEOEOEKORYOECUCUCUCUCUCUoUCUCUOKOKOKeIfDeIeIeITXWxFwdFUaUAFRyNJDJDJDVuUaLWLWLWFwETDMDMUaUaUaUaUaUaUaUaUaUaUaDMVRUaeIeIeIeIeIeIfDeIeI
+CUCUCUCUCUCUKgCqVAfTOEOETPAADiLXziroOExkxkxkVAFJKOOEOEOEOEOEOEOEOEOEOEOEOEKOKOKOCUCUCUCOCUCUCUCUCUOKOKOKeIeIeIeIeITXWxFwBbUaUasfyNiFEaqLVuUaLWLWLWFwETDMUaUaUaUaUaUaUaUaUaUaUaUaDMDMDMeIeIeIEveIKpeIeIeI
+CUCUCUCUfGCUjcCqVARrOEOETPAAJRuShMroOExkxkxkOEOEOEOEKOOEOEOEOEOEOEOEOEOEOEKOKOKOCUCUCUCUCUCUCUCUfGOKOKOKeIeIKpBUeISKWxFwHYUaUasfyNkLNWIKVuUaLWLWLWUaUaUaUaDMUaUaUaUaUaUaUaUaUaUaDMDMDMeIeIeIeIeIKpeIeIBU
+CUfGCUpWCUKOjcydRmOjOhIjsrvoAQAQAQrAOExkxkxkOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEKOKOKOKOCUCUfGCUpWCUOKOKOKBUeIcqeIDMSKtEdZleIrfsrYmcHpHpHpdBUaLWLWLWUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaDMXeDMDMeIeIBUeIBjeI
+CUCUCUCUCUKOxYCqOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEVAKCKOKOOEOEOEOEOEOEOEOEOEOEOEKOKOKOKOfGCUCUCUCUCUOKOKOKeIeIKpeIDMqmWxUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaFwIpDMDMUaUaUaUaUaUaUaUaUaUaUaDMDMDMDMBUeIeIeIeIeI
+CUCUCUCUCUKOkZqIIjOEOEOEIjIjyIyIOEOEMYFcPzcpOEOEVAKCOEOEOEOEOEOEOEOEOEOEOEOEKOKOKOKOCUCUCUCUCUZMCUOKOKOKeIKpeIeIDMlgGmfsUaUaUafsfskAkAUaUaWSqlTZcLUaUaFwhtUaUaUaUaUaUaUaUaUaUaUaUaDMXeDMDMeIKpeIeIeIeseI
+CUZMpWCUoUZMOEOEOECqOEVAUCLLLLxzepepxzLLcydgOEOEVAeuOEOEOEOEOEOEOEOEOEOEOEOEKOKOOEOECUKOpWCUZMZMCUOKOKOKhXBjeIfDesUaUaUaWxUaFwbQQlQljZoxoxjZQlSzVNUaUaFwzRUaUaUaUaUaUaUaUaUaUaUaUaDMDMUaUaeIKpcqeIeseseI
+CUCUCUCUZMKOgkOEOECqOEVAAAQEQEQUQEQEQUQEQEJZOEOEVAKCKOOEOEOEOENzOEOEOEOEOEOEOEOEKOKOCUCUCUCUCUCUCUOKOKOKKpeIeIesDMPuUaUaWxUaFwyNJDJDWnJDJDWnJDJDYxUaUaFwhtDMUaUaUaUaSRUaUaUaUaUaUaUaUaDMDMeIeIeIeIeIeIeI
+CUpWCUCUCUKOkZCqOEOEOEVAAAQEQEQEQEQEQEQEQEnQOEOEVAeuKOOEOEOENzOEOEOEOEOEOEOEOEKOKOKOCUCUCUCUCUCUCUOKOKOKBjeIeIeIDMlgWxUaUaUaFwyNJDJDJDJDJDJDJDJDUyUaUaFwRHXeUaUaUaSRUaUaUaUaUaUaUaUaDMDMKpeIeIeIeIeIeIeI
+CUCUZMCUCUKOkZuGdYCqOEVAUCLLLLLLPWvFJUGneOdgOEOEVAKCKOOEOENzOEOEOEOEOEOEOEOEOEKOKOKOCUKOCUfGJGpWCUOKOKOKeIhXeIeIDMlgnJzDWxUaFwbQQlQlQlTaSHVMZyenVNUaUaFwhtXeUaUaSRUaUaUaUaUaUaUaUaUaDMKpKpeIDMeIBUKpBjKp
+CUCUCUCUCUZMRlGSOEOEOEOEGRGRGRGRGRGRGRGRGRGROEOEVAeuKOOENzOEOEOEOEOEOEOEOEOEOEOEKOKOCUCUCUoUCUCUCUOKOKOKeIKpeIeIesTqlYUaUaUaUaUVUVUVUVUVUVUVUVUVUVUaUaFwzRXeUaSRUaUaUaUaUaUaUaUaUaUaUaKpDMeIeIeIfDKpeIKp
+fGCUpWoUCUKORlioIjIjOEOEIjIjIjIjIjIjIjIjIjIjIjIjedXxKONzOEOEOEOEOEOEOEOEOEOEOEKOKOKOKOCUCUCUCUCUCUOKOKOKeIBjeheIDMTqTkfsfsUaUafsfsfsfsfsfsfsfsfsfsfsfsBdfkDMSRUaUaUaUaUaUaUaUaUaUaUaDMDMDMDMeIeIeIKpeIeI
+XJXJXJdyHhRYWduZBWuZOEOEuZBWuZBWuZBWuZBWuZBWuZBWuZaHOEOEOEOEOEOEOEOEOEOEOEOEOEKOKOKOKOCUCUCUCUfGCUOKOKOKsUsUkQVTVRFdlqoylqUaUalqoylqoylqoyKGoylqPGlqoylqmMUaUaUaUaUaUaUaUaUaUaUaUaUaXeDMDMDMeIeIeIKpBUeI
+CUCUCUpqXMKOKOKOKOKOOEOEKOKOKOKOKOKOKOKOKOKOKOKOOEKOOEOEOEOEOEOEOEOEOEOEOEKOKOOEKOKOKOCUfGCUpWCUCUOKOKOKeIeIdtatDMDMDMDMDMUaUaDMDMXeXeXeDMDMDMDMXeXeDMXeDMUaUaUaUaUaUaUaUaUaUaUaDMDMUaDMDMDMeIywKpcqKpeI
+CUCUCUoUKOKOKOcHWBcHOEOEKOKOKOKOKOKOKOOEKOKOKOKOKOKOOEOEOEOEOEOEOEOEOEOEOEOEKOOEKOKOfGCUCUCUCUCUXMOKOKOKeIeIehDMDMDMivceivUaUaDMDMXeDMDMXeDMUaDMDMDMXeXeDMUaUaUaUaUaUaUaUaUaUaUaUaDMUaDMXeBUeIeIKpKpeIat
+pqfGCUCUfGCUKOcHcHcHOEOEOEKOOEKOKOOEOEOEOEOEOEKOKOOEOEOEOEOEOEOEOEOEOEOEOEKOKOOEKOKOKOKOCUCUCUCUCUOKOKOKBUKpKpBUeIDMivivivUaUaUaDMUaDMDMUaUaUaUaUaUaDMDMUaUaUaUaUaUaUaUaUaUaUaUaDMDMUaDMXeDMDMeIeIKpeIeI
+COCUCUKOCUCUKOKOKOOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEKOKOKOKOKOCUKOCUZMpWCUoUHCOKOKOKeIKpDMeIeIDMDMDMUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaDMDMDMDMDMeIXeeIescqKpfDgO
+ZMCUKOCUCUCUKOKOmomoOEOEOEOEOEOEOEOEKOOEOEKOOEOEOEOEOEOEOEOEOEOEOEOEOEOEKOOEKOKOKOCUKOCUCUCUCUCUHCOKOKOKeIKpeIeIeIDMDMrPrPUaUaUaUaUaUaUaUaDMUaUaDMUaUaUaUaUaUaUaUaUaUaUaUaUaUaDMUaDMXeDMeIDMeIKpKpKpeIKp
+CUCUCUfGCUpWKOmomomoOEOEOEOEOEOEOEOEOEKOOEOEOEOEOEOEKOOEOEOEOEOEOEOEOEOEKOKOKOKOKOCUKOCUpWCUCUCUdmOKOKOKeIKpBUeIBjDMrPrPrPUaUaUaUaUaUaUaUaUaDMUaUaUaUaUaUaDMUaUaUaUaUaUaUaUaUaDMDMXeDMDMeIDMKpcqeIKpKpyw
+CUCUKOCUKOKOKOOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOENzOEOEOEKOKOOECUCUZMpWCUCUCUCUZMOKOKOKeIDMKpDMDMDMUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaSRUaUaUaDMDMUaeIeIescqeIeIeIeIhX
+CUCUCUCUCUCUKOOErFOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOENzOEOEKOKOKOCUCUCUCUCUCUCUCUCOOKOKOKeIeIKpeIeIDMUaXjUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaSRUaUaDMDMDMeIeIeIeIeIeIeIeIKp
+CUCUZMZMpWCUOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOENzOEKOKOKOCUCUpWCUCUpWoUCUdmOKOKOKeIhXhXBjeIUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaSRUaDMDMDMeIeIBjeIeIBjehKpEG
+CUCUCUCUCUCUOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOERYKOOEfGpWKOXMCUCUoUXMpqCUOKOKOKeIKpKpeIeIUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaVRDMUaBUBjDMateIeIfDdtRDeI
+CUCUCUpWCUpWKOOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEKORYKOCUCUfGCUfGoUCUpqXMCOOKOKOKeIKpcqeIBjDMUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaDMVRDMeIeIBUKpBUeheIdtatEv
+CUCUCUCUCUoUKOOEUmOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEKOKOKOKOCUCUCUCUCUCOCOCOZMCOOKOKOKeIKpeIXefDDMUamlUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaDMDMDMDMeIeIeIKpeIKpEvKpesXe
+CUCUCUCUCUOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEKOKOOEKOKOKOCUCUCUCUCUCOZMCOCOOKOKOKeIKpeIeIUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaDMDMUaDMDMDMeIeIKpKpKpKphXXeXe
+CUCUJGCUpWCOKOOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEOEKOOEKOKOKOKOKOKOKOZMpWCUCUCUCUCUZMOKOKOKKpKpeIBjEvDMUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaDMUaDMDMDMDMDMKpDMescqeIKpeIeIeIes
+pWCUCUCUoUCOKOKOKOOEOEKOKOOEOEOEOEOEOEOEOEOEKOKOKOKOKOOEOEOEOEOEKOKOKOKOOEOEOEKOKOCUCUCUJGpWCUZMZMOKOKOKKpKpeIfDEvDMXeDMUaUaDMDMUaUaUaUaUaUaUaUaUaDMDMXeDMDMUaUaUaUaUaDMDMDMDMUaUaUaDMDMeIKpeIKpBjeIeses
+CUCUfGoUCUCUCUCUKOKOKOKOKOOEOEOEOEOEKOKOKOKOOEKOOEKOKOKOKOKOOEOEKOKOKOKOOEKOKOKOCUpWCUCUCUCUCUCUCUOKOKOKeIBUfDeIeIeIXeDMDMXeXeDMUaUaUaUaUaDMXeXeDMUaDMUaDMDMDMDMDMUaUaDMXeDMDMUaDMKpDMKpcqKpKpKpKpeIeIeI
+CUCUCUCOCOCUCUCUKOKOKOOEKOKOOEOEKOKOKOKOKOKOKOKOOEOEOEKOKOKOKOKOKOKOKOKOKOOEOEKOCUpWCUXMCUCUCUCUCUOKOKOKeIeIEvEveIeIeIDMDMXeUaDMDMUaUaDMDMDMDMXeDMXeXeUaUaUaDMDMXeDMDMDMXeDMDMDMUaKpKpKpBjKpateIXeKpeIeI
+pqCUCUCUCOCOfGCUCUCUKOKOKOKOKOKOKOCUCUCUCUKOKOKOOEOEOEKOKOKOKOKOKOKOKOOEKOKOKOKOKOZMCUXMCUCUCUCOfGOKOKOKeIeIeIEvEvBUeIeIXeXeXeXeDMDMDMDMeIeIeIeIDMDMDMUaUaUaDMDMDMDMXeXeDMDMUaDMDMKpKpXeesKpFbeIeIKpEvBU
+CUCUCUpWCUCUCUCUCUXMKOKOKOCUKOCUCUfGCUCUCUCUCUCUKOKOKOKOCUCUpWCUKOCUCUCUCUKOKOKOCUZMCUCUXMXMCUCUCUOKOKOKeIeIBjeIeIeIeIeIatDMDMDMeIDMeIeIBUeIeIeIeIeIeIDMXeXeDMeIeIcqKpDMeIeIeIeIDMDMXeKpesKpeIatateIeIeI
+CUCUCOCUCUCUCUCUCUoUCUCUCUCUCUKOCUCUCUCUCUCUCUCUCUCUCUCUCUCUCUCUCUCUKOKOCUCUKOCUCUCUCUCUCOCUCUpWCUOKOKOKeIEveIKpeIeIeIeIfDeIeIeIeIeIDMeIeIeIeIeIeIeIeIeIeIeIeIeIKpeIKpeIeIDMXeeIeIDMeIeIKpKpKpEveIeIBjeI
+CUCUCOCUCUJGCUCUCUCUCUZMCUoUoUCUCUCUCUCUCUCUCUCUCOCUCUCUCUCUCUoUCUKOKOCUCUCUCUZMCUoUoUCUCUCUCUCUCUOKOKOKeIEveIKpKpeIKpeIeIeIeseIfDfDeIeIeIeIeIeIeIeIeIEveIeIKpeIeIeIfDKpDMDMeIeIeIeIeseIehfDKpKpeIeIeIeI
+KOCUCOfGCUCUCUCUCUCUZMZMCUoUCUCUfGCUCUCUJGCUCUCUCOCUCUJGCUCUCUCUCUpWCUCUpWCUXMCUCUoUCUCUfGCUCUCUJGOKOKOKeIEvBUKpKpKpKpeIeIeseseIfDeIeIBUeIKpKpeIeIeIeIEveIKpeIeIeIeIXeKpBjeIeIBjKpateIeIfDKpKpyweIeIeIeI
+CUCUJGCUCUCUCUCUCUoUCUCUCUCUpWCUXMCUCUJGZMCUKOCUCOfGCUCUCUCUCUCUCUCUCUCUZMCUXMCUCUCUpWCUXMCUpWJGZMOKOKOKeIeIeIKpeIKpeIKpfDeIeIeIKpBjeIateIeIKpeseIDMeIKpBUeIeIeIeIeIeIeIKpKpKphXKpateIKpeIcqeIdteIBjeIes
+ZMZMCUoUCUCUfGCUCUCUCUCUCUCUZMCUXMCUCUCUCUCUCUCUJGCUCUCUCUCUCUCUCUCUCUpWCUXMCUCUXMCUZMCUXMCUCUCUCUOKOKOKeseIfDKpeIyweIKpeIeIKpKpeIeseIateIeIeIKpeIKpeIeIeIeIeIeIeIeIeIeIeIeIBjeIdtKpKpatKphXeIdteIeIeIeI
+CUCUCUCUpWCUXMCUCUJGJGpWCUZMZMCUCUXMXMCUCUCUZMZMCUoUCUCUfGCUCUCUJGCUCUZMCUXMCUCUCUZMZMCUCUXMXMCUCUOKOKOKeIeIeIcqeIatKpKpKpKpcqeIeseseIeIatateIeIKpeseseIfDeIeIBUeIeIeIeIeIKphXeIdteIeIeIeseseIKpdtateIeI
+ZlCUCUCUZMCUXMCUCUCUCUCUCUCUCUCUCUXMXMCUCUpWCUCUCUCUpWCUXMCUCUJGZMCUKOZMCUCUXMXMCUCUCUCUCUXMXMCUCUOKOKOKeIeIKpeseIateIeIKpKpKpeIeIeIeIeIatateIeIBjeIeIeIeIBjeIateIeIeIeseIDMesKpKpdtatKpeIKpKpKpdtateIeI
+"}
