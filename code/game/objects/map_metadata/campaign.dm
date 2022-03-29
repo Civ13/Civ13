@@ -8,17 +8,17 @@
 	no_winner ="The battle is going on."
 
 	faction_organization = list(
-		CIVILIAN,
-		PIRATES)
+		PIRATES,
+		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british/land/outside,
-		list(CIVILIAN) = /area/caribbean/british/land/inside,
-		list(PIRATES) = /area/caribbean/japanese
+		list(PIRATES) = /area/caribbean/british/land/outside,
+		list(PIRATES) = /area/caribbean/british/land/inside,
+		list(CIVILIAN) = /area/caribbean/japanese
 		)
 	age = "2022"
 	ordinal_age = 8
-	faction_distribution_coeffs = list(CIVILIAN = 0.5, PIRATES = 0.5)
+	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
 	battle_name = "R03 road"
 	mission_start_message = "<font size=4><b>30 minutes</b> until the battle begins.</font>"
 	faction1 = PIRATES

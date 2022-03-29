@@ -38,7 +38,7 @@
 	maxsway = 12
 	firedelay = 3
 	maxrange = 25
-	anchored = FALSE
+	anchored = TRUE
 	bound_height = 32
 	bound_width = 32
 	density = TRUE
