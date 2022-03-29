@@ -2,7 +2,7 @@
 	name = "AK-101"
 	desc = "A modern Russian AK variant, chambered in NATO 5.56x45mm."
 	icon_state = "ak101"
-	item_state = "ak74m"
+	item_state = "ak101"
 	base_icon = "ak101"
 	weight = 3.6
 	var/folded = FALSE
