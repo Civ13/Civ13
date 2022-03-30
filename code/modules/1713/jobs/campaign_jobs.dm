@@ -4,12 +4,47 @@
 	spawn_location = "JoinLateRed"
 	is_event = TRUE
 	uses_squads = TRUE
+	squad = 0
 	additional_languages = list("Russian" = 15)
 	min_positions = 999
 	max_positions = 999
 
+/datum/job/civilian/redfaction/commander
+	is_commander = TRUE
+	title = "RDF Commander"
+
+/datum/job/civilian/redfaction/s1
+	title = "RDF Squad 1 Pvt"
+	squad = 1
+/datum/job/civilian/redfaction/s1/sl
+	title = "RDF Squad 1 Squadleader"
+	squad = 1
+	is_squad_leader = TRUE
+/datum/job/civilian/redfaction/s1/corpsman
+	title = "RDF Squad 1 Corpsman"
+	squad = 1
+
+/datum/job/civilian/redfaction/s2
+	title = "RDF Squad 2 Pvt"
+	squad = 2
+/datum/job/civilian/redfaction/s2/sl
+	title = "RDF Squad 2 Squadleader"
+	squad = 2
+	is_squad_leader = TRUE
+
+/datum/job/civilian/redfaction/s3
+	title = "RDF Squad 3 Pvt"
+	squad = 3
+/datum/job/civilian/redfaction/s3/sl
+	title = "RDF Squad 3 Squadleader"
+	squad = 3
+	is_squad_leader = TRUE
+
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
+	H.squad = squad
+	if(is_squad_leader)
+		map.faction1_squad_leaders[squad] = H
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -33,7 +68,17 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	if (title == "RDF Squad 1 Corpsman" || title == "RDF Squad 2 Corpsman" || title == "RDF Squad 3 Corpsman")
+		H.setStat("medical", STAT_MEDIUM_HIGH)
+		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
+		uniform.attackby(medicalarm, H)
+	else if (title == "RDF Medic")
+		H.setStat("medical", STAT_VERY_HIGH)
+		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
+		uniform.attackby(medicalarm, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
+		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
 	H.make_artillery_scout()
 	return TRUE
@@ -44,12 +89,43 @@
 	spawn_location = "JoinLateBlue"
 	is_event = TRUE
 	uses_squads = TRUE
-
+	squad = 0
 	min_positions = 999
 	max_positions = 999
 
+/datum/job/civilian/bluefaction/commander
+	is_commander = TRUE
+	title = "BAF Commander"
+
+/datum/job/civilian/bluefaction/s1
+	title = "BAF Squad 1 Pvt"
+	squad = 1
+/datum/job/civilian/bluefaction/s1/sl
+	title = "BAF Squad 1 Squadleader"
+	squad = 1
+	is_squad_leader = TRUE
+
+/datum/job/civilian/bluefaction/s2
+	title = "BAF Squad 2 Pvt"
+	squad = 2
+/datum/job/civilian/bluefaction/s2/sl
+	title = "BAF Squad 2 Squadleader"
+	squad = 2
+	is_squad_leader = TRUE
+
+/datum/job/civilian/bluefaction/s3
+	title = "BAF Squad 3 Pvt"
+	squad = 3
+/datum/job/civilian/bluefaction/s3/sl
+	title = "BAF Squad 3 Squadleader"
+	squad = 3
+	is_squad_leader = TRUE
+
 /datum/job/civilian/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
+	H.squad = squad
+	if(is_squad_leader)
+		map.faction2_squad_leaders[squad] = H
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
@@ -73,7 +149,17 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	if (title == "BAF Squad 1 Corpsman" || title == "BAF Squad 2 Corpsman" || title == "BAF Squad 3 Corpsman")
+		H.setStat("medical", STAT_MEDIUM_HIGH)
+		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
+		uniform.attackby(medicalarm, H)
+	else if (title == "BAF Medic")
+		H.setStat("medical", STAT_VERY_HIGH)
+		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
+		uniform.attackby(medicalarm, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue(H), slot_belt)
+		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
 	H.make_artillery_scout()
 	return TRUE

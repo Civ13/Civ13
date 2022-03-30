@@ -28,6 +28,18 @@
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 0
 
+	var/list/squad_jobs_blue = list(
+		"squad 1" = list("corpsman" = 2, "sniper" = 1, "machinegunner" = 1),
+		"squad 2" = list("corpsman" = 2, "sniper" = 1, "machinegunner" = 1),
+		"squad 3" = list("corpsman" = 2, "sniper" = 1, "machinegunner" = 1),
+		"none" = list("medic" = 2, "commander" = 1, "recon" = 4)
+	)
+	var/list/squad_jobs_red = list(
+		"squad 1" = list("corpsman" = 2, "sniper" = 1, "machinegunner" = 1),
+		"squad 2" = list("corpsman" = 2, "sniper" = 1, "machinegunner" = 1),
+		"squad 3" = list("corpsman" = 2, "sniper" = 1, "machinegunner" = 1),
+		"none" = list("medic" = 2, "commander" = 1, "recon" = 4)
+	)
 obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian))

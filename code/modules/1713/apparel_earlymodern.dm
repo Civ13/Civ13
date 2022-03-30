@@ -1125,6 +1125,22 @@
 	max_storage_space = 8
 	show_above_suit = TRUE
 
+/obj/item/weapon/storage/belt/smallpouches/red
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/clothing/mask/gas/military(src)
+
+/obj/item/weapon/storage/belt/smallpouches/blue
+	icon_state = "smallpouches_olive"
+	item_state = "smallpouches_olive"
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/clothing/mask/gas/military(src)
+
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt/New()
 	..()
