@@ -906,24 +906,21 @@
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue
 	New()
 		..()
-		new/obj/item/ammo_magazine/sksm(src)
-		new/obj/item/ammo_magazine/sksm(src)
-		new/obj/item/ammo_magazine/sksm(src)
-		new/obj/item/ammo_magazine/sksm(src)
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red
 	New()
 		..()
-		new/obj/item/ammo_magazine/ak47(src)
-		new/obj/item/ammo_magazine/ak47(src)
-		new/obj/item/ammo_magazine/ak47(src)
-		new/obj/item/ammo_magazine/ak47(src)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
 /obj/item/clothing/accessory/storage/webbing/green_webbing/sniper
 	New()
 		..()
-		new/obj/item/ammo_magazine/mosin(src)
-		new/obj/item/ammo_magazine/mosin(src)
-		new/obj/item/ammo_magazine/mosin(src)
-		new/obj/item/ammo_magazine/mosin(src)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."

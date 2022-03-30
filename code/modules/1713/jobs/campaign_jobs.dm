@@ -30,9 +30,6 @@
 /datum/job/pirates/redfaction/s1/machinegunner
 	title = "RDF Squad 1 Machinegunner"
 	squad = 1
-/datum/job/pirates/redfaction/s1/sniper
-	title = "RDF Squad 1 Sniper"
-	squad = 1
 
 /datum/job/pirates/redfaction/s2
 	title = "RDF Squad 2 Private"
@@ -47,9 +44,6 @@
 	squad = 2
 /datum/job/pirates/redfaction/s2/machinegunner
 	title = "RDF Squad 2 Machinegunner"
-	squad = 2
-/datum/job/pirates/redfaction/s2/sniper
-	title = "RDF Squad 2 Sniper"
 	squad = 2
 
 /datum/job/pirates/redfaction/s3
@@ -66,10 +60,16 @@
 /datum/job/pirates/redfaction/s3/machinegunner
 	title = "RDF Squad 3 Machinegunner"
 	squad = 3
-/datum/job/pirates/redfaction/s3/sniper
-	title = "RDF Squad 3 Sniper"
-	squad = 3
-
+/datum/job/pirates/redfaction/recon
+	title = "RDF Recon"
+	squad = 4
+/datum/job/pirates/redfaction/armored
+	title = "RDF Armored Crew"
+	squad = 5
+/datum/job/pirates/redfaction/armored/sl
+	title = "RDF Armored Commander"
+	squad = 5
+	is_squad_leader = TRUE
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -86,12 +86,14 @@
 
 //equipment
 	if (findtext(title, "Squadleader"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/sl(H), slot_head)
 	else if (findtext(title, "Officer"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/com(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	if (findtext(title, "Sniper"))
+	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
 	else if (findtext(title, "Machinegunner"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
@@ -120,7 +122,9 @@
 	else
 		if (findtext(title, "Machinegunner"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
-		else if (findtext(title, "Sniper"))
+		else if (findtext(title, "Sniper") || findtext(title, "Recon"))
+			H.setStat("rifle", STAT_MEDIUM_HIGH)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 			var/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/sniper(null)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 			uniform.attackby(webbing, H)
@@ -147,7 +151,7 @@
 	is_commander = TRUE
 	title = "BAF Officer"
 /datum/job/civilian/bluefaction/medic
-	title = "RDF Medic"
+	title = "BAF Medic"
 	is_medic = TRUE
 
 /datum/job/civilian/bluefaction/s1
@@ -164,9 +168,6 @@
 /datum/job/civilian/bluefaction/s1/machinegunner
 	title = "BAF Squad 1 Machinegunner"
 	squad = 1
-/datum/job/civilian/bluefaction/s1/sniper
-	title = "BAF Squad 1 Sniper"
-	squad = 1
 
 /datum/job/civilian/bluefaction/s2
 	title = "BAF Squad 2 Private"
@@ -181,9 +182,6 @@
 	squad = 2
 /datum/job/civilian/bluefaction/s2/machinegunner
 	title = "BAF Squad 2 Machinegunner"
-	squad = 2
-/datum/job/civilian/bluefaction/s2/sniper
-	title = "BAF Squad 2 Sniper"
 	squad = 2
 
 /datum/job/civilian/bluefaction/s3
@@ -200,10 +198,19 @@
 /datum/job/civilian/bluefaction/s3/machinegunner
 	title = "BAF Squad 3 Machinegunner"
 	squad = 3
-/datum/job/civilian/bluefaction/s3/sniper
-	title = "BAF Squad 3 Sniper"
-	squad = 3
 
+/datum/job/civilian/bluefaction/recon
+	title = "BAF Recon"
+	squad = 4
+
+/datum/job/civilian/bluefaction/armored
+	title = "BAF Armored Crew"
+	squad = 5
+
+/datum/job/civilian/bluefaction/armored/sl
+	title = "BAF Armored Commander"
+	is_squad_leader = TRUE
+	squad = 5
 /datum/job/civilian/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -219,12 +226,15 @@
 	uniform.attackby(pasgt_armor, H)
 //equipment
 	if (findtext(title, "Squadleader"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green/sl(H), slot_head)
 	else if (findtext(title, "Officer"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green/com(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
-	if (findtext(title, "Sniper"))
+	if (findtext(title, "Sniper") || findtext(title, "Recon"))
+		H.setStat("rifle", STAT_MEDIUM_HIGH)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
 	else if (findtext(title, "Machinegunner"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
@@ -253,7 +263,9 @@
 	else
 		if (findtext(title, "Machinegunner"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
-		else if (findtext(title, "Sniper"))
+		else if (findtext(title, "Sniper") || findtext(title, "Recon"))
+			H.setStat("rifle", STAT_MEDIUM_HIGH)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 			var/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/sniper(null)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue(H), slot_belt)
 			uniform.attackby(webbing, H)

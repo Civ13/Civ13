@@ -29,15 +29,19 @@
 	artillery_count = 0
 
 	var/list/squad_jobs_blue = list(
-		"Squad 1" = list("Corpsman" = 2, "Sniper" = 1, "Machinegunner" = 1),
-		"Squad 2" = list("Corpsman" = 2, "Sniper" = 1, "Machinegunner" = 1),
-		"Squad 3" = list("Corpsman" = 2, "Sniper" = 1, "Machinegunner" = 1),
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
 		"none" = list("Medic" = 2, "Officer" = 3)
 	)
 	var/list/squad_jobs_red = list(
-		"Squad 1" = list("Corpsman" = 2, "Sniper" = 1, "Machinegunner" = 1),
-		"Squad 2" = list("Corpsman" = 2, "Sniper" = 1, "Machinegunner" = 1),
-		"Squad 3" = list("Corpsman" = 2, "Sniper" = 1, "Machinegunner" = 1),
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
 		"none" = list("Medic" = 2, "Officer" = 3)
 	)
 obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
@@ -129,7 +133,9 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
 				continue
-			if(findtext(job.title, "BAF Squad [job.squad] Sniper") && MC.squad_jobs_blue["Squad [job.squad]"]["Sniper"]<= 0)
+			if(findtext(job.title, "BAF Armored Commander") && MC.faction2_squad_leaders[4])
+				continue
+			if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
 				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
@@ -142,7 +148,9 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
 				continue
-			if(findtext(job.title, "RDF Squad [job.squad] Sniper") && MC.squad_jobs_red["Squad [job.squad]"]["Sniper"]<= 0)
+			if(findtext(job.title, "RDF Armored Commander") && MC.faction1_squad_leaders[4])
+				continue
+			if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
 				continue
 			if(findtext(job.title, "RDF Squad [job.squad] Machinegunner") && MC.squad_jobs_red["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
@@ -154,8 +162,11 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				extra_span = "<br><b><font size=2>"
 				end_extra_span = "</font></b>"
 			else if (job.is_commander)
-				extra_span = "<font size=3>"
-				end_extra_span = "</font></b><br><br>"
+				extra_span = "<br><font size=3>"
+				end_extra_span = "</font>"
+			else if (job.is_medic || !findtext(job.title, "Squad"))
+				extra_span = "<br>"
+				end_extra_span = ""
 
 			dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
 			++available_jobs_per_side[job.base_type_flag()]

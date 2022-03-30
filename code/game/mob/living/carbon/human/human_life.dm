@@ -1553,7 +1553,17 @@
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 				else
-					holder2.overlays += icon(holder2.icon,"squad_[squad]")
+					if(map.ID == MAP_CAMPAIGN)
+						if(squad == 4)
+							holder2.overlays += icon(holder2.icon,"squad_recon")
+						else if (squad == 5)
+							holder2.overlays += icon(holder2.icon,"squad_armoured")
+						else
+							holder2.overlays += icon(holder2.icon,"squad_[squad]")
+						if(original_job_title == "Squad Leader")
+							holder2.overlays += icon(holder2.icon,"officer")
+					else
+						holder2.overlays += icon(holder2.icon,"squad_[squad]")
 					if(original_job_title == "Squad Leader")
 						holder2.overlays += icon(holder2.icon,"officer")
 
