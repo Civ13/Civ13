@@ -200,6 +200,7 @@ var/global/datum/controller/occupations/job_master
 	if (H.original_job && H.original_job.uses_squads)
 		var/mob/living/human/HSL = null
 		if(H.original_job.is_squad_leader)
+			spawn (10)
 			for(var/mob/living/human/HM in world)
 				if(HM.original_job.is_commander && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
 					HSL = HM
