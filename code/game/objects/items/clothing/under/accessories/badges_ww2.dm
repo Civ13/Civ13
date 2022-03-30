@@ -3,7 +3,7 @@
 	ripable = FALSE
 	item_icons = 'icons/mob/badge.dmi'
 	flags = CONDUCT
-	
+
 /obj/item/clothing/accessory/medal/bronze
 	icon_state = "bronze"
 	worn_state = "bronze"
@@ -229,13 +229,27 @@
 /obj/item/clothing/accessory/rank
 	ripable = FALSE
 	slot = "decor"
-
+////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_nitohei
 	icon_state = "jap_nitohei"
 	item_state = "jap_nitohei"
 	worn_state = "jap_nitohei"
 	name = "Nitohei rank patch"
 	desc = "the rank of 2nd class soldier, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/jap_nitohei/update_icon()
+	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+		icon_state = "jap_nitohei_1937"
+		item_state = "jap_nitohei_1937"
+		worn_state = "jap_nitohei_1937"
+	else
+		icon_state = "jap_nitohei"
+		item_state = "jap_nitohei"
+		worn_state = "jap_nitohei"
+/obj/item/clothing/accessory/rank/jap_nitohei/New()
+	..()
+	update_clothing_icon()
+//////////////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/accessory/rank/jap_ittohei
 	icon_state = "jap_ittohei"
@@ -244,6 +258,20 @@
 	name = "Ittohei rank patch"
 	desc = "the rank of 1st class soldier, to be sewn into the collar of a uniform."
 
+/obj/item/clothing/accessory/rank/jap_ittohei/update_icon()
+	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+		icon_state = "jap_ittohei_1937"
+		item_state = "jap_ittohei_1937"
+		worn_state = "jap_ittohei_1937"
+	else
+		icon_state = "jap_ittohei"
+		item_state = "jap_ittohei"
+		worn_state = "jap_ittohei"
+/obj/item/clothing/accessory/rank/jap_ittohei/New()
+	..()
+	update_clothing_icon()
+
+/////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_jotohei
 	icon_state = "jap_jotohei"
 	item_state = "jap_jotohei"
@@ -251,6 +279,19 @@
 	name = "Jotohei rank patch"
 	desc = "the rank of senior soldier (lance corporal or specialist), to be sewn into the collar of a uniform."
 
+/obj/item/clothing/accessory/rank/jap_jotohei/update_icon()
+	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+		icon_state = "jap_jotohei_1937"
+		item_state = "jap_jotohei_1937"
+		worn_state = "jap_jotohei_1937"
+	else
+		icon_state = "jap_jotohei"
+		item_state = "jap_jotohei"
+		worn_state = "jap_jotohei"
+/obj/item/clothing/accessory/rank/jap_jotohei/New()
+	..()
+	update_clothing_icon()
+////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_gunso
 	icon_state = "jap_gunso"
 	item_state = "jap_gunso"
@@ -258,6 +299,20 @@
 	name = "Gunso rank patch"
 	desc = "the rank of Gunso, squad leader or sergeanr, to be sewn into the collar of a uniform."
 
+/obj/item/clothing/accessory/rank/jap_gunso/update_icon()
+	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+		icon_state = "jap_gunso_1937"
+		item_state = "jap_gunso_1937"
+		worn_state = "jap_gunso_1937"
+	else
+		icon_state = "jap_gunso"
+		item_state = "jap_gunso"
+		worn_state = "jap_gunso"
+/obj/item/clothing/accessory/rank/jap_gunso/New()
+	..()
+	update_clothing_icon()
+
+/////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_2lt
 	icon_state = "jap_2lt"
 	item_state = "jap_2lt"
@@ -265,6 +320,20 @@
 	name = "Shoi rank patch"
 	desc = "the rank of Shoi, 2nd Lieutenant, to be sewn into the collar of a uniform."
 
+/obj/item/clothing/accessory/rank/jap_2lt/update_icon()
+	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+		icon_state = "jap_2lt_1937"
+		item_state = "jap_2lt_1937"
+		worn_state = "jap_2lt_1937"
+	else
+		icon_state = "jap_2lt"
+		item_state = "jap_2lt"
+		worn_state = "jap_2lt"
+/obj/item/clothing/accessory/rank/jap_2lt/New()
+	..()
+	update_clothing_icon()
+
+////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_1lt
 	icon_state = "jap_1lt"
 	item_state = "jap_1lt"
@@ -272,12 +341,38 @@
 	name = "Chui rank patch"
 	desc = "the rank of Chui, 1st Lieutenant, to be sewn into the collar of a uniform."
 
+/obj/item/clothing/accessory/rank/jap_1lt/update_icon()
+	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+		icon_state = "jap_1lt_1937"
+		item_state = "jap_1lt_1937"
+		worn_state = "jap_1lt_1937"
+	else
+		icon_state = "jap_1lt"
+		item_state = "jap_1lt"
+		worn_state = "jap_1lt"
+/obj/item/clothing/accessory/rank/jap_1lt/New()
+	..()
+	update_clothing_icon()
+
+///////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_taii
 	icon_state = "jap_taii"
 	item_state = "jap_taii"
 	worn_state = "jap_taii"
 	name = "Tai-i rank patch"
 	desc = "the rank of Rikugun Tai-i, Captain, to be sewn into the collar of a uniform."
+/obj/item/clothing/accessory/rank/jap_taii/update_icon()
+	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+		icon_state = "jap_taii_1937"
+		item_state = "jap_taii_1937"
+		worn_state = "jap_taii_1937"
+	else
+		icon_state = "jap_taii"
+		item_state = "jap_taii"
+		worn_state = "jap_taii"
+/obj/item/clothing/accessory/rank/jap_taii/New()
+	..()
+	update_clothing_icon()
 
 //---------------------------------------------------------------------------
 

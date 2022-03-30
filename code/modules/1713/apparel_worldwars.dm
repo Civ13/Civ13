@@ -648,32 +648,164 @@
 	item_state = "ww2_japuni"
 	worn_state = "ww2_japuni"
 	var/rolled = FALSE
+	var/stripped = FALSE
 
+/obj/item/clothing/under/ww2/japuni/update_icon()
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
+		worn_state = "1937_japuni"
+		item_state = "1937_japuni"
+		icon_state = "1937_japuni"
+	else
+		worn_state = "ww2_japuni"
+		item_state = "ww2_japuni"
+		icon_state = "ww2_japuni"
 /obj/item/clothing/under/ww2/japuni/verb/roll_sleeves()
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/under/ww2/japuni)
 		return
 	else
-		if (rolled)
-			worn_state = "ww2_japuni"
-			item_state = "ww2_japuni"
-			icon_state = "ww2_japuni"
-			item_state_slots["w_uniform"] = "ww2_japuni"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
-			rolled = FALSE
-			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-			update_clothing_icon()
-		else if (!rolled)
-			worn_state = "ww2_japuni_rolled"
-			item_state = "ww2_japuni_rolled"
-			icon_state = "ww2_japuni_rolled"
-			item_state_slots["w_uniform"] = "ww2_japuni_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
-			rolled = TRUE
-			heat_protection = ARMS
-			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
-			update_clothing_icon()
+		if (!stripped)
+			if (rolled)
+				if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+					worn_state = "1937_japuni"
+					item_state = "1937_japuni"
+					icon_state = "1937_japuni"
+					item_state_slots["w_uniform"] = "1937_japuni"
+					usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+					rolled = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "ww2_japuni"
+					item_state = "ww2_japuni"
+					icon_state = "ww2_japuni"
+					item_state_slots["w_uniform"] = "ww2_japuni"
+					usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+					rolled = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+			if (!rolled)
+				if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+					worn_state = "1937_japuni_rolled"
+					item_state = "1937_japuni_rolled"
+					icon_state = "1937_japuni_rolled"
+					item_state_slots["w_uniform"] = "1937_japuni_rolled"
+					usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+					rolled = TRUE
+					heat_protection = ARMS
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "ww2_japuni_rolled"
+					item_state = "ww2_japuni_rolled"
+					icon_state = "ww2_japuni_rolled"
+					item_state_slots["w_uniform"] = "ww2_japuni_rolled"
+					usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+					rolled = TRUE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+		else
+			if (rolled)
+				worn_state = "japuni_summer"
+				item_state = "japuni_summer"
+				icon_state = "japuni_summer"
+				item_state_slots["w_uniform"] = "japuni_summer"
+				usr << "<span class = 'danger'>You roll down your jyuban's sleeves.</span>"
+				rolled = FALSE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+			else
+				worn_state = "japuni_summer_rolled"
+				item_state = "japuni_summer_rolled"
+				icon_state = "japuni_summer_rolled"
+				item_state_slots["w_uniform"] = "japuni_summer_rolled"
+				usr << "<span class = 'danger'>You roll up your jyuban's sleeves.</span>"
+				rolled = TRUE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+/obj/item/clothing/under/ww2/japuni/verb/strip()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/japuni)
+		return
+	else
+		if (stripped)
+			if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+				if (!rolled)
+					worn_state = "1937_japuni"
+					item_state = "1937_japuni"
+					icon_state = "1937_japuni"
+					item_state_slots["w_uniform"] = "1937_japuni"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "1937_japuni_rolled"
+					item_state = "1937_japuni_rolled"
+					icon_state = "1937_japuni_rolled"
+					item_state_slots["w_uniform"] = "1937_japuni_rolled"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+			else
+				if (!rolled)
+					worn_state = "ww2_japuni"
+					item_state = "ww2_japuni"
+					icon_state = "ww2_japuni"
+					item_state_slots["w_uniform"] = "ww2_japuni"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "ww2_japuni_rolled"
+					item_state = "ww2_japuni_rolled"
+					icon_state = "ww2_japuni_rolled"
+					item_state_slots["w_uniform"] = "1937_japuni_rolled"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+		else
+			if (!rolled)
+				worn_state = "japuni_summer"
+				item_state = "japuni_summer"
+				icon_state = "japuni_summer"
+				item_state_slots["w_uniform"] = "japuni_summer"
+				usr << "<span class = 'danger'>You strip to your jyuban.</span>"
+				stripped = TRUE
+				heat_protection = ARMS
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+				update_clothing_icon()
+				return
+			else
+				worn_state = "japuni_summer_rolled"
+				item_state = "japuni_summer_rolled"
+				icon_state = "japuni_summer_rolled"
+				item_state_slots["w_uniform"] = "japuni_summer_rolled"
+				usr << "<span class = 'danger'>You strip to your jyuban.</span>"
+				stripped = TRUE
+				heat_protection = ARMS
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+				update_clothing_icon()
+				return
+
+/obj/item/clothing/under/ww2/japuni/New()
+	..()
+	update_clothing_icon()
 
 /obj/item/clothing/under/ww2/japuni_snlf
 	name = "japanese uniform"
@@ -708,52 +840,6 @@
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
-
-/obj/item/clothing/under/ww2/japuni_summer
-	name = "japanese uniform"
-	desc = "A imperial japanese army uniform. This one meant for tropical warm climates."
-	icon_state = "japuni_summer"
-	item_state = "ww2_japuni"
-	worn_state = "ww2_japuni"
-	heat_protection = ARMS|UPPER_TORSO|LOWER_TORSO|LEGS
-
-obj/item/clothing/under/ww2/japuni_med
-	name = "japanese medic uniform"
-	desc = "A imperial japanese army uniform, this one bears the rank of a medic."
-	icon_state = "japuni_med"
-	item_state = "japuni_med"
-	worn_state = "japuni_med"
-	var/rolled = FALSE
-
-obj/item/clothing/under/ww2/japuni_med/verb/roll_sleeves()
-	set category = null
-	set src in usr
-	if (type != /obj/item/clothing/under/ww2/japuni_med)
-		return
-	else
-		if (rolled)
-			worn_state = "japuni_med"
-			item_state = "japuni_med"
-			icon_state = "japuni_med"
-			item_state_slots["w_uniform"] = "japuni_med"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
-			rolled = FALSE
-			update_clothing_icon()
-		else if (!rolled)
-			worn_state = "japuni_med_rolled"
-			item_state = "japuni_med_rolled"
-			icon_state = "japuni_med_rolled"
-			item_state_slots["w_uniform"] = "japuni_med_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
-			rolled = TRUE
-			update_clothing_icon()
-
-obj/item/clothing/under/ww2/japuni_mp
-	name = "japanese Kenpeitai uniform"
-	desc = "A imperial japanese army uniform, this one bears the rank of a military police."
-	icon_state = "japuni_mp"
-	item_state = "japuni_mp"
-	worn_state = "japuni_mp"
 
 obj/item/clothing/under/ww2/japuni_tanker
 	name = "japanese tanker uniform"
