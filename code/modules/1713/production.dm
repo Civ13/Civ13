@@ -9,6 +9,7 @@
 /var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items.
 //TO DO TODO: Make this proc global using
 /mob/living/human/var/tmp/last_mood_check = 0
+
 /mob/living/human/proc/in_mood(no_mood_check_treshold = 38.5)
 	//checking mood for doing anything
 	if (world.timeofday<src.last_mood_check) //prevent mood check spam

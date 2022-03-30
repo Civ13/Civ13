@@ -1037,6 +1037,18 @@ var/list/atom_types = null
 			if (findtext(i, "="))
 				var/list/current = splittext(i, "=")
 				whitelist_list += current[1]
+	var/F3 = file("SQL/factionlist.txt")
+	if (fexists(F3))
+		faction_list_blue = list()
+		faction_list_red = list()
+		var/list/flist_temp = file2list(F3,"\n")
+		for (var/i in flist_temp)
+			if (findtext(i, "="))
+				var/list/current = splittext(i, "=")
+				if (current[2] == "red")
+					faction_list_red += current[1]
+				else if (current[2] == "blue")
+					faction_list_blue += current[1]
 
 /client/proc/reload_bans()
 	set name = "Update Bans"

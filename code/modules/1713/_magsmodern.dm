@@ -18,6 +18,16 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak101
+	name = "AK-101 Magazine (5.46x45mm)"
+	icon_state = "ak47"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 30
+	weight = 0.35
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ak74/ak74m
 	name = "AK-74M Magazine (5.45x39mm)"
 	icon_state = "ak74m"
