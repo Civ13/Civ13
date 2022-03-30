@@ -15,14 +15,13 @@
 /datum/job/pirates/redfaction/medic
 	title = "RDF Medic"
 	is_medic = TRUE
-
-/datum/job/pirates/redfaction/s1
-	title = "RDF Squad 1 Private"
-	squad = 1
 /datum/job/pirates/redfaction/s1/sl
 	title = "RDF Squad 1 Squadleader"
 	squad = 1
 	is_squad_leader = TRUE
+/datum/job/pirates/redfaction/s1
+	title = "RDF Squad 1 Private"
+	squad = 1
 /datum/job/pirates/redfaction/s1/corpsman
 	title = "RDF Squad 1 Corpsman"
 	is_medic = TRUE
@@ -30,14 +29,13 @@
 /datum/job/pirates/redfaction/s1/machinegunner
 	title = "RDF Squad 1 Machinegunner"
 	squad = 1
-
-/datum/job/pirates/redfaction/s2
-	title = "RDF Squad 2 Private"
-	squad = 2
 /datum/job/pirates/redfaction/s2/sl
 	title = "RDF Squad 2 Squadleader"
 	squad = 2
 	is_squad_leader = TRUE
+/datum/job/pirates/redfaction/s2
+	title = "RDF Squad 2 Private"
+	squad = 2
 /datum/job/pirates/redfaction/s2/corpsman
 	title = "RDF Squad 2 Corpsman"
 	is_medic = TRUE
@@ -45,7 +43,7 @@
 /datum/job/pirates/redfaction/s2/machinegunner
 	title = "RDF Squad 2 Machinegunner"
 	squad = 2
-
+/*
 /datum/job/pirates/redfaction/s3
 	title = "RDF Squad 3 Private"
 	squad = 3
@@ -60,6 +58,7 @@
 /datum/job/pirates/redfaction/s3/machinegunner
 	title = "RDF Squad 3 Machinegunner"
 	squad = 3
+	*/
 /datum/job/pirates/redfaction/recon
 	title = "RDF Recon"
 	squad = 4
