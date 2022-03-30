@@ -885,8 +885,8 @@
 
 	give_random_name(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/rank/jap_nitohei = new /obj/item/clothing/accessory/rank/jap_nitohei(null)
-		uniform.attackby(jap_nitohei, H)
+	var/obj/item/clothing/accessory/rank/jap_nitohei/jap_nitohei = new/obj/item/clothing/accessory/rank/jap_nitohei(null)
+	uniform.attackby(jap_nitohei, H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
