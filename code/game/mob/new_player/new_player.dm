@@ -407,41 +407,8 @@ var/global/redirect_all_players = null
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return TRUE
 
-		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
-			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
-			if (check_rights(R_ADMIN, FALSE, src))
-				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
-					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
-					log_admin(msg)
-					message_admins(msg)
-					var/factjob = "null"
-					for (var/i in faction_list_red)
-						var/temp_ckey = lowertext(i)
-						temp_ckey = replacetext(temp_ckey," ", "")
-						temp_ckey = replacetext(temp_ckey,"_", "")
-						if (temp_ckey == client.ckey)
-							factjob = "Red Faction"
-					if (factjob == "null")
-						for (var/i in faction_list_blue)
-							var/temp_ckey = lowertext(i)
-							temp_ckey = replacetext(temp_ckey," ", "")
-							temp_ckey = replacetext(temp_ckey,"_", "")
-							if (temp_ckey == client.ckey)
-								factjob = "Blue Faction"
-
-					if (factjob != "null")
-						if (factjob == "Blue Faction" && !civilians_toggled)
-							WWalert(src, "Your faction is currently admin disabled.")
-							return TRUE
-
-						if (factjob == "Red Faction" && !pirates_toggled)
-							WWalert(src, "Your faction is currently admin disabled.")
-							return TRUE
-						AttemptLateSpawn(factjob)
-					else
-						WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Check the discord for more information.")
-						return
-					return TRUE
+		if (client.next_normal_respawn > world.realtime)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/10)
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
@@ -451,18 +418,18 @@ var/global/redirect_all_players = null
 			temp_ckey = replacetext(temp_ckey," ", "")
 			temp_ckey = replacetext(temp_ckey,"_", "")
 			if (temp_ckey == client.ckey)
-				factjob = "Red Faction"
+				factjob = "RDF"
 		if (factjob == "null")
 			for (var/i in faction_list_blue)
 				var/temp_ckey = lowertext(i)
 				temp_ckey = replacetext(temp_ckey," ", "")
 				temp_ckey = replacetext(temp_ckey,"_", "")
 				if (temp_ckey == client.ckey)
-					factjob = "Blue Faction"
+					factjob = "BAF"
 
 		if (factjob != "null")
-			//LateChoicesCampaign(factjob)
-			AttemptLateSpawn(factjob)
+			LateChoicesCampaign(factjob)
+			//AttemptLateSpawn(factjob)
 		else
 			WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Check the discord for more information.")
 			return
@@ -513,6 +480,60 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["SelectedJob"])
+		if(findtext(href_list["SelectedJob"],"BAF"))
+			var/obj/map_metadata/campaign/MC = map
+			if(findtext(href_list["SelectedJob"],"Squad 1"))
+				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MC.squad_jobs_blue["Squad 1"]["Sniper"]--
+				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MC.squad_jobs_blue["Squad 1"]["Machinegunner"]--
+
+			else if(findtext(href_list["SelectedJob"],"Squad 2"))
+				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MC.squad_jobs_blue["Squad 2"]["Sniper"]--
+				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MC.squad_jobs_blue["Squad 2"]["Machinegunner"]--
+
+			else if(findtext(href_list["SelectedJob"],"Squad 3"))
+				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MC.squad_jobs_blue["Squad 3"]["Sniper"]--
+				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MC.squad_jobs_blue["Squad 3"]["Machinegunner"]--
+
+			else if(findtext(href_list["SelectedJob"],"BAF Medic"))
+				MC.squad_jobs_blue["none"]["Medic"]--
+
+			else if(findtext(href_list["SelectedJob"],"BAF Officer"))
+				MC.squad_jobs_blue["none"]["Officer"]--
+			AttemptLateSpawn(href_list["SelectedJob"])
+			return
+		else if (findtext(href_list["SelectedJob"],"RDF"))
+			var/obj/map_metadata/campaign/MC = map
+			if(findtext(href_list["SelectedJob"],"Squad 1"))
+				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MC.squad_jobs_red["Squad 1"]["Sniper"]--
+				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MC.squad_jobs_red["Squad 1"]["Machinegunner"]--
+
+			else if(findtext(href_list["SelectedJob"],"Squad 2"))
+				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MC.squad_jobs_red["Squad 2"]["Sniper"]--
+				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MC.squad_jobs_red["Squad 2"]["Machinegunner"]--
+
+			else if(findtext(href_list["SelectedJob"],"Squad 3"))
+				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MC.squad_jobs_red["Squad 3"]["Sniper"]--
+				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MC.squad_jobs_red["Squad 3"]["Machinegunner"]--
+
+			else if(findtext(href_list["SelectedJob"],"RDF Medic"))
+				MC.squad_jobs_red["none"]["Medic"]--
+
+			else if(findtext(href_list["SelectedJob"],"RDF Officer"))
+				MC.squad_jobs_red["none"]["Officer"]--
+			AttemptLateSpawn(href_list["SelectedJob"])
+			return
 		if(href_list["SelectedJob"] == "Company Member")
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return

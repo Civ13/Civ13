@@ -411,62 +411,7 @@ var/global/datum/controller/occupations/job_master
 					H.default_language = A
 				if (prob(15))
 					H.add_language("Russian",FALSE)
-				spawn(1)
-					var/input_msg = WWinput(H, "Welcome, [H.client.ckey]. What squad do you want to join?", "Squad Selector", "Random", list("One","Two","Three","Random","None"))
-					switch(input_msg)
-						if("Random")
-							H.squad = pick(1,2,3)
-							if (!map.faction1_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction1_squad_leaders[H.squad] = H
-							if(map.faction1_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction1_squads[H.squad] += list(H)
 
-						if("One")
-							H.squad = 1
-							if (!map.faction1_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction1_squad_leaders[H.squad] = H
-							if(map.faction1_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction1_squads[H.squad] += list(H)
-						if("Two")
-							H.squad = 2
-							if (!map.faction1_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction1_squad_leaders[H.squad] = H
-							if(map.faction1_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction1_squads[H.squad] += list(H)
-
-						if("Three")
-							H.squad = 3
-							if (!map.faction1_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction1_squad_leaders[H.squad] = H
-							if(map.faction1_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction1_squads[H.squad] += list(H)
-
-						if("None")
-							H.squad = 0
 			else if (istype(job, /datum/job/civilian/bluefaction))
 				H.remove_language("English")
 				H.add_language("Russian",FALSE)
@@ -474,60 +419,7 @@ var/global/datum/controller/occupations/job_master
 					H.default_language = A
 				if (prob(15))
 					H.add_language("Greek",FALSE)
-				spawn(1)
-					var/input_msg = WWinput(H, "Welcome, [H.client.ckey]. What squad do you want to join?", "Squad Selector", "Random", list("One","Two","Three","Random","None"))
-					switch(input_msg)
-						if("Random")
-							H.squad = pick(1,2,3)
-							if (!map.faction2_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction2_squad_leaders[H.squad] = H
-							if(map.faction2_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction2_squads[H.squad] += list(H)
-						if("One")
-							H.squad = 1
-							if (!map.faction2_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction2_squad_leaders[H.squad] = H
-							if(map.faction2_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction2_squads[H.squad] += list(H)
-						if("Two")
-							H.squad = 2
-							if (!map.faction2_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction2_squad_leaders[H.squad] = H
-							if(map.faction2_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction2_squads[H.squad] += list(H)
-						if("Three")
-							H.squad = 3
-							if (!map.faction2_squad_leaders[H.squad])
-								var/input_msg2 = WWinput(H, "Squad leader slot is free. Do you want to become the SL?", "Squad Selector", "No", list("Yes","No"))
-								if(input_msg2 == "Yes")
-									map.faction2_squad_leaders[H.squad] = H
-							if(map.faction2_squad_leaders[H.squad] == H)
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Sgt. [H.real_name]")
-								H.original_job_title = "Squad Leader"
-							else
-								H.fully_replace_character_name(H.real_name,"[H.squad]-Pvt. [H.real_name]")
-							map.faction2_squads[H.squad] += list(H)
 
-						if("None")
-							H.squad = 0
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
 		H.original_job_title = H.original_job.title

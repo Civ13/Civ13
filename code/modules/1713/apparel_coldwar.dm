@@ -903,6 +903,27 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue
+	New()
+		..()
+		new/obj/item/ammo_magazine/sksm(src)
+		new/obj/item/ammo_magazine/sksm(src)
+		new/obj/item/ammo_magazine/sksm(src)
+		new/obj/item/ammo_magazine/sksm(src)
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(src)
+		new/obj/item/ammo_magazine/ak47(src)
+		new/obj/item/ammo_magazine/ak47(src)
+		new/obj/item/ammo_magazine/ak47(src)
+/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(src)
+		new/obj/item/ammo_magazine/mosin(src)
+		new/obj/item/ammo_magazine/mosin(src)
+		new/obj/item/ammo_magazine/mosin(src)
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."

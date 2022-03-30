@@ -368,6 +368,14 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/pasgt/com
+	icon_state = "pasgt_woodland_com"
+	item_state = "pasgt_woodland_com"
+	worn_state = "pasgt_woodland_com"
+/obj/item/clothing/head/helmet/modern/pasgt/sl
+	icon_state = "pasgt_woodland_sl"
+	item_state = "pasgt_woodland_sl"
+	worn_state = "pasgt_woodland_sl"
 /obj/item/clothing/head/helmet/modern/pasgt/desert
 	name = "PASGT helmet"
 	desc = "A typical US Army PASGT helmet. This one is in U.S. Desert pattern."
@@ -451,6 +459,16 @@
 	icon_state = "ach_green"
 	item_state = "ach_green"
 	worn_state = "ach_green"
+
+/obj/item/clothing/head/helmet/modern/ach/green/com
+	icon_state = "ach_green_com"
+	item_state = "ach_green_com"
+	worn_state = "ach_green_com"
+
+/obj/item/clothing/head/helmet/modern/ach/green/sl
+	icon_state = "ach_green_sl"
+	item_state = "ach_green_sl"
+	worn_state = "ach_green_sl"
 	/* US Army Clothing*/
 
 /obj/item/clothing/under/us_uni/us_camo_dcu
