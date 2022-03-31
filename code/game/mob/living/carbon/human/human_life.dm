@@ -1558,6 +1558,8 @@
 							holder2.overlays += icon(holder2.icon,"squad_recon")
 						else if (squad == 5)
 							holder2.overlays += icon(holder2.icon,"squad_armoured")
+						else if (squad == 6)
+							holder2.overlays += icon(holder2.icon,"squad_at")
 						else
 							holder2.overlays += icon(holder2.icon,"squad_[squad]")
 						if(original_job_title == "Squad Leader")

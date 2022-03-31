@@ -487,24 +487,35 @@ var/global/redirect_all_players = null
 					MC.squad_jobs_blue["Squad 1"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
 					MC.squad_jobs_blue["Squad 1"]["Machinegunner"]--
+				if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+					MC.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
 
 			else if(findtext(href_list["SelectedJob"],"Squad 2"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
 					MC.squad_jobs_blue["Squad 2"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
 					MC.squad_jobs_blue["Squad 2"]["Machinegunner"]--
+				if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+					MC.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
 
 			else if(findtext(href_list["SelectedJob"],"Squad 3"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
 					MC.squad_jobs_blue["Squad 3"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
 					MC.squad_jobs_blue["Squad 3"]["Machinegunner"]--
+				if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+					MC.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
 
 			else if(findtext(href_list["SelectedJob"],"BAF Medic"))
 				MC.squad_jobs_blue["none"]["Medic"]--
 
 			else if(findtext(href_list["SelectedJob"],"BAF Officer"))
 				MC.squad_jobs_blue["none"]["Officer"]--
+
+			else if(findtext(href_list["SelectedJob"],"BAF Recon"))
+				MC.squad_jobs_blue["Recon"]["Sniper"]--
+			else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
+				MC.squad_jobs_blue["AT"]["Anti-Tank"]--
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
 		else if (findtext(href_list["SelectedJob"],"RDF"))
@@ -532,6 +543,11 @@ var/global/redirect_all_players = null
 
 			else if(findtext(href_list["SelectedJob"],"RDF Officer"))
 				MC.squad_jobs_red["none"]["Officer"]--
+
+			else if(findtext(href_list["SelectedJob"],"RDF Recon"))
+				MC.squad_jobs_red["Recon"]["Sniper"]--
+			else if(findtext(href_list["SelectedJob"],"RDF Anti-Tank"))
+				MC.squad_jobs_red["AT"]["Anti-Tank"]--
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
 		if(href_list["SelectedJob"] == "Company Member")

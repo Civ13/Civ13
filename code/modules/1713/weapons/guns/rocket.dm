@@ -117,6 +117,7 @@
 	item_state = "rpg"
 	slot_flags = SLOT_SHOULDER
 	force = 10
+	load_delay = 45
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/update_icon()
 	..()

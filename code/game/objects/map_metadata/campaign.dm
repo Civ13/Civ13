@@ -20,7 +20,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
 	battle_name = "R03 road"
-	mission_start_message = "<font size=4><b>30 minutes</b> until the battle begins.</font>"
+	mission_start_message = "<font size=4><b>20 minutes</b> until the battle begins.</font>"
 	faction1 = PIRATES
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -29,11 +29,12 @@
 	artillery_count = 0
 
 	var/list/squad_jobs_blue = list(
-		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
-		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
-		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
 		"Recon" = list("Sniper" = 4),
 		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 2),
 		"none" = list("Medic" = 2, "Officer" = 3)
 	)
 	var/list/squad_jobs_red = list(
@@ -42,6 +43,7 @@
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
 		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 2),
 		"none" = list("Medic" = 2, "Officer" = 3)
 	)
 obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
@@ -63,10 +65,10 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/campaign/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/campaign/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/campaign/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
@@ -137,7 +139,11 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
 				continue
+			if(findtext(job.title, "BAF Anti-Tank") && MC.squad_jobs_blue["AT"]["Anti-Tank"]<= 0)
+				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
+				continue
+			if(findtext(job.title, "BAF Squad [job.squad] Des. Marksman") && MC.squad_jobs_blue["Squad [job.squad]"]["Des. Marksman"]<= 0)
 				continue
 		else if (factjob == "RDF")
 			if(!findtext(job.title, "RDF"))
@@ -152,6 +158,8 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
 				continue
+			if(findtext(job.title, "RDF Anti-Tank") && MC.squad_jobs_red["AT"]["Anti-Tank"]<= 0)
+				continue
 			if(findtext(job.title, "RDF Squad [job.squad] Machinegunner") && MC.squad_jobs_red["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
 		if (job)
@@ -164,7 +172,7 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 			else if (job.is_commander)
 				extra_span = "<br><font size=3>"
 				end_extra_span = "</font>"
-			else if (job.is_medic || !findtext(job.title, "Squad"))
+			else if ((job.is_medic && !findtext(job.title, "Corpsman")) || !findtext(job.title, "Squad"))
 				extra_span = "<br>"
 				end_extra_span = ""
 
