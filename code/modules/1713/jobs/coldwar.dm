@@ -68,7 +68,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -146,7 +146,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/pickscarf = rand(1,2)
 	if (pickscarf == 1)
@@ -226,7 +226,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -336,7 +336,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -1232,7 +1232,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1293,7 +1293,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1368,7 +1368,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -1493,7 +1493,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 			else
-				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+				H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")

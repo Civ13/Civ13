@@ -1002,6 +1002,13 @@
 	opacity = FALSE
 	powerneeded = 0
 
+/obj/structure/floodlight/on
+	New()
+		..()
+		floodlighton = 1
+		set_light (8)
+		icon_state ="floodlight_on"
+
 /obj/structure/floodlight/Destroy()
 	set_light (0)
 	..()

@@ -12,37 +12,47 @@
 /datum/job/pirates/redfaction/commander
 	is_commander = TRUE
 	title = "RDF Officer"
+	rank_abbreviation = "Officer"
 /datum/job/pirates/redfaction/medic
 	title = "RDF Medic"
 	is_medic = TRUE
+	rank_abbreviation = "Dr."
 /datum/job/pirates/redfaction/s1/sl
 	title = "RDF Squad 1 Squadleader"
 	squad = 1
 	is_squad_leader = TRUE
+	rank_abbreviation = "1-Sgt"
 /datum/job/pirates/redfaction/s1/pvt
 	title = "RDF Squad 1 Private"
 	squad = 1
+	rank_abbreviation = "1-Pvt"
 /datum/job/pirates/redfaction/s1/corpsman
 	title = "RDF Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
+	rank_abbreviation = "1-Corpsman"
 /datum/job/pirates/redfaction/s1/machinegunner
 	title = "RDF Squad 1 Machinegunner"
 	squad = 1
+	rank_abbreviation = "1-MG"
 /datum/job/pirates/redfaction/s2/sl
 	title = "RDF Squad 2 Squadleader"
 	squad = 2
 	is_squad_leader = TRUE
+	rank_abbreviation = "2-SL"
 /datum/job/pirates/redfaction/s2/pvt
 	title = "RDF Squad 2 Private"
 	squad = 2
+	rank_abbreviation = "2-Pvt"
 /datum/job/pirates/redfaction/s2/corpsman
 	title = "RDF Squad 2 Corpsman"
 	is_medic = TRUE
 	squad = 2
+	rank_abbreviation = "2-Corpsman"
 /datum/job/pirates/redfaction/s2/machinegunner
 	title = "RDF Squad 2 Machinegunner"
 	squad = 2
+	rank_abbreviation = "2-MG"
 /*
 /datum/job/pirates/redfaction/s3
 	title = "RDF Squad 3 Private"
@@ -62,16 +72,20 @@
 /datum/job/pirates/redfaction/recon
 	title = "RDF Recon"
 	squad = 4
+	rank_abbreviation = "4-Recon"
 /datum/job/pirates/redfaction/at
 	title = "RDF Anti-Tank"
 	squad = 6
+	rank_abbreviation = "6-AT"
 /datum/job/pirates/redfaction/armored/sl
 	title = "RDF Armored Commander"
 	squad = 5
 	is_squad_leader = TRUE
+	rank_abbreviation = "5-Tank Sgt"
 /datum/job/pirates/redfaction/armored/crew
 	title = "RDF Armored Crew"
 	squad = 5
+	rank_abbreviation = "5-Tank"
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -155,79 +169,100 @@
 /datum/job/civilian/bluefaction/commander
 	is_commander = TRUE
 	title = "BAF Officer"
+	rank_abbreviation = "Officer"
 /datum/job/civilian/bluefaction/medic
 	title = "BAF Medic"
 	is_medic = TRUE
+	rank_abbreviation = "Dr."
 
 /datum/job/civilian/bluefaction/s1/sl
 	title = "BAF Squad 1 Squadleader"
 	squad = 1
 	is_squad_leader = TRUE
+	rank_abbreviation = "1-Sgt"
 /datum/job/civilian/bluefaction/s1/pvt
 	title = "BAF Squad 1 Private"
 	squad = 1
+	rank_abbreviation = "1-Pvt"
 /datum/job/civilian/bluefaction/s1/corpsman
 	title = "BAF Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
+	rank_abbreviation = "1-Corpsman"
 /datum/job/civilian/bluefaction/s1/machinegunner
 	title = "BAF Squad 1 Machinegunner"
 	squad = 1
+	rank_abbreviation = "1-MG"
 /datum/job/civilian/bluefaction/s1/marksman
 	title = "BAF Squad 1 Des. Marksman"
 	squad = 1
+	rank_abbreviation = "1-DM"
 
 /datum/job/civilian/bluefaction/s2/sl
 	title = "BAF Squad 2 Squadleader"
 	squad = 2
 	is_squad_leader = TRUE
+	rank_abbreviation = "2-Sgt"
 /datum/job/civilian/bluefaction/s2/pvt
 	title = "BAF Squad 2 Private"
 	squad = 2
+	rank_abbreviation = "2-Pvt"
 /datum/job/civilian/bluefaction/s2/corpsman
 	title = "BAF Squad 2 Corpsman"
 	is_medic = TRUE
 	squad = 2
+	rank_abbreviation = "2-Corpsman"
 /datum/job/civilian/bluefaction/s2/machinegunner
 	title = "BAF Squad 2 Machinegunner"
 	squad = 2
+	rank_abbreviation = "2-MG"
 /datum/job/civilian/bluefaction/s2/marksman
 	title = "BAF Squad 2 Des. Marksman"
 	squad = 2
+	rank_abbreviation = "2-DM"
 
 /datum/job/civilian/bluefaction/s3/sl
 	title = "BAF Squad 3 Squadleader"
 	squad = 3
 	is_squad_leader = TRUE
+	rank_abbreviation = "3-Sgt"
 /datum/job/civilian/bluefaction/s3/pvt
 	title = "BAF Squad 3 Private"
 	squad = 3
+	rank_abbreviation = "3-Pvt"
 /datum/job/civilian/bluefaction/s3/corpsman
 	title = "BAF Squad 3 Corpsman"
 	is_medic = TRUE
 	squad = 3
+	rank_abbreviation = "3-Corpsman"
 /datum/job/civilian/bluefaction/s3/machinegunner
 	title = "BAF Squad 3 Machinegunner"
 	squad = 3
+	rank_abbreviation = "3-MG"
 /datum/job/civilian/bluefaction/s3/marksman
 	title = "BAF Squad 3 Des. Marksman"
 	squad = 3
+	rank_abbreviation = "3-DM"
 
 /datum/job/civilian/bluefaction/recon
 	title = "BAF Recon"
 	squad = 4
+	rank_abbreviation = "4-Recon"
 /datum/job/civilian/bluefaction/at
 	title = "BAF Anti-Tank"
 	squad = 6
-
+	rank_abbreviation = "6-AT"
+/*
 /datum/job/civilian/bluefaction/armored/sl
 	title = "BAF Armored Commander"
 	is_squad_leader = TRUE
 	squad = 5
+	rank_abbreviation = "5-Tank Sgt"
 /datum/job/civilian/bluefaction/armored/crew
 	title = "BAF Armored Crew"
 	squad = 5
-
+	rank_abbreviation = "5-Tank"
+*/
 /datum/job/civilian/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad

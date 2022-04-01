@@ -1131,6 +1131,7 @@
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
 		new/obj/item/weapon/attachment/bayonet/military(src)
 		new/obj/item/clothing/mask/gas/military(src)
+		new/obj/item/flashlight/militarylight(src)
 
 /obj/item/weapon/storage/belt/smallpouches/blue
 	icon_state = "smallpouches_olive"
@@ -1140,6 +1141,7 @@
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
 		new/obj/item/weapon/attachment/bayonet/military(src)
 		new/obj/item/clothing/mask/gas/military(src)
+		new/obj/item/flashlight/militarylight(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt/New()

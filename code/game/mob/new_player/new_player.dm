@@ -408,7 +408,7 @@ var/global/redirect_all_players = null
 			return TRUE
 
 		if (client.next_normal_respawn > world.realtime)
-			var/wait = ceil((client.next_normal_respawn-world.realtime)/10)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
