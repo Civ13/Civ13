@@ -621,7 +621,7 @@
 /datum/job/japanese/ija_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 //head
@@ -680,7 +680,7 @@
 /datum/job/japanese/ija_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform) // for now
 //head
@@ -734,7 +734,7 @@
 /datum/job/japanese/ija_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform) // for now
 //head
@@ -790,18 +790,17 @@
 /datum/job/japanese/ija_ww2infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	var/randhead = rand(1,3)
-	if (randhead == 1)
+	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (randhead == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_bandana(H), slot_head)
-	else if (randhead == 3)
+	else if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
 	var/randweap = rand(1,2)
@@ -873,7 +872,7 @@
 /datum/job/japanese/ija_ww2ATunit/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
@@ -920,18 +919,17 @@
 /datum/job/japanese/ija_machinegunner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	var/randhead = rand(1,3)
-	if (randhead == 1)
+	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (randhead == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_bandana(H), slot_head)
-	else if (randhead == 3)
+	else if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type99(H), slot_shoulder)
@@ -979,18 +977,17 @@
 /datum/job/japanese/ija_machinegunner_assistant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	var/randhead = rand(1,3)
-	if (randhead == 1)
+	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (randhead == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_bandana(H), slot_head)
-	else if (randhead == 3)
+	else if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
 	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
@@ -1044,18 +1041,17 @@
 /datum/job/japanese/ija_sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	var/randhead = rand(1,3)
-	if (randhead == 1)
+	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (randhead == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_bandana(H), slot_head)
-	else if (randhead == 3)
+	else if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
 	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
@@ -1107,7 +1103,7 @@
 /datum/job/japanese/ija_sergeant_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_tanker(H), slot_w_uniform)
 //head
@@ -1165,7 +1161,7 @@
 /datum/job/japanese/ija_ww2_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_tanker(H), slot_w_uniform)
@@ -1224,7 +1220,7 @@
 /datum/job/japanese/ija_camp_director/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 //head
@@ -1278,7 +1274,7 @@
 /datum/job/japanese/camp_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 //head
@@ -1331,7 +1327,7 @@
 /datum/job/japanese/camp_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform) // for now
 //head
@@ -1376,7 +1372,7 @@
 /datum/job/japanese/camp_guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 //head

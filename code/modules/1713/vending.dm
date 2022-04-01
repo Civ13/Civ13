@@ -376,6 +376,8 @@
 		/obj/item/clothing/under/ww2/japuni = 15,
 		/obj/item/clothing/suit/storage/coat/ww2/japcoat = 15,
 		/obj/item/clothing/head/ww2/japcap = 15,
+		/obj/item/havelock = 40,
+		/obj/item/puttees = 40,
 		/obj/item/clothing/head/helmet/ww2/japhelm = 15,
 		/obj/item/clothing/head/ww2/jap_headband = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
