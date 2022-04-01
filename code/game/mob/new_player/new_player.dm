@@ -511,7 +511,8 @@ var/global/redirect_all_players = null
 
 			else if(findtext(href_list["SelectedJob"],"BAF Officer"))
 				MC.squad_jobs_blue["none"]["Officer"]--
-
+			else if(findtext(href_list["SelectedJob"],"BAF Commander"))
+				MC.squad_jobs_blue["none"]["Commander"]--
 			else if(findtext(href_list["SelectedJob"],"BAF Recon"))
 				MC.squad_jobs_blue["Recon"]["Sniper"]--
 			else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
@@ -543,6 +544,8 @@ var/global/redirect_all_players = null
 
 			else if(findtext(href_list["SelectedJob"],"RDF Officer"))
 				MC.squad_jobs_red["none"]["Officer"]--
+			else if(findtext(href_list["SelectedJob"],"RDF Commander"))
+				MC.squad_jobs_red["none"]["Commander"]--
 
 			else if(findtext(href_list["SelectedJob"],"RDF Recon"))
 				MC.squad_jobs_red["Recon"]["Sniper"]--

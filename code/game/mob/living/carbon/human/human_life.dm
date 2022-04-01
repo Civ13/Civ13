@@ -1406,7 +1406,9 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					if (map && !map.battleroyale)
+					if (map.ID == MAP_CAMPAIGN)
+						holder2.icon_state = "redmenia"
+					else if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
 				if (BRITISH)
 					if (map.ordinal_age >= 4)
@@ -1502,7 +1504,7 @@
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
 					else if (map.ID == MAP_CAMPAIGN)
-						holder2.icon_state = "civ3"
+						holder2.icon_state = "blugoslavia"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
 					else if (original_job.is_upa && map.ID != MAP_OCCUPATION)
@@ -1556,30 +1558,45 @@
 					if(map.ID == MAP_CAMPAIGN)
 						if(squad == 4)
 							holder2.overlays += icon(holder2.icon,"squad_recon")
+							holder2.overlays += icon(holder2.icon,"i_cpl")
 						else if (squad == 5)
 							holder2.overlays += icon(holder2.icon,"squad_armoured")
 						else if (squad == 6)
 							holder2.overlays += icon(holder2.icon,"squad_at")
+							holder2.overlays += icon(holder2.icon,"i_cpl")
 						else
 							holder2.overlays += icon(holder2.icon,"squad_[squad]")
-						if(original_job_title == "Squad Leader")
-							holder2.overlays += icon(holder2.icon,"officer")
+						if(findtext(original_job_title,"Private"))
+							holder2.overlays += icon(holder2.icon,"rifleman")
+						if(findtext(original_job_title,"Des. Marksman"))
+							holder2.overlays += icon(holder2.icon,"i_cpl")
+							holder2.overlays += icon(holder2.icon,"designated_marksman")
+						if(findtext(original_job_title,"Machinegunner"))
+							holder2.overlays += icon(holder2.icon,"mg")
+							holder2.overlays += icon(holder2.icon,"i_cpl")
 					else
 						holder2.overlays += icon(holder2.icon,"squad_[squad]")
-					if(original_job_title == "Squad Leader")
+					if(findtext(original_job_title,"Officer"))
+						holder2.overlays += icon(holder2.icon,"i_lt")
+					else if(findtext(original_job_title,"Squadleader"))
+						holder2.overlays += icon(holder2.icon,"i_sgt")
+					else if(findtext(original_job_title,"Commander"))
+						holder2.overlays += icon(holder2.icon,"i_cpt")
+					else if(findtext(original_job_title,"Medic"))
+						holder2.overlays += icon(holder2.icon,"i_ssgt")
+					else if(findtext(original_job_title,"Corpsman"))
+						holder2.overlays += icon(holder2.icon,"i_cpl")
+			if (map.ID != MAP_CAMPAIGN)
+				if (original_job.is_commander)
+					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
+						holder2.icon_state = ""
+					else
+						holder2.overlays += icon(holder2.icon,"commander")
+				else if (original_job.is_officer || original_job.is_squad_leader)
+					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
+						holder2.icon_state = ""
+					else
 						holder2.overlays += icon(holder2.icon,"officer")
-
-
-			if (original_job.is_commander)
-				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
-					holder2.icon_state = ""
-				else
-					holder2.overlays += icon(holder2.icon,"commander")
-			else if (original_job.is_officer || original_job.is_squad_leader)
-				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
-					holder2.icon_state = ""
-				else
-					holder2.overlays += icon(holder2.icon,"officer")
 			else if (original_job.is_medic)
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2

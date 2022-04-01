@@ -549,6 +549,20 @@
 	item_state = "beret_rus_spez"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/beret_blugoslavia
+	name = "Blugoslavian beret"
+	desc = "A beret worn by Blugoslavian Officers."
+	icon_state = "beret_rus_vdv"
+	item_state = "beret_rus_vdv"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_redmenia
+	name = "Redmenian beret"
+	desc = "A beret worn by Redmenian Officers."
+	icon_state = "beret_rus_spez"
+	item_state = "beret_rus_spez"
+	body_parts_covered = HEAD
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -909,7 +923,19 @@
 		new/obj/item/ammo_magazine/sksm(hold)
 		new/obj/item/ammo_magazine/sksm(hold)
 		new/obj/item/ammo_magazine/sksm(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red
+	name = "khaki chest webbing"
+	desc = "A khaki chest-level webbing, with three medium sized pouches."
+	icon_state = "khaki_webbing"
+	item_state = "khaki_webbing"
 	New()
 		..()
 		new/obj/item/ammo_magazine/ak47(hold)
