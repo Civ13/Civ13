@@ -11,8 +11,12 @@
 
 /datum/job/pirates/redfaction/commander
 	is_commander = TRUE
+	title = "RDF Commander"
+	rank_abbreviation = "CO-Cpt."
+/datum/job/pirates/redfaction/officer
+	is_commander = TRUE
 	title = "RDF Officer"
-	rank_abbreviation = "Officer"
+	rank_abbreviation = "XO-Lt."
 /datum/job/pirates/redfaction/medic
 	title = "RDF Medic"
 	is_medic = TRUE
@@ -77,6 +81,10 @@
 	title = "RDF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
+/datum/job/pirates/redfaction/engineer
+	title = "RDF Engineer"
+	squad = 7
+	rank_abbreviation = "7-Engineer"
 /datum/job/pirates/redfaction/armored/sl
 	title = "RDF Armored Commander"
 	squad = 5
@@ -107,6 +115,11 @@
 	else if (findtext(title, "Officer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/com(H), slot_head)
+	else if (findtext(title, "Commander"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
+	else if (findtext(title, "Armored"))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
@@ -116,6 +129,8 @@
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/rpg(H), slot_back)
+	else if (findtext(title, "Armored"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/red, slot_l_store)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H), slot_shoulder)
@@ -134,6 +149,7 @@
 		uniform.attackby(medicalarm, H)
 	else if (findtext(title, "Medic"))
 		H.setStat("medical", STAT_VERY_HIGH)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
@@ -147,6 +163,8 @@
 			var/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/sniper(null)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 			uniform.attackby(webbing, H)
+		else if (findtext(title, "Engineer"))
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
 			var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red(null)
 			uniform.attackby(webbing, H)
@@ -168,8 +186,12 @@
 
 /datum/job/civilian/bluefaction/commander
 	is_commander = TRUE
+	title = "BAF Commander"
+	rank_abbreviation = "CO-Cpt."
+/datum/job/civilian/bluefaction/officer
+	is_commander = TRUE
 	title = "BAF Officer"
-	rank_abbreviation = "Officer"
+	rank_abbreviation = "XO-Lt."
 /datum/job/civilian/bluefaction/medic
 	title = "BAF Medic"
 	is_medic = TRUE
@@ -253,6 +275,10 @@
 	squad = 6
 	rank_abbreviation = "6-AT"
 /*
+/datum/job/civilian/bluefaction/engineer
+	title = "BAF Engineer"
+	squad = 7
+	rank_abbreviation = "7-Engineer"
 /datum/job/civilian/bluefaction/armored/sl
 	title = "BAF Armored Commander"
 	is_squad_leader = TRUE
@@ -283,6 +309,11 @@
 	else if (findtext(title, "Officer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green/com(H), slot_head)
+	else if (findtext(title, "Commander"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_blugoslavia(H), slot_head)
+	else if (findtext(title, "Armored"))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
@@ -295,9 +326,11 @@
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/rpg(H), slot_back)
+	else if (findtext(title, "Armored"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/blue, slot_l_store)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks/sksm(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H), slot_shoulder)
 	
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
@@ -314,6 +347,7 @@
 		uniform.attackby(medicalarm, H)
 	else if (findtext(title, "Medic"))
 		H.setStat("medical", STAT_VERY_HIGH)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
@@ -321,14 +355,20 @@
 	else
 		if (findtext(title, "Machinegunner"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
-		else if (findtext(title, "Sniper") || findtext(title, "Recon") || findtext(title, "Des. Marksman"))
+		else if (findtext(title, "Sniper") || findtext(title, "Recon"))
 			H.setStat("rifle", STAT_MEDIUM_HIGH)
 			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 			var/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/sniper(null)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue(H), slot_belt)
 			uniform.attackby(webbing, H)
-		else
+		else if  (findtext(title, "Des. Marksman"))
 			var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue(null)
+			uniform.attackby(webbing, H)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue(H), slot_belt)
+		else if (findtext(title, "Engineer"))
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
+		else
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak(null)
 			uniform.attackby(webbing, H)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)

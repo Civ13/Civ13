@@ -244,7 +244,7 @@
 
 /obj/item/ammo_casing/rocket/pg7v
 	name = "PG-7V rocket"
-	desc = "A high explosive warhead and propeller designed to be fired from a RPG-7 launcher."
+	desc = "A HEAT anti-tank warhead and propeller designed to be fired from a RPG-7 launcher."
 	icon_state = "pg7v"
 	projectile_type = /obj/item/missile/explosive
 

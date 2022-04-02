@@ -183,6 +183,14 @@
 	maxrange = 35
 	caliber = 88
 
+/obj/structure/cannon/modern/tank/omwtc10
+	name = "OMW-TC 10 cm"
+	desc = "a 100 mm Redmenian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 100
+
 /obj/structure/cannon/modern/tank/german88/field
 	name = "8.8 cm Pak 43 cannon"
 	desc = "a 88 mm german anti-tank cannon."

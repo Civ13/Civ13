@@ -186,8 +186,8 @@ obj/item/weapon/storage/backpack/ww2/american
 		..()
 		new/obj/item/ammo_casing/rocket/og7v(src)
 		new/obj/item/ammo_casing/rocket/og7v(src)
-		new/obj/item/ammo_casing/rocket/og7v(src)
-		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 /obj/item/weapon/storage/backpack/civbag

@@ -47,6 +47,7 @@ var/civmax_research = list(230,230,230)
 		4 = list(),
 		5 = list(),
 		6 = list(),
+		7 = list(),
 	)
 	var/list/faction2_squads = list(
 		1 = list(),
@@ -55,6 +56,7 @@ var/civmax_research = list(230,230,230)
 		4 = list(),
 		5 = list(),
 		6 = list(),
+		7 = list(),
 	)
 	var/list/faction1_squad_leaders = list(
 		1 = null,
@@ -63,6 +65,7 @@ var/civmax_research = list(230,230,230)
 		4 = null,
 		5 = null,
 		6 = null,
+		7 = null,
 	)
 	var/list/faction2_squad_leaders = list(
 		1 = null,
@@ -71,6 +74,7 @@ var/civmax_research = list(230,230,230)
 		4 = null,
 		5 = null,
 		6 = null,
+		7 = null,
 	)
 	var/required_players = 1
 	var/time_both_sides_locked = -1

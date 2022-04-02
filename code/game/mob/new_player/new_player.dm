@@ -517,6 +517,8 @@ var/global/redirect_all_players = null
 				MC.squad_jobs_blue["Recon"]["Sniper"]--
 			else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
 				MC.squad_jobs_blue["AT"]["Anti-Tank"]--
+			else if(findtext(href_list["SelectedJob"],"BAF Engineer"))
+				MC.squad_jobs_blue["Engineer"]["Engineer"]--
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
 		else if (findtext(href_list["SelectedJob"],"RDF"))
@@ -551,6 +553,8 @@ var/global/redirect_all_players = null
 				MC.squad_jobs_red["Recon"]["Sniper"]--
 			else if(findtext(href_list["SelectedJob"],"RDF Anti-Tank"))
 				MC.squad_jobs_red["AT"]["Anti-Tank"]--
+			else if(findtext(href_list["SelectedJob"],"RDF Engineer"))
+				MC.squad_jobs_red["Engineer"]["Engineer"]--
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
 		if(href_list["SelectedJob"] == "Company Member")

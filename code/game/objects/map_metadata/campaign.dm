@@ -13,7 +13,6 @@
 
 	roundend_condition_sides = list(
 		list(PIRATES) = /area/caribbean/british/land/outside,
-		list(PIRATES) = /area/caribbean/british/land/inside,
 		list(CIVILIAN) = /area/caribbean/japanese
 		)
 	age = "2022"
@@ -35,7 +34,8 @@
 		"Recon" = list("Sniper" = 4),
 		"Armored" = list("Crew" = 8),
 		"AT" = list("Anti-Tank" = 2),
-		"none" = list("Medic" = 2, "Officer" = 3)
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Medic" = 2, "Officer" = 3, "Commander" = 1)
 	)
 	var/list/squad_jobs_red = list(
 		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
@@ -44,7 +44,8 @@
 		"Recon" = list("Sniper" = 4),
 		"Armored" = list("Crew" = 8),
 		"AT" = list("Anti-Tank" = 2),
-		"none" = list("Medic" = 2, "Officer" = 3)
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Medic" = 2, "Officer" = 3, "Commander" = 1)
 	)
 obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -133,6 +134,8 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "BAF Officer") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
 				continue
+			if(findtext(job.title, "BAF Commander") && MC.squad_jobs_blue["none"]["Commander"]<= 0)
+				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
 				continue
 			if(findtext(job.title, "BAF Armored Commander") && MC.faction2_squad_leaders[4])
@@ -140,6 +143,8 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 			if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
 				continue
 			if(findtext(job.title, "BAF Anti-Tank") && MC.squad_jobs_blue["AT"]["Anti-Tank"]<= 0)
+				continue
+			if(findtext(job.title, "BAF Engineer") && MC.squad_jobs_blue["Engineer"]["Engineer"]<= 0)
 				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
@@ -152,6 +157,8 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "RDF Officer") && MC.squad_jobs_red["none"]["Officer"]<= 0)
 				continue
+			if(findtext(job.title, "RDF Commander") && MC.squad_jobs_red["none"]["Commander"]<= 0)
+				continue
 			if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
 				continue
 			if(findtext(job.title, "RDF Armored Commander") && MC.faction1_squad_leaders[4])
@@ -159,6 +166,8 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 			if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
 				continue
 			if(findtext(job.title, "RDF Anti-Tank") && MC.squad_jobs_red["AT"]["Anti-Tank"]<= 0)
+				continue
+			if(findtext(job.title, "RDF Engineer") && MC.squad_jobs_red["Engineer"]["Engineer"]<= 0)
 				continue
 			if(findtext(job.title, "RDF Squad [job.squad] Machinegunner") && MC.squad_jobs_red["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
@@ -203,3 +212,11 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 
 	spawn (1)
 		src << browse(data, "window=latechoices;size=600x640;can_close=1")
+
+/obj/item/weapon/key/blue
+	code = 932145
+	name = "Blugoslavian Key"
+
+/obj/item/weapon/key/red
+	code = 668643
+	name = "Redmenian Key"

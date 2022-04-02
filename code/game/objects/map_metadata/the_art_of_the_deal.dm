@@ -534,6 +534,10 @@
 /atom/proc/get_coded_loc()
 	var/a = ceil(x/22)
 	var/b = 10-Floor(y/22)
+	if (map.ID == MAP_CAMPAIGN)
+		a = ceil(x/15)
+		b = 10-Floor(y/10)
+
 	switch(a)
 		if (0 to 1)
 			a = "A"
