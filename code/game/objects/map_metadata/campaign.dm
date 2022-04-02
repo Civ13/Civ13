@@ -46,7 +46,7 @@
 		"AT" = list("Anti-Tank" = 2),
 		"none" = list("Medic" = 2, "Officer" = 3)
 	)
-/obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
+obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian))
 		if (J.is_event)
