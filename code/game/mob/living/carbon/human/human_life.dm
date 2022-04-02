@@ -1406,7 +1406,7 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_BOOTCAMP)
+					if (map.ID == MAP_CAMPAIGN)
 						holder2.icon_state = "redmenia"
 					else if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
@@ -1503,7 +1503,7 @@
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
-					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_BOOTCAMP)
+					else if (map.ID == MAP_CAMPAIGN)
 						holder2.icon_state = "blugoslavia"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
@@ -1555,7 +1555,7 @@
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 				else
-					if(map.ID == MAP_CAMPAIGN || map.ID == MAP_BOOTCAMP)
+					if(map.ID == MAP_CAMPAIGN)
 						if(squad == 4)
 							holder2.overlays += icon(holder2.icon,"squad_recon")
 							holder2.overlays += icon(holder2.icon,"i_cpl")
@@ -1586,7 +1586,7 @@
 						holder2.overlays += icon(holder2.icon,"i_ssgt")
 					else if(findtext(original_job_title,"Corpsman"))
 						holder2.overlays += icon(holder2.icon,"i_cpl")
-			if (map.ID != MAP_CAMPAIGN && map.ID != MAP_BOOTCAMP)
+			if (map.ID != MAP_CAMPAIGN)
 				if (original_job.is_commander)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""

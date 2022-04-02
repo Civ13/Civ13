@@ -404,7 +404,7 @@ var/global/datum/controller/occupations/job_master
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
 
-		if(map.ID == MAP_CAMPAIGN || map.ID == MAP_BOOTCAMP)
+		if(map.ID == MAP_CAMPAIGN)
 			if(istype(job,/datum/job/pirates/redfaction))
 				H.remove_language("English")
 				H.add_language("Greek",FALSE)
