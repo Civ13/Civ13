@@ -123,7 +123,7 @@ var/global/redirect_all_players = null
 		else if (map.nomads == TRUE)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			if(map.ID == MAP_CAMPAIGN)
+			if(map.ID == MAP_CAMPAIGN || map.ID == MAP_BOOTCAMP)
 				output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 			else
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
@@ -483,74 +483,102 @@ var/global/redirect_all_players = null
 	if (href_list["SelectedJob"])
 		if(findtext(href_list["SelectedJob"],"BAF"))
 			var/obj/map_metadata/campaign/MC = map
+			var/obj/map_metadata/bootcamp/MCT = map
 			if(findtext(href_list["SelectedJob"],"Squad 1"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
 					MC.squad_jobs_blue["Squad 1"]["Sniper"]--
+					MCT.squad_jobs_blue["Squad 1"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MC.squad_jobs_blue["Squad 1"]["Machinegunner"]--
 					MC.squad_jobs_blue["Squad 1"]["Machinegunner"]--
 				if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 					MC.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
+					MCT.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
 
 			else if(findtext(href_list["SelectedJob"],"Squad 2"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
 					MC.squad_jobs_blue["Squad 2"]["Sniper"]--
+					MCT.squad_jobs_blue["Squad 2"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
 					MC.squad_jobs_blue["Squad 2"]["Machinegunner"]--
+					MCT.squad_jobs_blue["Squad 2"]["Machinegunner"]--
 				if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 					MC.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
+					MCT.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
 
 			else if(findtext(href_list["SelectedJob"],"Squad 3"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
 					MC.squad_jobs_blue["Squad 3"]["Sniper"]--
+					MCT.squad_jobs_blue["Squad 3"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
 					MC.squad_jobs_blue["Squad 3"]["Machinegunner"]--
+					MCT.squad_jobs_blue["Squad 3"]["Machinegunner"]--
 				if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 					MC.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
+					MCT.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
 
 			else if(findtext(href_list["SelectedJob"],"BAF Medic"))
 				MC.squad_jobs_blue["none"]["Medic"]--
+				MCT.squad_jobs_blue["none"]["Medic"]--
 
 			else if(findtext(href_list["SelectedJob"],"BAF Officer"))
 				MC.squad_jobs_blue["none"]["Officer"]--
+				MCT.squad_jobs_blue["none"]["Officer"]--
 			else if(findtext(href_list["SelectedJob"],"BAF Commander"))
 				MC.squad_jobs_blue["none"]["Commander"]--
+				MCT.squad_jobs_blue["none"]["Commander"]--
 			else if(findtext(href_list["SelectedJob"],"BAF Recon"))
 				MC.squad_jobs_blue["Recon"]["Sniper"]--
+				MCT.squad_jobs_blue["Recon"]["Sniper"]--
 			else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
 				MC.squad_jobs_blue["AT"]["Anti-Tank"]--
+				MCT.squad_jobs_blue["AT"]["Anti-Tank"]--
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
+
 		else if (findtext(href_list["SelectedJob"],"RDF"))
 			var/obj/map_metadata/campaign/MC = map
+			var/obj/map_metadata/bootcamp/MCT = map
 			if(findtext(href_list["SelectedJob"],"Squad 1"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
 					MC.squad_jobs_red["Squad 1"]["Sniper"]--
+					MCT.squad_jobs_red["Squad 1"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MCT.squad_jobs_red["Squad 1"]["Machinegunner"]--
 					MC.squad_jobs_red["Squad 1"]["Machinegunner"]--
 
 			else if(findtext(href_list["SelectedJob"],"Squad 2"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MCT.squad_jobs_red["Squad 2"]["Sniper"]--
 					MC.squad_jobs_red["Squad 2"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MCT.squad_jobs_red["Squad 2"]["Machinegunner"]--
 					MC.squad_jobs_red["Squad 2"]["Machinegunner"]--
 
 			else if(findtext(href_list["SelectedJob"],"Squad 3"))
 				if (findtext(href_list["SelectedJob"],"Sniper"))
+					MCT.squad_jobs_red["Squad 3"]["Sniper"]--
 					MC.squad_jobs_red["Squad 3"]["Sniper"]--
 				if (findtext(href_list["SelectedJob"],"Machinegunner"))
+					MCT.squad_jobs_red["Squad 3"]["Machinegunner"]--
 					MC.squad_jobs_red["Squad 3"]["Machinegunner"]--
 
 			else if(findtext(href_list["SelectedJob"],"RDF Medic"))
+				MCT.squad_jobs_red["none"]["Medic"]--
 				MC.squad_jobs_red["none"]["Medic"]--
 
 			else if(findtext(href_list["SelectedJob"],"RDF Officer"))
+				MCT.squad_jobs_red["none"]["Officer"]--
 				MC.squad_jobs_red["none"]["Officer"]--
 			else if(findtext(href_list["SelectedJob"],"RDF Commander"))
+				MCT.squad_jobs_red["none"]["Commander"]--
 				MC.squad_jobs_red["none"]["Commander"]--
 
 			else if(findtext(href_list["SelectedJob"],"RDF Recon"))
+				MCT.squad_jobs_red["Recon"]["Sniper"]--
 				MC.squad_jobs_red["Recon"]["Sniper"]--
 			else if(findtext(href_list["SelectedJob"],"RDF Anti-Tank"))
+				MCT.squad_jobs_red["AT"]["Anti-Tank"]--
 				MC.squad_jobs_red["AT"]["Anti-Tank"]--
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
@@ -842,7 +870,7 @@ var/global/redirect_all_players = null
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
 
 	//squads
-	if (ishuman(character) && map.ID != MAP_CAMPAIGN)
+	if (ishuman(character) && map.ID != MAP_CAMPAIGN && map.ID != MAP_BOOTCAMP)
 		var/mob/living/human/H = character
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
