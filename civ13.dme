@@ -1028,6 +1028,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\2013\factory.dmm"
+#include "maps\WIP\bootcamp_redblue.dmm"
 // END_INCLUDE
 
