@@ -429,6 +429,7 @@ var/global/redirect_all_players = null
 
 		if (factjob != "null")
 			LateChoicesCampaign(factjob)
+			LateChoicesCampaign2(factjob)
 			//AttemptLateSpawn(factjob)
 		else
 			WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Check the discord for more information.")
