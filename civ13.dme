@@ -422,6 +422,7 @@
 #include "code\game\objects\map_metadata\battleroyale.dm"
 #include "code\game\objects\map_metadata\berlin.dm"
 #include "code\game\objects\map_metadata\bohemia.dm"
+#include "code\game\objects\map_metadata\bootcamp.dm"
 #include "code\game\objects\map_metadata\caloocan.dm"
 #include "code\game\objects\map_metadata\camp.dm"
 #include "code\game\objects\map_metadata\campaign.dm"
