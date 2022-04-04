@@ -761,6 +761,10 @@
 	new/obj/item/ammo_magazine/dp(src)
 	new/obj/item/ammo_magazine/dp(src)
 
+/obj/item/weapon/storage/belt/largepouches/sovietmg/white
+	icon_state = "largepouches_white"
+	item_state = "largepouches_white"
+
 /obj/item/weapon/storage/belt/smallpouches/vc_officer
 /obj/item/weapon/storage/belt/smallpouches/vc_officer/New()
 	..()

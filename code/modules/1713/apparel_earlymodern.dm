@@ -1114,6 +1114,9 @@
 /obj/item/weapon/storage/belt/largepouches/olive
 	icon_state = "largepouches_olive"
 	item_state = "largepouches_olive"
+/obj/item/weapon/storage/belt/largepouches/white
+	icon_state = "largepouches_white"
+	item_state = "largepouches_white"
 /obj/item/weapon/storage/belt/smallpouches
 	name = "small pouches"
 	desc = "A belt with 4 small pouches, that can fit items like magazines, knives, and other small things."
@@ -1125,6 +1128,10 @@
 	max_storage_space = 8
 	show_above_suit = TRUE
 
+/obj/item/weapon/storage/belt/smallpouches/white
+	icon_state = "smallpouches_white"
+	item_state = "smallpouches_white"
+
 /obj/item/weapon/storage/belt/smallpouches/red
 	New()
 		..()
@@ -1132,6 +1139,10 @@
 		new/obj/item/weapon/attachment/bayonet/military(src)
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
+
+/obj/item/weapon/storage/belt/smallpouches/red/winter
+	icon_state = "smallpouches_white"
+	item_state = "smallpouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/blue
 	icon_state = "smallpouches_olive"
@@ -1142,6 +1153,10 @@
 		new/obj/item/weapon/attachment/bayonet/military(src)
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
+
+/obj/item/weapon/storage/belt/smallpouches/blue/winter
+	icon_state = "smallpouches_white"
+	item_state = "smallpouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt/New()

@@ -50,8 +50,6 @@ var/list/time_of_day2ticks = list(
 	#endif
 
 /proc/progress_time_of_day(var/caller = null, var/force = FALSE)
-	if (map && map.ID == MAP_CAMPAIGN)
-		return
 	if(config.daynight_on || force)
 		var/TOD_position_in_list = 1
 		for (var/v in 1 to times_of_day.len)

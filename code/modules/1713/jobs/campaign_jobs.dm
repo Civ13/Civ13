@@ -100,7 +100,11 @@
 	if(is_squad_leader)
 		map.faction1_squad_leaders[squad] = H
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	var/area/A = get_area(H)
+	if(A.climate == "taiga" || A.climate == "tundra")
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/grey(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
@@ -156,7 +160,10 @@
 		uniform.attackby(medicalarm, H)
 	else
 		if (findtext(title, "Machinegunner"))
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
+			if(A.climate == "taiga" || A.climate == "tundra")
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg/white(H), slot_belt)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
 		else if (findtext(title, "Sniper") || findtext(title, "Recon"))
 			H.setStat("rifle", STAT_MEDIUM_HIGH)
 			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
@@ -295,7 +302,11 @@
 	if(is_squad_leader)
 		map.faction2_squad_leaders[squad] = H
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	var/area/A = get_area(H)
+	if(A.climate == "taiga" || A.climate == "tundra")
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/grey(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni(H), slot_w_uniform)
 //armor
@@ -354,7 +365,10 @@
 		uniform.attackby(medicalarm, H)
 	else
 		if (findtext(title, "Machinegunner"))
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
+			if(A.climate == "taiga" || A.climate == "tundra")
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg/white(H), slot_belt)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
 		else if (findtext(title, "Sniper") || findtext(title, "Recon"))
 			H.setStat("rifle", STAT_MEDIUM_HIGH)
 			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)

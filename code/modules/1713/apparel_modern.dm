@@ -1397,3 +1397,13 @@
 	item_state = "warband2"
 	worn_state = "warband2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+//modern winter jackets
+/obj/item/clothing/suit/storage/coat/fur/m05
+	name = "M05 snow pattern coat"
+	desc = "A coat in Finnish M05 snow pattern."
+	icon_state = "fur_jacket7"
+	item_state = "fur_jacket7"
+	worn_state = "fur_jacket7"
+	specific = TRUE
+	colorn = 7
