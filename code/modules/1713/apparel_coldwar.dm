@@ -709,8 +709,8 @@
 	armor = list(melee = 55, arrow = 75, gun = 41, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
 /obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
-	name = "USSR 6B3 body armor"
-	desc = "A russian body armor, made with glory."
+	name = "6B3 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
 	icon_state = "b3vest"
 	item_state = "b3vest"
 	worn_state = "b3vest"
@@ -718,6 +718,18 @@
 	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
 	ripable = FALSE
 	flags = CONDUCT
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b3 //accessory version
+	name = "6B3 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
+	icon_state = "b3vest"
+	item_state = "b3vest"
+	worn_state = "b3vest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 2
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"
@@ -867,10 +879,13 @@
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_spz
 /obj/item/weapon/storage/belt/smallpouches/green/sov_spz/New()
+	storage_slots = 6
 	..()
 	new /obj/item/weapon/grenade/antitank/rpg40(src)
-	new /obj/item/weapon/grenade/antitank/rpg40(src)
+	new /obj/item/weapon/grenade/modern/f1(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/
