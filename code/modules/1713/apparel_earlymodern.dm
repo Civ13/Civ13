@@ -1140,7 +1140,7 @@
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
 
-/obj/item/weapon/storage/belt/smallpouches/red/winter
+/obj/item/weapon/storage/belt/smallpouches/red/white
 	icon_state = "smallpouches_white"
 	item_state = "smallpouches_white"
 
@@ -1154,7 +1154,7 @@
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
 
-/obj/item/weapon/storage/belt/smallpouches/blue/winter
+/obj/item/weapon/storage/belt/smallpouches/blue/white
 	icon_state = "smallpouches_white"
 	item_state = "smallpouches_white"
 

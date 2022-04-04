@@ -440,6 +440,19 @@
 	body_parts_covered = HEAD
 	restricts_view = 1
 
+/obj/item/clothing/suit/storage/ghillie/winter
+	name = "winter ghillie suit"
+	desc = "A camo winter ghillie suit."
+	icon_state = "ghillie_winter"
+	item_state = "ghillie_winter"
+	worn_state = "ghillie_winter"
+
+/obj/item/clothing/head/ghillie/winter
+	name = "winter ghillie headcover"
+	desc = "A headcover for a winter ghillie suit."
+	icon_state = "ghillie_winter"
+	item_state = "ghillie_winter"
+
 /* Cold War Hats*/
 
 /obj/item/clothing/head/jungle_hat
