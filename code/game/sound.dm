@@ -214,6 +214,12 @@ var/list/charge_sounds_fp = list(
 	'sound/effects/emotes/charge_fp1.ogg',)
 var/list/charge_sounds_isr = list(
 	'sound/effects/emotes/charge_isr.ogg',)
+var/list/charge_sounds_fin = list(
+	'sound/effects/emotes/charge_fin1.ogg',
+	'sound/effects/emotes/charge_fin2.ogg',
+	'sound/effects/emotes/charge_fin3.ogg',
+	'sound/effects/emotes/charge_fin4.ogg',
+	)
 var/list/charge_sounds_orc = list(
 	'sound/effects/emotes/charge_orc1.ogg',
 	'sound/effects/emotes/charge_orc2.ogg',)
@@ -449,7 +455,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("charge_RUSSIAN")
 				soundin = pick(charge_sounds_ru)
 			if ("charge_FINNISH")
-				soundin = pick(charge_sounds_pir)
+				soundin = pick(charge_sounds_fin)
 			if ("charge_CHECHEN")
 				soundin = pick(charge_sounds_ar)
 			if ("charge_GREEK")
