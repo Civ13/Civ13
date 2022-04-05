@@ -524,7 +524,7 @@
 	update_icon()
 	check_bolt--
 /obj/item/weapon/gun/projectile/boltaction/arisaka38/sniper
-	name = "Arisaka Type 96"
+	name = "Arisaka Type 97"
 	desc = "Japanese bolt-action rifle chambered in 6.5x50mm Arisaka ammunition."
 	effectiveness_mod = 1.06
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER

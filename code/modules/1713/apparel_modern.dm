@@ -1407,3 +1407,139 @@
 	worn_state = "fur_jacket7"
 	specific = TRUE
 	colorn = 7
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////CAF/////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/item/clothing/under/caf
+	name = "cadpat uniform"
+	desc = "A canadian pattern uniform"
+	icon_state = "cad_pat"
+	item_state = "cad_pat"
+	worn_state = "cad_pat"
+	var/rolled = FALSE
+	var/stripped = FALSE
+
+/obj/item/clothing/under/caf/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/caf)
+		return
+	else
+		if (!stripped)
+			if (rolled)
+				worn_state = "cad_pat"
+				item_state = "cad_pat"
+				icon_state = "cad_pat"
+				item_state_slots["w_uniform"] = "cad_pat"
+				usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+				rolled = FALSE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+			if (!rolled)
+				worn_state = "cad_pat_rolled"
+				item_state = "cad_pat_rolled"
+				icon_state = "cad_pat_rolled"
+				item_state_slots["w_uniform"] = "cad_pat_rolled"
+				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+				rolled = TRUE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+		else
+			if (rolled)
+				worn_state = "cad_pat_stripped"
+				item_state = "cad_pat_stripped"
+				icon_state = "cad_pat_stripped"
+				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				usr << "<span class = 'danger'>You have no sleeves.</span>"
+				rolled = FALSE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+			else
+				worn_state = "cad_pat_stripped"
+				item_state = "cad_pat_stripped"
+				icon_state = "cad_pat_stripped"
+				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				usr << "<span class = 'danger'>You have no sleeves.</span>"
+				rolled = FALSE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+/obj/item/clothing/under/caf/verb/strip()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/japuni)
+		return
+	else
+		if (stripped)
+			if (!rolled)
+				worn_state = "cad_pat"
+				item_state = "cad_pat"
+				icon_state = "cad_pat"
+				item_state_slots["w_uniform"] = "cad_pat"
+				usr << "<span class = 'danger'>You put on your overshirt.</span>"
+				stripped = FALSE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+			else
+				worn_state = "cad_pat_rolled"
+				item_state = "cad_pat_rolled"
+				icon_state = "ww2_japuni_rolled"
+				item_state_slots["cad_pat_rolled"] = "cad_pat_rolled"
+				usr << "<span class = 'danger'>You put on your overshirt.</span>"
+				stripped = FALSE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+		else
+			if (!rolled)
+				worn_state = "cad_pat_stripped"
+				item_state = "cad_pat_stripped"
+				icon_state = "cad_pat_stripped"
+				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				usr << "<span class = 'danger'>You strip to your under shirt.</span>"
+				stripped = TRUE
+				rolled = FALSE
+				heat_protection = ARMS
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+				update_clothing_icon()
+				return
+			else
+				worn_state = "cad_pat_stripped"
+				item_state = "cad_pat_stripped"
+				icon_state = "cad_pat_stripped"
+				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				usr << "<span class = 'danger'>You strip to your under shirt.</span>"
+				stripped = TRUE
+				rolled = FALSE
+				heat_protection = ARMS
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+				update_clothing_icon()
+				return
+
+/obj/item/clothing/under/caf/New()
+	..()
+	update_clothing_icon()
+
+/obj/item/clothing/head/helmet/modern/cg634
+	name = "CG634 helmet"
+	desc = "A typical CAF CADPAT Combat Helmet."
+	icon_state = "cg634"
+	item_state = "cg634"
+	worn_state = "cg634"
+	body_parts_covered = HEAD
+	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+
+/obj/item/clothing/accessory/storage/webbing/caf_tacvest
+	name = "CAF Tacvest"
+	desc = "A large webbing with several pouches."
+	icon_state = "caf_tacvest"
+	item_state = "caf_tacvest"
+	slots = 8
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack,/obj/item/weapon/gun/projectile/pistol)
