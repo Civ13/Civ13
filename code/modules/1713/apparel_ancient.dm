@@ -930,6 +930,12 @@
 	set category = null
 	set src in usr
 	set name = "Toggle Hood"
+
+	if (ishuman(usr))
+		var/mob/living/human/H = usr
+		if (H.head)
+			usr << "<span class = 'warning'>You cannot put your hood up, the [H.head] is in the way!</span>"
+			return
 	if (hood)
 		icon_state = "fur_jacket[colorn]"
 		item_state = "fur_jacket[colorn]"

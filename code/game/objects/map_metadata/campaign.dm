@@ -76,10 +76,10 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/two))
 			if (H.faction_text == faction1)
 				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/one))
 			if (H.faction_text == faction2)
 				return TRUE
 		else
