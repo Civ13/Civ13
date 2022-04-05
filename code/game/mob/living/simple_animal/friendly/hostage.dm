@@ -101,6 +101,8 @@
 		return
 	if (stat != CONSCIOUS)
 		return
+	if (stop_automated_movement_when_pulled && pulledby)
+		return
 	var/atom/init_loc = locate(initial_spot["x"],initial_spot["y"],initial_spot["z"])
 	if (!init_loc)
 		return

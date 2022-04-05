@@ -361,6 +361,16 @@
 	desc = "The flag of Finland."
 	icon_state = "flag_finland"
 
+/obj/structure/sign/flag/redmenia
+	name = "Redmenian flag"
+	desc = "The flag of the Empire of Redmenia."
+	icon_state = "flag_redmenia"
+
+/obj/structure/sign/flag/blugoslavia
+	name = "Blugoslavian flag"
+	desc = "The flag of the Republic of Blugoslavia."
+	icon_state = "flag_blugoslavia"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."
