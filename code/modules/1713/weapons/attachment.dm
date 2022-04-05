@@ -405,7 +405,7 @@ Current Defines (_defines/attachment.dm)
 	name = "4x ACOG scope"
 	icon_state = "acog"
 	desc = "A 4x scope."
-	max_zoom = ZOOM_CONSTANT+4
+	max_zoom = ZOOM_CONSTANT+3
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/reddot
 	name = "red dot sight"
@@ -427,6 +427,12 @@ Current Defines (_defines/attachment.dm)
 	icon_state = "nvs"
 	max_zoom = ZOOM_CONSTANT
 	acc_modifier = 0.8
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/elcan
+	name = "C79A2 Elcan sight"
+	icon_state = "elcan"
+	desc = "A 3.4x scope."
+	max_zoom = ZOOM_CONSTANT+3.4
 
 /obj/item/weapon/attachment/under
 	icon = 'icons/obj/gun_att.dmi'

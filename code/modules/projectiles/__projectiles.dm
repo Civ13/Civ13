@@ -521,12 +521,12 @@ obj/item/projectile/bullet/rifle/a556x45
 /obj/item/projectile/bullet/rifle/a50cal
 	damage = DAMAGE_OH_GOD + 95
 	penetrating = 10
-	armor_penetration = 5
+	armor_penetration = 50
 
 /obj/item/projectile/bullet/rifle/a50cal_ap
 	damage = DAMAGE_MEDIUM + 5
 	penetrating = 100
-	armor_penetration = 80
+	armor_penetration = 100
 
 /obj/item/projectile/bullet/rifle/a50cal_he
 	damage = DAMAGE_LOW + 20
@@ -546,6 +546,18 @@ obj/item/projectile/bullet/rifle/a556x45
 		else
 			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 1, 0, 1, 1)
+	if (istype(A, /obj/structure/vehicleparts/frame))
+		var/obj/structure/vehicleparts/frame/T = A
+		if (atype == "HE")
+			var/turf/TU
+			if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
+				TU.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 1, 0, 2, 1)
+		else
+			var/turf/TU
+			if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
+				TU.ChangeTurf(/turf/floor/dirt/burned)
 			explosion(T, 1, 0, 1, 1)
 	spawn(50)
 		if (src)
