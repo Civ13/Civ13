@@ -409,7 +409,7 @@
 			if (input == "Cancel")
 				return
 			else if (input == "12 Gauge (Buckshot)")
-				resultpath = /obj/item/ammo_casing/shotgun
+				resultpath = /obj/item/ammo_casing/shotgun/buckshot
 			else if (input == "12 Gauge (Slugshot)")
 				resultpath = /obj/item/ammo_casing/shotgun/slug
 			else if (input == "12 Gauge (Beanbag)")
@@ -446,7 +446,7 @@
 			if (input == "Cancel")
 				return
 			else if (input == "12 Gauge (Buckshot)")
-				resultpath = /obj/item/ammo_casing/shotgun
+				resultpath = /obj/item/ammo_casing/shotgun/buckshot
 			else if (input == "12 Gauge (Slugshot)")
 				resultpath = /obj/item/ammo_casing/shotgun/slug
 			else if (input == "12 Gauge (Beanbag)")
@@ -491,7 +491,7 @@
 			else if (input == ".577/450 Martini-Henry")
 				resultpath = /obj/item/ammo_casing/a577
 			else if (input == "12 Gauge (Buckshot)")
-				resultpath = /obj/item/ammo_casing/shotgun
+				resultpath = /obj/item/ammo_casing/shotgun/buckshot
 			else if (input == "12 Gauge (Slugshot)")
 				resultpath = /obj/item/ammo_casing/shotgun/slug
 			else if (input == "12 Gauge (Beanbag)")
