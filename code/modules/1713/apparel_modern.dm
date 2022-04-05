@@ -1407,3 +1407,31 @@
 	worn_state = "fur_jacket7"
 	specific = TRUE
 	colorn = 7
+
+/obj/item/clothing/suit/storage/coat/fur/ukrainian
+	name = "Ukrainian winter camo coat"
+	desc = "A coat in Ukrainian winter pattern."
+	icon_state = "fur_jacket8"
+	item_state = "fur_jacket8"
+	worn_state = "fur_jacket8"
+	specific = TRUE
+	colorn = 8
+
+/obj/item/clothing/suit/storage/coat/fur/klyaksa
+	name = "Klyaksa camo coat"
+	desc = "A coat in Russian 'Klyaksa' snow pattern."
+	icon_state = "fur_jacket10"
+	item_state = "fur_jacket10"
+	worn_state = "fur_jacket10"
+	specific = TRUE
+	colorn = 10
+
+
+/obj/item/clothing/suit/storage/coat/fur/schneetarn
+	name = "Schneetarn camo coat"
+	desc = "A coat in German Schneetarn pattern."
+	icon_state = "fur_jacket9"
+	item_state = "fur_jacket9"
+	worn_state = "fur_jacket9"
+	specific = TRUE
+	colorn = 9
