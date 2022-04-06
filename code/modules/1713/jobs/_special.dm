@@ -79,6 +79,8 @@
 /datum/job/var/is_ukrainerussowar = FALSE
 /datum/job/var/is_russojapwar = FALSE
 /datum/job/var/is_smallsiegemoscow = FALSE
+/datum/job/var/is_lab = FALSE
+
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE
 // new autobalance stuff - Kachnov
