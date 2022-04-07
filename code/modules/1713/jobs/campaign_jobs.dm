@@ -185,6 +185,8 @@
 		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
 	H.make_artillery_scout()
+	if(A.climate == "taiga" || A.climate == "tundra")
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/schneetarn(H), slot_wear_suit)
 	return TRUE
 
 /datum/job/civilian/bluefaction
@@ -403,4 +405,6 @@
 		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
 	H.make_artillery_scout()
+	if(A.climate == "taiga" || A.climate == "tundra")
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
 	return TRUE
