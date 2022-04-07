@@ -412,14 +412,14 @@ Current Defines (_defines/attachment.dm)
 	icon_state = "reddot"
 	desc = "A red dot laser sight. Increases accuracy and gives a slight magnification."
 	max_zoom = ZOOM_CONSTANT+1
-	acc_modifier = 1.4
+	acc_modifier = 1.3
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/holographic
 	name = "holographic sight"
 	desc = "A reflector holographic sight. Does not give magnification but greatly reduces parallax error."
 	icon_state = "holographic"
 	max_zoom = ZOOM_CONSTANT
-	acc_modifier = 1.5
+	acc_modifier = 1.4
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/nvs
 	name = "night vision scope"
