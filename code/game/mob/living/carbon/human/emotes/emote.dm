@@ -226,7 +226,7 @@ var/list/vocal_emotes = list(
 				m_type = 1
 
 			if ("nap")
-				message = "faints."
+				message = "gently nods off."
 				if (sleeping)
 					return //Can't faint while asleep
 				sleeping += 30 //short nap
