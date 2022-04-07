@@ -1779,6 +1779,13 @@ obj/item/clothing/head/ww2/chicap2
 	item_state = "berezka"
 	worn_state = "berezka"
 
+/obj/item/clothing/under/ww2/soviet_amoeba
+	name = "soviet amoeba outfit"
+	desc = "A soviet camouflage outfit, concieved for reconnaissance units."
+	icon_state = "amoeba"
+	item_state = "amoeba"
+	worn_state = "amoeba"
+
 /obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
