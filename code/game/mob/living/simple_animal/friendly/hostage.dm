@@ -55,6 +55,7 @@
 	update_icons()
 
 /mob/living/simple_animal/civilian/death()
+	..()
 	var/killer = "none"
 	if (harmer_factions["Redmenia"] > harmer_factions["Blugoslavia"])
 		killer = "Redmenia"
@@ -64,10 +65,16 @@
 		killer = "both factions"
 	if (killer != "none")
 		var/msg = "Civilian killed by [killer] at ([src.x],[src.y],[src.z])!"
+		var/obj/map_metadata/campaign/CM = map
+		if (CM)
+			switch(killer)
+				if("Blugoslavia")
+					CM.civilians_killed["Blugoslavia"]++
+				if("Redmenia")
+					CM.civilians_killed["Redmenia"]++
 		harmer_factions = list("Redmenia" = 0, "Blugoslavia" = 0)
 		world.log << "CIVDEATH: [msg]"
 		message_admins(msg)
-	..()
 /mob/living/simple_animal/civilian/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug

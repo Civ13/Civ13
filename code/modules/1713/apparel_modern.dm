@@ -390,6 +390,13 @@
 	item_state = "pasgt_reddish"
 	worn_state = "pasgt_reddish"
 
+/obj/item/clothing/head/helmet/modern/pasgt/white
+	name = "White PASGT helmet"
+	desc = "A typical US Army PASGT helmet. This one has a white dye."
+	icon_state = "pasgt_white"
+	item_state = "pasgt_white"
+	worn_state = "pasgt_white"
+
 /obj/item/clothing/head/helmet/modern/pasgt/desert/New()
 	..()
 	if (prob(50))
@@ -459,7 +466,12 @@
 	icon_state = "ach_green"
 	item_state = "ach_green"
 	worn_state = "ach_green"
-
+/obj/item/clothing/head/helmet/modern/ach/white
+	name = "ACH helmet"
+	desc = "A typical US Army Advanced Combat Helmet. This one is in white."
+	icon_state = "ach_white"
+	item_state = "ach_white"
+	worn_state = "ach_white"
 /obj/item/clothing/head/helmet/modern/ach/green/com
 	icon_state = "ach_green_com"
 	item_state = "ach_green_com"

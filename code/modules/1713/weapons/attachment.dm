@@ -411,7 +411,7 @@ Current Defines (_defines/attachment.dm)
 	name = "red dot sight"
 	icon_state = "reddot"
 	desc = "A red dot laser sight. Increases accuracy and gives a slight magnification."
-	max_zoom = ZOOM_CONSTANT+2
+	max_zoom = ZOOM_CONSTANT+1
 	acc_modifier = 1.4
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/holographic
@@ -432,7 +432,7 @@ Current Defines (_defines/attachment.dm)
 	name = "C79A2 Elcan sight"
 	icon_state = "elcan"
 	desc = "A 3.4x scope."
-	max_zoom = ZOOM_CONSTANT+3.4
+	max_zoom = ZOOM_CONSTANT+2
 
 /obj/item/weapon/attachment/under
 	icon = 'icons/obj/gun_att.dmi'

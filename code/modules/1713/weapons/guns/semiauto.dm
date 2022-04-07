@@ -257,6 +257,19 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
 
+/obj/item/weapon/gun/projectile/semiautomatic/svd/acog/New()
+	..()
+	for(var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SC in attachments)
+		attachments -= SC
+		actions -= SC.actions
+		verbs -= SC.verbs
+		attachment_slots += SC.attachment_type
+		accuracy = initial(accuracy)
+		recoil = initial(recoil)
+		qdel(SC)
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/semiautomatic/g41
 	name = "Gewehr 41"
 	desc = "German semi-automatic rifle using 7.92x57mm Mauser ammunition in a 10 round non-detachable magazine."

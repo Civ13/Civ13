@@ -949,12 +949,19 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
 	New()
 		..()
 		new/obj/item/ammo_magazine/sksm(hold)
 		new/obj/item/ammo_magazine/sksm(hold)
 		new/obj/item/ammo_magazine/sksm(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd
+	New()
+		..()
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
 	New()
