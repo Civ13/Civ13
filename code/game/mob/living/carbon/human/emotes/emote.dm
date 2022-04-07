@@ -225,6 +225,13 @@ var/list/vocal_emotes = list(
 				sleeping += 10 //Short-short nap
 				m_type = 1
 
+			if ("nap")
+				message = "faints."
+				if (sleeping)
+					return //Can't faint while asleep
+				sleeping += 30 //short nap
+				m_type = 1
+
 			if ("cough")
 				if (miming)
 					message = "appears to cough!"
