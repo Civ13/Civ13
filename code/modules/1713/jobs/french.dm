@@ -446,12 +446,11 @@
 	return TRUE
 
 /datum/job/french/field_medic
-	title = "Docteur"
+	title = " Docteur"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "Doc."
 
 	spawn_location = "JoinLatePTSurgeon"
-
 	is_medic = TRUE
 	is_army = TRUE
 

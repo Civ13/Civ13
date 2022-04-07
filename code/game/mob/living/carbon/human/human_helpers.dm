@@ -85,6 +85,21 @@
 		WWalert("You cannot use this function on this map.","Disabled",usr)
 		return
 
+	if (disease)
+		usr << "<span class = 'red'>You toss and turn but you are too unwell to sleep.</span>"
+		return
+
+	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
+		if (C.fleas == TRUE)
+			usr << "<span class = 'red'>You toss and turn but your skin is crawling and you can not sleep.</span>"
+			return
+
+	if (hygiene <= 80)
+		usr << "<span class = 'red'>You toss and turn but you are too filthy to sleep.</span>"
+		return
+
+
+
 	if (usr.sleeping)
 		usr << "<span class = 'red'>You are already sleeping.</span>"
 		return
@@ -112,13 +127,8 @@
 					lastx = usr.x
 					lasty = usr.y
 					lastz = usr.z
-					usr.sleeping = 20 //Short nap
-					if (buckled)
-						var/obj/structure/B = buckled
-						if (istype(B, /obj/structure/bed/bedroll))
-							B.forceMove(locate(1,1,1))
-						else
-							B.unbuckle_mob()
+					usr.sleeping = 66 //nap
+					usr.drop_item()
 					inducedSSD = TRUE
 					sleep_update()
 					usr.forceMove(locate(1,1,1))
@@ -133,22 +143,17 @@
 	if (WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will wake up in 30 seconds."
 		spawn(300)
+			usr.forceMove(locate(lastx,lasty,lastz))
 			usr.sleeping = 0 //Short nap
 			inducedSSD = FALSE
-			usr.forceMove(locate(lastx,lasty,lastz))
-			if (buckled)
-				var/obj/structure/B = buckled
-				if (istype(B, /obj/structure/bed/bedroll))
-					B.forceMove(locate(lastx,lasty,lastz))
-				else
-					B.unbuckle_mob()
 			return
+
 //to keep the character sleeping
 /mob/living/human/proc/sleep_update()
 	if (!inducedSSD)
 		return
 	else
-		sleeping = 20
+		sleeping = 66
 		spawn(600)
 			sleep_update()
 			return

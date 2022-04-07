@@ -592,6 +592,10 @@
 	code = US_CODE
 	name = "American key"
 
+/obj/item/weapon/key/american/facility
+	desc = "A Facility Key."
+	name = "Facility key"
+
 /obj/structure/simple_door/key_door/american
 	keyslot_type = /datum/keyslot/american
 	unique_door_name = "American locked"

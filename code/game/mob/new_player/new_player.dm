@@ -861,7 +861,8 @@ var/global/redirect_all_players = null
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
 					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
-						H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
+						if (map.ID != MAP_YELTSIN)
+							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
 					for(var/i=1, i<=map.squads, i++)
@@ -887,7 +888,8 @@ var/global/redirect_all_players = null
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
 					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
-						H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
+						if (map.ID != MAP_YELTSIN)
+							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
 					for(var/i=1, i<=map.squads, i++)
