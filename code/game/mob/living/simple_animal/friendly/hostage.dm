@@ -48,7 +48,7 @@
 /mob/living/simple_animal/civilian/New()
 	..()
 	uniquenum = rand(10000,99999)
-	icon_state = "civilian_[rand(1,5)]"
+	icon_state = "civilian_[rand(1,9)]"
 	icon_living = icon_state
 	icon_dead = "[icon_state]_dead"
 	update_icons()

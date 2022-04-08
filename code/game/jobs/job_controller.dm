@@ -407,19 +407,15 @@ var/global/datum/controller/occupations/job_master
 		if(map.ID == MAP_CAMPAIGN)
 			if(istype(job,/datum/job/pirates/redfaction))
 				H.remove_language("English")
-				H.add_language("Greek",FALSE)
-				for (var/datum/language/greek/A in H.languages)
+				H.add_language("Redmenian",FALSE)
+				for (var/datum/language/redmenian/A in H.languages)
 					H.default_language = A
-				if (prob(15))
-					H.add_language("Russian",FALSE)
 
 			else if (istype(job, /datum/job/civilian/bluefaction))
 				H.remove_language("English")
-				H.add_language("Russian",FALSE)
-				for (var/datum/language/russian/A in H.languages)
+				H.add_language("Blugoslavian",FALSE)
+				for (var/datum/language/blugoslavian/A in H.languages)
 					H.default_language = A
-				if (prob(15))
-					H.add_language("Greek",FALSE)
 
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job

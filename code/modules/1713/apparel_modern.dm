@@ -842,7 +842,7 @@
 	item_state = "kevlarvest"
 	worn_state = "kevlarvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
-	armor = list(melee = 80, arrow = 95, gun = 95, energy = 35, bomb = 64, bio = 20, rad = FALSE)
+	armor = list(melee = 80, arrow = 95, gun = 65, energy = 35, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.4
 	w_class = 4
@@ -855,11 +855,25 @@
 	item_state = "civilianvest"
 	worn_state = "civilianvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 90, gun = 72, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 90, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.30
 	w_class = 4
 	weight = 3.6
+
+/obj/item/clothing/accessory/armor/nomads/civiliankevlar/press
+	name = "Press kevlar vest"
+	desc = "A blue kevlar vest, with 'PRESS' written across the chest."
+	icon_state = "press_kevlarvest"
+	item_state = "press_kevlarvest"
+	worn_state = "press_kevlarvest"
+
+/obj/item/clothing/head/helmet/kevlarhelmet/press
+	name = "Press kevlar helmet"
+	desc = "A standard bulletproof helmet, made of kevlar, with 'PRESS' written across it."
+	icon_state = "kevlarhelmet_press"
+	item_state = "kevlarhelmet_press"
+	worn_state = "kevlarhelmet_press"
 
 /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under //for TDM maps, showing under the clothing
 
