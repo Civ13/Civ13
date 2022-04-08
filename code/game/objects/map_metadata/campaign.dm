@@ -119,14 +119,25 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	var/ctr = 0
 	for(var/turf/T in get_area_turfs(/area/caribbean/japanese/land))
 		for (var/mob/living/simple_animal/civilian/CVL in T)
-			if(CVL.stat != DEAD)
+			if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador) && CVL.stat != DEAD)
+				var/msg = "<font size=4><font color='blue'><b>Blugoslavia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
+				world << msg
+				game_log(msg)
 				qdel(CVL)
-				civilians_evacuated["Blugoslavia"]++
+			else
+				if(CVL.stat != DEAD)
+					qdel(CVL)
+					civilians_evacuated["Blugoslavia"]++
 	for(var/turf/T in get_area_turfs(/area/caribbean/pirates/land))
 		for (var/mob/living/simple_animal/civilian/CVL in T)
-			if(CVL.stat != DEAD)
-				qdel(CVL)
-				civilians_evacuated["Redmenia"]++
+			if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador))
+				var/msg = "<font size=4><font color='red'><b>Redmenia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
+				world << msg
+				game_log(msg)
+			else
+				if(CVL.stat != DEAD)
+					qdel(CVL)
+					civilians_evacuated["Redmenia"]++
 	spawn(600)
 		civ_collector()
 	return "[ctb],[ctr]"
@@ -272,8 +283,11 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		game_log(message)
 		world << "<b><big>Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>"
 		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		game_log("Civilians Rescued: Blugoslavia [civilians_evacuated["Blugoslavia"]], Redmenia [civilians_evacuated["Redmenia"]]")
+		game_log("Civilians Killed: Blugoslavia [civilians_killed["Blugoslavia"]], Redmenia [civilians_killed["Redmenia"]]")
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major

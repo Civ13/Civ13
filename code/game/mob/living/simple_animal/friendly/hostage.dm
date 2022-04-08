@@ -42,20 +42,22 @@
 	icon_living = "civilian_1"
 	icon_dead = "civilian_1_dead"
 	meat_amount = 0
-	var/civilian_wander = TRUE
-	var/initial_spot = list(0,0,0)
 	var/list/harmer_factions = list("Redmenia" = 0, "Blugoslavia" = 0)
+	var/announce_death = FALSE
+	var/uniquenum = 0
 /mob/living/simple_animal/civilian/New()
 	..()
+	uniquenum = rand(10000,99999)
 	icon_state = "civilian_[rand(1,5)]"
 	icon_living = icon_state
 	icon_dead = "[icon_state]_dead"
-	initial_spot = list("x" = src.x,"y" = src.y, "z" = src.z)
-	civilian_wander_proc()
 	update_icons()
 
+var/global/civvies_killed = list()
 /mob/living/simple_animal/civilian/death()
 	..()
+	if(uniquenum in civvies_killed)
+		return
 	var/killer = "none"
 	if (harmer_factions["Redmenia"] > harmer_factions["Blugoslavia"])
 		killer = "Redmenia"
@@ -64,20 +66,25 @@
 	else if (harmer_factions["Redmenia"] == harmer_factions["Blugoslavia"] && harmer_factions["Blugoslavia"] > 0)
 		killer = "both factions"
 	if (killer != "none")
-		var/msg = "Civilian killed by [killer] at ([src.x],[src.y],[src.z])!"
+		var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x],[src.y],[src.z])!"
+		civvies_killed += list(uniquenum)
 		var/obj/map_metadata/campaign/CM = map
 		if (map.ID == MAP_CAMPAIGN && CM)
 			switch(killer)
 				if("Blugoslavia")
+					if(announce_death)
+						world << "<font size=4>The <b>[name]</b> was killed by <font color='blue'><b>[killer]</b></font>!</font>"
 					CM.civilians_killed["Blugoslavia"]++
 				if("Redmenia")
+					if(announce_death)
+						world << "<font size=4>The <b>[name]</b> was killed by <font color='red'><b>[killer]</b></font>!</font>"
 					CM.civilians_killed["Redmenia"]++
 		harmer_factions = list("Redmenia" = 0, "Blugoslavia" = 0)
-		world.log << "CIVDEATH: [msg]"
+		game_log("CIVDEATH: [msg]")
 		message_admins(msg)
 	else
-		var/msg = "Civilian killed by UNKNOWN at ([src.x],[src.y],[src.z])!"
-		world.log << "CIVDEATH: [msg]"
+		var/msg = "Civilian ([name]-[uniquenum]) killed by UNKNOWN at ([src.x],[src.y],[src.z])!"
+		game_log("CIVDEATH: [msg]")
 		message_admins(msg)
 /mob/living/simple_animal/civilian/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
@@ -105,29 +112,18 @@
 		else if(H.faction_text == CIVILIAN)
 			harmer_factions["Blugoslavia"]++
 	..()
-/mob/living/simple_animal/civilian/proc/civilian_wander_proc()
-	if (!civilian_wander)
-		return
-	if (buckled)
-		return
-	if (stat != CONSCIOUS)
-		return
-	if (stop_automated_movement_when_pulled && pulledby)
-		return
-	var/atom/init_loc = locate(initial_spot["x"],initial_spot["y"],initial_spot["z"])
-	if (!init_loc)
-		return
-	if (get_dist(src,init_loc)<= 5)
-		var/moving_to = FALSE
-		moving_to = pick(cardinal)
-		set_dir(moving_to)
-		Move(get_step(src,moving_to))
-		turns_since_move = FALSE
-	else
-		var/dir_to_origin = get_dir(src,init_loc)
-		set_dir(dir_to_origin)
-		Move(get_step(src,dir_to_origin))
-		turns_since_move = FALSE
 
-	spawn(100)
-		civilian_wander_proc()
+/mob/living/simple_animal/civilian/greenistani_ambassador
+	name = "Greenistani Ambassador"
+	desc = "The ambassator of Greenistan. Keep him safe!"
+	icon_state = "greenistani_2"
+	icon_living = "greenistani_2"
+	icon_dead = "greenistani_2_dead"
+	meat_amount = 0
+	announce_death = TRUE
+	New()
+		..()
+		icon_state = "greenistani_2"
+		icon_living = "greenistani_2"
+		icon_dead = "greenistani_2_dead"
+		update_icons()
