@@ -18,7 +18,7 @@
 	age = "2022"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
-	battle_name = "Rozenia"
+	battle_name = "battle of Rozenia"
 	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
 	faction1 = PIRATES
 	faction2 = CIVILIAN
@@ -26,7 +26,18 @@
 	songs = list(
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 0
-
+	scores = list(
+		"Blugoslavia" = 0,
+		"Redmenia" = 0,
+	)
+	var/list/civilians_evacuated = list(
+		"Blugoslavia" = 0,
+		"Redmenia" = 0,
+	)
+	var/list/civilians_killed = list(
+		"Blugoslavia" = 0,
+		"Redmenia" = 0,
+	)
 	var/list/squad_jobs_blue = list(
 		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
 		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
@@ -47,6 +58,11 @@
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Medic" = 2, "Officer" = 3, "Commander" = 1)
 	)
+
+/obj/map_metadata/campaign/New()
+	..()
+	civ_collector()
+
 obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian))
@@ -98,8 +114,24 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	else
 		return 4200 // 7 minutes
 
-//role selector
+/obj/map_metadata/campaign/proc/civ_collector()
+	var/ctb = 0
+	var/ctr = 0
+	for(var/turf/T in get_area_turfs(/area/caribbean/japanese/land))
+		for (var/mob/living/simple_animal/civilian/CVL in T)
+			if(CVL.stat != DEAD)
+				qdel(CVL)
+				civilians_evacuated["Blugoslavia"]++
+	for(var/turf/T in get_area_turfs(/area/caribbean/pirates/land))
+		for (var/mob/living/simple_animal/civilian/CVL in T)
+			if(CVL.stat != DEAD)
+				qdel(CVL)
+				civilians_evacuated["Redmenia"]++
+	spawn(600)
+		civ_collector()
+	return "[ctb],[ctr]"
 
+//role selector
 /mob/new_player/proc/LateChoicesCampaign(factjob)
 	var/list/available_jobs_per_side = list(
 		CIVILIAN = FALSE,
@@ -240,6 +272,8 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		world << "<b><big>Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>"
+		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major
@@ -289,3 +323,113 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+///////////map specific objs/////////
+/obj/structure/altar/heads
+	name = "Mr. Taislenko's Collection"
+	desc = "To be filled with his requests."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "wood_chest"
+	flammable = FALSE
+	health = 1000000
+
+/obj/structure/altar/heads/attackby(obj/item/W, mob/living/human/user)
+	if (istype(W, /obj/item/organ/external/head) && map.ID == MAP_CAMPAIGN)
+		var/obj/map_metadata/campaign/AW = map
+		if (!AW)
+			return
+		var/obj/item/organ/external/head/HD = W
+		var/head_nationality = HD.nationality
+		qdel(W)
+		if (!head_nationality)
+			return
+		
+		user << "You place the head in the chest."
+		switch(head_nationality)
+			if("Redmenia")
+				AW.scores["Blugoslavia"] += 1
+				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+			if("Blugoslavia")
+				AW.scores["Redmenia"] += 1
+				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
+		return
+
+/obj/item/weapon/telephone/mobile/campaign
+	name = "telephone"
+	icon_state = "telephone"
+	anchored = TRUE
+	update_icon()
+		icon_state = "telephone"
+/obj/item/weapon/telephone/mobile/campaign/red
+	name = "Red Command telephone"
+	phonenumber = 1111
+	desc = "Used to communicate with the opposite faction. Number is 1111."
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+		contacts += list(list("Blue Command",9999))
+
+/obj/item/weapon/telephone/mobile/campaign/blue
+	name = "Blue Command telephone"
+	phonenumber = 9999
+	desc = "Used to communicate with the opposite faction. Number is 9999."
+	icon_state = "telephone_blue"
+	update_icon()
+		icon_state = "telephone_blue"
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+		contacts += list(list("Red Command",1111))
+
+
+/obj/item/weapon/telephone/mobile/campaign/attack_self(var/mob/user as mob)
+	if (!connected && !ringing)
+		var/tgtnum = 0
+		if (phonenumber == 9999)
+			tgtnum = 1111
+		else if (phonenumber == 1111)
+			tgtnum = 9999
+		else
+			return
+
+		ring_phone(tgtnum,phonenumber, src, user)
+		spawn(200)
+			if (!connected || !origincall)
+				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+				return
+	else if (connected)
+		connected = FALSE
+		if (origincall)
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
+			origincall.connected = FALSE
+			origincall.origincall = null
+			origincall = null
+	else if (ringing && !ringingnum)
+		user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+		ringing = FALSE
+		if (origincall)
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
+			origincall.origincall = null
+			origincall.connected = FALSE
+			origincall = null
+	else if (ringing && ringingnum)
+		ringing = FALSE
+		connected = ringingnum
+		if (origincall)
+			origincall.connected = phonenumber
+			origincall.ringing = FALSE
+			origincall.origincall = src
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone."
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
