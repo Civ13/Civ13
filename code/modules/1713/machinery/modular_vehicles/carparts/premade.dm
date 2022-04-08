@@ -93,8 +93,16 @@
 			tpt.doorcode = doorcode
 		tpt.reg_number = reg_number
 		tpt.dir = 2
-		new/obj/effect/autoassembler(get_turf(locate(tpt.x-2,tpt.y+2,tpt.z)))
-
+		var/turf/autoassembler_loc = get_turf(locate(tpt.x-2,tpt.y+2,tpt.z))
+		new/obj/effect/autoassembler(autoassembler_loc)
+		spawn(5)
+			if (map.ID == MAP_CAMPAIGN && !istype(src, /obj/effects/premadevehicles/tank))
+				var/rangeto = range(2,autoassembler_loc)
+				for (var/obj/structure/vehicleparts/frame/A in rangeto)
+					A.w_front[7] = TRUE
+					A.w_back[7] = TRUE
+					A.w_left[7] = TRUE
+					A.w_right[7] = TRUE
 /obj/effects/premadevehicles/proc/new_number()
 	var/tempnum = 0
 	tempnum = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][pick(alphabet_uppercase)] [rand(0,9)][rand(0,9)][rand(0,9)]"
