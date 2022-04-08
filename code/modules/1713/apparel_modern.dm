@@ -909,6 +909,13 @@
 	item_state = "motorist"
 	worn_state = "motorist"
 
+/obj/item/clothing/under/reporter
+	name = "war correspondent outfit"
+	desc = "Casual brown trousers and a black shirt, perfect for running away from gunfire"
+	icon_state = "reporter"
+	item_state = "reporter"
+	worn_state = "reporter"
+
 /obj/item/clothing/gloves/motorist
 	name = "black motorist gloves"
 	icon_state = "motorist"
