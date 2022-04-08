@@ -405,7 +405,7 @@ mob/living/human/corpse/british_sailor
 	equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(src), slot_shoes)
 	equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(src), slot_w_uniform)
 	equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/really_black_suit(src), slot_wear_suit)
-	equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(src), slot_l_hand)
+	equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(src), slot_r_hand)
 	h_style = "CIA"
 	s_tone = -66
 	change_skin_tone(s_tone)
@@ -432,6 +432,7 @@ mob/living/human/corpse/british_sailor
 	equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(src), slot_shoes)
 	equip_to_slot_or_del(new /obj/item/clothing/under/reporter(src), slot_w_uniform)
 	equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kevlarhelmet/press(src), slot_head)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard/yellow(src), slot_r_store)
 	var/obj/item/clothing/under/uniform = w_uniform
 	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/press/press_armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/press(null)
 	uniform.attackby(press_armor, src)

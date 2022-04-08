@@ -464,12 +464,13 @@
 	item_state = "hazard_b"
 	worn_state = "hazard_b"
 
-/obj/item/clothing/suit/storage/hazard/blue
+/obj/item/clothing/suit/storage/hazard/yellow
 	name = "yellow high visibility vest"
 	desc = "A vest used for high visibility and reflectivity."
 	icon_state = "hazard_y"
 	item_state = "hazard_y"
 	worn_state = "hazard_y"
+	w_class = 1.0
 
 /obj/item/clothing/suit/storage/hazard/green
 	name = "green hazard vest"
