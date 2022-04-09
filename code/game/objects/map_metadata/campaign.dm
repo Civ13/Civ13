@@ -288,6 +288,7 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		game_log("Civilians Rescued: Blugoslavia [civilians_evacuated["Blugoslavia"]], Redmenia [civilians_evacuated["Redmenia"]]")
 		game_log("Civilians Killed: Blugoslavia [civilians_killed["Blugoslavia"]], Redmenia [civilians_killed["Redmenia"]]")
+		game_log("Scores: [scores["Blugoslavia"]], [scores["Redmenia"]]")
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major
@@ -361,12 +362,23 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 		user << "You place the head in the chest."
 		switch(head_nationality)
 			if("Redmenia")
-				AW.scores["Blugoslavia"] += 1
-				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
-			if("Blugoslavia")
 				AW.scores["Redmenia"] += 1
 				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
+			if("Blugoslavia")
+				AW.scores["Blugoslavia"] += 1
+				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
 		return
+
+/obj/structure/altar/heads/examine(mob/user, distance)
+	. = ..()
+	if(ishuman(user) && map && map.ID == MAP_CAMPAIGN)
+		var/mob/living/human/H = user
+		var/obj/map_metadata/campaign/AW = map
+		switch(H.nationality)
+			if("Redmenia")
+				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
+			if("Blugoslavia")
+				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
 
 /obj/item/weapon/telephone/mobile/campaign
 	name = "telephone"
