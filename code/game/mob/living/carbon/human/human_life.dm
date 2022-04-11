@@ -35,7 +35,7 @@
 /mob/living/human/Life()
 
 	handle_look_stuff()
-	if (!map.civilizations && !map.nomads && !map.is_RP)
+	if (map && !map.civilizations && !map.nomads && !map.is_RP)
 		process_awards()
 	if (transforming)
 		return

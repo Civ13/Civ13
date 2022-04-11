@@ -318,12 +318,12 @@ var/civmax_research = list(230,230,230)
 					v++
 
 /obj/map_metadata/proc/religious_timer()
-	if (map.custom_religions.len > 0)
-		for (var/rel in map.custom_religions)
-			if (map.custom_religions[rel][3] > 0)
-				map.custom_religions[rel][3] -= 0.2
-			if (map.custom_religions[rel][3] < 0)
-				map.custom_religions[rel][3] = 0
+	if (custom_religions.len > 0)
+		for (var/rel in custom_religions)
+			if (custom_religions[rel][3] > 0)
+				custom_religions[rel][3] -= 0.2
+			if (custom_religions[rel][3] < 0)
+				custom_religions[rel][3] = 0
 	spawn(1200)
 		religious_timer()
 

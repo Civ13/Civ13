@@ -341,7 +341,7 @@
 	for (var/refdir in dirs)
 		var/turf/ref = get_step(mob, refdir)
 
-		if (ref && map.check_caribbean_block(mob, ref))
+		if (ref && map && map.check_caribbean_block(mob, ref))
 			mob.dir = direct
 			if (world.time >= mob.next_gracewall_message)
 				mob << "<span class = 'warning'>You cannot pass the invisible wall until the <b>Grace Period</b> has ended.</span>"

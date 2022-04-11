@@ -771,7 +771,7 @@
 /datum/program/monkeysoftmail/does_checks_proc()
 	..()
 	if (tmp_comp_vars["mail_snd"] && origin)
-		if (islist(map.emails[tmp_comp_vars["mail_snd"]]))
+		if (map && islist(map.emails[tmp_comp_vars["mail_snd"]]))
 			for(var/i, i <= map.emails[tmp_comp_vars["mail_snd"]].len, i++)
 				if (istype(map.emails[tmp_comp_vars["mail_snd"]][i], /datum/email))
 					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]

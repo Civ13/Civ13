@@ -237,7 +237,7 @@
 	handle_piss()
 	handle_shit()
 	if (squad > 0 && original_job && original_job.uses_squads)
-		if (faction_text == map.faction1)
+		if (map && faction_text == map.faction1)
 			map.faction1_squads[squad] -= src
 			if (map.faction1_squad_leaders[squad] == src)
 				map.faction1_squad_leaders[squad] = null

@@ -202,7 +202,7 @@ var/global/datum/controller/occupations/job_master
 		if(H.original_job.is_squad_leader)
 			spawn (10)
 			for(var/mob/living/human/HM in world)
-				if(HM.original_job.is_commander && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+				if(HM && HM.original_job && HM.original_job.is_commander && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
 					HSL = HM
 					break
 		else if (H.squad && H.faction_text == map.faction1)
