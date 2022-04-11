@@ -282,7 +282,7 @@
 					desc = "an ammo pouch."
 					caliber = null
 	else
-		if (multiple_sprites && icon_keys.len)
+		if (multiple_sprites && icon_keys && icon_keys.len)
 			//find the lowest key greater than or equal to stored_ammo.len
 			var/new_state = null
 			for (var/idx in TRUE to icon_keys.len)
