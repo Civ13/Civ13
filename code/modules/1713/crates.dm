@@ -631,6 +631,14 @@ obj/structure/closet/crate/coldwar/m18
 	name = "M18 smoke grenade crate"
 	paths = list(/obj/item/weapon/grenade/smokebomb/m18smoke = 10)
 
+obj/structure/closet/crate/coldwar/us_supplies
+	name = "US Army ammo & supplies crate"
+	paths = list(/obj/item/weapon/grenade/coldwar/m67 = 3,
+				/obj/item/ammo_magazine/m16 = 12,
+				/obj/item/weapon/storage/firstaid/combat/modern = 1,
+				/obj/item/weapon/storage/firstaid/adv = 1,
+				)
+
 obj/structure/closet/crate/ww2/mortar_shells
 	name = "mortar shells"
 	paths = list(/obj/item/cannon_ball/mortar_shell = 18)
