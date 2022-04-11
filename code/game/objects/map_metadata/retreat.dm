@@ -4,7 +4,7 @@
 	lobby_icon_state = "coldwar"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
-
+	no_hardcore = TRUE
 	faction_organization = list(
 		AMERICAN,
 		CHINESE)
@@ -24,6 +24,7 @@
 	songs = list(
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 5
+
 /obj/map_metadata/retreat/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/american))

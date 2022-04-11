@@ -48,6 +48,20 @@
 	else
 		admin_notice("<span class='danger'>Failed to load whitelist!</span>", R_DEBUG)
 
+	admin_notice("<span class='danger'>Initializing factionlist...</span>", R_DEBUG)
+	sleep(-1)
+	var/F6 = file("SQL/factionlist.txt")
+	if (fexists(F6))
+		var/list/flist_temp = file2list(F6,"\n")
+		for (var/i in flist_temp)
+			if (findtext(i, ";"))
+				var/list/current = splittext(i, ";")
+				if (current[2] == "red")
+					faction_list_red += current[1]
+				else if (current[2] == "blue")
+					faction_list_blue += current[1]
+	else
+		admin_notice("<span class='danger'>Failed to load factionlist!</span>", R_DEBUG)
 	admin_notice("<span class='danger'>Initializing ban list...</span>", R_DEBUG)
 	sleep(-1)
 	if (load_bans())

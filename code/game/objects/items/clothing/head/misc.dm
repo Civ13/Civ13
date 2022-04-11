@@ -73,7 +73,7 @@
 
 /obj/item/clothing/head/feathertrilby
 	name = "feather trilby"
-	icon_state = "feather_trilby"
+	icon_state = "feathered_hat"
 	desc = "A sharp, stylish hat with a feather."
 
 /obj/item/clothing/head/fez

@@ -456,6 +456,40 @@
 	bstyle = "prop_mil1"
 /obj/item/weapon/poster/faction/mil2
 	bstyle = "prop_mil2"
+	
+/obj/structure/poster/faction/red
+	faction = "Redmenia"
+	color2 = "#d60000"
+	color1 = "#FFFFFF"
+/obj/structure/poster/faction/red/lead
+	icon_state = "prop_lead"
+	bstyle = "prop_lead"
+/obj/structure/poster/faction/red/work
+	icon_state = "prop_work"
+	bstyle = "prop_work"
+/obj/structure/poster/faction/red/mil1
+	icon_state = "prop_mil1"
+	bstyle = "prop_mil1"
+/obj/structure/poster/faction/red/mil2
+	icon_state = "prop_mil2"
+	bstyle = "prop_mil2"
+
+/obj/structure/poster/faction/blue
+	faction = "Blugoslavia"
+	color2 = "#0000d6"
+	color1 = "#FFD700"
+/obj/structure/poster/faction/blue/lead
+	icon_state = "prop_lead"
+	bstyle = "prop_lead"
+/obj/structure/poster/faction/blue/work
+	icon_state = "prop_work"
+	bstyle = "prop_work"
+/obj/structure/poster/faction/blue/mil1
+	icon_state = "prop_mil1"
+	bstyle = "prop_mil1"
+/obj/structure/poster/faction/blue/mil2
+	icon_state = "prop_mil2"
+	bstyle = "prop_mil2"
 /obj/item/weapon/poster/faction/New()
 	..()
 	spawn(10)

@@ -200,6 +200,7 @@ var/global/datum/controller/occupations/job_master
 	if (H.original_job && H.original_job.uses_squads)
 		var/mob/living/human/HSL = null
 		if(H.original_job.is_squad_leader)
+			spawn (10)
 			for(var/mob/living/human/HM in world)
 				if(HM.original_job.is_commander && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
 					HSL = HM
@@ -403,6 +404,18 @@ var/global/datum/controller/occupations/job_master
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
 
+		if(map.ID == MAP_CAMPAIGN)
+			if(istype(job,/datum/job/pirates/redfaction))
+				H.remove_language("English")
+				H.add_language("Redmenian",FALSE)
+				for (var/datum/language/redmenian/A in H.languages)
+					H.default_language = A
+
+			else if (istype(job, /datum/job/civilian/bluefaction))
+				H.remove_language("English")
+				H.add_language("Blugoslavian",FALSE)
+				for (var/datum/language/blugoslavian/A in H.languages)
+					H.default_language = A
 
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
@@ -519,7 +532,8 @@ var/global/datum/controller/occupations/job_master
 					H.stopDumbDamage = FALSE
 
 			spawn(12)
-				H.memory()
+				if(map.ID != MAP_CAMPAIGN)
+					H.memory()
 
 			return H
 

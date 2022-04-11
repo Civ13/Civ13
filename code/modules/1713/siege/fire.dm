@@ -159,6 +159,11 @@
 	desc = "Where you keep warm or light arrows on fire."
 	icon_state = "marble_brazier0"
 
+/obj/structure/brazier/potbellystove
+	name = "potbelly stove"
+	desc = "Where you keep warm or light arrows on fire."
+	icon_state = "potbelly"
+
 /obj/structure/brazier/sandstone/do_light()
 	if (on)
 		fuel = (fuel-1)
@@ -199,6 +204,16 @@
 	spawn(10)
 		do_light()
 
+/obj/structure/brazier/potbellystove/do_light()
+	if (on)
+		fuel = (fuel-1)
+		if (fuel <= 0)
+			on = FALSE
+			set_light(0)
+			icon_state = "potbelly"
+	spawn(10)
+		do_light()
+
 /obj/structure/brazier/stone/attack_hand(mob/user as mob)
 	if (!on && fuel > 0)
 		user << "You light the stone brazier."
@@ -211,6 +226,20 @@
 		on = FALSE
 		set_light(0)
 		icon_state = "s_brazier0"
+		return
+
+/obj/structure/brazier/potbellystove/attack_hand(mob/user as mob)
+	if (!on && fuel > 0)
+		user << "You light the potbelly stove."
+		on = TRUE
+		set_light(5)
+		icon_state = "potbelly-lit"
+		return
+	else
+		user << "You put out the potbelly stove."
+		on = FALSE
+		set_light(0)
+		icon_state = "potbelly"
 		return
 
 /obj/structure/brazier/sandstone/attack_hand(mob/user as mob)

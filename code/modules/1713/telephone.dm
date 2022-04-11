@@ -195,6 +195,8 @@ var/list/global/phone_numbers = list()
 				spawn(200)
 					if (!connected)
 						user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+						connected = FALSE
+						origincall = null
 						return
 			else
 				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."

@@ -210,9 +210,21 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1.03
+	effectiveness_mod = 1.02
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/semiautomatic/sks/sksm
+	name = "SKS-M"
+	desc = "Soviet semi-automatic rifle chambered in 7.62x39mm. This is the updated version based on the Type 63 that is compatible with AK-47 magazines."
+	icon_state = "sksm"
+	item_state = "sks"
+	base_icon = "sksm"
+	weight = 3.8
+	effectiveness_mod = 1.04
+	max_shells = 0
+	magazine_type = /obj/item/ammo_magazine/sksm
+	good_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/sksm, /obj/item/ammo_magazine/ak47)
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 /obj/item/weapon/gun/projectile/semiautomatic/svd
 	name = "SVD"
 	desc = "Soviet designated marksman's rifle, feeding from detachable 10-round magazines. Chambered in 7.62x54mmR."
@@ -243,6 +255,19 @@
 /obj/item/weapon/gun/projectile/semiautomatic/svd/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/semiautomatic/svd/acog/New()
+	..()
+	for(var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SC in attachments)
+		attachments -= SC
+		actions -= SC.actions
+		verbs -= SC.verbs
+		attachment_slots += SC.attachment_type
+		accuracy = initial(accuracy)
+		recoil = initial(recoil)
+		qdel(SC)
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/semiautomatic/g41
@@ -334,8 +359,8 @@
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a556x45
-	magazine_type = /obj/item/ammo_magazine/m16
-	good_mags = list(/obj/item/ammo_magazine/m16)
+	magazine_type = /obj/item/ammo_magazine/ar15
+	good_mags = list(/obj/item/ammo_magazine/ar15)
 	weight = 4.9
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=6)

@@ -735,7 +735,7 @@
 				stat("")
 				stat(stat_header("Developer"))
 				stat("")
-				if (processes.time_track)
+				if (processes.time_track && movementMachine)
 					stat("CPU (Average) (Movement Scheduler (Average)):","[world.cpu]% ([ceil(processes.time_track.stored_averages["cpu"])]%) ([ceil(movementMachine.last_cpu)]% ([ceil(movementMachine.average_cpu)]%))")
 					stat("Tick Usage (Average) (Movement Scheduler (Average)):","[ceil(world.tick_usage)]% ([ceil(processes.time_track.stored_averages["tick_usage"])]%) ([ceil(movementMachine.last_tick_usage)]% ([ceil(movementMachine.average_tick_usage)]%))")
 				if (client.holder.rights & R_MOD)

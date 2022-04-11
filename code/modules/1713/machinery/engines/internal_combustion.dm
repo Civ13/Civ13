@@ -272,7 +272,7 @@
 
 	maxpower = 86
 	torque = 1.08
-	fuelefficiency = 0.22
+	fuelefficiency = 0.37
 	fuels = list("diesel","biodiesel","gasoline")
 
 #undef FUEL_CONSUMPTION_MODIFIER

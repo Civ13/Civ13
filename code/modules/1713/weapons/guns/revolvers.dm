@@ -352,8 +352,8 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c41
 	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/webley4
@@ -368,8 +368,8 @@
 	magazine_type = /obj/item/ammo_magazine/c455
 	ammo_type = /obj/item/ammo_casing/a455
 	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/frontier
@@ -399,8 +399,8 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
 	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/taurus
@@ -414,8 +414,8 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
 	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/magnum44
@@ -429,8 +429,8 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
 	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/smithwesson
@@ -504,7 +504,7 @@
 	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	weight = 2.3
 	single_action = FALSE
-	blackpowder = TRUE
+	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
 
@@ -522,6 +522,8 @@
 	weight = 0.8
 	load_delay = 6
 	gun_safety = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/derringer
 	name = "Derringer M95 pistol"

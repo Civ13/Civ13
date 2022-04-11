@@ -31,11 +31,12 @@
 #define FILIPINO_SYLLABLES list("a", "b", "da", "fa", "ga", "gra", "ha", "han", "hon", "ka", "la", "lat", "ma", "na", "nga", "pa", "pra", "ra", "sa", "sal", "ta", "tra", "wa", "e", "be", "bre", "de", "dre", "ge", "he", "ke", "le", "me", "ne", "pe", "pre", "re", "se", "te", "tre", "i", "bi", "di", "fi", "gi", "hi", "ki", "li", "mi", "ni", "pi", "pri", "ri", "si", "ti", "o", "ong", "oo", "bo", "bro", "do", "dro", "go", "ho", "ko", "lo", "mo", "no", "ngo", "po", "pro", "ro", "so", "to", "tro", "yo", "u", "bu", "du", "gu", "hu", "ku", "lu", "mu", "pu", "yu")
 #define ITALIAN_SYLLABLES list("pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va", "ta", "ra", "ga", "da", "na", "sa", "la", "te", "re", "ge", "de", "ne", "se", "le", "ti", "ri", "gi", "di", "ni", "si")
 #define CHECHEN_SYLLABLES list("la", "ma", "nakh", "dukh", "duy", "lu", "sal", "shi", "shov", "dansh", "en", "be", "kha", "ja", "bal", "tsa", "mol", "ush", "jin", "khor", "gie", "buylsh", "or", "ga", "tha", "zan", "dakh", "gash", "det", "mekh", "sa", "salam", "al", "kum", "ha", "at", "qo", "di", "ste", "aid")
+#define FINNISH_SYLLABLES list ("a", "an", "del", "des", "er", "gas", "go", "he", "ik", "il", "ja", "jar", "jes", "jat", "ka", "kai", "ku", "la", "las", "lat", "lem", "let", "li", "lis", "ma", "mal", "mas", "mat", "me", "mel", "mer", "mi", "min", "mis", "moit", "myy", "nen", "ni", "nin", "nit", "no", "nos", "o", "on", "pe", "pet", "pis", "pu", "ra", "ri", "sa", "ses", "struk", "syy", "ta", "tau", "te", "tel", "ti", "to", "tu", "jar", "tan", "to", "ton", "vin", "voi")
 
 /datum/language/portuguese
 	name = "Portuguese"
 	desc = "Muito bom."
-	key = "p"
+	key = "pt"
 	colour = "Portuguese"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = PORTUGUESE_SYLLABLES
@@ -44,7 +45,7 @@
 /datum/language/danish
 	name = "Danish"
 	desc = "OH LO LO OH LO LO."
-	key = "v"
+	key = "dn"
 	colour = "danish"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DANISH_SYLLABLES
@@ -57,7 +58,7 @@
 /datum/language/spanish
 	name = "Spanish"
 	desc = "Muy bueno."
-	key = "s"
+	key = "sp"
 	colour = "Spanish"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SPANISH_SYLLABLES
@@ -66,7 +67,7 @@
 /datum/language/english
 	name = "English"
 	desc = "Very good."
-	key = "e"
+	key = "en"
 	colour = "English"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ENGLISH_SYLLABLES
@@ -75,7 +76,7 @@
 /datum/language/french
 	name = "French"
 	desc = "Tres bien."
-	key = "f"
+	key = "fr"
 	colour = "French"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = FRENCH_SYLLABLES
@@ -84,7 +85,7 @@
 /datum/language/dutch
 	name = "Dutch"
 	desc = "Erg goed."
-	key = "d"
+	key = "nl"
 	colour = "Dutch"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DUTCH_SYLLABLES
@@ -93,7 +94,7 @@
 /datum/language/carib
 	name = "Carib"
 	desc = "???"
-	key = "c"
+	key = "cb"
 	colour = "Carib"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CARIB_SYLLABLES
@@ -103,7 +104,7 @@
 /datum/language/greek
 	name = "Greek"
 	desc = "Old and rational."
-	key = "g"
+	key = "gr"
 	colour = "Greek"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GREEK_SYLLABLES
@@ -112,7 +113,7 @@
 /datum/language/latin
 	name = "Latin"
 	desc = "Sacred and violent."
-	key = "l"
+	key = "la"
 	colour = "Latin"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = LATIN_SYLLABLES
@@ -126,7 +127,7 @@
 /datum/language/arab
 	name = "Arabic"
 	desc = "Allahu Ackbar!"
-	key = "a"
+	key = "ar"
 	colour = "Arabic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
@@ -135,7 +136,7 @@
 /datum/language/chechen
 	name = "Chechen"
 	desc = "Marsallah!"
-	key = "c"
+	key = "ch"
 	colour = "Arabic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CHECHEN_SYLLABLES
@@ -144,7 +145,7 @@
 /datum/language/hebrew
 	name = "Hebrew"
 	desc = "Oy Vey!"
-	key = "h"
+	key = "hb"
 	colour = "Hebrew"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = HEBREW_SYLLABLES
@@ -153,7 +154,7 @@
 /datum/language/japanese
 	name = "Japanese"
 	desc = "Ohio Gozaimasu."
-	key = "j"
+	key = "jp"
 	colour = "Japanese"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = JAPANESE_SYLLABLES
@@ -162,7 +163,7 @@
 /datum/language/ainu
 	name = "Ainu"
 	desc = "Osoma!."
-	key = "i"
+	key = "ai"
 	colour = "Ainu"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = AINU_SYLLABLES
@@ -171,7 +172,7 @@
 /datum/language/russian
 	name = "Russian"
 	desc = "Za Rodinu!"
-	key = "r"
+	key = "ru"
 	colour = "Russian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = RUSSIAN_SYLLABLES
@@ -180,7 +181,7 @@
 /datum/language/ukrainian
 	name = "Ukrainian"
 	desc = "Slava Ukraina!"
-	key = "u"
+	key = "uk"
 	colour = "Ukrainian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = RUSSIAN_SYLLABLES
@@ -188,8 +189,8 @@
 
 /datum/language/polish
 	name = "Polish"
-	desc = "Smierc dla ciemiezc�w!"
-	key = "o"
+	desc = "Smierc dla ciemiezcow!"
+	key = "pl"
 	colour = "Polish"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = POLISH_SYLLABLES
@@ -198,7 +199,7 @@
 /datum/language/chinese
 	name = "Chinese"
 	desc = "Xiexie."
-	key = "x"
+	key = "cn"
 	colour = "Chinese"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = JAPANESE_SYLLABLES
@@ -207,7 +208,7 @@
 /datum/language/german
 	name = "German"
 	desc = "Vor uns liegt Deutschland, in uns marschiert Deutschland. und hinter uns kommt Deutschland!"
-	key = "y"
+	key = "de"
 	colour = "german"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GERMAN_SYLLABLES
@@ -216,7 +217,7 @@
 /datum/language/zulu
 	name = "Zulu"
 	desc = "Kuhle Kakhulu."
-	key = "z"
+	key = "zu"
 	colour = "Zulu"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SWAHILI_SYLLABLES
@@ -225,7 +226,7 @@
 /datum/language/swahili
 	name = "Swahili"
 	desc = "Vizuri Sana."
-	key = "w"
+	key = "sw"
 	colour = "Swahili"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SWAHILI_SYLLABLES
@@ -234,7 +235,7 @@
 /datum/language/armenian
 	name = "Armenian"
 	desc = "Baref!"
-	key = "m"
+	key = "ar"
 	colour = "Armenian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
@@ -243,7 +244,7 @@
 /datum/language/vietnamese
 	name = "Vietnamese"
 	desc = "Rat Tot!"
-	key = "v"
+	key = "vn"
 	colour = "Vietnamese"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = VIETNAMESE_SYLLABLES
@@ -253,7 +254,7 @@
 /datum/language/blackspeech
 	name = "Black Speech"
 	desc = "Baldur!"
-	key = "b"
+	key = "bs"
 	colour = "Black Speech"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = BLACKSPEECH_SYLLABLES
@@ -262,7 +263,7 @@
 /datum/language/ant
 	name = "Antspeak"
 	desc = "Kch!"
-	key = "a"
+	key = "an"
 	colour = "Antspeak"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ANT_SYLLABLES
@@ -271,7 +272,7 @@
 /datum/language/ape
 	name = "Ape Speech"
 	desc = "Ooga!"
-	key = "a"
+	key = "ap"
 	colour = "Ape Speech"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GORILLA_SYLLABLES
@@ -280,7 +281,7 @@
 /datum/language/wolf
 	name = "Wolf Howling"
 	desc = "Awoooo!"
-	key = "w"
+	key = "wo"
 	colour = "Wolf Howling"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = WOLF_SYLLABLES
@@ -289,7 +290,7 @@
 /datum/language/lizard
 	name = "Lizard Hissing"
 	desc = "Hissss!"
-	key = "l"
+	key = "li"
 	colour = "Lizard Hissing"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = HEBREW_SYLLABLES
@@ -298,7 +299,7 @@
 /datum/language/crab
 	name = "Clack Tongue"
 	desc = "Clic Clac!"
-	key = "c"
+	key = "ct"
 	colour = "Clack Tongue"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CRAB_SYLLABLES
@@ -307,7 +308,7 @@
 /datum/language/gaelic
 	name = "Gaelic"
 	desc = "Drunken ramblings!"
-	key = "g"
+	key = "ga"
 	colour = "Gaelic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GAELIC_SYLLABLES
@@ -316,7 +317,7 @@
 /datum/language/italian
 	name = "Italian"
 	desc = "Cazzo!"
-	key = "I"
+	key = "it"
 	colour = "ITALIAN"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ITALIAN_SYLLABLES
@@ -325,7 +326,7 @@
 /datum/language/inuit
 	name = "inuktitut"
 	desc = "Wendigo!"
-	key = "t"
+	key = "in"
 	colour = "Inuktitut"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = INUKTITUT_SYLLABLES
@@ -334,7 +335,7 @@
 /datum/language/cherokee
 	name = "Cherokee"
 	desc = "Zah-dah-dah-goh-huhn-yuhn"
-	key = "q"
+	key = "cr"
 	colour = "Cherokee"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CHEROKEE_SYLLABLES
@@ -344,7 +345,7 @@
 /datum/language/oldnorse
 	name = "Old Norse"
 	desc = "Asgard Awaits!"
-	key = "o"
+	key = "on"
 	colour = "Old Norse"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = OLDNORSE_SYLLABLES
@@ -354,10 +355,21 @@
 	/datum/language/blackspeech=10,
 	/datum/language/danish = 25)
 
+/datum/language/finnish
+	name = "Finnish"
+	desc = "Mamme!"
+	key = "fi"
+	colour = "Finnish"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = FINNISH_SYLLABLES
+	mutual_intelligibility = list(/datum/language/oldnorse = 25,
+	/datum/language/danish = 20,
+	/datum/language/russian = 10)
+
 /datum/language/egyptian
     name = "Egyptian"
     desc = "Amon-Ra, Aten!"
-    key = "k"
+    key = "eg"
     colour = "Egyptian"
     flags = RESTRICTED | COMMON_VERBS
     syllables = EGYPTIAN_SYLLABLES
@@ -369,7 +381,7 @@
 /datum/language/korean
     name = "Korean"
     desc = "Haudenosaunee."
-    key = "k"
+    key = "ko"
     colour = "Korean"
     flags = RESTRICTED | COMMON_VERBS
     syllables = KOREAN_SYLLABLES
@@ -378,7 +390,7 @@
 /datum/language/iroquois
     name = "Iroquois"
     desc = "Haudenosaunee."
-    key = "n"
+    key = "ir"
     colour = "Iroquois"
     flags = RESTRICTED | COMMON_VERBS
     syllables = IROQUOIS_SYLLABLES
@@ -392,3 +404,30 @@
     flags = RESTRICTED | COMMON_VERBS
     syllables = FILIPINO_SYLLABLES
     mutual_intelligibility = list(/datum/language/spanish = 40)
+
+/datum/language/redmenian
+	name = "Redmenian"
+	desc = "The language of Redmenia."
+	key = "rd"
+	colour = "Redmenian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = ARAB_SYLLABLES
+	mutual_intelligibility = list(/datum/language/blugoslavian = 10)
+
+/datum/language/blugoslavian
+	name = "Blugoslavian"
+	desc = "The language of Blugoslavia."
+	key = "bl"
+	colour = "Blugoslavian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = RUSSIAN_SYLLABLES
+	mutual_intelligibility = list(/datum/language/redmenian = 10)
+
+/datum/language/greenistani
+	name = "Greenistani"
+	desc = "The language of Greenistan."
+	key = "gn"
+	colour = "Greenistani"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CHECHEN_SYLLABLES
+	mutual_intelligibility = list()

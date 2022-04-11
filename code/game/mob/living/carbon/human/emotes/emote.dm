@@ -225,6 +225,13 @@ var/list/vocal_emotes = list(
 				sleeping += 10 //Short-short nap
 				m_type = 1
 
+			if ("nap")
+				message = "gently nods off."
+				if (sleeping)
+					return //Can't faint while asleep
+				sleeping += 30 //short nap
+				m_type = 1
+
 			if ("cough")
 				if (miming)
 					message = "appears to cough!"
@@ -375,7 +382,7 @@ var/list/vocal_emotes = list(
 								if (PIRATES)
 									playsound(get_turf(src), "charge_PIRATES", 100)
 								if (FINNISH)
-									playsound(get_turf(src), "charge_PIRATES", 100)
+									playsound(get_turf(src), "charge_FINNISH", 100)
 								if (BRITISH)
 									playsound(get_turf(src), "charge_BRITISH", 100)
 								if (FRENCH)

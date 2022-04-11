@@ -239,7 +239,7 @@
 		if (H.riding == TRUE && !isnull(H.riding_mob))
 			if (H.pulling)
 				H.stop_pulling()
-			H.riding_mob.forceMove(locate(x-1,y-1,z))
+			H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
 	return
 
@@ -738,7 +738,7 @@
 			#define STOMP_TIME 1
 
 			// wall stomping is bad
-			if (!t1.density && !locate_dense_type(t1.contents, /obj/structure))
+			if (t1 && !t1.density && !locate_dense_type(t1.contents, /obj/structure))
 
 				//Step on nerds in our way
 				if (mob_is_human)

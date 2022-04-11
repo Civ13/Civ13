@@ -176,9 +176,9 @@
 /datum/language/proc/get_random_finnish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+			return capitalize(pick(first_names_female_finnish)) + " " + capitalize(pick(last_names_finnish))
 		else
-			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+			return capitalize(pick(first_names_male_finnish)) + " " + capitalize(pick(last_names_finnish))
 
 	var/full_name = "Nokia Kuoma"
 	return full_name

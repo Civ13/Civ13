@@ -392,6 +392,69 @@ mob/living/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
+/mob/living/human/corpse/greenistani_ambassador
+	gender = MALE
+/mob/living/human/corpse/greenistani_ambassador/New()
+	..()
+	faction = CHECHEN
+	icon_state = "human_m_s"
+	nationality = "Greenistan"
+	invisibility = 101
+	dir = pick(NORTH,SOUTH,EAST,WEST)
+	invisibility = 0
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(src), slot_shoes)
+	equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(src), slot_w_uniform)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/really_black_suit(src), slot_wear_suit)
+	equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(src), slot_r_hand)
+	h_style = "CIA"
+	s_tone = -66
+	change_skin_tone(s_tone)
+	add_language("Blugoslavian",FALSE)
+	add_language("Redmenian",FALSE)
+	add_language("Greenistani",FALSE)
+	for (var/datum/language/greenistani/A in languages)
+		default_language = A
+	spawn (50) // must be here or they won't spawn, it seems - Kachnov
+		death()
+		name = "Ambassador Bogdan Nogoonbayev"
+		real_name = "Ambassador Bogdan Nogoonbayev"
+
+/mob/living/human/corpse/war_correspondent
+	gender = MALE
+/mob/living/human/corpse/war_correspondent/New()
+	..()
+	faction = AMERICAN
+	icon_state = "human_m_s"
+	nationality = "American"
+	invisibility = 101
+	dir = pick(NORTH,SOUTH,EAST,WEST)
+	invisibility = 0
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(src), slot_shoes)
+	equip_to_slot_or_del(new /obj/item/clothing/under/reporter(src), slot_w_uniform)
+	equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kevlarhelmet/press(src), slot_head)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard/yellow(src), slot_r_store)
+	var/obj/item/clothing/under/uniform = w_uniform
+	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/press/press_armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/press(null)
+	uniform.attackby(press_armor, src)
+	h_style = "Gelled Back"
+	f_style = "Full Beard"
+	var/hex_hair = hair_colors["Dirty Blond"]
+	r_hair = hex2num(copytext(hex_hair, 2, 4))
+	g_hair = hex2num(copytext(hex_hair, 4, 6))
+	b_hair = hex2num(copytext(hex_hair, 6, 8))
+	r_facial = hex2num(copytext(hex_hair, 2, 4))
+	g_facial = hex2num(copytext(hex_hair, 4, 6))
+	b_facial = hex2num(copytext(hex_hair, 6, 8))
+	update_hair()
+	add_language("Blugoslavian",FALSE)
+	add_language("Redmenian",FALSE)
+	add_language("English",FALSE)
+	for (var/datum/language/english/A in languages)
+		default_language = A
+	spawn (50) // must be here or they won't spawn, it seems - Kachnov
+		death()
+
+
 /mob/living/human/corpse/russian_soviet
 	gender = MALE
 

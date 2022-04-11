@@ -181,6 +181,15 @@ obj/item/weapon/storage/backpack/ww2/american
 	max_w_class = 4
 	max_storage_space = 28
 
+/obj/item/weapon/storage/backpack/rucksack/rpg
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
 /obj/item/weapon/storage/backpack/civbag
 	name = "backpack"
 	desc = "A big backpack made for long walks."

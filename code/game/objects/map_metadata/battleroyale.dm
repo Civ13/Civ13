@@ -40,6 +40,8 @@
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE
+	else if (J.is_event == TRUE)
+		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale) && !istype(J, /datum/job/pirates/battleroyale/modern) && !istype(J, /datum/job/pirates/battleroyale/medieval))
 		J.total_positions = 32
 		J.min_positions = 32

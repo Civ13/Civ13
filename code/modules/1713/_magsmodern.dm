@@ -8,6 +8,16 @@
 	weight = 0.7
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/sksm
+	name = "SKS-M Magazine (7.62x39mm)"
+	icon_state = "sksm"
+	mag_type = MAGAZINE
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 20
+	weight = 0.5
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ak74
 	name = "AK-74 Magazine (5.45x39mm)"
 	icon_state = "ak74"
@@ -16,6 +26,16 @@
 	ammo_type = /obj/item/ammo_casing/a545x39
 	max_ammo = 30
 	weight = 0.5
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/ak101
+	name = "AK-101 Magazine (5.46x45mm)"
+	icon_state = "ak47"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 30
+	weight = 0.35
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak74/ak74m
@@ -317,3 +337,36 @@
 	max_ammo = 10
 	weight = 0.32
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/a50cal
+	name = "heavy bullet pouch (.50 BMG)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a50cal
+	caliber = "a50cal"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
+	pouch = TRUE
+
+/obj/item/ammo_magazine/a50cal_ap
+	name = "heavy bullet pouch (.50 BMG)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a50cal_ap
+	caliber = "a50cal"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
+	pouch = TRUE
+
+/obj/item/ammo_magazine/a50cal_he
+	name = "heavy bullet pouch (.50 BMG HE)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a50cal_he
+	caliber = "a50cal"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
+	pouch = TRUE

@@ -93,8 +93,16 @@
 			tpt.doorcode = doorcode
 		tpt.reg_number = reg_number
 		tpt.dir = 2
-		new/obj/effect/autoassembler(get_turf(locate(tpt.x-2,tpt.y+2,tpt.z)))
-
+		var/turf/autoassembler_loc = get_turf(locate(tpt.x-2,tpt.y+2,tpt.z))
+		new/obj/effect/autoassembler(autoassembler_loc)
+		spawn(5)
+			if (map.ID == MAP_CAMPAIGN && !istype(src, /obj/effects/premadevehicles/tank))
+				var/rangeto = range(2,autoassembler_loc)
+				for (var/obj/structure/vehicleparts/frame/A in rangeto)
+					A.w_front[7] = TRUE
+					A.w_back[7] = TRUE
+					A.w_left[7] = TRUE
+					A.w_right[7] = TRUE
 /obj/effects/premadevehicles/proc/new_number()
 	var/tempnum = 0
 	tempnum = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][pick(alphabet_uppercase)] [rand(0,9)][rand(0,9)][rand(0,9)]"
@@ -279,6 +287,29 @@
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/panzeriv/rb, /obj/structure/engine/internal/gasoline/premade/panzeriv),
 	"2,4" = list(/obj/structure/vehicleparts/frame/panzeriv/back, /obj/structure/shellrack/full75),
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/panzeriv/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
+	)
+
+/obj/effects/premadevehicles/tank/omw22_2
+	name = "OMW-22 mk. II"
+	icon_state = "3x3"
+	custom_color = "#774D4C"
+	axis = /obj/structure/vehicleparts/axis/heavy/omw22_2
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/omw22_2/rf,/obj/structure/lamp/lamp_small/tank/floodlight),
+	"2,1" = list(/obj/structure/vehicleparts/frame/omw22_2/front, /obj/structure/bed/chair/drivers/tank,),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/obj/structure/lamp/lamp_small/tank/floodlight),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/omw22_2/right, /obj/structure/bed/chair/commander),
+	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/omwtc10),
+	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left, /obj/structure/bed/chair/loader),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right,/obj/item/weapon/storage/toolbox/emergency),
+	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2, /obj/structure/bed/chair/gunner),
+	"3,3" = list(/obj/structure/vehicleparts/frame/omw22_2/left,/obj/structure/shellrack/full100),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb/door),
+	"2,4" = list(/obj/structure/vehicleparts/frame/omw22_2/back,/obj/structure/engine/internal/diesel/premade/omw22_2,/obj/structure/lamp/lamp_small/tank/red),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
 	)
 
 /obj/effects/premadevehicles/tank/chiha

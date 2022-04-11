@@ -515,6 +515,36 @@
 	caliber = "a65x50"
 	value = 5
 
+/obj/item/ammo_casing/a50cal
+	name = ".50 BMG cartridge"
+	desc = "A big heavy brass casing designed to take out unarmored targets."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal
+	caliber = "a50cal"
+	value = 7
+
+/obj/item/ammo_casing/a50cal_ap
+	name = ".50 BMG AP cartridge"
+	desc = "A big heavy brass casing designed to penetrate armor."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal_ap
+	caliber = "a50cal"
+	value = 7
+
+/obj/item/ammo_casing/a50cal_he
+	name = ".50 BMG HE cartridge"
+	desc = "A big heavy brass casing designed to explode on impact."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal_he
+	caliber = "a50cal"
+	value = 7
+
 /obj/item/ammo_casing/a65x50/weak
 	projectile_type = /obj/item/projectile/bullet/rifle/a65x50/weak
 	caliber = "a65x50_weak"
@@ -581,16 +611,6 @@
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/a43
 	caliber = "a43"
-	value = 7
-
-/obj/item/ammo_casing/a50cal
-	name = ".50 caliber cartridge"
-	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
-	weight = 0.04
-	projectile_type = /obj/item/projectile/bullet/rifle/a50cal
-	caliber = "a50cal"
 	value = 7
 
 /obj/item/ammo_casing/a32

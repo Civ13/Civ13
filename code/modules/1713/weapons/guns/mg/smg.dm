@@ -182,6 +182,7 @@
 	force = 15
 	throwforce = 30
 	weight = 3.4
+	attachment_slots = ATTACH_BARREL
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
 		list(name="semi auto",    burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
@@ -285,7 +286,7 @@
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 3.03
+	effectiveness_mod = 1.03
 
 /obj/item/weapon/gun/projectile/submachinegun/type100
 	name = "Type-100"
@@ -670,7 +671,7 @@
 	effectiveness_mod = 1.02
 	damage_modifier = 0.95
 	equiptimer = 12
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL|ATTACH_ADV_SCOPE
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
 	if (folded)
@@ -899,7 +900,7 @@
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		)
-	effectiveness_mod = 1.12
+	effectiveness_mod = 1.03
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	accuracy_list = list(
@@ -967,6 +968,17 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2
+	name = "M16A2"
+	base_icon = "m16"
+	icon_state = "m16"
+	desc = "A modernized version of the M16, with burst fire instead of full auto."
+	full_auto = FALSE
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4
@@ -1117,10 +1129,10 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="semi auto",	burst=1, burst_delay=0.9, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
 		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
 		)
-	effectiveness_mod = 1.07
+	effectiveness_mod = 1.03
 	sel_mode = 1
 	accuracy_list = list(
 
@@ -1537,3 +1549,75 @@
 	icon_state = "black_vz58"
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
+
+//////////////////////C7///////////////////////////////
+/obj/item/weapon/gun/projectile/submachinegun/c7
+	name = "C7"
+	desc = "A Canadian Colt C7 assault rifle, chambered in 5.56x45mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "c7"
+	item_state = "c7"
+	base_icon = "c7"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
+	weight = 2.98
+	equiptimer = 13
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1, 1, 0.9)),
+		)
+	effectiveness_mod = 1.04
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+			"small" = list(
+			SHORT_RANGE_STILL = 65,
+			SHORT_RANGE_MOVING = 54,
+
+			MEDIUM_RANGE_STILL = 54,
+			MEDIUM_RANGE_MOVING = 44,
+
+			LONG_RANGE_STILL = 33,
+			LONG_RANGE_MOVING = 18,
+
+			VERY_LONG_RANGE_STILL = 12,
+			VERY_LONG_RANGE_MOVING = 7),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 84,
+			SHORT_RANGE_MOVING = 75,
+
+			MEDIUM_RANGE_STILL = 76,
+			MEDIUM_RANGE_MOVING = 67,
+
+			LONG_RANGE_STILL = 57,
+			LONG_RANGE_MOVING = 43,
+
+			VERY_LONG_RANGE_STILL = 12,
+			VERY_LONG_RANGE_MOVING = 6),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 98,
+			SHORT_RANGE_MOVING = 90,
+
+			MEDIUM_RANGE_STILL = 88,
+			MEDIUM_RANGE_MOVING = 80,
+
+			LONG_RANGE_STILL = 79,
+			LONG_RANGE_MOVING = 66,
+
+			VERY_LONG_RANGE_STILL = 58,
+			VERY_LONG_RANGE_MOVING = 36),
+	)
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan(src)
+	SP.attached(null,src,TRUE)

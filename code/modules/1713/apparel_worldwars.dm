@@ -368,29 +368,85 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
-	var/toggled = FALSE
-/obj/item/clothing/head/helmet/ww2/japhelm/verb/toggle_flaps()
+	var/has_headband = FALSE
+	var/has_havelock = FALSE
+/obj/item/clothing/head/helmet/ww2/japhelm/verb/strip_accessories(mob/user as mob)
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/head/helmet/ww2/japhelm)
 		return
 	else
-		if (toggled)
+		if (has_headband && !has_havelock)
 			item_state = "japhelm"
 			icon_state = "japhelm"
 			worn_state = "japhelm"
 			item_state_slots["slot_w_uniform"] = "japhelm"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
-			toggled = FALSE
+			usr << "<span class = 'danger'>You remove the headband from your helmet</span>"
+			has_headband = FALSE
+			new/obj/item/clothing/head/ww2/jap_headband(user.loc)
 			update_clothing_icon()
-		else if (!toggled)
-			item_state = "japhelm_extended"
-			icon_state = "japhelm_extended"
-			worn_state = "japhelm_extended"
-			item_state_slots["slot_w_uniform"] = "japhelm_extended"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
-			toggled = TRUE
+		else if (has_havelock && !has_headband)
+			item_state = "japhelm"
+			icon_state = "japhelm"
+			worn_state = "japhelm"
+			item_state_slots["slot_w_uniform"] = "japhelm"
+			usr << "<span class = 'danger'>You remove the havelocks from your helmet</span>"
+			has_havelock = FALSE
+			new/obj/item/havelock(user.loc)
 			update_clothing_icon()
+		else if (has_headband && has_havelock)
+			item_state = "japhelm"
+			icon_state = "japhelm"
+			worn_state = "japhelm"
+			item_state_slots["slot_w_uniform"] = "japhelm"
+			usr << "<span class = 'danger'>You remove the havelocks and the headband from your helmet</span>"
+			has_havelock = FALSE
+			has_headband = FALSE
+			new/obj/item/havelock(user.loc)
+			new/obj/item/clothing/head/ww2/jap_headband(user.loc)
+			update_clothing_icon()
+		else if (!has_headband && !has_havelock)
+			item_state = "japhelm"
+			icon_state = "japhelm"
+			worn_state = "japhelm"
+			item_state_slots["slot_w_uniform"] = "japhelm"
+			usr << "<span class = 'danger'>You have nothing attached to your helmet</span>"
+			update_clothing_icon()
+
+
+/obj/item/clothing/head/helmet/ww2/japhelm/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/clothing/head/ww2/jap_headband) && !has_headband)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the headband on the helmet.</span>"
+		src.has_headband = TRUE
+		qdel(W)
+		if(src.has_havelock == TRUE)
+			src.item_state = "japhelm_bandana_extended"
+			src.icon_state = "japhelm_bandana_extended"
+			src.worn_state = "japhelm_bandana_extended"
+		else
+			src.item_state = "japhelm_bandana"
+			src.icon_state = "japhelm_bandana"
+			src.worn_state = "japhelm_bandana"
+		update_clothing_icon()
+		return
+	if (istype(W, /obj/item/havelock) && !has_havelock)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the headband on the helmet.</span>"
+		src.has_havelock = TRUE
+		qdel(W)
+		if(src.has_headband == TRUE)
+			src.item_state = "japhelm_bandana_extended"
+			src.icon_state = "japhelm_bandana_extended"
+			src.worn_state = "japhelm_bandana_extended"
+		else
+			src.item_state = "japhelm_extended"
+			src.icon_state = "japhelm_extended"
+			src.worn_state = "japhelm_extended"
+		update_clothing_icon()
+		return
+
 
 /obj/item/clothing/head/helmet/ww2/japhelm_snlf
 	name = "japanese helmet"
@@ -401,30 +457,43 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
-	var/toggled = FALSE
+	var/has_havelock = FALSE
 
-/obj/item/clothing/head/helmet/ww2/japhelm_snlf/verb/toggle_flaps()
+/obj/item/clothing/head/helmet/ww2/japhelm_snlf/verb/strip_accessories(mob/user as mob)
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_snlf)
 		return
 	else
-		if (toggled)
-			icon_state = "japhelm_snlf"
+		if (has_havelock)
 			item_state = "japhelm_snlf"
+			icon_state = "japhelm_snlf"
 			worn_state = "japhelm_snlf"
 			item_state_slots["slot_w_uniform"] = "japhelm_snlf"
-			usr << "<span class = 'danger'>You put down your helmet's flaps.</span>"
-			toggled = FALSE
+			usr << "<span class = 'danger'>You remove the havelocks from your helmet</span>"
+			has_havelock = FALSE
+			new/obj/item/havelock(user.loc)
 			update_clothing_icon()
-		else if (!toggled)
-			icon_state = "japhelm_snlf_extended"
-			item_state = "japhelm_snlf_extended"
-			worn_state = "japhelm_snlf_extended"
-			item_state_slots["slot_w_uniform"]= "japhelm_snlf_extended"
-			usr << "<span class = 'danger'>You put up your helmet's flaps.</span>"
-			toggled = TRUE
+		else
+			item_state = "japhelm_snlf"
+			icon_state = "japhelm_snlf"
+			worn_state = "japhelm_snlf"
+			item_state_slots["slot_w_uniform"] = "japhelm_snlf"
+			usr << "<span class = 'danger'>You have nothing attached to the helmet!</span>"
 			update_clothing_icon()
+/obj/item/clothing/head/helmet/ww2/japhelm_snlf/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/havelock) && !has_havelock)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the havelocks on the helmet.</span>"
+		src.has_havelock = TRUE
+		qdel(W)
+		src.item_state = "japhelm_snlf_extended"
+		src.icon_state = "japhelm_snlf_extended"
+		src.worn_state = "japhelm_snlf_extended"
+		update_clothing_icon()
+		return
+
 
 /obj/item/clothing/head/helmet/ww2/japhelm_med
 	name = "japanese medic helmet"
@@ -435,31 +504,43 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
-	var/toggled = FALSE
+	var/has_havelock = FALSE
 
-/obj/item/clothing/head/helmet/ww2/japhelm_med/verb/toggle_flaps()
+/obj/item/clothing/head/helmet/ww2/japhelm_med/verb/strip_accessories(mob/user as mob)
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_med)
 		return
 	else
-		if (toggled)
+		if (has_havelock)
 			item_state = "japhelm_medic"
 			icon_state = "japhelm_medic"
 			worn_state = "japhelm_medic"
 			item_state_slots["slot_w_uniform"] = "japhelm_medic"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
-			toggled = FALSE
+			usr << "<span class = 'danger'>You remove the havelocks from your helmet</span>"
+			has_havelock = FALSE
+			new/obj/item/havelock(user.loc)
 			update_clothing_icon()
-		else if (!toggled)
-			item_state = "japhelm_medic_extended"
-			icon_state = "japhelm_medic_extended"
-			worn_state = "japhelm_medic_extended"
-			item_state_slots["slot_w_uniform"] = "japhelm_medic_extended"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
-			toggled = TRUE
+		else
+			item_state = "japhelm_medic"
+			icon_state = "japhelm_medic"
+			worn_state = "japhelm_medic"
+			item_state_slots["slot_w_uniform"] = "japhelm_medic"
+			usr << "<span class = 'danger'>You have nothing attached to the helmet!</span>"
 			update_clothing_icon()
 
+/obj/item/clothing/head/helmet/ww2/japhelm_med/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/havelock) && !has_havelock)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the havelocks on the helmet.</span>"
+		src.has_havelock = TRUE
+		qdel(W)
+		src.item_state = "japhelm_med_extended"
+		src.icon_state = "japhelm_med_extended"
+		src.worn_state = "japhelm_med_extended"
+		update_clothing_icon()
+		return
 
 /obj/item/clothing/head/helmet/ww2/japhelm_tanker
 	name = "japanese tanker helmet"
@@ -471,48 +552,11 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-/obj/item/clothing/head/helmet/ww2/japhelm/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/clothing/head/ww2/jap_headband))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You place the headband on the helmet.</span>"
-		new/obj/item/clothing/head/helmet/ww2/japhelm_bandana(user.loc)
-		qdel(src)
-		qdel(W)
-
-/obj/item/clothing/head/helmet/ww2/japhelm_bandana
-	name = "japanese helmet"
-	desc = "A typical rounded steel helmet. This one has a headband attached to it."
-	icon_state = "japhelm_bandana"
-	item_state = "japhelm_bandana"
-	worn_state = "japhelm_bandana"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
-	var/toggled = FALSE
-
-/obj/item/clothing/head/helmet/ww2/japhelm_bandana/verb/toggle_flaps()
-	set category = null
-	set src in usr
-	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_bandana)
-		return
-	else
-		if (toggled)
-			item_state = "japhelm_bandana"
-			icon_state = "japhelm_bandana"
-			worn_state = "japhelm_bandana"
-			item_state_slots["slot_w_uniform"] = "japhelm_bandana"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
-			toggled = FALSE
-			update_clothing_icon()
-		else if (!toggled)
-			item_state = "japhelm_bandana_extended"
-			icon_state = "japhelm_bandana_extended"
-			worn_state = "japhelm_bandana_extended"
-			item_state_slots["slot_w_uniform"] = "japhelm_bandana_extended"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
-			toggled = TRUE
-			update_clothing_icon()
+/obj/item/clothing/head/helmet/ww2/japhelm/bandana
+	has_headband = TRUE
+/obj/item/clothing/head/helmet/ww2/japhelm/bandana/New()
+	..()
+	update_clothing_icon()
 
 /obj/item/clothing/head/ww2/japcap
 	name = "japanese cap"
@@ -520,30 +564,43 @@
 	icon_state = "ww2_japcap"
 	item_state = "ww2_japcap"
 	worn_state = "ww2_japcap"
-	var/toggled = FALSE
+	var/has_havelock = FALSE
 
-/obj/item/clothing/head/ww2/japcap/verb/toggle_flaps()
+/obj/item/clothing/head/ww2/japcap/verb/strip_accessories(mob/user as mob)
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/head/ww2/japcap)
 		return
 	else
-		if (toggled)
+		if (has_havelock)
 			item_state = "ww2_japcap"
 			icon_state = "ww2_japcap"
 			worn_state = "ww2_japcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
-			toggled = FALSE
+			usr << "<span class = 'danger'>You remove the havelocks from your cap</span>"
+			has_havelock = FALSE
+			new/obj/item/havelock(user.loc)
 			update_clothing_icon()
-		else if (!toggled)
-			item_state = "ww2_japcap_extended"
-			icon_state = "ww2_japcap_extended"
-			worn_state = "ww2_japcap_extended"
-			item_state_slots["slot_w_uniform"] = "ww2_japcap_extended"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
-			toggled = TRUE
+		else
+			item_state = "ww2_japcap"
+			icon_state = "ww2_japcap"
+			worn_state = "ww2_japcap"
+			item_state_slots["slot_w_uniform"] = "ww2_japcap"
+			usr << "<span class = 'danger'>You have nothing attached to the cap!</span>"
 			update_clothing_icon()
+
+/obj/item/clothing/head/ww2/japcap/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/havelock) && !has_havelock)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the havelocks on the cap.</span>"
+		src.has_havelock = TRUE
+		qdel(W)
+		src.item_state = "ww2_japcap_extended"
+		src.icon_state = "ww2_japcap_extended"
+		src.worn_state = "ww2_japcap_extended"
+		update_clothing_icon()
+		return
 
 /obj/item/clothing/head/ww2/japoffcap
 	name = "japanese officer cap"
@@ -551,30 +608,43 @@
 	icon_state = "ww2_japoffcap"
 	item_state = "ww2_japoffcap"
 	worn_state = "ww2_japoffcap"
-	var/toggled = FALSE
+	var/has_havelock = FALSE
 
-/obj/item/clothing/head/ww2/japoffcap/verb/toggle_flaps()
+/obj/item/clothing/head/ww2/japoffcap/verb/strip_accessories(mob/user as mob)
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/head/ww2/japoffcap)
 		return
 	else
-		if (toggled)
+		if (has_havelock)
 			item_state = "ww2_japoffcap"
-			worn_state = "ww2_japoffcap"
 			icon_state = "ww2_japoffcap"
+			worn_state = "ww2_japoffcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
-			toggled = FALSE
+			usr << "<span class = 'danger'>You remove the havelocks from your cap</span>"
+			has_havelock = FALSE
+			new/obj/item/havelock(user.loc)
 			update_clothing_icon()
-		else if (!toggled)
-			item_state = "ww2_japoffcap_extended"
-			worn_state = "ww2_japoffcap_extended"
-			icon_state = "ww2_japoffcap_extended"
-			item_state_slots["slot_w_uniform"] = "ww2_japoffcap_extended"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
-			toggled = TRUE
+		else
+			item_state = "ww2_japoffcap"
+			icon_state = "ww2_japoffcap"
+			worn_state = "ww2_japoffcap"
+			item_state_slots["slot_w_uniform"] = "ww2_japoffcap"
+			usr << "<span class = 'danger'>You have nothing attached to the cap!</span>"
 			update_clothing_icon()
+/obj/item/clothing/head/ww2/japoffcap/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/havelock) && !has_havelock)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the havelocks on the cap.</span>"
+		src.has_havelock = TRUE
+		qdel(W)
+		src.item_state = "ww2_japoffcap_extended"
+		src.icon_state = "ww2_japoffcap_extended"
+		src.worn_state = "ww2_japoffcap_extended"
+		update_clothing_icon()
+		return
+
 
 /obj/item/clothing/head/ww2/japcap_snlf
 	name = "japanese cap"
@@ -582,30 +652,43 @@
 	icon_state = "ww2_japcap_snlf"
 	item_state = "ww2_japcap_snlf"
 	worn_state = "ww2_japcap_snlf"
-	var/toggled = FALSE
+	var/has_havelock = FALSE
 
-/obj/item/clothing/head/ww2/japcap_snlf/verb/toggle_flaps()
+/obj/item/clothing/head/ww2/japcap_snlf/verb/strip_accessories(mob/user as mob)
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/head/ww2/japcap_snlf)
 		return
 	else
-		if (toggled)
+		if (has_havelock)
 			item_state = "ww2_japcap_snlf"
-			worn_state = "ww2_japcap_snlf"
 			icon_state = "ww2_japcap_snlf"
+			worn_state = "ww2_japcap_snlf"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
-			toggled = FALSE
+			usr << "<span class = 'danger'>You remove the havelocks from your cap</span>"
+			has_havelock = FALSE
+			new/obj/item/havelock(user.loc)
 			update_clothing_icon()
-		else if (!toggled)
-			item_state = "ww2_japcap_snlf_extended"
-			worn_state = "ww2_japcap_snlf_extended"
-			icon_state = "ww2_japcap_snlf_extended"
-			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf_extended"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
-			toggled = TRUE
+		else
+			item_state = "ww2_japcap_snlf"
+			icon_state = "ww2_japcap_snlf"
+			worn_state = "ww2_japcap_snlf"
+			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf"
+			usr << "<span class = 'danger'>You have nothing attached to the cap!</span>"
 			update_clothing_icon()
+
+/obj/item/clothing/head/ww2/japcap_snlf/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/havelock) && !has_havelock)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the havelocks on the cap.</span>"
+		src.has_havelock = TRUE
+		qdel(W)
+		src.item_state = "ww2_japcap_snlf_extended"
+		src.icon_state = "ww2_japcap_snlf_extended"
+		src.worn_state = "ww2_japcap_snlf_extended"
+		update_clothing_icon()
+		return
 
 /obj/item/clothing/under/ww2/japoffuni
 	name = "japanese officer uniform"
@@ -648,32 +731,164 @@
 	item_state = "ww2_japuni"
 	worn_state = "ww2_japuni"
 	var/rolled = FALSE
+	var/stripped = FALSE
 
+/obj/item/clothing/under/ww2/japuni/update_icon()
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
+		worn_state = "1937_japuni"
+		item_state = "1937_japuni"
+		icon_state = "1937_japuni"
+	else
+		worn_state = "ww2_japuni"
+		item_state = "ww2_japuni"
+		icon_state = "ww2_japuni"
 /obj/item/clothing/under/ww2/japuni/verb/roll_sleeves()
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/under/ww2/japuni)
 		return
 	else
-		if (rolled)
-			worn_state = "ww2_japuni"
-			item_state = "ww2_japuni"
-			icon_state = "ww2_japuni"
-			item_state_slots["w_uniform"] = "ww2_japuni"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
-			rolled = FALSE
-			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-			update_clothing_icon()
-		else if (!rolled)
-			worn_state = "ww2_japuni_rolled"
-			item_state = "ww2_japuni_rolled"
-			icon_state = "ww2_japuni_rolled"
-			item_state_slots["w_uniform"] = "ww2_japuni_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
-			rolled = TRUE
-			heat_protection = ARMS
-			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
-			update_clothing_icon()
+		if (!stripped)
+			if (rolled)
+				if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+					worn_state = "1937_japuni"
+					item_state = "1937_japuni"
+					icon_state = "1937_japuni"
+					item_state_slots["w_uniform"] = "1937_japuni"
+					usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+					rolled = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "ww2_japuni"
+					item_state = "ww2_japuni"
+					icon_state = "ww2_japuni"
+					item_state_slots["w_uniform"] = "ww2_japuni"
+					usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+					rolled = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+			if (!rolled)
+				if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+					worn_state = "1937_japuni_rolled"
+					item_state = "1937_japuni_rolled"
+					icon_state = "1937_japuni_rolled"
+					item_state_slots["w_uniform"] = "1937_japuni_rolled"
+					usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+					rolled = TRUE
+					heat_protection = ARMS
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "ww2_japuni_rolled"
+					item_state = "ww2_japuni_rolled"
+					icon_state = "ww2_japuni_rolled"
+					item_state_slots["w_uniform"] = "ww2_japuni_rolled"
+					usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+					rolled = TRUE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+		else
+			if (rolled)
+				worn_state = "japuni_summer"
+				item_state = "japuni_summer"
+				icon_state = "japuni_summer"
+				item_state_slots["w_uniform"] = "japuni_summer"
+				usr << "<span class = 'danger'>You roll down your jyuban's sleeves.</span>"
+				rolled = FALSE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+			else
+				worn_state = "japuni_summer_rolled"
+				item_state = "japuni_summer_rolled"
+				icon_state = "japuni_summer_rolled"
+				item_state_slots["w_uniform"] = "japuni_summer_rolled"
+				usr << "<span class = 'danger'>You roll up your jyuban's sleeves.</span>"
+				rolled = TRUE
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+				update_clothing_icon()
+				return
+/obj/item/clothing/under/ww2/japuni/verb/strip()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/japuni)
+		return
+	else
+		if (stripped)
+			if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+				if (!rolled)
+					worn_state = "1937_japuni"
+					item_state = "1937_japuni"
+					icon_state = "1937_japuni"
+					item_state_slots["w_uniform"] = "1937_japuni"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "1937_japuni_rolled"
+					item_state = "1937_japuni_rolled"
+					icon_state = "1937_japuni_rolled"
+					item_state_slots["w_uniform"] = "1937_japuni_rolled"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+			else
+				if (!rolled)
+					worn_state = "ww2_japuni"
+					item_state = "ww2_japuni"
+					icon_state = "ww2_japuni"
+					item_state_slots["w_uniform"] = "ww2_japuni"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+				else
+					worn_state = "ww2_japuni_rolled"
+					item_state = "ww2_japuni_rolled"
+					icon_state = "ww2_japuni_rolled"
+					item_state_slots["w_uniform"] = "1937_japuni_rolled"
+					usr << "<span class = 'danger'>You put on your uniform.</span>"
+					stripped = FALSE
+					cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+					update_clothing_icon()
+					return
+		else
+			if (!rolled)
+				worn_state = "japuni_summer"
+				item_state = "japuni_summer"
+				icon_state = "japuni_summer"
+				item_state_slots["w_uniform"] = "japuni_summer"
+				usr << "<span class = 'danger'>You strip to your jyuban.</span>"
+				stripped = TRUE
+				heat_protection = ARMS
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+				update_clothing_icon()
+				return
+			else
+				worn_state = "japuni_summer_rolled"
+				item_state = "japuni_summer_rolled"
+				icon_state = "japuni_summer_rolled"
+				item_state_slots["w_uniform"] = "japuni_summer_rolled"
+				usr << "<span class = 'danger'>You strip to your jyuban.</span>"
+				stripped = TRUE
+				heat_protection = ARMS
+				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+				update_clothing_icon()
+				return
+
+/obj/item/clothing/under/ww2/japuni/New()
+	..()
+	update_clothing_icon()
 
 /obj/item/clothing/under/ww2/japuni_snlf
 	name = "japanese uniform"
@@ -708,52 +923,6 @@
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
-
-/obj/item/clothing/under/ww2/japuni_summer
-	name = "japanese uniform"
-	desc = "A imperial japanese army uniform. This one meant for tropical warm climates."
-	icon_state = "japuni_summer"
-	item_state = "ww2_japuni"
-	worn_state = "ww2_japuni"
-	heat_protection = ARMS|UPPER_TORSO|LOWER_TORSO|LEGS
-
-obj/item/clothing/under/ww2/japuni_med
-	name = "japanese medic uniform"
-	desc = "A imperial japanese army uniform, this one bears the rank of a medic."
-	icon_state = "japuni_med"
-	item_state = "japuni_med"
-	worn_state = "japuni_med"
-	var/rolled = FALSE
-
-obj/item/clothing/under/ww2/japuni_med/verb/roll_sleeves()
-	set category = null
-	set src in usr
-	if (type != /obj/item/clothing/under/ww2/japuni_med)
-		return
-	else
-		if (rolled)
-			worn_state = "japuni_med"
-			item_state = "japuni_med"
-			icon_state = "japuni_med"
-			item_state_slots["w_uniform"] = "japuni_med"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
-			rolled = FALSE
-			update_clothing_icon()
-		else if (!rolled)
-			worn_state = "japuni_med_rolled"
-			item_state = "japuni_med_rolled"
-			icon_state = "japuni_med_rolled"
-			item_state_slots["w_uniform"] = "japuni_med_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
-			rolled = TRUE
-			update_clothing_icon()
-
-obj/item/clothing/under/ww2/japuni_mp
-	name = "japanese Kenpeitai uniform"
-	desc = "A imperial japanese army uniform, this one bears the rank of a military police."
-	icon_state = "japuni_mp"
-	item_state = "japuni_mp"
-	worn_state = "japuni_mp"
 
 obj/item/clothing/under/ww2/japuni_tanker
 	name = "japanese tanker uniform"
@@ -855,6 +1024,103 @@ obj/item/clothing/head/ww2/jap_mp
 		item_state = "japwinter"
 		user << "You lower the ear flaps on the fur cap."
 
+/obj/item/puttees
+	name = "Puttees"
+	desc = "Leg wraps to keep rocks out of your boots and tension on your calves."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "puttees"
+
+/obj/item/havelock
+	name = "Bou-tare"
+	desc = "A piece of cloth hung on a senbou cap to protect the wearer's neck from the sun."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "havelock"
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2
+	name = "leather boots"
+	desc = "A pair of hobnailed leather boots"
+	icon_state = "japboots_ww2"
+	item_state = "japboots_ww2"
+	worn_state = "japboots_ww2"
+	var/puttees = FALSE
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/update_icon()
+	if (puttees)
+		item_state = "japboots_ww2_puttees"
+		icon_state = "japboots_ww2_puttees"
+		worn_state = "japboots_ww2_puttees"
+		item_state_slots["shoes"] = "japboots_ww2_puttees"
+	else
+		item_state = "japboots_ww2"
+		icon_state = "japboots_ww2"
+		worn_state = "japboots_ww2"
+		item_state_slots["slot_w_uniform"] = "japboots_ww2"
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/verb/strip_off_puttees(mob/user as mob)
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 && type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees)
+		return
+	else
+		if (puttees)
+			item_state = "japboots_ww2"
+			icon_state = "japboots_ww2"
+			worn_state = "japboots_ww2"
+			item_state_slots["slot_w_uniform"] = "japboots_ww2"
+			usr << "<span class = 'danger'>You unwrap your puttees.</span>"
+			puttees = FALSE
+			new/obj/item/puttees(user.loc)
+			update_clothing_icon()
+		else if (!puttees)
+			item_state = "japboots_ww2"
+			icon_state = "japboots_ww2"
+			worn_state = "japboots_ww2"
+			item_state_slots["slot_w_uniform"] = "japboots_ww2"
+			usr << "<span class = 'danger'>You haven't any puttees on the boots!</span>"
+			puttees = FALSE
+			update_clothing_icon()
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/puttees) && !puttees)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You wrap the puttees around your legs.</span>"
+		src.puttees = TRUE
+		qdel(W)
+		src.item_state = "japboots_ww2_puttees"
+		src.icon_state = "japboots_ww2_puttees"
+		src.worn_state = "japboots_ww2_puttees"
+		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		update_clothing_icon()
+		return
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees
+	puttees = TRUE
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/update_icon()
+	if (puttees)
+		item_state = "japboots_ww2_puttees"
+		icon_state = "japboots_ww2_puttees"
+		worn_state = "japboots_ww2_puttees"
+		item_state_slots["shoes"] = "japboots_ww2_puttees"
+	else
+		item_state = "japboots_ww2"
+		icon_state = "japboots_ww2"
+		worn_state = "japboots_ww2"
+		item_state_slots["slot_w_uniform"] = "japboots_ww2"
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/puttees) && !puttees)
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You wrap the puttees around your legs.</span>"
+		src.puttees = TRUE
+		qdel(W)
+		src.item_state = "japboots_ww2_puttees"
+		src.icon_state = "japboots_ww2_puttees"
+		src.worn_state = "japboots_ww2_puttees"
+		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		update_clothing_icon()
+		return
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/New()
+	..()
+	update_icon()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////BRITISH////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1428,7 +1694,7 @@ obj/item/clothing/head/ww2/chicap2
 
 /obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
-	desc = "A soviet uniform, used by infantry in the red army."
+	desc = "A soviet uniform, used by infantry in the Red Army."
 	icon_state = "sovuni"
 	item_state = "sovuni"
 	worn_state = "sovuni"
@@ -1500,11 +1766,25 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "sovuni_officer"
 
 /obj/item/clothing/under/ww2/soviet_nkvd
-	name = "nkvd uniform"
+	name = "NKVD uniform"
 	desc = "A soviet nkvd uniform, used by nkvd."
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
+
+/obj/item/clothing/under/ww2/soviet_berezka
+	name = "soviet berezka uniform"
+	desc = "A soviet berezka uniform, adapted to the winter wilderness."
+	icon_state = "berezka"
+	item_state = "berezka"
+	worn_state = "berezka"
+
+/obj/item/clothing/under/ww2/soviet_amoeba
+	name = "soviet amoeba outfit"
+	desc = "A soviet camouflage outfit, concieved for reconnaissance units."
+	icon_state = "amoeba"
+	item_state = "amoeba"
+	worn_state = "amoeba"
 
 /obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
@@ -1568,6 +1848,13 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "us_shirtless"
 	item_state = "us_shirtless"
 	worn_state = "us_shirtless"
+
+/obj/item/clothing/under/ww2/finnish
+	name = "finnish uniform"
+	desc = "A finnish winter uniform."
+	icon_state = "geruni_ww2_winter"
+	item_state = "geruni_ww2_winter"
+	worn_state = "geruni_ww2_winter"
 
 /obj/item/clothing/suit/storage/coat/ww2/german
 	name = "german parka"
@@ -2451,10 +2738,10 @@ obj/item/clothing/head/ww2/chicap2
 /obj/item/weapon/storage/belt/smallpouches/gerbelt
 	icon_state = "gerbelt"
 	item_state = "gerbelt"
-	worn_state = "gerbelt"
 
 /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer
 /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer/New()
+	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/weapon/horn(src)

@@ -293,7 +293,7 @@
 		/obj/item/clothing/head/ww2/chicap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
 	)
@@ -313,7 +313,7 @@
 		/obj/item/clothing/head/ww2/german_fieldcap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
 	)
@@ -376,6 +376,8 @@
 		/obj/item/clothing/under/ww2/japuni = 15,
 		/obj/item/clothing/suit/storage/coat/ww2/japcoat = 15,
 		/obj/item/clothing/head/ww2/japcap = 15,
+		/obj/item/havelock = 40,
+		/obj/item/puttees = 40,
 		/obj/item/clothing/head/helmet/ww2/japhelm = 15,
 		/obj/item/clothing/head/ww2/jap_headband = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
@@ -545,7 +547,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
@@ -564,7 +566,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 
@@ -583,7 +585,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 
@@ -602,7 +604,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 10,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 20,
 
@@ -883,7 +885,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/accessory/holster/armpit = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 	)

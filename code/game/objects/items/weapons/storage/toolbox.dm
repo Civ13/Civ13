@@ -31,6 +31,7 @@
 		new /obj/item/weapon/fire_extinguisher(src)
 		new /obj/item/flashlight/flashlight(src)
 		new /obj/item/weapon/weldingtool(src)
+		new /obj/item/weapon/wirecutters/boltcutters(src)
 		new /obj/item/weapon/material/shovel/trench(src)
 
 /obj/item/weapon/storage/toolbox/mechanical

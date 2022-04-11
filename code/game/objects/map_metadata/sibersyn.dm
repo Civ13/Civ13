@@ -23,7 +23,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
+		"Korobushka:1" = 'sound/music/korobushka.ogg')
 	gamemode = "Siege"
 
 obj/map_metadata/sibersyn/job_enabled_specialcheck(var/datum/job/J)

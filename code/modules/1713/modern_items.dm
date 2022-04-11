@@ -267,7 +267,16 @@
 			return FALSE
 
 /obj/structure/lamp/lamp_small/tank/red
+	icon_state = ""
+	base_icon = ""
 	brightness_color = "#da0205"
+
+/obj/structure/lamp/lamp_small/tank/floodlight
+	brightness_color = "#fff898"
+	icon_state = ""
+	base_icon = ""
+	light_amt = 8
+
 /obj/structure/lamp/lamp_small/tank/red/police
 	name = "police lights"
 	pixel_x=32
@@ -1001,6 +1010,13 @@
 	density = TRUE
 	opacity = FALSE
 	powerneeded = 0
+
+/obj/structure/floodlight/on
+	New()
+		..()
+		floodlighton = 1
+		set_light (8)
+		icon_state ="floodlight_on"
 
 /obj/structure/floodlight/Destroy()
 	set_light (0)

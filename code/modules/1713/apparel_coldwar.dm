@@ -440,6 +440,19 @@
 	body_parts_covered = HEAD
 	restricts_view = 1
 
+/obj/item/clothing/suit/storage/ghillie/winter
+	name = "winter ghillie suit"
+	desc = "A camo winter ghillie suit."
+	icon_state = "ghillie_winter"
+	item_state = "ghillie_winter"
+	worn_state = "ghillie_winter"
+
+/obj/item/clothing/head/ghillie/winter
+	name = "winter ghillie headcover"
+	desc = "A headcover for a winter ghillie suit."
+	icon_state = "ghillie_winter"
+	item_state = "ghillie_winter"
+
 /* Cold War Hats*/
 
 /obj/item/clothing/head/jungle_hat
@@ -545,6 +558,20 @@
 /obj/item/clothing/head/beret_rus_spez
 	name = "Spetznaz beret"
 	desc = "A beret worn by the Spetznaz."
+	icon_state = "beret_rus_spez"
+	item_state = "beret_rus_spez"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_blugoslavia
+	name = "Blugoslavian beret"
+	desc = "A beret worn by Blugoslavian Officers."
+	icon_state = "beret_rus_vdv"
+	item_state = "beret_rus_vdv"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_redmenia
+	name = "Redmenian beret"
+	desc = "A beret worn by Redmenian Officers."
 	icon_state = "beret_rus_spez"
 	item_state = "beret_rus_spez"
 	body_parts_covered = HEAD
@@ -692,11 +719,11 @@
 	worn_state = "ssh_68_sovhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 100, gun = 76, energy = 24, bomb = 66, bio = 25, rad = FALSE)
+	armor = list(melee = 55, arrow = 75, gun = 41, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
 /obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
-	name = "USSR 6B3 body armor"
-	desc = "A russian body armor, made with glory."
+	name = "6B3 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
 	icon_state = "b3vest"
 	item_state = "b3vest"
 	worn_state = "b3vest"
@@ -704,6 +731,18 @@
 	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
 	ripable = FALSE
 	flags = CONDUCT
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b3 //accessory version
+	name = "6B3 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
+	icon_state = "b3vest"
+	item_state = "b3vest"
+	worn_state = "b3vest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 2
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"
@@ -746,6 +785,10 @@
 	..()
 	new/obj/item/ammo_magazine/dp(src)
 	new/obj/item/ammo_magazine/dp(src)
+
+/obj/item/weapon/storage/belt/largepouches/sovietmg/white
+	icon_state = "largepouches_white"
+	item_state = "largepouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/vc_officer
 /obj/item/weapon/storage/belt/smallpouches/vc_officer/New()
@@ -846,17 +889,20 @@
 	..()
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/ammo_magazine/tt30(src)
+	new /obj/item/ammo_magazine/makarov(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_spz
 /obj/item/weapon/storage/belt/smallpouches/green/sov_spz/New()
+	storage_slots = 6
 	..()
 	new /obj/item/weapon/grenade/antitank/rpg40(src)
-	new /obj/item/weapon/grenade/antitank/rpg40(src)
+	new /obj/item/weapon/grenade/modern/f1(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/
@@ -903,6 +949,43 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
+	New()
+		..()
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd
+	New()
+		..()
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red
+	name = "khaki chest webbing"
+	desc = "A khaki chest-level webbing, with three medium sized pouches."
+	icon_state = "khaki_webbing"
+	item_state = "khaki_webbing"
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."
@@ -1296,10 +1379,3 @@
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
-
-/obj/item/clothing/under/customuniform/fins
-    name = "finnish uniform"
-    desc = "A finnish winter uniform."
-    shirtcolor = "#FFFFFF"
-    pantscolor = "#FFFFFF"
-    color = "#FFFFFF"

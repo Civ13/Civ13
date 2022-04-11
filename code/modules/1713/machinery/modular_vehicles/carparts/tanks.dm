@@ -200,3 +200,38 @@
 /obj/structure/vehicleparts/frame/m4/lf
 	w_left = list("c_wall",TRUE,TRUE,30,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,30,50,FALSE,FALSE)
+
+//Campaign
+
+
+/obj/structure/vehicleparts/frame/omw22_2
+
+/obj/structure/vehicleparts/frame/omw22_2/front
+	w_front = list("c_wall",TRUE,TRUE,90,90,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/back
+	w_back = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/left
+	w_left = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/right
+	w_right = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/left/door
+	w_left = list("c_door",TRUE,TRUE,50,28,TRUE,TRUE)
+	doorcode = 668643
+/obj/structure/vehicleparts/frame/omw22_2/right/door
+	w_right = list("c_door",TRUE,TRUE,50,28,TRUE,TRUE)
+	doorcode = 668643
+/obj/structure/vehicleparts/frame/omw22_2/rb
+	w_right = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/rb/door
+	w_right = list("c_door",TRUE,TRUE,50,28,TRUE,TRUE)
+	w_back = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/lb
+	w_left = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/rf
+	w_right = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,90,90,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/omw22_2/lf
+	w_left = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,90,90,FALSE,FALSE)

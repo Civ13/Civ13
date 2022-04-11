@@ -1014,7 +1014,7 @@
 /datum/reagent/ethanol/gin
 	name = "Gin"
 	id = "gin"
-	description = "It's gin. In space. I say, good sir."
+	description = "It's gin. I say, good sir."
 	taste_description = "grain alcohol and a hint of a christmas tree"
 	color = "#ffffff80"
 	strength = 20

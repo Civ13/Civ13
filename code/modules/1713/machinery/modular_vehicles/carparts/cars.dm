@@ -532,6 +532,10 @@
 /obj/structure/engine/internal/gasoline/premade/panzervi
 	enginesize = 25000
 
+/obj/structure/engine/internal/diesel/premade/omw22_2
+	name = "OMW 15 liter diesel engine"
+	enginesize = 15000
+
 /obj/structure/emergency_lights
 	name = "emergency lights control"
 	desc = "controls the emergency lights and the wailing siren."

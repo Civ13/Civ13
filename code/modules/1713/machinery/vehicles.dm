@@ -123,6 +123,14 @@
 		tank_names_german -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/omw22_2
+	name = "OMW-22 mk. II"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#774D4C"
+
+
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
 	speeds = 4

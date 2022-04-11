@@ -420,6 +420,8 @@
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE
+	else if (J.is_event == TRUE)
+		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/captain) || istype(J, /datum/job/pirates/boatswain) || istype(J, /datum/job/pirates/qm) || istype(J, /datum/job/pirates/cook) || istype(J, /datum/job/pirates/carpenter) || istype(J, /datum/job/pirates/midshipman))

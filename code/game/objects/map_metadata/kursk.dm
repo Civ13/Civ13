@@ -23,7 +23,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 
 /obj/map_metadata/kursk/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -32,6 +32,8 @@
 	else if (J.is_ss_panzer == TRUE)
 		. = TRUE
 	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
+		. = TRUE
+	else if (istype(J, /datum/job/russian/sniper_soviet))
 		. = TRUE
 	else
 		. = FALSE

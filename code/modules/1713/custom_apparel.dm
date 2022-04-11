@@ -1096,6 +1096,13 @@
 	else
 		..()
 
+/obj/item/clothing/under/customuniform/facilityg
+	name = "Facility uniform"
+	desc = "A sterile white uniform."
+	shirtcolor = "#FFFFFF"
+	pantscolor = "#FFFFFF"
+	color = "#FFFFFF"
+
 /obj/item/clothing/under/customuniform/baggy
 	name = "baggy modern outfit"
 	item_state = "custom_modbaggy_full"

@@ -391,71 +391,72 @@
 		startingturf = get_turf(proj)
 	if (!startingturf)
 		return "front"
-	switch(get_dir(startingturf, get_turf(src)))
+	var/incdir = get_dir(startingturf, get_turf(src))
+	switch(dir)
 		if (NORTH)
-			switch(dir)
+			switch(incdir)
 				if (NORTH)
 					return "back"
 				if (SOUTH)
 					return "front"
 				if (WEST)
-					return "left"
-				if (EAST)
 					return "right"
+				if (EAST)
+					return "left"
 				if (NORTHWEST)
-					return "frontleft"
-				if (SOUTHWEST)
-					return "backleft"
-				if (NORTHEAST)
-					return "frontright"
-				if (SOUTHEAST)
 					return "backright"
+				if (SOUTHWEST)
+					return "frontright"
+				if (NORTHEAST)
+					return "backleft"
+				if (SOUTHEAST)
+					return "frontleft"
 		if (SOUTH)
-			switch(dir)
+			switch(incdir)
 				if (NORTH)
 					return "front"
 				if (SOUTH)
 					return "back"
 				if (WEST)
-					return "right"
-				if (EAST)
 					return "left"
-				if (NORTHWEST)
-					return "backright"
-				if (SOUTHWEST)
-					return "frontright"
-				if (NORTHEAST)
-					return "backleft"
-				if (SOUTHEAST)
-					return "frontleft"
-		if (WEST)
-			switch(dir)
-				if (NORTH)
-					return "right"
-				if (SOUTH)
-					return "left"
-				if (WEST)
-					return "back"
 				if (EAST)
-					return "front"
+					return "right"
 				if (NORTHWEST)
-					return "frontright"
-				if (SOUTHWEST)
 					return "frontleft"
-				if (NORTHEAST)
-					return "backright"
-				if (SOUTHEAST)
+				if (SOUTHWEST)
 					return "backleft"
+				if (NORTHEAST)
+					return "frontright"
+				if (SOUTHEAST)
+					return "backright"
 		if (EAST)
-			switch(dir)
+			switch(incdir)
+				if (NORTH)
+					return "right"
+				if (SOUTH)
+					return "left"
+				if (WEST)
+					return "front"
+				if (EAST)
+					return "back"
+				if (NORTHWEST)
+					return "frontright"
+				if (SOUTHWEST)
+					return "frontleft"
+				if (NORTHEAST)
+					return "backright"
+				if (SOUTHEAST)
+					return "backleft"
+		if (WEST)
+			switch(incdir)
 				if (NORTH)
 					return "left"
 				if (SOUTH)
 					return "right"
 				if (WEST)
-					return "front"
-				if (EAST)
 					return "back"
+				if (EAST)
+					return "front"
 				if (NORTHWEST)
 					return "backleft"
 				if (SOUTHWEST)
@@ -464,6 +465,7 @@
 					return "frontleft"
 				if (SOUTHEAST)
 					return "frontright"
+
 	return "front"
 
 /obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/penloc = "front")
@@ -494,22 +496,22 @@
 		if ("frontleft")
 			if ((w_front[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
 				return TRUE
 		if ("backleft")
 			if ((w_back[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
 				return TRUE
 		if ("frontright")
 			if ((w_front[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
 				return TRUE
 		if ("backright")
 			if ((w_back[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] || max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
 				return TRUE
 	if (istype(proj, /obj/item/projectile/shell))
 		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
