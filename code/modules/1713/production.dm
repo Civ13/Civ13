@@ -5,12 +5,13 @@
 /var/const/MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK = 0 //setting it to 0, because have no normal mood restoration TO DO TODO: make some mood restoration on resting and sleeping, also make meditation (religion?)
 /var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0 //setting it to 0, because have no normal mood restoration
 //TO DO TODO: Make some normalization of mood to normal state (not 100, but 50 for full water and food lvl) with time depending on the state: rest, sleep, awake
-/var/const/STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK = 0.2 //(summ of used strength, dexterity and stamina itself in deciseconds)
-/var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items.
+/var/const/STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK = 0 //(summ of used strength, dexterity and stamina itself in deciseconds)
+/var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items. 
 //TO DO TODO: Make this proc global using
 /mob/living/human/var/tmp/last_mood_check = 0
 
-/mob/living/human/proc/in_mood(no_mood_check_treshold = 38.5)
+/mob/living/human/proc/in_mood(no_mood_check_treshold = 38)
+	return TRUE //This is temporary! TO DO TODO: Return this function after reworking mood restoration and mood buff/debuff system
 	//checking mood for doing anything
 	if (world.timeofday<src.last_mood_check) //prevent mood check spam
 		src.mood -= 0.25
