@@ -129,6 +129,7 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	reg_number = ""
 	color = "#774D4C"
+	turret_type = "round_tank_turret"
 
 
 /obj/structure/vehicleparts/axis/heavy/i_go

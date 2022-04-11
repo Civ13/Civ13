@@ -156,12 +156,13 @@
 
 		if (override_roof_icon)
 			roof.icon_state = override_roof_icon
+			roof.layer = 11
 		if (override_color)
 			roof.color = override_color
 		else
 			if (axis && axis.color && roof)
 				roof.color = axis.color
-
+	var/override_applied = FALSE
 	switch (dir)
 		if (NORTH)
 			if (w_left[1] != "")
@@ -169,7 +170,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10, dir=WEST)
+				var/tempstate = "[w_left[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
 				if (w_left.len < 8)
 					if (axis)
 						if (override_color)
@@ -182,7 +184,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10, dir=EAST)
+				var/tempstate = "[w_right[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
 				if (w_right.len < 8)
 					if (axis)
 						if (override_color)
@@ -195,7 +198,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10, dir=NORTH)
+				var/tempstate = "[w_front[1]]"
+				if (override_frame_icon && !override_applied)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
 				if (w_front.len < 8)
 					if (axis)
 						if (override_color)
@@ -208,7 +215,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10.5, dir=SOUTH)
+				var/tempstate = "[w_back[1]]"
+				if (override_frame_icon)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
 				if (w_back.len < 8)
 					if (axis)
 						if (override_color)
@@ -226,7 +237,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10, dir=EAST)
+				var/tempstate = "[w_left[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
 				if (w_left.len < 8)
 					if (axis)
 						if (override_color)
@@ -239,7 +251,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10, dir=WEST)
+				var/tempstate = "[w_right[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
 				if (w_right.len < 8)
 					if (axis)
 						if (override_color)
@@ -252,7 +265,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10.5, dir=SOUTH)
+				var/tempstate = "[w_front[1]]"
+				if (override_frame_icon && !override_applied)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
 				if (w_front.len < 8)
 					if (axis)
 						if (override_color)
@@ -265,7 +282,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=NORTH)
+				var/tempstate = "[w_back[1]]"
+				if (override_frame_icon && !override_applied)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
 				if (w_back.len < 8)
 					if (axis)
 						if (override_color)
@@ -283,7 +304,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10, dir=NORTH)
+				var/tempstate = "[w_left[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
 				if (w_left.len < 8)
 					if (axis)
 						if (override_color)
@@ -296,7 +318,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10.5, dir=SOUTH)
+				var/tempstate = "[w_right[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
 				if (w_right.len < 8)
 					if (axis)
 						if (override_color)
@@ -309,7 +332,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10, dir=EAST)
+				var/tempstate = "[w_front[1]]"
+				if (override_frame_icon && !override_applied)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
 				if (w_front.len < 8)
 					if (axis)
 						if (override_color)
@@ -322,7 +349,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=WEST)
+				var/tempstate = "[w_back[1]]"
+				if (override_frame_icon && !override_applied)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
 				if (w_back.len < 8)
 					if (axis)
 						if (override_color)
@@ -340,7 +371,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10.5, dir=SOUTH)
+				var/tempstate = "[w_left[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
 				if (w_left.len < 8)
 					if (axis)
 						if (override_color)
@@ -353,7 +385,8 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10, dir=NORTH)
+				var/tempstate = "[w_right[1]]"
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
 				if (w_right.len < 8)
 					if (axis)
 						if (override_color)
@@ -366,7 +399,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10, dir=WEST)
+				var/tempstate = "[w_front[1]]"
+				if (override_frame_icon && !override_applied)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
 				if (w_front.len < 8)
 					if (axis)
 						if (override_color)
@@ -379,7 +416,11 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=EAST)
+				var/tempstate = "[w_back[1]]"
+				if (override_frame_icon && !override_applied)
+					tempstate = override_frame_icon
+					override_applied = TRUE
+				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
 				if (w_back.len < 8)
 					if (axis)
 						if (override_color)

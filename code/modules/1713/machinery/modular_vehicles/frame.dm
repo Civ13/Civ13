@@ -25,6 +25,7 @@
 	var/noroof = FALSE
 	var/removesroof = FALSE
 	var/override_roof_icon = null
+	var/override_frame_icon = null
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/broken = FALSE
