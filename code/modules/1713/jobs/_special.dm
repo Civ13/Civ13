@@ -80,6 +80,10 @@
 /datum/job/var/is_russojapwar = FALSE
 /datum/job/var/is_smallsiegemoscow = FALSE
 /datum/job/var/is_lab = FALSE
+/datum/job/var/is_afghan = FALSE
+/datum/job/var/is_soviet = FALSE
+/datum/job/var/is_muj = FALSE
+/datum/job/var/is_dra = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE

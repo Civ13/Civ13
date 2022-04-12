@@ -498,6 +498,7 @@
 #include "code\game\objects\map_metadata\sibersyn.dm"
 #include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\skullisland.dm"
+#include "code\game\objects\map_metadata\sovafghan.dm"
 #include "code\game\objects\map_metadata\stalingrad.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
 #include "code\game\objects\map_metadata\testing.dm"
@@ -718,6 +719,7 @@
 #include "code\modules\1713\jobs\russoukrainewar.dm"
 #include "code\modules\1713\jobs\samurai.dm"
 #include "code\modules\1713\jobs\skyrim.dm"
+#include "code\modules\1713\jobs\sovafghan.dm"
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\UPA.dm"
@@ -1027,6 +1029,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\campaign\campaign3.dmm"
+#include "maps\WIP\sovafghan.dmm"
 // END_INCLUDE
 

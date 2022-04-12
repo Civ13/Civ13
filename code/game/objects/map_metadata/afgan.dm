@@ -19,7 +19,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.35, CIVILIAN = 0.65)
 	battle_name = "afgan"
-	mission_start_message = "<font size=4>russians and dra have 10 minutes to prepare before they can leave their base. <br> After 20 minutes civilians (including terrorists) will be able to access the army base and terrorist armoury unlocks. <br> To gain points the <b>armies</b> must imprison (passive point generation) or kill (one time point gain) all the terrorists and any murderers hidden within the populace while still maintaining peace and order. <br> The <b>terrorists</b> must rid the region of the Russian oppressors and kill any dra race traitors(one time point gain).<br> Civilians earn points for their nationality by having rubles in their pockets (points = rubles in pockets).<br> <b>The faction with the most points wins!</b><br></font>"
+	mission_start_message = "<font size=4>The Soviets and the DRA have 10 minutes to prepare before they can leave their base. <br> After 20 minutes civilians (including the Mujahideen) will be able to access the army base and terrorist armoury unlocks. <br> To gain points the <b>armies</b> must imprison (passive point generation) or kill (one time point gain) all the terrorists and any murderers hidden within the populace while still maintaining peace and order. <br> The <b>terrorists</b> must rid the region of the Russian oppressors and kill any dra race traitors(one time point gain).<br> Civilians earn points for their nationality by having rubles in their pockets (points = rubles in pockets).<br> <b>The faction with the most points wins!</b><br></font>"
 	faction1 = CIVILIAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -37,9 +37,9 @@
 
 /obj/map_metadata/afgan/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_afgan && istype(J, /datum/job/civilian/afgan) && J.title != "DONT USE")
+	if (J.is_afghan && istype(J, /datum/job/civilian/afgan) && J.title != "DONT USE")
 		. = TRUE
-	if (J.is_afgan && J.is_upa)
+	if (J.is_afghan && J.is_upa)
 		. = TRUE
 	if (istype(J, /datum/job/civilian/fantasy))
 		. = FALSE
@@ -48,7 +48,7 @@
 	if (J.is_abashiri)
 		. = FALSE
 	if (istype(J, /datum/job/german))
-		if (J.is_afgan)
+		if (J.is_afghan)
 			. = TRUE
 		else
 			. = FALSE
@@ -63,7 +63,7 @@
 	..()
 	switch (define)
 		if (RUSSIAN)
-			return "Russian army"
+			return "Soviet Army"
 		if (CIVILIAN)
 			return "Civilian"
 
@@ -71,7 +71,7 @@
 	..()
 	switch (define)
 		if (RUSSIAN)
-			return "Russian army"
+			return "Soviet Army"
 		if (CIVILIAN)
 			return "Civilians"
 
