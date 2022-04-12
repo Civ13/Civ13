@@ -198,6 +198,10 @@ steam.start() -- spawns the effect
 	pixel_y = 0
 /obj/effect/effect/smoke/small/fast
 	time_to_live = 30
+
+/obj/effect/effect/smoke/purple
+	color = "#800080"
+	time_to_live = 600
 /////////////////////////////////////////////
 // Illumination
 /////////////////////////////////////////////
@@ -370,9 +374,11 @@ steam.start() -- spawns the effect
 /datum/effect/effect/system/smoke_spread/sleepy
 	smoke_type = /obj/effect/effect/smoke/sleepy
 
-
 /datum/effect/effect/system/smoke_spread/mustard
 	smoke_type = /obj/effect/effect/smoke/mustard
+
+/datum/effect/effect/system/smoke_spread/purple
+	smoke_type = /obj/effect/effect/smoke/purple
 
 /////////////////////////////////////////////
 //////// Attach a steam trail to an object (eg. a reacting beaker) that will follow it

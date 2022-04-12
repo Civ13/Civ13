@@ -330,6 +330,13 @@
 	det_time = 50
 	throw_range = 10
 
+/obj/item/weapon/grenade/coldwar/rgd5
+	name = "RGD-5 grenade"
+	desc = "A Soviet fragmentation grenade designed in the 1950's."
+	icon_state = "rgd5"
+	det_time = 50
+	throw_range = 11
+
 /obj/item/weapon/grenade/ww2/prime()
 	set waitfor = 0
 	..()
