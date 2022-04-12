@@ -631,6 +631,48 @@ obj/structure/closet/crate/coldwar/m18
 	name = "M18 smoke grenade crate"
 	paths = list(/obj/item/weapon/grenade/smokebomb/m18smoke = 10)
 
+obj/structure/closet/crate/ww2/vietnam/us_ammo
+	name = "US Army ammo"
+	paths = list(/obj/item/ammo_magazine/m16 = 16,
+				/obj/item/ammo_magazine/b762 = 4,
+				/obj/item/ammo_magazine/greasegun = 4,
+				/obj/item/ammo_magazine/m14 = 4,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_medical
+	name = "US Army medical supplies"
+	paths = list(/obj/item/weapon/storage/firstaid/combat/modern = 1,
+				/obj/item/weapon/storage/firstaid/adv = 1,
+				/obj/structure/iv_drip = 1,
+				/obj/item/weapon/reagent_containers/blood/OMinus = 1,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_explosives
+	name = "US Army explosives"
+	paths = list(/obj/item/weapon/grenade/coldwar/m67 = 4,
+				/obj/item/weapon/grenade/incendiary/anm14 = 2,
+				/obj/item/weapon/plastique/c4 = 2,
+				/obj/item/weapon/grenade/dynamite/ready = 2,
+				/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 2,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_engineering
+	name = "US Army engineering supplies"
+	paths = list(/obj/item/weapon/barrier/sandbag = 30,
+				/obj/item/stack/material/barbwire/ten = 2,
+				/obj/item/weapon/material/shovel/trench = 2,
+				/obj/item/weapon/material/shovel/steel = 1,
+				/obj/item/weapon/material/hatchet/steel = 1,
+				/obj/item/weapon/wirecutters/boltcutters = 1,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_ap_mines
+	name = "US Army AP mines"
+	paths = list(/obj/item/mine/ap = 15,
+				/obj/item/weapon/wirecutters/boltcutters = 2,
+				/obj/item/weapon/material/shovel/trench = 2,
+				)
+
 obj/structure/closet/crate/ww2/mortar_shells
 	name = "mortar shells"
 	paths = list(/obj/item/cannon_ball/mortar_shell = 18)
