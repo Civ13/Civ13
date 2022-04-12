@@ -254,6 +254,11 @@ var/list/charge_sounds_african = list(
 	'sound/effects/emotes/charge_afr7.ogg',
 	'sound/effects/emotes/charge_afr8.ogg',
 	'sound/effects/emotes/charge_afr9.ogg',)
+var/list/charge_sounds_redmenia = list(
+	'sound/effects/emotes/redmenia1.ogg',
+	'sound/effects/emotes/redmenia2.ogg',
+	'sound/effects/emotes/redmenia3.ogg',)
+var/list/charge_sounds_blugoslavia = list()
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -492,4 +497,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_gorilla)
 			if ("charge_AFRICAN")
 				soundin = pick(charge_sounds_african)
+			if ("charge_REDMENIA")
+				soundin = pick(charge_sounds_redmenia)
+			if ("charge_BLUGOSLAVIA")
+				soundin = pick(charge_sounds_blugoslavia)
 	return soundin

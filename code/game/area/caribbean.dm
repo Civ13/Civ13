@@ -541,6 +541,12 @@
 /area/caribbean/no_mans_land/invisible_wall/temperate
 	climate = "temperate"
 	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/invisible_wall/temperate/one
+	icon_state = "green1"
+	name = "I grace wall"
+/area/caribbean/no_mans_land/invisible_wall/temperate/two
+	icon_state = "green1"
+	name = "II grace wall"
 /area/caribbean/no_mans_land/invisible_wall/desert
 	climate = "desert"
 	base_turf = /turf/floor/beach/sand/desert
