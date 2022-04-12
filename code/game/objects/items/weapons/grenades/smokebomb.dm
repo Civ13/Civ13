@@ -68,21 +68,43 @@
 	smoke = null
 	return ..()
 
+/obj/item/weapon/grenade/smokebomb/m18smoke/signal/attack_self(mob/user as mob)
+	if (!active)
+		if (time_of_day != "Night")
+			var/list/options = list()
+			options["Ammunition"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ammo)
+			options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_medical)
+			options["Explosives"] = list(/obj/structure/closet/crate/ww2/vietnam/us_explosives)
+			options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_engineering)
+			options["AP mines"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ap_mines)
+			var/choice = input(user,"What type of supply drop?") as null|anything in options
+			if(src && choice)
+				var/list/things_to_spawn = options[choice]
+				for(var/new_type in things_to_spawn)
+					user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+					firer = user
+					activate(user)
+					add_fingerprint(user)
+					if (ishuman(user))
+						var/mob/living/human/C = user
+						C.throw_mode_on()
+					sleep(500)
+					new new_type(get_turf(src))
+		else
+			visible_message("<span class = 'danger'>There is no sufficient visibility for the supply drop!</span>")
+
 /obj/item/weapon/grenade/smokebomb/m18smoke/signal/prime()
 	if (active)
 		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
 		smoke.set_up(10, FALSE, usr ? usr.loc : loc)
 		spawn(0)
 			smoke.start()
+		sleep(300)
 		if (time_of_day != "Night")
-			sleep(300)
 			world << "The sound of a helicopter rotor can be heard in the distance."
-			playsound(loc, 'sound/effects/uh1.ogg', 90, TRUE)
-			sleep(150)
+			playsound(get_turf(src), 'sound/effects/uh1.ogg', 90, TRUE)
+			sleep(200)
 			visible_message("<span class = 'notice'>A US Army UH-1 helicopter flies by and drops off a crate at the smoke's location.</span>")
-			new/obj/structure/closet/crate/coldwar/us_supplies(src.loc)
-		else
-			visible_message("<span class = 'danger'>There is no sufficient visibility for the supply drop!</span>")
 		sleep(10)
 		qdel(src)
 		return
