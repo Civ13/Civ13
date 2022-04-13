@@ -214,7 +214,7 @@ obj/item/weapon/storage/backpack/ww2/american
 
 /obj/item/weapon/storage/backpack/buttpack
 	name = "US Army buttpack"
-	desc = "Standard issue buttpack for american military personel"
+	desc = "Standard issue buttpack for american military personel."
 	icon_state = "us_buttpack"
 	item_state = "us_buttpack"
 	item_state_slots = list(
@@ -223,6 +223,20 @@ obj/item/weapon/storage/backpack/ww2/american
 		)
 	worn_state = "us_buttpack"
 	base_icon = "us_buttpack"
+	slot_flags = SLOT_BACK
+	max_storage_space = 8
+
+/obj/item/weapon/storage/backpack/sovpack
+	name = "Sidor rucksack"
+	desc = "Soviet standard issue rucksack."
+	icon_state = "sovpack"
+	item_state = "sovpack"
+	item_state_slots = list(
+		slot_l_hand_str = "sovpack",
+		slot_r_hand_str = "sovpack",
+		)
+	worn_state = "sovpack"
+	base_icon = "sovpack"
 	slot_flags = SLOT_BACK
 	max_storage_space = 12
 
