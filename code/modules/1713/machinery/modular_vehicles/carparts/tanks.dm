@@ -227,9 +227,13 @@
 /obj/structure/vehicleparts/frame/omw22_2/left/door
 	w_left = list("c_door",TRUE,TRUE,50,28,TRUE,TRUE)
 	doorcode = 668643
+	override_roof_icon = "mt_left_door_roof"
+	override_frame_icon = "mt_left_door_frame"
 /obj/structure/vehicleparts/frame/omw22_2/right/door
 	w_right = list("c_door",TRUE,TRUE,50,28,TRUE,TRUE)
 	doorcode = 668643
+	override_roof_icon = "mt_right_door_roof"
+	override_frame_icon = "mt_right_door_frame"
 /obj/structure/vehicleparts/frame/omw22_2/rb
 	w_right = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
 	w_back = list("mt_right_back_frame",TRUE,TRUE,50,40,FALSE,FALSE)

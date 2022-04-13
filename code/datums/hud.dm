@@ -28,6 +28,7 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
+		"gasmask" = list("type" = /obj/screen/gasmask, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "blank"),
 
 	)
 	HUDneed = list(
@@ -98,6 +99,7 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
+		"gasmask" = list("type" = /obj/screen/gasmask, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "blank"),
 	)
 	HUDneed = list(
 		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll.dmi'),
@@ -171,6 +173,7 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
+		"gasmask" = list("type" = /obj/screen/gasmask, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "blank"),
 	)
 	HUDneed = list(
 		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,6", "icon" = 'icons/mob/screen/healthdoll_lw.dmi'),
@@ -235,6 +238,7 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
+		"gasmask" = list("type" = /obj/screen/gasmask, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "blank"),
 	)
 	HUDneed = list(
 		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll_fof.dmi'),
