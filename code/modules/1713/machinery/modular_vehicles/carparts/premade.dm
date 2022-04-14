@@ -303,11 +303,11 @@
 	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/omwtc10),
 	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left, /obj/structure/bed/chair/loader),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right,/obj/item/weapon/storage/toolbox/emergency),
+	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right/door,/obj/item/weapon/storage/toolbox/emergency),
 	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2, /obj/structure/bed/chair/gunner),
 	"3,3" = list(/obj/structure/vehicleparts/frame/omw22_2/left,/obj/structure/shellrack/full100),
 
-	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb/door),
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb),
 	"2,4" = list(/obj/structure/vehicleparts/frame/omw22_2/back,/obj/structure/engine/internal/diesel/premade/omw22_2,/obj/structure/lamp/lamp_small/tank/red),
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
 	)
