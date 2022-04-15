@@ -24,7 +24,7 @@
 	faction2 = VIETNAMESE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
 	artillery_count = 8
 
 /obj/map_metadata/hue/job_enabled_specialcheck(var/datum/job/J)

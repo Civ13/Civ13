@@ -24,7 +24,7 @@
 	faction2 = BRITISH
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
+		"The Great Escape:1" = "sound/music/the_great_escape.ogg")
 	gamemode = "Prison Simulation"
 	var/gracedown1 = TRUE
 	var/siren = FALSE

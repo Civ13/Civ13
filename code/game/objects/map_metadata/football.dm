@@ -19,7 +19,7 @@
 	ambience = list('sound/ambience/football.ogg')
 	faction1 = CIVILIAN
 	songs = list(
-		"Forever Blowing Bubbles:1" = 'sound/music/forever_blowing_bubbles.ogg',)
+		"Forever Blowing Bubbles:1" = "sound/music/forever_blowing_bubbles.ogg",)
 	is_singlefaction = TRUE
 	var/team1 = "Unga Utd."
 	var/team2 = "Chad Town F.C."

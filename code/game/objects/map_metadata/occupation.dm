@@ -24,7 +24,7 @@
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
+		"The Great Escape:1" = "sound/music/the_great_escape.ogg")
 	gamemode = "Occupation"
 	var/list/points = list(
 		list("SS",0,0),

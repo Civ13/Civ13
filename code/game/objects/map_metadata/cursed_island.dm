@@ -24,7 +24,7 @@
 	is_singlefaction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
-		"Words Trough the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Trough the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	gamemode = "Player vs NPCs"
 
 /obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)

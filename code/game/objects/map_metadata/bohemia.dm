@@ -21,7 +21,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = GERMAN
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Medieval RP"
 	is_singlefaction = TRUE
 	force_mapgen = TRUE

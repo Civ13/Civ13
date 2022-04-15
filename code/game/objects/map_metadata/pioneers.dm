@@ -25,7 +25,7 @@
 	faction1 = CIVILIAN
 	faction2 = INDIANS
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Pioneer Building RP"
 
 

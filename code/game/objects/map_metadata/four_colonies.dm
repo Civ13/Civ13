@@ -29,7 +29,7 @@
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Faction-Based RP"
 	is_RP = TRUE
 

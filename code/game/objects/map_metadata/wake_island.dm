@@ -24,7 +24,7 @@
 	faction2 = JAPANESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	gamemode = "Area Control"
 	var/jap_points = 0
 	var/usa_points = 0

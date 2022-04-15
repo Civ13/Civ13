@@ -22,7 +22,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
 	artillery_count = 5
 
 /obj/map_metadata/retreat/job_enabled_specialcheck(var/datum/job/J)

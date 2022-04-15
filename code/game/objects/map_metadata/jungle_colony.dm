@@ -30,7 +30,7 @@
 	faction2 = CIVILIAN
 	is_RP = TRUE
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Colony Building RP"
 obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
