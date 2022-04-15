@@ -1029,6 +1029,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\campaign\campaign4.dmm"
+#include "maps\campaign\campaign3.dmm"
 // END_INCLUDE
 
