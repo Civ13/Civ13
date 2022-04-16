@@ -888,6 +888,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/french/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/french(null)
 	uniform.attackby(fullwebbing, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/c8x50, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/c8x50, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the French Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
