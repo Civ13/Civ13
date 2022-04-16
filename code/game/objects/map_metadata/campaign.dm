@@ -24,7 +24,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Divinitus:1" = "sound/music/divinitus.ogg",)
+		"Emma:1" = "sound/music/emma.ogg",)
 	artillery_count = 0
 	scores = list(
 		"Blugoslavia" = 0,

@@ -49,3 +49,5 @@
 	var/F = file(songs[song_title])
 	if (F)
 		return sound(F)
+	else
+		return null
