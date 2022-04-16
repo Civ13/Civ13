@@ -387,6 +387,16 @@
 	name = "Vietcong Flag"
 	desc = "The flag of the National Liberation Front of Vietnam."
 
+/obj/structure/flag/redmenia
+	icon_state = "redmenia"
+	name = "Redmenia Flag"
+	desc = "The flag of Redmenia."
+
+/obj/structure/flag/blugoslavia
+	icon_state = "blugoslavia"
+	name = "Blugoslavia Flag"
+	desc = "The flag of Blugoslavia."
+
 /obj/structure/flag/pole
 	icon_state = "flagpole_blank"
 	name = "Flagpole"
