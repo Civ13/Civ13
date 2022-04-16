@@ -1441,7 +1441,7 @@ obj/item/clothing/head/ww2/chicap2
 	desc = "two leather belts with small pouches for ammunition and grenades."
 	icon_state = "german_vest"
 	item_state = "german_vest"
-	slots = 4
+	slots = 8
 	New()
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)

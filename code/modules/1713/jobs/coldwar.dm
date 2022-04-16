@@ -1434,7 +1434,7 @@
 			nlfsmallpouches.attackby(new/obj/item/ammo_magazine/sks, H)
 			nlfsmallpouches.attackby(new/obj/item/ammo_magazine/sks, H)
 	else if (pickgun == 2)
-		if (prob(50))
+		if (prob(10))
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_belt)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_belt)

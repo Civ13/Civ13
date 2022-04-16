@@ -233,7 +233,7 @@ obj/item/ammo_magazine/dp
 
 /obj/item/ammo_magazine/garand
 	name = "clip (30-06) 8 rounds"
-	icon_state = "clip"
+	icon_state = "g-clip"
 	caliber = "a3006"
 
 	ammo_type = /obj/item/ammo_casing/a3006
