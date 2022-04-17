@@ -181,6 +181,7 @@ var/global/photo_count = 0
 	icon = 'icons/obj/device.dmi'
 	desc = "A video camera used for broadcasting on news channels."
 	icon_state = "video_camera"
+	item_state = "video_camera"
 
 /obj/item/camera/verb/change_size()
 	set name = "Set Photo Focus"
