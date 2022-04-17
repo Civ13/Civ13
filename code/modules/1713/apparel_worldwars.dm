@@ -1807,6 +1807,8 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "hj_uni"
 	icon_state = "hj_uni"
 
+
+///////////////////////////////////////////////////UNITED STATES/////////////////////////////////////////
 /obj/item/clothing/under/ww2/us
 	name = "american uniform"
 	desc = "An american uniform, used by soldiers in the US army during WW2."
@@ -1849,6 +1851,17 @@ obj/item/clothing/head/ww2/chicap2
 	item_state = "us_shirtless"
 	worn_state = "us_shirtless"
 
+/obj/item/clothing/accessory/storage/webbing/us_ww2
+	name = "US webbing"
+	desc = "A khaki canvas pouch rig with 10 pouches total for ammo and other various items"
+	icon_state = "us_webbing"
+	item_state = "us_webbing"
+	slots = 10
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
+
+////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/under/ww2/finnish
 	name = "finnish uniform"
 	desc = "A finnish winter uniform."
