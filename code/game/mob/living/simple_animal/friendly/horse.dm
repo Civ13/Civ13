@@ -18,7 +18,7 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	attacktext = "kicked"
-	health = 850
+	health = 1800
 	mob_size = MOB_LARGE
 	layer = 3.99
 	a_intent = I_HARM
