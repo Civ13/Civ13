@@ -4,6 +4,7 @@
  *		Camera Film
  *		Photos
  *		Photo Albums
+ *		And now a (prop) video camera too!
  */
 
 /*******
@@ -174,6 +175,13 @@ var/global/photo_count = 0
 	icon_state = "camera_coldwar"
 	colorset = "oldcolor"
 	pictures_max = 8
+
+/obj/item/video_camera
+	name = "video camera"
+	icon = 'icons/obj/device.dmi'
+	desc = "A video camera used for broadcasting on news channels."
+	icon_state = "video_camera"
+	item_state = "video_camera"
 
 /obj/item/camera/verb/change_size()
 	set name = "Set Photo Focus"
