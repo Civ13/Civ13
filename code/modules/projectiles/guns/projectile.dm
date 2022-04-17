@@ -52,13 +52,17 @@
 	if (map && map.civilizations)
 		loaded = list()
 		chambered = null
+		world << "test0a"
 	else if (!(istype(loc, /mob/living)))
 		loaded = list()
 		chambered = null
+		world << "test0b"
 	else
-		if (ispath(ammo_type) && (load_method & (SINGLE_CASING|SPEEDLOADER)))
+		world << "test"
+		if (ispath(ammo_type) && ((load_method & (SINGLE_CASING|SPEEDLOADER)) || istype(src, /obj/item/weapon/gun/projectile/shotgun)))
 			for (var/i in TRUE to max_shells)
 				loaded += new ammo_type(src)
+				world << "test1"
 		if (ispath(magazine_type) && (load_method & MAGAZINE))
 			ammo_magazine = new magazine_type(src)
 

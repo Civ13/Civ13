@@ -180,49 +180,19 @@
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
 
-/obj/item/weapon/gun/projectile/shotgun/remington870
+/obj/item/weapon/gun/projectile/shotgun/pump/remington870
 	name = "Remington 870 Express"
 	desc = "A pump-action shotgun with a 3in 12 gauge chamber."
 	icon_state = "remington870"
 	item_state = "shotgun"
 	max_shells = 7
-	w_class = 4.0
-	force = 10
-	flags =  CONDUCT
 	slot_flags = SLOT_SHOULDER
 	caliber = "12gauge"
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	handle_casings = HOLD_CASINGS
-	stat = "rifle"
 	move_delay = 4
-	var/recentpump = FALSE // to prevent spammage
 	load_delay = 5
-
-/obj/item/weapon/gun/projectile/shotgun/remington870/consume_next_projectile()
-	if (chambered)
-		return chambered.BB
-	return null
-
-/obj/item/weapon/gun/projectile/shotgun/remington870/attack_self(mob/living/user as mob)
-	if (world.time >= recentpump + 10)
-		pump(user)
-		recentpump = world.time
-
-/obj/item/weapon/gun/projectile/shotgun/remington870/proc/pump(mob/M as mob)
-	playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
-
-	if (chambered)//We have a shell in the chamber
-		chambered.loc = get_turf(src)//Eject casing
-		chambered.randomrotation()
-		chambered = null
-
-	if (loaded.len)
-		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-		loaded -= AC //Remove casing from loaded list.
-		chambered = AC
-
-	update_icon()
 
 
 

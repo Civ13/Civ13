@@ -1094,7 +1094,31 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier
+	name = "shotgun bandolier"
+	desc = "A bandolier with several holes made to fit shotgun shells."
+	icon_state = "us_bandolier"
+	item_state = "us_bandolier"
+	slots = 12
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing/shotgun)
 
+/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot
+	New()
+		..()
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
 /* NBC &  Hazmat Suits*/
 
 /obj/item/clothing/head/nbc
