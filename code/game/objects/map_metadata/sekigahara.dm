@@ -18,7 +18,7 @@
 	mission_start_message = "<font size=4>The <b>Eastern Army</b> and <b>Western Army</b> are facing each other outside of Sekigahara! It will start in <b>2 minutes</b></font>"
 	faction1 = JAPANESE
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	is_singlefaction = TRUE
 	scores = list(
 		"Eastern Army" = 0,

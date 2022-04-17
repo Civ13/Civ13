@@ -22,7 +22,7 @@
 	faction2 = JAPANESE
 	ordinal_age = 5
 	songs = list(
-		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
+		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg")
 	gamemode = "Siege"
 /obj/map_metadata/port_arthur/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)

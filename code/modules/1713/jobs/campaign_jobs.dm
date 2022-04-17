@@ -89,7 +89,7 @@
 	squad = 7
 	rank_abbreviation = "7-Engineer"
 /datum/job/pirates/redfaction/armored/sl
-	title = "RDF Armored Commander"
+	title = "RDF Armored Squadleader"
 	squad = 5
 	is_squad_leader = TRUE
 	rank_abbreviation = "5-Tank Sgt"
@@ -306,7 +306,7 @@
 	squad = 7
 	rank_abbreviation = "7-Engineer"
 /datum/job/civilian/bluefaction/armored/sl
-	title = "BAF Armored Commander"
+	title = "BAF Armored Squadleader"
 	is_squad_leader = TRUE
 	squad = 5
 	rank_abbreviation = "5-Tank Sgt"

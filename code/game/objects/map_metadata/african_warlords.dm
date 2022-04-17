@@ -23,7 +23,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Barrington Levy - Murderer:1" = 'sound/music/murderer.ogg',)
+		"Barrington Levy - Murderer:1" = "sound/music/murderer.ogg",)
 	scores = list(
 		"Blugisi" = 0,
 		"Yellowagwana" = 0,

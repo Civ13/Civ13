@@ -19,7 +19,7 @@
 	ordinal_age = 2
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5)
 	songs = list(
-		"Crusaders:1" = 'sound/music/crusaders.ogg')
+		"Crusaders:1" = "sound/music/crusaders.ogg")
 	battle_name = "battle of Normandy"
 	mission_start_message = "<font size=4>The <b>French</b> and <b>English</b> armies are facing each other in Northern France! There is a <b>Castle</b> in the middle of the map, that must be captured and held for 8 minutes! The battle will start in <b>6 minutes</b>.</font>"
 	faction1 = BRITISH

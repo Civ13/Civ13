@@ -30,7 +30,7 @@
 
 /area/caribbean/roofed/temperate
 	climate = "temperate"
-	base_turf = /turf/floor/dirt
+	base_turf = /turf/floor/dirt/burned
 
 /area/caribbean/roofed/sea
 	climate = "sea"
@@ -170,7 +170,7 @@
 
 /area/caribbean/nomads/forest
 	name = "Forest"
-	base_turf = /turf/floor/grass
+	base_turf = /turf/floor/dirt/burned
 	icon_state = "green1"
 	climate = "temperate"
 

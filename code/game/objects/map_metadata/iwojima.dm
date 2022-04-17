@@ -23,7 +23,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Neue Deutsche Welle (Remix):1" = "sound/music/neue_deutsche_welle.ogg",)
 	gamemode = "Siege"
 /obj/map_metadata/iwojima/job_enabled_specialcheck(var/datum/job/J)
 	..()

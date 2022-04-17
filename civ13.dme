@@ -1029,6 +1029,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\sovafghan.dmm"
+#include "maps\campaign\blue_fieldtraining.dmm"
 // END_INCLUDE
 

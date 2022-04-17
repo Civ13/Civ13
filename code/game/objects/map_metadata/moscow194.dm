@@ -3,7 +3,7 @@
 	ID = MAP_SMALLSIEGEMOSCOW
 	title = "Siege of Moscow"
 	lobby_icon_state = "ww2"
-	caribbean_blocking_area_types = list(	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two))
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two)
 	respawn_delay = 1200
 	no_winner ="The Politburo is under Soviet control."
 	no_hardcore = TRUE
@@ -16,14 +16,14 @@
 		)
 	age = "1943"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(russian = 0.4, German = 0.6)
+	faction_distribution_coeffs = list(RUSSIAN = 0.5, GERMAN = 0.5)
 	battle_name = "Battle for Moscow"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach and hold the Politburo in the Administration building!.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach and hold the Politburo in the Administration building!.</font>"
 	faction1 = RUSSIAN
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
 
 obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
@@ -38,10 +38,10 @@ obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 
 /obj/map_metadata/smallsiegemoscow/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/smallsiegemoscow/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/smallsiegemoscow/roundend_condition_def2name(define)
@@ -91,7 +91,7 @@ obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Soviets</b> has sucessfuly defended Moscow! The Germans halted the attack!"
+		var/message = "The <b>Soviets</b> have sucessfuly defended Moscow! The Germans halted the attack!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -156,12 +156,10 @@ obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
 			if (H.faction_text == faction1)
 				return TRUE
 		else
+			return !faction1_can_cross_blocks()
 			return !faction2_can_cross_blocks()
 	return FALSE
