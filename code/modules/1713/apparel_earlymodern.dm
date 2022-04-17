@@ -465,12 +465,15 @@
 	desc = "A cap worn by russian army officers."
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"
+
+////////////storage//////////////////////////
+//russo-jap
 /obj/item/weapon/storage/belt/russian
 	name = "Russian Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
-	icon_state = "japbelt"
-	item_state = "japbelt"
-	storage_slots = 12
+	icon_state = "rubelt"
+	item_state = "rubelt"
+	storage_slots = 7
 	max_w_class = 3
 	max_storage_space = 24
 	can_hold = list(
@@ -489,6 +492,50 @@
 		)
 /obj/item/weapon/storage/belt/russian/soldier
 /obj/item/weapon/storage/belt/russian/soldier/New()
+	..()
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+
+/obj/item/clothing/accessory/storage/webbing/russband
+	name = "Imperial Russian Army bandolier"
+	desc = "A large leather bandolier 6 small pouches for strip clips."
+	icon_state = "ru_band"
+	item_state = "ru_band"
+	slots = 6
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
+
+//world war 1
+/obj/item/weapon/storage/belt/russian/ww1
+	name = "Russian Soldier belt"
+	desc = "A belt with 2 pouches to hold 12 strip clips."
+	icon_state = "rubelt_ww1"
+	item_state = "rubelt_ww1"
+	storage_slots = 7
+	max_w_class = 3
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/material/shovel,
+		/obj/item/weapon/key,
+		/obj/item/weapon/melee/classic_baton
+		)
+/obj/item/weapon/storage/belt/russian/ww1/soldier
+/obj/item/weapon/storage/belt/russian/ww1/soldier/New()
 	..()
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)

@@ -24,7 +24,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Emma:1" = "sound/music/emma.ogg",)
 	artillery_count = 0
 	scores = list(
 		"Blugoslavia" = 0,
@@ -181,7 +181,7 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
 				continue
-			if(findtext(job.title, "BAF Armored Commander") && MC.faction2_squad_leaders[4])
+			if(findtext(job.title, "BAF Armored Squadleader") && MC.faction2_squad_leaders[4])
 				continue
 			if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
 				continue
@@ -204,7 +204,7 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 				continue
 			if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
 				continue
-			if(findtext(job.title, "RDF Armored Commander") && MC.faction1_squad_leaders[4])
+			if(findtext(job.title, "RDF Armored Squadleader") && MC.faction1_squad_leaders[4])
 				continue
 			if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
 				continue
@@ -408,7 +408,61 @@ var/no_loop_cm = FALSE
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
-
+///////////arty and stuff/////////////
+/obj/map_metadata/campaign/proc/napalm_strike(var/inputx, var/inputy, var/inputz)
+	var/xoffsetmin = inputx-4
+	var/xoffsetmax = inputx+4
+	var/yoffsetmin = inputy-4
+	var/yoffsetmax = inputy+4
+	for (var/i = xoffsetmin, i <= xoffsetmax, i++)
+		for(var/yi = yoffsetmin, yi <= yoffsetmax, yi++)
+			if(prob(86))
+				var/turf/O = get_turf(locate(i,yi,inputz))
+				if(prob(7))
+					explosion(O,0,1,1,3)
+				spawn(rand(15,50))
+					for (var/mob/living/LS1 in O)
+						LS1.adjustFireLoss(35)
+						LS1.fire_stacks += rand(9,13)
+						LS1.IgniteMob()
+					new/obj/effect/fire(O)
+	spawn(10)
+		xoffsetmin = inputx-4
+		xoffsetmax = inputx+4
+		yoffsetmin = inputy-4
+		yoffsetmax = inputy+4
+		for (var/i = 1, i < 18, i++)
+			var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
+			for (var/mob/living/LS1 in O)
+				LS1.adjustFireLoss(14)
+				LS1.fire_stacks += rand(2,4)
+				LS1.IgniteMob()
+			new/obj/effect/fire(O)
+/obj/map_metadata/campaign/proc/precision_strike(var/inputx, var/inputy, var/inputz)
+	var/xoffsetmin = inputx-2
+	var/xoffsetmax = inputx+2
+	var/yoffsetmin = inputy-2
+	var/yoffsetmax = inputy+2
+	for (var/i = 1, i < 3, i++)
+		var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
+		explosion(O,2,3,3,2)
+//40-106,34-77
+/obj/map_metadata/campaign/proc/city_mrl_strike()
+	mrl_strike(13,60,97,34,63,2)
+	spawn(100)
+		mrl_strike(5,97,105,34,73,2)
+/obj/map_metadata/campaign/proc/mrl_strike(var/strikenum = 18, var/xoffsetmin, var/xoffsetmax, var/yoffsetmin, var/yoffsetmax, var/inputz)
+	var/sound/uploaded_sound = sound('sound/weapons/Explosives/mrls.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	uploaded_sound.priority = 250
+	for (var/mob/M in player_list)
+		if (!new_player_mob_list.Find(M))
+			M.client << uploaded_sound
+			M << "<font size=4>You hear the blood-curdling sound of rocket artillery being fired!</font>"
+	spawn(40)
+		for (var/i = 1, i <= strikenum, i++)
+			spawn(i*4)
+				var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
+				explosion(O,2,3,3,3)
 ///////////map specific objs/////////
 /obj/structure/altar/heads
 	name = "Mr. Taislenko's Collection"

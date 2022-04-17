@@ -25,7 +25,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Swallowing Dust:1" = 'sound/music/swallowingdust.ogg')
+		"Swallowing Dust:1" = "sound/music/swallowingdust.ogg")
 	gamemode = "Afghan"
 	var/list/points = list(
 		list("Soviets",0,0),

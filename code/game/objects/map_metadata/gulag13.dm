@@ -25,7 +25,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Red Army Choir - Slavery and Suffering:1" = 'sound/music/slavery_and_suffering.ogg')
+		"Red Army Choir - Slavery and Suffering:1" = "sound/music/slavery_and_suffering.ogg")
 	gamemode = "Prison Simulation"
 	var/list/points = list(
 		list("Guards",0,0),

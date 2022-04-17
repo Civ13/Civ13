@@ -21,7 +21,7 @@
 	faction1 = CHECHEN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Just don't tell mom I'm in Chechnya:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
+		"Just don't tell mom I'm in Chechnya:1" = "sound/music/just_dont_tell_mom_im_in_chechnya.ogg",)
 	artillery_count = 3 //they really need it to get anywhere, but now it's some OP shit
 	artillery_timer = 2400 //and they need it just slightly quicker. It's artillery supposedly, not CAS.
 	valid_artillery = list("Explosive","Napalm","Creeping Barrage")

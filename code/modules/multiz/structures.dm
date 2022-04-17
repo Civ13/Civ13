@@ -100,6 +100,12 @@
 		M << "<span class='warning'>You can't use \the [src] while you're restrained.</span>"
 		return
 
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if(map.ID == MAP_CAMPAIGN && H.faction_text != "PIRATES")
+			M << "<span class='notice'>You cannot enter this tunnel.</span>"
+			return
+
 	if (!target || !istype(target.loc, /turf))
 		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && !istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom) && !istype(src, /obj/structure/multiz/ladder/ww2) && !istype(src, /obj/structure/multiz/ladder/ww2/up) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsdown) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsup))
 			M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"

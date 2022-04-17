@@ -21,7 +21,7 @@ K
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = ROMAN
 	songs = list(
-		"Divinitus:1" = 'sound/music/divinitus.ogg',)
+		"Divinitus:1" = "sound/music/divinitus.ogg",)
 	gamemode = "Gladiatorial Combat"
 	is_singlefaction = TRUE
 	valid_weather_types = list(WEATHER_NONE)

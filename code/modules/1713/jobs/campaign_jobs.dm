@@ -89,7 +89,7 @@
 	squad = 7
 	rank_abbreviation = "7-Engineer"
 /datum/job/pirates/redfaction/armored/sl
-	title = "RDF Armored Commander"
+	title = "RDF Armored Squadleader"
 	squad = 5
 	is_squad_leader = TRUE
 	rank_abbreviation = "5-Tank Sgt"
@@ -136,6 +136,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/key/red, slot_l_store)
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
+	else if (findtext(title, "Armored"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else if (findtext(title, "Machinegunner"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
 	else if (findtext(title, "Anti-Tank"))
@@ -184,8 +186,12 @@
 		else if (findtext(title, "Engineer"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
-			var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red(null)
-			uniform.attackby(webbing, H)
+			if(findtext(title, "Armored"))
+				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot/webbing = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot(null)
+				uniform.attackby(webbing, H)
+			else
+				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red(null)
+				uniform.attackby(webbing, H)
 			if(A.climate == "taiga" || A.climate == "tundra")
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white(H), slot_belt)
 			else
@@ -306,7 +312,7 @@
 	squad = 7
 	rank_abbreviation = "7-Engineer"
 /datum/job/civilian/bluefaction/armored/sl
-	title = "BAF Armored Commander"
+	title = "BAF Armored Squadleader"
 	is_squad_leader = TRUE
 	squad = 5
 	rank_abbreviation = "5-Tank Sgt"

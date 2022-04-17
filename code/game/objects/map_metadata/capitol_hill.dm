@@ -27,7 +27,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"To Arms in Dixie:1" = 'sound/music/to_arms_in_dixie.ogg',)
+		"To Arms in Dixie:1" = "sound/music/to_arms_in_dixie.ogg",)
 	artillery_count = 0
 	valid_artillery = list()
 	scores = list(

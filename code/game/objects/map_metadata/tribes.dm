@@ -28,7 +28,7 @@
 	civilizations = TRUE
 	is_RP = TRUE
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	gamemode = "Faction-Based RP"
 	nomads = TRUE
 /obj/map_metadata/tribes/New()

@@ -46,4 +46,8 @@
 	client << "<span class = 'notice'><font size = 2>Now playing <b>[splittext(song_title, ":")[1]]</b></font></span>"
 
 /datum/lobby_music_player/proc/get_song()
-	return songs[song_title]
+	var/F = file(songs[song_title])
+	if (F)
+		return sound(F)
+	else
+		return null

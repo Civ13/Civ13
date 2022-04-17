@@ -24,7 +24,7 @@
 	faction2 = JAPANESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
+		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()

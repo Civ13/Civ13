@@ -24,7 +24,7 @@
 	faction1 = INDIANS
 	faction2 = PIRATES
 	songs = list(
-		"Blade and Dagger:1" = 'sound/music/blade_and_dagger.ogg',)
+		"Blade and Dagger:1" = "sound/music/blade_and_dagger.ogg",)
 	gamemode = "Survival RP"
 	is_RP = TRUE
 

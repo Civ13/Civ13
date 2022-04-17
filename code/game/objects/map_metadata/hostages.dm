@@ -25,7 +25,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
+		"Al-Qussam:1" = "sound/music/alqassam.ogg",)
 	artillery_count = 0
 
 	var/total_hostages = 6

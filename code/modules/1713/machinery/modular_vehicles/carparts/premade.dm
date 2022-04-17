@@ -103,6 +103,9 @@
 					A.w_back[7] = TRUE
 					A.w_left[7] = TRUE
 					A.w_right[7] = TRUE
+	spawn(100)
+		if(src)
+			qdel(src)
 /obj/effects/premadevehicles/proc/new_number()
 	var/tempnum = 0
 	tempnum = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][pick(alphabet_uppercase)] [rand(0,9)][rand(0,9)][rand(0,9)]"

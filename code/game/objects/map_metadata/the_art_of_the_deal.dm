@@ -8,7 +8,7 @@
 	has_hunger = TRUE
 	no_winner ="The fighting is still going."
 	songs = list(
-		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
+		"Woke Up This Morning:1" = "sound/music/woke_up_this_morning.ogg",)
 	faction_organization = list(
 		CIVILIAN)
 
@@ -351,7 +351,7 @@
 		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 300,
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 400,
 		/obj/item/weapon/gun/projectile/revolver/smithwesson = 240,
-		/obj/item/weapon/gun/projectile/shotgun/remington870 = 500,
+		/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 500,
 		/obj/item/weapon/gun/projectile/boltaction/m24 = 600,
 		/obj/item/weapon/attachment/silencer/pistol = 120,
 
@@ -409,7 +409,7 @@
 	desc = "When the baton is not enough."
 	icon_state = "weapons_sof"
 	products = list(
-	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
+	/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 10,
 	/obj/item/ammo_magazine/shellbox/slug = 10,
 	/obj/item/ammo_magazine/shellbox = 10,
 	/obj/item/ammo_magazine/glock17 = 50,
@@ -432,7 +432,7 @@
 	desc = "Baton +."
 	icon_state = "equipment_usa"
 	products = list(
-	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
+	/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 10,
 	/obj/item/ammo_magazine/shellbox/rubber = 10,
 	/obj/item/ammo_magazine/shellbox/beanbag = 10,
 	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,

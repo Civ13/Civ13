@@ -26,7 +26,7 @@
 	nomads = FALSE
 	availablefactions_run = FALSE
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	default_research = 105
 	gamemode = "Nations RP"
 	ordinal_age = 4
