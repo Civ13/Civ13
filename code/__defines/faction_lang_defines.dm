@@ -59,6 +59,8 @@
 			return "United Nations"
 		if (map.ID == "WHITERUN")
 			return "Stormcloaks"
+		if (map.ID == "CAPITOL_HILL")
+			return "Rioters"
 		else
 			return "Colonists"
 
@@ -131,6 +133,8 @@
 	if (constant == AMERICAN)
 		if (map.ID == "ARAB_TOWN")
 			return "IDF"
+		if (map.ID == "CAPITOL_HILL")
+			return "American Government"
 		else
 			return "United States"
 
