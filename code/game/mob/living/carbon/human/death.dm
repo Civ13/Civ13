@@ -87,17 +87,17 @@
 
 	else if (map && map.ID == MAP_YELTSIN)
 		if (civilization && civilization in map.scores)
-			if (civilization == "Soviet Army")
-				if (original_job && original_job.title == "Soviet Army Sergeant")
+			if (civilization == "Russian Army")
+				if (original_job && original_job.title == "Russian Army Sergeant")
 					map.scores["Militia"] += 5
-					world << "<font color='red' size=3>The <b>Soviet Army</b> Sergeant has been killed!</font>"
-				else if (original_job && original_job.title == "Soviet Army Lieutenant")
+					world << "<font color='red' size=3>A <b>Russian Army</b> Sergeant has been killed!</font>"
+				else if (original_job && original_job.title == "Russian Army Lieutenant")
 					map.scores["Militia"] += 10
-					world << "<font color='red' size=3>The <b>Soviet Army</b> Lieutenant has been killed!</font>"
+					world << "<font color='red' size=3>The <b>Russian Army</b> Lieutenant has been killed!</font>"
 				else
 					map.scores["Militia"] += 1
 			else
-				map.scores["Soviet Army"] += 1
+				map.scores["Russian Army"] += 1
 
 	else if (map && map.ID == MAP_CAPITOL_HILL)
 		if (civilization && civilization in map.scores)
@@ -138,7 +138,16 @@
 				map.scores[killer.nationality] -= 10
 				killer.nationality = "Exiled"
 				world << "<b><big>A United Nations Engineer has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>"
-
+		if (faction_text == CIVILIAN && original_job_title == "United Nations Soldier")
+			map.scores["Blugisi"] -= 4
+			map.scores["Yellowagwana"] -= 4
+			map.scores["Redkantu"] -= 4
+			world << "<b><big>A United Nations Soldier has been killed. The United Nations have lowered their financial support in the region. The local population is paying the consequences!</b></big>"
+		if (faction_text == CIVILIAN && original_job_title == "Local Policeman")
+			map.scores["Blugisi"] -= 4
+			map.scores["Yellowagwana"] -= 4
+			map.scores["Redkantu"] -= 4
+			world << "<b><big>A Local Policeman has been killed! The local population is in shock and lowered their support for the warbands!</b></big>"
 
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
