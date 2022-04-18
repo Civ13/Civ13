@@ -18,8 +18,8 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "pokes"
 	stop_automated_movement_when_pulled = FALSE
-	maxHealth = 60
-	health = 60
+	maxHealth = 160
+	health = 160
 	melee_damage_lower = 20
 	melee_damage_upper = 30
 	mob_size = MOB_LARGE
