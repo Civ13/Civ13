@@ -509,6 +509,7 @@
 	slots = 6
 	New()
 		..()
+		hold.storage_slots = slots
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
 //world war 1
@@ -519,7 +520,6 @@
 	item_state = "rubelt_ww1"
 	storage_slots = 7
 	max_w_class = 3
-	max_storage_space = 24
 	can_hold = list(
 		/obj/item/ammo_magazine,
 		/obj/item/weapon/material,

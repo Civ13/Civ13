@@ -127,7 +127,7 @@
 				MAP_RETREAT = 6,
 				MAP_GROZNY = 6,
 				//MAP_FACTORY = 15,
-				MAP_AFRICAN_WARLORDS = 8,
+				MAP_AFRICAN_WARLORDS = 10,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
