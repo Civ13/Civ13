@@ -93,6 +93,7 @@ var/list/ancient_names = file2list("config/names/ancient_names.txt")
 var/list/epithets = file2list("config/names/epithets.txt")
 
 var/list/first_names_orc = file2list("config/names/first_orc.txt")
+var/list/first_names_goblin = file2list("config/names/first_goblin.txt")
 var/list/first_names_ant = file2list("config/names/first_ant.txt")
 var/list/first_names_gorilla = file2list("config/names/first_gorilla.txt")
 var/list/first_names_wolf = file2list("config/names/first_wolf.txt")
