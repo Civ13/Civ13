@@ -844,7 +844,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt/New()
 	..()
-	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)

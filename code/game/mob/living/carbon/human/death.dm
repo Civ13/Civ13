@@ -106,6 +106,19 @@
 			else
 				map.scores["National Guard"] += 1
 
+	else if (map && map.ID == MAP_SOVAFGHAN)
+		var/obj/map_metadata/sovafghan/MP = map
+		if (faction_text == RUSSIAN && original_job.title == "Soviet Army Lieutenant")
+			MP.muj_points += 10
+			world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"
+		else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Sergeant")
+			MP.muj_points += 5
+		else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Radio Operator")
+			MP.muj_points += 3
+		else if (faction_text == ARAB && original_job.title == "Mujahideen Leader")
+			MP.sov_points += 10
+			world << "<font color='red' size=3>A <b>Mujahideen Leader</b> has been killed!</font>"
+
 	else if (map && map.ID == MAP_SEKIGAHARA)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Eastern Army")
