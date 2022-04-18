@@ -39,10 +39,11 @@
 		process_awards()
 	if (transforming)
 		return
-	if (werewolf + gorillaman + orc + ant + lizard + wolfman + crab > 1)
+	if (werewolf + gorillaman + orc +goblin + ant + lizard + wolfman + crab > 1)
 		werewolf = 0
 		gorillaman = 0
 		orc = 0
+		goblin = 0
 		ant = 0
 		lizard = 0
 		wolfman = 0
@@ -55,6 +56,8 @@
 		handle_animalistic("Gorilla")
 	else if (orc)
 		handle_animalistic("Orc")
+	else if (goblin)
+		handle_animalistic("Goblin")
 	else if (ant)
 		handle_animalistic("Ant")
 	else if (lizard)
@@ -63,7 +66,7 @@
 		handle_animalistic("Wolf")
 	else if (crab)
 		handle_animalistic("Crab")
-	else if (!gorillaman && !werewolf && !orc && !ant && !lizard && !wolfman && !crab && body_build.name != "Default")
+	else if (!gorillaman && !werewolf && !orc && !goblin && !ant && !lizard && !wolfman && !crab && body_build.name != "Default")
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
@@ -158,6 +161,9 @@
 			food_m *= 0.8
 		if (orc)
 			food_m *= 1.5
+		if (goblin)
+			food_m *= 0.8
+			water_m *= 1.0
 		if (crab)
 			food_m *= 0.8
 			water_m *= 2.5

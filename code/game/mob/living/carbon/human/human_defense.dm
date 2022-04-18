@@ -46,6 +46,9 @@ bullet_act
 					if (orc)
 						var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
 						HP.amount = 3
+					else if (goblin)
+						var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
+						HP.amount = 2
 					else if (gorillaman)
 						var/obj/item/stack/material/pelt/gorillapelt/HP = new/obj/item/stack/material/pelt/gorillapelt(get_turf(src))
 						HP.amount = 3

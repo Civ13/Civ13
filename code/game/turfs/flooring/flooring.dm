@@ -55,6 +55,15 @@ var/list/flooring_types
 	damage_temperature = T0C+3000
 //	flags = TURF_HAS_EDGES
 
+/decl/flooring/dark_dirt
+	name = "dark dirt"
+	desc = "Darker than normal dirt, spooky."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "dirt_dark"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+//	flags = TURF_HAS_EDGES
+
 /decl/flooring/dust
 	name = "dry dirt"
 	desc = "Simple dry dirt."
