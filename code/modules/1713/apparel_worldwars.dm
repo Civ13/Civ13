@@ -1444,6 +1444,7 @@ obj/item/clothing/head/ww2/chicap2
 	slots = 8
 	New()
 		..()
+		hold.storage_slots = slots
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
 
 /obj/item/clothing/accessory/storage/webbing/russian
@@ -1857,9 +1858,9 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "us_webbing"
 	item_state = "us_webbing"
 	slots = 10
-	max_storage_space = 20
 	New()
 		..()
+		hold.storage_slots = slots
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
 ////////////////////////////////////////////////////////////////////////
