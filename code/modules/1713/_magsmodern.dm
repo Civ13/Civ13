@@ -8,6 +8,11 @@
 	weight = 0.7
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak47/drum
+	name = "AK Drum Magazine (7.62x39mm)"
+	icon_state = "tommydrum"
+	max_ammo = 50
+
 /obj/item/ammo_magazine/sksm
 	name = "SKS-M Magazine (7.62x39mm)"
 	icon_state = "sksm"
@@ -28,6 +33,11 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak74/drum
+	name = "AK-74 Drum Magazine (5.45x39mm)"
+	max_ammo = 75
+	icon_state = "tommydrum"
+
 /obj/item/ammo_magazine/ak101
 	name = "AK-101 Magazine (5.46x45mm)"
 	icon_state = "ak47"
@@ -38,9 +48,19 @@
 	weight = 0.35
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak101/drum
+	name = "AK-101 Drum Magazine (5.46x45mm)"
+	icon_state = "tommydrum"
+	max_ammo = 75
+
 /obj/item/ammo_magazine/ak74/ak74m
 	name = "AK-74M Magazine (5.45x39mm)"
 	icon_state = "ak74m"
+
+/obj/item/ammo_magazine/ak74/ak74m/drum
+	name = "AK-74M Drum Magazine (5.45x39mm)"
+	icon_state = "tommydrum"
+	max_ammo = 75
 
 /obj/item/ammo_magazine/bx7
 	name = "BX-7 (.50 caliber)"

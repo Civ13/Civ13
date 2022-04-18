@@ -11,7 +11,7 @@
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak101
-	good_mags = list(/obj/item/ammo_magazine/ak101)
+	good_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
 	equiptimer = 15
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.3, 0.4, 0.4, 0.5)),
@@ -121,7 +121,7 @@
 	weight = 3
 	effectiveness_mod = 1.09
 	magazine_type = /obj/item/ammo_magazine/ak101
-	good_mags = list(/obj/item/ammo_magazine/ak101)
+	good_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103
@@ -134,7 +134,7 @@
 	effectiveness_mod = 1.08
 	caliber = "a762x39"
 	magazine_type = /obj/item/ammo_magazine/ak47
-	good_mags = list(/obj/item/ammo_magazine/ak47)
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum)
 	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/ak104
@@ -158,4 +158,4 @@
 	effectiveness_mod = 1.12
 	equiptimer = 12
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74)
+	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum)
