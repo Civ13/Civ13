@@ -80,7 +80,7 @@
 			species.unarmed_attacks += new /datum/unarmed_attack/bite()
 	else if (type == "Goblin")
 		if (body_build.name == "Default")
-			src << "<font size=3 color='red'>You turn into a Goblin, Gobel Gobel!</font>"
+			src << "<font size=3 color='red'>You turn into a Goblin, gobbel gobbel!</font>"
 			icon = 'icons/mob/human.dmi'
 			body_build = pick(get_body_build(gender,"Goblin"))
 			prev_tone = s_tone
@@ -91,7 +91,7 @@
 			update_body(1,1)
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
-			damage_multiplier = 0.9
+			damage_multiplier = 0.8
 			movement_speed_multiplier = 1.6
 			species.unarmed_attacks = list()
 			species.unarmed_attacks += new /datum/unarmed_attack/stomp()

@@ -38,7 +38,7 @@
 			if (prob(10))
 				src << "<span> You feel yourself getting smaller and faster!</span>"
 			else
-				src << "<span> Your skin starts to turn a greenish hue!</span>"
+				src << "<span> Your skin starts to turn a greenish!</span>"
 			togglerace("goblin")
 			radiation -= radiation/8 //Reduce radiation a little.
 		else if (prob(15))
