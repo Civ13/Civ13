@@ -507,6 +507,7 @@
 	icon_state = "ru_band"
 	item_state = "ru_band"
 	slots = 6
+	max_storage_space = 12
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
