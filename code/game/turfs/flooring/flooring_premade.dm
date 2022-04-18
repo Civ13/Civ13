@@ -238,9 +238,10 @@
 	name = "dark dirt"
 	desc = "Darker than normal dirt, spooky."
 	icon = 'icons/turf/floors.dmi'
-	icon_base = "dirt_dark"
-	has_base_range = 0
-	damage_temperature = T0C+3000
+	icon_state = "dark_dirt"
+	is_diggable = FALSE
+	uses_winter_overlay = FALSE
+	may_become_muddy = FALSE
 //	flags = TURF_HAS_EDGES
 
 /turf/floor/dirt/flooded
