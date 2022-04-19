@@ -415,6 +415,27 @@
 			VERY_LONG_RANGE_MOVING = 23),
 	)
 
+/obj/item/weapon/gun/projectile/submachinegun/ak47/update_icon()
+	var/temp_state = base_icon
+	if (sniper_scope)
+		if (!ammo_magazine)
+			icon_state = "[temp_state]_scope_open"
+			return
+		else
+			icon_state = "[temp_state]_scope"
+			return
+	else
+		if (ammo_magazine && ammo_magazine.is_drum == TRUE)
+			icon_state = "[temp_state]_drum"
+			item_state = temp_state
+		else if (ammo_magazine && ammo_magazine.is_drum == FALSE)
+			icon_state = temp_state
+			item_state = temp_state
+		else
+			icon_state = "[temp_state]_open"
+			item_state = "[temp_state]_open"
+	update_held_icon()
+	return
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
@@ -534,6 +555,28 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+/obj/item/weapon/gun/projectile/submachinegun/ak74/update_icon()
+	var/temp_state = base_icon
+	if (sniper_scope)
+		if (!ammo_magazine)
+			icon_state = "[temp_state]_scope_open"
+			return
+		else
+			icon_state = "[temp_state]_scope"
+			return
+	else
+		if (ammo_magazine && ammo_magazine.is_drum == TRUE)
+			icon_state = "[temp_state]_drum"
+			item_state = temp_state
+		else if (ammo_magazine && ammo_magazine.is_drum == FALSE)
+			icon_state = temp_state
+			item_state = temp_state
+		else
+			icon_state = "[temp_state]_open"
+			item_state = "[temp_state]_open"
+	update_held_icon()
+	return
+
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
 	name = "AKS-74"
@@ -547,6 +590,7 @@
 	effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/update_icon()
+	var/temp_state = base_icon
 	if (folded)
 		base_icon = "aks74_folded"
 	else
@@ -559,9 +603,12 @@
 			icon_state = "[base_icon]_scope"
 			return
 	else
-		if (ammo_magazine)
-			icon_state = base_icon
-			item_state = base_icon
+		if (ammo_magazine && ammo_magazine.is_drum == TRUE)
+			icon_state = "[temp_state]_drum"
+			item_state = temp_state
+		else if (ammo_magazine && ammo_magazine.is_drum == FALSE)
+			icon_state = temp_state
+			item_state = temp_state
 		else
 			icon_state = "[base_icon]_open"
 			item_state = "[base_icon]_open"
@@ -610,6 +657,7 @@
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/update_icon()
+	var/temp_state = base_icon
 	if (folded)
 		base_icon = "aks74u_folded"
 	else
@@ -622,9 +670,12 @@
 			icon_state = "[base_icon]_scope"
 			return
 	else
-		if (ammo_magazine)
-			icon_state = base_icon
-			item_state = base_icon
+		if (ammo_magazine && ammo_magazine.is_drum == TRUE)
+			icon_state = "[temp_state]_drum"
+			item_state = temp_state
+		else if (ammo_magazine && ammo_magazine.is_drum == FALSE)
+			icon_state = temp_state
+			item_state = temp_state
 		else
 			icon_state = "[base_icon]_open"
 			item_state = "[base_icon]_open"
@@ -674,6 +725,7 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
+	var/temp_state = base_icon
 	if (folded)
 		base_icon = "aks74uso_folded"
 	else
@@ -686,9 +738,12 @@
 			icon_state = "[base_icon]_scope"
 			return
 	else
-		if (ammo_magazine)
-			icon_state = base_icon
-			item_state = base_icon
+		if (ammo_magazine && ammo_magazine.is_drum == TRUE)
+			icon_state = "[temp_state]_drum"
+			item_state = temp_state
+		else if (ammo_magazine && ammo_magazine.is_drum == FALSE)
+			icon_state = temp_state
+			item_state = temp_state
 		else
 			icon_state = "[base_icon]_open"
 			item_state = "[base_icon]_open"
@@ -804,6 +859,29 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74m/update_icon()
+	var/temp_state = base_icon
+	if (sniper_scope)
+		if (!ammo_magazine)
+			icon_state = "[temp_state]_scope_open"
+			return
+		else
+			icon_state = "[temp_state]_scope"
+			return
+	else
+		if (ammo_magazine && ammo_magazine.is_drum == TRUE)
+			icon_state = "[temp_state]_drum"
+			item_state = temp_state
+		else if (ammo_magazine && ammo_magazine.is_drum == FALSE)
+			icon_state = temp_state
+			item_state = temp_state
+		else
+			icon_state = "[temp_state]_open"
+			item_state = "[temp_state]_open"
+	update_held_icon()
+	return
+
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16A1"
 	desc = "An American assault rifle, chambered in 5.56x45mm."

@@ -79,6 +79,7 @@
 	secondary_action = 1
 	var/clip = FALSE
 	var/belt = FALSE
+	var/is_drum = FALSE
 
 	var/list/stored_ammo = list()
 	var/mag_type = SPEEDLOADER //ammo_magazines can only be used with compatible guns. This is not a bitflag, the load_method var on guns is.

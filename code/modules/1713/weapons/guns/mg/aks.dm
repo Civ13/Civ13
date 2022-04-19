@@ -76,7 +76,10 @@
 			icon_state = "[temp_state]_scope"
 			return
 	else
-		if (ammo_magazine)
+		if (ammo_magazine && ammo_magazine.is_drum == TRUE)
+			icon_state = "[temp_state]_drum"
+			item_state = temp_state
+		else if (ammo_magazine && ammo_magazine.is_drum == FALSE)
 			icon_state = temp_state
 			item_state = temp_state
 		else
