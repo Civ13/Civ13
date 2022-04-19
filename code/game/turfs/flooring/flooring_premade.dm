@@ -234,6 +234,16 @@
 	is_diggable = TRUE
 	initial_flooring = /decl/flooring/dirt
 
+/turf/floor/dark_dirt
+	name = "dark dirt"
+	desc = "Darker than normal dirt, spooky."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dark_dirt"
+	is_diggable = FALSE
+	uses_winter_overlay = FALSE
+	may_become_muddy = FALSE
+//	flags = TURF_HAS_EDGES
+
 /turf/floor/dirt/flooded
 	name = "flood plains dirt"
 	icon = 'icons/turf/floors.dmi'
