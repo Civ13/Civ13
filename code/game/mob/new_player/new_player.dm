@@ -974,7 +974,10 @@ var/global/redirect_all_players = null
 	if (ROMAN in map.faction_organization)
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
-		dat += "[alive_arab.len] Arabs "
+		if (map && istype(map, /obj/map_metadata/sovafghan))
+			dat += "[alive_arab.len] Mujahideen "
+		else
+			dat += "[alive_arab.len] Arabs "
 	if (JAPANESE in map.faction_organization)
 		dat += "[alive_japanese.len] Japanese "
 	if (RUSSIAN in map.faction_organization)
@@ -1140,6 +1143,11 @@ var/global/redirect_all_players = null
 						temp_name = "Russian Army"
 					if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
+				else if (map && map.ID == "SOVAFGHAN")
+					if (temp_name == "Russian")
+						temp_name = "Soviet Army"
+					if (temp_name == "Arab")
+						temp_name = "Mujahideen"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
