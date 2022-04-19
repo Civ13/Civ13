@@ -47,6 +47,20 @@
 /obj/structure/closet/crate
 	icon = 'icons/obj/crate.dmi'*/
 
+/obj/structure/closet/crate/urn
+	name = "urn"
+	desc = "Maybe there's a treasure inside? probably just some poor sap's ashes"
+	icon_state = "urn"
+	icon_opened = "urn_open"
+	icon_closed = "urn"
+	health = 10
+	storage_capacity = 12
+
+/obj/structure/closet/crate/urn/stand
+	icon_state = "urn2"
+	icon_opened = "urn2_open"
+	icon_closed = "urn2"
+
 obj/structure/closet/crate/chest
 	name = "wood chest"
 	desc = "Maybe there's a treasure inside?"
