@@ -351,6 +351,11 @@
 	desc = "The Cuban flag."
 	icon_state = "flag_cuba"
 
+/obj/structure/sign/flag/afghan/dra
+	name = "DRA flag"
+	desc = "The Democratic Republic of Afghanistan flag."
+	icon_state = "flag_dra"
+
 /obj/structure/sign/flag/italy
 	name = "Italian flag"
 	desc = "The Italian flag."

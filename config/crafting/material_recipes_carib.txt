@@ -979,6 +979,7 @@ RECIPE: /material/plastic/,pedestrian crossing sign,/obj/structure/sign/traffic/
 RECIPE: /material/plastic/,fast food cup,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/fastfoodcup,1,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,condiment bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/condiment,0.75,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/cola,1.5,15,0,1,drinks,170,0,0,8,null
+RECIPE: /material/plastic/,gallon jug,/obj/item/weapon/reagent_containers/food/drinks/plastic/gallonjug,3,15,0,1,drinks,170,0,0,8,null
 
 //*****************| PLASTIC CLOTHING & ARMOR |***************************
 
@@ -1712,6 +1713,8 @@ RECIPE: /material/tin/,large tin double doors,/obj/structure/simple_door/key_doo
 RECIPE: /material/tin/,small tin can (x3),/obj/item/weapon/can/small,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,tin can (x2),/obj/item/weapon/can,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95,0,0,8,null
+RECIPE: /material/tin/,soda can,/obj/item/weapon/reagent_containers/food/drinks/plastic/sodacan,1,50,0,1,none,160,0,0,8,null
+RECIPE: /material/tin/,beer can,/obj/item/weapon/reagent_containers/food/drinks/plastic/tallcan,1.5,50,0,1,none,160,0,0,8,null
 
 //*********************************************************
 //*********************| COPPER |**************************
@@ -2150,6 +2153,7 @@ RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,
 RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel,5,75,1,1,kitchen,19,0,0,8,null
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,kitchen,20,0,0,8,null
 RECIPE: /material/wood/,paper cup,/obj/item/weapon/reagent_containers/food/drinks/sillycup,1,30,0,1,kitchen,105,0,0,8,null
+RECIPE: /material/wood/,milk carton,/obj/item/weapon/reagent_containers/food/drinks/plastic/carton,2,30,0,1,kitchen,105,0,0,8,null
 
 //*********************| WOOD ENTERTAINMENT |**************************
 

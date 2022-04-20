@@ -109,12 +109,18 @@
 	else if (map && map.ID == MAP_SOVAFGHAN)
 		var/obj/map_metadata/sovafghan/MP = map
 		if (faction_text == RUSSIAN && original_job.title == "Soviet Army Lieutenant")
-			MP.muj_points += 10
+			MP.muj_points += 12
 			world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"
 		else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Sergeant")
 			MP.muj_points += 5
 		else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Radio Operator")
 			MP.muj_points += 3
+		else if (faction_text == CIVILIAN && original_job.title == "DRA Governor")
+			MP.muj_points += 15
+			world << "<font color='red' size=3>The <b>DRA Governor</b> has been killed!</font>"
+		else if (faction_text == CIVILIAN && original_job.title == "DRA Sergeant")
+			world << "<font color='red' size=3>A <b>DRA Sergeant</b> has been killed!</font>"
+			MP.muj_points += 5
 		else if (faction_text == ARAB && original_job.title == "Mujahideen Leader")
 			MP.sov_points += 10
 			world << "<font color='red' size=3>A <b>Mujahideen Leader</b> has been killed!</font>"

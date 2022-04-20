@@ -328,7 +328,7 @@
 	is_soviet = TRUE
 
 	min_positions = 10
-	max_positions = 30
+	max_positions = 32
 
 /datum/job/russian/sovafghan/tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -437,19 +437,22 @@
 
 /////////DRA Goverment//////////////
 
-/*/datum/job/civilian/afghan/mayorafg
-	title = "Governor"
-	rank_abbreviation = "Gv."
-	spawn_location = "JoinLatessm"
+/datum/job/civilian/afghan/dra/governor
+	title = "DRA Governor"
+	rank_abbreviation = "Gov."
+	spawn_location = "JoinLateDRAGov"
 
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_afghan
+	is_afghan = TRUE
+	is_dra = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 100,"English" = 100)
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/afghan/mayorafg/equip(var/mob/living/human/H)
+/datum/job/civilian/afghan/dra/governor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
@@ -458,14 +461,27 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/cigarette/cigar(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
 	uniform.attackby(armor, H)
-
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_l_store)
-	H.civilization = "Afgov"
-	H.add_note("Role", "You are an member of the DRA Goverment,manage the city,and cooperate with the soviets!")
+	H.civilization = "DRA"
+	if (H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-85,-65)
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are an member of the DRA Goverment, manage the region in cooperation with the Soviets!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -477,149 +493,138 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-////////////DRA soliders/////////////
+////////////DRA soldiers/////////////
 
-/datum/job/civilian/afghan/dra/sergant
-	title = "DRA sergant"
-	rank_abbreviation = "Sgt."
+/datum/job/civilian/afghan/dra/sergeant
+	title = "DRA Sergeant"
+	rank_abbreviation = "DRA Sgt."
 
-	spawn_location = "JoinLateRNCap"
+	spawn_location = "JoinLateDRACap"
 
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
+	is_afghan = TRUE
+	is_dra = TRUE
 
 	can_get_coordinates = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 30)
 
-	min_positions = 2
-	max_positions = 5
+	min_positions = 1
+	max_positions = 4
 
-/datum/job/afghan/dra/sergant/equip(var/mob/living/human/H)
+/datum/job/civilian/afghan/dra/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/combat(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/officer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armband/armbangle/gold = new/obj/item/clothing/accessory/armband/armbangle(null)
-	uniform.attackby(gold, H)
+	var/obj/item/clothing/accessory/armband/red = new/obj/item/clothing/accessory/armband(null)
+	uniform.attackby(red, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
-	H.civilization = "Afgov"
+	H.civilization = "DRA"
+	if (H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-90,-70)
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Terrorists!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.add_note("Role", "You are a <b>[title]</b>, responsible for leading DRA soldiers and guards in the province.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
-	return TRUE
-
-/datum/job/afghan/civilian/dra/medic
-	title = "DRA field medic"
-	rank_abbreviation = "Cpl."
-
-	spawn_location = "JoinLateRN"
-
-	is_medic = TRUE
-	is_afghan = TRUE
-
-	min_positions = 2
-	max_positions = 4
-
-/datum/job/afghan/civilian/dra/medic/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
-	uniform.attackby(white, H)
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern(null)
-	uniform.attackby(plate, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
-
-	H.civilization = "Afgov"
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/civilian/afghan/dra/soldier
 	title = "DRA Rifleman"
-	rank_abbreviation = "Pvt."
+	rank_abbreviation = "DRA Pvt."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateDRA"
 	is_afghan = TRUE
+	is_dra = TRUE
 
 	uses_squads = TRUE
+	default_language = "Arabic"
 
 	min_positions = 10
-	max_positions = 45
+	max_positions = 40
 
-/datum/job/afghan/dra/soldier/equip(var/mob/living/human/H)
+/datum/job/civilian/afghan/dra/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/combat(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/soldier, slot_w_uniform)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern(null)
-	uniform.attackby(plate, H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+	var/obj/item/clothing/accessory/armband/red = new/obj/item/clothing/accessory/armband(null)
+	uniform.attackby(red, H)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/custom/fieldcap/dra(H), slot_head)
+
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 
-	H.civilization = "Afgov"
+	H.civilization = "DRA"
+	if (H.f_style != "Shaved" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+		H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-95,-75)
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt of the DRA. Follow orders and defeat the terrorists!")
 	H.setStat("strength", STAT_NORMAL)
@@ -633,7 +638,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/afghan/civilian/dra/palg
+/*/datum/job/afghan/civilian/dra/palg
 	title = "DRA Palace Guard"
 	rank_abbreviation = "Pfc."
 
