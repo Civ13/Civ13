@@ -6,6 +6,28 @@
 	var/cattle_gender = null			//Nice info to have about the cattle. Will make it easier to work with
 	var/calf = FALSE  //Each gender was taking this var
 	fat_penalty = 1 //For ballance reasons
+	icon_state = "cow_random"
+
+/mob/living/simple_animal/cattle/New()
+	..()
+	var/mob/living/simple_animal/cattle/cow/NC
+	var/mob/living/simple_animal/cattle/bull/NB
+	spawn(5)
+		if (name!="cow")
+			if (name!="bull")
+				if (prob(55))
+					NC = new/mob/living/simple_animal/cattle/cow(loc)
+					if (prob(20))
+						NC.calf = TRUE
+					else
+						if (prob(10))
+							NC.pregnant = TRUE
+				else
+					NB = new/mob/living/simple_animal/cattle/bull(loc)
+					if (prob(20))
+						NB.calf = TRUE
+				qdel(src)
+
 /mob/living/simple_animal/cattle/cow
 	name = "cow"
 	cattle_gender = "female"

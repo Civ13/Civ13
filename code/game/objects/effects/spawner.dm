@@ -613,18 +613,23 @@
 	timer = 5000
 
 /obj/effect/spawner/mobspawner/cattle
-	name = "cattle cow spawner"
+	name = "random cow and bulls spawner"
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "cow_random"
 	max_number = 2
 	max_range = 8
-	create_path = /mob/living/simple_animal/cattle/cow
+	create_path = /mob/living/simple_animal/cattle
 	timer = 5000
+
+/obj/effect/spawner/mobspawner/cattle/cow
+	name = "cattle cow spawner"
+	icon_state = "cow_spawner"
+	create_path = /mob/living/simple_animal/cattle/cow
 
 /obj/effect/spawner/mobspawner/cattle/bull
 	name = "cattle bull spawner"
-	max_number = 2
-	max_range = 8
+	icon_state = "bull_spawner"
 	create_path = /mob/living/simple_animal/cattle/bull
-	timer = 5000
 
 /obj/effect/spawner/mobspawner/pig
 	name = "pig boar spawner"
