@@ -214,7 +214,7 @@
 	return
 
 /obj/structure/closet/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!opened && !istype(src, /obj/structure/closet/hideout) && !istype(src, /obj/structure/closet/coffin))
+	if (!opened && !istype(src, /obj/structure/closet/hideout) && !istype(src, /obj/structure/closet/coffin) && !istype(src, /obj/structure/closet/old_coffin))
 		if (istype(W, /obj/item/weapon/key))
 			var/obj/item/weapon/key/K = W
 			if (custom_code == 0 && K.code != 0)
@@ -333,22 +333,41 @@
 		toggle(user)
 
 /obj/structure/closet/verb/verb_toggleopen()
-	set src in oview(1)
-	set category = null
-	set name = "Toggle Open"
+	var/obj/structure/closet/CO
+	if (!istype(CO,/obj/structure/closet/old_coffin))
+		set src in oview(1)
+		set category = null
+		set name = "Toggle Open"
 
-	if (!usr.canmove || usr.stat || usr.restrained())
-		return
+		if (!usr.canmove || usr.stat || usr.restrained())
+			return
 
-	if (locked)
-		usr << "<span class='warning'>\The [src]is locked!</span>"
-		return
+		if (locked)
+			usr << "<span class='warning'>\The [src]is locked!</span>"
+			return
 
-	if (ishuman(usr))
-		add_fingerprint(usr)
-		toggle(usr)
+		if (ishuman(usr))
+			add_fingerprint(usr)
+			toggle(usr)
+		else
+			usr << "<span class='warning'>This mob type can't use this verb.</span>"
 	else
-		usr << "<span class='warning'>This mob type can't use this verb.</span>"
+		set src in oview(1)
+		set category = null
+		set name = "Toggle Open"
+
+		if (!usr.canmove || usr.stat || usr.restrained())
+			return
+
+		if (locked)
+			usr << "<span class='warning'>\The [src]is locked!</span>"
+			return
+
+		if (ishuman(usr))
+			add_fingerprint(usr)
+			usr << "<span class='warning'>you're gonna need to use something to open this</span>"
+		else
+			usr << "<span class='warning'>This mob type can't use this verb.</span>"
 
 /obj/structure/closet/update_icon()//Putting the welded stuff in updateicon() so it's easy to overwrite for special cases (Fridges, cabinets, and whatnot)
 	overlays.Cut()

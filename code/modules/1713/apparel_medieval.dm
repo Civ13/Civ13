@@ -2447,6 +2447,19 @@ obj/item/clothing/head/helmet/samurai/black
 	health = 60
 	slowdown = 0.01
 
+/obj/item/clothing/head/helmet/medieval/tes13/iron
+	name = "iron helmet"
+	desc = "A thick horned helmet of iron worn often by bandits mercenaries and travelers."
+	icon_state = "tes13_iron"
+	item_state = "tes13_iron"
+	worn_state = "tes13_iron"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 45, arrow = 30, gun = 15, energy = 25, bomb = 30, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 100
+	slowdown = 0.02
+
 /obj/item/clothing/suit/armor/tes13/stormcloak
 	name = "stormcloak officer armor"
 	desc = "A thick, leather armor of hide with a bearpelt draped over it."
