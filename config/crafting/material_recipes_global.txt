@@ -926,6 +926,7 @@ RECIPE: /material/plastic/,dumpster,/obj/structure/closet/crate/dumpster,5,95,1,
 
 RECIPE: /material/plastic/,trash bag,/obj/item/weapon/storage/bag/trash,1,95,0,1,storage,150,0,0,8,null
 RECIPE: /material/plastic/,plastic bag,/obj/item/weapon/storage/bag/plasticbag,0.75,95,0,1,storage,150,0,0,8,null
+RECIPE: /material/plastic/,chip pack,/obj/item/weapon/storage/foodbox/chippack,0.4,35,0,1,storage,150,0,0,8,null
 
 //*****************| PLASTIC GAS MASKS |***************************
 
@@ -1509,6 +1510,8 @@ RECIPE: /material/glass/,tribal pot,/obj/item/weapon/reagent_containers/food/dri
 RECIPE: /material/glass/,drinking glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,22,0,0,8,null
 RECIPE: /material/glass/,small glass bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,2,40,0,1,drinks,22,0,0,8,null
 RECIPE: /material/glass/,glass bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/large,4,60,0,1,drinks,22,0,0,8,null
+RECIPE: /material/glass/,beer bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/custom/beer,2,40,0,1,drinks,52,0,0,8,null
+RECIPE: /material/glass/,fancy beer bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/custom/fancybeer,3,70,0,1,drinks,52,0,0,8,null
 RECIPE: /material/glass/,teapot,/obj/item/weapon/reagent_containers/food/drinks/teapot,4,70,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,teacup,/obj/item/weapon/reagent_containers/food/drinks/tea/empty,2,50,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,wine glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,49,0,0,8,null
@@ -2144,6 +2147,8 @@ RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel,
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,kitchen,20,0,0,8,null
 RECIPE: /material/wood/,paper cup,/obj/item/weapon/reagent_containers/food/drinks/sillycup,1,30,0,1,kitchen,105,0,0,8,null
 RECIPE: /material/wood/,milk carton,/obj/item/weapon/reagent_containers/food/drinks/plastic/carton,2,30,0,1,kitchen,105,0,0,8,null
+RECIPE: /material/wood/,food box,/obj/item/weapon/storage/foodbox,1.5,35,0,1,storage,90,0,0,8,null
+
 //*********************| WOOD ENTERTAINMENT |**************************
 
 RECIPE: /material/wood/,gong,/obj/structure/gong,5,100,1,1,entertainment & other,26,0,0,8,null
