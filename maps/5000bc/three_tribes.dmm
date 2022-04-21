@@ -230,7 +230,7 @@
 "ev" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ew" = (/obj/structure/wild/jungle,/turf/floor/beach/water/flooded,/area/caribbean/nomads/forest/Jungle)
 "ex" = (/obj/effect/spawner/mobspawner/fox,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
-"ey" = (/mob/living/simple_animal/cattle/cow/cow,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"ey" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "gy" = (/turf/floor/winter,/area/caribbean/nomads/taiga)
 "gJ" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/nomads/forest)
 "gL" = (/turf/floor/beach/sand,/area/caribbean/nomads/forest)

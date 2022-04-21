@@ -964,7 +964,7 @@
 "sB" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/tiled/dark,/area/caribbean/roofed)
 "sC" = (/obj/structure/table/rack/shelf,/obj/item/weapon/storage/seed_collector,/obj/item/weapon/storage/seed_collector,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "sD" = (/obj/structure/table/rack/shelf,/obj/item/weapon/storage/produce_basket,/obj/item/weapon/storage/produce_basket,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
-"sE" = (/obj/structure/wild/tallgrass,/obj/effect/spawner/mobspawner/cattle{step_x = 0; step_y = 0},/turf/floor/dirt/winter,/area/caribbean)
+"sE" = (/obj/structure/wild/tallgrass,/obj/effect/spawner/mobspawner/cattle,/turf/floor/dirt/winter,/area/caribbean)
 "sF" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/pig_gilt,/turf/floor/dirt/winter,/area/caribbean)
 "sG" = (/obj/structure/mine_support/stone/concrete,/obj/structure/lamp/lamp_small/alwayson{dir = 1; icon_state = "bulb"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
 "sH" = (/mob/living/simple_animal/pig_gilt,/turf/floor/dirt/winter,/area/caribbean)

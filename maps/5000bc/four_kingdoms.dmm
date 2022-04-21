@@ -523,7 +523,7 @@
 "kc" = (/obj/structure/wild/jungle,/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "kd" = (/obj/covers/marbletile,/obj/roof/clay,/obj/structure/mine_support/stone/ionic,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "ke" = (/obj/structure/simple_door/key_door/anyone/roman{color = "#666666"; name = "door"; unique_door_name = "castle"},/obj/covers/stone_wall/brick/archway,/obj/roof/clay,/obj/covers/cobblestone,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
-"kf" = (/obj/effect/spawner/mobspawner/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
+"kf" = (/obj/effect/spawner/mobspawner/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "kg" = (/obj/effect/spawner/mobspawner/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
 "kh" = (/obj/effect/spawner/mobspawner/alligator{max_number = 1; scalable_nr = 2},/turf/floor/dirt,/area/caribbean/colonies/swamp)
 "ki" = (/obj/effect/spawner/mobspawner/alligator{max_number = 1; scalable_nr = 2},/turf/floor/grass,/area/caribbean/colonies/swamp)
