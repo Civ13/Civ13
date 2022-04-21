@@ -578,7 +578,7 @@
 "lf" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/five)
 "lg" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{name = "North-Western Area"})
 "lh" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest-prop"; layer = 5; stage = 7; vstatic = 1},/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land/battleroyale/six)
-"li" = (/obj/structure/wild/tallgrass2,/mob/living/simple_animal/cattle/cow/cow,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/five)
+"li" = (/obj/structure/wild/tallgrass2,/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/five)
 "lj" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/turf/floor/dirt,/area/caribbean/no_mans_land/battleroyale/six/inside)
 "lk" = (/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/wheat,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/six)
 "ll" = (/obj/item/weapon/material/pitchfork,/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land/battleroyale/six)

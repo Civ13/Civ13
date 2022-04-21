@@ -227,7 +227,7 @@
 			cust_color="green"
 			sov_points++
 		if (a3_control != "none")
-			if (a1_control == "Soviets")
+			if (a3_control == "Soviets")
 				cust_color = "red"
 			else if (a3_control == "Mujahideen")
 				cust_color = "black"

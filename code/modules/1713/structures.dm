@@ -237,6 +237,21 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/broken_hind
+	name = "Mi-24 remains"
+	desc = "The remains of a Soviet helicopter."
+	icon = 'icons/obj/decals_huge.dmi'
+	icon_state = "brokenhind"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	anchored = TRUE
+	density = TRUE
+	layer = MOB_LAYER + 0.01
+	bound_width = 128
+	bound_height = 128
+	bound_x = 32
+
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
 	icon_state = "black"
