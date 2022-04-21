@@ -11,6 +11,7 @@
 	whitelisted = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -74,6 +75,7 @@
 	uses_squads = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -140,6 +142,7 @@
 	is_medic = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -193,6 +196,7 @@
 	uses_squads = TRUE
 	is_soviet = TRUE
 	is_radioman = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 10
 	max_positions = 8
@@ -257,6 +261,7 @@
 	is_afghan = TRUE
 	uses_squads = TRUE
 	is_soviet = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 10
 	max_positions = 100
@@ -326,6 +331,7 @@
 	uses_squads = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 10
 	max_positions = 32
@@ -381,6 +387,7 @@
 	whitelisted = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
+	is_coldwar = TRUE
 
 	uses_squads = TRUE
 
@@ -448,6 +455,7 @@
 	is_dra = TRUE
 	default_language = "Arabic"
 	additional_languages = list("Russian" = 100,"English" = 100)
+	is_coldwar = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -506,6 +514,7 @@
 	is_radioman = TRUE
 	is_afghan = TRUE
 	is_dra = TRUE
+	is_coldwar = TRUE
 
 	can_get_coordinates = TRUE
 	default_language = "Arabic"
@@ -576,6 +585,7 @@
 	spawn_location = "JoinLateDRA"
 	is_afghan = TRUE
 	is_dra = TRUE
+	is_coldwar = TRUE
 
 	uses_squads = TRUE
 	default_language = "Arabic"
@@ -937,6 +947,7 @@
 	spawn_location = "JoinLateAR"
 	is_afghan = TRUE
 	is_muj = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 1
 	max_positions = 5
@@ -991,6 +1002,7 @@
 	spawn_location = "JoinLateAR"
 	is_afghan = TRUE
 	is_muj = TRUE
+	is_coldwar = TRUE
 
 
 	min_positions = 10
