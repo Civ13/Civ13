@@ -1,7 +1,7 @@
 /obj/map_metadata/pavlov_house
 	ID = MAP_PAVLOV_HOUSE
 	title = "Pavlov House"
-	lobby_icon_state = "ww2"
+	lobby_icon_state = "stalingrad"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner ="The House stays under Soviet control, stalling the German advance."
