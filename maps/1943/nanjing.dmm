@@ -63,7 +63,7 @@
 "bk" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean)
 "bl" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall)
 "bm" = (/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/structure/closet,/turf/floor/dirt/dust,/area/caribbean/void/caves)
-"bn" = (/obj/structure/closet,/obj/item/clothing/under/ww2/japuni_med,/obj/item/clothing/under/ww2/japuni_med,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/turf/floor/dirt/dust,/area/caribbean/void/caves)
+"bn" = (/obj/structure/closet,/obj/item/clothing/under/ww2/japuni,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "bo" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "bp" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPDoc"},/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "bq" = (/obj/structure/curtain/medical,/turf/floor/wood,/area/caribbean/roofed)
