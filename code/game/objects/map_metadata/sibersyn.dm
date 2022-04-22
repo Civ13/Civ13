@@ -2,7 +2,7 @@
 /obj/map_metadata/sibersyn
 	ID = MAP_SIBERSYN
 	title = "Battle of the Bridges"
-	lobby_icon_state = "ww1"
+	lobby_icon_state = "rcw"
 	no_winner ="The battle ends in stalemate."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 600
