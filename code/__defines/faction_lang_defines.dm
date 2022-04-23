@@ -61,6 +61,8 @@
 			return "Stormcloaks"
 		if (map.ID == "CAPITOL_HILL")
 			return "Rioters"
+		if (map.ID == "MISSIONARY_RIDGE")
+			return "Confederates"
 		else if (age >= 6)
 			return "Civilians"
 		else

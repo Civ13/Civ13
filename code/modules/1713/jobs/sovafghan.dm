@@ -454,7 +454,7 @@
 	is_afghan = TRUE
 	is_dra = TRUE
 	default_language = "Arabic"
-	additional_languages = list("Russian" = 100,"English" = 100)
+	additional_languages = list("Russian" = 100, "English" = 100)
 	is_coldwar = TRUE
 
 	min_positions = 1
@@ -475,12 +475,14 @@
 	uniform.attackby(armor, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_l_store)
 	H.civilization = "DRA"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
 	if (H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
 		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 	H.s_tone = rand(-85,-65)
-	var/new_hair = pick("Dark Brown","Black")
+	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
 	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
@@ -518,7 +520,7 @@
 
 	can_get_coordinates = TRUE
 	default_language = "Arabic"
-	additional_languages = list("Russian" = 30)
+	additional_languages = list("Russian" = 60)
 
 	min_positions = 1
 	max_positions = 4
@@ -549,9 +551,10 @@
 	uniform.attackby(red, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
-	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
+
 	H.civilization = "DRA"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
 	if (H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
 		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
@@ -565,7 +568,6 @@
 	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
-	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, responsible for leading DRA soldiers and guards in the province.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -579,7 +581,7 @@
 	return TRUE
 
 /datum/job/civilian/afghan/dra/soldier
-	title = "DRA Rifleman"
+	title = "DRA Soldier"
 	rank_abbreviation = "DRA Pvt."
 
 	spawn_location = "JoinLateDRA"
@@ -589,6 +591,7 @@
 
 	uses_squads = TRUE
 	default_language = "Arabic"
+	additional_languages = list("Russian" = 30)
 
 	min_positions = 10
 	max_positions = 40
@@ -622,6 +625,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 
 	H.civilization = "DRA"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
 	if (H.f_style != "Shaved" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
 		H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
@@ -635,7 +640,6 @@
 	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
-	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt of the DRA. Follow orders and defeat the terrorists!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -804,31 +808,57 @@
 	give_random_name(H)
 
 	return TRUE
-
+*/
 /datum/job/civilian/afghan/doctor
-	title = "Doctor"
-	en_meaning = " "
+	title = "Civilian Doctor "
 	rank_abbreviation = "Dr."
 
-	spawn_location = "JoinLateAR"
+	spawn_location = "JoinLateDoc"
+	is_afghan = TRUE
 
 	min_positions = 1
-	max_positions = 15
+	max_positions = 4
 
 /datum/job/civilian/afghan/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
+	var/randclothes = rand (1,5)
+	switch(randclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern4(H), slot_w_uniform)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/cozyoldy(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.civilization = "civilian"
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.civilization = "Civilian"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-90,-65)
+	var/new_hair = pick("Dark Brown","Black","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are an <b>[title]</b>, an local doctor, keep your fellow citizens healthy!!")
+	H.add_note("Role", "You are a <b>[title]</b>, keep your fellow citizens healthy!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW)
@@ -837,9 +867,8 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_HIGH)
-	give_random_name(H)
 	return TRUE
-
+/*
 /datum/job/civilian/afghan/urbanciv
 	title = "urban unemployed civilian"
 	en_meaning = " "

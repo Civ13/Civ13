@@ -583,6 +583,56 @@ var/global/redirect_all_players = null
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
+//Sovafghan DRA spawnpoints
+		if (map && map.ID == MAP_SOVAFGHAN)
+			var/obj/map_metadata/sovafghan/MP = map
+			var/randspawn = rand(1,4)
+			switch (randspawn)
+				if (1)
+					if (MP.a1_control != "Mujahideen")
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap1"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA1"
+					else
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA"
+				if (2)
+					if (MP.a2_control != "Mujahideen")
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap2"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA2"
+					else
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA"
+				if (3)
+					if (MP.a3_control != "Mujahideen")
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap3"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA3"
+					else
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA"
+				if (4)
+					if (MP.a4_control != "Mujahideen")
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap4"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA4"
+					else
+						if (actual_job && actual_job.title == "DRA Sergeant")
+							actual_job.spawn_location = "JoinLateDRACap"
+						if (actual_job && actual_job.title == "DRA Soldier")
+							actual_job.spawn_location = "JoinLateDRA"
+
 //prevent boss spawns if there are enemies in the building
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			var/obj/map_metadata/capitol_hill/CP = map
@@ -967,6 +1017,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Rioters "
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_civilians.len] Soviet Remnants "
+		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+			dat += "[alive_civilians.len] Confederates "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -996,6 +1048,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Israeli "
 		if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_american.len] American Government "
+		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+			dat += "[alive_american.len] Union Soldiers "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1128,6 +1182,11 @@ var/global/redirect_all_players = null
 						temp_name = "Africans"
 					else if (temp_name == "Civilian")
 						temp_name = "United Nations"
+				else if (map && map.ID == "MISSIONARY_RIDGE")
+					if (temp_name == "American")
+						temp_name = "Union"
+					if (temp_name == "Civilian")
+						temp_name = "Confederate"
 				else if (map && map.ID == "WHITERUN")
 					if (temp_name == "Roman")
 						temp_name = "Imperials"
