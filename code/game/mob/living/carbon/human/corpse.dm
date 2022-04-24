@@ -253,7 +253,7 @@ mob/living/human/corpse/british_sailor
 		if (!job_master)
 			qdel(src)
 			return
-		job_master.EquipRank(src, "Nitohei")
+		job_master.EquipRank(src, "Ittohei")
 		dir = pick(NORTH,SOUTH,EAST,WEST)
 		adjustBruteLoss(rand(6,7))
 		name = "Japanese Soldier"

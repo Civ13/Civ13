@@ -443,6 +443,7 @@
 #include "code\game\objects\map_metadata\heraclea.dm"
 #include "code\game\objects\map_metadata\hill203.dm"
 #include "code\game\objects\map_metadata\hostages.dm"
+#include "code\game\objects\map_metadata\hotel.dm"
 #include "code\game\objects\map_metadata\hue.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\intramuros.dm"
