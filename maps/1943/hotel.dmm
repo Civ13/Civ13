@@ -3,15 +3,15 @@
 "ac" = (/obj/structure/bed/roller,/obj/effect/decal/cleanable/blood/writing{dir = 8},/obj/effect/decal/cleanable/blood/writing,/mob/living/human/corpse/russian_soviet,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ad" = (/obj/effect/decal/cleanable/vomit/bloody,/obj/effect/decal/cleanable/blood/writing{dir = 8},/obj/effect/decal/cleanable/blood/writing{dir = 10},/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/mob/living/human/corpse/russian_soviet,/turf/floor/wood_broken,/area/caribbean/german/inside)
 "ae" = (/obj/structure/rails{dir = 4},/obj/structure/simple_door/fence/picket,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"af" = (/obj/structure/rails{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
+"af" = (/obj/structure/barricade/debris,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "ag" = (/obj/structure/sign/flag/sov,/turf/wall/brick,/area/caribbean/russian/land/inside)
 "ah" = (/obj/structure/rails{dir = 4},/obj/structure/rails{dir = 4},/obj/structure/trains/storage/miningcart,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "ai" = (/obj/structure/rails/turn/right,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "aj" = (/obj/structure/grille/chainlinkfence,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "ak" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"al" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
+"al" = (/obj/structure/sign/traffic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "am" = (/obj/structure/grille/chainlinkfence,/obj/structure/sign/securearea,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"an" = (/obj/structure/sign/traffic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
+"an" = (/turf/wall/brick,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "ao" = (/obj/structure/sign/traffic/crossing,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "ap" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "aq" = (/obj/structure/railing/steel,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -40,11 +40,11 @@
 "aN" = (/obj/structure/railing/steel{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "aO" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2{transmitter_on = 0},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "aP" = (/obj/structure/table/modern/table,/turf/floor/wood_broken,/area/caribbean/houses)
-"aQ" = (/obj/structure/sign/traffic/crossing,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
+"aQ" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "aR" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "aS" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "aT" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"aU" = (/obj/structure/barricade/debris,/turf/floor/plating/road,/area/caribbean)
+"aU" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "aV" = (/obj/structure/table/modern/table,/turf/floor/dirt/burned,/area/caribbean/houses)
 "aW" = (/obj/structure/bed/chair/office/dark,/obj/effect/landmark{name = "JoinLateGECap"},/turf/floor/wood,/area/caribbean/houses)
 "aX" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction1,/turf/floor/wood,/area/caribbean/houses)
@@ -56,7 +56,7 @@
 "bd" = (/obj/structure/sign/traffic/stop,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "be" = (/obj/structure/railing/steel{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "bf" = (/obj/structure/simple_door/key_door/anyone/singledoor/housedoor,/turf/floor/wood,/area/caribbean/german/inside)
-"bg" = (/obj/structure/wild/bush,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bg" = (/obj/structure/barricade/debris,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "bh" = (/obj/structure/railing/steel{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "bi" = (/obj/structure/railing/steel{dir = 4},/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "bj" = (/obj/structure/table/modern/table,/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 5},/turf/floor/plating/metroline{dir = 9; icon_state = "metroline"; name = "Lobby floor"},/area/caribbean/houses)
@@ -136,7 +136,7 @@
 "cF" = (/obj/effect/decal/cleanable/blood/writing{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "cG" = (/turf/floor/plating/metro{icon_state = "metro"; dir = 9},/area/caribbean/houses)
 "cH" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/tiled,/area/caribbean/houses)
-"cI" = (/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 1},/obj/effect/decal/cleanable/blood/writing{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"cI" = (/obj/structure/railing/steel,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "cJ" = (/obj/effect/decal/cleanable/blood/writing{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "cK" = (/obj/effect/decal/cleanable/blood/writing{dir = 6},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "cL" = (/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -175,7 +175,7 @@
 "ds" = (/obj/structure/oven/stove,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/white,/area/caribbean/houses)
 "dt" = (/obj/item/weapon/reagent_containers/food/condiment/saltshaker,/obj/item/weapon/reagent_containers/food/condiment/saltshaker,/obj/structure/table/modern/table,/turf/floor/plating/steel,/area/caribbean/houses)
 "du" = (/obj/structure/sink/kitchen{dir = 8; pixel_x = 14},/turf/floor/plating/steel,/area/caribbean/houses)
-"dv" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
+"dv" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "dw" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "dx" = (/obj/item/weapon/reagent_containers/food/condiment/peppermill,/obj/item/weapon/reagent_containers/food/condiment/peppermill,/obj/structure/table/modern/table,/turf/floor/plating/white,/area/caribbean/houses)
 "dy" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -199,7 +199,7 @@
 "dQ" = (/obj/item/weapon/barrier/sandbag/empty,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "dR" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/obj/structure/bed/chair/wood/bleacher/l{dir = 4; name = "wood bench"},/turf/floor/plating/metroline{dir = 8; icon_state = "metroline"; name = "Lobby floor"},/area/caribbean/houses)
 "dS" = (/obj/structure/closet/crate/dumpster,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"dT" = (/obj/structure/closet/crate/dumpster,/obj/item/weapon/storage/bag/trash,/obj/item/weapon/storage/bag/trash,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"dT" = (/obj/structure/wild/bush,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "dU" = (/obj/structure/railing/steel,/turf/floor/plating/metro,/area/caribbean/houses)
 "dV" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "dW" = (/obj/structure/props/junk,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -322,8 +322,16 @@
 "gj" = (/obj/structure/railing/steel{dir = 1},/obj/structure/wild/bush,/turf/floor/dirt/ploughed,/area/caribbean)
 "gk" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 1},/turf/floor/carpet/redcarpet,/area/caribbean/no_mans_land/capturable)
 "gl" = (/obj/structure/vehicleparts/frame/car/van/lfc{broken = 1},/obj/structure/bed/chair/drivers/car/dark,/obj/structure/vehicleparts/axis/car{color = "#444444"; speedlist = list(7,5,4,2.5,1.8)},/turf/floor/plating/road/yellowline{dir = 8},/area/caribbean)
+"gm" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
+"gn" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
+"go" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
+"gp" = (/obj/structure/railing/steel{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
+"gq" = (/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 1},/obj/effect/decal/cleanable/blood/writing{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "gr" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{dir = 8; icon_state = "frame_steel"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"gs" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "gt" = (/obj/effect/decal/cleanable/blood/writing{dir = 9},/obj/effect/landmark{name = "JoinLateRUDoc"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"gu" = (/obj/structure/closet/crate/dumpster,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
+"gv" = (/obj/structure/closet/crate/dumpster,/obj/item/weapon/storage/bag/trash,/obj/item/weapon/storage/bag/trash,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "gH" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/industrial1,/obj/item/clothing/shoes/riding2,/turf/floor/wood/fancywood,/area/caribbean/houses)
 "gJ" = (/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "gT" = (/obj/structure/vehicleparts/frame/car/van/lf{broken = 1},/obj/structure/vehicleparts/movement/reversed{broken = 1},/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/license_plate/us/centered/front{icon_state = "license_plate_us"; dir = 1},/turf/floor/plating/road/yellowline{dir = 8},/area/caribbean)
@@ -463,7 +471,6 @@
 "Dt" = (/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
 "Dx" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/mechanic_outfit,/obj/item/clothing/shoes/workboots,/obj/item/weapon/storage/belt,/obj/item/clothing/gloves/fingerless,/turf/floor/wood/fancywood,/area/caribbean/russian/land/inside)
 "DH" = (/obj/structure/table/rack/shelf,/obj/item/weapon/pigleg/salted/dried/packaged,/turf/floor/plating/steel,/area/caribbean/houses)
-"DX" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean)
 "Eb" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean)
 "Ed" = (/obj/structure/bed/roller,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "Eh" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/marble/tile,/area/caribbean/russian/land/inside)
@@ -506,7 +513,6 @@
 "Lm" = (/obj/structure/simple_door/key_door/anyone/singledoor/privacy,/turf/floor/plating/steel,/area/caribbean/houses)
 "Lr" = (/obj/structure/closet/crate,/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/houses)
 "Lu" = (/obj/structure/props/junk,/turf/floor/plating/road,/area/caribbean)
-"Ly" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
 "LB" = (/turf/floor/dirt,/turf/wall/brick,/area/caribbean/houses)
 "LK" = (/turf/floor/broken_floor,/area/caribbean)
 "LX" = (/obj/structure/props/bathtub,/obj/structure/curtain/open,/turf/floor/plating/marble/grid,/area/caribbean/german/inside)
@@ -528,7 +534,6 @@
 "OR" = (/obj/structure/table/rack/shelf,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/turf/floor/plating/steel,/area/caribbean/houses)
 "Pq" = (/turf/floor/wood_broken,/area/caribbean/german/inside)
 "PG" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/cobblestone,/area/caribbean/german)
-"PI" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean)
 "PL" = (/obj/structure/window/classic/brick,/obj/structure/curtain/closed/yellow,/turf/floor/dirt,/area/caribbean/houses)
 "PN" = (/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "PX" = (/obj/structure/sink{dir = 4; pixel_x = 14},/turf/floor/plating/marble/grid,/area/caribbean/german/inside)
@@ -574,7 +579,6 @@
 "UQ" = (/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 1},/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "Vb" = (/obj/structure/shopping_cart{dir = 8},/turf/floor/plating/steel,/area/caribbean/houses)
 "Vh" = (/obj/item/flashlight/lamp/oldlamp,/turf/floor/wood,/area/caribbean/houses)
-"Vk" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean)
 "Vr" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/road,/area/caribbean)
 "VC" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/marble/grid,/area/caribbean/houses)
 "VD" = (/obj/covers/repairedfloor,/turf/floor/broken_floor,/area/caribbean/russian/land/inside)
@@ -618,74 +622,74 @@
 "ZY" = (/obj/structure/barricade/debris,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood_broken,/area/caribbean/houses)
 
 (1,1,1) = {"
-aaaaaaaaaaaaaaaaaaaaaaaaaeaaafOFfwsmoraaaaaeahaaaaaiajakakakakakakakcqhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUcqakHFpVRsnualakakakakakakakakakakakakak
-CUCUCUCUCUCUCUCUCUCUCUCUmoakalhdpVRsHFakakamajajajajajakakakakakakakcqhUhUhUhUhUhUhUhUhUZahUhUZaZaZaZaZahUhUhUhUhUZacqakHFpVRsnualakakakakakakakakakakakakak
-akakakakakakakakakakakakakakanhdpVRsHFakakakakakakakakakakakakakakakcqhUhUhUhUhUhUhUhUhUZaZaZahUhUhUhUhUZaZahUhUhUZaZaakHFpVRsnualakakakakakakakakakakakakak
-HFHFHFHFHFHFHFHFHFHFHFHFHFHFLyhdpVRsHFakakakakakakakakakakakakakakakcqcqcqcqcqcqZacqcqcqcqcqcqcqcqcqcqZacqcqcqZaZaZaZaakHFpVRsnualakakakakakakakakakakakakak
-HFHFHFHFHFHFHFHFHFHFHFHFHFHFLyhdpVRsHFakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakHFpVRsnualakakakakakakakakakakakakak
-HFHFHFHFHFHFHFHFHFHFHFHFHFHFLyhdpVRsHFaoakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakHFpVRsnualakakakakakakakakakakakakak
-akakakakakakakakakakakakakakanwiBYubjCakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakHFpVRsnualakakakakakakakakakakakakak
-akakakakakakakakakakakakakapalhdpVRsHFakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakHFpVRsnualakakakakakakakakakakakakak
-akakakakakakakakakakakakakakalhdpVRsHFakakakakakakakakakakakakakakakakakakakakapaqaqaqaqakakakakakakakakakaqaqaqakakapakHFpVRsnualapakakakakakakakakakakakak
-akakakakakakakakakakakakakakalhdpVRsHFakapBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSakakaktiNyNyNyNyNyNyNyNyNyNyNyNyNyNyNyvdZeakakHFpVRsnualakarakakakakakakakakakakak
-akakakakakakakakakakakakakakalhdpVRsHFakakBSrOMbYivNYiatYirOQbOmOmBSlhFMBSakakaktivdZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeakakHFpVRsnualakarakakakakakakakakakakak
-akakakakakakakakakakakakasakalhdpVRsHFakakQLrOdBrOrOrOrOrOrOBSBSOmBSfIfHBSakakaktivdEZeuZeZeZeZeZeZeZeZeZeZeZeZeZeZeakakHFpVRsnualararakakakakakakakakakakak
-akakakaqaqaqaqaqaqaqakakasaualhdpVRsHFakakQLrOjDWcrOrOrOrOrOUpBSOmBSBSnkBSakakaktivdKDKDKDKDKDKDKDKDKDKDKDKDKDKDKDKDakakHFpVRsnualararakakakakakakakakakakak
-akakakavaxaxaxaxaxaxakakasasalhdpVRsHFakakBSrOwhBnBnBnBnBnrOOGBSOmQbOmOmBSakakaktivdKDZeZeZeZeZeZeZeZeZeZeZeZeZeZeJCakakHFpVRsnualakakakakakakakakakakakakak
-akakBSBSBSBSBSBSBSBSRvakasakalhdpVRsHFakayBSrOrOrOrOrOrOrOrOCEBSOmBSBSBSBSakakaktivdKDZesjJCZesjZeoqZesjsjZeJCZeZeZeakakHFpVRsnualakarakakakakakakakakakakak
-akakBSTtlhBSCdvowQMTBSakazasalhdZaRsHFakakZrrOecBnWmuRbBBnrOTQBSOmRfhtIXBSakakaptivdKDZeZeZeZeZepZZeZeZeZeEbsjZeZeZeapakHFpVRsnualakarakakakakakakakakakakak
-akakBSfHaIBSCdCdCdCdBSakasasalxSZaRsHFakakZrrOrOrOVbrOrOWcrOBSBSOmDtDtDtBSakakaktivdKDZeZeZesjZeZeZeZeZeZeEbZeZeZejvakakHFpVRsnualaraAaCJHJHJHUHJHUHJHJHJHak
-akakBSnkBSBSCdnCnCkyZTakaDasalxSZaRsZaZaakBSrOBnoWBnDHSKBnrOQbOmOmOmOmOmBSakakaktivdKDZeoqZNZepwZesjZeoqZeZeZeZeoqZeakakHFpVRsnualakaEaCUHjoFAdcdcwJdcsaUHak
-akakBSCdCdkynCCdnCnCBSakaCaCalhdZaZaZaZaakBSrOrOrOrOrOrOrOrOBSBSBSBSBSLmBSakakaktivdKDZeJCZesjZevtZeZeJCZesjZeJCZeZeakakHFpVRsnualaGaEakUHdcdcwJdcdcdciNUHak
-akakBSBSBSBSBSnCBSBSBSakaCaHalxSZaZaZaakakQLrOrOrOrOrOrOrOdBBSqPzozozoSqBSakakaktivdMQKDKDKDKDKDKDKDKDKDKDKDKDKDKDKDakakHFpVRsnualakaJaCJHdcdcFAaRJHJHJHJHak
-akakBSTtlhnCnCCdCdMTBSakaCaHalxSZaZaZaakakQLrOSoSoGVRnSorOdBBSKLSqSqSqjRBSakakaktivdZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeakakHFpVRsnualaGaAakQndcFAdcaKJHXWBJJHak
-akakBSfHaIBSnCnCCdCdRvakakaHalxSZaZaHFakakBSTFtmySrOKPIyRRdBBSOPpFBuWHSqBSakakaktigjgjgjgjgjgjgjgjgjgjgjgjgjgjgjvdZeakakHFpVRsnualakaAaCJHdcdcaLaMJHEhmXJHak
-akakBSnkBSBSCdkynCCdZTakakaCalhdZaZaZaakapBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSakakapaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNakakapbdHFpVRsnualakaAaCUHdcwJdcaOJHASmXUHak
-akakBSCdCdCdCdCdCdkyBSakaCaCalhdpVZaZaakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakjCBYubqualaraAaCUHdcdcdcKyJHjLmXUHak
-akakBSBSnCnCnCBSnCnCBSakaCaCalhdpVZaHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnualakaAakagXZJHdcdcJHJHawJHak
-akakBSTtnCCdnCvoaPMTRvakaCaHaQhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuaQakaSakJHQVJHRxdcdcwJdcJHak
-akakBSfHaICdnCkyCdCdBSakaTakalhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnualakaAakJHJHJHJHJHJHJHdcJHak
-akakBSnkCdaVCdaWCdCdZTakazaGalhdpVRsHFakakaqakakakakakakakakakakakakakakakakhUZaakakakakakakakakakakakakakakakakakaqakakjCBYubqualapakakJHWvZKlaGPGPSMdcJHak
-akakBSIQCdaPaXaYaZbaBSakasakalhdpVRsHFbdbebgBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSnCnCBSBSBSBSBSBSBSBSBSBSBSBSBSnCnCnCnCVkbhbdHFpVRsnualakakakYkfXGPGPGPGPJHdcJHak
-akakBSBSBSBSBSBSBSBSBSakasaGalhdpVRsHFakbiDXBSbjbzbCbCbCbCdAdGbkblbmbnbobnbmbpvMbmbqbrbnbsbtbmbuvMbvbmbwbunCnCnCnCDXbhakHFpVRsnualakaAakJHwJGPGPHdAhJHdcJHak
-akakBSTtnCBSIQBfwQZYBSakbxakalhdpVRsHFakbeDXBSdRbAbAbAbAbAbAdUelevbmbnbFbsbmbGvMbmbnbFbsbsbsbHvMvMvMbmvMvMvMbsnCnCDXbhakHFpVRsnualarbIakJHJHJHJHJHJHJHdcJHak
-akakBSfHnCkyCdIQkyCdBSakbxasalhdpVRsHFakbeDXBSewbAbAbAbAbAbAexeyezbmbsbsbsbmbuvMbmbsbsbsbsbsbmvMvMvMbmbsbsbsbsbsBSDXbhakHFpVRsnualaraAakJHhIGPDxGPwJSMdcJHak
-akakBSnkkyoHkykyCdkykyakakakalhdpVRsHFakbeDXnCewbAbAbAbAbAbAeAeBezbmeCbsbsbmbmbHbmbsbsbsbseCbmbOvMbPbmbsbsbsbQbnBSDXbhakHFpVRsnualaraAakYkfXGPGPGPGPJHdcJHak
-akakBSoHCdCdCdkyIQkyBSakasakalhdpVRsHFakakZanCewbAbAbAbAbAbAdhdhdjbmbsbsbsbRbsbsbmbsbsbsbsbsbmbSbTbUbmeDbsbsbrbXBSDXbhakHFSmwznualakarakJHGPGPGPHdAhJHdcJHak
-akakBSBSBSBSnCnCBSBSBSakasakalhdpVRsHFakakZaBSewbAbLbKbAbAbAbAbAbMbmbZbsbsbsbsbsbmbZbsbsbsbsbmbmbmbmbmbmbmcabmbmBSDXbhakZDmWUfnualaGarakJHJHJHJHJHJHJHdcJHak
-akakLuHFHFbcLuZaZaHFZaakakakalhdpVRsHFakbeDXBSeEbAbDcbccccccccbAcdbmcebsbscfbncgbmcebsbscfbnbmeFeFeFbsbsbsbsbsbsBSDXbhakHFUzglnualchciakJHXFXFJHBTCuJHdcJHak
-akakbcHFHFHFHFZaZaHFHFakakakalhdZaRsHFakbePIBSbJbAcjbAbAckclbAbAbMbmcnbsbscfbncobmcrbsbsbsbXbmeFeFeFbsbsbsbsbsbsBSPIbhakHFdegTnualcsctaCJHqYqYJHtsCLjQdcJHak
-akakBSBSBSBSBSBSBSBSBSakasaGalhdZaZaZaakbeDXBSeGbAcjcubAcvcwbAbAbEbmbmbmcabmbmbmbmbmbmcabmbmbmbmbmbmbVbsbsbscxbtBSDXcyakHFpVRsnualaJaJaCJHqYqYJHJHJHJHdcJHak
-akakBSTtlhBStbvowQMTBSakasakalhdZaZaZaZaZaaNQXbJbAcjcubAczcAcBcCbMbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbscDcEbsBSDXbhcFHFZaRsnualaAaJaCJHdcdcFAwJwJdcdcJHak
-akakBSfHaIBSCdCdCdCdZTakasaGalhdpVZaZaZaZaZafdbJbAcjcucGcvcAbAbNbMbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbscDcHbscacIcJcKHFpVRsaBalaAakakJHJHJHJHJHJHJHJHJHak
-akakBSnkBSBSCdCdkykyBSakcLcMalhdZaZaHFZaakaqQXbJbAcjcubAcNcAcObAbMbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbscDcQbsBSDXbhZaZapVZaaBalaJaJaCHFbcLuHFHFHFHFHFHFak
-akakBSCdCdCdCdCdCdYXBSakakcRalhdZaRsHFakbeDXBSeGbAcjcubAcvcSbAbAbEbmbmbmbsbmbmbmbmbmbmcabmbmbmbmbmbmbVbsbsbscTbtBSDXbhakHFZaRsnualaJaJaCHFHFHFHFbcHFHFHFHFak
-akakBSBSBSBSBSBSBSnCBSakaTaTalhdpVRsHFakbePIBSbJbAbAcUbAckcVbAbAbMbmcWbsbscfbncXbmcYcZrOcZcYbmeFeFeFbsbsbsbsbsbsBSDXbhakHFpVRsnualaAdaaCBSBSCpCpBSCpCpBSBSak
-akakBSTtlhBSCdtkwQMTBSakakasalhdpVRsHFakbeDXBSeHbAbAdbbKbAbAbAbAbMbmcebsbscfbncgbmddrOcZrOcZbmeFeFeFbsbsbsbsbsbsBSPIbhakHFpVRsnualbxdfakBSMxOmOmZRQYOmhTBSak
-akakBSfHaIBSCdCdnCCdZTakakakalhdpVRsHFakbeDXBSewbAbDbLdgdhdhdhdhdjbmdkbsbsbsbsbsbmdlcZrOcZrObmbmbmbmbmbmbmcabmbmBSDXbhakHFpVRsnualakakakBSqfOmbbYMoDOmOmCpak
-akakBSnkBSBSkyCdCdCdBSakakdnalhdpVRsHFakbeDXBSewbAbAbAbAbAbAcccccdbmbsbsbsbsbseCbmdorOcZrOcZdpdqdrdsbmeCbsbsbrbnBSDXbhakHFpVRsnualakakakBSXbOmOmOmOmOmOmCpak
-akakBSCdCdnCnCCdCdlMBSakakdnalhdIUjrHFakbePIBSeIbAbAbAbAbAbAeBeBezbmbVbsbsbsbsbsbmdtcZrOcZrOcZrOcZdubmbsbsbsbFbnBSPIbhakHFpVRsnudvdwaTakBSBSBSBSBSQCBSBSBSak
-akakBSBSBSBSnCBSBSBSBSakasakalhdgJWNHFakbeDXnCnCbAbAbAbAbAbAeJeBezbmbmbmbHbmbsbnbmdxrOcZrOcZrOcZrOcZbmbsbsbsbsbsBSDXbhakHFpVRsnudvdyakakBSTtlhfHnkCdCdCdBSak
-akakBSTtlhnCCdCdnCnCBSakakasalhdrduHtOakbePInCnCnCbAbAbAbAbAdhdheKbmbuvMvMbmcfbrbmdCcZrOcZrOcZrOcZrObmvMvMvMbsbsBSDXbhakHFpVRsnudvdDdFakBSfHVCaIBSCdCdCdCpak
-akaknCnCnCnCnCnCnCCdCdakakasalhdUQXhHFakbeDXnCnCnCeLeNeNeNeOePdHdIbmbpdJvMbmbnbXbmdKrOcZrOcZdLdMdNdObmbpbuvMbsbsBSDXbhakHFpVRsnualakakakBSBSBSBSBSCdCdCdCpak
-akakBSnknCfOnCkynCCdnCakdPdQalhdpVRsHFbdbiDXnCnCnCnCBSBSBSBSBSBSBSBSBSBSYXBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSDXbhbdHFpVRsnualarakakBSQfnqOIXPCdCdCdBSak
-akakBSCdCdCdnCCdCdnCnCakakaGalhdpVRsHFakakaNakakakakakakakakakakakakakakZahUakakakakakakakakakakakakakakZaZadSdTakaNakakjCBYubqualarakakBSNxOIjhBSCdCdCdBSak
-akakBSBSBSnCnCBSBSBSBSakasakalhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnualarakakBSBSBSBSBSCdCdCdBSak
-akakBSTtlhBSnCfOwQMTBSakasaGaQhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuaQakakakZTCdlMCqJnCdCdCdCpak
-akakBSfHaIBSnCkyCdCdZTakasakalhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnualarakakBSCdCdshshCdCdCdCpak
-akakBSnkBSBSkyCdCdCdBSakakasalhdpVRsHFakakakakakakakakakakakakakakakakakakakakakakakakakakakdVdVdVdVdVdVdVdVdVdVdVdVakakjCBYubqualarakakBSCdCdCdGdCdCdCdBSak
-akakBSCdCdCdCdCdCdlMBSakasasalhdpVRsHFakapakakakakakakakakakakakakakakakakakakakakakakakakdWBSBSBSBSBSBSBSBSBSBSBSBSakbdHFpVRsnualakarakBSBSCpCpBSCpAGBSBSak
-akakBSBSBSBSBSBSBSBSBSakasasalhdpVRsHFakakakZaHFHFZaHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFdXBSqSvCihteLrvCrOBSlhFMBSakakHFpVRsnualakakakakakakakakakakakakak
-akakakakakakakdYdZeadYakasakalhdpVRsHFakakakHFZaHFHFZaHFVrHFHFVrHFHFVrHFHFHFHFHFHFHFHFHFHFakBSrOrOrOrOrOrOrOBSMeRoBSakakHFpVRsnualaGarakcqcqififcqcqcqcqcqak
-akakakakakakakebededebakakakalhdpVRsHFakakeeHFZaZaZaZaHFcqHFHFcqHFHFcqHFHFHFHFHFHFHFHFWMHFakaFrOBnBnBnBnORrOBSBSnkBSakakHFpVRsnualakarakBSCqcpCdCdBSTtlhBSak
-akakakakakakakegeheiejakakakalhdpVRsHFHFHFHFHFHFZaZaHFHFEWHFHFEWHFHFEWHFHFHFHFHFHFUMbWHVXfakaFrOrOrOrOrOrOrOrOrOrOBSakakHFpVRsnualaGarakBSVhCdCdCdnkVCaIBSak
-akakakakakakakegehehejakakakalhdpVRsHFHFHFHFZaZaZaHFHFHFcqHFHFcqHFHFcqHFHFHFHFHFHFYAgrjfljakBSrOBnBnBnBnBnrOBSvWLmBSakakHFpVRsnualakakakZTCdCdBSCdBSBSBSBSak
-akakakakakakakdYekekdYakakakalhdpVRsHFHFHFZaHFHFHFHFZaHFcqHFHFcqHFHFcqHFHFHFHFHFHFHFFYFYFYakZrrOrOrOrOrOrOrOBSXerOBSakakHFpVRsnualakarakBSBSQCBSCdXPOIDkLBak
-akakakakakakakakakakakakasasalhdpVRsHFHFHFHFHFZaHFHFHFHFEWHFHFEWHFHFEWHFHFHFHFHFHFHFHFHFHFakgbrOBnBnBnBnBnrOBSrOQoBSakakHFpVRsnualarakdSLBzXOmBSCdBSOIzpLBak
-akakakakakakakakakakakakasasalhdpVRsHFakakakHFHFHFHFHFHFcqHFHFcqHFHFcqHFHFHFHFHFHFHFFYFYFYakaFrOrOrOrOrOrOrOpOrOwBBSakakHFpVRsnualararakPLDjOmBSCjBSOIMhBSak
-akakakakakakakakakakakakasakalhdpVRsHFakapakHFHFHFHFHFHFyKHFHFyKHFHFyKHFHFHFHFHFHFHFstststakaFrOMsBnBnTkIArOatrOqGBSakakHFpVRsnualaparakBSgHeQBSODBSefRlBSak
-akakakakakakakakakakakakasakalhdpVRsHFakakakHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFakBSrOrOySrOySrOrOatrOyeBSakakHFpVRsnualakarakBSBSBSBSBSBSBSBSBSak
-emakakakakakakakakakakakakakalhdpVRsHFakakakakakakakakakakakakakakakakakakakakakakakakakakakcqcqcqcqcqcqcqcqcqcqcqcqakakHFpVRsnualakarakakakakakakakakakakak
+aaaaaaaaaaaaaaaaaaaaaaaaaeaaaaOFfwsmoraaaaaeahaaaaaiajakakakakakakakcqhUhUafhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUhUcqakHFpVRsnuakakakakakakakakakakakakakak
+CUCUCUCUCUCUCUCUCUCUCUCUmoakakhdpVRsHFakakamajajajajajakakakakakakakcqhUhUafhUhUhUhUhUhUZahUhUZaZaZaZaZahUhUhUhUhUZacqakHFpVRsnuakakakakakakakakakakakakakak
+akakakakakakakakakakakakakakalhdpVRsHFakakakakakakakakakakakakakakakcqhUhUafhUhUhUhUhUhUZaZaZahUhUhUhUhUZaZahUhUhUZaZaakHFpVRsnuakakakakakakakakakakakakakak
+HFHFHFHFHFHFHFHFHFHFHFHFHFHFHFhdpVRsHFakakakakakakakakakakakakakakakcqcqcqancqcqZacqcqcqcqcqcqcqcqcqcqZacqcqcqZaZaZaZaakHFpVRsnuakakakakakakakakakakakakakak
+HFHFHFHFHFHFHFHFHFHFHFHFHFHFHFhdpVRsHFakakakakakakakakakakakakakakakakakakaQakakakakakakakakakakakakakakakakakakakakakakHFpVRsnuakakakakakakakakakakakakakak
+HFHFHFHFHFHFHFHFHFHFHFHFHFHFHFhdpVRsHFaoakakakakakakakakakakakakakakakakakaQakakakakakakakakakakakakakakakakakakakakakakHFpVRsnuakakakakakakakakakakakakakak
+akakakakakakakakakakakakakakalwiBYubjCakakakakakakakakakakakakakakakakakakaQakakakakakakakakakakakakakakakakakakakakakakHFpVRsnuakakakakakakakakakakakakakak
+akakakakakakakakakakakakakapakhdpVRsHFakakakakakakakakakakakakakakakakakakaQakakakakakakakakakakakakakakakakakakakakakakHFpVRsnuakakakakakakakakakakakakakak
+akakakakakakakakakakakakakakakhdpVRsHFakakakakakakakakakakakakakakakakakakaQakapaqaqaqaqakakakakakakakakakaqaqaqakakapakHFpVRsnuakapakakakakakakakakakakakak
+akakakakakakakakakakakakakakakhdpVRsHFakapBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSaQakaktiNyNyNyNyNyNyNyNyNyNyNyNyNyNyNyvdZeakakHFpVRsnuakakarakakakakakakakakakakak
+akakakakakakakakakakakakakakakhdpVRsHFakakBSrOMbYivNYiatYirOQbOmOmBSlhFMBSaQakaktivdZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeakakHFpVRsnuakakarakakakakakakakakakakak
+akakakakakakakakakakakakasakakhdpVRsHFakakQLrOdBrOrOrOrOrOrOBSBSOmBSfIfHBSaQakaktivdEZeuZeZeZeZeZeZeZeZeZeZeZeZeZeZeakakHFpVRsnuakararakakakakakakakakakakak
+akakakaqaqaqaqaqaqaqakakasauakhdpVRsHFakakQLrOjDWcrOrOrOrOrOUpBSOmBSBSnkBSaQakaktivdKDKDKDKDKDKDKDKDKDKDKDKDKDKDKDKDakakHFpVRsnuakararakakakakakakakakakakak
+akakakavaxaxaxaxaxaxakakasasakhdpVRsHFakakBSrOwhBnBnBnBnBnrOOGBSOmQbOmOmBSaQakaktivdKDZeZeZeZeZeZeZeZeZeZeZeZeZeZeJCakakHFpVRsnuakakakakakakakakakakakakakak
+akakBSBSBSBSBSBSBSBSRvakasakakhdpVRsHFakayBSrOrOrOrOrOrOrOrOCEBSOmBSBSBSBSaQakaktivdKDZesjJCZesjZeoqZesjsjZeJCZeZeZeakakHFpVRsnuakakarakakakakakakakakakakak
+akakBSTtlhBSCdvowQMTBSakazasakhdZaRsHFakakZrrOecBnWmuRbBBnrOTQBSOmRfhtIXBSaQakaptivdKDZeZeZeZeZepZZeZeZeZeEbsjZeZeZeapakHFpVRsnuakakarakakakakakakakakakakak
+akakBSfHaIBSCdCdCdCdBSakasasakxSZaRsHFakakZrrOrOrOVbrOrOWcrOBSBSOmDtDtDtBSaQakaktivdKDZeZeZesjZeZeZeZeZeZeEbZeZeZejvakakHFpVRsnuakaraAaCJHJHJHUHJHUHJHJHJHak
+akakBSnkBSBSCdnCnCkyZTakaDasakxSZaRsZaZaakBSrOBnoWBnDHSKBnrOQbOmOmOmOmOmBSaQakaktivdKDZeoqZNZepwZesjZeoqZeZeZeZeoqZeakakHFpVRsnuakakaEaCUHjoFAdcdcwJdcsaUHak
+akakBSCdCdkynCCdnCnCBSakaCaCakhdZaZaZaZaakBSrOrOrOrOrOrOrOrOBSBSBSBSBSLmBSaQakaktivdKDZeJCZesjZevtZeZeJCZesjZeJCZeZeakakHFpVRsnuakaGaEakUHdcdcwJdcdcdciNUHak
+akakBSBSBSBSBSnCBSBSBSakaCaHakxSZaZaZaakakQLrOrOrOrOrOrOrOdBBSqPzozozoSqBSaQakaktivdMQKDKDKDKDKDKDKDKDKDKDKDKDKDKDKDakakHFpVRsnuakakaJaCJHdcdcFAaRJHJHJHJHak
+akakBSTtlhnCnCCdCdMTBSakaCaHakxSZaZaZaakakQLrOSoSoGVRnSorOdBBSKLSqSqSqjRBSaQakaktivdZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeZeakakHFpVRsnuakaGaAakQndcFAdcaKJHXWBJJHak
+akakBSfHaIBSnCnCCdCdRvakakaHakxSZaZaHFakakBSTFtmySrOKPIyRRdBBSOPpFBuWHSqBSaQakaktigjgjgjgjgjgjgjgjgjgjgjgjgjgjgjvdZeakakHFpVRsnuakakaAaCJHdcdcaLaMJHEhmXJHak
+akakBSnkBSBSCdkynCCdZTakakaCakhdZaZaZaakapBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSaQakapaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNakakapbdHFpVRsnuakakaAaCUHdcwJdcaOJHASmXUHak
+akakBSCdCdCdCdCdCdkyBSakaCaCakhdpVZaZaakakakakakakakakakakakakakakakakakakaQakakakakakakakakakakakakakakakakakakakakakakjCBYubquakaraAaCUHdcdcdcKyJHjLmXUHak
+akakBSBSnCnCnCBSnCnCBSakaCaCakhdpVZaHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuakakaAakagXZJHdcdcJHJHawJHak
+akakBSTtnCCdnCvoaPMTRvakaCaHaohdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuaoakaSakJHQVJHRxdcdcwJdcJHak
+akakBSfHaICdnCkyCdCdBSakaTakakhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFbgHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuakakaAakJHJHJHJHJHJHJHdcJHak
+akakBSnkCdaVCdaWCdCdZTakazaGakhdpVRsHFakakcIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQafdvaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQcIakakjCBYubquakapakakJHWvZKlaGPGPSMdcJHak
+akakBSIQCdaPaXaYaZbaBSakasakakhdpVRsHFbdbedTBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSnCnCBSBSBSBSBSBSBSBSBSBSBSBSBSnCnCnCnCgmbhbdHFpVRsnuakakakakYkfXGPGPGPGPJHdcJHak
+akakBSBSBSBSBSBSBSBSBSakasaGakhdpVRsHFakbignBSbjbzbCbCbCbCdAdGbkblbmbnbobnbmbpvMbmbqbrbnbsbtbmbuvMbvbmbwbunCnCnCnCgnbhakHFpVRsnuakakaAakJHwJGPGPHdAhJHdcJHak
+akakBSTtnCBSIQBfwQZYBSakbxakakhdpVRsHFakbegnBSdRbAbAbAbAbAbAdUelevbmbnbFbsbmbGvMbmbnbFbsbsbsbHvMvMvMbmvMvMvMbsnCnCgnbhakHFpVRsnuakarbIakJHJHJHJHJHJHJHdcJHak
+akakBSfHnCkyCdIQkyCdBSakbxasakhdpVRsHFakbegnBSewbAbAbAbAbAbAexeyezbmbsbsbsbmbuvMbmbsbsbsbsbsbmvMvMvMbmbsbsbsbsbsBSgnbhakHFpVRsnuakaraAakJHhIGPDxGPwJSMdcJHak
+akakBSnkkyoHkykyCdkykyakakakakhdpVRsHFakbegnnCewbAbAbAbAbAbAeAeBezbmeCbsbsbmbmbHbmbsbsbsbseCbmbOvMbPbmbsbsbsbQbnBSgnbhakHFpVRsnuakaraAakYkfXGPGPGPGPJHdcJHak
+akakBSoHCdCdCdkyIQkyBSakasakakhdpVRsHFakakdvnCewbAbAbAbAbAbAdhdhdjbmbsbsbsbRbsbsbmbsbsbsbsbsbmbSbTbUbmeDbsbsbrbXBSgnbhakHFSmwznuakakarakJHGPGPGPHdAhJHdcJHak
+akakBSBSBSBSnCnCBSBSBSakasakakhdpVRsHFakakdvBSewbAbLbKbAbAbAbAbAbMbmbZbsbsbsbsbsbmbZbsbsbsbsbmbmbmbmbmbmbmcabmbmBSgnbhakZDmWUfnuakaGarakJHJHJHJHJHJHJHdcJHak
+akakLuHFHFbcLuZaZaHFZaakakakakaUpVRsHFakbegnBSeEbAbDcbccccccccbAcdbmcebsbscfbncgbmcebsbscfbnbmeFeFeFbsbsbsbsbsbsBSgnbhakHFUzglnuakchciakJHXFXFJHBTCuJHdcJHak
+akakbcHFHFHFHFZaZaHFHFakakakakhdZaRsHFakbegoBSbJbAcjbAbAckclbAbAbMbmcnbsbscfbncobmcrbsbsbsbXbmeFeFeFbsbsbsbsbsbsBSgobhakHFdegTnuakcsctaCJHqYqYJHtsCLjQdcJHak
+akakBSBSBSBSBSBSBSBSBSakasaGakhdZaZaZaakbegnBSeGbAcjcubAcvcwbAbAbEbmbmbmcabmbmbmbmbmbmcabmbmbmbmbmbmbVbsbsbscxbtBSgncyakHFpVRsnuakaJaJaCJHqYqYJHJHJHJHdcJHak
+akakBSTtlhBStbvowQMTBSakasakakhdZaZaZaZaZagpQXbJbAcjcubAczcAcBcCbMbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbscDcEbsBSgnbhcFHFZaRsnuakaAaJaCJHdcdcFAwJwJdcdcJHak
+akakBSfHaIBSCdCdCdCdZTakasaGakhdpVZaZaZaZadvfdbJbAcjcucGcvcAbAbNbMbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbscDcHbscagqcJcKHFpVRsaBakaAakakJHJHJHJHJHJHJHJHJHak
+akakBSnkBSBSCdCdkykyBSakcLcMakhdZaZaHFZaakcIQXbJbAcjcubAcNcAcObAbMbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbscDcQbsBSgnbhZaZapVZaaBakaJaJaCHFbcLuHFHFHFHFHFHFak
+akakBSCdCdCdCdCdCdYXBSakakcRakhdZaRsHFakbegnBSeGbAcjcubAcvcSbAbAbEbmbmbmbsbmbmbmbmbmbmcabmbmbmbmbmbmbVbsbsbscTbtBSgnbhakHFZaRsnuakaJaJaCHFHFHFHFbcHFHFHFHFak
+akakBSBSBSBSBSBSBSnCBSakaTaTakhdpVRsHFakbegoBSbJbAbAcUbAckcVbAbAbMbmcWbsbscfbncXbmcYcZrOcZcYbmeFeFeFbsbsbsbsbsbsBSgnbhakHFpVRsnuakaAdaaCBSBSCpCpBSCpCpBSBSak
+akakBSTtlhBSCdtkwQMTBSakakasakhdpVRsHFakbegnBSeHbAbAdbbKbAbAbAbAbMbmcebsbscfbncgbmddrOcZrOcZbmeFeFeFbsbsbsbsbsbsBSgobhakHFpVRsnuakbxdfakBSMxOmOmZRQYOmhTBSak
+akakBSfHaIBSCdCdnCCdZTakakakakhdpVRsHFakbegnBSewbAbDbLdgdhdhdhdhdjbmdkbsbsbsbsbsbmdlcZrOcZrObmbmbmbmbmbmbmcabmbmBSgnbhakHFpVRsnuakakakakBSqfOmbbYMoDOmOmCpak
+akakBSnkBSBSkyCdCdCdBSakakdnakhdpVRsHFakbegnBSewbAbAbAbAbAbAcccccdbmbsbsbsbsbseCbmdorOcZrOcZdpdqdrdsbmeCbsbsbrbnBSgnbhakHFpVRsnuakakakakBSXbOmOmOmOmOmOmCpak
+akakBSCdCdnCnCCdCdlMBSakakdnakhdIUjrHFakbegoBSeIbAbAbAbAbAbAeBeBezbmbVbsbsbsbsbsbmdtcZrOcZrOcZrOcZdubmbsbsbsbFbnBSgobhakHFpVRsnugsdwaTakBSBSBSBSBSQCBSBSBSak
+akakBSBSBSBSnCBSBSBSBSakasakakhdgJWNHFakbegnnCnCbAbAbAbAbAbAeJeBezbmbmbmbHbmbsbnbmdxrOcZrOcZrOcZrOcZbmbsbsbsbsbsBSgnbhakHFpVRsnugsdyakakBSTtlhfHnkCdCdCdBSak
+akakBSTtlhnCCdCdnCnCBSakakasakhdrduHtOakbegonCnCnCbAbAbAbAbAdhdheKbmbuvMvMbmcfbrbmdCcZrOcZrOcZrOcZrObmvMvMvMbsbsBSgnbhakHFpVRsnugsdDdFakBSfHVCaIBSCdCdCdCpak
+akaknCnCnCnCnCnCnCCdCdakakasakhdUQXhHFakbegnnCnCnCeLeNeNeNeOePdHdIbmbpdJvMbmbnbXbmdKrOcZrOcZdLdMdNdObmbpbuvMbsbsBSgnbhakHFpVRsnuakakakakBSBSBSBSBSCdCdCdCpak
+akakBSnknCfOnCkynCCdnCakdPdQakhdpVRsHFbdbignnCnCnCnCBSBSBSBSBSBSBSBSBSBSYXBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSgnbhbdHFpVRsnuakarakakBSQfnqOIXPCdCdCdBSak
+akakBSCdCdCdnCCdCdnCnCakakaGakhdpVRsHFakakgpaQaQaQaQaQaQaQaQaQaQaQaQaQaQdvafaQaQaQaQaQaQaQaQaQaQaQaQaQaQdvdvgugvaQgpakakjCBYubquakarakakBSNxOIjhBSCdCdCdBSak
+akakBSBSBSnCnCBSBSBSBSakasakakhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuakarakakBSBSBSBSBSCdCdCdBSak
+akakBSTtlhBSnCfOwQMTBSakasaGaohdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuaoakakakZTCdlMCqJnCdCdCdCpak
+akakBSfHaIBSnCkyCdCdZTakasakakhdpVRsHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFpVRsnuakarakakBSCdCdshshCdCdCdCpak
+akakBSnkBSBSkyCdCdCdBSakakasakhdpVRsHFakakakakakakakakakakakakakakakakakakaQakakakakakakakakdVdVdVdVdVdVdVdVdVdVdVdVakakjCBYubquakarakakBSCdCdCdGdCdCdCdBSak
+akakBSCdCdCdCdCdCdlMBSakasasakhdpVRsHFakapakakakakakakakakakakakakakakakakaQakakakakakakakdWBSBSBSBSBSBSBSBSBSBSBSBSakbdHFpVRsnuakakarakBSBSCpCpBSCpAGBSBSak
+akakBSBSBSBSBSBSBSBSBSakasasakhdpVRsHFakakakZaHFHFZaHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFdXBSqSvCihteLrvCrOBSlhFMBSakakHFpVRsnuakakakakakakakakakakakakakak
+akakakakakakakdYdZeadYakasakakhdpVRsHFakakakHFZaHFHFZaHFVrHFHFVrHFHFVrHFHFaUHFHFHFHFHFHFHFakBSrOrOrOrOrOrOrOBSMeRoBSakakHFpVRsnuakaGarakcqcqififcqcqcqcqcqak
+akakakakakakakebededebakakakakhdpVRsHFakakeeHFZaZaZaZaHFcqHFHFcqHFHFcqHFHFaUHFHFHFHFHFWMHFakaFrOBnBnBnBnORrOBSBSnkBSakakHFpVRsnuakakarakBSCqcpCdCdBSTtlhBSak
+akakakakakakakegeheiejakakakakhdpVRsHFHFHFHFHFHFZaZaHFHFEWHFHFEWHFHFEWHFHFaUHFHFHFUMbWHVXfakaFrOrOrOrOrOrOrOrOrOrOBSakakHFpVRsnuakaGarakBSVhCdCdCdnkVCaIBSak
+akakakakakakakegehehejakakakakhdpVRsHFHFHFHFZaZaZaHFHFHFcqHFHFcqHFHFcqHFHFaUHFHFHFYAgrjfljakBSrOBnBnBnBnBnrOBSvWLmBSakakHFpVRsnuakakakakZTCdCdBSCdBSBSBSBSak
+akakakakakakakdYekekdYakakakakhdpVRsHFHFHFZaHFHFHFHFZaHFcqHFHFcqHFHFcqHFHFaUHFHFHFHFFYFYFYakZrrOrOrOrOrOrOrOBSXerOBSakakHFpVRsnuakakarakBSBSQCBSCdXPOIDkLBak
+akakakakakakakakakakakakasasakhdpVRsHFHFHFHFHFZaHFHFHFHFEWHFHFEWHFHFEWHFHFaUHFHFHFHFHFHFHFakgbrOBnBnBnBnBnrOBSrOQoBSakakHFpVRsnuakarakdSLBzXOmBSCdBSOIzpLBak
+akakakakakakakakakakakakasasakhdpVRsHFakakakHFHFHFHFHFHFcqHFHFcqHFHFcqHFHFaUHFHFHFHFFYFYFYakaFrOrOrOrOrOrOrOpOrOwBBSakakHFpVRsnuakararakPLDjOmBSCjBSOIMhBSak
+akakakakakakakakakakakakasakakhdpVRsHFakapakHFHFHFHFHFHFyKHFHFyKHFHFyKHFHFaUHFHFHFHFstststakaFrOMsBnBnTkIArOatrOqGBSakakHFpVRsnuakaparakBSgHeQBSODBSefRlBSak
+akakakakakakakakakakakakasakakhdpVRsHFakakakHFHFHFHFHFHFHFHFHFHFHFHFHFHFHFaUHFHFHFHFHFHFHFakBSrOrOySrOySrOrOatrOyeBSakakHFpVRsnuakakarakBSBSBSBSBSBSBSBSBSak
+emakakakakakakakakakakakakakakhdpVRsHFakakakakakakakakakakakakakakakakakakaQakakakakakakakakcqcqcqcqcqcqcqcqcqcqcqcqakakHFpVRsnuakakarakakakakakakakakakakak
 "}
 
 (1,1,2) = {"
