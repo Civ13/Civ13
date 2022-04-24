@@ -332,6 +332,7 @@
 "gt" = (/obj/effect/decal/cleanable/blood/writing{dir = 9},/obj/effect/landmark{name = "JoinLateRUDoc"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "gu" = (/obj/structure/closet/crate/dumpster,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "gv" = (/obj/structure/closet/crate/dumpster,/obj/item/weapon/storage/bag/trash,/obj/item/weapon/storage/bag/trash,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
+"gw" = (/obj/structure/multiz/ladder/ww2/stairsdown{icon_state = "rampbottom"; dir = 8},/turf/floor/plating/cobblestone,/area/caribbean/german)
 "gH" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/industrial1,/obj/item/clothing/shoes/riding2,/turf/floor/wood/fancywood,/area/caribbean/houses)
 "gJ" = (/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "gT" = (/obj/structure/vehicleparts/frame/car/van/lf{broken = 1},/obj/structure/vehicleparts/movement/reversed{broken = 1},/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/license_plate/us/centered/front{icon_state = "license_plate_us"; dir = 1},/turf/floor/plating/road/yellowline{dir = 8},/area/caribbean)
@@ -433,7 +434,6 @@
 "xk" = (/obj/structure/table/modern/table,/obj/item/ammo_magazine/mosinbox,/obj/item/weapon/attachment/bayonet,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "xS" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall/two)
 "ye" = (/obj/structure/table/rack/shelf,/obj/item/clothing/mask/smokable/cigarette/cigar,/turf/floor/plating/steel,/area/caribbean/houses)
-"ym" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 4},/turf/floor/plating/cobblestone,/area/caribbean/german)
 "yx" = (/obj/covers/repairedfloor,/turf/floor/broken_floor,/area/caribbean/german/inside)
 "yK" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "yO" = (/obj/effect/decal/cleanable/blood/writing{dir = 1},/obj/effect/decal/cleanable/blood/writing{dir = 8},/obj/effect/decal/cleanable/blood/writing,/turf/floor/wood,/area/caribbean/russian/land/inside)
@@ -706,7 +706,7 @@ LKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
 LKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
 LKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
 LKLKLKCeCeCeCeCeCeCeCeCeLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
-LKLKSQymLfLfLfLfLfLfTSTSnXLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
+LKLKSQgwLfLfLfLfLfLfTSTSnXLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
 LKLKwWwWwWwWwWwWwWwWwWTSnXLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
 LKLKwWeUzbeURKeURKESwWTSnXLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLK
 LKLKwWenrteUrteUzartwWPGnXLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKLKJHJHJHsuJHsuJHJHJHLK
