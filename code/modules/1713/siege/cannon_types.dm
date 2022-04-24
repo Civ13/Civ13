@@ -191,6 +191,14 @@
 	maxrange = 35
 	caliber = 100
 
+/obj/structure/cannon/modern/tank/baftkn75
+	name = "BAF TKN 75mm"
+	desc = "a 75 mm Blugoslavian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 16
+	maxrange = 30
+	caliber = 75
+
 /obj/structure/cannon/modern/tank/german88/field
 	name = "8.8 cm Pak 43 cannon"
 	desc = "a 88 mm german anti-tank cannon."
