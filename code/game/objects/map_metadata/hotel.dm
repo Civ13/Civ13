@@ -17,7 +17,7 @@
 	age = "1943"
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "Battle of the grand hotel"
-	mission_start_message = "<font size=4>The <b>German army</b> and the <b>Russian Army</b> are battling for the control of the Grand hotel! for<b> 6 minutes</b>.<br>The battle will start in <b>3 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Wehrmacht</b> and the <b>Red Army</b> are battling for the control of the Grand Hotel!<br> The battle will start in <b>3 minutes</b>. Capture the <b>upstairs lounge</b> to control the Hotel!</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	ordinal_age = 6

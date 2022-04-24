@@ -71,9 +71,9 @@
 		if (destination && !dontmove)
 
 			walk_to(src,destination,0,rand(2,3))
-	spawn(30)
-		do_wind()
-
+/*	spawn(30)
+		do_wind()*/
+/*
 /obj/effect/effect/smoke/chem/proc/do_wind()
 	if (!src)
 		return
@@ -94,7 +94,7 @@
 	spawn(40/map.windspeedvar)
 		if(src)
 			do_wind()
-
+*/
 /obj/effect/effect/smoke/chem/Destroy()
 	opacity = FALSE
 	walk(src, 0)
