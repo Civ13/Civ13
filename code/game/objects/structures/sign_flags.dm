@@ -106,6 +106,12 @@
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "stalingrad"
 
+/obj/structure/sign/wide/kandahar
+	name = "Kandahar sign"
+	desc = "A worn-out sign displaying Kandahar."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "kandahar"
+
 /obj/structure/sign
 	anchored = TRUE
 
