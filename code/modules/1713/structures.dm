@@ -252,6 +252,21 @@
 	bound_height = 128
 	bound_x = 32
 
+/obj/structure/props/marketstall
+	name = "market stall"
+	desc = "A market stall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "propstall1"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+	New()
+		..()
+		icon_state ="propstall[rand(1,4)]"
+
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
 	icon_state = "black"
