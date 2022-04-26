@@ -20,7 +20,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.4, CIVILIAN = 0.5, ARAB = 0.5)
 	battle_name = "Soviet Afghan War"
-	mission_start_message = "<font size=4>The <b><font color ='red'>Soviets</font></b>, along with the <b><font color ='green'>DRA</font></b>, have to remain in control of the Kandahar province. <br>The <b><font color ='black'>Mujahideen</font></b> must get rid of the communist oppressors in the region by capturing and holding their outposts and/or by killing their officers. <b>The faction with the most points (<b>60</b>) wins!</b><br></font>"
+	mission_start_message = "<font size=4>The <b><font color ='red'>Soviets</font></b>, along with the <b><font color ='green'>DRA</font></b>, have to remain in control of the Kandahar province and arrest or eliminate the Mujahideen leaders that are turning the local populace against the government. <br>The <b><font color ='black'>Mujahideen</font></b> must get rid of the communist oppressors in the region by capturing and holding their outposts and/or by killing/capturing their officers. <b>The faction with the most points (<b>75</b>) wins!</b><br></font>"
 	faction1 = ARAB
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -157,9 +157,9 @@
 				cust_color = "green"
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>South West Village Outpost</b>: [a1_control]</font></big>"
+			world << "<big><font color='[cust_color]'><b>Bridge Outpost</b>: [a1_control]</font></big>"
 		else
-			world << "<big><b>South West Village Outpost</b>: Nobody</big>"
+			world << "<big><b>Bridge Outpost</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
 		c3 = 0
@@ -277,6 +277,28 @@
 			world << "<big><font color='[cust_color]'><b>North West Village Outpost</b>: [a4_control]</font></big>"
 		else
 			world << "<big><b>North West Village Outpost</b>: Nobody</big>"
+	for (var/mob/living/human/H in player_list)
+		if (H.stat!=DEAD && (H.original_job.is_soviet == TRUE || H.original_job.is_dra == TRUE))
+			var/area/A = get_area(H)
+			if (istype(A, /area/caribbean/arab/caves/prison))
+				if (H.stat!=DEAD && H.original_job.title == "Soviet Army Lieutenant")
+					muj_points += 2
+					world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Lieutenant</font></b> is in captivity!</font>"
+				else if (H.stat!=DEAD && H.original_job.title == "Soviet Army Sergeant")
+					muj_points += 1
+					world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Sergeant</font></b> is in captivity!</font>"
+				else if (H.stat!=DEAD && H.original_job.title == "DRA Governor")
+					muj_points += 3
+					world << "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>"
+				else if (H.stat!=DEAD && H.original_job.title == "DRA Sergeant")
+					muj_points += 1
+					world << "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>"
+		if (H.stat!=DEAD && (H.original_job.is_muj == TRUE))
+			var/area/B = get_area(H)
+			if (istype(B, /area/caribbean/prison/jail))
+				if (H.stat!=DEAD && H.original_job.title == "Mujahideen Leader")
+					sov_points += 2
+					world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Leader</font></b> is currently being detained!</font>"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Mujahideen: [muj_points]</big>"
 	world << "<big>Soviets and DRA: [sov_points]</big>"
@@ -285,9 +307,9 @@
 
 /obj/map_metadata/sovafghan/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 3000)
-		if (sov_points < 60 && muj_points < 60)
+		if (sov_points < 75 && muj_points < 75)
 			return TRUE
-		if (sov_points >= 60 && sov_points > muj_points)
+		if (sov_points >= 75 && sov_points > muj_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
@@ -296,7 +318,7 @@
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
-		if (muj_points >= 60 && muj_points > sov_points)
+		if (muj_points >= 75 && muj_points > sov_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
