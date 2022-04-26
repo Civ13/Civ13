@@ -707,7 +707,10 @@ RECIPE: /material/cloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,h
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,grand turban,/obj/item/clothing/head/turban/sultan,5,110,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,custom taqiyah,/obj/item/clothing/head/custom/taqiyah,2,55,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,custom hijab,/obj/item/clothing/head/custom/hijab,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh,2,55,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,custom kippa,/obj/item/clothing/head/custom/kippa,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,phrigian hat,/obj/item/clothing/head/phrigian_hat,4,55,0,1,hats,0,0,38,2,null
 RECIPE: /material/cloth/,red phrigian hat,/obj/item/clothing/head/phrigian_hat/red,4,55,0,1,hats,0,0,38,2,null
 RECIPE: /material/cloth/,blue phrigian hat,/obj/item/clothing/head/phrigian_hat/blue,4,55,0,1,hats,0,0,38,2,null

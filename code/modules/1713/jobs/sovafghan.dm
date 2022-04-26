@@ -24,11 +24,11 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
 //head
-	if (prob(50))
+	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/gglasses(H), slot_eyes)
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_officercap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
@@ -291,11 +291,14 @@
 	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
+	else if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
 	else if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (prob(33))
@@ -346,8 +349,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/pilot(H), slot_eyes)
 	else if (prob(50))
@@ -379,7 +381,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/sovafghan/vdv
+/*/datum/job/russian/sovafghan/vdv
 	title = "VDV Paratrooper"
 	rank_abbreviation = "Spz. VDV"
 
@@ -440,7 +442,7 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
-	return TRUE
+	return TRUE*/
 
 /////////DRA Goverment//////////////
 
@@ -520,7 +522,7 @@
 
 	can_get_coordinates = TRUE
 	default_language = "Arabic"
-	additional_languages = list("Russian" = 60)
+	additional_languages = list("Russian" = 70)
 
 	min_positions = 1
 	max_positions = 4
@@ -535,7 +537,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/officer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //head
-	if (prob(40))
+	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
@@ -608,8 +610,7 @@
 	uniform.attackby(red, H)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
-	if (prob(40))
+	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/custom/fieldcap/dra(H), slot_head)
@@ -652,66 +653,16 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/*/datum/job/afghan/civilian/dra/palg
-	title = "DRA Palace Guard"
-	rank_abbreviation = "Pfc."
-
-	spawn_location = "JoinLateRN"
-
-
-	uses_squads = TRUE
-
-	min_positions = 10
-	max_positions = 45
-
-/datum/job/afghan/civilian/dra/palg(var/mob/living/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/combat(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/plate = new /obj/item/clothing/accessory/armor/modern(null)
-	uniform.attackby(plate, H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
-	var/obj/item/clothing/accessory/ruffle/neck = new /obj/item/clothing/accessory/ruffle(null)
-	uniform.attackby(neck, H)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
-
-	H.civilization = "Afgov"
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt of the DRA. Follow orders and defeat the terrorists!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
-	return TRUE
-
 ////////////////////////////////////////////////Afghan civilians////////////////////////////////////////
-
+/*
 /datum/job/civilian/afghan/facworker
-	title = "factory worker"
-	en_meaning = " "
+	title = "Factory Worker"
 	rank_abbreviation = " "
 
-	spawn_location = "JoinLateAR"
+	spawn_location = "JoinLateFact"
 
 	min_positions = 1
-	max_positions = 45
+	max_positions = 10
 
 /datum/job/civilian/afghan/facworker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -774,47 +725,14 @@
 	give_random_name(H)
 
 	return TRUE
-
-/datum/job/civilian/afghan/villager
-	title = "villager"
-	en_meaning = " "
-	rank_abbreviation = " "
-
-	spawn_location = "JoinLateAR"
-
-	min_positions = 1
-	max_positions = 90
-
-/datum/job/civilian/afghan/villager/equip(var/mob/living/human/H)
-
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
-
-	H.civilization = "civilian"
-
-	H.add_note("Role", "You are a <b>[title]</b>,a poor villager")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	give_random_name(H)
-
-	return TRUE
 */
 /datum/job/civilian/afghan/doctor
-	title = "Civilian Doctor "
+	title = "Hospital Doctor"
 	rank_abbreviation = "Dr."
 
 	spawn_location = "JoinLateDoc"
 	is_afghan = TRUE
+	is_coldwar = TRUE
 
 	min_positions = 1
 	max_positions = 4
@@ -868,41 +786,8 @@
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_HIGH)
 	return TRUE
-/*
-/datum/job/civilian/afghan/urbanciv
-	title = "urban unemployed civilian"
-	en_meaning = " "
-	rank_abbreviation = " "
 
-	spawn_location = "JoinLateAR"
-
-	min_positions = 1
-	max_positions = 45
-
-/datum/job/civilian/afghan/urbanciv/equip(var/mob/living/human/H)
-
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
-
-	H.civilization = "civilian"
-
-	H.add_note("Role", "You are an <b>[title]</b>, a local civilian,you are unemployed. Good luck finding a job!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	give_random_name(H)
-	return TRUE
-
-/datum/job/civilian/afghan/ubrec
+/*/datum/job/civilian/afghan/ubrec
 	title = "factory overseer"
 	en_meaning = " "
 	rank_abbreviation = " "
@@ -967,6 +852,214 @@
 	give_random_name(H)
 
 	return TRUE */
+
+/datum/job/civilian/afghan/urbanciv
+	title = "Civilian"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCiv"
+	is_afghan = TRUE
+	is_coldwar = TRUE
+
+
+	min_positions = 1
+	max_positions = 30
+
+/datum/job/civilian/afghan/urbanciv/equip(var/mob/living/human/H)
+
+//shoes
+	var/randshoes = rand (1,5)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+//clothes
+	var/randclothes = rand (1,18)
+	switch(randclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern4(H), slot_w_uniform)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/cozyoldy(H), slot_w_uniform)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(H), slot_w_uniform)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
+		if (8)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/artisan(H), slot_w_uniform)
+		if (9)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/artisan/dark(H), slot_w_uniform)
+		if (10)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/artisan/light(H), slot_w_uniform)
+		if (11)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
+		if (12)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
+		if (13)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/merchant_suit(H), slot_w_uniform)
+		if (14)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+		if (15)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+		if (16)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+		if (17)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+		if (18)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/steppe_tunic(H), slot_w_uniform)
+
+//head
+	if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+	else if (prob(30))
+		var/obj/item/clothing/head/custom/taqiyah/taq = new /obj/item/clothing/head/custom/taqiyah(null)
+		taq.color = pick("#f0f0f0","#bababa","#787878","#303030")
+		taq.uncolored1 = FALSE
+		H.equip_to_slot_or_del(taq, slot_head)
+	else if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+
+	H.civilization = "Civilian"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.gender != FEMALE)
+		if (H.f_style != "Shaved" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+			H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+
+	H.s_tone = rand(-90,-65)
+	var/new_hair = pick("Dark Brown","Black","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are an <b>[title]</b>, a local citizen. Live your life in the city!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	return TRUE
+
+/datum/job/civilian/afghan/villager
+	title = "Villager"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateVil"
+	is_afghan = TRUE
+	is_coldwar = TRUE
+	can_be_female = TRUE
+
+	min_positions = 1
+	max_positions = 30
+
+/datum/job/civilian/afghan/villager/equip(var/mob/living/human/H)
+
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+//clothes
+	if (H.gender != FEMALE)
+		var/randclothes = rand(1,5)
+		switch(randclothes)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(H), slot_w_uniform)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
+			if (4)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/beggar_clothing(H), slot_w_uniform)
+			if (5)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/steppe_tunic(H), slot_w_uniform)
+	else
+		var/randdress = rand(1,3)
+		switch(randdress)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/blackdress(H), slot_w_uniform)
+//head
+	if (H.gender != FEMALE)
+		var/randhat1 = rand (1,3)
+		var/randhat2 = rand (1,3)
+		if (prob(80))
+			switch (randhat1)
+				if (1)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+				if (2)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
+				if (3)
+					var/obj/item/clothing/head/custom/taqiyah/taq = new /obj/item/clothing/head/custom/taqiyah(null)
+					taq.color = pick("#f0f0f0","#bababa","#787878","#303030")
+					taq.uncolored1 = FALSE
+					H.equip_to_slot_or_del(taq, slot_head)
+		else
+			switch (randhat2)
+				if (1)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+				if (2)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/fez(H), slot_head)
+				if (3)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
+	else
+		var/obj/item/clothing/head/custom/hijab/hij = new /obj/item/clothing/head/custom/hijab(null)
+		hij.color = pick("#bababa","#787878","#303030","#3b3b3b","#1f1f1f","#240f0f","#241a0f","#1a1f0a","#0a1f11","#0a1f1a","#0a191f","#0a0c1f","#120a1f","#241e2e","#1b2129","#17211f","#1c1916")
+		hij.uncolored1 = FALSE
+		H.equip_to_slot_or_del(hij, slot_head)
+
+	H.civilization = "Civilian"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.gender != FEMALE)
+		if (H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Neckbeard" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+			H.f_style = pick("Medium Beard","Long Beard","Very Long Beard","Neckbeard","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+
+	H.s_tone = rand(-90,-65)
+	var/new_hair = pick("Dark Brown","Black","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are a <b>[title]</b>, exploit the land as you can and try to earn a little money.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+
+	return TRUE
+
 ////////////////////////////////////////////////Mujahideen////////////////////////////////////////
 
 /datum/job/arab/mujahideen/leader
@@ -984,17 +1077,38 @@
 /datum/job/arab/mujahideen/leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+	var/randshoes = rand(1,5)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/emirate(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
+	var/randclothes = rand(1,3)
+	switch (randclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/emirate(H), slot_w_uniform)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/modern/british = new /obj/item/clothing/accessory/armor/modern(null)
 	uniform.attackby(british, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/att(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 
 	H.civilization = "Mujahideen"
@@ -1025,38 +1139,89 @@
 	return TRUE
 
 /datum/job/arab/mujahideen/insurgent
-	title = "Insurgent"
-	rank_abbreviation = " "
+	title = "Mujahideen Insurgent"
+	rank_abbreviation = ""
 
 	spawn_location = "JoinLateAR"
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
 
-
 	min_positions = 10
 	max_positions = 250
 
-/datum/job/mujahideen/insurgent/equip(var/mob/living/human/H)
+/datum/job/arab/mujahideen/insurgent/equip(var/mob/living/human/H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+	var/randshoes = rand(1,4)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
-	var/randcloth = pick(1,2,3)
-	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(H), slot_w_uniform)
-	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
-	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
+	var/randclothes = rand(1,6)
+	switch(randclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_green(H), slot_w_uniform)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand(H), slot_w_uniform)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
 //gun and belt
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/att(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
+	var/randgun = rand(1,6)
+	switch(randgun)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_shoulder)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_shoulder)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+	var/randhat1 = rand (1,3)
+	var/randhat2 = rand (1,2)
+	if (prob(80))
+		switch (randhat1)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+	else
+		switch (randhat2)
+			if (1)
+				var/obj/item/clothing/head/custom/taqiyah/taq = new /obj/item/clothing/head/custom/taqiyah(null)
+				taq.color = pick("#f0f0f0","#bababa","#787878","#303030")
+				taq.uncolored1 = FALSE
+				H.equip_to_slot_or_del(taq, slot_head)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
 
 	H.civilization = "Mujahideen"
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard")
-		H.f_style = pick("Full Beard","Medium Beard","Long Beard")
+
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Neckbeard")
+		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard","Neckbeard")
 	H.s_tone = rand(-92,-80)
 	var/new_hair = pick("Dark Brown","Black")
 	var/hex_hair = hair_colors[new_hair]

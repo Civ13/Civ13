@@ -1421,8 +1421,5 @@
 /obj/item/clothing/head/custom/fieldcap/dra
 	name = "DRA field cap"
 	desc = "A cap worn by DRA military personnel."
-	icon_state = "fieldcap_custom"
-	item_state = "fieldcap_custom"
-	worn_state = "fieldcap_custom"
-	capcolor = "#767160"
+	color = "#767160"
 	uncolored1 = FALSE
