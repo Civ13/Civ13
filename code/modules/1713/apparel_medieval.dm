@@ -242,6 +242,18 @@
 	item_state = "keffiyeh_red"
 	worn_state = "keffiyeh_red"
 
+/obj/item/clothing/head/pakol
+	icon_state = "pakol_rose"
+	item_state = "pakol_rose"
+	worn_state = "pakol_rose"
+	heat_protection = HEAD
+/obj/item/clothing/head/pakol/New()
+	..()
+	var/pickcolor = pick("pakol_rose", "pakol_beige", "pakol_bgrey")
+	icon_state = pickcolor
+	item_state = pickcolor
+	worn_state = pickcolor
+
 /*Medieval Suits*/
 
 /obj/item/clothing/suit/storage/jacket/arabic_robe

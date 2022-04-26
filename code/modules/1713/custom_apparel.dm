@@ -797,6 +797,29 @@
     worn_state = "drill_hat"
     heat_protection = HEAD
 
+/obj/item/clothing/head/custom/taqiyah
+	name = "taqiyah"
+	desc = "A short, rounded skullcap usually worn for religious purposes."
+	icon_state = "taqiyah"
+	item_state = "taqiyah"
+	worn_state = "taqiyah"
+
+/obj/item/clothing/head/custom/hijab
+	name = "hijab"
+	desc = "A veil which is wrapped to cover the head and chest."
+	icon_state = "hijab"
+	item_state = "hijab"
+	worn_state = "hijab"
+	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/kippa
+	name = "kippa"
+	desc = "A small, brimless cap."
+	icon_state = "kippa"
+	item_state = "kippa"
+	worn_state = "kippa"
+
 /obj/item/clothing/head/custom_keffiyeh
 	name = "keffiyeh"
 	desc = "A headdress fashioned from a scarf with a checkered pattern."
