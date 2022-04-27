@@ -243,6 +243,8 @@
 	worn_state = "keffiyeh_red"
 
 /obj/item/clothing/head/pakol
+	name = "pakol"
+	desc = "A soft round-topped men's cap made of wool."
 	icon_state = "pakol_rose"
 	item_state = "pakol_rose"
 	worn_state = "pakol_rose"
