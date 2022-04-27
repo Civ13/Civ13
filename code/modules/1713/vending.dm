@@ -928,3 +928,102 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
 	)
+
+/obj/structure/vending/sovafghan/soviet/apparel
+	name = "Soviet Army apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/combat = 15,
+		/obj/item/clothing/shoes/soldiershoes = 10,
+		/obj/item/clothing/under/afghanka = 20,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b3 = 20,
+		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 20,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/smallpouches/green = 10,
+		/obj/item/weapon/storage/belt/smallpouches = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/weapon/storage/backpack/sovpack = 20,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+	)
+
+/obj/structure/vending/sovafghan/soviet/weapons
+	name = "Soviet Army weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 5,
+		/obj/item/weapon/gun/projectile/pistol/makarov = 10,
+	)
+
+/obj/structure/vending/sovafghan/soviet/ammo
+	name = "Soviet Army ammo crate"
+	desc = "A large crate of ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak74 = 50,
+		/obj/item/ammo_magazine/pkm/c100 = 10,
+		/obj/item/ammo_magazine/pkm/c100 = 10,
+		/obj/item/ammo_magazine/svd = 10,
+		/obj/item/ammo_magazine/makarov = 20,
+	)
+
+/obj/structure/vending/sovafghan/dra/apparel
+	name = "DRA apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/soldiershoes = 20,
+		/obj/item/clothing/under/coldwar/dra/soldier = 20,
+		/obj/item/clothing/head/custom/fieldcap/dra = 20,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 10,
+		/obj/item/clothing/accessory/armband = 20,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/smallpouches/green = 10,
+		/obj/item/weapon/storage/belt/smallpouches = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+	)
+
+/obj/structure/vending/sovafghan/dra/weapons
+	name = "DRA weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/sks = 30,
+		/obj/item/weapon/gun/projectile/submachinegun/ak47 = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 4,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
+		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
+	)
+
+/obj/structure/vending/sovafghan/dra/ammo
+	name = "DRA ammo crate"
+	desc = "A large crate of ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak47 = 40,
+		/obj/item/ammo_magazine/sks = 80,
+		/obj/item/ammo_magazine/ak74 = 12,
+		/obj/item/ammo_magazine/pkm = 5,
+		/obj/item/ammo_magazine/makarov = 10,
+	)
