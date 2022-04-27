@@ -98,6 +98,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -161,6 +163,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
 	uniform.attackby(white, H)
@@ -175,7 +179,7 @@
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.s_tone = rand(-40,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow comrades healthy and alive!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -281,10 +285,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	uniform.attackby(armour2, H)
-	var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
-	uniform.attackby(mag, H)
-	var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
-	uniform.attackby(mag2, H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //back
@@ -297,10 +297,20 @@
 	else if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+		var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag, H)
+		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag2, H)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+		var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag, H)
+		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag2, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (prob(33))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/sovpack(H), slot_back)
 //jacket
@@ -337,7 +347,7 @@
 	is_coldwar = TRUE
 
 	min_positions = 10
-	max_positions = 32
+	max_positions = 18
 
 /datum/job/russian/sovafghan/tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -358,7 +368,17 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+	if (prob(50))
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+		uniform.attackby(armour2, H)
+		var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag, H)
+		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag2, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
@@ -552,6 +572,8 @@
 	var/obj/item/clothing/accessory/armband/red = new/obj/item/clothing/accessory/armband(null)
 	uniform.attackby(red, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 //jacket
 
 	H.civilization = "DRA"
@@ -624,6 +646,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 
 	H.civilization = "DRA"
 	H.name = H.species.get_random_arab_name(H.gender)
