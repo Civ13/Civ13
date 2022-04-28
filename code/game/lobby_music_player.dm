@@ -35,7 +35,7 @@
 			break
 
 	// somehow we have no song, pick a random one
-	if (!song_title)
+	if (!song_title && random_order_songs)
 		song_title = pick(random_order_songs)
 
 	// don't play the same song as before

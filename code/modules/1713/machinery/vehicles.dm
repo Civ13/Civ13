@@ -129,7 +129,7 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	reg_number = ""
 	color = "#774D4C"
-	turret_type = "round_tank_turret"
+	turret_type = "t55_turret"
 
 /obj/structure/vehicleparts/axis/heavy/baf1_a
 	name = "BAF I mod. A"
@@ -137,7 +137,7 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	reg_number = ""
 	color = "#8383C2"
-	turret_type = "t55_turret"
+	turret_type = "pt76_turret"
 
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"

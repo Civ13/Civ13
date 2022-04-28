@@ -7,6 +7,7 @@
 	respawn_delay = 1800
 	no_winner ="The battle is going on."
 	var/victory_time = 45000
+	var/grace_wall_timer = 9000
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
@@ -82,10 +83,10 @@ obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/campaign/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 9000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)
 
 /obj/map_metadata/campaign/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 9000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)
 
 /obj/map_metadata/campaign/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
@@ -583,3 +584,73 @@ var/no_loop_cm = FALSE
 				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone."
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
+
+
+/obj/map_metadata/campaign/campaign5
+	victory_time = 48000
+	grace_wall_timer = 12000
+/obj/map_metadata/campaign/campaign5/update_win_condition()
+
+	if (world.time >= victory_time)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = "The <b>Blugoslavians</b> have sucessfuly defended the road! The Redmenians have failed to encircle the 12th Brigade!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		return FALSE
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_cm == FALSE)
+		ticker.finished = TRUE
+		var/message = "The <b>Redmenians</b> have captured the road and encircled the 12th Brigade to the West! The battle is over!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		no_loop_cm = TRUE
+		return FALSE
+	// German major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// German minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// Soviet major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	// Soviet minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	else
+		if (current_win_condition != no_winner && current_winner && current_loser)
+			world << "<font size = 3>The <b>Germans</b> have recaptured the Berlin Gate!</font>"
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+	return TRUE

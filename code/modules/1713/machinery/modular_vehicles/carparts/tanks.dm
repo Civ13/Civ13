@@ -263,44 +263,44 @@
 /obj/structure/vehicleparts/frame/baf1_a
 	icon = 'icons/obj/vehicles/tankparts.dmi'
 	normal_icon = 'icons/obj/vehicles/tankparts.dmi'
-	override_roof_icon = "t55_fc"
+	override_roof_icon = "baf1_fc"
 /obj/structure/vehicleparts/frame/baf1_a/center_back
-	override_roof_icon = "t55_bc"
+	override_roof_icon = "baf1_bc"
 /obj/structure/vehicleparts/frame/baf1_a/front
 	w_front = list("mt_front_frame",TRUE,TRUE,50,50,FALSE,FALSE)
-	override_roof_icon = "t55_f"
+	override_roof_icon = "baf1_f"
 	override_frame_icon = "mt_front_frame"
 /obj/structure/vehicleparts/frame/baf1_a/back
 	w_back = list("mt_back_frame",TRUE,TRUE,40,35,FALSE,FALSE)
-	override_roof_icon = "t55_b"
+	override_roof_icon = "baf1_b"
 	override_frame_icon = "mt_back_frame"
 /obj/structure/vehicleparts/frame/baf1_a/left
 	w_left = list("mt_left_frame",TRUE,TRUE,40,35,FALSE,FALSE)
-	override_roof_icon = "t55_fcl"
+	override_roof_icon = "baf1_fcl"
 	override_frame_icon = "mt_left_frame"
 /obj/structure/vehicleparts/frame/baf1_a/left/back
-	override_roof_icon = "t55_bcl"
+	override_roof_icon = "baf1_bcl"
 /obj/structure/vehicleparts/frame/baf1_a/right
 	w_right = list("mt_right_frame",TRUE,TRUE,40,35,FALSE,FALSE)
-	override_roof_icon = "t55_fcr"
+	override_roof_icon = "baf1_fcr"
 	override_frame_icon = "mt_right_frame"
 /obj/structure/vehicleparts/frame/baf1_a/right/back
-	override_roof_icon = "t55_bcr"
+	override_roof_icon = "baf1_bcr"
 
 /obj/structure/vehicleparts/frame/baf1_a/left/door
 	w_left = list("c_door",TRUE,TRUE,40,24,TRUE,TRUE)
 	doorcode = 668643
-	override_roof_icon = "t55_bcl"
+	override_roof_icon = "baf1_bcl"
 	override_frame_icon = "mt_left_door_frame"
 /obj/structure/vehicleparts/frame/baf1_a/right/door
 	w_right = list("mt_right_door_frame",TRUE,TRUE,40,24,TRUE,TRUE)
 	doorcode = 668643
-	override_roof_icon = "t55_bcr"
+	override_roof_icon = "baf1_bcr"
 	override_frame_icon = "mt_right_door_frame"
 /obj/structure/vehicleparts/frame/baf1_a/rb
 	w_right = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
 	w_back = list("mt_right_back_frame",TRUE,TRUE,40,35,FALSE,FALSE)
-	override_roof_icon = "t55_br"
+	override_roof_icon = "baf1_br"
 	override_frame_icon = "mt_back_right_frame"
 /obj/structure/vehicleparts/frame/baf1_a/rb/door
 	w_right = list("c_door",TRUE,TRUE,40,24,TRUE,TRUE)
@@ -308,15 +308,15 @@
 /obj/structure/vehicleparts/frame/baf1_a/lb
 	w_left = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
 	w_back = list("mt_back_left_frame",TRUE,TRUE,40,35,FALSE,FALSE)
-	override_roof_icon = "t55_bl"
+	override_roof_icon = "baf1_bl"
 	override_frame_icon = "mt_back_left_frame"
 /obj/structure/vehicleparts/frame/baf1_a/rf
 	w_right = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
 	w_front = list("mt_front_right_frame",TRUE,TRUE,50,50,FALSE,FALSE)
-	override_roof_icon = "t55_fr"
+	override_roof_icon = "baf1_fr"
 	override_frame_icon = "mt_front_right_frame"
 /obj/structure/vehicleparts/frame/baf1_a/lf
 	w_left = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
 	w_front = list("mt_front_left_frame",TRUE,TRUE,50,50,FALSE,FALSE)
-	override_roof_icon = "t55_fl"
+	override_roof_icon = "baf1_fl"
 	override_frame_icon = "mt_front_left_frame"

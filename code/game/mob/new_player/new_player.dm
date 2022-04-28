@@ -129,7 +129,7 @@ var/global/redirect_all_players = null
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
-	if (map.ID != MAP_CAMPAIGN || client.holder)
+	if (map && map.ID != MAP_CAMPAIGN || client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
