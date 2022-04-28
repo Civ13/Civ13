@@ -9,4 +9,4 @@ sudo apt upgrade
 sudo apt install python3 wget git unzip make sudo
 sudo rm INSTALL.py
 sudo wget https://raw.githubusercontent.com/Civ13/Civ13/master/INSTALL.py
-sudo python3 INSTALL.py 514 1568
+sudo python3 INSTALL.py 514 1583
