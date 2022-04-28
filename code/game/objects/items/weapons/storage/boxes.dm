@@ -12,7 +12,6 @@
 /obj/item/weapon/storage/box/drinkingglasses
 	name = "box of drinking glasses"
 	desc = "It has a picture of drinking glasses on it."
-
 	New()
 		..()
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
@@ -295,6 +294,21 @@
 		new /obj/item/weapon/key/civ/room3(src)
 		new /obj/item/weapon/key/civ/room4(src)
 		new /obj/item/weapon/storage/belt/keychain(src)
+
+/obj/item/weapon/storage/box/firstaid/advsmall
+	name = "pocket medkit"
+	desc = "Contains basic first-aid medicine."
+	icon_state = "advfirstaid2"
+	item_state = "advfirstaid2"
+	w_class = 2
+
+/obj/item/weapon/storage/box/firstaid/advsmall/New()
+	..()
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	return
 
 /obj/item/weapon/matchbox
 	name = "matchbox"

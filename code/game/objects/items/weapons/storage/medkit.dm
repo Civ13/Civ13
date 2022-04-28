@@ -55,8 +55,8 @@
 /obj/item/weapon/storage/firstaid/advsmall
 	name = "first-aid kit"
 	desc = "Contains basic first-aid medicine."
-	icon_state = "medical_satchel"
-	item_state = "medical_satchel"
+	icon_state = "advfirstaid2"
+	item_state = "advfirstaid2"
 
 /obj/item/weapon/storage/firstaid/advsmall/New()
 	..()
@@ -64,6 +64,7 @@
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
 	new /obj/item/stack/medical/advanced/ointment(src)
 	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
 	return
 
 /obj/item/weapon/storage/firstaid/combat/modern
