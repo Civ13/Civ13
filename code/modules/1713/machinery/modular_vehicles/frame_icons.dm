@@ -105,7 +105,7 @@
 					roof_turret.pixel_y = -32
 					roof_turret.pixel_x = -32
 				else if (dir == SOUTH)
-					roof_turret.pixel_y = -64
+					roof_turret.pixel_y = -56
 					roof_turret.pixel_x = -32
 				else if (dir == WEST)
 					roof_turret.pixel_x = -48

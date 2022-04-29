@@ -311,6 +311,7 @@
 	title = "BAF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
+*/
 /datum/job/civilian/bluefaction/armored/sl
 	title = "BAF Armored Squadleader"
 	is_squad_leader = TRUE
@@ -320,7 +321,7 @@
 	title = "BAF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
-*/
+
 /datum/job/civilian/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad

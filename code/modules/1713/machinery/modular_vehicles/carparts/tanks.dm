@@ -225,7 +225,7 @@
 	override_roof_icon = "mt_right_roof"
 	override_frame_icon = "mt_right_frame"
 /obj/structure/vehicleparts/frame/omw22_2/left/door
-	w_left = list("c_door",TRUE,TRUE,50,28,TRUE,TRUE)
+	w_left = list("mt_left_door_frame",TRUE,TRUE,50,28,TRUE,TRUE)
 	doorcode = 668643
 	override_roof_icon = "mt_left_door_roof"
 	override_frame_icon = "mt_left_door_frame"
@@ -288,13 +288,13 @@
 	override_roof_icon = "baf1_bcr"
 
 /obj/structure/vehicleparts/frame/baf1_a/left/door
-	w_left = list("c_door",TRUE,TRUE,40,24,TRUE,TRUE)
-	doorcode = 668643
+	w_left = list("mt_right_door_frame",TRUE,TRUE,40,24,TRUE,TRUE)
+	doorcode = 932145
 	override_roof_icon = "baf1_bcl"
 	override_frame_icon = "mt_left_door_frame"
 /obj/structure/vehicleparts/frame/baf1_a/right/door
 	w_right = list("mt_right_door_frame",TRUE,TRUE,40,24,TRUE,TRUE)
-	doorcode = 668643
+	doorcode = 932145
 	override_roof_icon = "baf1_bcr"
 	override_frame_icon = "mt_right_door_frame"
 /obj/structure/vehicleparts/frame/baf1_a/rb
