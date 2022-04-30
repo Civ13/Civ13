@@ -1603,3 +1603,24 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack,/obj/item/weapon/gun/projectile/pistol)
+
+/obj/item/clothing/head/helmet/modern/mechanical
+	name = "Mechanical Helmet"
+	desc = "A mechanical steel helmet."
+	icon_state = "mechanicalhelmet"
+	item_state = "mechanicalhelmet"
+	worn_state = "mechanicalhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 175, arrow = 99, gun = 120, energy = 42, bomb = 185, bio = 35, rad = FALSE)
+
+/obj/item/clothing/suit/armor/mechanical
+	name = "mechanized armor"
+	desc = "A thick, thrown together iron armor, covering most of the body."
+	icon_state = "mechanicalarmor"
+	item_state = "mechanicalarmor"
+	worn_state = "mechanicalarmor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 85, arrow = 150, gun = 150, energy = 55, bomb = 70, bio = 30, rad = FALSE)
+	value = 150
+	slowdown = 1.8
+	health = 175
