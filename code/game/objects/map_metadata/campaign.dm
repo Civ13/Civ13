@@ -589,9 +589,14 @@ var/no_loop_cm = FALSE
 /obj/map_metadata/campaign/campaign5
 	victory_time = 48000
 	grace_wall_timer = 12000
+	mission_start_message = "<font size=4><b>20 minutes</b> until the battle begins.</font>"
+	roundend_condition_sides = list(
+		list(CIVILIAN) = /area/caribbean/british/land/outside/objective,
+		list(PIRATES) = /area/caribbean/japanese
+		)
 /obj/map_metadata/campaign/campaign5/update_win_condition()
 
-	if (world.time >= victory_time)
+	if (world.time >= victory_time || round_finished)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
@@ -612,7 +617,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the road! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -621,7 +626,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the road! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -630,7 +635,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the road! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -639,14 +644,14 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have reached past the Berlin Gate! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the road! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Germans</b> have recaptured the Berlin Gate!</font>"
+			world << "<font size = 3>The <b>Blugoslavians</b> have recaptured the road!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1

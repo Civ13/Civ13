@@ -111,6 +111,11 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					moving = FALSE
 					stopmovementloop()
 					return FALSE
+			if (map && map.check_caribbean_block(driver,T))
+				visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+				moving = FALSE
+				stopmovementloop()
+				return FALSE
 			if (reverse)
 				T = get_turf(get_step(FR.loc,OPPOSITE_DIR(dir)))
 			if (!T)

@@ -107,6 +107,7 @@
 					if (!done4)
 						D.anchored = TRUE
 						D.dir = central.axis.dir
+						D.axis = central.axis
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE

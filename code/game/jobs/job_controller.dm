@@ -268,6 +268,20 @@ var/global/datum/controller/occupations/job_master
 		else
 			spawn_location = "JoinLateIND5"
 
+	if(map && map.ID == MAP_CAMPAIGN && istype(map, /obj/map_metadata/campaign/campaign5))
+		if (findtext(H.original_job_title,"RDF"))
+			spawn_location = "JoinLateRedN"
+			if(findtext(H.original_job_title,"Squad 2"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Engineer"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Anti-Tank"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Recon"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Armored"))
+				spawn_location = "JoinLateRedS"
+
 	var/turf/spawnpoint = null
 	var/list/turfs = latejoin_turfs[spawn_location]
 	if (!latejoin_turfs[spawn_location] || !latejoin_turfs[spawn_location].len)

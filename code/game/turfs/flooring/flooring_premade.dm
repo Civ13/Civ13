@@ -234,7 +234,7 @@
 	is_diggable = TRUE
 	initial_flooring = /decl/flooring/dirt
 
-/turf/floor/dark_dirt
+/turf/floor/dirt/dark_dirt
 	name = "dark dirt"
 	desc = "Darker than normal dirt, spooky."
 	icon = 'icons/turf/floors.dmi'

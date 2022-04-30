@@ -101,6 +101,8 @@ var/civmax_research = list(230,230,230)
 	var/list/zlevels_without_lighting = list()
 	var/list/areas_without_lighting = list()
 
+	var/round_finished = FALSE
+
 	// fluff
 	var/meme = FALSE
 	var/battle_name = null

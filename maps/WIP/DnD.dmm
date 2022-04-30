@@ -1,13 +1,13 @@
 "a" = (/turf/wall/rockwall,/area/caribbean/void/caves)
 "b" = (/turf/floor/wood,/area/caribbean/void/caves)
-"c" = (/turf/floor/dark_dirt,/area/caribbean/void/caves)
+"c" = (/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
 "d" = (/obj/structure/torch_stand/full{icon_state = "torch_stand"; dir = 4},/turf/floor/wood,/area/caribbean/void/caves)
-"e" = (/obj/structure/torch_stand/full,/turf/floor/dark_dirt,/area/caribbean/void/caves)
+"e" = (/obj/structure/torch_stand/full,/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
 "f" = (/turf/floor/dirt/underground/empty,/area/caribbean/void/caves)
-"g" = (/obj/item/weapon/melee/mace,/turf/floor/dark_dirt,/area/caribbean/void/caves)
-"h" = (/obj/item/weapon/punji_sticks{anchored = 1; deployed = 1; icon_state = "punji2_sand"},/turf/floor/dark_dirt,/area/caribbean/void/caves)
-"i" = (/obj/structure/brazier{fuel = 2.14748e+009; on = 1},/turf/floor/dark_dirt,/area/caribbean/void/caves)
-"j" = (/obj/structure/oven/fireplace/pit{fuel = 1e+008; on = 1},/turf/floor/dark_dirt,/area/caribbean/void/caves)
+"g" = (/obj/item/weapon/melee/mace,/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
+"h" = (/obj/item/weapon/punji_sticks{anchored = 1; deployed = 1; icon_state = "punji2_sand"},/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
+"i" = (/obj/structure/brazier{fuel = 2.14748e+009; on = 1},/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
+"j" = (/obj/structure/oven/fireplace/pit{fuel = 1e+008; on = 1},/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

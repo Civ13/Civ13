@@ -38,6 +38,10 @@
 		buckled_mob.pixel_x = 0
 		buckled_mob.pixel_y = 0
 		buckled_mob = null
+		if (istype(src, /obj/structure/bed/chair/drivers))
+			var/obj/structure/bed/chair/drivers/DC = src
+			if (DC.axis)
+				DC.axis.driver = null
 		if (istype(src, /obj/structure/bed/bedroll) && istype(., /mob/living/human))
 			var/obj/structure/bed/bedroll/BR = src
 			BR.used = FALSE

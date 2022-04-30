@@ -31,6 +31,7 @@
 	var/list/components = list()
 	var/current_weight = 5
 	var/lastmovementloop = 0
+	var/mob/living/human/driver = null
 
 	//matrix/turning stuff
 	var/list/corners = list()
@@ -134,7 +135,7 @@
 /obj/structure/vehicleparts/axis/heavy/baf1_a
 	name = "BAF I mod. A"
 	speeds = 4
-	speedlist = list(1=10,2=7,3=5,4=4)
+	speedlist = list(1=9,2=6,3=4,4=3)
 	reg_number = ""
 	color = "#8383C2"
 	turret_type = "pt76_turret"

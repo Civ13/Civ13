@@ -146,6 +146,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "driver_car"
 	anchored = FALSE
+	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/item/vehicleparts/wheel/modular/wheel = null
 	New()
 		..()
@@ -158,6 +159,8 @@
 	flammable = FALSE
 /obj/structure/bed/chair/drivers/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
+	if (axis)
+		axis.driver = null
 	if (M)
 		if (M != user)
 			M.visible_message(\
@@ -187,6 +190,8 @@
 	return
 
 /obj/structure/bed/chair/drivers/post_buckle_mob()
+	if (axis)
+		axis.driver = buckled_mob
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(wheel) == FALSE)
 		buckled_mob << "Your hands are full!"
 		return
