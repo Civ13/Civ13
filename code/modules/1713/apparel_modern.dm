@@ -1234,6 +1234,13 @@
 	worn_state = "fbi"
 	base_state = "fbi"
 
+/obj/item/clothing/head/cap/fbi/atf
+	name = "ATF hat"
+	desc = "A black hat with ATF in white letters in the front."
+	icon_state = "atf"
+	item_state = "atf"
+	worn_state = "atf"
+	base_state = "atf"
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
 	name = "IOG heavy vest B-7"

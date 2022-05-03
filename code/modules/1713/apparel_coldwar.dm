@@ -102,6 +102,13 @@
 	item_state = "fbi2"
 	worn_state = "fbi2"
 
+/obj/item/clothing/suit/storage/fbi/atf
+	name = "ATF jacket"
+	desc = "An ATF jacket, standard issue for ATF Agents."
+	icon_state = "atf"
+	item_state = "atf"
+	worn_state = "atf"
+
 /obj/item/clothing/suit/swat //these likely need upgrading to armor
 	name = "swat heavy vest"
 	desc = "A heavy NIJ level IV vest, used by swat officers."
