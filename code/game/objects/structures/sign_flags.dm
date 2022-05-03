@@ -100,6 +100,27 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
+/obj/structure/sign/wide/carpet/purple
+	name = "\improper Carpet"
+	desc = "A low quality carpet dangling on the wall."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "carpet2"
+	layer = OBJ_LAYER - 0.1
+
+/obj/structure/sign/wide/carpet/red
+	name = "\improper Carpet"
+	desc = "A low quality carpet dangling on the wall."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "carpet3"
+	layer = OBJ_LAYER - 0.1
+
+/obj/structure/sign/wide/carpet/green
+	name = "\improper Carpet"
+	desc = "A low quality carpet dangling on the wall."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "carpet4"
+	layer = OBJ_LAYER - 0.1
+
 /obj/structure/sign/wide/stalingrad
 	name = "Stalingrad sign"
 	desc = "A worn-out sign displaying Stalingrad in cyrilic."
