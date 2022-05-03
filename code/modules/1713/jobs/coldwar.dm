@@ -407,12 +407,12 @@
 	var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969(null)
 	uniform.attackby(fj, H)
 
-	if (prob(60))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	H.s_tone = rand(-40,-20)
+	H.s_tone = rand(-40,-25)
 	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
@@ -467,12 +467,12 @@
 	var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969(null)
 	uniform.attackby(fj, H)
 
-	if (prob(60))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	H.s_tone = rand(-40,-20)
+	H.s_tone = rand(-40,-25)
 	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
@@ -522,12 +522,12 @@
 	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
 	uniform.attackby(lw, H)
 
-	if (prob(60))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	H.s_tone = rand(-40,-20)
+	H.s_tone = rand(-40,-25)
 	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
@@ -593,12 +593,12 @@
 		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj2 = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
 		uniform.attackby(fj2, H)
 
-	if (prob(60))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	H.s_tone = rand(-40,-20)
+	H.s_tone = rand(-40,-25)
 	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
@@ -660,12 +660,12 @@
 		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj2 = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
 		uniform.attackby(fj2, H)
 
-	if (prob(60))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	H.s_tone = rand(-40,-20)
+	H.s_tone = rand(-40,-25)
 	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
@@ -722,12 +722,12 @@
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
 
-	if (prob(60))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Selleck Mustache","Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	H.s_tone = rand(-40,-20)
+	H.s_tone = rand(-40,-25)
 	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
@@ -782,13 +782,14 @@
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
 
-	if (prob(78))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	if (prob(25))
-		H.s_tone = rand(-210,-170)
+	if (prob(18))
+		H.original_job.is_afro = TRUE
+		H.s_tone = rand(-150,-120)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
 		var/new_hair = "Black"
 		var/hex_hair = hair_colors[new_hair]
@@ -799,7 +800,7 @@
 		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
-		H.s_tone = rand(-40,-20)
+		H.s_tone = rand(-40,-25)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -833,6 +834,7 @@
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
+	is_afro = FALSE
 
 	min_positions = 10
 	max_positions = 100
@@ -874,13 +876,14 @@
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
-	if (prob(78))
-		H.f_style = pick("Shaved","Selleck Mustache")
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
-		H.f_style = pick("Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Shaved")
 
-	if (prob(25))
-		H.s_tone = rand(-200,-170)
+	if (prob(18))
+		H.original_job.is_afro = TRUE
+		H.s_tone = rand(-150,-120)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
 		var/new_hair = "Black"
 		var/hex_hair = hair_colors[new_hair]
@@ -891,7 +894,7 @@
 		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
-		H.s_tone = rand(-40,-20)
+		H.s_tone = rand(-40,-25)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
