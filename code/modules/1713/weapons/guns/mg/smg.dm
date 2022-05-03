@@ -225,6 +225,15 @@
 	sel_mode = 1
 	effectiveness_mod = 0.95
 
+/obj/item/weapon/gun/projectile/submachinegun/mp40/mp5
+	name = "MP5"
+	desc = "German submachinegun with an underfolding stock, chambered in 9mm Parabellum."
+	icon_state = "mp5"
+	item_state = "mp5"
+	base_icon = "mp5"
+	magazine_type = /obj/item/ammo_magazine/mp40/mp5
+	good_mags = list(/obj/item/ammo_magazine/mp40/mp5)
+
 /obj/item/weapon/gun/projectile/submachinegun/greasegun
 	name = "M3A1 SMG"
 	desc = "A simplistic American submachinegun, chambered in .45 ACP."

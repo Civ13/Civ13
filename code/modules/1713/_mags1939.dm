@@ -78,6 +78,10 @@
 	weight = 0.34
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/mp40/mp5
+	name = "MP5 magazine (9x19mm)"
+	icon_state = "mp5"
+
 /obj/item/ammo_magazine/mg34
 	name = "MG34 magazine (7.92x57mm)"
 	icon_state = "mg34"
