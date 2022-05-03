@@ -87,6 +87,11 @@
 	desc = "A sign that says bar on it."
 	icon_state = "barsign"
 
+/obj/structure/sign/barbershop
+	name = "barbershop"
+	desc = "A swirly object indicating a barbershop."
+	icon_state = "barber"
+
 /obj/structure/sign/baily
 	name = "Baily post"
 	desc = "Protection service."
