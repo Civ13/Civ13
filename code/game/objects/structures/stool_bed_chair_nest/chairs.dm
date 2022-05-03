@@ -199,6 +199,12 @@
 	icon_state = "wooden_chair"
 	applies_material_colour = FALSE
 
+/obj/structure/bed/modern/chair/barber
+	name = "barber chair"
+	desc = "A professional barbershop chair."
+	icon_state = "wooden_chair"
+	applies_material_colour = FALSE
+
 /obj/structure/bed/chair/wood/bleacher
 	name = "wood bleacher"
 	desc = "A long bench like seat for a church."

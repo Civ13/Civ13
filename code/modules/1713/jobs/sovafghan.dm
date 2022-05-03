@@ -12,6 +12,7 @@
 	is_afghan = TRUE
 	is_soviet = TRUE
 	is_coldwar = TRUE
+	additional_languages = list("Arabic" = 70)
 
 	min_positions = 1
 	max_positions = 2
@@ -76,6 +77,7 @@
 	is_afghan = TRUE
 	is_soviet = TRUE
 	is_coldwar = TRUE
+	additional_languages = list("Arabic" = 60)
 
 	min_positions = 2
 	max_positions = 8
@@ -201,6 +203,7 @@
 	is_soviet = TRUE
 	is_radioman = TRUE
 	is_coldwar = TRUE
+	additional_languages = list("Arabic" = 70)
 
 	min_positions = 10
 	max_positions = 8
@@ -286,7 +289,10 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	uniform.attackby(armour2, H)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
 //back
 	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
@@ -401,11 +407,11 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/*/datum/job/russian/sovafghan/vdv
-	title = "VDV Paratrooper"
-	rank_abbreviation = "Spz. VDV"
+/datum/job/russian/sovafghan/spez
+	title = "Spetznaz GRU"
+	rank_abbreviation = "Spz."
 
-	spawn_location = "JoinLateRUsptz"
+	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
@@ -414,28 +420,27 @@
 	uses_squads = TRUE
 
 	min_positions = 1
-	max_positions = 10
+	max_positions = 5
 
-/datum/job/russian/sovafghan/vdv/equip(var/mob/living/human/H)
+/datum/job/russian/sovafghan/spez/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba(H), slot_w_uniform)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_klmk(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_kzs(H), slot_w_uniform)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
-	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
-	armour.attackby(plates1, H)
-	armour.attackby(plates2, H)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
 //back
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
@@ -451,7 +456,7 @@
 		H.f_style = pick("Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Shaved")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
-	H.add_note("Role", "You are a <b>[title]</b>, part of the Soviet Airborne Forces. You are the best of the best; end this insurrection!")
+	H.add_note("Role", "You are a <b>[title]</b>, part of the Main Intelligence Directorate. You are the best of the best; end this insurrection!")
 	H.s_tone = rand(-40,-25)
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -462,7 +467,7 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
-	return TRUE*/
+	return TRUE
 
 /////////DRA Goverment//////////////
 
@@ -757,6 +762,8 @@
 	spawn_location = "JoinLateDoc"
 	is_afghan = TRUE
 	is_coldwar = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 90, "English" = 70)
 
 	min_positions = 1
 	max_positions = 4
@@ -884,6 +891,8 @@
 	spawn_location = "JoinLateCiv"
 	is_afghan = TRUE
 	is_coldwar = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 20)
 
 
 	min_positions = 1
@@ -993,6 +1002,7 @@
 	is_afghan = TRUE
 	is_coldwar = TRUE
 	can_be_female = TRUE
+	default_language = "Arabic"
 
 	min_positions = 1
 	max_positions = 30
@@ -1094,6 +1104,7 @@
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
+	additional_languages = list("Russian" = 40, "English"= 40)
 
 	min_positions = 1
 	max_positions = 5

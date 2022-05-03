@@ -237,6 +237,22 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/props/hookah
+	name = "hookah"
+	desc = "A glass pipe used to smoke tobacco or other substances."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "hookah1"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+
+/obj/structre/props/hookah/New()
+	..()
+	var/pickhookah = pick("hookah1", "hookah2", "hookah3")
+	icon_state = pickhookah
+
 /obj/structure/broken_hind
 	name = "Mi-24 remains"
 	desc = "The remains of a Soviet helicopter."

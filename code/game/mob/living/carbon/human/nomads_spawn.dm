@@ -1030,6 +1030,11 @@
 				s_tone = rand(-155,-185)
 		else if (faction_text == CIVILIAN && map.ID == MAP_AFRICAN_WARLORDS && original_job_title == "Local Policeman")
 			s_tone = rand(-155,-185)
+		else if (faction_text == AMERICAN && map.ordinal_age >= 7)
+			if (original_job.is_afro == TRUE)
+				s_tone = rand(-150,-120)
+			else
+				s_tone = rand(-40,-25)
 		else if (s_tone < -65)
 			s_tone = -65
 

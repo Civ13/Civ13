@@ -39,6 +39,15 @@
 
 /obj/map_metadata/sovafghan/New()
 	..()
+	var/newnamea = list("Soviet Army" = list(175,175,175,null,0,"star","#FF0000","#f5c400",0,0))
+	var/newnameb = list("DRA" = list(175,175,175,null,0,"star","#FF0000","#005400",0,0))
+	var/newnamec = list("Civilian" = list(175,175,175,null,0,"moon","#005400","#000000",0,0))
+	var/newnamed = list("Mujahideen" = list(175,175,175,null,0,"skull","#000000","#FFFFFF",0,0))
+	custom_civs += newnamea
+	custom_civs += newnameb
+	custom_civs += newnamec
+	custom_civs += newnamed
+	load_new_recipes("config/crafting/material_recipes_sovafghan.txt")
 	spawn(3000)
 		points_check()
 
@@ -339,6 +348,95 @@
 				return TRUE
 			if (H.faction_text == "CIVILIAN")
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction1)
+				return TRUE
+			if (H.faction_text == "CIVILIAN")
+				return TRUE
 		else
+			return !faction1_can_cross_blocks()
 			return !faction2_can_cross_blocks()
 	return FALSE
+
+
+//////Vendors////////
+
+/obj/structure/vending/sales/cia_agent
+	name = "CIA agent"
+	desc = "The USA supports your cause in exchange of ressources."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "afghcia"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/m16 = 30,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 10,
+		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 10,
+		/obj/item/weapon/gun/launcher/rocket/bazooka = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 10,
+
+
+		/obj/item/ammo_magazine/m16 = 80,
+		/obj/item/ammo_magazine/m14 = 30,
+		/obj/item/ammo_casing/rocket/bazooka = 20,
+		/obj/item/ammo_casing/grenade_l = 30,
+		/obj/item/weapon/plastique/c4 = 10,
+	)
+	prices = list(
+		/obj/item/weapon/gun/projectile/submachinegun/m16 = 200,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 300,
+		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 400,
+		/obj/item/weapon/gun/launcher/rocket/bazooka = 400,
+		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 300,
+
+
+		/obj/item/ammo_magazine/m16 = 20,
+		/obj/item/ammo_magazine/m14 = 30,
+		/obj/item/ammo_casing/rocket/bazooka = 60,
+		/obj/item/ammo_casing/grenade_l = 40,
+		/obj/item/weapon/plastique/c4 = 100,
+	)
+	attack_hand(mob/living/human/user as mob)
+		if (user.faction_text == "ARAB")
+			..()
+		else
+		 user << "You are not part of the Mujahideen, you should really leave the area."
+		 return
+	attackby(obj/item/I, mob/living/human/user)
+		if (user.faction_text == "ARAB")
+			..()
+		else
+		 user << "You are not part of the Mujahideen, you should really leave the area."
+		 return
+
+/obj/structure/props/afghan/druglord
+	name = "Tarik the Trafficker"
+	desc = "You've got opium? I've got money."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "afghdrug"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/afghan/druglord/attackby(obj/item/W, mob/living/human/user)
+	if(user.civilization == "Mujahideen")
+		if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
+			if (!W)
+				return
+			user << "Here's your payment, pleasure doing business with you, brother."
+			new/obj/item/stack/money/dollar(loc)
+			new/obj/item/stack/money/dollar(loc)
+			qdel(W)
+			return
+	else if(user.civilization == "Civilian")
+		if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
+			if (!W)
+				return
+			user << "Here's your payment, there's more where it came from, if you bring me the stuff, of course."
+			new/obj/item/stack/money/dollar(loc)
+			qdel(W)
+			return
+	else
+		user << "I've got no business with you! Get lost, you dog!"
+		return

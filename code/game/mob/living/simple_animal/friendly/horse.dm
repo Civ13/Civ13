@@ -23,3 +23,10 @@
 	layer = 3.99
 	a_intent = I_HARM
 	can_ride = TRUE
+
+/mob/living/simple_animal/horse/New()
+	..()
+	var/pickcolor = pick("horse", "horse2", "horse3", "horse4")
+	icon_state = pickcolor
+	icon_living = pickcolor
+	icon_dead = "[pickcolor]_dead]"
