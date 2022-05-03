@@ -159,15 +159,26 @@
 	flags = CONDUCT
 /obj/item/stack/money/dollar/New()
 	if (map && map.ordinal_age >= 4)
-		name = "5 Dollar Bills"
-		desc = "Paper bank note valued at five dollars."
-		singular_name = "5 Dollar Bill"
-		icon_state = "5dollar"
-		value = 20
-		novariants = FALSE
-		flags = FALSE
-		update_icon()
-		return ..()
+		if (map.ID == MAP_SOVAFGHAN)
+			name = "1 Dollar Bill"
+			desc = "Paper bank note valued at 1 dollar."
+			singular_name = "1 Dollar Bill"
+			icon_state = "dollar"
+			value = 1
+			novariants = FALSE
+			flags = FALSE
+			update_icon()
+			return ..()
+		else
+			name = "5 Dollar Bills"
+			desc = "Paper bank note valued at five dollars."
+			singular_name = "5 Dollar Bill"
+			icon_state = "5dollar"
+			value = 20
+			novariants = FALSE
+			flags = FALSE
+			update_icon()
+			return ..()
 	else if (map.ordinal_age == 3)
 		name = "spanish dollars"
 		desc = "A silver coin, also called piece of eight, worth 8 reales."

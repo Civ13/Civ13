@@ -24,7 +24,10 @@
 	if (istype(W, /obj/item/stack/money))
 		var/obj/item/stack/money/M = W
 		moneyin += M.amount*M.value
-		user << "You put \the [W] in the [src]."
+		if (map.ID == MAP_SOVAFGHAN)
+			user << "You give \the [W] to the [src]."
+		else
+			user << "You put \the [W] in the [src]."
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/wrench))
@@ -210,6 +213,8 @@
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
 		else if (map.ID == MAP_GULAG13)
 			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 440, 600)
+		else if (map.ID == MAP_SOVAFGHAN)
+			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
 		else
 			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
 		ui.set_initial_data(data)
@@ -249,8 +254,9 @@
 				else
 					var/mob/living/human/H = usr
 					var/salestax = 0
-					if (H.civilization != "none")
-						salestax = (map.custom_civs[H.civilization][9]/100)*R.price
+					if (map.ID != MAP_SOVAFGHAN)
+						if (H.civilization != "none")
+							salestax = (map.custom_civs[H.civilization][9]/100)*R.price
 					var/price_with_tax = R.price+salestax
 					currently_vending = R
 					if (moneyin < price_with_tax*inp)
@@ -269,6 +275,11 @@
 								qdel(D)
 						else if (map.ID == MAP_GULAG13)
 							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+							D.amount = moneyin/D.value
+							if (D.amount == 0)
+								qdel(D)
+						else if (map.ID == MAP_SOVAFGHAN)
+							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
 								qdel(D)
@@ -303,6 +314,11 @@
 					qdel(D)
 			else if (map.ID == MAP_GULAG13)
 				var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+				D.amount = moneyin/D.value
+				if (D.amount == 0)
+					qdel(D)
+			else if (map.ID == MAP_SOVAFGHAN)
+				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
 				D.amount = moneyin/D.value
 				if (D.amount == 0)
 					qdel(D)
@@ -455,14 +471,14 @@
 	name = "food comissary"
 	products = list(
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 50,
-		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge = 50,	
+		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge = 50,
 		/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami = 50,
 		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 50,
 		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 50
 	)
 	prices = list(
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 10,
-		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge = 5,	
+		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge = 5,
 		/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami = 15,
 		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 15,
 		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 15
