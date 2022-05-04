@@ -826,7 +826,11 @@
 	effectiveness_mod = 1.05
 	equiptimer = 12
 
-	equiptimer = 12
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese
 	name = "Chiang Kai-Shek"
@@ -1107,7 +1111,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/springfield
-	good_mags = list(/obj/item/ammo_magazine/springfield)
+	good_mags = list(/obj/item/ammo_magazine/springfield,/obj/item/ammo_magazine/garand)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 5
 	equiptimer = 12

@@ -363,8 +363,10 @@
 		/obj/item/ammo_magazine/garand = 50,
 		/obj/item/ammo_magazine/springfield = 40,
 		/obj/item/ammo_magazine/bar = 15,
+		/obj/item/ammo_magazine/m3006box = 10,
 		/obj/item/ammo_magazine/thompson = 15,
 		/obj/item/ammo_magazine/m1911 = 10,
+		/obj/item/ammo_magazine/a45acpbox = 10,
 	)
 
 /obj/structure/vending/japaneseapparel_ww2
@@ -652,6 +654,8 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/mg34 = 10,
 		/obj/item/ammo_magazine/luger = 10,
 		/obj/item/ammo_magazine/walther = 10,
+		/obj/item/ammo_magazine/mauser = 10,
+		/obj/item/ammo_magazine/c9mm = 10
 	)
 
 /obj/structure/vending/sovietammo
@@ -670,7 +674,7 @@ obj/structure/vending/sofammo
 	)
 
 obj/structure/vending/idfammo
-	name = "IDF ammunition crates"
+	name = "IDF ammo pile"
 	desc = "ammunition and attachments for the Israeli Defense Forces."
 	icon_state = "ammo_crates"
 	products = list(
@@ -681,11 +685,12 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/coldwar/m67= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 		/obj/item/weapon/grenade/flashbang/m84 = 20,
+		/obj/item/weapon/attachment/bayonet/military = 30,
 //		/obj/item/weapon/grenade/incendiary = 20,
 	)
 
 obj/structure/vending/hezammo
-	name = "Hezbollah ammunition crates"
+	name = "Hezbollah ammo pile"
 	desc = "ammunition and attachments for the Hezbollah armed forces."
 	icon_state = "ammo_crates"
 	products = list(
@@ -693,9 +698,11 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak74 = 50,
 		/obj/item/ammo_magazine/tt30 = 50,
 		/obj/item/ammo_magazine/mosin = 50,
-		/obj/item/ammo_magazine/pkm/c100 = 10,
+		/obj/item/ammo_magazine/mosinbox = 20,
+		/obj/item/ammo_magazine/pkm/c100 = 15,
 		/obj/item/weapon/grenade/coldwar/m26= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
+		/obj/item/weapon/material/kitchen/utensil/knife/military = 30,
 	)
 
 /obj/structure/vending/usa_apparel_modern
@@ -703,14 +710,47 @@ obj/structure/vending/hezammo
 	desc = "Basic wear for soldiers of the USMC."
 	icon_state = "apparel_usa"
 	products = list(
-		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/shoes/usmc = 15,
 		/obj/item/clothing/under/us_uni/us_camo_dcu = 15,
 		/obj/item/clothing/head/helmet/modern/pasgt/desert = 15,
 		/obj/item/clothing/glasses/tactical_goggles = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/flashlight/militarylight = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+	)
+
+/obj/structure/vending/hez_apparel_modern
+	name = "Hezbollah apparel rack"
+	desc = "Basic wear for soldiers of Hezbollah."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah = 15,
+		/obj/item/clothing/accessory/armor/coldwar/pasgt = 15,
+		/obj/item/clothing/glasses/tactical_goggles = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight/alt = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/flatbread = 50,
+	)
+
+/obj/structure/vending/idf_apparel_modern
+	name = "IDF apparel rack"
+	desc = "Basic wear for soldiers of the IDF."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/idf = 15,
+		/obj/item/clothing/accessory/armor/coldwar/idf = 15,
+		/obj/item/clothing/glasses/tactical_goggles = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/idf = 50,
 	)
 
 /obj/structure/vending/usa_equipment_modern
@@ -728,6 +768,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m14 = 50,
 		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
+		/obj/item/weapon/attachment/bayonet/military = 20,
 	)
 
 /obj/structure/vending/usa_apparel_coldwar

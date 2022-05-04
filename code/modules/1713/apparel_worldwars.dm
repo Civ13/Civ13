@@ -1462,6 +1462,49 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "german_vest"
 	item_state = "german_vest"
 
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98
+	New()
+		..()
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper
+	New()
+		..()
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98box(hold)
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mauser
+	New()
+		..()
+		new/obj/item/ammo_magazine/mauser(hold)
+		new/obj/item/ammo_magazine/mauser(hold)
+		new/obj/item/ammo_magazine/mauser(hold)
+		new/obj/item/ammo_magazine/mauser(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40
+	New()
+		..()
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43
+	New()
+		..()
+		new/obj/item/ammo_magazine/g43(hold)
+		new/obj/item/ammo_magazine/g43(hold)
+		new/obj/item/ammo_magazine/g43(hold)
+		new/obj/item/ammo_magazine/g43(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/french
 	name = "french webbing"
 	icon_state = "french_vest"
@@ -1650,13 +1693,12 @@ obj/item/clothing/head/ww2/chicap2
 	throw_range = 8
 	max_storage_space = 14
 	max_w_class = 4
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT | SLOT_BACK
 	can_hold = list(
 		/obj/item/ammo_magazine,
 		/obj/item/ammo_casing,
 		/obj/item/weapon/key,
 		)
-
 /obj/item/weapon/storage/ammo_can/german_mg
 /obj/item/weapon/storage/ammo_can/german_mg/New()
 	..()
@@ -1857,7 +1899,6 @@ obj/item/clothing/head/ww2/chicap2
 	desc = "A khaki canvas pouch rig with 10 pouches total for ammo and other various items"
 	icon_state = "us_webbing"
 	item_state = "us_webbing"
-	slots = 10
 	New()
 		..()
 		hold.storage_slots = slots
@@ -2748,6 +2789,7 @@ obj/item/clothing/head/ww2/chicap2
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/whistle(src)
+	new /obj/item/weapon/clipboard/full(src)
 	new /obj/item/weapon/pen(src)
 
 /obj/item/weapon/storage/belt/smallpouches/gerbelt
@@ -2761,3 +2803,19 @@ obj/item/clothing/head/ww2/chicap2
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/weapon/horn(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/schnapps(src)
+
+/obj/item/weapon/storage/belt/smallpouches/us/officer
+/obj/item/weapon/storage/belt/smallpouches/us/officer/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/whistle(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/whiskey(src)
+
+/obj/item/weapon/storage/belt/smallpouches/us/idfoff
+/obj/item/weapon/storage/belt/smallpouches/us/idfoff/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/whistle(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/wine(src)

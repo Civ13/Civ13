@@ -34,6 +34,13 @@
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 
 /obj/item/weapon/storage/pill_bottle/
 	name = "bottle of  pills"
@@ -45,6 +52,13 @@
 
 /obj/item/weapon/storage/pill_bottle/penicillin/New()
 	..()
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
 	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
 	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
 	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
@@ -66,6 +80,13 @@
 		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
 		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
 		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
 
 /obj/item/weapon/storage/pill_bottle/pervitin
 	name = "bottle of Pervitin pills"
@@ -73,6 +94,13 @@
 
 	New()
 		..()
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
 		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
 		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
 		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
@@ -93,6 +121,13 @@
 		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
 		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
 		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
 
 /obj/item/weapon/storage/pill_bottle/citalopram
 	name = "bottle of Citalopram pills"
@@ -100,6 +135,13 @@
 
 	New()
 		..()
+		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
+		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
+		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
+		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
+		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
+		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
+		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
 		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
 		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
 		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
