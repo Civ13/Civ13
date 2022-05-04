@@ -59,10 +59,10 @@
 		. = FALSE
 
 /obj/map_metadata/sovafghan/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/sovafghan/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/sovafghan/roundend_condition_def2name(define)
 	..()
@@ -128,7 +128,7 @@
 	return FALSE
 
 /obj/map_metadata/sovafghan/proc/points_check()
-	if (processes.ticker.playtime_elapsed > 1200)
+	if (processes.ticker.playtime_elapsed >4800)
 		var/c1 = 0
 		var/c2 = 0
 		var/c3 = 0
@@ -351,7 +351,7 @@
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
 			if (H.faction_text == faction1)
 				return TRUE
-			if (H.faction_text == "CIVILIAN")
+			if (H.civilization == "Civilian")
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
@@ -381,18 +381,18 @@
 		/obj/item/weapon/plastique/c4 = 10,
 	)
 	prices = list(
-		/obj/item/weapon/gun/projectile/submachinegun/m16 = 200,
-		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 300,
-		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 400,
-		/obj/item/weapon/gun/launcher/rocket/bazooka = 400,
-		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 300,
+		/obj/item/weapon/gun/projectile/submachinegun/m16 = 100,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 175,
+		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 200,
+		/obj/item/weapon/gun/launcher/rocket/bazooka = 220,
+		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 150,
 
 
 		/obj/item/ammo_magazine/m16 = 20,
 		/obj/item/ammo_magazine/m14 = 30,
 		/obj/item/ammo_casing/rocket/bazooka = 60,
 		/obj/item/ammo_casing/grenade_l = 40,
-		/obj/item/weapon/plastique/c4 = 100,
+		/obj/item/weapon/plastique/c4 = 80,
 	)
 	attack_hand(mob/living/human/user as mob)
 		if (user.faction_text == "ARAB")
@@ -425,8 +425,22 @@
 			if (!W)
 				return
 			user << "Here's your payment, pleasure doing business with you, brother."
-			new/obj/item/stack/money/dollar(loc)
-			new/obj/item/stack/money/dollar(loc)
+			new/obj/item/stack/money/dollar/five(loc)
+			if (prob(5))
+				user << "Here's also a little extra to get you going."
+				new/obj/item/stack/money/dollar/five(loc)
+			if (prob(5))
+				var/obj/map_metadata/sovafghan/MP = map
+				var/randevent = rand(1,2)
+				switch (randevent)
+					if (1)
+						world << "A shipment of heroin has successfully left the Afghan border! The authorities are furious!"
+						MP.muj_points += 1
+						MP.sov_points -= 1
+					if (2)
+						world << "A shipment of heroin was intercepted by the authorities at the Afghan border!"
+						MP.muj_points -= 1
+						MP.sov_points += 1
 			qdel(W)
 			return
 	else if(user.civilization == "Civilian")
@@ -435,6 +449,10 @@
 				return
 			user << "Here's your payment, there's more where it came from, if you bring me the stuff, of course."
 			new/obj/item/stack/money/dollar(loc)
+			new/obj/item/stack/money/dollar(loc)
+			if (prob(5))
+				user << "Here's also a little extra to get you going."
+				new/obj/item/stack/money/dollar/five(loc)
 			qdel(W)
 			return
 	else
