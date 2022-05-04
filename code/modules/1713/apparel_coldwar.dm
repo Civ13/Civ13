@@ -928,6 +928,22 @@
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/ak74
+/obj/item/weapon/storage/belt/smallpouches/green/ak74/New()
+	..()
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/ak47
+/obj/item/weapon/storage/belt/smallpouches/green/ak47/New()
+	..()
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
 /* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava
@@ -1003,7 +1019,21 @@
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
-/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/sniper
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosinbox(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/m24
 	New()
 		..()
 		new/obj/item/ammo_magazine/mosin(hold)
@@ -1018,6 +1048,34 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/khaki_webbing/akm
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/khaki_webbing/g3
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/akm
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/g3
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+		new/obj/item/ammo_magazine/hk(hold)
 
 /obj/item/clothing/accessory/storage/webbing/pouches
 	name = "black pouches"

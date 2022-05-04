@@ -313,6 +313,7 @@
 	desc = "A rack for carrying a collapsed roller bed."
 	icon = 'icons/obj/rollerbed.dmi'
 	icon_state = "folded"
+	slot_flags = SLOT_BACK
 	var/obj/item/roller/held
 	flags = CONDUCT
 

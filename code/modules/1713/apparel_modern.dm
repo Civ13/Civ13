@@ -530,6 +530,17 @@
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
 
+/* US belts*/
+
+/obj/item/weapon/storage/belt/smallpouches/us/modern/m14
+/obj/item/weapon/storage/belt/smallpouches/us/modern/m14/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/m14(src)
+	new/obj/item/ammo_magazine/m14(src)
+	new/obj/item/ammo_magazine/m14(src)
+
+
 /* Russian Army Clothing*/
 
 /obj/item/clothing/under/milrus_vsr93
@@ -833,6 +844,14 @@
 	w_class = 4
 	weight = 3.8
 
+/obj/item/weapon/storage/belt/smallpouches/m24
+/obj/item/weapon/storage/belt/smallpouches/m24/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/m24(src)
+	new/obj/item/ammo_magazine/m24(src)
+	new/obj/item/ammo_magazine/m24(src)
+
 /* Kevlar Suits & Helmets*/
 
 /obj/item/clothing/accessory/armor/nomads/kevlarblack
@@ -1060,11 +1079,14 @@
 /obj/item/weapon/storage/belt/police/modern/New()
 	..()
 	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/clipboard/full(src)
+	new /obj/item/weapon/pen(src)
 	new /obj/item/weapon/whistle(src)
 
 /obj/item/weapon/storage/belt/police/old
@@ -1072,10 +1094,10 @@
 	..()
 	new /obj/item/weapon/melee/classic_baton(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs/old(src)
+	new /obj/item/weapon/handcuffs/old(src)
+	new /obj/item/weapon/handcuffs/old(src)
+	new /obj/item/weapon/handcuffs/old(src)
 	new /obj/item/weapon/whistle(src)
 
 /* Miscallenous*/
@@ -1312,6 +1334,7 @@
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 60
+
 
 //////////////////////////////////////Russo-Ukraine war/////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/helmet/modern/mk6

@@ -761,6 +761,22 @@
 	max_number = 14
 	timer = 600
 
+/obj/effect/spawner/mobspawner/voyage/brit/sword
+	name = "brit spawner"
+	hostile = TRUE
+	max_number = 10
+	max_range = 8
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british
+	timer = 300
+
+
+/obj/effect/spawner/mobspawner/voyage/brit/ranged
+	name = "ranged brit spawner"
+	hostile = TRUE
+	max_number = 10
+	max_range = 3
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british/ranged
+	timer = 300
 
 /obj/effect/spawner/mobspawner/zombies/special/getEmptyTurf()
 	var/list/turf/emptyTurfs = new
