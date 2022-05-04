@@ -1057,12 +1057,17 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws(H), slot_shoulder)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/arabsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/arabsword(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/insuroff(H), slot_belt)
+
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/flashlight(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
 	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
@@ -1099,29 +1104,38 @@
 
 	return TRUE
 
-
-/datum/job/arab/insurgent
-	title = "Insurgent"
+/datum/job/arab/insurgent_medic
+	title = "Insurgent Field Medic"
 	en_meaning = ""
-	rank_abbreviation = ""
+	rank_abbreviation = "Medic"
 
 	spawn_location = "JoinLateAR"
 
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
 
-	min_positions = 22
-	max_positions = 66
+	min_positions = 2
+	max_positions = 10
 
-/datum/job/arab/insurgent/equip(var/mob/living/human/H)
+/datum/job/arab/insurgent_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
+
 //shoes
-	if (prob(50))
+
+	var/pickboot = rand(1,5)
+	if (pickboot == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
-	else
+	if (pickboot == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (pickboot == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+	if (pickboot == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+	if (pickboot == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sneakers/courier(H), slot_shoes)
 //clothes
 	var/pickclothes = rand(1,4)
 	switch (pickclothes)
@@ -1141,23 +1155,18 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
-//back
-	if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
-	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
+//back
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/medical/full_vc(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/machete1(H), slot_back)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	if (prob(50))
-		var/obj/item/clothing/accessory/storage/webbing/green_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing(null)
-		uniform.attackby(fullwebbing, H)
-	else
-		var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing(null)
-		uniform.attackby(fullwebbing, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+
 	give_random_name(H)
 	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard")
 		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard")
@@ -1178,7 +1187,113 @@
 	H.change_eye_color(H.r_eyes, H.g_eyes, H.b_eyes)
 	H.force_update_limbs()
 	H.update_body()
-	H.add_note("Role", "You are an <b>[title]</b>, fighting guerilla warfare against the westerners. Protect the cave!")
+	H.add_note("Role", "You are an <b>[title]</b>, keep your fighters in shape for guerilla warfare against the westerners. Defend your base!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/arab/insurgent
+	title = "Insurgent"
+	en_meaning = ""
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateAR"
+
+	is_coldwar = TRUE
+	is_specops = TRUE
+	is_modernday = TRUE
+	uses_squads = TRUE
+
+	min_positions = 22
+	max_positions = 66
+
+/datum/job/arab/insurgent/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+
+	var/pickboot = rand(1,5)
+	if (pickboot == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	if (pickboot == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (pickboot == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+	if (pickboot == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+	if (pickboot == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sneakers/courier(H), slot_shoes)
+//clothes
+	var/pickclothes = rand(1,4)
+	switch (pickclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_green(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_woodland(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_dcu(H), slot_w_uniform)
+//head
+	if (prob(50))
+		if (prob(20))
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
+
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+//back
+	if (prob(33))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
+		if (prob(50))
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/g3/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/g3(null)
+			uniform.attackby(fullwebbing, H)
+		else
+			var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/g3/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing/g3(null)
+			uniform.attackby(fullwebbing, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		if (prob(50))
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/akm/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/akm(null)
+			uniform.attackby(fullwebbing, H)
+		else
+			var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/akm/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing/akm(null)
+			uniform.attackby(fullwebbing, H)
+	give_random_name(H)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard")
+		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard")
+	H.s_tone = rand(-92,-80)
+	var/new_hair = pick("Dark Brown","Black")
+	var/new_eyes = pick("Dark Brown", "Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	var/hex_eyes = eye_colors[new_eyes]
+	H.r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+	H.g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+	H.b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+	H.change_eye_color(H.r_eyes, H.g_eyes, H.b_eyes)
+	H.force_update_limbs()
+	H.update_body()
+	H.add_note("Role", "You are an <b>[title]</b>, fighting guerilla warfare against the westerners. Defend your base!")
 	H.add_note("Insurgent Mechanics", "- You have a radio on your vest. Use \";\" to broadcast. Be aware that americans can probably listen to your radio communications!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
