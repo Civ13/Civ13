@@ -77,6 +77,11 @@
 	desc = "A sign fat people usually like."
 	icon_state = "mcd"
 
+/obj/structure/sign/mcd/tfc
+	name = "Texas Fried Chicken"
+	desc = "A sign Texas people usually like."
+	icon_state = "tfc"
+
 /obj/structure/sign/mckellens
 	name = "McKellen's"
 	desc = "A sign for the McKellen's Franchise establishment."
