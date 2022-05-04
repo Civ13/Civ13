@@ -18,7 +18,7 @@
 	slot_flags = SLOT_BELT
 
 /obj/item/weapon/storage/firstaid/adv
-	name = "first-aid kit"
+	name = "field dressing kit"
 	desc = "Contains basic medical treatments."
 	icon_state = "medical_bag"
 	item_state = "medical_bag"
@@ -29,8 +29,8 @@
 	if (empty) return
 	new  /obj/item/weapon/doctor_handbook(src)
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
-	new /obj/item/stack/medical/advanced/bruise_pack(src)
 	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/bruise_pack/bint/medic(src)
 	new /obj/item/stack/medical/splint(src)
 	return
 
@@ -39,6 +39,8 @@
 	desc = "Contains drugs and antiseptics used in combat situations."
 	icon_state = "medical_satchel"
 	item_state = "medical_satchel"
+	slot_flags = SLOT_BACK | SLOT_BELT
+
 
 /obj/item/weapon/storage/firstaid/combat/New()
 	..()
@@ -78,7 +80,7 @@
 	if (empty) return
 	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
 	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
-	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
+	new /obj/item/weapon/storage/pill_bottle/antitox(src)
 	new /obj/item/weapon/storage/pill_bottle/penicillin(src)
 	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
 	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
