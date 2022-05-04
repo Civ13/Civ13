@@ -17,6 +17,12 @@
 	permeability_coefficient = 0.50
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/suit/chef/tfc
+	name = "Texas Fried Chicken apron"
+	desc = "A cloth apron. It reads TFC."
+	icon_state = "aprontfc"
+	item_state = "aprontfc"
+
 /obj/item/clothing/suit/hawaiian
 	name = "blue hawaiian shirt."
 	desc = "A brightly patterned and gaudy hawaiian shirt. It has a blue hue"
