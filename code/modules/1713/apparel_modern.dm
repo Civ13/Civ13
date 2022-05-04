@@ -1216,6 +1216,14 @@
 		item_state = icon_state
 		worn_state = icon_state
 
+/obj/item/clothing/head/cap/tfc
+	name = "TFC Cap"
+	desc = "A red Texas Fried Chicken cap."
+	icon_state = "tfc"
+	item_state = "tfc"
+	worn_state = "tfc"
+	base_state = "tfc"
+
 /obj/item/clothing/head/cap/red
 	name = "red cap"
 	desc = "A red cap."
