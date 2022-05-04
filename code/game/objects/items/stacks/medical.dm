@@ -208,7 +208,7 @@
 						break
 
 					user.visible_message("<span class='notice'>\The [user] rub some healing herbs over \a [W.desc] on [M]'s [affecting.name].</span>", \
-													  "<span class='notice'>You rub some healing berbs over \a [W.desc] on [M]'s [affecting.name].</span>" )
+													  "<span class='notice'>You rub some healing herbs over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					W.disinfect()
 					W.salve()
 					W.heal_damage(heal_brute)
@@ -379,6 +379,9 @@
 	icon_state = "bint"
 	heal_brute = 10 // for healing dogs and other animals
 	amount = 10
+
+/obj/item/stack/medical/bruise_pack/bint/medic
+	amount = 40
 
 /obj/item/stack/medical/bruise_pack/bint/leather
 	name = "leather bandages"
