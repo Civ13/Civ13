@@ -30,4 +30,3 @@
 	icon_state = pickcolor
 	icon_living = pickcolor
 	icon_dead = "[pickcolor]_dead"
-	update_icon()
