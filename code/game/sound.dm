@@ -254,6 +254,10 @@ var/list/charge_sounds_african = list(
 	'sound/effects/emotes/charge_afr7.ogg',
 	'sound/effects/emotes/charge_afr8.ogg',
 	'sound/effects/emotes/charge_afr9.ogg',)
+var/list/charge_sounds_iranian = list(
+	'sound/effects/emotes/charge_iran1.ogg',
+	'sound/effects/emotes/charge_iran2.ogg',
+	'sound/effects/emotes/charge_iran3.ogg',)
 var/list/charge_sounds_redmenia = list(
 	'sound/effects/emotes/redmenia1.ogg',
 	'sound/effects/emotes/redmenia2.ogg',
@@ -497,6 +501,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_gorilla)
 			if ("charge_AFRICAN")
 				soundin = pick(charge_sounds_african)
+			if ("charge_IRANIAN")
+				soundin = pick(charge_sounds_iranian)
 			if ("charge_REDMENIA")
 				soundin = pick(charge_sounds_redmenia)
 			if ("charge_BLUGOSLAVIA")
