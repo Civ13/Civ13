@@ -231,6 +231,27 @@
 	create_path = /mob/living/simple_animal/horse
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/horse/beige
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/beige
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/horse/black
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/black
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/horse/white
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/white
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/panthers
 	name = "panther spawner"
 	hostile = TRUE

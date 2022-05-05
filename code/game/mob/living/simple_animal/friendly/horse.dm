@@ -24,9 +24,17 @@
 	a_intent = I_HARM
 	can_ride = TRUE
 
-/mob/living/simple_animal/horse/New()
-	..()
-	var/pickcolor = pick("horse", "horse2", "horse3", "horse4")
-	icon_state = pickcolor
-	icon_living = pickcolor
-	icon_dead = "[pickcolor]_dead"
+/mob/living/simple_animal/horse/black
+	icon_state = "horse2"
+	icon_living = "horse2"
+	icon_dead = "horse2_dead"
+
+/mob/living/simple_animal/horse/beige
+	icon_state = "horse3"
+	icon_living = "horse3"
+	icon_dead = "horse3_dead"
+
+/mob/living/simple_animal/horse/white
+	icon_state = "horse4"
+	icon_living = "horse4"
+	icon_dead = "horse4_dead"
