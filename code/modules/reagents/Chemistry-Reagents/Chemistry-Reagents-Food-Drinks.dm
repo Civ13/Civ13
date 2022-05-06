@@ -200,6 +200,14 @@
 	taste_description = "sweetness"
 	nutriment_factor = 25
 	color = "#FFFFFF"
+	
+/datum/reagent/nutriment/apricotjuice //Added new reagent for apricots
+	name = "Apricot juice"
+	id = "apricotjuice"
+	description = "An orange, transparant liquid, tasting of apricots."
+	taste_description = "sweetness"
+	nutriment_factor = 25
+	color = "#FFFFFF"
 
 /datum/reagent/nutriment/cherryjelly
 	name = "Cherry Jelly"
