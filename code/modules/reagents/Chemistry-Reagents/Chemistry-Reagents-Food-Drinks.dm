@@ -193,7 +193,7 @@
 	nutriment_factor = TRUE
 	color = "#FFFFFF"
 
-/datum/reagent/nutriment/coconut_milk
+/datum/reagent/nutriment/coconutmilk //Added new reagent for coconuts
 	name = "Coconut milk"
 	id = "coconutmilk"
 	description = "A white, milky liquid, loaded with sugary sweetness."
