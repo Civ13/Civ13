@@ -240,7 +240,7 @@
 	icon_state = "banana"
 	satisfaction = 6
 	decay = 15*600
-	filling_color = "#fff896
+	filling_color = "#fff896"
 	New()
         ..()
         reagents.add_reagent("banana", 15)
