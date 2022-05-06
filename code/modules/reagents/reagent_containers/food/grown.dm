@@ -213,7 +213,7 @@
 	filling_color = "#a7ce68"
 	New()
 		..()
-		reagents.add_reagent("limejuice", 20)
+		reagents.add_reagent("limejuice", 15)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/orange //Added proper reagents to food.
 	name = "orange"
