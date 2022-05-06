@@ -88,6 +88,7 @@
 	title = "RDF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
+	/*
 /datum/job/pirates/redfaction/armored/sl
 	title = "RDF Armored Squadleader"
 	squad = 5
@@ -97,6 +98,7 @@
 	title = "RDF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
+	*/
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -145,7 +147,12 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/rpg(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H), slot_shoulder)
+		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
+		H.equip_to_slot_or_del(HGUN, slot_shoulder)
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		SP.attached(null,HGUN,TRUE)
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,HGUN,TRUE)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)

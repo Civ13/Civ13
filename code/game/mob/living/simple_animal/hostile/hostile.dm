@@ -6,7 +6,8 @@
 
 /mob/living/simple_animal/proc/FindTarget()
 	var/atom/T = null
-	stop_automated_movement = FALSE
+	if(!istype(src,/mob/living/simple_animal/hostile/human))
+		stop_automated_movement = FALSE
 	var/list/the_targets = ListTargets(7) // range that simple_animal will look for targets
 	if (behaviour == "hostile")
 		stance = HOSTILE_STANCE_ATTACK
