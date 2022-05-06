@@ -813,7 +813,7 @@
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
 
-/obj/item/clothing/head/kippa
+/obj/item/clothing/head/custom/kippa
 	name = "kippa"
 	desc = "A small, brimless cap."
 	icon_state = "kippa"

@@ -787,7 +787,7 @@
 	else
 		H.f_style = pick("Shaved")
 
-	if (prob(18))
+	if (prob(10))
 		H.original_job.is_afro = TRUE
 		H.s_tone = rand(-150,-120)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
@@ -881,7 +881,7 @@
 	else
 		H.f_style = pick("Shaved")
 
-	if (prob(18))
+	if (prob(10))
 		H.original_job.is_afro = TRUE
 		H.s_tone = rand(-150,-120)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")

@@ -12,7 +12,7 @@
 	is_afghan = TRUE
 	is_soviet = TRUE
 	is_coldwar = TRUE
-	additional_languages = list("Arabic" = 70)
+	additional_languages = list("Arabic" = 100)
 
 	min_positions = 1
 	max_positions = 2
@@ -43,6 +43,10 @@
 	armour.attackby(plates1, H)
 	armour.attackby(plates2, H)
 	uniform.attackby(armour, H)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
+	KC.attackby(sovk,H)
+	H.equip_to_slot_or_del(KC, slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
@@ -124,7 +128,7 @@
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 	H.s_tone = rand(-40,-25)
-	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Insurgents!")
+	H.add_note("Role", "You are a <b>[title]</b>, a non-comissioned officer, lead your squad in the diverse operations and follow the orders of your superior officers!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -181,7 +185,7 @@
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	H.s_tone = rand(-40,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow comrades healthy and alive!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow comrades alive and healthy!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -248,7 +252,7 @@
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 	H.s_tone = rand(-40,-25)
-	H.add_note("Role", "You are a <b>[title]</b>, you're the most important person in your squad after the SL. Relay communications between the HQ and your squad, call in for artillery strikes.")
+	H.add_note("Role", "You are a <b>[title]</b>, you're the most important person in your squad after the squad leader. Relay communications between the HQ and your squad, call in for artillery strikes.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -269,6 +273,7 @@
 	uses_squads = TRUE
 	is_soviet = TRUE
 	is_coldwar = TRUE
+	additional_languages = list("Arabic" = 30)
 
 	min_positions = 10
 	max_positions = 100
@@ -385,9 +390,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
-//jacket
 	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+//jacket
 	H.s_tone = rand(-40,-25)
 	H.civilization = "Soviet Army"
 	give_random_name(H)
@@ -531,6 +536,82 @@
 	return TRUE
 
 ////////////DRA soldiers/////////////
+
+/datum/job/civilian/afghan/dra/lieutenant
+	title = "DRA Lieutenant"
+	rank_abbreviation = "DRA Lt."
+
+	spawn_location = "JoinLateDRALt"
+
+	is_officer = TRUE
+	is_radioman = TRUE
+	is_afghan = TRUE
+	is_dra = TRUE
+	is_coldwar = TRUE
+
+	can_get_coordinates = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 90)
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/afghan/dra/sergeant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/officer(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/armband/red = new/obj/item/clothing/accessory/armband(null)
+	uniform.attackby(red, H)
+	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+	var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
+	var/obj/item/weapon/key/soviet/govk = new/obj/item/weapon/key/civ/gov(null)
+	KC.attackby(sovk,H)
+	KC.attackby(govk,H)
+	H.equip_to_slot_or_del(KC, slot_l_store)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_r_store)
+//jacket
+
+	H.civilization = "DRA"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-90,-70)
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	H.add_note("Role", "You are a <b>[title]</b>, responsible for leading DRA soldiers and guards in the province.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
 
 /datum/job/civilian/afghan/dra/sergeant
 	title = "DRA Sergeant"
@@ -1101,6 +1182,7 @@
 	rank_abbreviation = "Leader"
 
 	spawn_location = "JoinLateAR"
+	is_officer = TRUE
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
@@ -1229,7 +1311,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
-	if (prob(20))
+	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 
 //head
