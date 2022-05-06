@@ -202,8 +202,8 @@
 	decay = 100*600
 	filling_color = "#eedd82"
 	New()
-        ..()
-        reagents.add_reagent("lemonjuice", 15)
+		..()
+		reagents.add_reagent("lemonjuice", 20)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/lime //Added proper reagents to food.
 	name = "lime"
@@ -212,8 +212,8 @@
 	decay = 100*600
 	filling_color = "#a7ce68"
 	New()
-        ..()
-        reagents.add_reagent("limejuice", 15)
+		..()
+		reagents.add_reagent("thc", 20)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/orange //Added proper reagents to food.
 	name = "orange"
@@ -221,9 +221,9 @@
 	satisfaction = 3
 	decay = 100*600
 	filling_color = "#ffae00"
-	New()
-        ..()
-        reagents.add_reagent("orangejuice", 15)
+		New()
+		..()
+		reagents.add_reagent("orangejuice", 20)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/apple //Added proper reagents to food.
 	name = "apple"
@@ -232,8 +232,8 @@
 	decay = 50*600
 	filling_color = "#dfffaa"
 	New()
-        ..()
-        reagents.add_reagent("applejuice", 15)
+		..()
+		reagents.add_reagent("applejuice", 15)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/banana //Added proper reagents to food.
 	name = "banana"
@@ -242,8 +242,8 @@
 	decay = 15*600
 	filling_color = "#fff896"
 	New()
-        ..()
-        reagents.add_reagent("banana", 15)
+		..()
+		reagents.add_reagent("banana", 10)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/apricot //Added proper reagents to food.
 	name = "apricot"
