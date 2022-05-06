@@ -333,7 +333,7 @@
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/garand
-	good_mags = list(/obj/item/ammo_magazine/garand)
+	good_mags = list(/obj/item/ammo_magazine/springfield,/obj/item/ammo_magazine/garand)
 	reload_sound = 'sound/weapons/guns/interact/GarandLoad.ogg'
 	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
 	weight = 4.9

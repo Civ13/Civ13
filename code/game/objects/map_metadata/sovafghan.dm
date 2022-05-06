@@ -39,6 +39,15 @@
 
 /obj/map_metadata/sovafghan/New()
 	..()
+	var/newnamea = list("Soviet Army" = list(175,175,175,null,0,"star","#FF0000","#f5c400",0,0))
+	var/newnameb = list("DRA" = list(175,175,175,null,0,"star","#FF0000","#005400",0,0))
+	var/newnamec = list("Civilian" = list(175,175,175,null,0,"moon","#005400","#000000",0,0))
+	var/newnamed = list("Mujahideen" = list(175,175,175,null,0,"skull","#000000","#FFFFFF",0,0))
+	custom_civs += newnamea
+	custom_civs += newnameb
+	custom_civs += newnamec
+	custom_civs += newnamed
+	load_new_recipes("config/crafting/material_recipes_sovafghan.txt")
 	spawn(3000)
 		points_check()
 
@@ -50,10 +59,10 @@
 		. = FALSE
 
 /obj/map_metadata/sovafghan/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/sovafghan/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/sovafghan/roundend_condition_def2name(define)
 	..()
@@ -119,7 +128,7 @@
 	return FALSE
 
 /obj/map_metadata/sovafghan/proc/points_check()
-	if (processes.ticker.playtime_elapsed > 1200)
+	if (processes.ticker.playtime_elapsed >4800)
 		var/c1 = 0
 		var/c2 = 0
 		var/c3 = 0
@@ -290,6 +299,9 @@
 				else if (H.stat!=DEAD && H.original_job.title == "DRA Governor")
 					muj_points += 3
 					world << "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>"
+				else if (H.stat!=DEAD && H.original_job.title == "DRA Lieutenant")
+					muj_points += 2
+					world << "<font color='orange' size=2>A <b><font color='green'>DRA Lieutenant</font></b> is in captivity!</font>"
 				else if (H.stat!=DEAD && H.original_job.title == "DRA Sergeant")
 					muj_points += 1
 					world << "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>"
@@ -339,6 +351,113 @@
 				return TRUE
 			if (H.faction_text == "CIVILIAN")
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction1)
+				return TRUE
+			if (H.civilization == "Civilian")
+				return TRUE
 		else
+			return !faction1_can_cross_blocks()
 			return !faction2_can_cross_blocks()
 	return FALSE
+
+
+//////Vendors////////
+
+/obj/structure/vending/sales/cia_agent
+	name = "CIA agent"
+	desc = "The USA supports your cause in exchange of ressources."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "afghcia"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/m16 = 30,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 10,
+		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 10,
+		/obj/item/weapon/gun/launcher/rocket/bazooka = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 10,
+
+
+		/obj/item/ammo_magazine/m16 = 80,
+		/obj/item/ammo_magazine/m14 = 30,
+		/obj/item/ammo_casing/rocket/bazooka = 20,
+		/obj/item/ammo_casing/grenade_l = 30,
+		/obj/item/weapon/plastique/c4 = 10,
+	)
+	prices = list(
+		/obj/item/weapon/gun/projectile/submachinegun/m16 = 100,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 175,
+		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 200,
+		/obj/item/weapon/gun/launcher/rocket/bazooka = 220,
+		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 150,
+
+
+		/obj/item/ammo_magazine/m16 = 20,
+		/obj/item/ammo_magazine/m14 = 30,
+		/obj/item/ammo_casing/rocket/bazooka = 60,
+		/obj/item/ammo_casing/grenade_l = 40,
+		/obj/item/weapon/plastique/c4 = 80,
+	)
+	attack_hand(mob/living/human/user as mob)
+		if (user.faction_text == "ARAB")
+			..()
+		else
+		 user << "You are not part of the Mujahideen, you should really leave the area."
+		 return
+	attackby(obj/item/I, mob/living/human/user)
+		if (user.faction_text == "ARAB")
+			..()
+		else
+		 user << "You are not part of the Mujahideen, you should really leave the area."
+		 return
+
+/obj/structure/props/afghan/druglord
+	name = "Tarik the Trafficker"
+	desc = "You've got opium? I've got money."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "afghdrug"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/afghan/druglord/attackby(obj/item/W, mob/living/human/user)
+	if(user.civilization == "Mujahideen")
+		if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
+			if (!W)
+				return
+			user << "Here's your payment, pleasure doing business with you, brother."
+			new/obj/item/stack/money/dollar/five(loc)
+			if (prob(5))
+				user << "Here's also a little extra to get you going."
+				new/obj/item/stack/money/dollar/five(loc)
+			if (prob(5))
+				var/obj/map_metadata/sovafghan/MP = map
+				var/randevent = rand(1,2)
+				switch (randevent)
+					if (1)
+						world << "A shipment of heroin has successfully left the Afghan border! The authorities are furious!"
+						MP.muj_points += 1
+						MP.sov_points -= 1
+					if (2)
+						world << "A shipment of heroin was intercepted by the authorities at the Afghan border!"
+						MP.muj_points -= 1
+						MP.sov_points += 1
+			qdel(W)
+			return
+	else if(user.civilization == "Civilian")
+		if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
+			if (!W)
+				return
+			user << "Here's your payment, there's more where it came from, if you bring me the stuff, of course."
+			new/obj/item/stack/money/dollar(loc)
+			new/obj/item/stack/money/dollar(loc)
+			if (prob(5))
+				user << "Here's also a little extra to get you going."
+				new/obj/item/stack/money/dollar/five(loc)
+			qdel(W)
+			return
+	else
+		user << "I've got no business with you! Get lost, you dog!"
+		return

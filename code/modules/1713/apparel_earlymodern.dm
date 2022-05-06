@@ -1214,17 +1214,21 @@
 	new/obj/item/ammo_magazine/thompson(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper
+	max_w_class = 3
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/ammo_magazine/springfield(src)
 	new/obj/item/ammo_magazine/springfield(src)
-	new/obj/item/ammo_magazine/springfield(src)
+	new/obj/item/ammo_magazine/m3006box(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner
+	storage_slots = 6
+	max_storage_space = 12
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner/New()
 	..()
 	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
 	new/obj/item/ammo_magazine/bar(src)
 	new/obj/item/ammo_magazine/bar(src)
 	new/obj/item/ammo_magazine/bar(src)
@@ -1270,6 +1274,31 @@
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/insuroff
+/obj/item/weapon/storage/belt/smallpouches/green/insuroff/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/horn(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/tea(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/mosin
+/obj/item/weapon/storage/belt/smallpouches/green/mosin/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/mosin (src)
+	new/obj/item/ammo_magazine/mosin (src)
+	new/obj/item/ammo_magazine/mosin (src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/mosinsniper
+	max_w_class = 3
+
+/obj/item/weapon/storage/belt/smallpouches/green/mosinsniper/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/mosin (src)
+	new/obj/item/ammo_magazine/mosinbox (src)
 
 /obj/item/weapon/storage/belt/smallpouches/rusoff
 /obj/item/weapon/storage/belt/smallpouches/rusoff/New()

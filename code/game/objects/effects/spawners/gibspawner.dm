@@ -1,4 +1,6 @@
 /obj/effect/gibspawner
+	icon = 'icons/mob/screen/effects.dmi'
+	icon_state = "x1"
 	generic
 		gibtypes = list(/obj/effect/decal/cleanable/blood/gibs,/obj/effect/decal/cleanable/blood/gibs,/obj/effect/decal/cleanable/blood/gibs/core)
 		gibamounts = list(2,2,1)

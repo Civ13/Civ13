@@ -102,6 +102,20 @@
 	item_state = "fbi2"
 	worn_state = "fbi2"
 
+/obj/item/clothing/suit/storage/atf
+	name = "ATF jacket"
+	desc = "An ATF jacket, standard issue for ATF agents."
+	icon_state = "atf"
+	item_state = "atf"
+	worn_state = "atf"
+
+/obj/item/clothing/suit/storage/dea
+	name = "FBI jacket"
+	desc = "A DEA jacket, standard issue for DEA agents."
+	icon_state = "dea"
+	item_state = "dea"
+	worn_state = "dea"
+
 /obj/item/clothing/suit/swat //these likely need upgrading to armor
 	name = "swat heavy vest"
 	desc = "A heavy NIJ level IV vest, used by swat officers."
@@ -122,6 +136,7 @@
 	worn_state = "policevest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
+	var/slots = 3
 	ripable = FALSE
 
 /obj/item/clothing/under/traffic_police
@@ -548,6 +563,14 @@
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
+/obj/item/clothing/head/fieldcap/afghanka
+	name = "Afghanka field cap"
+	desc = "A cap and worn by Soviet forces in Afghanistan."
+	icon_state = "fieldcap_afghanka"
+	item_state = "fieldcap_afghanka"
+	worn_state = "fieldcap_afghanka"
+	body_parts_covered = HEAD
+
 /obj/item/clothing/head/beret_rus_vdv
 	name = "VDV beret"
 	desc = "A beret worn by the Russian Airborn Forces."
@@ -905,6 +928,22 @@
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/ak74
+/obj/item/weapon/storage/belt/smallpouches/green/ak74/New()
+	..()
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/ak47
+/obj/item/weapon/storage/belt/smallpouches/green/ak47/New()
+	..()
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
 /* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava
@@ -980,7 +1019,21 @@
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
-/obj/item/clothing/accessory/storage/webbing/green_webbing/sniper
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/sniper
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosinbox(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/m24
 	New()
 		..()
 		new/obj/item/ammo_magazine/mosin(hold)
@@ -995,6 +1048,34 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/khaki_webbing/akm
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/khaki_webbing/g3
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/akm
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/g3
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+		new/obj/item/ammo_magazine/hk(hold)
 
 /obj/item/clothing/accessory/storage/webbing/pouches
 	name = "black pouches"
@@ -1248,6 +1329,23 @@
 			usr << "You <b>close up</b> the collar of your uniform."
 			adjusted = TRUE
 			update_clothing_icon()
+
+/obj/item/clothing/under/sov_klmk
+	name = "KLMK camo uniform"
+	desc = "A suit in the KLMK camo pattern, issued by the Soviet Union in the 1970s."
+	icon_state = "sov_klmk"
+	item_state = "sov_klmk"
+	worn_state = "sov_klmk"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/sov_kzs
+	name = "KZS camo uniform"
+	desc = "A suit in the KZS camo pattern, issued by the Soviet Union in the late 1970s."
+	icon_state = "sov_kzs"
+	item_state = "sov_kzs"
+	worn_state = "sov_kzs"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
 
 	/* Swinging 60's*/
 

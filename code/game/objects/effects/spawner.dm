@@ -231,6 +231,27 @@
 	create_path = /mob/living/simple_animal/horse
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/horse/beige
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/beige
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/horse/black
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/black
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/horse/white
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/white
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/panthers
 	name = "panther spawner"
 	hostile = TRUE
@@ -761,6 +782,22 @@
 	max_number = 14
 	timer = 600
 
+/obj/effect/spawner/mobspawner/voyage/brit/sword
+	name = "brit spawner"
+	hostile = TRUE
+	max_number = 10
+	max_range = 8
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british
+	timer = 300
+
+
+/obj/effect/spawner/mobspawner/voyage/brit/ranged
+	name = "ranged brit spawner"
+	hostile = TRUE
+	max_number = 10
+	max_range = 3
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british/ranged
+	timer = 300
 
 /obj/effect/spawner/mobspawner/zombies/special/getEmptyTurf()
 	var/list/turf/emptyTurfs = new

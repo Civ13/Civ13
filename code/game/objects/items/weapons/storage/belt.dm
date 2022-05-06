@@ -28,6 +28,20 @@
 		var/mob/M = loc
 		M.update_inv_belt()
 
+/obj/item/weapon/storage/belt/press
+	name = "press belt"
+
+/obj/item/weapon/storage/belt/press/New()
+	..()
+	new /obj/item/weapon/pen(src)
+	new /obj/item/camera_film(src)
+	new /obj/item/camera_film(src)
+	new /obj/item/weapon/clipboard/full(src)
+	new /obj/item/weapon/reagent_containers/spray/pepper(src)
+	new /obj/item/camera/coldwar(src)
+	new /obj/item/weapon/storage/box/firstaid/advsmall(src)
+	new /obj/item/weapon/telephone/mobile(src)
+
 /obj/item/weapon/storage/belt/tactical
 	name = "combat belt"
 	storage_slots = 8
@@ -46,19 +60,24 @@
 	name = "medical belt"
 	can_hold = list(
 		/obj/item/stack/medical,
+		/obj/item/weapon/storage/pill_bottle,
+		/obj/item/weapon/doctor_handbook,
 		/obj/item/weapon/surgery,
 		)
+
+/obj/item/weapon/storage/belt/medical/full_vc
 /obj/item/weapon/storage/belt/medical/full_vc/New()
 	..()
-	new /obj/item/stack/medical/bruise_pack/gauze(src)
-	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/bruise_pack/bint/medic(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/advanced/sulfa(src)
 	new /obj/item/stack/medical/splint(src)
 	new /obj/item/weapon/doctor_handbook(src)
-	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
+	new /obj/item/weapon/storage/pill_bottle/pervitin(src)
 
 /obj/item/weapon/storage/belt/medical/full_us/New()
 	..()
-	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/bruise_pack/bint/medic(src)
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
 	new /obj/item/stack/medical/advanced/ointment(src)
 	new /obj/item/stack/medical/splint(src)

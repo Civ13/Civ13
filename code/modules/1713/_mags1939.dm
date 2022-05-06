@@ -78,6 +78,10 @@
 	weight = 0.34
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/mp40/mp5
+	name = "MP5 magazine (9x19mm)"
+	icon_state = "mp5"
+
 /obj/item/ammo_magazine/mg34
 	name = "MG34 magazine (7.92x57mm)"
 	icon_state = "mg34"
@@ -194,6 +198,17 @@ obj/item/ammo_magazine/dp
 	..()
 	stored_ammo.Cut()
 
+/obj/item/ammo_magazine/a45acpbox
+	name = "magazine box (.45)"
+	icon_state = "oldbox"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a45acp
+	caliber = "a45acp"
+	w_class = 3
+	max_ammo = 30
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/tt30
 	name = "TT-33 magazine (7.62x25mm)"
 	icon_state = "m1911"
@@ -241,6 +256,17 @@ obj/item/ammo_magazine/dp
 	weight = 0.038
 	multiple_sprites = TRUE
 	clip = TRUE
+
+/obj/item/ammo_magazine/m3006box
+	name = "magazine box (30-06)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a3006"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
 
 /obj/item/ammo_magazine/springfield
 	name = "clip (30-06)"

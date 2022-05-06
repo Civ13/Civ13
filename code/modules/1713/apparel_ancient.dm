@@ -1248,6 +1248,12 @@
 	heat_protection = FACE|EYES
 	flags = CONDUCT
 
+/obj/item/clothing/mask/necklace/christian/gold
+	name = "Christian Gold Necklace"
+	desc = " A chritian necklace, it's made out of gold, expensive"
+	icon_state = "NecklaceChristianGold"
+	item_state = "NecklaceChristianGold"
+
 /obj/item/clothing/mask/osiris
 	name = "osiris mask"
 	desc = "A mask in the form of a the egyptian god of the underworld, osiris."

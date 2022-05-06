@@ -530,6 +530,17 @@
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
 
+/* US belts*/
+
+/obj/item/weapon/storage/belt/smallpouches/us/modern/m14
+/obj/item/weapon/storage/belt/smallpouches/us/modern/m14/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/m14(src)
+	new/obj/item/ammo_magazine/m14(src)
+	new/obj/item/ammo_magazine/m14(src)
+
+
 /* Russian Army Clothing*/
 
 /obj/item/clothing/under/milrus_vsr93
@@ -833,6 +844,14 @@
 	w_class = 4
 	weight = 3.8
 
+/obj/item/weapon/storage/belt/smallpouches/m24
+/obj/item/weapon/storage/belt/smallpouches/m24/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/m24(src)
+	new/obj/item/ammo_magazine/m24(src)
+	new/obj/item/ammo_magazine/m24(src)
+
 /* Kevlar Suits & Helmets*/
 
 /obj/item/clothing/accessory/armor/nomads/kevlarblack
@@ -1060,11 +1079,14 @@
 /obj/item/weapon/storage/belt/police/modern/New()
 	..()
 	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/clipboard/full(src)
+	new /obj/item/weapon/pen(src)
 	new /obj/item/weapon/whistle(src)
 
 /obj/item/weapon/storage/belt/police/old
@@ -1072,10 +1094,10 @@
 	..()
 	new /obj/item/weapon/melee/classic_baton(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs/old(src)
+	new /obj/item/weapon/handcuffs/old(src)
+	new /obj/item/weapon/handcuffs/old(src)
+	new /obj/item/weapon/handcuffs/old(src)
 	new /obj/item/weapon/whistle(src)
 
 /* Miscallenous*/
@@ -1194,6 +1216,14 @@
 		item_state = icon_state
 		worn_state = icon_state
 
+/obj/item/clothing/head/cap/tfc
+	name = "TFC Cap"
+	desc = "A red Texas Fried Chicken cap."
+	icon_state = "tfc"
+	item_state = "tfc"
+	worn_state = "tfc"
+	base_state = "tfc"
+
 /obj/item/clothing/head/cap/red
 	name = "red cap"
 	desc = "A red cap."
@@ -1234,6 +1264,21 @@
 	worn_state = "fbi"
 	base_state = "fbi"
 
+/obj/item/clothing/head/cap/atf
+	name = "ATF hat"
+	desc = "A dark navy hat with ATF in yellow letters in the front."
+	icon_state = "atf"
+	item_state = "atf"
+	worn_state = "atf"
+	base_state = "atf"
+
+/obj/item/clothing/head/cap/dea
+	name = "DEA hat"
+	desc = "A dark navy hat with DEA in yellow letters in the front."
+	icon_state = "dea"
+	item_state = "dea"
+	worn_state = "dea"
+	base_state = "dea"
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
 	name = "IOG heavy vest B-7"
@@ -1297,6 +1342,7 @@
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 60
+
 
 //////////////////////////////////////Russo-Ukraine war/////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/helmet/modern/mk6
@@ -1603,3 +1649,24 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack,/obj/item/weapon/gun/projectile/pistol)
+
+/obj/item/clothing/head/helmet/modern/mechanical
+	name = "Mechanical Helmet"
+	desc = "A mechanical steel helmet."
+	icon_state = "mechanicalhelmet"
+	item_state = "mechanicalhelmet"
+	worn_state = "mechanicalhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 175, arrow = 99, gun = 120, energy = 42, bomb = 185, bio = 35, rad = FALSE)
+
+/obj/item/clothing/suit/armor/mechanical
+	name = "mechanized armor"
+	desc = "A thick, thrown together iron armor, covering most of the body."
+	icon_state = "mechanicalarmor"
+	item_state = "mechanicalarmor"
+	worn_state = "mechanicalarmor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 85, arrow = 150, gun = 150, energy = 55, bomb = 70, bio = 30, rad = FALSE)
+	value = 150
+	slowdown = 1.8
+	health = 175

@@ -384,6 +384,7 @@
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "quiver"
 	item_state = "quiver"
+	slot_flags = SLOT_BACK | SLOT_BELT
 
 /obj/item/weapon/storage/backpack/quiver/New()
 		..()
