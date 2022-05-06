@@ -193,6 +193,22 @@
 	nutriment_factor = TRUE
 	color = "#FFFFFF"
 
+/datum/reagent/nutriment/coconutmilk //Added new reagent for coconuts
+	name = "Coconut milk"
+	id = "coconutmilk"
+	description = "A white, milky liquid, loaded with sugary sweetness."
+	taste_description = "sweetness"
+	nutriment_factor = 25
+	color = "#FFFFFF"
+	
+/datum/reagent/nutriment/apricotjuice //Added new reagent for apricots
+	name = "Apricot juice"
+	id = "apricotjuice"
+	description = "An orange, transparant liquid, tasting of apricots."
+	taste_description = "sweetness"
+	nutriment_factor = 25
+	color = "#FFFFFF"
+
 /datum/reagent/nutriment/cherryjelly
 	name = "Cherry Jelly"
 	id = "cherryjelly"
