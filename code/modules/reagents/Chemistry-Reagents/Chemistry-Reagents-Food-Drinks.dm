@@ -193,6 +193,14 @@
 	nutriment_factor = TRUE
 	color = "#FFFFFF"
 
+/datum/reagent/nutriment/coconut_milk
+	name = "Coconut milk"
+	id = "coconutmilk"
+	description = "A white, milky liquid, loaded with sugary sweetness."
+	taste_description = "sweetness"
+	nutriment_factor = 25
+	color = "#FFFFFF"
+
 /datum/reagent/nutriment/cherryjelly
 	name = "Cherry Jelly"
 	id = "cherryjelly"
