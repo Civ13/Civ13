@@ -299,6 +299,9 @@
 				else if (H.stat!=DEAD && H.original_job.title == "DRA Governor")
 					muj_points += 3
 					world << "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>"
+				else if (H.stat!=DEAD && H.original_job.title == "DRA Lieutenant")
+					muj_points += 2
+					world << "<font color='orange' size=2>A <b><font color='green'>DRA Lieutenant</font></b> is in captivity!</font>"
 				else if (H.stat!=DEAD && H.original_job.title == "DRA Sergeant")
 					muj_points += 1
 					world << "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>"

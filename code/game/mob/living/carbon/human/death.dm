@@ -118,6 +118,9 @@
 		else if (faction_text == CIVILIAN && original_job.title == "DRA Governor")
 			MP.muj_points += 15
 			world << "<font color='red' size=3>The <b>DRA Governor</b> has been killed!</font>"
+		else if (faction_text == CIVILIAN && original_job.title == "DRA Lieutenant")
+			world << "<font color='red' size=3>A <b>DRA Lieutenant</b> has been killed!</font>"
+			MP.muj_points += 10
 		else if (faction_text == CIVILIAN && original_job.title == "DRA Sergeant")
 			world << "<font color='red' size=3>A <b>DRA Sergeant</b> has been killed!</font>"
 			MP.muj_points += 5
