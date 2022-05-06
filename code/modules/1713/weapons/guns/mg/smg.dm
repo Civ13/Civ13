@@ -226,13 +226,22 @@
 	effectiveness_mod = 0.95
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5
-	name = "MP5"
-	desc = "German submachinegun with an underfolding stock, chambered in 9mm Parabellum."
+	name = "H&K MP5"
+	desc = "German submachinegun chambered in 9mm Parabellum."
 	icon_state = "mp5"
 	item_state = "mp5"
 	base_icon = "mp5"
+	weight = 2.9
+	equiptimer = 8
+	fire_sound = 'sound/weapons/guns/fire/MP5.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp40/mp5
 	good_mags = list(/obj/item/ammo_magazine/mp40/mp5)
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+	sel_mode = 1
+	effectiveness_mod = 1.2
 
 /obj/item/weapon/gun/projectile/submachinegun/greasegun
 	name = "M3A1 SMG"
