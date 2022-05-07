@@ -563,7 +563,7 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/coldwar/dra/officer(H), slot_w_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/coldwar/dra/officer(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
 //back
