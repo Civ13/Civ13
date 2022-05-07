@@ -1509,12 +1509,26 @@
 	item_state = "dra_uni"
 	worn_state = "dra_uni"
 
+/obj/item/clothing/under/coldwar/dra/nco
+	name = "DRA NCO uniform"
+	desc = "A military uniform worn by DRA NCOs."
+	icon_state = "dra_uni_nco"
+	item_state = "dra_uni_nco"
+	worn_state = "dra_uni_nco"
+
 /obj/item/clothing/under/coldwar/dra/officer
 	name = "DRA officer uniform"
 	desc = "A military uniform worn by DRA officers."
 	icon_state = "dra_uni_officer"
 	item_state = "dra_uni_officer"
 	worn_state = "dra_uni_officer"
+
+/obj/item/clothing/suit/coldwar/dra/officer
+	name = "DRA officer jacket"
+	desc = "A military jacket worn by DRA officers."
+	icon_state = "dra_officer"
+	item_state = "dra_officer"
+	worn_state = "dra_officer"
 
 /obj/item/clothing/head/custom/fieldcap/dra
 	name = "DRA field cap"
