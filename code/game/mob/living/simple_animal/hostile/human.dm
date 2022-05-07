@@ -107,7 +107,7 @@
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
 					following_mob = null
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Coming!"), language)
 					do_movement(speaker)
 					spawn(30)
 						do_movement(loc)
@@ -115,13 +115,13 @@
 
 				else if (findtext(message, "follow me") || findtext(message, "on me"))
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Following!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Following!"), language)
 					do_movement(speaker)
 					following_mob = speaker
 
 				else if (findtext(message, "stop") || findtext(message, "hold"))
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Stopping, Sir!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Stopping, Sir!"), language)
 					walk(src,0)
 					do_movement(loc)
 					following_mob = null
@@ -154,7 +154,7 @@
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
 					following_mob = null
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Moving out!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Moving out!"), language)
 					if (prob(15))
 						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 					var/turf/t_dir = null

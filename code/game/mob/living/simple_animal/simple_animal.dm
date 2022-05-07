@@ -147,7 +147,6 @@
 				walk_to(src, following_mob,1, 6)
 				turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
-			visible_message("The leash on \the [src] breaks.")
 			following_mob = null
 			stop_automated_movement = FALSE
 

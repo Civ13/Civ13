@@ -474,6 +474,14 @@ var/no_loop_cm = FALSE
 	health = 1000000
 
 /obj/structure/altar/heads/attackby(obj/item/W, mob/living/human/user)
+	if (istype(map, /obj/map_metadata/campaign/campaign6))
+		var/obj/map_metadata/campaign/campaign6/AW = map
+		if(istype(W, /obj/item/weapon/book/holybook) || istype(W,/obj/item/clothing/suit/armor/royal) || istype(W,/obj/item/weapon/goldsceptre) || istype(W,/obj/item/clothing/head/helmet/gold_crown_diamond))
+			user << "You place the [W] in the chest."
+			qdel(W)
+			AW.scores["Blugoslavia"] += 1
+			user << "Total treasures inside: <b>[AW.scores["Blugoslavia"]]</b>"
+			return
 	if (istype(W, /obj/item/organ/external/head) && map.ID == MAP_CAMPAIGN)
 		var/obj/map_metadata/campaign/AW = map
 		if (!AW)
@@ -496,7 +504,7 @@ var/no_loop_cm = FALSE
 
 /obj/structure/altar/heads/examine(mob/user, distance)
 	. = ..()
-	if(ishuman(user) && map && map.ID == MAP_CAMPAIGN)
+	if(ishuman(user) && map && map.ID == MAP_CAMPAIGN && !istype(map, /obj/map_metadata/campaign/campaign6))
 		var/mob/living/human/H = user
 		var/obj/map_metadata/campaign/AW = map
 		switch(H.nationality)
@@ -747,3 +755,31 @@ obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+/obj/map_metadata/campaign/campaign6/proc/paradrop()
+	for(var/turf/T in list(locate(137,48,1),locate(125,48,1),locate(137,37,1),locate(124,37,1),locate(131,38,1),locate(131,47,1)))
+		var/obj/item/weapon/grenade/smokebomb/SB = new/obj/item/weapon/grenade/smokebomb(T)
+		SB.activate()
+	sleep(40)
+	for(var/turf/floor/plating/ironsand/SF in world)
+		for(var/mob/living/human/H in SF)
+			var/turf/newloc = pick(paradrop_landmarks)
+			H.x = newloc.x
+			H.y = newloc.y
+			H.z = newloc.z
+			var/image/I = image('icons/effects/parachute.dmi', H, layer = MOB_LAYER + 1.0)
+			I.pixel_x = -16
+			I.pixel_y = 32
+
+			H.overlays += I
+			playsound(get_turf(H), 'sound/effects/bamf.ogg', 20)
+			shake_camera(H, 2)
+			spawn (60)
+				H.overlays -= I
+				qdel(I)
+
+		for(var/obj/O in SF)
+			var/turf/newloc = pick(paradrop_landmarks)
+			O.x = newloc.x
+			O.y = newloc.y
+			O.z = newloc.z
