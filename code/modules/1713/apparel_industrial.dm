@@ -636,3 +636,12 @@ obj/item/clothing/under/confederate_uniform/New()
 	new/obj/item/ammo_casing/musketball_pistol(src)
 	new/obj/item/ammo_casing/musketball_pistol(src)
 	new/obj/item/weapon/gun/projectile/capnball/dragoon(src)
+
+/obj/item/clothing/suit/storage/coat/gentleman
+	name = "gentleman coat"
+	desc = "An elegant black coat."
+	icon_state = "gentlemancoat"
+	item_state = "gentlemancoat"
+	worn_state = "gentlemancoat"
+	body_parts_covered = UPPER_TORSO|ARMS|LEGS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT|LEGS

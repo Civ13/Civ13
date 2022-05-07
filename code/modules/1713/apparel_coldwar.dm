@@ -116,6 +116,13 @@
 	item_state = "dea"
 	worn_state = "dea"
 
+/obj/item/clothing/suit/storage/dea
+	name = "FBI jacket"
+	desc = "A DEA jacket, standard issue for DEA agents."
+	icon_state = "dea"
+	item_state = "dea"
+	worn_state = "dea"
+
 /obj/item/clothing/suit/swat //these likely need upgrading to armor
 	name = "swat heavy vest"
 	desc = "A heavy NIJ level IV vest, used by swat officers."
@@ -159,6 +166,45 @@
 	icon_state = "traffic_cop"
 	item_state = "traffic_cop"
 	worn_state = "traffic_cop"
+
+/obj/item/clothing/suit/storage/jacket/police
+	name = "police jacket"
+	desc = "A police jacket."
+	icon_state = "policejacket"
+	item_state = "policejacket"
+	worn_state = "policejacket"
+	var/closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/police/verb/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust jacket"
+	if (type != /obj/item/clothing/suit/storage/jacket/police)
+		return
+	else
+		if(closed)
+			worn_state = "policejacket_open"
+			item_state = "policejacket_open"
+			icon_state = "policejacket_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "policejacket"
+			item_state = "policejacket"
+			icon_state = "policejacket"
+			item_state_slots["w_uniform"] = "policejacket"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
+
+/obj/item/clothing/suit/storage/jacket/forensics
+	name = "forensics jacket"
+	desc = "A forensic department jacket."
+	icon_state = "forensics"
+	item_state = "forensics"
+	worn_state = "forensics"
 
 /obj/item/clothing/head/beret_black
 	name = "black beret"
@@ -1521,3 +1567,19 @@
 	desc = "A cap worn by DRA military personnel."
 	color = "#767160"
 	uncolored1 = FALSE
+
+//////Random clothing/////////
+
+/obj/item/clothing/suit/storage/coat/modern_long/brown
+	name = "modern brown coat"
+	desc = "A modern long brown coat."
+	icon_state = "mlongcoat_brown"
+	item_state = "mlongcoat_brown"
+	worn_state = "mlongcoat_brown"
+
+/obj/item/clothing/suit/storage/coat/modern_long/black
+	name = "modern black coat"
+	desc = "A modern long black coat."
+	icon_state = "mlongcoat_black"
+	item_state = "mlongcoat_black"
+	worn_state = "mlongcoat_black"

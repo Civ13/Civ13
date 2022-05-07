@@ -1115,6 +1115,13 @@
 	w_class = 3
 	weight = 2
 
+/obj/item/clothing/suit/storage/coat/leathercoat_black
+	name = "black leather long coat"
+	desc = "A long black leather coat."
+	icon_state = "leathercoat_black"
+	item_state = "leathercoat_black"
+	worn_state = "leathercoat_black"
+
 	/* Tactical*/
 
 /obj/item/clothing/head/helmet/tactical //unsure, but a white helmet is good for peacekeeper corps until a legit code entry is made.
