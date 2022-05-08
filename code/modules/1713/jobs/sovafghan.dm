@@ -544,7 +544,6 @@
 	spawn_location = "JoinLateDRALt"
 
 	is_officer = TRUE
-	is_radioman = TRUE
 	is_afghan = TRUE
 	is_dra = TRUE
 	is_coldwar = TRUE
@@ -556,7 +555,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/afghan/dra/sergeant/equip(var/mob/living/human/H)
+/datum/job/civilian/afghan/dra/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -564,6 +563,7 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/coldwar/dra/officer(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
 //back
@@ -640,7 +640,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/dra/nco(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //head
 	if (prob(20))

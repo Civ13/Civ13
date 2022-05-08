@@ -2819,3 +2819,31 @@ obj/item/clothing/head/ww2/chicap2
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/wine(src)
+
+/obj/item/clothing/suit/storage/coat/leathercoat_black
+	name = "black leather long coat"
+	desc = "A long black leather coat."
+	icon_state = "leathercoat_black"
+	item_state = "leathercoat_black"
+	worn_state = "leathercoat_black"
+
+/obj/item/clothing/suit/storage/coat/modern_long_brown
+	name = "modern brown coat"
+	desc = "A modern long brown coat."
+	icon_state = "mlongcoat_brown"
+	item_state = "mlongcoat_brown"
+	worn_state = "mlongcoat_brown"
+
+/obj/item/clothing/suit/storage/coat/modern_long_black
+	name = "modern black coat"
+	desc = "A modern long black coat."
+	icon_state = "mlongcoat_black"
+	item_state = "mlongcoat_black"
+	worn_state = "mlongcoat_black"
+
+/obj/item/clothing/suit/storage/coat/gentleman
+	name = "gentleman coat"
+	desc = "An elegant black coat."
+	icon_state = "gentlemancoat"
+	item_state = "gentlemancoat"
+	worn_state = "gentlemancoat"

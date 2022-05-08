@@ -1153,3 +1153,19 @@
 	icon_state = "custom_col_short_full"
 	worn_state = "custom_col_short_full"
 	base_icon = "custom_col_short"
+
+/obj/item/clothing/suit/storage/jacket/custom/hoodie
+	name = "hoodie"
+	desc = "A simple comfy cloth hoodie."
+	icon_state = "customhoodie"
+	item_state = "customhoodie"
+	worn_state = "customhoodie"
+	uncolored = TRUE
+
+/obj/item/clothing/suit/storage/jacket/custom/cloth_jacket
+	name = "cloth jacket"
+	desc = "A simple cloth jacket."
+	icon_state = "customjacket"
+	item_state = "customjacket"
+	worn_state = "customjacket"
+	uncolored = TRUE

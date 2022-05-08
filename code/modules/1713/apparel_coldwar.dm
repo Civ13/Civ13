@@ -116,6 +116,46 @@
 	item_state = "dea"
 	worn_state = "dea"
 
+/obj/item/clothing/suit/storage/jacket/forensics
+	name = "forensics jacket"
+	desc = "A forensic department jacket."
+	icon_state = "forensics"
+	item_state = "forensics"
+	worn_state = "forensics"
+
+
+/obj/item/clothing/suit/storage/jacket/police
+	name = "police jacket"
+	desc = "A police jacket."
+	icon_state = "policejacket"
+	item_state = "policejacket"
+	worn_state = "policejacket"
+	var/closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/police/verb/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust jacket"
+	if (type != /obj/item/clothing/suit/storage/jacket/police)
+		return
+	else
+		if(closed)
+			worn_state = "policejacket_open"
+			item_state = "policejacket_open"
+			icon_state = "policejacket_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "policejacket"
+			item_state = "policejacket"
+			icon_state = "policejacket"
+			item_state_slots["w_uniform"] = "policejacket"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
+
 /obj/item/clothing/suit/swat //these likely need upgrading to armor
 	name = "swat heavy vest"
 	desc = "A heavy NIJ level IV vest, used by swat officers."
@@ -1509,12 +1549,26 @@
 	item_state = "dra_uni"
 	worn_state = "dra_uni"
 
+/obj/item/clothing/under/coldwar/dra/nco
+	name = "DRA NCO uniform"
+	desc = "A military uniform worn by DRA NCOs."
+	icon_state = "dra_uni_nco"
+	item_state = "dra_uni_nco"
+	worn_state = "dra_uni_nco"
+
 /obj/item/clothing/under/coldwar/dra/officer
 	name = "DRA officer uniform"
 	desc = "A military uniform worn by DRA officers."
 	icon_state = "dra_uni_officer"
 	item_state = "dra_uni_officer"
 	worn_state = "dra_uni_officer"
+
+/obj/item/clothing/suit/coldwar/dra/officer
+	name = "DRA officer jacket"
+	desc = "A military jacket worn by DRA officers."
+	icon_state = "dra_officer"
+	item_state = "dra_officer"
+	worn_state = "dra_officer"
 
 /obj/item/clothing/head/custom/fieldcap/dra
 	name = "DRA field cap"
