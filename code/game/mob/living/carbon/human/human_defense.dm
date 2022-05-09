@@ -97,13 +97,13 @@ bullet_act
 	if (P.firer && ishuman(P.firer))
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			var/mob/living/human/Huser = P.firer
-			if (src.stat != DEAD && (src.civilization == "Police" || src.civilization == "Paramedics" || prob(5)) && Huser.civilization != "Police")
+			if (src.stat != DEAD && (src.civilization == "Sheriff Office" || src.civilization == "Paramedics" || prob(15)) && Huser.civilization != "Sheriff Office")
 				last_harmed = Huser
-				var/reason = "Mischef"
+				var/reason = "Mischief"
 				if (src.civilization == "Paramedics")
 					reason = "Harming a Paramedic"
-				else if (src.civilization == "Police")
-					reason = "Harming a Police Officer"
+				else if (src.civilization == "Sheriff Office")
+					reason = "Harming a Law Enforcement Officer"
 				else
 					reason = "Attempted Murder"
 				if (!(Huser.real_name in map.warrants))

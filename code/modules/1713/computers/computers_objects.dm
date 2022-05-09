@@ -77,7 +77,7 @@
 		if (D.faction == H.civilization)
 			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
 			return
-		else if (H.civilization == "Police")
+		else if (H.civilization == "Sheriff Office")
 			H << "<span class='notice'>You do not know how to decrypt this... Should put it in the evidence room instead.</span>"
 			return
 		else if (D.used)
@@ -159,13 +159,13 @@
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/police
 	name = "Police Processing Terminal"
-	desc = "A computer running unga OS 94 Police Edition, with access to both civilians and Police."
+	desc = "A computer running unga OS 94 Law Enforcement Edition, with access to both civilians and LEOs."
 	icon_state = "research_on"
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
 	density = TRUE
-	operatingsystem = "unga OS 94 Police Edition"
+	operatingsystem = "unga OS 94 Law Enforcement Edition"
 	New()
 		..()
 		programs += new/datum/program/permits
@@ -321,11 +321,11 @@
 	operatingsystem = "unga OS 94"
 
 /obj/item/weapon/disk/os/uos94pe
-	name = "unga OS 94 PE boot disk"
-	desc = "A disk used to boot unga OS 94 Police Edition."
+	name = "unga OS 94 LE boot disk"
+	desc = "A disk used to boot unga OS 94 Law Enforcement Edition."
 	icon_state = "disk_uos94"
 	item_state = "disk_uos94"
-	operatingsystem = "unga OS 94 Police Edition"
+	operatingsystem = "unga OS 94 Law Enforcement Edition"
 ///////////////components/////////////////////
 /obj/item/stack/component
 	icon = 'icons/obj/computers.dmi'
@@ -541,7 +541,7 @@
 /obj/item/weapon/disk/program/squadtracker
 	name = "Squad-Trak installation disk"
 	desc = "Tracks the location of your squad."
-	compatible_os = list("unga OS 94","unga OS 94 Police Edition")
+	compatible_os = list("unga OS 94","unga OS 94 Law Enforcement Edition")
 	New()
 		..()
 		included = /datum/program/squadtracker

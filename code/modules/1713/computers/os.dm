@@ -84,10 +84,10 @@
 	do_html(user)
 
 /obj/structure/computer/proc/boot(operatingsystem = "none")
-	if (operatingsystem == "unga OS 94" || operatingsystem == "unga OS 94 Police Edition")
+	if (operatingsystem == "unga OS 94" || operatingsystem == "unga OS 94 Law Enforcement Edition")
 		var/subt = ""
-		if (operatingsystem == "unga OS 94 Police Edition")
-			subt = "<br><font color='blue'>POLICE</font>&nbsp;<font color='red'>EDITION</font>"
+		if (operatingsystem == "unga OS 94 Law Enforcement Edition")
+			subt = "<br><font color='blue'>Law Enforcement</font>&nbsp;<font color='red'>EDITION</font>"
 		mainmenu = {"
 		<i><h1><img src='uos94.png'></img>[subt]</h1></i>
 		<hr>

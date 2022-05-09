@@ -31,11 +31,11 @@
 		"Giovanni Blu Stocks" = 0,
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,
-		"Police" = 0,)
+		"Sheriff Office" = 0,)
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
-	var/maxpoints = 2500
+	var/maxpoints = 3000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
 
@@ -66,7 +66,7 @@
 	var/newnameb = list("Giovanni Blu Stocks" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Kogama Kraftsmen" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
-	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
+	var/newnamee = list("Sheriff Office" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(230,230,230,null,0,"cross","#7F0000","#FFFFFF",0,0))
 	custom_civs += newnamea
 	custom_civs += newnameb
@@ -260,7 +260,7 @@
 			tlist[2] += scores[SF.faction]
 			world << "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] points</font></big>"
 //five-o scores
-	var/list/tlist2 = list("Police",0)
+	var/list/tlist2 = list("Sheriff Office",0)
 	for(var/obj/item/I in get_area(/area/caribbean/prison/jail))
 		if (istype(I, /obj/item/weapon/disk))
 			var/obj/item/weapon/disk/D = I
@@ -268,8 +268,8 @@
 				tlist2[2]+=300
 		if (istype(I, /obj/item/stack/money))
 			var/obj/item/stack/money/M = I
-			tlist2[2]+=M.amount*M.value/4
-	tlist2[2] += scores["Police"]
+			tlist2[2]+=M.amount*(M.value/4)
+	tlist2[2] += scores["Sheriff Office"]
 	world << "<big><font color='yellow' size=2>[tlist2[1]]: [tlist2[2]] points</font></big>"
 	spawn(3000)
 		score()
@@ -321,7 +321,7 @@
 		/obj/item/weapon/material/kitchen/utensil/knife/shank/iron = 10,
 	)
 	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer")
+		if (user.original_job_title == "County Deputy")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -389,16 +389,24 @@
 		/obj/item/clothing/mask/gas/swat = 15,
 		/obj/item/clothing/suit/police = 15,
 		/obj/item/clothing/suit/storage/jacket/highvis = 15,
-		/obj/item/clothing/head/helmet/constable = 15,
-		/obj/item/clothing/under/constable = 15,
 		/obj/item/clothing/shoes/swat = 15,
-		/obj/item/weapon/storage/backpack/civbag = 15,
+		/obj/item/clothing/under/countysheriff/deputy = 15,
+		/obj/item/clothing/under/countysheriff/deputy/short = 15,
+		/obj/item/clothing/shoes/laceup = 15,
+		/obj/item/clothing/head/countysheriff_cap = 15,
+		/obj/item/clothing/head/countysheriff_cap/black = 15,
+		/obj/item/weapon/storage/backpack/satchel = 15,
+		/obj/item/weapon/storage/backpack/civbag = 5,
+		/obj/item/weapon/storage/backpack/duffel = 5,
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
-		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 15,
+		/obj/item/weapon/storage/box/bodybags = 3,
+		/obj/item/clothing/head/helmet/constable = 5,
+		/obj/item/clothing/under/constable = 5,
+		/obj/item/clothing/under/traffic_police = 5,
 	)
 	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
+		if (user.original_job_title == "County Deputy" || user.original_job_title == "County Sheriff")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -421,7 +429,7 @@
 	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
 	)
 	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
+		if (user.original_job_title == "County Deputy" || user.original_job_title == "County Sheriff")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -447,7 +455,7 @@
 	/obj/item/ammo_magazine/tt30ll = 50,
 	)
 	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
+		if (user.original_job_title == "County Deputy" || user.original_job_title == "County Sheriff")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -492,7 +500,7 @@
 		arn = rand(1000,9999)
 		icon_state = "police_record"
 		spawn(10)
-			info = "<center>POLICE DEPARTMENT<hr><large><b>Arrest Warrant No. [arn]</b></large><hr><br>Police forces are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i></b>, for the following reasons:<br><br><i>- [reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Police forces shall bring <b>[tgt]</b> forthwith to the Police Station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
+			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Arrest Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i></b>, for the following reasons:<br><br><i>- [reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Law Enforcement Agencies shall bring <b>[tgt]</b> forthwith to the local station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
 		spawn(100)
 			if (spawntimer)
 				spawn(spawntimer)
@@ -508,7 +516,7 @@
 		arn = rand(100,999)
 		icon_state = "police_warrant"
 		spawn(10)
-			info = "<center>POLICE DEPARTMENT<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Police forces are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
+			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
@@ -565,10 +573,10 @@
 /mob/living/human/proc/undercover()
 	set category = "IC"
 	set name = "Toggle Undercover"
-	set desc="Hide your identity for police operations."
+	set desc="Hide your identity for undercover police operations."
 
-	if (findtext(name, "Officer"))
-		real_name = replacetext(real_name, "Officer ", "")
+	if (findtext(name, "Deputy"))
+		real_name = replacetext(real_name, "Deputy ", "")
 		hidden_name = real_name
 		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Japanese"))
 		switch(chosen_name)
@@ -588,9 +596,9 @@
 		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
-		real_name = "Officer [hidden_name]"
-		name = "Officer [hidden_name]"
-		voice = "Officer [hidden_name]"
+		real_name = "Deputy [hidden_name]"
+		name = "Deputy [hidden_name]"
+		voice = "Deputy [hidden_name]"
 		src << "<b><big>You are now revealing your identity again.</big></b>"
 		return
 
