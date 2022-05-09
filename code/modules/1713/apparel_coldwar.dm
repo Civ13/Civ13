@@ -1049,6 +1049,13 @@
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47/drum(hold)
+		new/obj/item/ammo_magazine/ak47/drum(hold)
+		new/obj/item/ammo_magazine/ak47/drum(hold)
+		
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."

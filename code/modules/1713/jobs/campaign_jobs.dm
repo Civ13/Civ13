@@ -445,7 +445,7 @@
 				uniform.attackby(PISTOL, H)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 			else
-				var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak(null)
+				var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak(null)
 				uniform.attackby(webbing, H)
 			if(A.climate == "taiga" || A.climate == "tundra")
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue/white(H), slot_belt)
