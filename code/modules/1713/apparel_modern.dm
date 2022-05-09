@@ -1050,7 +1050,7 @@
 
 /obj/item/weapon/storage/belt/police
 	name = "police belt"
-	desc = "A belt that can hold the standard issue gear of police officers."
+	desc = "A belt that can hold the standard issue gear of law enforcement officers."
 	icon_state = "gerbelt"
 	item_state = "security"
 	worn_state = "security"

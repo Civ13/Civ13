@@ -123,7 +123,6 @@
 	item_state = "forensics"
 	worn_state = "forensics"
 
-
 /obj/item/clothing/suit/storage/jacket/police
 	name = "police jacket"
 	desc = "A police jacket."
@@ -192,6 +191,48 @@
 	icon_state = "traffic_cop_sup"
 	item_state = "traffic_cop_sup"
 	worn_state = "traffic_cop_sup"
+
+/obj/item/clothing/under/countysheriff
+	name = "sheriff's department sheriff outfit"
+	desc = "A law enforcement outfit worn by the town's sherrif."
+	icon_state = "sd_sheriff"
+	item_state = "sd_sheriff"
+	worn_state = "sd_sheriff"
+
+/obj/item/clothing/under/countysheriff/deputy
+	name = "sheriff's department deputy outfit"
+	desc = "A law enforcement outfit worn by the town's deputies."
+	icon_state = "sd_deputy"
+	item_state = "sd_deputy"
+	worn_state = "sd_deputy"
+
+/obj/item/clothing/under/countysheriff/deputy/short
+	name = "sheriff's department deputy outfit"
+	desc = "A law enforcement outfit worn by the town's deputies. Short sleeved version."
+	icon_state = "sd_deputy_shortsleeves"
+	item_state = "sd_deputy_shortsleeves"
+	worn_state = "sd_deputy_shortsleeves"
+
+/obj/item/clothing/head/countysheriff_hat
+	name = "sheriff's stratton hat"
+	desc = "A stratton hat worn by the LEOs of the town's Sheriff Department."
+	icon_state = "sd_sheriffhat"
+	item_state = "sd_sheriffhat"
+	worn_state = "sd_sheriffhat"
+
+/obj/item/clothing/head/countysheriff_cap
+	name = "sheriff's department cap"
+	desc = "A baseball cap worn by the LEOs of the town's Sheriff Department."
+	icon_state = "sd_cap"
+	item_state = "sd_cap"
+	worn_state = "sd_cap"
+
+/obj/item/clothing/head/countysheriff_cap/black
+	name = "sheriff's department cap"
+	desc = "A baseball cap worn by the LEOs of the town's Sheriff Department. Black version."
+	icon_state = "sd_cap_black"
+	item_state = "sd_cap_black"
+	worn_state = "sd_cap_black"
 
 /obj/item/clothing/head/traffic_police
 	name = "police cap"
@@ -1575,3 +1616,38 @@
 	desc = "A cap worn by DRA military personnel."
 	color = "#767160"
 	uncolored1 = FALSE
+
+/obj/item/clothing/under/coldwar/bowling_red
+	name = "red bowling outfit"
+	desc = "A stylish red bowling shirt with black pants."
+	icon_state = "bowling_red"
+	item_state = "bowling_red"
+	worn_state = "bowling_red"
+
+/obj/item/clothing/under/coldwar/bowling_yellow
+	name = "yellow bowling outfit"
+	desc = "A stylish yellow bowling shirt with black pants."
+	icon_state = "bowling_yellow"
+	item_state = "bowling_yellow"
+	worn_state = "bowling_yellow"
+
+/obj/item/clothing/under/coldwar/bowling_green
+	name = "green bowling outfit"
+	desc = "A stylish green bowling shirt with black pants."
+	icon_state = "bowling_green"
+	item_state = "bowling_green"
+	worn_state = "bowling_green"
+
+/obj/item/clothing/under/coldwar/bowling_blue
+	name = "blue bowling outfit"
+	desc = "A stylish blue bowling shirt with black pants."
+	icon_state = "bowling_blue"
+	item_state = "bowling_blue"
+	worn_state = "bowling_blue"
+
+/obj/item/clothing/under/coldwar/hippie
+	name = "hippie outfit"
+	desc = "A tie-dye t-shirt with bootleg grey jeans. Right on, man!"
+	icon_state = "hippy"
+	item_state = "hippy"
+	worn_state = "hippy"

@@ -596,8 +596,8 @@
 	if (world.realtime >= lastsoundcheck)
 		if (on)
 			playsound(loc,'sound/machines/police_siren.ogg',100,FALSE,15)
-			lastsoundcheck = world.realtime+48
-			spawn(50)
+			lastsoundcheck = world.realtime+55
+			spawn(55)
 				check_sound()
 /obj/structure/emergency_lights/proc/check_color()
 	if (on)
@@ -617,8 +617,8 @@
 	if (world.realtime >= lastsoundcheck)
 		if (on)
 			playsound(loc,'sound/machines/ambulance_siren.ogg',100,FALSE,15)
-			lastsoundcheck = world.realtime+25
-			spawn(28)
+			lastsoundcheck = world.realtime+11
+			spawn(11)
 				check_sound()
 /obj/structure/emergency_lights/ambulance/check_color()
 	if (on)
