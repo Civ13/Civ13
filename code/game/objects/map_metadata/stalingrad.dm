@@ -103,7 +103,7 @@
 
 /obj/map_metadata/stalingrad/proc/points_check()
 	var/cust_color = "white"
-	if (processes.ticker.playtime_elapsed > 6000)
+	if (processes.ticker.playtime_elapsed > 3600)
 		var/c1 = 0
 		var/c2 = 0
 		var/prev_control = a1_control
