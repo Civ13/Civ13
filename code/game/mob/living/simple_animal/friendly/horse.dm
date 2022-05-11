@@ -28,13 +28,16 @@
 	icon_state = "horse2"
 	icon_living = "horse2"
 	icon_dead = "horse2_dead"
+	layer = 3.99
 
 /mob/living/simple_animal/horse/beige
 	icon_state = "horse3"
 	icon_living = "horse3"
 	icon_dead = "horse3_dead"
+	layer = 3.99
 
 /mob/living/simple_animal/horse/white
 	icon_state = "horse4"
 	icon_living = "horse4"
 	icon_dead = "horse4_dead"
+	layer = 3.99

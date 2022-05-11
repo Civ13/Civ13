@@ -103,7 +103,7 @@
 
 /obj/map_metadata/stalingrad/proc/points_check()
 	var/cust_color = "white"
-	if (processes.ticker.playtime_elapsed > 6000)
+	if (processes.ticker.playtime_elapsed > 3600)
 		var/c1 = 0
 		var/c2 = 0
 		var/prev_control = a1_control
@@ -279,7 +279,7 @@
 	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/stalingrad/minigrad/points_check()
-	if (processes.ticker.playtime_elapsed > 3000)
+	if (processes.ticker.playtime_elapsed > 2100)
 		var/c1 = 0
 		var/c2 = 0
 		var/cust_color = "white"
