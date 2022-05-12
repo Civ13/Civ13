@@ -470,9 +470,9 @@
 		gender = MALE
 		growth = 1
 
-//	volaju
-//		name = "Volaju"
-//		icon_state = "hair_volaju"
+	volaju
+		name = "Volaju"
+		icon_state = "hair_volaju"
 
 //	longeralt2
 //		name = "Long Hair Alt 2"
