@@ -1748,6 +1748,7 @@
 					map.marketplaceaccounts[user.name] -= cost
 					sleep(0.5)
 					do_html(user)
+					return
 		if (findtext(href_list["bank"],"s"))
 			var/tcode = replacetext(href_list["bank"],"s","")
 			var/cost = (map.globalmarketplace[tcode][4])
