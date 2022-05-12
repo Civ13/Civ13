@@ -13,10 +13,11 @@
    11 - Cold War Balaclavas
    12 - Cold War Webbing
    13 - NBC &  Hazmat Suits
-   14 - Miscallaneous
-   14a - John Toughguy - Jungle Commando
-   14b - Swinging Sixties
-   14c - Other Miscallaneous */
+   14 - Astronaut Suit and Helmet
+   15 - Miscallaneous
+   15a - John Toughguy - Jungle Commando
+   15b - Swinging Sixties
+   15c - Other Miscallaneous */
 
 /* Coldwar Coats*/
 
@@ -1096,7 +1097,7 @@
 		new/obj/item/ammo_magazine/ak47/drum(hold)
 		new/obj/item/ammo_magazine/ak47/drum(hold)
 		new/obj/item/ammo_magazine/ak47/drum(hold)
-		
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."
@@ -1332,7 +1333,7 @@
 
 /obj/item/clothing/suit/hazmat
 	name = "hazmat suit"
-	desc = "A bright hazard protection suit, made protect against biological, chemical and nuclear threats."
+	desc = "A bright hazard protection suit, made to protect against biological, chemical and nuclear threats."
 	icon_state = "hazmat_suit"
 	item_state = "hazmat_suit"
 	worn_state = "hazmat_suit"
@@ -1340,9 +1341,25 @@
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)
 	ripable = FALSE
 
+/* Astronaut Suit and Helmet*/
+
+/obj/item/clothing/head/astronaut
+	name = "astronaut helmet"
+	desc = "A grey helmet, made to protect against low pressure, temperature and radioactive threa"
+	icon_state = "astronaut"
+	armor = list(melee = 20, arrow = 10, gun = 5, energy = 10, bomb = 35, bio = 150, rad = 195)
+
+/obj/item/clothing/suit/astronaut
+	name = "astronaut suit"
+	desc = "A grey space suit, made protect to against low pressure, temperature and radioactive threats."
+	icon_state = "astronaut"
+	item_state = "astronaut"
+	worn_state = "astronaut"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS|HEAD
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 35, bio = 150, rad = 195)
+	ripable = FALSE
+
 /* Miscallaneous*/
-
-
 
 	/* John Toughguy - Jungle Commando defintiely does not rhyme with a certain movie franchise*/
 
@@ -1562,6 +1579,39 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
+
+obj/item/clothing/head/helmet/modern/hardhaty
+	name = "yellow hard hat"
+	desc = "A yellow hard hat used by the workers."
+	icon_state = "hardhat_yellow"
+	item_state = "hardhat_yellow"
+	worn_state = "hardhat_yellow"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
+obj/item/clothing/head/helmet/modern/hardhatw
+	name = "white hard hat"
+	desc = "A white hard hat used by the workers."
+	icon_state = "hardhat_white"
+	item_state = "hardhat_white"
+	worn_state = "hardhat_white"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
+obj/item/clothing/head/helmet/modern/hardhato
+	name = "orange hard hat"
+	desc = "A orange hard hat used by the workers."
+	icon_state = "hardhat_orange"
+	item_state = "hardhat_orange"
+	worn_state = "hardhat_orange"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
 
 //yare yare daze.
 
