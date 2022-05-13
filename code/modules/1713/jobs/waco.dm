@@ -132,8 +132,10 @@
 //back
 	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
-	else
+	else if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_shoulder)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat(H), slot_belt)
 	give_random_name(H)
 	H.civilization = "ATF"
@@ -261,7 +263,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/american/cult_leader/equip(var/mob/living/human/H)
+/datum/job/civilian/cult_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
@@ -277,9 +279,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/goldwatch(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/military(H), slot_belt)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
-	uniform.attackby(armor, H)
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are the great messiah who will save the people, stay alive at all costs!")
 	H.setStat("strength", STAT_NORMAL)
@@ -302,6 +301,15 @@
 	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
+	uniform.attackby(armor, H)
+	if (map && map.ID == MAP_WACO)
+		if (map.gamemode == "Protect the VIP")
+			var/obj/map_metadata/waco/WA = map
+			WA.HVT_list |= H
+		return TRUE
+
 
 /datum/job/civilian/believer
 	title = "David Follower"
@@ -350,7 +358,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
 //gunz
-	if(prob(80))
+	if(prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
 	else
@@ -372,7 +380,7 @@
 	title = "David Desciple"
 	en_meaning = ""
 	rank_abbreviation = "Follower"
-	spawn_location = "JoinLateDisciple"
+	spawn_location = "JoinLateRU"
 	min_positions = 10
 	max_positions = 150
 	is_waco = TRUE
@@ -401,7 +409,7 @@
 	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 //gunz
-	if (prob(50))
+	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
@@ -424,7 +432,7 @@
 	en_meaning = ""
 	rank_abbreviation = "Healer"
 
-	spawn_location = "JoinLateHealer"
+	spawn_location = "JoinLateRUDoc"
 
 	is_medic = TRUE
 	is_waco = TRUE
