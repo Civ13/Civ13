@@ -726,7 +726,7 @@
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\UPA.dm"
-#include "code\modules\1713\jobs\waco_jobs.dm"
+#include "code\modules\1713\jobs\waco.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
 #include "code\modules\1713\jobs\yakuza.dm"
 #include "code\modules\1713\jobs\yeltsin.dm"
@@ -1034,6 +1034,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\campaign\campaign6.dmm"
+#include "maps\1969\waco.dmm"
 // END_INCLUDE
 
