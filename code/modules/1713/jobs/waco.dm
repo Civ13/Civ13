@@ -99,8 +99,8 @@
 	return TRUE
 
 /datum/job/american/atf_soldier
-	title = "ATF Private"
-	rank_abbreviation = "Pvt."
+	title = "ATF Agent"
+	rank_abbreviation = "Agent"
 
 	spawn_location = "JoinLateJP"
 

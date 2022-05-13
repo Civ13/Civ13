@@ -1,4 +1,3 @@
-
 /obj/map_metadata/waco
 	ID = MAP_WACO
 	title = "Waco Siege"
@@ -29,7 +28,7 @@
 /obj/map_metadata/waco/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_waco == TRUE)
-		. = FALSE
+		. = TRUE
 	else
 		. = FALSE
 
