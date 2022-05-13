@@ -345,15 +345,17 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 //head
-	var/randhead = rand(1,2)
-	switch(randhead)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
+	if (prob(5))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
 //gunz
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
+	if(prob(80))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak47(H), slot_belt)
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home against the evil government!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -403,6 +405,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_belt)
+
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home from the goverment scum!")
 	H.setStat("strength", STAT_NORMAL)
