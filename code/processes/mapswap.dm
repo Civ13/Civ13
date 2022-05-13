@@ -593,19 +593,27 @@
 			world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
 		else if (map && map.ID == MAP_YELTSIN)
 			world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Parliamental Hall</b></big> until <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
+		else if (map && map.ID == MAP_WACO)
+			world << "<font color='yellow'><big>Siege</big><br>The <b>Branch Davidians</b> must defend the <b>Mount Carmel Compound</b></big> until <b>20 minutes</b have elapsed!<br><font size=4>All factions have <b>3 minutes</b> to prepare before the battle.</font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Siege"
-		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
-			new /area/caribbean/british/land/inside/objective(T)
-		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
-			new /area/caribbean/british/land/inside/objective(T)
+		if (map && map.ID == MAP_WACO)
+			for (var/turf/T in get_area_turfs(/area/caribbean/british/land/inside/objective))
+				new /area/caribbean/no_mans_land/capturable(T)
+		else
+			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
+				new /area/caribbean/british/land/inside/objective(T)
+			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
+				new /area/caribbean/british/land/inside/objective(T)
 		return
 	else if (vote.voted_gamemode == "Protect the VIP")
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
 		else if (map && map.ID == MAP_YELTSIN)
 			world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>KGB</b> inside the Militia-controlled Capitol. The Soviet Army must find them!<br>They have <b>40 minutes to do it!</b></big></font>"
+		if (map && map.ID == MAP_WACO)
+			world << "<font color='yellow'><big>Protect the VIP</big><br><b>David Koresh</b> is being guarded by the <b>Branch Davidians</b> inside the Mount Carmel Compound. The ATF must find him!<br>They have <b>20 minutes to do it!</b></big></font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Protect the VIP"

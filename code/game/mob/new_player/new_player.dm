@@ -579,7 +579,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -643,6 +643,11 @@ var/global/redirect_all_players = null
 			var/obj/map_metadata/yeltsin/CP = map
 			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet Supreme Chairman"))
 				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
+				return
+		if (map && map.ID == MAP_WACO)
+			var/obj/map_metadata/waco/CP = map
+			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Messiah"))
+				WWalert(usr,"Someone needs to spawn as David Koresh first!", "Error")
 				return
 		if (map && map.ID == MAP_ALLEYWAY)
 			if (actual_job && actual_job.title == "Yama Wakagashira")
