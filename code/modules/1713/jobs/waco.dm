@@ -396,7 +396,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband2(H), slot_w_uniform)
-	else if (prob(10))
+	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
