@@ -1582,3 +1582,21 @@
 	desc = "A cap worn by DRA military personnel."
 	color = "#767160"
 	uncolored1 = FALSE
+
+//blugoslavian and redmenian stuff
+/obj/item/clothing/under/blugoslavian_sailor
+	name = "Blugoslavian navy uniform"
+	desc = "A blue uniform of the Blugoslavian Navy."
+	icon_state = "blugoslavian_sailor"
+	item_state = "blugoslavian_sailor"
+	worn_state = "blugoslavian_sailor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+
+/obj/item/clothing/under/redmenian_sailor
+	name = "Redmenian navy uniform"
+	desc = "A red uniform of the Redmenian Navy."
+	icon_state = "redmenian_sailor"
+	item_state = "redmenian_sailor"
+	worn_state = "redmenian_sailor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
