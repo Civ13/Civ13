@@ -87,6 +87,11 @@
 	desc = "A sign for the McKellen's Franchise establishment."
 	icon_state = "mckellens"
 
+/obj/structure/sign/sheriff
+	name = "Sheriff's Office"
+	desc = "A sign for the local Sheriff's Office."
+	icon_state = "sheriff"
+
 /obj/structure/sign/bar
 	name = "BAR"
 	desc = "A sign that says bar on it."

@@ -175,14 +175,14 @@
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")
 				map.scores[civilization] -= 500
-			if (civilization == "Police")
+			if (civilization == "Sheriff Office")
 				map.scores[civilization] -= 250
 				if (ishuman(last_harmed))
 					map.scores[last_harmed.civilization] -= 100
 					global_broadcast(FREQP,"<big>10-9: Officer down! All available units proceed to [get_coded_loc()] ([x],[y])!</big>")
 					var/warrant = last_harmed.civilization
 					spawn(rand(300,500))
-						if (warrant != "Police")
+						if (warrant != "Sheriff Office")
 							var/obj/item/weapon/paper_bin/police/PAR = null
 							for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
 								PAR = PAR2

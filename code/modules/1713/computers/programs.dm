@@ -802,7 +802,7 @@
 				mdomain = "kogama.ug"
 			if ("Goldstein Solutions")
 				mdomain = "goldstein.ug"
-			if ("Police")
+			if ("Sheriff Office")
 				mdomain = "police.gov"
 		var/cname = "mail@[mdomain]"
 		if (user.original_job_title == "Legitimate Business")
@@ -838,7 +838,7 @@
 			mdomain = "kogama.ug"
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
-		if ("Police")
+		if ("Sheriff Office")
 			mdomain = "police.gov"
 	var/cname = "mail@[mdomain]"
 	if (user.original_job_title == "Legitimate Business")
@@ -1247,11 +1247,11 @@
 /datum/program/squadtracker
 	name = "Squad-Trak"
 	description = "Tracks the location of your squad."
-	compatible_os = list("unga OS 94","unga OS 94 Police Edition")
+	compatible_os = list("unga OS 94","unga OS 94 Law Enforcement Edition")
 
 /datum/program/squadtracker/do_html(mob/living/human/user)
 	mainmenu = "<h2>SQUAD STATUS</h2><br>"
-	if (origin.operatingsystem == "unga OS 94 Police Edition" && user.civilization != "Police" && user.civilization != "Paramedics")
+	if (origin.operatingsystem == "unga OS 94 Law Enforcement Edition" && user.civilization != "Sheriff Office" && user.civilization != "Paramedics")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
 		mainbody = ""
@@ -1267,12 +1267,12 @@
 
 /datum/program/licenseplates
 	name = "License Plate Registry"
-	description = "Connects to the main Police server to check updated status on license plates."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Transportation server to check on the updated status of a license plate."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/licenseplates/do_html(mob/living/human/user)
 	mainmenu = "<h2>LICENSE PLATE DATABASE</h2><br>"
-	if (user.civilization != "Police")
+	if (user.civilization != "Sheriff Office")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
 		mainbody = ""
@@ -1281,20 +1281,20 @@
 	..()
 /datum/program/permits
 	name = "Gun Permit Registry"
-	description = "Connects to the main Police server for automated gun permit requests."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Justice server for automated gun permit requests."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/permits/do_html(mob/living/human/user)
 	mainmenu = "<h2>GUN PERMITS</h2><br>"
 	mainmenu += "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
-	if (user.civilization == "Police" || user.civilization == "Paramedics")
+	if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics")
 		mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 	..()
 
 /datum/program/permits/Topic(href, href_list, hsrc)
 	mainbody = ""
 	if (href_list["permits"])
-		if (user.civilization == "Police" || user.civilization == "Paramedics")
+		if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics")
 			mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 			sleep(0.5)
 			do_html(user)
@@ -1305,7 +1305,7 @@
 			do_html(user)
 			return
 		else if  (user.civilization in map.warrants)
-			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked and the issue of new ones forbidden for murdering police officers.</font>"
+			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked and the issue of new ones has been suspended due to the murder of a law enforcement officer.</font>"
 			sleep(0.5)
 			do_html(user)
 			return
@@ -1332,7 +1332,7 @@
 					return
 				user.gun_permit = TRUE
 				mainbody += "<font color='green'>Your licence was <b>approved</b>.</span>"
-				map.scores["Police"] += 100
+				map.scores["Sheriff Office"] += 100
 			else
 				mainbody += "<font color='red'>You need to have 100 dollars in your hands to pay for the permit.</span>"
 				sleep(0.5)
@@ -1342,8 +1342,8 @@
 	do_html(user)
 /datum/program/warrants
 	name = "Warrant Terminal"
-	description = "Connects to the main Police server for up-to-date information on pending warrants."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Justice server for up-to-date information on pending warrants."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/warrants/do_html(mob/living/human/user)
 	if (mainmenu == "---")
@@ -1358,7 +1358,7 @@
 				mainbody += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp] <a href='?src=\ref[src];warrants=w[SW.arn]'>(print)</a><br>"
 
 		if (findtext(href_list["warrants"],"w"))
-			if (user.civilization != "Police")
+			if (user.civilization != "Sheriff Office")
 				mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 				sleep(0.5)
 				do_html(user)
@@ -1379,7 +1379,7 @@
 						do_html(user)
 						return
 		if (href_list["warrants"] == "3")
-			if (user.civilization != "Police" && user.civilization != "Paramedics")
+			if (user.civilization != "Sheriff Office" && user.civilization != "Paramedics")
 				var/done = FALSE
 				var/found = FALSE
 				for (var/mob/living/human/S in range(2,user))
@@ -1387,7 +1387,7 @@
 						found = TRUE
 						for(var/obj/item/weapon/paper/police/warrant/SW in map.pending_warrants)
 							if (SW.tgt_mob == S)
-								map.scores["Police"] += 100
+								map.scores["Sheriff Office"] += 100
 								var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(origin.loc)
 								DLR.amount = 20
 								DLR.update_icon()
@@ -1397,8 +1397,8 @@
 								SW.forceMove(null)
 								qdel(SW)
 								for(var/mob/living/human/HP in player_list)
-									if (HP.civilization == "Police")
-										HP << "<big><font color='yellow'>A suspect with a pending warrant has been dropped off at the Police station by a citizens arrest.</font></big>"
+									if (HP.civilization == "Sheriff Office")
+										HP << "<big><font color='yellow'>A suspect with a pending warrant has been dropped off at the station by a citizens arrest.</font></big>"
 					if (!done && found)
 						mainbody += "<font color='yellow'>There are no outstanding warrants for any of the suspects.</font>"
 					else if (!done && !found)
@@ -1415,7 +1415,7 @@
 					found = TRUE
 					for(var/obj/item/weapon/paper/police/warrant/SW in map.pending_warrants)
 						if (SW.tgt_mob == S)
-							map.scores["Police"] += 300
+							map.scores["Sheriff Office"] += 300
 							done = TRUE
 							mainbody += "<font color='green'>Processed warrant no. <b>[SW.arn]</b> for <b>[SW.tgt]</b>.</font>"
 							map.pending_warrants -= SW
@@ -1432,13 +1432,13 @@
 
 /datum/program/gunregistry
 	name = "Firearm Database"
-	description = "Connects to the main Police server to check updated status on all legally owned guns."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Justice server to check updated status on all legally owned guns."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/gunregistry/do_html(mob/living/human/user)
 	mainmenu = "<h2>FIREARM REGISTRY DATABASE</h2><br>"
 	mainbody = ""
-	if (user.civilization != "Police")
+	if (user.civilization != "Sheriff Office")
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
 	else
@@ -1748,6 +1748,7 @@
 					map.marketplaceaccounts[user.name] -= cost
 					sleep(0.5)
 					do_html(user)
+					return
 		if (findtext(href_list["bank"],"s"))
 			var/tcode = replacetext(href_list["bank"],"s","")
 			var/cost = (map.globalmarketplace[tcode][4])

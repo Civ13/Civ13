@@ -13,10 +13,11 @@
    11 - Cold War Balaclavas
    12 - Cold War Webbing
    13 - NBC &  Hazmat Suits
-   14 - Miscallaneous
-   14a - John Toughguy - Jungle Commando
-   14b - Swinging Sixties
-   14c - Other Miscallaneous */
+   14 - Astronaut Suit and Helmet
+   15 - Miscallaneous
+   15a - John Toughguy - Jungle Commando
+   15b - Swinging Sixties
+   15c - Other Miscallaneous */
 
 /* Coldwar Coats*/
 
@@ -123,7 +124,6 @@
 	item_state = "forensics"
 	worn_state = "forensics"
 
-
 /obj/item/clothing/suit/storage/jacket/police
 	name = "police jacket"
 	desc = "A police jacket."
@@ -192,6 +192,48 @@
 	icon_state = "traffic_cop_sup"
 	item_state = "traffic_cop_sup"
 	worn_state = "traffic_cop_sup"
+
+/obj/item/clothing/under/countysheriff
+	name = "sheriff's department sheriff outfit"
+	desc = "A law enforcement outfit worn by the town's sherrif."
+	icon_state = "sd_sheriff"
+	item_state = "sd_sheriff"
+	worn_state = "sd_sheriff"
+
+/obj/item/clothing/under/countysheriff/deputy
+	name = "sheriff's department deputy outfit"
+	desc = "A law enforcement outfit worn by the town's deputies."
+	icon_state = "sd_deputy"
+	item_state = "sd_deputy"
+	worn_state = "sd_deputy"
+
+/obj/item/clothing/under/countysheriff/deputy/short
+	name = "sheriff's department deputy outfit"
+	desc = "A law enforcement outfit worn by the town's deputies. Short sleeved version."
+	icon_state = "sd_deputy_shortsleeves"
+	item_state = "sd_deputy_shortsleeves"
+	worn_state = "sd_deputy_shortsleeves"
+
+/obj/item/clothing/head/countysheriff_hat
+	name = "sheriff's stratton hat"
+	desc = "A stratton hat worn by the LEOs of the town's Sheriff Department."
+	icon_state = "sd_sheriffhat"
+	item_state = "sd_sheriffhat"
+	worn_state = "sd_sheriffhat"
+
+/obj/item/clothing/head/countysheriff_cap
+	name = "sheriff's department cap"
+	desc = "A baseball cap worn by the LEOs of the town's Sheriff Department."
+	icon_state = "sd_cap"
+	item_state = "sd_cap"
+	worn_state = "sd_cap"
+
+/obj/item/clothing/head/countysheriff_cap/black
+	name = "sheriff's department cap"
+	desc = "A baseball cap worn by the LEOs of the town's Sheriff Department. Black version."
+	icon_state = "sd_cap_black"
+	item_state = "sd_cap_black"
+	worn_state = "sd_cap_black"
 
 /obj/item/clothing/head/traffic_police
 	name = "police cap"
@@ -1055,7 +1097,7 @@
 		new/obj/item/ammo_magazine/ak47/drum(hold)
 		new/obj/item/ammo_magazine/ak47/drum(hold)
 		new/obj/item/ammo_magazine/ak47/drum(hold)
-		
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."
@@ -1291,7 +1333,7 @@
 
 /obj/item/clothing/suit/hazmat
 	name = "hazmat suit"
-	desc = "A bright hazard protection suit, made protect against biological, chemical and nuclear threats."
+	desc = "A bright hazard protection suit, made to protect against biological, chemical and nuclear threats."
 	icon_state = "hazmat_suit"
 	item_state = "hazmat_suit"
 	worn_state = "hazmat_suit"
@@ -1299,9 +1341,25 @@
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)
 	ripable = FALSE
 
+/* Astronaut Suit and Helmet*/
+
+/obj/item/clothing/head/astronaut
+	name = "astronaut helmet"
+	desc = "A grey helmet, made to protect against low pressure, temperature and radioactive threa"
+	icon_state = "astronaut"
+	armor = list(melee = 20, arrow = 10, gun = 5, energy = 10, bomb = 35, bio = 150, rad = 195)
+
+/obj/item/clothing/suit/astronaut
+	name = "astronaut suit"
+	desc = "A grey space suit, made protect to against low pressure, temperature and radioactive threats."
+	icon_state = "astronaut"
+	item_state = "astronaut"
+	worn_state = "astronaut"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS|HEAD
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 35, bio = 150, rad = 195)
+	ripable = FALSE
+
 /* Miscallaneous*/
-
-
 
 	/* John Toughguy - Jungle Commando defintiely does not rhyme with a certain movie franchise*/
 
@@ -1522,6 +1580,39 @@
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
+obj/item/clothing/head/helmet/modern/hardhaty
+	name = "yellow hard hat"
+	desc = "A yellow hard hat used by the workers."
+	icon_state = "hardhat_yellow"
+	item_state = "hardhat_yellow"
+	worn_state = "hardhat_yellow"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
+obj/item/clothing/head/helmet/modern/hardhatw
+	name = "white hard hat"
+	desc = "A white hard hat used by the workers."
+	icon_state = "hardhat_white"
+	item_state = "hardhat_white"
+	worn_state = "hardhat_white"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
+obj/item/clothing/head/helmet/modern/hardhato
+	name = "orange hard hat"
+	desc = "A orange hard hat used by the workers."
+	icon_state = "hardhat_orange"
+	item_state = "hardhat_orange"
+	worn_state = "hardhat_orange"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
 //yare yare daze.
 
 /obj/item/clothing/head/bizarre_hat
@@ -1600,3 +1691,37 @@
 	item_state = "redmenian_sailor"
 	worn_state = "redmenian_sailor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+/obj/item/clothing/under/coldwar/bowling_red
+	name = "red bowling outfit"
+	desc = "A stylish red bowling shirt with black pants."
+	icon_state = "bowling_red"
+	item_state = "bowling_red"
+	worn_state = "bowling_red"
+
+/obj/item/clothing/under/coldwar/bowling_yellow
+	name = "yellow bowling outfit"
+	desc = "A stylish yellow bowling shirt with black pants."
+	icon_state = "bowling_yellow"
+	item_state = "bowling_yellow"
+	worn_state = "bowling_yellow"
+
+/obj/item/clothing/under/coldwar/bowling_green
+	name = "green bowling outfit"
+	desc = "A stylish green bowling shirt with black pants."
+	icon_state = "bowling_green"
+	item_state = "bowling_green"
+	worn_state = "bowling_green"
+
+/obj/item/clothing/under/coldwar/bowling_blue
+	name = "blue bowling outfit"
+	desc = "A stylish blue bowling shirt with black pants."
+	icon_state = "bowling_blue"
+	item_state = "bowling_blue"
+	worn_state = "bowling_blue"
+
+/obj/item/clothing/under/coldwar/hippie
+	name = "hippie outfit"
+	desc = "A tie-dye t-shirt with bootleg grey jeans. Right on, man!"
+	icon_state = "hippy"
+	item_state = "hippy"
+	worn_state = "hippy"

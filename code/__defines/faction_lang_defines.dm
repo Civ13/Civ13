@@ -61,6 +61,8 @@
 			return "Stormcloaks"
 		if (map.ID == "CAPITOL_HILL")
 			return "Rioters"
+		if (map.ID == "WACO")
+			return "Branch Davidians"
 		if (map.ID == "MISSIONARY_RIDGE")
 			return "Confederates"
 		else if (age >= 6)
@@ -141,6 +143,8 @@
 			return "IDF"
 		if (map.ID == "CAPITOL_HILL")
 			return "American Government"
+		if (map.ID == "WACO")
+			return "ATF"
 		else
 			return "United States"
 
