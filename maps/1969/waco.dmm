@@ -36,7 +36,7 @@
 "aJ" = (/obj/covers/wood_wall/adjustable,/turf/wall/wood,/area/caribbean/british/land/inside/objective)
 "aK" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean/houses)
 "aL" = (/obj/structure/shower,/obj/structure/curtain/open/shower,/turf/floor/plating/marble/grid,/area/caribbean/houses)
-"aM" = (/obj/covers/cement_wall,/obj/structure/gatecontrol/blastcontrol,/turf/wall/cement,/area/caribbean/houses)
+"aM" = (/obj/structure/lamp/lamp_small/alwayson{dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "aN" = (/turf/wall/rockwall,/area/caribbean/void/caves)
 "aO" = (/obj/structure/bed/bedroll,/turf/floor/wood,/area/caribbean/houses)
 "aP" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/houses)
@@ -106,7 +106,7 @@
 "cb" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cc" = (/turf/floor/carpet/tealcarpet,/area/caribbean/british/land/inside/objective)
 "cd" = (/obj/structure/closet/anchored,/obj/item/clothing/mask/gas/modern2,/obj/item/clothing/mask/gas/modern2,/obj/item/clothing/mask/gas/modern2,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
-"ce" = (/obj/structure/closet/crate/lead,/obj/item/weapon/gun/projectile/pistol/m9beretta,/obj/item/weapon/attachment/silencer/pistol,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
+"ce" = (/obj/structure/closet/crate/lead,/obj/item/weapon/gun/projectile/pistol/m9beretta,/obj/item/weapon/attachment/silencer/pistol,/obj/item/ammo_magazine/m9beretta,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cf" = (/obj/structure/table/wood,/obj/item/stack/money/goldvaluables,/obj/structure/window/classic/metal,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cg" = (/obj/structure/table/wood,/obj/structure/window/classic/metal,/obj/item/clothing/mask/necklace/christian/gold,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "ch" = (/obj/structure/window/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
@@ -313,6 +313,7 @@
 "re" = (/mob/living/simple_animal/mouse,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "ri" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/camonet,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
 "rl" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/wood,/area/caribbean/houses)
+"rp" = (/obj/structure/table/modern/table,/obj/item/weapon/doctor_handbook,/turf/floor/wood,/area/caribbean/houses)
 "ru" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "rv" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/lamp/lamp_small/alwayson,/turf/floor/grass,/area/caribbean)
 "rB" = (/obj/item/stack/material/straw,/obj/structure/barricade/tires,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/ammo_magazine/m16,/turf/floor/dirt/dust,/area/caribbean)
@@ -342,6 +343,7 @@
 "tv" = (/obj/covers/roads/dirt,/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean)
 "ty" = (/obj/structure/bed/bedroll,/obj/structure/camonet,/obj/structure/lamp/lamp_small/alwayson,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "tU" = (/obj/structure/bed/chair/carseat/left/dark,/obj/structure/vehicleparts/frame/car/falcon/lbc{color = "#d3d3d3"; override_color = "#FFFFFF"},/turf/floor/grass,/area/caribbean)
+"tW" = (/obj/structure/curtain/medical,/turf/floor/wood,/area/caribbean/houses)
 "tZ" = (/obj/structure/farming/plant/wheat{icon_state = "oat-grow6"},/turf/floor/dirt/ploughed,/area/caribbean)
 "ue" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/wood_broken,/area/caribbean/houses)
 "uf" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean)
@@ -375,6 +377,8 @@
 "xg" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/wood/fancywood,/area/caribbean/houses)
 "xm" = (/obj/structure/table/modern/table,/turf/floor/carpet/tealcarpet,/area/caribbean/houses)
 "xv" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/cabinet,/obj/item/clothing/under/christian_priest,/obj/item/clothing/accessory/custom/priest_band,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
+"xA" = (/obj/structure/medicalbed,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/effect/decal/cleanable/vomit/bloody,/turf/floor/wood,/area/caribbean/houses)
+"xD" = (/obj/structure/medicalbed,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/effect/decal/cleanable/blood,/turf/floor/wood,/area/caribbean/houses)
 "xG" = (/obj/structure/barbwire,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/wood_broken,/area/caribbean/houses)
 "xH" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
 "xO" = (/obj/structure/vehicleparts/frame/car/van/rf{color = "#db3106"},/obj/structure/vehicleparts/movement/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/grass,/area/caribbean)
@@ -401,6 +405,7 @@
 "Ac" = (/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/obj/structure/engine/internal/gasoline/premade/falcon,/obj/structure/vehicleparts/frame/car/falcon/lf,/obj/structure/vehicleparts/license_plate/us/centered/front,/obj/structure/vehicleparts/axis/car/falcon/police,/turf/floor/grass,/area/caribbean)
 "Ag" = (/obj/structure/table/rack/shelf,/obj/item/weapon/mop,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "An" = (/obj/covers/sidewalk,/turf/floor/grass,/area/caribbean)
+"As" = (/obj/structure/table/modern/table,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/houses)
 "At" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean)
 "AA" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt,/area/caribbean)
 "AG" = (/obj/covers/cobblestone/stairs{dir = 4; icon_state = "rampup"},/turf/floor/dirt,/area/caribbean/houses)
@@ -447,6 +452,7 @@
 "Ej" = (/obj/structure/closet/crate/bin,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "Em" = (/obj/structure/sink/kitchen{pixel_y = 14},/turf/floor/plating/marble/tile,/area/caribbean/houses)
 "Es" = (/obj/structure/bed/chair/carseat/right/dark,/obj/structure/vehicleparts/frame/car/falcon/rbc{color = "#d3d3d3"; override_color = "#FFFFFF"},/turf/floor/grass,/area/caribbean)
+"Ew" = (/obj/structure/medicalbed,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/wood,/area/caribbean/houses)
 "EA" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/roof_support,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean)
 "EC" = (/turf/floor/beach/water/deep{color = "#f2927a"},/area/caribbean)
 "EE" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/grass,/area/caribbean)
@@ -477,6 +483,7 @@
 "He" = (/obj/structure/bed/chair/wood/bleacher{dir = 8},/turf/floor/carpet,/area/caribbean/houses)
 "Hf" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 8; icon_state = "rampup"},/turf/floor/dirt,/area/caribbean/houses)
 "Hi" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
+"Hm" = (/obj/structure/closet/cabinet{name = "First aid supplies"},/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/wood,/area/caribbean/houses)
 "Hr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/dust,/area/caribbean)
 "Hz" = (/obj/structure/simple_door/key_door/anyone/singledoor,/obj/effect/decal/cleanable/blood/writing,/obj/effect/decal/cleanable/blood/writing,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
 "HA" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 8},/obj/effect/decal/cleanable/blood/writing{dir = 1},/turf/floor/carpet,/area/caribbean/houses)
@@ -498,6 +505,8 @@
 "Jd" = (/obj/structure/barbwire,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/carpet,/area/caribbean/houses)
 "Jg" = (/obj/covers/roads/dirt,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean)
 "JE" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/obj/structure/barricade/vertical,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/wood,/area/caribbean/houses)
+"JI" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
+"JJ" = (/obj/covers/cement_wall,/obj/structure/sign/flag/medical,/turf/wall/cement,/area/caribbean/houses)
 "JQ" = (/turf/floor/dirt/burned,/area/caribbean/houses)
 "JZ" = (/obj/structure/barricade,/obj/structure/sign/flag/medical,/turf/floor/grass,/area/caribbean)
 "Kg" = (/obj/structure/sink{dir = 1; icon_state = "sink"; pixel_y = 14},/turf/floor/plating/marble/grid,/area/caribbean/houses)
@@ -566,6 +575,7 @@
 "QO" = (/obj/structure/grille/fence/picket{dir = 1},/turf/floor/dirt,/area/caribbean)
 "Re" = (/obj/structure/closet/hideout,/obj/structure/branch/cleared,/turf/floor/grass,/area/caribbean)
 "Rk" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
+"Rp" = (/obj/structure/medicalbed,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "Rq" = (/obj/structure/vehicleparts/frame/car/van/rb{color = "#000057"},/obj/structure/vehicleparts/movement/reversed,/obj/structure/bed/chair/carseat/right/dark,/turf/floor/dirt,/area/caribbean)
 "Rs" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "Rw" = (/obj/structure/simple_door/key_door/anyone/singledoor,/turf/floor/wood,/area/caribbean/houses)
@@ -599,7 +609,7 @@
 "TY" = (/obj/effect/decal/cleanable/blood/writing{dir = 1},/obj/effect/decal/cleanable/blood/writing{dir = 1},/turf/floor/carpet,/area/caribbean/houses)
 "Ue" = (/obj/structure/wild/tallgrass2,/obj/structure/grille/fence{dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "Uh" = (/turf/floor/plating/marble/grid,/area/caribbean/houses)
-"Uk" = (/obj/structure/gate/blast/open,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
+"Uk" = (/obj/item/clothing/mask/gas/swat,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "Ul" = (/obj/structure/table/rack/shelf,/obj/item/weapon/reagent_containers/spray/cleaner,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/fire_extinguisher,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "Ut" = (/obj/structure/altar/wood,/obj/item/weapon/storage/bible,/turf/floor/wood/fancywood,/area/caribbean/houses)
 "Uu" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/pill/cocaine,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
@@ -621,6 +631,7 @@
 "Wh" = (/obj/structure/table/wood/poker,/obj/item/weapon/deck/cards,/turf/floor/carpet/tealcarpet,/area/caribbean/houses)
 "Wt" = (/turf/floor/wood/fancywood,/area/caribbean/houses)
 "Wv" = (/obj/structure/bed/roller,/turf/floor/carpet,/area/caribbean/houses)
+"Wx" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/houses)
 "WB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/table/wood,/obj/structure/camonet,/obj/structure/radio/faction2,/turf/floor/dirt/dust,/area/caribbean)
 "WK" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/grass,/area/caribbean)
 "WM" = (/obj/structure/bed/modern,/obj/item/weapon/bedsheet/brown,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
@@ -633,6 +644,7 @@
 "Xl" = (/obj/structure/bed/chair/carseat/right/dark,/obj/structure/vehicleparts/frame/car/falcon/rfc{color = "#d3d3d3"; override_color = "#FFFFFF"},/obj/structure/lamp/lamp_small/tank/blue/police{dir = 4; icon_state = "bulb"},/turf/floor/dirt/dust,/area/caribbean)
 "Xp" = (/turf/floor/beach/water/deep{color = "#eb390d"},/area/caribbean)
 "Xw" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/carpet,/area/caribbean/houses)
+"XE" = (/obj/item/weapon/barrier/sandbag,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "XH" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "XL" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/turf/floor/carpet,/area/caribbean/houses)
 "XM" = (/obj/structure/table/wood,/obj/item/ammo_magazine/gewehr98box,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
@@ -644,6 +656,7 @@
 "Yj" = (/obj/structure/vehicleparts/frame/car/van/rfc{color = "#db3106"},/obj/structure/bed/chair/carseat/right/dark,/mob/living/simple_animal/chicken,/turf/floor/grass,/area/caribbean)
 "Yk" = (/obj/structure/sink/well,/turf/floor/grass,/area/caribbean)
 "Yl" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{dir = 8; icon_state = "frame_steel"; w_right = list("c_windoweddoor",1,1,5,0.1,1,1)},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 8},/turf/floor/grass,/area/caribbean)
+"Yu" = (/obj/structure/medicalbed,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/houses)
 "Yv" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/turf/floor/grass,/area/caribbean)
 "Yx" = (/turf/floor/carpet,/area/caribbean/houses)
 "YA" = (/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 8},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 8},/obj/structure/table/carboot{dir = 8},/turf/floor/grass,/area/caribbean)
@@ -651,6 +664,7 @@
 "YF" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/meat/human,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "YJ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "YO" = (/obj/structure/bed/chair/wood/bleacher{dir = 8},/obj/effect/decal/cleanable/blood/writing{dir = 1},/turf/floor/carpet,/area/caribbean/houses)
+"YR" = (/obj/structure/lamp/lamp_small/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/houses)
 "YT" = (/obj/effect/autoassembler{dir = 8},/turf/floor/grass,/area/caribbean)
 "YU" = (/obj/structure/closet/crate/ww2{name = "uniforms"},/obj/item/clothing/head/cap/atf,/obj/item/clothing/head/cap/atf,/obj/item/clothing/head/cap/atf,/obj/item/clothing/suit/storage/atf,/obj/item/clothing/suit/storage/atf,/obj/item/clothing/suit/storage/atf,/obj/item/clothing/suit/storage/atf,/obj/item/clothing/head/cap/atf,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean)
 "YZ" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{dir = 8; icon_state = "frame_steel"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 8},/turf/floor/dirt,/area/caribbean)
@@ -687,19 +701,19 @@ aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaKUhUhiRKgiRUhUhaKbhaYOAaYaYaYOAMSrPaKYFaY
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaKUhUhUhUhUhUhUhaKBXaYAHaYaYBFaKaKaKaKEjaYaYaYaYaYaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaKaKaKUhUhUhaKaKaKBXaYAHaYaYaYfJaYAgaKgLwLaYaYwLgLaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaKUhUhUhaKailUaYaYAHaYaYBFaKaKaKaKaKaKaYaYaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaKaKaKaKaMaKaMaKaKaKbfbfbfaKaKaKaKaKaKPFaYaYaYaYOAaYebaKaYGoaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKUlaKpHBoaYUkaYaYaYaYaYaYaYaYaYaYaYqTaKaYaYBFaKaKaKaKaMaKaYaYaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaKaYaYreUkaYaYaYaYaYaYaYgoaYaYaYaYaYaYaYaYaYaYaYaYaYUkaYaYAGzjaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaKaKaKaKaKaKaKaKaKaKbfbfbfaKaKaKaKaKaKPFaYaYaYaYOAaYebaKaYGoaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKUlaKpHBoaYaYaYXHJIaYaYaYaYaYaYaYaYqTaKaYaYBFaKaKaKaKaKaKaYaYaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaKaYaYreaYaYaYaYXEaYaYaYgoaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYAGzjaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaKlUYeaYaYaYaKaKaKaKaKaKaKaKaKaKaKEOaYaYaYaYaYaYaYaYaYaYUkaYaYAGzjaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYaKKgGyaKVHVaGraKaNaNaKaKaKaKaKaKaKaKaKaKaKaKaKaMaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYaKhxUhaKiSSlGraKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYaKaKmVaKLnSlPxaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYRwSlSlSlSlSleLaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaKaKaKaKaKaKaKRwaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYBFaKaNaNaNaNaKaOSlaOaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaKaKaKaNaNaKaOSlaOaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYHfHfaKaNaNaKaOSlaOaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
-aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYHfHfaKaNaNaKaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYaKKgGyaKVHVaGraKaNaNaKaKaKaKRwJJRwaKaKaKaKaKaKaKaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYaKhxUhaKiSSlGraKaNaNaKRpSltWSlHmSltWSlxAaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYaKaKmVaKLnSlPxaKaNaNaKaKaKaKaMSlYRaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaYaYRwSlSlSlSlSleLaKaNaNaKRpSltWSlAsSltWSlxDaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaKaKaKaKaKaKaKRwaKaKaNaNaKaKaKaKaMrpYRaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYBFaKaNaNaNaNaKaOSlaOaKaNaNaKRpSltWSlWxSltWSlYuaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYaKaKaKaNaNaKaOSlaOaKaNaNaKaKaKaKaMWxYRaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYHfHfaKaNaNaKaOSlaOaKaNaNaKEwSltWSlSlSltWSlYuaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
+aNaNaNaNaNaNaNaNaNaNaNaKaYaYaYHfHfaKaNaNaKaKaKaKaKaNaNaKaKaKaKaKaKaKaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaKaKaKaKaKaKaKaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
@@ -753,7 +767,6 @@ aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 "}
-
 (1,1,2) = {"
 pVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVocCuCupVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
 pVpVpVpVQMpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVCuCuCuCuCunNCunNCunNCuCuXUpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
@@ -844,7 +857,6 @@ pVpVpVpVoYpVjgpVpVpVpVpVpVpVjgaopVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVjgpVpV
 pVpVkepVpVpVpVQMjgpVpVpVpVpVpVpVpVpVjgpVpVpVpVjgpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVjPpVpVpVpVpVpVpVpVpVpVurpVpVjgpVpVpVaFqKCuCuCuCuCuCuCuPMZFfBpVpVpVpVjgpVpVpVpVpVpVpV
 alpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjPpVpVpVpVpVoupVpVpVjgpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVaFqKCuCuCuCuCuCuCuCuCufBpVpVpVpVpVpVpVpVjgjgpVpV
 "}
-
 (1,1,3) = {"
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBanananananpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
@@ -869,13 +881,13 @@ pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBaJbWbXbYbZcacbaJccccccaJcdcecfcgcyczaJpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBcAcBcDbWcEcFbWaJccccccaJcGcGcGcGcGcHcApBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBcAcBbWbWcIcJcKaJccccccaJcLcGcGcGcGcHcApBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBajajajajajajajpBpBaJcNcOcObWcOcOcQcccccccRcScScUcVcWcXaJpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBajaYaYaYIaZVajpBpBaJaJcYcYaJcYcYaJaJaJaJaJcYcYaJcYcYaJaJpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBchKCaYaYIaZVajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBchKCaYnYPuPuajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBchKCaYaYzazLajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBajaYaYaYzazLajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBajaYaYaYaYaYajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajajajajajajajpBpBaJcNcOcObWcOcOcQcccccccRcScScUcVcWcXaJpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajaYaYaYIaZVajBtBtaJaJcYcYaJcYcYaJaJaJaJaJcYcYaJcYcYaJaJpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtchKCaYaYIaZVajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtchKCaYnYPuPuajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtchKCaYaYzazLajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajaYaYaYzazLajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajaYaYaYaYaYajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBajajajciciajajajajcjcjckcjcjckcjcjckcjcjckcjcjckcjajajswajakajajajclajajclajclclclajchchajajpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBajruIacmcmaYajZuVVcjxecnajjkcoajNpcoajhHcnajWfcocjbrajSlajKgGyajbncpajbncpajcqcqcqajcrcsaYpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBajruIaaYaYaYajSlSlcjxgWtajxgWtajxgWtajxgWtajxgWtcjWtajSlajUhUhajWtWtajWtWtajSlSlSlajaYaYpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
@@ -935,7 +947,6 @@ pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 "}
-
 (1,1,4) = {"
 bzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbz
 bzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbz
