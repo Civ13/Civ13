@@ -24,7 +24,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"Mad Man In Waco (David Koresh):1" = "sound/music/mad_man_in_waco.ogg",)
 
 /obj/map_metadata/waco/New()
 	..()
