@@ -1040,4 +1040,32 @@
 	icon_state = "slshell"
 	spent_icon = "slshell_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
+/////////////////////LASERS///////////////////////////////////
+/obj/item/ammo_casing/laser
+	name = "laser bolt"
+	desc = "you shouldnt be seeing this"
+	caliber = "laser"
+	icon_state = "darts"
+	spent_icon = "darts-0"
+	projectile_type = /obj/item/projectile/laser
+	leaves_residue = FALSE
 
+/obj/item/ammo_casing/laser/b
+	projectile_type = /obj/item/projectile/laser/b
+	caliber = "laserb"
+/obj/item/ammo_casing/laser/g
+	projectile_type = /obj/item/projectile/laser/g
+	caliber = "laserg"
+/obj/item/ammo_casing/laser/pistol
+	name = "pistol laser bolt"
+	projectile_type = /obj/item/projectile/laser/pistol
+	caliber = "laser_pistol"
+
+/obj/item/ammo_casing/laser/pistol/b
+	name = "pistol laser bolt"
+	projectile_type = /obj/item/projectile/laser/pistol/b
+	caliber = "laser_pistolb"
+/obj/item/ammo_casing/laser/pistol/g
+	name = "pistol laser bolt"
+	projectile_type = /obj/item/projectile/laser/pistol/g
+	caliber = "laser_pistolg"

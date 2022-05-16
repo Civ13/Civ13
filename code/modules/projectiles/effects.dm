@@ -22,3 +22,10 @@
 //----------------------------
 /obj/effect/projectile/bullet/muzzle
 	icon_state = "muzzle_bullet"
+///LASERS
+/obj/effect/projectile/laser/muzzle
+	icon_state = "muzzle_laser"
+/obj/effect/projectile/laser/muzzle/b
+	icon_state = "muzzle_laserb"
+/obj/effect/projectile/laser/muzzle/g
+	icon_state = "muzzle_laserg"
