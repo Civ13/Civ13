@@ -8,6 +8,9 @@
 	embed = FALSE
 	sharp = FALSE
 	hitsound_wall = "laser_ric_sound"
+	damage = DAMAGE_VERY_HIGH
+	penetrating = 8
+	armor_penetration = 0
 	var/mob_passthrough_check = FALSE
 	var/move_tiles = -1
 	var/moved_tiles = FALSE
@@ -64,3 +67,25 @@
 		return TRUE
 
 	return FALSE
+
+////////////////////////////LASERS///////////////////////////////////
+/obj/item/projectile/laser/b
+	icon_state = "bluebolt"
+	muzzle_type = /obj/effect/projectile/laser/muzzle/b
+
+/obj/item/projectile/laser/g
+	icon_state = "greenbolt"
+	muzzle_type = /obj/effect/projectile/laser/muzzle/g
+
+/obj/item/projectile/laser/pistol
+	damage = DAMAGE_LOW
+	penetrating = 6
+	armor_penetration = 0
+
+/obj/item/projectile/laser/pistol/b
+	icon_state = "bluebolt"
+	muzzle_type = /obj/effect/projectile/laser/muzzle/b
+
+/obj/item/projectile/laser/pistol/g
+	icon_state = "greenbolt"
+	muzzle_type = /obj/effect/projectile/laser/muzzle/g
