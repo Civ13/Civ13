@@ -610,27 +610,3 @@ obj/item/projectile/bullet/rifle/a556x45
 	spawn (0.01)
 		qdel(src)
 	..()
-
-////////////////////////////LASERS///////////////////////////////////
-/obj/item/projectile/laser
-	damage = DAMAGE_VERY_HIGH
-	penetrating = 8
-	armor_penetration = 0
-
-/obj/item/projectile/laser/b
-	icon_state = "bluebolt"
-
-/obj/item/projectile/laser/g
-	icon_state = "greenbolt"
-
-
-/obj/item/projectile/laser/pistol
-	damage = DAMAGE_LOW
-	penetrating = 6
-	armor_penetration = 0
-
-/obj/item/projectile/laser/pistol/b
-	icon_state = "bluebolt"
-
-/obj/item/projectile/laser/pistol/g
-	icon_state = "greenbolt"

@@ -2,7 +2,7 @@
 	name = "Tibanna Gas Cartridge"
 	icon_state = "tibanna"
 	caliber = "laser"
-	ammo_type = /obj/item/projectile/laser
+	ammo_type = /obj/item/ammo_casing/laser
 	max_ammo = 500
 	weight = 0.01
 	mag_type = MAGAZINE
@@ -10,24 +10,31 @@
 	clip = FALSE
 
 /obj/item/ammo_magazine/tibannagas/dc15
-	name = "Tibanna Gas Cartridge"
+	name = "DC-15 Tibanna Gas Cartridge"
 	icon_state = "tibanna"
 	caliber = "laserb"
-	ammo_type = /obj/item/projectile/laser/b
+	ammo_type = /obj/item/ammo_casing/laser/b
 	max_ammo = 200
 
 /obj/item/ammo_magazine/tibannagas/dc15a
-	name = "Tibanna Gas Cartridge"
+	name = "DC-15A Tibanna Gas Cartridge"
 	icon_state = "tibanna"
 	caliber = "laserb"
-	ammo_type = /obj/item/projectile/laser/b
+	ammo_type = /obj/item/ammo_casing/laser/b
 	max_ammo = 500
 
+/obj/item/ammo_magazine/tibannagas/dc17
+	name = "DC-17 Tibanna Gas Cartridge"
+	icon_state = "tibanna_pistol"
+	caliber = "laserb"
+	ammo_type = /obj/item/ammo_casing/laser/b
+	max_ammo = 50
+
 /obj/item/ammo_magazine/tibannagas/e5
-	name = "Tibanna Gas Cartridge"
+	name = "E-5 Tibanna Gas Cartridge"
 	icon_state = "tibanna"
 	caliber = "laser"
-	ammo_type = /obj/item/projectile/laser
+	ammo_type = /obj/item/ammo_casing/laser
 	max_ammo = 100
 	weight = 0.01
 	multiple_sprites = FALSE
