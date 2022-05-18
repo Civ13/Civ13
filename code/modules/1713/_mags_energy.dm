@@ -39,3 +39,26 @@
 	weight = 0.01
 	multiple_sprites = FALSE
 	clip = FALSE
+
+/obj/item/ammo_magazine/tibannagas/repeating_blaster
+	name = "Repeating Blaster Tibanna Gas Cartridge"
+	icon_state = "tibanna_turret"
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser
+	max_ammo = 2000
+	weight = 0.01
+	mag_type = MAGAZINE
+	multiple_sprites = FALSE
+	clip = FALSE
+
+/obj/item/ammo_magazine/tibannagas/blaster_power_pack
+	name = "Blaster Power Pack"
+	icon_state = "power_pack"
+	caliber = "laserb"
+	ammo_type = /obj/item/ammo_casing/laser/b
+	max_ammo = 400
+	weight = 0.01
+	mag_type = MAGAZINE
+	multiple_sprites = TRUE
+	clip = FALSE
+	slot_flags = SLOT_BACK
