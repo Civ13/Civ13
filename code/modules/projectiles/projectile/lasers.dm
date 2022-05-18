@@ -8,7 +8,7 @@
 	embed = FALSE
 	sharp = FALSE
 	hitsound_wall = "laser_ric_sound"
-	damage = DAMAGE_VERY_HIGH
+	damage = DAMAGE_LOW
 	penetrating = 8
 	armor_penetration = 0
 	var/mob_passthrough_check = FALSE
@@ -78,7 +78,7 @@
 	muzzle_type = /obj/effect/projectile/laser/muzzle/g
 
 /obj/item/projectile/laser/pistol
-	damage = DAMAGE_LOW
+	damage = 25
 	penetrating = 6
 	armor_penetration = 0
 
