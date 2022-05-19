@@ -1548,9 +1548,13 @@
 /obj/item/clothing/head/ph_us_war/american
 /obj/item/clothing/head/ph_us_war/american/infantry_hat
 	name = "US Army Hat"
-	desc = "A worn by enlisted men of the US Army in tropical climates."
+	desc = "A hat worn by enlisted men of the US Army in tropical climates."
 	icon_state = "us_fp_hat"
 	item_state = "us_fp_hat"
+
+/obj/item/clothing/head/ph_us_war/american/infantry_hat/civie
+	name = "cowboy hat"
+	desc = "A hat worn by stylish rural people."
 
 /obj/item/clothing/accessory/storage/webbing/filipino
 	name = "filipino webbing"

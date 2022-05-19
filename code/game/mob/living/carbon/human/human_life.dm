@@ -79,18 +79,14 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 	if (map && map.nomads)
-		if (map && map.ID == MAP_NOMADS_AFRICA || map.ID == MAP_NOMADS_DIVIDE)
-			if (s_tone <= -175)
-				size_multiplier = 0.85
-		else
-			if (find_trait("Gigantism"))
-				size_multiplier = 1.3
-			else if (find_trait("Dwarfism"))
-				size_multiplier = 0.8
-			else if (find_trait("Short"))
-				size_multiplier = 0.9
-			else if (find_trait("Tall"))
-				size_multiplier = 1.1
+		if (find_trait("Gigantism"))
+			size_multiplier = 1.3
+		else if (find_trait("Dwarfism"))
+			size_multiplier = 0.8
+		else if (find_trait("Short"))
+			size_multiplier = 0.9
+		else if (find_trait("Tall"))
+			size_multiplier = 1.1
 	if (riding && riding_mob)
 		if (!(riding_mob in range(1,src)))
 			riding = FALSE

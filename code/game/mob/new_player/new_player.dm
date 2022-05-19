@@ -579,7 +579,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -643,6 +643,11 @@ var/global/redirect_all_players = null
 			var/obj/map_metadata/yeltsin/CP = map
 			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet Supreme Chairman"))
 				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
+				return
+		if (map && map.ID == MAP_WACO)
+			var/obj/map_metadata/waco/CP = map
+			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Messiah"))
+				WWalert(usr,"Someone needs to spawn as David Koresh first!", "Error")
 				return
 		if (map && map.ID == MAP_ALLEYWAY)
 			if (actual_job && actual_job.title == "Yama Wakagashira")
@@ -905,9 +910,6 @@ var/global/redirect_all_players = null
 			H.verbs += /mob/living/human/proc/find_hvt
 		if (H.original_job.is_commander || H.original_job.is_officer)
 			H.verbs += /mob/living/human/proc/Commander_Announcement
-		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-			if (H.original_job_title == "Rednikov Industries CEO" || H.original_job_title == "Giovanni Blu Stocks CEO" || H.original_job_title == "Kogama Kraftsmen CEO" || H.original_job_title == "Goldstein Solutions CEO" || H.original_job_title == "McKellen Manager" || H.original_job_title == "Police Supervisor")
-				H.verbs += /mob/living/human/proc/Commander_Announcement
 		if (H.original_job.uses_squads)
 			H.verbs += /mob/living/human/proc/find_nco
 			if (H.original_job.is_squad_leader)
@@ -915,7 +917,7 @@ var/global/redirect_all_players = null
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
 					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
-						if (map.ID != MAP_YELTSIN)
+						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
 							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE

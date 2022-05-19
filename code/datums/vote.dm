@@ -226,6 +226,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						options = list("Protect the VIP", "Siege",/* "Area Capture",*/ "Kills")
 						if (!default)
 							default = "Siege"
+					else if (map.ID == MAP_WACO)
+						options = list("Protect the VIP", "Siege",/* "Area Capture",*/ /*"Kills"*/)
+						if (!default)
+							default = "Siege"
 					else if (!map.is_RP && !map.nomads && !map.civilizations)
 						if(map.no_hardcore)
 							options = list("Normal", "Competitive")

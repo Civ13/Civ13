@@ -2361,28 +2361,12 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
-/datum/job/civilian/policeofficer
-	title = "Police Officer"
-	en_meaning = ""
-	rank_abbreviation = ""
-	whitelisted = TRUE
-	spawn_location = "JoinLateCiv"
-	rank_abbreviation = "Officer"
-	selection_color = "#4845eb"
-	can_be_female = TRUE
-	is_deal = TRUE
-
-	min_positions = 5
-	max_positions = 50
-
-/datum/job/civilian/policeofficer/supervisor
-	title = "Police Supervisor"
-	en_meaning = ""
-	rank_abbreviation = ""
+/datum/job/civilian/sheriffdep/supervisor
+	title = "County Sheriff"
+	rank_abbreviation = "Sheriff"
 	whitelisted = TRUE
 	spawn_location = "JoinLateCivL"
-	rank_abbreviation = "Supervisor"
-	selection_color = "#4845eb"
+	selection_color = "#c3b091"
 	can_be_female = TRUE
 	is_deal = TRUE
 	is_officer = TRUE
@@ -2390,12 +2374,27 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
+/datum/job/civilian/sheriffdep
+	title = "County Deputy"
+	rank_abbreviation = "Deputy"
+	whitelisted = TRUE
+	spawn_location = "JoinLateCiv"
+	selection_color = "#c3b091"
+	can_be_female = TRUE
+	is_deal = TRUE
+
+	min_positions = 5
+	max_positions = 50
+
+/datum/job/civilian/sheriffdep/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Police"
+	H.civilization = "Sheriff Office"
 	give_random_name(H)
 	H.verbs += /mob/living/human/proc/undercover
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff/deputy(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff/deputy/short(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
@@ -2404,17 +2403,26 @@
 	uniform1.attackby(hiph, H)
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
-		pb.name = "[replacetext(H.real_name,"Officer ","")] police badge"
-		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
+		pb.name = "[replacetext(H.real_name,"Deputy ","")] Sheriff's Office badge"
+		pb.desc = "a sheriff deputy badge in star shape, with <b>[replacetext(H.real_name,"Deputy ","")]</b> engraved."
 	uniform1.attackby(pb, H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	if (prob(50))
+		var/randhat = rand(1,2)
+		switch(randhat)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap/black(H), slot_head)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
-	H.add_note("Role", "You are a member of the police force. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
-	H.add_note("Undercover", "If you need to go undercover and conceal your officer status, toggle it under the IC tab.")
-	H.add_note("Police Codes", "As an officer, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("Role", "You are a member of the local Sheriff Department. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
+	H.add_note("Undercover", "If you need to go undercover and conceal your law enforcement officer status, toggle it under the IC tab.")
+	H.add_note("Police Codes", "As an LEO, you can use police codes for faster broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
 	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
 		<b>10-1:</b> Report in / share location.<br><br> \
 		<b>10-2:</b> Report in as being available.<br><br> \
@@ -2437,11 +2445,11 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
-/datum/job/civilian/policeofficer/supervisor/equip(var/mob/living/human/H)
+/datum/job/civilian/sheriffdep/supervisor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Police"
+	H.civilization = "Sheriff Office"
 	give_random_name(H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police/supervisor(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
@@ -2449,8 +2457,8 @@
 	uniform1.attackby(hiph, H)
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
-		pb.name = "[replacetext(H.real_name,"Police Supervisor ","")] police badge"
-		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Police Supervisor ","")]</b> engraved."
+		pb.name = "[replacetext(H.real_name,"Sheriff ","")] Sheriff's Office badge"
+		pb.desc = "a sheriff badge in star shape, with <b>[replacetext(H.real_name,"Sheriff ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	var/obj/item/weapon/storage/belt/keychain/KC2 = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/civ/police/po1 = new/obj/item/weapon/key/civ/police(null)
@@ -2458,13 +2466,13 @@
 	KC2.attackby(po1,H)
 	KC2.attackby(po2,H)
 	H.equip_to_slot_or_del(KC2, slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_hat(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
-	H.add_note("Role", "You are the supervisor of the police force. Your objectives are to coordinate your fellow policemen in order to arrest as many criminal businessmen as possible and seize illegal money and disks!")
-	H.add_note("Police Codes", "As an officer, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("Role", "You are the chief of the local Sheriff Department. Your objectives are to coordinate your fellow deputies in order to arrest as many criminal businessmen as possible and seize illegal money and disks!")
+	H.add_note("Police Codes", "As a sheriff, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
 	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
 		<b>10-1:</b> Report in / share location.<br><br> \
 		<b>10-2:</b> Report in as being available.<br><br> \

@@ -318,9 +318,9 @@
 	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (ishuman(user) && user != src)
 			var/mob/living/human/H = user
-			if (H.civilization == "Police" && src.civilization == "Police")
-				msg += "<br><i>[T.He] is a member of the Police.</i>"
-			if (src.gun_permit && H.civilization == "Police")
+			if (H.civilization == "Sheriff Office" && src.civilization == "Sheriff Office")
+				msg += "<br><i>[T.He] is a member of the Sheriff Office.</i>"
+			if (src.gun_permit && H.civilization == "Sheriff Office")
 				msg += "<br><b>[T.He] has a valid gun permit.</b></b>"
 	else if (map.ID == MAP_OCCUPATION)
 		if (ishuman(user) && user != src)

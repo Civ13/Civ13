@@ -314,3 +314,17 @@ obj/item/ammo_magazine/dp
 	ammo_type = /obj/item/ammo_casing/a45acp
 	max_ammo = 20
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/deagle
+	name = "Desert eagle magazine (.44 Magnum)"
+	icon_state = "m1911"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a44magnum
+	caliber = "a44magnum"
+	max_ammo = 8
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/deagle/empty/New()
+	..()
+	stored_ammo.Cut()
+	

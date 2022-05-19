@@ -33,10 +33,12 @@
 		..()
 		spawn(600)
 			points_check()
-obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
+
+/obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_warlords && J.title != "warlord (do not use)")
-		. = TRUE
+	if (J.is_warlords && clients.len >= 1)
+		if (J.title != "warlord (do not use)")
+			. = TRUE
 	if (clients.len <= 12)
 		if (J.title == "United Nations Doctor" || J.title == "United Nations Soldier")
 			. = FALSE

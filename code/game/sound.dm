@@ -37,6 +37,7 @@ var/list/slash_sound = list('sound/weapons/slash1.ogg','sound/weapons/slash2.ogg
 var/list/page_sound = list('sound/effects/pageturn1.ogg', 'sound/effects/pageturn2.ogg','sound/effects/pageturn3.ogg')
 var/list/miss_sound = list ('sound/weapons/guns/misc/miss.ogg','sound/weapons/guns/misc/miss2.ogg','sound/weapons/guns/misc/miss3.ogg','sound/weapons/guns/misc/miss4.ogg')
 var/list/ric_sound = list ('sound/weapons/guns/misc/ric1.ogg','sound/weapons/guns/misc/ric2.ogg','sound/weapons/guns/misc/ric3.ogg','sound/weapons/guns/misc/ric4.ogg','sound/weapons/guns/misc/ric5.ogg')
+var/list/laser_ric_sound = list ('sound/weapons/magic/LS_Hit_1.ogg','sound/weapons/magic/LS_Hit_3.ogg','sound/weapons/magic/LS_Hit_4.ogg')
 var/list/bullet_hit_object_sound = list('sound/weapons/guns/misc/bullethit.ogg')
 var/list/casing_sound = list ('sound/weapons/guns/misc/casingfall1.ogg','sound/weapons/guns/misc/casingfall2.ogg','sound/weapons/guns/misc/casingfall3.ogg')
 var/list/trauma_sound = list('sound/effects/gore/trauma1.ogg', 'sound/effects/gore/trauma2.ogg', 'sound/effects/gore/trauma3.ogg')
@@ -263,6 +264,11 @@ var/list/charge_sounds_redmenia = list(
 	'sound/effects/emotes/redmenia2.ogg',
 	'sound/effects/emotes/redmenia3.ogg',)
 var/list/charge_sounds_blugoslavia = list()
+
+var/list/charge_sounds_gra = list(
+	'sound/effects/emotes/charge_replicant1.ogg',
+	'sound/effects/emotes/charge_replicant2.ogg',
+	'sound/effects/emotes/charge_replicant3.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -390,6 +396,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("pageturn") soundin = pick(page_sound)
 			if ("miss_sound") soundin = pick(miss_sound)
 			if ("ric_sound") soundin = pick(ric_sound)
+			if ("laser_ric_sound") soundin = pick(laser_ric_sound)
 			if ("hitobject") soundin = pick(bullet_hit_object_sound)
 			if ("trauma") soundin = pick(trauma_sound)
 			if ("chop") soundin = pick(chop_sound)
