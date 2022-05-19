@@ -156,10 +156,10 @@
 	item_state = "stormtrooper_armor"
 	worn_state = "stormtrooper_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 65, arrow = 96, gun = 88, energy = 55, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 96, gun = 88, energy = 75, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
-	health = 60
+	health = 100
 
 // HELMETS
 
@@ -478,3 +478,55 @@
 	icon_state = "hazard_g"
 	item_state = "hazard_g"
 	worn_state = "hazard_g"
+
+
+/////////////////REBELS///////////////////////////////////////////
+/obj/item/clothing/head/helmet/rebel
+	name = "Rebel Fleet Trooper Helmet"
+	desc = "A reinforced plastoid helmet of the Rebel Alliance."
+	icon_state = "rebel_helmet1"
+	item_state = "rebel_helmet1"
+	worn_state = "rebel_helmet1"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 40, energy = 45, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/rebel/New()
+	..()
+	icon_state = "rebel_helmet[rand(1,2)]"
+	worn_state = "[icon_state]"
+	update_icon()
+
+/obj/item/clothing/under/rebel
+	name = "rebellion trooper uniform"
+	desc = "A plain looking uniform worn by soldiers of the rebel alliance."
+	icon_state = "rebel1"
+	item_state = "rebel1"
+	worn_state = "rebel1"
+
+/obj/item/clothing/under/rebel/New()
+	..()
+	icon_state = "rebel[rand(1,2)]"
+	worn_state = "[icon_state]"
+	update_icon()
+
+/obj/item/clothing/under/rebel/officer
+	name = "rebellion officer uniform"
+	desc = "A plain looking uniform worn by officers of the rebel alliance."
+	icon_state = "rebel_officer"
+	item_state = "rebel_officer"
+	worn_state = "rebel_officer"
+
+/obj/item/clothing/suit/storage/jacket/rebel_vest
+	name = "black vest"
+	desc = "A simple black vest."
+	icon_state = "rebel_vest"
+	item_state = "rebel_vest"
+	worn_state = "rebel_vest"
+
+/obj/item/clothing/suit/storage/jacket/rebel_vest/officer
+	name = "rebel officer vest"
+	desc = "A khaki and orange vest worn by officers of the Rebel Alliance."
+	icon_state = "rebel_officer_vest"
+	item_state = "rebel_officer_vest"
+	worn_state = "rebel_officer_vest"
