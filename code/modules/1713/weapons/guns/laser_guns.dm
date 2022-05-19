@@ -121,7 +121,7 @@
 	w_class = 4
 	load_method = MAGAZINE
 	max_shells = 100
-	caliber = "laserb"
+	caliber = "laser"
 	ammo_type = /obj/item/ammo_casing/laser
 	damage_modifier = 1.2
 	slot_flags = SLOT_SHOULDER
@@ -136,6 +136,62 @@
 	force = 10
 	throwforce = 15
 	effectiveness_mod = 1.10
+	attachment_slots = null
+	handle_casings = REMOVE_CASINGS
+
+/obj/item/weapon/gun/projectile/semiautomatic/laser/e11
+	name = "E-11"
+	desc = "Standard issue rifle of the Storm Trooper Corps of the Galactic Empire"
+	icon_state = "E-11"
+	item_state = "E-11"
+	base_icon = "E-11"
+	fire_sound = 'sound/weapons/guns/fire/blasterimperial2.ogg'
+	w_class = 4
+	load_method = MAGAZINE
+	max_shells = 100
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser
+	damage_modifier = 1.2
+	slot_flags = SLOT_SHOULDER
+	magazine_type = /obj/item/ammo_magazine/tibannagas/e5
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/e5, /obj/item/ammo_magazine/tibannagas/dc15a)
+	weight = 3.85
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		)
+
+	gun_type = GUN_TYPE_RIFLE
+	force = 10
+	throwforce = 15
+	effectiveness_mod = 1.25
+	attachment_slots = null
+	handle_casings = REMOVE_CASINGS
+
+/obj/item/weapon/gun/projectile/semiautomatic/laser/a280
+	name = "A280 Blaster"
+	desc = "Standard issue rifle of the Rebel Alliance."
+	icon_state = "A280"
+	item_state = "A280"
+	base_icon = "A280"
+	fire_sound = 'sound/weapons/guns/fire/blasterrebel.ogg'
+	w_class = 4
+	load_method = MAGAZINE
+	max_shells = 100
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser
+	damage_modifier = 1.2
+	slot_flags = SLOT_SHOULDER
+	magazine_type = /obj/item/ammo_magazine/tibannagas/a280
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/a280)
+	weight = 5.85
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		)
+
+	gun_type = GUN_TYPE_RIFLE
+	force = 10
+	throwforce = 15
+	effectiveness_mod = 1.15
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
 
