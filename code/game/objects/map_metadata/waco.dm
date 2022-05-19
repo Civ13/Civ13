@@ -2,7 +2,7 @@
 	ID = MAP_WACO
 	title = "Waco Siege"
 	lobby_icon_state = "waco"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 1200
 	no_hardcore = TRUE
 	var/list/HVT_list = list()
@@ -205,6 +205,9 @@ var/no_loop_waco = FALSE
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one) && processes.ticker.playtime_elapsed <= 3000)
+			if (H.faction_text == faction2 || H.faction_text == faction1)
+				return TRUE
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside))
 			if (H.faction_text == faction2)
 				return TRUE
