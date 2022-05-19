@@ -100,7 +100,7 @@
 "bW" = (/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "bX" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/yellow,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "bY" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/cowboyhat2,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
-"bZ" = (/obj/structure/table/modern/table,/obj/structure/potted_plant,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
+"bZ" = (/obj/structure/table/modern/table,/obj/item/weapon/pen/fancy,/obj/item/weapon/folder/yellow,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "ca" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cb" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cc" = (/turf/floor/carpet/tealcarpet,/area/caribbean/british/land/inside/objective)
@@ -134,7 +134,7 @@
 "cF" = (/obj/structure/bed/chair/office/light{dir = 8},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cG" = (/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cH" = (/obj/structure/props/junk{icon_state = "Junk_8"},/turf/floor/dirt,/area/caribbean)
-"cI" = (/obj/structure/table/modern/table,/obj/item/weapon/folder/yellow,/obj/item/weapon/pen/fancy,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
+"cI" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/pistol/deagle{color = "#ad9300"; name = "Golden Deagle"; desc = "A golden version of the highly iconic deagle.."},/obj/item/ammo_magazine/deagle,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cJ" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cK" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cL" = (/obj/structure/closet/anchored,/obj/item/clothing/accessory/armor/nomads/civiliankevlar,/obj/item/clothing/accessory/armor/nomads/civiliankevlar,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
@@ -149,7 +149,7 @@
 "cU" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/submachinegun/mp40/mp5,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cV" = (/obj/structure/table/wood,/obj/item/ammo_magazine/mp40/mp5,/obj/item/ammo_magazine/mp40/mp5,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cW" = (/obj/structure/table/wood,/obj/item/clothing/glasses/nvg,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
-"cX" = (/obj/structure/table/wood,/obj/item/clothing/head/helmet/kevlarhelmet,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside/objective)
+"cX" = (/obj/structure/table/wood,/obj/item/clothing/head/helmet/kevlarhelmet,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/item/weapon/storage/belt/largepouches,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cY" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/curtain/closed/blue,/turf/floor/dirt,/area/caribbean/british/land/inside/objective)
 "cZ" = (/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/splint,/turf/floor/dirt/dust,/area/caribbean)
 "da" = (/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/houses)
@@ -776,7 +776,6 @@ aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaN
 "}
-
 (1,1,2) = {"
 pVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVocCuCupVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
 pVpVpVpVQMpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVCuCuCuCuCunNCunNCunNCuCuXUpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
@@ -867,7 +866,6 @@ pVpVpVpVoYpVjgpVpVpVpVpVpVpVjgaopVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVjgpVpV
 pVpVkepVpVpVpVQMjgpVpVpVpVpVpVpVpVpVjgpVpVpVpVjgpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVjPpVpVpVpVpVpVpVpVpVpVurpVpVjgpVpVpVaFqKCuCuCuCuCuCuCuPMZFfBpVpVpVpVjgpVpVpVpVpVpVpV
 alpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjPpVpVpVpVpVoupVpVpVjgpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVaFqKCuCuCuCuCuCuCuCuCufBpVpVpVpVpVpVpVpVjgjgpVpV
 "}
-
 (1,1,3) = {"
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBanananananpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
@@ -958,7 +956,6 @@ pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 "}
-
 (1,1,4) = {"
 bzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbz
 bzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbzbz
