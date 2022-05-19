@@ -62,3 +62,10 @@
 	multiple_sprites = TRUE
 	clip = FALSE
 	slot_flags = SLOT_BACK
+
+/obj/item/ammo_magazine/tibannagas/dl44
+	name = "DL-44 Tibanna Gas Cartridge"
+	icon_state = "tibanna_pistol"
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser/pistol
+	max_ammo = 50

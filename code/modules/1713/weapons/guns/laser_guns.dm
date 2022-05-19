@@ -165,12 +165,12 @@
 	desc = "A DL-44 blaster pistol used by various organizations throughout the galaxy."
 	icon_state = "DL-44"
 	w_class = 2
-	caliber = "laserb"
+	caliber = "laser"
 	fire_sound = 'sound/weapons/guns/fire/blasterdl44.ogg'
-	magazine_type = /obj/item/ammo_magazine/tibannagas/dc17
-	good_mags = list(/obj/item/ammo_magazine/tibannagas/dc17)
+	magazine_type = /obj/item/ammo_magazine/tibannagas/dl44
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/dl44)
 	weight = 0.5
-	ammo_type = /obj/item/ammo_casing/laser
+	ammo_type = /obj/item/ammo_casing/laser/pistol
 	load_method = MAGAZINE
 	handle_casings = REMOVE_CASINGS
 	effectiveness_mod = 1.02

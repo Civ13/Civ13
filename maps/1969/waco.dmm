@@ -15,7 +15,7 @@
 "ao" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean)
 "ap" = (/obj/structure/railing{dir = 4; icon_state = "railing0"},/obj/structure/railing,/turf/floor/broken_floor,/area/caribbean)
 "aq" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean)
-"ar" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/houses)
+"ar" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag,/obj/structure/curtain/closed/blue,/turf/floor/dirt,/area/caribbean/houses)
 "as" = (/obj/covers/wood,/obj/roof/wood,/turf/floor/broken_floor,/area/caribbean)
 "at" = (/obj/structure/railing,/obj/structure/railing{dir = 8; icon_state = "railing0"},/turf/floor/broken_floor,/area/caribbean)
 "au" = (/obj/structure/railing{dir = 4; icon_state = "railing0"},/turf/floor/broken_floor,/area/caribbean)
@@ -39,13 +39,13 @@
 "aM" = (/obj/structure/lamp/lamp_small/alwayson{dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "aN" = (/turf/wall/rockwall,/area/caribbean/void/caves)
 "aO" = (/obj/structure/bed/bedroll,/turf/floor/wood,/area/caribbean/houses)
-"aP" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/houses)
+"aP" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag,/obj/structure/curtain/closed/blue,/turf/floor/dirt,/area/caribbean/houses)
 "aQ" = (/obj/structure/vehicleparts/movement,/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/car/falcon/rb,/obj/structure/table/carboot,/turf/floor/dirt/dust,/area/caribbean)
 "aR" = (/turf/floor/grass,/area/caribbean/houses)
 "aS" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/carpet,/area/caribbean/houses)
 "aT" = (/obj/effect/decal/cleanable/blood/writing{dir = 1},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/carpet,/area/caribbean/houses)
-"aU" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/curtain/closed/blue{pixel_y = 32},/turf/floor/wood,/area/caribbean/houses)
-"aV" = (/obj/structure/window_frame,/obj/structure/window/barrier/sandbag/incomplete,/obj/item/weapon/material/shard/glass,/turf/floor/dirt/burned,/area/caribbean/houses)
+"aU" = (/obj/structure/window_frame,/obj/structure/window/barrier/sandbag/incomplete,/obj/item/weapon/material/shard/glass,/obj/structure/curtain/closed/blue,/turf/floor/dirt/burned,/area/caribbean/houses)
+"aV" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/houses)
 "aW" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag,/turf/floor/wood,/area/caribbean/houses)
 "aX" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/houses)
 "aY" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
@@ -53,16 +53,16 @@
 "ba" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/houses)
 "bb" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt/burned,/area/caribbean/houses)
 "bc" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/carpet,/area/caribbean/houses)
-"bd" = (/turf/floor/grass,/area/caribbean/no_mans_land{icon_state = "green1"})
+"bd" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "be" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/wood,/area/caribbean/houses)
 "bf" = (/obj/covers/marble_wall/grecian/archway/modern,/turf/floor/plating/marble/grid,/area/caribbean/houses)
 "bg" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/carpet/tealcarpet,/area/caribbean/british/land/inside/objective)
 "bh" = (/obj/structure/sink/kitchen{dir = 4; pixel_x = -14},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
-"bi" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/curtain/closed/blue{pixel_y = 32},/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
+"bi" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
 "bj" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/carpet/tealcarpet,/area/caribbean/houses)
-"bk" = (/obj/item/weapon/reagent_containers/food/snacks/cockroach,/obj/structure/curtain/closed/blue{pixel_y = 32},/turf/floor/dirt/burned,/area/caribbean/houses)
-"bl" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land{icon_state = "green1"})
-"bm" = (/turf/floor/dirt,/area/caribbean/no_mans_land{icon_state = "green1"})
+"bk" = (/obj/item/weapon/reagent_containers/food/snacks/cockroach,/turf/floor/dirt/burned,/area/caribbean/houses)
+"bl" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"bm" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
 "bn" = (/obj/structure/bed/bedroll,/turf/floor/wood/fancywood,/area/caribbean/houses)
 "bo" = (/obj/structure/vehicleparts/frame/car/van/lf{broken = 1},/obj/structure/vehicleparts/movement/reversed{broken = 1},/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/license_plate/us/centered/front{icon_state = "license_plate_us"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "bp" = (/obj/structure/camonet,/obj/structure/bed/chair/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt/dust,/area/caribbean)
@@ -73,18 +73,17 @@
 "bu" = (/obj/structure/window/barrier/sandbag,/obj/structure/camonet,/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt/dust,/area/caribbean)
 "bv" = (/obj/covers/roads/dirt,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPDoc"},/turf/floor/grass,/area/caribbean)
 "bw" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPDoc"},/turf/floor/grass,/area/caribbean)
-"bx" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land{icon_state = "green1"})
-"by" = (/obj/structure/wild/flowers{icon_state = "flower2"},/turf/floor/grass,/area/caribbean/no_mans_land{icon_state = "green1"})
+"bx" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/one)
+"by" = (/obj/structure/wild/flowers{icon_state = "flower2"},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "bz" = (/turf/floor/broken_floor/sky,/area/caribbean)
-"bA" = (/obj/structure/window/barrier/sandbag,/obj/structure/curtain/closed/blue{pixel_y = -32},/turf/floor/wood,/area/caribbean/houses)
-"bB" = (/obj/structure/window/barrier/sandbag,/obj/structure/curtain/closed/blue{pixel_y = -32},/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
-"bC" = (/obj/structure/window/barrier/sandbag,/obj/effect/decal/cleanable/blood,/obj/structure/curtain/closed/blue{pixel_y = -32},/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
-"bD" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/houses)
+"bA" = (/obj/structure/window/barrier/sandbag,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
+"bB" = (/obj/structure/window/barrier/sandbag,/obj/effect/decal/cleanable/blood,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
+"bC" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/curtain/closed/blue,/turf/floor/dirt,/area/caribbean/houses)
+"bD" = (/obj/structure/window/classic,/obj/structure/curtain/closed/blue,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "bE" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/two)
 "bF" = (/obj/structure/wild/flowers{icon_state = "flower4"},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
 "bG" = (/obj/structure/lamp/lamp_small/tank/red/police{dir = 8; icon_state = "bulb"},/obj/structure/bed/chair/drivers/car/dark,/obj/structure/vehicleparts/frame/car/falcon/lfc{color = "#d3d3d3"; override_color = "#FFFFFF"},/obj/structure/emergency_lights,/turf/floor/dirt/dust,/area/caribbean)
 "bH" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
-"bI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/curtain/closed/blue{pixel_y = 32},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/houses)
 "bJ" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
 "bK" = (/obj/item/weapon/material/hatchet,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
 "bL" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 8},/turf/floor/carpet,/area/caribbean/houses)
@@ -109,7 +108,6 @@
 "ce" = (/obj/structure/closet/crate/lead,/obj/item/weapon/gun/projectile/pistol/m9beretta,/obj/item/weapon/attachment/silencer/pistol,/obj/item/ammo_magazine/m9beretta,/obj/item/ammo_magazine/m9beretta,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cf" = (/obj/structure/table/wood,/obj/item/stack/money/goldvaluables,/obj/structure/window/classic/metal,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cg" = (/obj/structure/table/wood,/obj/structure/window/classic/metal,/obj/item/clothing/mask/necklace/christian/gold,/turf/floor/wood,/area/caribbean/british/land/inside/objective)
-"ch" = (/obj/structure/window/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "ci" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/curtain/open/blue,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "cj" = (/obj/covers/wood_wall/adjustable,/turf/wall/wood,/area/caribbean/no_mans_land/invisible_wall/inside)
 "ck" = (/obj/structure/window/classic,/obj/structure/barricade/horizontal,/obj/structure/curtain/open/blue,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/invisible_wall/inside)
@@ -803,8 +801,8 @@ pVqKqKcmbQcmqKqKqKpVpVpVpVpVpVpVpVlKlKlKlKpVpVjgpVpVpVQMpVpVpVpVjgpVpVpVpVpVpVjg
 pVpVqKgugucmqKqKpVpVpVpVpVjgpVpVlKlKlKlKlKlKpVpVpVpVpVaopVpVpVpVpVpVpVpVQMpVpVpVpVjgoYlKpVpVipajDwWtWtOwYxHeRMZkizGhYxNmsNpNXwXwXwajpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
 pVpVqKcqguqKqKpVpVpVpVpVpVpVpVlKlKlKlKlKlKftftftftlKJgJgmHgfgfgflKlKlKlKlKlKlKlKlKlKlKlKlKpsPiajWtWtWtOwYxHeYOHeYxYxYxNmAaXLiWiWiWajpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVjgpVpVpV
 pVpVpVqKqKqKqKpVpVpVpVpVpVpVpVlKlKlKpVpVJgDxJgDxgfNtGqGqGqtvtvDxJgJgJgJgDxDxJgJglKlclclKJgXVwxajWtdvdvYxYxbLHAbLYxYxYxNmeSJdhzEWxGajpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
-jgpVpVAAqKqKpVpVpVpVpVQMpVjgpVlKlKlKjgpVajararajajaPajajaVajajaPajajaPajaPaPajajajajajajajKAKAajawIUIUYxYxYxTYIqYxYxYxNmEGeOXwvjXwajpVpVpVpVpVpVpVpVpVQMpVpVpVjgpVpVpVpVpVpVpVpV
-pVpVpVpVpVpVpVpVpVpVpVpVpVpVpVQMlKlKpVpVajbIaUajDJbiajQabkajWXbiajWMbiajaUaUajgLaYaYZVzLajaWaWajajajajajajrFBpajajajajajajajyvyvajajpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
+jgpVpVAAqKqKpVpVpVpVpVQMpVjgpVlKlKlKjgpVajararajajaPajajaUajajaPajajaPajaPaPajajajajajajajKAKAajawIUIUYxYxYxTYIqYxYxYxNmEGeOXwvjXwajpVpVpVpVpVpVpVpVpVQMpVpVpVjgpVpVpVpVpVpVpVpV
+pVpVpVpVpVpVpVpVpVpVpVpVpVpVpVQMlKlKpVpVajaVrlajDJbiajQabkajWXbiajWMbiajrlrlajgLaYaYZVzLajaWaWajajajajajajrFBpajajajajajajajyvyvajajpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
 pVpVpVpVQMpVpVpVpVjgpVpVpVpVpVpVlKlKcvPIJETOSlajnqnqajJQQoajnqnqajnqnqajSlSlajgLaYaYZVzLajrlrlSlSlSlmMCeXamKrXajaRaRaRaRaRaZaZbaaZaZpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVjgpVpVpVpV
 jgpVjgpVjgQMpVMgpVpVpVpVQMpVpVpVQMlKNuufJETOSlajHZnqajMeCZajHZnqajxvnqajSlSlswaYaYnYajajajSlSlSlSlSlmMglSyntLtajpVpVpVpVpVpVpVpVpVpVpVpVpVWKpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpV
 pVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVQMpVRAITajrlSlajajkKajajHzajajkKajajkKajSlSlajaYaYaYIaZVajPfPfPfPfklPYmKSlmKShajpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVjgpVVopVpVpVpVpV
@@ -815,8 +813,8 @@ pVpVpVMgpVpVpVjgpVpVpVQMpVpVajzZzaaYaYaYajSlSldcSlSlFuSlSlFuSlSlSlSlSlSlSlSlSlSl
 pVYDpVpVpVpVpVpVpVpVpVpVpVpVajzZzaaYaYaYajSlSlajajkKajajkKajajkKajSlSlajajakajajajajajajajSlSlSlajakajajSlSlSlajaYaYcCrbBkJQpVpVpVpVpVpVpVpVjgpVpVjgpVpVpVjgpVpVpVpVpVpVpVpVpVpV
 pVQMpVpVpVjgQMpVpVQMpVpVpVpVajajajFNaYaYHaSlSlajlEnqajlVnqajkgnqajSlSlajGyKgajSIEmKMbqBOajSlSlSlajKgGyajSlSlSlswaYaYXHyyGePPgupVpVpVpVpVjgpVpVpVpVpVpVVxpVpVpVpVpQpVpVpVpVpVjgpV
 pVjgpVjgpVpVpVpVQMQMpVpVpVpVajruruaYaYaYajSlSlajnqnqajnqnqajnqnqajSlNeajUhUYajKzKziEKzoJajNeSlSlajILUhajSlSlSlajQJQJRkQqwyajpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpV
-pVpVpVpVpVpVpVpVQMpVpVpVpVpVajruruaYaYaYajbAbAajddbBajdebBajdfbCajbAbAmVUhNAajTVuJHFUziEiNFuPfPfajiOUhmVSlSlSlajjljlyRcMELajpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
-pVjgpVpVpVpVjgQMpVpVpVpVpVpVajajajajajajajbDbDajajbDajajbDajajbDajbDbDajajajajajajajajajajajbebeajajajajajajajajajajajajajajpVpVpVpVpVjgpVpVpVpVpVpVjgpVpVpVpVpVpVpVQMpVpVpVpVpV
+pVpVpVpVpVpVpVpVQMpVpVpVpVpVajruruaYaYaYajPfPfajddbAajdebAajdfbBajPfPfmVUhNAajTVuJHFUziEiNFuPfPfajiOUhmVSlSlSlajjljlyRcMELajpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpV
+pVjgpVpVpVpVjgQMpVpVpVpVpVpVajajajajajajajbCbCajajbCajajbCajajbCajbCbCajajajajajajajajajajajbebeajajajajajajajajajajajajajajpVpVpVpVpVjgpVpVpVpVpVpVjgpVpVpVpVpVpVpVQMpVpVpVpVpV
 pVpVpVpVjgpVQMQMpVpVpVpVpVpVpVpVpVpVpVpVpVuhsTmnuhmSzYzYmUTMTMTMmnLruhmnpVpVpVpVpVpVpVpVLpuhjZHLuhLppVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVQMpVpVpVpVpVpVpVpVpV
 pVpVpVpVpVpVQMpVpVQMpVpVpVpVpVpVpVpVpVpVpVpVpVpVRIRImnmnRIRIRIRImnpVpVpVpVpVpVpVjgDrpVpVpVpVmPmPuhpVpVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVpVpVpVjgpVpVjgpVpVpV
 pVpVjgpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVpVQMpVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVpVlKlKpVpVpVpVpVpVjgpVpVaopVpVpVpVpVpVpVpVpVpVpVjgpVpVpVpVpVpVQMpVpVpVpVpVpVpVpVpVpVpV
@@ -896,9 +894,9 @@ pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBcAbWbWbWcIcJcKaJbPccbPaJcLcGcGcGcGcGcApBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajajajajajajajpBpBaJcNbWbWbWbWbWcQcccccccRcGcGcUcVcWcXaJpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajaYaYaYIaZVajBtBtaJaJcYcYaJcYcYaJaJaJaJaJcYcYaJcYcYaJaJpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtchKCaYaYIaZVajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtchKCaYnYPuPuajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
-pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtchKCaYaYzazLajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtbDKCaYaYIaZVajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtbDKCaYnYPuPuajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
+pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtbDKCaYaYzazLajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajaYaYaYzazLajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtBtajaYaYaYaYaYajBtBtBtBtBtBtBtBtBtBtBtpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
 pBpBpBpBpBpBpBpBpBpBpBpBpBpBajajajciciajajajajcjcjckcjcjckcjcjckcjcjckcjcjckcjajajswajakajajajclajajclajclclclajPZPZajajpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpBpB
