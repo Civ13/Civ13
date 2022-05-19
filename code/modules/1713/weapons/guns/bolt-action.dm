@@ -303,8 +303,9 @@
 	name = "Barrett M99"
 	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
 	icon_state = "a50calbolt"
-	item_state = "a50calbolt"
+	item_state = "barrett"
 	base_icon = "a50calbolt"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	w_class = 4
 	force = 10
 	throwforce = 5
@@ -331,7 +332,41 @@
 	load_delay = 20
 	bolt_open = FALSE
 	bolt_safety = FALSE
-/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/New()
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper
+	name = "Barrett M99"
+	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
+	icon_state = "a50calbolt"
+	item_state = "barrett"
+	base_icon = "a50calbolt"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+	w_class = 4
+	force = 10
+	throwforce = 5
+	max_shells = 1
+	slot_flags = null
+	caliber = "a50cal"
+	weight = 8
+	recoil = 3
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = list (/obj/item/ammo_casing/a50cal, /obj/item/ammo_casing/a50cal_ap, /obj/item/ammo_casing/a50cal_he)
+	magazine_type = /obj/item/ammo_magazine/mosin
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	accuracy = TRUE
+	gun_type = GUN_TYPE_RIFLE
+	accuracy_increase_mod = 2.00
+	accuracy_decrease_mod = 6.00
+	KD_chance = KD_CHANCE_HIGH
+	move_delay = 4
+	fire_delay = 4
+	equiptimer = 15
+	gun_safety = TRUE
+	load_delay = 20
+	bolt_open = FALSE
+	bolt_safety = FALSE
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
