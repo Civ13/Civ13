@@ -593,3 +593,27 @@
 	else
 		icon_state = "deagle_open"
 	return
+
+/obj/item/weapon/gun/projectile/pistol/fiveseven
+	name = "Fiveseven"
+	desc = "A unique self defense pistol made in belgium."
+	icon_state = "fiveseven"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/fiveseven.ogg'
+	magazine_type = /obj/item/ammo_magazine/fiveseven
+	good_mags = list(/obj/item/ammo_magazine/fiveseven)
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.12
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
+
+/obj/item/weapon/gun/projectile/pistol/fiveseven/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "fiveseven"
+	else
+		icon_state = "fiveseven_open"
+	return

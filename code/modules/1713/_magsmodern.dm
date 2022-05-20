@@ -390,3 +390,12 @@
 	multiple_sprites = TRUE
 
 	pouch = TRUE
+
+/obj/item/ammo_magazine/fiveseven
+	name = "Fiveseven magazine"
+	icon_state = "fiveseven"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 22
+	multiple_sprites = TRUE
