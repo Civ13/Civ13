@@ -90,7 +90,7 @@
 	if (ammo_magazine)
 		icon_state = "nambu"
 	else
-		icon_state = "nambu"
+		icon_state = "nambu0"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu
@@ -154,6 +154,7 @@
 	effectiveness_mod = 0.96
 	good_mags = list(/obj/item/ammo_magazine/walther)
 	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
+
 /obj/item/weapon/gun/projectile/pistol/waltherp38/update_icon()
 	..()
 	if (ammo_magazine)
@@ -161,6 +162,12 @@
 	else
 		icon_state = "waltherp380"
 	return
+
+/obj/item/weapon/gun/projectile/pistol/waltherp38/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/pistol/glock17
 	name = "Glock 17"
@@ -239,6 +246,14 @@
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.15
 
+/obj/item/weapon/gun/projectile/pistol/pl14/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "pl14"
+	else
+		icon_state = "pl14_open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/mp443
 	name = "MP-443"
 	desc = "A modern pistol, loaded on 9x19mm, made by Russia."
@@ -303,6 +318,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.40
+
 /obj/item/weapon/gun/projectile/pistol/p220/update_icon()
 	..()
 	if (ammo_magazine)
@@ -310,6 +326,12 @@
 	else
 		icon_state = "p220_open"
 	return
+
+/obj/item/weapon/gun/projectile/pistol/p220/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/pistol/iogb7
 	name = "IOQ B-72"
@@ -356,7 +378,7 @@
 	if (ammo_magazine)
 		icon_state = "mauser"
 	else
-		icon_state = "mauser0"
+		icon_state = "mauser0-1"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/borchardt
@@ -398,6 +420,14 @@
 	effectiveness_mod = 0.95
 	pocket = TRUE
 
+/obj/item/weapon/gun/projectile/pistol/colthammerless/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "coltpockethammerless"
+	else
+		icon_state = "coltpockethammerless_open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908
 	name = "Colt M1908 Pocket Hammerless"
 	desc = "A later version of the compact Colt pistol, chambered in .380 ACP."
@@ -413,14 +443,6 @@
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
 
-/obj/item/weapon/gun/projectile/pistol/colthammerless/update_icon()
-	..()
-	if (ammo_magazine)
-		icon_state = "coltpockethammerless"
-	else
-		icon_state = "coltpockethammerless_open"
-	return
-
 /obj/item/weapon/gun/projectile/pistol/bergmann
 	name = "Bergmann No.2"
 	desc = "A particularly unique-in-appearance early German semi-automatic pistol."
@@ -435,6 +457,8 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
+
+
 /obj/item/weapon/gun/projectile/pistol/bergmann/update_icon()
 	..()
 	if (ammo_magazine)
@@ -459,6 +483,14 @@
 	effectiveness_mod = 1.02
 	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
 
+/obj/item/weapon/gun/projectile/pistol/m1911/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "colt"
+	else
+		icon_state = "colt_open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/blackm1911
 	name = "Colt Mark IV"
 	desc = "A slightly upgraded model of the M1911A1. Chambered in .45 ACP."
@@ -473,6 +505,21 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.02
+
+/obj/item/weapon/gun/projectile/pistol/blackm1911/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "colt"
+	else
+		icon_state = "colt_open"
+	return
+
+
+/obj/item/weapon/gun/projectile/pistol/blackm1911/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/pistol/tt30
 	name = "TT-33"
@@ -490,27 +537,19 @@
 	effectiveness_mod = 0.98
 	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 
+/obj/item/weapon/gun/projectile/pistol/tt30/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "tt30"
+	else
+		icon_state = "tt300"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/tt30/silenced/New()
 	..()
 
 	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
 	SP.attached(null,src,TRUE)
-
-/obj/item/weapon/gun/projectile/pistol/makarov
-	name = "Makarov PM"
-	desc = "The standard issue pistol of the Soviet Union and Russian Federation after the 1950's. Chambered in 9x18mm Makarov."
-	icon_state = "makarov"
-	w_class = 2
-	caliber = "a9x18"
-	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	magazine_type = /obj/item/ammo_magazine/makarov
-	good_mags = list(/obj/item/ammo_magazine/makarov, /obj/item/ammo_magazine/makarov/empty)
-	weight = 0.704
-	ammo_type = /obj/item/ammo_casing/a9x18
-	load_method = MAGAZINE
-	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.98
-	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 
 /obj/item/weapon/gun/projectile/pistol/tt30/silenced/New()
 	..()
@@ -534,6 +573,36 @@
 	effectiveness_mod = 0.98
 	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 
+/obj/item/weapon/gun/projectile/pistol/makarov
+	name = "Makarov PM"
+	desc = "The standard issue pistol of the Soviet Union and Russian Federation after the 1950's. Chambered in 9x18mm Makarov."
+	icon_state = "makarov"
+	w_class = 2
+	caliber = "a9x18"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
+	magazine_type = /obj/item/ammo_magazine/makarov
+	good_mags = list(/obj/item/ammo_magazine/makarov, /obj/item/ammo_magazine/makarov/empty)
+	weight = 0.704
+	ammo_type = /obj/item/ammo_casing/a9x18
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.98
+	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
+
+/obj/item/weapon/gun/projectile/pistol/makarov/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "makarov"
+	else
+		icon_state = "makarov_0"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/makarov/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/pistol/m9beretta
 	name = "Beretta M9"
 	desc = "The standard issue pistol of US Armed Forces from 1985 to 2017. Chambered in 9mm Luger."
@@ -548,6 +617,14 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.12
+
+/obj/item/weapon/gun/projectile/pistol/m9beretta/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "m9beretta"
+	else
+		icon_state = "m9beretta_open"
+	return
 
 /obj/item/weapon/gun/projectile/pistol/m9beretta/silenced/New()
 	..()
@@ -569,3 +646,11 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.12
+
+/obj/item/weapon/gun/projectile/pistol/jericho941/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "jericho941"
+	else
+		icon_state = "jericho941_open"
+	return

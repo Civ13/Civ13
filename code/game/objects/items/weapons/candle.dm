@@ -103,3 +103,8 @@
 			dropped()
 		qdel(src)
 	update_icon()
+
+/obj/item/weapon/flame/candle/lard/on
+	New()
+		..()
+		light()

@@ -139,9 +139,19 @@
 /obj/item/ammo_magazine/emptyspeedloader
 	name = "speedloader (6)"
 	mag_type = SPEEDLOADER
-	icon_state = "38-0"
+	icon_state = "38"
 	ammo_type = null
 	caliber = null
+	max_ammo = 6
+	weight = 0.1
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m44speedloader
+	name = "speedloader (6)"
+	mag_type = SPEEDLOADER
+	icon_state = "38"
+	ammo_type = /obj/item/ammo_casing/a44magnum
+	caliber = "a44magnum"
 	max_ammo = 6
 	weight = 0.1
 	multiple_sprites = TRUE

@@ -156,6 +156,9 @@ obj/item/weapon/material/sword/wakazashi
 	value = 60
 	cooldownw = 6
 
+obj/item/weapon/material/sword/wakazashi/yakuza
+	slot_flags = SLOT_BELT | SLOT_BACK
+
 /obj/item/weapon/material/knife/tanto
 	name = "tanto"
 	desc = "A knife used by the japanese for centuries. Made to slice and slash, not chop or saw. Often the tool of choice for ritual suicide."

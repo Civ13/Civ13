@@ -346,6 +346,10 @@
 	name = "Brown Winter Coat"
 	desc = "A thick winter coat."
 
+/obj/item/clothing/suit/storage/coat/japcoat2/trench
+	name = "brown trench coat"
+	desc = "A long coat to keep you clean and dry."
+
 /obj/item/clothing/suit/storage/coat/rusoffcoat
 	name = "Russian Officer Coat."
 	desc = "A russian army  officer coat. Worn by officers, acknowledge their rank."
