@@ -447,6 +447,7 @@
 #include "code\game\objects\map_metadata\hostages.dm"
 #include "code\game\objects\map_metadata\hotel.dm"
 #include "code\game\objects\map_metadata\hue.dm"
+#include "code\game\objects\map_metadata\hungergames.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\intramuros.dm"
 #include "code\game\objects\map_metadata\iwojima.dm"
@@ -1039,6 +1040,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1969\waco.dmm"
+#include "maps\special\hunger_games.dmm"
 // END_INCLUDE
 
