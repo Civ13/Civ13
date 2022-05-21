@@ -505,7 +505,9 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
 	uniform.attackby(armor, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_l_store)
+	var/obj/item/weapon/key/soviet/govk = new/obj/item/weapon/key/civ/gov(null)
+	govk.name = "Government key"
+	H.equip_to_slot_or_del (govk, slot_l_store)
 	H.civilization = "DRA"
 	H.name = H.species.get_random_arab_name(H.gender)
 	H.real_name = H.name
@@ -578,6 +580,7 @@
 	var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
 	var/obj/item/weapon/key/soviet/govk = new/obj/item/weapon/key/civ/gov(null)
 	KC.attackby(sovk,H)
+	govk.name = "Government key"
 	KC.attackby(govk,H)
 	H.equip_to_slot_or_del(KC, slot_l_store)
 
