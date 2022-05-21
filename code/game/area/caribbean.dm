@@ -516,7 +516,7 @@
 	base_turf = /turf/floor/dirt/jungledirt
 /area/caribbean/no_mans_land/invisible_wall
 	name = "grace wall"
-
+	icon_state = "green5"
 /area/caribbean/no_mans_land/invisible_wall/tundra
 	name = "grace wall"
 	climate = "tundra"
