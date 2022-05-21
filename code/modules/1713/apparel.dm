@@ -24,6 +24,20 @@
 	worn_state = "flipflops"
 	force = WEAPON_FORCE_WEAK
 
+/obj/item/clothing/under/squid_contestant
+	name = "contestant clothing"
+	desc = "regular jumpsuit for contestants"
+	icon_state = "squid_player"
+	item_state = "squid_player"
+	worn_state = "squid_player"
+
+/obj/item/clothing/suit/storage/jacket/squid_coat
+	name = "contestant jacket"
+	desc = "A simple green jumpsuit jacket."
+	icon_state = "squid_player"
+	item_state = "squid_player"
+	worn_state = "squid_player"
+
 ///////////////////////////////////////////////////////////////////
 /// Majority of the Sprites under this is made by Mane from TGMC///
 ///////////////////////////////////////////////////////////////////
