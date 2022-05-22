@@ -580,7 +580,7 @@
 	magazine_type = /obj/item/ammo_magazine/deagle
 	good_mags = list(/obj/item/ammo_magazine/deagle, /obj/item/ammo_magazine/deagle/empty)
 	weight = 0.794
-	ammo_type = /obj/item/ammo_casing/a44magnum
+	ammo_type = /obj/item/ammo_casing/a50cal
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.02
