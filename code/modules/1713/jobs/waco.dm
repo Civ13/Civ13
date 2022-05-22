@@ -75,7 +75,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -134,9 +134,11 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
 	else if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_shoulder)
-	else
+	else if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	give_random_name(H)
 	H.civilization = "ATF"
 	H.add_note("Role", "You are a <b>[title]</b>, a ATF soldier. Follow orders and secure the home!")
@@ -279,7 +281,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/goldwatch(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/military(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_belt)
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are the great messiah who will save the people, stay alive at all costs!")
 	H.setStat("strength", STAT_NORMAL)
