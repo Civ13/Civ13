@@ -1103,7 +1103,7 @@ obj/structure/vending/hezammo
 	products = list(
 		/obj/item/clothing/under/rebel = 25,
 		/obj/item/clothing/suit/storage/jacket/rebel_vest = 25,
-		/obj/item/clothing/head/helmet/replicant/stormtrooper = 25,
+		/obj/item/clothing/head/helmet/rebel = 25,
 		/obj/item/clothing/shoes/jackboots = 25,
 	)
 
@@ -1112,11 +1112,11 @@ obj/structure/vending/hezammo
 	desc = "A rack of rebel blaster equipment."
 	icon_state = "blaster_munitions"
 	products = list(
-		/obj/item/weapon/gun/projectile/semiautomatic/laser/a280 = 30,
-		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/a280 = 20,
+		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 40,
 		/obj/item/weapon/gun/projectile/pistol/laser/dl44 = 5,
-		/obj/item/ammo_magazine/tibannagas/dl44 = 10,
-		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
+		/obj/item/ammo_magazine/tibannagas/dl44 = 15,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
 	)
 
@@ -1141,10 +1141,10 @@ obj/structure/vending/hezammo
 	desc = "A rack of republic blaster equipment."
 	icon_state = "blaster_munitions"
 	products = list(
-		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15a = 30,
-		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15 = 10,
-		/obj/item/weapon/gun/projectile/pistol/laser/dl44 = 5,
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15a = 10,
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15 = 45,
 		/obj/item/weapon/gun/projectile/pistol/laser/dc17 = 10,
-		/obj/item/ammo_magazine/tibannagas/dc15 = 30,
-		/obj/item/ammo_magazine/tibannagas/dc15a = 40,
+		/obj/item/ammo_magazine/tibannagas/dc17 =20,
+		/obj/item/ammo_magazine/tibannagas/dc15 = 50,
+		/obj/item/ammo_magazine/tibannagas/dc15a = 25,
 	)
