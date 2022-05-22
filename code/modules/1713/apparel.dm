@@ -149,7 +149,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/shoes/replicantshoes
-	name = "replicant boots"
+	name = "plastoid boots"
 	desc = "A pair of plastoid boots."
 	icon_state = "replicant_boots"
 	item_state = "replicant_boots"

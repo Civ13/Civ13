@@ -1070,3 +1070,81 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/pkm = 5,
 		/obj/item/ammo_magazine/makarov = 10,
 	)
+
+///////////Star Wars stuff//////////////////////
+
+/obj/structure/vending/starwars/imperial/apparel
+	name = "Imperial uniform rack"
+	desc = "Basic wear for imperial stormtroopers."
+	icon_state = "apparel_german_old"
+	products = list(
+		/obj/item/clothing/under/bodyglove = 25,
+		/obj/item/clothing/suit/armor/stormtrooper = 25,
+		/obj/item/clothing/shoes/replicantshoes = 25,
+		/obj/item/clothing/gloves/replicantgloves = 25,
+		/obj/item/clothing/head/helmet/replicant/stormtrooper = 25,
+	)
+
+/obj/structure/vending/starwars/imperial/weapons
+	name = "Imperial weapon and ammo rack"
+	desc = "A rack of imperial blaster equipment."
+	icon_state = "blaster_munitions"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/e11 = 30,
+		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
+		/obj/item/ammo_magazine/tibannagas/e11 = 60,
+	)
+
+/obj/structure/vending/starwars/rebel/apparel
+	name = "Rebel uniform rack"
+	desc = "Basic wear for rebel soldiers."
+	icon_state = "apparel_german_old"
+	products = list(
+		/obj/item/clothing/under/rebel = 25,
+		/obj/item/clothing/suit/storage/jacket/rebel_vest = 25,
+		/obj/item/clothing/head/helmet/replicant/stormtrooper = 25,
+		/obj/item/clothing/shoes/jackboots = 25,
+	)
+
+/obj/structure/vending/starwars/rebel/weapons
+	name = "Rebel weapon and ammo rack"
+	desc = "A rack of rebel blaster equipment."
+	icon_state = "blaster_munitions"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/a280 = 30,
+		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
+		/obj/item/weapon/gun/projectile/pistol/laser/dl44 = 5,
+		/obj/item/ammo_magazine/tibannagas/dl44 = 10,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
+		/obj/item/ammo_magazine/tibannagas/a280 = 60,
+	)
+
+/obj/structure/vending/starwars/republic/apparel
+	name = "Republic uniform rack"
+	desc = "Basic wear for republic soldiers."
+	icon_state = "apparel_german_old"
+	products = list(
+		/obj/item/clothing/under/bodyglove = 50,
+		/obj/item/clothing/suit/armor/replicant = 50,
+		/obj/item/clothing/suit/armor/replicant/pilot = 25,
+		/obj/item/clothing/shoes/replicantshoes = 75,
+		/obj/item/clothing/gloves/replicantgloves = 75,
+		/obj/item/clothing/head/helmet/replicant/ARF = 25,
+		/obj/item/clothing/head/helmet/replicant/airborne = 25,
+		/obj/item/clothing/head/helmet/replicant = 25,
+		/obj/item/clothing/head/helmet/replicant/pilot = 25,
+	)
+
+/obj/structure/vending/starwars/republic/weapons
+	name = "Republic weapon and ammo rack"
+	desc = "A rack of republic blaster equipment."
+	icon_state = "blaster_munitions"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15a = 30,
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15 = 10,
+		/obj/item/weapon/gun/projectile/pistol/laser/dl44 = 5,
+		/obj/item/weapon/gun/projectile/pistol/laser/dc17 = 10,
+		/obj/item/ammo_magazine/tibannagas/dc15 = 30,
+		/obj/item/ammo_magazine/tibannagas/dc15a = 40,
+	)
