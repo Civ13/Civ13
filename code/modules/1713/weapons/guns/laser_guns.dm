@@ -216,6 +216,12 @@
 	desc = "A DC-17 blaster pistol most commonly used by the Grand Army of the Republic."
 	icon_state = "DC-17"
 
+/obj/item/weapon/gun/projectile/pistol/laser/dc17c
+	name = "DC-17 Commando blaster"
+	desc = "A DC-17 Commando blaster pistol most commonly used by the Grand Army of the Republic Commandos."
+	icon_state = "DC-17c"
+	effectiveness_mod = 1.04
+
 /obj/item/weapon/gun/projectile/pistol/laser/dl44
 	name = "DL-44 blaster"
 	desc = "A DL-44 blaster pistol used by various organizations throughout the galaxy."
