@@ -1105,6 +1105,31 @@
 	icon_state = "labcoat"
 	item_state = "labcoat"
 	worn_state = "labcoat"
+	var/closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/doctor/verb/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust lab coat"
+	if (type != /obj/item/clothing/suit/storage/jacket/doctor)
+		return
+	else
+		if(closed)
+			worn_state = "labcoat_open"
+			item_state = "labcoat_open"
+			icon_state = "labcoat_open"
+			item_state_slots["w_uniform"] = "labcoat_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "labcoat"
+			item_state = "labcoat"
+			icon_state = "labcoat"
+			item_state_slots["w_uniform"] = "labcoat"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
 
 /obj/item/clothing/suit/storage/jacket/surgeon
 	name = "surgery apron"
