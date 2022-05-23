@@ -1184,11 +1184,11 @@
 	name = "track pants"
 	desc = "A shirt with tracksuit pants."
 	var/uncolored = FALSE
-	var/pants_color = 0
-	var/sides_color = 0
-	var/shirt_color = 0
-	item_state = "trackpants_custom"
+	var/pantscolor = 0
+	var/sidescolor = 0
+	var/shirtcolor = 0
 	icon_state = "trackpants_custom"
+	item_state = "trackpants_custom"
 	worn_state = "trackpants_custom"
 	color = "#FFFFFF"
 	New()
@@ -1199,32 +1199,32 @@
 
 /obj/item/clothing/under/customtrackpants/attack_self(mob/user as mob)
 	if (uncolored)
-		if (!pants_color)
+		if (!pantscolor)
 			var/input = WWinput(user, "Pants - Choose a base color:", "Pants Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				pants_color = input
-		if (!sides_color)
+				pantscolor = input
+		if (!sidescolor)
 			var/input = WWinput(user, "Pants Stripes - Choose a color:", "Pants Stripes Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				sides_color = input
-		if (!shirt_color)
+				sidescolor = input
+		if (!shirtcolor)
 			var/input = WWinput(user, "Shirt - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				shirt_color = input
-		if (pants_color && sides_color && shirt_color)
+				shirtcolor = input
+		if (pantscolor && sidescolor && shirtcolor)
 			uncolored = FALSE
 			var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_pants")
-			pants.color = pants_color
+			pants.color = pantscolor
 			var/image/sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_sides")
-			sides.color = sides_color
+			sides.color = sidescolor
 			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_shirt")
-			shirt.color = shirt_color
+			shirt.color = shirtcolor
 			overlays += pants
 			overlays += sides
 			overlays += shirt
@@ -1236,10 +1236,10 @@
 	name = "track suit"
 	desc = "A sporty track suit."
 	var/uncolored = FALSE
-	var/base_color = 0
-	var/lines_color = 0
-	item_state = "customtracksuit"
+	var/basecolor = 0
+	var/linescolor = 0
 	icon_state = "customtracksuit"
+	item_state = "customtracksuit"
 	worn_state = "customtracksuit"
 	color = "#FFFFFF"
 	New()
@@ -1250,24 +1250,24 @@
 
 /obj/item/clothing/suit/storage/jacket/customtracksuit/attack_self(mob/user as mob)
 	if (uncolored)
-		if (!base_color)
+		if (!basecolor)
 			var/input = WWinput(user, "Jacket - Choose a base color:", "Jacket Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				base_color = input
-		if (!lines_color)
+				basecolor = input
+		if (!linescolor)
 			var/input = WWinput(user, "Jacket Lines - Choose a color:", "Jacket Lines Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				lines_color = input
-		if (base_color && lines_color)
+				linescolor = input
+		if (basecolor && linescolor)
 			uncolored = FALSE
 			var/image/base = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_base")
-			base.color = base_color
+			base.color = basecolor
 			var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_lines")
-			lines.color = lines_color
+			lines.color = linescolor
 			overlays += base
 			overlays += lines
 			return
