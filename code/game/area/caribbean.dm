@@ -682,7 +682,7 @@
 	name = "Admin Zone"
 	location = AREA_INSIDE
 	artillery_integrity = INFINITY
-	base_turf = /turf/floor/dirt
+	base_turf = /turf/floor
 	climate = "temperate"
 
 // houses in No Man's Land
