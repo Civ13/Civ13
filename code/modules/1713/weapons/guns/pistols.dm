@@ -597,7 +597,7 @@
 /obj/item/weapon/gun/projectile/pistol/deaglemagnum
 	name = "Desert Eagle (44.magnum)"
 	desc = "Designed and developed by Magnum Research Inc. Chambered in 44.magnum."
-	icon_state = "deagle"
+	icon_state = "deagle_50"
 	w_class = 2
 	caliber = "a44magnum"
 	fire_sound = 'sound/weapons/guns/fire/deagle.ogg'
@@ -613,7 +613,7 @@
 /obj/item/weapon/gun/projectile/pistol/deagle/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "deagle"
+		icon_state = "deagle_50"
 	else
-		icon_state = "deagle_open"
+		icon_state = "deagle_50_open"
 	return
