@@ -1,277 +1,323 @@
-"a" = (/turf/floor/wood,/area/caribbean)
-"b" = (/obj/structure/table/modern/table,/obj/structure/computer/nopower,/turf/floor/wood,/area/caribbean)
-"d" = (/obj/structure/table/modern/table,/obj/item/weapon/clipboard,/turf/floor/wood,/area/caribbean)
-"e" = (/obj/structure/props/junk{icon_state = "Junk_2"},/turf/floor/plating/road,/area/caribbean)
-"f" = (/obj/structure/bed/chair/wood/bleacher{icon_state = "bleacher"; dir = 8},/turf/floor/wood,/area/caribbean)
-"g" = (/obj/structure/simple_door/key_door{code = 9919; desc = "The door to the bank."; name = "Bank Door"},/turf/floor/wood,/area/caribbean)
-"h" = (/obj/structure/multiz/stairs/enter/bottom{dir = 4},/turf/floor/wood,/area/caribbean)
-"i" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 4},/obj/structure/railing/steel,/turf/floor/wood,/area/caribbean)
-"j" = (/obj/structure/railing/steel,/turf/floor/wood,/area/caribbean)
-"k" = (/obj/structure/railing/steel,/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean)
-"l" = (/obj/structure/bed/chair/office/light{icon_state = "officechair_white"; dir = 1},/turf/floor/wood,/area/caribbean)
-"m" = (/obj/structure/multiz/stairs/enter{dir = 4},/turf/floor/wood,/area/caribbean)
-"n" = (/obj/covers/marble_wall/classic,/turf/floor/wood,/area/caribbean)
-"o" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 4},/area/caribbean)
-"p" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"q" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 4},/turf/floor/wood,/area/caribbean)
-"r" = (/turf/floor/plating/road,/area/caribbean)
-"s" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 4},/turf/floor/wood,/area/caribbean)
-"t" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean)
-"u" = (/obj/structure/table/modern/table,/obj/item/weapon/clipboard,/obj/item/weapon/pen/pencil,/turf/floor/wood,/area/caribbean)
-"v" = (/obj/structure/simple_door/key_door{code = 2987; name = "Office"},/turf/floor/wood,/area/caribbean)
-"w" = (/turf/wall/brick,/area/caribbean)
-"x" = (/turf/floor/plating/road/yellowline,/area/caribbean)
-"z" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/turf/floor/wood,/area/caribbean)
-"A" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 4},/turf/floor/wood,/area/caribbean)
-"C" = (/obj/structure/table/modern/retable,/obj/covers/jail/steeljail,/turf/floor/wood,/area/caribbean)
-"D" = (/obj/structure/table/modern/retable,/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"},/turf/floor/wood,/area/caribbean)
-"E" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
-"F" = (/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean)
-"G" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/turf/floor/wood,/area/caribbean)
-"H" = (/obj/structure/closet/crate/dumpster,/turf/floor/plating/road,/area/caribbean)
-"I" = (/obj/covers/marble_wall/classic,/turf/floor/dirt,/area/caribbean)
-"J" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean)
-"K" = (/turf/wall/cement,/area/caribbean)
-"N" = (/obj/covers/marble_wall/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"O" = (/turf/wall/stone/marble,/area/caribbean)
-"P" = (/obj/structure/props/junk{icon_state = "Junk_3"},/turf/floor/plating/road,/area/caribbean)
-"Q" = (/obj/structure/props/junk{icon_state = "Junk_5"},/turf/floor/plating/road,/area/caribbean)
-"R" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean)
-"S" = (/turf/floor/broken_floor,/area/caribbean)
-"T" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
-"U" = (/obj/structure/bed/chair/office/light{icon_state = "officechair_white"; dir = 4},/turf/floor/wood,/area/caribbean)
-"W" = (/obj/structure/window/clean,/turf/floor/wood,/area/caribbean)
-"Y" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 8},/turf/floor/wood,/area/caribbean)
-"Z" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 8},/turf/floor/wood,/area/caribbean)
+"au" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 4},/turf/floor/wood,/area/caribbean)
+"bq" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean)
+"bL" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 1; broken = 1},/obj/structure/bed/chair/carseat/left/dark,/turf/floor/plating/road,/area/caribbean)
+"dd" = (/turf/floor/broken_floor,/area/caribbean)
+"dm" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 1; broken = 1},/obj/structure/bed/chair/carseat/left/dark{icon_state = "carseat_left"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"dn" = (/obj/structure/multiz/stairs/enter{dir = 4},/turf/floor/wood,/area/caribbean)
+"dv" = (/obj/effect/autoassembler{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"ep" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark,/turf/floor/plating/road,/area/caribbean)
+"fi" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 8; icon_state = "frame_steel_corner_rf"; pixel_x = -3; pixel_y = 3},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean)
+"fl" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 1; broken = 1},/obj/structure/bed/chair/carseat/left/dark{icon_state = "carseat_left"; dir = 1},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
+"fo" = (/turf/wall/cement,/area/caribbean)
+"fJ" = (/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 8},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 8},/obj/structure/table/carboot{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"gn" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/drivers/car/dark,/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 4},/area/caribbean)
+"gA" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 8},/turf/floor/wood,/area/caribbean)
+"hp" = (/obj/structure/props/junk{icon_state = "Junk_2"},/turf/floor/plating/road,/area/caribbean)
+"ir" = (/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean)
+"iK" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 8},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"jd" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
+"jr" = (/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 1},/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
+"jI" = (/obj/structure/bed/chair/office/light{icon_state = "officechair_white"; dir = 4},/turf/floor/wood,/area/caribbean)
+"kf" = (/obj/structure/props/junk{icon_state = "Junk_5"},/turf/floor/plating/road,/area/caribbean)
+"kr" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 8},/turf/floor/wood,/area/caribbean)
+"kZ" = (/obj/effect/autoassembler{dir = 1},/turf/floor/plating/road,/area/caribbean)
+"lC" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 4; broken = 1},/obj/structure/bed/chair/carseat/left/dark{icon_state = "carseat_left"; dir = 4},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
+"mt" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 1; pixel_y = 3; pixel_x = -3},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 1},/obj/structure/vehicleparts/movement{broken = 1; dir = 1},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"mF" = (/obj/covers/marble_wall/classic,/turf/floor/wood,/area/caribbean)
+"mP" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"nv" = (/obj/structure/table/modern/retable,/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"; name = "iron bars"},/turf/floor/wood,/area/caribbean)
+"nD" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"oV" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark,/turf/floor/plating/road,/area/caribbean)
+"oY" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"qc" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{dir = 8; icon_state = "frame_steel"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"tq" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/turf/floor/wood,/area/caribbean)
+"tt" = (/obj/structure/table/carboot{dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lb{doorcode = 13433},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"tw" = (/obj/structure/table/modern/table,/obj/item/weapon/clipboard,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean)
+"tX" = (/obj/structure/simple_door/key_door{code = 2987; name = "Office"},/turf/floor/wood,/area/caribbean)
+"ul" = (/obj/structure/simple_door/key_door{code = 9919; desc = "The door to the bank."; name = "Bank Door"},/turf/floor/wood,/area/caribbean)
+"vc" = (/obj/structure/closet/crate/dumpster,/turf/floor/plating/road,/area/caribbean)
+"vt" = (/obj/structure/table/modern/retable,/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/turf/floor/wood,/area/caribbean)
+"vw" = (/obj/structure/bed/chair/wood/bleacher{icon_state = "bleacher"; dir = 8},/turf/floor/wood,/area/caribbean)
+"vB" = (/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 8},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 8},/obj/structure/table/carboot{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"xn" = (/obj/structure/bed/chair/office/light{icon_state = "officechair_white"; dir = 1},/turf/floor/wood,/area/caribbean)
+"xy" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{dir = 8; icon_state = "frame_steel"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 4},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
+"xM" = (/obj/structure/props/junk{icon_state = "Junk_3"},/turf/floor/plating/road,/area/caribbean)
+"ye" = (/obj/structure/railing/steel,/turf/floor/wood,/area/caribbean)
+"yx" = (/obj/structure/multiz/stairs/enter/bottom{dir = 4},/turf/floor/wood,/area/caribbean)
+"ze" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 1},/obj/structure/vehicleparts/movement{broken = 1; dir = 1},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 1},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 1},/turf/floor/plating/road,/area/caribbean)
+"zh" = (/obj/structure/railing/steel,/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean)
+"Ar" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 4},/area/caribbean)
+"Ay" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 4},/turf/floor/wood,/area/caribbean)
+"AV" = (/obj/structure/table/carboot{dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lb{doorcode = 13433; pixel_x = 3},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"Bi" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/turf/floor/wood,/area/caribbean)
+"BM" = (/obj/structure/table/carboot{dir = 8; pixel_x = -3},/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 8; pixel_x = 3; pixel_y = -3},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 8},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
+"BS" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8; pixel_x = -3; pixel_y = -3},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"CE" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 1},/obj/structure/vehicleparts/movement{broken = 1; dir = 1},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 1},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 1},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
+"CF" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 4},/obj/structure/railing/steel,/turf/floor/wood,/area/caribbean)
+"CJ" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 1; icon_state = "frame_steel_corner_rf"; pixel_y = 3; pixel_x = 3},/obj/structure/vehicleparts/movement{broken = 1; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean)
+"Dv" = (/obj/structure/window/clean,/turf/floor/wood,/area/caribbean)
+"DR" = (/turf/floor/plating/road/yellowline,/area/caribbean)
+"Eo" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"GQ" = (/obj/structure/table/modern/retable,/obj/item/weapon/paper_bin,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean)
+"HG" = (/turf/floor/plating/road,/area/caribbean)
+"Iv" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 1; icon_state = "frame_steel_corner_rf"},/obj/structure/vehicleparts/movement{broken = 1; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean)
+"IE" = (/obj/covers/vault,/turf/floor/wood,/area/caribbean)
+"Jf" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean)
+"La" = (/obj/covers/vault,/obj/covers/vault,/turf/floor/wood,/area/caribbean)
+"Nq" = (/obj/structure/window/clean,/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/turf/floor/wood,/area/caribbean)
+"Od" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{dir = 8; icon_state = "frame_steel"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean)
+"OB" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 8; icon_state = "frame_steel_corner_rf"},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean)
+"ON" = (/obj/structure/table/modern/table,/obj/structure/computer/nopower,/turf/floor/wood,/area/caribbean)
+"OR" = (/turf/floor/wood,/area/caribbean)
+"OT" = (/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 1},/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"OY" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 8},/obj/structure/bed/chair/carseat/right/dark{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"Pf" = (/obj/covers/marble_wall/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"QR" = (/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"QX" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{dir = 8; icon_state = "frame_steel"; w_right = list("c_windoweddoor",1,1,5,0.1,1,1)},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"Rd" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{dir = 8; icon_state = "frame_steel"; w_right = list("c_windoweddoor",1,1,5,0.1,1,1)},/obj/structure/bed/chair/carseat/right/dark{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"Rv" = (/turf/wall/brick,/area/caribbean)
+"RU" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean)
+"Sc" = (/obj/structure/table/modern/retable,/obj/structure/computer/nopower{dir = 4},/turf/floor/wood,/area/caribbean)
+"Sr" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean)
+"UD" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/drivers/car/dark,/turf/floor/plating/road,/area/caribbean)
+"VE" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 4; broken = 1},/obj/structure/bed/chair/carseat/left/dark{icon_state = "carseat_left"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"VR" = (/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 1},/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"Wf" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
+"Wr" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 4},/turf/floor/wood,/area/caribbean)
+"YJ" = (/obj/structure/table/carboot{dir = 8; pixel_x = -3},/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 8; pixel_x = 3; pixel_y = 3},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"Zc" = (/turf/wall/stone/marble,/area/caribbean)
+"Zo" = (/obj/covers/marble_wall/classic,/turf/floor/dirt,/area/caribbean)
+"Zu" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 1; pixel_y = 3; pixel_x = -3},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 1},/obj/structure/vehicleparts/movement{broken = 1; dir = 1},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 1},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 4},/area/caribbean)
+"ZF" = (/obj/structure/bed/chair/office/light{icon_state = "officechair_white"; dir = 8},/turf/floor/wood,/area/caribbean)
 
 (1,1,1) = {"
-pppprrrroErrrrppppwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-pppprrrrrrrrrrppppwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-pppprrrrrrrrrrrrrrrrrrrrrrHHHHQerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwww
-pppprrrroErrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwww
-pppprrrroErrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwww
-pppprrrroErrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwww
-pppprrrroErrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwww
-pppprrrrrrrrrrrrrrrrrrrrrrrrrrrrrrHHPHHrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwww
-pppprrrrrrrrrrppppnnnnnnnnnnnnnnnnnnnnnngnnnnnnnnnnnnnnnnnnnnnnnNNOOOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaahhhhhhhhhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaahhhhhhhhhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaahhhhhhhhhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaannnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppzaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppzaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppzaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnFaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnsaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnGaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnGaaaaaaaaaajjanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnGaaaaaaaaaAaaJnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnqaaaaaaaajiAakCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppWaaaaaaaaajjijjDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppWaaaaaaaaaaaaaaCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaaaadaaaaaK
-pppprrrroErrrrppppWaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaaaUbaaaaaK
-pppprrrroErrrrppppnFaaaaaaaaaajjanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaaatRaaaaaK
-pppprrrroErrrrppppnsaaaaaaaaaAaaJnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaaaaaaaaaaK
-pppprrrroErrrrppppnGaaaaaaaajiAakCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaaaaaaaaaav
-pppprrrrrrrrrrppppnGaaaaaaaajjijjDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaaaaaaaaaaK
-pppprrrrrrrrrrppppnGaaaaaaaaaaaaaCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIubRaaaaRbuK
-pppprrrroErrrrppppnqaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaltaaaatlaK
-pppprrrroErrrrppppWaaaaaaaaaaajjanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaIaaaaaaaaaaK
-pppprrrroErrrrppppWaaaaaaaaaaAaaJnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppWaaaaaaaaajiAakCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnFaaaaaaaajjijjDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnsaaaaaaaaaaaaaCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnGaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnGaaaaaaaaaajjanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnGaaaaaaaaaAaaJnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnqaaaaaaaajiAakCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppWaaaaaaaaajjijjDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppWaaaaaaaaaaaaaaCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppWaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaaannnnggnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnaaaaaaZnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaafnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrroErrrrppppnaaaaaaYnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaOKKKKKKKKKKK
-pppprrrrrrrrrrppppnnnzzznnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnNNNNOKKKKKKKKKKK
-pppprrrroErrrrpppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-pppprrrroErrrrpppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-pppprrrroErrrrpppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-pppprrrrrrrrrrpppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-xxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxxxxrrxx
-TTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTTTTrrTT
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGvcvcvcvckfhpHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGArWfHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGArWfHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGArWfHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGArWfHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGvcvcxMvcvcHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGRvRvRvRvRvRvRvRvRvRvRvRvRvRv
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFulmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFPfPfZcZcZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFORORORORORyxyxyxyxyxyxyxyxyxmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORyxyxyxyxyxyxyxyxyxmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORyxyxyxyxyxyxyxyxyxmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORmFmFmFmFmFmFmFmFmFmFmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGAVttHGHGHGHGHGmPmPmPmPmFORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGkZoVbLHGHGHGHGHGmPmPmPmPmFORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGepgnWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGCJZuWfHGHGHGHGmPmPmPmPBiORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPBiORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPBiORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFirORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFauORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFtqORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFtqORORORORORORORORORORyeyeORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFtqORORORORORORORORORAyORORSrmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFWrORORORORORORORORyeCFAyORzhvtScORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGzeIvHGHGHGmPmPmPmPNqORORORORORORORORORyeyeCFyeyenvZFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGQREoHGHGHGmPmPmPmPNqORORORORORORORORORORORORORORvtGQORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORORORORtwORORORORORfo
+mPmPmPmPHGHGHGHGArflnDkZHGHGmPmPmPmPNqORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORORORjIONORORORORORfo
+mPmPmPmPHGHGHGHGArjrOTHGHGHGmPmPmPmPmFirORORORORORORORORORORyeyeORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORORORbqRUORORORORORfo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFauORORORORORORORORORAyORORSrmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORORORORORORORORORORfo
+mPmPmPmPHGHGHGHGArWfzeIvHGHGmPmPmPmPmFtqORORORORORORORORyeCFAyORzhvtScORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORORORORORORORORORORtX
+mPmPmPmPHGHGHGHGHGHGQREoHGHGmPmPmPmPmFtqORORORORORORORORyeyeCFyeyenvZFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORORORORORORORORORORfo
+mPmPmPmPHGHGHGHGHGHGdmnDkZHGmPmPmPmPmFtqORORORORORORORORORORORORORvtGQORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZotwONRUORORORORRUONtwfo
+mPmPmPmPHGHGHGHGArWfVROTHGHGmPmPmPmPmFWrORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORxnbqORORORORbqxnORfo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORORORORORORyeyeORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZoORORORORORORORORORORfo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORORORORORAyORORSrmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORORORORyeCFAyORzhvtScORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFirORORORORORORORORyeyeCFyeyenvZFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFauORORORORORORORORORORORORORvtGQORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFtqORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFtqORORORORORORORORORORyeyeORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfzeIvHGHGmPmPmPmPmFtqORORORORORORORORORAyORORSrmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfQREoHGHGmPmPmPmPmFWrORORORORORORORORyeCFAyORzhvtScORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGdmnDkZHGmPmPmPmPNqORORORORORORORORORyeyeCFyeyenvZFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGVROTHGHGmPmPmPmPNqORORORORORORORORORORORORORORvtGQORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORORORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFmFmFmFmFmFZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORORORORulORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEIEIEIEIEIEIEIEIEfofofofofofofo
+mPmPmPmPHGHGAVttArWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORORORORulORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIELaIEIEIEIEIEIELaIEfofofofofofofo
+mPmPmPmPHGkZoVbLArWfHGHGHGHGmPmPmPmPmFORORORORORORORmFmFmFmFmFmFmFmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEORORORORORORIEIEfofofofofofofo
+mPmPmPmPHGHGepUDHGHGHGHGHGHGmPmPmPmPmFORORORORORORgAmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEORORORORORORIEIEfofofofofofofo
+mPmPmPmPHGHGCJmtHGHGHGHGHGHGmPmPmPmPmFORORORORORORvwmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEORORORORORORIEIEfofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEORORORORORORIEIEfofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEORORORORORORIEIEfofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIELaORORORORORORLaIEfofofofofofofo
+mPmPmPmPHGHGHGHGArCEIvHGHGHGmPmPmPmPmFORORORORORORkrmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEIEIEIEIEIEIEIEIEfofofofofofofo
+mPmPmPmPHGHGHGHGHGQREoHGHGHGmPmPmPmPmFORORORORORORORmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFIEIEIEIEIEIEIEIEIEIEfofofofofofofo
+mPmPmPmPHGHGHGHGHGdmnDkZHGHGmPmPmPmPmFmFmFBiBiBimFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFZcZcZcZcZcZcfofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArjrOTHGHGHGmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+HGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+HGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+HGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGOBiKQXvBHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+HGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGoYqcVEfJHGHGHGHGOBiKQXvBHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+DRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRJfOdVEfJDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDR
+jdjdjdjdHGHGjdjdjdjdHGHGjdBMlCxyBSHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdjdHGHGjdBMlCxyBSHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdjdHGHGjdjd
+HGHGHGHGHGHGHGHGHGHGHGHGHGYJRdOYfiHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYJRdOYfiHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+HGHGHGHGHGHGHGHGHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+HGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+HGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
+mPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+mPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+mPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+mPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
 "}
 (1,1,2) = {"
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSnnnnnnnnnnnnnnnnnWWWnnnWWWnnnWWWnnnWWWnnnWWWnnKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSSSSSSnmmmmmmmmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSSSSSSnmmmmmmmmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSSSSSSnmmmmmmmmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSnnnWWWnnnWWWnnnWWWnnnWWWnnnWWWnnnWWWnnnWWWnnnWWWnnnKKKKKKKKKKK
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddddddddddddddmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddddddddddddmFdndndndndndndndnORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddddddddddddmFdndndndndndndndnORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddddddddddddmFdndndndndndndndnORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddZoORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddZoORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddZoORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddDvORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORORmFfofofofofofofofofofofo
+ddddddddddddddddddddddddddddddddddddmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFDvDvDvmFmFmFfofofofofofofofofofofo
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 "}
 (1,1,3) = {"
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 "}
