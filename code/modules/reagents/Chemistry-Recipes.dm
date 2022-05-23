@@ -1063,7 +1063,7 @@ datum/admins/proc/print_chemical_reactions()
 	result_amount = 6
 
 /datum/chemical_reaction/sterilizine
-	name = "Sterilizine"
+	name = "sterilizine"
 	result = /datum/reagent/sterilizine
 	required_reagents = list(/datum/reagent/ethanol = 1, /datum/reagent/anti_toxin = 1, /datum/reagent/acid/hydrochloric = 1)
 	result_amount = 3
