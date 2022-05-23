@@ -164,73 +164,122 @@
 		dat += "[alive_civilians.len] Blugoslavians "
 
 	dat += "<br>"
-	if (factjob == "BAF")
-		dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
-	else if (factjob == "RDF")
-		dat +="<b><h1><big>Redmenia Defense Force</big></h1></b>"
-	for (var/datum/job/job in job_master.faction_organized_occupations)
-		if (!job.is_event)
-			continue
+	if (istype(map, /obj/map_metadata/campaign/campaign7))
 		if (factjob == "BAF")
-			if(!findtext(job.title, "BAF"))
-				continue
-			if(findtext(job.title, "BAF Medic") && MC.squad_jobs_blue["none"]["Medic"]<= 0)
-				continue
-			if(findtext(job.title, "BAF Officer") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
-				continue
-			if(findtext(job.title, "BAF Commander") && MC.squad_jobs_blue["none"]["Commander"]<= 0)
-				continue
-			if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
-				continue
-			if(findtext(job.title, "BAF Armored Squadleader") && MC.faction2_squad_leaders[4])
-				continue
-			if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
-				continue
-			if(findtext(job.title, "BAF Anti-Tank") && MC.squad_jobs_blue["AT"]["Anti-Tank"]<= 0)
-				continue
-			if(findtext(job.title, "BAF Engineer") && MC.squad_jobs_blue["Engineer"]["Engineer"]<= 0)
-				continue
-			if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
-				continue
-			if(findtext(job.title, "BAF Squad [job.squad] Des. Marksman") && MC.squad_jobs_blue["Squad [job.squad]"]["Des. Marksman"]<= 0)
-				continue
+			dat +="<b><h1><big>Blugoslavian Naval Forces</big></h1></b>"
 		else if (factjob == "RDF")
-			if(!findtext(job.title, "RDF"))
+			dat +="<b><h1><big>Imperial Redmenian Navy</big></h1></b>"
+		for (var/datum/job/job in job_master.faction_organized_occupations)
+			if (!job.is_event)
 				continue
-			if(findtext(job.title, "RDF Medic") && MC.squad_jobs_red["none"]["Medic"]<= 0)
-				continue
-			if(findtext(job.title, "RDF Officer") && MC.squad_jobs_red["none"]["Officer"]<= 0)
-				continue
-			if(findtext(job.title, "RDF Commander") && MC.squad_jobs_red["none"]["Commander"]<= 0)
-				continue
-			if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
-				continue
-			if(findtext(job.title, "RDF Armored Squadleader") && MC.faction1_squad_leaders[4])
-				continue
-			if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
-				continue
-			if(findtext(job.title, "RDF Anti-Tank") && MC.squad_jobs_red["AT"]["Anti-Tank"]<= 0)
-				continue
-			if(findtext(job.title, "RDF Engineer") && MC.squad_jobs_red["Engineer"]["Engineer"]<= 0)
-				continue
-			if(findtext(job.title, "RDF Squad [job.squad] Machinegunner") && MC.squad_jobs_red["Squad [job.squad]"]["Machinegunner"]<= 0)
-				continue
-		if (job)
-			var/active = processes.job_data.get_active_positions(job)
-			var/extra_span = "<b>"
-			var/end_extra_span = "</b>"
-			if (job.is_squad_leader)
-				extra_span = "<br><b><font size=2>"
-				end_extra_span = "</font></b>"
-			else if (job.is_commander)
-				extra_span = "<br><font size=3>"
-				end_extra_span = "</font>"
-			else if ((job.is_medic && !findtext(job.title, "Corpsman")) || !findtext(job.title, "Squad"))
-				extra_span = "<br>"
-				end_extra_span = ""
+			if (factjob == "BAF")
+				if(!findtext(job.title, "BNF"))
+					continue
+				if(findtext(job.title, "BNF Medic") && MC.squad_jobs_blue["none"]["Medic"]<= 0)
+					continue
+				if(findtext(job.title, "BNF Ensign") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
+					continue
+				if(findtext(job.title, "BNF Captain") && MC.squad_jobs_blue["none"]["Commander"]<= 0)
+					continue
+				if(findtext(job.title, "BNF Petty Officer") && MC.faction2_squad_leaders[job.squad])
+					continue
 
-			dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
-			++available_jobs_per_side[job.base_type_flag()]
+			else if (factjob == "RDF")
+				if(!findtext(job.title, "IRN"))
+					continue
+				if(findtext(job.title, "IRN Medic") && MC.squad_jobs_red["none"]["Medic"]<= 0)
+					continue
+				if(findtext(job.title, "IRN Ensign") && MC.squad_jobs_red["none"]["Officer"]<= 0)
+					continue
+				if(findtext(job.title, "IRN Captain") && MC.squad_jobs_red["none"]["Commander"]<= 0)
+					continue
+				if(findtext(job.title, "IRN Petty Officer") && MC.faction1_squad_leaders[job.squad])
+					continue
+			if (job)
+				var/active = processes.job_data.get_active_positions(job)
+				var/extra_span = "<b>"
+				var/end_extra_span = "</b>"
+				if (job.is_squad_leader)
+					extra_span = "<br><b><font size=2>"
+					end_extra_span = "</font></b>"
+				else if (job.is_commander)
+					extra_span = "<br><font size=3>"
+					end_extra_span = "</font>"
+				else if ((job.is_medic && !findtext(job.title, "Corpsman")) || !findtext(job.title, "Squad"))
+					extra_span = "<br>"
+					end_extra_span = ""
+
+				dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
+				++available_jobs_per_side[job.base_type_flag()]
+
+	else
+		if (factjob == "BAF")
+			dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
+		else if (factjob == "RDF")
+			dat +="<b><h1><big>Redmenia Defense Force</big></h1></b>"
+		for (var/datum/job/job in job_master.faction_organized_occupations)
+			if (!job.is_event)
+				continue
+			if (factjob == "BAF")
+				if(!findtext(job.title, "BAF"))
+					continue
+				if(findtext(job.title, "BAF Medic") && MC.squad_jobs_blue["none"]["Medic"]<= 0)
+					continue
+				if(findtext(job.title, "BAF Officer") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
+					continue
+				if(findtext(job.title, "BAF Commander") && MC.squad_jobs_blue["none"]["Commander"]<= 0)
+					continue
+				if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
+					continue
+				if(findtext(job.title, "BAF Armored Squadleader") && MC.faction2_squad_leaders[4])
+					continue
+				if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
+					continue
+				if(findtext(job.title, "BAF Anti-Tank") && MC.squad_jobs_blue["AT"]["Anti-Tank"]<= 0)
+					continue
+				if(findtext(job.title, "BAF Engineer") && MC.squad_jobs_blue["Engineer"]["Engineer"]<= 0)
+					continue
+				if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
+					continue
+				if(findtext(job.title, "BAF Squad [job.squad] Des. Marksman") && MC.squad_jobs_blue["Squad [job.squad]"]["Des. Marksman"]<= 0)
+					continue
+			else if (factjob == "RDF")
+				if(!findtext(job.title, "RDF"))
+					continue
+				if(findtext(job.title, "RDF Medic") && MC.squad_jobs_red["none"]["Medic"]<= 0)
+					continue
+				if(findtext(job.title, "RDF Officer") && MC.squad_jobs_red["none"]["Officer"]<= 0)
+					continue
+				if(findtext(job.title, "RDF Commander") && MC.squad_jobs_red["none"]["Commander"]<= 0)
+					continue
+				if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
+					continue
+				if(findtext(job.title, "RDF Armored Squadleader") && MC.faction1_squad_leaders[4])
+					continue
+				if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
+					continue
+				if(findtext(job.title, "RDF Anti-Tank") && MC.squad_jobs_red["AT"]["Anti-Tank"]<= 0)
+					continue
+				if(findtext(job.title, "RDF Engineer") && MC.squad_jobs_red["Engineer"]["Engineer"]<= 0)
+					continue
+				if(findtext(job.title, "RDF Squad [job.squad] Machinegunner") && MC.squad_jobs_red["Squad [job.squad]"]["Machinegunner"]<= 0)
+					continue
+			if (job)
+				var/active = processes.job_data.get_active_positions(job)
+				var/extra_span = "<b>"
+				var/end_extra_span = "</b>"
+				if (job.is_squad_leader)
+					extra_span = "<br><b><font size=2>"
+					end_extra_span = "</font></b>"
+				else if (job.is_commander)
+					extra_span = "<br><font size=3>"
+					end_extra_span = "</font>"
+				else if ((job.is_medic && !findtext(job.title, "Corpsman")) || !findtext(job.title, "Squad"))
+					extra_span = "<br>"
+					end_extra_span = ""
+
+				dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
+				++available_jobs_per_side[job.base_type_flag()]
 
 	dat += "</center>"
 
@@ -783,3 +832,27 @@ obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
 			O.x = newloc.x
 			O.y = newloc.y
 			O.z = newloc.z
+
+
+///////////////////////////////////////////////////////////////////////
+/obj/map_metadata/campaign/campaign7
+	victory_time = 36000
+	grace_wall_timer = 9000
+	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
+	roundend_condition_sides = list(
+		list(CIVILIAN) = /area/caribbean/british,
+		list(PIRATES) = /area/caribbean/japanese/land,
+		)
+obj/map_metadata/campaign/campaign7/job_enabled_specialcheck(var/datum/job/J)
+	if (istype(J, /datum/job/civilian))
+		if (J.is_event && findtext(J.title, "BNF"))
+			. = TRUE
+		else
+			. = FALSE
+	else if (istype(J, /datum/job/pirates))
+		if (J.is_event && findtext(J.title, "IRN"))
+			. = TRUE
+		else
+			. = FALSE
+	else
+		. = FALSE
