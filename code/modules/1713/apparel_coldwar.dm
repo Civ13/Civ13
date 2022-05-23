@@ -681,6 +681,30 @@
 	item_state = "beret_rus_spez"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/cap_blugoslavia
+	name = "Blugoslavian navy cap"
+	desc = "A cap worn by Blugoslavian Officers of the Blugoslavian Naval Force."
+	icon_state = "blugoslavia_cap"
+	item_state = "blugoslavia_cap"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/cap_redmenia
+	name = "Redmenian navy cap"
+	desc = "A cap worn by Redmenian Officers of the Imperial Redmenian Navy."
+	icon_state = "redmenia_cap"
+	item_state = "redmenia_cap"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/ww2/us_sailor_hat/blugoslavia
+	name = "Blugoslavian sailor hat"
+	desc = "A hat worn by sailors of the Blugoslavian Naval Force."
+	icon_state = "upapilotka"
+	item_state = "upapilotka"
+	worn_state = "upapilotka"
+/obj/item/clothing/head/ww2/us_sailor_hat/redmenia
+	name = "Redmenian sailor hat"
+	desc = "A hat worn by sailors of the Imperial Redmenian Navy."
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
