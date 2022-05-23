@@ -618,3 +618,18 @@ obj/item/weapon/material/sword/rapier/iron
 	block_chance = 20
 	cooldownw = 8
 	value = 500
+
+//////////////////////////////////GAME OF THRONES////////////////////////////////////////
+/obj/item/weapon/material/sword/longclaw
+	name = "longclaw"
+	desc = "The Longclaw is a ancestral Valyrian steel bastard sword from the house of mormont."
+	icon_state = "longclaw"
+	item_state = "longsword"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 1 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 50
+	cooldownw = 11
+	value = 400
