@@ -9,6 +9,7 @@
 	var/load_method = SINGLE_CASING|SPEEDLOADER //1 = Single shells, 2 = box or quick loader, 3 = magazine
 	var/obj/item/ammo_casing/chambered = null
 	var/is_hmg = FALSE
+	var/is_laser_mg = FALSE
 	var/has_telescopic = FALSE
 	//gunporn stuff
 	var/unload_sound 	= 'sound/weapons/guns/interact/pistol_magout.ogg'
@@ -204,8 +205,12 @@
 					user << "<span class='warning'>[src] already has a magazine loaded.</span>" //already a magazine here
 					return
 				user.remove_from_mob(AM)
-				AM.loc = src
-				ammo_magazine = AM
+				if (src.is_laser_mg == TRUE)
+					AM.loc = user.back
+					ammo_magazine = AM
+				else
+					AM.loc = src
+					ammo_magazine = AM
 
 				if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
 				cock_gun(user)

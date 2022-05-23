@@ -2,7 +2,7 @@
 	ID = MAP_WACO
 	title = "Waco Siege"
 	lobby_icon_state = "waco"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 1200
 	no_hardcore = TRUE
 	var/list/HVT_list = list()
@@ -17,9 +17,9 @@
 		)
 	age = "1993"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(CIVILIAN = 0.2, AMERICAN = 0.8)
+	faction_distribution_coeffs = list(CIVILIAN = 0.3, AMERICAN = 0.7)
 	battle_name = "Siege of Mount Carmel"
-	mission_start_message = "<font size=4>All factions have <b>3 minutes</b> to prepare before the ceasefire ends!<br>The ATF will win if they capture the <b>Davidian leader's rooms inside the compound</b>. The Davidians will win if they manage to defend their home for <b>20 minutes!!</b>.</font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The ATF will win if they capture the <b>Davidian leader's rooms inside the compound</b>. The Davidians will win if they manage to defend their home for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
@@ -40,34 +40,34 @@
 		. = FALSE
 
 /obj/map_metadata/waco/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/waco/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/waco/roundend_condition_def2name(define)
 	..()
 	switch (define)
-		if (CIVILIAN)
-			return "Davidian"
 		if (AMERICAN)
 			return "American"
+		if (CIVILIAN)
+			return "Davidian"
 /obj/map_metadata/waco/roundend_condition_def2army(define)
 	..()
 	switch (define)
-		if (CIVILIAN)
-			return "Davidian"
 		if (AMERICAN)
 			return "ATF"
+		if (CIVILIAN)
+			return "Davidian"
 
 /obj/map_metadata/waco/army2name(army)
 	..()
 	switch (army)
-		if ("Davidian")
-			return "Davidian"
 		if ("ATF")
 			return "ATF"
+		if ("Davidian")
+			return "Davidian"
 
 
 /obj/map_metadata/waco/cross_message(faction)
@@ -205,6 +205,9 @@ var/no_loop_waco = FALSE
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one) && processes.ticker.playtime_elapsed <= 3000)
+			if (H.faction_text == faction2 || H.faction_text == faction1)
+				return TRUE
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside))
 			if (H.faction_text == faction2)
 				return TRUE

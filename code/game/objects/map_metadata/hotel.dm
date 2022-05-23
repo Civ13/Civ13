@@ -1,6 +1,6 @@
 /obj/map_metadata/hotel
 	ID = MAP_HOTEL
-	title = "hotel"
+	title = "Hotel"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
@@ -16,8 +16,8 @@
 		)
 	age = "1943"
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
-	battle_name = "Battle of the grand hotel"
-	mission_start_message = "<font size=4>The <b>Wehrmacht</b> and the <b>Red Army</b> are battling for the control of the Grand Hotel!<br> The battle will start in <b>3 minutes</b>. Capture the <b>upstairs lounge</b> to control the Hotel!</font>"
+	battle_name = "Battle for the Grand Hotel"
+	mission_start_message = "<font size=4>The <b>Wehrmacht</b> and the <b>Red Army</b> are battling for the control of the Grand Hotel!<br> The battle will start in <b>3 minutes</b>. Capture the <b>Upstairs Lounge</b> in order to control the Hotel!</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	ordinal_age = 6
@@ -62,7 +62,7 @@
 	..()
 	switch (define)
 		if (RUSSIAN)
-			return "Russians"
+			return "Soviets"
 		if (GERMAN)
 			return "Germans"
 
@@ -70,14 +70,14 @@
 	..()
 	switch (define)
 		if (RUSSIAN)
-			return "Russian Army"
+			return "Soviet Army"
 		if (GERMAN)
 			return "German Army"
 /obj/map_metadata/hotel/army2name(army)
 	..()
 	switch (army)
 		if ("Russians")
-			return "Russian"
+			return "Soviet"
 		if ("Germans")
 			return "German"
 
@@ -85,7 +85,7 @@
 	if (faction == GERMAN)
 		return "<font size = 4>The Germans may now cross the invisible wall!</font>"
 	else if (faction == RUSSIAN)
-		return "<font size = 4>The Russians may now cross the invisible wall!</font>"
+		return "<font size = 4>The Soviets may now cross the invisible wall!</font>"
 	else
 		return ""
 
@@ -93,7 +93,7 @@
 	if (faction == GERMAN)
 		return "<span class = 'userdanger'>The Germans may no longer cross the invisible wall!</span>"
 	else if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>The Russians may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Soviets may no longer cross the invisible wall!</span>"
 	else
 		return ""
 

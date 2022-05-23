@@ -343,6 +343,7 @@
 		'UI/minimap.png',
 		'UI/voyage.png',
 		'UI/abashiri_map.png',
+		'UI/sovafghan_map.png',
 		'UI/images/uos94.png',
 		'UI/images/uos.png',
 		'UI/templates/appearance_changer.tmpl',

@@ -375,3 +375,25 @@
 				qdel(src)
 				return
 	..()
+
+/obj/covers/generic_wall
+	name = "simple wall"
+	desc = "A generic wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "generic0"
+	base_icon_state = "generic"
+	passable = FALSE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 1000
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 13
+	material = "Stone"
+	hardness = 95
+	adjusts = TRUE
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement

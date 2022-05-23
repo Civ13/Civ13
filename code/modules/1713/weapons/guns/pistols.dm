@@ -569,3 +569,51 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.12
+
+/obj/item/weapon/gun/projectile/pistol/deagle
+	name = "Desert Eagle"
+	desc = "Designed and developed by Magnum Research Inc. Chambered in 50cal."
+	icon_state = "deagle"
+	w_class = 2
+	caliber = "a50cal"
+	fire_sound = 'sound/weapons/guns/fire/deagle.ogg'
+	magazine_type = /obj/item/ammo_magazine/deagle
+	good_mags = list(/obj/item/ammo_magazine/deagle)
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a50cal
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
+
+/obj/item/weapon/gun/projectile/pistol/deagle/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "deagle"
+	else
+		icon_state = "deagle_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/deaglemagnum
+	name = "Desert Eagle (44.magnum)"
+	desc = "Designed and developed by Magnum Research Inc. Chambered in 44.magnum."
+	icon_state = "deagle"
+	w_class = 2
+	caliber = "a44magnum"
+	fire_sound = 'sound/weapons/guns/fire/deagle.ogg'
+	magazine_type = /obj/item/ammo_magazine/deagle
+	good_mags = list(/obj/item/ammo_magazine/deaglemagnum)
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a44magnum
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
+
+/obj/item/weapon/gun/projectile/pistol/deagle/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "deagle"
+	else
+		icon_state = "deagle_open"
+	return
