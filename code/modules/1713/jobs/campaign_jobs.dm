@@ -458,29 +458,43 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
 	return TRUE
 
-/datum/job/civilian/bluefaction/navy
-	title = "BNF Sailor"
-	squad = 1
-	rank_abbreviation = "Sailor"
-/datum/job/civilian/bluefaction/navy/petty
-	title = "BNF Petty Officer"
-	is_squad_leader = TRUE
-	rank_abbreviation = "PO"
-	squad = 1
-/datum/job/civilian/bluefaction/navy/ensign
-	title = "BNF Ensign"
-	is_commander = TRUE
-	rank_abbreviation = "Ensign"
-	additional_languages = list("Redmenian" = 100)
 /datum/job/civilian/bluefaction/navy/captain
 	title = "BNF Captain"
 	is_commander = TRUE
 	rank_abbreviation = "Captain"
 	additional_languages = list("Redmenian" = 100)
-/datum/job/civilian/bluefaction/navy/marine
+/datum/job/civilian/bluefaction/navy/ensign
+	title = "BNF Ensign"
+	is_officer = TRUE
+	rank_abbreviation = "Ensign"
+	additional_languages = list("Redmenian" = 100)
+/datum/job/civilian/bluefaction/navy/petty
+	title = "BNF Squad 1 Petty Officer"
+	is_squad_leader = TRUE
+	rank_abbreviation = "1-PO"
+	squad = 1
+/datum/job/civilian/bluefaction/navy/one
+	title = "BNF Squad 1 Sailor"
+	squad = 1
+	rank_abbreviation = "1-Sailor"
+/datum/job/civilian/bluefaction/navy/petty/two
+	title = "BNF Squad 2 Petty Officer"
+	is_squad_leader = TRUE
+	rank_abbreviation = "2-PO"
+	squad = 2
+/datum/job/civilian/bluefaction/navy/two
+	title = "BNF Squad 2 Sailor"
+	squad = 2
+	rank_abbreviation = "2-Sailor"
+/datum/job/civilian/bluefaction/navy/marine/sl
+	title = "BNF Marine Squadleader"
+	is_squad_leader = TRUE
+	rank_abbreviation = "Sgt."
+	squad = 3
+/datum/job/civilian/bluefaction/navy/marine/soldier
 	title = "BNF Marine"
 	rank_abbreviation = "Pvt."
-	squad = 2
+	squad = 3
 /datum/job/civilian/bluefaction/navy/medic
 	title = "BNF Medic"
 	rank_abbreviation = "Dr."
@@ -513,6 +527,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap_blugoslavia(H), slot_head)
 	else if (findtext(title, "Marine"))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/nvg(H), slot_eyes)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
@@ -523,8 +538,6 @@
 		FP.attached(null,HGUN,TRUE)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_sailor_hat/blugoslavia(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/nvg(H), slot_eyes)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -556,29 +569,44 @@
 		H.setStat("medical", STAT_NORMAL)
 	H.make_artillery_scout()
 	return TRUE
-/datum/job/pirates/redfaction/navy
-	title = "IRN Sailor"
-	squad = 1
-	rank_abbreviation = "Sailor"
-/datum/job/pirates/redfaction/navy/petty
-	title = "IRN Petty Officer"
-	is_squad_leader = TRUE
-	rank_abbreviation = "PO"
-	squad = 1
-/datum/job/pirates/redfaction/navy/ensign
-	title = "IRN Ensign"
-	is_commander = TRUE
-	rank_abbreviation = "Ensign"
-	additional_languages = list("Blugoslavian" = 100)
+
 /datum/job/pirates/redfaction/navy/captain
 	title = "IRN Captain"
 	is_commander = TRUE
 	rank_abbreviation = "Captain"
 	additional_languages = list("Blugoslavian" = 100)
-/datum/job/pirates/redfaction/navy/marine
+/datum/job/pirates/redfaction/navy/ensign
+	title = "IRN Ensign"
+	is_officer = TRUE
+	rank_abbreviation = "Ensign"
+	additional_languages = list("Blugoslavian" = 100)
+/datum/job/pirates/redfaction/navy/petty
+	title = "IRN Squad 1 Petty Officer"
+	is_squad_leader = TRUE
+	rank_abbreviation = "1-PO"
+	squad = 1
+/datum/job/pirates/redfaction/navy/one
+	title = "IRN Squad 1 Sailor"
+	squad = 1
+	rank_abbreviation = "1-Sailor"
+/datum/job/pirates/redfaction/navy/petty/two
+	title = "IRN Squad 2 Petty Officer"
+	is_squad_leader = TRUE
+	rank_abbreviation = "2-PO"
+	squad = 2
+/datum/job/pirates/redfaction/navy/two
+	title = "IRN Squad 2 Sailor"
+	squad = 2
+	rank_abbreviation = "2-Sailor"
+/datum/job/pirates/redfaction/navy/marine/sl
+	title = "IRN Marine Squadleader"
+	is_squad_leader = TRUE
+	rank_abbreviation = "Sgt."
+	squad = 3
+/datum/job/pirates/redfaction/navy/marine/soldier
 	title = "IRN Marine"
 	rank_abbreviation = "Pvt."
-	squad = 2
+	squad = 3
 /datum/job/pirates/redfaction/navy/medic
 	title = "IRN Medic"
 	rank_abbreviation = "Dr."
