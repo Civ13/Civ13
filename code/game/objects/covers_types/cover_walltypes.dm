@@ -688,7 +688,8 @@
 	name = "divider wall"
 	desc = "A divider wall so you don't see what's next to you. Looks flimsy."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "divider"
+	icon_state = "divider0"
+	base_icon_state = "divider"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
