@@ -24,9 +24,25 @@
 	worn_state = "flipflops"
 	force = WEAPON_FORCE_WEAK
 
+/obj/item/clothing/under/squid_contestant
+	name = "contestant clothing"
+	desc = "regular jumpsuit for contestants"
+	icon_state = "squid_player"
+	item_state = "squid_player"
+	worn_state = "squid_player"
+
+/obj/item/clothing/suit/storage/jacket/squid_coat
+	name = "contestant jacket"
+	desc = "A simple green jumpsuit jacket."
+	icon_state = "squid_player"
+	item_state = "squid_player"
+	worn_state = "squid_player"
+
 ///////////////////////////////////////////////////////////////////
 /// Majority of the Sprites under this is made by Mane from TGMC///
 ///////////////////////////////////////////////////////////////////
+
+// Star Wars Outfits//
 
 /obj/item/clothing/under/bodyglove
 	name = "replicant black bodyglove"
@@ -35,8 +51,105 @@
 	item_state = "replicant_bodyglove"
 	worn_state = "replicant_bodyglove"
 
+//////////////////Imperial Tunics and Caps///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/obj/item/clothing/under/impstormofficer
+	name = "imperial stormtrooper officer uniform"
+	desc = "A double-breasted black tunic rank and trousers with a metal plac denoting rank for NCO's in the Stormtrooper Corps."
+	icon_state = "imp_stormofficer"
+	item_state = "imp_stormofficer"
+	worn_state = "imp_stormofficer"
+
+/obj/item/clothing/under/impnavyofficer
+	name = "imperial stormtrooper officer uniform"
+	desc = "A double-breasted olive-green tunic rank and trousers with a metal plac denoting rank for CO's in the Imperial Navy."
+	icon_state = "impofficer_captain"
+	item_state = "impofficer_captain"
+	worn_state = "impofficer_captain"
+
+/obj/item/clothing/under/imptechnician
+	name = "imperial technician grey uniform"
+	desc = "A grey jumpsuit for technician's in the Engineering Corps."
+	icon_state = "imp_technician_grey"
+	item_state = "imp_technician_grey"
+	worn_state = "imp_technician_grey"
+
+/obj/item/clothing/under/imptechnician2
+	name = "imperial technician blue uniform"
+	desc = "A blue jumpsuit for technician's in the Engineering Corps."
+	icon_state = "imp_technician_blue"
+	item_state = "imp_technician_blue"
+	worn_state = "imp_technician_blue"
+
+/obj/item/clothing/under/imptechnician3
+	name = "imperial technician black uniform"
+	desc = "A black jumpsuit for technician's in the Engineering Corps."
+	icon_state = "imp_technician_black"
+	item_state = "imp_technician_black"
+	worn_state = "imp_technician_black"
+
+/obj/item/clothing/head/impcaptaincap
+	name = "imperial naval officer cap"
+	desc = "a tight fitting green cap."
+	icon_state = "repnavalcaptain_ca"
+	item_state = "repnavalcaptain_cap"
+	worn_state = "repnavalcaptain_cap"
+
+/obj/item/clothing/head/impstormcap
+	name = "imperial black field cap"
+	desc = "a tight fitting black cap worn by Stormtrooper CORPS Officers, Naval Lieutenants, and Technicians."
+	icon_state = "impofficer_storm"
+	item_state = "impofficer_storm"
+	worn_state = "impofficer_storm"
+
+/////////////////Republic Tunics and Caps////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/obj/item/clothing/under/repensignofficer
+	name = "republic ensign uniform"
+	desc = "A double-breasted blue-grey tunic and trousers for NCO's in the Republic Navy."
+	icon_state = "repofficer_ensign"
+	item_state = "repofficer_ensign"
+	worn_state = "repofficer_ensign"
+
+/obj/item/clothing/under/repmedicalofficer
+	name = "republic medical officer"
+	desc = "A double-breasted white-grey tunic and trousers for NCO's in the Republic Medical Corps."
+	icon_state = "repofficer_medical"
+	item_state = "repofficer_medical"
+	worn_state = "repofficer_medical"
+
+/obj/item/clothing/under/repnavyofficer
+	name = "republic naval officer uniform"
+	desc = "A double-breasted olive-green tunic rank and trousers with a metal plac denoting rank for CO's in the Republic Navy."
+	icon_state = "repofficer_navcaptain"
+	item_state = "repofficer_navcaptain"
+	worn_state = "repofficer_navcaptain"
+
+/obj/item/clothing/head/repcaptaincap
+	name = "republic naval officer cap"
+	desc = "a tight fitting green cap."
+	icon_state = "repnavalcaptain_cap"
+	item_state = "repnavalcaptain_cap"
+	worn_state = "repnavalcaptain_cap"
+
+/obj/item/clothing/head/repensigncap
+	name = "republic naval ensign cap"
+	desc = "a tight fitting blue grey cap."
+	icon_state = "repensign_cap"
+	item_state = "repensign_cap"
+	worn_state = "repensign_cap"
+
+/obj/item/clothing/head/repmedicalcap
+	name = "republic medical officer cap"
+	desc = "a tight fitting grey cap."
+	icon_state = "repmedicalofficer_cap"
+	item_state = "repmedicalofficer_cap"
+	worn_state = "repmedicalofficer_cap"
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /obj/item/clothing/shoes/replicantshoes
-	name = "replicant boots"
+	name = "plastoid boots"
 	desc = "A pair of plastoid boots."
 	icon_state = "replicant_boots"
 	item_state = "replicant_boots"
@@ -63,7 +176,7 @@
 	slowdown = 0.1
 	health = 30
 
-// ARMOR
+// PLASTOID ARMOR
 
 /obj/item/clothing/suit/armor/replicant
 	name = "replicant trooper armor"
@@ -191,7 +304,7 @@
 	worn_state = "repstormtrooper_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, arrow = 60, gun = 65, energy = 55, bomb = 30, bio = 30, rad = FALSE)
+	armor = list(melee = 45, arrow = 60, gun = 65, energy = 60, bomb = 30, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant
 	name = "Phase I Replicant Trooper Helmet"
@@ -202,6 +315,17 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 30, arrow = 50, gun = 40, energy = 55, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant2
+	name = "Phase II Replicant Trooper Helmet"
+	desc = "A phase II helmet used by clone troopers of the Republic Army."
+	icon_state = "replicant_helmet2"
+	item_state = "replicant_helmet2"
+	worn_state = "replicant_helmet2"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 60, gun = 40, energy = 58, bomb = 30, bio = 20, rad = FALSE)
+
 
 /obj/item/clothing/head/helmet/replicant/pilot
 	name = "Phase I Replicant Pilot Helmet"
@@ -293,26 +417,6 @@
 	item_state = "darth_armor"
 	worn_state = "darth_armor"
 
-/obj/item/clothing/head/navalcaptaincap
-	name = "republic naval captain cap"
-	desc = "a tight fitting green cap."
-	icon_state = "repnavalcaptain_cap"
-	item_state = "repnavalcaptain_cap"
-	worn_state = "repnavalcaptain_cap"
-
-/obj/item/clothing/head/navalensigncap
-	name = "republic naval ensign cap"
-	desc = "a tight fitting blue grey cap."
-	icon_state = "repensign_cap"
-	item_state = "repensign_cap"
-	worn_state = "repensign_cap"
-
-/obj/item/clothing/head/navalsurgeoncap
-	name = "republic medical officer cap"
-	desc = "a tight fitting grey cap."
-	icon_state = "repmedicalofficer_cap"
-	item_state = "repmedicalofficer_cap"
-	worn_state = "repmedicalofficer_cap"
 
 ////////////IRISH BERET/////////////////////////////////////////////////////////////
 

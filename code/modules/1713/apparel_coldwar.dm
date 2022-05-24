@@ -681,6 +681,30 @@
 	item_state = "beret_rus_spez"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/cap_blugoslavia
+	name = "Blugoslavian navy cap"
+	desc = "A cap worn by Blugoslavian Officers of the Blugoslavian Naval Force."
+	icon_state = "blugoslavia_cap"
+	item_state = "blugoslavia_cap"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/cap_redmenia
+	name = "Redmenian navy cap"
+	desc = "A cap worn by Redmenian Officers of the Imperial Redmenian Navy."
+	icon_state = "redmenia_cap"
+	item_state = "redmenia_cap"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/ww2/us_sailor_hat/blugoslavia
+	name = "Blugoslavian sailor hat"
+	desc = "A hat worn by sailors of the Blugoslavian Naval Force."
+	icon_state = "upapilotka"
+	item_state = "upapilotka"
+	worn_state = "upapilotka"
+/obj/item/clothing/head/ww2/us_sailor_hat/redmenia
+	name = "Redmenian sailor hat"
+	desc = "A hat worn by sailors of the Imperial Redmenian Navy."
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -1725,3 +1749,78 @@ obj/item/clothing/head/helmet/modern/hardhato
 	icon_state = "hippy"
 	item_state = "hippy"
 	worn_state = "hippy"
+
+///////MEDICAL SCRUBS//////////////
+
+/obj/item/clothing/under/scrubs
+	name = "white medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel."
+	icon_state = "scrubs_white"
+	item_state = "scrubs_white"
+	worn_state = "scrubs_white"
+
+/obj/item/clothing/under/scrubs/darkgreen
+	name = "dark green medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is dark green."
+	icon_state = "scrubs_darkgreen"
+	item_state = "scrubs_darkgreen"
+	worn_state = "scrubs_darkgreen"
+
+/obj/item/clothing/under/scrubs/lightgreen
+	name = "light green medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is light green."
+	icon_state = "scrubs_lightgreen"
+	item_state = "scrubs_lightgreen"
+	worn_state = "scrubs_lightgreen"
+
+/obj/item/clothing/under/scrubs/blue
+	name = "blue medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is blue."
+	icon_state = "scrubs_blue"
+	item_state = "scrubs_blue"
+	worn_state = "scrubs_blue"
+
+/obj/item/clothing/under/scrubs/navy
+	name = "navy medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is navy."
+	icon_state = "scrubs_navy"
+	item_state = "scrubs_navy"
+	worn_state = "scrubs_navy"
+
+
+////////SURGICAL CAPS/////////
+
+/obj/item/clothing/head/surgical_cap
+	name = "white surgical cap"
+	desc = "A white sterile surgical cap."
+	icon_state = "surgcap_white"
+	item_state = "surgcap_white"
+	worn_state = "surgcap_white"
+
+/obj/item/clothing/head/surgical_cap/darkgreen
+	name = "dark green surgical cap"
+	desc = "A dark green sterile surgical cap."
+	icon_state = "surgcap_darkgreen"
+	item_state = "surgcap_darkgreen"
+	worn_state = "surgcap_darkgreen"
+
+/obj/item/clothing/head/surgical_cap/lightgreen
+	name = "light green surgical cap"
+	desc = "A light green sterile surgical cap."
+	icon_state = "surgcap_lightgreen"
+	item_state = "surgcap_lightgreen"
+	worn_state = "surgcap_lightgreen"
+
+/obj/item/clothing/head/surgical_cap/blue
+	name = "blue surgical cap"
+	desc = "A blue sterile surgical cap."
+	icon_state = "surgcap_blue"
+	item_state = "surgcap_blue"
+	worn_state = "surgcap_blue"
+
+/obj/item/clothing/head/surgical_cap/navy
+	name = "navy surgical cap"
+	desc = "A navy sterile surgical cap."
+	icon_state = "surgcap_navy"
+	item_state = "surgcap_navy"
+	worn_state = "surgcap_navy"

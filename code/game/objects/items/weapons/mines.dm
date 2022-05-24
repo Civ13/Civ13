@@ -156,6 +156,10 @@
 	anchored = TRUE
 	layer = TURF_LAYER + 0.01
 	icon_state = "mine_armed"
+/obj/item/mine/ap/armed/New()
+	if (map.ID == MAP_HUNGERGAMES)
+		spawn(1200)
+			qdel(src)
 
 /obj/item/mine/at
 	name = "anti-tank mine"
