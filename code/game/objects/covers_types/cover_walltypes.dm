@@ -684,6 +684,25 @@
 	hardness = 100
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
+/obj/covers/divider_wall
+	name = "divider wall"
+	desc = "A divider wall so you don't see what's next to you. Looks flimsy."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "divider0"
+	base_icon_state = "divider"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 3
+	health = 20
+	wood = TRUE
+	wall = TRUE
+	explosion_resistance = 1
+	material = "Wood"
+	hardness = 10
+
 /obj/covers/slate
 	name = "slatestone wall"
 	desc = "A slate wall."
