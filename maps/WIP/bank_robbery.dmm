@@ -52,6 +52,7 @@
 "nD" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "oK" = (/obj/structure/filingcabinet/filingcabinet,/obj/item/weapon/paper/official{desc = "A very important looking paper, might be worth a bit"; name = "important looking paper"},/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/plating/steel,/area/caribbean)
 "oV" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark,/turf/floor/plating/road,/area/caribbean)
+"oX" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug,/turf/floor/wood,/area/caribbean)
 "oY" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/turf/floor/plating/road,/area/caribbean)
 "pn" = (/obj/structure/closet/safe,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean)
 "pt" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/turf/floor/carpet,/area/caribbean)
@@ -140,6 +141,7 @@
 "Jw" = (/obj/structure/table/modern,/turf/floor/wood,/area/caribbean)
 "Jy" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean)
 "Kd" = (/obj/structure/table/modern/table,/obj/item/weapon/pen,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean)
+"KI" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/red,/turf/floor/wood,/area/caribbean)
 "KR" = (/obj/structure/simple_door/key_door/anyone/blast,/turf/floor/wood,/area/caribbean)
 "La" = (/obj/covers/vault,/turf/floor/plating/steel,/area/caribbean)
 "Lq" = (/obj/covers/divider_wall,/obj/structure/vehicleparts/license_plate{pixel_x = 4; pixel_y = -9; name = "name plate"; desc = "A small plate with the workers name, here works Tais Lin"; anchored = 1},/turf/floor/wood,/area/caribbean)
@@ -177,6 +179,7 @@
 "VR" = (/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 1},/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "Wf" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
 "Wr" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 4},/turf/floor/wood,/area/caribbean)
+"XI" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/red,/turf/floor/carpet,/area/caribbean)
 "XW" = (/obj/structure/table/rack/shelf,/obj/item/weapon/reagent_containers/spray/pepper,/obj/item/weapon/reagent_containers/spray/pepper,/obj/item/weapon/reagent_containers/spray/pepper,/turf/floor/plating/steel,/area/caribbean)
 "Yr" = (/obj/structure/table/modern/retable,/obj/structure/computer/nopower/police{name = "Camera Control Monitor"},/turf/floor/plating/steel,/area/caribbean)
 "YJ" = (/obj/structure/table/carboot{dir = 8; pixel_x = -3},/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 8; pixel_x = 3; pixel_y = 3},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 8},/turf/floor/plating/road,/area/caribbean)
@@ -298,19 +301,19 @@ mPmPmPmPHGHGHGHGArWfVROTHGHGmPmPmPmPmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmF
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFauORmoORORORmoORORORmoyeyeJymFTzORORmFOROROROROROROROROROROUtYiPztNkflfofofofofofofofofofofofofofo
 mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPhUmFYQORORORORORORORORORAyORORSrmFORORORmFORORORORORORORORORORflIOIOflflflfofofofofofofofofofofofofofo
 mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFWrORORORORORORORORyeCFAyORzhvtScORORmFTLTLTLTLOROROROROROROUtYIOztNkflfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGArWfHGzeIvHGmPmPmPmPmFirORORORORORORORORyeyeCFyeORnvZFORORmFPwDyRUTLORORORORORORflIOIOflflflfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGzeIvHGmPmPmPmPmFirORORORORORORORORyeyeCFyeORnvZFORORmFPwDyoXTLORORORORORORflIOIOflflflfofofofofofofofofofofofofofo
 mPmPmPmPHGHGHGHGArWfHGQREoHGmPmPmPmPmFORORORORORORORORORORORORORORvtGQORORmFORvRRUcHORORORORORORweIOvaztNkflfofofofofofofofofofofofofofo
 mPmPmPmPHGHGHGHGArWfHGdmnDkZmPmPmPhUBWTzORORORORORORORORORORyeyeJymFTzORORmFORORORORORORORORmFflflflflflmFZcfofofofofofofofofofofofofofo
 mPmPmPmPHGHGHGHGArWfHGVROTHGmPmPmPmPBiORORORORORORORORORORAyORORSrmFORORORmFTLTLTLTLORORORORmFzAqHIzJwxtlVmFfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeCFAyORzhvtScORORmFPwDyRUTLORORORORmFORORORORORORZoORmoORORtwORmoORORORfofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeCFAyORzhvtScORORmFPwDyoXTLORORORORmFORORORORORORZoORmoORORtwORmoORORORfofofofo
 mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeyeCFyeORnvZFORORmFORvRRULqORORORORmFORDARURUGXORZoORORORjIONORORORORJyfofofofo
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPhUBWTzORORORORORORORORORORORORORvtGQORORmFORORORORORORORORmFORDAwPRUGXORZoORORORbqRUORORORORORfofofofo
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORyeyeJymFTzORORmFTLTLTLTLORORORORmFORDARURUGXORZoTzORORORORORORORORORtXfofofo
-mPmPmPmPHGHGHGHGArWfzeIvHGHGmPmPmPmPmFirORORORORORORORORORAyORORSrmFORORORmFKdDyRUTLORORORORmFORDARUIpGXORZoORORORORORORORORORORfofofofo
+mPmPmPmPHGHGHGHGArWfzeIvHGHGmPmPmPmPmFirORORORORORORORORORAyORORSrmFORORORmFKdDyKITLORORORORmFORDARUIpGXORZoORORORORORORORORORORfofofofo
 mPmPmPmPHGHGHGHGArWfQREoHGHGmPmPmPhUmFCoORORORORORORORORyeCFAyORzhvtScORORmFORvRRUtyORORORORBiORORORORORORZotwONRUORORRUONtwORJyfofofofo
 mPmPmPmPHGHGHGHGHGHGdmnDkZHGmPmPmPmPNqtqORORORORORORORORyeyeCFyeORnvZFORORmFORORORORORORORORPOPOPOPOPOPOPOZoORxnbqUUUUbqxnORORORfofofofo
 mPmPmPmPHGHGHGHGHGHGVROTHGHGmPmPmPmPNqtqORORORORORORORORORORORORORvtGQORORmFTLTLTLTLORORORORHfzNzNzNzNzNzNmFfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqtqORORORORORORORORORORORORJymFTzORORORORORORORORORORORlmzNzNamamzNzNmFmPmPmPmPmPmPmPmPmPmPmPmPmPmP
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqtqORORORORORORORORORORORORJymFTzORORORORORORORORORORORlmzNzNXIamzNzNmFmPmPmPmPmPmPmPmPmPmPmPmPmPmP
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPhUmFQKORORORORORORORORORORORORORTxORORORORORORORORORORORORptzNzNsUiRzNzNBcmPkakakakaHGHGHGHGHGkakakaka
 mPmPmPmPHGHGAVttArWfHGHGHGHGmPmPmPmPmFzAORORORORORORSVORORORSVORORTxORORORORORORORORORORORORlmzNzNufBvgHzNmFmPHGHGHGHGHGHGHGHGHGHGHGHGHG
 mPmPmPmPHGkZoVbLArWfHGHGHGHGmPmPmPmPmFIzORORORORORORmFmFmFmFmFmFmFmFORORORORORORORORORmFmFmFmFmFmFmFmFmFmFmFmPyRyRyRyRHGHGHGHGHGyRyRyRyR
