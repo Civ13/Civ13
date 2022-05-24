@@ -10,7 +10,7 @@
 "dn" = (/obj/structure/table/rack/shelf,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/turf/floor/plating/steel,/area/caribbean)
 "dv" = (/obj/effect/autoassembler{dir = 8},/turf/floor/plating/road,/area/caribbean)
 "dV" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean)
-"ee" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/food/snacks/burger{pixel_x = 3; pixel_y = 8},/obj/item/weapon/reagent_containers/food/snacks/burger{pixel_x = -5; pixel_y = 1},/obj/item/weapon/reagent_containers/food/snacks/burger{pixel_x = 5; pixel_y = -2},/turf/floor/plating/steel,/area/caribbean)
+"ee" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/food/snacks/burger{pixel_x = 6; pixel_y = 8},/obj/item/weapon/reagent_containers/food/snacks/burger{pixel_x = -5; pixel_y = -2},/obj/item/weapon/reagent_containers/food/snacks/burger{pixel_x = 5; pixel_y = -2},/obj/item/weapon/reagent_containers/food/drinks/h_chocolate{pixel_y = 8; pixel_x = -6},/turf/floor/plating/steel,/area/caribbean)
 "ep" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark,/turf/floor/plating/road,/area/caribbean)
 "fe" = (/obj/structure/table/rack/shelf,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/turf/floor/plating/steel,/area/caribbean)
 "fi" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 8; icon_state = "frame_steel_corner_rf"; pixel_x = -3; pixel_y = 3},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean)
@@ -57,6 +57,7 @@
 "pn" = (/obj/structure/closet/safe,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean)
 "pt" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/turf/floor/carpet,/area/caribbean)
 "pz" = (/obj/structure/closet/crate/bin,/obj/item/stack/money/dollar,/turf/floor/plating/road,/area/caribbean)
+"pA" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/coffee,/turf/floor/wood,/area/caribbean)
 "pW" = (/obj/structure/sign/traffic/parking,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "pX" = (/obj/covers/vault,/turf/floor/wood,/area/caribbean)
 "qc" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{dir = 8; icon_state = "frame_steel"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 8},/turf/floor/plating/road,/area/caribbean)
@@ -307,8 +308,8 @@ mPmPmPmPHGHGHGHGArWfHGdmnDkZmPmPmPhUBWTzORORORORORORORORORORyeyeJymFTzORORmFOROR
 mPmPmPmPHGHGHGHGArWfHGVROTHGmPmPmPmPBiORORORORORORORORORORAyORORSrmFORORORmFTLTLTLTLORORORORmFzAqHIzJwxtlVmFfofofofofofofofofofofofofofo
 mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeCFAyORzhvtScORORmFPwDyoXTLORORORORmFORORORORORORZoORmoORORtwORmoORORORfofofofo
 mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeyeCFyeORnvZFORORmFORvRRULqORORORORmFORDARURUGXORZoORORORjIONORORORORJyfofofofo
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPhUBWTzORORORORORORORORORORORORORvtGQORORmFORORORORORORORORmFORDAwPRUGXORZoORORORbqRUORORORORORfofofofo
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORyeyeJymFTzORORmFTLTLTLTLORORORORmFORDARURUGXORZoTzORORORORORORORORORtXfofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPhUBWTzORORORORORORORORORORORORORvtGQORORmFORORORORORORORORmFORDAwPKIGXORZoORORORbqRUORORORORORfofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORyeyeJymFTzORORmFTLTLTLTLORORORORmFORDApARUGXORZoTzORORORORORORORORORtXfofofo
 mPmPmPmPHGHGHGHGArWfzeIvHGHGmPmPmPmPmFirORORORORORORORORORAyORORSrmFORORORmFKdDyKITLORORORORmFORDARUIpGXORZoORORORORORORORORORORfofofofo
 mPmPmPmPHGHGHGHGArWfQREoHGHGmPmPmPhUmFCoORORORORORORORORyeCFAyORzhvtScORORmFORvRRUtyORORORORBiORORORORORORZotwONRUORORRUONtwORJyfofofofo
 mPmPmPmPHGHGHGHGHGHGdmnDkZHGmPmPmPmPNqtqORORORORORORORORyeyeCFyeORnvZFORORmFORORORORORORORORPOPOPOPOPOPOPOZoORxnbqUUUUbqxnORORORfofofofo
