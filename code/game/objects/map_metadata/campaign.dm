@@ -181,9 +181,10 @@
 					continue
 				if(findtext(job.title, "BNF Captain") && MC.squad_jobs_blue["none"]["Commander"]<= 0)
 					continue
-				if(findtext(job.title, "BNF Petty Officer") && MC.faction2_squad_leaders[job.squad])
+				if(findtext(job.title, "BNF Squad [job.squad] Petty Officer") && MC.faction2_squad_leaders[job.squad])
 					continue
-
+				if(findtext(job.title, "BNF Marine Squadleader") && MC.faction2_squad_leaders[3])
+					continue
 			else if (factjob == "RDF")
 				if(!findtext(job.title, "IRN"))
 					continue
@@ -193,21 +194,26 @@
 					continue
 				if(findtext(job.title, "IRN Captain") && MC.squad_jobs_red["none"]["Commander"]<= 0)
 					continue
-				if(findtext(job.title, "IRN Petty Officer") && MC.faction1_squad_leaders[job.squad])
+				if(findtext(job.title, "IRN Squad [job.squad] Petty Officer") && MC.faction1_squad_leaders[job.squad])
+					continue
+				if(findtext(job.title, "IRN Marine Squadleader") && MC.faction1_squad_leaders[3])
 					continue
 			if (job)
 				var/active = processes.job_data.get_active_positions(job)
-				var/extra_span = "<b>"
-				var/end_extra_span = "</b>"
+				var/extra_span = ""
+				var/end_extra_span = "<br>"
 				if (job.is_squad_leader)
-					extra_span = "<br><b><font size=2>"
-					end_extra_span = "</font></b>"
+					extra_span = "<b>"
+					end_extra_span = "</b><br>"
 				else if (job.is_commander)
-					extra_span = "<br><font size=3>"
-					end_extra_span = "</font>"
-				else if ((job.is_medic && !findtext(job.title, "Corpsman")) || !findtext(job.title, "Squad"))
-					extra_span = "<br>"
-					end_extra_span = ""
+					extra_span = "<font size=3><b>"
+					end_extra_span = "</b></font><br>"
+				else if (job.is_officer)
+					extra_span = "<font size=3>"
+					end_extra_span = "</font><br>"
+				else if ((job.is_medic && !findtext(job.title, "Corpsman")))
+					extra_span = "<b>"
+					end_extra_span = "</b><br>"
 
 				dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
 				++available_jobs_per_side[job.base_type_flag()]
