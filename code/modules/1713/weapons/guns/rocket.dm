@@ -190,10 +190,10 @@
 	icon_state = "m72law"
 	item_state = "m72law"
 	slot_flags = SLOT_SHOULDER
-	force = 10
+	force = 15
 	recoil = 2
-	fire_delay = 12
-	release_force = 12
+	fire_delay = 10
+	release_force = 15
 	throw_distance = 10
 
 /obj/item/weapon/gun/launcher/rocket/m72law/New()
@@ -397,7 +397,7 @@
 		return
 
 /obj/item/missile/explosive/m72law
-	heavy_armor_penetration = 35
+	heavy_armor_penetration = 50
 	icon_state = "missile"
 	throw_impact(atom/hit_atom)
 		if(primed)
