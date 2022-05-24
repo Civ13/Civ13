@@ -193,6 +193,7 @@
 	icon_state = "mug"
 	glass_type = "mug"
 	volume = 30
+	center_of_mass = list("x"=15, "y"=13)
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/red
 	name = "mug"
@@ -200,6 +201,14 @@
 	icon_state = "r_mug"
 	glass_type = "mug"
 	volume = 30
+	center_of_mass = list("x"=15, "y"=13)
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/brit
+	name = "mug"
+	desc = "A cup with the British flag emblazoned on it."
+	icon_state = "brit_mug"
+	volume = 30
+	center_of_mass = list("x"=15, "y"=13)
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
 	name = "tribal pot"
