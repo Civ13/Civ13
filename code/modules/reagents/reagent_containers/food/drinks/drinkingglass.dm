@@ -168,6 +168,7 @@
 	glass_type = "mug"
 	volume = 40
 	flammable = TRUE
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tankard
 	name = "tankard"
 	icon_state = "tankard"
@@ -185,6 +186,20 @@
 	w_class = 2.0
 	volume = 70
 	flammable = TRUE
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug
+	name = "mug"
+	desc = "A clay mug."
+	icon_state = "mup"
+	glass_type = "mug"
+	volume = 30
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/red
+	name = "mug"
+	desc = "A clay mug, this one is red."
+	icon_state = "r_mup"
+	glass_type = "mug"
+	volume = 30
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
 	name = "tribal pot"
