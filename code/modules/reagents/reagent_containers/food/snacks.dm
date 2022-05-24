@@ -1305,6 +1305,36 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		..()
 		reagents.add_reagent("gold", 5)
 
+/obj/item/weapon/reagent_containers/food/snacks/ssicle
+	name = "Strawberry popsicle"
+	desc = "A nice refreshing strawberry treat for those hot days."
+	icon_state = "ssicle"
+	filling_color = "#FFDEFE"
+	satisfaction = 10
+	nutriment_amt = 5
+	nutriment_desc = list("sweetness" = 3, "popsicle" = 2)
+	decay = 12*600
+
+/obj/item/weapon/reagent_containers/food/snacks/ssicle/gsicle
+	name = "Grape popsicle"
+	desc = "A nice refreshing grape treat for those hot days."
+	icon_state = "gsicle"
+	filling_color = "#FFDEFE"
+	satisfaction = 10
+	nutriment_amt = 5
+	nutriment_desc = list("sweetness" = 3, "popsicle" = 2)
+	decay = 12*600
+
+/obj/item/weapon/reagent_containers/food/snacks/ssicle/osicle
+	name = "Orange popsicle"
+	desc = "A nice refreshing orange treat for those hot days."
+	icon_state = "osicle"
+	filling_color = "#FFDEFE"
+	satisfaction = 10
+	nutriment_amt = 5
+	nutriment_desc = list("sweetness" = 3, "popsicle" = 2)
+	decay = 12*600
+
 /////////////////////////////////////////////////Sliceable////////////////////////////////////////
 // All the food items that can be sliced into smaller bits like Meatbread and Cheesewheels
 // sliceable is just an organization type path, it doesn't have any additional code or variables tied to it.
