@@ -259,7 +259,7 @@
 "eY" = (/obj/item/weapon/bedsheet,/obj/structure/bed,/obj/item/weapon/bedsheet/brown,/turf/floor/carpet,/area/caribbean/british/land/inside)
 "eZ" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/carpet,/area/caribbean/british/land/inside)
 "fa" = (/obj/structure/bed/chair/wood/wings{dir = 4},/turf/floor/carpet,/area/caribbean/british/land/inside)
-"fb" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/obj/item/weapon/reagent_containers/food/drinks/britcup,/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/carpet,/area/caribbean/british/land/inside)
+"fb" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/brit,/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/carpet,/area/caribbean/british/land/inside)
 "fc" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/paper/crumpled/bloody{name = "Bar Tab"; text = "10 Dabloons"},/turf/floor/wood,/area/caribbean/british/land/inside)
 "fd" = (/obj/structure/bed/chair/wood/wings{dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside)
 "fe" = (/obj/structure/bed/chair/wood/wings{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
