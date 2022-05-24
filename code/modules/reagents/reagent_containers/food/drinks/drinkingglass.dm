@@ -190,14 +190,14 @@
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug
 	name = "mug"
 	desc = "A clay mug."
-	icon_state = "mup"
+	icon_state = "mug"
 	glass_type = "mug"
 	volume = 30
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/red
 	name = "mug"
 	desc = "A clay mug, this one is red."
-	icon_state = "r_mup"
+	icon_state = "r_mug"
 	glass_type = "mug"
 	volume = 30
 

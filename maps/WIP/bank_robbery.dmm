@@ -1,8 +1,10 @@
 "am" = (/obj/structure/table/modern/table,/turf/floor/carpet,/area/caribbean)
 "au" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 4},/turf/floor/wood,/area/caribbean)
+"aB" = (/obj/covers/divider_wall,/obj/structure/vehicleparts/license_plate{pixel_x = -4; pixel_y = -9; name = "name plate"; desc = "A small plate with the workers name, here works Gen Erikson"; anchored = 1},/turf/floor/wood,/area/caribbean)
 "bq" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean)
 "bL" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 1; broken = 1},/obj/structure/bed/chair/carseat/left/dark,/turf/floor/plating/road,/area/caribbean)
 "ca" = (/obj/structure/table/modern/retable,/obj/item/weapon/paper_bin,/obj/item/weapon/pen,/turf/floor/plating/steel,/area/caribbean)
+"cH" = (/obj/covers/divider_wall,/obj/structure/vehicleparts/license_plate{pixel_x = 4; pixel_y = -9; name = "name plate"; desc = "A small plate with the workers name, here works Terrence von Hagen"; anchored = 1},/turf/floor/wood,/area/caribbean)
 "dd" = (/obj/structure/closet/safe,/obj/item/stack/money/dollar{name = "american dollars"; desc = "An american dollar, I'm going to be rich!"; amount = 100},/turf/floor/plating/steel,/area/caribbean)
 "dm" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 1; broken = 1},/obj/structure/bed/chair/carseat/left/dark{icon_state = "carseat_left"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "dn" = (/obj/structure/table/rack/shelf,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/turf/floor/plating/steel,/area/caribbean)
@@ -65,6 +67,8 @@
 "tq" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/turf/floor/wood,/area/caribbean)
 "tt" = (/obj/structure/table/carboot{dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lb{doorcode = 13433},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "tw" = (/obj/structure/table/modern/table,/obj/item/weapon/clipboard,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean)
+"ty" = (/obj/covers/divider_wall,/obj/structure/vehicleparts/license_plate{pixel_x = 4; pixel_y = -9; name = "name plate"; desc = "A small plate with the workers name, here works Schmiro Bar"; anchored = 1},/turf/floor/wood,/area/caribbean)
+"tG" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/h_chocolate,/turf/floor/wood,/area/caribbean)
 "tX" = (/obj/structure/simple_door/key_door{code = 2987; name = "Office"},/turf/floor/wood,/area/caribbean)
 "tY" = (/obj/structure/sink{dir = 8},/turf/floor/plating/white,/area/caribbean)
 "uf" = (/obj/structure/table/modern/table,/obj/item/weapon/pen,/obj/item/weapon/paper_bin,/obj/item/weapon/clipboard,/turf/floor/carpet,/area/caribbean)
@@ -74,6 +78,7 @@
 "vt" = (/obj/structure/table/modern/retable,/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/turf/floor/wood,/area/caribbean)
 "vw" = (/obj/structure/bed/chair/wood/bleacher{icon_state = "bleacher"; dir = 8},/turf/floor/wood,/area/caribbean)
 "vB" = (/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 8},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 8},/obj/structure/table/carboot{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"vR" = (/obj/structure/bed/chair/office/light{dir = 1; icon_state = "officechair_white"},/turf/floor/wood,/area/caribbean)
 "we" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/turf/floor/plating/white,/area/caribbean)
 "wP" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/cookie,/turf/floor/wood,/area/caribbean)
 "xe" = (/obj/structure/props/junk{icon_state = "shelf2"},/turf/floor/plating/road,/area/caribbean)
@@ -90,6 +95,7 @@
 "zh" = (/obj/structure/railing/steel,/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean)
 "zt" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean)
 "zA" = (/obj/structure/vending/sales/food/hot/drinks,/turf/floor/wood,/area/caribbean)
+"zI" = (/obj/structure/bed/chair/office/light,/turf/floor/wood,/area/caribbean)
 "zN" = (/turf/floor/carpet,/area/caribbean)
 "zT" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "zZ" = (/obj/structure/table/modern/retable,/turf/floor/plating/steel,/area/caribbean)
@@ -111,6 +117,7 @@
 "CJ" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 1; icon_state = "frame_steel_corner_rf"; pixel_y = 3; pixel_x = 3},/obj/structure/vehicleparts/movement{broken = 1; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean)
 "CR" = (/obj/structure/closet/safe,/obj/item/stack/money/dollar{name = "american dollars"; desc = "An american dollar, I'm going to be rich!"; amount = 100},/obj/item/stack/money/dollar{name = "american dollars"; desc = "An american dollar, I'm going to be rich!"; amount = 100},/obj/item/stack/money/dollar{name = "american dollars"; desc = "An american dollar, I'm going to be rich!"; amount = 100},/turf/floor/plating/steel,/area/caribbean)
 "Dv" = (/obj/covers/marble_wall/classic,/turf/floor/plating/steel,/area/caribbean)
+"Dy" = (/obj/structure/table/modern/table,/obj/structure/computer/nopower{dir = 4},/turf/floor/wood,/area/caribbean)
 "DA" = (/obj/structure/bed/chair/office{dir = 4},/turf/floor/wood,/area/caribbean)
 "DR" = (/turf/floor/plating/road/yellowline,/area/caribbean)
 "DV" = (/obj/structure/closet/safe,/obj/item/stack/money/dollar{name = "american dollars"; desc = "An american dollar, I'm going to be rich!"; amount = 100},/obj/item/stack/money/goldvaluables,/obj/item/stack/money/goldvaluables,/turf/floor/plating/steel,/area/caribbean)
@@ -119,7 +126,7 @@
 "FA" = (/obj/structure/bed/chair/wood/bleacher{icon_state = "bleacher"; dir = 8},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean)
 "GQ" = (/obj/structure/table/modern/retable,/obj/item/weapon/paper_bin,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean)
 "GX" = (/obj/structure/bed/chair/office{dir = 8},/turf/floor/wood,/area/caribbean)
-"Hf" = (/obj/covers/marble_wall/classic,/obj/structure/sign/custom/golden{pixel_x = -1; pixel_y = -5; name = "Manager's Office"; desc = "Jep this is the managers office"},/turf/floor/carpet,/area/caribbean)
+"Hf" = (/obj/covers/marble_wall/classic,/obj/structure/sign/custom/golden{pixel_x = -1; pixel_y = -5; name = "Manager's Office"; desc = "Jep this is the managers office."},/turf/floor/carpet,/area/caribbean)
 "HG" = (/turf/floor/plating/road,/area/caribbean)
 "Id" = (/obj/structure/table/modern/retable,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean)
 "Ij" = (/obj/structure/filingcabinet/filingcabinet,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/plating/steel,/area/caribbean)
@@ -129,11 +136,13 @@
 "IE" = (/turf/floor/plating/steel,/area/caribbean)
 "IO" = (/turf/floor/plating/white,/area/caribbean)
 "Jf" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean)
-"Jh" = (/obj/structure/window/clean/reinforced,/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/turf/floor/plating/steel,/area/caribbean)
+"Jh" = (/obj/structure/window/clean/reinforced{name = "reinforced glass"},/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/turf/floor/plating/steel,/area/caribbean)
 "Jw" = (/obj/structure/table/modern,/turf/floor/wood,/area/caribbean)
 "Jy" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean)
+"Kd" = (/obj/structure/table/modern/table,/obj/item/weapon/pen,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean)
 "KR" = (/obj/structure/simple_door/key_door/anyone/blast,/turf/floor/wood,/area/caribbean)
 "La" = (/obj/covers/vault,/turf/floor/plating/steel,/area/caribbean)
+"Lq" = (/obj/covers/divider_wall,/obj/structure/vehicleparts/license_plate{pixel_x = 4; pixel_y = -9; name = "name plate"; desc = "A small plate with the workers name, here works Tais Lin"; anchored = 1},/turf/floor/wood,/area/caribbean)
 "Mv" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/steel,/area/caribbean)
 "Nk" = (/obj/structure/toilet{dir = 8},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/white,/area/caribbean)
 "Nq" = (/obj/structure/window/clean,/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/turf/floor/wood,/area/caribbean)
@@ -146,6 +155,7 @@
 "OV" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 4},/turf/floor/plating/steel,/area/caribbean)
 "OY" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 8},/obj/structure/bed/chair/carseat/right/dark{dir = 4},/turf/floor/plating/road,/area/caribbean)
 "Pf" = (/turf/wall/rockwall,/area/caribbean)
+"Pw" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean)
 "PO" = (/obj/covers/marble_wall/classic,/turf/floor/carpet,/area/caribbean)
 "QK" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean)
 "QR" = (/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1},/turf/floor/plating/road,/area/caribbean)
@@ -158,6 +168,7 @@
 "SV" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean)
 "Tx" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/wood,/area/caribbean)
 "Tz" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean)
+"TL" = (/obj/covers/divider_wall,/turf/floor/wood,/area/caribbean)
 "UD" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/drivers/car/dark,/turf/floor/plating/road,/area/caribbean)
 "UL" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean)
 "UU" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean)
@@ -282,23 +293,23 @@ mPmPmPmPHGHGCJmtArWfHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHG
 mPmPmPmPHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGhpkfRvRvRvRvRvRvRvRvRvRvRvRvRvRvgngngn
 mPmPmPmPHGHGHGHGHGHGzeIvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGqiRvRvRvRvRvRvRvRvRvRvRvRvRvRvgngngn
 mPmPmPmPHGHGHGHGArWfQREoHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGkfxMRvRvRvRvRvRvRvRvRvRvRvRvRvRvgngngn
-mPmPmPmPHGHGHGHGArWfdmnDkZHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGpzvcvcxMvcvcHGHGHGHGHGHGHGHGHGhpsMqiRvRvRvRvRvRvRvRvRvRvRvRvRvRvgngngn
+mPmPmPmPHGHGHGHGArWfdmnDkZHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGpzvcvcxMvcvcHGHGHGHGHGHGHGHGHGHGhpsMqiRvRvRvRvRvRvRvRvRvRvRvRvRvRvgngngn
 mPmPmPmPHGHGHGHGArWfVROTHGHGmPmPmPmPmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFTxmFmFmFmFmFmFmFflflflflflflfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFauORmoORORORmoORORORmoyeyeJymFTzOROROROROROROROROROROROROROUtYiPztNkflfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPhUmFYQORORORORORORORORORAyORORSrmFORORORORORORORORORORORORORORflIOIOflflflfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFWrORORORORORORORORyeCFAyORzhvtScOROROROROROROROROROROROROROUtYIOztNkflfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGArWfHGzeIvHGmPmPmPmPmFirORORORORORORORORyeyeCFyeORnvZFORORORORORORORORORORORORORflIOIOflflflfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGArWfHGQREoHGmPmPmPmPmFORORORORORORORORORORORORORORvtGQORORORORORORORORORORORORORweIOvaztNkflfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGArWfHGdmnDkZmPmPmPhUBWTzORORORORORORORORORORyeyeJymFTzORORORORORORORORORORORmFflflflflflmFZcfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGArWfHGVROTHGmPmPmPmPBiORORORORORORORORORORAyORORSrmFORORORORORORORORORORORORmFzAqHIzJwxtlVmFfofofofofofofofofofofofofofo
-mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeCFAyORzhvtScORORORORORORORORORORORmFORORORORORORZoORmoORORtwORmoORORORfofofofo
-mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeyeCFyeORnvZFORORORORORORORORORORORmFORDARURUGXORZoORORORjIONORORORORJyfofofofo
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPhUBWTzORORORORORORORORORORORORORvtGQORORORORORORORORORORORmFORDAwPRUGXORZoORORORbqRUORORORORORfofofofo
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORyeyeJymFTzORORORORORORORORORORORmFORDARURUGXORZoTzORORORORORORORORORtXfofofo
-mPmPmPmPHGHGHGHGArWfzeIvHGHGmPmPmPmPmFirORORORORORORORORORAyORORSrmFORORORORORORORORORORORORmFORDARUIpGXORZoORORORORORORORORORORfofofofo
-mPmPmPmPHGHGHGHGArWfQREoHGHGmPmPmPhUmFCoORORORORORORORORyeCFAyORzhvtScORORORORORORORORORORORBiORORORORORORZotwONRUORORRUONtwORJyfofofofo
-mPmPmPmPHGHGHGHGHGHGdmnDkZHGmPmPmPmPNqtqORORORORORORORORyeyeCFyeORnvZFORORORORORORORORORORORPOPOPOPOPOPOPOZoORxnbqUUUUbqxnORORORfofofofo
-mPmPmPmPHGHGHGHGHGHGVROTHGHGmPmPmPmPNqtqORORORORORORORORORORORORORvtGQORORORORORORORORORORORHfzNzNzNzNzNzNmFfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFauORmoORORORmoORORORmoyeyeJymFTzORORmFOROROROROROROROROROROUtYiPztNkflfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPhUmFYQORORORORORORORORORAyORORSrmFORORORmFORORORORORORORORORORflIOIOflflflfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPmFWrORORORORORORORORyeCFAyORzhvtScORORmFTLTLTLTLOROROROROROROUtYIOztNkflfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGzeIvHGmPmPmPmPmFirORORORORORORORORyeyeCFyeORnvZFORORmFPwDyRUTLORORORORORORflIOIOflflflfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGQREoHGmPmPmPmPmFORORORORORORORORORORORORORORvtGQORORmFORvRRUcHORORORORORORweIOvaztNkflfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGdmnDkZmPmPmPhUBWTzORORORORORORORORORORyeyeJymFTzORORmFORORORORORORORORmFflflflflflmFZcfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGArWfHGVROTHGmPmPmPmPBiORORORORORORORORORORAyORORSrmFORORORmFTLTLTLTLORORORORmFzAqHIzJwxtlVmFfofofofofofofofofofofofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeCFAyORzhvtScORORmFPwDyRUTLORORORORmFORORORORORORZoORmoORORtwORmoORORORfofofofo
+mPmPmPmPHGHGHGHGHGHGHGHGHGHGmPmPmPmPBiORORORORORORORORORyeyeCFyeORnvZFORORmFORvRRULqORORORORmFORDARURUGXORZoORORORjIONORORORORJyfofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPhUBWTzORORORORORORORORORORORORORvtGQORORmFORORORORORORORORmFORDAwPRUGXORZoORORORbqRUORORORORORfofofofo
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmFORORORORORORORORORORORyeyeJymFTzORORmFTLTLTLTLORORORORmFORDARURUGXORZoTzORORORORORORORORORtXfofofo
+mPmPmPmPHGHGHGHGArWfzeIvHGHGmPmPmPmPmFirORORORORORORORORORAyORORSrmFORORORmFKdDyRUTLORORORORmFORDARUIpGXORZoORORORORORORORORORORfofofofo
+mPmPmPmPHGHGHGHGArWfQREoHGHGmPmPmPhUmFCoORORORORORORORORyeCFAyORzhvtScORORmFORvRRUtyORORORORBiORORORORORORZotwONRUORORRUONtwORJyfofofofo
+mPmPmPmPHGHGHGHGHGHGdmnDkZHGmPmPmPmPNqtqORORORORORORORORyeyeCFyeORnvZFORORmFORORORORORORORORPOPOPOPOPOPOPOZoORxnbqUUUUbqxnORORORfofofofo
+mPmPmPmPHGHGHGHGHGHGVROTHGHGmPmPmPmPNqtqORORORORORORORORORORORORORvtGQORORmFTLTLTLTLORORORORHfzNzNzNzNzNzNmFfofofofofofofofofofofofofofo
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqtqORORORORORORORORORORORORJymFTzORORORORORORORORORORORlmzNzNamamzNzNmFmPmPmPmPmPmPmPmPmPmPmPmPmPmP
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPhUmFQKORORORORORORORORORORORORORTxORORORORORORORORORORORORptzNzNsUiRzNzNBcmPkakakakaHGHGHGHGHGkakakaka
 mPmPmPmPHGHGAVttArWfHGHGHGHGmPmPmPmPmFzAORORORORORORSVORORORSVORORTxORORORORORORORORORORORORlmzNzNufBvgHzNmFmPHGHGHGHGHGHGHGHGHGHGHGHGHG
@@ -306,10 +317,10 @@ mPmPmPmPHGkZoVbLArWfHGHGHGHGmPmPmPmPmFIzORORORORORORmFmFmFmFmFmFmFmFOROROROROROR
 mPmPmPmPHGHGepUDHGHGHGHGHGHGmPmPmPmPmFhcORORORORORgAmFzZlKYrYrIdcamFORORORORORORORORORmFpXpXpXpXpXpXpXpXpXmFmPkakakakaHGHGHGHGHGkakakaka
 mPmPmPmPHGHGCJmtHGHGHGHGHGHGmPmPmPhUmFTzORORORORORFAmFeeIEkkIEIEIEmFTzORORORORORORORJymFpXmFmFmFmFmFmFmFpXmFmPHGHGHGHGHGHGHGHGHGHGHGHGHG
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFzZIEIEIEIEIEMvORORORORORORORORORmFmFmFmoORBhBhBhmFpXmFmPyRyRyRyRHGHGHGHGHGyRyRyRyR
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFULIEIEIEIEIEmFORORORORORORORORORKRmoKRORORBhBhBhmFpXmFmPkakakakaHGHGHGHGHGkakakaka
-mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFDvJhJhJhJhMvmFORORORORORORORORORmFmFmFSVORBhBhBhmFpXmFmPHGHGHGHGHGHGHGHGHGHGHGHGHG
-mPmPmPmPHGHGHGHGArCEIvHGHGHGmPmPmPhUmFTzORORORORORkrmFIEIEIEIEIEIEmFTzORORORORORORORJymFpXmFmFmFmFmFmFmFpXmFmPyRyRyRyRHGHGHGHGHGyRyRyRyR
-mPmPmPmPHGHGHGHGHGQREoHGHGHGmPmPmPmPmFirORORORORORORmFxHfeqAAfdnXWmFORORORORSVORORORORmFpXpXpXpXpXpXpXpXpXmFmPkakakakaHGHGHGHGHGkakakaka
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFULIEIEIEIEIEmFORaBTLTLORORORORORKRmoKRORORBhBhBhmFpXmFmPkakakakaHGHGHGHGHGkakakaka
+mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPNqORORORORORORvwmFDvJhJhJhJhMvmFORORORTLORORORORORmFmFmFSVORBhBhBhmFpXmFmPHGHGHGHGHGHGHGHGHGHGHGHGHG
+mPmPmPmPHGHGHGHGArCEIvHGHGHGmPmPmPhUmFTzORORORORORkrmFIEIEIEIEIEIEmFTzzIRUTLORORORORJymFpXmFmFmFmFmFmFmFpXmFmPyRyRyRyRHGHGHGHGHGyRyRyRyR
+mPmPmPmPHGHGHGHGHGQREoHGHGHGmPmPmPmPmFirORORORORORORmFxHfeqAAfdnXWmFPwONtGTLSVORORORORmFpXpXpXpXpXpXpXpXpXmFmPkakakakaHGHGHGHGHGkakakaka
 mPmPmPmPHGHGHGHGHGdmnDkZHGHGmPmPmPmPmFmFBWBiBiBiBWmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmFmPHGHGHGHGHGHGHGHGHGHGHGHGHG
 mPmPmPmPHGHGHGHGArjrOTHGHGHGmPmPmPmPmPmPzTmPmPmPzTmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPyRyRyRyRHGHGHGHGHGyRyRyRyR
 mPmPmPmPHGHGHGHGArWfHGHGHGHGmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPHGHGHGHGHGmPmPmPmP
