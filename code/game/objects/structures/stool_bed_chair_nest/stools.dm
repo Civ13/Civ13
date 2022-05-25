@@ -22,6 +22,24 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/weapon/stool/padded
 	icon_state = "stool_padded_preview" //set for the map
 
+/obj/item/weapon/stool/bar
+	name = "bar stool"
+	icon_state = "barstool_red"
+/obj/item/weapon/stool/bar/green
+	icon_state = "barstool_green"
+/obj/item/weapon/stool/bar/blue
+	icon_state = "barstool_blue"
+/obj/item/weapon/stool/bar/yellow
+	icon_state = "barstool_yellow"
+/obj/item/weapon/stool/bar/black
+	icon_state = "barstool_black"
+/obj/item/weapon/stool/bar/white
+	icon_state = "barstool_white"
+/obj/item/weapon/stool/bar/brown
+	icon_state = "barstool_brown"
+/obj/item/weapon/stool/bar/grey
+	icon_state = "barstool_grey"
+
 /obj/item/weapon/stool/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
 	if (!new_material)
