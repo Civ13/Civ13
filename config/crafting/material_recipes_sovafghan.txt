@@ -1799,22 +1799,20 @@ RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,
 
 //*********************| STEEL VEHICLE PARTS |**************************
 
-RECIPE: /material/steel/,tank cannon,/obj/structure/cannon/modern/tank,40,600,1,1,weapons,115,125,0,8,null
-
 RECIPE: /material/steel/,rubber wheel,/obj/structure/vehicleparts/movement,1,20,0,1,vehicle parts,115,0,0,8,null
-RECIPE: /material/steel/,tank track,/obj/structure/vehicleparts/movement/tracks,4,60,0,1,vehicle parts,135,0,0,8,null
+RECIPE: /material/steel/,back rubber wheel,/obj/structure/vehicleparts/movement/reversed,1,20,0,1,vehicle parts,115,0,0,8,null
 
 RECIPE: /material/steel/,light axis (800 weight),/obj/structure/vehicleparts/axis/car,10,80,0,1,vehicle parts,126,0,0,8,null
-RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
 
-RECIPE: /material/steel/,driver's seat,/obj/structure/bed/chair/drivers,8,40,0,1,vehicle parts,126,0,0,8,null
-RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,6,40,0,1,vehicle parts,126,125,0,8,null
-RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,6,40,0,1,vehicle parts,126,125,0,8,null
-RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,40,0,1,vehicle parts,126,125,0,8,null
+RECIPE: /material/steel/,driver's seat,/obj/structure/bed/chair/drivers/car,8,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,right passenger seat,/obj/structure/bed/chair/carseat/right,8,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,left passenger seat,/obj/structure/bed/chair/carseat/left,8,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,dark driver's seat,/obj/structure/bed/chair/drivers/car,8,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,dark right passenger seat,/obj/structure/bed/chair/carseat/right,8,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,dark left passenger seat,/obj/structure/bed/chair/carseat/left,8,40,0,1,vehicle parts,126,0,0,8,null
 
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
-RECIPE: /material/steel/,steel ship frame,/obj/structure/vehicleparts/frame/ship/steel,2,40,0,1,vehicle parts,97,0,0,8,null
 
 RECIPE: /material/steel/,fuel pump (star),/obj/structure/fuelpump/star,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,1,1,none,120,0,0,8,null
