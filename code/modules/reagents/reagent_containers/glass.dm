@@ -643,6 +643,15 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		base_name = "wood barrel"
 		reagents.add_reagent("beer",250)
 
+/obj/item/weapon/reagent_containers/glass/barrel/ale
+	name = "wood barrel (ale)"
+	label_text = "ale"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("ale",250)
+
 /obj/item/weapon/reagent_containers/glass/barrel/rum
 	name = "wood barrel (rum)"
 	label_text = "rum"
@@ -652,6 +661,51 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		base_name = "wood barrel"
 		reagents.add_reagent("rum",250)
 
+/obj/item/weapon/reagent_containers/glass/barrel/whiskey
+	name = "wood barrel (whiskey)"
+	label_text = "whiskey"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("whiskey",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/tequila
+	name = "wood barrel (tequila)"
+	label_text = "tequila"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("tequila",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/gin
+	name = "wood barrel (gin)"
+	label_text = "gin"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("gin",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/vodka
+	name = "wood barrel (vodka)"
+	label_text = "vodka"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("vodka",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/cognac
+	name = "wood barrel (cognac)"
+	label_text = "cognac"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("cognac",250)
+
 /obj/item/weapon/reagent_containers/glass/barrel/wine
 	name = "wood barrel (wine)"
 	label_text = "wine"
@@ -659,7 +713,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		..()
 		flags &= ~OPENCONTAINER
 		base_name = "wood barrel"
-		reagents.add_reagent("wine",200)
+		reagents.add_reagent("wine",250)
 
 /obj/item/weapon/reagent_containers/glass/barrel/tea
 	name = "wood barrel (tea)"
@@ -846,7 +900,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	icon_state = "fueltank_large"
 	volume = 250
 	density = TRUE
-	
+
 	New()
 		..()
 		flags |= OPENCONTAINER
