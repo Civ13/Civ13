@@ -175,3 +175,13 @@
 	New()
 		..()
 		reagents.add_reagent("condensedcapsaicin",1000)
+
+/obj/structure/reagent_dispensers/fountain
+	name = "water fountain"
+	desc = "A water fountain with a big tank on top."
+	icon_state = "dispenser_water1"
+	anchored = TRUE
+	amount_per_transfer_from_this = 10
+	New()
+		..()
+		reagents.add_reagent("water",2000)
