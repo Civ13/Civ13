@@ -583,6 +583,13 @@
 	item_state = "hazard_g"
 	worn_state = "hazard_g"
 
+/obj/item/clothing/suit/storage/sealvest
+	name = "seal lifevest"
+	desc = "A vest used for keeping the seals afloat during training among other things."
+	icon_state = "sealvest"
+	item_state = "sealvest"
+	worn_state = "sealvest"
+
 
 /////////////////REBELS///////////////////////////////////////////
 /obj/item/clothing/head/helmet/rebel
