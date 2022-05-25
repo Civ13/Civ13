@@ -255,6 +255,9 @@
 	desc = "Built with padding for extra comfort."
 	icon_state = "wooden_chair_red"
 
+/obj/structure/bed/chair/wood/alt
+	icon_state = "wooden_chair_alt"
+
 /obj/structure/bed/chair/barber
 	name = "barber chair"
 	desc = "A barbershop chair."
