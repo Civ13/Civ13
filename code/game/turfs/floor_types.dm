@@ -49,9 +49,9 @@
 /turf/floor/grass
 	name = "Grass patch"
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "grass1"
+	icon_state = "grass0"
 	var/deadicon = 'icons/turf/floors.dmi'//Rad stuff what to turn into
-	var/deadicon_state = "dead_grass1"//Rad stuff what to turn into
+	var/deadicon_state = "ndead_grass1"//Rad stuff what to turn into
 	var/grassamt = 1
 	New()
 		icon_state = "grass[pick("0","1","2","3")]"
@@ -148,12 +148,12 @@
 
 /turf/floor/grass/jungle/savanna
 	name = "dry grass"
-	icon_state = "grass_dry"
+	icon_state = "dry_grass"
 	initial_flooring = null
 
 /turf/floor/grass/jungle/savanna/New()
 	..()
-	icon_state = "grass_dry"
+	icon_state = "dry_grass"
 	deadicon_state = "dead_grass[pick("0","1","2","3")]"//Rad stuff what to turn into
 
 /turf/floor/winter
