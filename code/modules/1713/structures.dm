@@ -248,7 +248,7 @@
 	density = FALSE
 	opacity = FALSE
 
-/obj/structre/props/hookah/New()
+/obj/structure/props/hookah/New()
 	..()
 	var/pickhookah = pick("hookah1", "hookah2", "hookah3")
 	icon_state = pickhookah
