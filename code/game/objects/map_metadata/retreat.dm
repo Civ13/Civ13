@@ -2,7 +2,7 @@
 	ID = MAP_RETREAT
 	title = "Retreat"
 	lobby_icon_state = "coldwar"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 1200
 	no_hardcore = TRUE
 	faction_organization = list(
@@ -160,6 +160,9 @@ var/no_loop_ret = FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction2)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside))
 			if (H.faction_text == faction2)
 				return TRUE
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))

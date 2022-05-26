@@ -157,6 +157,18 @@
 	name = "Kodoku"
 	desc = "Kodoku (Solitary)."
 	icon_state = "wing3"
+
+/obj/structure/sign/japsign
+	name = "street sign"
+	desc = "A japanese street sign."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "japsign"
+/obj/structure/sign/japsign/New()
+	..()
+	var/picksign = pick("japsign", "japsign2", "japsign3", "japsign4", "japsign5", "japsign6")
+	icon_state = picksign
+
+
 /obj/structure/sign/exit
 	name = "Exit"
 	desc = "Points to the exit."

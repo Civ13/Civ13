@@ -1249,10 +1249,10 @@
 	flags = CONDUCT
 
 /obj/item/clothing/mask/necklace/christian/gold
-	name = "Christian Gold Necklace"
-	desc = " A chritian necklace, it's made out of gold, expensive"
-	icon_state = "NecklaceChristianGold"
-	item_state = "NecklaceChristianGold"
+	name = "christian gold necklace"
+	desc = " A chritian necklace, it's made out of gold. Expensive."
+	icon_state = "necklace_christian_gold"
+	item_state = "necklace_christian_gold"
 
 /obj/item/clothing/mask/osiris
 	name = "osiris mask"

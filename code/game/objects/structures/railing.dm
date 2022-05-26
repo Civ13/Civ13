@@ -70,11 +70,12 @@
 		visible_message("<span class='warning'>\The [src] breaks down!</span>")
 		playsound(loc, 'sound/effects/grillehit.ogg', 50, TRUE)
 		qdel(src)
-/*		if (flammable == TRUE)
-			new /obj/item/stack/material/wood(get_turf(usr))
-		else
-			new /obj/item/stack/rods(get_turf(usr))
-		qdel(src) */ //Disabled due to abuse in Gulag rounds, if people want to get materials from it, they'll have to use tools
+		if (map.ID != MAP_GULAG13) //disabled due to abuse in gulag rounds
+			if (flammable == TRUE)
+				new /obj/item/stack/material/wood(get_turf(usr))
+			else
+				new /obj/item/stack/rods(get_turf(usr))
+			qdel(src)
 
 /obj/structure/railing/proc/NeighborsCheck(var/UpdateNeighbors = TRUE)
 	check = FALSE
