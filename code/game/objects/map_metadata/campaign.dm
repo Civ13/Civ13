@@ -846,8 +846,8 @@ obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
 	grace_wall_timer = 9000
 	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british,
-		list(PIRATES) = /area/caribbean/japanese/land,
+		list(CIVILIAN) = /area/caribbean/japanese/land,
+		list(PIRATES) = /area/caribbean/british/land,
 		)
 obj/map_metadata/campaign/campaign7/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/civilian))

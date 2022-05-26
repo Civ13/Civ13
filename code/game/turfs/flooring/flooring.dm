@@ -108,6 +108,8 @@ var/list/flooring_types
 	has_base_range = 0
 	damage_temperature = T0C+8000
 //	flags = TURF_HAS_EDGES
+/decl/flooring/water_deep_salt/shipline
+	icon_base = "ship_line"
 
 /decl/flooring/water_swamp
 	name = "swamp water"

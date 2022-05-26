@@ -279,6 +279,10 @@
 	density = FALSE
 	initial_flooring = /decl/flooring/water_deep
 
+/turf/floor/beach/water/deep/saltwater/shipline
+	icon_state = "ship_line"
+	initial_flooring = /decl/flooring/water_deep_salt/shipline
+
 /turf/floor/beach/water/deep/Crossed(atom/A)
 	..()
 	check_sinking(A)
