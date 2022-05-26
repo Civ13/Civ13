@@ -16,7 +16,6 @@
 	icon_state = "naval_cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	spritemod = FALSE
-	firedelay = 5
 	maxsway = 40
 	firedelay = 30
 	maxrange = 180
@@ -26,6 +25,22 @@
 	bound_width = 64
 	caliber = 204
 	can_assemble = FALSE
+
+/obj/structure/cannon/modern/naval/n380
+	name = "380mm naval cannon"
+	ammotype = /obj/item/cannon_ball/shell/tank
+	maxsway = 40
+	firedelay = 80
+	maxrange = 100
+	caliber = 380
+
+/obj/structure/cannon/modern/naval/n150
+	name = "150mm naval cannon"
+	ammotype = /obj/item/cannon_ball/shell/tank
+	maxsway = 40
+	firedelay = 50
+	maxrange = 60
+	caliber = 150
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
