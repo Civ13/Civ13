@@ -177,6 +177,18 @@
 /obj/structure/props/stove/old
 	icon_state = "gasstove"
 
+/obj/structure/props/radiator
+	name = "radiator"
+	desc = "A heat exchanger."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "radiator"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+
 /obj/structure/props/bathtub
 	name = "bathtub"
 	desc = "A bathtub."
