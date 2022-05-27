@@ -22,22 +22,27 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/weapon/stool/padded
 	icon_state = "stool_padded_preview" //set for the map
 
-/obj/item/weapon/stool/bar
+/obj/item/weapon/barstool
 	name = "bar stool"
+	desc = "A fancy stool made for catering."
+	icon = 'icons/obj/bed_chair.dmi'
 	icon_state = "barstool_red"
-/obj/item/weapon/stool/bar/green
+	force = 10
+	throwforce = 10
+	w_class = 5
+/obj/item/weapon/barstool/green
 	icon_state = "barstool_green"
-/obj/item/weapon/stool/bar/blue
+/obj/item/weapon/barstool/blue
 	icon_state = "barstool_blue"
-/obj/item/weapon/stool/bar/yellow
+/obj/item/weapon/barstool/yellow
 	icon_state = "barstool_yellow"
-/obj/item/weapon/stool/bar/black
+/obj/item/weapon/barstool/black
 	icon_state = "barstool_black"
-/obj/item/weapon/stool/bar/white
+/obj/item/weapon/barstool/white
 	icon_state = "barstool_white"
-/obj/item/weapon/stool/bar/brown
+/obj/item/weapon/barstool/brown
 	icon_state = "barstool_brown"
-/obj/item/weapon/stool/bar/grey
+/obj/item/weapon/barstool/grey
 	icon_state = "barstool_grey"
 
 /obj/item/weapon/stool/New(var/newloc, var/new_material, var/new_padding_material)
