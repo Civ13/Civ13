@@ -32,9 +32,9 @@
 
 	..()
 	if (J.is_event_role == TRUE)
-		J.total_positions = 36
-		J.min_positions = 36
-		J.max_positions = 36
+		J.total_positions = 40
+		J.min_positions = 40
+		J.max_positions = 40
 		. = TRUE
 	else
 		. = FALSE
