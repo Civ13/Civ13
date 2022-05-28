@@ -1040,6 +1040,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\hunger_games.dmm"
+#include "maps\campaign\campaign7.dmm"
 // END_INCLUDE
 
