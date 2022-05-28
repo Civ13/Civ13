@@ -451,6 +451,10 @@
 									explosion(target, 1, 2, 2, 3)
 								else if (istype(src,/obj/structure/cannon/modern/naval))
 									explosion(target, 2, 3, 4, 5)
+									if(target.z > 1)
+										var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
+										if (tgtbelow)
+											explosion(tgtbelow, 2, 3, 3, 3)
 								else
 									explosion(target, 1, 2, 3, 4)
 							if (nuclear)

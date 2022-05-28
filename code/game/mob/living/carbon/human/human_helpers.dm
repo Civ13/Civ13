@@ -305,6 +305,11 @@
 	var/water_overlay = FALSE
 /mob/living/human/proc/handle_drowning()
 	var/turf/T = get_turf(src)
+	if (istype(wear_suit, /obj/item/clothing/suit/lifejacket) && istype(T, /turf/floor/beach/water/deep))
+		drowning = FALSE
+		water_overlay = TRUE
+		update_fire(1)
+		return
 	if (!istype(T, /turf/floor/beach/water/deep) || T.iscovered())
 		drowning = FALSE
 		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())

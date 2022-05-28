@@ -33,6 +33,16 @@
 	firedelay = 80
 	maxrange = 100
 	caliber = 380
+	density = FALSE
+
+/obj/structure/cannon/naval/n380/attack_hand(var/mob/attacker)
+	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
+		var/mob/living/human/H = attacker
+		if(findtext(H.original_job_title,"Marine"))
+			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
+			return
+	else
+		interact(attacker)
 
 /obj/structure/cannon/modern/naval/n150
 	name = "150mm naval cannon"
@@ -41,6 +51,16 @@
 	firedelay = 50
 	maxrange = 60
 	caliber = 150
+	density = FALSE
+
+/obj/structure/cannon/naval/n150/attack_hand(var/mob/attacker)
+	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
+		var/mob/living/human/H = attacker
+		if(findtext(H.original_job_title,"Marine"))
+			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
+			return
+	else
+		interact(attacker)
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
