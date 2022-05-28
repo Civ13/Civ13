@@ -18,7 +18,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "76th annual hunger games"
-	mission_start_message = "<font size=4>The 76th Annual Hunger Games will have 36 tributes competing, <b>Last standing tribute wins!</b> 3 minutes beforeyou may step off your platforms.</font>"
+	mission_start_message = "<font size=4>The 76th Annual Hunger Games will have 40 tributes competing, <b>Last standing tribute wins!</b> 3 minutes beforeyou may step off your platforms.</font>"
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	faction1 = PIRATES
@@ -41,10 +41,10 @@
 	return .
 
 /obj/map_metadata/hunger_games/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hunger_games/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hunger_games/cross_message(faction)
 	if (faction == PIRATES)
