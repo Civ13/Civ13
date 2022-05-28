@@ -450,7 +450,7 @@
 								if (istype(src,/obj/structure/cannon/mortar))
 									explosion(target, 1, 2, 2, 3)
 								else if (istype(src,/obj/structure/cannon/modern/naval))
-									explosion(target, 2, 3, 4, 5)
+									explosion(target, 2, 3, 3, 4)
 									if(target.z > 1)
 										var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
 										if (tgtbelow)
