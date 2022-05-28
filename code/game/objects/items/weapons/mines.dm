@@ -159,7 +159,7 @@
 
 /obj/item/mine/ap/armed/New()
 	if (map.ID == MAP_HUNGERGAMES)
-		spawn(1800)
+		spawn(3000)
 			qdel(src)
 
 /obj/item/mine/at
