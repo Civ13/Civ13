@@ -450,6 +450,8 @@
 	/obj/item/weapon/grenade/smokebomb/m18smoke = 10,
 	/obj/item/weapon/reagent_containers/spray/pepper = 10,
 	/obj/item/weapon/gun/projectile/dartgun/mag = 10,
+	/obj/item/weapon/grenade/coldwar/stinger = 20,
+
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
 	/obj/item/weapon/gun/projectile/pistol/tt30 = 50,
