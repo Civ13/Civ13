@@ -381,9 +381,11 @@ var/list/seed_list_jungle
 	..()
 	icon_state = "pine_[rand(1,3)]"
 	if (map.ID == MAP_HUNGERGAMES)
-		spawn(1200)
-			if (processes.ticker.playtime_elapsed > 6000)
+		spawn(6000)
+			if(prob(75))
 				qdel(src)
+			else
+				return
 
 /obj/structure/wild/tree/live_tree/pine/update_icon()
 	..()
