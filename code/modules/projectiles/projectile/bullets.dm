@@ -144,7 +144,7 @@
 /obj/item/projectile/bullet/pistol/rubber //"rubber" bullets
 	name = "rubber bullet"
 	check_armor = "melee"
-	damage = 3
+	damage = 2
 	agony = 25
 	embed = FALSE
 	sharp = FALSE

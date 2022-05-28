@@ -1067,6 +1067,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak47 = 40,
 		/obj/item/ammo_magazine/sks = 80,
 		/obj/item/ammo_magazine/ak74 = 12,
+		/obj/item/ammo_magazine/ak74/rubber = 15,
 		/obj/item/ammo_magazine/pkm = 5,
 		/obj/item/ammo_magazine/makarov = 10,
 	)

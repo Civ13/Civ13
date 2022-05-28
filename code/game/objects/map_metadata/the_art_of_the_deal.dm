@@ -452,7 +452,7 @@
 	/obj/item/weapon/gun/projectile/dartgun/mag = 10,
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
-	/obj/item/ammo_magazine/tt30ll = 50,
+	/obj/item/weapon/gun/projectile/pistol/tt30 = 50,
 	)
 	attack_hand(mob/user as mob)
 		if (user.original_job_title == "County Deputy" || user.original_job_title == "County Sheriff")
