@@ -381,7 +381,7 @@ var/list/seed_list_jungle
 	..()
 	icon_state = "pine_[rand(1,3)]"
 	if (map.ID == MAP_HUNGERGAMES)
-		spawn(6630)
+		spawn(6000)
 			if(prob(75))
 				qdel(src)
 			else
