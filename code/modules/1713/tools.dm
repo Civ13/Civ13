@@ -400,6 +400,9 @@
 			update_icon()
 			return
 /obj/structure/grapplehook/attack_hand(mob/living/human/user)
+	if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
+		user << "<span class = 'danger'>You can't use this yet.</span>"
+		return
 	if (!deployed)
 		var/turf/nT = get_step(loc,user.dir)
 		var/turf/nTT = get_step(nT,user.dir)

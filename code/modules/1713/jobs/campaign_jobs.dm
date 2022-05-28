@@ -538,6 +538,7 @@
 		FP.attached(null,HGUN,TRUE)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_sailor_hat/blugoslavia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/lifejacket/yellow(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -650,6 +651,7 @@
 		FP.attached(null,HGUN,TRUE)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_sailor_hat/redmenia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/lifejacket(H), slot_wear_suit)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
