@@ -479,7 +479,8 @@
 	penetrating = 3
 	armor_penetration = 28
 
-obj/item/projectile/bullet/pistol/rubber/a762x25
+/obj/item/projectile/bullet/pistol/rubber/a762x25
+	damage = 3
 
 /obj/item/projectile/bullet/rifle/a762x39
 	damage = DAMAGE_HIGH + 12
