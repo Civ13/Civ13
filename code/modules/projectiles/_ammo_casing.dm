@@ -889,14 +889,14 @@
 	caliber = "a762x25"
 	value = 2
 
-/obj/item/ammo_casing/l762x25
+/obj/item/ammo_casing/a762x25/rubber
 	name = "7.62x25mm rubber cartridge"
 	desc = "A wooden casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/rubber
-	caliber = "l762x25"
+	projectile_type = /obj/item/projectile/bullet/pistol/rubber/a762x25
+	caliber = "a762x25"
 	value = 2
 
 /obj/item/ammo_casing/a792x33
@@ -916,6 +916,15 @@
 	spent_icon = "pistolcasing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/rifle/a545x39
+	caliber = "a545x39"
+	value = 2
+/obj/item/ammo_casing/a545x39/rubber
+	name = "5.45x39mm cartridge Rubber"
+	desc = "A rubbery brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/rubber/a54x39
 	caliber = "a545x39"
 	value = 2
 

@@ -323,6 +323,17 @@
 	throw_range = 9
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
+
+/obj/item/weapon/grenade/coldwar/stinger
+	name = "Stinger grenade"
+	desc = "a less then lethal  grenade that Explodes into a burst of rubber balls."
+	icon_state = "sting"
+	det_time = 50
+	throw_range = 10
+	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
+	fragment_type = /obj/item/projectile/bullet/pellet/rubberball
+	explosion_size = 2
+
 /obj/item/weapon/grenade/coldwar/m67
 	name = "M67 grenade"
 	desc = "An American grenade introduced as a replacement for the M26."

@@ -482,7 +482,7 @@
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/tt30
-	good_mags = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll, /obj/item/ammo_magazine/tt30/empty)
+	good_mags = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll, /obj/item/ammo_magazine/tt30/empty,/obj/item/ammo_magazine/tt30ll/rubber)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a762x25
 	load_method = MAGAZINE
@@ -518,21 +518,7 @@
 	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/pistol/tt30ll
-	name = "TT-33"
-	desc = "The pistol of the Soviet Union. this one has been modfied to fire rubber bullets."
-	icon_state = "tt30"
-	w_class = 2
-	caliber = "l762x25"
-	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	magazine_type = /obj/item/ammo_magazine/tt30ll
-	good_mags = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll)
-	weight = 0.794
-	ammo_type = /obj/item/ammo_casing/l762x25
-	load_method = MAGAZINE
-	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.98
-	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
+
 
 /obj/item/weapon/gun/projectile/pistol/m9beretta
 	name = "Beretta M9"
