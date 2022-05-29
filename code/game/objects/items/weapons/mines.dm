@@ -158,8 +158,8 @@
 	icon_state = "mine_armed"
 
 /obj/item/mine/ap/armed/New()
-	if (map.ID == MAP_HUNGERGAMES)
-		spawn(1800)
+	for (map.ID == MAP_HUNGERGAMES)
+		if (processes.ticker.playtime_elapsed > 1800)
 			qdel(src)
 
 /obj/item/mine/at

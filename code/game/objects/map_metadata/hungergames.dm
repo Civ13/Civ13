@@ -3,7 +3,7 @@
 	title = "Battle Royale: Imperial"
 	lobby_icon_state = "battleroyale"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
-	respawn_delay = 0
+	respawn_delay = 36000000
 	is_singlefaction = TRUE
 	battleroyale = TRUE
 
@@ -63,7 +63,7 @@
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
-	if (processes.ticker.playtime_elapsed >= 1200)
+	if (processes.ticker.playtime_elapsed >= 1800)
 		if (alive_n_of_side(PIRATES) <= 1 && !win_condition_spam_check)
 			for (var/mob/living/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
@@ -85,8 +85,8 @@
 			return FALSE
 
 /obj/map_metadata/hunger_games/proc/closing_areas()
-	if (processes.ticker.playtime_elapsed < 1200)
-		spawn(3000)
+	if (processes.ticker.playtime_elapsed < 1800)
+		spawn(300)
 			closing_areas()
 		return "too early to close areas"
 	var/list/all_areas = list("one","two","three","four","five","six")
