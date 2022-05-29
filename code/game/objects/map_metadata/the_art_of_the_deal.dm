@@ -1,4 +1,4 @@
-/obj/map_metadata/art_of_the_deal
+g/obj/map_metadata/art_of_the_deal
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
 	lobby_icon_state = "taotd"
@@ -424,6 +424,7 @@
 	/obj/item/ammo_magazine/m9beretta = 50,
 	/obj/item/ammo_magazine/c32 = 50,
 	/obj/item/ammo_magazine/c44 = 50,
+	/obj/item/weapon/grenade/coldwar/stinger = 20,
 	/obj/item/weapon/gun/projectile/boltaction/m24 = 10,
 	/obj/item/ammo_magazine/m24 = 20,
 	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
@@ -450,7 +451,6 @@
 	/obj/item/weapon/grenade/smokebomb/m18smoke = 10,
 	/obj/item/weapon/reagent_containers/spray/pepper = 10,
 	/obj/item/weapon/gun/projectile/dartgun/mag = 10,
-	/obj/item/weapon/grenade/coldwar/stinger = 20,
 
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
