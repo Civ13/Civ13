@@ -108,3 +108,16 @@
 	explosion(src.loc, 2, 2, 2, 2)
 	radiation_pulse(src.loc, 4, 15, 300, TRUE)
 	qdel(src)
+
+/obj/item/weapon/sledgehammer/batteringram
+	name = "battering ram"
+	desc = "A battering ram, very heavy, but good for ramming doors down."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "batteringram"
+	item_state = "batteringram"
+	edge = FALSE
+	sharp = FALSE
+	equiptimer = 35
+	force = 62
+	weight = 80
+	slot_flags = SLOT_BACK
