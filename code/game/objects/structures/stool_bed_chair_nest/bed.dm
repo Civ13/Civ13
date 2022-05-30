@@ -65,7 +65,7 @@
 
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
-	if (!istype(src, /obj/structure/bed/bedroll))
+	if (!istype(src, /obj/structure/bed/bedroll) && !istype(src, /obj/structure/bed/custsofa))
 		color = null
 		if (!new_material)
 			if (!material)
@@ -87,34 +87,35 @@
 
 // Reuse the cache/code from stools, todo maybe unify.
 /obj/structure/bed/update_icon()
-	// Prep icon.
-	icon_state = ""
-	overlays.Cut()
-	// Base icon.
-	var/cache_key = "[base_icon]-[material.name]"
-	if (isnull(stool_cache[cache_key]))
-		var/image/I = image('icons/obj/bed_chair.dmi', base_icon)
-		if (applies_material_colour)
-			I.color = material.icon_colour
-		stool_cache[cache_key] = I
-	overlays |= stool_cache[cache_key]
-	// Padding overlay.
-	if (padding_material)
-		var/padding_cache_key = "[base_icon]-padding-[padding_material.name]"
-		if (isnull(stool_cache[padding_cache_key]))
-			var/image/I =  image(icon, "[base_icon]_padding")
-			I.color = padding_material.icon_colour
-			stool_cache[padding_cache_key] = I
-		overlays |= stool_cache[padding_cache_key]
+	if (!istype(src, /obj/structure/bed/custsofa))
+		// Prep icon.
+		icon_state = ""
+		overlays.Cut()
+		// Base icon.
+		var/cache_key = "[base_icon]-[material.name]"
+		if (isnull(stool_cache[cache_key]))
+			var/image/I = image('icons/obj/bed_chair.dmi', base_icon)
+			if (applies_material_colour)
+				I.color = material.icon_colour
+			stool_cache[cache_key] = I
+		overlays |= stool_cache[cache_key]
+		// Padding overlay.
+		if (padding_material)
+			var/padding_cache_key = "[base_icon]-padding-[padding_material.name]"
+			if (isnull(stool_cache[padding_cache_key]))
+				var/image/I =  image(icon, "[base_icon]_padding")
+				I.color = padding_material.icon_colour
+				stool_cache[padding_cache_key] = I
+			overlays |= stool_cache[padding_cache_key]
 
-	// Strings.
-	desc = initial(desc)
-	if (padding_material)
-		name = "[padding_material.display_name] [initial(name)]" //this is not perfect but it will do for now.
-		desc += " It's made of [material.use_name] and covered with [padding_material.use_name]."
-	else
-		name = "[material.display_name] [initial(name)]"
-		desc += " It's made of [material.use_name]."
+		// Strings.
+		desc = initial(desc)
+		if (padding_material)
+			name = "[padding_material.display_name] [initial(name)]" //this is not perfect but it will do for now.
+			desc += " It's made of [material.use_name] and covered with [padding_material.use_name]."
+		else
+			name = "[material.display_name] [initial(name)]"
+			desc += " It's made of [material.use_name]."
 
 /obj/structure/bed/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover) && mover.checkpass(PASSTABLE))
@@ -336,7 +337,7 @@
 
 ////////////////sofa///////////////////
 /obj/structure/bed/sofa
-	name = "sofa"
+	name = "old sofa"
 	desc = "A sofa where you can rest."
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "sofa_forward"
@@ -369,3 +370,58 @@
 
 /obj/structure/bed/sofa/dismantle()
 	return
+
+/////////////Updated Sofa//////////////
+
+/obj/structure/bed/custsofa
+	name = "sofa"
+	desc = "A sofa where you can rest."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "custsofa_middle"
+	anchored = TRUE
+	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = TRUE
+	base_icon = "custsofa_middle"
+	applies_material_colour = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	applies_material_colour = FALSE
+	var/uncolored = FALSE
+	color = "#FFFFFF"
+
+/obj/structure/bed/custsofa/New()
+	..()
+	if(dir == 1)
+		buckle_dir = NORTH
+		layer = MOB_LAYER + 0.5
+	if(dir == 2)
+		buckle_dir = SOUTH
+	if(dir == 4)
+		buckle_dir = EAST
+	if(dir == 8)
+		buckle_dir = WEST
+	uncolored = TRUE
+	update_icon()
+
+/obj/structure/bed/custsofa/attack_hand(mob/user as mob)
+	if (uncolored)
+		var/input = WWinput(user, "Choose the color of the sofa:", "Color" , "#FFFFFF", "color")
+		if (input == null || input == "")
+			return
+		else
+			color = input
+			uncolored = FALSE
+			return
+	else
+		..()
+
+/obj/structure/bed/custsofa/left
+	icon_state = "custsofaend_left"
+	base_icon = "custsofaend_left"
+/obj/structure/bed/custsofa/right
+	icon_state = "custsofaend_right"
+	base_icon = "custsofaend_right"
+/obj/structure/bed/custsofa/corner
+	icon_state = "custsofacorner"
+	base_icon = "custsofacorner"
