@@ -828,7 +828,7 @@ var/global/FREQM = rand(101,120)
 /proc/ten_code(message,mob/living/human/speaker)
 	if (!speaker)
 		return message
-	if (speaker.civilization != "Police")
+	if (speaker.civilization != "Sheriff Office")
 		return message
 	var/dmessage = message
 	dmessage = splittext(dmessage,"10-")
