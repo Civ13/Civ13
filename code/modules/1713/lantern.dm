@@ -289,9 +289,44 @@
 /obj/item/flashlight/militarylight/alt
 	unlimited = TRUE
 	icon_state = "militarylightalt_off"
-	item_state = "militarylight"
+	item_state = "militarylightalt"
 	on_state = "militarylightalt_on"
 	off_state = "militarylightalt_off"
+
+/obj/item/flashlight/militarylight/alt/secondary_attack_self(mob/living/human/user)
+
+	lens +=1
+	if (lens > 3)
+		lens = 1
+
+	switch (lens)
+		if (1)
+			light_range = 1.5
+			brightness_on = 2.5
+			light_color = "#ad2005"
+			on_state = "militarylightalt_on_red"
+			lens = 1
+			user << "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>"
+			update_icon()
+			return
+		if (2)
+			light_range = 1.5
+			brightness_on = 2.5
+			light_color = "#17ad2a"
+			on_state ="militarylightalt_on_green"
+			lens = 2
+			update_icon()
+			user << "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>"
+			return
+		if (3)
+			light_range = 5
+			brightness_on = 5
+			light_color = "#fcffd6"
+			on_state ="militarylightalt_on"
+			lens = 3
+			user << "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>"
+			update_icon()
+			return
 
 
 /obj/item/flashlight/japflashlight

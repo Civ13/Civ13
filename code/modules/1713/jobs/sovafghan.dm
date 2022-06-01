@@ -767,78 +767,7 @@
 	return TRUE
 
 ////////////////////////////////////////////////Afghan civilians////////////////////////////////////////
-/*
-/datum/job/civilian/afghan/facworker
-	title = "Factory Worker"
-	rank_abbreviation = " "
 
-	spawn_location = "JoinLateFact"
-
-	min_positions = 1
-	max_positions = 10
-
-/datum/job/civilian/afghan/facworker/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
-
-	H.civilization = "civilian"
-
-	H.add_note("Role", "You are an <b>[title]</b>, an local factory worker")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	give_random_name(H)
-
-	return TRUE
-
-/datum/job/civilian/afghan/miner
-	title = "miner"
-	en_meaning = " "
-	rank_abbreviation = " "
-
-	spawn_location = "JoinLateAR"
-
-	min_positions = 1
-	max_positions = 50
-
-/datum/job/civilian/afghan/miner/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/stone(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
-
-	H.civilization = "civilian"
-
-	H.add_note("Role", "You are an <b>[title]</b>, an local miner, good luck mining!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	give_random_name(H)
-
-	return TRUE
-*/
 /datum/job/civilian/afghan/doctor
 	title = "Hospital Doctor"
 	rank_abbreviation = "Dr."
@@ -968,6 +897,322 @@
 
 	return TRUE */
 
+/datum/job/civilian/afghan/facworker
+	title = "Industrial Worker"
+
+	spawn_location = "JoinLateCivFW"
+	is_afghan = TRUE
+	is_coldwar = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 20)
+
+	min_positions = 1
+	max_positions = 6
+
+/datum/job/civilian/afghan/facworker/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	var/randshoes = rand (1,5)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+//jacket
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
+//gloves
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+//head
+	if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+	else if (prob(30))
+		var/obj/item/clothing/head/custom/taqiyah/taq = new /obj/item/clothing/head/custom/taqiyah(null)
+		taq.color = pick("#f0f0f0","#bababa","#787878","#303030")
+		taq.uncolored1 = FALSE
+		H.equip_to_slot_or_del(taq, slot_head)
+	else if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+	else if (prob(65))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhatw(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full, slot_belt)
+
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.gender != FEMALE)
+		if (H.f_style != "Shaved" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+			H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-90,-65)
+	var/new_hair = pick("Dark Brown","Black","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.civilization = "Civilian"
+	H.add_note("Role", "You are a <b>[title]</b>, produce various goods and supplies in the factory.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	return TRUE
+
+/datum/job/civilian/afghan/miner
+	title = "Mine Worker"
+
+	spawn_location = "JoinLateCivMW"
+	is_afghan = TRUE
+	is_coldwar = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 10)
+
+	min_positions = 1
+	max_positions = 6
+
+/datum/job/civilian/afghan/miner/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	var/randshoes = rand (1,4)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+//clothes
+	if (H.gender != FEMALE)
+		var/randclothes = rand(1,10)
+		switch(randclothes)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/artisan(H), slot_w_uniform)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/artisan/dark(H), slot_w_uniform)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/artisan/light(H), slot_w_uniform)
+			if (4)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
+			if (5)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
+			if (6)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+			if (7)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+			if (8)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+			if (9)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+			if (10)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/steppe_tunic(H), slot_w_uniform)
+//head
+	if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+	else if (prob(30))
+		var/obj/item/clothing/head/custom/taqiyah/taq = new /obj/item/clothing/head/custom/taqiyah(null)
+		taq.color = pick("#f0f0f0","#bababa","#787878","#303030")
+		taq.uncolored1 = FALSE
+		H.equip_to_slot_or_del(taq, slot_head)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+	else if (prob(65))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhato(H), slot_head)
+//back
+	/obj/item/clothing/suit/storage/hazard
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
+
+	H.civilization = "Civilian"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.gender != FEMALE)
+		if (H.f_style != "Shaved" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+			H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+
+	H.s_tone = rand(-90,-65)
+	var/new_hair = pick("Dark Brown","Black","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are a <b>[title]</b>, working in a local mine. Prospect for ores in the region and sell them.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	return TRUE
+
+/datum/job/civilian/afghan/waiter
+	title = "Waiter"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCivWaiter"
+	is_afghan = TRUE
+	is_coldwar = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 40)
+
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/afghan/waiter/equip(var/mob/living/human/H)
+
+//shoes
+	var/randshoes = rand (1,3)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
+//head
+	if (prob(30))
+		var/obj/item/clothing/head/custom/taqiyah/taq = new /obj/item/clothing/head/custom/taqiyah(null)
+		taq.color = pick("#f0f0f0","#bababa","#787878","#303030")
+		taq.uncolored1 = FALSE
+		H.equip_to_slot_or_del(taq, slot_head)
+	else if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+	else if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fez(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/inn(H), slot_l_store)
+
+	H.civilization = "Civilian"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.gender != FEMALE)
+		if (H.f_style != "Shaved" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+			H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+
+	H.s_tone = rand(-90,-65)
+	var/new_hair = pick("Dark Brown","Black","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are an <b>[title]</b>, working in a local Cafe. Serve your customers!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	return TRUE
+
+/datum/job/civilian/afghan/cook
+	title = "Cook"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCivCook"
+	is_afghan = TRUE
+	is_coldwar = TRUE
+	default_language = "Arabic"
+	additional_languages = list("Russian" = 20)
+
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/afghan/cook/equip(var/mob/living/human/H)
+
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+//head
+	if (prob(30))
+		var/obj/item/clothing/head/custom/taqiyah/taq = new /obj/item/clothing/head/custom/taqiyah(null)
+		taq.color = pick("#f0f0f0","#bababa","#787878","#303030")
+		taq.uncolored1 = FALSE
+		H.equip_to_slot_or_del(taq, slot_head)
+	else if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+	else if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/inn(H), slot_l_store)
+
+	H.civilization = "Civilian"
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	if (H.gender != FEMALE)
+		if (H.f_style != "Shaved" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+			H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+
+	H.s_tone = rand(-90,-65)
+	var/new_hair = pick("Dark Brown","Black","Grey")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are a <b>[title]</b>, working in a local Cafe. Cook for your customers!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	return TRUE
+
+
 /datum/job/civilian/afghan/urbanciv
 	title = "Civilian"
 	rank_abbreviation = ""
@@ -980,7 +1225,7 @@
 
 
 	min_positions = 1
-	max_positions = 30
+	max_positions = 25
 
 /datum/job/civilian/afghan/urbanciv/equip(var/mob/living/human/H)
 
@@ -1089,7 +1334,7 @@
 	default_language = "Arabic"
 
 	min_positions = 1
-	max_positions = 30
+	max_positions = 25
 
 /datum/job/civilian/afghan/villager/equip(var/mob/living/human/H)
 
@@ -1151,8 +1396,8 @@
 	H.name = H.species.get_random_arab_name(H.gender)
 	H.real_name = H.name
 	if (H.gender != FEMALE)
-		if (H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Neckbeard" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
-			H.f_style = pick("Medium Beard","Long Beard","Very Long Beard","Neckbeard","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
+		if (H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Neckbeard" && H.f_style != "Full Beard" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache" )
+			H.f_style = pick("Long Beard","Very Long Beard","Neckbeard","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 
@@ -1232,8 +1477,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 
 	H.civilization = "Mujahideen"
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard")
-		H.f_style = pick("Full Beard","Medium Beard","Long Beard")
+	if (H.f_style != "Full Beard" && H.f_style != "Long Beard")
+		H.f_style = pick("Full Beard", "Long Beard")
 	H.s_tone = rand(-92,-80)
 	var/new_hair = pick("Dark Brown","Black")
 	var/hex_hair = hair_colors[new_hair]
@@ -1340,8 +1585,8 @@
 
 	H.civilization = "Mujahideen"
 
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Neckbeard")
-		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard","Neckbeard")
+	if (H.f_style != "Full Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Neckbeard")
+		H.f_style = pick("Full Beard","Long Beard","Very Long Beard","Neckbeard")
 	H.s_tone = rand(-92,-80)
 	var/new_hair = pick("Dark Brown","Black")
 	var/hex_hair = hair_colors[new_hair]

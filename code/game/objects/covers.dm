@@ -132,8 +132,9 @@
 	if (ishuman(user))
 		var/turf/targetfloor = get_turf(get_step(user, user.dir))
 		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
-			visible_message("<span class='notice'>You can't build here!</span>")
-			return
+			if (map && map.ID != MAP_CAMPAIGN)
+				visible_message("<span class='notice'>You can't build here!</span>")
+				return
 		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))

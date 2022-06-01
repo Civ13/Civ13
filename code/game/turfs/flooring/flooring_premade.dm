@@ -234,6 +234,15 @@
 	is_diggable = TRUE
 	initial_flooring = /decl/flooring/dirt
 
+/turf/floor/dirt/space
+	name = "space"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "space"
+	uses_winter_overlay = TRUE
+	may_become_muddy = TRUE
+	is_diggable = FALSE
+	initial_flooring = /decl/flooring/dirt/space
+
 /turf/floor/dirt/dark_dirt
 	name = "dark dirt"
 	desc = "Darker than normal dirt, spooky."

@@ -276,6 +276,18 @@
 		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
 		periscope.commanderchair = src
 
+/obj/structure/bed/chair/commander/naval
+	name = "spotter's seat"
+	desc = "A spotter's seat with a long-range periscope."
+	anchored = TRUE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)
+		periscope.commanderchair = src
+
+
 /obj/structure/bed/chair/commander/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (M)

@@ -1314,3 +1314,12 @@
 	corresponding_area_allow_subtypes = TRUE
 	name = "Fallschirmjager Plane"
 */
+
+/area/caribbean/space
+	has_gravity = FALSE
+	no_air = TRUE
+	base_turf = /turf/floor/dirt //The base turf type of the area, which can be used to override the z-level's base turf
+	sound_env = FOREST
+	icon_state = "blue1"
+	dynamic_lighting = TRUE
+	ambience = list()

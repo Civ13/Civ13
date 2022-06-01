@@ -146,6 +146,13 @@
 	item_state = "repmedicalofficer_cap"
 	worn_state = "repmedicalofficer_cap"
 
+/obj/item/clothing/head/impofficercap
+	name = "imperial officer cap"
+	desc = "a tight fitting grey cap."
+	icon_state = "impofficer_storm"
+	item_state = "impofficer_storm"
+	worn_state = "impofficer_storm"
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/shoes/replicantshoes
@@ -417,6 +424,12 @@
 	item_state = "darth_armor"
 	worn_state = "darth_armor"
 
+/obj/item/clothing/under/navallieutenant
+	name = "imperial naval lieutenant uniform"
+	desc = "A well adjusted lieutenant's jacket."
+	icon_state = "imp_stormofficer"
+	item_state = "imp_stormofficer"
+	worn_state = "imp_stormofficer"
 
 ////////////IRISH BERET/////////////////////////////////////////////////////////////
 
@@ -624,6 +637,11 @@
 /obj/item/clothing/under/rebel/officer
 	name = "rebellion officer uniform"
 	desc = "A plain looking uniform worn by officers of the rebel alliance."
+	icon_state = "rebel_officer"
+	item_state = "rebel_officer"
+	worn_state = "rebel_officer"
+
+/obj/item/clothing/under/rebel/officer/New()
 	icon_state = "rebel_officer"
 	item_state = "rebel_officer"
 	worn_state = "rebel_officer"

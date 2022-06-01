@@ -171,6 +171,28 @@
 	caliber = 204
 	heavy_armor_penetration = 125
 	damage = 450
+
+/obj/item/cannon_ball/shell/tank/HE150
+	atype = "HE"
+	caliber = 150
+	heavy_armor_penetration = 80
+	damage = 350
+	icon_state = "navalshell"
+	New()
+		..()
+		icon_state = "navalshell"
+
+/obj/item/cannon_ball/shell/tank/HE380
+	atype = "HE"
+	caliber = 380
+	heavy_armor_penetration = 120
+	damage = 650
+	icon_state = "navalshell"
+	New()
+		..()
+		icon_state = "navalshell"
+
+
 /obj/item/cannon_ball/shell/tank/nuclear/
 	atype = "NUCLEAR"
 	New()

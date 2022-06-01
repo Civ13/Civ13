@@ -1035,8 +1035,9 @@
 				s_tone = rand(-150,-120)
 			else
 				s_tone = rand(-40,-25)
-		else if (s_tone < -65)
-			s_tone = -65
+		else
+			if (s_tone < -65)
+				s_tone = -65
 
 	force_update_limbs()
 	update_body()
