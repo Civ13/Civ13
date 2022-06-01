@@ -71,7 +71,7 @@
 
 /obj/map_metadata/tantiveiv/cross_message(faction)
 	if (faction == AMERICAN)
-		return "<font size = 4>The Impieral Stormtroopers may now cross the invisible wall!</font>"
+		return "<font size = 4>The Imperial Stormtroopers may now cross the invisible wall!</font>"
 	else if (faction == JAPANESE)
 		return ""
 	else
@@ -79,7 +79,7 @@
 
 /obj/map_metadata/tantiveiv/reverse_cross_message(faction)
 	if (faction == AMERICAN)
-		return "<span class = 'userdanger'>The Impieral Stormtroopers may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Imperial Stormtroopers may no longer cross the invisible wall!</span>"
 	else if (faction == JAPANESE)
 		return ""
 	else
@@ -94,14 +94,14 @@ var/no_loop_intra = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Rebellion</b> has successfuly defended the Tantive IV bridge! The Imperials have halted the attack!"
+		var/message = "The <b>Rebellion</b> has successfuly defended the Tantive IV bridge! The Rebels have halted the Imperial Stormtroopers from Boarding!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_intra == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Imperials</b> have captured the Tantive IV Bridge!! The battle for The Tantive IV is over!"
+		var/message = "The <b>Imperials</b> have captured the Tantive IV Bridge!! The commandeering The Tantive IV is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
