@@ -1033,6 +1033,23 @@
 
 	/* Emergency Services Clothing*/
 
+/obj/item/clothing/suit/lifejacket
+	name = "lifejacket"
+	desc = "A red lifejacket, to improve survival on sea."
+	icon_state = "sealvest"
+	item_state = "sealvest"
+	worn_state = "sealvest"
+	body_parts_covered = UPPER_TORSO
+	armor = list(melee = 10, arrow = 5, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 5, rad = 5)
+	w_class = 2
+	ripable = FALSE
+
+/obj/item/clothing/suit/lifejacket/yellow
+	name = "lifejacket"
+	desc = "A yellow lifejacket, to improve survival on sea."
+	icon_state = "sealvest_yellow"
+	item_state = "sealvest_yellow"
+	worn_state = "sealvest_yellow"
 /obj/item/clothing/suit/storage/jacket/highvis
 	name = "high visibility jacket"
 	desc = "A yellow high visibility jacket."

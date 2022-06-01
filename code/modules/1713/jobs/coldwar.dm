@@ -751,6 +751,7 @@
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
+	is_afro = FALSE
 
 	min_positions = 2
 	max_positions = 8
@@ -787,9 +788,8 @@
 	else
 		H.f_style = pick("Shaved")
 
-	if (prob(10))
+	if (prob(20))
 		H.original_job.is_afro = TRUE
-		H.s_tone = rand(-150,-120)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
 		var/new_hair = "Black"
 		var/hex_hair = hair_colors[new_hair]
@@ -800,7 +800,7 @@
 		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
-		H.s_tone = rand(-40,-25)
+		H.original_job.is_afro = FALSE
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -881,9 +881,8 @@
 	else
 		H.f_style = pick("Shaved")
 
-	if (prob(10))
+	if (prob(20))
 		H.original_job.is_afro = TRUE
-		H.s_tone = rand(-150,-120)
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
 		var/new_hair = "Black"
 		var/hex_hair = hair_colors[new_hair]
@@ -894,7 +893,7 @@
 		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
-		H.s_tone = rand(-40,-25)
+		H.original_job.is_afro = FALSE
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)

@@ -221,12 +221,12 @@ obj/item/ammo_magazine/dp
 	..()
 	stored_ammo.Cut()
 
-/obj/item/ammo_magazine/tt30ll
-	name = "TT-33 magazine (rubber)"
+/obj/item/ammo_magazine/tt30ll/rubber
+	name = "TT-33 magazine (wooden)"
 	icon_state = "m1911"
 	mag_type = MAGAZINE
-	ammo_type =  /obj/item/ammo_casing/l762x25
-	caliber = "l762x25"
+	ammo_type =  /obj/item/ammo_casing/a762x25/rubber
+	caliber = "a762x25"
 	max_ammo = 8
 	multiple_sprites = TRUE
 /obj/item/ammo_magazine/tt30/empty/New()

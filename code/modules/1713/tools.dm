@@ -400,6 +400,9 @@
 			update_icon()
 			return
 /obj/structure/grapplehook/attack_hand(mob/living/human/user)
+	if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
+		user << "<span class = 'danger'>You can't use this yet.</span>"
+		return
 	if (!deployed)
 		var/turf/nT = get_step(loc,user.dir)
 		var/turf/nTT = get_step(nT,user.dir)
@@ -442,7 +445,7 @@
 /obj/structure/grapplehook/proc/deploy()
 	anchored = TRUE
 	var/turf/last_turf = loc
-	for(var/i = 1, i <= 17, i++)
+	for(var/i = 1, i <= 21, i++)
 		var/turf/nT = get_step(last_turf,dir)
 		last_turf = nT
 		if (i>=2)
@@ -455,6 +458,10 @@
 				endpart.develop(src)
 				return
 			if (istype(nT, /turf/floor/beach/sand) || istype(nT, /turf/floor/dirt) || istype(nT, /turf/floor/grass))
+				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
+				endpart.develop(src)
+				return
+			if(map.ID == MAP_CAMPAIGN && istype(nT, /turf/floor/broken_floor))
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return

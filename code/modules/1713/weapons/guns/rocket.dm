@@ -183,7 +183,46 @@
 /obj/item/weapon/gun/launcher/rocket/panzerfaust/attack_hand(mob/user)
 	..()
 
+//mlaw
+/obj/item/weapon/gun/launcher/rocket/m72law
+	name = "M72 LAW"
+	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-tank weapon."
+	icon_state = "m72law"
+	item_state = "m72law"
+	slot_flags = SLOT_SHOULDER
+	force = 15
+	recoil = 2
+	fire_delay = 10
+	release_force = 15
+	throw_distance = 10
 
+/obj/item/weapon/gun/launcher/rocket/m72law/New()
+	..()
+	rockets += new /obj/item/ammo_casing/rocket/m72law(src)
+	update_icon()
+
+/obj/item/weapon/gun/launcher/rocket/m72law/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I, /obj/item/ammo_casing/rocket))
+		user << "<span class='warning'>You can't reload a [src]!</span>"
+		return
+
+/obj/item/weapon/gun/launcher/rocket/m72law/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "m72law"
+	else
+		icon_state = "m72law_empty"
+
+/obj/item/weapon/gun/launcher/rocket/m72law/proc/unload(mob/user)
+	if(rockets.len)
+		user << "<span class='warning'>You can't unload a [src]!</span>"
+		return
+	else
+		user << "<span class='warning'>\The [src] is already used.</span>"
+		return
+
+/obj/item/weapon/gun/launcher/rocket/m72law/attack_hand(mob/user)
+	..()
 
 /obj/item/weapon/gun/launcher/rocket/bazooka
 	name = "M1A1 Bazooka"
@@ -241,6 +280,12 @@
 	desc = "A high explosive warhead and propeller designed to be fired from a panzerfaust launcher."
 	icon_state = "panzerfaust"
 	projectile_type = /obj/item/missile/explosive/panzerfaust
+
+/obj/item/ammo_casing/rocket/m72law
+	name = "m72 LAW rocket"
+	desc = "A high explosive warhead and propeller designed to be fired from a m72 LAW launcher."
+	icon_state = "rocket"
+	projectile_type = /obj/item/missile/explosive/m72law
 
 /obj/item/ammo_casing/rocket/pg7v
 	name = "PG-7V rocket"
@@ -350,6 +395,19 @@
 		else
 			..()
 		return
+
+/obj/item/missile/explosive/m72law
+	heavy_armor_penetration = 50
+	icon_state = "missile"
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 1, 2, 3)
+			handle_vehicle_hit(hit_atom,firer)
+			qdel(src)
+		else
+			..()
+		return
+
 /obj/item/missile/fragmentation
 	heavy_armor_penetration = 6
 	var/num_fragments = 30

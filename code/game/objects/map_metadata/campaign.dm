@@ -842,12 +842,13 @@ obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
 
 ///////////////////////////////////////////////////////////////////////
 /obj/map_metadata/campaign/campaign7
-	victory_time = 36000
-	grace_wall_timer = 9000
-	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
+	victory_time = 24000
+	grace_wall_timer = 6000
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/sea)
+	mission_start_message = "<font size=4><b>10 minutes</b> until the battle begins.</font>"
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british,
-		list(PIRATES) = /area/caribbean/japanese/land,
+		list(CIVILIAN) = /area/caribbean/japanese/land,
+		list(PIRATES) = /area/caribbean/british/land,
 		)
 obj/map_metadata/campaign/campaign7/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/civilian))
@@ -862,3 +863,64 @@ obj/map_metadata/campaign/campaign7/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 	else
 		. = FALSE
+
+
+/obj/map_metadata/campaign/campaign7/update_win_condition()
+	if (world.time >= next_win && next_win != -1)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = ""
+		if (!map.civilizations)
+			message = "The battle has ended in a stalemate!"
+		else
+			message = "The round has ended!"
+		if (current_winner && current_loser)
+			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the naval engagement at Azula coast!" : ""]!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		win_condition_spam_check = TRUE
+		return FALSE
+	if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] ship! They will win in {time} minute{s}."
+				next_win = world.time + short_win_time(roundend_condition_sides[2][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] ship! They will win in {time} minute{s}."
+				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// Soviet major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] ship! They will win in {time} minute{s}."
+				next_win = world.time + short_win_time(roundend_condition_sides[1][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	// Soviet minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] ship! They will win in {time} minute{s}."
+				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	else
+		if (current_win_condition != no_winner && current_winner && current_loser)
+			world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] ship!</font>"
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+	return TRUE

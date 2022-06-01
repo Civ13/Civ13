@@ -278,6 +278,11 @@
 	water_level = 200
 	density = FALSE
 	initial_flooring = /decl/flooring/water_deep
+	move_delay = 20
+
+/turf/floor/beach/water/deep/saltwater/shipline
+	icon_state = "ship_line"
+	initial_flooring = /decl/flooring/water_deep_salt/shipline
 
 /turf/floor/beach/water/deep/Crossed(atom/A)
 	..()
@@ -299,6 +304,8 @@
 		if (ishuman(ML))
 			var/mob/living/human/H = ML
 			if (H.driver_vehicle)
+				return
+			if (istype(H.wear_suit, /obj/item/clothing/suit/lifejacket))
 				return
 		if (ML && ML.stat == DEAD)
 			spawn(60)
@@ -337,6 +344,10 @@
 	else if (istype(mover, /obj/item/projectile))
 		return TRUE
 	else if (istype(mover, /mob) && !iscovered())
+		if (ishuman(mover))
+			var/mob/living/human/H = mover
+			if(istype(H.wear_suit, /obj/item/clothing/suit/lifejacket))
+				return TRUE
 		return FALSE
 	else
 		return ..()

@@ -496,7 +496,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum)
+	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum,/obj/item/ammo_magazine/ak74/rubber)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER

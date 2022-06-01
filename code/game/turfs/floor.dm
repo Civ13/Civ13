@@ -90,7 +90,12 @@
 
 	set_light(0)
 	levelupdate()
-
+	if (map && map.ID == MAP_CAMPAIGN)
+		if(z == 1)
+			ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+		else
+			ChangeTurf(/turf/floor/broken_floor)
+		return
 	ChangeTurf(get_base_turf_by_area(src))
 
 /turf/floor/levelupdate()
