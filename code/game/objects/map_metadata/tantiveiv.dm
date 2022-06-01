@@ -1,6 +1,6 @@
 /obj/map_metadata/tantiveiv
 	ID = MAP_TANTIVEIV
-	title = "TantiveIV"
+	title = "VantiveIV"
 	lobby_icon_state = "starwars"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
@@ -17,13 +17,13 @@
 	age = "A long long time ago"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(CIVILIAN = 0.7, AMERICAN = 0.3)
-	battle_name = "TantiveIV capture"
-	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the ceasefire ends!<br>The Rebel Alliance will win if they hold out for <b>20 minutes</b>. The Galactic Empire will win if they manage to capture Rebel Spawn within the Bridge of the Tantive IV!</font>"
+	battle_name = "VantiveIV capture"
+	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the ceasefire ends!<br>The Alliance to Restore the Democracy will win if they hold out for <b>20 minutes</b>. The Extra-Galactic Empire will win if they manage to capture the Alliance Spawn within the Bridge of the Vantive IV!</font>"
 	faction1 = CIVILIAN
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Battle of Heroes (star wars):1" = "sound/music/battle_of_heroes.ogg",)
+		"Battle of Heroes (Galaxy Battles):1" = "sound/music/battle_of_heroes.ogg",)
 	gamemode = "Siege"
 /obj/map_metadata/tantiveiv/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -71,7 +71,7 @@
 
 /obj/map_metadata/tantiveiv/cross_message(faction)
 	if (faction == AMERICAN)
-		return "<font size = 4>The Imperial Stormtroopers may now cross the invisible wall!</font>"
+		return "<font size = 4>The Imperial Troopers may now cross the invisible wall!</font>"
 	else if (faction == JAPANESE)
 		return ""
 	else
@@ -79,7 +79,7 @@
 
 /obj/map_metadata/tantiveiv/reverse_cross_message(faction)
 	if (faction == AMERICAN)
-		return "<span class = 'userdanger'>The Imperial Stormtroopers may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Imperial Troopers may no longer cross the invisible wall!</span>"
 	else if (faction == JAPANESE)
 		return ""
 	else
@@ -94,14 +94,14 @@ var/no_loop_intra = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Rebellion</b> has successfuly defended the Tantive IV bridge! The Rebels have halted the Imperial Stormtroopers from Boarding!"
+		var/message = "The <b>Rebellion</b> has successfuly defended the Vantive IV bridge! The Rebels have halted the Imperial Troopers from Boarding!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_intra == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Imperials</b> have captured the Tantive IV Bridge!! The commandeering The Tantive IV is over!"
+		var/message = "The <b>Imperials</b> have captured the Vantive IV Bridge!! The commandeering The Vantive IV is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -111,7 +111,7 @@ var/no_loop_intra = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Imperials</b> have captured the Tantive IV Bridge! They will win in {time} minutes."
+				current_win_condition = "The <b>Imperials</b> have captured the Vantive IV Bridge! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -120,7 +120,7 @@ var/no_loop_intra = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Imperials</b> have captured the Tantive IV Bridge! They will win in {time} minutes."
+				current_win_condition = "The <b>Imperials</b> have captured the Vantive IV Bridge! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -129,7 +129,7 @@ var/no_loop_intra = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Imperials</b> have captured the Tantive IV Bridge! They will win in {time} minutes."
+				current_win_condition = "The <b>Imperials</b> have captured the Vantive IV Bridge! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -138,14 +138,14 @@ var/no_loop_intra = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Imperials</b> have captured the Tantive IV Bridge! They will win in {time} minutes."
+				current_win_condition = "The <b>Imperials</b> have captured the Vantive IV Bridge! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Rebellion</b> has recaptured the Tantive IV!</font>"
+			world << "<font size = 3>The <b>Rebellion</b> has recaptured the Vantive IV!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
