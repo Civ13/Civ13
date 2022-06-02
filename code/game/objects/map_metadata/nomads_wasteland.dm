@@ -39,7 +39,8 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	age8_done = TRUE
-	var/nonukes = FALSE
+	nonukes = FALSE
+
 /obj/map_metadata/nomads_wasteland/New()
 	..()
 	spawn(18000)
@@ -47,6 +48,8 @@
 		var/randtimer = rand(72000,108000)
 		if (!nonukes)
 			nuke_proc(randtimer)
+			supplydrop_proc()
+		else
 			supplydrop_proc()
 /obj/map_metadata/nomads_wasteland/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
@@ -77,8 +80,8 @@
 			nuke_proc(timer)
 	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
-	if (world_radiation >= 280 && !nonukes)
-		var/droptype = pick("supplies","food","weapons","medicine")
+	if ((world_radiation >= 280 && !nonukes)||is_zombie == TRUE)
+		var/droptype = pick("supplies","food","weapons","military","medicine")
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)
 			if("supplies")
@@ -86,7 +89,7 @@
 				new/obj/structure/closet/crate/airdrops/supplies(locationt)
 
 			if("food")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food has been airdropped in the area!</center></font>"
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food and water have been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/food(locationt)
 				new/obj/item/weapon/reagent_containers/glass/barrel/modern/water(locationt)
 
@@ -95,7 +98,7 @@
 				new/obj/structure/closet/crate/airdrops/weapons(locationt)
 
 			if("military")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>military equipment have been airdropped in the area!</center></font>"
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>military equipment has been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/military(locationt)
 
 			if("medicine")
@@ -122,7 +125,6 @@
 	is_zombie = TRUE
 	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
-
 
 /obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
