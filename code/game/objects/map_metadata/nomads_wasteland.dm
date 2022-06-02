@@ -81,7 +81,7 @@
 	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
 	if ((world_radiation >= 280 && !nonukes)||is_zombie == TRUE)
-		var/droptype = pick("supplies","food","weapons","military","medicine")
+		var/droptype = pick("supplies","food","weapons","military","medicine","rad","cold")
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)
 			if("supplies")
@@ -104,6 +104,15 @@
 			if("medicine")
 				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/medicine(locationt)
+
+			if("rad")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Radiation equipment has been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/rads(locationt)
+
+			if("cold")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Cold weather equipment has been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/cold(locationt)
+
 	spawn(rand(36000, 72000))
 		supplydrop_proc()
 
