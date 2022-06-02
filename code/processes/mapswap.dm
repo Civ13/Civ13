@@ -630,3 +630,23 @@
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Kills"
 		return
+
+		/// WASTELAND MODES //
+	else if (vote.voted_gamemode == "After the Fall")
+		world << "<font color='yellow'><big>After the Fall</big><br>The world has long since become lost and desolate. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+		map.gamemode = "After the Fall"
+		map.is_zombie = FALSE
+		map.nonukes = TRUE
+		return
+	else if (vote.voted_gamemode == "Nuklear")
+		world << "<font color='yellow'><big>Nuklear</big><br>To make things worse sometime between 2 and 3.5 hours a nuklear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+		map.gamemode = "Nuklear"
+		map.is_zombie = FALSE
+		map.nonukes = FALSE
+		return
+	else if (vote.voted_gamemode == "Zombie Apocalypse")
+		world << "<font color='yellow'><big>Zombie Apocalypse</big><br>Something has gone terribly wrong. Monsters roam the world and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+		map.gamemode = "Zombie Apocalypse"
+		map.is_zombie = TRUE
+		map.nonukes = TRUE
+		return
