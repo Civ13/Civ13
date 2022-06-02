@@ -2505,7 +2505,7 @@
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 3
-	max_positions = 15
+	max_positions = 8
 
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2537,7 +2537,7 @@
 	title = "Mechanic"
 	en_meaning = ""
 	rank_abbreviation = "Mechanic"
-	whitelisted = FALSE
+	whitelisted = TRUE
 	spawn_location = "JoinLateCivF"
 	selection_color = "#cd853f"
 	is_deal = TRUE
@@ -2570,7 +2570,7 @@
 	title = "Homeless Man"
 	en_meaning = ""
 	rank_abbreviation = ""
-	whitelisted = FALSE
+	whitelisted = TRUE
 	spawn_location = "JoinLateCivG"
 	selection_color = "#8b4513"
 	is_deal = TRUE

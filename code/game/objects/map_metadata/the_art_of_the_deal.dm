@@ -35,7 +35,7 @@
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
-	var/maxpoints = 3000
+	var/maxpoints = 4000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
 
@@ -401,6 +401,7 @@
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
 		/obj/item/weapon/storage/box/bodybags = 3,
+		/obj/item/taperoll/police = 10,
 		/obj/item/clothing/head/helmet/constable = 5,
 		/obj/item/clothing/under/constable = 5,
 		/obj/item/clothing/under/traffic_police = 5,
