@@ -35,7 +35,7 @@
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
-	var/maxpoints = 3000
+	var/maxpoints = 4000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
 
