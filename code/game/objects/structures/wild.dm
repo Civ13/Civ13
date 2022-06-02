@@ -46,7 +46,7 @@ var/list/seed_list_jungle
 /obj/structure/wild/proc/generate_seed_list(var/biome)
 	//generate seed list for empty list, called once per first empty entry in pick_seed_by_biome()
 	var/list/s_list
-	var/obj/item/stack/farming/seeds/seed_check 
+	var/obj/item/stack/farming/seeds/seed_check
 	s_list = typesof(/obj/item/stack/farming/seeds)
 	s_list -= /obj/item/stack/farming/seeds
 	s_list -= /obj/item/stack/farming/seeds/herbs //Technically it's not a seed
@@ -74,7 +74,7 @@ var/list/seed_list_jungle
 			if (!seed_list_sea)
 				generate_seed_list(biome)
 			return pick(seed_list_sea)
-		if ("temperate")	
+		if ("temperate")
 			if (!seed_list_temperate)
 				generate_seed_list(biome)
 			return pick(seed_list_temperate)
@@ -115,7 +115,7 @@ var/list/seed_list_jungle
 		return pick_seed_by_biome()
 	else
 		return pick_seed_by_biome(A.climate)
-		
+
 /obj/structure/wild/Destroy()
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
@@ -380,6 +380,12 @@ var/list/seed_list_jungle
 /obj/structure/wild/tree/live_tree/pine/New()
 	..()
 	icon_state = "pine_[rand(1,3)]"
+	if (map.ID == MAP_HUNGERGAMES)
+		spawn(6000)
+			if(prob(75))
+				qdel(src)
+			else
+				return
 
 /obj/structure/wild/tree/live_tree/pine/update_icon()
 	..()

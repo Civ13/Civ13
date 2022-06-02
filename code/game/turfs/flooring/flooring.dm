@@ -55,6 +55,15 @@ var/list/flooring_types
 	damage_temperature = T0C+3000
 //	flags = TURF_HAS_EDGES
 
+/decl/flooring/dirt/space
+	name = "space"
+	desc = "vast emptyness."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "space"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+//	flags = TURF_HAS_EDGES
+
 /decl/flooring/dust
 	name = "dry dirt"
 	desc = "Simple dry dirt."

@@ -33,6 +33,16 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak74/rubber
+	name = "AK-74 Magazine (5.45x39mm Rubber)"
+	icon_state = "ak74"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
+	ammo_type = /obj/item/ammo_casing/a545x39/rubber
+	max_ammo = 30
+	weight = 0.5
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ak74/drum
 	name = "AK-74 Drum Magazine (5.45x39mm)"
 	max_ammo = 75

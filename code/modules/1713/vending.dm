@@ -1067,6 +1067,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak47 = 40,
 		/obj/item/ammo_magazine/sks = 80,
 		/obj/item/ammo_magazine/ak74 = 12,
+		/obj/item/ammo_magazine/ak74/rubber = 15,
 		/obj/item/ammo_magazine/pkm = 5,
 		/obj/item/ammo_magazine/makarov = 10,
 	)
@@ -1147,4 +1148,15 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dc17 =20,
 		/obj/item/ammo_magazine/tibannagas/dc15 = 50,
 		/obj/item/ammo_magazine/tibannagas/dc15a = 25,
+	)
+
+/obj/structure/vending/starwars/gonk/gcw
+	name = "A munitions gonk droid"
+	desc = "A gonk droid that supplies tibanna magizines."
+	icon_state = "gonk"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/e11 = 60,
+		/obj/item/ammo_magazine/tibannagas/dl44 = 60,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
+		/obj/item/ammo_magazine/tibannagas/a280 = 60,
 	)

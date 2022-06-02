@@ -62,7 +62,7 @@
 			roundend_msg = "The whole crew has succumbed!<br><font color='red'>You have lost!</font>"
 			map.next_win = world.time - 100
 			return
-			
+
 /obj/map_metadata/voyage/proc/show_stats()
 	if (no_spam)
 		return
@@ -421,6 +421,8 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (J.is_event == TRUE)
+		. = FALSE
+	else if (J.is_event_role == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
