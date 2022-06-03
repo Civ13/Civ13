@@ -201,6 +201,32 @@
 										HMN.gun_permit = FALSE
 			else
 				map.scores[civilization] -= 200
+		var/mob/living/human/H
+		if ((!civilization || H.civilization == "Sheriff Office" || H.civilization == "Paramedics") in range(7,src))
+			if (ishuman(last_harmed))
+				var/reason = "Murder"
+				if (!(last_harmed.real_name in map.warrants))
+					map.warrants += last_harmed.real_name
+					last_harmed.gun_permit = 0
+					var/obj/item/weapon/paper_bin/police/PAR = null
+					for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+						PAR = PAR2
+						break
+					if (PAR)
+						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+						SW.tgt_mob = last_harmed
+						SW.tgt = last_harmed.real_name
+						SW.tgtcmp = last_harmed.civilization
+						SW.reason = reason
+						SW.spawntimer = 12000
+					var/obj/item/weapon/paper/police/warrant/SW2 = new /obj/item/weapon/paper/police/warrant(null)
+					SW2.tgt_mob = last_harmed
+					SW2.tgt = last_harmed.real_name
+					SW2.tgtcmp = last_harmed.civilization
+					SW2.reason = reason
+					map.pending_warrants += SW2
+					SW2.forceMove(null)
+
 	else if (map && map.ID == MAP_OCCUPATION && client)
 		var/obj/map_metadata/occupation/GD = map
 		var/mob/living/human/H = src

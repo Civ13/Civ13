@@ -89,3 +89,9 @@
 /obj/item/projectile/laser/pistol/g
 	icon_state = "greenbolt"
 	muzzle_type = /obj/effect/projectile/laser/muzzle/g
+
+
+/obj/item/projectile/laser/repeating
+	damage = 120
+	icon_state = "redbolt"
+	muzzle_type = /obj/effect/projectile/laser/muzzle

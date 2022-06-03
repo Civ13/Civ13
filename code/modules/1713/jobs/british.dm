@@ -558,7 +558,7 @@
 
 
 	return TRUE
-
+/*
 /datum/job/british/chasseur
 	title = "British Light Infantry"
 	en_meaning = "Light Infantry"
@@ -605,6 +605,7 @@
 
 
 	return TRUE
+*/ //goraps a bitch and refuses to listen to his superiors because he's light infantry
 //////////////////////////////////////////////////////
 ////////////////////////////WW1///////////////////////
 //////////////////////////////////////////////////////

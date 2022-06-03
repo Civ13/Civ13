@@ -1078,3 +1078,12 @@
 	name = "pistol laser bolt"
 	projectile_type = /obj/item/projectile/laser/pistol/g
 	caliber = "laser_pistolg"
+
+/obj/item/ammo_casing/laser/repeating
+	name = "laser bolt"
+	desc = "you shouldnt be seeing this"
+	caliber = "laser"
+	icon_state = "darts"
+	spent_icon = "darts-0"
+	projectile_type = /obj/item/projectile/laser/repeating
+	leaves_residue = FALSE
