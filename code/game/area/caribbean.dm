@@ -188,7 +188,7 @@
 
 /area/caribbean/nomads/forest/Jungle
 	name = "Jungle"
-	base_turf = /turf/floor/grass/jungle
+	base_turf = /turf/floor/dirt/jungledirt
 	icon_state = "green1"
 	climate = "jungle"
 
@@ -590,6 +590,12 @@
 /area/caribbean/no_mans_land/invisible_wall/inside
 	location = AREA_INSIDE
 
+/area/caribbean/no_mans_land/invisible_wall/inside/one
+	icon_state = "green1"
+	name = "I grace wall"
+/area/caribbean/no_mans_land/invisible_wall/inside/two
+	icon_state = "green1"
+	name = "II grace wall"
 /area/caribbean/desert
 	name = "The Desert"
 	icon_state = "red1"
@@ -791,7 +797,7 @@
 /area/caribbean/colonies/jungle
 	name = "Jungle"
 	icon_state = "red2"
-	base_turf = /turf/floor/dirt
+	base_turf = /turf/floor/dirt/jungledirt
 	ambience = list("sound/ambience/jungle1.ogg")
 	climate = "jungle"
 
