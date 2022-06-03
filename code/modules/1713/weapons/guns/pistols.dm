@@ -378,7 +378,7 @@
 	if (ammo_magazine)
 		icon_state = "mauser"
 	else
-		icon_state = "mauser0-1"
+		icon_state = "mauser0"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/borchardt
@@ -594,7 +594,7 @@
 	if (ammo_magazine)
 		icon_state = "makarov"
 	else
-		icon_state = "makarov_0"
+		icon_state = "makarov0"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/makarov/silenced/New()
