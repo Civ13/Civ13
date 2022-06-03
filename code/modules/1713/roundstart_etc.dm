@@ -79,7 +79,7 @@ var/GRACE_PERIOD_LENGTH = 7
 /hook/roundstart/proc/do_seasonal_stuff()
 	spawn (1)
 //		world << "<span class = 'notice'>Setting up seasons.</span>"
-	if (map.ID == MAP_NOMADS_DESERT || map.ID == MAP_NOMADS_JUNGLE)
+	if (map.ID == MAP_NOMADS_DESERT || map.ID == MAP_NOMADS_JUNGLE || map.ID == MAP_ROAD_TO_DAK_TO || map.ID == MAP_ALLEYWAY)
 		season = "Wet Season"
 	else if (map.ID == MAP_NOMADS_ICE_AGE || map.ID == MAP_GULAG13)
 		season = "WINTER"
