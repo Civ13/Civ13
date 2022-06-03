@@ -200,7 +200,7 @@
 	taste_description = "sweetness"
 	nutriment_factor = 25
 	color = "#FFFFFF"
-	
+
 /datum/reagent/nutriment/apricotjuice //Added new reagent for apricots
 	name = "Apricot juice"
 	id = "apricotjuice"
@@ -632,6 +632,13 @@
 	description = "An opaque white liquid produced by the mammary glands of mammals."
 	taste_description = "milk"
 	color = "#DFDFDF"
+
+/datum/reagent/drink/milk/blue
+	name = "Blue Milk"
+	id = "bmilk"
+	description = "An opaque light blue liquid produced by the mammary glands of banthas."
+	taste_description = "sweet and milk like"
+	color = "#bfe6ff"
 
 /datum/reagent/drink/milk/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()

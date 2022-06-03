@@ -286,6 +286,13 @@
 	det_time = 45
 	throw_range = 11
 
+/obj/item/weapon/grenade/modern/thermaldetonator
+	name = "Thermal Detonator"
+	desc = "A grenade-like weapon popular among military personnel, criminals, bountyhunters, and mercenaries."
+	icon_state = "detonator"
+	det_time = 35
+	throw_range = 12
+
 /obj/item/weapon/grenade/ww2/rgd33
 	name = "RGD-33 grenade"
 	desc = "A Soviet fragmentation grenade."
