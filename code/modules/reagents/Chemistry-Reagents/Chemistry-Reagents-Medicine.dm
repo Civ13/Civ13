@@ -545,7 +545,7 @@
 	M.mood += removed*100
 
 /datum/reagent/sterilizine
-	name = "sterilizine"
+	name = "sterilizine" //Patch notes: Fixed incorrectly placed capital that was preventing reagent working
 	description = "Sterilizes wounds in preparation for surgery and thoroughly removes blood."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
