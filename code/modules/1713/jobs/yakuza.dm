@@ -22,18 +22,39 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/peakyblinder(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat2/trench(H), slot_wear_suit)
 //head
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	if (prob(35))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta/silenced(H), slot_belt)
-	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_belt)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/hip/double/holsterh = new /obj/item/clothing/accessory/holster/hip/double(null)
 	uniform.attackby(holsterh, H)
+
+	var/randgun = rand(1,3)
+	if (randgun == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/blackm1911(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/blackm1911/silenced(H), slot_belt)
+		var/obj/item/weapon/gun/projectile/pistol/blackm1911/gun1 = new /obj/item/weapon/gun/projectile/pistol/blackm1911(null)
+		var/obj/item/ammo_magazine/m1911/gload = new /obj/item/ammo_magazine/m1911(null)
+		gun1.attackby(gload, H)
+		uniform.attackby(gun1, H)
+	else if (randgun == 2)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/p220(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/p220/silenced(H), slot_belt)
+		var/obj/item/weapon/gun/projectile/pistol/p220/gun1 = new /obj/item/weapon/gun/projectile/pistol/p220(null)
+		var/obj/item/ammo_magazine/p220/gload = new /obj/item/ammo_magazine/p220(null)
+		gun1.attackby(gload, H)
+		uniform.attackby(gun1, H)
+	else if (randgun == 3)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/magnum44(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/magnum44/silenced(H), slot_belt)
+		var/obj/item/weapon/gun/projectile/revolver/magnum44/gun1 = new /obj/item/weapon/gun/projectile/revolver/magnum44(null)
+		var/obj/item/ammo_magazine/m44speedloader/gload = new /obj/item/ammo_magazine/m44speedloader(null)
+		gun1.attackby(gload, H)
+		uniform.attackby(gun1, H)
+
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.civilization = "Yamaguchi-Gumi"
 	give_random_name(H)
@@ -73,7 +94,7 @@
 
 /datum/job/japanese/yakuza_underboss_deputy
 	title = "Yama Wakagashira-Hosa"
-	en_meaning = "Deputy underboss"
+	en_meaning = "Deputy Underboss"
 	rank_abbreviation = "Wa-Ho"
 	spawn_location = "JoinLateJP"
 	whitelisted = TRUE
@@ -95,14 +116,39 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 //head
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta/silenced(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/wakazashi/yakuza(H), slot_back)
+
+	if (prob(65))
+		if (prob(75))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/coachgun(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_l_store)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_l_store)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_belt)
+		if (prob(75))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_shoulder)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/type100(H), slot_shoulder)
+
+	var/randgun = rand(1,4)
+	if (randgun == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive/silenced(H), slot_belt)
+
+	else if (randgun == 2)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver/silenced(H), slot_belt)
+	else if (randgun == 3)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38/silenced(H), slot_belt)
+	else if (randgun == 4)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov/silenced(H), slot_belt)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.civilization = "Yamaguchi-Gumi"
@@ -168,13 +214,39 @@
 	else if (randjack == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 //back
-	if (prob(5))
+	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/silencer/pistol(H), slot_l_store)
 	else
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+		var/randknife = rand(1,4)
+		if (randknife == 1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/tanto(H), slot_belt)
+		else if (randknife == 2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/razorblade(H), slot_l_store)
+		else if (randknife == 3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/fancy(H), slot_l_store)
+		else if (randknife == 4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/randgun = rand(1,8)
+	if (randgun == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive(H), slot_l_hand)
+	else if (randgun == 2)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	else if (randgun == 3)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	else if (randgun == 4)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_l_hand)
+	else if (randgun == 5)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+	else if (randgun == 6)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+	else if (randgun == 7)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	else if (randgun == 8)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/t26_revolver(H), slot_l_hand)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.civilization = "Yamaguchi-Gumi"
@@ -233,15 +305,37 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 //head
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
-	if (prob(35))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta/silenced(H), slot_belt)
-	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_belt)
+
+
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+
+	var/obj/item/clothing/accessory/holster/hip/double/holsterh = new /obj/item/clothing/accessory/holster/hip/double(null)
 	uniform.attackby(holsterh, H)
+
+	var/randgun = rand(1,3)
+	if (randgun == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/blackm1911(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/blackm1911/silenced(H), slot_belt)
+		var/obj/item/weapon/gun/projectile/pistol/blackm1911/gun1 = new /obj/item/weapon/gun/projectile/pistol/blackm1911(null)
+		var/obj/item/ammo_magazine/m1911/gload = new /obj/item/ammo_magazine/m1911(null)
+		gun1.attackby(gload, H)
+		uniform.attackby(gun1, H)
+	else if (randgun == 2)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/p220(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/p220/silenced(H), slot_belt)
+		var/obj/item/weapon/gun/projectile/pistol/p220/gun1 = new /obj/item/weapon/gun/projectile/pistol/p220(null)
+		var/obj/item/ammo_magazine/p220/gload = new /obj/item/ammo_magazine/p220(null)
+		gun1.attackby(gload, H)
+		uniform.attackby(gun1, H)
+	else if (randgun == 3)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/magnum44(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/magnum44/silenced(H), slot_belt)
+		var/obj/item/weapon/gun/projectile/revolver/magnum44/gun1 = new /obj/item/weapon/gun/projectile/revolver/magnum44(null)
+		var/obj/item/ammo_magazine/m44speedloader/gload = new /obj/item/ammo_magazine/m44speedloader(null)
+		gun1.attackby(gload, H)
+		uniform.attackby(gun1, H)
 	give_random_name(H)
 	H.civilization = "Ichiwa-Kai"
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
@@ -279,7 +373,7 @@
 
 /datum/job/japanese/yakuza_underboss_deputy_ichi
 	title = "Ichi Wakagashira-Hosa"
-	en_meaning = "Deputy underboss"
+	en_meaning = "Deputy Underboss"
 	rank_abbreviation = "Wa-Ho"
 	spawn_location = "JoinLateRN"
 	whitelisted = TRUE
@@ -302,14 +396,39 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 //head
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
-	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta/silenced(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/wakazashi/yakuza(H), slot_back)
+
+	if (prob(55))
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/coachgun(H), slot_shoulder)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_belt)
+		if (prob(65))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_shoulder)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/type100(H), slot_shoulder)
+
+	var/randgun = rand(1,4)
+	if (randgun == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive/silenced(H), slot_belt)
+
+	else if (randgun == 2)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver/silenced(H), slot_belt)
+	else if (randgun == 3)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38/silenced(H), slot_belt)
+	else if (randgun == 4)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov/silenced(H), slot_belt)
+
+
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
 	uniform.attackby(holsterh, H)
 	H.civilization = "Ichiwa-Kai"
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
@@ -374,13 +493,39 @@
 	else if (randjack == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
 //back
-	if (prob(5))
+
+	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/silencer/pistol(H), slot_l_store)
 	else
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+		var/randknife = rand(1,4)
+		if (randknife == 1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/tanto(H), slot_belt)
+		else if (randknife == 2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/razorblade(H), slot_l_store)
+		else if (randknife == 3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/fancy(H), slot_l_store)
+		else if (randknife == 4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	var/randgun = rand(1,8)
+	if (randgun == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive(H), slot_l_hand)
+	else if (randgun == 2)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	else if (randgun == 3)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	else if (randgun == 4)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_l_hand)
+	else if (randgun == 5)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+	else if (randgun == 6)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+	else if (randgun == 7)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	else if (randgun == 8)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/t26_revolver(H), slot_l_hand)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
 	uniform.attackby(holsterh, H)
 	H.civilization = "Ichiwa-Kai"
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)

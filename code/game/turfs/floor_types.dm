@@ -17,6 +17,10 @@
 	name = "floor"
 	icon_state = "fancywood"
 
+/turf/floor/blackslateroof
+	name = "roof"
+	icon = 'icons/turf/roofs.dmi'
+	icon_state = "black_slateroof_dm"
 
 /* when this is a subtype of /turf/floor/wood, it doesn't get the right icon.
  * not sure why right now - kachnov */

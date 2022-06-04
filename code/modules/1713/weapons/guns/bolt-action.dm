@@ -302,14 +302,15 @@
 /obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal
 	name = "Barrett M99"
 	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
-	icon_state = "a50calbolt"
-	item_state = "a50calbolt"
-	base_icon = "a50calbolt"
+	icon_state = "a50calss"
+	item_state = "a50calss"
+	base_icon = "a50calss"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	w_class = 4
 	force = 10
 	throwforce = 5
 	max_shells = 1
-	slot_flags = null
+	slot_flags = SLOT_SHOULDER
 	caliber = "a50cal"
 	weight = 8
 	recoil = 3
@@ -331,7 +332,10 @@
 	load_delay = 20
 	bolt_open = FALSE
 	bolt_safety = FALSE
-/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/New()
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
@@ -1059,7 +1063,7 @@
 	w_class = 2
 	effectiveness_mod = 0.77
 	value = 60
-	slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
+	slot_flags = SLOT_BELT|SLOT_HOLSTER|SLOT_SHOULDER
 	equiptimer = 9
 
 
