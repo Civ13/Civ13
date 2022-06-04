@@ -76,17 +76,25 @@
 
 	else
 		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-			if (usr.original_job_title != "Mechanic")
-				usr << "You do not know how to do this."
+			if (usr.original_job_title == "Mechanic")
+				on = FALSE
+				power_off_connections()
+				fueltank.anchored = FALSE
+				usr << "You disconnect the fuel tank from the [src]."
+				fueltank = null
+				update_icon()
 				return
-		else
-			on = FALSE
-			power_off_connections()
-			fueltank.anchored = FALSE
-			usr << "You disconnect the fuel tank from the [src]."
-			fueltank = null
-			update_icon()
-			return
+			else
+				usr << "<span class='warning'>You do not know how to do this.</span>"
+				return
+
+		on = FALSE
+		power_off_connections()
+		fueltank.anchored = FALSE
+		usr << "You disconnect the fuel tank from the [src]."
+		fueltank = null
+		update_icon()
+		return
 
 /obj/structure/engine/internal/turn_on(var/mob/user = null)
 	if (on)
