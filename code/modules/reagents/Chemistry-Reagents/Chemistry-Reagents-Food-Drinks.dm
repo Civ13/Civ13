@@ -637,7 +637,7 @@
 	name = "Blue Milk"
 	id = "bmilk"
 	description = "An opaque light blue liquid produced by the mammary glands of banthas."
-	taste_description = "sweet and milk like"
+	taste_description = "extremely sweet and rich "
 	color = "#bfe6ff"
 
 /datum/reagent/drink/milk/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
