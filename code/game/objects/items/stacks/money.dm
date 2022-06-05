@@ -154,39 +154,9 @@
 	desc = "A silver coin, also called piece of eight, worth 8 reales."
 	singular_name = "dollar"
 	icon_state = "5dollar"
-	amount = 8
-	value = 1
+	amount = 1
+	value = 8
 	flags = CONDUCT
-/obj/item/stack/money/dollar/update_icon()
-	if (amount == 1)
-		icon_state = "dollar"
-		desc = "A one dollar bank note"
-	if (amount > 1)
-		icon_state = "dollar_2"
-		desc = "A few dollar bank note"
-	if (amount == 5)
-		icon_state = "5dollar"
-		desc = "A five dollar bank note"
-	if (amount >= 5)
-		icon_state = "5dollar_2"
-		desc = "A five dollar bank note and some."
-	if (amount == 20)
-		icon_state = "20dollar"
-		desc = "A twenty dollar bank note"
-	if (amount >= 20)
-		icon_state = "20dollar_2"
-		desc = "A twenty dollar bank note and some"
-	if (amount == 50)
-		icon_state = "50dollar"
-		desc = "A fifty dollar bank note"
-	if (amount >= 50)
-		icon_state = "50dollar_2"
-		desc = "A fifty dollar bank note and some"
-	if (amount >= 200)
-		icon_state = "50dollar_2"
-		desc = "four fifty dollar bank notes and some"
-
-
 /obj/item/stack/money/dollar/New()
 	if (map && map.ordinal_age >= 4)
 		if (map.ID == MAP_SOVAFGHAN)
@@ -199,22 +169,12 @@
 			flags = FALSE
 			update_icon()
 			return ..()
-		else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-			name = "Dollar Bills"
-			desc = "Paper bank note"
-			singular_name = "Dollar Bill"
-			icon_state = "dollar"
-			value = 1
-			novariants = FALSE
-			flags = FALSE
-			update_icon()
-			return ..()
 		else
 			name = "5 Dollar Bills"
 			desc = "Paper bank note valued at five dollars."
 			singular_name = "5 Dollar Bill"
 			icon_state = "5dollar"
-			value = 5
+			value = 20
 			novariants = FALSE
 			flags = FALSE
 			update_icon()
