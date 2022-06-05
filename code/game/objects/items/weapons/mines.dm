@@ -158,9 +158,8 @@
 	icon_state = "mine_armed"
 
 /obj/item/mine/ap/armed/New()
-	for (map.ID == MAP_HUNGERGAMES)
-		if (processes.ticker.playtime_elapsed > 1800)
-			qdel(src)
+	if (map.ID == MAP_HUNGERGAMES && processes.ticker.playtime_elapsed > 1800)
+		qdel(src)
 
 /obj/item/mine/at
 	name = "anti-tank mine"
