@@ -92,6 +92,11 @@
 	desc = "A sign for the local Sheriff's Office."
 	icon_state = "sheriff"
 
+/obj/structure/sign/bank
+	name = "bank"
+	desc = "A sign for the local bank."
+	icon_state = "bank"
+
 /obj/structure/sign/bar
 	name = "BAR"
 	desc = "A sign that says bar on it."
@@ -319,3 +324,82 @@
 	desc = "A barque at sea, lit by the full moon."
 	name = "painting"
 	icon_state = "painting10"
+
+/obj/structure/sign/painting11
+	desc = "A famous painting with a starry sky."
+	name = "painting"
+	icon_state = "painting11"
+
+/obj/structure/sign/painting12
+	desc = "An arrid desert, with some tents in the middle."
+	name = "painting"
+	icon_state = "painting12"
+
+/obj/structure/sign/painting13
+	desc = "A still life."
+	name = "painting"
+	icon_state = "painting13"
+
+////Restroom signs////
+
+/obj/structure/sign/restroom
+	desc = "A sign indicating the presence of a restroom."
+	name = "restroom"
+	icon_state = "restroom"
+
+/obj/structure/sign/restroom/male
+	desc = "A sign indicating the presence of a male restroom."
+	name = "restroom"
+	icon_state = "restroom_male"
+
+/obj/structure/sign/restroom/female
+	desc = "A sign indicating the presence of a female restroom."
+	name = "restroom"
+	icon_state = "restroom_female"
+
+/obj/structure/sign/justice
+	desc = "A justice sign."
+	name = "justice"
+	icon_state = "justice"
+
+/obj/structure/sign/court
+	name = "court"
+	desc = "A court house."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "court"
+
+/obj/structure/sign/nosmoking
+	desc = "Smoking is prohibited in this area."
+	name = "no smoking"
+	icon_state = "nosmoking"
+
+/obj/structure/sign/nosmoking2
+	desc = "Smoking is prohibited in this area."
+	name = "no smoking"
+	icon_state = "nosmoking2"
+
+/obj/structure/sign/anatomy
+	desc = "A poster detailing the complexity of the human body."
+	name = "anatomy poster"
+	icon_state = "anatomy"
+
+/obj/structure/sign/periodic
+	desc = "A poster detailing the complexity of the human body."
+	name = "periodic table"
+	icon_state = "periodic"
+
+/obj/structure/sign/casino
+	name = "casino"
+	desc = "A blinking casino sign"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "casino"
+
+/obj/structure/sign/open
+	name = "open"
+	desc = "A blinking open sign"
+	icon_state = "open"
+
+/obj/structure/sign/guns
+	name = "gun store"
+	desc = "A blinking gun store sign"
+	icon_state = "gunshop"
