@@ -2392,7 +2392,7 @@
 	rank_abbreviation = "Sheriff"
 	whitelisted = TRUE
 	spawn_location = "JoinLateCivL"
-	selection_color = "#c3b091"
+	selection_color = "#c5a562"
 	can_be_female = TRUE
 	is_deal = TRUE
 	is_officer = TRUE
@@ -2405,7 +2405,7 @@
 	rank_abbreviation = "Deputy"
 	whitelisted = TRUE
 	spawn_location = "JoinLateCiv"
-	selection_color = "#c3b091"
+	selection_color = "#c5a562"
 	can_be_female = TRUE
 	is_deal = TRUE
 
@@ -2527,7 +2527,7 @@
 	rank_abbreviation = "Paramedic"
 	whitelisted = FALSE
 	spawn_location = "JoinLateCivE"
-	selection_color = "#777777"
+	selection_color = "#91a6eb"
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 3
@@ -2594,11 +2594,9 @@
 
 /datum/job/civilian/hobo
 	title = "Homeless Man"
-	en_meaning = ""
-	rank_abbreviation = ""
-	whitelisted = TRUE
+	whitelisted = FALSE
 	spawn_location = "JoinLateCivG"
-	selection_color = "#8b4513"
+	selection_color = "#402b01"
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 1
@@ -2606,23 +2604,56 @@
 
 /datum/job/civilian/hobo/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/gatorpants(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/punk(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/trash(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/punk(H), slot_shoes)
-	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/armband/punk/armband = new /obj/item/clothing/accessory/armband/punk(null)
-	uniform1.attackby(armband, H)
-	H.add_note("Role", "You are a Bum. You should find a way to earn some cash. Maybe try helping out one of the gangs in the area.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	var/randoutfit = rand(1,3)
+	switch(randoutfit)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/gatorpants(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/punk(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/trash(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/punk(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/syringe(H), slot_l_store)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_r_store)
+			var/obj/item/clothing/under/uniform1 = H.w_uniform
+			var/obj/item/clothing/accessory/armband/punk/armband = new /obj/item/clothing/accessory/armband/punk(null)
+			uniform1.attackby(armband, H)
+			if (H.h_style != "Mohawk")
+				H.h_style = "Mohawk"
+
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/beggar_clothing, slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+		if (3)
+			var/obj/item/clothing/head/custom/fieldcap/headcap = new /obj/item/clothing/head/custom/fieldcap(null)
+			headcap.capcolor = "#932310"
+			headcap.uncolored1 = FALSE
+			H.equip_to_slot_or_del(headcap, slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2, slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2, slot_l_store)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+
+	if (prob(60))
+		var/randaddiction = rand(1,4)
+		switch(randaddiction)
+			if (1)
+				H.addictions["cocaine"] += rand(10,100)
+			if (2)
+				H.addictions["opium"] += rand(10,100)
+			if (3)
+				H.addictions["tobacco"] += rand(10,100)
+			if (4)
+				H.addictions["alcohol"] += rand(10,100)
+	H.add_note("Role", "You are a Bum. You should find a way to earn some cash to fulfill your potential addicition. Maybe try helping out one of the gangs in the area.")
+	H.setStat("strength", STAT_LOW)
+	H.setStat("crafting", STAT_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
 /*
 /datum/job/civilian/fireperson
 	title = "Fire Response"
