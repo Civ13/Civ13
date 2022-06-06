@@ -91,3 +91,7 @@
 /obj/item/weapon/grenade/flashbang/m84
 	name = "M84 flashbang grenade"
 	icon_state = "flashbang"
+
+/obj/item/weapon/grenade/flashbang/galaxywars
+	name = "Flash-bang grenade"
+	icon_state = "sflashbang"

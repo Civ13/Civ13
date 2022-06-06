@@ -51,7 +51,7 @@
 
 	PLEASE USE RESPONSIBLY, Some log files canr each sizes of 4MB!	*/
 /client/proc/file_spam_check()
-	if (check_rights(R_ADMIN) || key == world.host)
+	if (check_rights(R_ADMIN, FALSE, src.mob) || key == world.host)
 		return FALSE
 	var/time_to_wait = fileaccess_timer - world.time
 	if (time_to_wait > 0)

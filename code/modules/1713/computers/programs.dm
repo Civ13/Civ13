@@ -1321,8 +1321,8 @@
 					M = user.get_active_hand()
 				else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
 					M = user.get_inactive_hand()
-				if (M && M.value*M.amount >= 500)
-					M.amount-=500
+				if (M && M.value*M.amount >= 100*4)
+					M.amount-=100/5
 					if (M.amount <= 0)
 						qdel(M)
 				else
