@@ -322,6 +322,7 @@
 #include "code\game\objects\items\cards.dm"
 #include "code\game\objects\items\clay_items.dm"
 #include "code\game\objects\items\clipboard.dm"
+#include "code\game\objects\items\courtitems.dm"
 #include "code\game\objects\items\glassjar.dm"
 #include "code\game\objects\items\misc.dm"
 #include "code\game\objects\items\pen.dm"
@@ -547,10 +548,12 @@
 #include "code\game\objects\structures\religious.dm"
 #include "code\game\objects\structures\repairing.dm"
 #include "code\game\objects\structures\rocks.dm"
+#include "code\game\objects\structures\roulette_table.dm"
 #include "code\game\objects\structures\safe.dm"
 #include "code\game\objects\structures\sea.dm"
 #include "code\game\objects\structures\sign_flags.dm"
 #include "code\game\objects\structures\signs.dm"
+#include "code\game\objects\structures\slotmachine.dm"
 #include "code\game\objects\structures\table.dm"
 #include "code\game\objects\structures\table_frames.dm"
 #include "code\game\objects\structures\table_rack.dm"
@@ -1044,6 +1047,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\tantiveiv.dmm"
+#include "maps\special\the_art_of_the_deal.dmm"
 // END_INCLUDE
 
