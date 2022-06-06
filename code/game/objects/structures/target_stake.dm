@@ -255,3 +255,21 @@
 	desc = "A wood target, covered in straw. Used for training ranged weapons."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "target_dummy_target"
+
+/obj/structure/practice_dummy/target/human
+	name = "practice target"
+	desc = "A cardboard target. Used for training ranged weapons."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "target_h"
+/obj/structure/practice_dummy/target/human/New()
+	..()
+	name = "practice target"
+	desc = "A cardboard target. Used for training ranged weapons."
+	icon_state = "target_h"
+
+/obj/structure/practice_dummy/target/human/indestructible
+
+/obj/structure/practice_dummy/target/human/indestructible/check_health()
+	return
+/obj/structure/practice_dummy/target/human/indestructible/ex_act()
+	return
