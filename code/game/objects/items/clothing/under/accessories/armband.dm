@@ -107,6 +107,14 @@
 	icon_state = "spanish"
 	slot = "armband"
 
+/obj/item/clothing/accessory/robe
+	name = "red robe"
+	desc = "redrobe."
+	icon_state = "redrobe"
+	item_state = "redrobe"
+	worn_state = "redrobe"
+	slot = "overcloth"
+
 //customizable
 /obj/item/clothing/accessory/custom
 	var/uncolored = FALSE

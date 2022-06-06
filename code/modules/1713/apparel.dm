@@ -39,7 +39,7 @@
 	worn_state = "squid_player"
 
 ///////////////////////////////////////////////////////////////////
-/// Majority of the Sprites under this is made by Mane from TGMC///
+/// Majority of the Sprites under this is made by Mane from TGMC and Eluxor///
 ///////////////////////////////////////////////////////////////////
 
 // Star Wars Outfits//
@@ -50,6 +50,13 @@
 	icon_state = "replicant_bodyglove"
 	item_state = "replicant_bodyglove"
 	worn_state = "replicant_bodyglove"
+
+/obj/item/clothing/under/redbodyglove
+	name = "red bodyglove"
+	desc = "A red tight bodyglove worn by highly trained individuals."
+	icon_state = "red_bodyglove"
+	item_state = "red_bodyglove"
+	worn_state = "red_bodyglove"
 
 //////////////////Imperial Tunics and Caps///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -169,6 +176,20 @@
 	slowdown = 0.1
 	health = 35
 
+/obj/item/clothing/shoes/redguardboots
+	name = "red plastoid boots"
+	desc = "A pair of red plastoid boots."
+	icon_state = "red_guard_boots"
+	item_state = "red_guard_boots"
+	worn_state = "red_guard_boots"
+	body_parts_covered = FEET
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 55, arrow = 70, gun = 70, energy = 75, bomb = 45, bio = 15, rad = FALSE)
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 40
+
 /obj/item/clothing/gloves/replicantgloves
 	name = "plastoid gauntlets"
 	desc = "A pair of armored plastoid gauntlets."
@@ -184,6 +205,18 @@
 	health = 30
 
 // PLASTOID ARMOR
+
+/obj/item/clothing/suit/armor/redguard
+	name = "red guard armor"
+	desc = "A thick, extremely expensive red plastoid armor, covering the torso and back."
+	icon_state = "red_guard"
+	item_state = "red_guard"
+	worn_state = "red_guard"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 65, arrow = 90, gun = 85, energy = 75, bomb = 70, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.6
+	health = 35
 
 /obj/item/clothing/suit/armor/replicant
 	name = "replicant trooper armor"
@@ -282,6 +315,16 @@
 	health = 100
 
 // HELMETS
+
+/obj/item/clothing/head/helmet/replicant/redguard
+	name = "Red Guard helmet"
+	desc = "A reinforced plastoid helmet of the Imperial Red Guard."
+	icon_state = "red_guard"
+	item_state = "red_guard"
+	worn_state = "red_guard"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 70, gun = 50, energy = 65, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/ARF
 	name = "Phase I Replicant ARF Helmet"
@@ -606,8 +649,8 @@
 
 /////////////////REBELS///////////////////////////////////////////
 /obj/item/clothing/head/helmet/rebel
-	name = "Rebel Fleet Trooper Helmet"
-	desc = "A reinforced plastoid helmet of the Rebel Alliance."
+	name = "Fleet Security Helmet"
+	desc = "A reinforced plastoid helmet of fleet security staff."
 	icon_state = "rebel_helmet1"
 	item_state = "rebel_helmet1"
 	worn_state = "rebel_helmet1"
