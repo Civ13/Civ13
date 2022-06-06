@@ -434,79 +434,6 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	nutriment_desc = list("sweetness" = 3, "cookie" = 2)
 	decay = 45*600
 
-/obj/item/weapon/reagent_containers/food/snacks/pizza
-	name = "pizza"
-	desc = "A large flattened pie with toppings."
-	icon_state = "pizza"
-	center_of_mass = list("x"=16, "y"=13)
-	nutriment_amt = 8 //and 4 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "mushrooms" = 2, "cheese" = 2)
-	decay = 15*600
-	New()
-		..()
-		reagents.add_reagent("parsley", 2)
-		reagents.add_reagent("tomato", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzapepperoni
-	name = "pepperoni and cheese pizza"
-	desc = "A large flattened pie with cheese and pepperoni."
-	icon_state = "pizzapepperoni"
-	nutriment_amt = 9 //and 3 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "pepperoni" = 2, "spices" = 1, "cheese" = 2)
-	non_vegetarian = TRUE
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 2)
-		reagents.add_reagent("capsaicin", 1)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/vegetablepizza
-	name = "spicy vegetable pizza"
-	desc = "A large flattened pie with vegetables."
-	icon_state = "vegetablepizza"
-	nutriment_amt = 8 //and 4 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "paprika" = 1, "olives" = 1, "cheese" = 2)
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 2)
-		reagents.add_reagent("celery", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/meatpizza
-	name = "meatball pizza"
-	desc = "A large flattened pie with meat balls and tomato sauce."
-	icon_state = "meatpizza"
-	nutriment_amt = 6 //and 6 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "cheese" = 2)
-	non_vegetarian = TRUE
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("protein", 4)
-		reagents.add_reagent("tomato", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzasauced
-	name = "plain pizza"
-	desc = "A large flattened pie with tomato sauce."
-	icon_state = "pizzasauced"
-	nutriment_amt = 4 //and 8 are below, total 12
-	nutriment_desc = list("baked pastry" = 4)
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 8)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzacheesed
-	name = "cheese pizza"
-	desc = "A large flattened pie with cheese and tomato sauce."
-	icon_state = "pizzacheesed"
-	nutriment_amt = 10 //and 2 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "spices" = 1, "cheese" = 5)
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 2)
-
 /obj/item/weapon/reagent_containers/food/snacks/egg
 	name = "egg"
 	desc = "An egg!"
@@ -1342,6 +1269,202 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/sliceable
 	w_class = 3 //Whole pizzas and cakes shouldn't fit in a pocket, you can slice them if you want to do that.
 	decay = 17*600
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza
+	name = "pizza"
+	desc = "A large flattened pie with toppings."
+	icon_state = "pizza"
+	center_of_mass = list("x"=16, "y"=13)
+	nutriment_amt = 8 //and 4 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzaslice
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "mushrooms" = 2, "cheese" = 2)
+	decay = 15*600
+	New()
+		..()
+		reagents.add_reagent("parsley", 2)
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzaslice
+	name = "pizza slice"
+	desc = "A slice of delicious classic pizza."
+	icon_state = "vegetablepizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni
+	name = "pepperoni and cheese pizza"
+	desc = "A large flattened pie with cheese and pepperoni."
+	icon_state = "pizzapepperoni"
+	nutriment_amt = 9 //and 3 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzapepslice
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "pepperoni" = 2, "spices" = 1, "cheese" = 2)
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+		reagents.add_reagent("capsaicin", 1)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzapepslice
+	name = "pepperoni pizza slice"
+	desc = "A slice of delicious pepperoni pizza."
+	icon_state = "pizzapepperonislice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza
+	name = "spicy vegetable pizza"
+	desc = "A large flattened pie with vegetables."
+	icon_state = "vegetablepizza"
+	nutriment_amt = 8 //and 4 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzavege
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "paprika" = 1, "olives" = 1, "cheese" = 2)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+		reagents.add_reagent("celery", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzavege
+	name = "spicy vegetarian pizza slice"
+	desc = "A slice of delicious vege pizza."
+	icon_state = "vegetablepizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza
+	name = "meatball pizza"
+	desc = "A large flattened pie with meat balls and tomato sauce."
+	icon_state = "meatpizza"
+	nutriment_amt = 6 //and 6 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzameat
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "cheese" = 2)
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzameat
+	name = "meat pizza slice"
+	desc = "A slice of delicious meat pizza."
+	icon_state = "meatpizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced
+	name = "plain pizza"
+	desc = "A large flattened pie with tomato sauce."
+	icon_state = "pizzasauced"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/saucedsliced
+	slices_num = 8
+	nutriment_amt = 4 //and 8 are below, total 12
+	nutriment_desc = list("baked pastry" = 4)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 8)
+
+/obj/item/weapon/reagent_containers/food/snacks/saucedsliced
+	name = "sauced pizza slice"
+	desc = "A slice of delicious sauced pizza."
+	icon_state = "pizzasaucedslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed
+	name = "cheese pizza"
+	desc = "A large flattened pie with cheese and tomato sauce."
+	icon_state = "pizzacheesed"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzacheesesliced
+	slices_num = 8
+	nutriment_amt = 10 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "spices" = 1, "cheese" = 5)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzacheesesliced
+	name = "cheese pizza slice"
+	desc = "A slice of delicious cheese pizza."
+	icon_state = "pizzacheesedslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian
+	name = "hawaiian pizza"
+	desc = "A large flattened pie with cheese, ham and pineapple"
+	icon_state = "hawaiianpizza"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzahawaiiansliced
+	slices_num = 8
+	nutriment_amt = 12 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "spices" = 1, "cheese" = 5)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzahawaiiansliced
+	name = "cheese pizza slice"
+	desc = "A slice of delicious hawaiian styled pizza."
+	icon_state = "hawaiianpizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamac
+	name = "mac n cheese pizza"
+	desc = "A large flattened pie with cheese and macaroni noodles"
+	icon_state = "macpizza"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzamacsliced
+	slices_num = 8
+	nutriment_amt = 12 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "cheese" = 8)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzamacsliced
+	name = "mac n cheese pizza slice"
+	desc = "A slice of delicious mac n cheese pizza."
+	icon_state = "macpizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom
+	name = "mushroom pizza"
+	desc = "A large flattened pie with mushrooms and sauce."
+	icon_state = "mushroompizza"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzamushsliced
+	slices_num = 8
+	nutriment_amt = 12 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "mushroom" = 8)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzamushsliced
+	name = "mushroom pizza slice"
+	desc = "A slice of delicious mushroom pizza."
+	icon_state = "mushroompizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/meatbread
 	name = "meatbread loaf"

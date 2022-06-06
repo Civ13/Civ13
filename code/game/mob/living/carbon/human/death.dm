@@ -201,6 +201,7 @@
 										HMN.gun_permit = FALSE
 			else
 				map.scores[civilization] -= 200
+
 	else if (map && map.ID == MAP_OCCUPATION && client)
 		var/obj/map_metadata/occupation/GD = map
 		var/mob/living/human/H = src

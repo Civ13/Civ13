@@ -534,7 +534,7 @@
 
 
 	return TRUE
-
+/*
 /datum/job/french/chasseur
 	title = "Chasseur"
 	en_meaning = "Light Infantry"
@@ -581,7 +581,7 @@
 	give_random_name(H)
 
 	return TRUE
-
+*/ //goraps a bitch and refuses to listen to his superiors because he's light infantry
 ////////////////////////////WW1///////////////////////
 /datum/job/french/ww1captain
 	title = "Capitaine de le Armee"

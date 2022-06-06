@@ -440,6 +440,16 @@
 	speedlist = list(1=5,2=4,3=3,4=2,5=1.2)
 	turntimer = 4
 
+/obj/structure/vehicleparts/axis/car/shinobu/police
+	name = "Yamasaki Shinobu Police Interceptor"
+	color = "#383838"
+	New()
+		..()
+		spawn(40)
+			map.vehicle_registations += list(list("[reg_number]","Police", "Yamasaki Shinobu Police Interceptor", ""))
+			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Yamasaki Shinobu Police Interceptor", ""))
+
 /obj/structure/vehicleparts/axis/car/kazoku
 	name = "Yamasaki Kazoku"
 	desc = "A powered axis from a car."

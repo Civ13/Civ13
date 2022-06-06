@@ -1099,7 +1099,7 @@
 	compatible_os = list("unga OS 94","unga OS")
 
 /datum/program/cartrader/do_html(mob/living/human/user)
-	var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+	var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (1200)")
 	mainmenu = "<h2>CARTRADER NETWORK</h2><br>"
 	if(mainbody == "---")
 		mainbody = ""
@@ -1110,7 +1110,7 @@
 /datum/program/cartrader/Topic(href, href_list, hsrc)
 	..()
 	if (href_list["carlist"])
-		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (1200)")
 		mainbody = ""
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
@@ -1221,7 +1221,7 @@
 			spawn(5)
 				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Kazoku", basecolor))
 
-		else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (900)")
+		else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (1200)")
 			PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
 				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Shinobu 5000", basecolor))

@@ -1095,6 +1095,8 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
 		/obj/item/ammo_magazine/tibannagas/e11 = 60,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 10,
+		/obj/item/weapon/grenade/flashbang/galaxywars = 15,
 	)
 
 /obj/structure/vending/starwars/rebel/apparel
@@ -1119,6 +1121,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dl44 = 15,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 25,
 	)
 
 /obj/structure/vending/starwars/republic/apparel
@@ -1148,4 +1151,15 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dc17 =20,
 		/obj/item/ammo_magazine/tibannagas/dc15 = 50,
 		/obj/item/ammo_magazine/tibannagas/dc15a = 25,
+	)
+
+/obj/structure/vending/starwars/gonk/gcw
+	name = "A munitions gonk droid"
+	desc = "A gonk droid that supplies tibanna magizines."
+	icon_state = "gonk"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/e11 = 60,
+		/obj/item/ammo_magazine/tibannagas/dl44 = 60,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
+		/obj/item/ammo_magazine/tibannagas/a280 = 60,
 	)
