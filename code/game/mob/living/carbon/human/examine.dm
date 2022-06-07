@@ -320,6 +320,10 @@
 			var/mob/living/human/H = user
 			if (H.civilization == "Sheriff Office" && src.civilization == "Sheriff Office")
 				msg += "<br><i>[T.He] is a member of the Sheriff Office.</i>"
+			if (H.civilization == "Government" && src.civilization == "Sheriff Office")
+				msg += "<br><i>[T.He] is a member of the Sheriff Office.</i>"
+			if (src.civilization == "Government")
+				msg += "<br><i>[T.He] is a member of the Government.</i>"
 			if (src.gun_permit && H.civilization == "Sheriff Office")
 				msg += "<br><b>[T.He] has a valid gun permit.</b></b>"
 	else if (map.ID == MAP_OCCUPATION)

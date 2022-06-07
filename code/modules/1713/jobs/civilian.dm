@@ -2521,6 +2521,58 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
+/datum/job/civilian/judge_aotd
+	title = "County Judge"
+	rank_abbreviation = "Judge"
+
+	spawn_location = "JoinLateCivJud"
+	is_officer = TRUE
+	whitelisted = TRUE
+	is_deal = TRUE
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/judge_aotd/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
+//jacket
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/accessory/custom/tie(null)
+	blazer.color = "#141414"
+	blazer.uncolored = FALSE
+	blazer.update_icon()
+	H.equip_to_slot_or_del(blazer, slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular(H), slot_eyes)
+//other
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/scarf/scarf = new /obj/item/clothing/accessory/custom/tie(null)
+	scarf.color = "#f0f0f0"
+	scarf.setd = TRUE
+	scarf.uncolored = FALSE
+	scarf.update_icon()
+	uniform.attackby(scarf, H)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(H), slot_l_hand)
+
+	H.add_note("Role", "You are a <b>[title]</b>, the judge of the local county. Help sentence justice upon the evil doers!")
+	H.civilization = "Government"
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
 /datum/job/civilian/paramedic
 	title = "Paramedic"
 	en_meaning = ""
@@ -2577,7 +2629,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/black(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -2628,10 +2679,11 @@
 			var/obj/item/clothing/head/custom/fieldcap/headcap = new /obj/item/clothing/head/custom/fieldcap(null)
 			headcap.capcolor = "#932310"
 			headcap.uncolored1 = FALSE
+			headcap.update_icon()
 			H.equip_to_slot_or_del(headcap, slot_head)
 			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2, slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2, slot_l_store)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket, slot_wear_suit)
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
 
 	if (prob(60))
@@ -2646,12 +2698,12 @@
 			if (4)
 				H.addictions["alcohol"] += rand(10,100)
 	H.add_note("Role", "You are a Bum. You should find a way to earn some cash to fulfill your potential addicition. Maybe try helping out one of the gangs in the area.")
-	H.setStat("strength", STAT_LOW)
-	H.setStat("crafting", STAT_LOW)
+	H.setStat("strength", STAT_VERY_LOW)
+	H.setStat("crafting", STAT_VERY_LOW)
 	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_LOW)
 	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_LOW)
 /*

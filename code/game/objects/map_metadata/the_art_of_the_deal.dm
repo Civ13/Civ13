@@ -68,12 +68,14 @@
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
 	var/newnamee = list("Sheriff Office" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(230,230,230,null,0,"cross","#7F0000","#FFFFFF",0,0))
+	var/newnameg = list("Government" = list(230,230,230,null,0,"star","#E3E3E3", "#3e57a8",0,0))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
+	custom_civs += newnameg
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
 	spawn(15000)
@@ -139,7 +141,7 @@
 			if (J.title == "Paramedic" || J.title == "Legitimate Business")
 				. = FALSE
 		if (clients.len <= 25)
-			if (J.title == "Mechanic" || J.title == "Homeless Man")
+			if (J.title == "Mechanic" || J.title == "Homeless Man" || J.title == "County Judge")
 				. = FALSE
 		if (clients.len <= 35)
 			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
