@@ -193,6 +193,11 @@
 	icon_state = "wooden_chair"
 	applies_material_colour = FALSE
 
+/obj/structure/bed/chair/wood/another
+	name = "wooden chair"
+	desc = "Classic is never too old to not be in fashion."
+	icon_state = "wooden_chair_alt"
+
 /obj/structure/bed/modern/chair
 	name = "steel chair"
 	desc = "A cold boring chair."
@@ -220,7 +225,7 @@
 /obj/structure/bed/chair/stone
 	name = "stone chair"
 	desc = "Old is never too old to not be in fashion."
-	icon_state = "wooden_chair"
+	icon_state = "chair"
 	material = "stone"
 	applies_material_colour = TRUE
 
@@ -231,6 +236,16 @@
 	base_icon = "steelchair"
 	material = "steel"
 	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/steel
+	name = "steel chair"
+	desc = "cold boring chair."
+	icon_state = "steelchair"
+	base_icon = "steelchair"
+	material = "steel"
+	applies_material_colour = FALSE
+
+
 
 /obj/structure/bed/chair/wood/update_icon()
 	return

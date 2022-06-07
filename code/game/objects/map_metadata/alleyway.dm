@@ -2,7 +2,7 @@
 	ID = MAP_ALLEYWAY
 	title = "Alleyway"
 	lobby_icon_state = "alleyway"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/inside, /area/caribbean/no_mans_land/invisible_wall/inside/one, /area/caribbean/no_mans_land/invisible_wall/inside/two)
 	respawn_delay = 300
 	no_winner ="The fighting for the street is still going on."
 	faction_organization = list(
@@ -17,6 +17,7 @@
 	battle_name = "Yama-ichi gang fight"
 	mission_start_message = "<font size=4>The <b>Yamaguchi-Gumi Clan</b> and <b>Ichiwa-Kai Clan</b> are facing each other the streets of Kobe!</font>"
 	faction1 = JAPANESE
+	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Akira:1" = "sound/music/akira.ogg",)
 	is_singlefaction = TRUE
@@ -42,10 +43,10 @@
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/one))
 			if (H.original_job.is_yama == TRUE && !H.original_job.is_ichi == TRUE)
 				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))
 			if (H.original_job.is_ichi == TRUE && !H.original_job.is_yama == TRUE)
 				return TRUE
 		else

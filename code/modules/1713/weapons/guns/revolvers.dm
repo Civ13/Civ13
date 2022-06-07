@@ -192,6 +192,12 @@
 	load_delay = 5
 	gun_safety = TRUE
 
+/obj/item/weapon/gun/projectile/revolver/nagant_revolver/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/revolver/m1892
 	name = "Modèle 1892 Revolver"
 	desc = "French officer's revolver."
@@ -331,6 +337,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	equiptimer = 4
+	good_mags = list(/obj/item/ammo_magazine/emptyspeedloader)
 	magazine_type = /obj/item/ammo_magazine/c32
 	ammo_type = /obj/item/ammo_casing/a32
 	weight = 2.3
@@ -341,6 +348,12 @@
 	effectiveness_mod = 0.93
 
 /obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized
+
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/revolver/enfieldno2
 	name = "Enfield No. 2"
@@ -428,10 +441,18 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
+
+	good_mags = list(/obj/item/ammo_magazine/m44speedloader, /obj/item/ammo_magazine/emptyspeedloader)
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
 	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/magnum44/silenced/New()
+	..()
+
+	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/revolver/smithwesson
 	name = "Smith & Wesson Model 30"
@@ -500,6 +521,7 @@
 	caliber = "c9mm_jap_revolver"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
+	good_mags = list(/obj/item/ammo_magazine/emptyspeedloader)
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
 	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	weight = 2.3
