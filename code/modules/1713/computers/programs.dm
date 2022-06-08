@@ -804,6 +804,8 @@
 				mdomain = "goldstein.ug"
 			if ("Sheriff Office")
 				mdomain = "police.gov"
+			if ("Government")
+				mdomain = "usa.gov"
 		var/cname = "mail@[mdomain]"
 		if (user.original_job_title == "Legitimate Business")
 			var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
@@ -840,6 +842,8 @@
 			mdomain = "goldstein.ug"
 		if ("Sheriff Office")
 			mdomain = "police.gov"
+		if ("Government")
+			mdomain = "usa.gov"
 	var/cname = "mail@[mdomain]"
 	if (user.original_job_title == "Legitimate Business")
 		var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
@@ -1251,7 +1255,7 @@
 
 /datum/program/squadtracker/do_html(mob/living/human/user)
 	mainmenu = "<h2>SQUAD STATUS</h2><br>"
-	if (origin.operatingsystem == "unga OS 94 Law Enforcement Edition" && user.civilization != "Sheriff Office" && user.civilization != "Paramedics")
+	if (origin.operatingsystem == "unga OS 94 Law Enforcement Edition" && user.civilization != "Sheriff Office" && user.civilization != "Paramedics" && user.civilization != "Government")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
 		mainbody = ""
@@ -1272,7 +1276,7 @@
 
 /datum/program/licenseplates/do_html(mob/living/human/user)
 	mainmenu = "<h2>LICENSE PLATE DATABASE</h2><br>"
-	if (user.civilization != "Sheriff Office")
+	if (user.civilization != "Sheriff Office" && user.civilization != "Government")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
 		mainbody = ""
@@ -1287,14 +1291,14 @@
 /datum/program/permits/do_html(mob/living/human/user)
 	mainmenu = "<h2>GUN PERMITS</h2><br>"
 	mainmenu += "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
-	if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics")
+	if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
 		mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 	..()
 
 /datum/program/permits/Topic(href, href_list, hsrc)
 	mainbody = ""
 	if (href_list["permits"])
-		if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics")
+		if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
 			mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 			sleep(0.5)
 			do_html(user)
@@ -1358,7 +1362,7 @@
 				mainbody += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp] <a href='?src=\ref[src];warrants=w[SW.arn]'>(print)</a><br>"
 
 		if (findtext(href_list["warrants"],"w"))
-			if (user.civilization != "Sheriff Office")
+			if (user.civilization != "Sheriff Office" || user.civilization != "Government")
 				mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 				sleep(0.5)
 				do_html(user)
@@ -1379,7 +1383,7 @@
 						do_html(user)
 						return
 		if (href_list["warrants"] == "3")
-			if (user.civilization != "Sheriff Office" && user.civilization != "Paramedics")
+			if (user.civilization != "Sheriff Office" && user.civilization != "Paramedics" && user.civilization != "Government")
 				var/done = FALSE
 				var/found = FALSE
 				for (var/mob/living/human/S in range(2,user))
@@ -1438,7 +1442,7 @@
 /datum/program/gunregistry/do_html(mob/living/human/user)
 	mainmenu = "<h2>FIREARM REGISTRY DATABASE</h2><br>"
 	mainbody = ""
-	if (user.civilization != "Sheriff Office")
+	if (user.civilization != "Sheriff Office" || user.civilization != "Government")
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
 	else

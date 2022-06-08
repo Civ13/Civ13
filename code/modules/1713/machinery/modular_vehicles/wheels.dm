@@ -209,7 +209,7 @@
 		if (buckled_mob.put_in_active_hand(wheel))
 			H << "You grab the wheel."
 			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-				if (H.stat != DEAD && H.civilization != "Sheriff Office" && H.civilization != "Paramedics")
+				if (H.stat != DEAD && H.civilization != "Sheriff Office" && H.civilization != "Paramedics" && H.civilization != "Government")
 					for(var/list/L in map.vehicle_registations)
 						if (L[1]==wheel.control.axis.reg_number && L[2] != H.civilization)
 							if (!(H.real_name in map.warrants))
@@ -218,6 +218,8 @@
 									reason = "Theft of a Law Enforcement Vehicle"
 								if (L[2] == "Paramedics")
 									reason = "Theft of an Ambulance"
+								if (L[2] == "Government")
+									reason = "Theft of a Government Vehicle"
 								map.warrants += H.real_name
 								H.gun_permit = 0
 								var/obj/item/weapon/paper_bin/police/PAR = null

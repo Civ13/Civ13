@@ -78,7 +78,13 @@
 			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
 			return
 		else if (H.civilization == "Sheriff Office")
-			H << "<span class='notice'>You do not know how to decrypt this... Should put it in the evidence room instead.</span>"
+			H << "<span class='notice'>You do not know how to decrypt this... You should put it in the evidence room instead.</span>"
+			return
+		else if (H.civilization == "Paramedics")
+			H << "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>"
+			return
+		else if (H.civilization == "Government")
+			H << "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>"
 			return
 		else if (D.used)
 			H << "<span class='notice'>This disk has already been decrypted and wiped.</span>"

@@ -177,6 +177,8 @@
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")
 				map.scores[civilization] -= 500
+			if (civilization == "Government")
+				map.scores[civilization] -= 500
 			if (civilization == "Sheriff Office")
 				map.scores[civilization] -= 250
 				if (ishuman(last_harmed))
