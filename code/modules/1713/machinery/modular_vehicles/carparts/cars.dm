@@ -446,9 +446,10 @@
 	New()
 		..()
 		spawn(40)
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Yamasaki Shinobu Police Interceptor", ""))
+		else
 			map.vehicle_registations += list(list("[reg_number]","Police", "Yamasaki Shinobu Police Interceptor", ""))
-			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-				map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Yamasaki Shinobu Police Interceptor", ""))
 
 /obj/structure/vehicleparts/axis/car/kazoku
 	name = "Yamasaki Kazoku"
