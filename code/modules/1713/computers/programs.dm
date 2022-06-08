@@ -1362,7 +1362,7 @@
 				mainbody += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp] <a href='?src=\ref[src];warrants=w[SW.arn]'>(print)</a><br>"
 
 		if (findtext(href_list["warrants"],"w"))
-			if (user.civilization != "Sheriff Office" || user.civilization != "Government")
+			if (user.civilization != "Sheriff Office" && user.civilization != "Government")
 				mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 				sleep(0.5)
 				do_html(user)
@@ -1442,7 +1442,7 @@
 /datum/program/gunregistry/do_html(mob/living/human/user)
 	mainmenu = "<h2>FIREARM REGISTRY DATABASE</h2><br>"
 	mainbody = ""
-	if (user.civilization != "Sheriff Office" || user.civilization != "Government")
+	if (user.civilization != "Sheriff Office" && user.civilization != "Government")
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
 	else
