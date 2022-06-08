@@ -2054,14 +2054,12 @@
 	title = "Goldstein Solutions"
 	selection_color = "#7e7e06"
 	spawn_location = "JoinLateCivA"
-	additional_languages = list("Hebrew" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/yellow/CEO
 	title = "Goldstein Solutions CEO"
 	is_officer = TRUE
-	additional_languages = list("Hebrew" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2104,12 +2102,10 @@
 	title = "Kogama Kraftsmen"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
-	additional_languages = list("Japanese" = 70)
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
 	title = "Kogama Kraftsmen CEO"
-	additional_languages = list("Japanese" = 100)
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2154,14 +2150,12 @@
 	title = "Giovanni Blu Stocks"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
-	additional_languages = list("Italian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/blue/CEO
 	title = "Giovanni Blu Stocks CEO"
 	is_officer = TRUE
-	additional_languages = list("Italian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2204,14 +2198,12 @@
 	title = "Rednikov Industries"
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
-	additional_languages = list("Russian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/red/CEO
 	title = "Rednikov Industries CEO"
 	is_officer = TRUE
-	additional_languages = list("Russian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2257,7 +2249,7 @@
 	spawn_location = "JoinLateCivJ"
 	min_positions = 3
 	max_positions = 8
-	additional_languages = list("Gaelic" = 50)
+	additional_languages = list("Gaelic" = 100)
 	can_be_female = TRUE
 	is_deal = TRUE
 
