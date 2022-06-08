@@ -81,6 +81,8 @@
 		var/mob/living/human/H = usr
 		if (map.civilizations)
 			mob_factions = H.civilization
+		else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			mob_factions = H.civilization
 		else
 			mob_factions = H.faction_text
 	if (istype(src, /mob/living/simple_animal/complex_animal))
@@ -109,6 +111,8 @@
 		ranks = .
 	var/mob_faction = "none"
 	if (map.civilizations)
+		mob_faction = H.civilization
+	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 		mob_faction = H.civilization
 	else
 		mob_faction = H.faction_text
@@ -255,6 +259,8 @@
 					command_level_to_dog = COMMAND_LEVEL_1
 				else if (H.civilization == faction && map.civilizations)
 					command_level_to_dog = COMMAND_LEVEL_3
+				else if (map.ID == MAP_THE_ART_OF_THE_DEAL && H.civilization == faction)
+					command_level_to_dog = COMMAND_LEVEL_3
 				else if (H.faction_text == faction && !map.civilizations)
 					command_level_to_dog = COMMAND_LEVEL_3
 				else if (!owner && !faction)
@@ -384,6 +390,8 @@ s
 			var/mob_faction = "none"
 			if (map.civilizations)
 				mob_faction = H.civilization
+			else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				mob_faction = H.civilization
 			else
 				mob_faction = H.faction_text
 
@@ -403,7 +411,81 @@ s
 							playsound(src.loc, 'sound/animals/dog/dogbark2.ogg', 100, TRUE, 3)
 						next_bork = world.time + 500 // shut the fuck up dogs - kachnov
 						return
-
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			for(var/obj/item/weapon/disk/D in range(7, src))
+				var/area/D_area = get_area(D)
+				var/area/src_area = get_area(src)
+				if (D_area != istype(D_area, /area/caribbean/prison/jail) && D_area == src_area)
+					if (prob(20) && world.time >= next_bork)
+						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband nearby!</span>")
+						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+						next_bork = world.time + 500
+						return
+			for(var/mob/living/human/H in range(7, src))
+				if (H.civilization != "Sheriff Office")
+					for(var/obj/item/weapon/disk/D in H.contents)
+						if (prob(20) && world.time >= next_bork)
+							visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband on a person nearby!</span>")
+							playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+							next_bork = world.time + 500
+							return
+					var/obj/item/weapon/storage/B
+					for(B in H.contents)
+						for(var/obj/item/weapon/disk/D in B.contents)
+							if (prob(20) && world.time >= next_bork)
+								visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband in a person's bag nearby!</span>")
+								playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+								next_bork = world.time + 500
+								return
+					var/obj/item/clothing/suit/storage/S
+					for(S in H.contents)
+						for(var/obj/item/weapon/disk/D in S.pockets.contents)
+							if (prob(20) && world.time >= next_bork)
+								visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband on a person nearby!</span>")
+								playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+								next_bork = world.time + 500
+								return
+			for(var/obj/structure/closet/C in range(7, src))
+				for(var/obj/item/weapon/disk/D in C.contents)
+					if (prob(20) && world.time >= next_bork)
+						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband inside something nearby!</span>")
+						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+						next_bork = world.time + 500
+						return
+			var/obj/item/clothing/suit/storage/SG
+			for(SG in range(7, src))
+				for(var/obj/item/weapon/disk/D in SG.pockets.contents)
+					if (prob(20) && world.time >= next_bork)
+						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband inside something nearby!</span>")
+						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+						next_bork = world.time + 500
+						return
+			for(var/obj/item/weapon/storage/B in range(7, src))
+				for(var/obj/item/weapon/disk/D in B.contents)
+					if (prob(20) && world.time >= next_bork)
+						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband inside something nearby!</span>")
+						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+						next_bork = world.time + 500
+						return
+		if (map.ID == MAP_GROZNY || map.ID == MAP_SOVAFGHAN)
+			for(var/obj/item/mine/at/armed/ATA in range(3, src))
+				if (prob(20) && world.time >= next_bork)
+					visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
+					playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+					next_bork = world.time + 500
+					return
+			for(var/obj/item/mine/ap/armed/APA in range(3, src))
+				if (prob(20) && world.time >= next_bork)
+					visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
+					playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+					next_bork = world.time + 500
+					return
+			for(var/obj/item/mine/boobytrap/BT in range(3, src))
+				if (prob(20) && world.time >= next_bork)
+					visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
+					playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+					next_bork = world.time + 500
+					return
 // dog combat
 
 /mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
@@ -461,6 +543,9 @@ s
 	if (map.civilizations)
 		if (faction != H.civilization)
 			. = ((istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun)) || (istype(H.l_hand, /obj/item/weapon/material) || istype(H.r_hand, /obj/item/weapon/material)))
+	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		if (faction != H.civilization)
+			. = ((istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun)) || (istype(H.l_hand, /obj/item/weapon/material) || istype(H.r_hand, /obj/item/weapon/material)))
 	else
 		if (H.original_job.base_type_flag() == CIVILIAN)
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
@@ -473,7 +558,14 @@ s
 /mob/living/simple_animal/complex_animal/dog/proc/shouldGoAfter(var/mob/living/human/H)
 	. = FALSE // when can we attack random enemies who enter our area
 	if (attack_mode == "kill")
-		. = TRUE
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			if (faction != H.civilization)
+				if (faction == "Sheriff Office" && (H.civilization == "Government" || H.civilization == "Paramedics"))
+					. = FALSE
+				else
+					. = TRUE
+		else
+			. = TRUE
 	else if (attack_mode == "attack")
 		if (hostileCheck(H))
 			. = TRUE

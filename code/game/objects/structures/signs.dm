@@ -367,6 +367,7 @@
 	desc = "A court house."
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "court"
+	bound_width = 64
 
 /obj/structure/sign/nosmoking
 	desc = "Smoking is prohibited in this area."
@@ -390,16 +391,21 @@
 
 /obj/structure/sign/casino
 	name = "casino"
-	desc = "A blinking casino sign"
+	desc = "A blinking casino sign."
 	icon = 'icons/obj/decals_wider.dmi'
 	icon_state = "casino"
 
 /obj/structure/sign/open
 	name = "open"
-	desc = "A blinking open sign"
+	desc = "A blinking open sign."
 	icon_state = "open"
 
 /obj/structure/sign/guns
 	name = "gun store"
-	desc = "A blinking gun store sign"
+	desc = "A blinking gun store sign."
 	icon_state = "gunshop"
+
+/obj/structure/sign/deer_trophy
+	name = "hunting deer trophy"
+	desc = "Looks like we finally found Bambi..."
+	icon_state = "deer_trophy"

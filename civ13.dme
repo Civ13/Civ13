@@ -530,6 +530,7 @@
 #include "code\game\objects\structures\door.dm"
 #include "code\game\objects\structures\door_locks.dm"
 #include "code\game\objects\structures\filingcabinet.dm"
+#include "code\game\objects\structures\fitness.dm"
 #include "code\game\objects\structures\gladiator_control.dm"
 #include "code\game\objects\structures\gong.dm"
 #include "code\game\objects\structures\grille.dm"
