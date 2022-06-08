@@ -1633,6 +1633,28 @@
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
 
+/obj/item/weapon/gun/projectile/submachinegun/tec9
+	name = "TEC-9"
+	desc = "A blowback-operated semi-automatic pistol."
+	icon = 'icons/obj/guns/automatic.dmi'
+	icon_state = "tec-9"
+	item_state = "tec-9"
+	base_icon = "tec-9"
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/tec9.ogg'
+	magazine_type = /obj/item/ammo_magazine/tec9
+	good_mags = list(/obj/item/ammo_magazine/tec9)
+	weight = 1.3
+	equiptimer = 8
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.2, move_delay=2, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9)),
+		list(name="full auto",	burst=1, burst_delay=0.3, move_delay=4, dispersion = list(1.6, 1.7, 1.8, 1.9, 2.0)),
+		)
+	effectiveness_mod = 0.8
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS
+
 //////////////////////C7///////////////////////////////
 /obj/item/weapon/gun/projectile/submachinegun/c7
 	name = "C7"

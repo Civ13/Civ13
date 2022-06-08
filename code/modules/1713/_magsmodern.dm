@@ -298,6 +298,16 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/tec9
+	name = "TEC-9 (9x19mm)"
+	icon_state = "tec9"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 32
+	weight = 0.33
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/p220
 	name = "P220 (.45)"
 	icon_state = "p220"
