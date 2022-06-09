@@ -625,7 +625,7 @@
 /obj/item/weapon/storage/belt/jap/abashiri_guard
 /obj/item/weapon/storage/belt/jap/abashiri_guard/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -637,7 +637,7 @@
 /obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
 	..()
 	new /obj/item/weapon/whistle(src)
-	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
