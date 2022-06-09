@@ -2533,7 +2533,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
 //jacket
-	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/accessory/custom/blazer(null)
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
 	blazer.color = "#141414"
 	blazer.uncolored = FALSE
 	blazer.update_icon()
