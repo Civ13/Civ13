@@ -35,7 +35,7 @@
 		else
 			. = FALSE
 	if (istype(J, /datum/job/japanese))
-		if (J.is_ww2 == TRUE)
+		if (J.is_ww2 == TRUE && J.is_prison == FALSE)
 			. = TRUE
 		else
 			. = FALSE

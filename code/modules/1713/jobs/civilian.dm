@@ -2533,7 +2533,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
 //jacket
-	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/accessory/custom/tie(null)
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
 	blazer.color = "#141414"
 	blazer.uncolored = FALSE
 	blazer.update_icon()
@@ -2543,7 +2543,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular(H), slot_eyes)
 //other
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/custom/scarf/scarf = new /obj/item/clothing/accessory/custom/tie(null)
+	var/obj/item/clothing/accessory/custom/scarf/scarf = new /obj/item/clothing/accessory/custom/scarf(null)
 	scarf.color = "#f0f0f0"
 	scarf.setd = TRUE
 	scarf.uncolored = FALSE
@@ -2667,6 +2667,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/beggar_clothing, slot_w_uniform)
 			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/crack(H), slot_r_store)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/pipe/glass, slot_l_store)
 		if (3)
 			var/obj/item/clothing/head/custom/fieldcap/headcap = new /obj/item/clothing/head/custom/fieldcap(null)
 			headcap.capcolor = "#932310"
@@ -2676,7 +2678,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2, slot_w_uniform)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket, slot_wear_suit)
-			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless, slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey, slot_l_hand)
 
 	if (prob(60))
 		var/randaddiction = rand(1,4)
