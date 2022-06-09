@@ -583,6 +583,8 @@ var/list/name_to_material
 	integrity = 175
 	icon_base = "wood"
 	icon_colour = null
+	weight = 13
+
 
 /material/wood/soft
 	name = "softwood"
@@ -590,6 +592,7 @@ var/list/name_to_material
 	integrity = 80
 	door_icon_base = "wood"
 	icon_colour = "#D2BA9C"
+	weight = 10
 
 /material/bamboo
 	name = "bamboo"

@@ -231,6 +231,43 @@
 	force_divisor = 0.8 // 32 with hardness 40 (wood)
 	thrown_force_divisor = 1.6 // 29 with weight 18 (wood)
 
+//New batons
+/obj/item/weapon/material/classic_baton
+	name = "baton"
+	desc = "A wooden truncheon for beating criminal scum."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "baton"
+	item_state = "classic_baton"
+	block_chance = 27
+	force_divisor = 1
+	thrown_force_divisor = 3
+	force = 1
+	slot_flags = SLOT_BELT | SLOT_BACK
+	value = 0
+	cooldownw = 8
+	flammable = TRUE
+	attack_verb = list("thwacked", "hit", "clonked", "batted", "slammed", "smacked", "poked", "slapped")
+	hitsound = 'sound/weapons/pierce.ogg'
+	drawsound = 'sound/weapons/hiddenblade_deploy.ogg'
+	sharp = FALSE
+	edge = FALSE
+	default_material = "softwood"
+
+/obj/item/weapon/material/classic_baton/guard
+	desc = "A Heavy wooden truncheon for beating criminal scum this one is made of harder wood material."
+	default_material = "hardwood"
+	force_divisor = 1
+	block_chance = 27
+	cooldownw = 8
+
+/obj/item/weapon/material/classic_baton/guard/metal
+	desc = "A Heavy metal truncheon for beating criminal scum this one is made of iron and likely to injure someone quckily aim anywhere but the head!."
+	default_material = "iron"
+	force_divisor = 1
+	block_chance = 27
+	cooldownw = 10
+
+
 /obj/item/weapon/material/quarterstaff
 	name = "quarterstaff"
 	sharp = FALSE

@@ -2782,7 +2782,7 @@ obj/item/clothing/head/ww2/chicap2
 
 /obj/item/weapon/storage/belt/gulagguard/filled/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/material/classic_baton(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
