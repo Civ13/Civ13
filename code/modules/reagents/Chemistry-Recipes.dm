@@ -267,6 +267,13 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("acetone" = 1, "sugar" = 1, "diethylamine" = 1, "potassium_chloride" = 1)
 	result_amount = 5
 
+/datum/chemical_reaction/methamphetamine
+	name = "Methamphetamine"
+	id = "methamphetamine"
+	result = "methamphetamine"
+	required_reagents = list("adrenaline" = 1, "carbon" = 1)
+	result_amount = 1
+
 /datum/chemical_reaction/soporific
 	name = "Soporific"
 	id = "stoxin"
@@ -697,6 +704,13 @@ datum/admins/proc/print_chemical_reactions()
 	result = "cyanide"
 	required_reagents = list("carbon" = 1, "nitrogen" = 1)
 	result_amount = 1
+
+/datum/chemical_reaction/crack
+	name = "Crack cocaine"
+	id = "crack"
+	result = "crack"
+	required_reagents = list("cocaine" = 1, "baking_soda" = 1)
+	result_amount = 2
 
 /datum/chemical_reaction/chemsmoke/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
