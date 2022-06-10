@@ -1095,7 +1095,7 @@
 /obj/item/weapon/storage/belt/police/modern
 /obj/item/weapon/storage/belt/police/modern/New()
 	..()
-	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/weapon/material/classic_baton/police(src)
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -1109,7 +1109,7 @@
 /obj/item/weapon/storage/belt/police/old
 /obj/item/weapon/storage/belt/police/old/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs/old(src)
 	new /obj/item/weapon/handcuffs/old(src)
