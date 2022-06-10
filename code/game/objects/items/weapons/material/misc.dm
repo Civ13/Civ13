@@ -267,7 +267,7 @@
 	item_state = "blackjack"
 	default_material = "leather"
 	force_divisor = 3
-	block_chance = 20
+	block_chance = 19
 	cooldownw = 10
 	applies_material_colour = FALSE
 
