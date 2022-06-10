@@ -36,18 +36,18 @@
 
 /obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_warlords && clients.len >= 1)
+	if (J.is_warlords)
 		if (J.title != "warlord (do not use)")
 			. = TRUE
-	if (clients.len <= 12)
-		if (J.title == "United Nations Doctor" || J.title == "United Nations Soldier")
-			. = FALSE
-	if (clients.len <= 15)
-		if (J.title == "Local Policeman")
-			. = FALSE
-	if (clients.len <= 18)
-		if (J.title == "United Nations Engineer")
-			. = FALSE
+		if (clients.len <= 12)
+			if (J.title == "United Nations Doctor" || J.title == "United Nations Soldier")
+				. = FALSE
+		if (clients.len <= 15)
+			if (J.title == "Local Policeman")
+				. = FALSE
+		if (clients.len <= 18)
+			if (J.title == "United Nations Engineer")
+				. = FALSE
 	else
 		. = FALSE
 

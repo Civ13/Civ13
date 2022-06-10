@@ -295,11 +295,11 @@
 "fI" = (/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Stables"})
 "fJ" = (/obj/structure/closet/crate/empty,/obj/item/stack/ore/coal{amount = 25},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Stables"})
 "fK" = (/mob/living/simple_animal/horse{icon_state = "horse"; dir = 1},/turf/floor/dirt,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Stables"})
-"fL" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"fM" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"fL" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"fM" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "fN" = (/obj/structure/sign/clock{name = "\improper clock"},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"fO" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"fP" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"fO" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"fP" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/paper,/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "fQ" = (/obj/item/flashlight/lantern/on/anchored,/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Inn"})
 "fR" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Brewery"})
 "fS" = (/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Brewery"})
@@ -415,15 +415,15 @@
 "hY" = (/obj/structure/sign/kiddieplaque{desc = "Services every day at 6 p.m."; name = "St. Julian's Chapel"},/turf/wall/stone,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "hZ" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "ia" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
-"ib" = (/obj/structure/bed/chair/wood/wings{icon_state = "wooden_chair_wings"; dir = 4},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"ib" = (/obj/structure/bed/chair/wood/wings{icon_state = "wooden_chair_wings"; dir = 4},/obj/item/flashlight/lantern/on/anchored{pixel_y = 32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "ic" = (/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/ammo_casing/a45,/obj/item/ammo_casing/a45,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"id" = (/obj/structure/bedsheetbin,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"id" = (/obj/structure/bedsheetbin,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "ie" = (/obj/structure/wallclock,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"if" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 1},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"if" = (/obj/item/flashlight/lantern/on/anchored{pixel_y = -32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "ig" = (/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"ih" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 9},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"ii" = (/obj/structure/bed/chair/wood/wings,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"ij" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"ih" = (/obj/item/flashlight/lantern/on/anchored{pixel_x = 32},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"ii" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRN"},/obj/item/flashlight/lantern/on/anchored{pixel_x = 32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"ij" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/bronze,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "ik" = (/obj/structure/gallows{icon_state = "gallows1"; roped = 1},/turf/floor/wood,/area/caribbean/desert/town)
 "il" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/beach/sand,/area/caribbean/desert/town)
 "im" = (/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
@@ -434,38 +434,38 @@
 "ir" = (/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "is" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "it" = (/obj/structure/closet/crate/chest,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
-"iu" = (/obj/structure/window/classic/reinforced,/obj/structure/barricade/steel,/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
-"iv" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"iu" = (/obj/structure/window/classic/reinforced,/obj/structure/barricade/steel,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"iv" = (/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "iw" = (/obj/structure/simple_door/sandstone{name = "Church"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "ix" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "iy" = (/obj/structure/religious/grave,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "iz" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRN"},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"iA" = (/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/material/ashtray/bronze,/obj/item/clothing/mask/smokable/cigarette/cigar,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"iA" = (/obj/covers/jail/steeljail,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "iB" = (/obj/structure/table/wood,/obj/item/clothing/head/cowboyhat,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "iC" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/ammo_casing/a45,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "iD" = (/obj/covers/wood/stairs{icon_state = "wood2_stairs2"; dir = 9},/obj/structure/simple_door/key_door/civ/sherif,/obj/structure/railing{dir = 1; icon_state = "railing0"},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
-"iE" = (/obj/structure/piano,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
-"iF" = (/obj/item/weapon/stool/wood,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"iE" = (/obj/covers/carpet/redcarpet,/obj/structure/TV/grandfather{pixel_y = 12},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"iF" = (/obj/structure/bed/chair/wood/alt{dir = 8},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "iG" = (/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
-"iH" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
-"iI" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 1},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"iH" = (/obj/item/flashlight/lantern/on/anchored{pixel_y = 32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"iI" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/fancy/cigar/full,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/storage/fancy/cigarettes/randompack,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "iJ" = (/obj/structure/table/wood,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "iK" = (/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "iL" = (/turf/floor/wood,/area/caribbean/void/caves)
 "iM" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "iN" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "iO" = (/obj/structure/religious/gravestone,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
-"iP" = (/obj/structure/simple_door/key_door/civ/sherif,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"iP" = (/obj/structure/simple_door/key_door/civ/sherif{unique_door_name = "Armory"; name = "Armory"; health = 4000; initial_health = 4000},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "iQ" = (/obj/structure/multiz/ladder/ww2/up,/turf/floor/wood,/area/caribbean/void/caves)
 "iR" = (/obj/structure/sign/kiddieplaque{desc = "Armory"; name = "Armory"},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "iS" = (/obj/structure/closet/crate/chest,/turf/floor/wood,/area/caribbean/void/caves)
-"iT" = (/obj/structure/sign/clock,/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"iT" = (/obj/structure/reagent_dispensers/largebarrel/water,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "iU" = (/obj/covers/wood/stairs{icon_state = "wood2_stairs2"; dir = 9},/obj/structure/simple_door/key_door/civ/sherif,/obj/structure/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "iV" = (/obj/structure/table/wood,/obj/item/clothing/accessory/holster/hip,/obj/item/clothing/accessory/holster/hip,/obj/item/clothing/accessory/holster/hip/double,/obj/item/clothing/accessory/holster/hip/double,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "iW" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "iX" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "iY" = (/obj/structure/table/wood,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
-"iZ" = (/obj/structure/bed/chair/wood,/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"iZ" = (/obj/structure/bed/chair/wood/bleacher/r,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "ja" = (/obj/structure/closet/cabinet,/obj/item/ammo_magazine/c44,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "jb" = (/obj/structure/table/wood,/obj/item/trash/candle,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "jc" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale,/obj/item/kitchen/wood_bowl,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
@@ -473,7 +473,7 @@
 "je" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/revolver/peacemaker,/obj/item/weapon/gun/projectile/revolver/peacemaker,/obj/item/weapon/gun/projectile/revolver/peacemaker,/obj/item/weapon/gun/projectile/revolver/peacemaker,/obj/item/weapon/gun/projectile/revolver/peacemaker,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "jf" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/boltaction/singleshot,/obj/item/weapon/gun/projectile/boltaction/singleshot,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "jg" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/leveraction/winchester,/obj/item/weapon/gun/projectile/leveraction/winchester,/obj/item/weapon/gun/projectile/leveraction/winchester,/obj/item/weapon/gun/projectile/leveraction/winchester,/obj/item/weapon/gun/projectile/leveraction/winchester,/obj/item/weapon/gun/projectile/leveraction/winchester,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"jh" = (/obj/structure/barricade/steel,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"jh" = (/obj/structure/simple_door/key_door/custom/jail/steeljail{unique_door_name = "jail cell"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "ji" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/mob/living/simple_animal/dog,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "jj" = (/obj/structure/table/wood,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "jk" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
@@ -491,7 +491,7 @@
 "jw" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "jx" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/egg,/obj/item/weapon/reagent_containers/food/snacks/egg,/obj/item/weapon/reagent_containers/food/snacks/egg,/obj/item/weapon/reagent_containers/food/snacks/egg,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "jy" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
-"jz" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"jz" = (/obj/item/flashlight/lantern/on/anchored{pixel_x = -32},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "jA" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "jB" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox/beanbag,/obj/item/ammo_magazine/shellbox/beanbag,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "jC" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/sharps,/obj/item/ammo_magazine/sharps,/obj/item/ammo_magazine/sharps,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
@@ -505,11 +505,11 @@
 "jK" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/driedsalmon,/obj/item/weapon/reagent_containers/food/snacks/driedsalmon,/obj/item/weapon/reagent_containers/food/snacks/driedsalmon,/obj/item/weapon/reagent_containers/food/snacks/driedsalmon,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "jL" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
 "jM" = (/obj/structure/table/wood,/obj/item/stack/material/tobacco{amount = 10},/obj/item/stack/material/tobacco{amount = 10},/obj/item/stack/material/tobacco{amount = 10},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "General Store"})
-"jN" = (/obj/structure/window/classic,/obj/structure/barricade,/obj/structure/curtain/black,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"jO" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"jN" = (/obj/structure/simple_door/key_door/civ/bank{health = 1200; initial_health = 1200; name = "reinforced metal door"; unique_door_name = "reinforced metal door"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"jO" = (/obj/covers/carpet/redcarpet,/obj/covers/carpet/redcarpet,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "jP" = (/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "jQ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
-"jR" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"jR" = (/obj/item/weapon/reagent_containers/glass/barrel/whiskey,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "jS" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "jT" = (/obj/structure/railing,/turf/floor/beach/sand,/area/caribbean/desert)
 "jU" = (/obj/structure/reagent_dispensers/largebarrel/beer,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
@@ -533,7 +533,7 @@
 "km" = (/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
 "kn" = (/obj/structure/window/classic,/obj/structure/barricade,/obj/structure/curtain/black,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
 "ko" = (/obj/structure/window/classic,/obj/structure/barricade,/obj/structure/curtain/open/bed,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
-"kp" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/storage/box/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"kp" = (/obj/structure/bed/chair/wood/bleacher/l,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "kq" = (/obj/structure/window/barrier/rock,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "kr" = (/obj/structure/window/barrier/rock,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "ks" = (/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
@@ -547,7 +547,7 @@
 "kA" = (/obj/structure/noticeboard{layer = 4},/obj/structure/barricade/ship/mast{name = "wood pole"},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "kB" = (/obj/structure/table/wood/poker,/obj/item/weapon/deck/cards,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "kC" = (/turf/floor/dirt/underground{name = "rock"},/area/caribbean/no_mans_land/invisible_wall)
-"kD" = (/obj/structure/table/wood/poker,/obj/item/weapon/dice,/obj/item/weapon/dice,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"kD" = (/obj/structure/roulette,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "kE" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/mop,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "kF" = (/turf/floor/wood_broken,/area/caribbean/desert/buildings)
 "kG" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
@@ -560,14 +560,14 @@
 "kN" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
 "kO" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
 "kP" = (/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
-"kQ" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 9},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
-"kR" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 6},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
-"kS" = (/obj/structure/table/marble,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
-"kT" = (/obj/structure/table/marble,/obj/item/weapon/storage/bible,/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
-"kU" = (/obj/structure/table/marble,/obj/item/weapon/reagent_containers/food/drinks/golden_cup,/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"kQ" = (/obj/structure/potted_plant{icon = 'icons/obj/flora/plants.dmi'; icon_state = "plant-39"; anchored = 1; pixel_x = -6},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"kR" = (/obj/structure/bed/chair/wood/alt{dir = 4},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"kS" = (/obj/structure/table/marble,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/obj/covers/carpet/redcarpet,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"kT" = (/obj/structure/table/marble,/obj/item/weapon/storage/bible,/obj/covers/carpet/redcarpet,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"kU" = (/obj/structure/table/marble,/obj/item/weapon/reagent_containers/food/drinks/golden_cup,/obj/covers/carpet/redcarpet,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "kV" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
 "kW" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 4},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
-"kX" = (/obj/structure/religious/woodcross1,/turf/floor/plating/cobblestone/vertical,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"kX" = (/obj/structure/religious/woodcross1,/obj/covers/carpet/redcarpet,/obj/item/flashlight/lantern/on/anchored{pixel_y = -32},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
 "kY" = (/obj/structure/noticeboard{layer = 4},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
 "kZ" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
 "la" = (/obj/structure/sign/kiddieplaque{desc = "News leader in the western side of Arizona."; name = "Arizona Times, Newspaper"},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Newspaper"})
@@ -684,6 +684,9 @@
 "nh" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/grass,/area/caribbean/desert)
 "ni" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/water,/area/caribbean/desert)
 "nj" = (/obj/structure/farming/plant/wheat{icon_state = "oat-harvest"},/obj/structure/farming/plant/wheat{icon_state = "oat-harvest"},/turf/floor/dirt/ploughed,/area/caribbean/desert)
+"nL" = (/obj/structure/bed/chair/wood/wings{dir = 4},/obj/structure/sign/clock{pixel_x = -32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"nR" = (/obj/structure/bed/chair/wood/bleacher,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"ok" = (/obj/structure/sign/deer_trophy{pixel_y = 32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "pi" = (/turf/floor/dirt/underground,/area/caribbean/desert)
 "pk" = (/obj/covers/straw_wall,/obj/roof/thatch,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "pl" = (/obj/structure/bed/wood,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean/desert)
@@ -754,6 +757,29 @@
 "qL" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/agave,/obj/item/weapon/reagent_containers/food/snacks/grown/agave,/obj/item/weapon/reagent_containers/food/snacks/grown/agave,/obj/item/weapon/reagent_containers/food/snacks/grown/agave,/obj/item/weapon/reagent_containers/food/snacks/grown/agave,/obj/item/weapon/reagent_containers/food/snacks/grown/agave,/obj/roof/thatch,/obj/structure/torch_stand/full,/turf/floor/dirt/dust,/area/caribbean/desert)
 "qM" = (/obj/structure/table/wood,/obj/roof/thatch,/obj/item/weapon/reagent_containers/food/drinks/jar,/obj/item/weapon/reagent_containers/food/drinks/jar,/turf/floor/dirt/dust,/area/caribbean/desert)
 "qN" = (/obj/roof/thatch,/obj/structure/post_execution,/turf/floor/dirt/dust,/area/caribbean/desert)
+"sa" = (/obj/structure/bed/chair/wood/alt{dir = 1},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"tq" = (/obj/item/weapon/barstool/brown,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"tV" = (/obj/structure/barricade,/obj/structure/barricade/steel,/obj/covers/jail/steeljail,/obj/structure/window_frame,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"wc" = (/obj/structure/bed/chair/wood/alt{dir = 1},/obj/item/flashlight/lantern/on/anchored{pixel_x = -32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"wR" = (/obj/structure/table/wood,/obj/item/flashlight/lantern/on/anchored{pixel_y = -32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"xx" = (/obj/structure/simple_door/key_door/civ/bank{name = "reinforced metal door"; unique_door_name = "reinforced metal door"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"yQ" = (/obj/structure/simple_door/fence/picket{dir = 4},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"AI" = (/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/material/ashtray/bronze,/obj/item/clothing/mask/smokable/cigarette/cigar,/obj/item/weapon/key{name = "jail key"; code = 999},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"BZ" = (/obj/structure/reagent_dispensers/largebarrel/ale,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"EH" = (/obj/covers/carpet/redcarpet,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"Hi" = (/obj/covers/carpet/redcarpet,/obj/structure/sign/painting13{pixel_y = 32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Hq" = (/obj/structure/bed/chair/wood/alt,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"HR" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRN"},/obj/item/flashlight/lantern/on/anchored{pixel_x = -32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"Jn" = (/obj/structure/table/wood,/obj/structure/closet/crate/cash_register/inn{name = "Saloon till"},/obj/item/weapon/key/civ/inn{name = "Saloon key"},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Lk" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Ll" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/obj/item/weapon/storage/box/beermug,/obj/item/weapon/storage/box/drinkingglasses,/obj/item/weapon/storage/box/wineglasses,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Np" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Nt" = (/obj/structure/bed/chair/wood/alt{dir = 8},/obj/covers/carpet/redcarpet,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Os" = (/obj/structure/table/wood/poker,/obj/item/weapon/dice,/obj/item/weapon/dice,/obj/item/flashlight/lantern/on/anchored{pixel_x = -32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Qr" = (/obj/structure/piano,/obj/covers/carpet/redcarpet,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Te" = (/obj/item/flashlight/lantern/on/anchored{pixel_y = -32},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"Zu" = (/obj/item/flashlight/lantern/on/anchored{pixel_y = -32},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Chapel"})
+"ZI" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,/obj/item/weapon/reagent_containers/food/drinks/bottle/tequilla,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/obj/item/weapon/reagent_containers/food/drinks/bottle/vermouth,/obj/item/weapon/reagent_containers/food/drinks/bottle/cognac,/obj/item/weapon/reagent_containers/food/drinks/bottle/gin,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -957,7 +983,6 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bRabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
-
 (1,1,2) = {"
 acacacacacacacacbqacacacacbqacacacbqacacacacbqacacacacacacacacacacacacacacacacacacacacacacacacacacacaTacackJkJacacacacacacaAaBaCacaDaRaRaRaSaSaSaRaRaRaDacacacacacacacacackJkJkJacbracacacacbqacacacacbracbeacacacacacacacacaTacacacacacacacacacacacacacacacbracacacajacacacbqacacacbqbq
 acbabqacacbaacacacacacacacacacbqbqacacacacacacacbqbqacacacacacacacacacacacacbqacacacacacacacaTacacaUacacackJkJacacacacacacaAaBaCacaDaRaRaRaSaSaSaRaRaRaDacacacacacacacacacafkJkJbrbrbrbrbracaXacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacbeacacacbracacac
@@ -1018,11 +1043,11 @@ acacacacacacacacacbqaVaVaVbbquqsqsbbqvquaVaVacacadakakdFakakdFakakakeqadadadeKeK
 acacacbracacacacacacacacaVbbbbbbqsqsbJbbaVcaacacadadadadadeKeKadadadadeKeKeKeKeKeKazazazazazeKazazazeweKeKeKeKeKeseseKeKeKeKeKeKeKeKazesesazazeKeseKeKeKeKeKeKesazazeKeKeKeKeKeKeKeKeKeKeKeKadadadadanadadadadadlKdvdvdveudvdvdvdveudvdvdvdaacacacacacacbqacacacacacacacacacacacacacacac
 acacacacacacacacacacacacacaVbbqvqsqsqsbbbbaVaVacadadadadeKeKeKeKeKeKazeKeKeKeKeKeKeKeKeKexeyezeAexeKeKeKeKazeKeKeKeKeKeKeKeKeKeKeKeKazeKeKeKeKeKeKeKeKadeKeKeKeKadadazazazazazadadadadaneKadadadanadadadadadadadlKeBdvdveodvdvdvdvepdvdvdvdaacacacacacacbqacacacacacacacacacacacacacacac
 acacacacacacacacacacacacacaVbbbbqsqsqsbbbbaVqtacadadadadazewazazeKeKeKeKesazeKeKazeKazazezezeCeyeDazeKeKeKeKeKeKeKeKadeKadadeKadadadeHadeKeKadadadadadadeHeKeKeKeKadadadadadadadadadadadeKadanadadadadadadadadadlKeieieidbdvdvdvdvdbeieieidaacacaTacacacbqbqacacacacacacaUacaTacacacacac
-acacacacacacacacacacacacacaVbZqubbqsqsbbbbqvcaaVananadadeKazazazeKeKeKeKeKeseKeKeKeKazewexezezeAexeKeKeKeKeKeKeKeKesadadeEeEeEeGeEeEeEeEeIeGeEeEeEeGeEeEeEadeKeKadadeJeJeJeJeMeMeJeJeJeJadeNeOeNeNeOdadadadadadadadvdvdveodvdvdvdvepdvdvdvdaacacacacacacacbqacbeacbrbracacacacacacacacac
+acacacacacacacacacacacacacaVbZqubbqsqsbbbbqvcaaVananadadeKazazazeKeKeKeKeKeseKeKeKeKazewexezezeAexeKeKeKeKeKeKeKeKesadadeEeEeEeGeEeEeEeEjNeGeEeEeEeGeEeEeEadeKeKadadeJeJeJeJeMeMeJeJeJeJadeNeOeNeNeOdadadadadadadadvdvdveodvdvdvdvepdvdvdvdaacacacacacacacbqacbeacbrbracacacacacacacacac
 acacacaUacacacacacacacacacacaVbbbbqsqsqsbbbbaVcaadadadadeKeKeKeKadeKeKeKadadadeKeKeKeKazazazazeKeKeKeKeKeKeKeKeKazeKeKadeGePeQeReSeTeEeUeVeWeXeXeYeZfafbeGadeKeKeKadeJfcfdeJfefeeJfffceJadeOfgfhfhfidafjfkflfmfndadvetdveudvdvdvdveudveBdvdaacacacacacacacbqbqbqacbrbracacacacacacacacac
 acacacacacacacbqacbqbqacacaVaVbbqvqsqsqsbbbbcaaVadadadadadeKeKeKadeKeKeKeKeKadeKeKeKeKazazazazeKazeKeKeKeKeKadeKazeKadadeEfoeVeVeVeVeIeVeVeVeVeVeVeVeVeVeEadeKeKeKadeMfpfpfqfpfpfqfpfpeMadeNfgfrfrfsdaftflflflfudadvdvdveudvdvdvdveudvdvdvdaacacacacacacacacacacacbracacacacacacacacacac
 acacacacbqacacacacbqbqacaVaVcabbbbqsqsqsbbaVaVaTananadadadadadadadadeKadadadadadadeKeKeKeKadadadadeKadadadadadeKeKeKeKadeGfvfweVfxfyeEeRfzeVfzeVfzeVfzeReGadeKeKadadeJfAfBeJfpfpeJfCfDeJeKeNfgfEfFfGdafHflfIfIfJdadvevdveodvdvdvdvepfKdvdvdaacacacacacaUacacaUaUacbracaUaUacacacacacacac
-acacacacbqbqacacacacaccaaVaVbbbbqsqsqsqubbaVaVacadadadadadadadadadadadadadadadadadadadadcmcmcncmcmcncmcmeHeKadeKeweKeKeHeEeEeEeIeEeEeEeEfLeEfMfNfOeEfPeEeEadazeKeKeKeJeJfQeJfpfpeJfQeJeJadeOfRfSfSfTdafUflfIfIfVdaeieieidbdvdvdvdvdbfWeieidaacacacacacaUacacacacacacacacacacacacacacacac
+acacacacbqbqacacacacaccaaVaVbbbbqsqsqsqubbaVaVacadadadadadadadadadadadadadadadadadadadadcmcmcncmcmcncmcmeHeKadeKeweKeKeHeEeEeExxeEeEeEeEfLeEfMfNfOeEfPeEeEadazeKeKeKeJeJfQeJfpfpeJfQeJeJadeOfRfSfSfTdafUflfIfIfVdaeieieidbdvdvdvdvdbfWeieidaacacacacacaUacacacacacacacacacacacacacacacac
 acacacacbqacacacacacacaVcabbquqsqsqsbbqvbbcaaVacacadadadfXfYfXfXfYfXfXfYfXfXfYfXfXfXadadcmczfZgacmgbcPcmadadeKazazeKadadeEgcgdgegdgegfgggegggegggegggegheEadeKeKeKadeJfffpfqfpfpfqfpffeJadeNfRfSgigjdagkflflflfldadvdvdvdvdvdvdvdvdvdvdvdvdaacacacacacacacacacacacacacacacacacacacacacac
 acacacacbqbqacacacacaVaVbrbbqvqsqsqsbbbbcaaVacbqbqadadadfYglgmglgmglgnglgoglgpgqgsgtadadcncwfZdicmcwcwcnadadeKazeKazeKadeEgugvgvgvgvgvgwgvgwgvgwgvgwgvgxeEadadazeKadeMgyfceJfpfpeJfcfDeMadeNfRfSfSgzdagAgBgCgDflgEdvdvdvdvdvdvdvdvdvdvdvdvdaacacacacacacacacacacacacacacacacacacacacacac
 acacacacacacacacacacaVaVbbbbqsqsqsqvbbaVaVaVacbqbqadadadfXgpgmgFgmgmgmgmgmgGgmgqgpfXadadcmcxcwcvcmdFcmcmadeKadeKeKeweKadeGgugvgvgvgvgvgvgvgvgvgvgvgvgvgxeGadeKazesadeJeJfQeJfqgHeJfQeJeJadeOgIgJfSgKdaflflflflfldagLdvgMgNdvdvdvdvdvdvdvgLdaacacacacacacacacacacacacacacacacacacaeaeaeae
@@ -1033,20 +1058,20 @@ acacacacacacacacaVaVbbquqsqsqsbbbbcaaVacacbqacacacadadadadadadeKeKadadeHadadadad
 acacacacaUacacaVaVcabbbbqsmUqvbbaVcaacacacbqaTacbqbqadadadadhIeKadadeKadadadeKadeKeKadeKeKeKadadeKeKeKeKeseKeKeKeKeKeKeseKeKeKeKeKeKazeKeKeKeKhJeseKeKeKeKeKazeKeKeKeKeKeKazeKazazazazeKeKeKeKazazazazeKeKeKeKeKeKhEazazazeKmgaeaeaeaVaVaVaeaeaeaeaeaeaeaeaeacacacacacacacacacacacacacac
 acacacacacacacaVbBaVqvbbqsqsbbbbaVaVacacacacacacacacananadadadeKeKeKeKeKeKeKeKeKeKazazazeKeKeKazeweKeKeKeKeKeKeKazazeKeKazazazeKeKewazazeKazeKeKazazazazazeKeKeKadazazazeKeKeKeKeKeKeKeKeseseKeKazeKeKeKeKeseKadadeKadadeKazaeacacaeaeaeacacacaeaeacacacacacacacacacacbeacacacacacacacac
 acbrbracacaccaaVaVbbbbqsqsqsbbaVcaacacacacbqacacacacanadeKadeKazazeKazazeKeseKeKeKeKeKeseKazazeKeKeKeKeKeKeKeKeKeKeKeKeKeKeKeKeKeKeKazazazazazeKazeKeKeKeKeseKadadeKeKhKeKeKeKadadeKeKadadadeKadeKadeKadeKeKeKadadadadadadazaeaeacacacacacacacacacacacacacbqacacacacacacacacaUaUacacacac
-acacbrbrbracaVaVaVbbquqsqsbbquaVaVacacacacacacacaeaceKeKazazeKewazeKeKeKeKeKeKeKeKeKeKeKadeKeKeKadeKadadadadeKeKeKeKcAcAhLadadeKeKeKeKazeKazeKeKadadadadadeKeKadadadadadeHadadademadeKeKancZcTeHadadhIadadadeKeKadereHadadadaVaeacacacacacacacacacacacacacbqaUacacacacacbqacacacacacacac
-acacacbracacaVaVcaaVbbqsqsbbbbcacaacacacacacaeaeaeaeeKeKeKeKeKeKeKeKadeKadeKeKeKeKeKadadadadeKhMhMhMhNhNhOhPhPhOhNhNhMhMhMmGmGeHadeKazeKeKazeKeHhQhRhShRhRhQhRhQhRhRhRhRhQadhThUhUhVhWhWhVhUhUhTadhXhXhYhXadadeKhXhYhXhXhZiaacacdmdmdmdmdmdmdmdmdqacacacacacacbqacacacacaXacacaUaUaTacac
-acacacacacaTaccaaVbbmVmWmWmVaeaeaeaeaeaeaeaeaeaeaeaeeKadadadadeKadadadadadadeKeKeKadadadadadanhMibicidieifigigihigigiiijhMikamiladeKazeKeKazadadimimiminioimipimioinimimimadhTiqiririririsiqithTadiuivivhXiwiwiwhXiviviuixiyacacdsacdAacacacdBacmiacacacacacacacacacbqacacacbqacacacacac
-acacacacacacacaVaeaebWccbWbWaeaeaeaeaeaVaeaVaeaeacacadadadadeKeKadadadeHcZcTadeKeKeKeladadadadhNijigiziziziziziziziAiBiChNikamiDeKeKeKeKeKadanadimiEiFiGiGiHiGiHiGiGiGiIimadhUiJiKiMiririsiNirhUadhXivivivivivivivivivhXixiObqbqmjacdBacdsacdsacmiacacacacacacacacacbqacacacacacacacacac
-acacacacacbeaeaeliaebWbWbWbWaeaeaeacaeaeaeaeacacacacadadakcnakdFcnakadadakcnakcnakdFakcnakadadhMhMiPiRiThMizizizizizizizhMikamiUadeKeKeKeKeKadadiniGiGiGiGiGiGiGiGiGiGiGinadhTiViriWiKiriXiYirhTadhXiviZiZiZiviZiZiZivhXixenacacacacacacmjbqdsacmiacacacacacacbracacacacacacacacacacacac
-aeaeacacacaeaeaeaeaebWbWbWbWaeaeaVacacacacacacacacbqadadakgWcwcwjaakadadakczdyjbjccwcOjdakadanhMjeigjfjghMigjhiPjhjhiPjhhMikamjiadeKazazeKeKadadinjjiFiGiFiGiGiGiFjkjliGinadhTjmirjniririririrhTadiuiviviviviviviviviviujoenacbqdsacmkacacbqmjacacacacacacaTacbrbrbracacacacacacacacacac
-aeaeaeaeaeaeaeaeaeaemXmYmYmYbbaVcaaVacacacacbqbqacacadadakcxcwcwjpakadadcncwjqjqjqcwcwcwcnadadhNjrigigjshMighMjtjthMjtjthNikamjueKeKeKazeKeKanadimiFiGiGjjiFiGiGiFjviGiGimadhUjmirjwirjxirjyirhUadhXjziZiZiZiviZiZiZjzhXixadacbqacacacbqbqbqacacacacacacacacaUbrbrbrbrbrbracacacacacacac
-acacaeaeaeacacaVneaVbbqvqsqsqubbaVcaacacacacacacacacadadcncwcwcRdycnadadakcwcwcwcwcwcwcvakaddchMjAjBjCjDhMighMjEjFhMjEjFhMjGjGadeKeKeKeKazeKeKjHimiGiFiGiFiGiGiGiFjliGjIjJadhTiqirjKirjLirjMiqhTadhXivivivivivivivivivhXixiyacacbqacacacacacacmjmiacacacacacacbrbrbrbrbrbracacacacacacac
-acacacacacacacacaVaVcabbqsqsqsbbqvaVaVacbqacacbracacadadakcwcwcwcwakadadakdFakakdFakdFakakadadhMhMhNhNhMhMhNhMhMjNhMhMjNhMadanadeKeKeKazazazeKelimiFjOiGiGiFjPiGiFjQiGjRjJadhThThThThThThThThThTadiuiviZiZiZiviZiZiZiviuixaddsacacacbzacacdBacacmiacacacacacacacbrbrbracacacacacacacacac
-acacacacacacacacacaVaVbbbbqsqsqsbbaVcaaVbrbrbrbracacadadakhlcvcPcPakadadakctcwakcPakcwdzakadadananadadadadadanadadadadadadadadadeKeKeKazazazeKjSimiGiFiGiGiGiFiGiFjQiGjUimadcmjXkbcmkckfcmkkkfcmadhXivivivivivivivivivhXixklacacdsmkacmjbqacacdsmiacacacacacacbrbrbracacacacacacacacacac
-acacacacacacacacacacaVcaqvbbqsqsbbbbaVaVaVbracacacacadadakcnakakcnakadadakcnakakcnakcnakakadadadadkmknkmkmknkmkmkokmkmkmkokmkmadeKeKeKazeKeKeKadiniGiFiGiGiFiGiGiFjvkpjPinadejdXalcmalalcmalalejadhXjziZiZiZiviZiZiZjzhXkqkrmlmmmlmlmlmmmmmmmlmlmnacacacacacacacacacacacacacaTacacacacac
-acacacacacacacacacacacaVbbqvqsqsqsbbquaVaVaVacacacbqanadadadadadadadanadadadadadadadadadadadanadadkmksktkwkwkmkxkykykmkxkskzkmadkAeKeKazeKeKadadiniFkBiFiFkDiFiGiGiGiGkEinadcmdUkFcmcmeFcmcmeFcmadiuiviviviviviviviviviuadadacacacacacacacacacacacacacacacacacacaclzacacacacacacacacaUac
-acacacbqacacacacacacacbZaVaVquqsqsqsbbquaVaVaVacacbqanadadadadanadkIanadadadananananadadadadadadadkmkMkMkskskNkskOkOkmkPkPkskoadadeKeKazazeKadadimkQiFiGiGiFiGiFjjiFiGkRimadcmcMalalalalalalalcmadhXivivivkSkTkUivivivhXadadacacacacacacacacacacacacacacacacacacacacacacacacacacacbeacac
-acacacaUacbracacacacacaTaVcibbquqsqsbbbbaVcabZacacbqanadadaddcanadadadadadadadadananadadadadanadadknkxkskskskmkskskVkmkPkPkWkmeHeKeKeKazazeKeKeHimimimimimimimimimimimimimadcmcmejcmeFcmejcmejcmadhXivivivjzkXjzivivivhXadadacacacacacacacacacacacacacacacacacacacacacacacacacacacacacac
+acacbrbrbracaVaVaVbbquqsqsbbquaVaVacacacacacacacaeaceKeKazazeKewazeKeKeKeKeKeKeKeKeKeKeKadeKeKeKadeKadadadeKeKeKeKeKcAcAhLadadeKeKeKeKazeKazeKeKadadadadadeKeKadadadadadeHadadademadeKeKancZcTeHadadhIadadadeKeKadereHadadadaVaeacacacacacacacacacacacacacbqaUacacacacacbqacacacacacacac
+acacacbracacaVaVcaaVbbqsqsbbbbcacaacacacacacaeaeaeaeeKeKeKeKeKeKeKeKadeKadeKeKeKeKeKadadadadeKhMhMhMhNhNhOhPhPhOhNhMhMhMhMmGmGeHadeKazeKeKazeKeHhQhRhShRhRhQhRhQhRhRhRhRhQadhThUhUhVhWhWhVhUhUhTadhXhXhYhXadadeKhXhYhXhXhZiaacacdmdmdmdmdmdmdmdmdqacacacacacacbqacacacacaXacacaUaUaTacac
+acacacacacaTaccaaVbbmVmWmWmVaeaeaeaeaeaeaeaeaeaeaeaeeKadadadadeKadadadadadadeKeKeKadadadadadanhMibicidieigigigigigjhjtjFhMikamiladeKazeKeKazadadimimiminioimipimioinimimimadhTiqiririririsiqithTadiuivivhXiwiwiwhXiviviuixiyacacdsacdAacacacdBacmiacacacacacacacacacbqacacacbqacacacacac
+acacacacacacacaVaeaebWccbWbWaeaeaeaeaeaVaeaVaeaeacacadadadadeKeKadadadeHcZcTadeKeKeKeladadadadhNigigiziziziziziziziAjtjEtVikamiDeKeKeKeKeKadanadimiEHiiGiGiHiGiHiGyQokiIimadhUiJiKiMiririsiNirhUadhXivivivEHjOEHivivivhXixiObqbqmjacdBacdsacdsacmiacacacacacacacacacbqacacacacacacacacac
+acacacacacbeaeaeliaebWbWbWbWaeaeaeacaeaeaeaeacacacacadadakcnakdFcnakadadakcnakcnakdFakcnakadadhMhMiPiRhMhMHRiziziihMhMhMhMikamiUadeKeKeKeKeKadadinQrNtiGiGHqiGiGiGJniGNpinadhTiViriWiKiriXiYirhTadhXiviZnRkpEHiZnRkpivhXixenacacacacacacmjbqdsacmiacacacacacacbracacacacacacacacacacacac
+aeaeacacacaeaeaeaeaebWbWbWbWaeaeaVacacacacacacacacbqadadakgWcwcwjaakadadakczdyjbjccwcOjdakadanhMjeigjfjghMigiCigigjhjtjEhMikamjiadeKazazeKeKadadiniGiGiGkRjjiFiGtqjkiGZIinadhTjmirjniririririrhTadiuivivivivEHiviviviviujoenacbqdsacmkacacbqmjacacacacacacaTacbrbrbracacacacacacacacacac
+aeaeaeaeaeaeaeaeaeaemXmYmYmYbbaVcaaVacacacacbqbqacacadadakcxcwcwjpakadadcncwjqjqjqcwcwcwcnadadhNjrigigjshMnLiBigigiAjtjFtVikamjueKeKeKazeKeKanadimHqiGiGkRjPiFiGtqjviGLlimadhUjmirjwirjxirjyirhUadhXjziZnRkpEHiZnRkpihhXixadacbqacacacbqbqbqacacacacacacacacaUbrbrbrbrbrbracacacacacacac
+acacaeaeaeacacaVneaVbbqvqsqsqubbaVcaacacacacacacacacadadcncwcwcRdycnadadakcwcwcwcwcwcwcvakaddchMjAjBjCjDhMigAIifigiAjtjEhMjGjGadeKeKeKeKazeKeKjHimOsiFiGkRijiFiGtqjliGjIjJadhTiqirjKirjLirjMiqhTadhXivivivivEHivivivivhXixiyacacbqacacacacacacmjmiacacacacacacbrbrbrbrbrbracacacacacacac
+acacacacacacacacaVaVcabbqsqsqsbbqvaVaVacbqacacbracacadadakcwcwcwcwakadadakdFakakdFakdFakakadadhMhMhNhNhMhMhNhMhMhNhMhMhMhMadanadeKeKeKazazazeKelimwciGiGkRjPiFiGtqjQiGjRjJadhThThThThThThThThThTadiuiviZnRkpEHiZnRkpiviuixaddsacacacbzacacdBacacmiacacacacacacacbrbrbracacacacacacacacac
+acacacacacacacacacaVaVbbbbqsqsqsbbaVcaaVbrbrbrbracacadadakhlcvcPcPakadadakctcwakcPakcwdzakadadananadadadadadanadadadadadadadadadeKeKeKazazazeKjSimiGiGiGiGsaiGiGtqjQiGBZimadcmjXkbcmkckfcmkkkfcmadhXivivivivEHivivivivhXixklacacdsmkacmjbqacacdsmiacacacacacacbrbrbracacacacacacacacacac
+acacacacacacacacacacaVcaqvbbqsqsbbbbaVaVaVbracacacacadadakcnakakcnakadadakcnakakcnakcnakakadadadadkmknkmkmknkmkmkokmkmkmkokmkmadeKeKeKazeKeKeKadiniGHqiGiGiGiGiGtqjliGjUinadejdXalcmalalcmalalejadhXjziZnRkpEHiZnRkpihhXkqkrmlmmmlmlmlmmmmmmmlmlmnacacacacacacacacacacacacacaTacacacacac
+acacacacacacacacacacacaVbbqvqsqsqsbbquaVaVaVacacacbqanadadadadadadadanadadadadadadadadadadadanadadkmksktkwkwkmkxkykykmkxkskzkmadkAeKeKazeKeKadadinkRkBiFiGkDiGiGtqLkiGiTinadcmdUkFcmcmeFcmcmeFcmadiuivivivivEHiviviviviuadadacacacacacacacacacacacacacacacacacacaclzacacacacacacacacaUac
+acacacbqacacacacacacacbZaVaVquqsqsqsbbquaVaVaVacacbqanadadadadanadkIanadadadananananadadadadadadadkmkMkMkskskNkskOkOkmkPkPkskoadadeKeKazazeKadadimkQsaTeiGiGiGiGiGwRiGkEimadcmcMalalalalalalalcmadhXivivivkSkTkUivivivhXadadacacacacacacacacacacacacacacacacacacacacacacacacacacacbeacac
+acacacaUacbracacacacacaTaVcibbquqsqsbbbbaVcabZacacbqanadadaddcanadadadadadadadadananadadadadanadadknkxkskskskmkskskVkmkPkPkWkmeHeKeKeKazazeKeKeHimimimimimimimimimimimimimadcmcmejcmeFcmejcmejcmadhXZuivivEHkXEHivivZuhXadadacacacacacacacacacacacacacacacacacacacacacacacacacacacacacac
 acacacacacbracacaTacacacacaVaVbbqvqsqsqubbaVaVaVaVacadadadadadadadanadadadananadadaddMadadadadadadkmkMkMkskskYkskskskZkskskslaeKeKeKazazeKeKeKadeKeKeKeKeKeKlbeKlblblbeKeKadadadadadeKeKeHadadadadhXhXiuiuiuhXiuiuiuhXhXadadacaUbzbqacacacacacacacacacacacacacacacacacacacacacacacacacac
 acacacacacbrbracacacacacaccaaVqubbqvqsqsbbbbbbaVcaacacacacadadaddwdwadadadananadadadadadanadadadadknkxkskskslcksksldlekskskskNeKeKeKeKeweKeKeKadeKeseKeKeKeKaderadadanazesazeKeKeKeKesesadadadadaderadadanadadananadadadadadacacacaXacacacacacacacaXbqacacacacacacacacacacacacacacacacac
 acacacbracbracacacacacacacaccaqvbbbbqsqsqsbbqubbaVcabqbqacanandwdwanadadadadadanadandcanadadadadadkmkMkMkskskYksksldlekskskslaadeKeKeKazeKeKeKeKcmcmcncmcmcmcncmcmadadeKeKadadadeKazazeKeKazeKeKeKeKeKadadadadadbqbqacacacacacacacacacacacacacacacacbqacacacacacacacacacbqbqacacacacacac
