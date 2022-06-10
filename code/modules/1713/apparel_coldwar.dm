@@ -1824,3 +1824,12 @@ obj/item/clothing/head/helmet/modern/hardhato
 	icon_state = "surgcap_navy"
 	item_state = "surgcap_navy"
 	worn_state = "surgcap_navy"
+
+
+///////BUSH WAR///////
+/obj/item/clothing/under/rhodesian_bushstroke
+	name = "bushstroke uniform"
+	desc = "A Rhodesian uniform with the bushstroke pattern."
+	icon_state = "rhodesian_bushstroke"
+	item_state = "rhodesian_bushstroke"
+	worn_state = "rhodesian_bushstroke"

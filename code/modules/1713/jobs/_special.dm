@@ -86,6 +86,7 @@
 /datum/job/var/is_dra = FALSE
 /datum/job/var/is_afro = FALSE
 /datum/job/var/is_waco = FALSE
+/datum/job/var/is_nyadzonya = FALSE
 /datum/job/var/is_event_role = FALSE
 /datum/job/var/is_starwars = FALSE
 /datum/job/var/is_rebel = FALSE
