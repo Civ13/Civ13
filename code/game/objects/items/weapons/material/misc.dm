@@ -288,7 +288,7 @@
 	force_divisor = 3
 	block_chance = 19
 	cooldownw = 10
-	applies_material_colour = FALSE`
+	applies_material_colour = FALSE
 
 
 /obj/item/weapon/material/quarterstaff
