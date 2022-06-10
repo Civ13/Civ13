@@ -348,6 +348,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 					i[2]+=S.amount*S.value
 					H << "You export \the [S]."
 					qdel(S)
+					new/obj/item/stack/money/rubles(src.loc, round(S.amount*S.value))
 					return
 	else if (istype(map, /obj/map_metadata/abashiri))
 		AB = map
@@ -357,6 +358,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 					i[2]+=S.amount*S.value
 					H << "You export \the [S]."
 					qdel(S)
+					new/obj/item/stack/money/yen(src.loc, round(S.amount*S.value))
 					return
 	else
 		return
