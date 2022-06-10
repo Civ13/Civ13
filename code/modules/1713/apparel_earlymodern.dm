@@ -569,6 +569,7 @@
 		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/material,
 		/obj/item/flashlight,
 		/obj/item/weapon/whistle
 		)
@@ -649,7 +650,7 @@
 /obj/item/weapon/storage/belt/jap/camp_officer
 /obj/item/weapon/storage/belt/jap/camp_officer/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)

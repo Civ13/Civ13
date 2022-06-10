@@ -253,9 +253,21 @@
 	edge = FALSE
 	default_material = "softwood"
 
+
+
 /obj/item/weapon/material/classic_baton/guard
 	desc = "A Heavy wooden truncheon for beating criminal scum this one is made of harder wood material."
 	default_material = "hardwood"
+	force_divisor = 1
+	block_chance = 27
+	cooldownw = 8
+
+/obj/item/weapon/material/classic_baton/nightstick
+	name = "Nightstick"
+	desc = "A police officers nightstick used to keep the streets clean."
+	default_material = "hardwood"
+	icon_state = "nightbaton"
+	item_state = "nightbaton"
 	force_divisor = 1
 	block_chance = 27
 	cooldownw = 8
@@ -266,6 +278,17 @@
 	force_divisor = 1
 	block_chance = 27
 	cooldownw = 10
+
+/obj/item/weapon/material/classic_baton/blackjack
+	name = "Blackjack"
+	desc = "A Heavy leather wrapped truncheon with a hefty lead weight in the tip for makeing scum comply."
+	icon_state = "blackjack"
+	item_state = "blackjack"
+	default_material = "leather"
+	force_divisor = 3
+	block_chance = 19
+	cooldownw = 10
+	applies_material_colour = FALSE
 
 
 /obj/item/weapon/material/quarterstaff

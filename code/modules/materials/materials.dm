@@ -710,6 +710,7 @@ var/list/name_to_material
 	name = "leather"
 	icon_colour = "#5C4831"
 	hardness = 25
+	weight = 10
 	flags = MATERIAL_PADDING
 
 /material/leather/dark
