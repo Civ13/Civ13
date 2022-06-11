@@ -405,7 +405,40 @@
 	desc = "A blinking gun store sign."
 	icon_state = "gunshop"
 
+/obj/structure/sign/gas
+	name = "gas"
+	desc = "A flashing gas station sign."
+	icon_state = "gas"
+
 /obj/structure/sign/deer_trophy
 	name = "hunting deer trophy"
 	desc = "Looks like we finally found Bambi..."
 	icon_state = "deer_trophy"
+
+//BILLBOARDS
+
+/obj/structure/billboard
+	name = "billboard ad"
+	desc = "Goodness, what are they selling us this time?"
+	icon = 'icons/obj/billboards.dmi'
+	icon_state = "billboard"
+	light_range = 4
+	light_power = 2
+	light_color = "#fcf8f0"
+	density = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+	layer = MOB_LAYER + 0.1
+	bound_width = 64
+	bound_height = 64
+	var/adnumber
+
+/obj/structure/billboard/Destroy()
+	set_light(0)
+	return ..()
+
+/obj/structure/billboard/New()
+	..()
+	adnumber = rand(1,14)
+	overlays += "ad[adnumber]"
+	update_icon()

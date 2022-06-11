@@ -745,6 +745,7 @@
 #include "code\modules\1713\machinery\cables.dm"
 #include "code\modules\1713\machinery\cables_types.dm"
 #include "code\modules\1713\machinery\vehicles.dm"
+#include "code\modules\1713\machinery\washing_machine.dm"
 #include "code\modules\1713\machinery\engines\engines.dm"
 #include "code\modules\1713\machinery\engines\external_combustion.dm"
 #include "code\modules\1713\machinery\engines\heatsource.dm"
