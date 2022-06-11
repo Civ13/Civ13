@@ -432,6 +432,44 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "cobpipeoff"
 	chem_volume = 35
 
+/obj/item/clothing/mask/smokable/pipe/glass
+	name = "glass pipe"
+	desc = "A small glass pipe. Often used as drug paraphernalia."
+	icon_state = "crackpipeoff"
+	item_state = "crackpipeoff"
+	icon_on = "crackpipeon"  //Note - these are in masks.dmi
+	icon_off = "crackpipeoff"
+	chem_volume = 15
+
+/obj/item/clothing/mask/smokable/pipe/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	..()
+	if (istype(W, /obj/item/weapon/reagent_containers/pill/crack))
+		var/obj/item/weapon/reagent_containers/pill/crack/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already stuffed.</span>"
+			return
+		smoketime = 300
+		reagents.add_reagent("crack",5)
+		name = "crack-stuffed [initial(name)]"
+		visible_message("<span class='notice'> [user] stuffs their [src] with some [W].</span>")
+		if (G.amount > 1)
+			G.amount -= 1
+		else
+			qdel(G)
+	else if (istype(W, /obj/item/weapon/flame/lighter))
+		var/obj/item/weapon/flame/lighter/L = W
+		if (L.lit)
+			light("<span class='notice'>[user] manages to light their [name] with the [W].</span>")
+	else if (istype(W, /obj/item/weapon/flame/match))
+		var/obj/item/weapon/flame/match/M = W
+		if (M.lit)
+			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
+	else if (istype(W, /obj/item/flashlight))
+		light("<span class='notice'>[user] lights their [name] with the [W].</span>")
+	user.update_inv_wear_mask(0)
+	user.update_inv_l_hand(0)
+	user.update_inv_r_hand(1)
+
 /////////
 //ZIPPO//
 /////////

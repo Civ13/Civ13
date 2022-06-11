@@ -132,6 +132,16 @@
 	weight = 0.45
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/fal
+	name = "FN Fal Magazine (7.62x51mm)"
+	icon_state = "fal"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 30
+	weight = 0.45
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/mk18
 	name = "MK18 magazine (5.56mm NATO)"
 	icon_state = "hk"
@@ -285,6 +295,16 @@
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tec9
+	name = "TEC-9 (9x19mm)"
+	icon_state = "tec9"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 32
 	weight = 0.33
 	multiple_sprites = TRUE
 

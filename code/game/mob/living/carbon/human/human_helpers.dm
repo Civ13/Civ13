@@ -128,8 +128,8 @@
 					lasty = usr.y
 					lastz = usr.z
 					usr.sleeping = 66 //nap
-					usr.drop_item()
 					inducedSSD = TRUE
+					usr.drop_item()
 					sleep_update()
 					usr.forceMove(locate(1,1,1))
 					return
@@ -140,7 +140,10 @@
 	if (!usr.sleeping && !inducedSSD)
 		usr << "<span class = 'red'>You are already awake.</span>"
 		return
-	if (WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
+	if (!inducedSSD)
+		usr << "<span class = 'red'>You aren't asleep that deeply, just wait.</span>"
+		return
+	if (inducedSSD && WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will wake up in 30 seconds."
 		spawn(300)
 			usr.forceMove(locate(lastx,lasty,lastz))

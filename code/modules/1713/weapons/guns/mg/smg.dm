@@ -1196,6 +1196,71 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+/obj/item/weapon/gun/projectile/submachinegun/fal
+	name = "FN Fal"
+	desc = "A belgian battle rifle, chambered in 7.62×51mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "fal"
+	item_state = "fal"
+	base_icon = "fal"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/guns/fire/fal.ogg'
+	magazine_type = /obj/item/ammo_magazine/fal
+	good_mags = list(/obj/item/ammo_magazine/fal)
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	weight = 3.8
+	equiptimer = 12
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.9, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.8)),
+		)
+	effectiveness_mod = 1.07
+	sel_mode = 1
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 50,
+
+			MEDIUM_RANGE_STILL = 50,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 30,
+			LONG_RANGE_MOVING = 15,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 82,
+			SHORT_RANGE_MOVING = 72,
+
+			MEDIUM_RANGE_STILL = 64,
+			MEDIUM_RANGE_MOVING = 55,
+
+			LONG_RANGE_STILL = 44,
+			LONG_RANGE_MOVING = 31,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 91,
+			SHORT_RANGE_MOVING = 81,
+
+			MEDIUM_RANGE_STILL = 76,
+			MEDIUM_RANGE_MOVING = 67,
+
+			LONG_RANGE_STILL = 55,
+			LONG_RANGE_MOVING = 43,
+
+			VERY_LONG_RANGE_STILL = 36,
+			VERY_LONG_RANGE_MOVING = 23),
+	)
 /obj/item/weapon/gun/projectile/submachinegun/scarl
 	name = "FN SCAR-L"
 	desc = "A belgian assault rifle, chambered in 5.56x45mm."
@@ -1567,6 +1632,28 @@
 	icon_state = "black_vz58"
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
+
+/obj/item/weapon/gun/projectile/submachinegun/tec9
+	name = "TEC-9"
+	desc = "A blowback-operated semi-automatic pistol."
+	icon = 'icons/obj/guns/automatic.dmi'
+	icon_state = "tec-9"
+	item_state = "tec-9"
+	base_icon = "tec-9"
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/tec9.ogg'
+	magazine_type = /obj/item/ammo_magazine/tec9
+	good_mags = list(/obj/item/ammo_magazine/tec9)
+	weight = 1.3
+	equiptimer = 8
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.2, move_delay=2, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9)),
+		list(name="full auto",	burst=1, burst_delay=0.3, move_delay=4, dispersion = list(1.6, 1.7, 1.8, 1.9, 2.0)),
+		)
+	effectiveness_mod = 0.8
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS
 
 //////////////////////C7///////////////////////////////
 /obj/item/weapon/gun/projectile/submachinegun/c7

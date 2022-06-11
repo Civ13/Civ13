@@ -175,6 +175,15 @@
 		..()
 		reagents.add_reagent("cocaine", 5)
 
+/obj/item/weapon/reagent_containers/pill/crack
+	name = "crack rock"
+	desc = "A rock of crack cocaine. Ready to be smoked."
+	icon_state = "crack"
+	value = 4
+	New()
+		..()
+		reagents.add_reagent("crack", 5)
+
 /obj/item/weapon/reagent_containers/pill/methylphenidate
 	name = "Methylphenidate pill"
 	desc = "Improves the ability to concentrate."

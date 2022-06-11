@@ -1187,8 +1187,8 @@
 	var/pantscolor = 0
 	var/sidescolor = 0
 	var/shirtcolor = 0
-	icon_state = "trackpants_custom"
 	item_state = "trackpants_custom"
+	icon_state = "trackpants_custom"
 	worn_state = "trackpants_custom"
 	color = "#FFFFFF"
 	New()
@@ -1238,8 +1238,8 @@
 	var/uncolored = FALSE
 	var/basecolor = 0
 	var/linescolor = 0
-	icon_state = "customtracksuit"
 	item_state = "customtracksuit"
+	icon_state = "customtracksuit"
 	worn_state = "customtracksuit"
 	color = "#FFFFFF"
 	New()
