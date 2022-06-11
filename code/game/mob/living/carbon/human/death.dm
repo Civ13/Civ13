@@ -177,6 +177,8 @@
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")
 				map.scores[civilization] -= 500
+			if (civilization == "Government")
+				map.scores[civilization] -= 500
 			if (civilization == "Sheriff Office")
 				map.scores[civilization] -= 250
 				if (ishuman(last_harmed))
@@ -201,6 +203,7 @@
 										HMN.gun_permit = FALSE
 			else
 				map.scores[civilization] -= 200
+
 	else if (map && map.ID == MAP_OCCUPATION && client)
 		var/obj/map_metadata/occupation/GD = map
 		var/mob/living/human/H = src

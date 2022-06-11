@@ -1504,7 +1504,7 @@
 "CW" = (/obj/covers/brick_wall,/obj/structure/sign/painting1,/turf/floor/wood,/area/caribbean/roofed)
 "CX" = (/obj/structure/table/wood,/obj/item/weapon/telephone/wireless,/obj/covers/wood_ship,/turf/floor/plating/steel,/area/caribbean/roofed)
 "CY" = (/obj/structure/table/wood,/obj/covers/wood_ship,/turf/floor/plating/steel,/area/caribbean/roofed)
-"CZ" = (/obj/structure/closet/anchored,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/storage/belt/largepouches/green/m60,/obj/item/weapon/storage/belt/largepouches/green/m60,/obj/item/weapon/storage/belt/largepouches/green/m60,/turf/floor/plating/steel,/area/caribbean/roofed)
+"CZ" = (/obj/structure/closet/anchored,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/turf/floor/plating/steel,/area/caribbean/roofed)
 "Da" = (/obj/structure/table/wood,/obj/structure/computer,/turf/floor/wood,/area/caribbean/roofed)
 "Db" = (/obj/structure/barricade/tires{icon_state = "tire"},/turf/floor/plating/tiled/woodh,/area/caribbean/roofed)
 "Dc" = (/obj/structure/table/fancy,/obj/item/flashlight/lamp/littlelamp,/obj/structure/roof_support/admin,/turf/floor/wood,/area/caribbean/roofed)

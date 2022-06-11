@@ -82,6 +82,7 @@
 	fire_delay=6
 	burst=1
 	max_shells = 1
+	muzzle_flash = FALSE
 
 
 //FANCY DART GUN
@@ -115,7 +116,7 @@
 	max_beakers = 3
 	dart_reagent_amount = 15
 	container_type = /obj/item/weapon/reagent_containers/glass/beaker
-
+	muzzle_flash = FALSE
 
 /obj/item/weapon/gun/projectile/dartgun/New()
 	..()
@@ -158,6 +159,7 @@
 	beakers = list() //All containers inside the gun.
 	mixing = list() //Containers being used for mixing.
 	container_type = /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
+	muzzle_flash = FALSE
 
 /obj/item/weapon/gun/projectile/dartgun/consume_next_projectile()
 	. = ..()

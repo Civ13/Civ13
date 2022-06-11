@@ -51,6 +51,20 @@
 	item_state = "replicant_bodyglove"
 	worn_state = "replicant_bodyglove"
 
+/obj/item/clothing/under/redbodyglove
+	name = "red bodyglove"
+	desc = "A tight red bodyglove worn by Red guards."
+	icon_state = "redbodyglove"
+	item_state = "redbodyglove"
+	worn_state = "redbodyglove"
+
+/obj/item/clothing/under/bluebodyglove
+	name = "blue bodyglove"
+	desc = "A tight blue bodyglove worn by senate guards."
+	icon_state = "bluebodyglove"
+	item_state = "bluebodyglove"
+	worn_state = "bluebodyglove"
+
 //////////////////Imperial Tunics and Caps///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/under/impstormofficer
@@ -169,19 +183,60 @@
 	slowdown = 0.1
 	health = 35
 
+/obj/item/clothing/shoes/redguardshoes
+	name = "red plastoid boots"
+	desc = "A pair of red plastoid boots."
+	icon_state = "redboots"
+	item_state = "redboots"
+	worn_state = "redboots"
+	body_parts_covered = FEET
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 55, arrow = 70, gun = 60, energy = 65, bomb = 35, bio = 15, rad = FALSE)
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 40
+
+/obj/item/clothing/shoes/senateguardshoes
+	name = "blue plastoid boots"
+	desc = "A pair of blue plastoid boots."
+	icon_state = "senateboots"
+	item_state = "senateboots"
+	worn_state = "senateboots"
+	body_parts_covered = FEET
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 55, arrow = 70, gun = 60, energy = 65, bomb = 35, bio = 15, rad = FALSE)
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 40
+
 /obj/item/clothing/gloves/replicantgloves
-	name = "plastoid gauntlets"
-	desc = "A pair of armored plastoid gauntlets."
+	name = "plastoid gloves"
+	desc = "A pair of plastoid gloves."
 	icon_state = "replicant_gloves"
 	item_state = "replicant_gloves"
 	worn_state = "replicant_gloves"
 	body_parts_covered = HANDS
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 55, arrow = 60, gun = 30, energy = 48, bomb = 35, bio = 15, rad = FALSE)
+	armor = list(melee = 45, arrow = 50, gun = 50, energy = 45, bomb = 35, bio = 15, rad = FALSE)
 	cold_protection = HANDS
-	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
-	health = 30
+	health = 40
+
+/obj/item/clothing/gloves/veryblack
+	name = "very black gloves"
+	desc = "A pair of void black gloves."
+	icon_state = "veryblack"
+	item_state = "veryblack"
+	worn_state = "veryblack"
+	body_parts_covered = HANDS
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 10, arrow = 5, gun = 5, energy = 2, bomb = 5, bio = 5, rad = FALSE)
+	cold_protection = HANDS
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	health = 40
 
 // PLASTOID ARMOR
 
@@ -195,6 +250,30 @@
 	armor = list(melee = 45, arrow = 90, gun = 75, energy = 55, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/redguard
+	name = "red guard armor with robe."
+	desc = "A thick, extremely expensive plastoid armor with a crimson red robe attached."
+	icon_state = "redguard"
+	item_state = "redguard"
+	worn_state = "redguard"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 75, arrow = 90, gun = 95, energy = 75, bomb = 100, bio = 20, rad = FALSE)
+	value = 70
+	slowdown = 0.9
+	health = 60
+
+/obj/item/clothing/suit/armor/senateguard
+	name = "senate guard armor with robe."
+	desc = "A thick, extremely expensive plastoid armor with a royal blue robe attached."
+	icon_state = "senateguard"
+	item_state = "senateguard"
+	worn_state = "senateguard"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 75, arrow = 90, gun = 95, energy = 75, bomb = 100, bio = 20, rad = FALSE)
+	value = 70
+	slowdown = 0.9
 	health = 60
 
 /obj/item/clothing/suit/armor/replicant/pilot
@@ -228,7 +307,7 @@
 	item_state = "repsgt_armor"
 	worn_state = "repsgt_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 90, gun = 75, energy = 55, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 90, gun = 75, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -240,7 +319,7 @@
 	item_state = "replieutenant_armor"
 	worn_state = "replieutenant_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 90, gun = 75, energy = 55, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 90, gun = 75, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -252,7 +331,7 @@
 	item_state = "repcaptain_armor"
 	worn_state = "repcaptain_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 90, gun = 75, energy = 55, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 90, gun = 75, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -264,7 +343,7 @@
 	item_state = "repcommander_armor"
 	worn_state = "repcommander_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 55, arrow = 95, gun = 85, energy = 55, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 95, gun = 85, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -276,17 +355,37 @@
 	item_state = "stormtrooper_armor"
 	worn_state = "stormtrooper_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 65, arrow = 96, gun = 88, energy = 75, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 96, gun = 88, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 100
 
 // HELMETS
 
+/obj/item/clothing/head/helmet/redguard
+	name = "Imperial Red Guard Helmet"
+	desc = "A reinforced plastoid helmet of the Extra-Galactic Empire's Red Guards."
+	icon_state = "redguard"
+	item_state = "redguard"
+	worn_state = "redguard"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, arrow = 80, gun = 85, energy = 65, bomb = 40, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/senateguard
+	name = "Imperial Senate Guard Helmet"
+	desc = "A reinforced plastoid helmet of the Extra-Galactic Empire's Senate Guards."
+	icon_state = "senateguard"
+	item_state = "senateguard"
+	worn_state = "senateguard"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, arrow = 80, gun = 85, energy = 65, bomb = 40, bio = 30, rad = FALSE)
+
 /obj/item/clothing/head/helmet/replicant/ARF
 	name = "Phase I Replicant ARF Helmet"
 	desc = "A reinforced plastoid helmet of the Republic Army."
-	icon_state = "repARF_helmet"
+	icon_state = "redguard"
 	item_state = "repARF_helmet"
 	worn_state = "repARF_helmet"
 	body_parts_covered = HEAD

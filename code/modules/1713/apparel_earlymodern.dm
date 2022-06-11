@@ -346,6 +346,10 @@
 	name = "Brown Winter Coat"
 	desc = "A thick winter coat."
 
+/obj/item/clothing/suit/storage/coat/japcoat2/trench
+	name = "brown trench coat"
+	desc = "A long coat to keep you clean and dry."
+
 /obj/item/clothing/suit/storage/coat/rusoffcoat
 	name = "Russian Officer Coat."
 	desc = "A russian army  officer coat. Worn by officers, acknowledge their rank."
@@ -565,6 +569,7 @@
 		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/material,
 		/obj/item/flashlight,
 		/obj/item/weapon/whistle
 		)
@@ -625,7 +630,7 @@
 /obj/item/weapon/storage/belt/jap/abashiri_guard
 /obj/item/weapon/storage/belt/jap/abashiri_guard/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -637,7 +642,7 @@
 /obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
 	..()
 	new /obj/item/weapon/whistle(src)
-	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -645,7 +650,7 @@
 /obj/item/weapon/storage/belt/jap/camp_officer
 /obj/item/weapon/storage/belt/jap/camp_officer/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)

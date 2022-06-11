@@ -429,20 +429,41 @@
 		)
 
 /obj/structure/vending/yakuza
-	name = "yakuza equipment rack"
-	desc = "Basic gear for the yakuza."
+	name = "Yakuza apparel rack"
+	desc = "Basic clothing for the Yakuza."
 	icon_state = "apparel_german2"
 	products = list(
+		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/clothing/shoes/laceup = 15,
 		/obj/item/clothing/under/modern2 = 15,
 		/obj/item/clothing/head/fedora = 15,
-		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
 		/obj/item/clothing/mask/balaclava = 15,
-		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
 		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
 		/obj/item/clothing/suit/storage/jacket/blackvest = 10,
-		/obj/item/ammo_magazine/m9beretta = 15,
-		/obj/item/weapon/material/knife/tanto = 5,
+	)
+
+/obj/structure/vending/yakuza/equipment
+	name = "Yakuza equipment rack"
+	desc = "Basic gear for the Yakuza."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/m1911 = 14,
+		/obj/item/ammo_magazine/luger = 10,
+		/obj/item/ammo_magazine/walther = 10,
+		/obj/item/ammo_magazine/makarov = 10,
+		/obj/item/ammo_magazine/c8mmnambu = 10,
+		/obj/item/ammo_magazine/type100 = 4,
+		/obj/item/ammo_magazine/mosin = 4,
+		/obj/item/ammo_magazine/shellbox/slug = 2,
+		/obj/item/ammo_magazine/shellbox = 2,
+		/obj/item/ammo_magazine/c32 = 5,
+		/obj/item/ammo_magazine/c762x38mmR = 5,
+		/obj/item/ammo_magazine/c9mm_jap_revolver = 5,
+		/obj/item/ammo_magazine/c44magnum = 2,
+		/obj/item/ammo_magazine/p220 = 4,
+		/obj/item/weapon/material/knife/tanto = 15,
+		/obj/item/ammo_magazine/emptyspeedloader = 20,
 	)
 
 /obj/structure/vending/russianapparel
@@ -1095,6 +1116,8 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
 		/obj/item/ammo_magazine/tibannagas/e11 = 60,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 10,
+		/obj/item/weapon/grenade/flashbang/galaxywars = 15,
 	)
 
 /obj/structure/vending/starwars/rebel/apparel
@@ -1119,6 +1142,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dl44 = 15,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 25,
 	)
 
 /obj/structure/vending/starwars/republic/apparel

@@ -35,7 +35,7 @@
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
-	var/maxpoints = 3000
+	var/maxpoints = 4000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
 
@@ -68,12 +68,14 @@
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
 	var/newnamee = list("Sheriff Office" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(230,230,230,null,0,"cross","#7F0000","#FFFFFF",0,0))
+	var/newnameg = list("Government" = list(230,230,230,null,0,"star","#E3E3E3", "#3e57a8",0,0))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
+	custom_civs += newnameg
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
 	spawn(15000)
@@ -139,7 +141,7 @@
 			if (J.title == "Paramedic" || J.title == "Legitimate Business")
 				. = FALSE
 		if (clients.len <= 25)
-			if (J.title == "Mechanic" || J.title == "Homeless Man")
+			if (J.title == "Mechanic" || J.title == "Homeless Man" || J.title == "County Judge")
 				. = FALSE
 		if (clients.len <= 35)
 			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
@@ -207,7 +209,7 @@
 	if (prob(100))
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
-		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(300,500)), list(/obj/item/weapon/material/sword/katana,rand(300,500)))
+		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(2200,3500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1600,1900)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(800,1200)), list(/obj/item/weapon/material/sword/katana,rand(1000,2500)))
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
@@ -233,7 +235,7 @@
 	for(var/i, i<=num, i++)
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
-		chosen = list(list(/obj/item/ammo_magazine/gewehr98,rand(100,120)),list(/obj/item/ammo_magazine/mosin,rand(100,120)),list(/obj/item/ammo_magazine/shellbox,rand(120,180)),list(/obj/item/ammo_magazine/walther,rand(60,90)))
+		chosen = list(list(/obj/item/ammo_magazine/gewehr98,rand(100,120)),list(/obj/item/ammo_magazine/mosin,rand(80,120)),list(/obj/item/ammo_magazine/shellbox,rand(120,180)),list(/obj/item/ammo_magazine/walther,rand(60,90)))
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
@@ -401,6 +403,7 @@
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
 		/obj/item/weapon/storage/box/bodybags = 3,
+		/obj/item/taperoll/police = 10,
 		/obj/item/clothing/head/helmet/constable = 5,
 		/obj/item/clothing/under/constable = 5,
 		/obj/item/clothing/under/traffic_police = 5,

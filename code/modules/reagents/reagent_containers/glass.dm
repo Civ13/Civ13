@@ -795,6 +795,19 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		base_name = "steel barrel"
 		reagents.add_reagent("water",350)
 
+//////////Galactic Battles//////////////////////
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/bmilk
+	name = "steel barrel (blue milk)"
+	label_text = "blue milk"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "steel barrel"
+		reagents.add_reagent("bmilk",350)
+
+////////////////////////////////////////////////////////////////////////
+
 /obj/item/weapon/reagent_containers/glass/barrel/modern/oil
 	name = "steel barrel (petroleum)"
 	label_text = "petroleum"

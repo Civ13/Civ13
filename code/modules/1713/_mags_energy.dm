@@ -44,7 +44,7 @@
 	name = "Repeating Blaster Tibanna Gas Cartridge"
 	icon_state = "tibanna_turret"
 	caliber = "laser"
-	ammo_type = /obj/item/ammo_casing/laser
+	ammo_type = /obj/item/ammo_casing/laser/repeating
 	max_ammo = 2000
 	weight = 0.01
 	mag_type = MAGAZINE

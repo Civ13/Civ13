@@ -633,6 +633,7 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "drydirt_wall"
 	passable = TRUE
+	material = "dirt"
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE

@@ -344,7 +344,7 @@
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_dir = SOUTH
-	buckle_lying = TRUE
+	buckle_lying = FALSE
 	base_icon = "sofa_forward"
 	applies_material_colour = FALSE
 	not_movable = FALSE
@@ -381,7 +381,7 @@
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_dir = SOUTH
-	buckle_lying = TRUE
+	buckle_lying = FALSE
 	base_icon = "custsofa_middle"
 	applies_material_colour = FALSE
 	not_movable = FALSE
@@ -425,3 +425,39 @@
 /obj/structure/bed/custsofa/corner
 	icon_state = "custsofacorner"
 	base_icon = "custsofacorner"
+
+////////////////sofa but actually a chair not a bed///////////////////
+/obj/structure/bed/chair/sofa
+	name = "sofa"
+	desc = "A sofa where you can rest."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "sofa_forward"
+	anchored = TRUE
+	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = FALSE
+	base_icon = "sofa_forward"
+	applies_material_colour = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+
+/obj/structure/bed/chair/sofa/left
+	icon_state = "sofa_forward_left"
+	base_icon = "sofa_forward_left"
+/obj/structure/bed/chair/sofa/right
+	icon_state = "sofa_forward_right"
+	base_icon = "sofa_forward_right"
+/obj/structure/bed/chair/sofa/get_material()
+	return
+
+/obj/structure/bed/chair/sofa/update_icon()
+	return
+
+/obj/structure/bed/chair/sofa/remove_padding()
+	return
+
+/obj/structure/bed/chair/sofa/add_padding(var/padding_type)
+	return
+
+/obj/structure/bed/chair/sofa/dismantle()
+	return

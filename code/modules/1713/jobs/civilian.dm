@@ -2054,14 +2054,12 @@
 	title = "Goldstein Solutions"
 	selection_color = "#7e7e06"
 	spawn_location = "JoinLateCivA"
-	additional_languages = list("Hebrew" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/yellow/CEO
 	title = "Goldstein Solutions CEO"
 	is_officer = TRUE
-	additional_languages = list("Hebrew" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2104,12 +2102,10 @@
 	title = "Kogama Kraftsmen"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
-	additional_languages = list("Japanese" = 70)
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
 	title = "Kogama Kraftsmen CEO"
-	additional_languages = list("Japanese" = 100)
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2154,14 +2150,12 @@
 	title = "Giovanni Blu Stocks"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
-	additional_languages = list("Italian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/blue/CEO
 	title = "Giovanni Blu Stocks CEO"
 	is_officer = TRUE
-	additional_languages = list("Italian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2204,14 +2198,12 @@
 	title = "Rednikov Industries"
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
-	additional_languages = list("Russian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/red/CEO
 	title = "Rednikov Industries CEO"
 	is_officer = TRUE
-	additional_languages = list("Russian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
@@ -2257,7 +2249,7 @@
 	spawn_location = "JoinLateCivJ"
 	min_positions = 3
 	max_positions = 8
-	additional_languages = list("Gaelic" = 50)
+	additional_languages = list("Gaelic" = 100)
 	can_be_female = TRUE
 	is_deal = TRUE
 
@@ -2275,31 +2267,57 @@
 	if (!H)	return FALSE
 	H.add_note("Role", "You are a part of McKellen's Entreprises. Your goal is to work the restaurant and produce illegal substances secretly, while also attempting to extort other businesses for their revenue and criminal power.")
 
-
+	var/found = FALSE
+	for (var/i in whitelist_list)
+		var/temp_ckey = lowertext(i)
+		temp_ckey = replacetext(temp_ckey," ", "")
+		temp_ckey = replacetext(temp_ckey,"_", "")
+		if (temp_ckey == H.client.ckey)
+			found = TRUE
+	if (found == TRUE)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
+		var/obj/item/clothing/suit = H.wear_suit
+		var/obj/item/ammo_magazine/tommy/mag = new /obj/item/ammo_magazine/tommy(null)
+		suit.attackby(mag, H)
+		suit.attackby(mag, H)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/tommy(H), slot_l_hand)
+		H.add_note("Specialization", "You are a part of McKellen's Entreprises. You're the enforcer, the one who does what needs gettin done.")
+		H.setStat("strength", STAT_VERY_HIGH)
+		H.setStat("crafting", STAT_NORMAL)
+		H.setStat("rifle", STAT_VERY_HIGH)
+		H.setStat("dexterity", STAT_VERY_HIGH)
+		H.setStat("swords", STAT_VERY_HIGH)
+		H.setStat("pistol", STAT_VERY_VERY_HIGH)
+		H.setStat("bows", STAT_NORMAL)
+		H.setStat("medical", STAT_NORMAL)
+		H.setStat("machinegun", STAT_MAX)
 //clothes
-	var/randclothes = rand(1,3)
-	switch(randclothes)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-			if (prob(60))
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
-			else
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
-			var/obj/item/clothing/under/uniform = H.w_uniform
-			if (prob(50))
-				var/obj/item/clothing/accessory/suspenders/dark/ysuspenders = new /obj/item/clothing/accessory/suspenders/dark(null)
-				uniform.attackby(ysuspenders, H)
-		if (2)
-			if (prob(80))
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-		if (3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/kilt(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/caubeen(H), slot_head)
+		var/randclothes = rand(1,3)
+		switch(randclothes)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+				if (prob(60))
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
+				else
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+				var/obj/item/clothing/under/uniform = H.w_uniform
+				if (prob(50))
+					var/obj/item/clothing/accessory/suspenders/dark/ysuspenders = new /obj/item/clothing/accessory/suspenders/dark(null)
+					uniform.attackby(ysuspenders, H)
+			if (2)
+				if (prob(80))
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/kilt(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/caubeen(H), slot_head)
 
 //other
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_store)
@@ -2366,6 +2384,7 @@
 	rank_abbreviation = "Deputy"
 	spawn_location = "JoinLateCiv"
 	selection_color = "#c3b091"
+
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -2407,7 +2426,7 @@
 	rank_abbreviation = "Deputy"
 	whitelisted = TRUE
 	spawn_location = "JoinLateCiv"
-	selection_color = "#c3b091"
+	selection_color = "#c5a562"
 	can_be_female = TRUE
 	is_deal = TRUE
 
@@ -2536,17 +2555,69 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
+/datum/job/civilian/judge_aotd
+	title = "County Judge"
+	rank_abbreviation = "Judge"
+
+	spawn_location = "JoinLateCivJud"
+	is_officer = TRUE
+	whitelisted = TRUE
+	is_deal = TRUE
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/judge_aotd/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
+//jacket
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
+	blazer.color = "#141414"
+	blazer.uncolored = FALSE
+	blazer.update_icon()
+	H.equip_to_slot_or_del(blazer, slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular(H), slot_eyes)
+//other
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/scarf/scarf = new /obj/item/clothing/accessory/custom/scarf(null)
+	scarf.color = "#f0f0f0"
+	scarf.setd = TRUE
+	scarf.uncolored = FALSE
+	scarf.update_icon()
+	uniform.attackby(scarf, H)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(H), slot_l_hand)
+
+	H.add_note("Role", "You are a <b>[title]</b>, the judge of the local county. Help sentence justice upon the evil doers!")
+	H.civilization = "Government"
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
 /datum/job/civilian/paramedic
 	title = "Paramedic"
 	en_meaning = ""
 	rank_abbreviation = "Paramedic"
 	whitelisted = FALSE
 	spawn_location = "JoinLateCivE"
-	selection_color = "#777777"
+	selection_color = "#91a6eb"
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 3
-	max_positions = 15
+	max_positions = 8
 
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2578,7 +2649,7 @@
 	title = "Mechanic"
 	en_meaning = ""
 	rank_abbreviation = "Mechanic"
-	whitelisted = FALSE
+	whitelisted = TRUE
 	spawn_location = "JoinLateCivF"
 	selection_color = "#cd853f"
 	is_deal = TRUE
@@ -2592,7 +2663,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/black(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -2609,11 +2679,9 @@
 
 /datum/job/civilian/hobo
 	title = "Homeless Man"
-	en_meaning = ""
-	rank_abbreviation = ""
 	whitelisted = FALSE
 	spawn_location = "JoinLateCivG"
-	selection_color = "#8b4513"
+	selection_color = "#402b01"
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 1
@@ -2621,23 +2689,60 @@
 
 /datum/job/civilian/hobo/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/gatorpants(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/punk(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/trash(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/punk(H), slot_shoes)
-	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/armband/punk/armband = new /obj/item/clothing/accessory/armband/punk(null)
-	uniform1.attackby(armband, H)
-	H.add_note("Role", "You are a Bum. You should find a way to earn some cash. Maybe try helping out one of the gangs in the area.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	var/randoutfit = rand(1,3)
+	switch(randoutfit)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/gatorpants(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/punk(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/trash(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/punk(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/syringe(H), slot_l_store)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_r_store)
+			var/obj/item/clothing/under/uniform1 = H.w_uniform
+			var/obj/item/clothing/accessory/armband/punk/armband = new /obj/item/clothing/accessory/armband/punk(null)
+			uniform1.attackby(armband, H)
+			if (H.h_style != "Mohawk")
+				H.h_style = "Mohawk"
+
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/beggar_clothing, slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/crack(H), slot_r_store)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/pipe/glass, slot_l_store)
+		if (3)
+			var/obj/item/clothing/head/custom/fieldcap/headcap = new /obj/item/clothing/head/custom/fieldcap(null)
+			headcap.capcolor = "#932310"
+			headcap.uncolored1 = FALSE
+			headcap.update_icon()
+			H.equip_to_slot_or_del(headcap, slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2, slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket, slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless, slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey, slot_l_hand)
+
+	if (prob(60))
+		var/randaddiction = rand(1,4)
+		switch(randaddiction)
+			if (1)
+				H.addictions["cocaine"] += rand(10,100)
+			if (2)
+				H.addictions["opium"] += rand(10,100)
+			if (3)
+				H.addictions["tobacco"] += rand(10,100)
+			if (4)
+				H.addictions["alcohol"] += rand(10,100)
+	H.add_note("Role", "You are a Bum. You should find a way to earn some cash to fulfill your potential addicition. Maybe try helping out one of the gangs in the area.")
+	H.setStat("strength", STAT_VERY_LOW)
+	H.setStat("crafting", STAT_VERY_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_LOW)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
 /*
 /datum/job/civilian/fireperson
 	title = "Fire Response"
