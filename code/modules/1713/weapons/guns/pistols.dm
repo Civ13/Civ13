@@ -685,3 +685,27 @@
 	else
 		icon_state = "deagle_open"
 	return
+
+/obj/item/weapon/gun/projectile/pistol/browninghp
+	name = "Browning hi-power"
+	desc = "Produced by Fabrique Nationale of Belgium, This old handgun is chambered in 9mm Parabellum."
+	icon_state = "browning_hp"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/browninghp
+	good_mags = list(/obj/item/ammo_magazine/browninghp)
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
+
+/obj/item/weapon/gun/projectile/pistol/browninghp/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "browning_hp"
+	else
+		icon_state = "browning_hp_open"
+	return
