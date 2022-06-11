@@ -2364,13 +2364,11 @@
 /datum/job/civilian/policeofficer
 	title = "Police Officer"
 	rank_abbreviation = "Deputy"
-	whitelisted = TRUE
 	spawn_location = "JoinLateCiv"
 	selection_color = "#c3b091"
 	can_be_female = TRUE
-	is_deal = TRUE
 
-	min_positions = 5
+	min_positions = 1
 	max_positions = 50
 
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
@@ -2380,7 +2378,6 @@
 	H.verbs += /mob/living/human/proc/undercover
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
@@ -2392,7 +2389,8 @@
 	uniform1.attackby(pb, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 	H.add_note("Role", "You are a member of the police force. Your objective are to arrest as many robbers as possible and secure the vault!")
 	
 	H.setStat("strength", STAT_NORMAL)
