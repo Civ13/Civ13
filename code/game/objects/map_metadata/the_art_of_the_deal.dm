@@ -2,7 +2,7 @@
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
 	lobby_icon_state = "taotd"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3000
 	is_singlefaction = TRUE
 	has_hunger = TRUE
@@ -86,10 +86,10 @@
 		assign_delivery_zones()
 		send_buy_orders()
 								//id = seller, obj, amt, price, type, id, active
-		map.globalmarketplace += list("red1" = list("Rednikov Industries",null,1,1000,"bank","red1",1))
-		map.globalmarketplace += list("gio1" = list("Giovanni Blu Stocks",null,1,1000,"bank","gio1",1))
-		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000,"bank","green1",1))
-		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000,"bank","yellow1",1))
+		map.globalmarketplace += list("red1" = list("Rednikov Industries",null,1,1000+scores[1],"bank","red1",1))
+		map.globalmarketplace += list("gio1" = list("Giovanni Blu Stocks",null,1,1000+scores[2],"bank","gio1",1))
+		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000+scores[3],"bank","green1",1))
+		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000+scores[4],"bank","yellow1",1))
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
 	for(var/turf/floor/delivery/D in turfs)
 		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
@@ -138,10 +138,13 @@
 			if(!findtext(J.title, "CEO"))
 				. = FALSE
 		if (clients.len <= 15)
-			if (J.title == "Paramedic" || J.title == "Legitimate Business")
+			if (J.title == "Paramedic" || J.title == "Legitimate Business" || J.title == "Nurse")
+				. = FALSE
+		if (clients.len <= 20)
+			if (J.title == "Physician" || J.title == "County Judge")
 				. = FALSE
 		if (clients.len <= 25)
-			if (J.title == "Mechanic" || J.title == "Homeless Man" || J.title == "County Judge")
+			if (J.title == "Mechanic" || J.title == "Homeless Man")
 				. = FALSE
 		if (clients.len <= 35)
 			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
@@ -158,6 +161,17 @@
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
+
+/obj/map_metadata/art_of_the_deal/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.original_job_title == "Nurse")
+				H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
+				return TRUE
+	return FALSE
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
 	for(var/obj/structure/closet/safe/SF in world)
@@ -267,10 +281,10 @@
 		if (istype(I, /obj/item/weapon/disk))
 			var/obj/item/weapon/disk/D = I
 			if (D.faction && !D.used)
-				tlist2[2]+=300
+				tlist2[2]+= 400
 		if (istype(I, /obj/item/stack/money))
 			var/obj/item/stack/money/M = I
-			tlist2[2]+=M.amount*(M.value/4)
+			tlist2[2]+= M.amount*(M.value/4)
 	tlist2[2] += scores["Sheriff Office"]
 	world << "<big><font color='yellow' size=2>[tlist2[1]]: [tlist2[2]] points</font></big>"
 	spawn(3000)

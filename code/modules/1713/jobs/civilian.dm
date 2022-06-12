@@ -2569,13 +2569,13 @@
 	title = "Paramedic"
 	en_meaning = ""
 	rank_abbreviation = "Paramedic"
-	whitelisted = FALSE
+	whitelisted = TRUE
 	spawn_location = "JoinLateCivE"
 	selection_color = "#91a6eb"
 	is_deal = TRUE
 	can_be_female = TRUE
-	min_positions = 3
-	max_positions = 8
+	min_positions = 1
+	max_positions = 3
 
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2602,6 +2602,71 @@
 	H.setStat("medical", STAT_VERY_HIGH)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+/datum/job/civilian/hospital_doctor
+	title = "Physician"
+	en_meaning = ""
+	rank_abbreviation = "Dr."
+	whitelisted = TRUE
+	spawn_location = "JoinLateCivE"
+	selection_color = "#91a6eb"
+	is_deal = TRUE
+	can_be_female = TRUE
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/hospital_doctor/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Paramedics"
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/scrubs/navy(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/surgical_cap/navy(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	H.add_note("Role", "You are a Physician. Take care of your patients inside the hospital!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MAX)
+
+/datum/job/civilian/hospital_nurse
+	title = "Nurse"
+	en_meaning = ""
+	rank_abbreviation = "Nurse"
+	whitelisted = FALSE
+	spawn_location = "JoinLateCivE"
+	selection_color = "#91a6eb"
+	is_deal = TRUE
+	can_be_female = TRUE
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/hospital_nurse/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Paramedics"
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/scrubs/blue(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	H.add_note("Role", "You are a Nurse. Take care of your patients inside the hospital and follow directives from the physicians!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_HIGH)
 
 /datum/job/civilian/mechanic
 	title = "Mechanic"

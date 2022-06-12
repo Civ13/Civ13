@@ -1309,7 +1309,7 @@
 			do_html(user)
 			return
 		else if  (user.civilization in map.warrants)
-			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked and the issue of new ones has been suspended due to the murder of a law enforcement officer.</font>"
+			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked, and the issue of new ones has been suspended due to the murder of a law enforcement officer.</font>"
 			sleep(0.5)
 			do_html(user)
 			return
@@ -1352,7 +1352,7 @@
 /datum/program/warrants/do_html(mob/living/human/user)
 	if (mainmenu == "---")
 		mainmenu = "<h2>WARRANT TERMINAL</h2><br>"
-		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>"
+		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>&nbsp;<a href='?src=\ref[src];warrants=4'>Request a Warrant</a>"
 	..()
 /datum/program/warrants/Topic(href, href_list, hsrc)
 	mainbody = ""
@@ -1431,6 +1431,62 @@
 					mainbody += "<font color='yellow'>There are no suspects present.</font>"
 				else
 					mainbody += "<font color='yellow'>There are no outstanding warrants for any of the suspects.</font>"
+		if (href_list["warrants"] == "4")
+			if (user.original_job_title != "County Judge" || user.civilization != "Government")
+				mainbody += "<font color ='red'><b>ACCESS DENIED - ONLY Government officials may use this feature.</b></font>"
+				sleep(0.5)
+				do_html(user)
+				return
+			else
+				var/list/civilians = list("Cancel")
+				var/list/crimelist = list("Cancel","Assault","Murder","Manslaugther","Kidnapping","Hostage taking","Terrorism","Arson","Fleeing & Eluding","Jailbreak","Private Property Damage","Public Property Damage","Vandalism","General Traffic Violation","Threat of Death or Bodily Harm","Trespassing","Grand Theft Auto","Possession of illegal disks","Possession of narcotics","Possession of illegal firearms","Distribution of illegal disks","Distribution of narcotics","Distribution of illegal firearms","Obstruction of Justice","Theft","Contempt of Court","Tax evasion","Medical malpractice","Neglect of duties")
+				for (var/mob/living/human/M in world)
+					if(M.civilization != "Sheriff Office" && M.civilization != "Government")
+						civilians += M
+				var/choice = WWinput(usr, "Who to request a warrant for?","Assign a person","Cancel",civilians)
+				if (choice == "Cancel" || !choice)
+					return
+				else
+					var/mob/living/human/U
+					U = choice
+					var/crimechoice = WWinput(usr, "Choose a crime:","Arrest Warrant Reason","Cancel",crimelist)
+					if (crimechoice == "Cancel" || !crimechoice)
+						return
+					else
+						if (!(U.real_name in map.warrants))
+							map.warrants += U.real_name
+							U.gun_permit = 0
+							var/obj/item/weapon/paper_bin/police/PAR = null
+							for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+								PAR = PAR2
+								break
+							if (PAR)
+								var/obj/item/weapon/paper/police/warrant/RW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+								RW.tgt_mob = U
+								RW.tgt = U.real_name
+								RW.tgtcmp = U.civilization
+								RW.reason = crimechoice
+								RW.info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Arrest Warrant No. [RW.arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to detain <b>[RW.tgt]</b>, working for <b><i>[RW.tgtcmp]</i></b>, for the following reasons:<br><br><i>- [RW.reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Law Enforcement Agencies shall bring <b>[RW.tgt]</b> forthwith to the local station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
+								RW.spawntimer = 12000
+							var/obj/item/weapon/paper/police/warrant/RW2 = new /obj/item/weapon/paper/police/warrant(null)
+							RW2.tgt_mob = U
+							RW2.tgt = U.real_name
+							RW2.tgtcmp = U.civilization
+							RW2.reason = crimechoice
+							RW2.info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Arrest Warrant No. [RW2.arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to detain <b>[RW2.tgt]</b>, working for <b><i>[RW2.tgtcmp]</i></b>, for the following reasons:<br><br><i>- [RW2.reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Law Enforcement Agencies shall bring <b>[RW2.tgt]</b> forthwith to the local station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
+							map.pending_warrants += RW2
+							RW2.forceMove(null)
+							global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [RW2.tgt], working for [RW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+							mainbody += "<font color='yellow'>Warrant has been issued for [RW2.tgt].</font>"
+							sleep(0.5)
+							do_html(user)
+						else
+							mainbody += "<font color='orange'>A warrant has <b>already been issued</b> for [U.real_name].</font>"
+							sleep(0.5)
+							do_html(user)
+							return
+			return
+
 	sleep(0.5)
 	do_html(user)
 
