@@ -138,10 +138,13 @@
 			if(!findtext(J.title, "CEO"))
 				. = FALSE
 		if (clients.len <= 15)
-			if (J.title == "Paramedic" || J.title == "Legitimate Business")
+			if (J.title == "Paramedic" || J.title == "Legitimate Business" || J.title == "Nurse")
+				. = FALSE
+		if (clients.len <= 20)
+			if (J.title == "Physician" || J.title == "County Judge")
 				. = FALSE
 		if (clients.len <= 25)
-			if (J.title == "Mechanic" || J.title == "Homeless Man" || J.title == "County Judge")
+			if (J.title == "Mechanic" || J.title == "Homeless Man")
 				. = FALSE
 		if (clients.len <= 35)
 			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
