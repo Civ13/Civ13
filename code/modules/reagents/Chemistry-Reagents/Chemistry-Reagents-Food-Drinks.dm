@@ -127,6 +127,16 @@
 	nutriment_factor = 2
 	color = "#792300"
 
+/datum/reagent/nutriment/tomato
+	name = "Tomato sauce"
+	id = "tomato"
+	description = "A thick sauce made from the tomatoes."
+	taste_description = "sweet, acidity with a hint of umami"
+	taste_mult = 1.4
+	reagent_state = LIQUID
+	nutriment_factor = 2.3
+	color = "#B21807"
+
 /datum/reagent/nutriment/paprika
 	name = "Paprika"
 	id = "paprika"
