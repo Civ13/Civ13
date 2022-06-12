@@ -128,6 +128,14 @@
 	unlimited = TRUE
 	fuel = 100000
 
+/obj/item/flashlight/lamp/littlelamp/desklamp
+	name = "desk lamp"
+	on_state = "lampdesk_on"
+	off_state = "lampdesk"
+	icon_state = "lampdesk"
+	unlimited = TRUE
+	fuel = 100000
+
 /obj/item/flashlight/lantern/on/anchored
 	on_state = "lantern-on"
 	off_state = "lantern_on"
