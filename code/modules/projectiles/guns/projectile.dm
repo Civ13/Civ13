@@ -136,10 +136,10 @@
 		var/mob/living/human/H = loc
 		if (istype(H))
 			if (!H.gloves)
-				H.gunshot_residue = chambered.caliber
+				H.gunshot_residue = chambered.name
 			else
 				var/obj/item/clothing/G = H.gloves
-				G.gunshot_residue = chambered.caliber
+				G.gunshot_residue = chambered.name
 
 	#define DISABLE_CASINGS // goodbye lag (EXPERIMENTAL) - Kachnov
 
