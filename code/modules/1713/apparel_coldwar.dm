@@ -131,7 +131,6 @@
 	item_state = "policejacket"
 	worn_state = "policejacket"
 	var/closed = TRUE
-	var/baseicon ="policejacket"
 
 /obj/item/clothing/suit/storage/jacket/police/verb/toggle()
 	set category = null
@@ -141,18 +140,18 @@
 		return
 	else
 		if(closed)
-			worn_state = "[baseicon]_open"
-			item_state = "[baseicon]_open"
-			icon_state = "[baseicon]_open"
-			item_state_slots["w_uniform"] = "[baseicon]_open"
+			worn_state = "policejacket_open"
+			item_state = "policejacket_open"
+			icon_state = "policejacket_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
 			usr << "You <b>open up</b> your jacket."
 			closed = FALSE
 			update_clothing_icon()
 		else if (!closed)
-			worn_state = "[baseicon]"
-			item_state = "[baseicon]"
-			icon_state = "[baseicon]"
-			item_state_slots["w_uniform"] = "[baseicon]"
+			worn_state = "policejacket"
+			item_state = "policejacket"
+			icon_state = "policejacket"
+			item_state_slots["w_uniform"] = "policejacket"
 			usr << "You <b>close up</b> your jacket."
 			closed = TRUE
 			update_clothing_icon()
@@ -164,7 +163,30 @@
 	item_state = "policejacket_black"
 	worn_state = "policejacket_black"
 	closed = TRUE
-	baseicon ="policejacket_black"
+
+/obj/item/clothing/suit/storage/jacket/police/black/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust jacket"
+	if (type != /obj/item/clothing/suit/storage/jacket/police/black)
+		return
+	else
+		if(closed)
+			worn_state = "policejacket_black_open"
+			item_state = "policejacket_black_open"
+			icon_state = "policejacket_black_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "policejacket_black"
+			item_state = "policejacket_black"
+			icon_state = "policejacket_black"
+			item_state_slots["w_uniform"] = "policejacket_black"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
 
 /obj/item/clothing/suit/swat //these likely need upgrading to armor
 	name = "swat heavy vest"
