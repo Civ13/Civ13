@@ -141,7 +141,7 @@
 			if (J.title == "Paramedic" || J.title == "Legitimate Business" || J.title == "Nurse")
 				. = FALSE
 		if (clients.len <= 20)
-			if (J.title == "Physician" || J.title == "County Judge")
+			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
 		if (clients.len <= 25)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
@@ -162,7 +162,7 @@
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
-/obj/map_metadata/art_of_the_deal/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/*/obj/map_metadata/art_of_the_deal/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -171,7 +171,7 @@
 			if (H.original_job_title == "Nurse")
 				H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
 				return TRUE
-	return FALSE
+	return FALSE*/ //Commented out, to be re-implemented if players go unga.
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
 	for(var/obj/structure/closet/safe/SF in world)
@@ -336,8 +336,8 @@
 		/obj/item/clothing/accessory/holster/chest = 10,
 		/obj/item/weapon/material/kitchen/utensil/knife/shank/iron = 10,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "County Deputy")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -411,19 +411,20 @@
 		/obj/item/clothing/shoes/laceup = 15,
 		/obj/item/clothing/head/countysheriff_cap = 15,
 		/obj/item/clothing/head/countysheriff_cap/black = 15,
-		/obj/item/weapon/storage/backpack/satchel = 15,
-		/obj/item/weapon/storage/backpack/civbag = 5,
+		/obj/item/weapon/storage/backpack/satchel/police = 10,
+		/obj/item/weapon/storage/backpack/satchel/black = 5,
+		/obj/item/weapon/storage/backpack/satchel = 5,
 		/obj/item/weapon/storage/backpack/duffel = 5,
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
 		/obj/item/weapon/storage/box/bodybags = 3,
 		/obj/item/taperoll/police = 10,
-		/obj/item/clothing/head/helmet/constable = 5,
-		/obj/item/clothing/under/constable = 5,
-		/obj/item/clothing/under/traffic_police = 5,
+//		/obj/item/clothing/head/helmet/constable = 5,
+//		/obj/item/clothing/under/constable = 5,
+//		/obj/item/clothing/under/traffic_police = 5,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "County Deputy" || user.original_job_title == "County Sheriff")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -446,8 +447,8 @@
 	/obj/item/ammo_magazine/m24 = 20,
 	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "County Deputy" || user.original_job_title == "County Sheriff")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -473,8 +474,8 @@
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
 	/obj/item/weapon/gun/projectile/pistol/tt30 = 50,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "County Deputy" || user.original_job_title == "County Sheriff")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
