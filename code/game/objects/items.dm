@@ -555,8 +555,8 @@ var/list/global/slot_flags_enumeration = list(
 		G.transfer_blood = FALSE
 	update_icon()
 /obj/item/reveal_blood()
-	if (was_bloodied/* && !fluorescent*/)
-	//	fluorescent = TRUE
+	if (was_bloodied && !fluorescent)
+		fluorescent = TRUE
 		blood_color = COLOR_LUMINOL
 		blood_overlay.color = COLOR_LUMINOL
 		update_icon()
