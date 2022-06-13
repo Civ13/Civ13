@@ -90,8 +90,8 @@
 /obj/item/weapon/storage/firstaid/surgery
 	name = "surgery kit"
 	desc = "Contains tools for surgery."
-	icon_state = "firstaid2"
-	item_state = "firstaid_2"
+	icon_state = "surgerykit"
+	item_state = "surgerykit"
 
 /obj/item/weapon/storage/firstaid/surgery/New()
 	..()
