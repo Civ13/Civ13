@@ -311,6 +311,9 @@ var/list/slot_equipment_priority = list( \
 		update_inv_shoulder(0)
 	return
 
+/mob/living/proc/item_is_in_hands(var/obj/item/I)
+	return (I == r_hand || I == l_hand)
+
 /mob/proc/isEquipped(obj/item/I)
 	if (!I)
 		return FALSE
