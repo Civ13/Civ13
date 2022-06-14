@@ -112,6 +112,20 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
+/obj/item/clothing/shoes/laceup/brown
+	name = "brown laceup shoes"
+	desc = "The height of fashion, and they're pre-polished!"
+	icon_state = "brown_laceups"
+	item_state = "brown_laceups"
+	worn_state = "brown_laceups"
+
+/obj/item/clothing/shoes/laceup/white
+	name = "grey laceup shoes"
+	desc = "The height of fashion, and they're pre-polished!"
+	icon_state = "grey_laceups"
+	item_state = "grey_laceups"
+	worn_state = "grey_laceups"
+
 /obj/item/clothing/shoes/gator_laceup
 	name = "alligator scale laceup shoes"
 	desc = "The height of luxurious footwear, and they're pre-polished!"
