@@ -27,6 +27,14 @@ proc/is_complete_print(var/print)
 	desc = "A stainless steel-plated carrycase for all your forensic needs. Feels heavy."
 	icon = 'icons/obj/forensics.dmi'
 	icon_state = "case"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
+	item_state_slots = list(
+		slot_l_hand_str = "case",
+		slot_r_hand_str = "case",
+		)
 	storage_slots = 14
 
 // Evidence bag
