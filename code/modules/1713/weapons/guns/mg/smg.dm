@@ -1283,6 +1283,7 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -1326,71 +1327,6 @@
 
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
-	)
-/obj/item/weapon/gun/projectile/submachinegun/aug
-	name = "Steyr Aug"
-	desc = "A Austrian bullpup assault rifle, chambered in 5.56x45mm."
-	icon = 'icons/obj/guns/assault_rifles.dmi'
-	icon_state = "aug"
-	item_state = "aug"
-	base_icon = "aug"
-	caliber = "a556x45"
-	fire_sound = 'sound/weapons/guns/fire/aug.ogg'
-	magazine_type = /obj/item/ammo_magazine/aug
-	good_mags = list(/obj/item/ammo_magazine/aug)
-	weight = 3.2
-	equiptimer = 11
-	slot_flags = SLOT_SHOULDER
-	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
-		)
-	effectiveness_mod = 1.08
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 70,
-			SHORT_RANGE_MOVING = 60,
-
-			MEDIUM_RANGE_STILL = 60,
-			MEDIUM_RANGE_MOVING = 50,
-
-			LONG_RANGE_STILL = 35,
-			LONG_RANGE_MOVING = 20,
-
-			VERY_LONG_RANGE_STILL = 12,
-			VERY_LONG_RANGE_MOVING = 7),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 84,
-			SHORT_RANGE_MOVING = 74,
-
-			MEDIUM_RANGE_STILL = 68,
-			MEDIUM_RANGE_MOVING = 60,
-
-			LONG_RANGE_STILL = 48,
-			LONG_RANGE_MOVING = 32,
-
-			VERY_LONG_RANGE_STILL = 13,
-			VERY_LONG_RANGE_MOVING = 8),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 92,
-			SHORT_RANGE_MOVING = 82,
-
-			MEDIUM_RANGE_STILL = 78,
-			MEDIUM_RANGE_MOVING = 69,
-
-			LONG_RANGE_STILL = 58,
-			LONG_RANGE_MOVING = 46,
-
-			VERY_LONG_RANGE_STILL = 38,
-			VERY_LONG_RANGE_MOVING = 25),
 	)
 /obj/item/weapon/gun/projectile/submachinegun/scarh
 	name = "FN SCAR-H"
