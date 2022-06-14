@@ -268,6 +268,16 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/sti2011
+	name = "STI 2011 magazine (9x19mm)"
+	icon_state = "sti2011"
+	mag_type = MAGAZINE
+	caliber = "a45acp"
+	ammo_type = /obj/item/ammo_casing/a45acp
+	max_ammo = 14
+	weight = 0.33
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/sig250
 	name = "SIG 250 magazine (9x19mm)"
 	icon_state = "glock17"
