@@ -457,7 +457,7 @@
 "cwL" = (/obj/structure/closet/crate/bin{pixel_x = -6},/turf/floor/plating/marble/tile,/area/caribbean/roofed/temperate)
 "cyF" = (/obj/structure/mine_support/stone/marble,/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "czr" = (/obj/structure/wild/smallbush,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/nomads/forest)
-"czP" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/closet/anchored,/obj/item/weapon/storage/briefcase/crimekit,/obj/item/weapon/storage/briefcase/crimekit,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"czP" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/closet/anchored,/obj/item/weapon/storage/briefcase/crimekit,/obj/item/weapon/storage/briefcase/crimekit,/obj/item/weapon/storage/box/slides,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "cBe" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "cBK" = (/obj/structure/railing/steel{dir = 1; icon_state = "railing0"},/turf/floor/beach/water,/area/caribbean/nomads/forest)
 "cBZ" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/wood,/area/caribbean/roofed/temperate)
