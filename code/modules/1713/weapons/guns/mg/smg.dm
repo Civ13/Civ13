@@ -1674,53 +1674,9 @@
 		list(name="semi auto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1, 1, 0.9)),
 		)
-	effectiveness_mod = 1.04
+	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-			"small" = list(
-			SHORT_RANGE_STILL = 65,
-			SHORT_RANGE_MOVING = 54,
-
-			MEDIUM_RANGE_STILL = 54,
-			MEDIUM_RANGE_MOVING = 44,
-
-			LONG_RANGE_STILL = 33,
-			LONG_RANGE_MOVING = 18,
-
-			VERY_LONG_RANGE_STILL = 12,
-			VERY_LONG_RANGE_MOVING = 7),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 84,
-			SHORT_RANGE_MOVING = 75,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 57,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 12,
-			VERY_LONG_RANGE_MOVING = 6),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 98,
-			SHORT_RANGE_MOVING = 90,
-
-			MEDIUM_RANGE_STILL = 88,
-			MEDIUM_RANGE_MOVING = 80,
-
-			LONG_RANGE_STILL = 79,
-			LONG_RANGE_MOVING = 66,
-
-			VERY_LONG_RANGE_STILL = 58,
-			VERY_LONG_RANGE_MOVING = 36),
-	)
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/New()
 	..()
