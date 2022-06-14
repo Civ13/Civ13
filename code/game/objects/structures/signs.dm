@@ -385,7 +385,7 @@
 	icon_state = "anatomy"
 
 /obj/structure/sign/periodic
-	desc = "A poster detailing the complexity of the human body."
+	desc = "A poster with the periodic table on it."
 	name = "periodic table"
 	icon_state = "periodic"
 
