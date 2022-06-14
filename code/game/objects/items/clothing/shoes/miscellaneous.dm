@@ -115,8 +115,8 @@
 /obj/item/clothing/shoes/gator_laceup
 	name = "alligator scale laceup shoes"
 	desc = "The height of luxurious footwear, and they're pre-polished!"
-	icon_state = "gator_laceup"
-	item_state = "gator_laceup"
+	icon_state = "gator_laceups"
+	item_state = "gator_laceups"
 	worn_state = "gator_laceups"
 	body_parts_covered = FEET
 
