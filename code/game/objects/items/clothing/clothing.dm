@@ -198,6 +198,7 @@ BLIND	 // can't see anything
 	var/wired = FALSE
 	var/obj/item/weapon/cell/cell = FALSE
 	var/clipped = FALSE
+	var/fingerprint_chance = 0 //How likely the glove is to let fingerprints through
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
 	attack_verb = list("challenged")

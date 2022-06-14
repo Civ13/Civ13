@@ -28,18 +28,21 @@
 	desc = "A watch you wear on your hand."
 	icon_state = "watch"
 	item_state = "watch"
+	fingerprint_chance = 100
 
 /obj/item/clothing/gloves/watch/specialwatch
 	name = "expensive watch"
 	desc = "A watch you wear on your hand. Looks quite expensive."
 	icon_state = "specialwatch"
 	item_state = "watch"
+	fingerprint_chance = 100
 
 /obj/item/clothing/gloves/watch/goldwatch
 	name = "gold watch"
 	desc = "A watch you wear on your hand. This one is plated in gold."
 	icon_state = "goldwatch"
 	item_state = "watch"
+	fingerprint_chance = 100
 
 /obj/item/clothing/gloves/color/yellow
 	name = "yellow gloves"
@@ -116,3 +119,4 @@
 	desc = "A shiny silver ring. Looks expensive."
 	icon_state = "silver_ring"
 	item_state = "silver_ring"
+	fingerprint_chance = 100
