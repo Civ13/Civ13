@@ -217,10 +217,10 @@
 //shoes
 	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-	else if(prob(40))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	else if(prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
@@ -281,12 +281,12 @@
 /datum/job/russian/sovafghan/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(60))
+	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-	else if(prob(40))
+	else if(prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)

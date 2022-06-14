@@ -276,11 +276,11 @@
 
 		//Deal with gloves the pass finger/palm prints.
 		if (!ignoregloves)
-			if (H.gloves != src)
-				if (prob(75) && istype(H.gloves))
-					return FALSE
-				else if (H.gloves)
-					return FALSE
+			if (H.gloves && H.gloves != src)
+				if(istype(H.gloves, /obj/item/clothing/gloves))
+					var/obj/item/clothing/gloves/G = H.gloves
+					if(!prob(G.fingerprint_chance))
+						return 0
 
 		//More adminstuffz
 		if (fingerprintslast != H.key)

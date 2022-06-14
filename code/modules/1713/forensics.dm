@@ -17,7 +17,7 @@ proc/is_complete_print(var/print)
 	new /obj/item/weapon/forensics/sample_kit(src)
 	new /obj/item/weapon/forensics/sample_kit/powder(src)
 	new /obj/item/weapon/storage/box/csi_markers(src)
-	new /obj/item/weapon/storage/box/csi_markers(src)
+	new /obj/item/clothing/gloves/color/white
 	new /obj/item/device/uv_light(src)
 
 // Crime scene kit
@@ -27,9 +27,15 @@ proc/is_complete_print(var/print)
 	desc = "A stainless steel-plated carrycase for all your forensic needs. Feels heavy."
 	icon = 'icons/obj/forensics.dmi'
 	icon_state = "case"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
+	item_state_slots = list(
+		slot_l_hand_str = "case",
+		slot_r_hand_str = "case",
+		)
 	storage_slots = 14
-
-// TO DO: CONTENTS OF CRIME KIT
 
 // Evidence bag
 /obj/item/weapon/evidencebag
@@ -568,11 +574,57 @@ atom/proc/add_fibers(mob/living/human/M)
 							O.overlays |= O.blood_overlay
 							reset_objects |= O
 
+//Slides
+
+/obj/item/weapon/forensics/slide
+	name = "microscope slide"
+	desc = "A pair of thin glass panes used in the examination of samples beneath a microscope. Used with fibers and GSR swab tests to examine the samples in the microscope. To empty them, use in hand."
+	icon_state = "slide"
+	w_class = 1
+	var/obj/item/weapon/forensics/swab/has_swab
+	var/obj/item/weapon/forensics/sample/fibers/has_sample
+
+/obj/item/weapon/forensics/slide/attackby(var/obj/item/W, var/mob/living/human/user)
+	if(has_swab || has_sample)
+		usr << "<span class='warning'>There is already a sample in the slide.</span>"
+		return
+	if(istype (W, /obj/item/weapon/forensics/swab))
+		has_swab = W
+	else if(istype(W, /obj/item/weapon/forensics/sample/fibers))
+		has_sample = W
+	else
+		usr << "<span class='warning'>You don't think this will fit.</span>"
+		return
+	usr << "<span class='notice'>You insert the sample in the slide.</span>"
+	user.unEquip(W)
+	W.forceMove(src)
+	update_icon()
+
+/obj/item/weapon/forensics/slide/attack_self(var/mob/user)
+	if(has_swab || has_sample)
+		usr << "<span class='notice'>You remove the sample from the [src]."
+		if(has_swab)
+			user.put_in_hands(has_swab)
+			has_swab = null
+		if(has_sample)
+			user.put_in_hands(has_sample)
+			has_sample = null
+		update_icon()
+		return
+
+/obj/item/weapon/forensics/slide/update_icon()
+	if(!has_swab && !has_sample)
+		icon_state = "slide"
+	else if(has_swab)
+		icon_state = "slideswab"
+	else if(has_sample)
+		icon_state = "slidefiber"
+
 //MACHINERY
 
 /obj/machinery/microscope
 	name = "high powered electron microscope"
-	desc = "A highly advanced microscope capable of zooming up to 3000x."
+	desc = "A highly advanced microscope capable of zooming up to 3000x.<br> Use a microscope slide or a fingerprint card on this machine to analyze it. <br> Alt click to remove any object within it."
 	icon = 'icons/obj/forensics.dmi'
 	icon_state = "microscope_adv"
 	anchored = 1
@@ -587,7 +639,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		user << "<span class='warning'>There is already a slide in the microscope.</span>"
 		return
 
-	if(istype(W, /obj/item/weapon/forensics/swab)|| istype(W, /obj/item/weapon/forensics/sample/fibers) || istype(W, /obj/item/weapon/forensics/sample/print))
+	if(istype(W, /obj/item/weapon/forensics/slide) || istype(W, /obj/item/weapon/forensics/sample/print))
 		user << "<span class='notice'>You insert \the [W] into the microscope.</span>"
 		user.unEquip(W)
 		W.forceMove(src)
@@ -613,27 +665,33 @@ atom/proc/add_fibers(mob/living/human/M)
 	report.overlays = list("paper_stamped")
 	report_num++
 
-	if(istype(sample, /obj/item/weapon/forensics/swab))
-		var/obj/item/weapon/forensics/swab/swab = sample
+	if(istype(sample, /obj/item/weapon/forensics/slide))
+		var/obj/item/weapon/forensics/slide/slide = sample
+		if(slide.has_swab)
+			var/obj/item/weapon/forensics/swab/swab = slide.has_swab
 
-		report.name = "GSR report #[++report_num]: [swab.name]"
-		report.info = "<b>Scanned item:</b><br>[swab.name]<br><br>"
+			report.name = "GSR report #[++report_num]: [swab.name]"
+			report.info = "<b>Scanned item:</b><br>[swab.name]<br><br>"
 
-		if(swab.gsr)
-			report.info += "Residue from a [swab.gsr] detected."
+			if(swab.gsr)
+				report.info += "Residue from a [swab.gsr] detected."
+			else
+				report.info += "No gunpowder residue found."
+
+		else if(slide.has_sample)
+			var/obj/item/weapon/forensics/sample/fibers/fibers = slide.has_sample
+			report.name = "Fiber report #[++report_num]: [fibers.name]"
+			report.info = "<b>Scanned item:</b><br>[fibers.name]<br><br>"
+			if(fibers.evidence)
+				report.info += "Miscroscopic analysis on provided sample has determined the presence of unique fiber strings.<br><br>"
+				for(var/fiber in fibers.evidence)
+					report.info += "<span class='notice'>Most likely match for fibers: [fiber]</span><br><br>"
+			else
+				report.info += "No fibers found."
 		else
-			report.info += "No gunpowder residue found."
+			report.name = "Empty slide report #[report_num]"
+			report.info = "Analysis suggests that there's nothing in this slide."
 
-	else if(istype(sample, /obj/item/weapon/forensics/sample/fibers))
-		var/obj/item/weapon/forensics/sample/fibers/fibers = sample
-		report.name = "Fiber report #[++report_num]: [fibers.name]"
-		report.info = "<b>Scanned item:</b><br>[fibers.name]<br><br>"
-		if(fibers.evidence)
-			report.info += "Miscroscopic analysis on provided sample has determined the presence of unique fiber strings.<br><br>"
-			for(var/fiber in fibers.evidence)
-				report.info += "<span class='notice'>Most likely match for fibers: [fiber]</span><br><br>"
-		else
-			report.info += "No fibers found."
 	else if(istype(sample, /obj/item/weapon/forensics/sample/print))
 		report.name = "Fingerprint report #[report_num]: [sample.name]"
 		report.info = "<b>Fingerprint analysis report #[report_num]</b>: [sample.name]<br>"
@@ -697,9 +755,7 @@ atom/proc/add_fibers(mob/living/human/M)
 	var/obj/item/weapon/forensics/swab/bloodsamp = null
 	var/closed = 0
 	var/scanning = 0
-	var/scanner_progress = 0
 	var/scanner_rate = 2.50
-	var/last_process_worldtime = 0
 	var/report_num = 0
 
 /obj/machinery/dnaforensics/attackby(var/obj/item/W, mob/user as mob)
@@ -722,71 +778,9 @@ atom/proc/add_fibers(mob/living/human/M)
 		user << "<span class='warning'>\The [src] only accepts used swabs.</span>"
 		return
 
-/obj/machinery/dnaforensics/ui_interact(mob/user, ui_key = "main",var/datum/nanoui/ui = null)
-	if(user.stat || user.restrained()) return
-	var/list/data = list()
-	data["scan_progress"] = round(scanner_progress)
-	data["scanning"] = scanning
-	data["bloodsamp"] = (bloodsamp ? bloodsamp.name : "")
-	data["bloodsamp_desc"] = (bloodsamp ? (bloodsamp.desc ? bloodsamp.desc : "No information on record.") : "")
-	data["lidstate"] = closed
-
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data)
-	if (!ui)
-		ui = new(user, src, ui_key, "dnaforensics.tmpl", "DNA Analyzer", 540, 326)
-		ui.set_initial_data(data)
-		ui.open()
-		ui.set_auto_update(1)
-
-/obj/machinery/dnaforensics/Topic(href, href_list)
-
-	if(..()) return 1
-
-	if(href_list["scanItem"])
-		if(scanning)
-			scanning = 0
-		else
-			if(bloodsamp)
-				if(closed == 1)
-					scanner_progress = 0
-					scanning = 1
-					usr << "<span class='notice'>Scan initiated.</span>"
-					update_icon()
-				else
-					usr << "<span class='notice'>Please close sample lid before initiating scan.</span>"
-			else
-				usr << "<span class='warning'>Insert an item to scan.</span>"
-
-	if(href_list["ejectItem"])
-		if(bloodsamp)
-			bloodsamp.forceMove(src.loc)
-			bloodsamp = null
-
-	if(href_list["toggleLid"])
-		toggle_lid()
-
-	return 1
-
-/obj/machinery/dnaforensics/process()//Needs some tweaking, last_process_worldtime and scanner_progress var don't change at all
-	if(scanning)
-		if(!bloodsamp || bloodsamp.loc != src)
-			bloodsamp = null
-			scanning = 0
-		else if(scanner_progress == 100)
-			complete_scan()
-			return
-		else
-			spawn(60)
-				scanner_progress += 10
-			return
-			/*calculate time difference
-			//var/deltaT = (world.time - last_process_worldtime) * 0.1
-			//scanner_progress = min(100, scanner_progress + scanner_rate * deltaT)
-			spawn(600)*/
-	last_process_worldtime = world.time
-
 /obj/machinery/dnaforensics/proc/complete_scan()
 	src.visible_message("<span class='notice'>\icon[src] makes an insistent chime.</span>", 2)
+	playsound(loc, 'sound/machines/computer/beep.ogg', 80, TRUE)
 	update_icon()
 	if(bloodsamp)
 		var/obj/item/weapon/paper/P = new(src)
@@ -796,7 +790,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		//dna data itself
 		var/data = "No scan information available."
 		if(bloodsamp.dna != null)
-			data = "Spectometric analysis on provided sample has determined the presence of [bloodsamp.dna.len] strings of DNA.<br><br>"
+			data = "Spectrometric analysis on provided sample has determined the presence of [bloodsamp.dna.len] strings of DNA.<br><br>"
 			for(var/blood in bloodsamp.dna)
 				data += "<font color='blue'>Blood type: [bloodsamp.dna[blood]]<br>\nDNA: [blood]<br><br></font>"
 		else
@@ -810,10 +804,27 @@ atom/proc/add_fibers(mob/living/human/M)
 	return
 
 /obj/machinery/dnaforensics/attack_hand(mob/user as mob)
-	ui_interact(user)
+	if(scanning)
+		scanning = 0
+		usr << "<span class='notice'>You abort the scan.</span>"
+		update_icon()
+	else
+		if(bloodsamp && bloodsamp.loc == src)
+			if(closed == 1)
+				scanning = 1
+				usr << "<span class='notice'>Scan initiated. Please wait.</span>"
+				update_icon()
+				spawn(900)
+					usr << "<span class='notice'>Scan finished. </span>"
+					complete_scan()
+			else
+				usr << "<span class='notice'>Please close sample lid before initiating scan.</span>"
+		else
+			usr << "<span class='warning'>Insert an item to scan.</span>"
+			scanning = 0
 
 /obj/machinery/dnaforensics/verb/toggle_lid()
-	set category = "null"
+	set category = "IC"
 	set name = "Toggle Lid"
 	set src in oview(1)
 
@@ -826,6 +837,28 @@ atom/proc/add_fibers(mob/living/human/M)
 
 	closed = !closed
 	src.update_icon()
+
+/obj/machinery/dnaforensics/verb/eject_item()
+	set category = "IC"
+	set name = "Eject item"
+	set src in oview(1)
+
+	if(usr.stat || !isliving(usr))
+		return
+	if(scanning)
+		usr << "<span class='warning'>You can't do that while [src] is scanning!</span>"
+		return
+	else
+		if (closed)
+			usr << "<span class='warning'>You can't do that while the lid is closed!</span>"
+			return
+		else
+			if(bloodsamp)
+				bloodsamp.forceMove(src.loc)
+				bloodsamp = null
+			else
+				usr << "<span class='warning'>There's no sample in the scanner!</span>"
+				return
 
 /obj/machinery/dnaforensics/update_icon()
 	..()
@@ -890,5 +923,17 @@ atom/proc/add_fibers(mob/living/human/M)
 
 /obj/item/weapon/storage/box/swabs/New()
 	..()
-	for(var/i = 1 to storage_slots) // Fill 'er up.
+	for(var/i = 1 to storage_slots)
 		new /obj/item/weapon/forensics/swab(src)
+
+/obj/item/weapon/storage/box/slides
+	name = "microscope slide box"
+	icon_state = "solution_trays"
+	can_hold = list(/obj/item/weapon/forensics/slide)
+	storage_slots = 8
+
+/obj/item/weapon/storage/box/slides/New()
+	..()
+	for(var/i = 1 to storage_slots)
+		new /obj/item/weapon/forensics/slide(src)
+

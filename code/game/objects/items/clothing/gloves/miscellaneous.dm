@@ -123,4 +123,17 @@
 	icon_state = "boxingyellow"
 	item_state = "boxingyellow"
 
+/obj/item/clothing/gloves/sterile
+	name = "latex gloves"
+	desc = "Sterile gloves."
+	icon_state = "latex"
+	item_state = "latex"
+	germ_level = 0
+	fingerprint_chance = 20
+
+/obj/item/clothing/gloves/sterile/nitrile
+	name = "nitrile gloves"
+	desc = "Sterile gloves."
+	icon_state = "blue"
+	item_state = "bluegloves"
 

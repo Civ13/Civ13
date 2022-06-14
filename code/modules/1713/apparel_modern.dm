@@ -529,6 +529,7 @@
 	item_state = "fingerless"
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
+	fingerprint_chance = 100
 
 /* US belts*/
 

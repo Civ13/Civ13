@@ -406,7 +406,10 @@
 /datum/job/russian/nkvd_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
 //head
@@ -451,7 +454,10 @@
 /datum/job/russian/sergeant_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
 
@@ -608,9 +614,12 @@
 /datum/job/russian/sniper_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	if (map.ID == MAP_KARELINA)
+	if (map.ID == MAP_KARELINA || map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_GULAG13)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
 	else
 		if (prob(70))
@@ -659,7 +668,10 @@
 /datum/job/russian/soldier_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")

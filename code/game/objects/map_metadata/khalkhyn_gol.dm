@@ -23,7 +23,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = "sound/music/neue_deutsche_welle.ogg",)
+		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
 
 /obj/map_metadata/khalkhyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
