@@ -132,6 +132,11 @@
 	worn_state = "policejacket"
 	var/closed = TRUE
 
+/obj/item/clothing/suit/storage/jacket/police/New()
+	..()
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		name = "sheriff's office jacket"
+
 /obj/item/clothing/suit/storage/jacket/police/verb/toggle()
 	set category = null
 	set src in usr
