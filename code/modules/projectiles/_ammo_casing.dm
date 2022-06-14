@@ -850,7 +850,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a9x19
-	name = "9x19mm Luger cartridge"
+	name = "9x19mm cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"

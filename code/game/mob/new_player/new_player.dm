@@ -909,7 +909,11 @@ var/global/redirect_all_players = null
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
 		if (H.original_job.is_commander || H.original_job.is_officer)
-			H.verbs += /mob/living/human/proc/Commander_Announcement
+			if (map.ID != MAP_THE_ART_OF_THE_DEAL)
+				H.verbs += /mob/living/human/proc/Commander_Announcement
+			else
+				if (H.original_job_title == "County Sheriff" || H.civilization == "Government")
+					H.verbs += /mob/living/human/proc/Commander_Announcement
 		if (H.original_job.uses_squads)
 			H.verbs += /mob/living/human/proc/find_nco
 			if (H.original_job.is_squad_leader)

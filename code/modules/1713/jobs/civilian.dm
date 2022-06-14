@@ -2404,6 +2404,96 @@
 	min_positions = 5
 	max_positions = 50
 
+/datum/job/civilian/sheriffdep/detective
+	title = "Detective"
+	rank_abbreviation = "Detective"
+	whitelisted = TRUE
+	spawn_location = "JoinLateCiv"
+	selection_color = "#c5a562"
+	can_be_female = TRUE
+	is_deal = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/sheriffdep/detective/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Sheriff Office"
+	give_random_name(H)
+	H.verbs += /mob/living/human/proc/undercover
+	var/obj/item/clothing/under/customuniform/CU = new /obj/item/clothing/under/customuniform(null)
+	CU.uncolored = FALSE
+	CU.shirtcolor = pick("#777777","#79577F","#55609D","#7AA6AD","#A0B3D1","#708A78","#A09B6E","#A56D6A")
+	CU.pantscolor = pick("#292929","#333333","#4D4D4D","#5F5F5F","#777777","#4F3923","#7E6F5F","#C0A979")
+	CU.update_icon()
+	H.equip_to_slot_or_del(CU, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	if (prob(80))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/forensics(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police/black(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	if(prob(50))
+		var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+		uniform1.attackby(hiph, H)
+	else
+		var/obj/item/clothing/accessory/holster/armpit/armh = new /obj/item/clothing/accessory/holster/armpit(null)
+		uniform1.attackby(armh, H)
+	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
+	spawn(15)
+		pb.name = "[replacetext(H.real_name,"Detective ","")] Sheriff's Office badge"
+		pb.desc = "a Sheriff's Office detective badge in star shape, with <b>[replacetext(H.real_name,"Detective ","")]</b> engraved."
+	uniform1.attackby(pb, H)
+	if (prob(80))
+		var/randtie = rand(1,3)
+		switch(randtie)
+			if (1)
+				var/obj/item/clothing/accessory/tie/tie = new /obj/item/clothing/accessory/tie(null)
+				uniform1.attackby(tie, H)
+			if (2)
+				var/obj/item/clothing/accessory/tie/tieb = new /obj/item/clothing/accessory/tie/blue(null)
+				uniform1.attackby(tieb, H)
+			if (3)
+				var/obj/item/clothing/accessory/tie/tier = new /obj/item/clothing/accessory/tie/red(null)
+				uniform1.attackby(tier, H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	if (prob(10))
+		var/randhat = rand(1,2)
+		switch(randhat)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap/black(H), slot_head)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
+	H.add_note("Role", "You are a detective of the local Sheriff Department. Your objectives are to investigate as many crimes as possible and help your fellow deputies to aprehend criminals and contraband!")
+	H.add_note("Undercover", "If you need to go undercover and conceal your law enforcement officer status, toggle it under the IC tab.")
+	H.add_note("Police Codes", "As an LEO, you can use police codes for faster broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
+		<b>10-1:</b> Report in / share location.<br><br> \
+		<b>10-2:</b> Report in as being available.<br><br> \
+		<b>10-3:</b> Report in as being busy.<br><br> \
+		<b>10-4:</b> Roger that / Affirmative.<br><br> \
+		<b>10-5:</b> Negative / Impossible.<br><br> \
+		<b>10-6:</b> Returning to the Police Station.<br><br> \
+		<b>10-7:</b> Prisoner in custody / Arrested suspect.<br><br> \
+		<b>10-8:</b> Request immediate assistance / Officer injured - All non-busy units should answer with a <b>10-0</b> and proceed to location (shows current location)<br><br> \
+		<b>10-9:</b> Officer down, all units should answer with a <b>10-0</b> and proceed to location (shows current location) - This is automatically sent if an officer gets killed, no need for manual input, use <b>10-8</b> instead.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	spawn(50)
+		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
 /datum/job/civilian/sheriffdep/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Sheriff Office"
@@ -2416,6 +2506,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police/black(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform1.attackby(hiph, H)
@@ -2554,6 +2646,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(H), slot_l_hand)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the judge of the local county. Help sentence justice upon the evil doers!")
+	give_random_name(H)
 	H.civilization = "Government"
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2591,6 +2684,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
+	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(stet, H)
 	H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2600,6 +2696,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
+	give_random_name(H)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
@@ -2627,6 +2724,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(stet, H)
 	H.add_note("Role", "You are a Physician. Take care of your patients inside the hospital!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2636,6 +2736,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MAX)
+	give_random_name(H)
 
 /datum/job/civilian/hospital_nurse
 	title = "Nurse"
@@ -2658,6 +2759,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(stet, H)
 	H.add_note("Role", "You are a Nurse. Take care of your patients inside the hospital and follow directives from the physicians!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2667,6 +2771,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_HIGH)
+	give_random_name(H)
 
 /datum/job/civilian/mechanic
 	title = "Mechanic"

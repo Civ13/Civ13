@@ -184,6 +184,7 @@
 		programs += new/datum/program/squadtracker
 		programs += new/datum/program/gunregistry
 		programs += new/datum/program/licenseplates
+		programs += new/datum/program/fingerprintregistry
 //////////////////////////////////////////
 /////////DISKS///////////////////////////
 

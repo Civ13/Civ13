@@ -1506,6 +1506,21 @@
 			mainbody += "<b>[L[1]] (no. [L[2]])</b> - registered to <b>[L[3]]</b><br>"
 	..()
 
+/datum/program/fingerprintregistry
+	name = "Fingerprint Database"
+	description = "Connects to the main Department of Justice server to list all known fingerprints."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
+
+/datum/program/fingerprintregistry/do_html(mob/living/human/user)
+	mainmenu = "<h2>FINGERPRINT REGISTRY DATABASE</h2><br>"
+	mainbody = ""
+	if (user.civilization != "Sheriff Office" && user.civilization != "Government")
+		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
+		return
+	else
+		for (var/mob/living/human/M in world)
+			mainbody += "<b>[M.real_name]</b> - fingerprint string:<br> <b>[M.get_full_print()]</b><br><br>"
+	..()
 
 /////////////////////////////////////////////////////////
 /////////////////////NILE.UG MARKETPLACE/////////////////
