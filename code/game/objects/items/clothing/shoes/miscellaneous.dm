@@ -119,12 +119,19 @@
 	item_state = "brown_laceups"
 	worn_state = "brown_laceups"
 
-/obj/item/clothing/shoes/laceup/white
+/obj/item/clothing/shoes/laceup/grey
 	name = "grey laceup shoes"
 	desc = "The height of fashion, and they're pre-polished!"
 	icon_state = "grey_laceups"
 	item_state = "grey_laceups"
 	worn_state = "grey_laceups"
+
+/obj/item/clothing/shoes/laceup/white
+	name = "white laceup shoes"
+	desc = "The height of fashion, and they're pre-polished!"
+	icon_state = "white_laceups"
+	item_state = "white_laceups"
+	worn_state = "white_laceups"
 
 /obj/item/clothing/shoes/gator_laceup
 	name = "alligator scale laceup shoes"
