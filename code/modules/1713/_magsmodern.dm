@@ -420,3 +420,28 @@
 	multiple_sprites = TRUE
 
 	pouch = TRUE
+
+///////////c6//////////
+/obj/item/ammo_magazine/c6belt
+	name = "C6 GPMG ammo belt"
+	icon_state = "c6belt" //generic 100 round belt
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 100
+	multiple_sprites = TRUE
+	belt = TRUE
+
+/obj/item/ammo_magazine/c6can
+	name = "C6 GPMG ammo can"
+	icon_state = "7.62x51b"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 200
+	multiple_sprites = TRUE
+	belt = TRUE

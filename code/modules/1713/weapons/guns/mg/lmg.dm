@@ -320,3 +320,43 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.9
+
+////////////////////////C6 GPMG/////////////////////////////
+/obj/item/weapon/gun/projectile/automatic/c6
+	name = "C6 GPMG"
+	desc = "A Canadian License Produced FN MAG called the C6 GPMG, the main squad support weapon of the CAF."
+	icon_state = "c6"
+	item_state = "c6"
+	base_icon = "c6"
+	w_class = 5
+	heavy = TRUE
+	max_shells = 50
+	caliber = "a762x51"
+	weight = 12.1
+	slot_flags = SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	load_method = MAGAZINE
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	magazine_type = /obj/item/ammo_magazine/c6belt
+	good_mags = list(/obj/item/ammo_magazine/c6belt, /obj/item/ammo_magazine/c6can)
+	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
+	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
+	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M60.ogg'
+	force = 20
+	throwforce = 30
+
+/obj/item/weapon/gun/projectile/automatic/c6/update_icon()
+
+	icon_state = "c6[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
+	var/obj/item/ammo_magazine/MAG
+	if (ammo_magazine && istype(MAG, /obj/item/ammo_magazine/c6belt))
+		icon_state = "[base_icon][ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
+		item_state = base_icon
+	else if (ammo_magazine && !istype(MAG, /obj/item/ammo_magazine/c6belt))
+		icon_state = "[base_icon]_can[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
+		item_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
+		item_state = "[base_icon]_open"
+	update_held_icon()
