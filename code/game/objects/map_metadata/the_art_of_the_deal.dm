@@ -418,6 +418,7 @@
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
 		/obj/item/weapon/storage/box/bodybags = 3,
+		/obj/item/weapon/storage/box/evidence = 10,
 		/obj/item/taperoll/police = 10,
 //		/obj/item/clothing/head/helmet/constable = 5,
 //		/obj/item/clothing/under/constable = 5,
