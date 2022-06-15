@@ -2421,12 +2421,14 @@
 	H.civilization = "Sheriff Office"
 	give_random_name(H)
 	H.verbs += /mob/living/human/proc/undercover
-	var/obj/item/clothing/under/customuniform/CU = new /obj/item/clothing/under/customuniform(null)
-	CU.uncolored = FALSE
-	CU.shirtcolor = pick("#777777","#79577F","#55609D","#7AA6AD","#A0B3D1","#708A78","#A09B6E","#A56D6A")
-	CU.pantscolor = pick("#292929","#333333","#4D4D4D","#5F5F5F","#777777","#4F3923","#7E6F5F","#C0A979")
-	CU.update_icon()
-	H.equip_to_slot_or_del(CU, slot_w_uniform)
+	var/randuni = rand(1,3)
+	switch(randuni)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective1(H), slot_w_uniform)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective2(H), slot_w_uniform)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective3(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
@@ -2673,7 +2675,7 @@
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Paramedics"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/paramedic(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/highvis/paramedic(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
