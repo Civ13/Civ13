@@ -330,9 +330,9 @@
 	base_icon = "c6"
 	w_class = 5
 	heavy = TRUE
-	max_shells = 50
+	max_shells = 200
 	caliber = "a762x51"
-	weight = 12.1
+	weight = 8.1
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a762x51
 	load_method = MAGAZINE
@@ -347,13 +347,11 @@
 	throwforce = 30
 
 /obj/item/weapon/gun/projectile/automatic/c6/update_icon()
-
-	icon_state = "c6[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
 	var/obj/item/ammo_magazine/MAG
 	if (ammo_magazine && istype(MAG, /obj/item/ammo_magazine/c6belt))
 		icon_state = "[base_icon][ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
 		item_state = base_icon
-	else if (ammo_magazine && !istype(MAG, /obj/item/ammo_magazine/c6belt))
+	else if (ammo_magazine && istype(MAG, /obj/item/ammo_magazine/c6can))
 		icon_state = "[base_icon]_can[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
 		item_state = base_icon
 	else
