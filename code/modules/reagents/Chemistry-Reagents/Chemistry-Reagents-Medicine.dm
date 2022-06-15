@@ -480,7 +480,7 @@
 	M.adjustBrainLoss(6 * removed)
 	M.add_chemical_effect(CE_PULSE, 6)
 	M.hallucination = max(M.hallucination, 3)
-	M.apply_effect(STUTTER)
+	M.apply_effect(3, STUTTER)
 	M.mood -= 30
 
 /datum/reagent/pervitin
