@@ -1064,6 +1064,34 @@
 	item_state = "paramedic_jacket"
 	worn_state = "paramedic_jacket"
 
+/obj/item/clothing/under/paramedic
+	name = "paramedic uniform"
+	desc = "A uniform used by EMS workers."
+	icon_state = "paramedic"
+	item_state = "paramedic"
+	worn_state = "paramedic"
+
+/obj/item/clothing/under/detective1
+	name = "shirt outfit"
+	desc = "A brown shirt with black pants."
+	icon_state = "detective1"
+	item_state = "detective1"
+	worn_state = "detective1"
+
+/obj/item/clothing/under/detective2
+	name = "shirt outfit"
+	desc = "A blue shirt with black pants."
+	icon_state = "detective2"
+	item_state = "detective2"
+	worn_state = "detective2"
+
+/obj/item/clothing/under/detective3
+	name = "shirt outfit"
+	desc = "A black shirt with grey pants."
+	icon_state = "detective3"
+	item_state = "detective3"
+	worn_state = "detective3"
+
 	/* Emergency Services Objects*/
 
 /obj/item/weapon/storage/belt/police
