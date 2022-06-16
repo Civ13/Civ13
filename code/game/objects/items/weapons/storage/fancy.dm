@@ -40,6 +40,49 @@
 	return
 
 /*
+ * Donut box //Code needs complete overhaul, especially for the icon updates
+ */
+
+/obj/item/weapon/storage/fancy/donut_box
+	name = "donut box"
+	desc = "Mmm. Donuts."
+	icon = 'icons/obj/food/donuts.dmi'
+	icon_state = "donutbox_open"
+	storage_slots = 6
+	throwforce = WEAPON_FORCE_HARMLESS
+	can_hold = list(
+		/obj/item/weapon/reagent_containers/food/snacks/donut
+		)
+	var/is_open = TRUE
+	var/base_icon_state = "donutbox"
+
+/obj/item/weapon/storage/fancy/donut_box/New()
+	..()
+	for (var/i=1; i <= storage_slots; i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/donut(src)
+	return
+
+/obj/item/weapon/storage/fancy/donut_box/update_icon()
+	. = ..()
+	icon_state = "[base_icon_state][is_open ? "_inner" : null]"
+
+/obj/item/weapon/storage/fancy/donut_box/proc/update_overlays()
+	. = ..()
+	if(!is_open)
+		return
+
+	var/donuts = 0
+	for(var/_donut in contents)
+		var/obj/item/weapon/reagent_containers/food/snacks/donut = _donut
+		if (!istype(donut))
+			continue
+
+		overlays += image(icon = initial(icon), icon_state = "[donut.icon_state]_inbox", pixel_x = donuts * 3)
+		donuts += 1
+
+	overlays += image(icon = initial(icon), icon_state = "[base_icon_state]_top")
+
+/*
  * Egg Box
  */
 
