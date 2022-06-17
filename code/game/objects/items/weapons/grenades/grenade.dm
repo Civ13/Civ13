@@ -339,7 +339,7 @@
 	throw_range = 10
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 	fragment_type = /obj/item/projectile/bullet/pellet/rubberball
-	explosion_size = 2
+	explosion_size = 1
 
 /obj/item/weapon/grenade/coldwar/m67
 	name = "M67 grenade"

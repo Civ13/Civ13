@@ -174,13 +174,13 @@
 
 /obj/item/projectile/bullet/pellet/rubberball
 	name = "rubber ball"
-	damage = 5
+	damage = 2
 	pellets = 12
-	range_step = 2
-	base_spread = 90
+	range_step = 1
+	base_spread = 5
 	spread_step = 10
-	move_tiles = 7
-	agony = 10
+	agony = 13
+	embed = TRUE
 	icon_state = "buckshot"
 
 /* "Rifle" rounds */
