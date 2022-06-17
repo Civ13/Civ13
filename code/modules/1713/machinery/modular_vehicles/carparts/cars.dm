@@ -435,13 +435,12 @@
 	maxpower = 1000
 	speedlist = list(1=7,2=6,3=5,4=3,5=2.5)
 	turntimer = 4
-	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-		doorcode = 13443
 	New()
 		..()
 		spawn(40)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Unmarked SMC Falcon", ""))
+			doorcode = 13443
 		else
 			map.vehicle_registations += list(list("[reg_number]","Police", "Unmarked SMC Falcon", ""))
 
@@ -458,13 +457,12 @@
 /obj/structure/vehicleparts/axis/car/shinobu/police
 	name = "Yamasaki Shinobu Police Interceptor"
 	color = "#383838"
-	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-		doorcode = 13443
 	New()
 		..()
 		spawn(40)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Yamasaki Shinobu Police Interceptor", ""))
+			doorcode = 13443
 		else
 			map.vehicle_registations += list(list("[reg_number]","Police", "Yamasaki Shinobu Police Interceptor", ""))
 
