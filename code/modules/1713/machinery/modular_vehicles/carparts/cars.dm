@@ -430,6 +430,21 @@
 	speedlist = list(1=7,2=6,3=5,4=2)
 	turntimer = 5
 
+/obj/structure/vehicleparts/axis/car/falcon/police
+	speeds = 5
+	maxpower = 1000
+	speedlist = list(1=7,2=6,3=5,4=3,5=2.5)
+	turntimer = 4
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		doorcode = 13443
+	New()
+		..()
+		spawn(40)
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Unmarked SMC Falcon", ""))
+		else
+			map.vehicle_registations += list(list("[reg_number]","Police", "Unmarked SMC Falcon", ""))
+
 /obj/structure/vehicleparts/axis/car/shinobu
 	name = "Yamasaki Shinobu"
 	desc = "A powered axis from a car."
@@ -443,6 +458,8 @@
 /obj/structure/vehicleparts/axis/car/shinobu/police
 	name = "Yamasaki Shinobu Police Interceptor"
 	color = "#383838"
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		doorcode = 13443
 	New()
 		..()
 		spawn(40)
@@ -579,6 +596,9 @@
 /obj/structure/emergency_lights/attack_hand(mob/living/human/H)
 	if (!ishuman(H))
 		return
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL && (H.civilization != "Sheriff Office" || H.civilization != "Paramedics"))
+		usr << "<span class ='warning'>You're not part of the emergency services.</span>"
+		return
 	on = !on
 	if (on)
 		check_color()
@@ -639,6 +659,22 @@
 				pol_color = "#D3D3D3"
 			else
 				pol_color = "#FF0000"
+			check_color()
+	else
+		set_light(0)
+
+/obj/structure/emergency_lights/police2
+	atype = "police2"
+	pol_color = "#0000FF"
+
+/obj/structure/emergency_lights/police2/check_color()
+	if (on)
+		set_light(7,1,pol_color)
+		spawn(5)
+			if (pol_color == "#0000FF")
+				pol_color = "#D3D3D3"
+			else
+				pol_color = "#0000FF"
 			check_color()
 	else
 		set_light(0)
