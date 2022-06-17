@@ -438,7 +438,7 @@
 		if (!lights.centered)
 			IMG.pixel_x = lights.pixel_x
 			IMG.pixel_y = lights.pixel_y
-		IMG.color = ""
+		IMG.color = "#FFFFFF"
 		var/matrix/M = matrix()
 		M.Scale(1.5)
 		IMG.transform = M

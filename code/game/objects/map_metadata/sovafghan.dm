@@ -55,6 +55,9 @@
 	..()
 	if (J.is_afghan)
 		. = TRUE
+		if (clients.len <= 25)
+			if (J.title == "Industrial Worker" || J.title == "Mine Worker" || J.title == "Waiter" || J.title == "Cook" || J.title == "Civilian" || J.title == "Villager")
+				. = FALSE
 	else
 		. = FALSE
 
@@ -314,7 +317,7 @@
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Mujahideen: [muj_points]</big>"
 	world << "<big>Soviets and DRA: [sov_points]</big>"
-	spawn(600)
+	spawn(300)
 		points_check()
 
 /obj/map_metadata/sovafghan/update_win_condition()
