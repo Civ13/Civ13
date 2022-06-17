@@ -192,3 +192,11 @@
 	icon_state = "tactical_goggles"
 	item_state = "tactical_goggles"
 	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/tactical_goggles/flash_resistant_goggles
+	name = "Flash resistant goggles"
+	desc = "Flash proof combat goggles."
+	icon_state = "tactical_goggles"
+	item_state = "tactical_goggles"
+	body_parts_covered = FALSE
+	flash_protection = FLASH_PROTECTION_MAJOR

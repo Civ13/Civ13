@@ -1045,6 +1045,24 @@
 	w_class = 2
 	ripable = FALSE
 
+/obj/item/clothing/suit/marshalvest // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
+	name = "Marshal service vest"
+	desc = "A heavy vest used by the us marshal service."
+	icon_state = "marshalvest"
+	item_state = "marshalvest"
+	worn_state = "marshalvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 30, arrow = 40, gun = 84, energy = 47, bomb = 35, bio = 29, rad = 10)
+	var/slots = 6
+	ripable = FALSE
+	flags = CONDUCT
+
+/obj/item/clothing/under/marshal
+	name = "Marshal service outfit"
+	desc = "A teal outfit with cargo pants used by the marshal service."
+	icon_state = "martial"
+	item_state = "martial"
+	worn_state = "martial"
 /obj/item/clothing/suit/lifejacket/yellow
 	name = "lifejacket"
 	desc = "A yellow lifejacket, to improve survival on sea."

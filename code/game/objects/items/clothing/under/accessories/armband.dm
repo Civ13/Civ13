@@ -101,6 +101,13 @@
 	icon_state = "sheriff"
 	slot = "armband"
 
+/obj/item/clothing/accessory/armband/marshal
+	name = "Marshal service badge"
+	desc = "a golden star of the the us marshal service."
+	icon_state = "marshal"
+	icon_state = "marshal"
+	slot = "armband"
+
 /obj/item/clothing/accessory/armband/deputy
 	name = "deputy armband"
 	desc = "A yellow armband, used to identify the Sheriff's deputies."
