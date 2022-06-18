@@ -447,6 +447,7 @@
 #include "code\game\objects\map_metadata\gulag13.dm"
 #include "code\game\objects\map_metadata\heraclea.dm"
 #include "code\game\objects\map_metadata\hill203.dm"
+#include "code\game\objects\map_metadata\hill_3234.dm"
 #include "code\game\objects\map_metadata\hostages.dm"
 #include "code\game\objects\map_metadata\hotel.dm"
 #include "code\game\objects\map_metadata\hue.dm"
@@ -1052,6 +1053,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\the_art_of_the_deal.dmm"
+#include "maps\WIP\hill_3234.dmm"
 // END_INCLUDE
 
