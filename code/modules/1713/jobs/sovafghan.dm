@@ -44,10 +44,11 @@
 	armour.attackby(plates1, H)
 	armour.attackby(plates2, H)
 	uniform.attackby(armour, H)
-	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
-	var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
-	KC.attackby(sovk,H)
-	H.equip_to_slot_or_del(KC, slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+		var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
+		KC.attackby(sovk,H)
+		H.equip_to_slot_or_del(KC, slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
@@ -117,8 +118,8 @@
 	uniform.attackby(mag, H)
 	var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
 	uniform.attackby(mag2, H)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
@@ -180,7 +181,8 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	uniform.attackby(armour2, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
@@ -242,7 +244,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 //jacket
 	if (prob(15))
@@ -324,7 +327,8 @@
 		uniform.attackby(mag, H)
 		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
 		uniform.attackby(mag2, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (prob(33))
@@ -399,7 +403,8 @@
 		uniform.attackby(mag, H)
 		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
 		uniform.attackby(mag2, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/sovpack(H), slot_back)
@@ -533,7 +538,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
@@ -1510,6 +1516,7 @@
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
+	is_squad_leader = TRUE
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
@@ -1590,6 +1597,7 @@
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
+	uses_squads = TRUE
 
 	min_positions = 10
 	max_positions = 250
