@@ -314,11 +314,12 @@
 				if (H.stat!=DEAD && H.original_job.title == "Mujahideen Leader")
 					sov_points += 2
 					world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Leader</font></b> is currently being detained!</font>"
-	world << "<big><b>Current Points:</big></b>"
-	world << "<big>Mujahideen: [muj_points]</big>"
-	world << "<big>Soviets and DRA: [sov_points]</big>"
 	spawn(300)
 		points_check()
+		spawn(300)
+			world << "<big><b>Current Points:</big></b>"
+			world << "<big>Mujahideen: [muj_points]</big>"
+			world << "<big>Soviets and DRA: [sov_points]</big>"
 
 /obj/map_metadata/sovafghan/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 3000)
