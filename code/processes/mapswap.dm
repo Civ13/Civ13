@@ -119,7 +119,7 @@
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
-				//MAP_HILL_3234 = 6,
+				MAP_HILL_3234 = 10,
 				MAP_YELTSIN = 6,
 				MAP_GROZNY = 6,
 				MAP_ALLEYWAY = 0,
