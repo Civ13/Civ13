@@ -1517,13 +1517,14 @@
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
 	additional_languages = list("Russian" = 40, "English"= 40)
 
 	min_positions = 1
-	max_positions = 5
+	max_positions = 6
 
 /datum/job/arab/mujahideen/leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
