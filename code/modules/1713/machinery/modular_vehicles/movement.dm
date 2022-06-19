@@ -42,10 +42,27 @@
 	base_icon = "tracks_end_right"
 	movement_icon = "tracks_end_right_m"
 
+/obj/structure/vehicleparts/movement/tracks/left/mtlb
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "mtlb_tracks_end_left"
+	base_icon = "mtlb_tracks_end_left"
+	movement_icon = "mtlb_tracks_end_left_m"
+/obj/structure/vehicleparts/movement/tracks/right/mtlb
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "mtlb_tracks_end_right"
+	base_icon = "mtlb_tracks_end_right"
+	movement_icon = "mtlb_tracks_end_right_m"
+
 /obj/structure/vehicleparts/movement/tracks/left/reversed
 	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/tracks/right/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/left/mtlb/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/right/mtlb/reversed
 	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/update_icon()

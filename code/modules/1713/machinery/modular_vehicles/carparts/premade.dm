@@ -501,3 +501,28 @@
 	"2,4" = list(/obj/structure/vehicleparts/frame/panzervi/back/door),
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/panzeriv/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	)
+
+////////////APCS/////////////
+
+/obj/effects/premadevehicles/apc
+
+/obj/effects/premadevehicles/apc/mtlb
+	name = "MT-LB"
+	icon_state = "3x3"
+	custom_color = "#4a5243"
+	axis = /obj/structure/vehicleparts/axis/heavy/mtlb
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right/mtlb,/obj/structure/vehicleparts/frame/mtlb/rf,/obj/structure/bed/chair/drivers/tank),
+	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/left/mtlb,/obj/structure/vehicleparts/frame/mtlb/lf),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/mtlb/rfc),
+	"2,2" = list(/obj/structure/vehicleparts/frame/mtlb/lfc),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/mtlb/rbc),
+	"2,3" = list(/obj/structure/vehicleparts/frame/mtlb/lbc),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/right/mtlb/reversed,/obj/structure/vehicleparts/frame/mtlb/rb,/obj/structure/engine/internal/diesel/premade/mtlb),
+	"2,4" = list(/obj/structure/vehicleparts/movement/tracks/left/mtlb/reversed,/obj/structure/vehicleparts/frame/mtlb/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
+	)
+
+

@@ -566,6 +566,10 @@
 	name = "BAF 12 gasoline engine"
 	enginesize = 12000
 
+/obj/structure/engine/internal/diesel/premade/mtlb
+	name = "YaMZ 238 diesel engine"
+	enginesize = 15000
+
 /obj/structure/emergency_lights
 	name = "emergency lights control"
 	desc = "controls the emergency lights and the wailing siren."
