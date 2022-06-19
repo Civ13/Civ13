@@ -12,34 +12,64 @@
 		movemento = image(icon=mwheel.icon, loc=src, icon_state=mwheel.icon_state, layer=6, dir=mwheel.dir)
 		if (mwheel.ntype == "track")
 			movemento.color = axis.color
-			if (axis.corners[1] == src || axis.corners[2] == src)
-				switch(dir)
-					if (NORTH)
-						movemento.pixel_x = 0
-						movemento.pixel_y = 32
-					if (SOUTH)
-						movemento.pixel_x = 0
-						movemento.pixel_y = -32
-					if (WEST)
-						movemento.pixel_x = -32
-						movemento.pixel_y = 0
-					if (EAST)
-						movemento.pixel_x = 32
-						movemento.pixel_y = 0
-			else if (axis.corners[3] == src || axis.corners[4] == src)
-				switch(dir)
-					if (NORTH)
-						movemento.pixel_x = 0
-						movemento.pixel_y = -32
-					if (SOUTH)
-						movemento.pixel_x = 0
-						movemento.pixel_y = 32
-					if (WEST)
-						movemento.pixel_x = 32
-						movemento.pixel_y = 0
-					if (EAST)
-						movemento.pixel_x = -32
-						movemento.pixel_y = 0
+			if (istype(mwheel, /obj/structure/vehicleparts/movement/tracks/mtlb/))
+				if (axis.corners[1] == src || axis.corners[2] == src)
+					switch(dir)
+						if (NORTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = 28
+						if (SOUTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = -28
+						if (WEST)
+							movemento.pixel_x = -28
+							movemento.pixel_y = 0
+						if (EAST)
+							movemento.pixel_x = 28
+							movemento.pixel_y = 0
+				else if (axis.corners[3] == src || axis.corners[4] == src)
+					switch(dir)
+						if (NORTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = -28
+						if (SOUTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = 28
+						if (WEST)
+							movemento.pixel_x = 28
+							movemento.pixel_y = 0
+						if (EAST)
+							movemento.pixel_x = -28
+							movemento.pixel_y = 0
+			else
+				if (axis.corners[1] == src || axis.corners[2] == src)
+					switch(dir)
+						if (NORTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = 32
+						if (SOUTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = -32
+						if (WEST)
+							movemento.pixel_x = -32
+							movemento.pixel_y = 0
+						if (EAST)
+							movemento.pixel_x = 32
+							movemento.pixel_y = 0
+				else if (axis.corners[3] == src || axis.corners[4] == src)
+					switch(dir)
+						if (NORTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = -32
+						if (SOUTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = 32
+						if (WEST)
+							movemento.pixel_x = 32
+							movemento.pixel_y = 0
+						if (EAST)
+							movemento.pixel_x = -32
+							movemento.pixel_y = 0
 			overlays += movemento
 		else if (mwheel.ntype == "wheel")
 			switch(dir)
