@@ -759,6 +759,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\frame_parts.dm"
 #include "code\modules\1713\machinery\modular_vehicles\movement.dm"
 #include "code\modules\1713\machinery\modular_vehicles\wheels.dm"
+#include "code\modules\1713\machinery\modular_vehicles\carparts\apcs.dm"
 #include "code\modules\1713\machinery\modular_vehicles\carparts\cars.dm"
 #include "code\modules\1713\machinery\modular_vehicles\carparts\premade.dm"
 #include "code\modules\1713\machinery\modular_vehicles\carparts\tanks.dm"
