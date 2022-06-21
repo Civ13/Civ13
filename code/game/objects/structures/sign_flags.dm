@@ -37,6 +37,26 @@
 	desc = "A Reich flag for glory."
 	icon_state = "reich"
 
+/obj/structure/sign/flag/gb/imperial
+	name = "Extra-Galactic Empire Flag"
+	desc = "An Imperial Flag for the Extra-Galactic Empire."
+	icon_state = "flag_galacticempire"
+
+/obj/structure/sign/flag/gb/rebel
+	name = "Alliance to Restore the Democracy Flag"
+	desc = "A Rebellious flag for the Alliance."
+	icon_state = "flag_rebelalliance"
+
+/obj/structure/sign/flag/gb/pysker
+	name = "Pysker Order Flag"
+	desc = "A blue and white flag for the ancient order of pyskers."
+	icon_state = "flag_pysker"
+
+/obj/structure/sign/flag/gb/cis
+	name = "Confederacy of Issolationist Star-Systems Flag"
+	desc = "A bright blue and white with a circular emblem."
+	icon_state = "flag_cis"
+
 /obj/structure/sign/flag/blue2
 	name = "\improper blue banner"
 	desc = "A blue linen banner, with golden trims."
