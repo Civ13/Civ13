@@ -63,6 +63,13 @@
 	base_icon = "satchel_black"
 	worn_state = "satchel_black"
 
+/obj/item/weapon/storage/backpack/satchel/replicant
+	name = "synthetic backpack"
+	desc = "A very versitile backpack made out of synthetic leather."
+	icon_state = "replicant_backpack"
+	base_icon = "replicant_backpack"
+	worn_state = "replicant_backpack"
+
 /obj/item/weapon/storage/backpack/satchel/police
 	name = "police tactical pouch"
 	desc = "A tactical pouch made for law enforcement agents."
