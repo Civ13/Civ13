@@ -23,6 +23,7 @@
 		//"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
 		"Battle Royale" = 0,
+		"Fiction" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -53,6 +54,7 @@
 				"HRP TDM (Gulag, Voyage, Occupation, etc)" = 10,
 //				"Chad Mode" = 0,
 				"Battle Royale" = 6,
+				"Fiction" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
@@ -194,7 +196,6 @@
 				MAP_KARAK = 0,
 				MAP_CAMP = 0,
 				MAP_SAMMIRHAYEED = 10,
-				MAP_WHITERUN = 10,
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
 				MAP_GLADIATORS = 0,
@@ -206,7 +207,7 @@
 //				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 0,
 				MAP_HUNT = 0,
-				MAP_ABASHIRI = 6,
+//				MAP_ABASHIRI = 6,
 				MAP_VOYAGE = 6,
 //				MAP_RIVER_KWAI = 0,
 				MAP_LITTLE_CREEK = 10,
@@ -259,6 +260,10 @@
 				MAP_BATTLEROYALE_IMPERIAL = 0,
 				MAP_BATTLEROYALE_WILDWEST = 0,
 				MAP_BATTLEROYALE_MODERN = 0,)
+		else if (epoch == "Fiction")
+			maps = list(
+				MAP_TANTIVEIV = 0,
+				MAP_WHITERUN = 10,)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
 			return
