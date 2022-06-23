@@ -1116,8 +1116,8 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
 		/obj/item/ammo_magazine/tibannagas/e11 = 60,
-		/obj/item/weapon/grenade/modern/thermaldetonator = 10,
-		/obj/item/weapon/grenade/flashbang/galaxywars = 15,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 4,
+		/obj/item/weapon/grenade/flashbang/galaxywars = 5,
 	)
 
 /obj/structure/vending/starwars/rebel/apparel
@@ -1142,7 +1142,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dl44 = 15,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
-		/obj/item/weapon/grenade/modern/thermaldetonator = 25,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 5,
 	)
 
 /obj/structure/vending/starwars/republic/apparel
