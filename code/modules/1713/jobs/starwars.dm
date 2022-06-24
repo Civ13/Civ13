@@ -1,6 +1,5 @@
 /datum/job/civilian/starwars/rebel/lieutenant
 	title = "Rebel Lieutenant"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateJP"
@@ -43,7 +42,6 @@
 
 /datum/job/civilian/starwars/rebel/doctor
 	title = "Rebel Doctor"
-	en_meaning = ""
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJPDoc"
@@ -83,7 +81,6 @@
 
 /datum/job/civilian/starwars/rebel/sergeant
 	title = "Rebel Marine Squad Leader"
-	en_meaning = " "
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
@@ -124,7 +121,6 @@
 
 /datum/job/civilian/starwars/rebel/soldier
 	title = "Rebel Marine"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateJP"
@@ -170,7 +166,6 @@
 
 /datum/job/american/starwars/empire/lieutenant
 	title = "Imperial Navy Lieutenant"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRUCap"
@@ -212,7 +207,6 @@
 
 /datum/job/american/starwars/empire/doctor
 	title = "Imperial Doctor"
-	en_meaning = ""
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRUDoc"
@@ -252,8 +246,7 @@
 	return TRUE
 
 /datum/job/american/starwars/empire/sergeant
-	title = "Shocktrooper sergeant"
-	en_meaning = " "
+	title = "Shocktrooper Sergeant"
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
@@ -294,7 +287,6 @@
 
 /datum/job/american/starwars/empire/soldier
 	title = "Shocktrooper"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
