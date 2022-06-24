@@ -221,7 +221,7 @@
 /obj/structure/coolingfan/attack_hand(mob/user as mob)
 	if (on == FALSE)
 		usr << "You turn the cooling fan on."
-		icon_state = "fanworking"
+		icon_state = "fan_working"
 		on = TRUE
 	else
 		usr << "You turn the cooling fan off."
