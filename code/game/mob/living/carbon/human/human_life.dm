@@ -1494,6 +1494,8 @@
 				if (AMERICAN)
 					if (map.ID == MAP_ARAB_TOWN)
 						holder2.icon_state = "idf_basic"
+					else if (map.ID == MAP_TANTIVEIV)
+						holder2.icon_state = "imp_basic"
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
@@ -1513,6 +1515,8 @@
 						holder2.icon_state = "upa_basic"
 					else if (map.ID == MAP_WHITERUN)
 						holder2.icon_state = "stormcloak"
+					else if (map.ID == MAP_TANTIVEIV)
+						holder2.icon_state = "rebel_basic"
 					else if (map.ID == MAP_FACTORY)
 						holder2.icon_state = "ukr_basic"
 					else if (map.ID == MAP_GULAG13)
