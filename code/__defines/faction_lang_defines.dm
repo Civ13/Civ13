@@ -53,19 +53,19 @@
 	if (constant == CIVILIAN)
 		if (map.ID == "TSARITSYN")
 			return "Red Army"
-		if (map.ID == "YELTSIN")
+		else if (map.ID == "YELTSIN")
 			return "Militia"
-		if (map.ID == "AFRICAN_WARLORDS")
+		else if (map.ID == "AFRICAN_WARLORDS")
 			return "United Nations"
-		if (map.ID == "WHITERUN")
+		else if (map.ID == "WHITERUN")
 			return "Stormcloaks"
-		if (map.ID == "CAPITOL_HILL")
+		else if (map.ID == "CAPITOL_HILL")
 			return "Rioters"
-		if (map.ID == "WACO")
+		else if (map.ID == "WACO")
 			return "Branch Davidians"
-		if (map.ID == "MISSIONARY_RIDGE")
+		else if (map.ID == "MISSIONARY_RIDGE")
 			return "Confederates"
-		if (map.ID == "TANTIVEIV")
+		else if (map.ID == "TANTIVEIV")
 			return "Rebels"
 		else
 			if (age >= 6)
@@ -101,14 +101,14 @@
 	if (constant == RUSSIAN)
 		if (map.ID == "YELTSIN")
 			return "Russian Army"
-		if (map.ID == "GROZNY")
+		else if (map.ID == "GROZNY")
 			return "Russian Federal Forces"
-		if (map.ID == "TSARITSYN")
+		else if (map.ID == "TSARITSYN")
 			return "White Army"
 		else
 			if (age == 6 && age == 7)
 				return "Soviet Union"
-			if (age >= 8)
+			else if (age >= 8)
 				return "Russian Federation"
 			else
 				return "Russian Empire"
@@ -128,7 +128,7 @@
 	if (constant == GERMAN)
 		if (age == 6)
 			return "Third Reich"
-		if (age >= 7)
+		else if (age >= 7)
 			return "Federal Republic of Germany"
 		else
 			return "German Empire"
@@ -139,7 +139,7 @@
 		if (age >= 6)
 			if (map.ID == "ARAB_TOWN")
 				return "Hezbollah"
-			if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234")
+			else if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234")
 				return "Mujahideen"
 			else
 				return "Insurgents"
@@ -149,11 +149,11 @@
 	if (constant == AMERICAN)
 		if (map.ID == "ARAB_TOWN")
 			return "IDF"
-		if (map.ID == "CAPITOL_HILL")
+		else if (map.ID == "CAPITOL_HILL")
 			return "American Government"
-		if (map.ID == "WACO")
+		else if (map.ID == "WACO")
 			return "ATF"
-		if (map.ID == "VANTIVEIV")
+		else if (map.ID == "TANTIVEIV")
 			return "Imperials"
 		else
 			return "United States"
