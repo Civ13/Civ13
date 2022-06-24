@@ -379,10 +379,22 @@
 	item_state = "stormtrooper_armor"
 	worn_state = "stormtrooper_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 65, arrow = 96, gun = 88, energy = 45, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 96, gun = 88, energy = 50, bomb = 50, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
-	health = 100
+	health = 75
+
+/obj/item/clothing/suit/armor/stormsurgeon
+	name = "stormsurgeon armor"
+	desc = "A thick, expensive imperial stormsurgeon plastoid armor with mint green highlights, covering most of the body."
+	icon_state = "stormsurgeon_armor"
+	item_state = "stormsurgeon_armor"
+	worn_state = "stormsurgeon_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 45, arrow = 86, gun = 68, energy = 35, bomb = 40, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 1.2
+	health = 75
 
 // HELMETS
 
@@ -434,7 +446,17 @@
 	worn_state = "repstormtrooper_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, arrow = 60, gun = 65, energy = 60, bomb = 30, bio = 30, rad = FALSE)
+	armor = list(melee = 35, arrow = 60, gun = 65, energy = 50, bomb = 30, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/stormsurgeon
+	name = "Replicant Storm-Surgeon Helmet"
+	desc = "A reinforced helmet of the Imperial Medical Corps."
+	icon_state = "stormsurgeon_helmet"
+	item_state = "stormsurgeon_helmet"
+	worn_state = "stormsurgeon_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 60, gun = 65, energy = 50, bomb = 30, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant
 	name = "Phase I Replicant Trooper Helmet"
