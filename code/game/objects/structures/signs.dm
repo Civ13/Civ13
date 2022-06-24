@@ -179,6 +179,22 @@
 	desc = "Points to the exit."
 	icon_state = "exit"
 
+/obj/structure/sign/galacticbattles/unite
+	name = "UNITE Poster"
+	desc = "Seems to be a Galactic Republic Propaganda Poster for the fight against the Sepretists."
+	icon_state = "unite"
+
+/obj/structure/sign/galacticbattles/care
+	name = "CARE Poster"
+	desc = "Seems to be a Galactic Republic Propaganda Poster to make the public aware of infiltrators"
+	icon_state = "care"
+
+/obj/structure/sign/galacticbattles/repair
+	name = "Corelian Repair Advertisement Poster"
+	desc = "Seems to be a Corelian advertisement for Robot repairs"
+	icon_state = "repair"
+
+
 /obj/structure/sign/minefield
 	name = "Minefield"
 	desc = "Achtung! Minen."
