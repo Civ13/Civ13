@@ -472,3 +472,66 @@
 /obj/structure/goalpost/inner
 	icon_state = "goalpost_i"
 	density = FALSE
+
+///////////////////////////////////BASKETBALL///////////////////////////////////////
+
+/obj/structure/basketball_hoop
+	name = "basketball hoop"
+	desc = "A basketball hoop."
+	icon = 'icons/obj/basketball.dmi'
+	icon_state = "hoop"
+	flammable = FALSE
+	opacity = FALSE
+	density = TRUE
+	anchored = TRUE
+	throwpass = TRUE
+
+/obj/item/weapon/basketball
+	icon = 'icons/obj/basketball.dmi'
+	icon_state = "basketball"
+	name = "basketball"
+	desc = "Here's your chance, time to sign up for the NBA."
+	force = 0
+	throwforce = 0
+	throw_speed = 1.5
+	throw_range = 7
+	item_state = "basketball"
+	w_class = 4 //Stops people from hiding it in their backpack.
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
+	item_state_slots = list(
+		slot_l_hand_str = "basketball",
+		slot_r_hand_str = "basketball",
+		)
+
+
+/obj/structure/basketball_hoop/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/grab) && get_dist(src,user)<2)
+		var/obj/item/weapon/grab/G = W
+		if(G.state<2)
+			user << "<span class='warning'>You need a better grip to do that!</span>"
+			return
+		G.affecting.loc = src.loc
+		G.affecting.Weaken(5)
+		visible_message("<span class='warning'>[G.assailant] dunks [G.affecting] into the [src]!</span>", 3)
+		qdel(W)
+		return
+	else if (istype(W, /obj/item) && get_dist(src,user)<2)
+		user.drop_item(src.loc)
+		visible_message("<span class='notice'>[user] dunks [W] into the [src]!</span>", 3)
+		return
+
+/obj/structure/basketball_hoop/hitby(atom/movable/AM)
+	if (isitem(AM) && !istype(AM,/obj/item/projectile))
+		if(prob(50))
+			AM.forceMove(get_turf(src))
+			visible_message("<span class='notice'>Swish! [AM] lands in [src].</span>", 4)
+			return
+		else
+			visible_message("<span class='warning'>[AM] bounces off of [src]'s rim!</span>", 4)
+			return ..()
+	else
+		return ..()
+

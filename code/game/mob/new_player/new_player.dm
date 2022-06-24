@@ -1017,14 +1017,16 @@ var/global/redirect_all_players = null
 	if (CIVILIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
 			dat += "[alive_civilians.len] Soviets "
-		if (map && istype(map, /obj/map_metadata/african_warlords))
+		else if (map && istype(map, /obj/map_metadata/african_warlords))
 			dat += "[alive_civilians.len] UN Peacekeepers "
-		if (map && istype(map, /obj/map_metadata/capitol_hill))
+		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_civilians.len] Rioters "
-		if (map && istype(map, /obj/map_metadata/yeltsin))
+		else if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_civilians.len] Soviet Remnants "
-		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_civilians.len] Confederates "
+		else if (map && istype(map, /obj/map_metadata/tantiveiv))
+			dat += "[alive_civilians.len] Rebels "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1042,9 +1044,9 @@ var/global/redirect_all_players = null
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_russian.len] Russian Army "
 		else
-			dat += "[alive_russian.len] Russian "
+			dat += "[alive_russian.len] Russians "
 	if (CHECHEN in map.faction_organization)
-		dat += "[alive_chechen.len] Chechen "
+		dat += "[alive_chechen.len] Chechens "
 	if (FINNISH in map.faction_organization)
 		dat += "[alive_finnish.len] Finnish "
 	if (GERMAN in map.faction_organization)
@@ -1052,10 +1054,12 @@ var/global/redirect_all_players = null
 	if (AMERICAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/arab_town))
 			dat += "[alive_american.len] Israeli "
-		if (map && istype(map, /obj/map_metadata/capitol_hill))
+		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_american.len] American Government "
-		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_american.len] Union Soldiers "
+		else if (map && istype(map, /obj/map_metadata/tantiveiv))
+			dat += "[alive_american.len] Imperials "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1191,28 +1195,38 @@ var/global/redirect_all_players = null
 				else if (map && map.ID == "MISSIONARY_RIDGE")
 					if (temp_name == "American")
 						temp_name = "Union"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Confederate"
 				else if (map && map.ID == "WHITERUN")
 					if (temp_name == "Roman")
 						temp_name = "Imperials"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Stormcloaks"
 				else if (map && map.ID == "CAPITOL_HILL")
 					if (temp_name == "American")
 						temp_name = "American Government"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Rioters"
 				else if (map && map.ID == "YELTSIN")
 					if (temp_name == "Russian")
 						temp_name = "Russian Army"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
 				else if (map && map.ID == "SOVAFGHAN")
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
-					if (temp_name == "Arab")
+					else if (temp_name == "Arab")
 						temp_name = "Mujahideen"
+				else if (map && map.ID == "SOVAFGHAN")
+					if (temp_name == "Russian")
+						temp_name = "Soviet Army"
+					else if (temp_name == "Arab")
+						temp_name = "Mujahideen"
+				else if (map && map.ID == "TANTIVEIV")
+					if (temp_name == "Civilian")
+						temp_name = "Rebels"
+					else if (temp_name == "American")
+						temp_name = "Imperials"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
