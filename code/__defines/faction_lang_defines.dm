@@ -153,7 +153,7 @@
 			return "American Government"
 		else if (map.ID == "WACO")
 			return "ATF"
-		else if (map.ID == "VANTIVEIV")
+		else if (map.ID == "TANTIVEIV")
 			return "Imperials"
 		else
 			return "United States"
