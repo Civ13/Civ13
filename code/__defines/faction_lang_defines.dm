@@ -106,7 +106,7 @@
 		else if (map.ID == "TSARITSYN")
 			return "White Army"
 		else
-			if (age == 6 && age == 7)
+			if (age == 6 || age == 7)
 				return "Soviet Union"
 			else if (age >= 8)
 				return "Russian Federation"
