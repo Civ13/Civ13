@@ -1025,6 +1025,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Soviet Remnants "
 		if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_civilians.len] Confederates "
+		if (map && istype(map, /obj/map_metadata/tantiveiv))
+			dat += "[alive_civilians.len] Rebels "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1056,6 +1058,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] American Government "
 		if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_american.len] Union Soldiers "
+		if (map && istype(map, /obj/map_metadata/tantiveiv))
+			dat += "[alive_american.len] Imperials "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1191,28 +1195,38 @@ var/global/redirect_all_players = null
 				else if (map && map.ID == "MISSIONARY_RIDGE")
 					if (temp_name == "American")
 						temp_name = "Union"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Confederate"
 				else if (map && map.ID == "WHITERUN")
 					if (temp_name == "Roman")
 						temp_name = "Imperials"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Stormcloaks"
 				else if (map && map.ID == "CAPITOL_HILL")
 					if (temp_name == "American")
 						temp_name = "American Government"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Rioters"
 				else if (map && map.ID == "YELTSIN")
 					if (temp_name == "Russian")
 						temp_name = "Russian Army"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
 				else if (map && map.ID == "SOVAFGHAN")
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
-					if (temp_name == "Arab")
+					else if (temp_name == "Arab")
 						temp_name = "Mujahideen"
+				else if (map && map.ID == "SOVAFGHAN")
+					if (temp_name == "Russian")
+						temp_name = "Soviet Army"
+					else if (temp_name == "Arab")
+						temp_name = "Mujahideen"
+				else if (map && map.ID == "TANTIVEIV")
+					if (temp_name == "Civilian")
+						temp_name = "Rebels"
+					else if (temp_name == "American")
+						temp_name = "Imperials"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
