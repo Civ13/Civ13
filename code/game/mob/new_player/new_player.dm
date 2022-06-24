@@ -1017,15 +1017,15 @@ var/global/redirect_all_players = null
 	if (CIVILIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
 			dat += "[alive_civilians.len] Soviets "
-		if (map && istype(map, /obj/map_metadata/african_warlords))
+		else if (map && istype(map, /obj/map_metadata/african_warlords))
 			dat += "[alive_civilians.len] UN Peacekeepers "
-		if (map && istype(map, /obj/map_metadata/capitol_hill))
+		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_civilians.len] Rioters "
-		if (map && istype(map, /obj/map_metadata/yeltsin))
+		else if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_civilians.len] Soviet Remnants "
-		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_civilians.len] Confederates "
-		if (map && istype(map, /obj/map_metadata/tantiveiv))
+		else if (map && istype(map, /obj/map_metadata/tantiveiv))
 			dat += "[alive_civilians.len] Rebels "
 		else
 			dat += "[alive_civilians.len] Civilians "
@@ -1044,9 +1044,9 @@ var/global/redirect_all_players = null
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_russian.len] Russian Army "
 		else
-			dat += "[alive_russian.len] Russian "
+			dat += "[alive_russian.len] Russians "
 	if (CHECHEN in map.faction_organization)
-		dat += "[alive_chechen.len] Chechen "
+		dat += "[alive_chechen.len] Chechens "
 	if (FINNISH in map.faction_organization)
 		dat += "[alive_finnish.len] Finnish "
 	if (GERMAN in map.faction_organization)
@@ -1054,11 +1054,11 @@ var/global/redirect_all_players = null
 	if (AMERICAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/arab_town))
 			dat += "[alive_american.len] Israeli "
-		if (map && istype(map, /obj/map_metadata/capitol_hill))
+		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_american.len] American Government "
-		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_american.len] Union Soldiers "
-		if (map && istype(map, /obj/map_metadata/tantiveiv))
+		else if (map && istype(map, /obj/map_metadata/tantiveiv))
 			dat += "[alive_american.len] Imperials "
 		else
 			dat += "[alive_american.len] American "
