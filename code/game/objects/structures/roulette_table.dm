@@ -59,7 +59,7 @@
 
 /obj/structure/roulette/verb/spin(mob/user as mob)
 	set name = "Spin Roulette Table"
-	set category = "Object"
+	set category = null
 	set src in oview(1)
 
 	if(spinning)
