@@ -245,6 +245,46 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/american/starwars/empire/technician
+	title = "Shocktrooper Radio Technician"
+	rank_abbreviation = ""
+	can_be_female = TRUE
+	spawn_location = "JoinLateRU"
+
+	is_medic = FALSE
+	is_starwars = TRUE
+	is_empire = TRUE
+	can_be_female = TRUE
+	min_positions = 1
+	max_positions = 10
+
+/datum/job/american/starwars/empire/technician/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/replicantshoes(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/bodyglove(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/replicantgloves(H), slot_gloves)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/galacticbattles(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormradio(H), slot_wear_suit)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormradio(H), slot_head)
+
+	H.s_tone = rand(-35,-25)
+	H.add_note("Role", "You are a <b>[title]</b>. Keep the Imperial Forces Informed and Updated!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
 /datum/job/american/starwars/empire/sergeant
 	title = "Shocktrooper Sergeant"
 	rank_abbreviation = ""
