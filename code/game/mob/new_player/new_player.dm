@@ -920,7 +920,7 @@ var/global/redirect_all_players = null
 				H.verbs += /mob/living/human/proc/Squad_Announcement
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
-					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
+					if (map.ordinal_age >= 6 && map.ordinal_age <= 8)
 						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
 							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
@@ -947,8 +947,8 @@ var/global/redirect_all_players = null
 					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
-					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
-						if (map.ID != MAP_YELTSIN)
+					if (map.ordinal_age >= 6 && map.ordinal_age <= 8)
+						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
 							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
@@ -1034,7 +1034,7 @@ var/global/redirect_all_players = null
 	if (ROMAN in map.faction_organization)
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/sovafghan))
+		if (map && (istype(map, /obj/map_metadata/sovafghan) || istype(map, /obj/map_metadata/hill_3234)))
 			dat += "[alive_arab.len] Mujahideen "
 		else
 			dat += "[alive_arab.len] Arabs "
@@ -1043,6 +1043,8 @@ var/global/redirect_all_players = null
 	if (RUSSIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_russian.len] Russian Army "
+		if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
+			dat += "[alive_russian.len] Soviets "
 		else
 			dat += "[alive_russian.len] Russians "
 	if (CHECHEN in map.faction_organization)
@@ -1217,7 +1219,7 @@ var/global/redirect_all_players = null
 						temp_name = "Soviet Army"
 					else if (temp_name == "Arab")
 						temp_name = "Mujahideen"
-				else if (map && map.ID == "SOVAFGHAN")
+				else if (map && map.ID == "HILL_3234")
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
 					else if (temp_name == "Arab")
