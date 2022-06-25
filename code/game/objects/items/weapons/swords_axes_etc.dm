@@ -118,6 +118,28 @@
 	force = WEAPON_FORCE_WEAK+1
 	flammable = TRUE
 
+/obj/item/weapon/melee/baseball_bat
+	name = "wooden baseball bat"
+	desc = "A smooth wooden club used in the sport of baseball. Useful for damaging skulls."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "woodbat"
+	item_state = "woodbat"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_WEAK
+	w_class = 3.0
+	flammable = TRUE
+	weakens = FALSE
+
+/obj/item/weapon/melee/baseball_bat/aluminium
+	name = "aluminium baseball bat"
+	desc = "A smooth metal club used in the sport of baseball. This one's stronger than a wooden one."
+	icon_state = "metalbat"
+	item_state = "metalbat"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_WEAK+1
+	flammable = FALSE
+	flags = CONDUCT
+
 /obj/item/weapon/melee/attack(mob/M as mob, mob/living/user as mob)
 
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
