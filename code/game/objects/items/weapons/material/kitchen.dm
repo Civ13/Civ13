@@ -197,6 +197,44 @@
 /obj/item/weapon/material/kitchen/utensil/knife/bowie/iron
 	default_material = "iron"
 
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade
+	name = "switchblade knife"
+	desc = "A sharp, concealable, spring-loaded knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "switchblade"
+	item_state = "switchblade"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+	w_class = 2
+	throwforce = 5
+	throw_speed = 3
+	throw_range = 5
+	var/on = TRUE
+
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade/attack_self(mob/user as mob)
+	on = !on
+	if(on)
+		user.visible_message("<span class='warning'>With a simple press, [user] extends the blade on their switchblade knife.</span>",\
+		"<span class='warning'>You extend the blade on the the knife</span>",\
+		"You hear an ominous click.")
+	else
+		user.visible_message("<span class='notice'>\The [user] retracts the blade on their switchblade knife.</span>",\
+		"<span class='notice'>You retract the blade on the knife.</span>",\
+		"You hear a click.")
+		force = 0.5
+		force_divisor = 0
+		sharp = 0
+		edge = 0
+		attack_verb = list("hit", "punched")
+
+	playsound(src.loc, 'sound/weapons/empty.ogg', 50, 1)
+	add_fingerprint(user)
+	update_icon()
+	update_held_icon()
+
+
 /obj/item/weapon/material/kitchen/utensil/knife/fancy
 	name = "fancy knife"
 	desc = "A expensive knife."
