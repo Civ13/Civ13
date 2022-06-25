@@ -243,6 +243,24 @@
 	sel_mode = 1
 	effectiveness_mod = 1.2
 
+/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi
+	name = "Uzi"
+	desc = "An Israeli submachinegun chambered in 9mm Parabellum."
+	icon_state = "uzi"
+	item_state = "uzi"
+	base_icon = "uzi"
+	weight = 2.1
+	equiptimer = 5
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/uzi
+	good_mags = list(/obj/item/ammo_magazine/uzi)
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1, recoil=0, move_delay=3, dispersion = list(0.8, 0.9, 1.0, 1.1, 1.2)),
+		)
+	sel_mode = 1
+	effectiveness_mod = 1.1
+
 /obj/item/weapon/gun/projectile/submachinegun/greasegun
 	name = "M3A1 SMG"
 	desc = "A simplistic American submachinegun, chambered in .45 ACP."
