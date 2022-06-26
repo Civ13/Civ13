@@ -373,7 +373,7 @@
 	health = 60
 
 /obj/item/clothing/suit/armor/stormtrooper
-	name = "stormtrooper armor"
+	name = "standard stormtrooper armor"
 	desc = "A thick, expensive imperial plastoid armor, covering most of the body."
 	icon_state = "stormtrooper_armor"
 	item_state = "stormtrooper_armor"
@@ -391,10 +391,22 @@
 	item_state = "stormsurgeon_armor"
 	worn_state = "stormsurgeon_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 86, gun = 68, energy = 35, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 86, gun = 68, energy = 40, bomb = 40, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.2
 	health = 75
+
+/obj/item/clothing/suit/armor/stormradio
+	name = "light stormtrooper armor"
+	desc = "A light, substandard imperial stormtrooper plastoid armor with removed plates for added mobility , covering some of the body."
+	icon_state = "stormradio_armor"
+	item_state = "stormradio_armor"
+	worn_state = "stormradio_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 35, arrow = 66, gun = 58, energy = 35, bomb = 25, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.85
+	health = 57
 
 // HELMETS
 
@@ -440,7 +452,7 @@
 
 /obj/item/clothing/head/helmet/replicant/stormtrooper
 	name = "Replicant Stormtrooper Helmet"
-	desc = "A reinforced helmet of the Imperial Army."
+	desc = "A reinforced helmet of the Imperial Storm Corps."
 	icon_state = "repstormtrooper_helmet"
 	item_state = "repstormtrooper_helmet"
 	worn_state = "repstormtrooper_helmet"
@@ -457,6 +469,16 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 35, arrow = 60, gun = 65, energy = 50, bomb = 30, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/replicant/stormradio
+	name = "Replicant Stormtrooper Radio Technician Helmet"
+	desc = "A reinforced helmet of the Imperial Storm Corps."
+	icon_state = "stormradio_helmet"
+	item_state = "stormradio_helmet"
+	worn_state = "stormradio_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 50, gun = 55, energy = 50, bomb = 20, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant
 	name = "Phase I Replicant Trooper Helmet"
