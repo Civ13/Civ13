@@ -281,7 +281,7 @@
 	additional_languages = list("Arabic" = 30)
 
 	min_positions = 1
-	max_positions = 80
+	max_positions = 100
 
 /datum/job/russian/sovafghan/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

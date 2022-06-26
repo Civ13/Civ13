@@ -17,7 +17,7 @@
 		)
 	age = "1988"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(RUSSIAN = 0.4, ARAB = 0.6)
+	faction_distribution_coeffs = list(RUSSIAN = 0.3, ARAB = 0.7)
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the battle begins!<br>The <font color = 'red'>Soviets</font> will win if they hold out the hill for <b>40 minutes</b>.<br>The <b><font color = 'black'>Mujahideen</font></b> will win if they manage to capture the radio station on the top of the hill!</font>"
 	faction1 = RUSSIAN
 	faction2 = ARAB
@@ -33,6 +33,27 @@
 		. = TRUE
 		if (J.title == "Soviet Army Tankist")
 			. = FALSE
+		if (J.title == "Soviet Army Lieutenant")
+			J.max_positions = 1
+			J.total_positions = 1
+		if (J.title == "Soviet Army Sergeant")
+			J.max_positions = 5
+			J.total_positions = 5
+		if (J.title == "Soviet Army Field Medic")
+			J.max_positions = 4
+			J.total_positions = 4
+		if (J.title == "Soviet Army Radio Operator")
+			J.max_positions = 4
+			J.total_positions = 4
+		if (J.title == "Soviet Army Private")
+			J.max_positions = 60
+			J.total_positions = 60
+		if (J.title == "Spetznaz GRU")
+			J.max_positions = 2
+			J.total_positions = 2
+		if (J.title == "Mujahideen Leader")
+			J.max_positions = 10
+			J.total_positions = 10
 	else
 		. = FALSE
 
@@ -98,14 +119,14 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b><font color = 'red'>Soviets</b></font> have sucessfuly defended Hill 3234! The Mujahideen halted their attack!"
+		var/message = "The <font color = 'red'>Soviets</font> have sucessfuly defended Hill 3234! The Mujahideen halted their attack!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b><font color = 'black'>Mujahideen</b></font> have captured Hill 3234! The Soviets have been wiped out!"
+		var/message = "The <font color = 'black'>Mujahideen</font> have captured Hill 3234! The Soviets have been wiped out!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -114,7 +135,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "<b>The<font color = 'black'>Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes.</b>"
+				current_win_condition = "The<font color = 'black'>Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes."
 				next_win = world.time + short_win_time(ARAB)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -122,7 +143,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "<b>The<font color = 'black'>Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes.</b>"
+				current_win_condition = "The<font color = 'black'>Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes."
 				next_win = world.time + short_win_time(ARAB)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -130,7 +151,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "<b>The<font color = 'black'>Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes.</b>"
+				current_win_condition = "The<font color = 'black'>Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes."
 				next_win = world.time + short_win_time(ARAB)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -138,14 +159,14 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "<b>The<font color = 'black'> Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes.</b>"
+				current_win_condition = "The<font color = 'black'> Mujahideen</font> are capturing Hill 3234! They will win in {time} minutes."
 				next_win = world.time + short_win_time(ARAB)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3><b><font color = 'red'>The Soviets</b></font> have recaptured Hill 3234!</font>"
+			world << "<font size = 3><font color = 'red'>The Soviets</font> have recaptured Hill 3234!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -161,6 +182,9 @@
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.faction_text == faction1)
+				return TRUE
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/three))
+			if (H.faction_text == faction2)
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
