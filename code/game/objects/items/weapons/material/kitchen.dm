@@ -202,38 +202,51 @@
 	desc = "A sharp, concealable, spring-loaded knife."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "switchblade"
-	item_state = "switchblade"
+	item_state = null
 	applies_material_colour = FALSE
 	unbreakable = TRUE
-	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.6
+	hitsound = null
+	attack_verb = list("patted", "tapped")
+	force_divisor = 0.05
 	w_class = 2
-	throwforce = 5
+	throwforce = 0
 	throw_speed = 3
 	throw_range = 5
-	var/on = TRUE
+	secondary_action = TRUE
+	drawsound = 'sound/weapons/hiddenblade_deploy.ogg'
+	var/active = FALSE
 
-/obj/item/weapon/material/kitchen/utensil/knife/switchblade/attack_self(mob/user as mob)
-	on = !on
-	if(on)
-		user.visible_message("<span class='warning'>With a simple press, [user] extends the blade on their switchblade knife.</span>",\
-		"<span class='warning'>You extend the blade on the the knife</span>",\
-		"You hear an ominous click.")
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade/update_force()
+	if(active)
+		edge = 1
+		sharp = 1
+		..() //Updates force.
+		throwforce = 5
+		hitsound = 'sound/weapons/bladeslice.ogg'
+		icon_state += "_open"
+		item_state = "switchblade_ext"
+		w_class = 3
+		force_divisor = 0.7
+		attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	else
-		user.visible_message("<span class='notice'>\The [user] retracts the blade on their switchblade knife.</span>",\
-		"<span class='notice'>You retract the blade on the knife.</span>",\
-		"You hear a click.")
-		force = 0.5
-		force_divisor = 0
-		sharp = 0
 		edge = 0
-		attack_verb = list("hit", "punched")
+		sharp = 0
+		hitsound = initial(hitsound)
+		icon_state = initial(icon_state)
+		item_state = initial(item_state)
+		w_class = initial(w_class)
+		force_divisor = initial(force_divisor)
+		attack_verb = initial(attack_verb)
 
-	playsound(src.loc, 'sound/weapons/empty.ogg', 50, 1)
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade/secondary_attack_self(mob/living/human/user)
+	active = !active
+	if(active)
+		visible_message("<span class='warning'>With a simple press, [user] extends the blade on their switchblade knife.</span>", 3)
+		playsound(loc, 'sound/weapons/switchblade.ogg', 15, 1)
+	else
+		visible_message("<span class='notice'>\The [user] retracts the blade on their switchblade knife.</span>", 3)
+	update_force()
 	add_fingerprint(user)
-	update_icon()
-	update_held_icon()
-
 
 /obj/item/weapon/material/kitchen/utensil/knife/fancy
 	name = "fancy knife"

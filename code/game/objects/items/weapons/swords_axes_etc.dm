@@ -125,7 +125,7 @@
 	icon_state = "woodbat"
 	item_state = "woodbat"
 	slot_flags = SLOT_BACK
-	force = WEAPON_FORCE_WEAK
+	force = WEAPON_FORCE_PAINFUL
 	w_class = 3.0
 	flammable = TRUE
 	weakens = FALSE
@@ -136,7 +136,7 @@
 	icon_state = "metalbat"
 	item_state = "metalbat"
 	slot_flags = SLOT_BACK
-	force = WEAPON_FORCE_WEAK+1
+	force = WEAPON_FORCE_PAINFUL+3
 	flammable = FALSE
 	flags = CONDUCT
 

@@ -99,7 +99,7 @@
 
 /obj/map_metadata/hill_3234/cross_message(faction)
 	if (faction == ARAB)
-		return "<font size = 4>The <b><font color = 'black'>Mujahideen</b></font> may now cross the invisible wall!</font>"
+		return "<font size = 4>The <font color = 'black'>Mujahideen</font> may now cross the invisible wall!</font>"
 	else if (faction == RUSSIAN)
 		return ""
 	else
@@ -107,7 +107,7 @@
 
 /obj/map_metadata/hill_3234/reverse_cross_message(faction)
 	if (faction == ARAB)
-		return "<span class = 'userdanger'>The <b><font color = 'black'>Mujahideen</b></font> may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The <font color = 'black'>Mujahideen</font> may no longer cross the invisible wall!</span>"
 	else if (faction == RUSSIAN)
 		return ""
 	else
