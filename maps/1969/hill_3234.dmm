@@ -281,9 +281,11 @@
 "hk" = (/turf/floor/dirt/burned,/area/caribbean/nomads/desert)
 "kp" = (/obj/structure/wild/rock,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
 "mh" = (/turf/floor/dirt/underground/sandy,/area/caribbean/no_mans_land/invisible_wall/two)
+"oS" = (/obj/structure/camonet{color = "#736043"},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/trench,/area/caribbean/nomads/desert)
 "pv" = (/mob/living/simple_animal/goat/female,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "pZ" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "qa" = (/obj/item/flashlight/militarylight/alt,/obj/item/flashlight/militarylight/alt,/obj/item/flashlight/militarylight/alt,/obj/item/flashlight/militarylight/alt,/obj/item/flashlight/militarylight/alt,/obj/item/flashlight/militarylight/alt,/obj/item/flashlight/militarylight/alt,/obj/item/flashlight/militarylight/alt,/obj/structure/camonet{color = "#736043"},/obj/structure/closet/crate/empty,/turf/floor/trench,/area/caribbean/nomads/desert)
+"rc" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/obj/structure/camonet{color = "#736043"},/turf/floor/trench,/area/caribbean/nomads/desert)
 "uA" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
 "vR" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "xp" = (/obj/item/flashlight/flare/nighttime,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -307,7 +309,7 @@ KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaedDaaaaewaadwaaaaabaadwaaabaaaaaaaaaaaaaaacaa
 KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaeaaaaaadHaaaabZczczaTaTaTaTaTcAaTaTaTcBaaacacacacaaabaaaWbsbqbCbubqbDbDbzbAbEbzbyasaaaaaaaaaaacacaaaaaabWaaabaaaaaaaaaaaaaaaaaaaaaaaacEcEcEcEaadHemcfdedecvcfdedecvae
 KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaedwdHdDaaaadHaaaWbIbHbHbHbObHbHbHbHbObIasaaacacacbXabdHaaaWbsbqbPbubQbDbRcdbAcebzbyasabaaabaaacacacaaaaaaaaabaaaaaaaadwexaeaaaaabaaaaaaxrdhcEJKaaabemcfdedecvcfdedecvae
 KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaadwaaaaaaabcCchcicjcjckckckclclcmcnasaaaaacacacacabdDaWbsbqcocpctcxctctcJcobzbwasaadEaaaaacacacdDaadwaaabaaaaaaaaaadHabaaaaabaaaaaaxrcwcwxraaabemcfdedecvcfdedecvae
-KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaeaaaaaadIaacCchcLcMcMcMcMcMcMcMcNcOaaaaaaacacacacacaaaaeRbqbDcPcobDcocQcRbDbzbwasababaaacacacacaaaaaaaaabaadwaaaaaaaaaaaaaaaaacacaccwcwcwcwacaaemcfdedecvcfdedecvae
+KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaeaaaaaadIaacCchcLcMcMcMcMcMcMcMcNcOaaaaaaacacacacacaaaaeRbqbDcPcobDcocQcRbDbzbwasababaaacacacacaaaaaaaaabaadwaaaaaaaaaaaaaaaaacacaccwcwcwcwacaaemcfdedecvcfrcoScvae
 KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaeaedHaaaaaWchdfcMcMcMcMcMcMcMcMaaaaaadDacacacacacaaaadobzbqbDbDbDbDbDbDbDbzbyasaaaadIaaacacacaaaaacacacacaaacacaaaaaaacacacacacaccwcwcwcwacacacacacacacacacacacae
 KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaeaaaaabcCchdfcMcMcycScZcMcMcMaaaaaaaaaaacacacacacaaeRbQbRbRbRdbbRbRbRbRdcbyasaaaaaabXacacacacacacacacacacacacacacacacacacacacaaxrdhcEcEaaabacacacacaaaaacacaaae
 KMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMKMaeaeaeaaaaaabWcCchdfcMcMdpqaeGcMcMcNcnaaaaaaacaaacacacacaWbSdudvdvdudvdvdvdudvdvbSasaaaaaaacacacacacacacacabaaaaabacacacacacabaaaaaaaacEcEcgcEaaaaaaaaaaaaaaaaaaaaaaae
