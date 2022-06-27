@@ -268,13 +268,12 @@
 /obj/structure/sign/flag/medical/crescent
 	name = "Red crescent flag"
 	desc = "A flag with the crescent emblem for medicine and humanitarian aid."
-	icon_state = "medical_flag"
+	icon_state = "medical_flag_crescent"
 
 /obj/structure/sign/flag/medical/crystal
-	name = "Medical flag"
+	name = "Medical crystal flag"
 	desc = "A flag with the crystal symbol for medicine and humaniarian aid."
-	icon_state = "medical_flag"
-
+	icon_state = "medical_flag_crystal"
 
 /obj/structure/sign/flag/japanese
 	name = "Imperial Japanese flag"
