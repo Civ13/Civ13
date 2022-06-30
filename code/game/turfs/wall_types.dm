@@ -24,7 +24,7 @@
 /turf/wall/generic_wall
 	icon_state = "generic0"
 turf/wall/generic_wall/New(var/newloc)
-	..(newloc,"generic")
+	..(newloc,"concrete")
 
 /turf/wall/cement
 	icon_state = "cement_wall0"
