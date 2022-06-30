@@ -368,12 +368,12 @@
 /obj/structure/sign/flag/doncossack
 	name = "Don Cossack Host flag"
 	desc = "A flag of the Don cossacks."
-	icon_state = "flag_don_cossacks"
+	icon_state = "flag_doncossack"
 
 /obj/structure/sign/flag/terekcossack
 	name = "Terek Cossack Host flag"
 	desc = "A flag of the Terek cossacks."
-	icon_state = "flag_terek_cossacks"
+	icon_state = "flag_terekcossack"
 
 /obj/structure/sign/flag/poland
 	name = "Polish flag"
