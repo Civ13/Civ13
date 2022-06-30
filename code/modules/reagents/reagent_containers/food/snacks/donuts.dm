@@ -51,7 +51,7 @@
 	is_decorated = TRUE
 	New ()
 		..()
-		reagents.add_reagent("cherry", rand(1,3))
+		reagents.add_reagent("cherryjuice", rand(1,3))
 		reagents.add_reagent("sprinkles", 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/donut/apple
