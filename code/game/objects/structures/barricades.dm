@@ -1016,6 +1016,34 @@
 	icon_state = "hescobastion"
 	name = "hesco bastion"
 
+/obj/structure/barricade/construction
+	name = "construction barrier"
+	desc = "A barrier indicating an area of construction works."
+	icon_state = "construction1"
+	health = 50
+	maxhealth = 50
+	material_name = "steel"
+	protection_chance = 5
+	opacity = FALSE
+	density = TRUE
+
+/obj/structure/barricade/construction/New()
+	name = "construction barrier"
+	icon_state = "construction1"
+
+/obj/structure/barricade/construction/flashing
+	icon_state = "construction2"
+	light_range = 2
+	light_power = 1
+	light_color = "#9c2154"
+
+/obj/structure/barricade/construction/flashing/New()
+	..()
+	name = "construction barrier"
+	icon_state = "construction2"
+	if (dir == NORTH)
+		pixel_y = 6
+
 /obj/structure/shelf
 	name = "shelf"
 	desc = "A store shelf."

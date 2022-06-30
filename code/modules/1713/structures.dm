@@ -909,3 +909,60 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	mouse_opacity = FALSE
+
+
+///////////////////////CARGO CONTAINERS///////////////////////////
+
+/obj/structure/cargo_container
+	name = "cargo container"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "container1"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 64
+
+/obj/structure/cargo_container/New()
+	var/number = rand(1,5)
+	icon_state = "container[number]"
+
+/////////////////////CONSTRUCTION PROPS///////////////////////
+
+/obj/structure/machinery/water_pump
+	name = "water pump"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "waterpump"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 96
+
+/obj/structure/machinery/construction_crane
+	name = "crane"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "crane"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 64
+	bound_height = 64
+
+/obj/structure/machinery/construction_crane/New()
+	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
+		bound_width = 64
+		bound_height = 64
+	else
+		bound_width = 64
+		bound_height = 64
+
+/obj/structure/machinery/construction_crane/excavator
+	name = "excavator"
+	icon_state = "excavator"
