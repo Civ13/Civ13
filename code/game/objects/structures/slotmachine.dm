@@ -1,5 +1,7 @@
 ///////////////Slot machine//////////////
 
+//Prop object
+
 /obj/structure/props/slot_machine
 	name = "slot machine"
 	desc = "Gambling for the antisocial."
@@ -9,7 +11,7 @@
 	not_disassemblable = FALSE
 	not_disassemblable = FALSE
 
-//Would ideally be ported from /tg/, for now it'll act as prop, here's the "full" code below:
+//For now it'll act as prop, here's the partial /tg/ code below:
 /*
 /*******************************\
 |   Slot Machines |
@@ -21,131 +23,71 @@
 #define SMALL_PRIZE 400
 #define BIG_PRIZE 1000
 #define JACKPOT 10000
-#define SPIN_TIME 65 //As always, deciseconds.
+#define SPIN_TIME 60 // Corresponds to 6 seconds.
 #define REEL_DEACTIVATE_DELAY 7
 #define SEVEN "<font color='red'>7</font>"
-#define HOLOCHIP 1
-#define COIN 2
 
-/obj/machinery/computer/slot_machine
+/obj/machinery/slot_machine
 	name = "slot machine"
 	desc = "Gambling for the antisocial."
-	icon = 'icons/obj/computer.dmi'
+	icon = 'icons/obj.dmi'
 	icon_state = "slots"
 	icon_keyboard = null
 	icon_screen = "slots_screen"
 	density = TRUE
-	circuit = /obj/item/circuitboard/computer/slot_machine
-	light_color = LIGHT_COLOR_BROWN
 	var/money = 3000 //How much money it has CONSUMED
 	var/plays = 0
 	var/working = FALSE
 	var/balance = 0 //How much money is in the machine, ready to be CONSUMED.
 	var/jackpots = 0
-	var/paymode = HOLOCHIP //toggles between HOLOCHIP/COIN, defined above
-	var/cointype = /obj/item/coin/iron //default cointype
 	var/list/coinvalues = list()
 	var/list/reels = list(list("", "", "") = 0, list("", "", "") = 0, list("", "", "") = 0, list("", "", "") = 0, list("", "", "") = 0)
 	var/list/symbols = list(SEVEN = 1, "<font color='orange'>&</font>" = 2, "<font color='yellow'>@</font>" = 2, "<font color='green'>$</font>" = 2, "<font color='blue'>?</font>" = 2, "<font color='grey'>#</font>" = 2, "<font color='white'>!</font>" = 2, "<font color='fuchsia'>%</font>" = 2) //if people are winning too much, multiply every number in this list by 2 and see if they are still winning too much.
 
 
-/obj/machinery/computer/slot_machine/Initialize(mapload)
+/obj/machinery/slot_machine/New()
 	. = ..()
 	jackpots = rand(1, 4) //false hope
 	plays = rand(75, 200)
 
-	INVOKE_ASYNC(src, .proc/toggle_reel_spin, TRUE)//The reels won't spin unless we activate them
-
 	var/list/reel = reels[1]
 	for(var/i in 1 to reel.len) //Populate the reels.
 		randomize_reels()
-
-	INVOKE_ASYNC(src, .proc/toggle_reel_spin, FALSE)
 
 	for(cointype in typesof(/obj/item/coin))
 		var/obj/item/coin/C = new cointype
 		coinvalues["[cointype]"] = C.get_item_credit_value()
 		qdel(C) //Sigh
 
-/obj/machinery/computer/slot_machine/Destroy()
+/obj/machinery/slot_machine/Destroy()
 	if(balance)
 		give_payout(balance)
 	return ..()
 
-/obj/machinery/computer/slot_machine/process(delta_time)
+/obj/machinery/slot_machine/process(delta_time)
 	. = ..() //Sanity checks.
 	if(!.)
 		return .
 
 	money += round(delta_time / 2) //SPESSH MAJICKS
 
-/obj/machinery/computer/slot_machine/update_icon_state()
-	if(machine_stat & BROKEN)
-		icon_state = "slots_broken"
-	else
-		icon_state = "slots"
-	return ..()
 
-/obj/machinery/computer/slot_machine/update_overlays()
+/obj/machinery/slot_machine/update_overlays()
 	if(working)
 		icon_screen = "slots_screen_working"
 	else
 		icon_screen = "slots_screen"
 	return ..()
 
-/obj/machinery/computer/slot_machine/attackby(obj/item/I, mob/living/user, params)
-	if(istype(I, /obj/item/coin))
-		var/obj/item/coin/C = I
-		if(paymode == COIN)
-			if(prob(2))
-				if(!user.transferItemToLoc(C, drop_location(), silent = FALSE))
-					return
-				C.throw_at(user, 3, 10)
-				if(prob(10))
-					balance = max(balance - SPIN_PRICE, 0)
-				to_chat(user, span_warning("[src] spits your coin back out!"))
-
-			else
-				if(!user.temporarilyRemoveItemFromInventory(C))
-					return
-				to_chat(user, span_notice("You insert [C] into [src]'s slot!"))
-				balance += C.value
-				qdel(C)
-		else
-			to_chat(user, span_warning("This machine is only accepting holochips!"))
-	else if(istype(I, /obj/item/holochip))
-		if(paymode == HOLOCHIP)
-			var/obj/item/holochip/H = I
-			if(!user.temporarilyRemoveItemFromInventory(H))
-				return
-			to_chat(user, span_notice("You insert [H.credits] holocredits into [src]'s slot!"))
-			balance += H.credits
-			qdel(H)
-		else
-			to_chat(user, span_warning("This machine is only accepting coins!"))
-	else if(I.tool_behaviour == TOOL_MULTITOOL)
-		if(balance > 0)
-			visible_message("<b>[src]</b> says, 'ERROR! Please empty the machine balance before altering paymode'") //Prevents converting coins into holocredits and vice versa
-		else
-			if(paymode == HOLOCHIP)
-				paymode = COIN
-				visible_message("<b>[src]</b> says, 'This machine now works with COINS!'")
-			else
-				paymode = HOLOCHIP
-				visible_message("<b>[src]</b> says, 'This machine now works with HOLOCHIPS!'")
+/obj/machinery/slot_machine/attackby(obj/item/I, mob/living/user)
+	if(istype(I, /obj/item/stack/money/dollar))
+		to_chat(user, span_notice("You insert [I.value] dollars into [src]'s slot!"))
+		balance += I.value
+		qdel(I)
 	else
 		return ..()
 
-/obj/machinery/computer/slot_machine/emag_act()
-	if(obj_flags & EMAGGED)
-		return
-	obj_flags |= EMAGGED
-	var/datum/effect_system/spark_spread/spark_system = new /datum/effect_system/spark_spread()
-	spark_system.set_up(4, 0, src.loc)
-	spark_system.start()
-	playsound(src, SFX_SPARKS, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
-
-/obj/machinery/computer/slot_machine/ui_interact(mob/living/user)
+/obj/machinery/slot_machine/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	. = ..()
 	var/reeltext = {"<center><font face=\"courier new\">
 	/*****^*****^*****^*****^*****\\<BR>
@@ -160,15 +102,15 @@
 		dat = reeltext
 
 	else
-		dat = {"Five credits to play!<BR>
-		<B>Prize Money Available:</B> [money] (jackpot payout is ALWAYS 100%!)<BR>
-		<B>Credit Remaining:</B> [balance]<BR>
+		dat = {"Five credits to play!<br>
+		<b>Prize Money Available:</b> [money] (jackpot payout is ALWAYS 100%!)<BR>
+		<b>Credit Remaining:</b> [balance]<br>
 		[plays] players have tried their luck today, and [jackpots] have won a jackpot!<BR>
 		<HR><BR>
-		<A href='?src=[REF(src)];spin=1'>Play!</A><BR>
-		<BR>
+		<a href='?src=[REF(src)];spin=1'>Play!</a><br>
+		<br>
 		[reeltext]
-		<BR>"}
+		<br>"}
 		if(balance > 0)
 			dat+="<font size='1'><A href='?src=[REF(src)];refund=1'>Refund balance</A><BR>"
 
@@ -176,7 +118,7 @@
 	popup.set_content(dat)
 	popup.open()
 
-/obj/machinery/computer/slot_machine/Topic(href, href_list)
+/obj/machinery/slot_machine/Topic(href, href_list)
 	. = ..() //Sanity checks.
 	if(.)
 		return .
@@ -189,21 +131,7 @@
 			give_payout(balance)
 			balance = 0
 
-/obj/machinery/computer/slot_machine/emp_act(severity)
-	. = ..()
-	if(machine_stat & (NOPOWER|BROKEN) || . & EMP_PROTECT_SELF)
-		return
-	if(prob(15 * severity))
-		return
-	if(prob(1)) // :^)
-		obj_flags |= EMAGGED
-	var/severity_ascending = 4 - severity
-	money = max(rand(money - (200 * severity_ascending), money + (200 * severity_ascending)), 0)
-	balance = max(rand(balance - (50 * severity_ascending), balance + (50 * severity_ascending)), 0)
-	money -= max(0, give_payout(min(rand(-50, 100 * severity_ascending)), money)) //This starts at -50 because it shouldn't always dispense coins yo
-	spin()
-
-/obj/machinery/computer/slot_machine/proc/spin(mob/user)
+/obj/machinery/slot_machine/proc/spin(mob/user)
 	if(!can_spin(user))
 		return
 
@@ -212,7 +140,7 @@
 		the_name = user.real_name
 		visible_message(span_notice("[user] pulls the lever and the slot machine starts spinning!"))
 	else
-		the_name = "Exaybachay"
+		the_name = "Someone"
 
 	balance -= SPIN_PRICE
 	money += SPIN_PRICE
@@ -220,7 +148,6 @@
 	working = TRUE
 
 	toggle_reel_spin(1)
-	update_appearance()
 	updateDialog()
 
 	var/spin_loop = addtimer(CALLBACK(src, .proc/do_spin), 2, TIMER_LOOP|TIMER_STOPPABLE)
@@ -228,20 +155,20 @@
 	addtimer(CALLBACK(src, .proc/finish_spinning, spin_loop, user, the_name), SPIN_TIME - (REEL_DEACTIVATE_DELAY * reels.len))
 	//WARNING: no sanity checking for user since it's not needed and would complicate things (machine should still spin even if user is gone), be wary of this if you're changing this code.
 
-/obj/machinery/computer/slot_machine/proc/do_spin()
+/obj/machinery/slot_machine/proc/do_spin()
 	randomize_reels()
 	updateDialog()
 	use_power(active_power_usage)
 
-/obj/machinery/computer/slot_machine/proc/finish_spinning(spin_loop, mob/user, the_name)
+/obj/machinery/slot_machine/proc/finish_spinning(spin_loop, mob/user, the_name)
 	toggle_reel_spin(0, REEL_DEACTIVATE_DELAY)
 	working = FALSE
 	deltimer(spin_loop)
 	give_prizes(the_name, user)
-	update_appearance()
+	update_overlays()
 	updateDialog()
 
-/obj/machinery/computer/slot_machine/proc/can_spin(mob/user)
+/obj/machinery/slot_machine/proc/can_spin(mob/user)
 	if(machine_stat & NOPOWER)
 		to_chat(user, span_warning("The slot machine has no power!"))
 		return FALSE
@@ -256,12 +183,12 @@
 		return FALSE
 	return TRUE
 
-/obj/machinery/computer/slot_machine/proc/toggle_reel_spin(value, delay = 0) //value is 1 or 0 aka on or off
+/obj/machinery/slot_machine/proc/toggle_reel_spin(value, delay = 0) //value is 1 or 0 aka on or off
 	for(var/list/reel in reels)
 		reels[reel] = value
 		sleep(delay)
 
-/obj/machinery/computer/slot_machine/proc/randomize_reels()
+/obj/machinery/slot_machine/proc/randomize_reels()
 
 	for(var/reel in reels)
 		if(reels[reel])
@@ -269,7 +196,7 @@
 			reel[2] = reel[1]
 			reel[1] = pick(symbols)
 
-/obj/machinery/computer/slot_machine/proc/give_prizes(usrname, mob/user)
+/obj/machinery/slot_machine/proc/give_prizes(usrname, mob/user)
 	var/linelength = get_lines()
 
 	if(reels[1][2] + reels[2][2] + reels[3][2] + reels[4][2] + reels[5][2] == "[SEVEN][SEVEN][SEVEN][SEVEN][SEVEN]")
@@ -302,7 +229,7 @@
 	else
 		to_chat(user, span_warning("No luck!"))
 
-/obj/machinery/computer/slot_machine/proc/get_lines()
+/obj/machinery/slot_machine/proc/get_lines()
 	var/amountthesame
 
 	for(var/i in 1 to 3)
@@ -321,34 +248,21 @@
 
 	return amountthesame
 
-/obj/machinery/computer/slot_machine/proc/give_money(amount)
+/obj/machinery/slot_machine/proc/give_money(amount)
 	var/amount_to_give = money >= amount ? amount : money
 	var/surplus = amount_to_give - give_payout(amount_to_give)
 	money = max(0, money - amount)
 	balance += surplus
 
-/obj/machinery/computer/slot_machine/proc/give_payout(amount)
-	if(paymode == HOLOCHIP)
-		cointype = /obj/item/holochip
-	else
-		cointype = obj_flags & EMAGGED ? /obj/item/coin/iron : /obj/item/coin/silver
-
-	if(!(obj_flags & EMAGGED))
-		amount = dispense(amount, cointype, null, 0)
-
-	else
-		var/mob/living/target = locate() in range(2, src)
-
-		amount = dispense(amount, cointype, target, 1)
+/obj/machinery/slot_machine/proc/give_payout(amount)
+	var/mob/living/target = locate() in range(2, src)
+	amount = dispense(amount, cointype, target, 1)
 
 	return amount
 
-/obj/machinery/computer/slot_machine/proc/dispense(amount = 0, cointype = /obj/item/coin/silver, mob/living/target, throwit = 0)
+/obj/machinery/slot_machine/proc/dispense(amount = 0, cointype = /obj/item/coin/silver, mob/living/target, throwit = 0)
 	if(paymode == HOLOCHIP)
 		var/obj/item/holochip/H = new /obj/item/holochip(loc,amount)
-
-		if(throwit && target)
-			H.throw_at(target, 3, 10)
 	else
 		var/value = coinvalues["[cointype]"]
 		if(value <= 0)
@@ -356,10 +270,6 @@
 		while(amount >= value)
 			var/obj/item/coin/C = new cointype(loc) //DOUBLE THE PAIN
 			amount -= value
-			if(throwit && target)
-				C.throw_at(target, 3, 10)
-			else
-				random_step(C, 2, 40)
 
 	return amount
 
@@ -369,6 +279,4 @@
 #undef BIG_PRIZE
 #undef SMALL_PRIZE
 #undef SPIN_PRICE
-#undef HOLOCHIP
-#undef COIN
 */
