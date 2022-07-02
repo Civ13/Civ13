@@ -1031,6 +1031,11 @@
 	name = "construction barrier"
 	icon_state = "construction1"
 
+/obj/structure/barricade/construction/corner
+	icon_state = "construction_corner"
+/obj/structure/barricade/construction/corner/New()
+	icon_state = "construction_corner"
+
 /obj/structure/barricade/construction/flashing
 	icon_state = "construction2"
 	light_range = 2
