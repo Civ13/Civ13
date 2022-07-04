@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////Soviet army (1985's)////////////////////////////////////////
 
 /datum/job/russian/coldwar/lieutenant
-	title = "Soviet Army Lieutenant"
+	title = "Soviet Army Lieutenant "
 	rank_abbreviation = "Lt."
 
 	spawn_location = "JoinLateRUCap"
@@ -68,7 +68,7 @@
 	return TRUE
 
 /datum/job/russian/coldwar/sergeant
-	title = "Soviet Army Sergeant"
+	title = "Soviet Army Sergeant "
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRUCap"
@@ -136,7 +136,7 @@
 
 
 /datum/job/russian/coldwar/medic
-	title = "Soviet Army Field Medic"
+	title = "Soviet Army Field Medic "
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
@@ -190,7 +190,7 @@
 	return TRUE
 
 /datum/job/russian/coldwar/radop
-	title = "Soviet Army Radio Operator"
+	title = "Soviet Army Radio Operator "
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
@@ -254,7 +254,7 @@
 	return TRUE
 
 /datum/job/russian/coldwar/soldier
-	title = "Soviet Army Private"
+	title = "Soviet Army Private "
 	rank_abbreviation = "Pvt."
 
 	spawn_location = "JoinLateRU"
@@ -333,7 +333,7 @@
 	return TRUE
 
 /datum/job/russian/coldwar/tanker
-	title = "Soviet Army Tankist"
+	title = "Soviet Army Tankist "
 	rank_abbreviation = "Tanker"
 
 	spawn_location = "JoinLateRU"
@@ -397,7 +397,7 @@
 	return TRUE
 
 /datum/job/russian/coldwar/spez
-	title = "Spetznaz GRU"
+	title = "Spetznaz GRU "
 	rank_abbreviation = "Spz."
 
 	spawn_location = "JoinLateRU"
