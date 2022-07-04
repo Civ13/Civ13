@@ -25,6 +25,7 @@
 	songs = list(
 		"Korobushka:1" = "sound/music/korobushka.ogg")
 	gamemode = "Siege"
+	grace_wall_timer = 4200
 
 obj/map_metadata/sibersyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -40,13 +41,6 @@ obj/map_metadata/sibersyn/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/sibersyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/sibersyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/sibersyn/roundend_condition_def2name(define)
 	..()

@@ -23,18 +23,13 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	gamemode = "King of the Hill"
+	grace_wall_timer = 2400
 /obj/map_metadata/caloocan/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ph_us_war == TRUE)
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/caloocan/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/caloocan/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/caloocan/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

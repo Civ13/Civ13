@@ -5,7 +5,7 @@
 	lobby_icon_state = "sovafghan"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
-	var/victory_time = 24000
+	victory_time = 24000
 
 	faction_organization = list(
 		RUSSIAN,
@@ -26,6 +26,7 @@
 		"Kino - Gruppa Krovi (Blood Group):1" = "sound/music/gruppakrovi.ogg",)
 	gamemode = "Siege"
 	artillery_count = 3
+	grace_wall_timer = 3000
 
 /obj/map_metadata/hill_3234/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -56,11 +57,6 @@
 			J.total_positions = 10
 	else
 		. = FALSE
-
-/obj/map_metadata/hill_3234/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-/obj/map_metadata/hill_3234/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hill_3234/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

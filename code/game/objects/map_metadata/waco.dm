@@ -22,6 +22,7 @@
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The ATF will win if they capture the <b>Davidian leader's rooms inside the compound</b>. The Davidians will win if they manage to defend their home for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = AMERICAN
+	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Mad Man In Waco (David Koresh):1" = "sound/music/mad_man_in_waco.ogg",)
@@ -38,13 +39,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/waco/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/waco/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/waco/roundend_condition_def2name(define)
 	..()

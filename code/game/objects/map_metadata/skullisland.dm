@@ -27,6 +27,7 @@
 	battle_name = "Skull Island"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts. Each team must capture the other's command post to win.</font>"
 	var/done = FALSE
+	grace_wall_timer = 3000
 
 /obj/map_metadata/skullisland/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -42,12 +43,6 @@
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/skullisland/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/skullisland/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/skullisland/tick()
 	..()

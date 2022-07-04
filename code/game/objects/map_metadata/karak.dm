@@ -26,11 +26,7 @@
 	songs = list(
 		"Crusaders:1" = "sound/music/crusaders.ogg")
 	gamemode = "Siege"
-/obj/map_metadata/karak/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/karak/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	grace_wall_timer = 3600
 
 obj/map_metadata/karak/job_enabled_specialcheck(var/datum/job/J)
 	..()

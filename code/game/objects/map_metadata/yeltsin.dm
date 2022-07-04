@@ -24,6 +24,7 @@
 	mission_start_message = ""
 	faction1 = CIVILIAN
 	faction2 = RUSSIAN
+	grace_wall_timer = 6000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Kino - I Want Changes:1" = "sound/music/want_changes.ogg",)
@@ -54,13 +55,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/yeltsin/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/yeltsin/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/yeltsin/roundend_condition_def2name(define)
 	..()

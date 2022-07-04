@@ -398,11 +398,6 @@
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
-/obj/map_metadata/voyage/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/voyage/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/voyage/job_enabled_specialcheck(var/datum/job/J)
 	..()

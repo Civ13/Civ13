@@ -22,6 +22,7 @@
 	faction1 = ROMAN
 	faction2 = GERMAN
 	ambience = list('sound/ambience/jungle1.ogg')
+	grace_wall_timer = 3000
 	songs = list(
 		"Divinitus:1" = "sound/music/divinitus.ogg",)
 obj/map_metadata/teutoburg/job_enabled_specialcheck(var/datum/job/J)
@@ -38,10 +39,5 @@ obj/map_metadata/teutoburg/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 	else
 		. = FALSE
-/obj/map_metadata/teutoburg/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/teutoburg/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 

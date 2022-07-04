@@ -24,6 +24,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	songs = list(
 		"Divinitus:1" = "sound/music/divinitus.ogg",)
+	grace_wall_timer = 3000
 obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/roman))
@@ -33,10 +34,4 @@ obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 	else
 		. = TRUE
-/obj/map_metadata/heraclea/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/heraclea/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 

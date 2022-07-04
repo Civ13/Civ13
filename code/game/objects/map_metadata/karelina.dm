@@ -20,6 +20,7 @@
 	faction1 = FINNISH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
+	grace_wall_timer = 3600
 	songs = list(
 		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 
@@ -29,13 +30,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-
-/obj/map_metadata/karelina/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/karelina/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/karelina/roundend_condition_def2name(define)
 	..()

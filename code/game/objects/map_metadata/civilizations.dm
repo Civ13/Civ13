@@ -55,11 +55,5 @@
 	admin_ended_all_grace_periods = FALSE
 	return
 
-/obj/map_metadata/civilizations/faction2_can_cross_blocks()
-	return (admin_ended_all_grace_periods)
-
-/obj/map_metadata/civilizations/faction1_can_cross_blocks()
-	return (admin_ended_all_grace_periods)
-
 /obj/map_metadata/civilizations/cross_message(faction)
 	return "<big><b>THE GRACE PERIOD HAS ENDED!</b></big>"

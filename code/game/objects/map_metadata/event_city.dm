@@ -5,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	is_singlefaction = TRUE
+	grace_wall_timer = 1200
 
 	no_winner ="The fighting is still going."
 
@@ -29,12 +30,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/event_city/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/event_city/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/event_city/cross_message(faction)
 	if (faction == PIRATES)

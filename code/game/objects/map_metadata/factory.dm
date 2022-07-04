@@ -25,6 +25,7 @@
 	songs = list(
 		"Vopli Vidopliassova - Vesna:1" = "sound/music/vesna.ogg",) //change this eventually to a more war march sounding song and not just a ukrainian rock band
 	artillery_count = 0
+	grace_wall_timer = 3000
 
 /obj/map_metadata/factory/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -58,13 +59,6 @@
 			return "Ukrainian"
 		if ("Russians")
 			return "Russian Federation"
-
-
-/obj/map_metadata/factory/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/factory/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/factory/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))

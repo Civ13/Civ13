@@ -5,8 +5,7 @@
 	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900
-
-
+	grace_wall_timer = 3000
 	faction_organization = list(
 		BRITISH,
 		INDIANS)
@@ -40,9 +39,4 @@ obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = FALSE
 
-/obj/map_metadata/supply_raid/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/supply_raid/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 

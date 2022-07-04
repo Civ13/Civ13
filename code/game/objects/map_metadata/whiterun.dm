@@ -26,13 +26,8 @@
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
 		"One They Fear:1" = "sound/music/tesonetheyfear.ogg",)
-
 	gamemode = "Siege"
-/obj/map_metadata/whiterun/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/whiterun/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	grace_wall_timer = 3600
 
 obj/map_metadata/whiterun/job_enabled_specialcheck(var/datum/job/J)
 	..()

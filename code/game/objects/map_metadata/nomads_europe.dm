@@ -34,12 +34,6 @@
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_europe/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_europe/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
 /obj/map_metadata/nomads_europe/cross_message(faction)
 	return ""
 

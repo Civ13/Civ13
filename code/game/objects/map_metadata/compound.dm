@@ -27,6 +27,7 @@
 	songs = list(
 		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
 	artillery_count = 3
+	grace_wall_timer = 3000
 
 obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -45,12 +46,6 @@ obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/compound/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
-
-/obj/map_metadata/compound/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/compound/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/compound/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))

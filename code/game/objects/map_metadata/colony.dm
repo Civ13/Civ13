@@ -31,7 +31,7 @@
 		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Colony Building RP"
 	is_RP = TRUE
-
+	grace_wall_timer = 15000
 /obj/map_metadata/colony/New()
 	..()
 	spawn(18000)
@@ -43,12 +43,6 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/colony/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/colony/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/colony/cross_message(faction)
 	return ""

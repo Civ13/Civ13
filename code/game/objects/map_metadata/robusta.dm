@@ -25,6 +25,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = PORTUGUESE
 	faction2 = SPANISH
+	grace_wall_timer = 7200
 
 obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -43,11 +44,6 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = TRUE
 	return .
-/obj/map_metadata/robusta/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 7200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/robusta/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 7200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/robusta/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"

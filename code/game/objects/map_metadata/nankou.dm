@@ -24,6 +24,7 @@
 	songs = list(
 		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
 	is_singlefaction = TRUE
+	grace_wall_timer = 3000
 
 /obj/map_metadata/nankou/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -35,13 +36,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/nankou/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nankou/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/nankou/roundend_condition_def2name(define)
 	..()

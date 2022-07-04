@@ -129,9 +129,6 @@
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/football/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"

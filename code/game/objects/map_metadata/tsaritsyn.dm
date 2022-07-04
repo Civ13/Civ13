@@ -24,6 +24,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	ordinal_age = 5
+	grace_wall_timer = 4200
 	songs = list(
 		"Korobushka:1" = "sound/music/korobushka.ogg")
 	gamemode = "Siege"
@@ -42,13 +43,6 @@ obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/tsaritsyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/tsaritsyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/tsaritsyn/roundend_condition_def2name(define)
 	..()

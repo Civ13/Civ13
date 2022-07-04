@@ -38,6 +38,7 @@
 	var/sov_points = 0
 	var/a1_control = "none"
 	var/a2_control = "none"
+	grace_wall_timer = 2400
 
 /obj/map_metadata/capitol_hill/New()
 	..()
@@ -60,12 +61,6 @@
 			. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/capitol_hill/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/capitol_hill/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/capitol_hill/roundend_condition_def2name(define)

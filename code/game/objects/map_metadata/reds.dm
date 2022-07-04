@@ -5,7 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE
-	var/victory_time = 36000
+	victory_time = 36000
 
 	faction_organization = list(
 		AMERICAN,
@@ -26,6 +26,7 @@
 	songs = list(
 		"Over There!:1" = "sound/music/overthere.ogg",)
 	gamemode = "Siege"
+	grace_wall_timer = 2400
 /obj/map_metadata/reds/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_reds)
@@ -35,11 +36,6 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/reds/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/reds/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/reds/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

@@ -36,6 +36,7 @@
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
 	var/maxpoints = 4000
+	grace_wall_timer = 3000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
 
@@ -151,12 +152,6 @@
 				. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/art_of_the_deal/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/art_of_the_deal/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)

@@ -25,6 +25,7 @@
 	songs = list(
 		"Battle of Heroes (Galactic Battles):1" = "sound/music/battle_of_heroes.ogg",)
 	gamemode = "Siege"
+	grace_wall_timer = 2400
 /obj/map_metadata/tantiveiv/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/american))
@@ -37,12 +38,6 @@
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/tantiveiv/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/tantiveiv/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/tantiveiv/roundend_condition_def2name(define)

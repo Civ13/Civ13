@@ -24,11 +24,7 @@
 	songs = list(
 		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg")
 	gamemode = "King of the Hill"
-/obj/map_metadata/hotel/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/hotel/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+	grace_wall_timer = 1800
 
 /obj/map_metadata/hotel/job_enabled_specialcheck(var/datum/job/J)
 	..()

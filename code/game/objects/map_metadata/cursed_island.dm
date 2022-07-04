@@ -26,6 +26,7 @@
 	songs = list(
 		"Words Trough the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	gamemode = "Player vs NPCs"
+	grace_wall_timer = 1200
 
 /obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -36,12 +37,6 @@
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/cursed_island/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/cursed_island/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/cursed_island/cross_message(faction)
 	return ""

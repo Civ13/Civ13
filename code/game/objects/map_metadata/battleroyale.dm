@@ -25,6 +25,7 @@
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 6
+	grace_wall_timer = 1200
 	var/list/closed_areas = list()
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
@@ -50,12 +51,6 @@
 	else
 		. = FALSE
 	return .
-
-/obj/map_metadata/battleroyale/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/battleroyale/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/battleroyale/cross_message(faction)
 	if (faction == PIRATES)

@@ -4,7 +4,7 @@
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
-	var/victory_time = 15000
+	victory_time = 15000
 	no_winner = "No faction controls the Castle."
 
 	faction_organization = list(
@@ -26,6 +26,7 @@
 	faction2 = FRENCH
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "King of the Hill"
+	grace_wall_timer = 2400
 obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_medieval == TRUE)
@@ -34,12 +35,6 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	if (J.is_crusader == TRUE)
 		. = FALSE
-
-/obj/map_metadata/camp/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/camp/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/camp/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

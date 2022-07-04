@@ -27,6 +27,7 @@
 		"Blade and Dagger:1" = "sound/music/blade_and_dagger.ogg",)
 	gamemode = "Survival RP"
 	is_RP = TRUE
+	grace_wall_timer = 15000
 
 /obj/map_metadata/hunt/New()
 	..()
@@ -52,11 +53,6 @@ obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		if (J.is_warlords)
 			. = FALSE
-/obj/map_metadata/hunt/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/hunt/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hunt/cross_message(faction)
 	return "The gracewall is now removed."

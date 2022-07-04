@@ -21,6 +21,7 @@
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The Soviets will win if they hold out for <b>30 minutes</b>. The Germans will win if they manage to reach the <b>Radio Station</b> in the building.</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
+	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
@@ -42,13 +43,6 @@
 		. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/pavlov_house/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/pavlov_house/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/pavlov_house/roundend_condition_def2name(define)
 	..()

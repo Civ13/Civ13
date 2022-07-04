@@ -27,6 +27,7 @@
 	songs = list(
 		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Pioneer Building RP"
+	grace_wall_timer = 15000
 
 
 /obj/map_metadata/pioneers/New()
@@ -51,12 +52,6 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/pioneers/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/pioneers/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/pioneers/cross_message(faction)
 	return ""

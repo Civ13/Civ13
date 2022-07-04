@@ -24,18 +24,13 @@
 	faction2 = DUTCH
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "Siege"
+	grace_wall_timer = 6000
 obj/map_metadata/recife/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_army == TRUE)
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/recife/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/recife/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
 
 var/no_loop = FALSE
 

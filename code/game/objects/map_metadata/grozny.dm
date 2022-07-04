@@ -25,6 +25,7 @@
 	artillery_count = 3 //they really need it to get anywhere, but now it's some OP shit
 	artillery_timer = 2400 //and they need it just slightly quicker. It's artillery supposedly, not CAS.
 	valid_artillery = list("Explosive","Napalm","Creeping Barrage")
+	grace_wall_timer = 4800
 /obj/map_metadata/grozny/New()
 	..()
 	spawn(20)
@@ -46,13 +47,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/grozny/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/grozny/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/grozny/roundend_condition_def2name(define)
 	..()

@@ -24,6 +24,7 @@
 	songs = list(
 		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
 	artillery_count = 5
+	grace_wall_timer = 4800
 
 /obj/map_metadata/retreat/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -37,13 +38,6 @@
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/retreat/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/retreat/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/retreat/roundend_condition_def2name(define)
 	..()

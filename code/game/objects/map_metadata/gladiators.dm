@@ -41,11 +41,6 @@ K
 			. = TRUE
 		else
 			. = FALSE
-/obj/map_metadata/gladiators/faction2_can_cross_blocks()
-	return (1)
-
-/obj/map_metadata/gladiators/faction1_can_cross_blocks()
-	return (1)
 
 /obj/map_metadata/gladiators/cross_message(faction)
 	return ""

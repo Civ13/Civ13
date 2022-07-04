@@ -20,6 +20,7 @@
 	songs = list(
 		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	is_singlefaction = TRUE
+	grace_wall_timer = 1200
 	scores = list(
 		"Eastern Army" = 0,
 		"Western Army" = 0,
@@ -34,9 +35,6 @@
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/sekigahara/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/sekigahara/proc/points_check()
 	world << "<big><b>Current Points:</big></b>"
@@ -70,9 +68,6 @@
 			return FALSE
 		last_win_condition = win_condition.hash
 		return TRUE
-
-/obj/map_metadata/sekigahara/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/sekigahara/cross_message(faction)
 	return "<font size = 4>The grace wall is lifted!</font>"

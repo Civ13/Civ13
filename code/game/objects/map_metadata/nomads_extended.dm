@@ -35,6 +35,7 @@
 	age5_done = TRUE
 	research_active = FALSE
 	default_research = 135
+	grace_wall_timer = 24000
 
 	var/oiltarget = 3000
 /obj/map_metadata/nomads_extended/New()
@@ -58,11 +59,6 @@
 
 	spawn(1200)
 		check_oil()
-/obj/map_metadata/nomads_extended/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_extended/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_extended/cross_message(faction)
 	return "<b><big>The grace wall is lifted!</big></b>"

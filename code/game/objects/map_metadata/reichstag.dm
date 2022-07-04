@@ -23,6 +23,7 @@
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
+	grace_wall_timer = 6000
 	songs = list(
 		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
@@ -44,13 +45,6 @@ obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/reichstag/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/reichstag/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/reichstag/roundend_condition_def2name(define)
 	..()

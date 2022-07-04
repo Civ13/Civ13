@@ -28,6 +28,7 @@
 	civilizations = TRUE
 	is_RP = TRUE
 	force_mapgen = TRUE
+	grace_wall_timer = 1500
 	songs = list(
 		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	gamemode = "Faction-Based RP"

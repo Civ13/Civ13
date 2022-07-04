@@ -27,16 +27,12 @@
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
+	grace_wall_timer = 18000
+
 /obj/map_metadata/nomads_karafuto/New()
 	..()
 	spawn(18000)
 		seasons()
-
-/obj/map_metadata/nomads_karafuto/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_karafuto/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_karafuto/cross_message(faction)
 	return "The nomads may now cross the waterway!"

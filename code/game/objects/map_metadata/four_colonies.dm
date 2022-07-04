@@ -32,6 +32,7 @@
 		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Faction-Based RP"
 	is_RP = TRUE
+	grace_wall_timer = 18000
 
 	New()
 		..()
@@ -57,11 +58,6 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/four_colonies/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/four_colonies/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/four_colonies/cross_message(faction)
 	return ""

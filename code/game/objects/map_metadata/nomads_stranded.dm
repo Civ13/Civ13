@@ -47,11 +47,6 @@
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_stranded/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_stranded/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_stranded/cross_message(faction)
 	return ""

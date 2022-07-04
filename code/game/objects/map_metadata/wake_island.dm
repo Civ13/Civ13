@@ -31,6 +31,7 @@
 	var/a1_control = "none"
 	var/a2_control = "none"
 	var/a3_control = "none"
+	grace_wall_timer = 3000
 /obj/map_metadata/wake_island/New()
 	..()
 	spawn(3000)
@@ -52,13 +53,6 @@
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/wake_island/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/wake_island/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/wake_island/roundend_condition_def2name(define)
 	..()

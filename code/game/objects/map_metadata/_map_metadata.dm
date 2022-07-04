@@ -23,6 +23,8 @@ var/civmax_research = list(230,230,230)
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
 
+	var/victory_time = 36000
+	var/grace_wall_timer = 0
 //faction stuff
 	var/faction1 = BRITISH
 	var/faction2 = PIRATES
@@ -591,11 +593,12 @@ var/civmax_research = list(230,230,230)
 				return !faction2_can_cross_blocks()
 	return FALSE
 
-/obj/map_metadata/proc/faction1_can_cross_blocks()
-	return TRUE
-
 /obj/map_metadata/proc/faction2_can_cross_blocks()
-	return TRUE
+	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)
+
+/obj/map_metadata/proc/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)
+
 
 /obj/map_metadata/proc/specialfaction_can_cross_blocks()
 	return TRUE

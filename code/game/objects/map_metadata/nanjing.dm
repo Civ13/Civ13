@@ -23,6 +23,7 @@
 	faction1 = CHINESE
 	faction2 = JAPANESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
+	grace_wall_timer = 4800
 	songs = list(
 		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
 
@@ -36,13 +37,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/nanjing/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nanjing/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/nanjing/roundend_condition_def2name(define)
 	..()

@@ -36,6 +36,7 @@
 	is_RP = TRUE
 	var/gracedown1 = TRUE
 	var/siren = FALSE
+	grace_wall_timer = 2400
 obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))
@@ -54,12 +55,6 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/gulag13/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/gulag13/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/gulag13/roundend_condition_def2name(define)
 	..()

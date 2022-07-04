@@ -16,6 +16,7 @@
 		)
 	age = "1899"
 	ordinal_age = 5
+	grace_wall_timer = 3000
 	faction_distribution_coeffs = list(AMERICAN = 0.5, FILIPINO = 0.5)
 	battle_name = "Santo Tomas"
 	mission_start_message = "<font size=4>The <b>Filipino</b> and <b>American</b> armies are facing each other by Santo Tomas! The each side needs to capture each others' bases! It will start in <b>5 minutes</b></font>"
@@ -29,11 +30,6 @@
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/santo_tomas/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/santo_tomas/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/santo_tomas/cross_message(faction)
 	if (faction == AMERICAN)

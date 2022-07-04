@@ -22,6 +22,7 @@
 	faction1 = BRITISH
 	faction2 = FRENCH
 	ambience = list('sound/ambience/jungle1.ogg')
+	grace_wall_timer = 3000
 
 obj/map_metadata/fields/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -29,12 +30,6 @@ obj/map_metadata/fields/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/fields/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/fields/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/fields/bridge
 	ID = MAP_BRIDGE

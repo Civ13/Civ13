@@ -21,6 +21,7 @@
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese Army will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture Japanese Command within Mount Suribachi!</font>"
 	faction1 = JAPANESE
 	faction2 = AMERICAN
+	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Over There!:1" = "sound/music/overthere.ogg",)
@@ -33,13 +34,6 @@
 		. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/iwojima/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/iwojima/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/iwojima/roundend_condition_def2name(define)
 	..()

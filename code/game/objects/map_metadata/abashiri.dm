@@ -55,9 +55,6 @@
 /obj/map_metadata/abashiri/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/abashiri/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
 /obj/map_metadata/abashiri/roundend_condition_def2name(define)
 	..()
 	switch (define)
