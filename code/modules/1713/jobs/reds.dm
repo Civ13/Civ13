@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////Soviet army (1985's)////////////////////////////////////////
 
-/datum/job/russian/sovafghan/lieutenant
+/datum/job/russian/coldwar/lieutenant
 	title = "Soviet Army Lieutenant"
 	rank_abbreviation = "Lt."
 
@@ -14,7 +14,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/russian/sovafghan/lieutenant/equip(var/mob/living/human/H)
+/datum/job/russian/coldwar/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
@@ -67,7 +67,7 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-/datum/job/russian/sovafghan/sergeant
+/datum/job/russian/coldwar/sergeant
 	title = "Soviet Army Sergeant"
 	rank_abbreviation = "Sgt."
 
@@ -80,7 +80,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/russian/sovafghan/sergeant/equip(var/mob/living/human/H)
+/datum/job/russian/coldwar/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -135,7 +135,7 @@
 	return TRUE
 
 
-/datum/job/russian/sovafghan/medic
+/datum/job/russian/coldwar/medic
 	title = "Soviet Army Field Medic"
 	rank_abbreviation = "Efr."
 
@@ -147,7 +147,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/russian/sovafghan/medic/equip(var/mob/living/human/H)
+/datum/job/russian/coldwar/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -189,7 +189,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/sovafghan/radop
+/datum/job/russian/coldwar/radop
 	title = "Soviet Army Radio Operator"
 	rank_abbreviation = "Efr."
 
@@ -201,7 +201,7 @@
 	min_positions = 10
 	max_positions = 8
 
-/datum/job/russian/sovafghan/radop/equip(var/mob/living/human/H)
+/datum/job/russian/coldwar/radop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -253,7 +253,7 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-/datum/job/russian/sovafghan/soldier
+/datum/job/russian/coldwar/soldier
 	title = "Soviet Army Private"
 	rank_abbreviation = "Pvt."
 
@@ -264,7 +264,7 @@
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/russian/sovafghan/soldier/equip(var/mob/living/human/H)
+/datum/job/russian/coldwar/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -332,7 +332,7 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-/datum/job/russian/sovafghan/tanker
+/datum/job/russian/coldwar/tanker
 	title = "Soviet Army Tankist"
 	rank_abbreviation = "Tanker"
 
@@ -344,7 +344,7 @@
 	min_positions = 10
 	max_positions = 18
 
-/datum/job/russian/sovafghan/tanker/equip(var/mob/living/human/H)
+/datum/job/russian/coldwar/tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -396,7 +396,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/sovafghan/spez
+/datum/job/russian/coldwar/spez
 	title = "Spetznaz GRU"
 	rank_abbreviation = "Spz."
 
@@ -408,7 +408,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/russian/sovafghan/spez/equip(var/mob/living/human/H)
+/datum/job/russian/coldwar/spez/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
