@@ -117,6 +117,16 @@
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK+1
 	flammable = TRUE
+/obj/item/weapon/melee/knuckle_duster
+	name = "knuckle duster"
+	desc = "A peice of metal that fits around your hand. Could break some teeth."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "knuckle_duster"
+	item_state = "knuckle_duster"
+	slot_flags = SLOT_POCKET
+	force = WEAPON_FORCE_PAINFUL
+	flammable = FALSE
+	weakens = FALSE
 
 /obj/item/weapon/melee/baseball_bat
 	name = "wooden baseball bat"
