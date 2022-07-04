@@ -5,7 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE
-	victory_time = 36000
+	var/victory_time = 36000
 
 	faction_organization = list(
 		AMERICAN,
@@ -17,7 +17,7 @@
 		)
 	age = "1985"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(RUSSIAN = 0.3, AMERICAN = 0.7)
+	faction_distribution_coeffs = list(RUSSIAN = 0.4, AMERICAN = 0.6)
 	battle_name = "Battle for America"
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>1 hour</b>. The Soviets will win if they manage to capture the City Hall!</font>"
 	faction1 = AMERICAN
@@ -26,7 +26,6 @@
 	songs = list(
 		"Over There!:1" = "sound/music/overthere.ogg",)
 	gamemode = "Siege"
-	grace_wall_timer = 2400
 /obj/map_metadata/reds/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_reds)
@@ -36,6 +35,11 @@
 	else
 		. = FALSE
 
+/obj/map_metadata/reds/faction2_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/reds/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/reds/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -77,7 +81,7 @@
 	if (faction == RUSSIAN)
 		return "<font size = 4>The Soviets may now cross the invisible wall!</font>"
 	else if (faction == AMERICAN)
-		return ""
+		return "<font size = 4>The Americans may now cross the invisible wall!</font>"
 	else
 		return ""
 
