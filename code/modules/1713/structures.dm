@@ -208,6 +208,18 @@
 	opacity = FALSE
 	anchored = TRUE
 
+/obj/structure/props/djtable
+	name = "dj table"
+	desc = "A dj table."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "djtable"
+	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
 /obj/structure/props/coatrack
 	name = "coat rack"
 	desc = "A coat rack."
@@ -272,6 +284,17 @@
 	var/pickhookah = pick("hookah1", "hookah2", "hookah3")
 	icon_state = pickhookah
 
+/obj/structure/props/bong
+	name = "bong"
+	desc = "A glass pipe used to smoke cannabis or other substances."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "bong"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+
 /obj/structure/broken_hind
 	name = "Mi-24 remains"
 	desc = "The remains of a Soviet helicopter."
@@ -301,6 +324,42 @@
 	New()
 		..()
 		icon_state ="propstall[rand(1,4)]"
+
+/obj/structure/props/keyboard
+	name = "eletric keyboard"
+	desc = "A electric keyboard."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "keyboard"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+
+/obj/structure/props/dj
+	name = "dj table"
+	desc = "A dj setup for makin sick beats."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "djtable"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+
+/obj/structure/props/micstand
+	name = "microphone stand"
+	desc = "A mic stand."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "microphone_stand"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
