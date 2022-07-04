@@ -112,6 +112,10 @@
 	desc = "The Irish Republic flag."
 	icon_state = "flag_ireland"
 
+/obj/structure/sign/flag/gadsen
+	name = "\improper Gadsen flag"
+	desc = "The classic Gadsen flag."
+	icon_state = "flag_gadsen"
 /obj/structure/sign/clock
 	name = "\improper clock"
 	desc = "A clock."
