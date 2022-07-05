@@ -1,7 +1,7 @@
 /obj/map_metadata/reds
 	ID = MAP_REDS
 	title = "Filthy Reds"
-	lobby_icon = "icons/lobby/modern.png"
+	lobby_icon = "icons/lobby/redmenace.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -17,46 +17,49 @@
 		)
 	age = "1985"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(RUSSIAN = 0.3, AMERICAN = 0.7)
+	faction_distribution_coeffs = list(RUSSIAN = 0.4, AMERICAN = 0.6)
 	battle_name = "Battle for America"
-	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>1 hour</b>. The Soviets will win if they manage to capture the City Hall!</font>"
+	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>1 hour</b>.<br>The Soviets will win if they manage to capture the City Hall!<br>Capture point is on the 2nd floor.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Over There!:1" = "sound/music/overthere.ogg",)
 	gamemode = "Siege"
-	grace_wall_timer = 2400
-/obj/map_metadata/reds/job_enabled_specialcheck(var/datum/job/J)
+
+/obj/map_metadata/red_menace/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_reds)
 		. = TRUE
-		if (J.title == "American Civilian")
-			. = TRUE
 	else
 		. = FALSE
 
+/obj/map_metadata/red_menace/faction2_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/reds/short_win_time(faction)
+/obj/map_metadata/red_menace/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/red_menace/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
 		return 3000 // 5 minutes
 
-/obj/map_metadata/reds/long_win_time(faction)
+/obj/map_metadata/red_menace/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
 		return 3000 // 5 minutes
 
-/obj/map_metadata/reds/roundend_condition_def2name(define)
+/obj/map_metadata/red_menace/roundend_condition_def2name(define)
 	..()
 	switch (define)
 		if (AMERICAN)
 			return "American"
 		if (RUSSIAN)
 			return "Soviet"
-/obj/map_metadata/reds/roundend_condition_def2army(define)
+/obj/map_metadata/red_menace/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (AMERICAN)
@@ -64,7 +67,7 @@
 		if (RUSSIAN)
 			return "Soviet"
 
-/obj/map_metadata/reds/army2name(army)
+/obj/map_metadata/red_menace/army2name(army)
 	..()
 	switch (army)
 		if ("AMERICAN")
@@ -73,15 +76,15 @@
 			return "Soviet"
 
 
-/obj/map_metadata/reds/cross_message(faction)
+/obj/map_metadata/red_menace/cross_message(faction)
 	if (faction == RUSSIAN)
 		return "<font size = 4>The Soviets may now cross the invisible wall!</font>"
 	else if (faction == AMERICAN)
-		return ""
+		return "<font size = 4>The Americans may now cross the invisible wall!</font>"
 	else
 		return ""
 
-/obj/map_metadata/reds/reverse_cross_message(faction)
+/obj/map_metadata/red_menace/reverse_cross_message(faction)
 	if (faction == RUSSIAN)
 		return "<span class = 'userdanger'>The Soviets may no longer cross the invisible wall!</span>"
 	else if (faction == AMERICAN)
@@ -90,7 +93,7 @@
 		return ""
 
 
-/obj/map_metadata/reds/update_win_condition()
+/obj/map_metadata/red_menace/update_win_condition()
 
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
@@ -155,3 +158,18 @@
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+/obj/map_metadata/red_menace/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE

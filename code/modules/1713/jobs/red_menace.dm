@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////Soviet army (1985's)////////////////////////////////////////
 
 /datum/job/russian/coldwar/lieutenant
-	title = "Soviet Army Lieutenant "
+	title = "Soviet Armed Forces Lieutenant"
 	rank_abbreviation = "Lt."
 
 	spawn_location = "JoinLateRUCap"
@@ -10,7 +10,9 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_reds = TRUE
-	
+	is_coldwar = TRUE
+	can_get_coordinates = TRUE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -47,7 +49,7 @@
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
-	H.civilization = "Soviet Army"
+	H.civilization = "Soviet Armed Forces"
 	give_random_name(H)
 
 	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
@@ -68,7 +70,7 @@
 	return TRUE
 
 /datum/job/russian/coldwar/sergeant
-	title = "Soviet Army Sergeant "
+	title = "Soviet Armed Forces Sergeant"
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRUCap"
@@ -76,7 +78,9 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_reds = TRUE
-	
+	is_coldwar = TRUE
+	can_get_coordinates = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -115,7 +119,7 @@
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
 
-	H.civilization = "Soviet Army"
+	H.civilization = "Soviet Armed Forces"
 	give_random_name(H)
 	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
 		H.f_style = pick("Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Shaved")
@@ -136,16 +140,17 @@
 
 
 /datum/job/russian/coldwar/medic
-	title = "Soviet Army Field Medic "
+	title = "Soviet Armed Forces Field Medic"
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
 
 	is_medic = TRUE
+	is_coldwar = TRUE
 	is_reds = TRUE
-	
+
 	min_positions = 2
-	max_positions = 8
+	max_positions = 10
 
 /datum/job/russian/coldwar/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -174,7 +179,7 @@
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
-	H.civilization = "Soviet Army"
+	H.civilization = "Soviet Armed Forces"
 	give_random_name(H)
 	H.s_tone = rand(-40,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow comrades alive and healthy!")
@@ -190,16 +195,17 @@
 	return TRUE
 
 /datum/job/russian/coldwar/radop
-	title = "Soviet Army Radio Operator "
+	title = "Soviet Armed Forces Radio Operator"
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
 	is_radioman = TRUE
 	is_reds = TRUE
+	is_coldwar = TRUE
 
-	min_positions = 10
-	max_positions = 8
+	min_positions = 1
+	max_positions = 10
 
 /datum/job/russian/coldwar/radop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -234,7 +240,7 @@
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
-	H.civilization = "Soviet Army"
+	H.civilization = "Soviet Armed Forces"
 	give_random_name(H)
 	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
 		H.f_style = pick("Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Shaved")
@@ -254,15 +260,15 @@
 	return TRUE
 
 /datum/job/russian/coldwar/soldier
-	title = "Soviet Army Private "
-	rank_abbreviation = "Pvt."
+	title = "Soviet Armed Forces Private"
+	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
 	is_reds = TRUE
-	
-	min_positions = 10
-	max_positions = 100
+
+	min_positions = 1
+	max_positions = 200
 
 /datum/job/russian/coldwar/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -333,15 +339,15 @@
 	return TRUE
 
 /datum/job/russian/coldwar/tanker
-	title = "Soviet Army Tankist "
-	rank_abbreviation = "Tanker"
+	title = "Soviet Armed Forces Tanker"
+	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
 
 	uses_squads = TRUE
 	is_reds = TRUE
-	
-	min_positions = 10
+
+	min_positions = 1
 	max_positions = 18
 
 /datum/job/russian/coldwar/tanker/equip(var/mob/living/human/H)
@@ -397,7 +403,7 @@
 	return TRUE
 
 /datum/job/russian/coldwar/spez
-	title = "Spetznaz GRU "
+	title = "Spetsnaz GRU "
 	rank_abbreviation = "Spz."
 
 	spawn_location = "JoinLateRU"
@@ -406,7 +412,7 @@
 	uses_squads = TRUE
 
 	min_positions = 1
-	max_positions = 5
+	max_positions = 10
 
 /datum/job/russian/coldwar/spez/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -436,7 +442,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
-	H.civilization = "Soviet Army"
+	H.civilization = "Soviet Armed Forces"
 	give_random_name(H)
 	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
 		H.f_style = pick("Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Shaved")
@@ -460,12 +466,12 @@
 /datum/job/american/modernciv
 	title = "American Civilian"
 	rank_abbreviation = ""
-	
+
 	spawn_location = "JoinLateRN"
 
 	can_be_female = TRUE
 	is_reds = TRUE
-	
+
 	min_positions = 1
 	max_positions = 1000
 
@@ -474,29 +480,31 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 //clothes
-	var/pickuni = rand(1,5)
-	if (pickuni == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
-	if (pickuni == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
-	if (pickuni == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
-	if (pickuni == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern4(H), slot_w_uniform)
-	if (pickuni == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern7(H), slot_w_uniform)
-	if (pickuni == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-	if (pickuni == 7)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+	var/pickuni = rand(1,7)
+	switch(pickuni)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern4(H), slot_w_uniform)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern7(H), slot_w_uniform)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 	H.add_note("Role", "You are a proud American citizen! Defend against the Red Menace!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_HIGH)
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	give_random_name(H)
 	return TRUE

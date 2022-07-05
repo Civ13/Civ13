@@ -120,6 +120,21 @@
 /obj/structure/bed/chair/comfy/lime/New(var/newloc,var/newmaterial)
 	..(newloc,"steel","lime")
 
+/obj/structure/bed/chair/comfy/fancy_sofa
+	name = "fancy sofa"
+	desc = "A nice leather sofa."
+	base_icon = "fancysofa_l"
+	icon_state = "fancysofa_l"
+	applies_material_colour = FALSE
+	material = "leather"
+/obj/structure/bed/chair/comfy/fancy_sofa/l
+	icon_state = "fancysofa_l"
+	applies_material_colour = FALSE
+	base_icon = "fancysofa_l"
+/obj/structure/bed/chair/comfy/fancy_sofa/r
+	icon_state = "fancysofa_r"
+	applies_material_colour = FALSE
+	base_icon = "fancysofa_r"
 
 /obj/structure/bed/chair/office
 	anchored = FALSE

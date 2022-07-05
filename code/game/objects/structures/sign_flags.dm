@@ -532,7 +532,7 @@
 /obj/structure/sign/flag/colombia/farc
 	name = "FARC flag"
 	desc = "The flag of the Revolutionary Armed Forces of Columbia."
-	icon_state = "flag_colombia"
+	icon_state = "flag_colombia_farc"
 
 /obj/structure/sign/flag/mexico
 	name = "Mexican flag"
@@ -692,7 +692,7 @@
 /obj/structure/sign/flag/romania/socialist
 	name = "RSR flag"
 	desc = "The flag of the Socialist Republic of Romania."
-	icon_state = "flag_romania"
+	icon_state = "flag_romania_soc"
 
 /obj/structure/sign/flag/moldova
 	name = "Moldovan flag"
