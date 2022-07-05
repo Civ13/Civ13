@@ -492,7 +492,7 @@
 #include "code\game\objects\map_metadata\pioneers.dm"
 #include "code\game\objects\map_metadata\port_arthur.dm"
 #include "code\game\objects\map_metadata\recife.dm"
-#include "code\game\objects\map_metadata\reds.dm"
+#include "code\game\objects\map_metadata\red_menace.dm"
 #include "code\game\objects\map_metadata\reichflakturm.dm"
 #include "code\game\objects\map_metadata\reichstag.dm"
 #include "code\game\objects\map_metadata\retreat.dm"
@@ -733,7 +733,7 @@
 #include "code\modules\1713\jobs\pirates.dm"
 #include "code\modules\1713\jobs\portuguese.dm"
 #include "code\modules\1713\jobs\prison.dm"
-#include "code\modules\1713\jobs\reds.dm"
+#include "code\modules\1713\jobs\red_menace.dm"
 #include "code\modules\1713\jobs\russian.dm"
 #include "code\modules\1713\jobs\russoukrainewar.dm"
 #include "code\modules\1713\jobs\samurai.dm"
@@ -1056,6 +1056,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\reds.dmm"
+#include "maps\WIP\red_menace.dmm"
 // END_INCLUDE
 
