@@ -1,5 +1,5 @@
 /obj/map_metadata/reds
-	ID = MAP_REDS
+	ID = MAP_RED_MENACE
 	title = "Filthy Reds"
 	lobby_icon = "icons/lobby/redmenace.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
