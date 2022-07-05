@@ -451,6 +451,12 @@
 			VERY_LONG_RANGE_MOVING = 23),
 	)
 
+/obj/item/weapon/gun/projectile/submachinegun/ak47/gold
+	name = "gold-plated AKM"
+	desc = "Iconic Soviet assault rifle, chambered in 7.62x39mm. This one is plated in gold. It looks very expensive."
+	icon_state = "ak47gold"
+	item_state = "ak47gold"
+	base_icon = "ak47gold"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
