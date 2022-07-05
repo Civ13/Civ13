@@ -1,7 +1,7 @@
 /obj/map_metadata/rizal_stadium
 	ID = MAP_RIZAL_STADIUM
 	title = "Rizal Stadium"
-	lobby_icon_state = "pacific"
+	lobby_icon = "icons/lobby/pacific.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 

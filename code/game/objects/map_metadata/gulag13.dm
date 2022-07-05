@@ -3,7 +3,7 @@
 	ID = MAP_GULAG13
 	title = "GULAG 13"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "gulag"
+	lobby_icon = "icons/lobby/gulag.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3600
 	has_hunger = TRUE

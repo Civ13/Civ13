@@ -12,7 +12,7 @@ var/civmax_research = list(230,230,230)
 	var/ID = null // MUST be text, or aspects will break
 	var/no_winner = "Neither side has captured the other side's base."
 	var/title = null
-	var/lobby_icon_state = "civ13"
+	var/lobby_icon = "icons/lobby/civ13.gif"
 	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]

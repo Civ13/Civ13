@@ -2,7 +2,7 @@
 	ID = MAP_FOUR_KINGDOMS
 	title = "Four Kingdoms"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "fantasy"
+	lobby_icon = "icons/lobby/fantasy.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/temperate,/area/caribbean/no_mans_land/invisible_wall/desert,/area/caribbean/no_mans_land/invisible_wall/semiarid,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3600 // 6 minutes!
 	force_mapgen = TRUE

@@ -3,7 +3,7 @@
 	ID = MAP_JUNGLE_COLONY
 	title = "Jungle Colony"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	has_hunger = TRUE

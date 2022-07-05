@@ -1,7 +1,7 @@
 /obj/map_metadata/waco
 	ID = MAP_WACO
 	title = "Waco Siege"
-	lobby_icon_state = "waco"
+	lobby_icon = "icons/lobby/waco.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 1200
 	no_hardcore = TRUE

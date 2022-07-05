@@ -1,7 +1,7 @@
 /obj/map_metadata/capitol_hill
 	ID = MAP_CAPITOL_HILL
 	title = "Capitol Hill"
-	lobby_icon_state = "capitol"
+	lobby_icon = "icons/lobby/capitol.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."

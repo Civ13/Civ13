@@ -2,7 +2,7 @@
 	ID = MAP_RIVER_KWAI
 	title = "Bridge Over River Kwai"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "camp"
+	lobby_icon = "icons/lobby/camp.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 3600
 	has_hunger = TRUE

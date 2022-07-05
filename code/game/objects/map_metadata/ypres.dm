@@ -2,7 +2,7 @@
 /obj/map_metadata/ypres
 	ID = MAP_YPRES
 	title = "2nd Battle of Ypres"
-	lobby_icon_state = "ww1"
+	lobby_icon = "icons/lobby/ww1.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 

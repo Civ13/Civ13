@@ -1,7 +1,7 @@
 /obj/map_metadata/event_city
 	ID = MAP_EVENT_CITY
 	title = "event city"
-	lobby_icon_state = "civ13-logo"
+	lobby_icon = "icons/lobby/civ13.gif"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	is_singlefaction = TRUE

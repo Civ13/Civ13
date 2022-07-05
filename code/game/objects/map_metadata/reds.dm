@@ -1,7 +1,7 @@
 /obj/map_metadata/reds
 	ID = MAP_REDS
 	title = "Filthy Reds"
-	lobby_icon_state = "modern"
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE

@@ -1,7 +1,7 @@
 /obj/map_metadata/football
 	ID = MAP_FOOTBALL
 	title = "Football Match"
-	lobby_icon_state = "futebol"
+	lobby_icon = "icons/lobby/futebol.png"
 	caribbean_blocking_area_types = list(/area/caribbean/football/midfield, /area/caribbean/football/nopass)
 	respawn_delay = 0
 	no_winner ="The game is still going on."

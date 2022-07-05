@@ -1,7 +1,7 @@
 /obj/map_metadata/sekigahara
 	ID = MAP_SEKIGAHARA
 	title = "Sekigahara"
-	lobby_icon_state = "medieval"
+	lobby_icon = "icons/lobby/medieval.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="The fighting for sekigahara is still going on."

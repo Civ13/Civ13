@@ -2,7 +2,7 @@
 /obj/map_metadata/naval
 	ID = MAP_NAVAL
 	title = "Naval Battle"
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	no_winner ="No ship has been captured."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300

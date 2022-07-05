@@ -2,7 +2,7 @@
 /obj/map_metadata/recife
 	ID = MAP_RECIFE
 	title = "Recife"
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900

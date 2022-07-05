@@ -1,7 +1,7 @@
 /obj/map_metadata/wake_island
 	ID = MAP_WAKE_ISLAND
 	title = "Wake Island"
-	lobby_icon_state = "pacific"
+	lobby_icon = "icons/lobby/pacific.png"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0

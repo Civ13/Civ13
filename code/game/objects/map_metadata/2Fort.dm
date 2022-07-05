@@ -1,7 +1,7 @@
 /obj/map_metadata/camp
 	ID = MAP_CAMP
 	title = "Camp"
-	lobby_icon_state = "medieval"
+	lobby_icon = "icons/lobby/medieval.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
 	has_hunger = TRUE

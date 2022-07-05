@@ -2,7 +2,7 @@
 	ID = MAP_HILL_3234
 	title = "Battle for Hill 3234"
 	no_winner = "Hill 3234 is still under the Soviet forces control."
-	lobby_icon_state = "sovafghan"
+	lobby_icon = "icons/lobby/sovafghan.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	victory_time = 24000

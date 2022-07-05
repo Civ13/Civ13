@@ -3,7 +3,7 @@
 	ID = MAP_VOYAGE
 	title = "Voyage"
 	no_winner ="The ship is on the way."
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	faction_organization = list(PIRATES)
 	roundend_condition_sides = list(list(PIRATES) = /area/caribbean/no_mans_land)

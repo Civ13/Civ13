@@ -1,7 +1,7 @@
 /obj/map_metadata/hunger_games
 	ID = MAP_HUNGERGAMES
 	title = "Battle Royale: Imperial"
-	lobby_icon_state = "battleroyale"
+	lobby_icon = "icons/lobby/battleroyale.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 36000000
 	is_singlefaction = TRUE

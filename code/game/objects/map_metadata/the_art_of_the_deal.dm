@@ -1,7 +1,7 @@
 /obj/map_metadata/art_of_the_deal
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
-	lobby_icon_state = "taotd"
+	lobby_icon = "icons/lobby/taotd.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3000
 	is_singlefaction = TRUE

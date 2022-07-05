@@ -2,7 +2,7 @@
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
 	title = "Nanjing"
-	lobby_icon_state = "china"
+	lobby_icon = "icons/lobby/china.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE

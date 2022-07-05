@@ -1,7 +1,7 @@
 /obj/map_metadata/teutoburg
 	ID = MAP_TEUTOBURG
 	title = "Teutoburg"
-	lobby_icon_state = "ancient"
+	lobby_icon = "icons/lobby/ancient.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 

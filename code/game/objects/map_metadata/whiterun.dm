@@ -2,7 +2,7 @@
 /obj/map_metadata/whiterun
 	ID = MAP_WHITERUN
 	title = "Whiterun"
-	lobby_icon_state = "tes13"
+	lobby_icon = "icons/lobby/tes13.png"
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 300

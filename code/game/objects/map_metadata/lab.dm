@@ -1,7 +1,7 @@
 /obj/map_metadata/lab
 	ID = MAP_LAB
 	title = "Lab"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/temperate, /area/caribbean/no_mans_land/invisible_wall/four)
 	respawn_delay = 1200
 	no_winner ="No one has escaped yet."

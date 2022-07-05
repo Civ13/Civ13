@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_extended
 	ID = MAP_NOMADS_EXTENDED
 	title = "Nomads: Oil Rush"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // q0 minutes!

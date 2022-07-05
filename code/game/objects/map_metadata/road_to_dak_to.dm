@@ -2,7 +2,7 @@
 /obj/map_metadata/road_to_dak_to
 	ID = MAP_ROAD_TO_DAK_TO
 	title = "Road to Dak To"
-	lobby_icon_state = "coldwar"
+	lobby_icon = "icons/lobby/coldwar.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 300
 

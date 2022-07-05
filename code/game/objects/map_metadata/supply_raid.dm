@@ -2,7 +2,7 @@
 /obj/map_metadata/supply_raid
 	ID = MAP_SUPPLY_RAID
 	title = "Supply Raid"
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900
 	grace_wall_timer = 3000

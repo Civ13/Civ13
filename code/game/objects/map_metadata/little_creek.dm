@@ -2,7 +2,7 @@
 /obj/map_metadata/little_creek
 	ID = MAP_LITTLE_CREEK
 	title = "Big Trouble in Little Creek (RP)"
-	lobby_icon_state = "wildwest"
+	lobby_icon = "icons/lobby/wildwest.png"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 3600

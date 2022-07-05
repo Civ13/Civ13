@@ -1,7 +1,7 @@
 /obj/map_metadata/four_colonies
 	ID = MAP_FOUR_COLONIES
 	title = "Four Colonies"
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!

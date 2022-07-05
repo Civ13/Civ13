@@ -1,7 +1,7 @@
 /obj/map_metadata/yeltsin
 	ID = MAP_YELTSIN
 	title = "Battle for the Russian Parliament"
-	lobby_icon_state = "yeltsin"
+	lobby_icon = "icons/lobby/yeltsin.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."

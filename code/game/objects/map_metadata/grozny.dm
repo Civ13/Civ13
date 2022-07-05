@@ -1,7 +1,7 @@
 /obj/map_metadata/grozny
 	ID = MAP_GROZNY
 	title = "Retreat From Grozny"
-	lobby_icon_state = "grozny"
+	lobby_icon = "icons/lobby/grozny.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE

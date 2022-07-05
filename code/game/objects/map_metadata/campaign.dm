@@ -2,7 +2,7 @@
 /obj/map_metadata/campaign
 	ID = MAP_CAMPAIGN
 	title = "Campaign"
-	lobby_icon_state = "modern"
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner ="The battle is going on."

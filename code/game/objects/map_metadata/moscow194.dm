@@ -2,7 +2,7 @@
 /obj/map_metadata/smallsiegemoscow
 	ID = MAP_SMALLSIEGEMOSCOW
 	title = "Siege of Moscow"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two)
 	respawn_delay = 1200
 	no_winner ="The Politburo is under Soviet control."

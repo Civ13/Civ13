@@ -1,7 +1,7 @@
 /obj/map_metadata/nankou
 	ID = MAP_NANKOU
 	title = "Nankou"
-	lobby_icon_state = "china"
+	lobby_icon = "icons/lobby/china.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	no_hardcore = TRUE
 	respawn_delay = 1200

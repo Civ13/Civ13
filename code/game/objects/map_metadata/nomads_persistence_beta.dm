@@ -1,7 +1,7 @@
 /obj/map_metadata/nomads_persistence_beta
 	ID = MAP_NOMADS_PERSISTENCE_BETA
 	title = "Nomads (Persistence) (600x523x2)"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!

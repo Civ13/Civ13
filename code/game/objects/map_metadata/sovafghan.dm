@@ -2,7 +2,7 @@
 	ID = MAP_SOVAFGHAN
 	title = "Soviet-Afghan War"
 	no_winner ="The region of Kandahar is still contested."
-	lobby_icon_state = "sovafghan"
+	lobby_icon = "icons/lobby/sovafghan.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 	has_hunger = TRUE

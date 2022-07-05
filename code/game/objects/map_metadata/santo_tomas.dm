@@ -1,7 +1,7 @@
 /obj/map_metadata/santo_tomas
 	ID = MAP_SANTO_TOMAS
 	title = "Santo Tomas"
-	lobby_icon_state = "ph_us_war"
+	lobby_icon = "icons/lobby/ph_us_war.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 
