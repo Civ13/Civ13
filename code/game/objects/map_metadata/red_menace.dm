@@ -6,6 +6,7 @@
 	respawn_delay = 1200
 	no_hardcore = TRUE
 	victory_time = 36000
+	grace_wall_timer = 2400
 
 	faction_organization = list(
 		AMERICAN,
@@ -33,12 +34,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/red_menace/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/red_menace/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/red_menace/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
