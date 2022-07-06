@@ -1,6 +1,6 @@
-/obj/map_metadata/reds
+/obj/map_metadata/red_menace
 	ID = MAP_RED_MENACE
-	title = "Filthy Reds"
+	title = "The Red Menace"
 	lobby_icon = "icons/lobby/redmenace.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
@@ -165,10 +165,10 @@
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction2)
+			if (H.faction_text == faction1)
 				return TRUE
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))
-			if (H.faction_text == faction1)
+			if (H.faction_text == faction2)
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()

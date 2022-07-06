@@ -1229,6 +1229,9 @@ var/global/redirect_all_players = null
 						temp_name = "Rebels"
 					else if (temp_name == "American")
 						temp_name = "Imperials"
+				else if (map && map.ID == "RED_MENACE")
+					if (temp_name == "Russian")
+						temp_name = "Soviets"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
