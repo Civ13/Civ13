@@ -10,7 +10,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_reds = TRUE
-	is_coldwar = TRUE
+
 	can_get_coordinates = TRUE
 
 	min_positions = 1
@@ -78,7 +78,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_reds = TRUE
-	is_coldwar = TRUE
+
 	can_get_coordinates = TRUE
 
 	min_positions = 2
@@ -146,7 +146,7 @@
 	spawn_location = "JoinLateRU"
 
 	is_medic = TRUE
-	is_coldwar = TRUE
+
 	is_reds = TRUE
 
 	min_positions = 2
@@ -202,7 +202,7 @@
 	uses_squads = TRUE
 	is_radioman = TRUE
 	is_reds = TRUE
-	is_coldwar = TRUE
+
 
 	min_positions = 1
 	max_positions = 10
@@ -266,7 +266,7 @@
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
 	is_reds = TRUE
-	is_coldwar = TRUE
+
 
 	min_positions = 1
 	max_positions = 200
@@ -347,7 +347,7 @@
 
 	uses_squads = TRUE
 	is_reds = TRUE
-	is_coldwar = TRUE
+
 
 	min_positions = 1
 	max_positions = 18
@@ -412,7 +412,7 @@
 	whitelisted = TRUE
 	is_reds = TRUE
 	uses_squads = TRUE
-	is_coldwar = TRUE
+
 
 	min_positions = 1
 	max_positions = 10
@@ -474,7 +474,7 @@
 
 	can_be_female = TRUE
 	is_reds = TRUE
-	is_coldwar = TRUE
+
 
 	min_positions = 1
 	max_positions = 1000
@@ -586,7 +586,7 @@
 
 	can_be_female = FALSE
 	is_reds = TRUE
-	is_coldwar = TRUE
+
 
 	min_positions = 1
 	max_positions = 1

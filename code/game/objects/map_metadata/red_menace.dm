@@ -29,7 +29,7 @@
 
 /obj/map_metadata/red_menace/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_reds && J.is_coldwar)
+	if (J.is_reds)
 		. = TRUE
 	else
 		. = FALSE
