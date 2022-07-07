@@ -946,6 +946,12 @@
 	new/obj/item/ammo_magazine/m249(src)
 	new/obj/item/ammo_magazine/m249(src)
 
+/obj/item/weapon/storage/belt/largepouches/green/m249
+/obj/item/weapon/storage/belt/largepouches/green/m249/New()
+	..()
+	new/obj/item/ammo_magazine/m249(src)
+	new/obj/item/ammo_magazine/m249(src)
+
 /obj/item/weapon/storage/belt/largepouches/sovietmg
 /obj/item/weapon/storage/belt/largepouches/sovietmg/New()
 	..()
@@ -1085,6 +1091,22 @@
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/stanag
+/obj/item/weapon/storage/belt/smallpouches/green/stanag/New()
+	..()
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/m14
+/obj/item/weapon/storage/belt/smallpouches/green/m14/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/

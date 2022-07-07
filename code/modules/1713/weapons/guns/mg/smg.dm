@@ -1155,6 +1155,11 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
 
+/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21
+	name = "M21 SWS"
+	desc = "An American sniper rifle, chambered in 7.62x51mm."
+	effectiveness_mod = 1.12
+
 /obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"
 	desc = "A German battle rifle, chambered in 7.62x51mm."
