@@ -340,7 +340,6 @@
 	uses_squads = TRUE
 	is_reds = TRUE
 
-
 	min_positions = 1
 	max_positions = 18
 
@@ -402,6 +401,7 @@
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
+
 	is_reds = TRUE
 
 	min_positions = 1
@@ -595,6 +595,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/m18smoke/signal(H), slot_r_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -702,7 +703,7 @@
 	if (!H)	return FALSE
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249, slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")

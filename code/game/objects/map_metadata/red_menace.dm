@@ -5,8 +5,8 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE
-	victory_time = 36000
-	grace_wall_timer = 2400
+	victory_time = 27000
+	grace_wall_timer = 3600
 
 	faction_organization = list(
 		AMERICAN,
@@ -20,7 +20,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.4, AMERICAN = 0.6)
 	battle_name = "Battle for America"
-	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>1 hour</b>.<br>The Soviets will win if they manage to capture the City Hall!<br>Capture point is on the 2nd floor.</font>"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>45 minutes</b>.<br>The Soviets will win if they manage to capture the City Hall!<br>Capture point is on the 2nd floor.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
