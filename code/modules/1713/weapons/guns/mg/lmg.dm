@@ -300,6 +300,48 @@
 	load_delay = 50
 	slowdown = 0.8
 
+/obj/item/weapon/gun/projectile/automatic/rpd
+	name = "RPD machine gun"
+	desc = "A soviet machinegun chambered in 7.62x39 rounds."
+	icon_state = "rpk"
+	item_state = "rpk"
+	base_icon = "rpk"
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/rpd
+	good_mags = list(/obj/item/ammo_magazine/rpd)
+	weight = 5
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+	slot_flags = SLOT_SHOULDER
+	effectiveness_mod = 1.5
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 25
+	load_delay = 50
+	slowdown = 0.6
+
+/obj/item/weapon/gun/projectile/automatic/rpk74
+	name = "RPK74 maching gun"
+	desc = "A soviet machinegun chambered in 7.62x39 rounds."
+	icon_state = "rpd"
+	item_state = "rpd"
+	base_icon = "rpd"
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/rpk74
+	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74mag, /obj/item/ammo_magazine/ak74)
+	weight = 5
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+	slot_flags = SLOT_SHOULDER
+	effectiveness_mod = 1.7
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 24
+	load_delay = 50
+	slowdown = 0.5
+
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
 	desc = "An israeli machinegun chambered in 5.56x45mm NATO rounds."
