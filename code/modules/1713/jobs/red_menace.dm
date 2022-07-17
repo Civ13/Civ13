@@ -304,7 +304,6 @@
 		uniform.attackby(mag, H)
 		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
 		uniform.attackby(mag2, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (prob(33))
