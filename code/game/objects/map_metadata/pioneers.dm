@@ -62,7 +62,7 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/pioneers/wasteland_two
 	ID = MAP_PIONEERS_WASTELAND_2
-	title = "Pioneer Wastland II"
+	title = "Pioneers Wasteland II"
 	gamemode = "Zombie Wasteland"
 	civilizations = TRUE
 	is_zombie = TRUE
