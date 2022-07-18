@@ -90,7 +90,7 @@
 			for(var/mob/living/simple_animal/hostile/wolf/M in nearbyObjects)
 				if (M.stat == CONSCIOUS && !M.female) //Failsafe, no misscheck for self-reproduction
 					pregnant = TRUE
-					birthCountdown = 600 // life ticks once per 2 seconds, 300 == 10 minutes
+					birthCountdown = 900 // life ticks once per 2 seconds, 300 == 10 minutes
 	else if (src.female && src.pregnant)
 		birthCountdown--
 		if (birthCountdown <= 0)
