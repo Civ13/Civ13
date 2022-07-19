@@ -20,11 +20,11 @@
 	if (!(I.slot_flags & SLOT_HOLSTER))
 		user << "<span class='warning'>[I] won't fit in [src]!</span>"
 		return
-	if (istype(I, /obj/item/weapon/gun))
+	/*if (istype(I, /obj/item/weapon/gun))
 		var/obj/item/weapon/gun/G = I
 		if (G.silencer)
 			user << "<span class='warning'>[I] won't fit in [src]!</span>"
-			return
+			return*/ //Comments it out until special holsters for silenced pistols can be made
 	if (istype(user))
 		user.stop_aiming(no_message=1)
 	if (capacity == 1)

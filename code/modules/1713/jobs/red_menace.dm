@@ -437,7 +437,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov/silenced(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov/silenced(H), slot_r_hand)
 	H.civilization = "Soviet Armed Forces"
 	give_random_name(H)
 	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
@@ -476,24 +476,33 @@
 	if (!H)	return FALSE
 //clothes
 	if (prob(80))
-		var/pickuni = rand(1,7)
-		switch(pickuni)
+		var/pickoutfit = rand(1,8)
+		switch(pickoutfit)
 			if (1)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(H), slot_shoes)
 			if (2)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 			if (3)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 			if (4)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern4(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(H), slot_shoes)
 			if (5)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern7(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 			if (6)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 			if (7)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
-		//shoes
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+			if (8)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/mafia(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/white(H), slot_shoes)
+
 		H.add_note("Role", "You are a proud American citizen! Defend against the Red Menace!")
 		H.setStat("strength", STAT_NORMAL)
 		H.setStat("crafting", STAT_NORMAL)
@@ -575,7 +584,7 @@
 	title = "US Army Staff Sergeant"
 	rank_abbreviation = "SSgt."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRNSL"
 
 	can_be_female = FALSE
 	is_reds = TRUE
@@ -616,7 +625,7 @@
 	title = "US Army Radio Operator"
 	rank_abbreviation = "Cpl."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRN2"
 
 	can_be_female = FALSE
 	is_reds = TRUE
@@ -653,7 +662,7 @@
 	title = "US Army Designated Marksman"
 	rank_abbreviation = "Spc."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRN2"
 
 	can_be_female = FALSE
 	is_reds = TRUE
@@ -689,7 +698,7 @@
 	title = "US Army Automatic Rifleman"
 	rank_abbreviation = "Pfc."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRN2"
 
 	can_be_female = FALSE
 	is_reds = TRUE
@@ -726,7 +735,7 @@
 	title = "US Army Rifleman"
 	rank_abbreviation = "Pvt."
 
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRN2"
 
 	can_be_female = FALSE
 	is_reds = TRUE
@@ -757,3 +766,52 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_LOW)
+
+/datum/job/american/coldwar/tanker
+	title = "US Army Crewman"
+	rank_abbreviation = "Cpl."
+
+	spawn_location = "JoinLateRNT"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	is_tanker = FALSE
+
+	min_positions = 1
+	max_positions = 8
+
+/datum/job/american/coldwar/tanker/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland, slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/(null)
+	uniform.attackby(armor, H)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Follow orders and use your armor to defeat the enemy!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
