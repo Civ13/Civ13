@@ -449,6 +449,13 @@
 	item_state = "ushelmet_camo_lt"
 	worn_state = "ushelmet_camo_lt"
 
+/obj/item/clothing/head/helmet/modern/ushelmet/crewman
+	name = "CVC helmet"
+	desc = "A standard issue helmet for vehicle crewmen."
+	icon_state = "cvc_helmet"
+	item_state = "cvc_helmet"
+	worn_state = "cvc_helmet"
+
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1
 	name = "M1 Helmet"
