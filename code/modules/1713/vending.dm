@@ -1018,30 +1018,6 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 	)
-/obj/structure/vending/sovafghan/soviet/apparel/New()
-	if (map.ID != MAP_SOVAFGHAN)
-		products = list(
-			/obj/item/clothing/shoes/combat = 15,
-			/obj/item/clothing/shoes/soldiershoes = 10,
-			/obj/item/clothing/under/afghanka = 20,
-			/obj/item/clothing/accessory/armor/coldwar/plates/b3 = 20,
-			/obj/item/clothing/suit/storage/jacket/afghanka = 15,
-			/obj/item/clothing/mask/gas/russia = 15,
-			/obj/item/clothing/head/helmet/modern/ssh_68 = 20,
-			/obj/item/clothing/accessory/storage/webbing/russian = 10,
-			/obj/item/weapon/storage/belt/smallpouches/green = 10,
-			/obj/item/weapon/storage/belt/smallpouches = 10,
-			/obj/item/weapon/storage/belt/largepouches = 10,
-			/obj/item/weapon/storage/belt/largepouches/green = 10,
-			/obj/item/weapon/storage/backpack/sovpack = 20,
-			/obj/item/clothing/accessory/holster/armpit = 5,
-			/obj/item/stack/medical/bruise_pack/bint = 10,
-			/obj/item/weapon/material/shovel/trench = 10,
-			/obj/item/weapon/attachment/bayonet = 15,
-			/obj/item/flashlight/militarylight/alt = 15,
-			/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
-			/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-		)
 
 /obj/structure/vending/sovafghan/soviet/weapons
 	name = "Soviet Army weapon rack"
@@ -1115,6 +1091,32 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak74/rubber = 15,
 		/obj/item/ammo_magazine/pkm = 5,
 		/obj/item/ammo_magazine/makarov = 10,
+	)
+
+/obj/structure/vending/coldwar/soviet/apparel
+	name = "Soviet Armed Forces apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/jackboots/soviet = 20,
+		/obj/item/clothing/under/afghanka = 20,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b3 = 20,
+		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 20,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/smallpouches/green = 10,
+		/obj/item/weapon/storage/belt/smallpouches = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/weapon/storage/backpack/sovpack = 20,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 	)
 
 ///////////Star Wars stuff//////////////////////
