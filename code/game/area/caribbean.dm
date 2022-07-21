@@ -192,6 +192,13 @@
 	icon_state = "green1"
 	climate = "jungle"
 
+/area/caribbean/nomads/forest/Jungle/sea
+	base_turf = /turf/floor/beach/water/deep/saltwater
+	icon_state = "blue1"
+
+/area/caribbean/nomads/forest/Jungle/beach
+	base_turf = /turf/floor/beach/sand
+	icon_state = "yellow1"
 //lava paths
 /area/caribbean/nomads/forest/Jungle/lava_west
 	icon_state = "green3"
