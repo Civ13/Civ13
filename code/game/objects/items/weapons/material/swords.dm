@@ -393,6 +393,24 @@ obj/item/weapon/material/sword/scimitar/iron
 	default_material = "iron"
 	value = 40
 
+/obj/item/weapon/material/sword/plasmaquan
+	name = "Plasmaquan"
+	desc = "A sword based off of the longquan, this is used as a last defense for soldeirs in the chinese army."
+	icon_state = "plasmaquan"
+	item_state = "plasmaquan"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 1.2 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BACK
+	block_chance = 40
+	cooldownw = 7
+	value = 100
+
+/obj/item/weapon/material/sword/longquan/iron
+	default_material = "iron"
+	value = 40
+
 /obj/item/weapon/material/sword/saif
 	name = "saif"
 	desc = "A medium sword, original from the arab peninsula."
