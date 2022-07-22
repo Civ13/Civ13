@@ -10,7 +10,7 @@
 	var/on = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel", "olive_oil", "fat_oil")
+	var/fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil", "fat_oil")
 /obj/structure/heatsource/New()
 	..()
 	do_light()

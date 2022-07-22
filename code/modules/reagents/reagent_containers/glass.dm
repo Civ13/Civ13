@@ -758,7 +758,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		..()
 		flags &= ~OPENCONTAINER
 		base_name = "wood barrel"
-		reagents.add_reagent("ethanol",250)
+		reagents.add_reagent("pethanol",250)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern
 	name = "steel barrel"
@@ -869,7 +869,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		..()
 		flags &= ~OPENCONTAINER
 		base_name = "steel barrel"
-		reagents.add_reagent("ethanol",350)
+		reagents.add_reagent("pethanol",350)
 
 /obj/item/weapon/reagent_containers/glass/barrel/jerrycan
 	name = "jerrycan"
@@ -972,6 +972,12 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	New()
 		..()
 		reagents.add_reagent("gasoline",450)
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledethanol
+	New()
+		..()
+		reagents.add_reagent("pethanol",450)
+
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
 	name = "medium fueltank"

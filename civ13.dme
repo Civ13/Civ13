@@ -762,6 +762,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\movement.dm"
 #include "code\modules\1713\machinery\modular_vehicles\wheels.dm"
 #include "code\modules\1713\machinery\modular_vehicles\carparts\apcs.dm"
+#include "code\modules\1713\machinery\modular_vehicles\carparts\boats.dm"
 #include "code\modules\1713\machinery\modular_vehicles\carparts\cars.dm"
 #include "code\modules\1713\machinery\modular_vehicles\carparts\premade.dm"
 #include "code\modules\1713\machinery\modular_vehicles\carparts\tanks.dm"
@@ -1056,6 +1057,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1969\african_warlords.dmm"
+#include "maps\campaign\campaign8.dmm"
 // END_INCLUDE
 
