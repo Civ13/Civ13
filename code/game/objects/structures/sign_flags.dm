@@ -282,7 +282,12 @@
 /obj/structure/sign/flag/japanese
 	name = "Imperial Japanese flag"
 	desc = "A flag with the imperial Japanese rising sun."
-	icon_state = "japanese"
+	icon_state = "flag_japan_empire"
+
+/obj/structure/sign/flag/japanese/modern
+	name = "Japanese flag"
+	desc = "A flag with the Japanese rising sun."
+	icon_state = "flag_japan"
 
 /obj/structure/sign/flag/chinese
 	name = "Republic of China flag"
@@ -709,10 +714,37 @@
 	desc = "The flag of Czechoslovakia."
 	icon_state = "flag_czech"
 
+/obj/structure/sign/flag/hungary
+	name = "Hungarian flag"
+	desc = "The flag of Hungary."
+	icon_state = "flag_hungary"
+
+/obj/structure/sign/flag/hungary/sov
+	name = "Hungarian People's Republic flag"
+	desc = "The flag of the Hungarian People's Republic."
+	icon_state = "flag_hungary_sov"
+
+/obj/structure/sign/flag/hungary/old
+	desc = "The flag of Hungary with the small coat of arms."
+	icon_state = "flag_hungary_kingdom"
+
 /obj/structure/sign/flag/finland
 	name = "Finnish flag"
 	desc = "The flag of Finland."
 	icon_state = "flag_finland"
+
+/obj/structure/sign/flag/warpact
+	name = "WARPACT flag"
+	desc = "The flag of the Wasrsaw Pact."
+	icon_state = "flag_warpact1"
+
+/obj/structure/sign/flag/warpact/alt
+	icon_state = "flag_warpact2"
+
+/obj/structure/sign/flag/nato
+	name = "NATO flag"
+	desc = "The flag of North Atlantic Treaty Organization."
+	icon_state = "flag_nato"
 
 /obj/structure/sign/flag/redmenia
 	name = "Redmenian flag"
