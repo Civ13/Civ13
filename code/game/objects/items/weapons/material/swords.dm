@@ -395,12 +395,12 @@ obj/item/weapon/material/sword/scimitar/iron
 
 /obj/item/weapon/material/sword/plasmaquan
 	name = "Plasmaquan"
-	desc = "A sword based off of the longquan, this is used as a last defense for soldeirs in the chinese army."
+	desc = "A sword based on the longquan."
 	icon_state = "plasmaquan"
 	item_state = "plasmaquan"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 1.2 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.2 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BACK
 	block_chance = 40
