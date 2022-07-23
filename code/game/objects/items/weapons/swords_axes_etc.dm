@@ -2,7 +2,29 @@
 /obj/item/weapon/melee
 	edge = FALSE
 	sharp = FALSE
+	var/force_multiplier = 1.2
+	var/force_divisor = 3
 	var/weakens = 0
+	var/weaken_chance = 40
+
+/obj/item/weapon/melee/attack(mob/M as mob, mob/living/user as mob, var/target_zone)
+
+	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
+		if (I_HARM)
+			force *= force_multiplier
+		if (I_HELP, I_GRAB, I_DISARM)
+			force /= force_divisor
+
+	var/user_last_intent = user.a_intent
+	user.a_intent = I_HARM // so we actually hit people right
+
+	..(M, user, target_zone)
+	if (weakens && prob(weaken_chance))
+		M.Weaken(weakens) // decent
+
+	user.a_intent = user_last_intent
+
+	force = initial(force)
 
 /obj/item/weapon/melee/mace
 	name = "iron mace"
@@ -105,7 +127,30 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_WEAK
 	flammable = TRUE
-	weakens = FALSE
+	weakens = 1
+	weaken_chance = 20
+
+/* 	//Commented out for the moment, as an attack proc has been made for all melee weapons
+	//(see line 10)
+/obj/item/weapon/melee/classic_baton/club/attack(mob/M as mob, mob/living/user as mob)
+
+	switch (user.a_intent)
+		if (I_HARM)
+			force*=1.2
+		if (I_HELP, I_GRAB, I_DISARM)
+			force/=3
+
+	var/user_last_intent = user.a_intent
+	user.a_intent = I_HARM
+
+	..(M, user)
+	if (weakens && prob(20))
+		M.Weaken(weakens) // decent
+
+	user.a_intent = user_last_intent
+
+	force = initial(force)
+*/
 
 /obj/item/weapon/melee/classic_baton/whip
 	name = "whip"
@@ -117,6 +162,7 @@
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK+1
 	flammable = TRUE
+
 /obj/item/weapon/melee/knuckle_duster
 	name = "knuckle duster"
 	desc = "A peice of metal that fits around your hand. Could break some teeth."
@@ -138,7 +184,7 @@
 	force = WEAPON_FORCE_PAINFUL
 	w_class = 3.0
 	flammable = TRUE
-	weakens = FALSE
+	weakens = 1
 
 /obj/item/weapon/melee/baseball_bat/aluminium
 	name = "aluminium baseball bat"
@@ -150,51 +196,18 @@
 	flammable = FALSE
 	flags = CONDUCT
 
-/obj/item/weapon/melee/attack(mob/M as mob, mob/living/user as mob)
-
-	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
-		if (I_HARM)
-			force*=1.2
-		if (I_HELP, I_GRAB, I_DISARM)
-			force/=3
-
-	var/user_last_intent = user.a_intent
-	user.a_intent = I_HARM // so we actually hit people right
-
-	..(M, user)
-	if (weakens && prob(40))
-		M.Weaken(weakens) // decent
-
-	user.a_intent = user_last_intent
-
-	force = initial(force)
-
-/obj/item/weapon/melee/classic_baton/club/attack(mob/M as mob, mob/living/user as mob)
-
-	switch (user.a_intent)
-		if (I_HARM)
-			force*=1.2
-		if (I_HELP, I_GRAB, I_DISARM)
-			force/=3
-
-	var/user_last_intent = user.a_intent
-	user.a_intent = I_HARM
-
-	..(M, user)
-	if (weakens && prob(20))
-		M.Weaken(weakens) // decent
-
-	user.a_intent = user_last_intent
-
-	force = initial(force)
 /obj/item/weapon/melee/classic_baton/big_club
 	name = "big wood club"
 	desc = "This looks huge!"
 	icon_state = "big_club"
 	item_state = "big_club"
 	force = WEAPON_FORCE_PAINFUL
-	weakens = 2
+	weakens = 3
+	force_multiplier = 2.5
+	force_divisor = 1.5
 
+/* 	//Commented out for the moment, as an attack proc has been made for all melee weapons
+	//(see line 10)
 /obj/item/weapon/melee/classic_baton/big_club/attack(mob/M as mob, mob/living/user as mob)
 
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
@@ -214,6 +227,7 @@
 	user.a_intent = user_last_intent
 
 	force = initial(force)
+*/
 
 /obj/item/weapon/macuahuitl
 	name = "macuahuitl"
