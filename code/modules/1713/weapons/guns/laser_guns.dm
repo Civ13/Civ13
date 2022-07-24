@@ -353,3 +353,45 @@
 	has_telescopic = FALSE
 	slot_flags = SLOT_SHOULDER
 	is_laser_mg = TRUE
+
+//////////other laser weapons//////////
+/obj/item/weapon/gun/projectile/automatic/laser/qblz1
+	name = "Qblz1 Plasma gun"
+	desc = "An advanced plasma rifle used by the Chinese."
+	icon_state = "qblz1"
+	item_state = "m16"
+	base_icon = "qblz1"
+	caliber = "laserb"
+	fire_sound = 'sound/weapons/guns/fire/laserrifle.ogg'
+	ammo_type = /obj/item/ammo_casing/laser/b
+	magazine_type = /obj/item/ammo_magazine/tibannagas/qblz1
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/qblz1)
+	weight = 6.4
+	force = 20
+	throwforce = 30
+	attachment_slots = null
+	slowdown = 0.2
+	has_telescopic = FALSE
+	slot_flags = SLOT_SHOULDER
+	is_laser_mg = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/laser/dcb2
+	name = "Dcb-2 Plasma pistol"
+	desc = "A plasma pistol used by the Chinese."
+	icon_state = "dcb2"
+	w_class = 2
+	caliber = "laserb"
+	fire_sound = 'sound/weapons/guns/fire/dcb2.ogg'
+	magazine_type = /obj/item/ammo_magazine/tibannagas/dcb2
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/dcb2)
+	weight = 0.6
+	ammo_type = /obj/item/ammo_casing/laser/pistol/b
+	effectiveness_mod = 1.03
+
+/obj/item/weapon/gun/projectile/pistol/laser/dcb2/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "dcb2"
+	else
+		icon_state = "dcb2_open"
+	return
