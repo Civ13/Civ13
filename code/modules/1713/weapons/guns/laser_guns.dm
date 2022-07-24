@@ -357,7 +357,7 @@
 //////////other laser weapons//////////
 /obj/item/weapon/gun/projectile/automatic/laser/qblz1
 	name = "Qblz1 Plasma gun"
-	desc = "A advanced plasma rifle used by the chinese."
+	desc = "An advanced plasma rifle used by the Chinese."
 	icon_state = "qblz1"
 	item_state = "m16"
 	base_icon = "qblz1"
