@@ -293,6 +293,13 @@
 	det_time = 35
 	throw_range = 12
 
+/obj/item/weapon/grenade/modern/t68
+	name = "Type68 grenade"
+	desc = "A advanced grenade modeled after the type67 grenade used by the chinese."
+	icon_state = "t68"
+	det_time = 35
+	throw_range = 12
+
 /obj/item/weapon/grenade/ww2/rgd33
 	name = "RGD-33 grenade"
 	desc = "A Soviet fragmentation grenade."
