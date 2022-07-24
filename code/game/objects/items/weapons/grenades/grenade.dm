@@ -295,7 +295,7 @@
 
 /obj/item/weapon/grenade/modern/t68
 	name = "Type68 grenade"
-	desc = "A advanced grenade modeled after the type67 grenade used by the chinese."
+	desc = "An advanced grenade modeled after the Type 67 hand grenade used by the Chinese."
 	icon_state = "t68"
 	det_time = 35
 	throw_range = 12
