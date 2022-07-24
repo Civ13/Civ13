@@ -377,7 +377,7 @@
 
 /obj/item/weapon/gun/projectile/pistol/laser/dcb2
 	name = "Dcb-2 Plasma pistol"
-	desc = "A Dcb-2 Plasma pistol used by the chinese."
+	desc = "A plasma pistol used by the Chinese."
 	icon_state = "dcb2"
 	w_class = 2
 	caliber = "laserb"
