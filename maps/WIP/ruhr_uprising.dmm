@@ -2233,9 +2233,12 @@
 /turf/floor/trench,
 /area/caribbean)
 "nS" = (
-/obj/map_metadata/ruhruprising,
-/turf/floor/grass,
-/area/caribbean)
+/obj/map_metadata/ruhr_uprising,
+/turf/floor/dirt/underground,
+/area/caribbean/void/caves{
+	base_turf = /turf/floor/dirt;
+	name = "The Caves"
+	})
 "nT" = (
 /obj/structure/window/barrier/sandbag{
 	dir = 1;
@@ -8343,7 +8346,7 @@ Kz
 Kz
 Kz
 Kz
-Kz
+nS
 "}
 (2,1,1) = {"
 Kz
@@ -20767,7 +20770,7 @@ Wi
 Cw
 Cw
 Cw
-nS
+Cw
 "}
 (2,1,2) = {"
 VW
