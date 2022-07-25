@@ -375,7 +375,8 @@
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_LOW)
-	give_random_name(H)
+	H.name = H.species.get_random_german_name(H.gender)
+	H.real_name = H.name
 	
 	return TRUE
 	
@@ -426,6 +427,7 @@
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_LOW)
-	give_random_name(H)
+	H.name = H.species.get_random_german_name(H.gender)
+	H.real_name = H.name
 	
 	return TRUE
