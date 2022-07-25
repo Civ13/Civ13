@@ -1027,7 +1027,7 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Confederates "
 		else if (map && istype(map, /obj/map_metadata/tantiveiv))
 			dat += "[alive_civilians.len] Rebels "
-		else if (map && istype(map, /obj/map_metadata/ruhruprising))
+		else if (map && istype(map, /obj/map_metadata/ruhr_uprising))
 			dat += "[alive_civilians.len] Communists "
 		else
 			dat += "[alive_civilians.len] Civilians "
@@ -1054,7 +1054,7 @@ var/global/redirect_all_players = null
 	if (FINNISH in map.faction_organization)
 		dat += "[alive_finnish.len] Finnish "
 	if (GERMAN in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/ruhruprising))
+		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
 			dat += "[alive_german.len] Conservatives "
 		else
 			dat += "[alive_german.len] German "
