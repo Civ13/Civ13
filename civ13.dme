@@ -500,6 +500,7 @@
 #include "code\game\objects\map_metadata\rizal_stadium.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
+#include "code\game\objects\map_metadata\ruhruprising.dm"
 #include "code\game\objects\map_metadata\sammirhayeed.dm"
 #include "code\game\objects\map_metadata\santo_tomas.dm"
 #include "code\game\objects\map_metadata\save_awards.dm"
@@ -744,6 +745,7 @@
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\UPA.dm"
 #include "code\modules\1713\jobs\waco.dm"
+#include "code\modules\1713\jobs\weimar.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
 #include "code\modules\1713\jobs\yakuza.dm"
 #include "code\modules\1713\jobs\yeltsin.dm"
@@ -1057,7 +1059,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1969\african_warlords.dmm"
-
+#include "maps\WIP\ruhruprising.dmm"
 // END_INCLUDE
 
