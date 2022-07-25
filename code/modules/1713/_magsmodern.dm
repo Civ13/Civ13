@@ -217,7 +217,7 @@
 	name = "rpk74 drum (7.62x39)"
 	icon_state = "rpk74"
 	mag_type = MAGAZINE
-	caliber = "a762x39"
+	caliber = "a556x39"
 	w_class = 3
 
 	ammo_type = /obj/item/ammo_casing/a762x39
@@ -228,7 +228,7 @@
 	name = "rpk74 magazine (7.62x39)"
 	icon_state = "rpk74mag"
 	mag_type = MAGAZINE
-	caliber = "a762x39"
+	caliber = "a556x39"
 	w_class = 3
 
 	ammo_type = /obj/item/ammo_casing/a762x39

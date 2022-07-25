@@ -301,11 +301,12 @@
 	slowdown = 0.8
 
 /obj/item/weapon/gun/projectile/automatic/rpd
+	
 	name = "RPD machine gun"
 	desc = "A soviet machinegun chambered in 7.62x39 rounds."
-	icon_state = "rpk"
-	item_state = "rpk"
-	base_icon = "rpk"
+	icon_state = "rpd"
+	item_state = "rpd"
+	base_icon = "rpd"
 	caliber = "a762x39"
 	magazine_type = /obj/item/ammo_magazine/rpd
 	good_mags = list(/obj/item/ammo_magazine/rpd)
@@ -322,12 +323,12 @@
 	slowdown = 0.6
 
 /obj/item/weapon/gun/projectile/automatic/rpk74
-	name = "RPK74 maching gun"
+	name = "RPK74 machine gun"
 	desc = "A soviet machinegun chambered in 7.62x39 rounds."
-	icon_state = "rpd"
-	item_state = "rpd"
-	base_icon = "rpd"
-	caliber = "a762x39"
+	icon_state = "rpk74"
+	item_state = "rpk74"
+	base_icon = "rpk74"
+	caliber = "a556x39"
 	magazine_type = /obj/item/ammo_magazine/rpk74
 	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74mag, /obj/item/ammo_magazine/ak74)
 	weight = 5
