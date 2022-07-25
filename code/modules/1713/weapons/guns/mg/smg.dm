@@ -1233,7 +1233,7 @@
 	item_state = "fal"
 	base_icon = "fal"
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/guns/fire/fal.ogg'
+	fire_sound = 'sound/weapons/guns/fire/fnfal.ogg'
 	magazine_type = /obj/item/ammo_magazine/fal
 	good_mags = list(/obj/item/ammo_magazine/fal)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL

@@ -67,6 +67,8 @@
 			return "Confederates"
 		else if (map.ID == "TANTIVEIV")
 			return "Rebels"
+		else if (map.ID == "RUHR_UPRISING")
+			return "Ruhr Red Army"
 		else
 			if (age >= 6)
 				return "Civilians"
@@ -130,6 +132,8 @@
 			return "Third Reich"
 		else if (age >= 7)
 			return "Federal Republic of Germany"
+		else if (map.ID == "RUHR_UPRISING")
+			return "Weimar Republic"
 		else
 			return "German Empire"
 	if (constant == GREEK)
