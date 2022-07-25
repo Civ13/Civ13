@@ -316,7 +316,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-
+	default_language = "German"
 	can_be_female = TRUE
 	is_interwar = TRUE
 	uses_squads = TRUE
@@ -375,13 +375,15 @@
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_LOW)
-
-	return TRUE	
+	H.name = H.species.get_random_german_name(H.gender)
+	H.real_name = H.name
+	
+	return TRUE
 	
 /datum/job/civilian/ruhrunteroffizier
 	title = "Ruhr Red Army Unteroffizier"
 	rank_abbreviation = "Uffz."
-	
+	default_language = "German"
 	spawn_location = "JoinLateCiv"
 
 	is_interwar = TRUE
@@ -425,5 +427,7 @@
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_LOW)
-
-	return TRUE	
+	H.name = H.species.get_random_german_name(H.gender)
+	H.real_name = H.name
+	
+	return TRUE
