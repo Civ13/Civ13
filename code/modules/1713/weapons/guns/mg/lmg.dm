@@ -300,8 +300,8 @@
 	load_delay = 50
 	slowdown = 0.8
 
-
-
+/obj/item/weapon/gun/projectile/automatic/rpd
+	
 	name = "RPD machine gun"
 	desc = "A soviet machinegun chambered in 7.62x39 rounds."
 	icon_state = "rpd"
