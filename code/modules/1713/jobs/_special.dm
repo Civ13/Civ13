@@ -91,6 +91,7 @@
 /datum/job/var/is_rebel = FALSE
 /datum/job/var/is_empire = FALSE
 /datum/job/var/is_reds = FALSE
+/datum/job/var/is_interwar = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE
