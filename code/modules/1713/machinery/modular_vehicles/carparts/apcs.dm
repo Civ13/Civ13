@@ -28,7 +28,7 @@
 	removesroof = TRUE
 
 /obj/structure/vehicleparts/frame/mtlb/rfc
-	normal_icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "mtlb_frame_steel_middle_right"
 	w_right = list("mtlb_middle_front_right_frame",TRUE,TRUE,50,50,FALSE,FALSE)
 	override_frame_icon = "mtlb_middle_front_right_frame"
 	override_roof_icon = "mtlb_middle_front_right_roof"
