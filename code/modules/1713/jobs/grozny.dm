@@ -350,8 +350,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
-
-
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
@@ -478,7 +476,7 @@
 
 /datum/job/russian/ruff_medic
 	title = "Russian Federal Forces Corpsman"
-	rank_abbreviation = "Pfc."
+	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRUMedic"
 
@@ -556,7 +554,7 @@
 /datum/job/russian/ruff_radioman
 	title = "Russian Federal Forces Artillery Liaison"
 	en_meaning = "Radio Operator"
-	rank_abbreviation = "Pfc."
+	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRURadop"
 
@@ -652,7 +650,7 @@
 
 /datum/job/russian/ruff_soldier
 	title = "Russian Federal Forces Private"
-	rank_abbreviation = "Pvt."
+	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
 
