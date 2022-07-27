@@ -432,6 +432,13 @@
 	item_state = "pasgt_green"
 	worn_state = "pasgt_green"
 
+	/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard
+	name = "blizzard PASGT body armor"
+	desc = "Wearable armor that can stop most pistol rounds. This one is has a blizzard pattern."
+	icon_state = "pasgt_blizzard"
+	item_state = "pasgt_blizzard"
+	worn_state = "pasgt_blizzard"
+
 		/* US Lightwieght Helmets*/
 
 /obj/item/clothing/head/helmet/modern/lwh
@@ -1160,6 +1167,54 @@
 	slowdown = 0.2
 	w_class = 3
 	weight = 2
+
+//my nerd shit (skyfire)//
+
+//armor//
+/obj/item/clothing/suit/armor/zgz1
+	name = "zgz1 advanced armor"
+	desc = "An advanced piece of armor that provides medium protection against kinetic and other projectiles. This armor is mostly used by the Chinese."
+	icon_state = "zgz1_armor"
+	item_state = "zgz1_armor"
+	worn_state = "zgz1_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 78, energy = 50, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.5
+	health = 60
+
+	/obj/item/clothing/suit/armor/zgz1/med
+	name = "Medical zgz1 advanced armor"
+	desc = "An advanced piece of armor that provides medium protection against kinetic and other projectiles. This armor is mostly used by the Chinese medics."
+	icon_state = "zgz1med_armor"
+	item_state = "zgz1med_armor"
+	worn_state = "zgz1med_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 78, energy = 50, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.5
+	health = 60
+//helmets//
+/obj/item/clothing/head/helmet/ft1
+	name = "FT1 advanced helmet"
+	desc = "An extremely advanced helmet used by the Chinese."
+	icon_state = "ft1_helmet"
+	item_state = "ft1_helmet"
+	worn_state = "ft1_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 60, gun = 80, energy = 40, bomb = 30, bio = 30, rad = FALSE)
+
+
+/obj/item/clothing/head/helmet/ft1/med
+	name = "Medical FT1 advanced helmet"
+	desc = "An extremely advanced helmet used by the Chinese medics."
+	icon_state = "ft1med_helmet"
+	item_state = "ft1med_helmet"
+	worn_state = "ft1med_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 60, gun = 80, energy = 40, bomb = 30, bio = 30, rad = FALSE)
 
 	/* Tactical*/
 
