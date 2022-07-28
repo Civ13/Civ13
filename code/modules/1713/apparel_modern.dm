@@ -432,7 +432,7 @@
 	item_state = "pasgt_green"
 	worn_state = "pasgt_green"
 
-	/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard
+/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard
 	name = "blizzard PASGT body armor"
 	desc = "Wearable armor that can stop most pistol rounds. This one has a blizzard pattern."
 	icon_state = "pasgt_blizzard"
