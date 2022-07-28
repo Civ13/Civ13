@@ -1,7 +1,7 @@
 /obj/map_metadata/ruhr_uprising
 	ID = MAP_RUHR_UPRISING
 	title = "The Ruhr Uprising"
-	lobby_icon = "icons/lobby/ww1.png"
+	lobby_icon = "icons/lobby/ruhr.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE
