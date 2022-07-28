@@ -112,9 +112,9 @@
 /obj/item/clothing/head/impstormcap
 	name = "imperial black field cap"
 	desc = "a tight fitting black cap worn by Stormtrooper CORPS Officers, Naval Lieutenants, and Technicians."
-	icon_state = "impofficer_storm"
+	icon_state = "impofficer_stormofficer"
 	item_state = "impofficer_stormofficer"
-	worn_state = "impofficer_storm"
+	worn_state = "impofficer_stormofficer"
 
 /////////////////Republic Tunics and Caps////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
