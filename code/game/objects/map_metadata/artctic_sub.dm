@@ -11,20 +11,20 @@
 	no_hardcore = FALSE
 
 	faction_organization = list(
-		CREW,
-		RAIDER)
+		RUSSIAN,
+		AMERICAN)
 
 	roundend_condition_sides = list(
-		list(CREW) = /area/caribbean/british/land/inside/objective,
-		list(RAIDER) = /area/caribbean/no_mans_land/capturable/one
+		list(AMERICAN) = /area/caribbean/british/land/inside/objective,
+		list(RUSSIAN) = /area/caribbean/no_mans_land/capturable/one
 		)
-	age = "2030"
-	ordinal_age = 8
-	faction_distribution_coeffs = list(Raider = 0.7, Crew = 0.3)
+	age = "1960"
+	ordinal_age = 7
+	faction_distribution_coeffs = list(RUSSIAN = 0.7, AMERICAN = 0.3)
 	battle_name = "Battle for the Submarine."
-	mission_start_message = "<font size=4>Both factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Submarine Crew will win if they hold out for <b>40 minutes</b>. The Raiders will win if they enter and occupy the command room for 5 minutes!.</font>"
+	mission_start_message = "<font size=4>Both factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Submarine Crew will win if they hold out for <b>40 minutes</b>. Soviets will win if they enter and occupy the command room for 5 minutes!.</font>"
 	faction1 = CREW
-	faction2 = RAIDER
+	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	gamemode = "Siege"
 
@@ -49,39 +49,39 @@
 /obj/map_metadata/arctic_sub/roundend_condition_def2name(define)
 	..()
 	switch (define)
-		if (CREW)
+		if (AMERICAN)
 			return "Crew"
-		if (RAIDER)
-			return "Raiders"
+		if (RUSSIAN)
+			return "Soviets"
 /obj/map_metadata/arctic_sub/roundend_condition_def2army(define)
 	..()
 	switch (define)
-		if (CREW)
+		if (AMERICAN)
 			return "Crew"
-		if (RAIDER)
-			return "Raiders"
+		if (RUSSIAN)
+			return "Soviets"
 
 /obj/map_metadata/arctic_sub/army2name(army)
 	..()
 	switch (army)
 		if ("Crew")
 			return "Crew"
-		if ("Raiders")
-			return "Raider"
+		if ("Soviets")
+			return "Soviet"
 
 
 /obj/map_metadata/arctic_sub/cross_message(faction)
-	if (faction == Raider)
-		return "<font size = 4>The Raiders may now cross the invisible wall!</font>"
-	else if (faction == Crew)
+	if (faction == RUSSIAN)
+		return "<font size = 4>The Soviets may now cross the invisible wall!</font>"
+	else if (faction == AMERICAN)
 		return ""
 	else
 		return ""
 
 /obj/map_metadata/berlin/reverse_cross_message(faction)
-	if (faction == Raider)
-		return "<span class = 'userdanger'>The Raiders may no longer cross the invisible wall!</span>"
-	else if (faction == Crew)
+	if (faction == RUSSIAN)
+		return "<span class = 'userdanger'>The Soviets may no longer cross the invisible wall!</span>"
+	else if (faction == AMERICAN)
 		return ""
 	else
 		return ""
@@ -100,7 +100,7 @@
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_r == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Raiders</b> have captured the Submarine! The battle for the submarine is over!"
+		var/message = "The <b>Soviets</b> have captured the Submarine! The battle for the submarine is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -110,8 +110,8 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Raiders</b> have reached the Command room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RAIDER)
+				current_win_condition = "The <b>Soviets</b> have reached the Command room! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -119,8 +119,8 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Raiders</b> have reached the Command room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RAIDER)
+				current_win_condition = "The <b>Soviets</b> have reached the Command room! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -128,8 +128,8 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Raiders</b> have reached the Command room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RAIDER)
+				current_win_condition = "The <b>Soviets</b> have reached the Command room! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -137,8 +137,8 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Raiders</b> have reached the Command room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RAIDER)
+				current_win_condition = "The <b>Soviets</b> have reached the Command room! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
