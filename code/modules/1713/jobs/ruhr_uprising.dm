@@ -1,4 +1,16 @@
 ////////////////////////////////WEIMAR REPUBLIC///////////////////////////
+/datum/job/german/reichswehr_sergeant
+	title = "Reichsheer Unteroffizier"
+	en_meaning = "Squad Leader"
+	rank_abbreviation = "Uffz."
+
+	spawn_location = "JoinLateWR"
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	is_interwar = TRUE
+
+	min_positions = 1
+	max_positions = 4
 
 /datum/job/german/reichswehr_soldat
 	title = "Reichsheer Soldat"
@@ -12,7 +24,7 @@
 
 	min_positions = 1
 	max_positions = 30
-	
+
 /datum/job/german/reichswehr_soldat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -50,19 +62,6 @@
 
 	return TRUE
 
-/datum/job/german/reichswehr_sergeant
-	title = "Reichsheer Unteroffizier"
-	en_meaning = "Squad Leader"
-	rank_abbreviation = "Uffz."
-
-	spawn_location = "JoinLateWR"
-	is_squad_leader = TRUE
-	uses_squads = TRUE
-	is_interwar = TRUE
-
-	min_positions = 1
-	max_positions = 4
-
 /datum/job/german/reichswehr_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -93,7 +92,20 @@
 	H.setStat("machinegun", STAT_VERY_HIGH)
 
 	return TRUE
-	
+
+/datum/job/german/freikorps_sergeant
+	title = "Freikorps Unteroffizier"
+	en_meaning = "Squad Leader"
+	rank_abbreviation = "Uffz."
+
+	spawn_location = "JoinLateFK"
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	is_interwar = TRUE
+
+	min_positions = 1
+	max_positions = 20
+
 /datum/job/german/freikorps_soldat
 	title = "Freikorps Soldat"
 	en_meaning = "Soldier"
@@ -106,7 +118,7 @@
 
 	min_positions = 1
 	max_positions = 160
-	
+
 /datum/job/german/freikorps_soldat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
@@ -174,19 +186,6 @@
 	H.setStat("machinegun", STAT_LOW)
 
 	return TRUE
-	
-/datum/job/german/freikorps_sergeant
-	title = "Freikorps Unteroffizier"
-	en_meaning = "Squad Leader"
-	rank_abbreviation = "Uffz."
-
-	spawn_location = "JoinLateFK"
-	is_squad_leader = TRUE
-	uses_squads = TRUE
-	is_interwar = TRUE
-
-	min_positions = 1
-	max_positions = 20
 
 /datum/job/german/freikorps_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -255,7 +254,7 @@
 	H.setStat("machinegun", STAT_LOW)
 
 	return TRUE
-	
+
 /datum/job/german/weimarpolice
 	title = "Sicherheitspolizei"
 	en_meaning = "Security Police"
@@ -268,7 +267,7 @@
 
 	min_positions = 1
 	max_positions = 100
-	
+
 /datum/job/german/weimarpolice/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
@@ -307,9 +306,22 @@
 	H.setStat("machinegun", STAT_LOW)
 
 	return TRUE
-	
+
 
 ////////////////////////////////RUHR RED ARMY///////////////////////////
+
+/datum/job/civilian/ruhrunteroffizier
+	title = "Ruhr Red Army Unteroffizier"
+	rank_abbreviation = "Uffz."
+	default_language = "German"
+	spawn_location = "JoinLateCiv"
+
+	is_interwar = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 50
 
 /datum/job/civilian/ruhrsoldat
 	title = "Ruhr Red Army Soldat"
@@ -323,7 +335,7 @@
 
 	min_positions = 1
 	max_positions = 1000
-	
+
 /datum/job/civilian/ruhrsoldat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -377,22 +389,9 @@
 	H.setStat("machinegun", STAT_LOW)
 	H.name = H.species.get_random_german_name(H.gender)
 	H.real_name = H.name
-	
+
 	return TRUE
-	
-/datum/job/civilian/ruhrunteroffizier
-	title = "Ruhr Red Army Unteroffizier"
-	rank_abbreviation = "Uffz."
-	default_language = "German"
-	spawn_location = "JoinLateCiv"
 
-	is_interwar = TRUE
-	is_squad_leader = TRUE
-	uses_squads = TRUE
-
-	min_positions = 1
-	max_positions = 50
-	
 /datum/job/civilian/ruhrunteroffizier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -429,5 +428,5 @@
 	H.setStat("machinegun", STAT_LOW)
 	H.name = H.species.get_random_german_name(H.gender)
 	H.real_name = H.name
-	
+
 	return TRUE

@@ -1055,7 +1055,7 @@ var/global/redirect_all_players = null
 		dat += "[alive_finnish.len] Finnish "
 	if (GERMAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
-			dat += "[alive_german.len] Conservatives "
+			dat += "[alive_german.len] Loyalists "
 		else
 			dat += "[alive_german.len] German "
 	if (AMERICAN in map.faction_organization)
