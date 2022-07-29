@@ -102,7 +102,7 @@
 		sleep(300)
 		if (time_of_day != "Night")
 			world << "The sound of a helicopter rotor can be heard in the distance."
-			if (map.ID == "ROAD_TO_DAK_TO" || map.ID == "COMPOUND" || map.ID == "HUE")
+			if (map.ID == "ROAD_TO_DAK_TO" || map.ID == "COMPOUND" || map.ID == "HUE" || map.ID == "ONG_THAHN")
 				playsound(get_turf(src), 'sound/effects/uh1.ogg', 98, TRUE)
 				sleep(200)
 				visible_message("<span class = 'notice'>A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location.</span>")
