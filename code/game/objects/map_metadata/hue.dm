@@ -18,7 +18,7 @@
 	age = "1969"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(AMERICAN = 0.4, VIETNAMESE = 0.6)
-	battle_name = "jungle compound"
+	battle_name = "Battle of Hue"
 	mission_start_message = "<font size=4>The <b>NVA</b> must defend their base from the Americans. The <b>US Army</b> must defend their base.<br>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = AMERICAN
 	faction2 = VIETNAMESE
