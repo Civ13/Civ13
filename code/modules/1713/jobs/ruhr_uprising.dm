@@ -377,6 +377,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective1(H), slot_w_uniform)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(armband, H)
+
 	H.add_note("Role", "You are a member of the Ruhr Red Army, attempting to overthrow the Weimar Republic to establish a communist state. Fight the Bourgeoisie and the reactionaries!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
@@ -416,6 +421,11 @@
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat2(H), slot_w_uniform)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(armband, H)
+
 	H.add_note("Role", "You are a member of the Ruhr Red Army, attempting to overthrow the Weimar Republic to establish a communist state. Lead your squad to defeat the Bourgeoisie and the reactionaries!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
