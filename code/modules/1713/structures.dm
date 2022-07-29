@@ -1032,3 +1032,15 @@
 /obj/structure/machinery/construction_crane/excavator
 	name = "excavator"
 	icon_state = "excavator"
+
+/obj/structure/m113
+	name = "M113 APC"
+	icon = 'icons/obj/vehicles/m113_wip.dmi'
+	icon_state = "m113"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 128
