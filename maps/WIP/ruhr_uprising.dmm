@@ -81,6 +81,9 @@
 /obj/structure/window/barrier/sandbag,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
+"aI" = (
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
 "aJ" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,
@@ -1190,10 +1193,10 @@
 /turf/floor/dirt/dust,
 /area/caribbean)
 "ia" = (
-/obj/structure/vehicleparts/frame/car/van/rb,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/rb{
+	doorcode = 4975
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/structure/closet/crate/ww1/ammo_mg08,
 /obj/structure/flag/soviet{
 	name = "Communist Party of Germany Flag"
@@ -1568,10 +1571,10 @@
 /turf/floor/wood,
 /area/caribbean/roofed)
 "kj" = (
-/obj/structure/vehicleparts/frame/car/van/rb,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/rb{
+	doorcode = 11940
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/structure/closet/crate/ww1/ammo_mg08,
 /obj/structure/flag/german_modern,
 /turf/floor/dirt/dust,
@@ -1703,7 +1706,9 @@
 /turf/floor/wood,
 /area/caribbean/roofed)
 "kU" = (
-/obj/structure/vehicleparts/frame/car/van/lfc,
+/obj/structure/vehicleparts/frame/car/van/lfc{
+	doorcode = 11940
+	},
 /obj/structure/vehicleparts/axis/car{
 	color = "#444444";
 	speedlist = list(7,5,4,2.5,1.8)
@@ -1807,10 +1812,10 @@
 /turf/floor/carpet/redcarpet,
 /area/caribbean/roofed)
 "lA" = (
-/obj/structure/vehicleparts/frame/car/van/rf,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/rf{
+	doorcode = 11940
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank,
 /turf/floor/dirt/dust,
 /area/caribbean)
@@ -2463,7 +2468,9 @@
 /turf/floor/dirt/burned,
 /area/caribbean/roofed)
 "pU" = (
-/obj/structure/vehicleparts/frame/car/van/rfc,
+/obj/structure/vehicleparts/frame/car/van/rfc{
+	doorcode = 11940
+	},
 /obj/structure/bed/chair/commander,
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a,
 /obj/item/ammo_magazine/gewehr98,
@@ -2769,6 +2776,16 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
+"sA" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/item/weapon/key/soviet{
+	name = "German Commmunist Party key"
+	},
+/obj/item/weapon/key/soviet{
+	name = "German Commmunist Party key"
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
 "sB" = (
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/deep/swamp{
@@ -3044,10 +3061,10 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "uq" = (
-/obj/structure/vehicleparts/frame/car/van/lb,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/lb{
+	doorcode = 4975
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/structure/closet/crate/ww1/ammo_mg08,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
@@ -3375,10 +3392,10 @@
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "we" = (
-/obj/structure/vehicleparts/frame/car/van/lf,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/lf{
+	doorcode = 4975
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/structure/engine/internal/gasoline{
 	enginesize = 7000
 	},
@@ -5278,10 +5295,10 @@
 /turf/floor/trench,
 /area/caribbean)
 "HB" = (
-/obj/structure/vehicleparts/frame/car/van/lf,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/lf{
+	doorcode = 11940
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/structure/engine/internal/gasoline{
 	enginesize = 7000
 	},
@@ -5637,7 +5654,9 @@
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "Kg" = (
-/obj/structure/vehicleparts/frame/car/van/lfc,
+/obj/structure/vehicleparts/frame/car/van/lfc{
+	doorcode = 4975
+	},
 /obj/structure/vehicleparts/axis/car{
 	color = "#444444";
 	speedlist = list(7,5,4,2.5,1.8)
@@ -6903,7 +6922,9 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
 "Sn" = (
-/obj/structure/vehicleparts/frame/car/van/rfc,
+/obj/structure/vehicleparts/frame/car/van/rfc{
+	doorcode = 4975
+	},
 /obj/structure/bed/chair/commander,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
@@ -7696,10 +7717,10 @@
 /turf/floor/wood,
 /area/caribbean/roofed)
 "WT" = (
-/obj/structure/vehicleparts/frame/car/van/lb,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/lb{
+	doorcode = 11940
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/structure/closet/crate/ww1/ammo_mg08,
 /turf/floor/dirt/dust,
 /area/caribbean)
@@ -7898,10 +7919,10 @@
 	name = "The Caves"
 	})
 "Ye" = (
-/obj/structure/vehicleparts/frame/car/van/rf,
-/obj/structure/vehicleparts/movement/reversed{
-	broken = 1
+/obj/structure/vehicleparts/frame/car/van/rf{
+	doorcode = 4975
 	},
+/obj/structure/vehicleparts/movement/reversed,
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
@@ -7953,6 +7974,15 @@
 	dir = 8
 	},
 /turf/floor/dirt/burned,
+/area/caribbean)
+"Yu" = (
+/obj/item/weapon/key/german{
+	name = "Reichswehr key"
+	},
+/obj/item/weapon/key/german{
+	name = "Reichswehr key"
+	},
+/turf/floor/dirt/dust,
 /area/caribbean)
 "Yz" = (
 /obj/structure/mine_support,
@@ -29962,14 +29992,14 @@ VW
 VW
 VW
 VW
-VW
+aI
 VW
 VW
 VW
 VW
 VW
 Ex
-VW
+sA
 VW
 VW
 VW
@@ -30085,7 +30115,7 @@ VW
 VW
 VW
 Ex
-VW
+sA
 SA
 VW
 VW
@@ -31856,7 +31886,7 @@ oZ
 Bq
 Fn
 dj
-oZ
+Yu
 Fn
 Bq
 Fn
