@@ -14,11 +14,12 @@
 		list(AMERICAN) = /area/caribbean/no_mans_land/jungle,
 		list(VIETNAMESE) = /area/caribbean/japanese,
 		)
+
 	age = "1967"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(AMERICAN = 0.5, VIETNAMESE = 0.5)
 	battle_name = "Battle of Ong Thahn"
-	mission_start_message = "<font size=4>The <b>NVA</b> must capture the American FOB. The <b>US Army</b> must defend their base.<br>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
+	mission_start_message = "<font size=4>The <b>NVA</b> must capture the American FOB. The <b>US Army</b> must defend their base for <b>45 minutes</b>.<br>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = AMERICAN
 	faction2 = VIETNAMESE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -62,6 +63,7 @@
 			return "NVA"
 		if (AMERICAN)
 			return "American"
+
 /obj/map_metadata/ong_thahn/roundend_condition_def2army(define)
 	..()
 	switch (define)
@@ -104,11 +106,12 @@
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_capitol == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
 		world << "<font size = 4><span class = 'notice'>The NVA has captured the FOB!</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
+		no_loop_o = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
