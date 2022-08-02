@@ -257,8 +257,9 @@
 			user << "<span class='notice'>\The [target] is closed.</span>"
 		return FALSE
 	if (!target.is_open_container()) // Otherwise don't care about splashing.
-		user << "<span class='notice'>\The [target] is closed.</span>"
-		return FALSE
+		if(!ishuman(target)) //Bugfix: Humans appearing as containers when using condiments
+			user << "<span class='notice'>\The [target] is closed.</span>"
+			return FALSE
 	if (!reagents || !reagents.total_volume)
 		user << "<span class='notice'>[src] is empty.</span>"
 		return TRUE
@@ -266,9 +267,10 @@
 		user << "<span class='notice'>[target] is full.</span>"
 		return TRUE
 	var/trans = reagents.trans_to(target, amount_per_transfer_from_this)
-	playsound(src,'sound/effects/Liquid_transfer_mono.ogg',50,1)
-	user.visible_message("<span class='notice'>[user] pours the contents of [src] into the [target].</span>",
-		"<span class='notice'>You transfer [trans] units of the solution to [target].</span>")
+	if(!ishuman(target)) //Bugfix: Humans appearing as containers when using condiments
+		playsound(src,'sound/effects/Liquid_transfer_mono.ogg',50,1)
+		user.visible_message("<span class='notice'>[user] pours the contents of [src] into the [target].</span>",
+			"<span class='notice'>You transfer [trans] units of the solution to [target].</span>")
 	if (istype(target, /obj/item/weapon/reagent_containers/glass/rag)) // fixes rags not updating names after being wet - Kachnov
 		var/obj/item/weapon/reagent_containers/glass/rag/R = target
 		R.update_name()

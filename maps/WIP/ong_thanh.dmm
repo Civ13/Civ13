@@ -349,7 +349,7 @@
 "gK" = (/obj/covers/repairedfloor/ship,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/grass,/area/caribbean/roofed/jungle)
 "gL" = (/obj/structure/sink/well,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "gM" = (/obj/structure/table/modern/table,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/trench,/area/caribbean/colonies/jungle)
-"gN" = (/obj/map_metadata/ong_thahn,/turf/floor/trench,/area/caribbean/colonies/jungle)
+"gN" = (/obj/map_metadata/ong_thahn,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "gO" = (/obj/structure/closet/crate/ww2/mosin_ammo,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "gP" = (/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/structure/closet/crate/empty,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "gQ" = (/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/structure/closet/crate/empty,/turf/floor/trench,/area/caribbean/colonies/jungle)
@@ -416,6 +416,7 @@
 "Lg" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/closet/crate/ww2/mosin,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "MW" = (/obj/item/clothing/head/ghillie,/obj/structure/table/rack{layer = 3},/obj/item/clothing/head/ghillie,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "NO" = (/obj/structure/wild/bush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
+"Tu" = (/turf/wall/indestructable/black,/area/caribbean/colonies/jungle)
 "UC" = (/obj/structure/m113,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "XF" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "XK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/colonies/jungle)
@@ -581,7 +582,7 @@ cMenevfZetaceFepfOesajajfQgMbAeneveoepebajebajebajebajeebAeqayayayayacacaeacacay
 cEepajbAetacgeepfPajajajfPfPbAepajbAepajajajajajajajajajbAePayayayayacaeaeacacaycMewajexeOepefajefajefajefajef
 emewajexetacgferbDbDajbDbDbDbEewajexepebajebajebajebajegbAeqayayajajajajajajajajcAeWeEeRcMepeJajeJajeJajeJajeJ
 eSeyajezeTacggZwfwfzajfKgnfCfEfFajelgRbDbDbDbDajbDbDbDbDcpeVeicDajajajajajajajajeKeLeEeXeYepefajefajefajefajef
-LgekajfSekajekajajajajajajajajajajajekekekekekajekekekekekekekekajajajajajajajajajajajeMeNepeJajeJajeJajeJajeJ
-fyajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajefajefajefajefajef
-gNajgOgOajajajajfxfBfLajfDfGfHfIfJfyajajajfTfUgmgoglhkhmajgPfdeQeQgjgkgkgiajhjhigQajajajajajeJajeJajeJajeJajeJ
+LgekajfSekfyekajajajajajajajajajajajekekekekekajekekekekekekekekajajajajajajajajajajajeMeNepeJajeJajeJajeJajeJ
+TuTuajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajefajefajefajefajef
+gNTugOgOajajajajfxfBfLajfDfGfHfIfJfyajajajfTfUgmgoglhkhmajgPfdeQeQgjgkgkgiajhjhigQajajajajajeJajeJajeJajeJajeJ
 "}
