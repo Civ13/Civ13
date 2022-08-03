@@ -1060,6 +1060,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\ong_thanh.dmm"
+#include "maps\WIP\ong_thahn.dmm"
 // END_INCLUDE
 
