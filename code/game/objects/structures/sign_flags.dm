@@ -736,7 +736,7 @@
 /obj/structure/sign/flag/warpact
 	name = "WARPACT flag"
 	desc = "The flag of the Wasrsaw Pact."
-	icon_state = "flag_warpact1"
+	icon_state = "flag_warpact"
 
 /obj/structure/sign/flag/warpact/alt
 	icon_state = "flag_warpact2"

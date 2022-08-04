@@ -537,11 +537,15 @@
 			if (M.value*M.amount >= 200)
 				foundm = TRUE
 				M.amount -= 200/M.value
+				if (M.amount <= 0)
+					qdel(M)
 		else if (istype(user.r_hand, /obj/item/stack/money))
 			var/obj/item/stack/money/M = user.r_hand
 			if (M.value*M.amount >= 200)
 				foundm = TRUE
 				M.amount -= 200/M.value
+				if (M.amount <= 0)
+					qdel(M)
 		if (foundm)
 			var/obj/item/blueprint/gun/newgunbp = new/obj/item/blueprint/gun(loc)
 			newgunbp.name = "[current_gun.name] blueprint"
