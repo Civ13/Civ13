@@ -2414,7 +2414,7 @@ RECIPE: /material/iron/,surgical drill,/obj/item/weapon/surgery/surgicaldrill,2,
 //*********************| IRON FIREARMS |**************************
 
 RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient/matchlock,18,140,0,1,firearms,0,70,0,5,null
-RECIPE: /material/iron/,matchlock tanegashima,obj/item/weapon/gun/projectile/ancient/tanegashima,18,140,0,1,firearms,0,70,0,5,null
+RECIPE: /material/iron/,matchlock tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,18,140,0,1,firearms,0,70,0,5,null
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null
