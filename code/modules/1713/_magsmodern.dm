@@ -207,32 +207,36 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/rpd
-	name = "rpd drum (7.62x39)"
+	name = "RPD drum (7.62x39)"
 	icon_state = "rpd"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
 	w_class = 3
 
-/obj/item/ammo_magazine/rpk74
-	name = "rpk74 drum (7.62x39)"
-	icon_state = "rpk74"
-	mag_type = MAGAZINE
-	caliber = "a556x39"
-	w_class = 3
-
 	ammo_type = /obj/item/ammo_casing/a762x39
-	max_ammo = 75
+	max_ammo = 100
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/rpk74mag
-	name = "rpk74 magazine (7.62x39)"
+/obj/item/ammo_magazine/rpk74
+	name = "RPK-74 magazine (7.62x39)"
 	icon_state = "rpk74mag"
 	mag_type = MAGAZINE
-	caliber = "a556x39"
+	caliber = "a545x39"
+
+	w_class = 2
+	ammo_type = /obj/item/ammo_casing/a545x39
+	max_ammo = 45
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/rpk74/drum
+	name = "RPK-74 drum (5.45x39)"
+	icon_state = "rpk74"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
 	w_class = 3
 
-	ammo_type = /obj/item/ammo_casing/a762x39
-	max_ammo = 45
+	ammo_type = /obj/item/ammo_casing/a545x39
+	max_ammo = 75
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/m9beretta

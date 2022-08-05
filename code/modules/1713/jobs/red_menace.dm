@@ -514,7 +514,7 @@
 		H.setStat("medical", STAT_MEDIUM_LOW)
 		H.setStat("machinegun", STAT_NORMAL)
 	else
-		var/loadout = rand(1,3)
+		var/loadout = rand(1,5)
 		switch(loadout)
 			if(1)
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -526,7 +526,7 @@
 				var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
 				var/obj/item/clothing/under/uniform = H.w_uniform
 				uniform.attackby(stet, H)
-				H.add_note("Role", "You are a paramedic. Tend to your fellow American citizens!")
+				H.add_note("Role", "You are a Paramedic. Tend to your fellow American citizens!")
 				H.setStat("strength", STAT_NORMAL)
 				H.setStat("crafting", STAT_NORMAL)
 				H.setStat("rifle", STAT_NORMAL)
@@ -546,7 +546,7 @@
 				var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
 				uniform1.attackby(hiph, H)
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive(H), slot_l_hand)
-				H.add_note("Role", "You are a police officer. Keep your fellow American citizens safe!")
+				H.add_note("Role", "You are a Police Officer. Keep your fellow American citizens safe!")
 				H.setStat("strength", STAT_MEDIUM_HIGH)
 				H.setStat("crafting", STAT_NORMAL)
 				H.setStat("rifle", STAT_NORMAL)
@@ -559,7 +559,7 @@
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
 			//clothes
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/engi(H), slot_w_uniform)
 				H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard(H), slot_wear_suit)
 				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 			//head
@@ -567,7 +567,6 @@
 			//back
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
 				H.equip_to_slot_or_del(new /obj/item/weapon/material/shovel/steel(H), slot_back)
-				H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 				H.add_note("Role", "You are a Construction Worker. Help your fellow citizens build barricades and repair structures against the invaders.")
 				H.setStat("strength", STAT_MEDIUM_HIGH)
 				H.setStat("crafting", STAT_HIGH)
@@ -577,6 +576,71 @@
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_LOW)
+			if (4)
+			//shoes
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+			//clothes
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
+			//head
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
+			//back
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
+				H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/butcher(H), slot_r_hand)
+				H.add_note("Role", "You are a Cook. Use your cooking skills to defeat the invaders.")
+				H.setStat("strength", STAT_MEDIUM_HIGH)
+				H.setStat("crafting", STAT_MEDIUM_LOW)
+				H.setStat("rifle", STAT_NORMAL)
+				H.setStat("dexterity", STAT_NORMAL)
+				H.setStat("swords", STAT_MEDIUM_HIGH)
+				H.setStat("pistol", STAT_NORMAL)
+				H.setStat("bows", STAT_NORMAL)
+				H.setStat("medical", STAT_LOW)
+			if (5)
+			//shoes
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+			//clothes
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
+			//head
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_wear_suit)
+			//back
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+				var/obj/item/clothing/under/uniform = H.w_uniform
+				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/band = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier(null)
+				uniform.attackby(band, H)
+				H.add_note("Role", "You are a Hunter. Defend your town against the invaders.")
+				H.setStat("strength", STAT_NORMAL)
+				H.setStat("crafting", STAT_NORMAL)
+				H.setStat("rifle", STAT_MEDIUM_HIGH)
+				H.setStat("dexterity", STAT_MEDIUM_HIGH)
+				H.setStat("swords", STAT_NORMAL)
+				H.setStat("pistol", STAT_NORMAL)
+				H.setStat("bows", STAT_MEDIUM_HIGH)
+				H.setStat("medical", STAT_LOW)
+			/*if (6)
+			//shoes
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+			//clothes
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
+			//head
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_wear_suit)
+			//back
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+				var/obj/item/clothing/under/uniform = H.w_uniform
+				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/band = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier(null)
+				uniform.attackby(band, H)
+				H.add_note("Role", "You are a Fireman. Asssist your fellow citizens against the invaders.")
+				H.setStat("strength", STAT_MEDIUM_HIGH)
+				H.setStat("crafting", STAT_NORMAL)
+				H.setStat("rifle", STAT_NORMAL)
+				H.setStat("dexterity", STAT_MEDIUM_HIGH)
+				H.setStat("swords", STAT_NORMAL)
+				H.setStat("pistol", STAT_NORMAL)
+				H.setStat("bows", STAT_NORMAL)
+				H.setStat("medical", STAT_MEDIUM_HIGH)*/
+
 	give_random_name(H)
 	return TRUE
 
