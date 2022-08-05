@@ -931,14 +931,14 @@
 
 /obj/item/clothing/under/motorist
 	name = "motorist outfit"
-	desc = "A casual jeans and white shirt combo, often worn by tofu deliveryboy's"
+	desc = "A casual jeans and white shirt combo."
 	icon_state = "motorist"
 	item_state = "motorist"
 	worn_state = "motorist"
 
 /obj/item/clothing/under/reporter
 	name = "war correspondent outfit"
-	desc = "Casual brown trousers and a black shirt, perfect for running away from gunfire"
+	desc = "Casual brown trousers and a black shirt, perfect for running away from gunfire."
 	icon_state = "reporter"
 	item_state = "reporter"
 	worn_state = "reporter"
@@ -1058,6 +1058,7 @@
 	icon_state = "sealvest_yellow"
 	item_state = "sealvest_yellow"
 	worn_state = "sealvest_yellow"
+
 /obj/item/clothing/suit/storage/jacket/highvis
 	name = "high visibility jacket"
 	desc = "A yellow high visibility jacket."
@@ -1077,6 +1078,13 @@
 	icon_state = "paramedic"
 	item_state = "paramedic"
 	worn_state = "paramedic"
+
+/obj/item/clothing/under/firefighter
+	name = "firefighter uniform"
+	desc = "A uniform used by firefighters."
+	icon_state = "firefighter"
+	item_state = "firefighter"
+	worn_state = "firefighter"
 
 /obj/item/clothing/under/detective1
 	name = "shirt outfit"
