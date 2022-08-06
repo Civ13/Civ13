@@ -490,11 +490,11 @@
 	belt = TRUE
 
 /obj/item/ammo_magazine/qbz95
-	name = "QBZ-95 Magazine (5.7x28mm)"
+	name = "QBZ-95 Magazine (5.8x42mm)"
 	icon_state = "type99"
 	mag_type = MAGAZINE
-	ammo_type = /obj/item/ammo_casing/a57x28
+	ammo_type = /obj/item/ammo_casing/a58x42
 	caliber = "a58x42"
-	max_ammo = 50
+	max_ammo = 30
 	weight = 0.045
 	multiple_sprites = TRUE
