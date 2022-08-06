@@ -1601,6 +1601,74 @@
 	effectiveness_mod = 1.15
 	sel_mode = 1
 
+/obj/item/weapon/gun/projectile/submachinegun/qbz95
+	name = "QBZ-95"
+	icon_state = "qbz95"
+	item_state = "qbz95"
+	base_icon = "qbz95"
+	desc = "A Chinese-designed bullup assault rifle, chambered in 5.8x42mm."
+	icon = 'icons/obj/guns/wip.dmi'
+	caliber = "a58x42"
+	fire_sound = 'sound/weapons/guns/fire/M14.ogg'
+	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
+	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
+	magazine_type = /obj/item/ammo_magazine/qbz95
+	good_mags = list(/obj/item/ammo_magazine/qbz95)
+	weight = 3.5
+	equiptimer = 11
+	effectiveness_mod = 1.05
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		)
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 50,
+
+			MEDIUM_RANGE_STILL = 50,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 30,
+			LONG_RANGE_MOVING = 15,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 82,
+			SHORT_RANGE_MOVING = 72,
+
+			MEDIUM_RANGE_STILL = 64,
+			MEDIUM_RANGE_MOVING = 55,
+
+			LONG_RANGE_STILL = 44,
+			LONG_RANGE_MOVING = 31,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 91,
+			SHORT_RANGE_MOVING = 81,
+
+			MEDIUM_RANGE_STILL = 76,
+			MEDIUM_RANGE_MOVING = 67,
+
+			LONG_RANGE_STILL = 55,
+			LONG_RANGE_MOVING = 43,
+
+			VERY_LONG_RANGE_STILL = 36,
+			VERY_LONG_RANGE_MOVING = 23),
+	)
+
 /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
 	name = "Makeshift AK-47"
 	desc = "Something retarded that doesn't exist."
