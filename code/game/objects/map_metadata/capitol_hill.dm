@@ -301,7 +301,7 @@ var/no_loop_capitol = FALSE
 			return !faction1_can_cross_blocks()
 	return FALSE
 
-///RUSSIANS!!!!//////////
+///CHINESES!!!!//////////
 /obj/map_metadata/capitol_hill/russians
 	title = "Russian Attack at the Capitol Hill"
 	lobby_icon = "icons/lobby/capitol.png"
@@ -313,18 +313,18 @@ var/no_loop_capitol = FALSE
 
 	faction_organization = list(
 		AMERICAN,
-		RUSSIAN)
+		CHINESE)
 
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/british/land/inside/objective,
-		list(RUSSIAN) = /area/caribbean/arab
+		list(CHINESE) = /area/caribbean/arab
 		)
 	age = "2022"
-	faction_distribution_coeffs = list(AMERICAN = 0.4, RUSSIAN = 0.6)
+	faction_distribution_coeffs = list(AMERICAN = 0.4, CHINESE = 0.6)
 	battle_name = "battle for the Capitol Hill"
 	mission_start_message = ""
 	faction1 = AMERICAN
-	faction2 = RUSSIAN
+	faction2 = CHINESE
 	songs = list(
 		"Some Russian Song IDK:1" = "sound/music/gruppakrovi.ogg",)
 	valid_artillery = list()
@@ -343,47 +343,45 @@ var/no_loop_capitol = FALSE
 				. = TRUE
 			else
 				. = FALSE
-	else if (istype(J, /datum/job/russian))
-		if (J.is_ukrainerussowar == TRUE)
-			. = TRUE
-		else
-			. = FALSE
+	else if (istype(J, /datum/job/chinese/pla))
+		. = TRUE
+
 
 
 
 /obj/map_metadata/capitol_hill/russians/roundend_condition_def2name(define)
 	..()
 	switch (define)
-		if (RUSSIAN)
-			return "Russia"
+		if (CHINESE)
+			return "China"
 		if (AMERICAN)
 			return "USA"
 /obj/map_metadata/capitol_hill/russians/roundend_condition_def2army(define)
 	..()
 	switch (define)
-		if (RUSSIAN)
-			return "Russians"
+		if (CHINESE)
+			return "Chinese"
 		if (AMERICAN)
 			return "Americans"
 
 /obj/map_metadata/capitol_hill/russians/army2name(army)
 	..()
 	switch (army)
-		if ("Russians")
-			return "Russia"
+		if ("Chinese")
+			return "China"
 		if ("Americans")
 			return "USA"
 
 
 /obj/map_metadata/capitol_hill/russians/cross_message(faction)
-	if (faction == RUSSIAN)
-		return "<font size = 4>The Russians may now cross the invisible wall!</font>"
+	if (faction == CHINESE)
+		return "<font size = 4>The Chinese may now cross the invisible wall!</font>"
 	else
 		return ""
 
 /obj/map_metadata/capitol_hill/russians/reverse_cross_message(faction)
-	if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>The Russians may no longer cross the invisible wall!</span>"
+	if (faction == CHINESE)
+		return "<span class = 'userdanger'>The Chinese may no longer cross the invisible wall!</span>"
 	else
 		return ""
 
@@ -397,7 +395,7 @@ var/no_loop_capitol = FALSE
 		current_win_condition = no_winner
 		win_condition.hash = 0
 		last_win_condition = win_condition.hash
-		message = "25 minutes have passed! The HVT is now safe!"
+		message = "25 minutes have passed! The HVTs are now safe!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
@@ -405,7 +403,7 @@ var/no_loop_capitol = FALSE
 		if (!win_condition_spam_check)
 			var/count = 0
 			for (var/mob/living/human/H in HVT_list)
-				if (H.original_job_title == "US HVT" && H.stat != DEAD)
+				if (istype(H.original_job, /datum/job/american/hvt/specials) && H.stat != DEAD)
 					count++
 			if (count == 0)
 				message = "The battle is over! All the <b>HVT</b>s are dead!"

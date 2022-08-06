@@ -707,3 +707,173 @@
 
 
 	return TRUE
+
+
+	////////////////////MODERN PLA//////////////////
+	
+/datum/job/chinese/pla/sergeant
+	title = "Zhong Shi"
+	en_meaning = "PLA Sergeant"
+	rank_abbreviation = "Zh."
+	spawn_location = "JoinLateRUSgt"
+
+	is_pla = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+
+	can_get_coordinates = TRUE
+
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/chinese/pla/sergeant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_type07(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/qgf03(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/qbz95(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>, lead your squad in the Chinese advance!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_VERY_HIGH)
+	return TRUE
+
+
+/datum/job/chinese/pla/corpsman
+	title = "Junren"
+	rank_abbreviation = "Sdb."
+	en_meaning = "PLA Corpsman"
+	spawn_location = "JoinLateRUMedic"
+
+	is_medic = TRUE
+	is_pla = TRUE
+
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/chinese/pla/corpsman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_type07(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/qgf03(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
+	uniform.attackby(white, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("machinegun", STAT_HIGH)
+	return TRUE
+
+/datum/job/chinese/pla
+	title = "Lie Bing"
+	en_meaning = "PLA Infantryman"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateRU"
+	is_pla = TRUE
+	uses_squads = TRUE
+
+	min_positions = 25
+	max_positions = 80
+
+/datum/job/chinese/pla/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_type07(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/qgf03(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/qbz95(H), slot_shoulder)
+	H.add_note("Role", "You are a <b>[title]</b>, an infantryman of the PLA's Ground Forces. Follow orders given by your superiors and defeat the enemy!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/datum/job/chinese/pla/sniper
+	title = "Ju Ji Shou"
+	en_meaning = "PLA Sniper"
+	rank_abbreviation = "Sdb."
+	spawn_location = "JoinLateRU"
+	uses_squads = TRUE
+	is_pla = TRUE
+
+	min_positions = 5
+	max_positions = 10
+
+/datum/job/chinese/pla/sniper/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_type07(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/qgf03(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+//back
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	uniform.attackby(armour, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_l_hand)
+	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_VERY_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	return TRUE
