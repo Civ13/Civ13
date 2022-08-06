@@ -1622,7 +1622,6 @@
 		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
 		)
-	effectiveness_mod = 1.06
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	accuracy_list = list(
