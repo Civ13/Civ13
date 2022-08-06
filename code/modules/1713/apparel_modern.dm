@@ -1779,3 +1779,10 @@
 	value = 150
 	slowdown = 1.8
 	health = 175
+
+/obj/item/clothing/under/chinese_type07
+	name = "type 07 chinese uniform"
+	desc = "The standard modern Chinese military uniform."
+	icon_state = "type07"
+	item_state = "type07"
+	worn_state = "type07"

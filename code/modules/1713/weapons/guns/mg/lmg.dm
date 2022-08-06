@@ -341,21 +341,21 @@
 	equiptimer = 20
 	load_delay = 30
 	slowdown = 0.5
-/*
+
 /obj/item/weapon/gun/projectile/automatic/rpk74/update_icon()
-	var/obj/item/ammo_magazine/MAG
 	if (ammo_magazine)
-		if (istype(MAG, /obj/item/ammo_magazine/rpk74))
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk74))
 			item_state = "rpk74"
 			icon_state = "rpk74"
-		else if (istype(MAG, /obj/item/ammo_magazine/rpk74/drum))
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk74/drum))
 			icon_state = "rpk74_drum"
 			item_state = "rpk74_drum"
+			base_icon = "rpk74_drum"
 	else
 		icon_state = "rpk74_open"
 		item_state = "rpk74_open"
 	update_held_icon()
-	return*/
+	return
 
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
