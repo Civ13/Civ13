@@ -828,6 +828,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/qgf03(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/qbz95(H), slot_shoulder)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/h = new /obj/item/clothing/accessory/storage/webbing(null)
+	uniform.attackby(h, H)
 	H.add_note("Role", "You are a <b>[title]</b>, an infantryman of the PLA's Ground Forces. Follow orders given by your superiors and defeat the enemy!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
