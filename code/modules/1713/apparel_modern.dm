@@ -1786,3 +1786,12 @@
 	icon_state = "type07"
 	item_state = "type07"
 	worn_state = "type07"
+
+/obj/item/clothing/head/helmet/modern/qgf03
+	name = "QGF03 helmet"
+	desc = "A modern chinese combat helmet."
+	icon_state = "qgf03"
+	item_state = "qgf03"
+	worn_state = "qgf03"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, arrow = 80, gun = 65, energy = 15, bomb = 55, bio = 20, rad = FALSE)
