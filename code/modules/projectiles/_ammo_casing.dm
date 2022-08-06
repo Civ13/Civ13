@@ -1010,6 +1010,17 @@
 	projectile_type = /obj/item/projectile/bullet/pistol/a57x28
 	caliber = "a57x28"
 	value = 2
+
+/obj/item/ammo_casing/a58x42
+	name = "5.8x42mm cartridge"
+	desc = "A rimless bottlenecked casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/rifle/a58x42
+	caliber = "a58x42"
+	value = 2
+
 /obj/item/ammo_casing/shotgun
 	caliber = "12gauge"
 	weight = 0.12
@@ -1049,6 +1060,7 @@
 	icon_state = "slshell"
 	spent_icon = "slshell_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
+
 /////////////////////LASERS///////////////////////////////////
 /obj/item/ammo_casing/laser
 	name = "laser bolt"
