@@ -300,3 +300,118 @@ var/no_loop_capitol = FALSE
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+///CHINESES!!!!//////////
+/obj/map_metadata/capitol_hill/russians
+	title = "Russian Attack at the Capitol Hill"
+	lobby_icon = "icons/lobby/capitol.png"
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
+	respawn_delay = 1200
+	no_winner = "The operation is still underway."
+	no_hardcore = TRUE
+	gamemode = "Protect the VIP"
+
+	faction_organization = list(
+		AMERICAN,
+		CHINESE)
+
+	roundend_condition_sides = list(
+		list(AMERICAN) = /area/caribbean/british/land/inside/objective,
+		list(CHINESE) = /area/caribbean/arab
+		)
+	age = "2022"
+	faction_distribution_coeffs = list(AMERICAN = 0.4, CHINESE = 0.6)
+	battle_name = "battle for the Capitol Hill"
+	mission_start_message = ""
+	faction1 = AMERICAN
+	faction2 = CHINESE
+	songs = list(
+		"Some Russian Song IDK:1" = "sound/music/gruppakrovi.ogg",)
+	valid_artillery = list()
+	scores = list(
+		"Russians" = 0,
+		"National Guard" = 0,
+	)
+
+/obj/map_metadata/capitol_hill/russians/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if(istype(J, /datum/job/american))
+		if (J.is_capitol == TRUE && !(J.title == "US HVT"))
+			. = TRUE
+		else
+			if (istype(J, /datum/job/american/hvt/specials))
+				. = TRUE
+			else
+				. = FALSE
+	else if (istype(J, /datum/job/chinese/pla))
+		. = TRUE
+
+
+
+
+/obj/map_metadata/capitol_hill/russians/roundend_condition_def2name(define)
+	..()
+	switch (define)
+		if (CHINESE)
+			return "China"
+		if (AMERICAN)
+			return "USA"
+/obj/map_metadata/capitol_hill/russians/roundend_condition_def2army(define)
+	..()
+	switch (define)
+		if (CHINESE)
+			return "Chinese"
+		if (AMERICAN)
+			return "Americans"
+
+/obj/map_metadata/capitol_hill/russians/army2name(army)
+	..()
+	switch (army)
+		if ("Chinese")
+			return "China"
+		if ("Americans")
+			return "USA"
+
+
+/obj/map_metadata/capitol_hill/russians/cross_message(faction)
+	if (faction == CHINESE)
+		return "<font size = 4>The Chinese may now cross the invisible wall!</font>"
+	else
+		return ""
+
+/obj/map_metadata/capitol_hill/russians/reverse_cross_message(faction)
+	if (faction == CHINESE)
+		return "<span class = 'userdanger'>The Chinese may no longer cross the invisible wall!</span>"
+	else
+		return ""
+
+/obj/map_metadata/capitol_hill/russians/update_win_condition()
+	var/message = ""
+	if (processes.ticker.playtime_elapsed >= 18000)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+		last_win_condition = win_condition.hash
+		message = "25 minutes have passed! The HVTs are now safe!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		win_condition_spam_check = TRUE
+		return FALSE
+	if (processes.ticker.playtime_elapsed >= 3000)
+		if (!win_condition_spam_check)
+			var/count = 0
+			for (var/mob/living/human/H in HVT_list)
+				if (istype(H.original_job, /datum/job/american/hvt/specials) && H.stat != DEAD)
+					count++
+			if (count == 0)
+				message = "The battle is over! All the <b>HVT</b>s are dead!"
+				world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
+				win_condition_spam_check = TRUE
+				ticker.finished = TRUE
+				next_win = -1
+				current_win_condition = no_winner
+				win_condition.hash = 0
+				last_win_condition = win_condition.hash
+				return FALSE

@@ -1220,7 +1220,7 @@
 	slowdown = 0.5
 	health = 60
 
-	/obj/item/clothing/suit/armor/zgz1/med
+/obj/item/clothing/suit/armor/zgz1/med
 	name = "Medical zgz1 advanced armor"
 	desc = "An advanced piece of armor that provides medium protection against kinetic and other projectiles. This armor is mostly used by the Chinese medics."
 	icon_state = "zgz1med_armor"

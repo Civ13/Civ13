@@ -293,6 +293,10 @@
 	name = "Republic of China flag"
 	desc = "A flag with the republic of China design."
 	icon_state = "flag_china"
+/obj/structure/sign/flag/chinese/prc
+	name = "People's Republic of China flag"
+	desc = "A flag with the PRC design."
+	icon_state = "flag_chinacommie"
 
 /obj/structure/sign/flag/mongolia
 	name = "Mongolian State flag"

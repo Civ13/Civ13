@@ -1116,6 +1116,39 @@
 	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/* PLA Belts */
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbza95_2
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_2/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1/New()
+	..()
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
 /* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava

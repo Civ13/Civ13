@@ -1503,7 +1503,10 @@
 				if (FILIPINO)
 					holder2.icon_state = "fp_basic"
 				if (CHINESE)
-					holder2.icon_state = "roc_basic"
+					if(map && map.ordinal_age >= 8)
+						holder2.icon_state = "sov_basic"
+					else
+						holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
