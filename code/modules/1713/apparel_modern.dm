@@ -1824,3 +1824,10 @@
 	worn_state = "qgf03"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 80, gun = 65, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/under/cartel
+	name = "floral shirt with light pants"
+	desc = "A pair of light pants with a red floral shirt."
+	icon_state = "cartel1"
+	item_state = "cartel1"
+	worn_state = "cartel1"
