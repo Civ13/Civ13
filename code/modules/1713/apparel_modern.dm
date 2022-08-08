@@ -1081,10 +1081,39 @@
 
 /obj/item/clothing/under/firefighter
 	name = "firefighter uniform"
-	desc = "A uniform used by firefighters."
+	desc = "A uniform used by firefighters. Offers heat protection on the legs."
 	icon_state = "firefighter"
 	item_state = "firefighter"
 	worn_state = "firefighter"
+	flammable = FALSE
+	heat_protection = LOWER_TORSO|LEGS
+	max_heat_protection_temperature = FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/suit/storage/coat/firefighter
+	name = "firefighter coat"
+	desc = "A coat used by firefighters. Offers heat protection on the torso and arms."
+	icon_state = "firefighter"
+	item_state = "firefighter"
+	worn_state = "firefighter"
+	flammable = FALSE
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	max_heat_protection_temperature = FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/head/helmet/modern/firefighter
+	name = "firefighter helmet"
+	desc = "A protective and fire-resistant helmet used by firefigthers."
+	icon_state = "hardhat_yellow"
+	item_state = "hardhat_yellow"
+	worn_state = "hardhat_yellow"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD
+	max_heat_protection_temperature = FIRE_HELMET_MAX_HEAT_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/head/helmet/modern/firefighter/white
+	icon_state = "hardhat_white"
+	item_state = "hardhat_white"
+	worn_state = "hardhat_white"
 
 /obj/item/clothing/under/detective1
 	name = "shirt outfit"
