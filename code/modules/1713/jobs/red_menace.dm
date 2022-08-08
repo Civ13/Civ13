@@ -514,7 +514,7 @@
 		H.setStat("medical", STAT_MEDIUM_LOW)
 		H.setStat("machinegun", STAT_NORMAL)
 	else
-		var/loadout = rand(1,5)
+		var/loadout = rand(1,6)
 		switch(loadout)
 			if(1)
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -602,7 +602,7 @@
 			//clothes
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
 			//head
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
 			//back
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
 				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
@@ -618,20 +618,19 @@
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_MEDIUM_HIGH)
 				H.setStat("medical", STAT_LOW)
-			/*if (6)
+			if (6)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 			//clothes
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/firefighter(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/firefighter(H), slot_wear_suit)
 			//head
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/firefighter(H), slot_head)
 			//back
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
-				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
-				var/obj/item/clothing/under/uniform = H.w_uniform
-				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/band = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier(null)
-				uniform.attackby(band, H)
-				H.add_note("Role", "You are a Fireman. Asssist your fellow citizens against the invaders.")
+				H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/fireaxe(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/firefighter(H), slot_gloves)
+				H.equip_to_slot_or_del(new /obj/item/weapon/fire_extinguisher(H), slot_r_hand)
+				H.add_note("Role", "You are a Firefighter. Asssist your fellow citizens against the invasion.")
 				H.setStat("strength", STAT_MEDIUM_HIGH)
 				H.setStat("crafting", STAT_NORMAL)
 				H.setStat("rifle", STAT_NORMAL)
@@ -639,8 +638,7 @@
 				H.setStat("swords", STAT_NORMAL)
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_NORMAL)
-				H.setStat("medical", STAT_MEDIUM_HIGH)*/
-
+				H.setStat("medical", STAT_MEDIUM_HIGH)
 	give_random_name(H)
 	return TRUE
 
