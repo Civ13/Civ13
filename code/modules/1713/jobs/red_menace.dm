@@ -468,14 +468,13 @@
 	can_be_female = TRUE
 	is_reds = TRUE
 
-
 	min_positions = 1
 	max_positions = 1000
 
 /datum/job/american/modernciv/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
-	if (prob(80))
+	if (prob(75))
 		var/pickoutfit = rand(1,8)
 		switch(pickoutfit)
 			if (1)
@@ -513,8 +512,9 @@
 		H.setStat("bows", STAT_NORMAL)
 		H.setStat("medical", STAT_MEDIUM_LOW)
 		H.setStat("machinegun", STAT_NORMAL)
+		give_random_name(H)
 	else
-		var/loadout = rand(1,6)
+		var/loadout = rand(1,7)
 		switch(loadout)
 			if(1)
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -535,6 +535,7 @@
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_VERY_HIGH)
+				give_random_name(H)
 			if (2)
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police, slot_w_uniform)
@@ -555,6 +556,7 @@
 				H.setStat("pistol", STAT_HIGH)
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_MEDIUM_LOW)
+				give_random_name(H)
 			if (3)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
@@ -576,6 +578,7 @@
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_LOW)
+				give_random_name(H)
 			if (4)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
@@ -596,6 +599,7 @@
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_LOW)
+				give_random_name(H)
 			if (5)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -618,6 +622,7 @@
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_MEDIUM_HIGH)
 				H.setStat("medical", STAT_LOW)
+				give_random_name(H)
 			if (6)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -630,7 +635,7 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/fireaxe(H), slot_shoulder)
 				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/firefighter(H), slot_gloves)
 				H.equip_to_slot_or_del(new /obj/item/weapon/fire_extinguisher(H), slot_r_hand)
-				H.add_note("Role", "You are a Firefighter. Asssist your fellow citizens against the invasion.")
+				H.add_note("Role", "You are a Firefighter. Assist your fellow citizens against the invasion.")
 				H.setStat("strength", STAT_MEDIUM_HIGH)
 				H.setStat("crafting", STAT_NORMAL)
 				H.setStat("rifle", STAT_NORMAL)
@@ -639,7 +644,35 @@
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_MEDIUM_HIGH)
-	give_random_name(H)
+				give_random_name(H)
+			if (7)
+			//shoes
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/white(H), slot_shoes)
+			//clothes
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/cartel(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+				var/obj/item/weapon/storage/briefcase/BC = new /obj/item/weapon/storage/briefcase(null)
+				var/obj/item/weapon/reagent_containers/pill/cocaine/CK = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
+				var/obj/item/weapon/gun/projectile/submachinegun/tec9/TC = new /obj/item/weapon/gun/projectile/submachinegun/tec9(null)
+				var/obj/item/ammo_magazine/tec9/AT = new /obj/item/ammo_magazine/tec9(null)
+				BC.attackby(CK, H)
+				BC.attackby(CK, H)
+				BC.attackby(CK, H)
+				BC.attackby(TC, H)
+				BC.attackby(AT, H)
+				BC.attackby(AT, H)
+				H.equip_to_slot_or_del(BC, slot_r_hand)
+				H.add_note("Role", "You are a Colombian Businessman. Those commies are messing with the wrong guy, time for them to pay back for ruining your business opportunities!")
+				H.setStat("strength", STAT_MEDIUM_HIGH)
+				H.setStat("crafting", STAT_MEDIUM_LOW)
+				H.setStat("rifle", STAT_MEDIUM_HIGH)
+				H.setStat("dexterity", STAT_NORMAL)
+				H.setStat("swords", STAT_NORMAL)
+				H.setStat("pistol", STAT_MEDIUM_HIGH)
+				H.setStat("bows", STAT_NORMAL)
+				H.setStat("medical", STAT_MEDIUM_LOW)
+				H.name = H.species.get_random_spanish_name(H.gender)
+				H.real_name = H.name
 	return TRUE
 
 /datum/job/american/coldwar/ssergeant
