@@ -380,9 +380,16 @@
 
 /obj/structure/sign/court
 	name = "court"
-	desc = "A court house."
+	desc = "The court house."
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "court"
+	bound_width = 64
+
+/obj/structure/sign/townhall
+	name = "town hall"
+	desc = "The town hall."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "townhall"
 	bound_width = 64
 
 /obj/structure/sign/nosmoking

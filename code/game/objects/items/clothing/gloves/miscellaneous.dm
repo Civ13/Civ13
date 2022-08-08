@@ -49,6 +49,13 @@
 	icon_state = "pinkfur"
 	item_state = "pinkfur"
 
+/obj/item/clothing/gloves/thick/firefighter
+	name = "fire-resistant gloves"
+	icon_state = "firefighter"
+	item_state = "firefighter"
+	max_heat_protection_temperature = GLOVES_MAX_HEAT_PROTECTION_TEMPERATURE*4
+	flammable = FALSE
+
 //orc gloves relocated to apparel_tribes.dm
 
 /obj/item/clothing/gloves/thick/combat //Combined effect of SWAT gloves and insulated gloves
