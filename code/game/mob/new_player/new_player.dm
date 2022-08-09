@@ -948,7 +948,7 @@ var/global/redirect_all_players = null
 					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
-					if (map.ordinal_age >= 6 && map.ordinal_age <= 8)
+					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
 						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
 							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
 				if (H.original_job.is_squad_leader)
@@ -1046,7 +1046,7 @@ var/global/redirect_all_players = null
 	if (RUSSIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_russian.len] Russian Army "
-		if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
+		else if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
 			dat += "[alive_russian.len] Soviets "
 		else
 			dat += "[alive_russian.len] Russians "
