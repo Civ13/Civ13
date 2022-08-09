@@ -313,7 +313,6 @@
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
-	effectiveness_mod = 1.5
 	force = 20
 	nothrow = TRUE
 	throwforce = 30
@@ -334,7 +333,6 @@
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
-	effectiveness_mod = 1.7
 	force = 20
 	nothrow = TRUE
 	throwforce = 30
