@@ -423,6 +423,7 @@
 #include "code\game\objects\map_metadata\african_warlords.dm"
 #include "code\game\objects\map_metadata\alleyway.dm"
 #include "code\game\objects\map_metadata\arab_town.dm"
+#include "code\game\objects\map_metadata\arctic_sub.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"
 #include "code\game\objects\map_metadata\berlin.dm"
 #include "code\game\objects\map_metadata\bohemia.dm"
@@ -708,6 +709,7 @@
 #include "code\modules\1713\jobs\_special.dm"
 #include "code\modules\1713\jobs\american.dm"
 #include "code\modules\1713\jobs\ancient.dm"
+#include "code\modules\1713\jobs\arctic_sub.dm"
 #include "code\modules\1713\jobs\british.dm"
 #include "code\modules\1713\jobs\campaign_jobs.dm"
 #include "code\modules\1713\jobs\capitol.dm"
@@ -1062,4 +1064,3 @@
 #include "interface\skin.dmf"
 #include "maps\1969\african_warlords.dmm"
 // END_INCLUDE
-

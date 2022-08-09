@@ -1,9 +1,7 @@
-//Metadata file is still WIP, needs a rework. - Savethetreez 23/07/2022
-
 /obj/map_metadata/arctic_sub
 	ID = MAP_ARCTIC_SUB
 	title = "Battle for the Submarine"
-	lobby_icon_state = "sub"
+	lobby_icon = "icons/lobby/arcticsub.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 	respawn_delay = 1200
 	no_winner = "The siege is still underway."
@@ -23,9 +21,11 @@
 	faction_distribution_coeffs = list(RUSSIAN = 0.7, AMERICAN = 0.3)
 	battle_name = "Battle for the Submarine."
 	mission_start_message = "<font size=4>Both factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Submarine Crew will win if they hold out for <b>40 minutes</b>. Soviets will win if they enter and occupy the command room for 5 minutes!.</font>"
-	faction1 = CREW
+	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
+	songs = list(
+		"Visonia - Antarctic Love:1" = "sound/music/antarcticlove.ogg",)
 	gamemode = "Siege"
 
 /obj/map_metadata/arctic_sub/faction1_can_cross_blocks()

@@ -455,14 +455,4 @@ H.civilization = "Crew"
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_HIGH)
-
-
-
-
-
-
-
-
-
-
-	/////////////////////////////////////////////misc////////////////////////////////////////
+*/
