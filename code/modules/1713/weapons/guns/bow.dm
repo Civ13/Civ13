@@ -230,7 +230,7 @@ obj/item/weapon/gun/projectile/bow/Fire()
 			)
 			chambered = loaded[1]
 			update_icon()
-			load_arrow_overlay(/obj/item/ammo_casing/arrow/bronze)
+			load_arrow_overlay(/obj/item/ammo_casing/arrow/iron)
 	else if (!(istype(loc, /mob/living)))
 		loaded = list()
 		chambered = null
