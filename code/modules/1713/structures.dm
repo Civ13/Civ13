@@ -1044,3 +1044,15 @@
 	not_disassemblable = TRUE
 	bound_width = 96
 	bound_height = 128
+
+/obj/structure/radome
+	name = "radio dome"
+	icon = 'icons/obj/decals_widest.dmi'
+	icon_state = "radome"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 128
+	bound_height = 128
