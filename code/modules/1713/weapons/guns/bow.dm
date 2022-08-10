@@ -216,15 +216,21 @@ obj/item/weapon/gun/projectile/bow/Fire()
 	if (map && map.civilizations)
 		loaded = list()
 		chambered = null
-	/*else if (map && !map.civilizations)
+	else if (map && !map.civilizations)
 		if (map.ordinal_age == 1)
 			loaded = list(
-			/obj/item/ammo_casing/arrow/bronze,
+			new /obj/item/ammo_casing/arrow/bronze,
 			)
+			chambered = loaded[1]
+			update_icon()
+			load_arrow_overlay(/obj/item/ammo_casing/arrow/bronze)
 		else if (map.ordinal_age >= 2)
 			loaded = list(
-			/obj/item/ammo_casing/arrow/iron,
-			)*/ //Commented out for the moment, to be corrected - Treez, 08/22
+			new /obj/item/ammo_casing/arrow/iron,
+			)
+			chambered = loaded[1]
+			update_icon()
+			load_arrow_overlay(/obj/item/ammo_casing/arrow/iron)
 	else if (!(istype(loc, /mob/living)))
 		loaded = list()
 		chambered = null
