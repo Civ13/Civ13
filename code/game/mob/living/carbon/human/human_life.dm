@@ -1494,6 +1494,8 @@
 				if (AMERICAN)
 					if (map.ID == MAP_ARAB_TOWN)
 						holder2.icon_state = "idf_basic"
+					else if (map.ID == MAP_TANTIVEIV)
+						holder2.icon_state = "imp_basic"
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
@@ -1501,7 +1503,10 @@
 				if (FILIPINO)
 					holder2.icon_state = "fp_basic"
 				if (CHINESE)
-					holder2.icon_state = "roc_basic"
+					if(map && map.ordinal_age >= 8)
+						holder2.icon_state = "sov_basic"
+					else
+						holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
@@ -1513,6 +1518,8 @@
 						holder2.icon_state = "upa_basic"
 					else if (map.ID == MAP_WHITERUN)
 						holder2.icon_state = "stormcloak"
+					else if (map.ID == MAP_TANTIVEIV)
+						holder2.icon_state = "rebel_basic"
 					else if (map.ID == MAP_FACTORY)
 						holder2.icon_state = "ukr_basic"
 					else if (map.ID == MAP_GULAG13)
@@ -1682,8 +1689,9 @@
 						if (stat == DEAD)
 							visible_message("[src]'s body is visibly rotten!")
 							rotting_stage = 2
-							if (isturf(loc))
-								new/mob/living/simple_animal/crow(loc)
+							if(map.ID != "TANTIVEIV")
+								if (isturf(loc))
+									new/mob/living/simple_animal/crow(loc)
 							spawn(2000)
 								if (stat == DEAD)
 									var/found = FALSE

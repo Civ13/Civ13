@@ -2,7 +2,7 @@ K
 /obj/map_metadata/gladiators
 	ID = MAP_GLADIATORS
 	title = "Gladiators"
-	lobby_icon_state = "gladiators"
+	lobby_icon = "icons/lobby/gladiators.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/three,/area/caribbean/no_mans_land/invisible_wall/four)
 	respawn_delay = 0
 
@@ -41,11 +41,6 @@ K
 			. = TRUE
 		else
 			. = FALSE
-/obj/map_metadata/gladiators/faction2_can_cross_blocks()
-	return (1)
-
-/obj/map_metadata/gladiators/faction1_can_cross_blocks()
-	return (1)
 
 /obj/map_metadata/gladiators/cross_message(faction)
 	return ""

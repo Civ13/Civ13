@@ -683,6 +683,19 @@ var/global/FREQM = rand(101,120)
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, speaker.default_language, speaker, src, src)
 
+/obj/item/weapon/radio/galacticbattles
+	name = "portable communications backpack"
+	desc = "Used to communicate with others from a far. Set to 150kHz."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "portable_radio5"
+	item_state = "portable_radio5"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	powerneeded = 0
+	force = 4.0
+	throwforce = 3.0
+
 //////////////"POUCH SLOT" RADIOS///////////////////////////
 //For modern radios worn on your chest
 /obj/item/weapon/radio/walkietalkie

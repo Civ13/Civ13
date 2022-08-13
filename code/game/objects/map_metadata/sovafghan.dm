@@ -2,7 +2,7 @@
 	ID = MAP_SOVAFGHAN
 	title = "Soviet-Afghan War"
 	no_winner ="The region of Kandahar is still contested."
-	lobby_icon_state = "sovafghan"
+	lobby_icon = "icons/lobby/sovafghan.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 	has_hunger = TRUE
@@ -36,6 +36,7 @@
 	var/a4_control = "DRA"
 	is_RP = TRUE
 	var/gracedown1 = TRUE
+	grace_wall_timer = 4800
 
 /obj/map_metadata/sovafghan/New()
 	..()
@@ -55,14 +56,11 @@
 	..()
 	if (J.is_afghan)
 		. = TRUE
+		if (clients.len <= 25)
+			if (J.title == "Industrial Worker" || J.title == "Mine Worker" || J.title == "Waiter" || J.title == "Cook" || J.title == "Civilian" || J.title == "Villager")
+				. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/sovafghan/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/sovafghan/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/sovafghan/roundend_condition_def2name(define)
 	..()
@@ -311,11 +309,12 @@
 				if (H.stat!=DEAD && H.original_job.title == "Mujahideen Leader")
 					sov_points += 2
 					world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Leader</font></b> is currently being detained!</font>"
-	world << "<big><b>Current Points:</big></b>"
-	world << "<big>Mujahideen: [muj_points]</big>"
-	world << "<big>Soviets and DRA: [sov_points]</big>"
-	spawn(600)
+	spawn(300)
 		points_check()
+		spawn(300)
+			world << "<big><b>Current Points:</big></b>"
+			world << "<big>Mujahideen: [muj_points]</big>"
+			world << "<big>Soviets and DRA: [sov_points]</big>"
 
 /obj/map_metadata/sovafghan/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 3000)

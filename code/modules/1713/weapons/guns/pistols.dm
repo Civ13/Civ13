@@ -685,3 +685,51 @@
 	else
 		icon_state = "deagle_open"
 	return
+
+/obj/item/weapon/gun/projectile/pistol/browninghp
+	name = "Browning hi-power"
+	desc = "Produced by Fabrique Nationale of Belgium, This old handgun is chambered in 9mm Parabellum."
+	icon_state = "browning_hp"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/browninghp
+	good_mags = list(/obj/item/ammo_magazine/browninghp)
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
+
+/obj/item/weapon/gun/projectile/pistol/browninghp/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "browning_hp"
+	else
+		icon_state = "browning_hp_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/sti2011
+	name = "STI 2011"
+	desc = "A high end specialized version of a m1911 made by the request of the US marshal service chambered .45 S&W."
+	icon_state = "sti2011"
+	w_class = 2
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
+	magazine_type = /obj/item/ammo_magazine/sti2011
+	good_mags = list(/obj/item/ammo_magazine/sti2011)
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a45acp
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.12
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
+
+/obj/item/weapon/gun/projectile/pistol/sti2011/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "sti2011"
+	else
+		icon_state = "sti2011_open"
+	return

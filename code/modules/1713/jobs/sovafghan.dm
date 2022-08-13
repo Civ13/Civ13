@@ -12,6 +12,7 @@
 	is_afghan = TRUE
 	is_soviet = TRUE
 	is_coldwar = TRUE
+	can_get_coordinates = TRUE
 	additional_languages = list("Arabic" = 100)
 
 	min_positions = 1
@@ -43,10 +44,11 @@
 	armour.attackby(plates1, H)
 	armour.attackby(plates2, H)
 	uniform.attackby(armour, H)
-	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
-	var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
-	KC.attackby(sovk,H)
-	H.equip_to_slot_or_del(KC, slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+		var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
+		KC.attackby(sovk,H)
+		H.equip_to_slot_or_del(KC, slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
@@ -81,6 +83,7 @@
 	is_afghan = TRUE
 	is_soviet = TRUE
 	is_coldwar = TRUE
+	can_get_coordinates = TRUE
 	additional_languages = list("Arabic" = 60)
 
 	min_positions = 2
@@ -115,8 +118,8 @@
 	uniform.attackby(mag, H)
 	var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
 	uniform.attackby(mag2, H)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
@@ -178,7 +181,8 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	uniform.attackby(armour2, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
@@ -209,7 +213,7 @@
 	is_coldwar = TRUE
 	additional_languages = list("Arabic" = 70)
 
-	min_positions = 10
+	min_positions = 1
 	max_positions = 8
 
 /datum/job/russian/sovafghan/radop/equip(var/mob/living/human/H)
@@ -217,10 +221,10 @@
 //shoes
 	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-	else if(prob(40))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	else if(prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
@@ -240,7 +244,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 //jacket
 	if (prob(15))
@@ -266,7 +271,7 @@
 
 /datum/job/russian/sovafghan/soldier
 	title = "Soviet Army Private"
-	rank_abbreviation = "Pvt."
+	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
 	is_afghan = TRUE
@@ -275,18 +280,18 @@
 	is_coldwar = TRUE
 	additional_languages = list("Arabic" = 30)
 
-	min_positions = 10
+	min_positions = 1
 	max_positions = 100
 
 /datum/job/russian/sovafghan/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(60))
+	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-	else if(prob(40))
+	else if(prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
@@ -294,10 +299,13 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	uniform.attackby(armour2, H)
 //head
-	if (prob(50))
+	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/sov_ushanka_new(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
+
 //back
 	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
@@ -319,7 +327,8 @@
 		uniform.attackby(mag, H)
 		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
 		uniform.attackby(mag2, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (prob(33))
@@ -337,6 +346,81 @@
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/datum/job/russian/sovafghan/sapper
+	title = "Soviet Army Sapper"
+	rank_abbreviation = "Efr."
+
+	spawn_location = "JoinLateRUSap"
+	is_afghan = TRUE
+	is_soviet = TRUE
+	is_coldwar = TRUE
+	additional_languages = list("Arabic" = 30)
+
+	min_positions = 1
+	max_positions = 6
+
+/datum/job/russian/sovafghan/sapper/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
+	else if(prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper(H), slot_belt)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
+		var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag, H)
+		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag2, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
+		var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag, H)
+		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag2, H)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/sovpack(H), slot_back)
+//jacket
+	if (prob(15))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+	H.civilization = "Soviet Army"
+	give_random_name(H)
+	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache")
+		H.f_style = pick("Selleck Mustache","Shaved")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Joestar")
+	H.s_tone = rand(-40,-25)
+	H.add_note("Role", "You are a <b>[title]</b>, responsible for engineering, maintenance and tasks regarding mines. Listen to your superiors orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
@@ -409,7 +493,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/russian/sovafghan/spez
@@ -454,7 +538,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	H.civilization = "Soviet Army"
 	give_random_name(H)
 	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
@@ -1431,13 +1516,15 @@
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
 	additional_languages = list("Russian" = 40, "English"= 40)
 
 	min_positions = 1
-	max_positions = 5
+	max_positions = 6
 
 /datum/job/arab/mujahideen/leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1511,6 +1598,7 @@
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
+	uses_squads = TRUE
 
 	min_positions = 10
 	max_positions = 250
@@ -1598,10 +1686,10 @@
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
 	H.add_note("Role", "You are a <b>[title]</b>, an islamic rifleman militia. Use guerrila warfare tactics to defeat the infidels!")
-	H.setStat("strength", STAT_HIGH)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_LOW)
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)

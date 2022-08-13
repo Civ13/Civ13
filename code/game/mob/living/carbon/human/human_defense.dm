@@ -129,6 +129,7 @@ bullet_act
 					SW2.reason = reason
 					map.pending_warrants += SW2
 					SW2.forceMove(null)
+					global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
 
 		else if (map.ID == MAP_AFRICAN_WARLORDS)
 			var/mob/living/human/Huser = P.firer

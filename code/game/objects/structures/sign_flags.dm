@@ -37,6 +37,26 @@
 	desc = "A Reich flag for glory."
 	icon_state = "reich"
 
+/obj/structure/sign/flag/gb/imperial
+	name = "Extra-Galactic Empire Flag"
+	desc = "An Imperial Flag for the Extra-Galactic Empire."
+	icon_state = "flag_galacticempire"
+
+/obj/structure/sign/flag/gb/rebel
+	name = "Alliance to Restore the Democracy Flag"
+	desc = "A Rebellious flag for the Alliance."
+	icon_state = "flag_rebelalliance"
+
+/obj/structure/sign/flag/gb/pysker
+	name = "Pysker Order Flag"
+	desc = "A blue and white flag for the ancient order of pyskers."
+	icon_state = "flag_pysker"
+
+/obj/structure/sign/flag/gb/cis
+	name = "Confederacy of Issolationist Star-Systems Flag"
+	desc = "A bright blue and white with a circular emblem."
+	icon_state = "flag_cis"
+
 /obj/structure/sign/flag/blue2
 	name = "\improper blue banner"
 	desc = "A blue linen banner, with golden trims."
@@ -72,6 +92,16 @@
 	desc = "A green banner with the shadada."
 	icon_state = "jihad4"
 
+/obj/structure/sign/flag/taliban
+	name = "\improper taliban flag"
+	desc = "A white flag of the Taliban."
+	icon_state = "flag_taliban"
+
+/obj/structure/sign/flag/isis
+	name = "\improper ISIS flag"
+	desc = "A black flag of the ISIS."
+	icon_state = "flag_isis"
+
 /obj/structure/sign/flag/chechen
 	name = "\improper chechen flag"
 	desc = "The Chechen Separatist flag."
@@ -82,6 +112,10 @@
 	desc = "The Irish Republic flag."
 	icon_state = "flag_ireland"
 
+/obj/structure/sign/flag/gadsen
+	name = "\improper Gadsen flag"
+	desc = "The classic Gadsen flag."
+	icon_state = "flag_gadsen"
 /obj/structure/sign/clock
 	name = "\improper clock"
 	desc = "A clock."
@@ -232,18 +266,47 @@
 
 /obj/structure/sign/flag/medical
 	name = "Medical flag"
-	desc = "A flag with the universally recognized symbol for medicine."
+	desc = "A flag with the universally recognized symbol for medicine and humanitarian aid."
 	icon_state = "medical_flag"
+
+/obj/structure/sign/flag/medical/crescent
+	name = "Red crescent flag"
+	desc = "A flag with the crescent emblem for medicine and humanitarian aid."
+	icon_state = "medical_flag_crescent"
+
+/obj/structure/sign/flag/medical/crystal
+	name = "Medical crystal flag"
+	desc = "A flag with the crystal symbol for medicine and humaniarian aid."
+	icon_state = "medical_flag_crystal"
 
 /obj/structure/sign/flag/japanese
 	name = "Imperial Japanese flag"
 	desc = "A flag with the imperial Japanese rising sun."
-	icon_state = "japanese"
+	icon_state = "flag_japan_empire"
+
+/obj/structure/sign/flag/japanese/modern
+	name = "Japanese flag"
+	desc = "A flag with the Japanese rising sun."
+	icon_state = "flag_japan"
 
 /obj/structure/sign/flag/chinese
 	name = "Republic of China flag"
-	desc = "A flag with the republic of china design."
+	desc = "A flag with the republic of China design."
 	icon_state = "flag_china"
+/obj/structure/sign/flag/chinese/prc
+	name = "People's Republic of China flag"
+	desc = "A flag with the PRC design."
+	icon_state = "flag_chinacommie"
+
+/obj/structure/sign/flag/mongolia
+	name = "Mongolian State flag"
+	desc = "A flag of the state of Mongolia."
+	icon_state = "flag_mongolia"
+
+/obj/structure/sign/flag/mongolia/communist
+	name = "Mongolian People's Republic flag"
+	desc = "A flag of the Mongolian People's Republic."
+	icon_state = "flag_mongolia_communist"
 
 /obj/structure/sign/flag/french
 	name = "French flag"
@@ -259,29 +322,71 @@
 	name = "German Empire flag"
 	desc = "A horizontal tricolour flag of the German Empire."
 	icon_state = "flag_germany"
+
 /obj/structure/sign/flag/german/modern
 	name = "German flag"
 	desc = "A horizontal tricolour flag of the German Republic."
 	icon_state = "flag_germany_republic"
+
+/obj/structure/sign/flag/german/east
+	name = "East German flag"
+	desc = "A horizontal tricolour flag of the German Democratic Republic."
+	icon_state = "flag_germany_east"
+
 /obj/structure/sign/flag/uk
 	name = "United Kingdom flag"
 	desc = "A flag of the United Kingdom."
 	icon_state = "flag_uk"
 
 /obj/structure/sign/flag/russia
-	name = "Russia flag"
+	name = "Russian flag"
 	desc = "A flag of Russsia."
 	icon_state = "flag_russia"
+
+/obj/structure/sign/flag/russia/empire
+	name = "Russian Empire flag"
+	desc = "A flag of the Russsian Empire."
+	icon_state = "flag_russia_empire"
+
+/obj/structure/sign/flag/russia/kornilov
+	name = "Kornilov Shock Regiment flag"
+	desc = "A flag of the infamous regiment of the Volunteer Army."
+	icon_state = "flag_russia_kornilov"
+
+/obj/structure/sign/flag/russia/navy
+	name = "Russian Navy flag"
+	desc = "A flag of Russsian Navy."
+	icon_state = "flag_russia_andreev"
+
+/obj/structure/sign/flag/russia/rsfsr
+	name = "RSFSR flag"
+	desc = "A flag of the Russian Soviet Federative Socialist Republic."
+	icon_state = "flag_rsfsr"
 
 /obj/structure/sign/flag/ukraine
 	name = "Ukrainian flag"
 	desc = "A flag of Ukraine."
-	icon_state = "ukraine"
+	icon_state = "flag_ukraine"
 
 /obj/structure/sign/flag/ukraine/upa
 	name = "flag of the UPA"
 	desc = "The flag of the Ukrainian Insurgent Army called UPA."
 	icon_state ="flag_ukraine_upa"
+
+/obj/structure/sign/flag/ukraine/makhno
+	name = "Makhnovsti flag"
+	desc = "A flag of the Revolutionary Insurgent Army of Ukraine. Also known as the Black Army or Makhnovsti."
+	icon_state = "flag_makhno"
+
+/obj/structure/sign/flag/doncossack
+	name = "Don Cossack Host flag"
+	desc = "A flag of the Don cossacks."
+	icon_state = "flag_doncossack"
+
+/obj/structure/sign/flag/terekcossack
+	name = "Terek Cossack Host flag"
+	desc = "A flag of the Terek cossacks."
+	icon_state = "flag_terekcossack"
 
 /obj/structure/sign/flag/poland
 	name = "Polish flag"
@@ -308,6 +413,11 @@
 	desc = "The flag of the self-proclaimed state of the Luhansk People's Republic"
 	icon_state = "flag_ukraine_lnr"
 
+/obj/structure/sign/flag/ukraine/afu
+	name = "AFU flag"
+	desc = "The flag of the Armed Forces of Ukraine."
+	icon_state ="flag_ukraine_vsu"
+
 /obj/structure/sign/flag/vietnam
 	name = "North Vietnam flag"
 	desc = "The North Vietnamese flag."
@@ -328,10 +438,35 @@
 	desc = "The red, white and blue flag flying above ranks of blue-clad troops."
 	icon_state = "flag_union"
 
+/obj/structure/sign/flag/texas
+	name = "Texan flag"
+	desc = "The flag of the state of Texas."
+	icon_state = "flag_texas"
+
 /obj/structure/sign/flag/sov
 	name = "Soviet Union flag"
 	desc = "The red flag of the Soviet Union."
 	icon_state = "flag_sov"
+
+/obj/structure/sign/flag/sov/navy
+	name = "Soviet Navy flag"
+	desc = "The flag of the naval service branch of the Soviet Armed Forces."
+	icon_state = "flag_sovfleet"
+
+/obj/structure/sign/flag/sov/vdv
+	name = "Soviet VDV flag"
+	desc = "The flag of the Soviet Airborne Forces."
+	icon_state = "flag_vdv"
+
+/obj/structure/sign/flag/sov/air
+	name = "Soviet Air Forces flag"
+	desc = "The flag of the Soviet Air Forces."
+	icon_state = "flag_sovair"
+
+/obj/structure/sign/flag/sov/border
+	name = "Soviet Border Troops flag"
+	desc = "The flag of the Soviet Border Troops."
+	icon_state = "flag_sovborder"
 
 /obj/structure/sign/flag/nazi
 	name = "Third Reich flag"
@@ -345,8 +480,28 @@
 
 /obj/structure/sign/flag/un
 	name = "UN flag"
-	desc = "The peace flag."
+	desc = "The flag of the United Nations."
 	icon_state = "un_flag"
+
+/obj/structure/sign/flag/netherlands
+	name = "Dutch flag"
+	desc = "The flag of Netherlands."
+	icon_state = "flag_netherlands"
+
+/obj/structure/sign/flag/dutch
+	name = "Prince's flag"
+	desc = "The Dutch flag."
+	icon_state = "flag_netherlands_old"
+
+/obj/structure/sign/flag/australia
+	name = "Australian flag"
+	desc = "The flag of Australia."
+	icon_state = "flag_australia"
+
+/obj/structure/sign/flag/canada
+	name = "Canadian flag"
+	desc = "The flag of Canada."
+	icon_state = "flag_canada"
 
 /obj/structure/sign/flag/hezbollah
 	name = "Hezbollah flag"
@@ -378,10 +533,115 @@
 	desc = "The Cuban flag."
 	icon_state = "flag_cuba"
 
+/obj/structure/sign/flag/colombia
+	name = "Colombian flag"
+	desc = "The flag of Colombia."
+	icon_state = "flag_colombia"
+
+/obj/structure/sign/flag/colombia/farc
+	name = "FARC flag"
+	desc = "The flag of the Revolutionary Armed Forces of Columbia."
+	icon_state = "flag_colombia_farc"
+
+/obj/structure/sign/flag/mexico
+	name = "Mexican flag"
+	desc = "The flag of Mexico."
+	icon_state = "flag_mexico"
+
+/obj/structure/sign/flag/brazil
+	name = "Brazilian flag"
+	desc = "The flag of Brazil."
+	icon_state = "flag_brazil"
+
+/obj/structure/sign/flag/brazil/empire
+	name = "Empire of Brazil flag"
+	desc = "The flag of the Empire of Brazil."
+	icon_state = "flag_brazil_empire"
+
+/obj/structure/sign/flag/paraguay
+	name = "Paraguayan flag"
+	desc = "The flag of Paraguay."
+	icon_state = "flag_paraguay"
+
+/obj/structure/sign/flag/argentina
+	name = "Argentinian flag"
+	desc = "The flag of Argentina."
+	icon_state = "flag_argentina"
+
+/obj/structure/sign/flag/venezuela
+	name = "Venezuelan flag"
+	desc = "The flag of Venezuela."
+	icon_state = "flag_venezuela"
+
+/obj/structure/sign/flag/peru
+	name = "Peruvian flag"
+	desc = "The flag of Peru."
+	icon_state = "flag_peru"
+
+/obj/structure/sign/flag/bolivia
+	name = "Bolivian flag"
+	desc = "The flag of Bolivia."
+	icon_state = "flag_bolivia"
+
+/obj/structure/sign/flag/chile
+	name = "Chilean flag"
+	desc = "The flag of Chile."
+	icon_state = "flag_chile"
+
 /obj/structure/sign/flag/afghan/dra
 	name = "DRA flag"
 	desc = "The Democratic Republic of Afghanistan flag."
 	icon_state = "flag_dra"
+
+/obj/structure/sign/flag/iran
+	name = "Iranian flag"
+	desc = "The Iranian flag."
+	icon_state = "flag_iran"
+
+/obj/structure/sign/flag/iraq
+	name = "Iraqui flag"
+	desc = "The flag of Iraq."
+	icon_state = "flag_iraq"
+
+/obj/structure/sign/flag/syria
+	name = "Syrian flag"
+	desc = "The flag of Syria."
+	icon_state = "flag_syria"
+
+/obj/structure/sign/flag/fsa
+	name = "FSA flag"
+	desc = "The flag of the Free Syrian Army."
+	icon_state = "flag_syria_fsa"
+
+/obj/structure/sign/flag/turkey
+	name = "Turkish flag"
+	desc = "The flag of Turkey."
+	icon_state = "flag_turkey"
+
+/obj/structure/sign/flag/kurdistan
+	name = "Kurdish flag"
+	desc = "The flag of Kurdistan."
+	icon_state = "flag_kurdistan"
+
+/obj/structure/sign/flag/georgia
+	name = "Georgian flag"
+	desc = "The flag of Georgia."
+	icon_state = "flag_georgia"
+
+/obj/structure/sign/flag/georgia/old
+	name = "Georgian flag"
+	desc = "The flag of Georgia. Used from 1990 to 2004."
+	icon_state = "flag_georgia_old"
+
+/obj/structure/sign/flag/india
+	name = "Indian flag"
+	desc = "The flag of India."
+	icon_state = "flag_india"
+
+/obj/structure/sign/flag/pakistan
+	name = "Pakistani flag"
+	desc = "The flag of Pakistan."
+	icon_state = "flag_pakistan"
 
 /obj/structure/sign/flag/italy
 	name = "Italian flag"
@@ -392,6 +652,103 @@
 	name = "Finnish flag"
 	desc = "The flag of Finland."
 	icon_state = "flag_finland"
+
+/obj/structure/sign/flag/nigeria
+	name = "Nigerian flag"
+	desc = "The flag of Nigeria."
+	icon_state = "flag_nigeria"
+
+/obj/structure/sign/flag/ethiopia
+	name = "Ethiopian flag"
+	desc = "The flag of Ethiopia."
+	icon_state = "flag_ethiopia"
+
+/obj/structure/sign/flag/armenia
+	name = "Armenian flag"
+	desc = "The flag of Armenia."
+	icon_state = "flag_armenia"
+
+/obj/structure/sign/flag/azerbaijan
+	name = "Azerbaijani flag"
+	desc = "The flag of the Republic of Azerbaijan."
+	icon_state = "flag_azerbaijan"
+
+/obj/structure/sign/flag/bosnia
+	name = "Bosnian flag"
+	desc = "The flag of Bosnia."
+	icon_state = "flag_bosnia"
+
+/obj/structure/sign/flag/kosovo
+	name = "Kosovo flag"
+	desc = "The flag of Kosovo."
+	icon_state = "flag_kosovo"
+
+/obj/structure/sign/flag/albania
+	name = "Albanian flag"
+	desc = "The flag of Albania."
+	icon_state = "flag_albania"
+
+/obj/structure/sign/flag/serbia
+	name = "Serbian flag"
+	desc = "The flag of Serbia."
+	icon_state = "flag_serbia"
+
+/obj/structure/sign/flag/romania
+	name = "Romanian flag"
+	desc = "The flag of Romania."
+	icon_state = "flag_romania"
+
+/obj/structure/sign/flag/romania/socialist
+	name = "RSR flag"
+	desc = "The flag of the Socialist Republic of Romania."
+	icon_state = "flag_romania_soc"
+
+/obj/structure/sign/flag/moldova
+	name = "Moldovan flag"
+	desc = "The flag of the Republic of Moldova."
+	icon_state = "flag_moldova"
+
+/obj/structure/sign/flag/moldova/transnistria
+	name = "Transnistrian flag"
+	desc = "The flag of the Pridnestrovian Moldavian Republic."
+	icon_state = "flag_transnistria"
+
+/obj/structure/sign/flag/czech
+	name = "Czechoslovakian flag"
+	desc = "The flag of Czechoslovakia."
+	icon_state = "flag_czech"
+
+/obj/structure/sign/flag/hungary
+	name = "Hungarian flag"
+	desc = "The flag of Hungary."
+	icon_state = "flag_hungary"
+
+/obj/structure/sign/flag/hungary/sov
+	name = "Hungarian People's Republic flag"
+	desc = "The flag of the Hungarian People's Republic."
+	icon_state = "flag_hungary_sov"
+
+/obj/structure/sign/flag/hungary/old
+	desc = "The flag of Hungary with the small coat of arms."
+	icon_state = "flag_hungary_kingdom"
+
+/obj/structure/sign/flag/finland
+	name = "Finnish flag"
+	desc = "The flag of Finland."
+	icon_state = "flag_finland"
+
+/obj/structure/sign/flag/warpact
+	name = "WARPACT flag"
+	desc = "The flag of the Wasrsaw Pact."
+	icon_state = "flag_warpact"
+
+/obj/structure/sign/flag/warpact/alt
+	icon_state = "flag_warpact2"
+
+/obj/structure/sign/flag/nato
+	name = "NATO flag"
+	desc = "The flag of North Atlantic Treaty Organization."
+	icon_state = "flag_nato"
 
 /obj/structure/sign/flag/redmenia
 	name = "Redmenian flag"

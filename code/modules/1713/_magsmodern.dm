@@ -206,6 +206,39 @@
 	max_ammo = 100
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/rpd
+	name = "RPD drum (7.62x39)"
+	icon_state = "rpd"
+	mag_type = MAGAZINE
+	caliber = "a762x39"
+	w_class = 3
+
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 100
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/rpk74
+	name = "RPK-74 magazine (7.62x39)"
+	icon_state = "rpk74mag"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
+
+	w_class = 2
+	ammo_type = /obj/item/ammo_casing/a545x39
+	max_ammo = 45
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/rpk74/drum
+	name = "RPK-74 drum (5.45x39)"
+	icon_state = "rpk74"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
+	w_class = 3
+
+	ammo_type = /obj/item/ammo_casing/a545x39
+	max_ammo = 75
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/m9beretta
 	name = "Beretta M9 magazine (9x19mm)"
 	icon_state = "m9beretta"
@@ -265,6 +298,16 @@
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/sti2011
+	name = "STI 2011 magazine (9x19mm)"
+	icon_state = "sti2011"
+	mag_type = MAGAZINE
+	caliber = "a45acp"
+	ammo_type = /obj/item/ammo_casing/a45acp
+	max_ammo = 14
 	weight = 0.33
 	multiple_sprites = TRUE
 
@@ -420,3 +463,38 @@
 	multiple_sprites = TRUE
 
 	pouch = TRUE
+
+///////////c6//////////
+/obj/item/ammo_magazine/c6belt
+	name = "C6 GPMG ammo belt"
+	icon_state = "c6belt" //generic 100 round belt
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 100
+	multiple_sprites = TRUE
+	belt = TRUE
+
+/obj/item/ammo_magazine/c6can
+	name = "C6 GPMG ammo can"
+	icon_state = "7.62x51b"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 200
+	multiple_sprites = TRUE
+	belt = TRUE
+
+/obj/item/ammo_magazine/qbz95
+	name = "QBZ-95 Magazine (5.8x42mm)"
+	icon_state = "type99"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a58x42
+	caliber = "a58x42"
+	max_ammo = 30
+	weight = 0.045
+	multiple_sprites = TRUE

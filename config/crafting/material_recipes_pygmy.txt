@@ -2235,6 +2235,9 @@ RECIPE: /material/wood/,pine on the shore,/obj/structure/sign/painting7,3,40,1,1
 RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1,1,paintings,102,0,0,8,null
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,102,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,102,0,0,8,null
+RECIPE: /material/wood/,starry sky,/obj/structure/sign/painting11,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,arid desert,/obj/structure/sign/painting12,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,still life,/obj/structure/sign/painting13,3,40,1,1,paintings,65,0,0,8,null
 
 //*********************| WOOD PUNISHMENTS |**************************
 

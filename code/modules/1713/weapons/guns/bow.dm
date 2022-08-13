@@ -216,6 +216,21 @@ obj/item/weapon/gun/projectile/bow/Fire()
 	if (map && map.civilizations)
 		loaded = list()
 		chambered = null
+	else if (map && !map.civilizations)
+		if (map.ordinal_age == 1)
+			loaded = list(
+			new /obj/item/ammo_casing/arrow/bronze,
+			)
+			chambered = loaded[1]
+			update_icon()
+			load_arrow_overlay(/obj/item/ammo_casing/arrow/bronze)
+		else if (map.ordinal_age >= 2)
+			loaded = list(
+			new /obj/item/ammo_casing/arrow/iron,
+			)
+			chambered = loaded[1]
+			update_icon()
+			load_arrow_overlay(/obj/item/ammo_casing/arrow/iron)
 	else if (!(istype(loc, /mob/living)))
 		loaded = list()
 		chambered = null
@@ -295,3 +310,10 @@ obj/item/weapon/gun/projectile/bow/Fire()
 			user << "<span class='warning'>You need both hands to fire the [src]!</span>"
 			return FALSE
 	return ..()
+
+/obj/item/weapon/gun/projectile/bow/attackby(obj/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/attachment/bayonet))
+		user << "<span class = 'danger'>That won't fit on there.</span>"
+		return FALSE
+	else
+		return ..()

@@ -480,7 +480,7 @@
 	M.adjustBrainLoss(6 * removed)
 	M.add_chemical_effect(CE_PULSE, 6)
 	M.hallucination = max(M.hallucination, 3)
-	M.apply_effect(STUTTER)
+	M.apply_effect(3, STUTTER)
 	M.mood -= 30
 
 /datum/reagent/pervitin
@@ -579,7 +579,8 @@
 	M.mood += removed*100
 
 /datum/reagent/sterilizine
-	name = "sterilizine" //Patch notes: Fixed incorrectly placed capital that was preventing reagent working
+	name = "Sterilizine"
+	id = "sterilizine"
 	description = "Sterilizes wounds in preparation for surgery and thoroughly removes blood."
 	taste_description = "bitterness"
 	reagent_state = LIQUID

@@ -636,9 +636,10 @@ var/global/redirect_all_players = null
 //prevent boss spawns if there are enemies in the building
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			var/obj/map_metadata/capitol_hill/CP = map
-			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "US HVT"))
-				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
-				return
+			if(!istype(map, /obj/map_metadata/capitol_hill/russians))
+				if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "US HVT"))
+					WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
+					return
 		if (map && map.ID == MAP_YELTSIN)
 			var/obj/map_metadata/yeltsin/CP = map
 			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet Supreme Chairman"))
@@ -909,14 +910,18 @@ var/global/redirect_all_players = null
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
 		if (H.original_job.is_commander || H.original_job.is_officer)
-			H.verbs += /mob/living/human/proc/Commander_Announcement
+			if (map.ID != MAP_THE_ART_OF_THE_DEAL)
+				H.verbs += /mob/living/human/proc/Commander_Announcement
+			else
+				if (H.original_job_title == "County Sheriff" || H.civilization == "Government")
+					H.verbs += /mob/living/human/proc/Commander_Announcement
 		if (H.original_job.uses_squads)
 			H.verbs += /mob/living/human/proc/find_nco
 			if (H.original_job.is_squad_leader)
 				H.verbs += /mob/living/human/proc/Squad_Announcement
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
-					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
+					if (map.ordinal_age >= 6 && map.ordinal_age <= 8)
 						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
 							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
@@ -944,7 +949,7 @@ var/global/redirect_all_players = null
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
 					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
-						if (map.ID != MAP_YELTSIN)
+						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
 							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
@@ -1013,14 +1018,18 @@ var/global/redirect_all_players = null
 	if (CIVILIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
 			dat += "[alive_civilians.len] Soviets "
-		if (map && istype(map, /obj/map_metadata/african_warlords))
+		else if (map && istype(map, /obj/map_metadata/african_warlords))
 			dat += "[alive_civilians.len] UN Peacekeepers "
-		if (map && istype(map, /obj/map_metadata/capitol_hill))
+		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_civilians.len] Rioters "
-		if (map && istype(map, /obj/map_metadata/yeltsin))
+		else if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_civilians.len] Soviet Remnants "
-		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_civilians.len] Confederates "
+		else if (map && istype(map, /obj/map_metadata/tantiveiv))
+			dat += "[alive_civilians.len] Rebels "
+		else if (map && istype(map, /obj/map_metadata/ruhr_uprising))
+			dat += "[alive_civilians.len] Revolutionaries "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1028,7 +1037,7 @@ var/global/redirect_all_players = null
 	if (ROMAN in map.faction_organization)
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/sovafghan))
+		if (map && (istype(map, /obj/map_metadata/sovafghan) || istype(map, /obj/map_metadata/hill_3234)))
 			dat += "[alive_arab.len] Mujahideen "
 		else
 			dat += "[alive_arab.len] Arabs "
@@ -1037,21 +1046,28 @@ var/global/redirect_all_players = null
 	if (RUSSIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_russian.len] Russian Army "
+		else if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
+			dat += "[alive_russian.len] Soviets "
 		else
-			dat += "[alive_russian.len] Russian "
+			dat += "[alive_russian.len] Russians "
 	if (CHECHEN in map.faction_organization)
-		dat += "[alive_chechen.len] Chechen "
+		dat += "[alive_chechen.len] Chechens "
 	if (FINNISH in map.faction_organization)
 		dat += "[alive_finnish.len] Finnish "
 	if (GERMAN in map.faction_organization)
-		dat += "[alive_german.len] German "
+		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
+			dat += "[alive_german.len] Reactionaries "
+		else
+			dat += "[alive_german.len] German "
 	if (AMERICAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/arab_town))
 			dat += "[alive_american.len] Israeli "
-		if (map && istype(map, /obj/map_metadata/capitol_hill))
+		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_american.len] American Government "
-		if (map && istype(map, /obj/map_metadata/missionary_ridge))
+		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
 			dat += "[alive_american.len] Union Soldiers "
+		else if (map && istype(map, /obj/map_metadata/tantiveiv))
+			dat += "[alive_american.len] Imperials "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1187,28 +1203,46 @@ var/global/redirect_all_players = null
 				else if (map && map.ID == "MISSIONARY_RIDGE")
 					if (temp_name == "American")
 						temp_name = "Union"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Confederate"
 				else if (map && map.ID == "WHITERUN")
 					if (temp_name == "Roman")
 						temp_name = "Imperials"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Stormcloaks"
 				else if (map && map.ID == "CAPITOL_HILL")
 					if (temp_name == "American")
 						temp_name = "American Government"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Rioters"
 				else if (map && map.ID == "YELTSIN")
 					if (temp_name == "Russian")
 						temp_name = "Russian Army"
-					if (temp_name == "Civilian")
+					else if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
 				else if (map && map.ID == "SOVAFGHAN")
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
-					if (temp_name == "Arab")
+					else if (temp_name == "Arab")
 						temp_name = "Mujahideen"
+				else if (map && map.ID == "HILL_3234")
+					if (temp_name == "Russian")
+						temp_name = "Soviet Army"
+					else if (temp_name == "Arab")
+						temp_name = "Mujahideen"
+				else if (map && map.ID == "TANTIVEIV")
+					if (temp_name == "Civilian")
+						temp_name = "Rebels"
+					else if (temp_name == "American")
+						temp_name = "Imperials"
+				else if (map && map.ID == "RED_MENACE")
+					if (temp_name == "Russian")
+						temp_name = "Soviets"
+				else if (map && map.ID == "RUHR_UPRISING")
+					if (temp_name == "German")
+						temp_name = "Reactionaries"
+					if (temp_name == "Civilian")
+						temp_name = "Revolutionaries"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"

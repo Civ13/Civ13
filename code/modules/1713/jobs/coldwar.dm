@@ -1441,7 +1441,7 @@
 
 /datum/job/vietnamese/vietcong_comms_nva
 	title = "NVA Tuy Phai"
-	en_meaning = "NVA Radio man"
+	en_meaning = "NVA Radioman/Squad Leader"
 	rank_abbreviation = "Tuy Phai"
 
 	spawn_location = "JoinLateJP"

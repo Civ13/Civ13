@@ -127,6 +127,16 @@
 	nutriment_factor = 2
 	color = "#792300"
 
+/datum/reagent/nutriment/tomato
+	name = "Tomato sauce"
+	id = "tomato"
+	description = "A thick sauce made from the tomatoes."
+	taste_description = "sweet, acidity with a hint of umami"
+	taste_mult = 1.4
+	reagent_state = LIQUID
+	nutriment_factor = 2.3
+	color = "#B21807"
+
 /datum/reagent/nutriment/paprika
 	name = "Paprika"
 	id = "paprika"
@@ -241,6 +251,22 @@
 	taste_description = "mint"
 	reagent_state = LIQUID
 	color = "#CF3600"
+
+/datum/reagent/nutriment/sprinkles
+	name = "Sprinkles"
+	id = "sprinkles"
+	description = "Multi-colored little bits of sugar, commonly found on donuts. Loved by cops."
+	taste_description = "sweetness"
+	reagent_state = SOLID
+	color = "#FFBAFF"
+
+/datum/reagent/nutriment/caramel
+	name = "Caramel"
+	id = "caramel"
+	description = "Who would have guessed that heated sugar could be so delicious?"
+	taste_description = "caramel"
+	reagent_state = SOLID
+	color = "#824D27"
 
 /* Non-food stuff like condiments */
 

@@ -1,7 +1,7 @@
 /obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
 	title = "Arab Town"
-	lobby_icon_state = "modern"
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -154,7 +154,7 @@ var/no_loop_arab = FALSE
 /obj/map_metadata/arab_town_2
 	ID = MAP_ARAB_TOWN_2
 	title = "Arab Town II"
-	lobby_icon_state = "modern"
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_hardcore = FALSE

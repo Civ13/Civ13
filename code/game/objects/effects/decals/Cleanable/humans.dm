@@ -24,13 +24,13 @@ var/global/list/image/splatter_cache=list()
 	decay_timer = 216000
 
 /obj/effect/decal/cleanable/blood/reveal_blood()
-/*	if (!fluorescent)
-		fluorescent = TRUE*/
+	if (!fluorescent)
+		fluorescent = TRUE
 	basecolor = COLOR_LUMINOL
 	update_icon()
 
 /obj/effect/decal/cleanable/blood/clean_blood()
-//	fluorescent = FALSE
+	fluorescent = FALSE
 	if (invisibility != 100)
 		invisibility = 100
 		amount = 0

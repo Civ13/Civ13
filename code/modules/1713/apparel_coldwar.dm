@@ -132,6 +132,11 @@
 	worn_state = "policejacket"
 	var/closed = TRUE
 
+/obj/item/clothing/suit/storage/jacket/police/New()
+	..()
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		name = "sheriff's office jacket"
+
 /obj/item/clothing/suit/storage/jacket/police/verb/toggle()
 	set category = null
 	set src in usr
@@ -152,6 +157,38 @@
 			item_state = "policejacket"
 			icon_state = "policejacket"
 			item_state_slots["w_uniform"] = "policejacket"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
+
+/obj/item/clothing/suit/storage/jacket/police/black
+	name = "police jacket"
+	desc = "A black police jacket."
+	icon_state = "policejacket_black"
+	item_state = "policejacket_black"
+	worn_state = "policejacket_black"
+	closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/police/black/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust jacket"
+	if (type != /obj/item/clothing/suit/storage/jacket/police/black)
+		return
+	else
+		if(closed)
+			worn_state = "policejacket_black_open"
+			item_state = "policejacket_black_open"
+			icon_state = "policejacket_black_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "policejacket_black"
+			item_state = "policejacket_black"
+			icon_state = "policejacket_black"
+			item_state_slots["w_uniform"] = "policejacket_black"
 			usr << "You <b>close up</b> your jacket."
 			closed = TRUE
 			update_clothing_icon()
@@ -411,6 +448,13 @@
 	icon_state = "m1_camo_mitchell_lt"
 	item_state = "ushelmet_camo_lt"
 	worn_state = "ushelmet_camo_lt"
+
+/obj/item/clothing/head/helmet/modern/ushelmet/crewman
+	name = "CVC helmet"
+	desc = "A standard issue helmet for vehicle crewmen."
+	icon_state = "cvc_helmet"
+	item_state = "cvc_helmet"
+	worn_state = "cvc_helmet"
 
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1
@@ -909,6 +953,12 @@
 	new/obj/item/ammo_magazine/m249(src)
 	new/obj/item/ammo_magazine/m249(src)
 
+/obj/item/weapon/storage/belt/largepouches/green/m249
+/obj/item/weapon/storage/belt/largepouches/green/m249/New()
+	..()
+	new/obj/item/ammo_magazine/m249(src)
+	new/obj/item/ammo_magazine/m249(src)
+
 /obj/item/weapon/storage/belt/largepouches/sovietmg
 /obj/item/weapon/storage/belt/largepouches/sovietmg/New()
 	..()
@@ -1048,6 +1098,55 @@
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/stanag
+/obj/item/weapon/storage/belt/smallpouches/green/stanag/New()
+	..()
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/m14
+/obj/item/weapon/storage/belt/smallpouches/green/m14/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/* PLA Belts */
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbza95_2
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_2/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1/New()
+	..()
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/

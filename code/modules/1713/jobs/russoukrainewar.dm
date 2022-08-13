@@ -542,8 +542,6 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, apart of the Russian Federal Forces. Follow orders given by your superiors and defeat the enemy!")
-	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_HIGH)
@@ -595,7 +593,6 @@
 	give_random_name(H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, take out enemy officers and high value targets from a distance!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_VERY_VERY_HIGH)

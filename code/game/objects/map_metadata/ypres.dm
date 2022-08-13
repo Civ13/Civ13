@@ -2,7 +2,7 @@
 /obj/map_metadata/ypres
 	ID = MAP_YPRES
 	title = "2nd Battle of Ypres"
-	lobby_icon_state = "ww1"
+	lobby_icon = "icons/lobby/ww1.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 
@@ -23,6 +23,7 @@
 	mission_start_message = "<font size=4>The <b>German</b> and the <b>Allied</b> forces are facing eachother in the trenches near Ypres! Get ready for the battle! It will start in <b>5 minutes</b>.</font>"
 	faction1 = BRITISH
 	faction2 = GERMAN
+	grace_wall_timer = 3000
 	songs = list(
 		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg")
 
@@ -81,12 +82,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/ypres/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/ypres/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/ypres/update_win_condition()
 

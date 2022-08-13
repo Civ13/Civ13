@@ -2,7 +2,7 @@
 /obj/map_metadata/little_creek
 	ID = MAP_LITTLE_CREEK
 	title = "Big Trouble in Little Creek (RP)"
-	lobby_icon_state = "wildwest"
+	lobby_icon = "icons/lobby/wildwest.png"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 3600
@@ -40,6 +40,7 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/little_creek/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
+	
 /obj/map_metadata/little_creek/cross_message(faction)
 	return ""
 

@@ -135,6 +135,13 @@
 	health = 80
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
+/obj/structure/grille/chainlinkfence/corner
+	name = "chain-link fence"
+	desc = "A woven steel fence."
+	icon_state = "chainlinkfence_corner"
+	health = 80
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+
 /obj/structure/wallclock
 	name = "standing clock"
 	desc = "A classic standing clock."
@@ -196,6 +203,18 @@
 	icon_state = "bathtub"
 	flammable = FALSE
 	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/djtable
+	name = "dj table"
+	desc = "A dj table."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "djtable"
+	flammable = TRUE
+	not_movable = TRUE
 	not_disassemblable = TRUE
 	density = TRUE
 	opacity = FALSE
@@ -265,6 +284,17 @@
 	var/pickhookah = pick("hookah1", "hookah2", "hookah3")
 	icon_state = pickhookah
 
+/obj/structure/props/bong
+	name = "bong"
+	desc = "A glass pipe used to smoke cannabis or other substances."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "bong"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+
 /obj/structure/broken_hind
 	name = "Mi-24 remains"
 	desc = "The remains of a Soviet helicopter."
@@ -294,6 +324,42 @@
 	New()
 		..()
 		icon_state ="propstall[rand(1,4)]"
+
+/obj/structure/props/keyboard
+	name = "eletric keyboard"
+	desc = "A electric keyboard."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "keyboard"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+
+/obj/structure/props/dj
+	name = "dj table"
+	desc = "A dj setup for makin sick beats."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "djtable"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+
+/obj/structure/props/micstand
+	name = "microphone stand"
+	desc = "A mic stand."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "microphone_stand"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
@@ -909,3 +975,84 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	mouse_opacity = FALSE
+
+
+///////////////////////CARGO CONTAINERS///////////////////////////
+
+/obj/structure/cargo_container
+	name = "cargo container"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "container1"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 64
+
+/obj/structure/cargo_container/New()
+	var/number = rand(1,5)
+	icon_state = "container[number]"
+
+/////////////////////CONSTRUCTION PROPS///////////////////////
+
+/obj/structure/machinery/water_pump
+	name = "water pump"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "waterpump"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 96
+
+/obj/structure/machinery/construction_crane
+	name = "crane"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "crane"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 64
+	bound_height = 64
+
+/obj/structure/machinery/construction_crane/New()
+	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
+		bound_width = 64
+		bound_height = 64
+	else
+		bound_width = 64
+		bound_height = 64
+
+/obj/structure/machinery/construction_crane/excavator
+	name = "excavator"
+	icon_state = "excavator"
+
+/obj/structure/m113
+	name = "M113 APC"
+	icon = 'icons/obj/vehicles/m113_wip.dmi'
+	icon_state = "m113"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 128
+
+/obj/structure/radome
+	name = "radio dome"
+	icon = 'icons/obj/decals_widest.dmi'
+	icon_state = "radome"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 128
+	bound_height = 128

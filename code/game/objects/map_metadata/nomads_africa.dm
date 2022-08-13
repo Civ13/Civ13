@@ -1,7 +1,7 @@
 /obj/map_metadata/nomads_africa
 	ID = MAP_NOMADS_AFRICA
 	title = "Nomads (Africa)"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -37,12 +37,6 @@
 		eruption_check()
 	spawn(18000)
 		seasons()
-
-/obj/map_metadata/nomads_africa/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_africa/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_africa/cross_message(faction)
 	return ""

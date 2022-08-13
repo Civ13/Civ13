@@ -3,7 +3,7 @@
 	ID = MAP_KENOBI
 	title = "Kenobi's Test Map"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200 // 10 minutes!
 

@@ -1,7 +1,7 @@
 /obj/map_metadata/tantiveiv
 	ID = MAP_TANTIVEIV
 	title = "VantiveIV"
-	lobby_icon_state = "starwars"
+	lobby_icon = "icons/lobby/galacticbattles.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -18,13 +18,14 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(CIVILIAN = 0.7, AMERICAN = 0.3)
 	battle_name = "VantiveIV capture"
-	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the ceasefire ends!<br>The Alliance to Restore the Democracy will win if they hold out for <b>20 minutes</b>. The Extra-Galactic Empire will win if they manage to capture the Alliance Spawn within the Bridge of the Vantive IV!</font>"
+	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the boarding begins!<br>The Alliance to Restore the Democracy will win if they hold out for <b>20 minutes</b>. The Extra-Galactic Empire will win if they manage to capture the Alliance Spawn within the Bridge of the Vantive IV!</font>"
 	faction1 = CIVILIAN
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Battle of Heroes (Galactic Battles):1" = "sound/music/battle_of_heroes.ogg",)
 	gamemode = "Siege"
+	grace_wall_timer = 2400
 /obj/map_metadata/tantiveiv/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/american))
@@ -37,12 +38,6 @@
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/tantiveiv/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/tantiveiv/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/tantiveiv/roundend_condition_def2name(define)
@@ -71,7 +66,7 @@
 
 /obj/map_metadata/tantiveiv/cross_message(faction)
 	if (faction == AMERICAN)
-		return "<font size = 4>The Imperial Shocktroopers Troopers may now cross the invisible wall!</font>"
+		return "<font size = 4>The Imperial Shocktroopers may now cross the invisible wall!</font>"
 	else if (faction == JAPANESE)
 		return ""
 	else
@@ -79,7 +74,7 @@
 
 /obj/map_metadata/tantiveiv/reverse_cross_message(faction)
 	if (faction == AMERICAN)
-		return "<span class = 'userdanger'>The Imperial Shocktroopers Troopers may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Imperial Shocktroopers may no longer cross the invisible wall!</span>"
 	else if (faction == JAPANESE)
 		return ""
 	else
@@ -94,7 +89,7 @@ var/no_loop_intra = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Rebellion</b> has successfuly defended the Vantive IV bridge! The Rebels have halted the Imperial Shocktroopers Troopers from Boarding!"
+		var/message = "The <b>Rebellion</b> has successfuly defended the Vantive IV bridge! The Rebels have halted the Imperial Shocktroopers from Boarding!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

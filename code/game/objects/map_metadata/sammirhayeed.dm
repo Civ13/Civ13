@@ -1,7 +1,7 @@
 /obj/map_metadata/sammirhayeed
 	ID = MAP_SAMMIRHAYEED
 	title = "Sammir Hayeed"
-	lobby_icon_state = "medieval"
+	lobby_icon = "icons/lobby/medieval.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_hardcore = TRUE
@@ -24,11 +24,7 @@
 	songs = list(
 		"Crusaders:1" = "sound/music/crusaders.ogg")
 	gamemode = "Siege"
-/obj/map_metadata/sammirhayeed/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/sammirhayeed/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	grace_wall_timer = 3600
 
 /obj/map_metadata/sammirhayeed/job_enabled_specialcheck(var/datum/job/J)
 	..()
