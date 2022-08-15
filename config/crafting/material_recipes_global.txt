@@ -1550,13 +1550,13 @@ RECIPE: /material/glass/,green glasses,/obj/item/clothing/glasses/gglasses,6,120
 RECIPE: /material/glass/,corrective glasses,/obj/item/clothing/glasses/regular,6,120,0,1,eyewear,110,120,0,8,null
 RECIPE: /material/glass/,sunglasses,/obj/item/clothing/glasses/sunglasses,2,90,1,1,eyewear,140,0,0,8,null
 RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/large,2,90,1,1,eyewear,165,0,0,8,null
-RECIPE: /material/glass/,redglasses,/obj/item/clothing/glasses/redlense,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_r,/obj/item/clothing/glasses/univisorred,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_g,/obj/item/clothing/glasses/univisorgreen,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_y,/obj/item/clothing/glasses/univisoryellow,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_c,/obj/item/clothing/glasses/univisorcyan,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_w,/obj/item/clothing/glasses/univisorwhite,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_flashy,/obj/item/clothing/glasses/univisorflashy,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,red glasses,/obj/item/clothing/glasses/redlense,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,red univisor,/obj/item/clothing/glasses/univisorred,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,green univisor,/obj/item/clothing/glasses/univisorgreen,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,yellow univisor,/obj/item/clothing/glasses/univisoryellow,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,cyan univisor,/obj/item/clothing/glasses/univisorcyan,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,white univisor,/obj/item/clothing/glasses/univisorwhite,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,flashy univisor,/obj/item/clothing/glasses/univisorflashy,3,90,1,1,eyewear,140,0,0,8,null
 
 //**************************************************************
 //************************ROBERTS CARTS*************************
