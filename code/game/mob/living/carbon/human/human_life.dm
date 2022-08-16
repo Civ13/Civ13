@@ -1604,12 +1604,17 @@
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"commander")
-				else if (original_job.is_officer || original_job.is_squad_leader)
+				else if (original_job.is_officer)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"officer")
-			else if (original_job.is_medic)
+				else if (original_job.is_squad_leader)
+					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
+						holder2.icon_state = ""
+					else
+						holder2.overlays += icon(holder2.icon,"nco")
+			if (original_job.is_medic)
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2
 
