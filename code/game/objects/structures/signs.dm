@@ -82,6 +82,11 @@
 	desc = "A sign Texas people usually like."
 	icon_state = "tfc"
 
+/obj/structure/sign/weedshop
+	name = "Weed Shop"
+	desc = "A sign stoners usually like."
+	icon_state = "weedshop"
+
 /obj/structure/sign/mckellens
 	name = "McKellen's"
 	desc = "A sign for the McKellen's Franchise establishment."
