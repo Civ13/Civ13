@@ -63,7 +63,7 @@
 	title = "Soviet Army Lieutenant"
 	rank_abbreviation = "Lt."
 
-	spawn_location = "JoinLateRUCap"
+	spawn_location = "JoinLateRULt"
 
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -134,7 +134,7 @@
 	title = "Soviet Army Sergeant"
 	rank_abbreviation = "Sgt."
 
-	spawn_location = "JoinLateRUCap"
+	spawn_location = "JoinLateRUSL"
 
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -492,7 +492,7 @@
 	title = "Soviet Army Tankist"
 	rank_abbreviation = "Tanker"
 
-	spawn_location = "JoinLateRU"
+	spawn_location = "JoinLateRUTank"
 
 	uses_squads = TRUE
 	is_afghan = TRUE
