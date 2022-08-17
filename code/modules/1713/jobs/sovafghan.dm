@@ -1,4 +1,63 @@
 ////////////////////////////////////////////////Soviet army (1985's)////////////////////////////////////////
+/datum/job/russian/sovafghan/captain
+	title = "Soviet Army Captain"
+	rank_abbreviation = "Kapt."
+
+	spawn_location = "JoinLateRUCap"
+
+	is_officer = TRUE
+	is_commander = TRUE
+	whitelisted = TRUE
+	is_afghan = TRUE
+	is_soviet = TRUE
+	is_coldwar = TRUE
+	can_get_coordinates = TRUE
+	additional_languages = list("Arabic" = 100)
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/russian/sovafghan/captain/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/soviet_officer(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/coldwar/soviet_officer(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/waist/holsterw = new /obj/item/clothing/accessory/holster/waist(null)
+	uniform.attackby(holsterw, H)
+	if (map.ID == MAP_SOVAFGHAN)
+		var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+		var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
+		KC.attackby(sovk,H)
+		H.equip_to_slot_or_del(KC, slot_l_store)
+
+	H.civilization = "Soviet Army"
+	give_random_name(H)
+	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
+		H.f_style = pick("Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Shaved")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-40,-25)
+	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole company. Organize your troops accordingly!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
 
 /datum/job/russian/sovafghan/lieutenant
 	title = "Soviet Army Lieutenant"
@@ -7,7 +66,6 @@
 	spawn_location = "JoinLateRUCap"
 
 	is_officer = TRUE
-	is_commander = TRUE
 	whitelisted = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
@@ -60,7 +118,7 @@
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 	H.s_tone = rand(-40,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
+	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of your assigned platoon. Organize and coordinate your NCOs and troops!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)

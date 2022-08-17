@@ -288,26 +288,29 @@
 		if (H.stat!=DEAD && (H.original_job.is_soviet == TRUE || H.original_job.is_dra == TRUE))
 			var/area/A = get_area(H)
 			if (istype(A, /area/caribbean/arab/caves/prison))
-				if (H.stat!=DEAD && H.original_job.title == "Soviet Army Lieutenant")
-					muj_points += 2
+				if (H.stat!=DEAD && H.original_job.title == "Soviet Army Captain")
+					muh_points += 4
+					world << "<font color='orange' size=2>The <b><font color='red'>Soviet Army Captain</font></b> is in captivity!</font>"
+				else if (H.stat!=DEAD && H.original_job.title == "Soviet Army Lieutenant")
+					muj_points += 3
 					world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Lieutenant</font></b> is in captivity!</font>"
 				else if (H.stat!=DEAD && H.original_job.title == "Soviet Army Sergeant")
-					muj_points += 1
+					muj_points += 2
 					world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Sergeant</font></b> is in captivity!</font>"
 				else if (H.stat!=DEAD && H.original_job.title == "DRA Governor")
-					muj_points += 3
+					muj_points += 5
 					world << "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>"
 				else if (H.stat!=DEAD && H.original_job.title == "DRA Lieutenant")
-					muj_points += 2
+					muj_points += 3
 					world << "<font color='orange' size=2>A <b><font color='green'>DRA Lieutenant</font></b> is in captivity!</font>"
 				else if (H.stat!=DEAD && H.original_job.title == "DRA Sergeant")
-					muj_points += 1
+					muj_points += 2
 					world << "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>"
 		if (H.stat!=DEAD && (H.original_job.is_muj == TRUE))
 			var/area/B = get_area(H)
 			if (istype(B, /area/caribbean/prison/jail))
 				if (H.stat!=DEAD && H.original_job.title == "Mujahideen Leader")
-					sov_points += 2
+					sov_points += 3
 					world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Leader</font></b> is currently being detained!</font>"
 	spawn(300)
 		points_check()
