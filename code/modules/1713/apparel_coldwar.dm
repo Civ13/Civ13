@@ -1035,6 +1035,14 @@
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74/New()
+	..()
+	new/obj/item/ammo_magazine/rpk74(src)
+	new/obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m/New()
 	..()
