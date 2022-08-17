@@ -983,7 +983,6 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/pkm/c100 = 25,
 		/obj/item/ammo_magazine/rpk74 = 12,
 		/obj/item/ammo_magazine/rpk74/drum = 8,
-		/obj/item/ammo_magazine/rpd = 8,
 		/obj/item/ammo_magazine/svd = 16,
 		/obj/item/ammo_casing/grenade_l/teargas = 16,
 		/obj/item/ammo_magazine/makarov = 15,
@@ -1043,7 +1042,6 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/pkm/c100 = 10,
 		/obj/item/ammo_magazine/svd = 10,
 		/obj/item/ammo_magazine/makarov = 20,
-		/obj/item/ammo_magazine/rpd = 12,
 		/obj/item/ammo_magazine/rpk74 = 12,
 		/obj/item/ammo_magazine/rpk74/drum = 6,
 	)
