@@ -1221,6 +1221,7 @@
 	whitelisted = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
+	is_tankcom = TRUE
 
 	min_positions = 2
 	max_positions = 6

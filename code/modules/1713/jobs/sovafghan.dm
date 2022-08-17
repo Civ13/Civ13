@@ -500,6 +500,7 @@
 	is_soviet = TRUE
 	is_coldwar = TRUE
 	is_tankcom = TRUE
+	is_tanker = TRUE
 
 	min_positions = 1
 	max_positions = 4
@@ -523,8 +524,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(50))
-		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 		uniform.attackby(armour2, H)
 		var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
