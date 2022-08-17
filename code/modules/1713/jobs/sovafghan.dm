@@ -488,7 +488,7 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-/datum/job/russian/sovafghan/tanker/com
+/datum/job/russian/sovafghan/tank_com
 	title = "Soviet Army Tank Commander"
 	rank_abbreviation = "Jr. Sgt."
 
@@ -501,11 +501,12 @@
 	is_coldwar = TRUE
 	is_tankcom = TRUE
 	is_tanker = TRUE
+	can_get_coordinates = TRUE
 
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/russian/sovafghan/tanker/com/equip(var/mob/living/human/H)
+/datum/job/russian/sovafghan/tank_com/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -536,6 +537,7 @@
 	uniform.attackby(holsterw, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (prob(15))
@@ -644,7 +646,7 @@
 /datum/job/russian/sovafghan/spez/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
 
 //clothes
 	if (prob(50))
@@ -667,7 +669,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_svd(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov/silenced(H), slot_l_hand)
 	if (map.ID == MAP_SOVAFGHAN)
 		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	H.civilization = "Soviet Army"
