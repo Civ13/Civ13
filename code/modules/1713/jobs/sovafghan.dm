@@ -488,19 +488,90 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
-/datum/job/russian/sovafghan/tanker
-	title = "Soviet Army Tankist"
-	rank_abbreviation = "Tanker"
+/datum/job/russian/sovafghan/tanker/com
+	title = "Soviet Army Tank Commander"
+	rank_abbreviation = "Jr. Sgt."
 
 	spawn_location = "JoinLateRUTank"
 
 	uses_squads = TRUE
+	is_squad_leader = TRUE
 	is_afghan = TRUE
 	is_soviet = TRUE
 	is_coldwar = TRUE
+	is_tankcom = TRUE
 
-	min_positions = 10
-	max_positions = 18
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/russian/sovafghan/tanker/com/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_tanker(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/pilot(H), slot_eyes)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+	if (prob(50))
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+		uniform.attackby(armour2, H)
+		var/obj/item/ammo_magazine/ak74/mag = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag, H)
+		var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
+		uniform.attackby(mag2, H)
+	var/obj/item/clothing/accessory/holster/waist/holsterw = new /obj/item/clothing/accessory/holster/waist(null)
+	uniform.attackby(holsterw, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	if (prob(15))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+//jacket
+	H.s_tone = rand(-40,-25)
+	H.civilization = "Soviet Army"
+	give_random_name(H)
+	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
+		H.f_style = pick("Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Shaved")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.add_note("Role", "You are a <b>[title]</b>, a tankmen. Follow orders and defeat the enemy with heavy soviet armor!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/datum/job/russian/sovafghan/tanker
+	title = "Soviet Army Tanker"
+	rank_abbreviation = "Efr."
+
+	spawn_location = "JoinLateRUTank"
+	uses_squads = TRUE
+	is_afghan = TRUE
+	is_soviet = TRUE
+	is_coldwar = TRUE
+	is_tanker = TRUE
+
+	min_positions = 1
+	max_positions = 12
 
 /datum/job/russian/sovafghan/tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -556,7 +627,7 @@
 
 /datum/job/russian/sovafghan/spez
 	title = "Spetznaz GRU"
-	rank_abbreviation = "Spz."
+	rank_abbreviation = "Jr. Sgt."
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
