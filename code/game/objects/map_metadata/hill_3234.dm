@@ -34,6 +34,8 @@
 		. = TRUE
 		if (J.title == "Soviet Army Tankist")
 			. = FALSE
+		if (J.title == "Soviet Army Captain")
+			. = FALSE
 		if (J.title == "Soviet Army Lieutenant")
 			J.max_positions = 1
 			J.total_positions = 1
