@@ -20,7 +20,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.4, CIVILIAN = 0.5, ARAB = 0.5)
 	battle_name = "Soviet Afghan War"
-	mission_start_message = "<font size=4>The <b><font color ='red'>Soviets</font></b>, along with the <b><font color ='green'>DRA</font></b>, have to remain in control of the Kandahar province, arrest or eliminate the Mujahideen leaders that are turning the local populace against the government. <br>The <b><font color ='black'>Mujahideen</font></b> must get rid of the communist oppressors in the region by capturing and holding their outposts or by killing/capturing their officers. <b>The faction with the most points (<b>75</b>) wins!</b><br>The gracewall ends in <b>8 minutes</b></font>"
+	mission_start_message = "<font size=4>The <b><font color ='red'>Soviets</font></b>, along with the <b><font color ='green'>DRA</font></b>, have to remain in control of the Kandahar province, arrest or eliminate the Mujahideen leaders that are turning the local populace against the government. <br>The <b><font color ='black'>Mujahideen</font></b> must get rid of the communist oppressors in the region by capturing and holding their outposts or by killing/capturing their officers. <b>The faction with the most points (<b>100</b>) wins!</b><br>The gracewall ends in <b>8 minutes</b></font>"
 	faction1 = ARAB
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -146,22 +146,22 @@
 		else if (c1 > c2)
 			a1_control = "Mujahideen"
 			cust_color="black"
-			muj_points++
 		else if (c2 > c1 || c2 > c3)
 			a1_control = "Soviets"
 			cust_color="red"
-			sov_points++
 		else if (c3 > c1 || c3 > c2)
 			a1_control = "DRA"
 			cust_color="green"
-			sov_points++
 		if (a1_control != "none")
 			if (a1_control == "Soviets")
 				cust_color = "red"
+				sov_points++
 			else if (a1_control == "Mujahideen")
 				cust_color = "black"
+				muj_points++
 			else if (a1_control == "DRA")
 				cust_color = "green"
+				sov_points++
 			else
 				cust_color = "white"
 			world << "<big><font color='[cust_color]'><b>Bridge Outpost</b>: [a1_control]</font></big>"
@@ -185,22 +185,22 @@
 		else if (c1 > c2)
 			a2_control = "Mujahideen"
 			cust_color="black"
-			muj_points++
 		else if (c2 > c1 || c2 > c3)
 			a2_control = "Soviets"
 			cust_color="red"
-			sov_points++
 		else if (c3 > c1 || c3 > c2)
 			a2_control = "DRA"
 			cust_color="green"
-			sov_points++
 		if (a2_control != "none")
 			if (a2_control == "Soviets")
 				cust_color = "red"
+				sov_points++
 			else if (a2_control == "Mujahideen")
 				cust_color = "black"
+				muj_points++
 			else if (a2_control == "DRA")
 				cust_color = "green"
+				sov_points++
 			else
 				cust_color = "white"
 			world << "<big><font color='[cust_color]'><b>South Border Checkpoint</b>: [a2_control]</font></big>"
@@ -224,22 +224,22 @@
 		else if (c1 > c2)
 			a3_control = "Mujahideen"
 			cust_color="black"
-			muj_points++
 		else if (c2 > c1 || c2 > c3)
 			a3_control = "Soviets"
 			cust_color="red"
-			sov_points++
 		else if (c3 > c1 || c3 > c2)
 			a3_control = "DRA"
 			cust_color="green"
-			sov_points++
 		if (a3_control != "none")
 			if (a3_control == "Soviets")
 				cust_color = "red"
+				sov_points++
 			else if (a3_control == "Mujahideen")
 				cust_color = "black"
+				muj_points++
 			else if (a3_control == "DRA")
 				cust_color = "green"
+				sov_points++
 			else
 				cust_color = "white"
 			world << "<big><font color='[cust_color]'><b>Palace</b>: [a3_control]</font></big>"
@@ -263,22 +263,22 @@
 		else if (c1 > c2)
 			a4_control = "Mujahideen"
 			cust_color="black"
-			muj_points++
 		else if (c2 > c1 || c2 > c3)
 			a4_control = "Soviets"
 			cust_color="red"
-			sov_points++
 		else if (c3 > c1 || c3 > c2)
 			a4_control = "DRA"
 			cust_color="green"
-			sov_points++
 		if (a4_control != "none")
 			if (a4_control == "Soviets")
 				cust_color = "red"
+				sov_points++
 			else if (a4_control == "Mujahideen")
 				cust_color = "black"
+				muj_points++
 			else if (a4_control == "DRA")
 				cust_color = "green"
+				sov_points++
 			else
 				cust_color = "white"
 			world << "<big><font color='[cust_color]'><b>North West Village Outpost</b>: [a4_control]</font></big>"
@@ -318,9 +318,9 @@
 
 /obj/map_metadata/sovafghan/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 3000)
-		if (sov_points < 75 && muj_points < 75)
+		if (sov_points < 100 && muj_points < 100)
 			return TRUE
-		if (sov_points >= 75 && sov_points > muj_points)
+		if (sov_points >= 100 && sov_points > muj_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
@@ -329,7 +329,7 @@
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
-		if (muj_points >= 75 && muj_points > sov_points)
+		if (muj_points >= 100 && muj_points > sov_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
