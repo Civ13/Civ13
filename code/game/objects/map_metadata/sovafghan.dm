@@ -289,7 +289,7 @@
 			var/area/A = get_area(H)
 			if (istype(A, /area/caribbean/arab/caves/prison))
 				if (H.stat!=DEAD && H.original_job.title == "Soviet Army Captain")
-					muh_points += 4
+					muj_points += 4
 					world << "<font color='orange' size=2>The <b><font color='red'>Soviet Army Captain</font></b> is in captivity!</font>"
 				else if (H.stat!=DEAD && H.original_job.title == "Soviet Army Lieutenant")
 					muj_points += 3
