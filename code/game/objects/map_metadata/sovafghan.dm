@@ -49,7 +49,7 @@
 	custom_civs += newnamec
 	custom_civs += newnamed
 	load_new_recipes("config/crafting/material_recipes_sovafghan.txt")
-	spawn(3000)
+	spawn(4800)
 		points_check()
 
 /obj/map_metadata/sovafghan/job_enabled_specialcheck(var/datum/job/J)
@@ -126,7 +126,7 @@
 	return FALSE
 
 /obj/map_metadata/sovafghan/proc/points_check()
-	if (processes.ticker.playtime_elapsed >4800)
+	if (processes.ticker.playtime_elapsed > 4800)
 		var/c1 = 0
 		var/c2 = 0
 		var/c3 = 0
@@ -312,7 +312,7 @@
 				if (H.stat!=DEAD && H.original_job.title == "Mujahideen Leader")
 					sov_points += 3
 					world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Leader</font></b> is currently being detained!</font>"
-	spawn(300)
+	spawn(600)
 		points_check()
 		spawn(300)
 			world << "<big><b>Current Points:</big></b>"
@@ -320,7 +320,7 @@
 			world << "<big>Soviets and DRA: [sov_points]</big>"
 
 /obj/map_metadata/sovafghan/update_win_condition()
-	if (processes.ticker.playtime_elapsed > 3000)
+	if (processes.ticker.playtime_elapsed > 4800)
 		if (sov_points < 100 && muj_points < 100)
 			return TRUE
 		if (sov_points >= 100 && sov_points > muj_points)
