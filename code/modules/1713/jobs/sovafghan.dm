@@ -20,7 +20,7 @@
 /datum/job/russian/sovafghan/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(50))
+	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
