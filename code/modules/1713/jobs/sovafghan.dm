@@ -799,17 +799,17 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armband/red = new/obj/item/clothing/accessory/armband(null)
 	uniform.attackby(red, H)
-	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
-	var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
-	var/obj/item/weapon/key/soviet/govk = new/obj/item/weapon/key/civ/gov(null)
-	KC.attackby(sovk,H)
-	govk.name = "Government key"
-	KC.attackby(govk,H)
-	H.equip_to_slot_or_del(KC, slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
+		var/obj/item/weapon/key/soviet/sovk = new/obj/item/weapon/key/soviet(null)
+		var/obj/item/weapon/key/soviet/govk = new/obj/item/weapon/key/civ/gov(null)
+		KC.attackby(sovk,H)
+		govk.name = "Government key"
+		KC.attackby(govk,H)
+		H.equip_to_slot_or_del(KC, slot_l_store)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_r_store)
-//jacket
 
 	H.civilization = "DRA"
 	H.name = H.species.get_random_arab_name(H.gender)
@@ -883,10 +883,10 @@
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armband/red = new/obj/item/clothing/accessory/armband(null)
 	uniform.attackby(red, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
-//jacket
 
 	H.civilization = "DRA"
 	H.name = H.species.get_random_arab_name(H.gender)

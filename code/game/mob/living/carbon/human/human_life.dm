@@ -1600,12 +1600,12 @@
 					else if(findtext(original_job_title,"Corpsman"))
 						holder2.overlays += icon(holder2.icon,"i_cpl")
 			if (map.ID != MAP_CAMPAIGN)
-				if (original_job.is_commander)
+				if (original_job.is_commander || (original_job.is_commander && original_job.is_officer))
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"commander")
-				else if (original_job.is_officer)
+				else if (original_job.is_officer && !original_job.is_commander)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""
 					else
