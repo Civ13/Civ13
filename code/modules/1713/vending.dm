@@ -1029,6 +1029,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 5,
+		/obj/item/weapon/gun/projectile/automatic/rpk74 = 5,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 10,
 	)
 
@@ -1081,6 +1082,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 4,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
+		/obj/item/weapon/gun/projectile/automatic/rpd = 3,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 	)
 
@@ -1094,6 +1096,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak74 = 12,
 		/obj/item/ammo_magazine/ak74/rubber = 15,
 		/obj/item/ammo_magazine/pkm = 5,
+		/obj/item/ammo_magazine/rpd = 6,
 		/obj/item/ammo_magazine/makarov = 10,
 	)
 
