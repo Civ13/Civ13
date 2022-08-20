@@ -510,10 +510,10 @@
 "jP" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/item/mine/boobytrap,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "ks" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/omw22_2,/obj/item/weapon/key/russian{name = "Vehicle key"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "lL" = (/obj/structure/lamp/lamp_small/tank/red{dir = 8},/obj/structure/vehicleparts/frame/mtlb/rbc,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/pill_bottle/citalopram,/turf/floor/plating/road,/area/caribbean)
-"nx" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateDRACap"},/turf/floor/trench,/area/caribbean/roofed/desert)
 "qJ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUTank"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "rs" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "sj" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/desert)
+"uH" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateDRACap"},/turf/floor/trench,/area/caribbean/roofed/desert)
 "AJ" = (/turf/floor/dirt/underground/sandy,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "CD" = (/obj/structure/vehicleparts/frame/mtlb/rfc,/obj/structure/engine/internal/diesel/premade/mtlb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/turf/floor/plating/road,/area/caribbean)
 "IJ" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
@@ -522,6 +522,7 @@
 "NQ" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "Qo" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "Rs" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/desert)
+"Wu" = (/obj/item/stack/material/steel/twentyfive,/obj/item/stack/material/steel/twentyfive,/turf/floor/beach/sand/dark,/area/caribbean/roofed/desert)
 "Ys" = (/obj/item/flashlight/flare/nighttime,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "ZO" = (/obj/map_metadata/magistral,/turf/wall/rockwall,/area/caribbean/arab/caves)
 "ZU" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
@@ -532,7 +533,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabgbMcucvcucvcucvcucvbPaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadoafaaaaaaaabgcwaXbabAbAbCbCbDbEcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiajahaaaaaaaabgcDbFbXbXbXbXbXbXbYcHaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaalamaaaaaaaaabcwbFcacacgnxchchcjcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaalamaaaaaaaaabcwbFcacacguHchchcjcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanaoaaaaaaaaabclbXbXbXbXbXbXbXbYcHaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadKdKaaaaaaaaaaaaaaaaaaaaaaaaaaaaabclbXcmcncncococpcqcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 eFababepabababababepababababababababababeqababehababbQaKaKaKaKaKaKaKaKaKaKaKaKaKbRabaaaaaaaaaaaaaaaaaaaaiwaaabclbXbXbXbXbXbXbXbYcHaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
@@ -543,7 +544,7 @@ aEaEaCaCaCaCaCaCaCaCaCaCaCaCaCabababababaCaCaKaKbkacacbzcRcWcXcScScScScScScScSab
 aEaEaEaEaEaEaEaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaccRcScScScScYcZdecScScScQapapapapaaaaauauddaoaaaaaaaacCaLaLaLaLaLaLaLaLaLaLaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCacdfcSdgdhcSdidjdkcScScSapapapababaaaaauauauaaaaaaaaaaababababababababababdaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCaCaCaCaCaCdFdGaCaCaCacdlcSdmdncSdpdqdkcScScScQapapapabaaaaaaaaaaaaaaaaaaaaabababababababagabdadaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
-aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCdHciaCaCaCdrcScSiCcScScScScScScScSabababapabaaaaaaaaaaaaaaaaaaaaababaJaOabagabababdadaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
+aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCdHciaCaCaCdrcScSiCWucScScScScScScSabababapabaaaaaaaaaaaaaaaaaaaaababaJaOabagabababdadaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCdIckdvcScScScScScScScScScScShlcSdwcbbhabababaaaaaaaaaeafaaaaaaaaabababaUababehabababdaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCaCaCaCaCaCdxcScSdydycSdzcScScSdAdBcbbhabababaaaaaaaiajahaaaaaaaaababababababesabababdaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCaCaCaCaCaCaCdCdDdEdEdDdJdDcSgtdDgucbbhabababaaaaaaaaalamiwaaaaaaabababababababagabdadaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
