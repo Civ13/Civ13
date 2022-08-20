@@ -99,7 +99,6 @@
 		return ""
 
 /obj/map_metadata/magistral/update_win_condition()
-
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
@@ -120,16 +119,16 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The<font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(ARAB)
+				current_win_condition = "The <font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The<font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(ARAB)
+				current_win_condition = "The <font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -137,7 +136,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "<font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(ARAB)
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -145,7 +144,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "<font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
-				next_win = world.time + short_win_time(ARAB)
+				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
