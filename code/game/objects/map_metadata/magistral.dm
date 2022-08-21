@@ -13,9 +13,8 @@
 		ARAB)
 
 	roundend_condition_sides = list(
-		list(RUSSIAN) = /area/caribbean/british,
+		list(RUSSIAN, CIVILIAN) = /area/caribbean/british,
 		list(ARAB) = /area/caribbean/no_mans_land/capturable/one,
-		list(CIVILIAN) = /area/caribbean/british,
 		)
 	age = "1987"
 	ordinal_age = 7
@@ -84,15 +83,13 @@
 
 /obj/map_metadata/magistral/cross_message(faction)
 	if (faction == ARAB)
-		return "<font size = 4>The <font color = 'red'>Soviet Army</font> and <font color = 'green'>DRA</font> may now cross the invisible wall!</font>"
-	else if (faction == RUSSIAN)
-		return "<font size = 4>The <font color = 'red'>Soviet Army</font> and <font color = 'green'>DRA</font> may now cross the invisible wall!</font>"
-	else if (faction == CIVILIAN)
-		return "<font size = 4>The <font color = 'red'>Soviet Army</font> and <font color = 'green'>DRA</font> may now cross the invisible wall!</font>"
+		return "<font size = 4>The <font color = 'red'>Soviet Army</font> and the <font color = 'green'>DRA</font> may now cross the invisible wall!</font>"
+	else if (faction == RUSSIAN || faction == CIVILIAN)
+		return "<font size = 4>The <font color = 'red'>Soviet Army</font> and the <font color = 'green'>DRA</font> may now cross the invisible wall!</font>"
 
 /obj/map_metadata/magistral/reverse_cross_message(faction)
 	if (faction == ARAB)
-		return "<span class = 'userdanger'>The <font color = 'red'>Soviets</font> may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The <font color = 'red'>Soviet Army</font> and the <font color = 'green'>DRA</font>  may no longer cross the invisible wall!</span>"
 	else if (faction == RUSSIAN)
 		return ""
 	else
@@ -119,7 +116,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
+				current_win_condition = "The <font color = 'red'>Soviet Army</font> and the <font color = 'green'>DRA</font> are capturing the Compound's Control Room! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -127,7 +124,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
+				current_win_condition = "The <font color = 'red'>Soviet Army</font> and the <font color = 'green'>DRA</font> are capturing the Compound's Control Room! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -135,7 +132,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "<font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
+				current_win_condition = "<font color = 'red'>Soviet Army</font> and the <font color = 'green'>DRA</font> are capturing the Compound's Control Room! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -143,7 +140,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "<font color = 'red'>Soviets</font> are capturing the Compound's Control Room! They will win in {time} minutes."
+				current_win_condition = "<font color = 'red'>Soviet Army</font> and the <font color = 'green'>DRA</font> are capturing the Compound's Control Room! They will win in {time} minutes."
 				next_win = world.time + short_win_time(RUSSIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
