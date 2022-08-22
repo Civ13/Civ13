@@ -1220,16 +1220,13 @@ var/global/redirect_all_players = null
 						temp_name = "Russian Army"
 					else if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
-				else if (map && map.ID == "SOVAFGHAN")
+				else if (map && (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL"))
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
 					else if (temp_name == "Arab")
 						temp_name = "Mujahideen"
-				else if (map && map.ID == "HILL_3234")
-					if (temp_name == "Russian")
-						temp_name = "Soviet Army"
-					else if (temp_name == "Arab")
-						temp_name = "Mujahideen"
+					else if (temp_name == "Civilian")
+						temp_name = "DRA and Civilians"
 				else if (map && map.ID == "TANTIVEIV")
 					if (temp_name == "Civilian")
 						temp_name = "Rebels"
