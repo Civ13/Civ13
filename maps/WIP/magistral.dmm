@@ -508,12 +508,14 @@
 "jN" = (/obj/structure/window/classic/reinforced,/obj/structure/window/barrier/sandbag,/obj/structure/barricade,/obj/structure/barbwire,/turf/floor/wood,/area/caribbean/roofed/desert)
 "jO" = (/obj/structure/barbwire,/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "jP" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/item/mine/boobytrap,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"kr" = (/mob/living/simple_animal/complex_animal/dog/german_shepherd{behaviour = "wander"; desc = "Probably the only thing keeping your sanity intact."; faction = "RUSSIAN"; name = "Timur"; starves = 0; friendly_factions = list(CIVILIAN)},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "ks" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/omw22_2,/obj/item/weapon/key/russian{name = "Vehicle key"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "kM" = (/obj/item/weapon/flame/candle/lard/on,/turf/floor/beach/sand/dark,/area/caribbean/arab/caves)
 "lL" = (/obj/structure/lamp/lamp_small/tank/red{dir = 8},/obj/structure/vehicleparts/frame/mtlb/rbc,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/pill_bottle/citalopram,/turf/floor/plating/road,/area/caribbean)
 "qJ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUTank"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "rs" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "sj" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/desert)
+"vc" = (/mob/living/simple_animal/complex_animal/dog/german_shepherd{behaviour = "wander"; desc = "Probably the only thing keeping your sanity intact."; faction = "RUSSIAN"; name = "Baikal"; starves = 0; friendly_factions = list(CIVILIAN)},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "AJ" = (/turf/floor/dirt/underground/sandy,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "CD" = (/obj/structure/vehicleparts/frame/mtlb/rfc,/obj/structure/engine/internal/diesel/premade/mtlb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/turf/floor/plating/road,/area/caribbean)
 "IJ" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
@@ -525,6 +527,7 @@
 "Op" = (/obj/item/weapon/flame/candle/lard/on,/turf/floor/dirt/dust,/area/caribbean/arab/caves)
 "Qo" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "Rs" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/desert)
+"WH" = (/obj/item/kitchen/snack_bowl,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "Ys" = (/obj/item/flashlight/flare/nighttime,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one{climate = "desert"})
 "ZO" = (/obj/map_metadata/magistral,/turf/wall/rockwall,/area/caribbean/arab/caves)
 "ZU" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
@@ -544,7 +547,7 @@ aCaCaCaCaCaCaCaCababababehababapabababababababababbgbTbzcFcGcIcJcKcKcLcLcOcOcPbV
 aCaCaCaCaCaCaCaCabepababeHabababeqabababababababbgbTbTbWcRcScScScScScScScScScSbBababababaaaaauaklLahaaaaaaaabgcwcTcUcUcUcUcUcUcVcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaCaCaCaCaCaCaCaCaCaCaCaCaCabababababaCaCaKaKbkacacbzcRcWcXcScScScScScScScSabapabapapaaaaauauCDamaaaaaaaabgcscMcNcMcNcMcNcMcNctaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaccRcScScScScYcZdecScScScQapapapapaaaaauauddaoaaaaaaaacCaLaLaLaLaLaLaLaLaLaLaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
-aEaEaEaEaEaEaEaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCacdfcSdgdhcSdidjdkcScScSapapapababaaaaauauauaaaaaaaaaaababababababababababdaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
+aEaEaEaEaEaEaEaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCacdfcSdgdhcSdidjdkcScScSapapapababaaaaauauauaaaaaaaaaaababababvcWHkrabababdaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCaCaCaCaCaCdFdGaCaCaCacdlcSdmdncSdpdqdkcScScScQapapapabaaaaaaaaaaaaaaaaaaaaabababababababagabdadaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCdHciaCaCaCdrcScSiCMmcScScScScScScSabababapabaaaaaaaaaaaaaaaaaaaaababaJaOabagabababdadaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaCaCaCdIckdvcScScScScScScScScScScShlcSdwcbbhabababaaaaaaaaaeafaaaaaaaaabababaUababehabababdaaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
