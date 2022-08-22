@@ -467,7 +467,7 @@ s
 						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
 						next_bork = world.time + 500
 						return
-		if (map.ID == MAP_GROZNY || map.ID == MAP_SOVAFGHAN)
+		if (map.ID == MAP_GROZNY || map.ID == MAP_SOVAFGHAN || map.ID == MAP_MAGISTRAL)
 			for(var/obj/item/mine/at/armed/ATA in range(3, src))
 				if (prob(20) && world.time >= next_bork)
 					visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
