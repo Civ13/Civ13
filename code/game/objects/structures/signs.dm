@@ -407,6 +407,11 @@
 	name = "anatomy poster"
 	icon_state = "anatomy"
 
+/obj/structure/sign/xray
+	desc = "A medical lightbox used to examine X-ray images."
+	name = "lightbox"
+	icon_state = "xray_on"
+
 /obj/structure/sign/periodic
 	desc = "A tabular display of the chemical elements."
 	name = "periodic table"
