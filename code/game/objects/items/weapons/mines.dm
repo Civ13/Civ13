@@ -128,7 +128,7 @@
 			O << "<font color='red'>[AM] triggered the [src]!</font>"
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
-		explosion(get_turf(src),2,2,6)
+		explosion(get_turf(src),1,2,6)
 		spawn(9)
 			if (src)
 				qdel(src)
@@ -294,7 +294,7 @@
 			O << "<font color='red'>[AM] triggered the [src]!</font>"
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
-		explosion(get_turf(src),2,2,4)
+		explosion(get_turf(src),1,2,4)
 		spawn(9)
 			if (src)
 				qdel(src)
