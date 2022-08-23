@@ -82,11 +82,6 @@
 	desc = "A sign Texas people usually like."
 	icon_state = "tfc"
 
-/obj/structure/sign/weedshop
-	name = "Weed Shop"
-	desc = "A sign stoners usually like."
-	icon_state = "weedshop"
-
 /obj/structure/sign/mckellens
 	name = "McKellen's"
 	desc = "A sign for the McKellen's Franchise establishment."
@@ -411,6 +406,11 @@
 	desc = "A poster detailing the complexity of the human body."
 	name = "anatomy poster"
 	icon_state = "anatomy"
+
+/obj/structure/sign/xray
+	desc = "A medical lightbox used to examine X-ray images."
+	name = "lightbox"
+	icon_state = "xray_on"
 
 /obj/structure/sign/periodic
 	desc = "A tabular display of the chemical elements."
