@@ -120,3 +120,19 @@
 	ammo_type = /obj/item/ammo_casing/laser/pistol/b
 	max_ammo = 15
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tibannagas/lasgun
+	name = "Lasgun power pack"
+	icon_state = "lasgun"
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser
+	max_ammo = 150
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tibannagas/laspistol
+	name = "Laspistol power pack"
+	icon_state = "laspistol"
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser
+	max_ammo = 80
+	multiple_sprites = TRUE
