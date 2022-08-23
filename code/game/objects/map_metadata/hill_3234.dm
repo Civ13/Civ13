@@ -32,13 +32,16 @@
 	..()
 	if (J.is_afghan)
 		. = TRUE
-		if (J.title == "Soviet Army Tankist")
+		if (J.title == "Soviet Army Tanker")
+			. = FALSE
+		if (J.title == "Soviet Army Tank Commander")
 			. = FALSE
 		if (J.title == "Soviet Army Captain")
 			. = FALSE
 		if (J.title == "Soviet Army Lieutenant")
 			J.max_positions = 1
 			J.total_positions = 1
+			J.is_commander = TRUE
 		if (J.title == "Soviet Army Sergeant")
 			J.max_positions = 5
 			J.total_positions = 5
