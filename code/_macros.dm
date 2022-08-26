@@ -122,3 +122,9 @@
 #define OPPOSITE_DIR(D) turn(D, 180)
 #define TURN_LEFT(D) turn(D, 90)
 #define TURN_RIGHT(D) turn(D, -90)
+
+
+#define SPAN(class, X)   "<span class='[class]'>[X]</span>"
+#define SPAN_NOTICE(X)   SPAN("notice", X)
+#define SPAN_WARNING(X)  SPAN("warning", X)
+#define SPAN_DANGER(X)   SPAN("danger", X)
