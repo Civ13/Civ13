@@ -349,6 +349,9 @@
 			icon_state = "rpk74_drum"
 			item_state = "rpk74_drum"
 			base_icon = "rpk74_drum"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/ak74))
+			item_state = "rpk74"
+			icon_state = "rpk74"
 	else
 		icon_state = "rpk74_open"
 		item_state = "rpk74_open"
