@@ -12,7 +12,7 @@
 
 /obj/structure/morgue
 	name = "morgue"
-	desc = "Used to keep bodies in untill someone fetches them."
+	desc = "Used to keep bodies in until someone fetches them."
 	icon = 'icons/obj/morgue.dmi'
 	icon_state = "morgue1"
 	dir = EAST
@@ -170,36 +170,33 @@
 			if ((B.client && !( B.blinded )))
 				B << "<span class='warning'>\The [user] stuffs [O] into [src]!</span>"
 	return
-/*
-/*
- * Crematorium
- */
-/obj/structure/crematorium
-	name = "crematorium"
-	desc = "A human incinerator. Works well on barbeque nights."
+
+//////////////
+// Cremator //
+//////////////
+
+/obj/structure/cremator
+	name = "cremator"
+	desc = "An incinerator designed for cremating human corpses."
 	icon = 'icons/obj/morgue.dmi'
 	icon_state = "crema1"
 	density = TRUE
 	var/obj/structure/c_tray/connected = null
-	anchored = 1.0
+	anchored = TRUE
 	var/cremating = FALSE
 	var/id = TRUE
 	var/locked = FALSE
-	var/_wifi_id
-	var/datum/wifi/receiver/button/crematorium/wifi_receiver
-/obj/structure/crematorium/initialize()
+
+/obj/structure/cremator/initialize()
 	..()
-	if (_wifi_id)
-		wifi_receiver = new(_wifi_id, src)
-/obj/structure/crematorium/Destroy()
+
+/obj/structure/cremator/Destroy()
 	if (connected)
 		qdel(connected)
 		connected = null
-	if (wifi_receiver)
-		qdel(wifi_receiver)
-		wifi_receiver = null
 	return ..()
-/obj/structure/crematorium/proc/update()
+
+/obj/structure/cremator/proc/update()
 	if (connected)
 		icon_state = "crema0"
 	else
@@ -208,7 +205,8 @@
 		else
 			icon_state = "crema1"
 	return
-/obj/structure/crematorium/ex_act(severity)
+
+/obj/structure/cremator/ex_act(severity)
 	switch(severity)
 		if (1.0)
 			for (var/atom/movable/A as mob|obj in src)
@@ -231,13 +229,8 @@
 				qdel(src)
 				return
 	return
-/obj/structure/crematorium/attack_hand(mob/user as mob)
-//	if (cremating) AWW MAN! THIS WOULD BE SO MUCH MORE FUN ... TO WATCH
-//		user.show_message("<span class='warning'>Uh-oh, that was a bad idea.</span>", TRUE)
-//		//usr << "Uh-oh, that was a bad idea."
-//		src:loc:poison += 20000000
-//		src:loc:firelevel = src:loc:poison
-//		return
+
+/obj/structure/cremator/attack_hand(mob/user as mob)
 	if (cremating)
 		usr << "<span class='warning'>It's locked.</span>"
 		return
@@ -250,7 +243,7 @@
 		qdel(connected)
 	else if (locked == FALSE)
 		playsound(loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
-		connected = new /obj/structure/c_tray( loc )
+		connected = new /obj/structure/c_tray(src.loc)
 		step(connected, SOUTH)
 		connected.layer = OBJ_LAYER
 		var/turf/T = get_step(src, SOUTH)
@@ -265,7 +258,8 @@
 			qdel(connected)
 	add_fingerprint(user)
 	update()
-/obj/structure/crematorium/attackby(P as obj, mob/user as mob)
+
+/obj/structure/cremator/attackby(P as obj, mob/user as mob)
 	if (istype(P, /obj/item/weapon/pen))
 		var/t = WWinput(user, "What would you like the label to be?", text("[]", name), null, "text")
 		if (user.get_active_hand() != P)
@@ -274,94 +268,96 @@
 			return
 		t = sanitizeSafe(t, MAX_NAME_LEN)
 		if (t)
-			name = text("Crematorium- '[]'", t)
+			name = text("cremator - '[]'", t)
 		else
-			name = "Crematorium"
+			name = "cremator"
 	add_fingerprint(user)
 	return
-/obj/structure/crematorium/relaymove(mob/user as mob)
-	if (..(user))
-		if (user.stat || locked)
-			return
-		connected = new /obj/structure/c_tray( loc )
-		step(connected, SOUTH)
-		connected.layer = OBJ_LAYER
-		var/turf/T = get_step(src, SOUTH)
-		if (T.contents.Find(connected))
-			connected.connected = src
-			icon_state = "crema0"
-			for (var/atom/movable/A as mob|obj in src)
-				A.forceMove(connected.loc)
-			connected.icon_state = "cremat"
-		else
-			qdel(connected)
-			connected = null
+
+/obj/structure/cremator/relaymove(mob/user as mob)
+	if (user.stat || locked)
 		return
-/obj/structure/crematorium/proc/cremate(atom/A, mob/user as mob)
-//	for (var/obj/machinery/crema_switch/O in src) //trying to figure a way to call the switch, too drunk to sort it out atm
-//		if (var/on == TRUE)
-//		return
+	src.connected = new /obj/structure/c_tray( loc )
+	step(src.connected, SOUTH)
+	connected.layer = OBJ_LAYER
+	var/turf/T = get_step(src, SOUTH)
+	if (T.contents.Find(connected))
+		src.connected.connected = src
+		src.icon_state = "crema0"
+		for (var/atom/movable/A as mob|obj in src)
+			A.forceMove(connected.loc)
+	else
+		qdel(src.connected)
+		src.connected = null
+	return
+
+/obj/structure/cremator/proc/cremate(atom/A, mob/user as mob)
 	if (cremating)
-		return //don't let you cremate something twice or w/e
+		return //Doesn't let you cremate something twice.
 	if (contents.len <= 0)
 		for (var/mob/M in viewers(src))
 			M.show_message("<span class='warning'>You hear a hollow crackle.</span>", TRUE)
 			return
 	else
-		if (!isemptylist(search_contents_for (/obj/item/weapon/disk/nuclear)))
-			usr << "You get the feeling that you shouldn't cremate one of the items in the cremator."
-			return
 		for (var/mob/M in viewers(src))
-			M.show_message("<span class='warning'>You hear a roar as the crematorium activates.</span>", TRUE)
+			M.show_message("<span class='warning'>You hear a roar as the cremator activates.</span>", TRUE)
 		cremating = TRUE
 		locked = TRUE
+		update()
 		for (var/mob/living/M in contents)
-			if (M.stat!=2)
-				if (!iscarbon(M))
-					M.emote("scream")
-				else
-					var/mob/living/carbon/C = M
-					if (!(C.species && (C.species.flags & NO_PAIN)))
-						C.emote("scream")
-			//Logging for this causes runtimes resulting in the cremator locking up. Commenting it out until that's figured out.
-			//M.attack_log += "\[[time_stamp()]\] Has been cremated by <b>[user]/[user.ckey]</b>" //No point in this when the mob's about to be deleted
-			//user.attack_log +="\[[time_stamp()]\] Cremated <b>[M]/[M.ckey]</b>"
-			//log_attack("\[[time_stamp()]\] <b>[user]/[user.ckey]</b> cremated <b>[M]/[M.ckey]</b>")
-			M.death(1)
-			M.ghostize()
-			qdel(M)
+			admin_attack_log(A, M, "Began cremating their victim.", "Has begun being cremated.", "began cremating")
+			if (isliving(M))
+				var/mob/living/L = M
+				for(var/I, I < 60, I++)
+					L.bodytemperature += 50
+					L.adjustFireLoss(20)
+					L.adjustBrainLoss(5)
+					if(L.stat == DEAD || !(L in contents)) //In case we die or are removed at any point.
+						cremating = 0
+						update()
+						break
+					sleep(30)
+					L.emote("scream")
+			if(M.stat == DEAD)
+				admin_attack_log(A, M, "Cremated their victim.", "Was cremated.", "cremated alive")
+				M.audible_message("[M]'s screams cease, as does any movement within the [src]. All that remains is a dull, empty silence.")
+				qdel(M)
 		for (var/obj/O in contents) //obj instead of obj/item so that bodybags and ashes get destroyed. We dont want tons and tons of ash piling up
 			qdel(O)
 		new /obj/effect/decal/cleanable/ash(src)
 		sleep(30)
 		cremating = FALSE
 		locked = FALSE
-		playsound(loc, 'sound/machines/ding.ogg', 50, TRUE)
+		update()
+		playsound(loc, 'sound/effects/spray.ogg', 50, TRUE)
 	return
+
 /*
- * Crematorium tray
+ * Cremator tray
  */
+
 /obj/structure/c_tray
-	name = "crematorium tray"
+	name = "cremator tray"
 	desc = "Apply body before burning."
 	icon = 'icons/obj/morgue.dmi'
 	icon_state = "cremat"
 	density = TRUE
 	layer = 2.0
-	var/obj/structure/crematorium/connected = null
+	var/obj/structure/cremator/connected = null
 	anchored = TRUE
 	throwpass = TRUE
+
 /obj/structure/c_tray/Destroy()
 	if (connected && connected.connected == src)
 		connected.connected = null
 	connected = null
 	return ..()
+
 /obj/structure/c_tray/attack_hand(mob/user as mob)
 	if (connected)
 		for (var/atom/movable/A as mob|obj in loc)
 			if (!( A.anchored ))
 				A.forceMove(connected)
-			//Foreach goto(26)
 		connected.connected = null
 		connected.update()
 		add_fingerprint(user)
@@ -383,23 +379,33 @@
 				B << text("<span class='warning'>[] stuffs [] into []!</span>", user, O, src)
 			//Foreach goto(99)
 	return
-/obj/machinery/button/crematorium
-	name = "crematorium igniter"
+
+//Cremator button//
+
+/obj/structure/button/cremator
+	name = "cremator igniter"
 	desc = "Burn baby burn!"
-	icon = 'icons/obj/power.dmi'
+	icon = 'icons/obj/morgue.dmi'
 	icon_state = "crema_switch"
-	req_access = list(access_crematorium)
-	id = TRUE
-/obj/machinery/button/crematorium/update_icon()
+
+/obj/structure/button/cremator/update_icon()
 	return
-/obj/machinery/button/crematorium/attack_hand(mob/user as mob)
-	if (..())
-		return
-	if (allowed(user))
-		for (var/obj/structure/crematorium/C in world)
-			if (C.id == id)
-				if (!C.cremating)
-					C.cremate(user)
-	else
-		usr << "<span class='warning'>Access denied.</span>"
-*/
+/obj/structure/button/cremator/attack_hand(mob/user as mob)
+	for (var/obj/structure/cremator/C in range(8,src))
+		if (!C.cremating)
+			C.cremate(user)
+	..()
+
+/obj/structure/autopsy_table
+	name = "autopsy table"
+	desc = "A stationary table designed to hold cadavers during autopsy procedures."
+	icon = 'icons/obj/morgue.dmi'
+	icon_state = "autopsy_table"
+	anchored = TRUE
+	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = TRUE
+	not_movable = FALSE
+	density = FALSE
+	opacity = FALSE
+	not_disassemblable = TRUE
