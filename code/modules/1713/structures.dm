@@ -1056,3 +1056,15 @@
 	not_disassemblable = TRUE
 	bound_width = 128
 	bound_height = 128
+
+/obj/structure/medical_divider
+	name = "medical divider"
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "medical_divider_half"
+	density = FALSE
+	flammable = TRUE
+
+/obj/structure/medical_divider/full
+	icon_state = "medical_divider_full"
+	density = TRUE
+	flammable = TRUE
