@@ -518,7 +518,7 @@
 		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 		playsound(loc, "ric_voice", 100, TRUE)
 	else
-		playsound(loc, "ric_sound", 100, TRUE)
+		playsound(loc, "ric_sound", 50, TRUE)
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
