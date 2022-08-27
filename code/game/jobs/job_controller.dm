@@ -202,14 +202,22 @@ var/global/datum/controller/occupations/job_master
 		if(H.original_job.is_squad_leader)
 			spawn (10)
 			for(var/mob/living/human/HM in world)
-				if(HM && HM.original_job && HM.original_job.is_commander && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+				if(HM && HM.original_job && (HM.original_job.is_officer || HM.original_job.is_commander) && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
 					HSL = HM
 					break
 		else if (H.squad && H.faction_text == map.faction1)
-			if (map.faction1_squad_leaders[H.squad])
+			if (H.original_job.is_tanker)
+				for(var/mob/living/human/HM in world)
+					if (HM && HM.original_job && HM.original_job.is_tankcom && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+						HSL = HM
+			else if (map.faction1_squad_leaders[H.squad] && !map.faction1_squad_leaders[H.squad].original_job.is_tankcom)
 				HSL = map.faction1_squad_leaders[H.squad]
 		else if (H.squad && H.faction_text == map.faction2)
-			if (map.faction2_squad_leaders[H.squad])
+			if (H.original_job.is_tanker)
+				for(var/mob/living/human/HM in world)
+					if (HM && HM.original_job && HM.original_job.is_tankcom && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+						HSL = HM
+			else if (map.faction2_squad_leaders[H.squad] && !map.faction2_squad_leaders[H.squad].original_job.is_tankcom)
 				HSL = map.faction2_squad_leaders[H.squad]
 		if (HSL && HSL.stat == CONSCIOUS)
 			var/found = FALSE

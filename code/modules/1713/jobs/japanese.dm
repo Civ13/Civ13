@@ -1095,6 +1095,7 @@
 	is_tanker = TRUE
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
+	is_tankcom = TRUE
 	uses_squads = TRUE
 	whitelisted = TRUE
 	min_positions = 1

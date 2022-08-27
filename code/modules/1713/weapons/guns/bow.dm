@@ -223,14 +223,14 @@ obj/item/weapon/gun/projectile/bow/Fire()
 			)
 			chambered = loaded[1]
 			update_icon()
-			load_arrow_overlay(/obj/item/ammo_casing/arrow/bronze)
+			src.overlays += image("icon" = 'icons/obj/weapons.dmi', "icon_state" = "arrow_bronze")
 		else if (map.ordinal_age >= 2)
 			loaded = list(
 			new /obj/item/ammo_casing/arrow/iron,
 			)
 			chambered = loaded[1]
 			update_icon()
-			load_arrow_overlay(/obj/item/ammo_casing/arrow/iron)
+			src.overlays += image("icon" = 'icons/obj/weapons.dmi', "icon_state" = "arrow_iron")
 	else if (!(istype(loc, /mob/living)))
 		loaded = list()
 		chambered = null

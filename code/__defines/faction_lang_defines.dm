@@ -69,6 +69,8 @@
 			return "Rebels"
 		else if (map.ID == "RUHR_UPRISING")
 			return "Ruhr Red Army"
+		else if (map.ID == "MAGISTRAL")
+			return "DRA Army"
 		else
 			if (age >= 6)
 				return "Civilians"
@@ -143,7 +145,7 @@
 		if (age >= 6)
 			if (map.ID == "ARAB_TOWN")
 				return "Hezbollah"
-			else if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234")
+			else if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL")
 				return "Mujahideen"
 			else
 				return "Insurgents"

@@ -921,7 +921,7 @@ var/global/redirect_all_players = null
 				H.verbs += /mob/living/human/proc/Squad_Announcement
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
-					if (map.ordinal_age >= 6 && map.ordinal_age <= 8)
+					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
 						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
 							H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
@@ -1220,16 +1220,13 @@ var/global/redirect_all_players = null
 						temp_name = "Russian Army"
 					else if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
-				else if (map && map.ID == "SOVAFGHAN")
+				else if (map && (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL"))
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
 					else if (temp_name == "Arab")
 						temp_name = "Mujahideen"
-				else if (map && map.ID == "HILL_3234")
-					if (temp_name == "Russian")
-						temp_name = "Soviet Army"
-					else if (temp_name == "Arab")
-						temp_name = "Mujahideen"
+					else if (temp_name == "Civilian")
+						temp_name = "DRA and Civilians"
 				else if (map && map.ID == "TANTIVEIV")
 					if (temp_name == "Civilian")
 						temp_name = "Rebels"

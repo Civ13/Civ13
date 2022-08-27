@@ -38,6 +38,7 @@
 /datum/job/var/is_modernday = FALSE
 /datum/job/var/is_rcw = FALSE
 /datum/job/var/is_tanker = FALSE
+/datum/job/var/is_tankcom = FALSE
 /datum/job/var/is_prison = FALSE
 /datum/job/var/is_navy = FALSE
 /datum/job/var/is_rp = FALSE
