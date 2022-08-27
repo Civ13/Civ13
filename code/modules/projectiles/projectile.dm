@@ -90,6 +90,8 @@
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
+		if (penetrating == 0)
+			penetrating += 1
 		penetrating *= 2
 		armor_penetration *= 3
 		return

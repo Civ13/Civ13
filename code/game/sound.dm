@@ -58,6 +58,11 @@ var/list/artillery_in = list( 'sound/weapons/WW2/new_artillery_incoming01.ogg', 
 var/list/artillery_out_distance = list( 'sound/weapons/WW2/explo_distant01.ogg', 'sound/weapons/WW2/explo_distant02.ogg', 'sound/weapons/WW2/explo_distant03.ogg', 'sound/weapons/WW2/explo_distant04.ogg', 'sound/weapons/WW2/explo_distant05.ogg', 'sound/weapons/WW2/explo_distant06.ogg', 'sound/weapons/WW2/explo_distant07.ogg', 'sound/weapons/WW2/explo_distant08.ogg')
 var/list/artillery_in_distance = list( 'sound/weapons/WW2/explo_distant01.ogg', 'sound/weapons/WW2/explo_distant02.ogg', 'sound/weapons/WW2/explo_distant03.ogg', 'sound/weapons/WW2/explo_distant04.ogg', 'sound/weapons/WW2/explo_distant05.ogg', 'sound/weapons/WW2/explo_distant06.ogg', 'sound/weapons/WW2/explo_distant07.ogg', 'sound/weapons/WW2/explo_distant08.ogg')
 
+var/list/loaded_voice = list ('sound/voice/vehicle/loaded_voice1.ogg', 'sound/voice/vehicle/loaded_voice2.ogg')
+var/list/pen_voice = list ('sound/voice/vehicle/pen_voice1.ogg', 'sound/voice/vehicle/pen_voice2.ogg')
+var/list/ric_voice = list ('sound/voice/vehicle/ric_voice1.ogg', 'sound/voice/vehicle/ric_voice2.ogg')
+var/list/track_voice = list ('sound/voice/vehicle/track_voice1.ogg', 'sound/voice/vehicle/track_voice2.ogg')
+
 var/list/doorknock_sounds = list(
 	'sound/effects/doorknock1.ogg',
 	'sound/effects/doorknock2.ogg',
@@ -415,6 +420,11 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("artillery_in") soundin = pick(artillery_in)
 			if ("artillery_out_distance") soundin = pick(artillery_out_distance)
 			if ("artillery_in_distance") soundin = pick(artillery_in_distance)
+
+			if ("loaded_voice") soundin = pick(loaded_voice)
+			if ("pen_voice") soundin = pick(pen_voice)
+			if ("ric_voice") soundin = pick(ric_voice)
+			if ("track_voice") soundin = pick(track_voice)
 
 			// emote sounds from InterBay
 			if ("cough_male")
