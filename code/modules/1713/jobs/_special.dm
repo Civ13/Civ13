@@ -38,6 +38,7 @@
 /datum/job/var/is_modernday = FALSE
 /datum/job/var/is_rcw = FALSE
 /datum/job/var/is_tanker = FALSE
+/datum/job/var/is_tankcom = FALSE
 /datum/job/var/is_prison = FALSE
 /datum/job/var/is_navy = FALSE
 /datum/job/var/is_rp = FALSE
@@ -90,6 +91,9 @@
 /datum/job/var/is_starwars = FALSE
 /datum/job/var/is_rebel = FALSE
 /datum/job/var/is_empire = FALSE
+/datum/job/var/is_reds = FALSE
+/datum/job/var/is_interwar = FALSE
+/datum/job/var/is_pla = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE

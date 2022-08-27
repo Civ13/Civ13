@@ -1550,13 +1550,13 @@ RECIPE: /material/glass/,green glasses,/obj/item/clothing/glasses/gglasses,6,120
 RECIPE: /material/glass/,corrective glasses,/obj/item/clothing/glasses/regular,6,120,0,1,eyewear,110,120,0,8,null
 RECIPE: /material/glass/,sunglasses,/obj/item/clothing/glasses/sunglasses,2,90,1,1,eyewear,140,0,0,8,null
 RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/large,2,90,1,1,eyewear,165,0,0,8,null
-RECIPE: /material/glass/,redglasses,/obj/item/clothing/glasses/redlense,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_r,/obj/item/clothing/glasses/univisorred,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_g,/obj/item/clothing/glasses/univisorgreen,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_y,/obj/item/clothing/glasses/univisoryellow,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_c,/obj/item/clothing/glasses/univisorcyan,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_w,/obj/item/clothing/glasses/univisorwhite,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_flashy,/obj/item/clothing/glasses/univisorflashy,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,red glasses,/obj/item/clothing/glasses/redlense,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,red univisor,/obj/item/clothing/glasses/univisorred,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,green univisor,/obj/item/clothing/glasses/univisorgreen,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,yellow univisor,/obj/item/clothing/glasses/univisoryellow,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,cyan univisor,/obj/item/clothing/glasses/univisorcyan,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,white univisor,/obj/item/clothing/glasses/univisorwhite,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,flashy univisor,/obj/item/clothing/glasses/univisorflashy,3,90,1,1,eyewear,140,0,0,8,null
 
 //**************************************************************
 //************************ROBERTS CARTS*************************
@@ -2231,6 +2231,9 @@ RECIPE: /material/wood/,pine on the shore,/obj/structure/sign/painting7,3,40,1,1
 RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,starry sky,/obj/structure/sign/painting11,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,arid desert,/obj/structure/sign/painting12,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,still life,/obj/structure/sign/painting13,3,40,1,1,paintings,65,0,0,8,null
 
 //*********************| WOOD PUNISHMENTS |**************************
 
@@ -2411,7 +2414,7 @@ RECIPE: /material/iron/,surgical drill,/obj/item/weapon/surgery/surgicaldrill,2,
 //*********************| IRON FIREARMS |**************************
 
 RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient/matchlock,18,140,0,1,firearms,0,70,0,5,null
-RECIPE: /material/iron/,matchlock tanegashima,obj/item/weapon/gun/projectile/ancient/tanegashima,18,140,0,1,firearms,0,70,0,5,null
+RECIPE: /material/iron/,matchlock tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,18,140,0,1,firearms,0,70,0,5,null
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null

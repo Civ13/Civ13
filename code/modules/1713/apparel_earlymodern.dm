@@ -835,9 +835,9 @@
 /obj/item/clothing/under/engi
 	name = "worker outfit"
 	desc = "A outfit used by construction workers."
-	icon_state = "pmc"
-	item_state = "pmc"
-	worn_state = "pmc"
+	icon_state = "engi"
+	item_state = "engi"
+	worn_state = "engi"
 
 /obj/item/clothing/under/gorka
 	name = "gorka outfit"

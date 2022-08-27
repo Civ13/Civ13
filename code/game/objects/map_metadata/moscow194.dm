@@ -2,7 +2,7 @@
 /obj/map_metadata/smallsiegemoscow
 	ID = MAP_SMALLSIEGEMOSCOW
 	title = "Siege of Moscow"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two)
 	respawn_delay = 1200
 	no_winner ="The Politburo is under Soviet control."
@@ -25,6 +25,7 @@
 	songs = list(
 		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
+	grace_wall_timer = 4800
 
 obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -36,13 +37,6 @@ obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/smallsiegemoscow/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/smallsiegemoscow/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/smallsiegemoscow/roundend_condition_def2name(define)
 	..()

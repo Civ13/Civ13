@@ -432,6 +432,13 @@
 	item_state = "pasgt_green"
 	worn_state = "pasgt_green"
 
+/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard
+	name = "blizzard PASGT body armor"
+	desc = "Wearable armor that can stop most pistol rounds. This one has a blizzard pattern."
+	icon_state = "pasgt_blizzard"
+	item_state = "pasgt_blizzard"
+	worn_state = "pasgt_blizzard"
+
 		/* US Lightwieght Helmets*/
 
 /obj/item/clothing/head/helmet/modern/lwh
@@ -529,6 +536,7 @@
 	item_state = "fingerless"
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
+	fingerprint_chance = 100
 
 /* US belts*/
 
@@ -923,14 +931,14 @@
 
 /obj/item/clothing/under/motorist
 	name = "motorist outfit"
-	desc = "A casual jeans and white shirt combo, often worn by tofu deliveryboy's"
+	desc = "A casual jeans and white shirt combo."
 	icon_state = "motorist"
 	item_state = "motorist"
 	worn_state = "motorist"
 
 /obj/item/clothing/under/reporter
 	name = "war correspondent outfit"
-	desc = "Casual brown trousers and a black shirt, perfect for running away from gunfire"
+	desc = "Casual brown trousers and a black shirt, perfect for running away from gunfire."
 	icon_state = "reporter"
 	item_state = "reporter"
 	worn_state = "reporter"
@@ -1050,6 +1058,7 @@
 	icon_state = "sealvest_yellow"
 	item_state = "sealvest_yellow"
 	worn_state = "sealvest_yellow"
+
 /obj/item/clothing/suit/storage/jacket/highvis
 	name = "high visibility jacket"
 	desc = "A yellow high visibility jacket."
@@ -1062,6 +1071,70 @@
 	icon_state = "paramedic_jacket"
 	item_state = "paramedic_jacket"
 	worn_state = "paramedic_jacket"
+
+/obj/item/clothing/under/paramedic
+	name = "paramedic uniform"
+	desc = "A uniform used by EMS workers."
+	icon_state = "paramedic"
+	item_state = "paramedic"
+	worn_state = "paramedic"
+
+/obj/item/clothing/under/firefighter
+	name = "firefighter uniform"
+	desc = "A uniform used by firefighters. Offers heat protection on the legs."
+	icon_state = "firefighter"
+	item_state = "firefighter"
+	worn_state = "firefighter"
+	flammable = FALSE
+	heat_protection = LOWER_TORSO|LEGS
+	max_heat_protection_temperature = FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/suit/storage/coat/firefighter
+	name = "firefighter coat"
+	desc = "A coat used by firefighters. Offers heat protection on the torso and arms."
+	icon_state = "firefighter"
+	item_state = "firefighter"
+	worn_state = "firefighter"
+	flammable = FALSE
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	max_heat_protection_temperature = FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/head/helmet/modern/firefighter
+	name = "firefighter helmet"
+	desc = "A protective and fire-resistant helmet used by firefigthers."
+	icon_state = "hardhat_yellow"
+	item_state = "hardhat_yellow"
+	worn_state = "hardhat_yellow"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD
+	max_heat_protection_temperature = FIRE_HELMET_MAX_HEAT_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/head/helmet/modern/firefighter/white
+	icon_state = "hardhat_white"
+	item_state = "hardhat_white"
+	worn_state = "hardhat_white"
+
+/obj/item/clothing/under/detective1
+	name = "shirt outfit"
+	desc = "A brown shirt with black pants."
+	icon_state = "detective1"
+	item_state = "detective1"
+	worn_state = "detective1"
+
+/obj/item/clothing/under/detective2
+	name = "shirt outfit"
+	desc = "A blue shirt with black pants."
+	icon_state = "detective2"
+	item_state = "detective2"
+	worn_state = "detective2"
+
+/obj/item/clothing/under/detective3
+	name = "shirt outfit"
+	desc = "A black shirt with grey pants."
+	icon_state = "detective3"
+	item_state = "detective3"
+	worn_state = "detective3"
 
 	/* Emergency Services Objects*/
 
@@ -1145,6 +1218,54 @@
 	slowdown = 0.2
 	w_class = 3
 	weight = 2
+
+//my nerd shit (skyfire)//
+
+//armor//
+/obj/item/clothing/suit/armor/zgz1
+	name = "zgz1 advanced armor"
+	desc = "An advanced piece of armor that provides medium protection against kinetic and other projectiles. This armor is mostly used by the Chinese."
+	icon_state = "zgz1_armor"
+	item_state = "zgz1_armor"
+	worn_state = "zgz1_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 78, energy = 50, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.5
+	health = 60
+
+/obj/item/clothing/suit/armor/zgz1/med
+	name = "Medical zgz1 advanced armor"
+	desc = "An advanced piece of armor that provides medium protection against kinetic and other projectiles. This armor is mostly used by the Chinese medics."
+	icon_state = "zgz1med_armor"
+	item_state = "zgz1med_armor"
+	worn_state = "zgz1med_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 45, arrow = 90, gun = 78, energy = 50, bomb = 60, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.5
+	health = 60
+//helmets//
+/obj/item/clothing/head/helmet/ft1
+	name = "FT1 advanced helmet"
+	desc = "An extremely advanced helmet used by the Chinese."
+	icon_state = "ft1_helmet"
+	item_state = "ft1_helmet"
+	worn_state = "ft1_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 60, gun = 80, energy = 40, bomb = 30, bio = 30, rad = FALSE)
+
+
+/obj/item/clothing/head/helmet/ft1/med
+	name = "Medical FT1 advanced helmet"
+	desc = "An extremely advanced helmet used by the Chinese medics."
+	icon_state = "ft1med_helmet"
+	item_state = "ft1med_helmet"
+	worn_state = "ft1med_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 35, arrow = 60, gun = 80, energy = 40, bomb = 30, bio = 30, rad = FALSE)
 
 	/* Tactical*/
 
@@ -1701,3 +1822,26 @@
 	value = 150
 	slowdown = 1.8
 	health = 175
+
+/obj/item/clothing/under/chinese_type07
+	name = "type 07 chinese uniform"
+	desc = "The standard modern Chinese military uniform."
+	icon_state = "type07"
+	item_state = "type07"
+	worn_state = "type07"
+
+/obj/item/clothing/head/helmet/modern/qgf03
+	name = "QGF03 helmet"
+	desc = "A modern chinese combat helmet."
+	icon_state = "qgf03"
+	item_state = "qgf03"
+	worn_state = "qgf03"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, arrow = 80, gun = 65, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/under/cartel
+	name = "floral shirt with light pants"
+	desc = "A pair of light pants with a red floral shirt."
+	icon_state = "cartel1"
+	item_state = "cartel1"
+	worn_state = "cartel1"

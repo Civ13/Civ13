@@ -53,22 +53,29 @@
 	if (constant == CIVILIAN)
 		if (map.ID == "TSARITSYN")
 			return "Red Army"
-		if (map.ID == "YELTSIN")
+		else if (map.ID == "YELTSIN")
 			return "Militia"
-		if (map.ID == "AFRICAN_WARLORDS")
+		else if (map.ID == "AFRICAN_WARLORDS")
 			return "United Nations"
-		if (map.ID == "WHITERUN")
+		else if (map.ID == "WHITERUN")
 			return "Stormcloaks"
-		if (map.ID == "CAPITOL_HILL")
+		else if (map.ID == "CAPITOL_HILL")
 			return "Rioters"
-		if (map.ID == "WACO")
+		else if (map.ID == "WACO")
 			return "Branch Davidians"
-		if (map.ID == "MISSIONARY_RIDGE")
+		else if (map.ID == "MISSIONARY_RIDGE")
 			return "Confederates"
-		else if (age >= 6)
-			return "Civilians"
+		else if (map.ID == "TANTIVEIV")
+			return "Rebels"
+		else if (map.ID == "RUHR_UPRISING")
+			return "Ruhr Red Army"
+		else if (map.ID == "MAGISTRAL")
+			return "DRA Army"
 		else
-			return "Colonists"
+			if (age >= 6)
+				return "Civilians"
+			else
+				return "Colonists"
 
 	if (constant == INDIANS)
 		if (map.ID == "AFRICAN_WARLORDS")
@@ -98,14 +105,17 @@
 	if (constant == RUSSIAN)
 		if (map.ID == "YELTSIN")
 			return "Russian Army"
-		if (map.ID == "GROZNY")
+		else if (map.ID == "GROZNY")
 			return "Russian Federal Forces"
-		else if (age >= 6)
-			return "Soviet Union"
-		if (map.ID == "TSARITSYN")
+		else if (map.ID == "TSARITSYN")
 			return "White Army"
 		else
-			return "Russian Empire"
+			if (age == 6 || age == 7)
+				return "Soviet Union"
+			else if (age >= 8)
+				return "Russian Federation"
+			else
+				return "Russian Empire"
 
 	if (constant == ROMAN)
 		if (map.ID == "WHITERUN")
@@ -120,8 +130,12 @@
 		return "Republic of Finland"
 
 	if (constant == GERMAN)
-		if (age >= 6)
+		if (age == 6)
 			return "Third Reich"
+		else if (age >= 7)
+			return "Federal Republic of Germany"
+		else if (map.ID == "RUHR_UPRISING")
+			return "Weimar Republic"
 		else
 			return "German Empire"
 	if (constant == GREEK)
@@ -131,7 +145,7 @@
 		if (age >= 6)
 			if (map.ID == "ARAB_TOWN")
 				return "Hezbollah"
-			if (map.ID == "SOVAFGHAN")
+			else if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL")
 				return "Mujahideen"
 			else
 				return "Insurgents"
@@ -141,10 +155,12 @@
 	if (constant == AMERICAN)
 		if (map.ID == "ARAB_TOWN")
 			return "IDF"
-		if (map.ID == "CAPITOL_HILL")
+		else if (map.ID == "CAPITOL_HILL")
 			return "American Government"
-		if (map.ID == "WACO")
+		else if (map.ID == "WACO")
 			return "ATF"
+		else if (map.ID == "TANTIVEIV")
+			return "Imperials"
 		else
 			return "United States"
 

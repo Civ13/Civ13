@@ -377,10 +377,12 @@
 				if (mob)
 					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
 				return FALSE
+/*
 		var/turf/TF = get_turf(O)
 		if (!istype(TF, /turf/floor/beach/water) && !istype(TF, /turf/floor/trench/flooded))
 			mob << "<span class='warning'>You can't turn, the ship will get stuck!</span>"
 			return FALSE
+*/
 	if (newdir == "left")
 		ship.do_matrix(dir,TURN_LEFT(ship.dir), newdir)
 	else

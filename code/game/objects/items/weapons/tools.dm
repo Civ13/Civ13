@@ -242,6 +242,30 @@
 			cooldown_whistle = FALSE
 		return
 
+/obj/item/weapon/deathwhistle
+	name = "death whistle"
+	desc = "Good for terrifying enemy soldiers."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "death_whistle"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	item_state = "zippo"
+	w_class = 2.0
+
+	attack_verb = list("attacked", "whacked")
+	var/cooldown_whistle = FALSE
+
+/obj/item/weapon/deathwhistle/attack_self(mob/user as mob)
+	if (cooldown_whistle == FALSE)
+		playsound(loc, 'sound/effects/death-whistle.ogg', 100, FALSE, 5)
+		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
+		cooldown_whistle = TRUE
+		spawn(100)
+			cooldown_whistle = FALSE
+		return
+
 /obj/item/weapon/siegeladder
 	name = "siege ladder"
 	desc = "A wood ladder, used to climb over walls."

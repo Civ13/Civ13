@@ -1494,6 +1494,8 @@
 				if (AMERICAN)
 					if (map.ID == MAP_ARAB_TOWN)
 						holder2.icon_state = "idf_basic"
+					else if (map.ID == MAP_TANTIVEIV)
+						holder2.icon_state = "imp_basic"
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
@@ -1501,7 +1503,10 @@
 				if (FILIPINO)
 					holder2.icon_state = "fp_basic"
 				if (CHINESE)
-					holder2.icon_state = "roc_basic"
+					if(map && map.ordinal_age >= 8)
+						holder2.icon_state = "sov_basic"
+					else
+						holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
@@ -1513,6 +1518,8 @@
 						holder2.icon_state = "upa_basic"
 					else if (map.ID == MAP_WHITERUN)
 						holder2.icon_state = "stormcloak"
+					else if (map.ID == MAP_TANTIVEIV)
+						holder2.icon_state = "rebel_basic"
 					else if (map.ID == MAP_FACTORY)
 						holder2.icon_state = "ukr_basic"
 					else if (map.ID == MAP_GULAG13)
@@ -1586,23 +1593,29 @@
 					else if(findtext(original_job_title,"Squadleader") || findtext(original_job_title,"Petty Officer"))
 						holder2.overlays += icon(holder2.icon,"i_sgt")
 					else if(findtext(original_job_title,"Commander") || findtext(original_job_title,"Captain"))
-						holder2.overlays += icon(holder2.icon,"i_cpt")
+						if(map.ID != MAP_SOVAFGHAN)
+							holder2.overlays += icon(holder2.icon,"i_cpt")
 					else if(findtext(original_job_title,"Medic"))
 						holder2.overlays += icon(holder2.icon,"i_ssgt")
 					else if(findtext(original_job_title,"Corpsman"))
 						holder2.overlays += icon(holder2.icon,"i_cpl")
 			if (map.ID != MAP_CAMPAIGN)
-				if (original_job.is_commander)
+				if (original_job.is_commander || (original_job.is_commander && original_job.is_officer))
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"commander")
-				else if (original_job.is_officer || original_job.is_squad_leader)
+				else if (original_job.is_officer && !original_job.is_commander)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"officer")
-			else if (original_job.is_medic)
+				else if (original_job.is_squad_leader)
+					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
+						holder2.icon_state = ""
+					else
+						holder2.overlays += icon(holder2.icon,"nco")
+			if (original_job.is_medic)
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2
 
@@ -1682,8 +1695,9 @@
 						if (stat == DEAD)
 							visible_message("[src]'s body is visibly rotten!")
 							rotting_stage = 2
-							if (isturf(loc))
-								new/mob/living/simple_animal/crow(loc)
+							if(map.ID != "TANTIVEIV")
+								if (isturf(loc))
+									new/mob/living/simple_animal/crow(loc)
 							spawn(2000)
 								if (stat == DEAD)
 									var/found = FALSE

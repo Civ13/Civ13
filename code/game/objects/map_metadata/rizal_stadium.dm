@@ -1,7 +1,7 @@
 /obj/map_metadata/rizal_stadium
 	ID = MAP_RIZAL_STADIUM
 	title = "Rizal Stadium"
-	lobby_icon_state = "pacific"
+	lobby_icon = "icons/lobby/pacific.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 
@@ -25,6 +25,7 @@
 	songs = list(
 		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	gamemode = "Siege"
+	grace_wall_timer = 3600
 /obj/map_metadata/rizal_stadium/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/american))
@@ -39,13 +40,6 @@
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/rizal_stadium/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/rizal_stadium/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/rizal_stadium/roundend_condition_def2name(define)
 	..()

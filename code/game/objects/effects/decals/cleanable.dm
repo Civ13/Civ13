@@ -42,3 +42,15 @@
 	New()
 		..()
 		icon_state = "graffiti[rand(1,3)]"
+
+/obj/effect/decal/cleanable/graffiti_grove
+	name = "Grove Street graffiti"
+	desc = "A graffiti made with a spraycan."
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "graffiti_grove"
+
+/obj/effect/decal/cleanable/graffiti_ballas
+	name = "Rollin Heights Ballas graffiti"
+	desc = "A graffiti made with a spraycan."
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "graffiti_ballas"

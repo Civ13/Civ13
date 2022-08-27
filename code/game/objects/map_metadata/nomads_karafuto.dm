@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_karafuto
 	ID = MAP_NOMADS_KARAFUTO
 	title = "Nomads Karafuto (Temperate)"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -27,16 +27,12 @@
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
+	grace_wall_timer = 18000
+
 /obj/map_metadata/nomads_karafuto/New()
 	..()
 	spawn(18000)
 		seasons()
-
-/obj/map_metadata/nomads_karafuto/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_karafuto/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_karafuto/cross_message(faction)
 	return "The nomads may now cross the waterway!"

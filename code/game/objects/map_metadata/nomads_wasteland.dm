@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_wasteland
 	ID = MAP_NOMADS_WASTELAND
 	title = "Wasteland"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -51,11 +51,6 @@
 			supplydrop_proc()
 		else
 			supplydrop_proc()
-/obj/map_metadata/nomads_wasteland/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_wasteland/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_wasteland/cross_message(faction)
 	return ""

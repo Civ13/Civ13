@@ -2,7 +2,7 @@
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
 	title = "Nanjing"
-	lobby_icon_state = "china"
+	lobby_icon = "icons/lobby/china.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -23,6 +23,7 @@
 	faction1 = CHINESE
 	faction2 = JAPANESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
+	grace_wall_timer = 4800
 	songs = list(
 		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
 
@@ -36,13 +37,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/nanjing/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nanjing/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/nanjing/roundend_condition_def2name(define)
 	..()

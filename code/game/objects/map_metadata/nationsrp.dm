@@ -1,7 +1,7 @@
 /obj/map_metadata/nationsrp
 	ID = MAP_NATIONSRP
 	title = "Nations RP"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/sea/temperate)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
@@ -36,6 +36,7 @@
 	age4_done = TRUE
 	research_active = FALSE
 	is_singlefaction = TRUE
+	grace_wall_timer = 54000
 
 /obj/map_metadata/nationsrp/New()
 	..()
@@ -49,12 +50,6 @@
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
 		seasons()
-
-/obj/map_metadata/nationsrp/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 54000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nationsrp/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 54000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nationsrp/cross_message(faction)
 	return "<big><b>THE GRACE PERIOD HAS ENDED!</b></big>"

@@ -1,7 +1,7 @@
 /obj/map_metadata/civilizations
 	ID = MAP_CIVILIZATIONS
 	title = "Two Kingdoms"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
@@ -54,12 +54,6 @@
 	world <<"<font color=#CECE00><big><b>THE WALL HAS GONE UP!</b></big></font>"
 	admin_ended_all_grace_periods = FALSE
 	return
-
-/obj/map_metadata/civilizations/faction2_can_cross_blocks()
-	return (admin_ended_all_grace_periods)
-
-/obj/map_metadata/civilizations/faction1_can_cross_blocks()
-	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/civilizations/cross_message(faction)
 	return "<big><b>THE GRACE PERIOD HAS ENDED!</b></big>"

@@ -82,6 +82,11 @@
 	desc = "A sign Texas people usually like."
 	icon_state = "tfc"
 
+/obj/structure/sign/weedshop
+	name = "Weed Shop"
+	desc = "A sign stoners usually like."
+	icon_state = "weedshop"
+
 /obj/structure/sign/mckellens
 	name = "McKellen's"
 	desc = "A sign for the McKellen's Franchise establishment."
@@ -178,6 +183,22 @@
 	name = "Exit"
 	desc = "Points to the exit."
 	icon_state = "exit"
+
+/obj/structure/sign/galacticbattles/unite
+	name = "UNITE Poster"
+	desc = "Seems to be a Galactic Republic Propaganda Poster for the fight against the Sepretists."
+	icon_state = "unite"
+
+/obj/structure/sign/galacticbattles/care
+	name = "CARE Poster"
+	desc = "Seems to be a Galactic Republic Propaganda Poster to make the public aware of infiltrators"
+	icon_state = "care"
+
+/obj/structure/sign/galacticbattles/repair
+	name = "Corelian Repair Advertisement Poster"
+	desc = "Seems to be a Corelian advertisement for Robot repairs"
+	icon_state = "repair"
+
 
 /obj/structure/sign/minefield
 	name = "Minefield"
@@ -364,9 +385,16 @@
 
 /obj/structure/sign/court
 	name = "court"
-	desc = "A court house."
+	desc = "The court house."
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "court"
+	bound_width = 64
+
+/obj/structure/sign/townhall
+	name = "town hall"
+	desc = "The town hall."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "townhall"
 	bound_width = 64
 
 /obj/structure/sign/nosmoking
@@ -384,8 +412,13 @@
 	name = "anatomy poster"
 	icon_state = "anatomy"
 
+/obj/structure/sign/xray
+	desc = "A medical lightbox used to examine X-ray images."
+	name = "lightbox"
+	icon_state = "xray_on"
+
 /obj/structure/sign/periodic
-	desc = "A poster detailing the complexity of the human body."
+	desc = "A tabular display of the chemical elements."
 	name = "periodic table"
 	icon_state = "periodic"
 
@@ -405,7 +438,40 @@
 	desc = "A blinking gun store sign."
 	icon_state = "gunshop"
 
+/obj/structure/sign/gas
+	name = "gas"
+	desc = "A flashing gas station sign."
+	icon_state = "gas"
+
 /obj/structure/sign/deer_trophy
 	name = "hunting deer trophy"
 	desc = "Looks like we finally found Bambi..."
 	icon_state = "deer_trophy"
+
+//BILLBOARDS
+
+/obj/structure/billboard
+	name = "billboard ad"
+	desc = "Goodness, what are they selling us this time?"
+	icon = 'icons/obj/billboards.dmi'
+	icon_state = "billboard"
+	light_range = 4
+	light_power = 2
+	light_color = "#fcf8f0"
+	density = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+	layer = MOB_LAYER + 0.1
+	bound_width = 64
+	bound_height = 64
+	var/adnumber
+
+/obj/structure/billboard/Destroy()
+	set_light(0)
+	return ..()
+
+/obj/structure/billboard/New()
+	..()
+	adnumber = rand(1,14)
+	overlays += "ad[adnumber]"
+	update_icon()

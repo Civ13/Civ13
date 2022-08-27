@@ -1,7 +1,7 @@
 /obj/map_metadata/hunger_games
 	ID = MAP_HUNGERGAMES
 	title = "Battle Royale: Imperial"
-	lobby_icon_state = "battleroyale"
+	lobby_icon = "icons/lobby/battleroyale.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 36000000
 	is_singlefaction = TRUE
@@ -27,6 +27,7 @@
 	required_players = 12
 	has_hunger = TRUE
 	var/list/closed_areas = list()
+	grace_wall_timer = 1800
 
 /obj/map_metadata/hunger_games/job_enabled_specialcheck(var/datum/job/J)
 
@@ -39,12 +40,6 @@
 	else
 		. = FALSE
 	return .
-
-/obj/map_metadata/hunger_games/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/hunger_games/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hunger_games/cross_message(faction)
 	if (faction == PIRATES)

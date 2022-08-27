@@ -1,7 +1,7 @@
 /obj/map_metadata/caloocan
 	ID = MAP_CALOOCAN
 	title = "Caloocan"
-	lobby_icon_state = "ph_us_war"
+	lobby_icon = "icons/lobby/ph_us_war.png"
 	no_winner ="The church is under Filipino control."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
@@ -23,18 +23,13 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	gamemode = "King of the Hill"
+	grace_wall_timer = 2400
 /obj/map_metadata/caloocan/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ph_us_war == TRUE)
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/caloocan/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/caloocan/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/caloocan/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

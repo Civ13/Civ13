@@ -31,7 +31,7 @@
 	maxvol = 1000
 /obj/structure/fuelpump/premade/New()
 	..()
-	fueltype = pick("gasoline","diesel","biodiesel","ethanol","petroleum")
+	fueltype = pick("gasoline","diesel","biodiesel","pethanol","petroleum")
 	vol = maxvol
 	name = "[brand] [fueltype] pump"
 	price = 0.4
@@ -221,7 +221,7 @@
 				user << "<span class = 'notice'>The [src] still has fuel inside! Empty it before changing!</span>"
 				return
 			else
-				var/choice = WWinput(user, "What fuel to set this pump to?", "Fuel Pump Management", "cancel", list("cancel","gasoline","diesel","biodiesel","ethanol","petroleum"))
+				var/choice = WWinput(user, "What fuel to set this pump to?", "Fuel Pump Management", "cancel", list("cancel","gasoline","diesel","biodiesel","pethanol","petroleum"))
 				if (choice == "cancel")
 					return
 				else

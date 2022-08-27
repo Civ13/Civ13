@@ -2,7 +2,7 @@
 /obj/map_metadata/stalingrad
 	ID = MAP_STALINGRAD
 	title = "Stalingrad"
-	lobby_icon_state = "stalingrad"
+	lobby_icon = "icons/lobby/stalingrad.png"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
 	respawn_delay = 0
@@ -32,6 +32,7 @@
 	var/a2_control = "none"
 	var/a3_control = "none"
 	var/a4_control = "none"
+	grace_wall_timer = 3000
 /obj/map_metadata/stalingrad/New()
 	..()
 	spawn(3000)
@@ -53,13 +54,6 @@
 		. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/stalingrad/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/stalingrad/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/stalingrad/roundend_condition_def2name(define)
 	..()
@@ -249,6 +243,7 @@
 /obj/map_metadata/stalingrad/minigrad
 	ID = MAP_SMALLINGRAD
 	title = "Central Stalingrad"
+	grace_wall_timer = 1800
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one, /area/caribbean/no_mans_land/invisible_wall/tundra/two)
 
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
@@ -271,12 +266,6 @@
 		. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/stalingrad/minigrad/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/stalingrad/minigrad/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/stalingrad/minigrad/points_check()
 	if (processes.ticker.playtime_elapsed > 2100)

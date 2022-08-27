@@ -2,12 +2,12 @@
 /obj/map_metadata/campaign
 	ID = MAP_CAMPAIGN
 	title = "Campaign"
-	lobby_icon_state = "modern"
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner ="The battle is going on."
-	var/victory_time = 45000
-	var/grace_wall_timer = 9000
+	victory_time = 45000
+	grace_wall_timer = 9000
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
@@ -321,7 +321,7 @@
 	name = "Redmenian Key"
 /*
 /obj/map_metadata/campaign/update_win_condition()
-	var/victory_time = 45000
+	victory_time = 45000
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
@@ -917,6 +917,94 @@ obj/map_metadata/campaign/campaign7/job_enabled_specialcheck(var/datum/job/J)
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
 			world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] ship!</font>"
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+	return TRUE
+
+///////////////////////////////////////////////////////////////////////
+/obj/map_metadata/campaign/campaign8
+	victory_time = 36000
+	grace_wall_timer = 9000
+	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
+	roundend_condition_sides = list(
+		list(CIVILIAN) = /area/caribbean/british,
+		list(PIRATES) = /area/caribbean/japanese/land/inside,
+		)
+obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
+	if (istype(J, /datum/job/civilian))
+		if (J.is_event)
+			. = TRUE
+		else
+			. = FALSE
+	else if (istype(J, /datum/job/pirates))
+		if (J.is_event)
+			. = TRUE
+		else
+			. = FALSE
+	else
+		. = FALSE
+/obj/map_metadata/campaign/campaign8/update_win_condition()
+
+	if (world.time >= victory_time || round_finished)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = "The <b>Blugoslavians</b> have sucessfuly defended the RADAR station! The Redmenians have retreated!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		win_condition_spam_check = TRUE
+		show_global_battle_report(null)
+		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		game_log("Civilians Killed: Blugoslavia [civilians_killed["Blugoslavia"]], Redmenia [civilians_killed["Redmenia"]]")
+		return FALSE
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_cm == FALSE)
+		ticker.finished = TRUE
+		var/message = "The <b>Redmenians</b> have captured the RADAR station! The battle is over!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		game_log("Civilians Killed: Blugoslavia [civilians_killed["Blugoslavia"]], Redmenia [civilians_killed["Redmenia"]]")
+		no_loop_cm = TRUE
+		return FALSE
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Redmenians</b> have control over the RADAR station! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Redmenians</b> have control over the RADAR station! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Redmenians</b> have control over the RADAR station! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Redmenians</b> have control over the RADAR station! They will win in {time} minutes."
+				next_win = world.time + short_win_time(RUSSIAN)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	else
+		if (current_win_condition != no_winner && current_winner && current_loser)
+			world << "<font size = 3>The <b>Blugoslavians</b> have recaptured the eastern side of the river!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1

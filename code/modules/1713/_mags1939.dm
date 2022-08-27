@@ -332,3 +332,21 @@ obj/item/ammo_magazine/dp
 	caliber = "a44magnum"
 	max_ammo = 8
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/browninghp
+	name = "Browning hi-power magazine (9mm Parabellum)"
+	icon_state = "browning_hp"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 13
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/uzi
+	name = "Uzi magazine (9mm Parabellum)"
+	icon_state = "uzi"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 25
+	multiple_sprites = TRUE

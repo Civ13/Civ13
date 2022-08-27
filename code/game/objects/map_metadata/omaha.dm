@@ -1,10 +1,10 @@
 /obj/map_metadata/omaha
 	ID = MAP_OMAHA
 	title = "Omaha Beach"
-	lobby_icon_state = "omaha"
+	lobby_icon = "icons/lobby/omaha.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
-	var/victory_time = 24000
+	victory_time = 24000
 	no_hardcore = TRUE
 
 	faction_organization = list(
@@ -24,8 +24,9 @@
 	faction1 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = "sound/music/neue_deutsche_welle.ogg",)
+		"Over There!:1" = "sound/music/overthere.ogg",)
 	gamemode = "Siege"
+	grace_wall_timer = 4800
 /obj/map_metadata/omaha/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_tanker == TRUE || J.is_occupation == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
@@ -34,13 +35,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/omaha/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/omaha/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/omaha/roundend_condition_def2name(define)
 	..()
@@ -175,10 +169,5 @@ var/no_loop_o = FALSE
 	victory_time = 15000
 	faction_distribution_coeffs = list(GERMAN = 0.4, AMERICAN = 0.6)
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>25 minutes</b>. The Americans will win if they manage to capture the <b>rear bunkers</b>.</font>"
-
-/obj/map_metadata/omaha/micromaha/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/omaha/micromaha/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
+	grace_wall_timer = 2400
 

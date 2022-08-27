@@ -197,6 +197,57 @@
 /obj/item/weapon/material/kitchen/utensil/knife/bowie/iron
 	default_material = "iron"
 
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade
+	name = "switchblade knife"
+	desc = "A sharp, concealable, spring-loaded knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "switchblade"
+	item_state = null
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	hitsound = null
+	attack_verb = list("patted", "tapped")
+	force_divisor = 0.05
+	w_class = 2
+	throwforce = 0
+	throw_speed = 3
+	throw_range = 5
+	secondary_action = TRUE
+	drawsound = 'sound/weapons/hiddenblade_deploy.ogg'
+	var/active = FALSE
+
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade/update_force()
+	if(active)
+		edge = 1
+		sharp = 1
+		..() //Updates force.
+		throwforce = 5
+		hitsound = 'sound/weapons/bladeslice.ogg'
+		icon_state += "_open"
+		item_state = "switchblade_ext"
+		w_class = 3
+		force_divisor = 0.7
+		attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
+	else
+		edge = 0
+		sharp = 0
+		hitsound = initial(hitsound)
+		icon_state = initial(icon_state)
+		item_state = initial(item_state)
+		w_class = initial(w_class)
+		force_divisor = initial(force_divisor)
+		attack_verb = initial(attack_verb)
+
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade/secondary_attack_self(mob/living/human/user)
+	active = !active
+	if(active)
+		visible_message("<span class='warning'>With a simple press, [user] extends the blade on their switchblade knife.</span>", 3)
+		playsound(loc, 'sound/weapons/switchblade.ogg', 15, 1)
+	else
+		visible_message("<span class='notice'>\The [user] retracts the blade on their switchblade knife.</span>", 3)
+	update_force()
+	add_fingerprint(user)
+
 /obj/item/weapon/material/kitchen/utensil/knife/fancy
 	name = "fancy knife"
 	desc = "A expensive knife."

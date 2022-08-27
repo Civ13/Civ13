@@ -107,9 +107,19 @@
 				map.scores["Militia"] += 1
 			else
 				map.scores["National Guard"] += 1
+		if(original_job && original_job.title == "President of the USA")
+			world << "<font color='red' size=3>The <b>President</b> has been killed!</font>"
+		else if(original_job && original_job.title == "Vice-President of the USA")
+			world << "<font color='red' size=3>The <b>Vice-President</b> has been killed!</font>"
+		else if(original_job && original_job.title == "Speaker of the House")
+			world << "<font color='red' size=3>The <b>Speaker of the House</b> has been killed!</font>"
+
 
 	else if (map && map.ID == MAP_SOVAFGHAN)
 		var/obj/map_metadata/sovafghan/MP = map
+		if (faction_text == RUSSIAN && original_job.title == "Soviet Army Captain")
+			MP.muj_points += 15
+			world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"
 		if (faction_text == RUSSIAN && original_job.title == "Soviet Army Lieutenant")
 			MP.muj_points += 12
 			world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"

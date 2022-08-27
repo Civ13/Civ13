@@ -47,14 +47,36 @@
 	desc = "It's a very fancy satchel made with fine leather."
 	icon_state = "satchel"
 	base_icon = "satchel"
-	worn_state = "satchel-norm"
-	max_storage_space = 20
+	worn_state = "satchel"
+	max_storage_space = 16
 
 /obj/item/weapon/storage/backpack/satchel/gator_satchel
 	name = "alligator scale satchel"
 	desc = "A fashionable satchel lined with exotic alligator scales"
 	icon_state = "gator_satchel"
 	base_icon = "gator_satchel"
+
+/obj/item/weapon/storage/backpack/satchel/black
+	name = "black leather satchel"
+	desc = "A very fancy satchel made out of black leather."
+	icon_state = "satchel_black"
+	base_icon = "satchel_black"
+	worn_state = "satchel_black"
+
+/obj/item/weapon/storage/backpack/satchel/replicant
+	name = "synthetic backpack"
+	desc = "A very versitile backpack made out of synthetic leather."
+	icon_state = "replicant_backpack"
+	base_icon = "replicant_backpack"
+	worn_state = "replicant_backpack"
+
+/obj/item/weapon/storage/backpack/satchel/police
+	name = "police tactical pouch"
+	desc = "A tactical pouch made for law enforcement agents."
+	icon_state = "policesatchel"
+	base_icon = "policesatchel"
+	worn_state = "policesatchel"
+	max_storage_space = 12
 
 /* Backpacks */
 

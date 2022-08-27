@@ -1,7 +1,7 @@
 /obj/map_metadata/yeltsin
 	ID = MAP_YELTSIN
 	title = "Battle for the Russian Parliament"
-	lobby_icon_state = "yeltsin"
+	lobby_icon = "icons/lobby/yeltsin.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -24,6 +24,7 @@
 	mission_start_message = ""
 	faction1 = CIVILIAN
 	faction2 = RUSSIAN
+	grace_wall_timer = 6000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Kino - I Want Changes:1" = "sound/music/want_changes.ogg",)
@@ -54,13 +55,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/yeltsin/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/yeltsin/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/yeltsin/roundend_condition_def2name(define)
 	..()

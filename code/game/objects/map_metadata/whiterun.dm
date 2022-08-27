@@ -2,7 +2,7 @@
 /obj/map_metadata/whiterun
 	ID = MAP_WHITERUN
 	title = "Whiterun"
-	lobby_icon_state = "tes13"
+	lobby_icon = "icons/lobby/tes13.png"
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 300
@@ -26,13 +26,8 @@
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
 		"One They Fear:1" = "sound/music/tesonetheyfear.ogg",)
-
 	gamemode = "Siege"
-/obj/map_metadata/whiterun/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/whiterun/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	grace_wall_timer = 3600
 
 obj/map_metadata/whiterun/job_enabled_specialcheck(var/datum/job/J)
 	..()

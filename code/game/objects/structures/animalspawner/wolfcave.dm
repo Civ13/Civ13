@@ -192,6 +192,11 @@
 /obj/structure/animalspawner/wolfcave/full // initializes defaultly with 5 males and 5 females
 
 /obj/structure/animalspawner/wolfcave/full/New()
-	..()
 	src.males = 5
 	src.females = 5
+	src.total_population = src.males + src.females + src.cubs //Initializes the local population
+	empty = FALSE
+	if(!wolfcave_ticking) //Checks if the wolfcave tick havent been started yet
+		wolfcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
+		Tick()
+	..()

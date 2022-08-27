@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_ice_age
 	ID = MAP_NOMADS_ICE_AGE
 	title = "Nomads (Ice Age)"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -36,12 +36,6 @@
 		TREES.change_season()
 	spawn(9000)
 		seasons()
-
-/obj/map_metadata/nomads_ice_age/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_ice_age/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_ice_age/cross_message(faction)
 	return ""

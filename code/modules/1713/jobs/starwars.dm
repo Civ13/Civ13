@@ -1,6 +1,5 @@
 /datum/job/civilian/starwars/rebel/lieutenant
 	title = "Rebel Lieutenant"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateJP"
@@ -29,7 +28,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
 //back
 	H.s_tone = rand(-35,-25)
-	H.add_note("Role", "You are a <b>[title]</b>, lead the Rebel Alliance forced in the fight against the Galactic Empire!")
+	H.add_note("Role", "You are a <b>[title]</b>, lead the Rebel Alliance forced in the fight against the Extra-Galactic Empire!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_VERY_VERY_HIGH)
@@ -43,7 +42,6 @@
 
 /datum/job/civilian/starwars/rebel/doctor
 	title = "Rebel Doctor"
-	en_meaning = ""
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJPDoc"
@@ -69,7 +67,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
 
 	H.s_tone = rand(-35,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep the Rebel Alliance fighting on!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep the Rebel Marines fighting on!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
@@ -83,7 +81,6 @@
 
 /datum/job/civilian/starwars/rebel/sergeant
 	title = "Rebel Marine Squad Leader"
-	en_meaning = " "
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
@@ -108,8 +105,8 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/laser/a280(H), slot_l_hand)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a sergeant in the Rebel Alliance, in charge of a squad. Lead your men and fight against the Galactic Empire!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
+	H.add_note("Role", "You are a <b>[title]</b>, a sergeant in the Rebel Alliance, in charge of a squad. Lead your men and fight against the Extra-Galactic Empire!")
+	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a thermal detonator.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_HIGH)
@@ -124,7 +121,6 @@
 
 /datum/job/civilian/starwars/rebel/soldier
 	title = "Rebel Marine"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateJP"
@@ -151,7 +147,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/laser/a280(H), slot_l_hand)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Rebel Alliance. Fight for the freedom of <b>the Galaxy</b>! Fight against the Galactic Empire!")
-	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
+	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a thermal detonator.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -170,7 +166,6 @@
 
 /datum/job/american/starwars/empire/lieutenant
 	title = "Imperial Navy Lieutenant"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRUCap"
@@ -211,8 +206,7 @@
 	return TRUE
 
 /datum/job/american/starwars/empire/doctor
-	title = "Imperial Doctor"
-	en_meaning = ""
+	title = "Imperial Storm-Surgeon"
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRUDoc"
@@ -234,12 +228,12 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormtrooper(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormsurgeon(H), slot_wear_suit)
 
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormtrooper(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormsurgeon(H), slot_head)
 
 	H.s_tone = rand(-35,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep the Galactic Empire fighting on!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep the Extra-Galactic Empire fighting on!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
@@ -251,9 +245,48 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/american/starwars/empire/technician
+	title = "Shocktrooper Radio Technician"
+	rank_abbreviation = ""
+	can_be_female = TRUE
+	spawn_location = "JoinLateRU"
+
+	is_medic = FALSE
+	is_starwars = TRUE
+	is_empire = TRUE
+	can_be_female = TRUE
+	min_positions = 1
+	max_positions = 10
+
+/datum/job/american/starwars/empire/technician/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/replicantshoes(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/bodyglove(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/replicantgloves(H), slot_gloves)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/galacticbattles(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormradio(H), slot_wear_suit)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormradio(H), slot_head)
+
+	H.s_tone = rand(-35,-25)
+	H.add_note("Role", "You are a <b>[title]</b>. Keep the Imperial Forces Informed and Updated!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
 /datum/job/american/starwars/empire/sergeant
-	title = "Shocktrooper sergeant"
-	en_meaning = " "
+	title = "Shocktrooper Sergeant"
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
@@ -279,7 +312,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/laser/e11(H), slot_l_hand)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a sergeant in the Galactic Imperial Army, in charge of a squad. Lead your men and fight against the Rebel Alliance!")
+	H.add_note("Role", "You are a <b>[title]</b>, in the Extra-Galactic Imperial Army, in charge of a squad. Lead your men and fight against the Rebel Alliance!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_HIGH)
@@ -294,7 +327,6 @@
 
 /datum/job/american/starwars/empire/soldier
 	title = "Shocktrooper"
-	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
@@ -318,7 +350,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormtrooper(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/laser/e11(H), slot_l_hand)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Galactic Imperial Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Rebel Alliance!")
+	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Extra-Galactic Imperial Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Rebel Alliance!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)

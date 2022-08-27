@@ -2,7 +2,7 @@
 /obj/map_metadata/pioneers
 	ID = MAP_PIONEERS
 	title = "Pioneers"
-	lobby_icon_state = "wildwest"
+	lobby_icon = "icons/lobby/wildwest.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	has_hunger = TRUE
@@ -27,6 +27,7 @@
 	songs = list(
 		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Pioneer Building RP"
+	grace_wall_timer = 15000
 
 
 /obj/map_metadata/pioneers/New()
@@ -52,12 +53,6 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = FALSE
 
-/obj/map_metadata/pioneers/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/pioneers/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
 /obj/map_metadata/pioneers/cross_message(faction)
 	return ""
 
@@ -67,7 +62,7 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/pioneers/wasteland_two
 	ID = MAP_PIONEERS_WASTELAND_2
-	title = "Pioneer Wastland II"
+	title = "Pioneers Wasteland II"
 	gamemode = "Zombie Wasteland"
 	civilizations = TRUE
 	is_zombie = TRUE

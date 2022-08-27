@@ -3,7 +3,7 @@
 	ID = MAP_VOYAGE
 	title = "Voyage"
 	no_winner ="The ship is on the way."
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	faction_organization = list(PIRATES)
 	roundend_condition_sides = list(list(PIRATES) = /area/caribbean/no_mans_land)
@@ -398,11 +398,6 @@
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
-/obj/map_metadata/voyage/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/voyage/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/voyage/job_enabled_specialcheck(var/datum/job/J)
 	..()

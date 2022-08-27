@@ -137,7 +137,7 @@
 //return TRUE if the projectile should be allowed to pass through after all, FALSE if not.
 /obj/item/projectile/proc/check_penetrate(var/atom/A)
 	if (istype(A, /turf/wall))
-		if (prob(50))
+		if (prob(92))
 			return FALSE
 	return TRUE
 

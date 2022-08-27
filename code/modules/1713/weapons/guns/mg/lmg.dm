@@ -300,6 +300,63 @@
 	load_delay = 50
 	slowdown = 0.8
 
+/obj/item/weapon/gun/projectile/automatic/rpd
+	name = "RPD machine gun"
+	desc = "A soviet machinegun chambered in 7.62x39 rounds."
+	icon_state = "rpd"
+	item_state = "rpd"
+	base_icon = "rpd"
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/rpd
+	good_mags = list(/obj/item/ammo_magazine/rpd)
+	weight = 5
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 22
+	load_delay = 40
+	slowdown = 0.6
+
+/obj/item/weapon/gun/projectile/automatic/rpk74
+	name = "RPK-74 machine gun"
+	desc = "A soviet machinegun chambered in 5.45x39 rounds."
+	icon_state = "rpk74"
+	item_state = "rpk74"
+	base_icon = "rpk74"
+	caliber = "a545x39"
+	magazine_type = /obj/item/ammo_magazine/rpk74
+	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74)
+	weight = 5
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 20
+	load_delay = 30
+	slowdown = 0.5
+
+/obj/item/weapon/gun/projectile/automatic/rpk74/update_icon()
+	if (ammo_magazine)
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk74))
+			item_state = "rpk74"
+			icon_state = "rpk74"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk74/drum))
+			icon_state = "rpk74_drum"
+			item_state = "rpk74_drum"
+			base_icon = "rpk74_drum"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/ak74))
+			icon_state = "rpk74_magak"
+	else
+		icon_state = "rpk74_open"
+		item_state = "rpk74_open"
+	update_held_icon()
+	return
+
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
 	desc = "An israeli machinegun chambered in 5.56x45mm NATO rounds."
@@ -320,3 +377,41 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.9
+
+////////////////////////C6 GPMG/////////////////////////////
+/obj/item/weapon/gun/projectile/automatic/c6
+	name = "C6 GPMG"
+	desc = "A Canadian License Produced FN MAG called the C6 GPMG, the main squad support weapon of the CAF."
+	icon_state = "c6"
+	item_state = "c6"
+	base_icon = "c6"
+	w_class = 5
+	heavy = TRUE
+	max_shells = 200
+	caliber = "a762x51"
+	weight = 8.1
+	slot_flags = SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	load_method = MAGAZINE
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	magazine_type = /obj/item/ammo_magazine/c6belt
+	good_mags = list(/obj/item/ammo_magazine/c6belt, /obj/item/ammo_magazine/c6can)
+	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
+	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
+	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M60.ogg'
+	force = 20
+	throwforce = 30
+
+/obj/item/weapon/gun/projectile/automatic/c6/update_icon()
+	var/obj/item/ammo_magazine/MAG
+	if (ammo_magazine && istype(MAG, /obj/item/ammo_magazine/c6belt))
+		icon_state = "[base_icon][ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
+		item_state = base_icon
+	else if (ammo_magazine && istype(MAG, /obj/item/ammo_magazine/c6can))
+		icon_state = "[base_icon]_can[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
+		item_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
+		item_state = "[base_icon]_open"
+	update_held_icon()

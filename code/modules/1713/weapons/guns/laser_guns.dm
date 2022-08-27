@@ -353,3 +353,89 @@
 	has_telescopic = FALSE
 	slot_flags = SLOT_SHOULDER
 	is_laser_mg = TRUE
+
+//////////other laser weapons//////////
+/obj/item/weapon/gun/projectile/automatic/laser/qblz1
+	name = "Qblz1 Plasma gun"
+	desc = "An advanced plasma rifle used by the Chinese."
+	icon_state = "qblz1"
+	item_state = "m16"
+	base_icon = "qblz1"
+	caliber = "laserb"
+	fire_sound = 'sound/weapons/guns/fire/laserrifle.ogg'
+	ammo_type = /obj/item/ammo_casing/laser/b
+	magazine_type = /obj/item/ammo_magazine/tibannagas/qblz1
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/qblz1)
+	weight = 6.4
+	force = 20
+	throwforce = 30
+	attachment_slots = null
+	slowdown = 0.2
+	has_telescopic = FALSE
+	slot_flags = SLOT_SHOULDER
+	is_laser_mg = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/laser/dcb2
+	name = "Dcb-2 Plasma pistol"
+	desc = "A plasma pistol used by the Chinese."
+	icon_state = "dcb2"
+	w_class = 2
+	caliber = "laserb"
+	fire_sound = 'sound/weapons/guns/fire/dcb2.ogg'
+	magazine_type = /obj/item/ammo_magazine/tibannagas/dcb2
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/dcb2)
+	weight = 0.6
+	ammo_type = /obj/item/ammo_casing/laser/pistol/b
+	effectiveness_mod = 1.03
+
+/obj/item/weapon/gun/projectile/pistol/laser/dcb2/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "dcb2"
+	else
+		icon_state = "dcb2_open"
+	return
+
+/obj/item/weapon/gun/projectile/automatic/laser/lasgun
+	name = "Lasgun"
+	desc = "The standard lasgun used by the imperial gaurd."
+	icon_state = "lasgunm36"
+	item_state = "lasgunm36"
+	base_icon = "lasgunm36"
+	caliber = "laser"
+	fire_sound = 'sound/weapons/guns/fire/lasgun.ogg'
+	ammo_type = /obj/item/ammo_casing/laser
+	magazine_type = /obj/item/ammo_magazine/tibannagas/lasgun
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/lasgun)
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		)
+	weight = 3.08
+	force = 20
+	throwforce = 30
+	attachment_slots = ATTACH_BARREL
+	slowdown = 0.2
+	has_telescopic = FALSE
+	slot_flags = SLOT_SHOULDER
+
+/obj/item/weapon/gun/projectile/pistol/laser/laspistol
+	name = "Laspistol"
+	desc = "A laspistol used by the imperial gaurd."
+	icon_state = "laspistol"
+	w_class = 2
+	caliber = "laser"
+	fire_sound = 'sound/weapons/guns/fire/lasgun.ogg'
+	magazine_type = /obj/item/ammo_magazine/tibannagas/laspistol
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/laspistol)
+	weight = 0.7
+	ammo_type = /obj/item/ammo_casing/laser/pistol
+	effectiveness_mod = 1.04
+
+/obj/item/weapon/gun/projectile/pistol/laser/laspistol/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "laspistol"
+	else
+		icon_state = "laspistol_open"
+	return

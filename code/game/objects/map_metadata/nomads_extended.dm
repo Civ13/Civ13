@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_extended
 	ID = MAP_NOMADS_EXTENDED
 	title = "Nomads: Oil Rush"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // q0 minutes!
@@ -35,6 +35,7 @@
 	age5_done = TRUE
 	research_active = FALSE
 	default_research = 135
+	grace_wall_timer = 24000
 
 	var/oiltarget = 3000
 /obj/map_metadata/nomads_extended/New()
@@ -58,11 +59,6 @@
 
 	spawn(1200)
 		check_oil()
-/obj/map_metadata/nomads_extended/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_extended/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_extended/cross_message(faction)
 	return "<b><big>The grace wall is lifted!</big></b>"

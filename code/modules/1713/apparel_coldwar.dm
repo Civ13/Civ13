@@ -132,6 +132,11 @@
 	worn_state = "policejacket"
 	var/closed = TRUE
 
+/obj/item/clothing/suit/storage/jacket/police/New()
+	..()
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		name = "sheriff's office jacket"
+
 /obj/item/clothing/suit/storage/jacket/police/verb/toggle()
 	set category = null
 	set src in usr
@@ -152,6 +157,38 @@
 			item_state = "policejacket"
 			icon_state = "policejacket"
 			item_state_slots["w_uniform"] = "policejacket"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
+
+/obj/item/clothing/suit/storage/jacket/police/black
+	name = "police jacket"
+	desc = "A black police jacket."
+	icon_state = "policejacket_black"
+	item_state = "policejacket_black"
+	worn_state = "policejacket_black"
+	closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/police/black/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust jacket"
+	if (type != /obj/item/clothing/suit/storage/jacket/police/black)
+		return
+	else
+		if(closed)
+			worn_state = "policejacket_black_open"
+			item_state = "policejacket_black_open"
+			icon_state = "policejacket_black_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "policejacket_black"
+			item_state = "policejacket_black"
+			icon_state = "policejacket_black"
+			item_state_slots["w_uniform"] = "policejacket_black"
 			usr << "You <b>close up</b> your jacket."
 			closed = TRUE
 			update_clothing_icon()
@@ -412,6 +449,13 @@
 	item_state = "ushelmet_camo_lt"
 	worn_state = "ushelmet_camo_lt"
 
+/obj/item/clothing/head/helmet/modern/ushelmet/crewman
+	name = "CVC helmet"
+	desc = "A standard issue helmet for vehicle crewmen."
+	icon_state = "cvc_helmet"
+	item_state = "cvc_helmet"
+	worn_state = "cvc_helmet"
+
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1
 	name = "M1 Helmet"
@@ -640,14 +684,21 @@
 
 /obj/item/clothing/head/ww2/nkvd_cap/kgb
 	name = "KGB cap"
-	desc = "A cap and worn by KGB."
+	desc = "A cap worn by KGB."
 	icon_state = "nkvd_cap"
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
+/obj/item/clothing/head/coldwar/soviet_officer
+	name = "soviet officer cap"
+	desc = "A cap worn by Soviet officers."
+	icon_state = "sov_officercap2"
+	item_state = "sov_officercap2"
+	worn_state = "sov_officercap2"
+
 /obj/item/clothing/head/fieldcap/afghanka
 	name = "Afghanka field cap"
-	desc = "A cap and worn by Soviet forces in Afghanistan."
+	desc = "A field cap issued to Soviet forces in the 1980s."
 	icon_state = "fieldcap_afghanka"
 	item_state = "fieldcap_afghanka"
 	worn_state = "fieldcap_afghanka"
@@ -909,6 +960,12 @@
 	new/obj/item/ammo_magazine/m249(src)
 	new/obj/item/ammo_magazine/m249(src)
 
+/obj/item/weapon/storage/belt/largepouches/green/m249
+/obj/item/weapon/storage/belt/largepouches/green/m249/New()
+	..()
+	new/obj/item/ammo_magazine/m249(src)
+	new/obj/item/ammo_magazine/m249(src)
+
 /obj/item/weapon/storage/belt/largepouches/sovietmg
 /obj/item/weapon/storage/belt/largepouches/sovietmg/New()
 	..()
@@ -977,6 +1034,14 @@
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74/New()
+	..()
+	new/obj/item/ammo_magazine/rpk74(src)
+	new/obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m/New()
@@ -1048,6 +1113,55 @@
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/stanag
+/obj/item/weapon/storage/belt/smallpouches/green/stanag/New()
+	..()
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/m14
+/obj/item/weapon/storage/belt/smallpouches/green/m14/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/* PLA Belts */
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbza95_2
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_2/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1/New()
+	..()
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/
@@ -1152,6 +1266,7 @@
 		new/obj/item/ammo_magazine/mosin(hold)
 		new/obj/item/ammo_magazine/mosin(hold)
 		new/obj/item/ammo_magazine/mosin(hold)
+
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."
@@ -1475,6 +1590,13 @@
 	worn_state = "sov_kzs"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/coldwar/soviet_officer
+	name = "soviet officer uniform"
+	desc = "An officer uniform, used by officers in the Soviet Army."
+	icon_state = "sovuni_officer2"
+	item_state = "sovuni_officer2"
+	worn_state = "sovuni_officer2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 	/* Swinging 60's*/
 

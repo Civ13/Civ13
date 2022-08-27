@@ -103,3 +103,36 @@
 	caliber = "laser"
 	ammo_type = /obj/item/ammo_casing/laser
 	max_ammo = 20
+
+///other energy mags///
+/obj/item/ammo_magazine/tibannagas/qblz1
+	name = "Qblz1 plasma mag"
+	icon_state = "qblz1"
+	caliber = "laserb"
+	ammo_type = /obj/item/ammo_casing/laser/b
+	max_ammo = 40
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tibannagas/dcb2
+	name = "Dcb-2 Plasma cartridge"
+	icon_state = "dcb2"
+	caliber = "laserb"
+	ammo_type = /obj/item/ammo_casing/laser/pistol/b
+	max_ammo = 15
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tibannagas/lasgun
+	name = "Lasgun power pack"
+	icon_state = "lasgun"
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser
+	max_ammo = 150
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tibannagas/laspistol
+	name = "Laspistol power pack"
+	icon_state = "laspistol"
+	caliber = "laser"
+	ammo_type = /obj/item/ammo_casing/laser
+	max_ammo = 80
+	multiple_sprites = TRUE

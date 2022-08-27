@@ -215,6 +215,8 @@
 	H.make_artillery_scout()
 	if(A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/schneetarn(H), slot_wear_suit)
+	if(istype(map, /obj/map_metadata/campaign/campaign8))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/lifejacket(H), slot_wear_suit)
 	return TRUE
 
 /datum/job/civilian/bluefaction

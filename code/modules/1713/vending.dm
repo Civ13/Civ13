@@ -966,7 +966,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/attachment/bayonet/military = 15,
 		/obj/item/weapon/grenade/smokebomb = 15,
 		/obj/item/weapon/grenade/flashbang = 15,
-		/obj/item/weapon/grenade/modern/f1 = 15,
+		/obj/item/weapon/grenade/coldwar/rgd5 = 15,
 		/obj/item/weapon/grenade/antitank/rpg40 = 15,
 		/obj/item/weapon/plastique/c4 = 6,
 		/obj/item/weapon/shield/metal_riot = 15,
@@ -981,6 +981,8 @@ obj/structure/vending/hezammo
 	products = list(
 		/obj/item/ammo_magazine/ak74 = 50,
 		/obj/item/ammo_magazine/pkm/c100 = 25,
+		/obj/item/ammo_magazine/rpk74 = 12,
+		/obj/item/ammo_magazine/rpk74/drum = 8,
 		/obj/item/ammo_magazine/svd = 16,
 		/obj/item/ammo_casing/grenade_l/teargas = 16,
 		/obj/item/ammo_magazine/makarov = 15,
@@ -1027,6 +1029,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 5,
+		/obj/item/weapon/gun/projectile/automatic/rpk74 = 5,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 10,
 	)
 
@@ -1040,6 +1043,8 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/pkm/c100 = 10,
 		/obj/item/ammo_magazine/svd = 10,
 		/obj/item/ammo_magazine/makarov = 20,
+		/obj/item/ammo_magazine/rpk74 = 12,
+		/obj/item/ammo_magazine/rpk74/drum = 6,
 	)
 
 /obj/structure/vending/sovafghan/dra/apparel
@@ -1077,6 +1082,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 4,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
+		/obj/item/weapon/gun/projectile/automatic/rpd = 3,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 	)
 
@@ -1090,7 +1096,34 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak74 = 12,
 		/obj/item/ammo_magazine/ak74/rubber = 15,
 		/obj/item/ammo_magazine/pkm = 5,
+		/obj/item/ammo_magazine/rpd = 6,
 		/obj/item/ammo_magazine/makarov = 10,
+	)
+
+/obj/structure/vending/coldwar/soviet/apparel
+	name = "Soviet Armed Forces apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/jackboots/soviet = 20,
+		/obj/item/clothing/under/afghanka = 20,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b3 = 20,
+		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 20,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/smallpouches/green = 10,
+		/obj/item/weapon/storage/belt/smallpouches = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/weapon/storage/backpack/sovpack = 20,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 	)
 
 ///////////Star Wars stuff//////////////////////
@@ -1116,8 +1149,8 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
 		/obj/item/ammo_magazine/tibannagas/e11 = 60,
-		/obj/item/weapon/grenade/modern/thermaldetonator = 10,
-		/obj/item/weapon/grenade/flashbang/galaxywars = 15,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 4,
+		/obj/item/weapon/grenade/flashbang/galaxywars = 5,
 	)
 
 /obj/structure/vending/starwars/rebel/apparel
@@ -1142,7 +1175,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dl44 = 15,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
-		/obj/item/weapon/grenade/modern/thermaldetonator = 25,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 5,
 	)
 
 /obj/structure/vending/starwars/republic/apparel

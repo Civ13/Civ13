@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_continental
 	ID = MAP_NOMADS_CONTINENTAL
 	title = "Nomads (Continents)"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE

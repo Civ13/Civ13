@@ -1829,6 +1829,13 @@ obj/item/clothing/head/ww2/chicap2
 	item_state = "amoeba"
 	worn_state = "amoeba"
 
+/obj/item/clothing/shoes/jackboots/soviet
+	name = "soviet sapogi boots"
+	desc = "Jackboots of soviet origin. Also known as 'Yuftevyje sapogi'."
+	icon_state = "sovietboots"
+	item_state = "sovietboots"
+	worn_state = "sovietboots"
+
 /obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
