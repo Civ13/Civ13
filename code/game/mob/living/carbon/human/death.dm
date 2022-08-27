@@ -117,6 +117,9 @@
 
 	else if (map && map.ID == MAP_SOVAFGHAN)
 		var/obj/map_metadata/sovafghan/MP = map
+		if (faction_text == RUSSIAN && original_job.title == "Soviet Army Captain")
+			MP.muj_points += 15
+			world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"
 		if (faction_text == RUSSIAN && original_job.title == "Soviet Army Lieutenant")
 			MP.muj_points += 12
 			world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"

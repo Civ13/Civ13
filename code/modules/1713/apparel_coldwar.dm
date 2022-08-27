@@ -684,14 +684,21 @@
 
 /obj/item/clothing/head/ww2/nkvd_cap/kgb
 	name = "KGB cap"
-	desc = "A cap and worn by KGB."
+	desc = "A cap worn by KGB."
 	icon_state = "nkvd_cap"
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
+/obj/item/clothing/head/coldwar/soviet_officer
+	name = "soviet officer cap"
+	desc = "A cap worn by Soviet officers."
+	icon_state = "sov_officercap2"
+	item_state = "sov_officercap2"
+	worn_state = "sov_officercap2"
+
 /obj/item/clothing/head/fieldcap/afghanka
 	name = "Afghanka field cap"
-	desc = "A cap and worn by Soviet forces in Afghanistan."
+	desc = "A field cap issued to Soviet forces in the 1980s."
 	icon_state = "fieldcap_afghanka"
 	item_state = "fieldcap_afghanka"
 	worn_state = "fieldcap_afghanka"
@@ -1028,6 +1035,14 @@
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74/New()
+	..()
+	new/obj/item/ammo_magazine/rpk74(src)
+	new/obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m/New()
 	..()
@@ -1251,6 +1266,7 @@
 		new/obj/item/ammo_magazine/mosin(hold)
 		new/obj/item/ammo_magazine/mosin(hold)
 		new/obj/item/ammo_magazine/mosin(hold)
+
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."
@@ -1574,6 +1590,13 @@
 	worn_state = "sov_kzs"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/coldwar/soviet_officer
+	name = "soviet officer uniform"
+	desc = "An officer uniform, used by officers in the Soviet Army."
+	icon_state = "sovuni_officer2"
+	item_state = "sovuni_officer2"
+	worn_state = "sovuni_officer2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 	/* Swinging 60's*/
 

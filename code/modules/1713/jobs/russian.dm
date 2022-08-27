@@ -1221,6 +1221,7 @@
 	whitelisted = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
+	is_tankcom = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1467,13 +1468,12 @@
 	return TRUE
 
 /datum/job/russian/mosmil
-	title = "Soviet Militia"
-	en_meaning = "Armed Militia"
+	title = "Opolchenets"
+	en_meaning = "Soviet Militia"
 	is_smallsiegemoscow = TRUE
-	rank_abbreviation = ""
 	spawn_location = "JoinEarlyMilita"
 	min_positions = 10
-	max_positions = 35
+	max_positions = 55
 
 /datum/job/russian/mosmil/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1492,7 +1492,7 @@
 
 
 //clothes
-	var/randjack2 = rand(1,8)
+	var/randjack2 = rand(1,9)
 	if (randjack2 == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
 	else if (randjack2 == 2)
@@ -1509,6 +1509,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
 	else if (randjack2 == 8)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
+	else if (randjack2 == 9)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 
 
 //head

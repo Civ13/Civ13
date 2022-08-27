@@ -163,6 +163,7 @@
 		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
 		vol = reagents.get_reagent_amount("cocaine")/25
 		desc = "A pile of very pure cocaine. Contains [vol] grams."
+		qdel(I)
 	else
 		..()
 /obj/item/weapon/reagent_containers/pill/cocaine_line

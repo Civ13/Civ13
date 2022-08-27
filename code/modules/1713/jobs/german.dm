@@ -1274,6 +1274,7 @@
 	uses_squads = TRUE
 	is_officer = TRUE
 	uses_squads = TRUE
+	is_tankcom = TRUE
 
 	min_positions = 2
 	max_positions = 6

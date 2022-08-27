@@ -966,7 +966,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/attachment/bayonet/military = 15,
 		/obj/item/weapon/grenade/smokebomb = 15,
 		/obj/item/weapon/grenade/flashbang = 15,
-		/obj/item/weapon/grenade/modern/f1 = 15,
+		/obj/item/weapon/grenade/coldwar/rgd5 = 15,
 		/obj/item/weapon/grenade/antitank/rpg40 = 15,
 		/obj/item/weapon/plastique/c4 = 6,
 		/obj/item/weapon/shield/metal_riot = 15,
@@ -981,6 +981,8 @@ obj/structure/vending/hezammo
 	products = list(
 		/obj/item/ammo_magazine/ak74 = 50,
 		/obj/item/ammo_magazine/pkm/c100 = 25,
+		/obj/item/ammo_magazine/rpk74 = 12,
+		/obj/item/ammo_magazine/rpk74/drum = 8,
 		/obj/item/ammo_magazine/svd = 16,
 		/obj/item/ammo_casing/grenade_l/teargas = 16,
 		/obj/item/ammo_magazine/makarov = 15,
@@ -1027,6 +1029,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 5,
+		/obj/item/weapon/gun/projectile/automatic/rpk74 = 5,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 10,
 	)
 
@@ -1040,6 +1043,8 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/pkm/c100 = 10,
 		/obj/item/ammo_magazine/svd = 10,
 		/obj/item/ammo_magazine/makarov = 20,
+		/obj/item/ammo_magazine/rpk74 = 12,
+		/obj/item/ammo_magazine/rpk74/drum = 6,
 	)
 
 /obj/structure/vending/sovafghan/dra/apparel
@@ -1077,6 +1082,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 4,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
+		/obj/item/weapon/gun/projectile/automatic/rpd = 3,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 	)
 
@@ -1090,6 +1096,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak74 = 12,
 		/obj/item/ammo_magazine/ak74/rubber = 15,
 		/obj/item/ammo_magazine/pkm = 5,
+		/obj/item/ammo_magazine/rpd = 6,
 		/obj/item/ammo_magazine/makarov = 10,
 	)
 

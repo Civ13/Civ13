@@ -16,6 +16,12 @@
 	else
 		icon_state = icon_opened
 
+/obj/structure/closet/coffin/generic
+	icon_state = "coffin_blank"
+	icon_closed = "coffin_blank"
+/obj/structure/closet/coffin/generic/anchored
+	anchored = TRUE
+
 /obj/structure/closet/coffin/sarcophagus
 	name = "bronze sarcophagus"
 	desc = "It's a burial receptacle for egyptian royalty."
