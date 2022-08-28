@@ -107,7 +107,7 @@
 		roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	if (!noroof)
-		for(var/obj/structure/cannon/C in T)
+		for(var/obj/structure/cannon/modern/tank/C in T)
 			var/ic = 'icons/obj/vehicles/vehicles96x96.dmi'
 			if (axis && axis.turret_type == "t55_turret")
 				ic = 'icons/obj/vehicles/vehicles128x128.dmi'
