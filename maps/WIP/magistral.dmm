@@ -24,7 +24,7 @@
 "ax" = (/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/omwtc10{name = "125 mm 2A46M"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "ay" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/obj/structure/vehicleparts/frame/omw22_2/left,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "az" = (/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{anchored = 1; pixel_y = 8},/obj/structure/vehicleparts/frame/omw22_2/rf,/obj/structure/vehicleparts/movement/tracks/right,/turf/floor/plating/road,/area/caribbean/nomads/desert)
-"aA" = (/obj/structure/vehicleparts/frame/omw22_2/front,/obj/structure/vehicleparts/axis/heavy/omw22_2{color = "#7A7555"; name = "T-72"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
+"aA" = (/obj/structure/vehicleparts/frame/omw22_2/front,/obj/structure/vehicleparts/axis/heavy/omw22_2{color = "#7A7555"; name = "T-72"; turret_type = "t72_turret"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "aB" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/vehicleparts/movement/tracks/left,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "aC" = (/turf/floor/dirt/underground/sandy,/area/caribbean/arab/caves)
 "aD" = (/turf/floor/beach/sand/desert,/area/caribbean/arab/caves)
