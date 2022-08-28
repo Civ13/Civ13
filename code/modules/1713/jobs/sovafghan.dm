@@ -1750,6 +1750,7 @@
 /datum/job/arab/mujahideen/imam
 	title = "Mujahideen Imam"
 	rank_abbreviation = ""
+	en_meaning = "Chaplain/Medic"
 
 	spawn_location = "JoinLateAR"
 	is_afghan = TRUE
