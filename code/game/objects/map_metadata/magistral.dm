@@ -164,6 +164,10 @@
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.faction_text == faction2)
 				return TRUE
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction1 || H.faction_text == CIVILIAN)
+				return TRUE
 		else
 			return !faction1_can_cross_blocks()
+			return !faction2_can_cross_blocks()
 	return FALSE

@@ -958,7 +958,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	if (map.ID == MAP_SOVAFGHAN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 
@@ -1681,27 +1682,45 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/emirate(H), slot_shoes)
 //clothes
-	var/randclothes = rand(1,3)
+	var/randclothes = rand(1,2)
 	switch (randclothes)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
-		if (3)
+		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/emirate(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/modern/british = new /obj/item/clothing/accessory/armor/modern(null)
-	uniform.attackby(british, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/one = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/green/two = new /obj/item/clothing/accessory/armor/coldwar/pasgt/green(null)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/three = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	var/randarmor = rand(1,3)
+	switch (randarmor)
+		if (1)
+			uniform.attackby(one, H)
+		if (2)
+			uniform.attackby(two, H)
+		if (3)
+			uniform.attackby(three, H)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
+	var/obj/item/weapon/storage/bbelt = H.belt
+	var/obj/item/stack/medical/bruise_pack/gauze/ggauze = new /obj/item/stack/medical/bruise_pack/gauze(null)
+	var/obj/item/ammo_magazine/m16/mag1 = new /obj/item/ammo_magazine/m16(null)
+	var/obj/item/ammo_magazine/m16/mag2 = new /obj/item/ammo_magazine/m16(null)
+	var/obj/item/ammo_magazine/m16/mag3 = new /obj/item/ammo_magazine/m16(null)
+	bbelt.attackby(ggauze, H)
+	bbelt.attackby(mag1, H)
+	bbelt.attackby(mag2, H)
+	bbelt.attackby(mag3, H)
 //head
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+	var/randhat = rand(1,2)
+	switch (randhat)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-
 	H.civilization = "Mujahideen"
 	if (H.f_style != "Full Beard" && H.f_style != "Long Beard")
 		H.f_style = pick("Full Beard", "Long Beard")
@@ -1716,18 +1735,74 @@
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
 	H.add_note("Role", "You are an <b>[title]</b>, an islamic leader. Lead the Holy war against the red menace!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/arab/mujahideen/imam
+	title = "Mujahideen Imam"
+	rank_abbreviation = ""
+	en_meaning = "Chaplain/Medic"
+
+	spawn_location = "JoinLateAR"
+	is_afghan = TRUE
+	is_muj = TRUE
+	is_coldwar = TRUE
+	is_medic = TRUE
+
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/arab/mujahideen/imam/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	var/randshoes = rand(1,2)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/bible/quran(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/medical/advanced/herbs(H), slot_l_store)
+	H.civilization = "Mujahideen"
+	if (H.f_style != "Full Beard" && H.f_style != "Long Beard")
+		H.f_style = pick("Full Beard", "Long Beard")
+	H.s_tone = rand(-92,-80)
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are a <b>[title]</b>, an islamic chaplain. Use your vast knowledge and devotion to Allah to support your brothers!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	give_random_name(H)
 
-
 	return TRUE
+
 
 /datum/job/arab/mujahideen/insurgent
 	title = "Mujahideen Insurgent"
@@ -1814,7 +1889,7 @@
 
 	if (H.f_style != "Full Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Neckbeard")
 		H.f_style = pick("Full Beard","Long Beard","Very Long Beard","Neckbeard")
-	H.s_tone = rand(-92,-80)
+	H.s_tone = rand(-102,-84)
 	var/new_hair = pick("Dark Brown","Black")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
