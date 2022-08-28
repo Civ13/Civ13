@@ -109,7 +109,7 @@
 	if (!noroof)
 		for(var/obj/structure/cannon/modern/tank/C in T)
 			var/ic = 'icons/obj/vehicles/vehicles96x96.dmi'
-			if (axis && axis.turret_type == "t55_turret")
+			if (axis && (axis.turret_type == "t55_turret" || axis.turret_type == "t72_turret" || axis.turret_type == "t72m1_turret" || axis.turret_type == "t90_turret" || axis.turret_type == "m48a3_turret" || axis.turret_type == "m60a3_turret"))
 				ic = 'icons/obj/vehicles/vehicles128x128.dmi'
 			if (axis)
 				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
