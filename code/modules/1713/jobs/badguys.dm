@@ -1,35 +1,30 @@
 ////////////////////////////////////////////CIVILIAN///////////////////////////////////////////////////////
-/datum/job/badguys
-	faction = "Human"
 
-/datum/job/badguys/give_random_name(var/mob/living/human/H)
-	if (is_civilizations || is_nomad)
-		H.name = H.species.get_random_name(H.gender)
-		H.real_name = H.name
-	else
-		H.give_random_civ_name()
-
-/datum/job/badguys/robber
+/datum/job/american/robber
 	title = "Bank Robber"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRU"
+	
+	is_heist = TRUE
+	is_outlaw = TRUE
 	can_be_female = FALSE
 
 	min_positions = 1
 	max_positions = 50
 
-/datum/job/badguys/robber/equip(var/mob/living/human/H)
+/datum/job/american/robber/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
+	H.civilization = "Bad Guys"
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/pmc(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/lwh/black(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 //jacket
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
 //gun
 	if (prob(95))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/p90(H), slot_l_hand)
@@ -48,10 +43,8 @@
 //extra
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 
-	H.civilization = "Bad Guys"
-	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, one day you and your mates thought that robbing a bank was a good idea!")
-	H.add_note("Objective", "Steal 10.000.000.000 from the bank's vault before the police capture the vault!")
+	H.add_note("Objective", "Steal 10.000 from the bank's vault before the police capture the vault!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
