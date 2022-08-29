@@ -205,7 +205,7 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name="full auto",	burst=1.2, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -276,7 +276,7 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 7
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.6, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -297,7 +297,7 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.6, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -339,7 +339,7 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -359,8 +359,8 @@
 	weight = 3.63
 	equiptimer = 14
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="full auto",	burst=1, burst_delay=1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -379,7 +379,7 @@
 	weight = 3.04
 	equiptimer = 10
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
