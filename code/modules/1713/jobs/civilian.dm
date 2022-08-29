@@ -2381,7 +2381,7 @@
 
 /datum/job/civilian/policeofficer
 	title = "Police Officer"
-	rank_abbreviation = "Deputy"
+	rank_abbreviation = "Officer"
 	spawn_location = "JoinLateCiv"
 	selection_color = "#353575"
 
