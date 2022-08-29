@@ -1,7 +1,7 @@
 /obj/map_metadata/bank_robbery
 	ID = MAP_BANK_ROBBERY
 	title = "The Goldstein Bank Heist"
-	lobby_icon = "icons/lobby/taotd.png"
+	lobby_icon = "icons/lobby/bank_robbery.png"
 	no_winner ="The robbery is still underway."
 	caribbean_blocking_area_types = list(
 		/area/caribbean/no_mans_land/invisible_wall,
@@ -23,7 +23,7 @@
 	grace_wall_timer = 3000
 	gamemode = "Bank Robbery"
 	songs = list(
-		"Woke Up This Morning:1" = "sound/music/woke_up_this_morning.ogg",)
+		"Little Green Bag:1" = "sound/music/little_green_bag.ogg",)
 		
 obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 	..()
