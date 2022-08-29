@@ -1190,6 +1190,33 @@
 	new /obj/item/weapon/handcuffs/old(src)
 	new /obj/item/weapon/whistle(src)
 
+/obj/item/weapon/storage/belt/police/bank
+/obj/item/weapon/storage/belt/police/bank/New()
+	..()
+	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/flashlight/modern(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/glock17(src)
+
+/obj/item/weapon/storage/belt/police/swat
+/obj/item/weapon/storage/belt/police/swat/New()
+	..()
+	new /obj/item/flashlight/modern(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/clothing/mask/gas/swat(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/coldwar/stinger(src)
+
 /* Miscallenous*/
 
 /obj/item/clothing/accessory/armor/nomads/baily //too broad, can't make out what detail this is actually meant to be associated with.

@@ -695,14 +695,15 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
-	amount = 1
+	amount = 0
 	layer = 3
-	health = 20
+	health = 6
 	wood = TRUE
 	wall = TRUE
-	explosion_resistance = 1
+	explosion_resistance = 0
 	material = "Wood"
-	hardness = 10
+	hardness = 1
+	adjusts = TRUE
 
 /obj/covers/slate
 	name = "slatestone wall"
