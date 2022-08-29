@@ -1198,11 +1198,24 @@
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/pen(src)
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
+
+/obj/item/weapon/storage/belt/police/swat
+/obj/item/weapon/storage/belt/police/swat/New()
+	..()
+	new /obj/item/flashlight/modern(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/clothing/mask/gas/swat(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/coldwar/stinger(src)
 
 /* Miscallenous*/
 

@@ -695,10 +695,10 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
-	amount = 1
+	amount = 0
 	layer = 3
-	health = 5
-	wood = FALSE
+	health = 6
+	wood = TRUE
 	wall = TRUE
 	explosion_resistance = 0
 	material = "Wood"
