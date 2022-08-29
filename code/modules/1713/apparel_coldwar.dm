@@ -899,30 +899,56 @@
 	worn_state = "ssh_68_sovhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 75, gun = 41, energy = 24, bomb = 66, bio = 25, rad = FALSE)
+	armor = list(melee = 55, arrow = 75, gun = 40, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
 /obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
 	name = "6B3 body armor"
 	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
-	icon_state = "b3vest"
-	item_state = "b3vest"
-	worn_state = "b3vest"
+	icon_state = "6b3"
+	item_state = "6b3"
+	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	armor = list(melee = 65, arrow = 100, gun = 40, energy = 30, bomb = 40, bio = 10, rad = 30)
 	ripable = FALSE
 	flags = CONDUCT
 
-/obj/item/clothing/accessory/armor/coldwar/plates/b3 //accessory version
+/obj/item/clothing/accessory/armor/coldwar/plates/b3 //Accessory version
 	name = "6B3 body armor"
 	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
-	icon_state = "b3vest"
-	item_state = "b3vest"
-	worn_state = "b3vest"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	icon_state = "6b3"
+	item_state = "6b3"
+	worn_state = "6b3"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 65, arrow = 100, gun = 35, energy = 30, bomb = 55, bio = 10, rad = 30)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
+	slowdown = 0.1
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b2
+	name = "6B2 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the early 1980s."
+	icon_state = "6b2"
+	item_state = "6b2"
+	worn_state = "6b2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 60, arrow = 100, gun = 25, energy = 30, bomb = 50, bio = 10, rad = 30)
+	ripable = FALSE
+	flags = CONDUCT
+	slowdown = 0.2
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b5
+	name = "6B5 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the late 1980s."
+	icon_state = "6b5"
+	item_state = "6b5"
+	worn_state = "6b5"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 65, arrow = 100, gun = 50, energy = 30, bomb = 70, bio = 10, rad = 30)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 2
+	slowdown = 0.1
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"
