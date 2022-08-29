@@ -52,7 +52,6 @@
 	spawn_location = "JoinLateRNBoatswain"
 
 	is_officer = TRUE
-	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
@@ -727,7 +726,6 @@
 	spawn_location = "JoinLateRNBoatswain"
 
 	is_officer = TRUE
-	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_korean_war = TRUE

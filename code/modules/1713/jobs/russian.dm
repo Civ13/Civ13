@@ -1220,7 +1220,6 @@
 	is_tanker = TRUE
 	whitelisted = TRUE
 	is_squad_leader = TRUE
-	is_officer = TRUE
 	is_tankcom = TRUE
 
 	min_positions = 2
