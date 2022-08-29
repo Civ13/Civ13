@@ -574,7 +574,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni3(H), slot_w_uniform)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_medic(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
