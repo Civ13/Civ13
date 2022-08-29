@@ -94,6 +94,7 @@
 "or" = (/obj/structure/vehicleparts/license_plate{pixel_x = 11; name = "Archive"; desc = "A small plate, this one says Archive"; anchored = 1},/obj/structure/window/classic/metal,/turf/floor/wood,/area/caribbean/british/land/inside)
 "oG" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 4},/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/void/caves)
 "oK" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/steel,/area/caribbean/void/caves)
+"oP" = (/obj/item/tape/police{icon_state = "tape_dir_0"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "oV" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{icon_state = "frame_steel"; dir = 1},/obj/structure/bed/chair/carseat/right/dark,/turf/floor/plating/road,/area/caribbean)
 "oX" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug,/turf/floor/wood,/area/caribbean/british/land/inside)
 "oY" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 4},/obj/structure/vehicleparts/axis/car/falcon/police{dir = 8},/turf/floor/plating/road,/area/caribbean)
@@ -248,7 +249,7 @@
 "IE" = (/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "IH" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean)
 "II" = (/obj/structure/grille/chainlinkfence,/turf/floor/plating/road,/area/caribbean)
-"IK" = (/obj/item/tape/police,/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
+"IK" = (/obj/item/tape/police{icon_state = "police_v_0"},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
 "IO" = (/turf/floor/plating/white,/area/caribbean/british/land/inside)
 "IV" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Jf" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 4},/obj/structure/vehicleparts/axis/car/falcon/police{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean)
@@ -308,6 +309,7 @@
 "RU" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Sc" = (/obj/structure/table/modern/retable,/obj/structure/computer/nopower{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Sr" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/carpet,/area/caribbean/british/land/inside)
+"Ss" = (/obj/item/tape/police{icon_state = "police_dir_0"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "Sy" = (/obj/structure/sign/bank{pixel_x = 32},/obj/structure/redmailbox,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "SC" = (/turf/floor/plating/road/whiteline{dir = 1},/area/caribbean/no_mans_land/invisible_wall/one)
 "SP" = (/obj/structure/table/modern/table,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -337,16 +339,18 @@
 "Wf" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
 "Wr" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Wu" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
-"WJ" = (/obj/item/tape/police,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"WJ" = (/obj/item/tape/police{icon_state = "tape_dir_0"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "WL" = (/obj/structure/sign/traffic/crossing,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "WM" = (/obj/structure/grille/chainlinkfence,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "Xk" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 4},/obj/effect/floor_decal/carpet{dir = 1},/turf/floor/carpet,/area/caribbean/british/land/inside)
 "Xx" = (/obj/structure/grille/chainlinkfence{dir = 1},/obj/structure/grille/chainlinkfence{dir = 4},/turf/floor/plating/road/whiteline,/area/caribbean)
+"XA" = (/obj/item/tape/police{icon_state = "police_dir_0"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
 "XH" = (/obj/effect/floor_decal/carpet,/turf/floor/carpet,/area/caribbean/british/land/inside)
 "XI" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/red,/turf/floor/carpet,/area/caribbean/british/land/inside)
+"XM" = (/obj/item/tape/police{icon_state = "police_v_0"; dir = 4},/turf/floor/plating/road,/area/caribbean)
 "XW" = (/obj/structure/table/rack/shelf,/obj/item/weapon/reagent_containers/spray/pepper,/obj/item/weapon/reagent_containers/spray/pepper,/obj/item/weapon/reagent_containers/spray/pepper,/turf/floor/plating/steel,/area/caribbean/no_mans_land/invisible_wall/two)
 "XZ" = (/obj/structure/closet/safe,/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/turf/floor/plating/steel,/area/caribbean/void/caves)
-"Yb" = (/obj/item/tape/police,/turf/floor/plating/road/yellowline,/area/caribbean)
+"Yb" = (/obj/item/tape/police{icon_state = "police_v_0"},/turf/floor/plating/road/yellowline,/area/caribbean)
 "Yr" = (/obj/structure/table/modern/retable,/obj/structure/computer/nopower/police{name = "Camera Control Monitor"},/turf/floor/plating/steel,/area/caribbean/no_mans_land/invisible_wall/two)
 "YC" = (/obj/structure/vehicleparts/frame/car/falcon/lfc{dir = 8; icon_state = "frame_steel"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 8},/turf/floor/plating/road,/area/caribbean/desert/escape)
 "YE" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/obj/structure/barricade/vertical,/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -354,7 +358,7 @@
 "YJ" = (/obj/structure/table/carboot{dir = 4},/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 4},/obj/structure/vehicleparts/movement/reversed{broken = 1; dir = 4},/turf/floor/plating/road,/area/caribbean)
 "YO" = (/obj/effect/landmark{name = "JoinLateCiv"},/obj/effect/autoassembler{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "YQ" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside)
-"YS" = (/obj/item/tape/police,/turf/floor/plating/road,/area/caribbean)
+"YS" = (/obj/item/tape/police{icon_state = "police_v_0"},/turf/floor/plating/road,/area/caribbean)
 "YU" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "YZ" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/mobile/campaign/blue{name = "Police telephone"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "Zo" = (/obj/covers/cement_wall,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -420,7 +424,7 @@ PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
 yOPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
 "}
 (1,1,2) = {"
-mPmPmPmPHGHGHGHGHGHGHGHGHGHGBmlzlzlzRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvWaWaWaWaWaWauZWaWaWaWaWaWaWa
+mPmPmPSsXMXMXMXMXMXMXMXMXMXMXAlzlzlzRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvRvWaWaWaWaWaWauZWaWaWaWaWaWaWa
 mPmPmPmPHGHGHGHGHGHGHGHGHGHGBmlzmPmPWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaRvWaWaWaWaWaWauZWaWaWaWaWaWaWa
 mPmPmPmPHGHGAVttArWfHGHGHGHGBmlzmPmPWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaRvWaWaWaWaWaWauZWaWaWaWaWaWaWa
 mPmPmPmPHGnQoVbLArWfHGHGHGHGBmrtmPmPWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaRvWaWaWaWaWaWauZWaWaWaWaWaWaWa
@@ -461,18 +465,18 @@ mPmPmPmPHGHGHGHGOhdmnDkZHGHGBmlzmPmPmFmFBWvjvjvjBWmFDvDvDvDvDvDvDvDvmFmFmFmFmFmF
 mPmPmPWLHGHGHGHGArjrOTHGHGHGonlzmPmPmPniBDmPmPmPzTnimPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPbcbcyRVaHGHGHGHGHGbcbcbcbcmP
 mPmPmPmPFzFzFzFzFzFzFzFzFzFzBmlzmPmPmPmPmPmPmPIjmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPlzBmHGHGHGHGHGmPmPmPmPmP
 mPmPIpmPFzFzFzFzFzFzFzFzFzFzBmrtlzlzlzlzlzrtlzlzlzlzlzrtlzlzlzlzlzrtlzlzlzlzlzrtlzlzlzlzlzrtlzlzlzlzlzrtlzlzlzlzlzrtBmHGHGHGHGHGpWIpmPmPmP
-mPmPWJmPHGHGHGHGHGHGHGHGHGHGBmBmBmonBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmHGHGHGHGHGmPmPmPWJmP
-HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGOBiKeBvBHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGoYqcxgfJHGHGHGHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGOhOhHGHGHGHGHGHGHGHGOBiKeBvBHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-DRDRYbDRHGHGDRDRDRDRHGHGDRDRDRddddHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRJfOdVEfJDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRYbDR
-jdjdIKjdHGHGjdjdjdjdHGHGjdBMlCxyGAHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdkWOhHGjdjdjdjdHGHGjdBMlCcQBSHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdjdHGHGjdIKjd
-HGHGYSHGHGHGHGHGHGHGHGHGHGYJRdOYVRHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYJRdDEfiHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-HGHGYSHGHGHGHGHGHGHGHGHGHGHGkDPzddHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGkDOhHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHG
-mPmPWJmPmPmPmPmPmPmPmPmPmPmPmPmPmPWLmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPWJmP
+mPmPoPmPHGHGHGHGHGHGHGHGHGHGBmBmBmonBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmBmHGHGHGHGHGmPmPoPmPmP
+HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGOBiKeBvBHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGoYqcxgfJHGHGHGHGHGHGHGHGHGdvHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGOhOhHGHGHGHGHGHGHGHGOBiKeBvBHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+DRDRYbDRHGHGDRDRDRDRHGHGDRDRDRddddHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRJfOdVEfJDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGDRDRDRDRHGHGYbDRDR
+jdjdIKjdHGHGjdjdjdjdHGHGjdBMlCxyGAHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdkWOhHGjdjdjdjdHGHGjdBMlCcQBSHGjdjdjdjdHGHGjdjdjdjdHGHGjdjdjdjdHGHGIKjdjd
+HGHGYSHGHGHGHGHGHGHGHGHGHGYJRdOYVRHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYJRdDEfiHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+HGHGYSHGHGHGHGHGHGHGHGHGHGHGkDPzddHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGkDOhHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+HGHGYSHGHGHGHGHGHGHGHGHGHGHGHGddddHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGHGYSHGHG
+mPmPWJmPmPmPmPmPmPmPmPmPmPmPmPmPmPWLmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPWJmPmP
 IpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmPmPmPmPIpmPmP
 GJYIFlwKmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPBfmPYIFlwKGJmPmPmPmPmPmPmPmPmP
 mPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmPmP
