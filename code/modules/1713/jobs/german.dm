@@ -1272,7 +1272,6 @@
 	whitelisted = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_officer = TRUE
 	uses_squads = TRUE
 	is_tankcom = TRUE
 
@@ -1368,7 +1367,6 @@
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_officer = TRUE
 	uses_squads = TRUE
 	is_ss_panzer = TRUE
 
