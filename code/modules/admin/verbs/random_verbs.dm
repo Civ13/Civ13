@@ -367,7 +367,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set category = "Special"
 	set name = "Explosion"
 
-	if (!check_rights(R_DEBUG|R_FUN))	return
+	if (!check_rights(R_SPAWN))	return
 
 	var/devastation = input("Range of total devastation. -1 to none", text("Input"))  as num|null
 	if (devastation == null) return

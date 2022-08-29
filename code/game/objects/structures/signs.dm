@@ -448,6 +448,29 @@
 	desc = "Looks like we finally found Bambi..."
 	icon_state = "deer_trophy"
 
+/obj/structure/sign/orthodox1
+	name = "icon of Mary"
+	desc = "An icon depicting Mary, mother of Jesus. Often used in Eastern Orthodox cultures."
+	icon_state = "orthodox1"
+
+/obj/structure/sign/orthodox2
+	name = "icon of Trinity"
+	desc = "An icon depicting the saint Trinity. Often used in Eastern Orthodox cultures."
+	icon_state = "orthodox2"
+
+/obj/structure/sign/orthodox3
+	name = "icon of Archangel Michael"
+	desc = "An icon depicting Archangel Michael. Often used in Eastern Orthodox cultures."
+	icon_state = "orthodox3"
+
+/obj/structure/sign/khalif_ali1
+	name = "portrait of Khalif Ali"
+	desc = "A portrait of Khalif Ali."
+	icon_state = "khalif_ali1"
+
+/obj/structure/sign/khalif_ali2
+	icon_state = "khalif_ali2"
+
 //BILLBOARDS
 
 /obj/structure/billboard
