@@ -174,7 +174,7 @@
 				message_admins("<span class='notice'>[key_name(usr)] deleted all objects of type or subtype of [AM_type] ([i] objects deleted)</span>")
 
 	else if (href_list["explode"])
-		if (!check_rights(R_DEBUG|R_FUN))	return
+		if (!check_rights(R_SPAWN))	return
 
 		var/atom/A = locate(href_list["explode"])
 		if (!isobj(A) && !ismob(A) && !isturf(A))
