@@ -205,6 +205,18 @@
 	ripable = FALSE
 	flags = CONDUCT
 
+/obj/item/clothing/suit/swat_new
+	name = "swat bulletproof vest"
+	desc = "A heavy NIJ level IV vest, used by swat officers."
+	icon_state = "policevest"
+	item_state = "policevest"
+	worn_state = "policevest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
+	var/slots = 6
+	ripable = FALSE
+	ripable = FALSE
+
 /obj/item/clothing/suit/police
 	name = "police bulletproof vest"
 	desc = "A police vest (Level III)."

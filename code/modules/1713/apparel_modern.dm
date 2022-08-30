@@ -1039,6 +1039,18 @@
 	restricts_view = 2
 	health = 90
 
+/obj/item/clothing/head/helmet/swat_new
+	name = "swat helmet"
+	desc = "A standard kevlar helmet used by swat officers."
+	icon_state = "swat_new"
+	item_state = "swat_new"
+	worn_state = "swat_new"
+	body_parts_covered = HEAD
+	armor = list(melee = 85, arrow = 95, gun = 85, energy = 27, bomb = 70, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 100
+
 	/* Emergency Services Clothing*/
 
 /obj/item/clothing/suit/lifejacket
@@ -1204,14 +1216,16 @@
 	new /obj/item/ammo_magazine/glock17(src)
 
 /obj/item/weapon/storage/belt/police/swat
+	icon_state = "swatbelt"
+	item_state = "swatbelt"
 /obj/item/weapon/storage/belt/police/swat/New()
 	..()
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/clothing/mask/gas/swat(src)
 	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/weapon/grenade/flashbang(src)
 	new /obj/item/weapon/grenade/flashbang(src)

@@ -19,7 +19,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/pmc(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
 //head
 	var/randcloth = rand(1,5)
 	switch(randcloth)
@@ -87,7 +87,8 @@
 	H.add_note("Objective", "Steal 10.000 from the bank's vault!")
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_HIGH)

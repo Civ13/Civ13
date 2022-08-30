@@ -80,6 +80,11 @@
 	item_state = "swatmask"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
+/obj/item/clothing/mask/gas/swat_new
+	icon_state = "swat_new"
+	item_state = "swat_new"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
 /obj/item/clothing/mask/gas/soviet
 	icon_state = "sovietmask"
 	item_state = "sovietmask"
