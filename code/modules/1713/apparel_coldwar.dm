@@ -200,10 +200,22 @@
 	item_state = "swat"
 	worn_state = "swat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 105, arrow = 80, gun = 116, energy = 70, bomb = 74, bio = 44, rad = 40)
+	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
+
+/obj/item/clothing/suit/swat_new
+	name = "swat bulletproof vest"
+	desc = "A heavy NIJ level IV vest, used by swat officers."
+	icon_state = "policevest"
+	item_state = "policevest"
+	worn_state = "policevest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
+	var/slots = 6
+	ripable = FALSE
+	ripable = FALSE
 
 /obj/item/clothing/suit/police
 	name = "police bulletproof vest"
@@ -211,7 +223,7 @@
 	icon_state = "policevest"
 	item_state = "policevest"
 	worn_state = "policevest"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
 	var/slots = 3
 	ripable = FALSE

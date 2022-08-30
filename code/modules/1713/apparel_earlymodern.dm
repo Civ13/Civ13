@@ -776,6 +776,13 @@
 	item_state = "swat"
 	worn_state = "swat"
 
+/obj/item/clothing/under/swat_new
+	name = "swat outfit"
+	desc = "A uniform used by police special forces."
+	icon_state = "swat_new"
+	item_state = "swat_new"
+	worn_state = "swat_new"
+
 /obj/item/clothing/under/combat
 	name = "combat outfit"
 	desc = "A combat uniform plated with kevlar."

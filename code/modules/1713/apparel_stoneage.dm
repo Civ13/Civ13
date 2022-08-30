@@ -361,14 +361,6 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 5, arrow = 14, gun = 10, energy = 20, bomb = 10, bio = 10, rad = FALSE)
 
-/obj/item/clothing/mask/clown
-	name = "clown mask"
-	desc = "A mask used around the world by clowns."
-	icon_state = "clownmask"
-	item_state = "clownmask"
-	body_parts_covered = FACE|EYES
-	armor = list(melee = 5, arrow = 5, gun = 1, energy = 0, bomb = 5, bio = 0, rad = FALSE)
-
 /////////////////////////////
 
 /obj/item/clothing/head/chief_hat

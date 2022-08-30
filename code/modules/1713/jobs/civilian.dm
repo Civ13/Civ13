@@ -2412,8 +2412,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+	if(prob(60))
+		var/randcloth = rand(1,2)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
 	H.add_note("Role", "You are a member of the police force. Your objective are to arrest (or deal justice to) as many robbers as possible and protect the vault!")
 	
 	H.setStat("strength", STAT_NORMAL)
@@ -2427,9 +2431,9 @@
 
 /datum/job/civilian/swat
 	title = "SWAT Officer"
-	rank_abbreviation = "Deputy"
+	rank_abbreviation = "Sergeant"
 	spawn_location = "JoinLateSwat"
-	selection_color = "#353575"
+	selection_color = "#1d1d42"
 
 	whitelisted = TRUE
 	is_heist = TRUE
@@ -2437,18 +2441,18 @@
 	can_be_female = TRUE
 
 	min_positions = 1
-	max_positions = 10
+	max_positions = 5
 
 /datum/job/civilian/swat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Police Department"
 	give_random_name(H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/swat(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/swat_new(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat_new(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/tactical/hiph = new /obj/item/clothing/accessory/holster/tactical(null)
 	uniform1.attackby(hiph, H)
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
@@ -2456,8 +2460,8 @@
 		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/swat(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/swat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/swat_new(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/swat_new(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/swat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
@@ -2467,6 +2471,7 @@
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_HIGH)
+	H.setStat("machinegun", STAT_HIGH)
 	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_VERY_HIGH)

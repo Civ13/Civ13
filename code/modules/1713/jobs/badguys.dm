@@ -19,11 +19,21 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/pmc(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/lwh/black(H), slot_head)
-//jacket
+	var/randcloth = rand(1,5)
+	switch(randcloth)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday1(H), slot_wear_mask)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday2(H), slot_wear_mask)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday3(H), slot_wear_mask)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday4(H), slot_wear_mask)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/paydayclown(H), slot_wear_mask)
+//armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(70))
 		var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack/plate_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack(null)
@@ -36,19 +46,40 @@
 		var/obj/item/clothing/accessory/armor/modern/plate/plate_armor = new /obj/item/clothing/accessory/armor/modern/plate(null)
 		uniform.attackby(plate_armor, H)
 //gun
-	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/p90(H), slot_l_hand)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p90(H), slot_belt)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p90(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p90(H), slot_r_store)
-	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_l_hand)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_belt)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
-//armor
-	if (prob(10))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3, slot_wear_suit)
+	var/randarmw = rand(1,2)
+	switch(randarmw)
+		if (1)
+			if (prob(75))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_belt)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_r_store)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/tec9(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tec9(H), slot_belt)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tec9(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tec9(H), slot_r_store)
+		if (2)
+			if (prob(75))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_belt)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_r_store)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/uzi(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_belt)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_r_store)
+		
+//suit
+	var/randsuit = rand(1,3)
+	switch(randsuit)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(H), slot_wear_suit)
 //extra
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 
@@ -56,7 +87,8 @@
 	H.add_note("Objective", "Steal 10.000 from the bank's vault!")
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_HIGH)

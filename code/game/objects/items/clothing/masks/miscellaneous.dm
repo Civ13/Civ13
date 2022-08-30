@@ -169,3 +169,66 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	w_class = 1
 	blocks_scope = TRUE
 	restricts_view = 1
+
+/obj/item/clothing/mask/clown
+	name = "clown mask"
+	desc = "A mask used around the world by clowns."
+	icon_state = "clownmask"
+	item_state = "clownmask"
+	flags_inv = HIDEEARS
+	body_parts_covered = FACE|EYES
+
+/obj/item/clothing/mask/paydayclown
+	name = "clown mask"
+	desc = "A what looks plastic mask to hide your identity, used around the world by clowns."
+	icon_state = "clownmask"
+	item_state = "clownmask"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	restricts_view = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday1
+	name = "american flag mask"
+	desc = "A what looks plastic mask to hide your identity, this one has an American flag on it."
+	icon_state = "payday1"
+	item_state = "payday1"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	restricts_view = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday2
+	name = "clown mask"
+	desc = "A what looks like plastic clown mask to hide your identity."
+	icon_state = "payday2"
+	item_state = "payday2"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	restricts_view = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday3
+	name = "american flag mask"
+	desc = "A what looks like plastic clown mask to hide your identity."
+	icon_state = "payday3"
+	item_state = "payday3"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	restricts_view = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday4
+	name = "american flag mask"
+	desc = "A what looks like plastic clown mask to hide your identity."
+	icon_state = "payday4"
+	item_state = "payday4"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	restricts_view = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
