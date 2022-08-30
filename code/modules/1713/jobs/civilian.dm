@@ -2412,8 +2412,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+	if(prob(60))
+		var/randcloth = rand(1,2)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
 	H.add_note("Role", "You are a member of the police force. Your objective are to arrest (or deal justice to) as many robbers as possible and protect the vault!")
 	
 	H.setStat("strength", STAT_NORMAL)
@@ -2429,7 +2433,7 @@
 	title = "SWAT Officer"
 	rank_abbreviation = "Deputy"
 	spawn_location = "JoinLateSwat"
-	selection_color = "#353575"
+	selection_color = "#1d1d42"
 
 	whitelisted = TRUE
 	is_heist = TRUE
@@ -2437,7 +2441,7 @@
 	can_be_female = TRUE
 
 	min_positions = 1
-	max_positions = 10
+	max_positions = 5
 
 /datum/job/civilian/swat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
