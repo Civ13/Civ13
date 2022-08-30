@@ -31,48 +31,54 @@ bullet_act
 		if (stat == DEAD)
 			var/mob/living/human/H = user
 			if (istype(H))
-				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
-				if (do_after(user, 30, src))
-					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-					if (!crab)
-						for(var/i=1;i<=4;i++)
-							var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-							meat.name = "[src.name] meat"
-							meat.radiation = radiation/10
-					else
-						for(var/i=1;i<=4;i++)
-							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-							meat.radiation = radiation/10
-					if (orc)
-						var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
-						HP.amount = 3
-					else if (goblin)
-						var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
-						HP.amount = 2
-					else if (gorillaman)
-						var/obj/item/stack/material/pelt/gorillapelt/HP = new/obj/item/stack/material/pelt/gorillapelt(get_turf(src))
-						HP.amount = 3
-					else if (ant || crab)
-						var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
-						HP.amount = 2
-					else if (wolfman)
-						var/obj/item/stack/material/pelt/wolfpelt/HP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
-						HP.amount = 3
-					else if (lizard)
-						var/obj/item/stack/material/pelt/lizardpelt/HP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
-						HP.amount = 3
-					else
-						var/obj/item/stack/material/pelt/humanpelt/HP = new/obj/item/stack/material/pelt/humanpelt(get_turf(src))
-						HP.amount = 3
-					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
-					bonedrop.amount = 2
-					if (istype(user, /mob/living/human))
-						var/mob/living/human/HM = user
-						HM.adaptStat("medical", 1)
-					for (var/obj/item/clothing/I in contents)
-						drop_from_inventory(I)
-					crush()
-					qdel(src)
+				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL && H.civilization != "Professional")
+					user << "<span class = 'warning'>You're not sure about this, better call a professional...</span>"
+				else
+					user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
+					if (do_after(user, 1200, src))
+						user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
+						if (!crab)
+							for(var/i=1;i<=4;i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
+								meat.name = "[src.name] meat"
+								meat.radiation = radiation/10
+							var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
+								HD.name = "[src.name]'s head"
+						else
+							for(var/i=1;i<=4;i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.radiation = radiation/10
+						if (orc)
+							var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
+							HP.amount = 3
+						else if (goblin)
+							var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
+							HP.amount = 2
+						else if (gorillaman)
+							var/obj/item/stack/material/pelt/gorillapelt/HP = new/obj/item/stack/material/pelt/gorillapelt(get_turf(src))
+							HP.amount = 3
+						else if (ant || crab)
+							var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
+							HP.amount = 2
+						else if (wolfman)
+							var/obj/item/stack/material/pelt/wolfpelt/HP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
+							HP.amount = 3
+						else if (lizard)
+							var/obj/item/stack/material/pelt/lizardpelt/HP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+							HP.amount = 3
+						else
+							var/obj/item/stack/material/pelt/humanpelt/HP = new/obj/item/stack/material/pelt/humanpelt(get_turf(src))
+							HP.amount = 3
+						var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
+						bonedrop.amount = 2
+						if (istype(user, /mob/living/human))
+							var/mob/living/human/HM = user
+							HM.adaptStat("medical", 1)
+						for (var/obj/item/clothing/I in contents)
+							drop_from_inventory(I)
+						crush()
+						qdel(src)
+
 	else if (map.ID == MAP_OCCUPATION)
 		var/mob/living/human/H = user
 		if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && istype(W))
