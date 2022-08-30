@@ -207,7 +207,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+	if (map.ordinal_age <= 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)

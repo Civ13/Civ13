@@ -1352,7 +1352,7 @@
 /datum/program/warrants/do_html(mob/living/human/user)
 	if (mainmenu == "---")
 		mainmenu = "<h2>WARRANT TERMINAL</h2><br>"
-		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>&nbsp;<a href='?src=\ref[src];warrants=4'>Request a Warrant</a>"
+		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>&nbsp;<a href='?src=\ref[src];warrants=4'>Issue a Warrant</a>"
 	..()
 /datum/program/warrants/Topic(href, href_list, hsrc)
 	mainbody = ""
@@ -1443,7 +1443,7 @@
 				for (var/mob/living/human/M in world)
 					if(M.civilization != "Sheriff Office" && M.civilization != "Government")
 						civilians += M
-				var/choice = WWinput(usr, "Who to request a warrant for?","Assign a person","Cancel",civilians)
+				var/choice = WWinput(usr, "Who to issue a warrant for?","Assign a person","Cancel",civilians)
 				if (choice == "Cancel" || !choice)
 					return
 				else
@@ -1518,7 +1518,7 @@
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
 	else
-		for (var/mob/living/human/M in world)
+		for (var/mob/living/human/M in mob_list)
 			mainbody += "<b>[M.real_name]</b> - fingerprint string:<br> <b>[M.get_full_print()]</b><br><br>"
 	..()
 

@@ -935,18 +935,41 @@ mob/living/human/corpse/russian_soviet_tanker
 /mob/living/human/corpse/teller/modern/New()
 	..()
 	icon_state = "human_m_s"
-	var/spawntime = 0
 	invisibility = 101
-	if (!job_master)
-		spawntime = 5
-	spawn (spawntime)
-		if (!job_master)
-			qdel(src)
-			return
-		job_master.EquipRank(src, "Teller")
-		dir = pick(NORTH,SOUTH,EAST,WEST)
-		adjustBruteLoss(rand(6,7))
-		name = "Bank Teller"
-		invisibility = 0
-		spawn (50) // must be here or they won't spawn, it seems - Kachnov
-			death()
+	var/randshoes = rand(1,2)
+	switch(randshoes)
+		if(1)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(src), slot_shoes)
+		if(2)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(src), slot_shoes)
+	equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(src), slot_w_uniform)
+	var/randsuit = rand(1,5)
+	switch(randsuit)
+		if(1)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/really_black_suit(src), slot_wear_suit)
+		if(2)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(src), slot_wear_suit)
+		if(3)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(src), slot_wear_suit)
+		if(4)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/checkered_suit(src), slot_wear_suit)
+		if(5)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/burgundy_suit(src), slot_wear_suit)
+	if (prob(20))
+		equip_to_slot_or_del(new /obj/item/clothing/glasses/regular(src), slot_wear_mask)
+	h_style = pick("CIA","Business 1", "Business 2", "Business 3", "Regulation Cut")
+	f_style = pick("Shaved","Selleck Mustache","Medium Beard")
+	var/hex_hair = hair_colors[pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")]
+	r_hair = hex2num(copytext(hex_hair, 2, 4))
+	g_hair = hex2num(copytext(hex_hair, 4, 6))
+	b_hair = hex2num(copytext(hex_hair, 6, 8))
+	r_facial = hex2num(copytext(hex_hair, 2, 4))
+	g_facial = hex2num(copytext(hex_hair, 4, 6))
+	b_facial = hex2num(copytext(hex_hair, 6, 8))
+	update_hair()
+	dir = pick(NORTH,SOUTH,EAST,WEST)
+	adjustBruteLoss(rand(6,40))
+	name = "Bank Teller"
+	invisibility = 0
+	spawn (50) // must be here or they won't spawn, it seems - Kachnov
+		death()
