@@ -1352,7 +1352,7 @@
 /datum/program/warrants/do_html(mob/living/human/user)
 	if (mainmenu == "---")
 		mainmenu = "<h2>WARRANT TERMINAL</h2><br>"
-		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>&nbsp;<a href='?src=\ref[src];warrants=4'>Request a Warrant</a>"
+		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>&nbsp;<a href='?src=\ref[src];warrants=4'>Issue a Warrant</a>"
 	..()
 /datum/program/warrants/Topic(href, href_list, hsrc)
 	mainbody = ""
@@ -1440,10 +1440,10 @@
 			else
 				var/list/civilians = list("Cancel")
 				var/list/crimelist = list("Cancel","Assault","Murder","Manslaugther","Kidnapping","Hostage taking","Terrorism","Arson","Fleeing & Eluding","Jailbreak","Private Property Damage","Public Property Damage","Vandalism","General Traffic Violation","Threat of Death or Bodily Harm","Trespassing","Grand Theft Auto","Possession of illegal disks","Possession of narcotics","Possession of illegal firearms","Distribution of illegal disks","Distribution of narcotics","Distribution of illegal firearms","Obstruction of Justice","Theft","Contempt of Court","Tax evasion","Medical malpractice","Neglect of duties")
-				for (var/mob/living/human/M in world)
+				for (var/mob/living/human/M in mob_list)
 					if(M.civilization != "Sheriff Office" && M.civilization != "Government")
 						civilians += M
-				var/choice = WWinput(usr, "Who to request a warrant for?","Assign a person","Cancel",civilians)
+				var/choice = WWinput(usr, "Who to issue a warrant for?","Assign a person","Cancel",civilians)
 				if (choice == "Cancel" || !choice)
 					return
 				else
