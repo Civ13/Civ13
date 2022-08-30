@@ -1687,18 +1687,18 @@
 		return
 	spawn(600)
 		if (stat == DEAD)
-			spawn(3000)
+			spawn(30000)
 				if (stat == DEAD)
 					visible_message("[src]'s body starts to rot.")
 					rotting_stage = 1
-					spawn(3000)
+					spawn(30000)
 						if (stat == DEAD)
 							visible_message("[src]'s body is visibly rotten!")
 							rotting_stage = 2
 							if(map.ID != "TANTIVEIV")
 								if (isturf(loc))
 									new/mob/living/simple_animal/crow(loc)
-							spawn(2000)
+							spawn(20000)
 								if (stat == DEAD)
 									var/found = FALSE
 									for (var/obj/item/organ/external/head/H in organs)
