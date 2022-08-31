@@ -602,6 +602,12 @@
 												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [CVR]!</span>"
 											else
 												passthrough = FALSE
+										else if (istype(O, /obj/item/weapon/gun/projectile/automatic/stationary))
+											var/obj/covers/MG = O
+											if (prob(100-MG.hardness))
+												passthrough = TRUE
+											else
+												passthrough = FALSE
 										else
 											passthrough = FALSE
 									else if (istype(O, /obj/structure))
