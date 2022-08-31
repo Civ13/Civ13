@@ -4,7 +4,7 @@
 	title = "Bank Robber"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRU"
-	
+
 	is_heist = TRUE
 	is_outlaw = TRUE
 	can_be_female = FALSE
@@ -66,11 +66,11 @@
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_l_store)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_r_store)
 			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/uzi(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/uzi(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_belt)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_l_store)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_r_store)
-		
+
 //suit
 	var/randsuit = rand(1,3)
 	switch(randsuit)

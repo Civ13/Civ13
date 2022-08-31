@@ -243,7 +243,7 @@
 	sel_mode = 1
 	effectiveness_mod = 1.2
 
-/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi
+/obj/item/weapon/gun/projectile/submachinegun/uzi
 	name = "Uzi"
 	desc = "An Israeli submachinegun chambered in 9mm Parabellum."
 	icon_state = "uzi"
