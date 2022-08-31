@@ -51,6 +51,10 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "shelfwood"
 
+/obj/structure/table/rack/shelf/store
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "shelfstore"
+
 /obj/structure/table/rack/coatrack
 	name = "coat rack"
 	desc = "A convenient place to hang your hat."
