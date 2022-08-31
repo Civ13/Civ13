@@ -2400,7 +2400,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform1.attackby(hiph, H)
@@ -2420,7 +2420,7 @@
 		else if (randcloth == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
 	H.add_note("Role", "You are a member of the police force. Your objective are to arrest (or deal justice to) as many robbers as possible and protect the vault!")
-	
+
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
@@ -2451,7 +2451,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/swat_new(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat_new(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/tactical/hiph = new /obj/item/clothing/accessory/holster/tactical(null)
 	uniform1.attackby(hiph, H)
@@ -2468,7 +2468,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
 	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective are to arrest (or deal justice to) as many robbers as possible and protect the vault!")
-	
+
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_HIGH)
@@ -2764,7 +2764,6 @@
 	title = "Paramedic"
 	en_meaning = ""
 	rank_abbreviation = "Paramedic"
-	whitelisted = TRUE
 	spawn_location = "JoinLateCivE"
 	selection_color = "#91a6eb"
 	is_deal = TRUE
@@ -2777,19 +2776,19 @@
 	H.civilization = "Paramedics"
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/paramedic(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/highvis/paramedic(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
 	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(stet, H)
-	H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
+	if (map.ID == MAP_BANK_ROBBERY)
+		H.add_note("Role", "You are a paramedic, and you were called to a bank where a shooting is taking place!")
+	else
+		H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -2799,8 +2798,12 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
 	give_random_name(H)
-	spawn(50)
-		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+		spawn(50)
+			H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
 /datum/job/civilian/hospital_doctor
 	title = "Physician"
