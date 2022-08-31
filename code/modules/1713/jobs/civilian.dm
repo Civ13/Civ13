@@ -2400,7 +2400,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform1.attackby(hiph, H)
@@ -2451,7 +2451,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/swat_new(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat_new(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/tactical/hiph = new /obj/item/clothing/accessory/holster/tactical(null)
 	uniform1.attackby(hiph, H)
@@ -2478,45 +2478,6 @@
 	H.setStat("pistol", STAT_VERY_HIGH)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_HIGH)
-
-/datum/job/civilian/paramedic/bank
-	title = "Paramedic"
-	en_meaning = ""
-	rank_abbreviation = "Paramedic"
-	spawn_location = "JoinLateCivE"
-	selection_color = "#fa1e16"
-	
-	is_heist = TRUE
-	is_law = TRUE
-	can_be_female = TRUE
-
-	min_positions = 1
-	max_positions = 2
-
-/datum/job/civilian/paramedic/bank/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-	H.civilization = "Paramedics"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/paramedic(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/highvis/paramedic(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	uniform.attackby(stet, H)
-	H.add_note("Role", "You are a paramedic, and you were called to a bank where a shooting is taking place!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
-	give_random_name(H)
 
 /datum/job/civilian/sheriffdep
 	title = "County Deputy"

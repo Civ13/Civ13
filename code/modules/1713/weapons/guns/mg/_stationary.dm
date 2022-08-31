@@ -38,8 +38,6 @@
 
 	var/zoom_amount = 10
 
-	var/hardness = 10 //for projectile penetration
-
 	gun_type = GUN_TYPE_MG
 
 	accuracy_increase_mod = 1.00
