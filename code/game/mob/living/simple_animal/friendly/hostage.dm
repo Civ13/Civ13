@@ -83,9 +83,13 @@ var/global/civvies_killed = list()
 		game_log("CIVDEATH: [msg]")
 		message_admins(msg)
 	else
-		var/msg = "Civilian ([name]-[uniquenum]) killed by UNKNOWN at ([src.x],[src.y],[src.z])!"
-		game_log("CIVDEATH: [msg]")
-		message_admins(msg)
+		if (map && map.ID == MAP_BANK_ROBBERY)
+			var/msg = "A hostage has been killed! The situation is critical!"
+			world << "<font size=4, font color ='red'>[msg]</font>"
+		else if(map && map.ID != MAP_BANK_ROBBERY)
+			var/msg = "Civilian ([name]-[uniquenum]) killed by UNKNOWN at ([src.x],[src.y],[src.z])!"
+			game_log("CIVDEATH: [msg]")
+			message_admins(msg)
 /mob/living/simple_animal/civilian/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug

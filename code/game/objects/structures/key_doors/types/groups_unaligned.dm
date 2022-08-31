@@ -126,6 +126,17 @@
 	health = 400
 	desc = "A large set of reinforced steel doors."
 
+/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door
+	name = "large steel double store"
+	health = 200
+	desc = "A large store steel and glass double door."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	basic_icon = "storedoor"
+	icon_state = "storedoor"
+	override_material = FALSE
+	override_opacity = TRUE
+	opacity = FALSE
+
 /obj/structure/simple_door/key_door/anyone/doubledoor/silver
 	name = "large silver double"
 	material = "silver"

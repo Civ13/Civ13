@@ -443,6 +443,11 @@
 	desc = "A flashing gas station sign."
 	icon_state = "gas"
 
+/obj/structure/sign/sale
+	name = "SALE sign"
+	desc = "A sign indicating a sale."
+	icon_state = "sale"
+
 /obj/structure/sign/deer_trophy
 	name = "hunting deer trophy"
 	desc = "Looks like we finally found Bambi..."
