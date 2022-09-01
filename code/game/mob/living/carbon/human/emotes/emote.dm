@@ -383,6 +383,8 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_BLUGOSLAVIA", 100)
 									else if (original_job.is_dra)
 										playsound(get_turf(src), "charge_IRANIAN", 100)
+									else if (original_job.is_heist && original_job.is_law)
+										playsound(get_turf(src), "charge_POLICE", 100)
 								if (PIRATES)
 									if (original_job.is_event)
 										playsound(get_turf(src), "charge_REDMENIA", 100)
