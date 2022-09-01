@@ -290,7 +290,7 @@
 "MI" = (/mob/living/human/corpse/teller/modern,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "ML" = (/obj/structure/grille/chainlinkfence{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "MR" = (/obj/structure/table/modern/retable,/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Vault Room"})
-"Nf" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction1{freq = FREQP},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"Nf" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction1{freq = "FREQP"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "Nk" = (/obj/structure/toilet{dir = 8},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/white,/area/caribbean/british/land/inside)
 "No" = (/obj/structure/railing/steel,/obj/structure/sign/painting13{pixel_y = 32},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Nq" = (/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/obj/structure/window/classic/metal,/turf/floor/wood,/area/caribbean/british/land/inside)
