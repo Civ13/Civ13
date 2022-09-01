@@ -1030,6 +1030,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Rebels "
 		else if (map && istype(map, /obj/map_metadata/ruhr_uprising))
 			dat += "[alive_civilians.len] Revolutionaries "
+		else if (map && istype(map, /obj/map_metadata/bank_robbery))
+			dat += "[alive_civilians.len] Policemen "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1068,6 +1070,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Union Soldiers "
 		else if (map && istype(map, /obj/map_metadata/tantiveiv))
 			dat += "[alive_american.len] Imperials "
+		else if (map && istype(map, /obj/map_metadata/bank_robbery))
+			dat +="[alive_american.len] Robbers "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1240,6 +1244,11 @@ var/global/redirect_all_players = null
 						temp_name = "Reactionaries"
 					if (temp_name == "Civilian")
 						temp_name = "Revolutionaries"
+				else if (map && map.ID == "BANK_ROBBERY")
+					if (temp_name == "Civilian")
+						temp_name = "Police Department"
+					if (temp_name == "American")
+						temp_name = "Robbers"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
