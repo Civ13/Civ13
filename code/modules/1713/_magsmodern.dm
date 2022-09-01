@@ -341,13 +341,43 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/uzi
+	name = "Uzi magazine (9x19mm Parabellum)"
+	icon_state = "uzi"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 25
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/mac10
+	name = "MAC-10 magazine (.45 ACP)"
+	icon_state = "mac10"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a45acp
+	caliber = "a45acp"
+	max_ammo = 30
+	weight = 0.33
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/tec9
-	name = "TEC-9 (9x19mm)"
+	name = "TEC-9 (9x19mm Parabellum)"
 	icon_state = "tec9"
 	mag_type = MAGAZINE
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 32
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/skorpion
+	name = "Skorpion magazine (9x19mm Parabellum)"
+	icon_state = "skorpion"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 20
 	weight = 0.33
 	multiple_sprites = TRUE
 
