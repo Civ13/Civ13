@@ -2391,7 +2391,10 @@
 	can_be_female = TRUE
 
 	min_positions = 1
-	max_positions = 50
+	if (map.ID == MAP_DRUG_BUST)
+		max_positions = 4
+	else
+		max_positions = 50
 
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2413,13 +2416,15 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+	if (map.ID == MAP_DRUG_BUST)
+		H.equip_to_slot_or_del(new /obj/item/weapon/paper/police/searchwarrant/drug(H), slot_r_hand)
 	if(prob(60))
 		var/randcloth = rand(1,2)
 		if (randcloth == 1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
 		else if (randcloth == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
-	H.add_note("Role", "You are a member of the police force. Your objective are to arrest (or deal justice to) as many robbers as possible and protect the vault!")
+	H.add_note("Role", "You are a member of the police force. Your objective are to arrest (or deal justice to) as many criminals as possible!")
 	
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2436,13 +2441,17 @@
 	spawn_location = "JoinLateSwat"
 	selection_color = "#1d1d42"
 
-	whitelisted = TRUE
 	is_heist = TRUE
 	is_law = TRUE
 	can_be_female = TRUE
 
 	min_positions = 1
-	max_positions = 5
+	if (map.ID == MAP_DRUG_BUST)
+		max_positions = 20
+		whitelisted = FALSE
+	else
+		max_positions = 5
+		whitelisted = TRUE
 
 /datum/job/civilian/swat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2467,7 +2476,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
-	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective are to arrest (or deal justice to) as many robbers as possible and protect the vault!")
+	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective are to arrest (or deal justice to) as many criminals as possible!")
 	
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
