@@ -1480,6 +1480,8 @@
 						holder2.icon_state = "ru_basic"
 					else if (map.ordinal_age >= 6)
 						holder2.icon_state = "sov_basic"
+					else if (map.ID == MAP_BANK_ROBBERY)
+						holder2.icon_state = "robbers"
 					if (map.ID == MAP_YELTSIN || map.ID == MAP_GROZNY || map.ID == MAP_FACTORY)
 						holder2.icon_state = "ru_basic"
 				if (GERMAN)
@@ -1496,8 +1498,6 @@
 						holder2.icon_state = "idf_basic"
 					else if (map.ID == MAP_TANTIVEIV)
 						holder2.icon_state = "imp_basic"
-					else if (map.ID == MAP_BANK_ROBBERY)
-						holder2.icon_state = "robbers"
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
