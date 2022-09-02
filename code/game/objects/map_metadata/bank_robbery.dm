@@ -103,9 +103,9 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 		return 3000 // 2 minutes
 
 /obj/map_metadata/bank_robbery/update_win_condition()
+	if (win_condition_spam_check)
+		return FALSE
 	if (processes.ticker.playtime_elapsed >= 18000)
-		if (win_condition_spam_check)
-			return FALSE
 		ticker.finished = TRUE
 		var/message = "The Police Department has surrounded the whole neighborhood and are going in after each robber, one by one. The Robbers have failed their heist!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
