@@ -194,5 +194,77 @@
 	move_delay = 4
 	load_delay = 5
 
+/obj/item/weapon/gun/projectile/shotgun/mts225
+	name = "MTS-225"
+	desc = "A Russian 6-cylinder revolver shotgun, used by Russian hunters."
+	icon_state = "mts225"
+	item_state = "shotgun"
+	max_shells = 5
+	w_class = 4.0
+	force = 10
+	flags =  CONDUCT
+	slot_flags = SLOT_SHOULDER
+	caliber = "12gauge"
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
+	handle_casings = HOLD_CASINGS
+	stat = "rifle"
+	move_delay = 4
+	var/open = FALSE
+	var/recentpump = FALSE // to prevent spammage
+	load_delay = 3
+/obj/item/weapon/gun/projectile/shotgun/mts225/consume_next_projectile()
+	if (chambered)
+		return chambered.BB
+	return null
+/obj/item/weapon/gun/projectile/shotgun/mts225/update_icon()
+	..()
+	if (open)
+		icon_state = "mts225_open"
+	else
+		icon_state = "mts225"
+
+/obj/item/weapon/gun/projectile/shotgun/mts225/attack_self(mob/living/user as mob)
+	if (world.time >= recentpump + 10)
+		if (open)
+			open = FALSE
+			user << "<span class='notice'>You put the cylinder back into \the [src].</span>"
+			icon_state = "mts225"
+			if (loaded.len)
+				var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
+				loaded -= AC //Remove casing from loaded list.
+				chambered = AC
+		else
+			open = TRUE
+			user << "<span class='notice'>You release the cylinder of \the [src].</span>"
+			icon_state = "mts225_open"
+		recentpump = world.time
+
+/obj/item/weapon/gun/projectile/shotgun/mts225/load_ammo(var/obj/item/A, mob/user)
+	if (!open)
+		user << "<span class='notice'>You need release the cylinder of \the [src] first!</span>"
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/shotgun/coachgun/unload_ammo(mob/user, var/allow_dump=1)
+	if (!open)
+		user << "<span class='notice'>You need to release the cylinder of \the [src] first!</span>"
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/shotgun/mts225/special_check(mob/user)
+	if (open)
+		user << "<span class='warning'>You can't fire \the [src] while the cylinder is not in the gun!</span>"
+		return FALSE
+	return ..()
+
+/obj/item/weapon/gun/projectile/shotgun/mts225/handle_post_fire()
+	..()
+	if (loaded.len)
+		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
+		loaded -= AC //Remove casing from loaded list.
+		chambered = AC
+
+
 
 
