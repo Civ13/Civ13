@@ -306,9 +306,9 @@
 /obj/item/weapon/gun/projectile/submachinegun/skorpion
 	name = "Skorpion"
 	desc = "An Czechoslovak machinepistol chambered in 9mm Parabellum."
-	icon_state = "uzi"
-	item_state = "uzi"
-	base_icon = "uzi"
+	icon_state = "skorpion"
+	item_state = "skorpion"
+	base_icon = "skorpion"
 	caliber = "a9x19"
 	weight = 1.1
 	equiptimer = 6
@@ -1797,7 +1797,7 @@
 	desc = "A Canadian Colt C7 assault rifle, chambered in 5.56x45mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "c7"
-	item_state = "c7"
+	item_state = "g3a3"
 	base_icon = "c7"
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'

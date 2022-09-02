@@ -530,19 +530,19 @@
 
 	business1
 		name = "Business 1"
-		icon_state = "hair_business1"
+		icon_state = "hair_business"
 		gender = MALE
 		growth = 2
 
 	business2
 		name = "Business 2"
-		icon_state = "hair_business1"
+		icon_state = "hair_business2"
 		gender = MALE
 		growth = 2
 
 	business3
 		name = "Business 3"
-		icon_state = "hair_business1"
+		icon_state = "hair_business3"
 		gender = MALE
 		growth = 2
 
