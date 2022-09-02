@@ -1048,6 +1048,8 @@ var/global/redirect_all_players = null
 	if (RUSSIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_russian.len] Russian Army "
+		else if (map && istype(map, /obj/map_metadata/bank_robbery))
+			dat +="[alive_american.len] Robbers "
 		else if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
 			dat += "[alive_russian.len] Soviets "
 		else
@@ -1070,8 +1072,6 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Union Soldiers "
 		else if (map && istype(map, /obj/map_metadata/tantiveiv))
 			dat += "[alive_american.len] Imperials "
-		else if (map && istype(map, /obj/map_metadata/bank_robbery))
-			dat +="[alive_american.len] Robbers "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1247,7 +1247,7 @@ var/global/redirect_all_players = null
 				else if (map && map.ID == "BANK_ROBBERY")
 					if (temp_name == "Civilian")
 						temp_name = "Police Department"
-					if (temp_name == "American")
+					if (temp_name == "Russian")
 						temp_name = "Robbers"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
