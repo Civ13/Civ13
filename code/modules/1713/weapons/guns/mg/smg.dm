@@ -306,9 +306,9 @@
 /obj/item/weapon/gun/projectile/submachinegun/skorpion
 	name = "Skorpion"
 	desc = "An Czechoslovak machinepistol chambered in 9mm Parabellum."
-	icon_state = "uzi"
-	item_state = "uzi"
-	base_icon = "uzi"
+	icon_state = "skorpion"
+	item_state = "skorpion"
+	base_icon = "skorpion"
 	caliber = "a9x19"
 	weight = 1.1
 	equiptimer = 6
