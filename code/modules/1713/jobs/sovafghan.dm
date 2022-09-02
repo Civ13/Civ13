@@ -354,8 +354,12 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
-	uniform.attackby(armour2, H)
+	if (prob(50))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+		uniform.attackby(armour2, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b2/armour3 = new /obj/item/clothing/accessory/armor/coldwar/plates/b2(null)
+		uniform.attackby(armour3, H)
 //head
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
@@ -445,8 +449,12 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
-	uniform.attackby(armour2, H)
+	if (prob(50))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+		uniform.attackby(armour2, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b2/armour3 = new /obj/item/clothing/accessory/armor/coldwar/plates/b2(null)
+		uniform.attackby(armour3, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
 //head
 	if (prob(50))
@@ -662,8 +670,12 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
-	uniform.attackby(armour2, H)
+	if (prob(30))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+		uniform.attackby(armour2, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armour4 = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
+		uniform.attackby(armour4, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
 
 //head

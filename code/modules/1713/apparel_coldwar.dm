@@ -920,7 +920,7 @@
 	item_state = "6b3"
 	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 65, arrow = 100, gun = 40, energy = 30, bomb = 40, bio = 10, rad = 30)
+	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 
@@ -931,7 +931,7 @@
 	item_state = "6b3"
 	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 65, arrow = 100, gun = 35, energy = 30, bomb = 55, bio = 10, rad = 30)
+	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
@@ -944,7 +944,7 @@
 	item_state = "6b2"
 	worn_state = "6b2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 60, arrow = 100, gun = 25, energy = 30, bomb = 50, bio = 10, rad = 30)
+	armor = list(melee = 67, arrow = 95, gun = 30, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slowdown = 0.2
@@ -956,7 +956,7 @@
 	item_state = "6b5"
 	worn_state = "6b5"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 65, arrow = 100, gun = 50, energy = 30, bomb = 70, bio = 10, rad = 30)
+	armor = list(melee = 70, arrow = 95, gun = 70, energy = 30, bomb = 70, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
