@@ -104,7 +104,7 @@ var/global/civvies_killed = list()
 					world << "<font size=2>A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>!</font>"
 					BR.civilians_killed["Robbers"]++
 				if("Police")
-					world << "<font size=2>A <b>[name]</b> has been killed by the <font color='blue'><b>[killer]</b></font>!</font>"
+					world << "<font size=2>A <b>[name]</b> has been killed by the <font color='blue'><b>[killer]</b></font>! This is unacceptable!</font>"
 					BR.civilians_killed["Police"]++
 	else
 		var/msg = "Civilian ([name]-[uniquenum]) killed by UNKNOWN at ([src.x],[src.y],[src.z])!"
