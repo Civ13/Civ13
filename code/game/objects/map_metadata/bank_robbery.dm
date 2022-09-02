@@ -38,12 +38,13 @@
 	..()
 	civ_collector()
 	civ_status()
+	civ_complete()
 
 obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_heist == TRUE)
 		. = TRUE
-		if(civilians_killed["Robbers"] >= 5)
+		if(civilians_killed["Robbers"] >= 5 || civilians_evacuated == 12)
 			if (J.title == "SWAT Officer")
 				J.whitelisted = FALSE
 				J.max_positions = 20
@@ -201,3 +202,11 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 		world << "<big>Evacuated hostages: [civilians_evacuated]/12 </big>"
 		world << "<big>Dead hostages: [total_killed] </big>"
 		civ_status()
+
+/obj/map_metadata/bank_robbery/proc/civ_complete()
+	var/spam_check = FALSE
+	if (civilians_evacuated = 12)
+		if (spam_check = FALSE)
+			world << "<big><span class = 'notice'>The Police Department has successfully evacuated all the civilian hostages: Additional SWAT units are coming to assist!</span></big>"
+			spam_check = TRUE
+	civ_complete()
