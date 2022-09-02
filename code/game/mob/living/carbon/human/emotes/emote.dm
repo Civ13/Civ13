@@ -422,7 +422,10 @@ var/list/vocal_emotes = list(
 								if (JAPANESE)
 									playsound(get_turf(src), "charge_JAPANESE", 100)
 								if (RUSSIAN)
-									playsound(get_turf(src), "charge_RUSSIAN", 100)
+									if (original_job.is_heist && original_job.is_outlaw)
+										playsound(get_turf(src), "charge_RUROBBERS", 100)
+									else
+										playsound(get_turf(src), "charge_RUSSIAN", 100)
 								if (GERMAN)
 									playsound(get_turf(src), "charge_GERMAN", 100)
 								if (AMERICAN)
