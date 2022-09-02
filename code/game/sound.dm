@@ -268,6 +268,11 @@ var/list/charge_sounds_police = list(
 	'sound/effects/emotes/charge_police2.ogg',
 	'sound/effects/emotes/charge_police3.ogg',
 	'sound/effects/emotes/charge_police4.ogg',)
+var/list/charge_sounds_rurobbers = list(
+	'sound/effects/emotes/robber1.ogg',
+	'sound/effects/emotes/robber2.ogg',
+	'sound/effects/emotes/robber3.ogg',
+	'sound/effects/emotes/robber4.ogg',)
 var/list/charge_sounds_blugoslavia = list()
 
 var/list/charge_sounds_gra = list(
@@ -521,4 +526,6 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_blugoslavia)
 			if ("charge_POLICE")
 				soundin = pick(charge_sounds_police)
+			if ("charge_RUROBBERS")
+				soundin = pick(charge_sounds_rurobbers)
 	return soundin
