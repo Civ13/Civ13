@@ -458,8 +458,8 @@
 	else
 		return
 /obj/structure/money_bag/proc/timer()
-	spawn(4000)
-		world << "<big>Current status: Robbers: <b>[storedvalue]/10000 Dollars</b></big>."
+	spawn(2100)
+		world << "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>."
 		timer()
 
 /obj/item/stack/money/goldvaluables
