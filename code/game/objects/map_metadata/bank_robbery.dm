@@ -10,20 +10,20 @@
 
 	faction_organization = list(
 		CIVILIAN,
-		AMERICAN,)
+		RUSSIAN,)
 
 	roundend_condition_sides = list(
-		list(AMERICAN) = /area/caribbean/british/land/inside/objective,
+		list(RUSSIAN) = /area/caribbean/british/land/inside/objective,
 		list(CIVILIAN) = /area/caribbean/japanese/land/inside/command, //doesn't exist on the map
 		)
 
-	age = "1996"
+	age = "1986"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(CIVILIAN = 0.65, AMERICAN = 0.35)
+	faction_distribution_coeffs = list(CIVILIAN = 0.65, RUSSIAN = 0.35)
 	battle_name = "Goldstein Bank Heist"
 	mission_start_message = "<font size=4>The Robbers have <b>5 minutes</b> to prepare before the negotiations end!<br> The Police Department will win if they capture the <b>Vault Room inside the bank</b>. The Robbers will win if they manage to extract 10'000 dollars from the Vault within <b>25 minutes!</b></font>"
 	faction1 = CIVILIAN
-	faction2 = AMERICAN
+	faction2 = RUSSIAN
 	grace_wall_timer = 3000
 	gamemode = "Bank Robbery"
 	songs = list(
@@ -65,7 +65,7 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 	switch (define)
 		if (CIVILIAN)
 			return "Police Department"
-		if (AMERICAN)
+		if (RUSSIAN)
 			return "Robbers"
 
 /obj/map_metadata/bank_robbery/roundend_condition_def2army(define)
@@ -73,7 +73,7 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 	switch (define)
 		if (CIVILIAN)
 			return "Police Department"
-		if (AMERICAN)
+		if (RUSSIAN)
 			return "Robbers"
 
 /obj/map_metadata/bank_robbery/army2name(army)
@@ -81,7 +81,7 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 	switch (army)
 		if ("CIVILIAN")
 			return "Police Department"
-		if ("Americans")
+		if ("Russians")
 			return "Robbers"
 
 /obj/map_metadata/bank_robbery/cross_message(faction)

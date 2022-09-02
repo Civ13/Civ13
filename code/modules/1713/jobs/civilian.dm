@@ -2391,10 +2391,7 @@
 	can_be_female = TRUE
 
 	min_positions = 1
-	if (map.ID == MAP_DRUG_BUST)
-		max_positions = 4
-	else
-		max_positions = 50
+	max_positions = 50
 
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2416,8 +2413,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
-	if (map.ID == MAP_DRUG_BUST)
-		H.equip_to_slot_or_del(new /obj/item/weapon/paper/police/searchwarrant/drug(H), slot_r_hand)
 	if(prob(60))
 		var/randcloth = rand(1,2)
 		if (randcloth == 1)
@@ -2446,12 +2441,8 @@
 	can_be_female = TRUE
 
 	min_positions = 1
-	if (map.ID == MAP_DRUG_BUST)
-		max_positions = 20
-		whitelisted = FALSE
-	else
-		max_positions = 5
-		whitelisted = TRUE
+	max_positions = 5
+	whitelisted = TRUE
 
 /datum/job/civilian/swat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

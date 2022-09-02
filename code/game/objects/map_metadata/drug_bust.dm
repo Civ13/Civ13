@@ -10,25 +10,30 @@
 
 	faction_organization = list(
 		CIVILIAN,
-		AMERICAN,)
-	
+		RUSSIAN,)
 
-	age = "1996"
+	age = "1986"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(CIVILIAN = 0.65, AMERICAN = 0.35)
+	faction_distribution_coeffs = list(CIVILIAN = 0.7, RUSSIAN = 0.3)
 	battle_name = "Rednikov Drug Bust"
 	mission_start_message = "<font size=4>The Russians have <b>5 minutes</b> to prepare SWAT raid the building!<br>The police will win if they <b>confiscate 20 stacks of cocaine!</b>. The Russians will win if they manage to hold off the police for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
-	faction2 = AMERICAN
+	faction2 = RUSSIAN
 	grace_wall_timer = 3000
 	gamemode = "Drug Bust"
 	songs = list(
-		"Little Green Bag:1" = "sound/music/little_green_bag.ogg",)
+		"George Baker Selection - Little Green Bag:1" = "sound/music/little_green_bag.ogg",)
 		
 obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_heist == TRUE)
 		. = TRUE
+		if (J.title == "Police Officer")
+			J.max_positions = 4
+			J.total_positions = 4
+		if (J.title == "SWAT Officer")
+			J.whitelisted = FALSE
+			J.max_positions = 30
 	else
 		. = FALSE
 
@@ -78,13 +83,18 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 			return !faction1_can_cross_blocks()
 	return FALSE
 
-////////////////////////////////LOOOORE//////////////////////////////////////////////////
+
+
+////////////////////////////////Jobs and stuff//////////////////////////////////////////////////
+
+/datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/weapon/paper/police/searchwarrant/drug(H), slot_r_hand)
 
 /obj/item/weapon/paper/police/searchwarrant/drug
 	icon_state = "police_warrant"
 	base_icon = "police_warrant"
 	name = "Search Warrant"
-	var/arn = 0
 	New()
 		..()
 		arn = rand(100,999)
