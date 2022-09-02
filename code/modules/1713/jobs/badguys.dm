@@ -1,6 +1,6 @@
 ////////////////////////////////////////////CIVILIAN///////////////////////////////////////////////////////
 
-/datum/job/american/robber
+/datum/job/russian/robber
 	title = "Bank Robber"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRU"
@@ -11,8 +11,9 @@
 
 	min_positions = 1
 	max_positions = 50
+	additional_languages = list("English" = 100)
 
-/datum/job/american/robber/equip(var/mob/living/human/H)
+/datum/job/russian/robber/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Bad Guys"
 	give_random_name(H)
