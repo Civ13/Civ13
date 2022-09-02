@@ -205,8 +205,8 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/bank_robbery/proc/civ_complete()
 	var/spam_check = FALSE
-	if (civilians_evacuated = 12)
-		if (spam_check = FALSE)
+	if (civilians_evacuated == 12)
+		if (spam_check == FALSE)
 			world << "<big><span class = 'notice'>The Police Department has successfully evacuated all the civilian hostages: Additional SWAT units are coming to assist!</span></big>"
 			spam_check = TRUE
 	civ_complete()
