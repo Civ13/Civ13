@@ -119,7 +119,7 @@ var/global/civvies_killed = list()
 		if (BR && map.ID == MAP_BANK_ROBBERY)
 			if (H.faction_text == CIVILIAN)
 				harmer_factions["Police"]++
-			else if (H.faction_text == AMERICAN)
+			else if (H.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
 		else
 			if(H.faction_text == PIRATES)
@@ -133,7 +133,7 @@ var/global/civvies_killed = list()
 		if (map && map.ID == MAP_BANK_ROBBERY)
 			if (M.faction_text == CIVILIAN)
 				harmer_factions["Police"]++
-			else if (M.faction_text == AMERICAN)
+			else if (M.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
 		else
 			if(M.faction_text == PIRATES)
@@ -147,7 +147,7 @@ var/global/civvies_killed = list()
 		if (map && map.ID == MAP_BANK_ROBBERY)
 			if (H.faction_text == CIVILIAN)
 				harmer_factions["Police"]++
-			else if (H.faction_text == AMERICAN)
+			else if (H.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
 		else
 			if(H.faction_text == PIRATES)

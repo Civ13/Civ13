@@ -111,6 +111,8 @@
 			return "Russian Federal Forces"
 		else if (map.ID == "TSARITSYN")
 			return "White Army"
+		else if (map.ID == "BANK_ROBBERY")
+			return "Robbers"
 		else
 			if (age == 6 || age == 7)
 				return "Soviet Union"
@@ -163,8 +165,6 @@
 			return "ATF"
 		else if (map.ID == "TANTIVEIV")
 			return "Imperials"
-		else if (map.ID == "BANK_ROBBERY")
-			return "Robbers"
 		else
 			return "United States"
 
