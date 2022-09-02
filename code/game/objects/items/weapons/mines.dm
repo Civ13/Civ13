@@ -151,6 +151,14 @@
 	throw_range = 6
 	throw_speed = 3
 	anchored = FALSE
+	var/origin = null
+	var/explosion_size = 2
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 30  //total number of fragments produced by the grenade
+	var/fragment_damage = 15
+	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/big_bomb = FALSE
+	var/spread_range = 7
 
 /obj/item/mine/ap/armed
 	anchored = TRUE
@@ -160,6 +168,35 @@
 /obj/item/mine/ap/armed/New()
 	if (map.ID == MAP_HUNGERGAMES && processes.ticker.playtime_elapsed > 1800)
 		qdel(src)
+
+/obj/item/mine/ap/trigger(atom/movable/AM)
+	if (world.time < nextCanExplode)
+		return
+	if (istype(AM, /mob/living))
+		for (var/mob/O in viewers(7, loc))
+			O << "<font color='red'>[AM] triggered the [src]!</font>"
+		triggered = TRUE
+		visible_message("<span class = 'red'><b>Click!</b></span>")
+		explosion(get_turf(src),1,2,4)
+
+
+	var/turf/T = get_turf(src)
+	if(!T) return
+
+	var/list/target_turfs = getcircle(T, spread_range)
+	var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+	for (var/turf/TT in target_turfs)
+		var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+		P.damage = fragment_damage
+		P.pellets = fragments_per_projectile
+		P.range_step = damage_step
+		P.shot_from = name
+		P.launch_fragment(TT)
+
+		spawn(9)
+			if (src)
+				qdel(src)
 
 /obj/item/mine/at
 	name = "anti-tank mine"
@@ -216,6 +253,7 @@
 		if (src)
 			qdel(src)
 			return TRUE
+
 /obj/item/mine/boobytrap
 	name = "booby trap"
 	desc = "Useful for setting traps or for area denial."
@@ -228,6 +266,13 @@
 	throw_speed = 3
 	anchored = TRUE
 	var/origin = null
+	var/explosion_size = 2
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 30  //total number of fragments produced by the grenade
+	var/fragment_damage = 15
+	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/big_bomb = FALSE
+	var/spread_range = 7
 
 //Disarming
 /obj/item/mine/boobytrap/attackby(obj/item/W as obj, mob/user as mob)
@@ -295,6 +340,23 @@
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
 		explosion(get_turf(src),1,2,4)
+
+
+	var/turf/T = get_turf(src)
+	if(!T) return
+
+	var/list/target_turfs = getcircle(T, spread_range)
+	var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+	for (var/turf/TT in target_turfs)
+		var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+		P.damage = fragment_damage
+		P.pellets = fragments_per_projectile
+		P.range_step = damage_step
+		P.shot_from = name
+		P.launch_fragment(TT)
+
 		spawn(9)
 			if (src)
 				qdel(src)
+
