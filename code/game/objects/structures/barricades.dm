@@ -1059,9 +1059,17 @@
 	if (user.a_intent == I_HELP)
 		user.drop_from_inventory(W)
 		W.forceMove(loc)
-		user << "You put \the [W] on the shelf."
+		user << "You put \the [W] on the [src]."
 	else
 		..()
+
+/obj/structure/shelf/palette
+	name = "wooden palette"
+	desc = "A wooden palette which is used by forklifts"
+	icon_state = "palette"
+	anchored = FALSE
+	density = TRUE
+
 /obj/structure/barricade/car
 	name = "car"
 	desc = "An abandoned car."

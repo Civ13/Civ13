@@ -136,7 +136,7 @@
 /obj/item/weapon/reagent_containers/pill/cocaine
 	name = "pile of cocaine"
 	desc = "A pile of very pure cocaine."
-	icon = 'icons/obj/items.dmi'
+	icon = 'icons/obj/drugs.dmi'
 	icon_state = "cocaine_pile"
 	var/vol = 1
 	value = 20
@@ -169,7 +169,7 @@
 /obj/item/weapon/reagent_containers/pill/cocaine_line
 	name = "line of cocaine"
 	desc = "A line of cocaine. Ready to go up your nose."
-	icon = 'icons/obj/items.dmi'
+	icon = 'icons/obj/drugs.dmi'
 	icon_state = "cocaine_line"
 	value = 4
 	New()

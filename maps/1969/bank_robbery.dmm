@@ -45,7 +45,7 @@
 "hh" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 1; override_color = "#d6d6d6"},/obj/structure/bed/chair/carseat/left/dark{icon_state = "carseat_left"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "hm" = (/obj/structure/sign/nosmoking{pixel_y = 32},/turf/floor/wood,/area/caribbean/british/land/inside)
 "hp" = (/obj/structure/props/junk{icon_state = "Junk_2"},/turf/floor/plating/road,/area/caribbean)
-"hC" = (/obj/structure/lamp/lamp_small/tank/red/police{dir = 8; icon_state = "bulb"},/obj/structure/bed/chair/carseat/right{dir = 1; icon_state = "carseat_right"},/obj/structure/vehicleparts/frame/car/van/rfc{doorcode = 12443; override_color = "#7F0000"; dir = 1},/obj/item/weapon/telephone/mobile/police{dir = 1},/turf/floor/plating/road,/area/caribbean)
+"hC" = (/obj/structure/lamp/lamp_small/tank/red/police{dir = 8; icon_state = "bulb"},/obj/structure/bed/chair/carseat/right{dir = 1; icon_state = "carseat_right"},/obj/structure/vehicleparts/frame/car/van/rfc{doorcode = 12443; override_color = "#7F0000"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "hD" = (/obj/structure/sign/traffic/zebracrossing{dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
 "hN" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean)
 "hU" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
