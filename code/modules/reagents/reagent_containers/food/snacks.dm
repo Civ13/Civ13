@@ -667,7 +667,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		reagents.add_reagent("hyperzine", 5)
 
 /obj/item/weapon/reagent_containers/food/snacks/bearmeat/attackby(obj/item/weapon/W as obj, mob/user as mob) //TODO: REPAIR IT to slicing mechanic!
-	if (!roasted && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		var/atom/A = new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		A.name = "bear meat cutlet"
 		A.desc = replacetext(desc, "slab", "cutlet")
