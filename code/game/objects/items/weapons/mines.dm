@@ -62,7 +62,7 @@
 					return
 				else
 					Bumped(user)
-			else if (istype(W, /obj/item/weapon/material/knife))
+			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
 				if (!do_after(user,80))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
@@ -292,7 +292,7 @@
 					return
 				else
 					Bumped(user)
-			else if (istype(W, /obj/item/weapon/material/knife))
+			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
 				if (!do_after(user,80))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")

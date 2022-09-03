@@ -493,7 +493,7 @@
 	flammable = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/cow/stomach/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!rotten && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		user << "You cut the lining out of the stomach."
@@ -504,7 +504,7 @@
 	else
 		..()
 /obj/item/weapon/reagent_containers/food/snacks/pig/stomach/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!rotten && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		user << "You cut the lining out of the stomach."
 		if(map.ordinal_age >= 1)
