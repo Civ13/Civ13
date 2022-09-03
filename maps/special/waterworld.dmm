@@ -53,7 +53,7 @@
 "ba" = (/obj/covers/fancywood,/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/turf/floor/dirt,/area/caribbean)
 "bb" = (/obj/covers/fancywood,/obj/item/weapon/reagent_containers/glass/barrel/beer,/turf/floor/dirt,/area/caribbean)
 "bc" = (/obj/covers/fancywood,/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/turf/floor/dirt,/area/caribbean)
-"bd" = (/obj/covers/fancywood,/obj/structure/table/modern/retable,/obj/item/weapon/material/kitchen/rollingpin,/obj/item/weapon/material/knife/butcher,/turf/floor/dirt,/area/caribbean)
+"bd" = (/obj/covers/fancywood,/obj/structure/table/modern/retable,/obj/item/weapon/material/kitchen/rollingpin,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/dirt,/area/caribbean)
 "be" = (/obj/covers/fancywood,/obj/structure/closet/cabinet,/turf/floor/dirt,/area/caribbean)
 "bf" = (/obj/covers/fancywood,/obj/structure/props/coatrack,/turf/floor/dirt,/area/caribbean)
 "bg" = (/obj/covers/fancywood,/obj/structure/filingcabinet/filingcabinet,/turf/floor/dirt,/area/caribbean)

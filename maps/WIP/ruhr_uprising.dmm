@@ -690,7 +690,7 @@
 /obj/structure/mine_support,
 /obj/structure/roof_support/admin,
 /obj/structure/table/wood,
-/obj/item/weapon/material/knife,
+/obj/item/weapon/material/kitchen/utensil/knife,
 /turf/floor/dirt,
 /area/caribbean/void/caves{
 	base_turf = /turf/floor/dirt;
@@ -2406,7 +2406,7 @@
 /area/caribbean)
 "pq" = (
 /obj/structure/closet/crate/footlocker,
-/obj/item/weapon/material/knife,
+/obj/item/weapon/material/kitchen/utensil/knife,
 /turf/floor/dirt,
 /area/caribbean/void/caves{
 	base_turf = /turf/floor/dirt;
@@ -3024,7 +3024,7 @@
 /area/caribbean/roofed)
 "uf" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/item/weapon/material/knife/butcher,
+/obj/item/weapon/material/kitchen/utensil/knife/butcher,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "ug" = (
@@ -6614,7 +6614,7 @@
 	})
 "Qf" = (
 /obj/structure/table/wood,
-/obj/item/weapon/material/knife/butcher,
+/obj/item/weapon/material/kitchen/utensil/knife/butcher,
 /turf/floor/wood,
 /area/caribbean/roofed)
 "Qm" = (
@@ -7312,8 +7312,8 @@
 /obj/structure/mine_support,
 /obj/structure/roof_support/admin,
 /obj/structure/table/wood,
-/obj/item/weapon/material/knife,
-/obj/item/weapon/material/knife,
+/obj/item/weapon/material/kitchen/utensil/knife,
+/obj/item/weapon/material/kitchen/utensil/knife,
 /obj/item/weapon/material/kitchen/utensil/spoon,
 /obj/item/weapon/material/kitchen/utensil/spoon,
 /obj/item/weapon/material/kitchen/utensil/fork,

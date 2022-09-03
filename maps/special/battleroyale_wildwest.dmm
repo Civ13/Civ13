@@ -177,7 +177,7 @@
 "eB" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/kitchen/wood_bowl,/turf/floor/wood/ship,/area/caribbean/no_mans_land/battleroyale/three/inside)
 "eD" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/no_mans_land/battleroyale/three/inside)
 "eG" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/backpack,/turf/floor/wood/ship,/area/caribbean/no_mans_land/battleroyale/three/inside)
-"eH" = (/obj/structure/table/wood,/obj/item/weapon/material/knife/butcher,/turf/floor/wood,/area/caribbean/no_mans_land/battleroyale/four/inside)
+"eH" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/wood,/area/caribbean/no_mans_land/battleroyale/four/inside)
 "eI" = (/obj/structure/bed/chair/wood/wings{dir = 4; icon_state = "wooden_chair_wings"},/turf/floor/wood,/area/caribbean/no_mans_land/battleroyale/four/inside)
 "eJ" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/weapon/storage/fancy/candle_box,/obj/item/weapon/material/quarterstaff,/turf/floor/wood,/area/caribbean/no_mans_land/battleroyale/four/inside)
 "eL" = (/obj/structure/pot,/turf/floor/wood/ship,/area/caribbean/no_mans_land/battleroyale/three/inside)
