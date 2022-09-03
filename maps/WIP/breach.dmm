@@ -340,10 +340,10 @@
 /area/caribbean)
 "gY" = (
 /obj/structure/table/modern/table,
-/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi,
+/obj/item/weapon/gun/projectile/submachinegun/uzi,
 /obj/item/ammo_magazine/uzi,
 /obj/item/ammo_magazine/uzi,
-/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi,
+/obj/item/weapon/gun/projectile/submachinegun/uzi,
 /turf/floor/wood,
 /area/caribbean)
 "gZ" = (
@@ -1358,7 +1358,7 @@
 /area/caribbean)
 "LH" = (
 /obj/structure/closet/crate/empty,
-/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi,
+/obj/item/weapon/gun/projectile/submachinegun/uzi,
 /obj/item/ammo_magazine/uzi,
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/concrete,
