@@ -134,8 +134,9 @@
 	basic_icon = "storedoor"
 	icon_state = "storedoor"
 	override_material = TRUE
-	opacity = FALSE
-	uses_initial_opacity = TRUE
+	override_opacity = TRUE
+	opacity = 0
+	initial_opacity = 0
 
 /obj/structure/simple_door/key_door/anyone/doubledoor/silver
 	name = "large silver double"
