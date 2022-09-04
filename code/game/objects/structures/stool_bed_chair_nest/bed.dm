@@ -387,7 +387,7 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	applies_material_colour = FALSE
-	var/uncolored = FALSE
+	var/uncolored = TRUE
 	color = "#FFFFFF"
 
 /obj/structure/bed/custsofa/New()
@@ -401,7 +401,6 @@
 		buckle_dir = EAST
 	if(dir == 8)
 		buckle_dir = WEST
-	uncolored = TRUE
 	update_icon()
 
 /obj/structure/bed/custsofa/attack_hand(mob/user as mob)

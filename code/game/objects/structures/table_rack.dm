@@ -53,7 +53,7 @@
 
 /obj/structure/table/rack/shelf/store
 	icon = 'icons/obj/structures.dmi'
-	icon_state = "shelfstore"
+	icon_state = "storeshelf"
 
 /obj/structure/table/rack/coatrack
 	name = "coat rack"

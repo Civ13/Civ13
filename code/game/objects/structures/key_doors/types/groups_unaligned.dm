@@ -133,9 +133,9 @@
 	icon = 'icons/obj/doors/material_doors.dmi'
 	basic_icon = "storedoor"
 	icon_state = "storedoor"
-	override_material = FALSE
-	override_opacity = TRUE
+	override_material = TRUE
 	opacity = FALSE
+	uses_initial_opacity = TRUE
 
 /obj/structure/simple_door/key_door/anyone/doubledoor/silver
 	name = "large silver double"
