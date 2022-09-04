@@ -187,9 +187,6 @@
 	var/id = TRUE
 	var/locked = FALSE
 
-/obj/structure/cremator/initialize()
-	..()
-
 /obj/structure/cremator/Destroy()
 	if (connected)
 		qdel(connected)
@@ -197,14 +194,14 @@
 	return ..()
 
 /obj/structure/cremator/proc/update()
-	if (connected)
-		icon_state = "crema0"
+	if (cremating)
+		icon_state = "crema_active"
+	else if (src.connected)
+		src.icon_state = "crema0"
+	else if (contents.len)
+		src.icon_state = "crema2"
 	else
-		if (contents.len)
-			icon_state = "crema2"
-		else
-			icon_state = "crema1"
-	return
+		icon_state = "crema1"
 
 /obj/structure/cremator/ex_act(severity)
 	switch(severity)
@@ -234,28 +231,28 @@
 	if (cremating)
 		usr << "<span class='warning'>It's locked.</span>"
 		return
-	if ((connected) && (locked == FALSE))
-		for (var/atom/movable/A as mob|obj in connected.loc)
+	if ((src.connected) && (src.locked == FALSE))
+		for (var/atom/movable/A as mob|obj in src.connected.loc)
 			if (!( A.anchored ))
 				A.forceMove(src)
-		playsound(loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
-		//connected = null
+		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
+		src.connected = null
 		qdel(connected)
-	else if (locked == FALSE)
-		playsound(loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
-		connected = new /obj/structure/c_tray(src.loc)
-		step(connected, SOUTH)
+	else if (src.locked == FALSE)
+		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
+		src.connected = new /obj/structure/c_tray(src.loc)
+		step(src.connected, dir)
 		connected.layer = OBJ_LAYER
-		var/turf/T = get_step(src, SOUTH)
-		if (T.contents.Find(connected))
-			connected.connected = src
-			icon_state = "crema0"
+		var/turf/T = get_step(src, dir)
+		if (T.contents.Find(src.connected))
+			src.connected.connected = src
+			src.icon_state = "crema0"
 			for (var/atom/movable/A as mob|obj in src)
 				A.forceMove(connected.loc)
-			connected.icon_state = "cremat"
+			src.connected.icon_state = "cremat"
 		else
-			//connected = null
 			qdel(connected)
+			src.connected = null
 	add_fingerprint(user)
 	update()
 
@@ -329,7 +326,7 @@
 		cremating = FALSE
 		locked = FALSE
 		update()
-		playsound(loc, 'sound/effects/spray.ogg', 50, TRUE)
+		playsound(loc, 'sound/machines/crema.ogg', 70, TRUE)
 	return
 
 /*
@@ -354,14 +351,13 @@
 	return ..()
 
 /obj/structure/c_tray/attack_hand(mob/user as mob)
-	if (connected)
-		for (var/atom/movable/A as mob|obj in loc)
+	if (src.connected)
+		for (var/atom/movable/A as mob|obj in src.loc)
 			if (!( A.anchored ))
-				A.forceMove(connected)
-		connected.connected = null
-		connected.update()
+				A.forceMove(src.connected)
+		src.connected.connected = null
+		src.connected.update()
 		add_fingerprint(user)
-		//SN src = null
 		qdel(src)
 		return
 	return
@@ -377,7 +373,6 @@
 		for (var/mob/B in viewers(user, 3))
 			if ((B.client && !( B.blinded )))
 				B << text("<span class='warning'>[] stuffs [] into []!</span>", user, O, src)
-			//Foreach goto(99)
 	return
 
 //Cremator button//
@@ -387,10 +382,13 @@
 	desc = "Burn baby burn!"
 	icon = 'icons/obj/morgue.dmi'
 	icon_state = "crema_switch"
+	anchored = TRUE
 
 /obj/structure/button/cremator/update_icon()
 	return
 /obj/structure/button/cremator/attack_hand(mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	add_fingerprint(user)
 	for (var/obj/structure/cremator/C in range(8,src))
 		if (!C.cremating)
 			C.cremate(user)
