@@ -92,7 +92,7 @@
 		icon_state = material.door_icon_base
 		basic_icon = material.door_icon_base
 		name = "[material.display_name] door"
-	color = material.icon_colour
+		color = material.icon_colour
 	if (material.opacity < 0.5)
 		opacity = FALSE
 	else
