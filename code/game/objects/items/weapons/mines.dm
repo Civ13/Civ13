@@ -266,13 +266,13 @@
 	throw_speed = 3
 	anchored = TRUE
 	var/origin = null
-	var/explosion_size = 2
+/*	var/explosion_size = 2
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 30  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
 	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/big_bomb = FALSE
-	var/spread_range = 7
+	var/spread_range = 7 */
 
 //Disarming
 /obj/item/mine/boobytrap/attackby(obj/item/W as obj, mob/user as mob)
@@ -341,7 +341,7 @@
 		visible_message("<span class = 'red'><b>Click!</b></span>")
 		explosion(get_turf(src),1,2,4)
 
-
+/*
 	var/turf/T = get_turf(src)
 	if(!T) return
 
@@ -355,7 +355,7 @@
 		P.range_step = damage_step
 		P.shot_from = name
 		P.launch_fragment(TT)
-
+*/
 		spawn(9)
 			if (src)
 				qdel(src)
