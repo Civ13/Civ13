@@ -1033,6 +1033,27 @@
 	name = "excavator"
 	icon_state = "excavator"
 
+/obj/structure/machinery/forklift
+	name = "forklift"
+	desc = "'A lift for forks', this one seems to be out of battery, missing the fuel tank, spark plugs an-- OH! And the engine is missing too."
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
+	icon_state = "forklift"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 64
+	bound_height = 64
+
+/obj/structure/machinery/construction_crane/New()
+	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
+		bound_width = 64
+		bound_height = 64
+	else
+		bound_width = 64
+		bound_height = 64
+
 /obj/structure/m113
 	name = "M113 APC"
 	icon = 'icons/obj/vehicles/m113_wip.dmi'
