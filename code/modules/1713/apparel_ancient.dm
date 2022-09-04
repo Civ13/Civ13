@@ -1248,6 +1248,15 @@
 	heat_protection = FACE|EYES
 	flags = CONDUCT
 
+/obj/item/clothing/under/mummywappings
+	name = "linnen wrappings"
+	icon = 'icons/mob/uniform.dmi'
+	icon_state = "mummy"
+	item_state = "mummy"
+	worn_state = "mummy"
+	canremove = FALSE
+	desc = "The musty wrappings seem to disintigrate as you examine them."
+
 /obj/item/clothing/mask/necklace/christian/gold
 	name = "christian gold necklace"
 	desc = " A chritian necklace, it's made out of gold. Expensive."

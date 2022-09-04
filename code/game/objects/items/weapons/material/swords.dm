@@ -159,51 +159,6 @@ obj/item/weapon/material/sword/wakazashi
 obj/item/weapon/material/sword/wakazashi/yakuza
 	slot_flags = SLOT_BELT | SLOT_BACK
 
-/obj/item/weapon/material/knife/tanto
-	name = "tanto"
-	desc = "A knife used by the japanese for centuries. Made to slice and slash, not chop or saw. Often the tool of choice for ritual suicide."
-	icon_state = "tanto"
-	item_state = "tanto"
-	block_chance = 10
-	force_divisor = 0.4 // 42 when wielded with hardnes 60 (steel)
-	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
-	slot_flags = SLOT_BELT
-	value = 60
-	cooldownw = 6
-	var/suicide = FALSE //To
-
-/obj/item/weapon/material/knife/tanto/proc/handle_suicide(mob/living/user)
-	..()
-	if (!ishuman(user))
-		return
-	var/mob/living/human/M = user
-	suicide = TRUE
-	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
-	if (!do_after(user, 60))
-		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
-		suicide = FALSE
-		return
-	else
-		user << "<span class = 'notice'>Ow...</span>"
-		user.apply_effect(110,AGONY,0)
-		user.apply_damage(src.sharpness*2.5, "brute", "groin")
-		user.death()
-		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
-		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
-		suicide = FALSE
-
-/obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, target_zone)
-	if (A == user)
-		if (target_zone == "groin" && !suicide)
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				if (H.faction_text == "INDIANS")
-					user << "<span class = 'danger'>You have no idea how to do this.</span>"
-					return TRUE
-			handle_suicide(user)
-			return TRUE
-	return ..(A, user, target_zone)
-
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"
 

@@ -1062,9 +1062,9 @@
 /area/caribbean)
 "Ho" = (
 /obj/structure/table/rack/shelf/wooden,
-/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi,
-/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi,
-/obj/item/weapon/gun/projectile/submachinegun/mp40/uzi,
+/obj/item/weapon/gun/projectile/submachinegun/uzi,
+/obj/item/weapon/gun/projectile/submachinegun/uzi,
+/obj/item/weapon/gun/projectile/submachinegun/uzi,
 /turf/floor/carpet/greencarpet,
 /area/caribbean)
 "HD" = (

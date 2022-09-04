@@ -28,7 +28,7 @@
 	name = "handle"
 	sharp = FALSE
 	edge = FALSE
-	desc = "A basic stick with a hole on top to attach something. Can be made into a veriety of weapons and tools."
+	desc = "A basic stick with a slot on top to attach something. Can be made into a veriety of weapons and tools."
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "handle"
 	item_state = "spear"
@@ -549,6 +549,12 @@
 	block_chance = 10
 	cooldownw = 7
 
+/*/obj/item/weapon/material/javelin
+	name = "javelin"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A meter long short spear that can be used as a hand launched missle or for close combat." */
+
 /obj/item/weapon/material/roman_standard
 	name = "roman standard"
 	sharp = TRUE
@@ -814,6 +820,89 @@
 /obj/item/weapon/material/spear/sarissa/bronze
 	name = "bronze spear"
 	default_material = "bronze"
+
+/obj/item/weapon/material/spear/sarissa/dja
+	name = "bronze dja"
+	default_material = "bronze"
+
+/obj/item/weapon/material/spear/naginata
+	name = "naginata"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A wood staff with a blade on the end, good for impaling those who insult your lord."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "naginata"
+	item_state = "naginata"
+	default_material = "iron"
+	throw_speed = 7
+	throw_range = 11
+	allow_spin = FALSE
+	force_divisor = 0.85 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.95 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","impaled","beaten")
+	value = 30
+	block_chance = 36
+	cooldownw = 6
+	color = null
+
+/obj/item/weapon/material/spear/naginata/steel
+	default_material = "steel"
+	value = 35
+	block_chance = 40
+	cooldownw = 6
+
+/obj/item/weapon/material/spear/halberd
+	name = "halberd"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A spear topped by an axe blade."
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	icon_state = "halberd"
+	item_state = "halberd"
+	worn_state = "halberd"
+	default_material = "iron"
+	throw_speed = 3
+	throw_range = 4
+	allow_spin = FALSE
+	block_chance = 18
+	force_divisor = 0.8 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 15
+	cooldownw = 12
+	range = 2
+
+/obj/item/weapon/material/spear/halberd/steel
+	default_material = "steel"
+	value = 20
+
+/obj/item/weapon/material/spear/pike
+	name = "pike"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A long spear."
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	icon_state = "pike"
+	item_state = "pike"
+	worn_state = "pike"
+	default_material = "iron"
+	throw_speed = 4
+	throw_range = 5
+	allow_spin = FALSE
+	block_chance = 12
+	force_divisor = 0.85 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 1 // 20 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 18
+	cooldownw = 13
+
+
+/obj/item/weapon/material/spear/pike/steel
+	default_material = "steel"
+	value = 23
+	health = 30
+	maxhealth = 30
+
 
 /obj/item/weapon/material/halberd
 	name = "halberd"

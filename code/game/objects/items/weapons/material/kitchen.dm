@@ -17,6 +17,7 @@
 	var/shiv = 0
 	var/usespeed = 0.2
 
+
 /obj/item/weapon/material/kitchen/utensil/New()
 	..()
 	if (prob(60))
@@ -92,10 +93,39 @@
 	icon_state = "knife"
 	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
 	scoop_food = FALSE
-	slot_flags = SLOT_BELT|SLOT_POCKET
+	slot_flags = SLOT_BELT|SLOT_POCKET//|SLOT_MASK
 	edge = TRUE
 	sharp = TRUE
 	var/atk_mode = SLASH
+	var/suicide = FALSE // for the hari kiri action
+
+/obj/item/weapon/material/kitchen/utensil/knife/proc/handle_suicide(mob/living/user)
+	..()
+	if (!ishuman(user))
+		return
+	var/mob/living/human/M = user
+	suicide = TRUE
+	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
+	if (!do_after(user, 60))
+		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
+		suicide = FALSE
+		return
+	else
+		user << "<span class = 'notice'>Ow...</span>"
+		user.apply_effect(110,AGONY,0)
+		user.apply_damage(src.sharpness*2.5, "brute", "groin")
+		user.death()
+		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
+		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
+		suicide = FALSE
+
+/obj/item/weapon/material/kitchen/utensil/knife/attack(atom/A, mob/living/user, target_zone)
+	if (A == user)
+		if (target_zone == "groin" && !suicide)
+			handle_suicide(user)
+			return TRUE
+	return ..(A, user, target_zone)
+
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade
 	name = "razor blade"
 	desc = "A folding blade, used to cut beard and hairs."
@@ -451,6 +481,38 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/wood
 	default_material = "wood"
+	name = "meat hook"
+
+/obj/item/weapon/material/kitchen/utensil/knife/hook
+	name = "meat hook"
+	desc = "A sharp, metal hook what sticks into things."
+	icon_state = "hook_knife"
+	item_state = "hook_knife"
+
+/obj/item/weapon/material/kitchen/utensil/knife/butcher
+	name = "butcher's cleaver"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "butch"
+	desc = "A huge knife used for chopping and chopping up meat."
+	edge = FALSE
+	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
+	attack_verb = list("cleaved", "slashed", "sliced", "torn", "ripped", "diced", "cut")
+	drawsound = 'sound/items/unholster_knife.ogg'
+	unbreakable = TRUE
+
+/obj/item/weapon/material/kitchen/utensil/knife/tanto
+	name = "tanto"
+	desc = "A knife used by the japanese for centuries. Made to slice and slash, not chop or saw. Often the tool of choice for ritual suicide."
+	icon_state = "tanto"
+	item_state = "tanto"
+	block_chance = 10
+	force_divisor = 0.4 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	value = 60
+	cooldownw = 6
+
+
+
 /*
  * Rolling Pins
  */

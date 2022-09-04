@@ -462,7 +462,7 @@
 		/obj/item/ammo_magazine/c9mm_jap_revolver = 5,
 		/obj/item/ammo_magazine/c44magnum = 2,
 		/obj/item/ammo_magazine/p220 = 4,
-		/obj/item/weapon/material/knife/tanto = 15,
+		/obj/item/weapon/material/kitchen/utensil/knife/tanto = 15,
 		/obj/item/ammo_magazine/emptyspeedloader = 20,
 	)
 

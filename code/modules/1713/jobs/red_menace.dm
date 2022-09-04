@@ -589,7 +589,7 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
 			//back
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/butcher(H), slot_r_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_r_hand)
 				H.add_note("Role", "You are a Cook. Use your cooking skills to defeat the invaders.")
 				H.setStat("strength", STAT_MEDIUM_HIGH)
 				H.setStat("crafting", STAT_MEDIUM_LOW)

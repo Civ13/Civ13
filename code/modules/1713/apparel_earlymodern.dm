@@ -558,7 +558,7 @@
 	max_storage_space = 24
 	can_hold = list(
 		/obj/item/ammo_magazine,
-		/obj/item/weapon/material/knife,
+		/obj/item/weapon/material/kitchen/utensil/knife,
 		/obj/item/weapon/grenade,
 		/obj/item/weapon/attachment,
 		/obj/item/weapon/gun/projectile/pistol,
@@ -1601,7 +1601,7 @@
 	slots = 8
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/knife, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/material/shovel, /obj/item/weapon/key)
+		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/kitchen/utensil/knife, /obj/item/weapon/attachment/bayonet, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/material/shovel, /obj/item/weapon/key)
 
 /obj/item/clothing/suit/storage/coat/winter_coat
 	name = "brown winter coat"

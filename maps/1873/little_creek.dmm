@@ -171,7 +171,7 @@
 "do" = (/obj/structure/bed/chair/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
 "dp" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
 "dq" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert)
-"dr" = (/obj/structure/table/wood,/obj/item/weapon/material/knife/butcher,/turf/floor/wood,/area/caribbean/desert/buildings)
+"dr" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/wood,/area/caribbean/desert/buildings)
 "ds" = (/obj/structure/religious/gravestone,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "dt" = (/obj/structure/bed/chair/wood/wings{icon_state = "wooden_chair_wings"; dir = 4},/turf/floor/wood,/area/caribbean/desert/buildings)
 "du" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/weapon/storage/fancy/candle_box,/obj/item/weapon/material/quarterstaff,/turf/floor/wood,/area/caribbean/desert/buildings)
