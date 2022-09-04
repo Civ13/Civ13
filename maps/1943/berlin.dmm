@@ -507,7 +507,7 @@
 "jM" = (/obj/structure/lamp/lamp_big/alwayson,/obj/item/wood_ash,/obj/item/wood_ash,/obj/item/wood_ash,/obj/item/wood_ash,/obj/item/wood_ash,/obj/item/wood_ash,/obj/item/wood_ash,/obj/item/wood_ash,/obj/item/wood_ash,/turf/floor/plating/concrete,/area/caribbean/german/inside)
 "jN" = (/obj/item/weapon/paper/crumpled,/turf/floor/plating/concrete,/area/caribbean/german/inside)
 "jO" = (/obj/structure/shelf,/obj/item/clothing/head/ww2/german_fieldcap,/turf/floor/wood,/area/caribbean/german/inside)
-"jP" = (/obj/structure/table/wood,/obj/item/weapon/material/knife/butcher,/turf/floor/wood,/area/caribbean/german/inside)
+"jP" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/wood,/area/caribbean/german/inside)
 "jQ" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/pistol/mauser,/obj/item/weapon/gun/projectile/pistol/mauser,/obj/item/weapon/gun/projectile/pistol/mauser,/obj/structure/window/barrier/sandbag,/turf/floor/wood,/area/caribbean/german/inside)
 "jR" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
 "jS" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)

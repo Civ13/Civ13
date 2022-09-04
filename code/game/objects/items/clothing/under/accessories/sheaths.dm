@@ -134,7 +134,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/sword/katana,
 		/obj/item/weapon/material/sword/wakazashi,
 		/obj/item/weapon/material/sword/training/bamboo,
-		/obj/item/weapon/material/knife/tanto)
+		/obj/item/weapon/material/kitchen/utensil/knife/tanto)
 
 /obj/item/clothing/accessory/storage/sheath/katana/full
 	slots = 1
@@ -156,7 +156,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/sword/katana,
 		/obj/item/weapon/material/sword/wakazashi,
 		/obj/item/weapon/material/sword/training/bamboo,
-		/obj/item/weapon/material/knife/tanto)
+		/obj/item/weapon/material/kitchen/utensil/knife/tanto)
 
 /obj/item/clothing/accessory/storage/sheath/longer
 	name = "sword sheath"
@@ -258,7 +258,7 @@
 		/obj/item/weapon/material/thrown/kunai_normal,
 		/obj/item/weapon/material/thrown/throwing_knife,
 		/obj/item/weapon/material/thrown/throwing_knife1,
-		/obj/item/weapon/material/knife/tanto)
+		/obj/item/weapon/material/kitchen/utensil/knife/tanto)
 
 /obj/item/clothing/accessory/storage/sheath/baton
 	name = "belt loop"

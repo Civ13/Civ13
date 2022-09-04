@@ -22,7 +22,7 @@
 		bitesize = 3
 	satisfaction = -4
 /obj/item/weapon/reagent_containers/food/snacks/meat/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet)  || istype(W, /obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		user << "You cut the meat into thin strips."
@@ -132,7 +132,7 @@
 		reagents.remove_reagent("food_poisoning",1)
 	satisfaction = 4
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
@@ -142,7 +142,7 @@
 		..()
 
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
 		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
@@ -239,7 +239,7 @@
 		reagents.add_reagent("protein", 1)
 		reagents.add_reagent("nutriment", 5, list("seafood"=3))
 		reagents.add_reagent("food_poisoning", pick(0,1,1,2)) //25% chance not poison, 50% poison, 25% double poison
-		
+
 /obj/item/weapon/reagent_containers/food/snacks/octopus/dried
 	icon = 'icons/obj/food/dryed.dmi'
 	name = "dried octopus rings"
@@ -300,7 +300,7 @@
 	icon = 'icons/obj/food/food.dmi'
 
 	attackby(obj/item/I, mob/user)
-		if (istype(I, /obj/item/weapon/material/knife) || istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (istype(I, /obj/item/weapon/attachment/bayonet) || istype(I, /obj/item/weapon/material/kitchen/utensil/knife) || istype(I, /obj/item/weapon/material/hatchet))
 			user << "You crack open \the [src]."
 			new /obj/item/weapon/reagent_containers/food/snacks/cracked_shellfish(user.loc)
 			qdel(src)

@@ -183,7 +183,7 @@
 "dA" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle/river)
 "dB" = (/obj/structure/wild/tallgrass2,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle/river)
 "dC" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle/river)
-"dD" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/key/civ/room1,/obj/item/weapon/key/civ/room2,/obj/item/weapon/key/civ/room3,/obj/item/weapon/key/civ/room4,/obj/item/weapon/key/civ/room5,/obj/item/weapon/key/civ/room6,/obj/item/weapon/key/civ/room7,/obj/item/weapon/key/civ/room8,/obj/item/weapon/material/knife/butcher,/turf/floor/grass/jungle,/area/caribbean/roofed)
+"dD" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/key/civ/room1,/obj/item/weapon/key/civ/room2,/obj/item/weapon/key/civ/room3,/obj/item/weapon/key/civ/room4,/obj/item/weapon/key/civ/room5,/obj/item/weapon/key/civ/room6,/obj/item/weapon/key/civ/room7,/obj/item/weapon/key/civ/room8,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/grass/jungle,/area/caribbean/roofed)
 "dE" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/rollingpin,/turf/floor/grass/jungle,/area/caribbean/roofed)
 "dF" = (/obj/covers/wood,/obj/structure/pot,/turf/floor/grass/jungle,/area/caribbean/roofed)
 "dG" = (/obj/covers/wood_wall,/obj/structure/sign/painting10,/turf/floor/grass/jungle,/area/caribbean/roofed)

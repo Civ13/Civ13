@@ -13,7 +13,7 @@
 "hx" = (/obj/covers/wood_wall/log{dir = 1},/turf/floor/grass/jungle,/area/caribbean/sea/top/roofed)
 "hK" = (/mob/living/simple_animal/hostile/human/voyage/slave,/turf/floor/dirt/dust,/area/caribbean/sea/top)
 "hU" = (/obj/covers/wood,/obj/structure/oven,/turf/floor/dirt,/area/caribbean/sea/top)
-"ib" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/knife/butcher,/turf/floor/dirt,/area/caribbean/sea/top)
+"ib" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/dirt,/area/caribbean/sea/top)
 "iC" = (/obj/covers/wood_wall/adjustable,/obj/structure/sign/painting5,/turf/floor/dirt,/area/caribbean/sea/top)
 "iR" = (/obj/structure/railing,/obj/covers/thatch2,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "jw" = (/turf/floor/dirt/ploughed,/area/caribbean/sea/top)

@@ -548,7 +548,7 @@
 "QX" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
 "QY" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood/fancywood,/area/caribbean/houses)
 "Rf" = (/obj/structure/bed/chair/wood/bleacher/r,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
-"Rl" = (/obj/structure/table/modern/table,/obj/structure/cutting_board,/obj/item/weapon/material/knife/butcher,/turf/floor/plating/marble/tile,/area/caribbean/houses)
+"Rl" = (/obj/structure/table/modern/table,/obj/structure/cutting_board,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/plating/marble/tile,/area/caribbean/houses)
 "Rn" = (/obj/structure/simple_door/fence/picket,/turf/floor/plating/steel,/area/caribbean/houses)
 "Ro" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/plating/marble/grid,/area/caribbean/houses)
 "Rs" = (/turf/floor/plating/road/yellowline{dir = 8},/area/caribbean)

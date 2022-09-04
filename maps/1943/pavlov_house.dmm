@@ -367,7 +367,7 @@
 "hc" = (/obj/item/weapon/beartrap/armed,/turf/floor/plating/road,/area/caribbean/nomads)
 "hd" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag,/obj/structure/barricade/horizontal,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "he" = (/turf/floor/plating/concrete,/area/caribbean/sewers)
-"hf" = (/obj/structure/table/modern/table,/obj/item/weapon/material/knife/butcher,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hf" = (/obj/structure/table/modern/table,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hg" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hh" = (/obj/structure/window/barrier/sandbag,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hi" = (/obj/structure/bed/wood,/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)

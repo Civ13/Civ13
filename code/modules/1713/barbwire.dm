@@ -84,14 +84,14 @@
 			qdel(src)
 			return
 
-	else if (istype(W, /obj/item/weapon/material/knife))
+	else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/hatchet))
 		if (anchored)
-			user.visible_message("<span class = 'notice'>\The [user] starts to cut through \the [src] with [W].</span>")
-			if (!do_after(user,80))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to cut through \the [src].</span>")
+			user.visible_message("<span class = 'notice'>\The [user] starts to hack through \the [src] with [W].</span>")
+			if (!do_after(user,120))
+				user.visible_message("<span class = 'notice'>\The [user] decides to hack through \the [src].</span>")
 				return
 			if (prob(40))
-				user.visible_message("<span class = 'notice'>\The [user] finishes cutting through \the [src]!</span>")
+				user.visible_message("<span class = 'notice'>\The [user] finishes hacking through \the [src]!</span>")
 				playsound(loc, 'sound/items/Wirecutter.ogg', 50, TRUE)
 				qdel(src)
 				return
@@ -99,14 +99,14 @@
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					var/obj/item/organ/external/affecting = null
-					if (istype(H.l_hand, /obj/item/weapon/material/knife))
+					if (istype(H.l_hand, /obj/item/weapon/material/kitchen/utensil/knife) || istype(H.l_hand, /obj/item/weapon/attachment/bayonet) || istype(H.l_hand, /obj/item/weapon/material/hatchet))
 						affecting = H.get_organ("l_hand")
 					else
 						affecting = H.get_organ("r_hand")
 
-					user << "<span class = 'red'><b>Your hand slips, causing \the [src] to cut your [affecting.name] open!</b></span>"
+					user << "<span class = 'red'><b>Your hand slips, causing \the [src] to gauge your [affecting.name] open!</b></span>"
 					playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
-					if (affecting.take_damage(10, FALSE))
+					if (affecting.take_damage(18, FALSE))
 						H.UpdateDamageIcon()
 					H.updatehealth()
 					if (!(H.species && (H.species.flags)))

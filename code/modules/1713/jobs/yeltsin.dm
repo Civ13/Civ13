@@ -567,7 +567,7 @@
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/fancycane(H), slot_l_hand)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/hook(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/hook(H), slot_l_hand)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/scythe(H), slot_l_hand)
 		if (4)

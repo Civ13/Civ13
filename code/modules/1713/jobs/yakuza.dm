@@ -219,7 +219,7 @@
 	else
 		var/randknife = rand(1,4)
 		if (randknife == 1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/tanto(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/tanto(H), slot_belt)
 		else if (randknife == 2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/razorblade(H), slot_l_store)
 		else if (randknife == 3)
@@ -499,7 +499,7 @@
 	else
 		var/randknife = rand(1,4)
 		if (randknife == 1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/tanto(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/tanto(H), slot_belt)
 		else if (randknife == 2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/razorblade(H), slot_l_store)
 		else if (randknife == 3)

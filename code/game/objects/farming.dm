@@ -151,7 +151,7 @@
 	//Technically it's not a seed
 	name = "herbs seeds"
 	plant = "herbs"
-	color = "#2e8d2e" 
+	color = "#2e8d2e"
 	biomes = list()
 
 //////////////////////////////////////////////////////////
@@ -516,7 +516,7 @@
 	max_water = 0
 
 /obj/structure/farming/plant/mushroompsy
-	//yes it have equal icon... for fun and roleplay, enjoy 
+	//yes it have equal icon... for fun and roleplay, enjoy
 	name = "Psilocybin mushrooms"
 	desc = "A bunch of mushrooms. Can be grown inside and underground."
 	icon_state = "mushroompsy-grow1"
@@ -868,7 +868,7 @@
 		I.radiation = radiation/2
 		if (fertilized)
 			I.amount *= 2
-	else 
+	else
 		if (condiment <> "product_name")
 			fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"
 		else
@@ -934,7 +934,7 @@
 					growth()
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
+	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
 		if (stage < readyStageMin) // destroy
 			user << "<span class = 'warning'>You uproot the [name].</span>"
 			qdel(src)
@@ -949,7 +949,7 @@
 
 /obj/structure/farming/plant/proc/water_proc()
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
-		return 
+		return
 	var/area/A = get_area(loc)
 	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
 		water += 15

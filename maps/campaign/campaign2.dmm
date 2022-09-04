@@ -277,7 +277,7 @@
 "TK" = (/turf/floor/grass,/area/caribbean/japanese{icon_state = "blue2"; name = "Blugoslavian Command Post"})
 "TP" = (/obj/structure/wild/smallbush,/turf/floor/dirt/underground,/area/caribbean/forest)
 "Ul" = (/obj/structure/railing/steel,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
-"Uo" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/knife/butcher,/turf/floor/grass,/area/caribbean/forest)
+"Uo" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/grass,/area/caribbean/forest)
 "Ux" = (/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/structure/closet/crate/ww2,/turf/floor/dirt,/area/caribbean/japanese{icon_state = "blue2"; name = "Blugoslavian Command Post"})
 "Va" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean/forest)
 "Vb" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
