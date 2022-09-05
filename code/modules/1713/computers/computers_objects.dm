@@ -351,7 +351,7 @@
 	icon_state = "card_red"
 
 /obj/item/stack/component/green
-	name = "McGT S5R1 chip"
+	name = "KOGM S5R1 chip"
 	desc = "A highly advanced chip, manufactured by Kogama Kraftsmen."
 	icon_state = "card_ram"
 
