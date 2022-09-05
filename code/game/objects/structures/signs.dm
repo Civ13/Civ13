@@ -178,6 +178,11 @@
 	var/picksign = pick("japsign", "japsign2", "japsign3", "japsign4", "japsign5", "japsign6")
 	icon_state = picksign
 
+/obj/structure/sign/mugshot
+	name = "police lineup screen"
+	desc = "A measure scale fixated to a wall. Useful for mugshots."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "mugshot"
 
 /obj/structure/sign/exit
 	name = "Exit"
