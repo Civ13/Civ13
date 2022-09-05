@@ -79,6 +79,53 @@ bullet_act
 						crush()
 						qdel(src)
 
+	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		var/mob/living/human/H = user
+		if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && !istype(W, /obj/item/weapon/surgery) && istype(W))
+			if (src.stat != DEAD && (H.civilization != "Sheriff Office" && H.civilization != "Paramedics" && H.civilization != "Government" && H.civilization != "Professional"))
+				last_harmed = H
+				var/reason = "Mischief"
+				var/probtoissue = 100
+				if (src.civilization == "Paramedics")
+					reason = "Harming a Paramedic"
+				else if (src.civilization == "Sheriff Office")
+					reason = "Harming a Law Enforcement Officer"
+				else if (src.civilization == "Government")
+					reason = "Harming a Government Official"
+				else
+					if (prob(50))
+						reason = "Assault with a deadly weapon on [src.real_name]"
+					else
+						reason = "Assault with a deadly weapon"
+					probtoissue = rand(0,70)
+					if (H.wear_mask)
+						probtoissue = rand(0,30)
+				if (!(H.real_name in map.warrants) && prob(probtoissue))
+					map.warrants += H.real_name
+					H.gun_permit = 0
+					var/obj/item/weapon/paper_bin/police/PAR = null
+					for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+						PAR = PAR2
+						break
+					if (PAR)
+						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+						SW.tgt_mob = H
+						SW.tgt = H.real_name
+						SW.tgtcmp = H.civilization
+						SW.reason = reason
+						SW.spawntimer = 12000
+					var/obj/item/weapon/paper/police/warrant/SW2 = new /obj/item/weapon/paper/police/warrant(null)
+					SW2.tgt_mob = H
+					SW2.tgt = H.real_name
+					SW2.tgtcmp = H.civilization
+					SW2.reason = reason
+					map.pending_warrants += SW2
+					SW2.forceMove(null)
+					if (H.original_job_title != "Legal Businessman")
+						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+					else
+						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], please detain the suspect as soon as possible.</big>")
+
 	else if (map.ID == MAP_OCCUPATION)
 		var/mob/living/human/H = user
 		if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && istype(W))
@@ -101,9 +148,9 @@ bullet_act
 	if (P.damage == 0)
 		return // fix for strange bug
 	if (P.firer && ishuman(P.firer))
-		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)// To be optimized in the future
 			var/mob/living/human/Huser = P.firer
-			if (src.stat != DEAD && (src.civilization == "Sheriff Office" || src.civilization == "Paramedics" || src.civilization == "Government"|| prob(60)) && (Huser.civilization != "Sheriff Office" && Huser.civilization != "Government"))
+			if (src.stat != DEAD && (src.civilization == "Sheriff Office" || src.civilization == "Paramedics" || src.civilization == "Government"|| prob(65)) && (Huser.civilization != "Sheriff Office" && Huser.civilization != "Government"))
 				last_harmed = Huser
 				var/reason = "Mischief"
 				if (src.civilization == "Paramedics")
@@ -113,7 +160,10 @@ bullet_act
 				else if (src.civilization == "Government")
 					reason = "Harming a Government Official"
 				else
-					reason = "Attempted Murder"
+					if (prob(50))
+						reason = "Attempted Murder of [src.real_name]"
+					else
+						reason = "Attempted Murder"
 				if (!(Huser.real_name in map.warrants))
 					map.warrants += Huser.real_name
 					Huser.gun_permit = 0
@@ -135,7 +185,10 @@ bullet_act
 					SW2.reason = reason
 					map.pending_warrants += SW2
 					SW2.forceMove(null)
-					global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+					if (Huser.original_job_title != "Legal Businessman")
+						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+					else
+						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], please detain the suspect as soon as possible.</big>")
 
 		else if (map.ID == MAP_AFRICAN_WARLORDS)
 			var/mob/living/human/Huser = P.firer

@@ -241,6 +241,7 @@
 								SW2.reason = reason
 								map.pending_warrants += SW2
 								SW2.forceMove(null)
+								global_broadcast(FREQP,"<big>Attention, a stolen vehicle has been reported: <b>[L[1]]</b> - <b>[L[4]] [L[3]]</b> - registered to <b>[L[2]]</b><br>. A warrant has been issued for [SW2.tgt], please intervene immediately and detain the suspect.</big>")
 								break
 			return
 	else

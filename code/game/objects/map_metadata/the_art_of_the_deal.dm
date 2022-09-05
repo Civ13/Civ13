@@ -104,11 +104,11 @@
 			if ("mail@kogama.ug")
 				comps = pick("GBSA-1994 chip","RDKV S-445 chip","GS-IC-M3 chip")
 			if ("mail@rednikov.ug")
-				comps = pick("GBSA-1994 chip","McGT S5R1 chip","GS-IC-M3 chip")
+				comps = pick("GBSA-1994 chip","KOGM S5R1 chip","GS-IC-M3 chip")
 			if ("mail@goldstein.ug")
-				comps = pick("GBSA-1994 chip","McGT S5R1 chip","RDKV S-445 chip")
+				comps = pick("GBSA-1994 chip","KOGM S5R1 chip","RDKV S-445 chip")
 			if ("mail@blu.ug")
-				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
+				comps = pick("KOGM S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
 		var/pay = nr*rand(500,1100)
 		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay,i)) //x,y,product,amount,payment,faction
 		delivery_orders += tlist

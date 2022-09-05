@@ -186,33 +186,89 @@
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")
-				map.scores[civilization] -= 500
-			if (civilization == "Government")
-				map.scores[civilization] -= 500
-			if (civilization == "Sheriff Office")
+				map.scores[last_harmed.civilization] -= 500
+			else if (civilization == "Government")
+				map.scores[last_harmed.civilization] -= 500
+			else if (civilization == "Sheriff Office")
 				map.scores[civilization] -= 250
 				if (ishuman(last_harmed))
 					map.scores[last_harmed.civilization] -= 100
 					global_broadcast(FREQP,"<big>10-9: Officer down! All available units proceed to [get_coded_loc()] ([x],[y])!</big>")
-					var/warrant = last_harmed.civilization
+					var/comp_to_warrant = last_harmed.civilization
+					var/mob/living/human/Huser = last_harmed
 					spawn(rand(300,500))
-						if (warrant != "Sheriff Office")
+						if (comp_to_warrant != "Sheriff Office" && comp_to_warrant != "Government")
 							var/obj/item/weapon/paper_bin/police/PAR = null
 							for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
 								PAR = PAR2
 								break
 							if (PAR)
 								var/obj/item/weapon/paper/police/searchwarrant/SW = new /obj/item/weapon/paper/police/searchwarrant(PAR.loc)
-								SW.cmp = warrant
+								SW.cmp = comp_to_warrant
 								SW.spawntimer = 18000
-							global_broadcast(FREQP,"<big>Attention, warrant issued for <b>[warrant] HQ</b>, please search the premises as soon as possible.</big>")
-							map.warrants += warrant
+								var/obj/item/weapon/paper/police/warrant/AW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+								AW.tgt_mob = Huser
+								AW.tgt = Huser.real_name
+								AW.tgtcmp = Huser.civilization
+								AW.reason = "Murder of a Law Enforcement Officer"
+								AW.spawntimer = 12000
+							var/obj/item/weapon/paper/police/warrant/AW2 = new /obj/item/weapon/paper/police/warrant(null)
+							AW2.tgt_mob = Huser
+							AW2.tgt = Huser.real_name
+							AW2.tgtcmp = Huser.civilization
+							AW2.reason = "Murder of a Law Enforcement Officer"
+							map.pending_warrants += AW2
+							AW2.forceMove(null)
+							map.warrants += comp_to_warrant
+							map.warrants += Huser.real_name
+							Huser.gun_permit = 0
+							global_broadcast(FREQP,"<big>Attention, search warrant issued for <b>[comp_to_warrant] HQ</b>, please search the premises as soon as possible.</big>")
+							spawn(300)
+								if (Huser.original_job_title != "Legal Business")
+									global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [AW2.tgt], working for [AW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+								else
+									global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [AW2.tgt], please detain the suspect as soon as possible.</big>")
 							spawn(30)
 								for(var/mob/living/human/HMN in player_list)
-									if (HMN.civilization == warrant)
+									if (HMN.civilization == comp_to_warrant)
 										HMN.gun_permit = FALSE
 			else
 				map.scores[civilization] -= 200
+				if (ishuman(last_harmed))
+					var/mob/living/human/Huser = last_harmed
+					var/probtogetcaught = rand(50,70)
+					if (Huser.wear_mask)
+						probtogetcaught = rand(0,50)
+					if (Huser.civilization != "Sheriff Office" && Huser.civilization != "Paramedics" && Huser.civilization != "Government")
+						if (prob(probtogetcaught))
+							spawn (rand(300,500))
+								var/reason = "Murder"
+								if (prob(30))
+									reason = "Murder of [src.real_name]"
+								map.warrants += Huser.real_name
+								Huser.gun_permit = 0
+								var/obj/item/weapon/paper_bin/police/PAR = null
+								for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+									PAR = PAR2
+									break
+								if (PAR)
+									var/obj/item/weapon/paper/police/warrant/AW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+									AW.tgt_mob = Huser
+									AW.tgt = Huser.real_name
+									AW.tgtcmp = Huser.civilization
+									AW.reason = reason
+									AW.spawntimer = 12000
+								var/obj/item/weapon/paper/police/warrant/AW2 = new /obj/item/weapon/paper/police/warrant(null)
+								AW2.tgt_mob = Huser
+								AW2.tgt = Huser.real_name
+								AW2.tgtcmp = Huser.civilization
+								AW2.reason = reason
+								map.pending_warrants += AW2
+								AW2.forceMove(null)
+								if (Huser.original_job_title != "Legitimate Business")
+									global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [AW2.tgt], working for [AW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+								else
+									global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [AW2.tgt], please detain the suspect as soon as possible.</big>")
 
 	else if (map && map.ID == MAP_OCCUPATION && client)
 		var/obj/map_metadata/occupation/GD = map
