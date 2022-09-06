@@ -1049,7 +1049,7 @@ var/global/redirect_all_players = null
 		if (map && istype(map, /obj/map_metadata/yeltsin))
 			dat += "[alive_russian.len] Russian Army "
 		else if (map && istype(map, /obj/map_metadata/bank_robbery))
-			dat +="[alive_american.len] Robbers "
+			dat +="[alive_russian.len] Robbers "
 		else
 			if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
 				dat += "[alive_russian.len] Soviets "
