@@ -1215,10 +1215,10 @@
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
 
-/obj/item/weapon/storage/belt/police/swat
+/obj/item/weapon/storage/belt/police/m16
 	icon_state = "swatbelt"
 	item_state = "swatbelt"
-/obj/item/weapon/storage/belt/police/swat/New()
+/obj/item/weapon/storage/belt/police/m16/New()
 	..()
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
@@ -1227,6 +1227,22 @@
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/coldwar/stinger(src)
+
+/obj/item/weapon/storage/belt/police/mp5
+	icon_state = "swatbelt"
+	item_state = "swatbelt"
+/obj/item/weapon/storage/belt/police/mp5/New()
+	..()
+	new /obj/item/flashlight/modern(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/mp40/mp5(src)
+	new /obj/item/ammo_magazine/mp40/mp5(src)
 	new /obj/item/weapon/grenade/flashbang(src)
 	new /obj/item/weapon/grenade/flashbang(src)
 	new /obj/item/weapon/grenade/coldwar/stinger(src)
@@ -1307,6 +1323,22 @@
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 90
+
+/obj/item/clothing/under/trackpants
+	name = "track pants"
+	desc = "A shirt with tracksuit pants."
+	item_state = "trackpants"
+	icon_state = "trackpants"
+	worn_state = "trackpants"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/suit/storage/jacket/tracksuit
+	name = "track suit"
+	desc = "A sporty track suit."
+	item_state = "tracksuit"
+	icon_state = "tracksuit"
+	worn_state = "tracksuit"
+	body_parts_covered = UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/tacti
 	name = "tactical outfit"

@@ -88,6 +88,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	desc = "Russian version of the original Maxim machinegun, on cart mount. Uses Russian 7.62x54mm rounds."
 	icon_state = "maxim_ww2"
 	base_icon = "maxim_ww2"
+	hardness = 90
 	caliber = "a762x54_weak"
 	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/maxim

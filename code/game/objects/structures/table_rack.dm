@@ -47,7 +47,7 @@
 
 /obj/structure/table/rack/shelf/wooden
 	name = "shelf"
-	desc = "A store shelf."
+	desc = "A wooden shelf."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "shelfwood"
 

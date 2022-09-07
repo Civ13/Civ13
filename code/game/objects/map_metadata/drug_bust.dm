@@ -22,7 +22,7 @@
 	grace_wall_timer = 3000
 	gamemode = "Drug Bust"
 	songs = list(
-		"George Baker Selection - Little Green Bag:1" = "sound/music/little_green_bag.ogg",)
+		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = "sound/music/amphetamine_cocaine.ogg",)
 		
 obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -34,6 +34,9 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		if (J.title == "SWAT Officer")
 			J.whitelisted = FALSE
 			J.max_positions = 30
+			J.total_positions = 30
+		if (J.title == "Bank Robber")
+			. = FALSE
 	else
 		. = FALSE
 
@@ -88,7 +91,6 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 ////////////////////////////////Jobs and stuff//////////////////////////////////////////////////
 
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
 	H.equip_to_slot_or_del(new /obj/item/weapon/paper/police/searchwarrant/drug(H), slot_r_hand)
 
 /obj/item/weapon/paper/police/searchwarrant/drug
@@ -101,3 +103,111 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		icon_state = "police_warrant"
 		spawn(10)
 			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to search all and every property owned by <b>Vyacheslav 'Tatarin' Grigoriev</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
+
+/obj/item/weapon/reagent_containers/cocaineblock
+	icon = 'icons/obj/drugs.dmi'
+	name = "block of cocaine"
+	desc = "A block of very pure cocaine."
+	icon_state = "single_brick"
+	pixel_y = 6
+	var/vol = 500
+	value = 100
+	New()
+		..()
+		reagents.add_reagent("cocaine", 500)
+		desc = "A block of very pure cocaine. Contains [vol] grams."
+
+/obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (reagents.get_reagent_amount("cocaine") >= 10)
+			user << "You cut a line from the [src]."
+			reagents.remove_reagent("cocaine",5)
+			var/obj/item/weapon/reagent_containers/pill/cocaine_line/coca = new/obj/item/weapon/reagent_containers/pill/cocaine_line(user)
+			user.put_in_hands(coca)
+			vol = reagents.get_reagent_amount("cocaine")/25
+			desc = "A block of very pure cocaine. Contains [vol] grams."
+			if (reagents.get_reagent_amount("cocaine") >= 500)
+				name = "block of cocaine"
+				desc = "A block of very pure cocaine."
+				icon_state = "single_brick"
+			else
+				name = "torn block of cocaine"
+				desc = "A block of very pure cocaine that's been cut or torn from the outside."
+				icon_state = "single_brick_torn"
+	else
+		user << "You need a knife to cut the [src]."
+
+/obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
+	if (istype(I, /obj/item/weapon/reagent_containers/pill/cocaine_line))
+		user << "You put \the [I] into \the [src]."
+		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
+		vol = reagents.get_reagent_amount("cocaine")/25
+		desc = "A pile of very pure cocaine. Contains [vol] grams."
+		if (reagents.get_reagent_amount("cocaine") >= 500)
+			name = "block of cocaine"
+			desc = "A block of very pure cocaine."
+			icon_state = "single_brick"
+		else
+			name = "torn block of cocaine"
+			desc = "A block of very pure cocaine that's been cut or torn from the outside."
+			icon_state = "single_brick_torn"
+		qdel(I)
+	else
+		..()
+
+/obj/item/weapon/reagent_containers/cocaineblock/torn
+	icon_state = "single_brick_torn"
+	vol = 400
+	value = 100
+	New()
+		..()
+		reagents.add_reagent("cocaine", 400)
+		desc = "A block of very pure cocaine. Contains [vol] grams."
+
+/obj/item/weapon/reagent_containers/cocaineblocks
+	name = "blocks of cocaine"
+	desc = "2 block of very pure cocaine, packed together for shipping."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "brick_stack2"
+	pixel_y = 6
+	value = 200
+
+/obj/item/weapon/reagent_containers/cocaineblocks/three
+	name = "blocks of cocaine"
+	desc = "3 block of very pure cocaine, packed together for shipping."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "brick_stack3"
+	pixel_y = 6
+	value = 300
+
+/obj/item/weapon/reagent_containers/cocaineblocks/four
+	name = "blocks of cocaine"
+	desc = "4 block of very pure cocaine, packed together for shipping."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "brick_stack4"
+	pixel_y = 6
+	value = 400
+
+/obj/item/weapon/reagent_containers/cocaineblocks/five
+	name = "blocks of cocaine"
+	desc = "5 block of very pure cocaine, packed together for shipping."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "brick_stack5"
+	pixel_y = 6
+	value = 500
+
+/obj/item/weapon/reagent_containers/cocaineblocks/six
+	name = "blocks of cocaine"
+	desc = "6 block of very pure cocaine, packed together for shipping."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "brick_stack6"
+	pixel_y = 6
+	value = 600
+
+/obj/item/weapon/reagent_containers/cocaineblocks/attack_hand(mob/living/user)
+	if (src == user.l_hand || src == user.r_hand)
+		user << "You split a from the [src] apart."
+		var/obj/item/weapon/reagent_containers/cocaineblock/block = new/obj/item/weapon/reagent_containers/cocaineblock(user)
+		user.put_in_hands(block)
+	else
+		..()
