@@ -109,7 +109,7 @@
 	max_positions = 50
 	additional_languages = list("English" = 100)
 
-/datum/job/russian/robber/equip(var/mob/living/human/H)
+/datum/job/russian/rednikov/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Rednikov"
 	give_random_name(H)
