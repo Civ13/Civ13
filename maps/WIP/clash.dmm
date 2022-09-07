@@ -6,13 +6,17 @@
 /obj/structure/wild/berrybush,
 /turf/floor/winter/grass,
 /area/caribbean/nomads/taiga)
-"aR" = (
+"aG" = (
 /obj/roof/thatch,
+/obj/structure/table/wood,
+/obj/item/clothing/mask/skullmask,
+/obj/effect/decal/cleanable/blood,
+/obj/item/weapon/material/kitchen/utensil/knife/bone,
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/taiga)
-"bk" = (
-/obj/structure/closet/crate/arrows/iron,
-/turf/floor/winter,
+"bp" = (
+/obj/structure/farming/plant/tomato,
+/turf/floor/dirt/ploughed/flooded,
 /area/caribbean/nomads/taiga)
 "br" = (
 /obj/effect/floor_decal/spline/fancy/wood{
@@ -46,38 +50,34 @@
 /turf/wall/wood,
 /area/caribbean/greek)
 "bU" = (
-/obj/item/stack/ore/gold,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
+/obj/item/weapon/beartrap/armed,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "cp" = (
 /obj/covers/wood_wall/nordic,
 /obj/item/flashlight/torch/on/unlimited,
 /turf/wall/wood,
 /area/caribbean/houses)
 "cq" = (
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
-"cs" = (
-/obj/structure/wild/flowers,
-/turf/floor/beach/water/ice,
+/obj/covers/wood,
+/turf/floor/dirt,
 /area/caribbean/nomads/taiga)
 "ct" = (
-/obj/covers/wood_wall/nordic,
-/turf/wall/wood,
-/area/caribbean/no_mans_land/invisible_wall/inside/two)
+/mob/living/simple_animal/horse/white,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/invisible_wall)
 "cu" = (
 /turf/floor/beach/water,
 /area/caribbean/nomads/taiga)
-"cB" = (
-/obj/structure/window/barrier/palisade,
-/obj/structure/window/barrier/palisade{
-	dir = 1
-	},
-/turf/floor/winter,
+"cI" = (
+/turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "cS" = (
 /turf/wall/rockwall,
 /area/caribbean/void/caves)
+"cZ" = (
+/turf/floor/dirt,
+/area/caribbean/no_mans_land/invisible_wall)
 "dm" = (
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/ice,
@@ -85,10 +85,6 @@
 "dx" = (
 /mob/living/simple_animal/hostile/wolf/white/female,
 /turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"dz" = (
-/obj/structure/farming/plant/wheat,
-/turf/floor/dirt/ploughed/flooded,
 /area/caribbean/nomads/taiga)
 "ef" = (
 /obj/structure/wild/flowers,
@@ -106,10 +102,6 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/houses)
-"eE" = (
-/obj/effect/decal/cleanable/blood/gibs/limb,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
 "eY" = (
 /turf/wall/rockwall{
 	opacity = 0;
@@ -133,10 +125,6 @@
 /obj/structure/reagent_dispensers/largebarrel/water,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
-"fo" = (
-/mob/living/simple_animal/horse/white,
-/turf/floor/winter,
-/area/caribbean/no_mans_land/invisible_wall)
 "fA" = (
 /obj/structure/wild/rock,
 /turf/floor/beach/water/ice,
@@ -149,8 +137,12 @@
 /obj/item/weapon/shield/iron,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"gu" = (
+/obj/roof/thatch,
+/turf/floor/dirt/dust,
+/area/caribbean/nomads/taiga)
 "gH" = (
-/turf/wall/stone/stonebrick,
+/turf/floor/beach/water/deep,
 /area/caribbean/nomads/taiga)
 "gK" = (
 /obj/covers/stone_wall/brick,
@@ -159,6 +151,23 @@
 "gP" = (
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter/grass,
+/area/caribbean/nomads/taiga)
+"gU" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 4;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
+"hj" = (
+/obj/covers/stone_wall/brick/archway{
+	dir = 4
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 4;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/ice,
 /area/caribbean/nomads/taiga)
 "hk" = (
 /obj/structure/bed/chair/wood{
@@ -184,17 +193,27 @@
 /obj/item/weapon/reagent_containers/food/snacks/cracker,
 /turf/floor/winter,
 /area/caribbean/roman)
-"hB" = (
-/obj/effect/decal/cleanable/blood/writing,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
-"hE" = (
+"hx" = (
+/obj/item/weapon/beartrap/armed,
+/obj/structure/wild/smallbush/winter,
+/turf/floor/winter/grass,
+/area/caribbean/nomads/taiga)
+"hM" = (
+/obj/covers/stone_wall/brick/archway{
+	dir = 4
+	},
 /obj/structure/window/barrier/railing/stone{
 	dir = 4;
 	icon_state = "stone"
 	},
-/obj/covers/wood,
 /turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
+"hP" = (
+/obj/structure/barricade/wood_pole,
+/obj/structure/sign/custom{
+	name = "ravenburrow"
+	},
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "ie" = (
 /obj/structure/wild/rock{
@@ -208,14 +227,6 @@
 /obj/covers/clay_wall/redearth,
 /turf/wall/wood/straw,
 /area/caribbean/nomads/taiga)
-"ix" = (
-/obj/structure/wild/smallbush/winter,
-/obj/item/weapon/beartrap/armed,
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"iy" = (
-/turf/floor/dirt,
-/area/caribbean/no_mans_land/invisible_wall/one)
 "iR" = (
 /obj/covers/cobblestone/stairs{
 	dir = 8;
@@ -225,7 +236,7 @@
 /area/caribbean/houses)
 "jE" = (
 /obj/structure/table/fancy,
-/obj/item/weapon/reagent_containers/food/snacks/tomatosoup,
+/obj/item/weapon/book/holybook,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek)
 "jG" = (
@@ -241,16 +252,6 @@
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
-"km" = (
-/obj/covers/stone_wall/brick/archway{
-	dir = 8
-	},
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/ice,
-/area/caribbean/nomads/taiga)
 "ku" = (
 /turf/wall/rockwall,
 /area/caribbean/nomads/taiga)
@@ -275,7 +276,8 @@
 /turf/floor/wood,
 /area/caribbean/houses)
 "la" = (
-/turf/floor/dirt/ploughed/flooded,
+/obj/effect/decal/cleanable/blood/gibs/body,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "lc" = (
 /obj/structure/grille/logfence{
@@ -284,17 +286,15 @@
 	},
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"lp" = (
+/obj/item/stack/teeth/human,
+/obj/effect/decal/cleanable/blood,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "lx" = (
 /obj/structure/closet/crate/arrows/iron,
 /turf/floor/winter,
 /area/caribbean/roman)
-"lD" = (
-/obj/covers/wood/stairs{
-	dir = 4;
-	icon_state = "wood2_stairs"
-	},
-/turf/floor/wood,
-/area/caribbean/nomads/taiga)
 "lE" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/material/sword/armingsword/iron,
@@ -316,6 +316,11 @@
 /obj/structure/curtain/leather,
 /obj/roof/wood,
 /turf/floor/wood,
+/area/caribbean/nomads/taiga)
+"lO" = (
+/obj/structure/wild/flowers,
+/obj/item/weapon/beartrap/armed,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "ma" = (
 /obj/item/stack/material/straw,
@@ -342,6 +347,16 @@
 /obj/structure/simple_door/fence,
 /turf/floor/dirt/dust,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
+"mG" = (
+/obj/covers/stone_wall/brick/archway{
+	dir = 8
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 8;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/ice,
+/area/caribbean/nomads/taiga)
 "mL" = (
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4
@@ -353,8 +368,15 @@
 /turf/wall/wood,
 /area/caribbean/houses)
 "mV" = (
+/obj/structure/grille/logfence{
+	dir = 4;
+	opacity = 0
+	},
+/obj/structure/window/barrier/palisade{
+	dir = 1
+	},
 /turf/floor/winter,
-/area/caribbean/no_mans_land/invisible_wall/one)
+/area/caribbean/nomads/taiga)
 "mZ" = (
 /obj/structure/brazier/loaded,
 /turf/floor/winter,
@@ -365,10 +387,13 @@
 /obj/item/weapon/material/hatchet/battleaxe,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"nE" = (
-/obj/structure/wild/flowers,
-/obj/item/weapon/beartrap/armed,
-/turf/floor/winter,
+"nw" = (
+/obj/covers/repairedfloor,
+/obj/structure/window/barrier/railing/stone{
+	dir = 8;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/ice,
 /area/caribbean/nomads/taiga)
 "nJ" = (
 /obj/structure/closet/crate/empty,
@@ -395,6 +420,22 @@
 /obj/effect/decal/cleanable/blood,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"nY" = (
+/obj/item/remains/mouse,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"ok" = (
+/mob/living/simple_animal/hostile/bear/boar/brown,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"on" = (
+/obj/effect/decal/cleanable/blood,
+/obj/item/remains/human,
+/obj/item/weapon/material/sword/magic/ice,
+/obj/item/clothing/suit/armor/medieval/leather,
+/obj/item/clothing/head/helmet/medieval/viking/valkyrie,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
 "ov" = (
 /obj/structure/window/classic/stonefull,
 /obj/structure/window/barrier/rock,
@@ -425,6 +466,14 @@
 /obj/structure/farming/plant/mushroompsy,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"pE" = (
+/obj/covers/repairedfloor,
+/obj/structure/window/barrier/railing/stone{
+	dir = 8;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
 "pU" = (
 /obj/effect/landmark{
 	name = "JoinLateRO"
@@ -438,10 +487,6 @@
 /obj/item/weapon/material/spear,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"pY" = (
-/obj/structure/farming/plant/mushroom,
-/turf/floor/dirt/ploughed/flooded,
-/area/caribbean/nomads/taiga)
 "qm" = (
 /turf/floor/wood,
 /area/caribbean/houses)
@@ -451,14 +496,6 @@
 /obj/structure/barricade/horizontal,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek)
-"qG" = (
-/obj/covers/repairedfloor,
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/ice,
-/area/caribbean/nomads/taiga)
 "ra" = (
 /mob/living/simple_animal/crow,
 /turf/floor/winter,
@@ -474,14 +511,27 @@
 	},
 /turf/floor/dirt,
 /area/caribbean/houses)
+"ru" = (
+/obj/covers/repairedfloor,
+/obj/structure/window/barrier/railing/stone{
+	dir = 4;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/ice,
+/area/caribbean/nomads/taiga)
 "rz" = (
 /obj/covers/stone_wall/brick,
 /obj/roof/wood,
 /turf/wall/stone/stonebrick,
 /area/caribbean/nomads/taiga)
-"rU" = (
-/turf/floor/dirt,
-/area/caribbean/no_mans_land/invisible_wall)
+"rH" = (
+/obj/structure/branch,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"st" = (
+/obj/item/stack/ore/gold,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
 "sy" = (
 /obj/structure/wild/rock{
 	icon_state = "rock1"
@@ -496,13 +546,6 @@
 /obj/structure/curtain/leather,
 /obj/roof/wood,
 /turf/floor/wood,
-/area/caribbean/nomads/taiga)
-"sF" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 4;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water,
 /area/caribbean/nomads/taiga)
 "sN" = (
 /obj/item/flashlight/torch/on/unlimited,
@@ -521,11 +564,21 @@
 /obj/item/weapon/material/sword/longsword/iron,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"tw" = (
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "tI" = (
 /obj/structure/reagent_dispensers/largebarrel/ale,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
-"um" = (
+"tK" = (
+/obj/structure/branch/cleared,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"uj" = (
 /obj/roof/thatch,
 /obj/item/stack/medical/advanced/herbs,
 /obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy,
@@ -539,21 +592,14 @@
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "uz" = (
-/turf/floor/dirt/underground/icy,
-/area/caribbean/void/caves)
-"uF" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 4;
-	icon_state = "stone"
-	},
-/obj/covers/repairedfloor,
-/turf/floor/beach/water/deep,
+/turf/floor/plating/stone_old,
 /area/caribbean/nomads/taiga)
-"vc" = (
+"uA" = (
 /obj/structure/window/barrier/railing/stone{
-	dir = 4;
+	dir = 8;
 	icon_state = "stone"
 	},
+/obj/covers/wood,
 /turf/floor/beach/water/deep,
 /area/caribbean/nomads/taiga)
 "vh" = (
@@ -569,9 +615,16 @@
 /obj/roof/wood,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"vG" = (
-/obj/covers/wood,
-/turf/floor/dirt,
+"vB" = (
+/obj/covers/cobblestone/stairs{
+	dir = 8
+	},
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"vK" = (
+/obj/item/remains/human,
+/obj/effect/decal/cleanable/blood/gibs/core,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "vL" = (
 /obj/structure/anvil,
@@ -588,15 +641,9 @@
 /obj/covers/roads/dirt,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"wb" = (
-/mob/living/simple_animal/horse/white,
-/turf/floor/winter/grass,
-/area/caribbean/no_mans_land/invisible_wall/one)
-"wA" = (
-/obj/effect/decal/cleanable/blood/writing{
-	dir = 6
-	},
-/turf/floor/winter,
+"wd" = (
+/obj/structure/farming/plant/mushroom,
+/turf/floor/dirt/ploughed/flooded,
 /area/caribbean/nomads/taiga)
 "wC" = (
 /obj/structure/table/wood,
@@ -621,6 +668,10 @@
 /obj/covers/roads/dirt,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"wN" = (
+/obj/structure/closet/crate/arrows/iron,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "xi" = (
 /obj/structure/farming/plant/mushroompsy,
 /turf/floor/winter/grass,
@@ -629,17 +680,26 @@
 /obj/structure/animalspawner/wolfcave,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"xr" = (
-/obj/covers/wood/stairs,
-/turf/floor/wood,
-/area/caribbean/nomads/taiga)
 "xw" = (
 /turf/floor/winter/grass,
 /area/caribbean/roman)
+"xA" = (
+/obj/item/weapon/reagent_containers/food/snacks/meat/human,
+/obj/effect/decal/cleanable/blood,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "xQ" = (
 /obj/item/weapon/reagent_containers/glass/barrel/water,
 /turf/floor/winter,
 /area/caribbean/roman)
+"xV" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 4;
+	icon_state = "stone"
+	},
+/obj/covers/repairedfloor,
+/turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
 "yj" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
@@ -654,11 +714,8 @@
 /turf/floor/dirt/winter,
 /area/caribbean/nomads/taiga)
 "yD" = (
-/obj/structure/window/barrier/palisade{
-	dir = 8
-	},
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
 "yP" = (
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/winter/grass,
@@ -674,14 +731,14 @@
 /obj/covers/clay_wall/redearth,
 /turf/wall/wood/straw,
 /area/caribbean/nomads/taiga)
+"yV" = (
+/obj/structure/wild/berrybush/tinto,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "yX" = (
 /obj/item/weapon/reagent_containers/glass/barrel/water,
 /turf/floor/dirt/dust,
 /area/caribbean/houses)
-"zc" = (
-/obj/item/remains/mouse,
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
 "zC" = (
 /obj/structure/animalspawner/bearcave/full,
 /turf/floor/winter,
@@ -702,6 +759,16 @@
 /mob/living/simple_animal/hostile/wolf/white,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"zP" = (
+/obj/item/weapon/material/pickaxe,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
+"zR" = (
+/obj/structure/table/wood,
+/obj/roof/wood,
+/obj/item/weapon/punji_sticks,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "zW" = (
 /obj/structure/table/fancy,
 /obj/structure/potted_plant{
@@ -709,17 +776,19 @@
 	},
 /turf/floor/wood/fancywood,
 /area/caribbean/greek)
+"Ax" = (
+/obj/covers/wood/stairs{
+	dir = 4;
+	icon_state = "wood2_stairs"
+	},
+/turf/floor/wood,
+/area/caribbean/nomads/taiga)
 "AL" = (
 /obj/structure/table/wood,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "AZ" = (
 /obj/structure/wild/berrybush,
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"Bg" = (
-/obj/item/weapon/beartrap,
-/obj/effect/decal/cleanable/blood,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "By" = (
@@ -735,20 +804,6 @@
 "BE" = (
 /turf/floor/winter/grass,
 /area/caribbean/no_mans_land/invisible_wall)
-"BK" = (
-/obj/covers/stone_wall/brick/archway{
-	dir = 8
-	},
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/deep,
-/area/caribbean/nomads/taiga)
-"Cm" = (
-/obj/effect/decal/cleanable/blood/gibs,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
 "Cs" = (
 /obj/item/stack/material/straw,
 /mob/living/simple_animal/goat/female,
@@ -763,29 +818,10 @@
 /obj/roof/thatch,
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/taiga)
-"CN" = (
-/obj/roof/thatch,
-/obj/structure/table/wood,
-/obj/item/clothing/mask/skullmask,
-/obj/effect/decal/cleanable/blood,
-/obj/item/weapon/material/kitchen/utensil/knife/bone,
-/turf/floor/dirt/dust,
-/area/caribbean/nomads/taiga)
-"CO" = (
-/obj/covers/repairedfloor,
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/deep,
-/area/caribbean/nomads/taiga)
-"CS" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
-	},
-/obj/covers/wood,
-/turf/floor/beach/water/deep,
+"CD" = (
+/obj/item/weapon/beartrap/armed,
+/obj/structure/wild/smallbush/winter,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "CY" = (
 /obj/roof/wood,
@@ -803,14 +839,27 @@
 	},
 /turf/floor/dirt,
 /area/caribbean/houses)
-"DH" = (
-/obj/effect/decal/cleanable/blood,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
+"DD" = (
+/obj/effect/decal/cleanable/blood/writing{
+	dir = 6
+	},
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"DG" = (
+/obj/covers/cobblestone/stairs{
+	dir = 1;
+	icon_state = "rampup"
+	},
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "DJ" = (
 /obj/item/weapon/material/shovel,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"DK" = (
+/obj/item/stack/ore/iron,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
 "DM" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
@@ -819,14 +868,6 @@
 "DY" = (
 /obj/roof/wood,
 /turf/floor/wood,
-/area/caribbean/nomads/taiga)
-"Eh" = (
-/obj/covers/repairedfloor,
-/turf/floor/beach/water/deep,
-/area/caribbean/nomads/taiga)
-"Ei" = (
-/obj/effect/decal/cleanable/blood/writing,
-/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "En" = (
 /obj/structure/closet/crate/chest{
@@ -843,16 +884,12 @@
 /obj/item/clothing/gloves/thick/leather/grey,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek)
-"Ev" = (
-/obj/structure/farming/plant/tomato,
+"Et" = (
 /turf/floor/dirt/ploughed/flooded,
 /area/caribbean/nomads/taiga)
 "Ez" = (
-/obj/covers/stone_wall/brick/archway{
-	dir = 4
-	},
 /obj/structure/window/barrier/railing/stone{
-	dir = 4;
+	dir = 8;
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/deep,
@@ -877,21 +914,31 @@
 /mob/living/simple_animal/deer/elk/female,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"ET" = (
-/obj/covers/wood,
+"ES" = (
+/obj/structure/wild/smallbush/winter,
+/obj/item/weapon/beartrap/armed,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"EX" = (
-/obj/covers/repairedfloor,
-/obj/structure/window/barrier/railing/stone{
-	dir = 4;
-	icon_state = "stone"
+"ET" = (
+/obj/structure/window/barrier/palisade{
+	dir = 8
 	},
-/turf/floor/beach/water/deep,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "EZ" = (
 /obj/covers/roads/dirt,
 /turf/floor/winter/grass,
+/area/caribbean/nomads/taiga)
+"Fe" = (
+/obj/structure/farming/plant/wheat,
+/turf/floor/dirt/ploughed/flooded,
+/area/caribbean/nomads/taiga)
+"Fl" = (
+/obj/covers/cobblestone/stairs{
+	dir = 4;
+	icon_state = "rampup"
+	},
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "Fm" = (
 /obj/structure/toilet/pit_latrine,
@@ -899,17 +946,14 @@
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "FL" = (
-/obj/covers/stone_wall/brick/archway{
-	dir = 4
-	},
-/obj/structure/window/barrier/railing/stone{
-	dir = 4;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/ice,
+/turf/floor/dirt,
 /area/caribbean/nomads/taiga)
 "FQ" = (
-/turf/floor/wood,
+/turf/floor/dirt/underground/icy,
+/area/caribbean/void/caves)
+"FT" = (
+/obj/effect/decal/cleanable/blood/writing,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "Gg" = (
 /obj/structure/closet/crate/empty,
@@ -921,10 +965,13 @@
 /obj/structure/table/wood,
 /turf/floor/wood,
 /area/caribbean/houses)
-"Gp" = (
-/obj/item/stack/ore/iron,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
+"Gy" = (
+/obj/structure/religious/monument/megalith{
+	name = "runestone";
+	desc = "A large stone rune that has many symbols carved into it."
+	},
+/turf/floor/plating/stone_old,
+/area/caribbean/nomads/taiga)
 "GB" = (
 /obj/covers/stone_wall/brick/archway{
 	dir = 4
@@ -943,7 +990,8 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "He" = (
-/turf/floor/dirt,
+/obj/structure/wild/berrybush/azul,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "Hl" = (
 /obj/structure/bed/chair/wood{
@@ -961,11 +1009,8 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "Hy" = (
-/obj/structure/window/barrier/palisade{
-	dir = 4
-	},
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
+/turf/floor/dirt/underground/empty,
+/area/caribbean/void/caves)
 "HL" = (
 /obj/covers/cobblestone/stairs{
 	dir = 4;
@@ -978,29 +1023,14 @@
 /obj/covers/roads/dirt,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"HP" = (
-/obj/covers/wood,
-/turf/floor/beach/water/deep,
-/area/caribbean/nomads/taiga)
 "HX" = (
-/obj/structure/fish,
-/turf/floor/beach/water/deep,
+/obj/structure/wild/tree/live_tree/pine/snow,
+/turf/floor/dirt,
 /area/caribbean/nomads/taiga)
 "HZ" = (
 /obj/structure/wild/rock,
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"If" = (
-/mob/living/simple_animal/horse/white,
-/turf/floor/winter/grass,
-/area/caribbean/no_mans_land/invisible_wall)
-"Ig" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/deep,
 /area/caribbean/nomads/taiga)
 "Ik" = (
 /obj/structure/religious/impaledskull,
@@ -1011,11 +1041,6 @@
 /obj/item/weapon/reagent_containers/food/snacks/mushroomsoup,
 /turf/floor/wood,
 /area/caribbean/houses)
-"II" = (
-/obj/item/weapon/beartrap/armed,
-/obj/structure/wild/smallbush/winter,
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
 "Jd" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
@@ -1028,6 +1053,13 @@
 	},
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
+"Jn" = (
+/turf/floor/winter/grass,
+/area/caribbean/no_mans_land/invisible_wall/one)
+"Jz" = (
+/obj/effect/decal/cleanable/blood/writing,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
 "JJ" = (
 /obj/structure/toilet/pit_latrine,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -1039,6 +1071,10 @@
 /obj/item/weapon/reagent_containers/food/snacks/flatbread,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"JT" = (
+/obj/effect/decal/cleanable/blood/gibs/limb,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
 "Ka" = (
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter,
@@ -1047,14 +1083,14 @@
 /obj/structure/reagent_dispensers/largebarrel/beer,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
-"Ks" = (
-/obj/effect/decal/cleanable/blood,
-/obj/item/remains/human,
-/obj/item/weapon/material/sword/magic/ice,
-/obj/item/clothing/suit/armor/medieval/leather,
-/obj/item/clothing/head/helmet/medieval/viking/valkyrie,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
+"Kn" = (
+/obj/covers/repairedfloor,
+/obj/structure/window/barrier/railing/stone{
+	dir = 4;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
 "Kz" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
@@ -1072,27 +1108,23 @@
 /obj/roof,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"KS" = (
+/obj/structure/wild/smallbush/winter,
+/turf/floor/dirt/winter,
+/area/caribbean/nomads/taiga)
 "KY" = (
 /obj/structure/repair/grindstone,
 /obj/roof/wood,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"Ll" = (
+/obj/effect/decal/cleanable/blood,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
 "Lu" = (
-/obj/item/weapon/beartrap/armed,
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"LC" = (
-/obj/structure/barricade/wood_pole,
-/obj/structure/sign/custom{
-	name = "ravenburrow"
-	},
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"Mi" = (
-/obj/structure/wild/smallbush/winter,
-/obj/item/weapon/beartrap/armed,
-/turf/floor/dirt/winter,
-/area/caribbean/nomads/taiga)
+/obj/covers/wood_wall/nordic,
+/turf/wall/wood,
+/area/caribbean/no_mans_land/invisible_wall/inside/two)
 "Ms" = (
 /obj/structure/table/wood,
 /obj/item/stack/medical/advanced/herbs,
@@ -1125,6 +1157,10 @@
 /obj/structure/curtain/leather/open,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
+"Nb" = (
+/obj/covers/wood,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "Nc" = (
 /obj/effect/landmark{
 	icon_state = "x3";
@@ -1132,21 +1168,19 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/houses)
-"Nq" = (
-/turf/floor/beach/water/ice,
-/area/caribbean/no_mans_land/invisible_wall)
+"Ne" = (
+/obj/structure/window/barrier/palisade,
+/obj/structure/window/barrier/palisade{
+	dir = 1
+	},
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "Ny" = (
 /obj/structure/wild/rock,
 /turf/floor/winter/grass,
 /area/caribbean/nomads/taiga)
-"NE" = (
-/obj/structure/multiz/ladder/ww2/tunneltop,
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"NM" = (
-/obj/structure/table/wood,
-/obj/roof/wood,
-/obj/item/weapon/beartrap,
+"On" = (
+/obj/covers/cobblestone/stairs,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "Op" = (
@@ -1158,14 +1192,29 @@
 /obj/covers/wood,
 /turf/floor/beach/water,
 /area/caribbean/nomads/taiga)
+"OJ" = (
+/obj/effect/decal/cleanable/blood/gibs,
+/turf/floor/dirt/dust,
+/area/caribbean/void/caves)
+"Pk" = (
+/turf/floor/beach/water/ice,
+/area/caribbean/no_mans_land/invisible_wall)
+"PH" = (
+/obj/covers/wood/stairs,
+/turf/floor/wood,
+/area/caribbean/nomads/taiga)
 "PJ" = (
-/obj/item/weapon/material/pickaxe,
+/obj/structure/multiz/ladder/ww2/tunnelbottom,
 /turf/floor/dirt/dust,
 /area/caribbean/void/caves)
 "PL" = (
 /obj/item/weapon/reagent_containers/glass/barrel/water,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"PX" = (
+/mob/living/simple_animal/horse/white,
+/turf/floor/winter/grass,
+/area/caribbean/no_mans_land/invisible_wall)
 "Qe" = (
 /obj/structure/table/wood,
 /obj/structure/roof_support/nordic,
@@ -1190,10 +1239,10 @@
 /obj/item/weapon/reagent_containers/food/snacks/tomatosoup,
 /turf/floor/wood,
 /area/caribbean/houses)
-"Qw" = (
-/obj/map_metadata/clash,
-/turf/wall/rockwall,
-/area/caribbean/void/caves)
+"Qu" = (
+/obj/covers/wood,
+/turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
 "QC" = (
 /obj/structure/roof_support/nordic,
 /obj/roof/wood,
@@ -1206,15 +1255,12 @@
 /obj/item/weapon/material/pickaxe,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
-"QL" = (
-/obj/structure/grille/logfence{
+"QG" = (
+/obj/structure/window/barrier/railing/stone{
 	dir = 4;
-	opacity = 0
+	icon_state = "stone"
 	},
-/obj/structure/window/barrier/palisade{
-	dir = 1
-	},
-/turf/floor/winter,
+/turf/floor/beach/water,
 /area/caribbean/nomads/taiga)
 "QR" = (
 /mob/living/simple_animal/deer/elk/male,
@@ -1225,19 +1271,19 @@
 /obj/structure/wild/flowers,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"Rc" = (
-/obj/structure/wild/tree/live_tree/pine/snow,
-/turf/floor/beach/water/ice,
+"Rb" = (
+/obj/covers/stone_wall/brick/archway{
+	dir = 8
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 8;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water/deep,
 /area/caribbean/nomads/taiga)
-"Rg" = (
-/obj/structure/grille/logfence{
-	dir = 1;
-	opacity = 0
-	},
-/obj/structure/window/barrier/palisade{
-	dir = 4
-	},
-/turf/floor/winter,
+"Rc" = (
+/obj/structure/fish,
+/turf/floor/beach/water/deep,
 /area/caribbean/nomads/taiga)
 "Rh" = (
 /mob/living/simple_animal/deer/elk/male,
@@ -1249,24 +1295,17 @@
 /turf/wall/stone/stonebrick,
 /area/caribbean/houses)
 "Ru" = (
-/obj/structure/wild/tree/live_tree/pine/snow,
-/turf/floor/dirt,
-/area/caribbean/nomads/taiga)
+/turf/floor/winter,
+/area/caribbean/no_mans_land/invisible_wall/one)
 "Ry" = (
 /obj/structure/simple_door/key_door/anyone/nordic,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek)
 "RF" = (
-/obj/covers/repairedfloor,
-/obj/structure/window/barrier/railing/stone{
-	dir = 4;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/ice,
-/area/caribbean/nomads/taiga)
-"RK" = (
-/obj/structure/wild/smallbush/winter,
-/turf/floor/dirt/winter,
+/obj/structure/table/wood,
+/obj/roof/wood,
+/obj/item/weapon/beartrap,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "RM" = (
 /obj/roof/wood,
@@ -1277,6 +1316,22 @@
 /obj/structure/shower/bathtub/stone,
 /obj/roof,
 /turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"RS" = (
+/obj/structure/multiz/ladder/ww2/tunneltop,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"Sl" = (
+/obj/item/weapon/beartrap,
+/obj/effect/decal/cleanable/blood,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"Sn" = (
+/obj/structure/wild/tree/live_tree/pine/snow,
+/turf/floor/beach/water/ice,
+/area/caribbean/nomads/taiga)
+"Sx" = (
+/turf/wall/stone/stonebrick,
 /area/caribbean/nomads/taiga)
 "SD" = (
 /obj/covers/cobblestone/stairs{
@@ -1290,14 +1345,8 @@
 /obj/item/flashlight/torch/on/unlimited,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek)
-"Tx" = (
-/obj/covers/repairedfloor,
-/turf/floor/winter,
-/area/caribbean/nomads/taiga)
 "TG" = (
-/obj/structure/table/wood,
-/obj/roof/wood,
-/obj/item/weapon/punji_sticks,
+/obj/covers/repairedfloor,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "TI" = (
@@ -1318,8 +1367,13 @@
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "UL" = (
-/turf/floor/beach/water/deep,
+/obj/structure/wild/flowers,
+/turf/floor/beach/water/ice,
 /area/caribbean/nomads/taiga)
+"UM" = (
+/obj/map_metadata/clash,
+/turf/wall/rockwall,
+/area/caribbean/void/caves)
 "Ve" = (
 /mob/living/simple_animal/goat,
 /obj/effect/landmark{
@@ -1359,16 +1413,11 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "Xf" = (
-/turf/floor/dirt/underground/empty,
-/area/caribbean/void/caves)
+/turf/floor/dirt,
+/area/caribbean/no_mans_land/invisible_wall/one)
 "Xh" = (
 /obj/structure/sink/puddle,
 /turf/floor/winter,
-/area/caribbean/nomads/taiga)
-"Xw" = (
-/obj/item/weapon/beartrap/armed,
-/obj/structure/wild/smallbush/winter,
-/turf/floor/winter/grass,
 /area/caribbean/nomads/taiga)
 "Xx" = (
 /turf/floor/beach/water/ice,
@@ -1377,14 +1426,20 @@
 /obj/item/weapon/reagent_containers/glass/barrel/wine,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
-"XJ" = (
-/obj/structure/multiz/ladder/ww2/tunnelbottom,
-/turf/floor/dirt/dust,
-/area/caribbean/void/caves)
 "Yh" = (
 /obj/structure/sink/well,
 /obj/roof/wood,
 /obj/covers/roads/dirt,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"Yn" = (
+/obj/structure/grille/logfence{
+	dir = 1;
+	opacity = 0
+	},
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "Yw" = (
@@ -1410,13 +1465,43 @@
 /obj/item/weapon/storage/backpack/quiver,
 /turf/floor/winter,
 /area/caribbean/roman)
+"YS" = (
+/obj/covers/repairedfloor,
+/turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
+"Ze" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 4;
+	icon_state = "stone"
+	},
+/obj/covers/wood,
+/turf/floor/beach/water/deep,
+/area/caribbean/nomads/taiga)
+"Zf" = (
+/obj/item/weapon/material/hatchet/battleaxe,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"Zk" = (
+/obj/structure/wild/smallbush/winter,
+/obj/item/weapon/beartrap/armed,
+/turf/floor/dirt/winter,
+/area/caribbean/nomads/taiga)
 "Zu" = (
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
-"ZN" = (
+"ZC" = (
+/mob/living/simple_animal/horse/white,
 /turf/floor/winter/grass,
 /area/caribbean/no_mans_land/invisible_wall/one)
+"ZH" = (
+/obj/structure/branch/cleared,
+/turf/floor/dirt/winter,
+/area/caribbean/nomads/taiga)
+"ZN" = (
+/obj/structure/wild/berrybush/narco,
+/turf/floor/winter,
+/area/caribbean/nomads/taiga)
 "ZS" = (
 /turf/floor/winter,
 /area/caribbean/no_mans_land/invisible_wall)
@@ -1505,7 +1590,7 @@ cS
 cS
 cS
 cS
-Qw
+UM
 "}
 (2,1,1) = {"
 cS
@@ -6074,14 +6159,14 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6155,16 +6240,16 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6236,20 +6321,20 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-cq
-cq
-cq
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+yD
+yD
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6318,21 +6403,21 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-cq
-cq
-cq
-cq
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+yD
+yD
+yD
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6400,22 +6485,22 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-cq
-cq
-Gp
+FQ
+FQ
+FQ
+FQ
+yD
+yD
+DK
 sN
-cq
-cq
-uz
-uz
-uz
-uz
-uz
-uz
+yD
+yD
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6482,22 +6567,22 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-cq
-bU
-cq
-Gp
-cq
-cq
-cq
-cq
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+yD
+st
+yD
+DK
+yD
+yD
+yD
+yD
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6564,23 +6649,23 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-cq
-cq
-cq
-cq
-cq
-cq
-cq
-cq
-cq
-cq
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+yD
+yD
+yD
+yD
+yD
+yD
+yD
+yD
+yD
+yD
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6646,23 +6731,23 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-cq
-PJ
-cq
-cq
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+zP
+yD
+yD
 sN
-cq
-cq
-cq
-cq
-uz
-uz
-uz
+yD
+yD
+yD
+yD
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6729,23 +6814,23 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-cq
-cq
-cq
-cq
-cq
-cq
-cq
-cq
-cq
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+yD
+yD
+yD
+yD
+yD
+yD
+yD
+yD
+yD
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6811,23 +6896,23 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-Gp
-cq
-cq
-cq
-cq
-cq
-cq
-eE
-DH
-Xf
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+DK
+yD
+yD
+yD
+yD
+yD
+yD
+JT
+Ll
+Hy
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6893,24 +6978,24 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-cq
-cq
-cq
-bU
-cq
-cq
-cq
-cq
-Xf
-Xf
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+yD
+yD
+yD
+st
+yD
+yD
+yD
+yD
+Hy
+Hy
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -6975,26 +7060,26 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-cq
-cq
-Ks
-hB
-hB
-DH
-Xf
-Xf
-DH
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+yD
+on
+Jz
+Jz
+Ll
+Hy
+Hy
+Ll
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 cS
@@ -7058,28 +7143,28 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-bU
-cq
-cq
-Xf
-Xf
-Xf
-Cm
-cq
-cq
-uz
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+st
+yD
+yD
+Hy
+Hy
+Hy
+OJ
+yD
+yD
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 "}
@@ -7141,27 +7226,27 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-cq
-uz
-Xf
-Xf
-DH
-cq
-cq
-cq
-cq
-uz
-cq
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+FQ
+Hy
+Hy
+Ll
+yD
+yD
+yD
+yD
+FQ
+yD
+FQ
+FQ
+FQ
 cS
 cS
 "}
@@ -7224,26 +7309,26 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-Xf
-Xf
-DH
-cq
-cq
-cq
-cq
-cq
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+Hy
+Hy
+Ll
+yD
+yD
+yD
+yD
+yD
+FQ
+FQ
+FQ
 cS
 cS
 "}
@@ -7307,26 +7392,26 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-cq
-cq
-uz
-uz
-cq
-cq
-cq
-cq
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+yD
+FQ
+FQ
+yD
+yD
+yD
+yD
+FQ
+FQ
+FQ
 cS
 "}
 (73,1,1) = {"
@@ -7393,22 +7478,22 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-cq
-cq
-cq
-cq
-cq
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+yD
+yD
+yD
+yD
+FQ
 cS
 "}
 (74,1,1) = {"
@@ -7476,21 +7561,21 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-cq
-XJ
-cq
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+PJ
+yD
+FQ
+FQ
 cS
 "}
 (75,1,1) = {"
@@ -7559,20 +7644,20 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-cq
-cq
-cq
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+yD
+yD
+yD
+FQ
+FQ
 cS
 "}
 (76,1,1) = {"
@@ -7644,17 +7729,17 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 "}
 (77,1,1) = {"
@@ -7727,16 +7812,16 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 "}
 (78,1,1) = {"
@@ -7810,14 +7895,14 @@ cS
 cS
 cS
 cS
-uz
-uz
-uz
-uz
-uz
-uz
-uz
-uz
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
+FQ
 cS
 cS
 "}
@@ -8031,15 +8116,15 @@ Xx
 Xx
 cu
 Xx
-UL
-UL
-HX
-UL
-UL
-HX
-UL
-UL
-UL
+gH
+gH
+Rc
+gH
+gH
+Rc
+gH
+gH
+gH
 cu
 Xx
 ux
@@ -8112,14 +8197,14 @@ ux
 ux
 cu
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 cu
@@ -8171,7 +8256,7 @@ ux
 ux
 ux
 ux
-ux
+ZN
 ux
 ux
 ux
@@ -8194,13 +8279,13 @@ ux
 ux
 ux
 Xx
-UL
-HX
-UL
-UL
-UL
-UL
-UL
+gH
+Rc
+gH
+gH
+gH
+gH
+gH
 bJ
 Op
 wD
@@ -8247,8 +8332,8 @@ eY
 eY
 eY
 eY
-eY
-ux
+zC
+ok
 ux
 ux
 ux
@@ -8276,12 +8361,12 @@ ux
 WX
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 Xx
 Os
@@ -8357,12 +8442,12 @@ ux
 ux
 WX
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 Xx
@@ -8421,7 +8506,7 @@ ux
 Ka
 ux
 ux
-ux
+ZN
 ux
 ux
 ux
@@ -8439,12 +8524,12 @@ ux
 ux
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 ux
@@ -8520,13 +8605,13 @@ ux
 ux
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 ux
 ux
@@ -8602,12 +8687,12 @@ Xx
 ux
 Xx
 cu
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 ux
@@ -8683,13 +8768,13 @@ Xx
 Xx
 Xx
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 cu
 ux
@@ -8765,13 +8850,13 @@ cu
 cu
 cu
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 WX
 ux
@@ -8848,11 +8933,11 @@ cu
 cu
 Xx
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 WX
@@ -8866,8 +8951,8 @@ ux
 Wd
 wK
 ux
-NM
-TG
+RF
+zR
 bz
 HO
 pV
@@ -8930,11 +9015,11 @@ Xx
 Xx
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 cu
 Xx
 ux
@@ -8960,12 +9045,12 @@ mP
 GB
 GB
 GB
-ct
-ct
+Lu
+Lu
 mF
 mF
-ct
-ct
+Lu
+Lu
 wK
 wK
 wK
@@ -9011,12 +9096,12 @@ ux
 ux
 ux
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 ux
 ux
@@ -9042,12 +9127,12 @@ mP
 HL
 HL
 HL
-ct
+Lu
 ma
 eD
 Nc
 Nc
-ct
+Lu
 wK
 wK
 ux
@@ -9055,8 +9140,8 @@ ux
 (14,1,2) = {"
 ux
 yU
-CN
-aR
+aG
+gu
 CB
 ux
 ux
@@ -9066,7 +9151,7 @@ ux
 ux
 ux
 ux
-RK
+KS
 yx
 eY
 eY
@@ -9090,14 +9175,14 @@ ux
 ux
 ux
 ux
-ux
+Dk
 ux
 fA
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 cu
 jT
@@ -9124,12 +9209,12 @@ mP
 HL
 HL
 rq
-ct
+Lu
 Nc
 Nc
 Nc
 Nc
-ct
+Lu
 wK
 wK
 ux
@@ -9137,8 +9222,8 @@ ux
 (15,1,2) = {"
 ux
 yU
-um
-aR
+uj
+gu
 CB
 ux
 ux
@@ -9149,7 +9234,7 @@ ux
 yx
 ux
 Zu
-yx
+ZH
 eY
 eY
 ux
@@ -9175,11 +9260,11 @@ ux
 ux
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 ux
 ux
@@ -9206,12 +9291,12 @@ mP
 yT
 Dw
 yT
-ct
+Lu
 Ve
 eD
 zJ
 Cs
-ct
+Lu
 wK
 wK
 ux
@@ -9257,11 +9342,11 @@ ux
 ux
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 ux
@@ -9288,12 +9373,12 @@ mP
 yT
 Dw
 yT
-ct
+Lu
 eD
 yX
 Yx
 eD
-ct
+Lu
 wK
 wK
 ux
@@ -9339,11 +9424,11 @@ ux
 ux
 ux
 Xx
-UL
-UL
-HX
-UL
-UL
+gH
+gH
+Rc
+gH
+gH
 Xx
 Xx
 ux
@@ -9356,7 +9441,7 @@ ux
 ux
 ux
 Wd
-Hy
+tw
 wK
 wK
 wK
@@ -9370,12 +9455,12 @@ mP
 mP
 mP
 mP
-ct
-ct
-ct
-ct
-ct
-ct
+Lu
+Lu
+Lu
+Lu
+Lu
+Lu
 wK
 ux
 ux
@@ -9421,13 +9506,13 @@ EC
 ux
 ux
 Xx
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
-Rc
+Sn
 ux
 ux
 ux
@@ -9437,9 +9522,9 @@ ux
 ux
 ux
 ux
-cB
-FQ
-lD
+Ne
+cI
+Ax
 mZ
 UE
 ux
@@ -9474,7 +9559,7 @@ UE
 ux
 ux
 ux
-ux
+tK
 ux
 ux
 eY
@@ -9503,11 +9588,11 @@ ux
 ux
 ux
 Xx
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 WX
 ux
@@ -9519,10 +9604,10 @@ ux
 ux
 ux
 ux
-cB
-FQ
-FQ
-xr
+Ne
+cI
+cI
+PH
 ux
 ux
 ux
@@ -9583,13 +9668,13 @@ ux
 ux
 ux
 ux
-He
+FL
 Xx
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 WX
 ux
@@ -9601,11 +9686,11 @@ ux
 ux
 ux
 ux
-cB
+Ne
 Jh
 Jh
 Jh
-QL
+mV
 ux
 ux
 ux
@@ -9658,7 +9743,7 @@ ux
 ux
 ux
 Zu
-ux
+rH
 ux
 ux
 ux
@@ -9666,11 +9751,11 @@ ux
 ux
 ux
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 WX
 WX
@@ -9684,9 +9769,9 @@ ux
 ux
 ux
 ux
-yD
-yD
-yD
+ET
+ET
+ET
 ux
 Wd
 ux
@@ -9748,11 +9833,11 @@ ux
 jT
 ux
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 WX
 WX
@@ -9831,10 +9916,10 @@ jT
 ux
 cu
 cu
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 cu
 WX
 WX
@@ -9899,7 +9984,7 @@ ux
 ux
 ux
 ux
-Lu
+bU
 ux
 ux
 ux
@@ -9913,10 +9998,10 @@ jT
 ux
 Xx
 cu
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 cu
 WX
 WX
@@ -9933,7 +10018,7 @@ ux
 ux
 ux
 ux
-LC
+hP
 Wd
 ux
 ux
@@ -9983,7 +10068,7 @@ Zu
 ux
 ux
 ux
-II
+CD
 ux
 ux
 ux
@@ -9995,13 +10080,13 @@ ux
 ux
 WX
 cu
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 cu
 cu
-He
+FL
 ux
 Zu
 ux
@@ -10022,7 +10107,7 @@ lc
 lc
 ux
 ux
-Ev
+bp
 ux
 ux
 ux
@@ -10060,7 +10145,7 @@ eY
 eY
 ux
 ux
-II
+CD
 ux
 ux
 ux
@@ -10077,13 +10162,13 @@ ux
 ux
 WX
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 cu
-He
+FL
 ux
 ux
 ux
@@ -10104,8 +10189,8 @@ ux
 ux
 Wd
 wK
-la
-Ev
+Et
+bp
 ux
 ux
 HO
@@ -10134,7 +10219,7 @@ eY
 eY
 Zu
 ux
-Mi
+Zk
 yx
 ux
 eY
@@ -10154,16 +10239,16 @@ ux
 ux
 ux
 ux
-ux
+He
 ux
 ux
 WX
 cu
 Xx
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 cu
 WX
 ux
@@ -10217,7 +10302,7 @@ eY
 ux
 ux
 yx
-ux
+rH
 ux
 eY
 eY
@@ -10242,10 +10327,10 @@ ux
 Xx
 cu
 Xx
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 cu
 WX
 ux
@@ -10268,8 +10353,8 @@ ux
 ux
 Wd
 wK
-dz
-dz
+Fe
+Fe
 ux
 ux
 ux
@@ -10310,6 +10395,7 @@ ux
 ux
 ux
 ux
+EL
 ux
 ux
 ux
@@ -10319,15 +10405,14 @@ ux
 ux
 ux
 ux
-ux
-He
+FL
 Xx
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 cu
 WX
 ux
@@ -10350,8 +10435,8 @@ ux
 ux
 Wd
 ux
-dz
-la
+Fe
+Et
 ux
 ux
 ux
@@ -10405,14 +10490,14 @@ ux
 ux
 cu
 cu
-UL
-UL
-UL
+gH
+gH
+gH
 Xx
-UL
+gH
 cu
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -10432,8 +10517,8 @@ ux
 ux
 Wd
 wK
-pY
-la
+wd
+Et
 ux
 ux
 ux
@@ -10484,17 +10569,17 @@ Zu
 ux
 ux
 ux
-He
+FL
 cu
-UL
-UL
-UL
+gH
+gH
+gH
 Xx
 Xx
-UL
-UL
+gH
+gH
 cu
-He
+FL
 ux
 ux
 ux
@@ -10503,7 +10588,7 @@ ux
 Zu
 ux
 ux
-ux
+yV
 ux
 ux
 ux
@@ -10565,18 +10650,18 @@ ux
 ux
 ux
 ux
-He
+FL
 Xx
-UL
-UL
-Xx
-Xx
+gH
+gH
 Xx
 Xx
-UL
-UL
+Xx
+Xx
+gH
+gH
 cu
-He
+FL
 ux
 ux
 ux
@@ -10647,19 +10732,19 @@ ux
 ux
 ux
 ux
-He
+FL
 Xx
-UL
-UL
-Xx
-Xx
+gH
+gH
 Xx
 Xx
-UL
-UL
+Xx
+Xx
+gH
+gH
 Xx
 WX
-He
+FL
 ux
 ux
 ux
@@ -10705,7 +10790,7 @@ ux
 ux
 ux
 ux
-nE
+lO
 ux
 ux
 ux
@@ -10729,19 +10814,19 @@ ux
 ux
 ux
 ux
-He
+FL
 Xx
-UL
-UL
-UL
+gH
+gH
+gH
 Xx
 Xx
-UL
-UL
-UL
+gH
+gH
+gH
 Xx
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -10810,17 +10895,17 @@ ux
 ux
 ux
 ux
-He
+FL
 Xx
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 Xx
 Xx
-UL
-UL
-UL
+gH
+gH
+gH
 Xx
 Xx
 WX
@@ -10894,14 +10979,14 @@ ux
 ux
 WX
 Xx
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 Xx
-UL
-UL
-UL
+gH
+gH
+gH
 Xx
 Xx
 Xx
@@ -10973,21 +11058,21 @@ ux
 ux
 ux
 ux
-He
+FL
 WX
 cu
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
 Xx
-UL
-UL
-UL
+gH
+gH
+gH
 Xx
 Xx
 Xx
-He
+FL
 ux
 ux
 ux
@@ -11056,20 +11141,20 @@ ux
 ux
 ux
 WX
-He
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -11140,18 +11225,18 @@ ux
 WX
 cu
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -11218,21 +11303,21 @@ ux
 ux
 ux
 ux
-He
+FL
 WX
 cu
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
-He
+FL
 ux
 ux
 ux
@@ -11300,20 +11385,20 @@ ux
 ux
 ux
 ux
-He
-He
+FL
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
-He
+FL
 ux
 ux
 ux
@@ -11321,7 +11406,7 @@ ux
 ux
 ux
 jT
-ux
+AZ
 ux
 ux
 ux
@@ -11332,10 +11417,10 @@ eY
 eY
 ux
 ux
-Rg
+Yn
 wK
 wK
-bk
+wN
 ux
 ux
 ux
@@ -11382,20 +11467,20 @@ ux
 ux
 ux
 ux
-He
+FL
 cu
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
-He
+FL
 ux
 ux
 ux
@@ -11413,9 +11498,9 @@ eY
 eY
 Zu
 ux
-cB
-FQ
-lD
+Ne
+cI
+Ax
 mZ
 UE
 wK
@@ -11464,20 +11549,20 @@ ux
 ux
 ux
 ux
-He
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
-He
+FL
 ux
 ux
 ux
@@ -11495,10 +11580,10 @@ eY
 eY
 ux
 ux
-cB
-FQ
-FQ
-xr
+Ne
+cI
+cI
+PH
 ux
 ux
 ux
@@ -11535,31 +11620,31 @@ jT
 jT
 ux
 ux
-ux
-ux
-ux
-ux
-ux
-ux
-ux
-ux
+la
+Zf
+nW
 ux
 ux
 ux
 He
+ux
+ux
+ux
+ux
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -11577,11 +11662,11 @@ eY
 eY
 ux
 ux
-cB
+Ne
 Jh
 Jh
 Jh
-QL
+mV
 lc
 lc
 lc
@@ -11613,12 +11698,12 @@ ux
 ux
 UE
 ux
-Xw
+hx
 ux
 ux
 ux
-ux
-ux
+xA
+vK
 ux
 ux
 ux
@@ -11628,19 +11713,19 @@ ux
 ux
 ux
 ux
-gH
+Sx
+hj
+Sx
+Sx
+hM
+Sx
+Sx
+hM
+Sx
+Sx
+hj
+Sx
 FL
-gH
-gH
-Ez
-gH
-gH
-Ez
-gH
-gH
-FL
-gH
-He
 ux
 ux
 ux
@@ -11660,9 +11745,9 @@ ux
 ux
 ux
 ux
-yD
-yD
-yD
+ET
+ET
+ET
 ux
 ux
 ux
@@ -11700,8 +11785,8 @@ ux
 ux
 ux
 ux
-ux
-ux
+lp
+la
 ux
 ux
 Zu
@@ -11710,18 +11795,18 @@ ux
 ux
 ux
 ux
-ET
-CS
-Ig
-CO
-CS
-Ig
-Ig
-CO
-CO
-CO
-qG
-ET
+Nb
+uA
+Ez
+Ez
+uA
+Ez
+Ez
+pE
+Ez
+Ez
+nw
+Nb
 ux
 ux
 ux
@@ -11764,7 +11849,7 @@ ux
 gP
 ux
 Zu
-Bg
+Sl
 ux
 ux
 ux
@@ -11792,18 +11877,18 @@ ux
 ux
 ux
 ux
-ET
+Nb
 dm
-Eh
-HP
-HP
-Eh
-UL
-HP
-Eh
-Eh
-HP
-ET
+gH
+gH
+Qu
+YS
+gH
+Qu
+YS
+YS
+Qu
+Nb
 ux
 ux
 ux
@@ -11874,18 +11959,18 @@ ux
 jT
 jT
 jT
-Tx
-sF
-EX
-EX
-hE
-uF
-vc
-hE
-vc
-vc
-RF
-vG
+TG
+QG
+gU
+Kn
+Ze
+xV
+gU
+gU
+gU
+gU
+ru
+cq
 ux
 ux
 ux
@@ -11925,10 +12010,10 @@ ux
 (49,1,2) = {"
 Zu
 ux
-zc
-Ei
-Ei
-wA
+nY
+FT
+FT
+DD
 ux
 Zu
 ux
@@ -11939,7 +12024,7 @@ eY
 eY
 ux
 ux
-II
+CD
 ux
 ux
 Zu
@@ -11956,18 +12041,18 @@ ux
 jT
 jT
 jT
-gH
-km
-gH
-gH
-BK
-gH
-gH
-BK
-gH
-gH
-km
-gH
+Sx
+mG
+Sx
+Sx
+Rb
+Sx
+Sx
+Rb
+Sx
+Sx
+mG
+Sx
 ux
 ux
 ux
@@ -11976,7 +12061,7 @@ ux
 ux
 ux
 ux
-II
+CD
 ux
 ku
 ux
@@ -12036,17 +12121,17 @@ ux
 ux
 ux
 ux
-He
+FL
 cu
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 WX
 WX
@@ -12118,17 +12203,17 @@ ux
 ux
 ux
 ux
-He
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 WX
 WX
@@ -12187,7 +12272,7 @@ ux
 ux
 ux
 ux
-Lu
+bU
 ux
 ux
 ux
@@ -12202,17 +12287,17 @@ ux
 ux
 cu
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 Xx
-He
+FL
 ux
 ux
 ux
@@ -12281,19 +12366,19 @@ ux
 ux
 ux
 ux
-He
+FL
 cu
-UL
-UL
-UL
-HX
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+Rc
+gH
+gH
+gH
+gH
+gH
 cu
-He
+FL
 WX
 ux
 ux
@@ -12362,20 +12447,20 @@ ux
 ux
 ux
 ux
-He
-He
+FL
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
-He
+FL
 ux
 ux
 ux
@@ -12446,13 +12531,13 @@ ux
 ux
 ux
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 cu
@@ -12475,9 +12560,9 @@ ux
 ux
 ux
 ux
-ux
-ux
-ux
+vB
+vB
+vB
 ux
 ux
 ux
@@ -12510,6 +12595,12 @@ eY
 eY
 ux
 ux
+tK
+ux
+ux
+ux
+Zu
+ux
 ux
 ux
 ux
@@ -12520,21 +12611,15 @@ ux
 ux
 ux
 ux
-Zu
-ux
-ux
-ux
-ux
-ux
-He
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
@@ -12544,7 +12629,7 @@ ux
 ux
 ux
 ux
-He
+ux
 ux
 ux
 ux
@@ -12556,11 +12641,11 @@ ux
 ux
 ux
 ux
-ux
-ux
-ux
-ux
-ux
+DG
+uz
+uz
+uz
+On
 ux
 ux
 ux
@@ -12582,7 +12667,7 @@ ux
 ux
 ux
 ux
-ux
+tK
 ux
 ux
 eY
@@ -12610,11 +12695,11 @@ ux
 ux
 cu
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
@@ -12638,11 +12723,11 @@ ux
 ux
 ux
 ux
-Xh
-ux
-ux
-ux
-ux
+DG
+uz
+Gy
+uz
+On
 ux
 ux
 ux
@@ -12691,11 +12776,11 @@ ux
 ux
 ux
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
@@ -12720,11 +12805,11 @@ ux
 ux
 ux
 ux
-ux
-ux
-ux
-ux
-ux
+DG
+uz
+uz
+uz
+On
 ux
 ux
 ux
@@ -12773,11 +12858,11 @@ ux
 ux
 cu
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
@@ -12803,9 +12888,9 @@ Zu
 ux
 ux
 ux
-ux
-ux
-ux
+Fl
+Fl
+Fl
 ux
 ux
 ux
@@ -12854,18 +12939,18 @@ ux
 ux
 cu
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
 Xx
 Xx
 WX
-He
+FL
 ux
 ux
 ux
@@ -12935,19 +13020,19 @@ ux
 ux
 ux
 cu
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
 Xx
-He
+FL
 WX
-He
+FL
 ux
 ux
 ux
@@ -12959,8 +13044,8 @@ ux
 ux
 eY
 eY
-eY
-zC
+ux
+ux
 ux
 ux
 ux
@@ -13016,18 +13101,18 @@ ux
 ux
 WX
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
 Xx
 Xx
-He
+FL
 ux
 ux
 ux
@@ -13098,18 +13183,18 @@ ux
 ux
 WX
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 Xx
 Xx
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -13177,20 +13262,20 @@ ux
 ux
 ux
 ux
-He
+FL
 WX
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 Xx
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -13261,17 +13346,17 @@ ux
 ux
 WX
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
-He
-He
+FL
+FL
 ux
 ux
 jT
@@ -13290,7 +13375,7 @@ ku
 ux
 Zu
 ux
-ux
+Xh
 ux
 ux
 ux
@@ -13317,7 +13402,7 @@ ux
 ux
 "}
 (66,1,2) = {"
-mV
+Ru
 ZS
 ZS
 ux
@@ -13343,16 +13428,16 @@ ux
 ux
 WX
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
-He
-He
+FL
+FL
 ux
 ux
 ux
@@ -13399,8 +13484,8 @@ ux
 ux
 "}
 (67,1,2) = {"
-mV
-mV
+Ru
+Ru
 ZS
 ZS
 ux
@@ -13425,12 +13510,12 @@ ux
 ux
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 gP
@@ -13482,8 +13567,8 @@ ux
 "}
 (68,1,2) = {"
 kS
-mV
-mV
+Ru
+Ru
 ZS
 ZS
 ux
@@ -13506,13 +13591,13 @@ ux
 UE
 UE
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 cu
@@ -13565,8 +13650,8 @@ ux
 (69,1,2) = {"
 kS
 kS
-mV
-mV
+Ru
+Ru
 ZS
 ZS
 ux
@@ -13588,12 +13673,12 @@ ux
 UE
 QZ
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 WX
 WX
@@ -13648,8 +13733,8 @@ ux
 kS
 kS
 kS
-mV
-mV
+Ru
+Ru
 Yw
 ef
 UE
@@ -13667,14 +13752,14 @@ ux
 ux
 ux
 ux
-cs
+UL
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 WX
@@ -13731,8 +13816,8 @@ kS
 kS
 kS
 kS
-mV
-mV
+Ru
+Ru
 ZS
 ZS
 ux
@@ -13748,14 +13833,14 @@ ux
 ux
 ux
 ux
-Ru
-UL
-UL
-UL
-UL
 HX
-UL
-UL
+gH
+gH
+gH
+gH
+Rc
+gH
+gH
 cu
 cu
 ux
@@ -13789,7 +13874,7 @@ ux
 ux
 ux
 UE
-nE
+lO
 Ka
 ux
 ux
@@ -13814,8 +13899,8 @@ kS
 kS
 kS
 kS
-mV
-mV
+Ru
+Ru
 ZS
 ZS
 ux
@@ -13831,13 +13916,13 @@ ux
 ux
 ux
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 Zu
@@ -13897,8 +13982,8 @@ lx
 YF
 Mu
 vh
-mV
-mV
+Ru
+Ru
 rb
 ZS
 ux
@@ -13911,15 +13996,15 @@ jT
 Zu
 ux
 ux
-He
+FL
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 ux
@@ -13969,7 +14054,7 @@ ux
 ux
 Zu
 ux
-ux
+tK
 ux
 "}
 (74,1,2) = {"
@@ -13980,8 +14065,8 @@ wG
 Gg
 kS
 kS
-ZN
-ZN
+Jn
+Jn
 ZS
 ZS
 ux
@@ -13992,15 +14077,15 @@ jT
 ux
 ux
 ux
-He
+FL
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 WX
@@ -14048,7 +14133,7 @@ ux
 sy
 Zu
 Ka
-NE
+RS
 ux
 ux
 ux
@@ -14063,8 +14148,8 @@ xQ
 kS
 ZY
 xw
-mV
-mV
+Ru
+Ru
 ZS
 ZS
 ux
@@ -14073,16 +14158,16 @@ jT
 ux
 ux
 ux
-He
+FL
 Xx
 Xx
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 WX
@@ -14130,7 +14215,7 @@ ux
 ux
 ux
 Zu
-ix
+ES
 ux
 ux
 Zu
@@ -14146,24 +14231,24 @@ kS
 xw
 kS
 kS
-mV
-mV
+Ru
+Ru
 ZS
 BE
 ux
 jT
 ux
 jT
-He
+FL
 Xx
 Xx
 cu
 cu
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 cu
@@ -14229,23 +14314,23 @@ kS
 kS
 kS
 MN
-mV
+Ru
 zM
 ZS
-If
+PX
 ux
 ux
-He
+FL
 Xx
 Xx
 cu
 cu
-UL
-UL
-HX
-UL
-UL
-UL
+gH
+gH
+Rc
+gH
+gH
+gH
 cu
 ux
 ux
@@ -14312,21 +14397,21 @@ kS
 kS
 kS
 kS
-wb
-mV
-fo
+ZC
+Ru
+ct
 ZS
 ux
-He
+FL
 Xx
 Xx
 cu
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 ux
@@ -14378,7 +14463,7 @@ Zu
 ux
 ux
 ux
-ux
+EL
 ux
 ux
 "}
@@ -14395,20 +14480,20 @@ kS
 kS
 xw
 kS
-mV
-mV
+Ru
+Ru
 ZS
-rU
+cZ
 Xx
 cu
 cu
 cu
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 WX
@@ -14478,18 +14563,18 @@ kS
 kS
 kS
 kS
-mV
-iy
-Nq
-Nq
+Ru
+Xf
+Pk
+Pk
 cu
-UL
-UL
-UL
-UL
-UL
-UL
-UL
+gH
+gH
+gH
+gH
+gH
+gH
+gH
 cu
 cu
 ux
