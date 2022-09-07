@@ -35,6 +35,8 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 			J.whitelisted = FALSE
 			J.max_positions = 30
 			J.total_positions = 30
+		if (J.title == "Bank Robber")
+			. = FALSE
 	else
 		. = FALSE
 
@@ -89,7 +91,6 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 ////////////////////////////////Jobs and stuff//////////////////////////////////////////////////
 
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
 	H.equip_to_slot_or_del(new /obj/item/weapon/paper/police/searchwarrant/drug(H), slot_r_hand)
 
 /obj/item/weapon/paper/police/searchwarrant/drug
