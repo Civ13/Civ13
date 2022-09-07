@@ -2449,7 +2449,6 @@
 	H.civilization = "Police Department"
 	give_random_name(H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/swat_new(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat_new(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
@@ -2463,10 +2462,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/swat_new(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/swat_new(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/swat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
+	if(prob(65))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/mp5(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/m16(H), slot_belt)
 	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective are to arrest (or deal justice to) as many criminals as possible!")
 
 	H.setStat("strength", STAT_HIGH)

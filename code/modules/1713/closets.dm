@@ -20,6 +20,7 @@
 	icon_closed = "medical_wall"
 	icon_opened = "medical_wall"
 	anchored = TRUE
+	density =  FALSE
 	New()
 		..()
 		new /obj/item/weapon/storage/firstaid/advsmall(src)
@@ -46,6 +47,7 @@
 			has_extinguisher = O
 			to_chat(user, "<span class='notice'>You place [O] in [src].</span>")
 			playsound(src.loc, 'sound/effects/extin.ogg', 50, 0)
+			density = FALSE
 		else
 			opened = !opened
 	else

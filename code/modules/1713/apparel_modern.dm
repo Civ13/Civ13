@@ -1215,10 +1215,10 @@
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
 
-/obj/item/weapon/storage/belt/police/swat
+/obj/item/weapon/storage/belt/police/m16
 	icon_state = "swatbelt"
 	item_state = "swatbelt"
-/obj/item/weapon/storage/belt/police/swat/New()
+/obj/item/weapon/storage/belt/police/m16/New()
 	..()
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
@@ -1227,6 +1227,22 @@
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/flashbang(src)
+	new /obj/item/weapon/grenade/coldwar/stinger(src)
+
+/obj/item/weapon/storage/belt/police/mp5
+	icon_state = "swatbelt"
+	item_state = "swatbelt"
+/obj/item/weapon/storage/belt/police/mp5/New()
+	..()
+	new /obj/item/flashlight/modern(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/mp40/mp5(src)
+	new /obj/item/ammo_magazine/mp40/mp5(src)
 	new /obj/item/weapon/grenade/flashbang(src)
 	new /obj/item/weapon/grenade/flashbang(src)
 	new /obj/item/weapon/grenade/coldwar/stinger(src)
