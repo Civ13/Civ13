@@ -933,7 +933,7 @@
 	mainbody = ""
 	var/u_account = user.civilization
 	if (user.original_job_title == "Legitimate Business")
-		u_account = user.name
+		u_account = user.real_name
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
@@ -1308,12 +1308,12 @@
 			sleep(0.5)
 			do_html(user)
 			return
-		else if  (user.civilization in map.warrants)
+		else if (user.civilization in map.warrants)
 			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked, and the issue of new ones has been suspended due to the murder of a law enforcement officer.</font>"
 			sleep(0.5)
 			do_html(user)
 			return
-		else if  (user.real_name in map.warrants)
+		else if (user.real_name in map.warrants)
 			mainbody += "<font color='red'>You have, or had, a warrant in your name, so your request was <b>denied</b>.</font>"
 			sleep(0.5)
 			do_html(user)
@@ -1439,9 +1439,9 @@
 				return
 			else
 				var/list/civilians = list("Cancel")
-				var/list/crimelist = list("Cancel","Assault","Murder","Manslaugther","Kidnapping","Hostage taking","Terrorism","Arson","Fleeing & Eluding","Jailbreak","Private Property Damage","Public Property Damage","Vandalism","General Traffic Violation","Threat of Death or Bodily Harm","Trespassing","Grand Theft Auto","Possession of illegal disks","Possession of narcotics","Possession of illegal firearms","Distribution of illegal disks","Distribution of narcotics","Distribution of illegal firearms","Obstruction of Justice","Theft","Contempt of Court","Tax evasion","Medical malpractice","Neglect of duties")
+				var/list/crimelist = list("Cancel","Assault","Murder","Manslaugther","Kidnapping","Hostage taking","Terrorism","Arson","Fleeing & Eluding","Jailbreak","Private Property Damage","Public Property Damage","Vandalism","General Traffic Violation","Threat of Death or Bodily Harm","Trespassing","Grand Theft Auto","Possession of illegal disks","Possession of narcotics","Possession of illegal firearms","Distribution of illegal disks","Distribution of narcotics","Distribution of illegal firearms","Obstruction of Justice","Theft","Contempt of Court","Tax evasion","Medical malpractice","Neglect of duties","Police misconduct")
 				for (var/mob/living/human/M in world)
-					if(M.civilization != "Sheriff Office" && M.civilization != "Government")
+					if(M.stat != DEAD)
 						civilians += M
 				var/choice = WWinput(usr, "Who to issue a warrant for?","Assign a person","Cancel",civilians)
 				if (choice == "Cancel" || !choice)
@@ -1476,7 +1476,10 @@
 							RW2.info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Arrest Warrant No. [RW2.arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to detain <b>[RW2.tgt]</b>, working for <b><i>[RW2.tgtcmp]</i></b>, for the following reasons:<br><br><i>- [RW2.reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Law Enforcement Agencies shall bring <b>[RW2.tgt]</b> forthwith to the local station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
 							map.pending_warrants += RW2
 							RW2.forceMove(null)
-							global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [RW2.tgt], working for [RW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+							if (U.original_job_title != "Legal Business")
+								global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [RW2.tgt], working for [RW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+							else
+								global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [RW2.tgt], please detain the suspect as soon as possible.</big>")
 							mainbody += "<font color='yellow'>Warrant has been issued for [RW2.tgt].</font>"
 							sleep(0.5)
 							do_html(user)
