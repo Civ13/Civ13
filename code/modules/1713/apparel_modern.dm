@@ -1308,6 +1308,22 @@
 	restricts_view = 2
 	health = 90
 
+/obj/item/clothing/under/trackpants
+	name = "track pants"
+	desc = "A shirt with tracksuit pants."
+	item_state = "trackpants"
+	icon_state = "trackpants"
+	worn_state = "trackpants"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/suit/storage/jacket/tracksuit
+	name = "track suit"
+	desc = "A sporty track suit."
+	item_state = "tracksuit"
+	icon_state = "tracksuit"
+	worn_state = "tracksuit"
+	body_parts_covered = UPPER_TORSO|ARMS
+
 /obj/item/clothing/under/tacti
 	name = "tactical outfit"
 	desc = "A outfit used by tactical units."
