@@ -57,15 +57,15 @@
 	desc = "Controls nearby garage shutters"
 
 /obj/structure/gatecontrol/blastcontrol/garage/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 50)
+	if (cooldown <= world.time - 60)
 		if (open)
 			visible_message("[user] closes the shutters!")
 			open = FALSE
 			cooldown = world.time
 			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 				G.icon_state = "garage_closing"
-				spawn(1.18)
-					playsound(loc, 'sound/effects/lever.ogg', 100)
+				playsound(loc, 'sound/effects/garage.ogg', 100)
+				spawn(13)
 					G.icon_state = "garage_closed"
 					G.density = TRUE
 					G.opacity = TRUE
@@ -76,8 +76,8 @@
 			cooldown = world.time
 			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 				G.icon_state = "garage_opening"
-				spawn(1.18)
-					playsound(loc, 'sound/effects/rollermove.ogg', 100)
+				playsound(loc, 'sound/effects/garage.ogg', 100)
+				spawn(13)
 					G.icon_state = "garage_open"
 					G.density = FALSE
 					G.opacity = FALSE

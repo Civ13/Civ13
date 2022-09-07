@@ -1035,7 +1035,7 @@
 
 /obj/structure/machinery/forklift
 	name = "forklift"
-	desc = "'A lift for forks', this one seems to be out of battery, missing the fuel tank, spark plugs an-- OH! And the engine is missing too."
+	desc = "'A lift for forks', this one seems to be out of battery, missing the fuel tank, spark plugs an-- Oh! And the engine is missing too."
 	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "forklift"
 	density = TRUE
