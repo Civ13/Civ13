@@ -84,7 +84,7 @@
 //extra
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 
-	H.add_note("Role", "You are a <b>[title]</b>, one day you and your mates thought that robbing a bank was a good idea!")
+	H.add_note("Role", "You are a <b>[title]</b>. One day your boss Grigoriev told you to go rob a local bank, so you did!")
 	H.add_note("Objective", "Steal 10.000 from the bank's vault!")
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
