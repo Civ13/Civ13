@@ -140,7 +140,8 @@
 				W.loc = src
 				loaded = W
 				M << "You load the [src]."
-				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+				playsound(loc, "loaded_voice", 100, TRUE)
 				return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
