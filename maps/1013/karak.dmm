@@ -136,7 +136,7 @@
 "cF" = (/obj/structure/multiz/stairs_wood{icon_state = "wood2_stairs"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/crusader/sand)
 "cG" = (/obj/structure/barricade,/obj/structure/sign/flag/jihad1,/turf/floor/dirt/dust,/area/caribbean/forest/dirt)
 "cH" = (/obj/structure/multiz/stairs_wood{icon_state = "wood2_stairs"; dir = 4},/turf/floor/beach/sand,/area/caribbean/crusader/sand)
-"cI" = (/obj/structure/table/rack,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/turf/floor/beach/sand,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
+"cI" = (/obj/structure/table/rack,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/turf/floor/beach/sand,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "cJ" = (/turf/floor/dirt/dust,/turf/floor/beach/water/coastwater/layer{dir = 1},/area/caribbean/forest/dirt)
 "cK" = (/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Walls"})
 "cL" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/dust,/area/caribbean/forest/dirt)
