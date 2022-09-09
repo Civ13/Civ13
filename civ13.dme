@@ -490,6 +490,7 @@
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads_stranded.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
+#include "code\game\objects\map_metadata\oasis.dm"
 #include "code\game\objects\map_metadata\occupation.dm"
 #include "code\game\objects\map_metadata\omaha.dm"
 #include "code\game\objects\map_metadata\ong_thahn.dm"
