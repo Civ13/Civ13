@@ -276,6 +276,15 @@
 	worn_state = "arab2"
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/suit/storage/arabic_robe
+	name = "light white arabic robe"
+	desc = "A light, white, loose fitting garment for keeping the sun off."
+	icon = 'icons/obj/clothing/uniforms.dmi'
+	icon_state = "arab2"
+	item_state = "arab2"
+	worn_state = "arab2"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
 /obj/item/clothing/suit/storage/jacket/plaguedoctor //moved from jobs.dm
 	name = "plague doctor suit"
 	desc = "Used by plague doctors. Only adds to the mystery behind their methods."
@@ -1440,6 +1449,25 @@
 				/obj/item/clothing/shoes/medieval/knight = 1,
 				/obj/item/weapon/material/sword/longsword/iron = 1,
 				/obj/item/weapon/shield/iron/semioval = 1,)
+
+/obj/structure/closet/crate/equipment/mamluk_armor
+	name = "mamluk's equipment crate"
+	paths = list(/obj/item/clothing/head/helmet/medieval = 1,
+				/obj/item/clothing/suit/armor/medieval/hauberk = 1,
+				/obj/item/clothing/under/medieval/arabic_tunic = 1,
+				/obj/item/clothing/shoes/medieval/knight = 1,
+				/obj/item/weapon/material/sword/saif = 1,
+				/obj/item/weapon/material/spear/sarissa/pike = 1,
+				/obj/item/weapon/shield/arab_buckler = 1,)
+
+/obj/structure/closet/crate/equipment/sayaf
+	name = "sayaf's equipment crate"
+	paths = list(/obj/item/clothing/head/helmet/medieval/arab = 1,
+				/obj/item/clothing/suit/armor/medieval/chainmail = 1,
+				/obj/item/clothing/under/medieval/arab2 = 1,
+				/obj/item/clothing/shoes/medieval/arab = 1,
+				/obj/item/weapon/material/sword/scimitar = 1,
+				/obj/item/weapon/shield/arab_buckler = 1,)
 
 /* Extra-Cultural Medieval Clothes*/
 
