@@ -114,6 +114,48 @@
 		new /obj/item/weapon/material/kitchen/utensil/knife/razorblade( src )
 		new /obj/item/weapon/haircomb( src )
 
+/obj/item/weapon/storage/emergencykit
+	name = "emergency kit"
+	desc = "Bandages and a little something to keep you going."
+	icon_state = "shaving_kit"
+	item_state = "shaving_kit"
+	max_storage_space = 4
+	w_class = 2
+	slot_flags = SLOT_ID
+	can_hold = new/list(
+	/obj/item/stack/medical/bruise_pack/bint,
+	/obj/item/weapon/reagent_containers/food/snacks/hardtack
+	)
+
+/obj/item/weapon/storage/emergencykit/base
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/bint/leather( src )
+/obj/item/weapon/storage/emergencykit/base/generic
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/hardtack( src )
+/obj/item/weapon/storage/emergencykit/base/french
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknwine( src )
+/obj/item/weapon/storage/emergencykit/base/arabrich
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknopium( src )
+/obj/item/weapon/storage/emergencykit/base/arab
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknkhat( src )
+/obj/item/weapon/storage/emergencykit/base/brit
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknbeer( src )
+/obj/item/weapon/storage/emergencykit/base/germ
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknale( src )
+
 /obj/item/weapon/reagent_containers/glass/small_pot/german_kit_lid
 	desc = "A lid to the german messkit. Can be used as a pot to boil water."
 	name = "Messkit Lid"

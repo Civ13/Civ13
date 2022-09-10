@@ -693,8 +693,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt/black(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa/pike(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa/pike(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a germanic spearman.")
 

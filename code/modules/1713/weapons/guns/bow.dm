@@ -111,6 +111,7 @@
 	flammable = TRUE
 	load_delay = 10
 	projtype = "arrow"
+	w_class = 3
 
 
 /obj/item/weapon/gun/projectile/bow/longbow

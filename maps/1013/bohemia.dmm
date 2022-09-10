@@ -428,7 +428,7 @@
 "il" = (/obj/covers/cobblestone,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/grass,/area/caribbean/void/caves)
 "im" = (/obj/covers/cobblestone,/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/grass,/area/caribbean/void/caves)
 "in" = (/obj/covers/cobblestone,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/grass,/area/caribbean/void/caves)
-"io" = (/obj/covers/cobblestone,/obj/structure/closet/cabinet,/obj/item/weapon/material/halberd,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/shoes/medieval/knight,/obj/item/clothing/head/helmet/medieval/helmet1,/obj/item/clothing/gloves/gauntlets,/obj/item/clothing/under/medieval/red2,/turf/floor/grass,/area/caribbean/void/caves)
+"io" = (/obj/covers/cobblestone,/obj/structure/closet/cabinet,/obj/item/weapon/material/spear/halberd,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/shoes/medieval/knight,/obj/item/clothing/head/helmet/medieval/helmet1,/obj/item/clothing/gloves/gauntlets,/obj/item/clothing/under/medieval/red2,/turf/floor/grass,/area/caribbean/void/caves)
 "ip" = (/obj/covers/cobblestone,/obj/structure/closet/crate/rations/ale,/turf/floor/grass,/area/caribbean/void/caves)
 "iq" = (/obj/covers/cobblestone,/obj/structure/closet/crate/arrows/steel,/turf/floor/grass,/area/caribbean/void/caves)
 "ir" = (/obj/covers/cobblestone,/obj/structure/closet/crate/rations/beer,/turf/floor/grass,/area/caribbean/void/caves)

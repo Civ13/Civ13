@@ -368,6 +368,51 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		..()
 		icon_state = "hardtack[rand(1,2)]"
 
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknale
+	name = "hardtack soaked in ale"
+	desc = "Looks like it has been in a ship's hull for years. You soaked some ale into it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("ale", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknwine
+	name = "hardtack soaked in wine"
+	desc = "Looks like it has been in a ship's hull for years. You soaked some ale into it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("wine", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknbeer
+	name = "hardtack soaked in beer"
+	desc = "Looks like it has been in a ship's hull for years. You soaked some ale into it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("beer", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknopium
+	name = "hardtack with an opium smear"
+	desc = "Looks like it has been in a ship's hull for years. You smeared opium onto it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("opium", 0.01)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknkhat
+	name = "hardtack with an opium smear"
+	desc = "Looks like it has been in a ship's hull for years. You smeared khat leaves onto it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("cocaine", 0.01)
+
 /obj/item/weapon/reagent_containers/food/snacks/driedmeat
 	name = "dried meat"
 	desc = "Dried meat. Probably pork. Or mice."

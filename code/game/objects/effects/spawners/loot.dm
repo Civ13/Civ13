@@ -30,7 +30,7 @@
 
 /obj/effect/spawner/lootdrop/melee/medieval
 	name = "melee spawner"
-	loot = list(/obj/item/weapon/material/sword/armingsword,/obj/item/weapon/material/sword/longsword,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/saif,/obj/item/weapon/material/sword/broadsword,/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/zweihander,/obj/item/weapon/melee/mace,/obj/item/weapon/material/pike,/obj/item/weapon/material/halberd,/obj/item/weapon/material/hatchet/battleaxe)
+	loot = list(/obj/item/weapon/material/sword/armingsword,/obj/item/weapon/material/sword/longsword,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/saif,/obj/item/weapon/material/sword/broadsword,/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/zweihander,/obj/item/weapon/melee/mace,/obj/item/weapon/material/spear/sarissa/pike,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/hatchet/battleaxe)
 
 /obj/effect/spawner/lootdrop/ammo
 	name = "ammo spawner"

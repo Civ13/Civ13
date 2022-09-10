@@ -717,15 +717,33 @@ var/global/FREQM = rand(101,120)
 	..()
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+/obj/item/weapon/radio/walkietalkie/faction1/earradio1
+	desc = "A radio that fits around your ears."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "earmuffs"
+	item_state = "earmuffs"
+	slot_flags = SLOT_EARS | SLOT_TWOEARS
+	var/ear_safety = 2
+
 /obj/item/weapon/radio/walkietalkie/faction2/New()
 	..()
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
+/obj/item/weapon/radio/walkietalkie/faction2/earradio2
+	desc = "A radio that fits around your ears."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "earmuffs"
+	item_state = "earmuffs"
+	slot_flags = SLOT_EARS | SLOT_TWOEARS
+	var/ear_safety = 2
+
 /obj/item/weapon/radio/walkietalkie/factionred/New()
 	..()
 	freq = FREQR
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
 /obj/item/weapon/radio/walkietalkie/factionblue/New()
 	..()
 	freq = FREQB

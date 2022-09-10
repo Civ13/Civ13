@@ -109,8 +109,8 @@ var/global/list/anvil_recipes = list(
 	"Kukri Machete" = list("Kukri Machete","machetes",4,5,12,12,0,0,/obj/item/weapon/material/sword/kukri),
 	"Reproduction Kukri Machete" = list("Reproduction Kukri Machete","machetes",6,8,16,16,0,0,/obj/item/weapon/material/sword/kukri), //price inflated +4 out of era
 
-	"Halberd" = list("Halberd","other weapons",2,3,14,10,0,0,/obj/item/weapon/material/halberd),
-	"Pike" = list("Pike","other weapons",2,2,14,12,0,0,/obj/item/weapon/material/pike),
+	"Halberd" = list("Halberd","other weapons",2,3,14,10,0,0,/obj/item/weapon/material/spear/halberd),
+	"Pike" = list("Pike","other weapons",2,2,14,12,0,0,/obj/item/weapon/material/spear/sarissa/pike),
 	"Boarding Axe" = list("Boarding Axe","other weapons",3,3,8,0,0,0,/obj/item/weapon/material/boarding_axe),
 	"Naginata" = list("Naginata","other weapons",2,3,16,14,0,0,/obj/item/weapon/material/naginata),
 
