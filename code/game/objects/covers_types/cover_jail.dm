@@ -87,9 +87,9 @@
 	opacity = TRUE
 	amount = 1
 	layer = 3
-	health = 200
+	health = 6
 	wall = TRUE
-	explosion_resistance = 5
+	explosion_resistance = 0
 	buildstackamount = 8
 	buildstack = /obj/item/stack/material/wood
 	opacity = 0
