@@ -385,7 +385,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/broadsword(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/emergencykit/base/french(H), slot_wear_id)
 	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -727,7 +726,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_l_hand)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/emergencykit/base/french(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
 	uniform.attackby(h, H)
