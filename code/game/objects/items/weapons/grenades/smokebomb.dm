@@ -131,6 +131,13 @@
 	slot_flags = SLOT_BELT
 	var/spread_range = 2
 
+/obj/item/weapon/grenade/incendiary/incendiarydetonator
+	name = "Incendiary Detonator"
+	desc = "A grenade-like incendiary weapon popular among military personnel, criminals, bountyhunters, and mercenaries."
+	icon_state = "detonator"
+	det_time = 35
+	throw_range = 12
+
 /obj/item/weapon/grenade/incendiary/anm14
 	name = "AN/M14 incendiary grenade"
 
