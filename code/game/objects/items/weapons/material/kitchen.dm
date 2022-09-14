@@ -228,7 +228,7 @@
 	default_material = "iron"
 
 /obj/item/weapon/material/kitchen/utensil/knife/dagger
-	name = "bowie knife"
+	name = "dagger"
 	desc = "A long, sharp, swordlike knife that is used for cqc."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "dagger"
