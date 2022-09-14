@@ -187,6 +187,19 @@
 	volume = 70
 	flammable = TRUE
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/cognac
+	name = "cognac skin"
+	desc = "A leather for holding your cognac reserves."
+	New()
+		..()
+		reagents.add_reagent("cognac", 70)
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/tea
+	name = "tea skin"
+	desc = "A leather skin for holding your tea reserves."
+	New()
+		..()
+		reagents.add_reagent("tea", 120)
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug
 	name = "mug"
 	desc = "A clay mug."

@@ -1335,4 +1335,6 @@
 	sound_env = FOREST
 	icon_state = "blue1"
 	dynamic_lighting = TRUE
+	climate = "tundra"
+	location = AREA_OUTSIDE
 	ambience = list()

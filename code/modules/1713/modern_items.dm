@@ -247,7 +247,10 @@
 	brightness_color = "#ffffff"
 /obj/structure/lamp/lamp_small/alwayson/red
 	brightness_color = "#da0205"
-
+/obj/structure/lamp/lamp_small/alwayson/space
+	icon_state = "spacelights"
+	base_icon = "spacelights"
+	brightness_color = "bee9e4"
 /obj/structure/lamp/lamp_small/tank
 	powerneeded = 1
 	var/obj/structure/engine/connection = null
@@ -1101,7 +1104,7 @@
 			return
 		if (checkmob(H))
 			bleep()
-	
+
 	proc/bleep()
 		icon_state = "metal_detector2"
 		playsound(loc, 'sound/machines/metal_detector.ogg', 100, 0)

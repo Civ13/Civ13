@@ -62,7 +62,7 @@
 	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/scalpel",100),
 		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
-		3 = list("/obj/item/weapon/material/knife",75),
+		3 = list("/obj/item/weapon/material/kitchen/utensil/knife",75),
 		4 = list("/obj/item/weapon/material/shard",50),
 	)
 

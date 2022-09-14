@@ -38,7 +38,7 @@
 	item_state = "buckler"
 	var/base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_BACK | SLOT_ACCESSORY
 	var/material = "wood"
 	health = 20 // hardness of wood
 	var/cooldown = 0
@@ -209,6 +209,7 @@
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
+	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY
 
 /obj/item/weapon/shield/chimalli
 	name = "chimalli"
@@ -298,7 +299,7 @@
 
 /* Nomads Semi Oval & Medieval Shields -End*/
 
-obj/item/weapon/shield/red_buckler
+/obj/item/weapon/shield/red_buckler
 	name = "red buckler shield"
 	icon_state = "red_buckler"
 	item_state = "red_buckler"
@@ -307,12 +308,14 @@ obj/item/weapon/shield/red_buckler
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
+	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY
 
 obj/item/weapon/shield/blue_buckler
 	name = "blue buckler shield"
 	icon_state = "blue_buckler"
 	item_state = "blue_buckler"
 	base_block_chance = 25
+	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY
 	w_class = 2.0
 	material = "wood"
 	health = 20 // hardness of wood
@@ -329,6 +332,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	icon_state = "arabic_shield"
 	item_state = "arabic_shield"
 	base_block_chance = 30
+	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY | SLOT_ACCESSORY
 	w_class = 2.0
 	material = "wood"
 	health = 20 // hardness of wood

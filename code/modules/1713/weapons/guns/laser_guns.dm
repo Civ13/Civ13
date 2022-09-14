@@ -288,8 +288,23 @@
 	last_fire = world.time
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/repeating_laser
-	name = "repreating laser"
+	name = "repeating laser"
 	desc = "A stationary repeating laser, a turret firing tibanna gas cartridge lasers."
+	icon_state = "repeating_blaster"
+	base_icon = "repeating_blaster"
+	caliber = "laser"
+	fire_sound = 'sound/weapons/guns/fire/blastere5sniper.ogg'
+	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
+	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
+	firemodes = list(
+		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/laser
+	is_hmg = TRUE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/eweb
+	name = "E-WEB Heavy Repeating blaster"
+	desc = "A stationary repeating blasyer, set on a tri-pod, firing tibanna-gas cartridge lasers."
 	icon_state = "repeating_blaster"
 	base_icon = "repeating_blaster"
 	caliber = "laser"
@@ -336,7 +351,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/laser/z6
 	name = "Z-6 blaster"
-	desc = "The standard Z-6 blaster heavy rotary blaster used commonly in the Grand Army of the Republic."
+	desc = "The standard Z-6 heavy rotary blaster used commonly in the Grand Army of the Republic."
 	icon_state = "Z-6"
 	item_state = "Z-6"
 	base_icon = "Z-6"
@@ -353,6 +368,9 @@
 	has_telescopic = FALSE
 	slot_flags = SLOT_SHOULDER
 	is_laser_mg = TRUE
+
+/obj/item/weapon/gun/projectile/automatic/laser/z6/empire
+	desc = "The standard Z-6 heavy rotary blaster used commonly by the by the Storm Trooper Corps of the Galactic Empire and the combatants of the Rebel Alliance alike."
 
 //////////other laser weapons//////////
 /obj/item/weapon/gun/projectile/automatic/laser/qblz1
