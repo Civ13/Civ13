@@ -19,9 +19,9 @@
 
 	age = "1986"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(CIVILIAN = 0.7, RUSSIAN = 0.3)
+	faction_distribution_coeffs = list(CIVILIAN = 0.65, RUSSIAN = 0.35)
 	battle_name = "Rednikov Drug Bust"
-	mission_start_message = "<font size=4>The Russians have <b>5 minutes</b> to prepare SWAT raid the building!<br>The police will win if they <b>confiscate 20 stacks of cocaine!</b>. The Russians will win if they manage to hold off the police for <b>20 minutes!</b></font>"
+	mission_start_message = "<font size=4>Rednikov have <b>5 minutes</b> to prepare SWAT raid the building!<br>The police will win if they <b>capture the Storage Depot!</b> Rednikov will win if they manage to hold off the police for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = RUSSIAN
 	grace_wall_timer = 3000
@@ -34,6 +34,8 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_heist == TRUE)
 		. = TRUE
 		if (J.title == "Police Officer")
+			J.title = "DEA Detective"
+			J.rank_abbreviation = "Detective"
 			J.max_positions = 4
 			J.total_positions = 4
 		if (J.title == "SWAT Officer")
@@ -83,20 +85,20 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/bank_robbery/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 1200
+		return 600
 	else
-		return 1200 // 2 minutes
+		return 3500 // 2 minutes
 
 /obj/map_metadata/bank_robbery/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 1200
+		return 600
 	else
-		return 3000 // 2 minutes
+		return 3500 // 5 minutes
 
 /obj/map_metadata/drug_bust/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
-	if (processes.ticker.playtime_elapsed >= 18000)
+	if (processes.ticker.playtime_elapsed >= 20000)
 		ticker.finished = TRUE
 		var/message = "SWAT retreats out of the Storage Depot with heavy casualties, Rednikov wins!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
@@ -104,7 +106,14 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		win_condition_spam_check = TRUE
 		return FALSE
 	else
-		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
+			ticker.finished = TRUE
+			world << "<font size = 4><span class = 'notice'>SWAT seized total control of the Storage Depot!</span></font>"
+			show_global_battle_report(null)
+			win_condition_spam_check = TRUE
+			no_loop_o = TRUE
+			return FALSE
+		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 				if (last_win_condition != win_condition.hash)
 					current_win_condition = "SWAT is now securing the Storage Depot! They will win in {time} minutes."
@@ -138,7 +147,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 		else
 			if (current_win_condition != no_winner && current_winner && current_loser)
-				world << "<font size = 3>Rednikov managed to regain control of the Storage Depot!</font>"
+				world << "<font size = 3>Rednikov has regained control of the Storage Depot!</font>"
 				current_winner = null
 				current_loser = null
 			next_win = -1
@@ -178,7 +187,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		arn = rand(100,999)
 		icon_state = "police_warrant"
 		spawn(10)
-			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to search all and every property owned by <b>Vyacheslav 'Tatarin' Grigoriev</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
+			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to search all and every property owned by <b>Vyacheslav Grigoriev</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
 
 /obj/item/weapon/reagent_containers/cocaineblock
 	icon = 'icons/obj/drugs.dmi'
