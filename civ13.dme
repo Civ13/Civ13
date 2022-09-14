@@ -439,7 +439,6 @@
 #include "code\game\objects\map_metadata\cursed_island.dm"
 #include "code\game\objects\map_metadata\drug_bust.dm"
 #include "code\game\objects\map_metadata\event_city.dm"
-#include "code\game\objects\map_metadata\factory.dm"
 #include "code\game\objects\map_metadata\fields.dm"
 #include "code\game\objects\map_metadata\football.dm"
 #include "code\game\objects\map_metadata\forest.dm"
@@ -745,7 +744,6 @@
 #include "code\modules\1713\jobs\red_menace.dm"
 #include "code\modules\1713\jobs\ruhr_uprising.dm"
 #include "code\modules\1713\jobs\russian.dm"
-#include "code\modules\1713\jobs\russoukrainewar.dm"
 #include "code\modules\1713\jobs\samurai.dm"
 #include "code\modules\1713\jobs\skyrim.dm"
 #include "code\modules\1713\jobs\sovafghan.dm"
@@ -1067,5 +1065,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\pavlov_house.dmm"
+#include "maps\special\tantiveiv.dmm"
 // END_INCLUDE
