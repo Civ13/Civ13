@@ -518,11 +518,17 @@ var/global/FREQM = rand(101,120)
 	..()
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/item/weapon/radio/faction1/spaceradio
+	icon_state = "portable_radio5"
+	item_state = "portable_radio5"
 /obj/item/weapon/radio/faction2/New()
 	..()
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
+/obj/item/weapon/radio/faction2/spaceradio
+	icon_state = "portable_radio5"
+	item_state = "portable_radio5"
 /obj/item/weapon/radio/attack_self(mob/user)
 	interact(user)
 
@@ -718,26 +724,35 @@ var/global/FREQM = rand(101,120)
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
-/obj/item/weapon/radio/walkietalkie/faction1/earradio1
-	desc = "A radio that fits around your ears."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "earmuffs"
-	item_state = "earmuffs"
-	slot_flags = SLOT_EARS | SLOT_TWOEARS
-	var/ear_safety = 2
+
+
 
 /obj/item/weapon/radio/walkietalkie/faction2/New()
 	..()
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
-/obj/item/weapon/radio/walkietalkie/faction2/earradio2
-	desc = "A radio that fits around your ears."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "earmuffs"
-	item_state = "earmuffs"
+/obj/item/weapon/radio/walkietalkie/faction1/earradio1
+	icon_state = "radio_headset"
+	item_state = "radio_headset"
 	slot_flags = SLOT_EARS | SLOT_TWOEARS
 	var/ear_safety = 2
+
+/obj/item/weapon/radio/walkietalkie/faction2/earradio2
+	icon_state = "radio_headset"
+	item_state = "radio_headset"
+	slot_flags = SLOT_EARS | SLOT_TWOEARS
+	var/ear_safety = 2
+
+/obj/item/weapon/radio/walkietalkie/faction1/comlink
+	name = "comlink"
+	icon_state = "comlink"
+	item_state = "comlink"
+
+/obj/item/weapon/radio/walkietalkie/faction2/comlink
+	name = "comlink"
+	icon_state = "comlink"
+	item_state = "comlink"
 
 /obj/item/weapon/radio/walkietalkie/factionred/New()
 	..()
