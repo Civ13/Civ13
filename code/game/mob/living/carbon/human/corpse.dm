@@ -402,7 +402,7 @@ mob/living/human/corpse/british_sailor
 	invisibility = 101
 	dir = pick(NORTH,SOUTH,EAST,WEST)
 	invisibility = 0
-	equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(src), slot_shoes)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(src), slot_shoes)
 	equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(src), slot_w_uniform)
 	equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/really_black_suit(src), slot_wear_suit)
 	equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(src), slot_r_hand)

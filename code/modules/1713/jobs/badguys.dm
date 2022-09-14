@@ -114,22 +114,24 @@
 	H.civilization = "Rednikov"
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
-//head
-	var/randcloth = rand(1,5)
-	switch(randcloth)
+	var/randuniform = rand(1,3)
+	switch(randuniform)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday1(H), slot_wear_mask)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/trackpants(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/tracksuit(H), slot_wear_suit)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday2(H), slot_wear_mask)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
 		if (3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday3(H), slot_wear_mask)
-		if (4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/mask/payday4(H), slot_wear_mask)
-		if (5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/mask/paydayclown(H), slot_wear_mask)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(H), slot_wear_suit)
+//head
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(70))
@@ -168,15 +170,6 @@
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_l_store)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_r_store)
 
-//suit
-	var/randsuit = rand(1,3)
-	switch(randsuit)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
-		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
-		if (3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(H), slot_wear_suit)
 //extra
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 

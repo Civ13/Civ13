@@ -244,7 +244,7 @@
 	desc = "Basic wear for soldiers of the Imperial German Army."
 	icon_state = "apparel_german2"
 	products = list(
-		/obj/item/clothing/shoes/blackboots1 = 15,
+		/obj/item/clothing/shoes/blackboots = 15,
 		/obj/item/clothing/under/ww1/german = 15,
 		/obj/item/clothing/suit/storage/coat/germcoat = 15,
 		/obj/item/clothing/head/ww/germcap = 15,
@@ -826,7 +826,7 @@ obj/structure/vending/hezammo
 	desc = "Basic wear for the soldiers of the US Army."
 	icon_state = "apparel_usa"
 	products = list(
-		/obj/item/clothing/shoes/blackboots1 = 30,
+		/obj/item/clothing/shoes/blackboots = 30,
 		/obj/item/clothing/under/us_uni = 20,
 		/obj/item/clothing/under/us_uni/us_greentrousers = 10,
 		/obj/item/clothing/under/us_uni/us_lightuni = 10,

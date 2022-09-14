@@ -1138,7 +1138,7 @@
 "awX" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/temperate/three)
 "awY" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/item/mine/boobytrap{layer = 2.9},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "awZ" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/temperate/two)
-"axa" = (/obj/structure/closet/cabinet,/obj/item/clothing/shoes/blackboots1,/obj/item/clothing/shoes/color/brown,/obj/item/clothing/shoes/winterboots,/obj/item/clothing/shoes/workboots,/turf/floor/wood,/area/caribbean/roofed/temperate)
+"axa" = (/obj/structure/closet/cabinet,/obj/item/clothing/shoes/blackboots,/obj/item/clothing/shoes/color/brown,/obj/item/clothing/shoes/winterboots,/obj/item/clothing/shoes/workboots,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "axb" = (/obj/item/mine/at/armed,/turf/floor/plating/road,/area/caribbean/no_mans_land/temperate/three)
 "axc" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/coat/ww2/soviet,/obj/item/clothing/suit/storage/coat/ww2/sovcoat,/obj/item/clothing/suit/storage/coat/ww2/fancycoat,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "axd" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/box/canned,/obj/item/weapon/storage/box/nood,/turf/floor/wood,/area/caribbean/roofed/temperate)

@@ -428,7 +428,7 @@
 "il" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civ1,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "im" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/chinese_type07,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "in" = (/obj/structure/closet/cabinet,/obj/item/clothing/gloves/veryblack,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"io" = (/obj/item/clothing/gloves/veryblack,/obj/item/clothing/gloves/veryblack,/obj/item/clothing/shoes/blackboots1,/obj/item/clothing/shoes/blackboots1,/turf/floor/plating/concrete,/area/caribbean/nomads)
+"io" = (/obj/item/clothing/gloves/veryblack,/obj/item/clothing/gloves/veryblack,/obj/item/clothing/shoes/blackboots,/obj/item/clothing/shoes/blackboots,/turf/floor/plating/concrete,/area/caribbean/nomads)
 "ip" = (/obj/structure/table/modern/table,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/clothing/mask/muzzle,/obj/item/clothing/mask/muzzle,/obj/item/clothing/mask/muzzle,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/two)
 "iq" = (/obj/structure/table/modern/table,/obj/item/weapon/matchbox,/obj/item/camera_film,/obj/item/camera/coldwar,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/two)
 "ir" = (/obj/structure/table/modern/table,/obj/item/weapon/whistle,/obj/item/camera_film,/obj/item/camera/coldwar,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/one)
