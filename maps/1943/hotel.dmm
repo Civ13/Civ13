@@ -572,7 +572,7 @@
 "TS" = (/turf/floor/plating/cobblestone,/area/caribbean/german)
 "Uf" = (/obj/structure/vehicleparts/frame/car/left/metal,/obj/structure/bed/chair/carseat/left/dark,/turf/floor/plating/road/yellowline{dir = 8},/area/caribbean)
 "Uk" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"Up" = (/obj/structure/table/rack,/obj/item/clothing/shoes/blackboots1,/obj/item/clothing/shoes/blackboots1,/obj/item/clothing/shoes/heavyboots/wrappedboots,/obj/item/clothing/shoes/sandal,/obj/item/clothing/shoes/leatherboots1,/turf/floor/plating/steel,/area/caribbean/houses)
+"Up" = (/obj/structure/table/rack,/obj/item/clothing/shoes/blackboots,/obj/item/clothing/shoes/blackboots,/obj/item/clothing/shoes/heavyboots/wrappedboots,/obj/item/clothing/shoes/sandal,/obj/item/clothing/shoes/leatherboots1,/turf/floor/plating/steel,/area/caribbean/houses)
 "Uz" = (/obj/structure/vehicleparts/frame/car/van/rfc{broken = 1},/obj/structure/bed/chair/carseat/right/dark,/turf/floor/plating/road/yellowline{dir = 4},/area/caribbean)
 "UH" = (/obj/structure/window/classic/brickfull,/obj/structure/curtain/closed/green,/obj/covers/jail/steeljail,/turf/floor/dirt,/area/caribbean/russian/land/inside)
 "UM" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 8; icon_state = "frame_steel_corner_rf"},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)

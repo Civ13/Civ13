@@ -273,7 +273,7 @@
 "lq" = (/obj/structure/gunbench,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "ly" = (/obj/structure/closet/crate,/obj/item/weapon/reagent_containers/blood/ABMinus,/obj/item/weapon/reagent_containers/blood/ABPlus,/obj/item/weapon/reagent_containers/blood/AMinus,/obj/item/weapon/reagent_containers/blood/APlus,/obj/item/weapon/reagent_containers/blood/BMinus,/obj/item/weapon/reagent_containers/blood/BPlus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OPlus,/obj/item/weapon/reagent_containers/blood,/turf/floor/dirt/dust,/area/caribbean)
 "lC" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{broken = 1; dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/turf/floor/dirt,/area/caribbean)
-"lE" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/closet/cabinet,/obj/item/clothing/under/farmer_outfit,/obj/item/clothing/shoes/blackboots1,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
+"lE" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/closet/cabinet,/obj/item/clothing/under/farmer_outfit,/obj/item/clothing/shoes/blackboots,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)
 "lF" = (/obj/structure/table/rack/shelf,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/spray/cleaner,/obj/item/weapon/fire_extinguisher,/turf/floor/wood,/area/caribbean/houses)
 "lK" = (/obj/covers/roads/dirt,/turf/floor/grass,/area/caribbean)
 "lQ" = (/obj/structure/railing{dir = 4; icon_state = "railing0"},/turf/floor/grass,/area/caribbean)

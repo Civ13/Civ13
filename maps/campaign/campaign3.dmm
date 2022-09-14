@@ -574,7 +574,7 @@
 "Tk" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean/nomads/taiga)
 "Tn" = (/obj/covers/brick_wall,/obj/structure/sign/flag/red2,/turf/floor/dirt,/area/caribbean/roofed/taiga)
 "Tq" = (/obj/structure/window/classic/brickfull,/obj/covers/tatami,/obj/structure/curtain/open/yellow,/turf/floor/dirt,/area/caribbean/roofed/taiga)
-"Tt" = (/obj/structure/closet/anchored,/obj/item/clothing/under/modern2,/obj/item/clothing/suit/storage/jacket/really_black_suit,/obj/item/clothing/accessory/custom/tie,/obj/item/weapon/storage/briefcase,/obj/item/clothing/shoes/blackboots1,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective)
+"Tt" = (/obj/structure/closet/anchored,/obj/item/clothing/under/modern2,/obj/item/clothing/suit/storage/jacket/really_black_suit,/obj/item/clothing/accessory/custom/tie,/obj/item/weapon/storage/briefcase,/obj/item/clothing/shoes/blackboots,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective)
 "Tu" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/roofed/taiga)
 "Tv" = (/obj/structure/window/classic/brickfull,/turf/floor/plating/tiled/woodh,/area/caribbean/roofed/taiga)
 "Tx" = (/mob/living/simple_animal/civilian,/turf/floor/plating/road/yellowline{dir = 4; icon_state = "road_yellowline"},/area/caribbean/nomads/taiga)

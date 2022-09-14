@@ -26,7 +26,7 @@
 "bt" = (/obj/structure/sign/minefield,/turf/floor/grass,/area/caribbean/nomads/forest)
 "by" = (/obj/structure/window/classic/brickfull,/obj/covers/tatami,/obj/structure/curtain/open/yellow,/turf/floor/dirt,/area/caribbean/roofed/temperate)
 "bC" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/nomads/forest)
-"bD" = (/obj/structure/closet/anchored,/obj/item/clothing/under/modern2,/obj/item/clothing/suit/storage/jacket/really_black_suit,/obj/item/clothing/accessory/custom/tie,/obj/item/weapon/storage/briefcase,/obj/item/clothing/shoes/blackboots1,/turf/floor/plating/steel,/area/caribbean/pirates/land/inside/objective)
+"bD" = (/obj/structure/closet/anchored,/obj/item/clothing/under/modern2,/obj/item/clothing/suit/storage/jacket/really_black_suit,/obj/item/clothing/accessory/custom/tie,/obj/item/weapon/storage/briefcase,/obj/item/clothing/shoes/blackboots,/turf/floor/plating/steel,/area/caribbean/pirates/land/inside/objective)
 "bL" = (/obj/structure/gate/barrier/vertical{dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate/one)
 "bO" = (/obj/structure/floodlight/on,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "bQ" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/nomads/forest)
