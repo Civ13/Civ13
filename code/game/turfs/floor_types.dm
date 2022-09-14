@@ -556,6 +556,12 @@
 	icon_state = "floor"
 	interior = TRUE
 
+/turf/floor/plating/dark
+	name = "dark plating"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dark"
+	interior = TRUE
+
 /turf/floor/plating/white
 	name = "white plated floor"
 	icon = 'icons/turf/floors.dmi'

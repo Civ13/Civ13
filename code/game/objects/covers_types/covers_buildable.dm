@@ -264,6 +264,7 @@
 				qdel(I)
 	..()
 
+
 /obj/covers/cement_wall
 	name = "concrete wall"
 	desc = "A concrete wall."
@@ -397,3 +398,47 @@
 	hardness = 95
 	adjusts = TRUE
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
+
+
+
+/obj/covers/metal
+	name = "metal wall"
+	desc = "A wall of metal panelling."
+	icon = 'icons/turf/wall_masks.dmi'
+	icon_state = "metal0"
+	base_icon_state = "metal"
+	adjusts = TRUE
+	passable = FALSE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 999999
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 100
+	material = "Stone"
+	hardness = 100
+
+/obj/covers/shipwindow
+	name = "windscreen"
+	desc = "A gap large gap in the structure of the ship skinned with a windscreen."
+	icon = 'icons/obj/windows.dmi'
+	icon_state = "windowmetal"
+	base_icon_state = "windowmetal"
+	adjusts = FALSE
+	passable = FALSE
+	not_movable = TRUE
+	density = TRUE
+	opacity = FALSE
+	amount = 0
+	layer = 3
+	health = 999999
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 100
+	material = "Stone"
+	hardness = 100

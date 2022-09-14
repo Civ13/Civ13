@@ -476,7 +476,7 @@
 	flipped_icon = "wood_table-flipped"
 
 /obj/structure/table/wood/flipped
-	icon_state = "wood_table-flipped" 
+	icon_state = "wood_table-flipped"
 	flipped = TRUE
 	New()
 		..()
@@ -489,7 +489,7 @@
 	flipped_icon = "pokertable-flipped"
 
 /obj/structure/table/wood/poker/flipped
-	icon_state = "pokertable-flipped" 
+	icon_state = "pokertable-flipped"
 	flipped = TRUE
 	New()
 		..()
@@ -506,7 +506,7 @@
 	flammable = TRUE
 
 /obj/structure/table/modern/flipped
-	icon_state = "woodtable-flipped" 
+	icon_state = "woodtable-flipped"
 	flipped = TRUE
 	New()
 		..()
@@ -522,3 +522,9 @@
 	frame = /obj/structure/table_frame
 	framestack = /obj/item/stack/material/steel
 	buildstack = /obj/item/stack/material/steel
+/obj/structure/table/modern/retable/flipped
+	icon_state = "table-flipped"
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
