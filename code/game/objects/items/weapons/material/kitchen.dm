@@ -227,6 +227,20 @@
 /obj/item/weapon/material/kitchen/utensil/knife/bowie/iron
 	default_material = "iron"
 
+/obj/item/weapon/material/kitchen/utensil/knife/dagger
+	name = "bowie knife"
+	desc = "A long, sharp, swordlike knife that is used for cqc."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "dagger"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.8
+
+/obj/item/weapon/material/kitchen/utensil/knife/dagger/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/kitchen/utensil/knife/switchblade
 	name = "switchblade knife"
 	desc = "A sharp, concealable, spring-loaded knife."
