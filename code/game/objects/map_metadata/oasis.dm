@@ -5,7 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	victory_time = 15000
-	no_winner = "No faction controls the Castle."
+	no_winner = "No faction controls the Oasis."
 
 	faction_organization = list(
 		FRENCH,
@@ -21,11 +21,11 @@
 	songs = list(
 		"Crusaders:1" = "sound/music/crusaders.ogg")
 	battle_name = "Trouble at the Oasis"
-	mission_start_message = "<font size=4>The <b>Crusader</b> and <b>Arabic Caliphate</b> armies have found each other by chance in  the desert as they searched for water. Each group is thirsty and seeking to secure the valuable Oasis for themselves. Whichever army manages to hold onto the shores of the oasis for 8 minutes will capture it. Grace wall will end in 4 minutes."
+	mission_start_message = "<font size=4>The <b>Crusader</b> and <b>Arabic Caliphate</b> armies have found each other by chance in the desert as they searched for a water source. Each group is thirsty and seeking to secure the valuable Oasis for themselves. Whichever army manages to hold onto the shores of the Oasis for 5 minutes will capture it. Grace wall will end in 4 minutes."
 	faction1 = FRENCH
 	faction2 = ARAB
 	ambience = list('sound/ambience/jungle1.ogg')
-	gamemode = "King of the Hill"
+	gamemode = "King of the Oasis"
 	grace_wall_timer = 2400
 
 obj/map_metadata/oasis/job_enabled_specialcheck(var/datum/job/J)
