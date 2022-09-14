@@ -120,6 +120,7 @@
 	H.name = "Vyacheslav \"Tatarin\" Grigoriev"
 	H.real_name = H.name
 	H.h_style = "Bald"
+	H.f_style = "Shaved"
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 //clothes
