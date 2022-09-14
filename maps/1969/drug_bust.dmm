@@ -9,6 +9,7 @@
 "aL" = (/obj/structure/sign/logo/red{pixel_y = 32},/obj/structure/bed/custsofa,/turf/floor/wood,/area/caribbean/british/land/inside)
 "aP" = (/obj/structure/vehicleparts/frame/defaultarmored/lwall/armored{w_front = list("c_thin",1,1,0,0.1,0,0); dir = 1},/obj/structure/bed/chair/comfy/black{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
 "aW" = (/obj/structure/curtain/closed/red{pixel_y = -32},/turf/floor/wood,/area/caribbean/british/land/inside)
+"be" = (/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "bf" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/british/land/inside)
 "bg" = (/obj/item/weapon/paper/police/searchwarrant/drug,/turf/floor/plating/road,/area/caribbean)
 "bn" = (/obj/effect/floor_decal/industrial/danger{dir = 4},/obj/effect/floor_decal/grass_edge{dir = 1},/turf/floor/plating/road,/area/caribbean)
@@ -36,8 +37,9 @@
 "eP" = (/obj/structure/grille/chainlinkfence{dir = 8},/obj/structure/grille/chainlinkfence/corner,/turf/floor/grass,/area/caribbean)
 "eY" = (/obj/structure/vehicleparts/frame/car/falcon/rbc{dir = 8; icon_state = "frame_steel"; override_color = "#d6d6d6"},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "fa" = (/obj/structure/window/classic/brickfull,/obj/structure/barricade/steel,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/two)
-"fv" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"fv" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "fy" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/bone,/turf/floor/grass,/area/caribbean)
+"fH" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "fM" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/british/land/inside)
 "fR" = (/turf/floor/blackslateroof,/area/caribbean)
 "gk" = (/obj/structure/vending/rednikovweapons,/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -45,7 +47,7 @@
 "gH" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
 "gR" = (/obj/structure/bed/chair/comfy/fancy_sofa/l,/turf/floor/wood,/area/caribbean/british/land/inside)
 "gS" = (/obj/structure/grille/chainlinkfence/corner,/turf/floor/grass,/area/caribbean)
-"gW" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"gW" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "hd" = (/obj/structure/lamp/lamp_big/alwayson,/obj/item/weapon/stool{anchored = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "hk" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/cocaineblocks/four,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "ho" = (/obj/structure/sign/logo/red{pixel_y = 32; desc = "A sign with the logo of Rednikov Industries, logistical warehouse"},/turf/floor/grass,/area/caribbean)
@@ -103,7 +105,7 @@
 "os" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/british/land/inside)
 "oV" = (/obj/structure/gate/barrier,/turf/floor/plating/road,/area/caribbean)
 "pb" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/pill/cocaine_line,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"pe" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"pe" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "pv" = (/obj/structure/gatecontrol/blastcontrol/garage{pixel_x = -28},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "pA" = (/obj/effect/floor_decal/grass_edge{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "pC" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/pill/cocaine,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
@@ -137,7 +139,7 @@
 "uW" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "uY" = (/turf/floor/wood,/area/caribbean/british/land/inside)
 "vh" = (/obj/covers/wood_wall/log/corner,/turf/floor/wood,/area/caribbean/british/land/inside)
-"vk" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"vk" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "vm" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 1},/obj/structure/vehicleparts/movement{dir = 1},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 1},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 1},/obj/structure/vehicleparts/axis/car/falcon/police{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "vq" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "vx" = (/obj/item/weapon/cigbutt,/turf/floor/grass,/area/caribbean)
@@ -146,7 +148,7 @@
 "we" = (/obj/structure/multiz/stairs,/turf/floor/wood,/area/caribbean/british/land/inside)
 "wl" = (/obj/structure/grille/chainlinkfence/corner{dir = 8},/turf/floor/grass,/area/caribbean)
 "wu" = (/obj/structure/table/modern/table,/obj/item/weapon/deck/cards,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"ww" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"ww" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "wD" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside)
 "wF" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/plating/road,/area/caribbean)
 "wJ" = (/turf/floor/plating/road/yellowline,/area/caribbean)
@@ -164,15 +166,15 @@
 "yi" = (/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 1; w_back = list("smc_falcon_back_rightU",1,1,0,0.1,1,1)},/obj/structure/table/carboot{dir = 1},/obj/structure/vehicleparts/movement/reversed{dir = 1},/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox/beanbag,/obj/item/ammo_magazine/shellbox/beanbag,/obj/item/clothing/suit/police,/obj/item/weapon/gun/projectile/shotgun/pump,/turf/floor/plating/road,/area/caribbean)
 "yv" = (/obj/structure/table/modern/table,/obj/item/stack/money/dollar/five,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "yx" = (/obj/effect/floor_decal/grass_edge{dir = 8},/obj/effect/decal/cleanable/blood/oil,/turf/floor/plating/road,/area/caribbean)
-"yA" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/three,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"yA" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/three,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "yG" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/pill/cocaine,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "yP" = (/obj/effect/decal/cleanable/vomit,/turf/floor/grass,/area/caribbean)
 "yW" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 1; icon_state = "frame_steel_corner_rf"; w_front = list("smc_falcon_front_rightU",1,1,55,90,0,0)},/obj/item/weapon/reagent_containers/glass/barrel/fueltank{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "zb" = (/obj/structure/table/modern/table,/obj/structure/mailbox,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "zA" = (/obj/structure/grille/chainlinkfence/corner{dir = 8},/obj/structure/grille/chainlinkfence/corner{dir = 4; density = 0},/turf/floor/grass,/area/caribbean)
 "zI" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"zN" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"Ab" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/three,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"zN" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
+"Ab" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/three,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Ah" = (/obj/covers/brick_wall,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Ak" = (/obj/structure/table/glass,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Am" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka/empty,/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -181,7 +183,7 @@
 "AX" = (/obj/structure/curtain/closed/red{pixel_y = -32},/obj/effect/decal/cleanable/blood/oil,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "AZ" = (/obj/structure/table/modern/retable,/obj/item/weapon/pill_pack/tramadol,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Ba" = (/obj/structure/TV/television/active,/turf/floor/wood,/area/caribbean/british/land/inside)
-"Bb" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/six,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Bb" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/six,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Bf" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Bi" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/bed/roller,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Br" = (/obj/structure/grille/chainlinkfence/corner,/obj/structure/grille/chainlinkfence/corner{dir = 1; density = 0},/turf/floor/grass,/area/caribbean)
@@ -191,6 +193,7 @@
 "BN" = (/obj/structure/bed/chair/comfy/fancy_sofa/l{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
 "BR" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/item/weapon/stool{anchored = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "BT" = (/obj/item/weapon/stool{anchored = 1},/obj/item/weapon/stool{anchored = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"BU" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Cb" = (/obj/structure/table/rack/shelf/wooden,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Cc" = (/obj/structure/table/rack/shelf/wooden,/obj/effect/floor_decal/industrial/warning/cee{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Cg" = (/obj/structure/curtain/closed/red{pixel_y = -32},/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/material/machete,/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -198,7 +201,7 @@
 "Cw" = (/obj/structure/table/modern/table,/obj/structure/cutting_board,/obj/item/weapon/reagent_containers/food/snacks/mince{pixel_y = 13},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Cy" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/five,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "CI" = (/obj/structure/closet/crate/bin{anchored = 1},/obj/item/weapon/paper/crumpled,/obj/item/weapon/package{desc = "Some kind of package. There is 'BOMB' writen on it with a pen."},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"CK" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/six,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"CK" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/six,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Da" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/table/modern/retable,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Dk" = (/obj/structure/table/modern/table,/obj/item/flashlight/lamp/littlelamp/desklamp,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Dt" = (/obj/structure/curtain/closed/red{pixel_y = -32},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/obj/structure/bed/chair{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -207,31 +210,33 @@
 "DA" = (/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 8; w_back = list("smc_falcon_back_leftU",1,1,0,0.1,1,1)},/obj/structure/vehicleparts/movement/reversed{dir = 8},/obj/structure/table/carboot{dir = 8},/obj/structure/vehicleparts/license_plate/us/centered{dir = 4},/obj/item/weapon/trafficcone,/obj/item/weapon/trafficcone,/obj/item/weapon/trafficcone,/obj/item/clothing/suit/storage/jacket/highvis,/turf/floor/plating/road,/area/caribbean)
 "DN" = (/obj/structure/vehicleparts/frame/car/falcon/lbc{icon_state = "frame_steel"; dir = 8; override_color = "#d6d6d6"},/obj/structure/bed/chair/carseat/left/dark{icon_state = "carseat_left"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "DP" = (/obj/effect/autoassembler{dir = 8},/turf/floor/plating/road,/area/caribbean)
-"DV" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/four,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"DV" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/four,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "DX" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one)
-"Ed" = (/obj/structure/table/rack/shelf{name = "display case"; desc = "A display case for showing off items."},/obj/item/weapon/melee/baseball_bat/aluminium{w_class = 1},/obj/structure/window/classic/metal{name = "display case"; desc = "A display case for showing off items."},/turf/floor/wood,/area/caribbean/british/land/inside)
+"Ed" = (/obj/structure/table/rack/shelf{name = "display case"; desc = "A display case for showing off items."},/obj/structure/window/classic/metal{name = "display case"; desc = "A display case for showing off items."},/obj/item/weapon/grenade/coldwar/rgd5,/obj/item/weapon/grenade/coldwar/rgd5,/obj/item/weapon/grenade/coldwar/rgd5,/obj/item/weapon/melee/baseball_bat/aluminium{w_class = 1},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Ef" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/pill/crack{pixel_x = -5; pixel_y = 6},/obj/item/clothing/mask/smokable/pipe/glass,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Eh" = (/obj/structure/vehicleparts/frame/car/falcon/lb{icon_state = "frame_steel_corner_lb"; dir = 1; w_back = list("smc_falcon_back_leftU",1,1,0,0.1,1,1)},/obj/structure/table/carboot{dir = 1},/obj/structure/vehicleparts/movement/reversed{dir = 1},/obj/structure/vehicleparts/license_plate/us/centered{dir = 1; icon_state = "license_plate_us"},/obj/item/weapon/trafficcone,/obj/item/weapon/trafficcone,/obj/item/weapon/trafficcone,/obj/item/clothing/suit/storage/jacket/highvis,/turf/floor/plating/road,/area/caribbean)
 "En" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/cocaineblock/torn,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Es" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/remains/human,/turf/floor/grass,/area/caribbean)
-"EB" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"EB" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "EM" = (/obj/structure/grille/chainlinkfence/corner{dir = 4; density = 0; desc = "A woven steel fence. This one has a hole in it"},/turf/floor/grass,/area/caribbean)
-"Ff" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Ff" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
+"Ft" = (/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "FB" = (/obj/structure/table/modern/table,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/wood,/area/caribbean/british/land/inside)
 "FD" = (/obj/effect/autoassembler{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
 "FT" = (/obj/effect/decal/cleanable/vomit/bloody,/turf/floor/wood,/area/caribbean/british/land/inside)
-"Ga" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Ga" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Gj" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "Gs" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/effect/decal/cleanable/blood/oil,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "GA" = (/obj/structure/multiz/stairs,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "GB" = (/obj/effect/floor_decal/grass_edge{dir = 1},/turf/floor/plating/road,/area/caribbean)
-"GE" = (/obj/structure/shelf/palette,/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"GE" = (/obj/structure/shelf/palette,/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "GM" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/wood,/area/caribbean/british/land/inside)
 "GP" = (/obj/structure/bed/chair,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "GU" = (/obj/structure/cargo_container{icon_state = "container2"; opacity = 1; desc = "A heavy container for shipping a lot of items oversea's, this one is heading towards The Netherlands."},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "GW" = (/obj/structure/simple_door/key_door{custom_code = 1245},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Hh" = (/obj/structure/closet/crate/bin{anchored = 1},/obj/item/weapon/paper/crumpled,/obj/item/weapon/paper/crumpled,/obj/item/weapon/paper/crumpled,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Hl" = (/obj/effect/floor_decal/grass_edge,/turf/floor/plating/road,/area/caribbean)
+"Hs" = (/obj/covers/brick_wall,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Ht" = (/obj/structure/table/rack/shelf/wooden,/obj/effect/floor_decal/industrial/warning/cee,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Hw" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Hx" = (/obj/effect/landmark{name = "JoinLateSwat"},/turf/floor/plating/road,/area/caribbean)
@@ -250,15 +255,16 @@
 "Ko" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Kw" = (/obj/structure/table/modern/retable,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "KX" = (/obj/structure/table/modern/table,/obj/structure/mailbox,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Li" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Ll" = (/obj/effect/floor_decal/industrial/danger{dir = 4},/obj/effect/floor_decal/grass_edge,/turf/floor/plating/road,/area/caribbean)
-"LC" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/five,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"LC" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/five,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "LE" = (/obj/structure/table/modern/retable,/obj/item/weapon/pill_pack/tramadol,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "LG" = (/obj/structure/window/classic/brickfull,/obj/structure/barricade/steel,/turf/floor/wood,/area/caribbean/british/land/inside)
-"LO" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"LO" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "LP" = (/obj/structure/table/modern/table,/obj/item/weapon/storage/envelope,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "LW" = (/obj/effect/decal/cleanable/blood,/obj/structure/closet/body_bag,/obj/item/remains/human,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Ma" = (/obj/structure/simple_door/key_door/anyone,/obj/effect/floor_decal/industrial/hatch/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"Mf" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Mf" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Mn" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/package,/obj/effect/floor_decal/industrial/warning/cee{dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "MC" = (/obj/effect/floor_decal/grass_edge{dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one)
 "MP" = (/obj/structure/cargo_container{icon_state = "container3"; opacity = 1; desc = "A heavy container for shipping a lot of items oversea's."},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
@@ -269,7 +275,7 @@
 "NM" = (/obj/structure/multiz/stairs,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside)
 "NR" = (/obj/structure/grille/chainlinkfence/corner{dir = 1},/turf/floor/grass,/area/caribbean)
 "NY" = (/obj/structure/grille/chainlinkfence/corner,/obj/structure/grille/chainlinkfence/corner{dir = 1},/turf/floor/grass,/area/caribbean)
-"Ot" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Ot" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Ou" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike{pixel_y = 10; pixel_x = -16; density = 0; anchored = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Ov" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
 "Ow" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -278,11 +284,12 @@
 "OZ" = (/obj/structure/window/classic/brickfull,/obj/structure/barricade/steel,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Pm" = (/obj/effect/autoassembler{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "PB" = (/obj/structure/table/modern/table,/obj/item/flashlight/lamp/littlelamp/desklamp{pixel_y = 9; pixel_x = -3},/obj/item/weapon/pen,/obj/structure/sign/clock{pixel_y = -24},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"PP" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/six,/obj/effect/floor_decal/industrial/outline/yellow,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"PP" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/six,/obj/effect/floor_decal/industrial/outline/yellow,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "PW" = (/obj/structure/table/rack/shelf/wooden,/obj/effect/floor_decal/industrial/warning/cee{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"Qo" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Qo" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
+"Qr" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Qs" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/turf/floor/wood,/area/caribbean/british/land/inside)
-"QM" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/three,/obj/effect/floor_decal/industrial/outline/yellow,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"QM" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/three,/obj/effect/floor_decal/industrial/outline/yellow,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "QU" = (/obj/structure/table/modern/table,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "QY" = (/obj/structure/machinery/forklift,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Rj" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -291,19 +298,19 @@
 "Sc" = (/obj/structure/bed/chair/drivers/car/dark{icon_state = "carseat_driver_left"; dir = 1},/obj/structure/vehicleparts/frame/car/falcon/lfc{icon_state = "frame_steel"; dir = 1; override_color = "#d6d6d6"; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/emergency_lights{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "Sh" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/obj/structure/table/modern/retable,/obj/item/weapon/pill_pack/tramadol,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Sw" = (/obj/structure/table/rack/shelf{name = "display case"; desc = "A display case for showing off items."},/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47/gold,/obj/structure/window/classic/metal{name = "display case"; desc = "A display case for showing off items."},/turf/floor/wood,/area/caribbean/british/land/inside)
-"Sz" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Sz" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "SW" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/cocaineblocks,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Tc" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Tk" = (/turf/floor/plating/road,/area/caribbean)
 "Tm" = (/obj/effect/floor_decal/grass_edge{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "Tp" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/package,/obj/effect/floor_decal/industrial/warning/cee,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"TA" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"TA" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "TF" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/cocaineblock,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"TM" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/four,/obj/effect/floor_decal/industrial/outline/yellow,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"TM" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/four,/obj/effect/floor_decal/industrial/outline/yellow,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "TV" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "TY" = (/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Uc" = (/obj/structure/bed/chair/comfy/fancy_sofa/r{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
-"Ul" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"Ul" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Up" = (/obj/effect/floor_decal/grass_edge{dir = 1},/obj/structure/sign/logo/red{pixel_y = 32; desc = "A sign with the logo of Rednikov Industries, logistical warehouse"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "Us" = (/obj/structure/table/modern/retable,/obj/item/weapon/fire_extinguisher{pixel_x = 11},/obj/item/weapon/fire_extinguisher{pixel_x = 6},/obj/item/weapon/fire_extinguisher{pixel_x = 1},/obj/item/weapon/fire_extinguisher{pixel_x = -4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "UI" = (/obj/structure/vehicleparts/frame/car/falcon/rf{broken = 0; dir = 1; icon_state = "frame_steel_corner_rf"},/obj/structure/vehicleparts/movement{dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean)
@@ -313,7 +320,7 @@
 "Ve" = (/obj/structure/table/modern/retable,/obj/structure/sign/clock{pixel_x = 32},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Vk" = (/obj/structure/vehicleparts/movement/reversed{dir = 1},/obj/structure/bed/chair/comfy/black{dir = 8},/obj/structure/vehicleparts/frame/defaultarmored/bdoor{w_right = list("c_armoredwall",1,1,55,90,0,0); w_back = list("c_door",1,1,55,90,0,1); dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one)
 "Vx" = (/obj/structure/grille/chainlinkfence/corner{dir = 4},/turf/floor/plating/road,/area/caribbean)
-"VA" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"VA" = (/obj/structure/table/rack/shelf/wooden,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "VJ" = (/obj/covers/brick_wall,/turf/floor/plating/steel,/area/caribbean/no_mans_land/invisible_wall/two)
 "VR" = (/obj/structure/vending/rednikovweapons,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Wq" = (/obj/structure/table/modern/retable,/obj/item/weapon/material/marx{density = 1; pixel_y = 9},/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -322,8 +329,8 @@
 "Xh" = (/obj/structure/table/modern/table,/obj/item/weapon/deck/cards,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Xm" = (/obj/effect/floor_decal/grass_edge{dir = 8},/obj/structure/grille/chainlinkfence/corner{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "XA" = (/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"XD" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/four,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"XF" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/five,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"XD" = (/obj/structure/shelf/palette,/obj/item/weapon/reagent_containers/cocaineblocks/four,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
+"XF" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/weapon/reagent_containers/cocaineblocks/five,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "XV" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "XZ" = (/obj/structure/lamp/lamp_small/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Yd" = (/obj/covers/brick_wall,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -349,20 +356,20 @@ oaoaoaYGoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoa
 oaoaoaYGoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoargoaoaoaoaoamJmJfymJoaoaoaoaoaoaoaoaoaoajBoaoaoa
 oaoaoaYGoaoaoargoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoafyfyfyhKEsfyfyoaoaoaoaoaoaoaoaoajBoaoaoa
 oaoaoaYGoaoaoaoaoaoaNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGoaoaoaoaoaoaNFXAnEBxXAXAXABxnEXAXAXANFFfBxOtBxXAXABxAbDVBxXDvkBxXAXAXANFTVBGXAXANFoaoaoaoaoaoajBoaoaoa
-oaoaoaePrkrkrkrkrkrkNFXAXAXAbOXAXAXAXAQYXAXANFOtXAMfnEXAXAXABbvkXADVXDXADVAbxPNFBGBGXAxPNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGoaoaoaoaoaoaNFDzXAXAXAXAXAXAbPOutGjGNFzNXAMfXADVXDXADVAbXAGEAbXAXDDVXANFNFNFGAGANFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGRIGBGBGBGBbnNFpvXAXAXAXAXAXAXAnEXAXANFFfXASzXAGECKXANFNFXAXDCKXANFNFnEXAxPNFNMweNFoawcoaoaoaoajBoaoaoa
-oaoaoabCqgTkTkTkTklnjDmdusXAXAkeNFXZXAXAXAXANFVAXAMfXAAbBbXANFNFXAAbwwXANFNFXAXAXAafuYuYNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGqgTkTkTkTklnjDmdusXAXAXAXAXAXAXAXAxPNFUlXAOtXADVGEXABbpeXAAbvkXAAbPPXAXAXAafuYgHNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGyxTkTkTkTklnjDmdusXAMPXAXAXAXAXAXAXAMaXAXAHyXAXDCKXACKXFXAXAXAXADVBbXAXAxPAhuYuYNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGqgTkTkTkTkLlNFDzXAXAXAXAXAXAXAXAXAXAMaXAXAXAXABbyAXAGECKXAXDCKXACKAbXAXAXAAhuYuYNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGaXAXAvkTMXADVLCXAXFQMXALCQoXAXALOAhdNuYNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGqgTkTkTkavoaNFXAapXAXAXAXAXAGUXAXAxPNFGaEBXAXANFNFXALCBbXANFNFXAXAXAXAXAgWAhuYuYNFoaoaoargoaoajBoaoaoa
-oaoaoabCqgTkTkwFavoaNFDzXAXAXAkeNFXZXAXAXAXANFGaGaXAXANFNFXALCvkXANFNFXAGEvkXAXALOAhuYgHNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGaXAXAAbCKXAvkLCXAXDCKXAAbDVXAXALOAhdNuYNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGqgTkTkTkavoaNFXAnEbOXAXAXAXAMPXAXAxPNFEBGanEXALCvkXADVGEXACKGEnEyAAbXAXAgWAhuYuYNFoaoaoaoaoaoajBoaoaoa
-oaoaoaYGqgTkTkTkavoaNFDzXAqAXAXAqAXAXAqAXAnENFfvGaXAqACKAbqAXAXAqAvkCKqAvkyAqAXALOAhuYuYNFoavxoaoaoaoajBoaoaoa
+oaoaoaYGoaoaoaoaoaoaNFXAnEBxXAXAXABxnEXAXAXANFFfQrOtQrbebeQrAbDVQrXDvkQrbebebeNFTVBGXAXANFoaoaoaoaoaoajBoaoaoa
+oaoaoaePrkrkrkrkrkrkNFXAXAXAbOXAXAXAXAQYXAXANFOtbeMfLibebebeBbvkbeDVXDbeDVAbfHNFBGBGXAxPNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGoaoaoaoaoaoaNFDzXAXAXAXAXAXAbPOutGjGNFzNbeMfbeDVXDbeDVAbbeGEAbbeXDDVbeNFNFNFGAGANFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGRIGBGBGBGBbnNFpvXAXAXAXAXAXAXAnEXAXANFFfbeSzbeGECKbeHsHsbeXDCKbeHsHsLibefHNFNMweNFoawcoaoaoaoajBoaoaoa
+oaoaoabCqgTkTkTkTklnjDmdusXAXAkeNFXZXAXAXAXANFVAbeMfbeAbBbbeHsHsbeAbwwbeHsHsbebebeafuYuYNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGqgTkTkTkTklnjDmdusXAXAXAXAXAXAXAXAxPNFUlbeOtbeDVGEbeBbpebeAbvkbeAbPPbebebeafuYgHNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGyxTkTkTkTklnjDmdusXAMPXAXAXAXAXAXAXAMabebeFtbeXDCKbeCKXFbebebebeDVBbbebefHAhuYuYNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGqgTkTkTkTkLlNFDzXAXAXAXAXAXAXAXAXAXAMabebebebeBbyAbeGECKbeXDCKbeCKAbbebebeAhuYuYNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGabebevkTMbeDVLCbeXFQMbeLCQobebeLOAhdNuYNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGqgTkTkTkavoaNFXAapXAXAXAXAXAGUXAXAxPNFGaEBbebeHsHsbeLCBbbeHsHsbebebebebegWAhuYuYNFoaoaoargoaoajBoaoaoa
+oaoaoabCqgTkTkwFavoaNFDzXAXAXAkeNFXZXAXAXAXANFGaGabebeHsHsbeLCvkbeHsHsbeGEvkbebeLOAhuYgHNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGabebeAbCKbevkLCbeXDCKbeAbDVbebeLOAhdNuYNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGqgTkTkTkavoaNFXAnEbOXAXAXAXAMPXAXAxPNFEBGaLibeLCvkbeDVGEbeCKGELiyAAbbebegWAhuYuYNFoaoaoaoaoaoajBoaoaoa
+oaoaoaYGqgTkTkTkavoaNFDzXAqAXAXAqAXAXAqAXAnENFfvGabeBUCKAbBUbebeBUvkCKBUvkyABUbeLOAhuYuYNFoavxoaoaoaoajBoaoaoa
 oaoaoaYGqgTkTkTkavoaNFNFafNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFdNuYNFoaoaoaoaoaoajBoaoaoa
 oaoaoaYGqgTkTkTkavoaNFuYuYnfuYuYuYuYnfuYuYuYuYnfuYQsuYuYuYuYuYuYnfuYuYuYuYnfuYuYuYuYuYuYAhoaoaoaoaoaoajBoaoaoa
 oaoaoabCqgTkTkTkavoaNFbFuYuYuYuYbFuYuYuYbFuYuYuYuYQsuYuYuYbFuYuYuYuYbFuYuYuYuYbFuYuYuYgHAhoaoaoaoaoaoajBoaoaoa
