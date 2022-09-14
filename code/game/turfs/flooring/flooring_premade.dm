@@ -238,8 +238,8 @@
 	name = "space"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "space"
-	uses_winter_overlay = TRUE
-	may_become_muddy = TRUE
+	uses_winter_overlay = FALSE
+	may_become_muddy = FALSE
 	is_diggable = FALSE
 	initial_flooring = /decl/flooring/dirt/space
 

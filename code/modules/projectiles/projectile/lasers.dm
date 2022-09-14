@@ -11,6 +11,8 @@
 	damage = DAMAGE_LOW
 	penetrating = 8
 	armor_penetration = 0
+	light_color = "#ff0000"
+	light_range = 3
 	var/mob_passthrough_check = FALSE
 	var/move_tiles = -1
 	var/moved_tiles = FALSE
@@ -72,11 +74,12 @@
 /obj/item/projectile/laser/b
 	icon_state = "bluebolt"
 	muzzle_type = /obj/effect/projectile/laser/muzzle/b
+	light_color = "#3b719f"
 
 /obj/item/projectile/laser/g
 	icon_state = "greenbolt"
 	muzzle_type = /obj/effect/projectile/laser/muzzle/g
-
+	light_color = "#00bf00"
 /obj/item/projectile/laser/pistol
 	damage = 25
 	penetrating = 6
@@ -85,11 +88,11 @@
 /obj/item/projectile/laser/pistol/b
 	icon_state = "bluebolt"
 	muzzle_type = /obj/effect/projectile/laser/muzzle/b
-
+	light_color = "#3b719f"
 /obj/item/projectile/laser/pistol/g
 	icon_state = "greenbolt"
 	muzzle_type = /obj/effect/projectile/laser/muzzle/g
-
+	light_color = "#00bf00"
 
 /obj/item/projectile/laser/repeating
 	damage = 120

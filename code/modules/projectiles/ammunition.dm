@@ -227,7 +227,8 @@
 	set category = null
 	set src in view(1)
 	set name = "Toggle Open"
-
+	if (istype(src,/obj/item/ammo_magazine/tibannagas))
+		return FALSE
 	if (opened)
 		opened=FALSE
 		usr << "You close the [src]."
@@ -390,7 +391,8 @@
 /obj/item/ammo_magazine/attack_self(mob/user)
 
 	var/cont = FALSE
-	if (stored_ammo.len > 0 && stored_ammo.len < 20)
+
+	if (stored_ammo.len > 0 && stored_ammo.len < 20 && !istype(src,/obj/item/ammo_magazine/tibannagas))
 		if ((input(user, "Are you sure you want to empty the [src]?", "[src]") in list ("Yes", "No")) == "Yes")
 			cont = TRUE
 

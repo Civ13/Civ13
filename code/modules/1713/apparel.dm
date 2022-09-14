@@ -105,9 +105,9 @@
 /obj/item/clothing/head/impcaptaincap
 	name = "imperial naval officer cap"
 	desc = "a tight fitting green cap."
-	icon_state = "repnavalcaptain_ca"
-	item_state = "repnavalcaptain_cap"
-	worn_state = "repnavalcaptain_cap"
+	icon_state = "repofficer_navcaptain"
+	item_state = "repofficer_navcaptain"
+	worn_state = "repofficer_navcaptain"
 
 /obj/item/clothing/head/impstormcap
 	name = "imperial black field cap"
@@ -163,9 +163,9 @@
 /obj/item/clothing/head/impofficercap
 	name = "imperial officer cap"
 	desc = "a tight fitting grey cap."
-	icon_state = "impofficer_storm"
-	item_state = "impofficer_storm"
-	worn_state = "impofficer_storm"
+	icon_state = "impofficer_stormofficer"
+	item_state = "impofficer_stormofficer"
+	worn_state = "impofficer_stormofficer"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -451,7 +451,7 @@
 	armor = list(melee = 35, arrow = 50, gun = 35, energy = 55, bomb = 40, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/stormtrooper
-	name = "Replicant Stormtrooper Helmet"
+	name = "Stormtrooper Helmet"
 	desc = "A reinforced helmet of the Imperial Storm Corps."
 	icon_state = "repstormtrooper_helmet"
 	item_state = "repstormtrooper_helmet"
@@ -461,7 +461,7 @@
 	armor = list(melee = 35, arrow = 60, gun = 65, energy = 50, bomb = 30, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/stormsurgeon
-	name = "Replicant Storm-Surgeon Helmet"
+	name = "Storm-Surgeon Helmet"
 	desc = "A reinforced helmet of the Imperial Medical Corps."
 	icon_state = "stormsurgeon_helmet"
 	item_state = "stormsurgeon_helmet"
@@ -471,7 +471,7 @@
 	armor = list(melee = 35, arrow = 60, gun = 65, energy = 50, bomb = 30, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/stormradio
-	name = "Replicant Stormtrooper Radio Technician Helmet"
+	name = "Stormtrooper Radio Technician Helmet"
 	desc = "A reinforced helmet of the Imperial Storm Corps."
 	icon_state = "stormradio_helmet"
 	item_state = "stormradio_helmet"
@@ -489,7 +489,8 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 30, arrow = 50, gun = 40, energy = 50, bomb = 30, bio = 20, rad = FALSE)
-
+	flash_protection = FLASH_PROTECTION_MODERATE
+	var/ear_safety = 2
 /obj/item/clothing/head/helmet/replicant/atrt
 	name = "AT-RT Replicant Driver Helmet"
 	desc = "A reinforced plastoid helmet of the Republic Army."
