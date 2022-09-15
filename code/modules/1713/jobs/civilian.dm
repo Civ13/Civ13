@@ -2484,7 +2484,7 @@
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_HIGH)
 
-datum/job/civilian/dea_agent
+/datum/job/civilian/dea_agent
 	title = "DEA Agent"
 	rank_abbreviation = "Agent"
 	spawn_location = "JoinLateCiv"

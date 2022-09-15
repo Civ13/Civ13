@@ -51,6 +51,8 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 				J.total_positions = 20
 		if (J.title == "Rednikov Guard")
 			. = FALSE
+		if (J.title == "DEA Agent")
+			. = FALSE
 	else if (J.title == "Paramedic")
 		. = TRUE
 	else
