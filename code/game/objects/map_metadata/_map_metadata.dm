@@ -740,6 +740,9 @@ var/civmax_research = list(230,230,230)
 		RUSSIAN = 0,
 		CHECHEN = 0,
 		FINNISH = 0,
+		NORWEGIAN = 0,
+		SWEDISH = 0,
+		DANISH = 0,
 		GERMAN = 0,
 		AMERICAN = 0,
 		VIETNAMESE = 0,
@@ -856,6 +859,12 @@ var/civmax_research = list(230,230,230)
 			return "Chechen"
 		if (FINNISH)
 			return "Finnish"
+		if (NORWEGIAN)
+			return "Norwegian"
+		if (SWEDISH)
+			return "Swedish"
+		if (DANISH)
+			return "Danish"
 		if (AMERICAN)
 			return "American"
 		if (VIETNAMESE)
@@ -903,6 +912,12 @@ var/civmax_research = list(230,230,230)
 			return "Chechen Republic of Ichkeria"
 		if (FINNISH)
 			return "Republic of Finland"
+		if (NORWEGIAN)
+			return "Kingdom of Norway"
+		if (SWEDISH)
+			return "Kingdom of Sweden"
+		if (DANISH)
+			return "Kingdom of Denmark"
 		if (GERMAN)
 			return "German Empire"
 		if (AMERICAN)

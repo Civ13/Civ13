@@ -33,12 +33,16 @@
 #define RUSSIAN "RUSSIAN"
 #define CHECHEN "CHECHEN"
 #define FINNISH "FINNISH"
+#define NORWEGIAN "NORWEGIAN"
+#define SWEDISH "SWEDISH"
+#define DANISH "DANISH"
 #define GREEK "GREEK"
 #define ARAB "ARAB"
 #define GERMAN "GERMAN"
 #define VIETNAMESE "VIETNAMESE"
 #define KOREAN "KOREAN"
 #define FILIPINO "FILIPINO"
+
 /proc/faction_const2name(constant,age = 0)
 
 	if (constant == PIRATES)
@@ -132,6 +136,15 @@
 
 	if (constant == FINNISH)
 		return "Republic of Finland"
+
+	if (constant == NORWEGIAN)
+		return "Kingdom of Norway"
+
+	if (constant == SWEDISH)
+		return "Kingdom of Sweden"
+
+	if (constant == DANISH)
+		return "Kingdom of Denmark"
 
 	if (constant == GERMAN)
 		if (age == 6)

@@ -183,6 +183,36 @@
 	var/full_name = "Nokia Kuoma"
 	return full_name
 
+/datum/language/proc/get_random_norwegian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))//To do: implement proper Norwegian names
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))//To do: implement proper Norwegian names
+
+	var/full_name = "Bjorn Hansen"
+	return full_name
+
+/datum/language/proc/get_random_swedish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))//To do: implement proper Swedish names
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))//To do: implement proper Swedish names
+
+	var/full_name = "Lars Andersson"
+	return full_name
+
+/datum/language/proc/get_random_danish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))//To do: implement proper Danish names
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))//To do: implement proper Danish names
+
+	var/full_name = "Karl Jensen"
+	return full_name
+
 /datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
