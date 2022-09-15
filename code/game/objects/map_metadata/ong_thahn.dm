@@ -19,14 +19,14 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(AMERICAN = 0.5, VIETNAMESE = 0.5)
 	battle_name = "Battle of Ong Thahn"
-	mission_start_message = "<font size=4>The <b>NVA</b> must capture the American FOB. The <b>US Army</b> must defend their base for <b>45 minutes</b>.<br>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
+	mission_start_message = "<font size=4>The <b>NVA</b> must capture the American FOB. The <b>US Army</b> must defend their base for <b>45 minutes</b>.<br>All factions have <b>6 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = AMERICAN
 	faction2 = VIETNAMESE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
 	artillery_count = 3
-	grace_wall_timer = 3000
+	grace_wall_timer = 3600
 	gamemode = "Siege"
 
 /obj/map_metadata/ong_thahn/job_enabled_specialcheck(var/datum/job/J)
