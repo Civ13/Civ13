@@ -114,6 +114,18 @@ var/list/first_names_male_finnish = file2list("config/names/first_male_finnish.t
 var/list/first_names_female_finnish = file2list("config/names/first_female_finnish.txt")
 var/list/last_names_finnish  = file2list("config/names/last_finnish.txt")
 
+var/list/first_names_male_norwegian = file2list("config/names/first_male_oldnorse.txt")//To be changed with real Norwegian names
+var/list/first_names_female_norwegian  = file2list("config/names/first_female_oldnorse.txt")//To be changed with real Norwegian names
+var/list/last_names_norwegian  = file2list("config/names/last_oldnorse.txt")//To be changed with real Norwegian names
+
+var/list/first_names_male_swedish = file2list("config/names/first_male_oldnorse.txt")//To be changed with real Swedish names
+var/list/first_names_female_swedish  = file2list("config/names/first_female_oldnorse.txt")//To be changed with real Swedish names
+var/list/last_names_swedish  = file2list("config/names/last_oldnorse.txt")//To be changed with real Swedish names
+
+var/list/first_names_male_danish = file2list("config/names/first_male_oldnorse.txt")//To be changed with real Danish names
+var/list/first_names_female_danish  = file2list("config/names/first_female_oldnorse.txt")//To be changed with real Danish names
+var/list/last_names_danish  = file2list("config/names/last_oldnorse.txt")//To be changed with real Danish names
+
 var/list/first_names_male_oldnorse = file2list("config/names/first_male_oldnorse.txt")
 var/list/first_names_female_oldnorse  = file2list("config/names/first_female_oldnorse.txt")
 var/list/last_names_oldnorse  = file2list("config/names/last_oldnorse.txt")
