@@ -142,6 +142,12 @@
 		. = RUSSIAN
 	else if (istype(src, /datum/job/finnish))
 		. = FINNISH
+	else if (istype(src, /datum/job/norwegian))
+		. = NORWEGIAN
+	else if (istype(src, /datum/job/swedish))
+		. = SWEDISH
+	else if (istype(src, /datum/job/danish))
+		. = DANISH
 	else if (istype(src, /datum/job/arab/civilian/chechen))
 		. = CHECHEN
 	else if (istype(src, /datum/job/roman))
@@ -198,6 +204,15 @@
 	else if (istype(src, /datum/job/finnish))
 		user.faction_text = "FINNISH"
 		user.base_faction = new/datum/faction/finnish(user, src)
+	else if (istype(src, /datum/job/norwegian))
+		user.faction_text = "NORWEGIAN"
+		user.base_faction = new/datum/faction/norwegian/user, src)
+	else if (istype(src, /datum/job/swedish))
+		user.faction_text = "SWEDISH"
+		user.base_faction = new/datum/faction/swedish(user, src)
+	else if (istype(src, /datum/job/danish))
+		user.faction_text = "DANISH"
+		user.base_faction = new/datum/faction/danish(user, src)
 	else if (istype(src, /datum/job/arab/civilian/chechen))
 		user.faction_text = "CHECHEN"
 		user.base_faction = new/datum/faction/chechen(user, src)
