@@ -34,8 +34,11 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_heist == TRUE)
 		. = TRUE
 		if (J.title == "Police Officer")
-			J.max_positions = 4
-			J.total_positions = 4
+			J.max_positions = 2
+			J.total_positions = 2
+		if (J.title == "DEA Agent")
+			J.max_positions = 2
+			J.total_positions = 2	
 		if (J.title == "SWAT Officer")
 			J.whitelisted = FALSE
 			J.max_positions = 30
@@ -172,9 +175,6 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 
 
 ////////////////////////////////Objects and stuff//////////////////////////////////////////////////
-
-/datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/paper/police/searchwarrant/drug(H), slot_r_hand)
 
 /obj/item/weapon/paper/police/searchwarrant/drug
 	icon_state = "police_warrant"
