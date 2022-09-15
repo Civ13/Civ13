@@ -29,7 +29,11 @@
 #define TEAM_FP 18
 #define TEAM_FI 19
 #define TEAM_CC 20
-var/global/soldiers[20]
+#define TEAM_NO 21
+#define TEAM_SE 22
+#define TEAM_DK 23
+
+var/global/soldiers[23]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -147,6 +151,30 @@ var/global/soldiers[20]
 
 /datum/faction/finnish/base_type()
 	return "/datum/faction/finnish"
+
+/datum/faction/norwegian
+	icon_state = ""
+	title = "Norwegian Soldier"
+	team = TEAM_NO
+
+/datum/faction/norwegian/base_type()
+	return "/datum/faction/norwegian"
+
+/datum/faction/swedish
+	icon_state = ""
+	title = "Swedish Soldier"
+	team = TEAM_SE
+
+/datum/faction/swedish/base_type()
+	return "/datum/faction/swedish"
+
+/datum/faction/danish
+	icon_state = ""
+	title = "Danish Soldier"
+	team = TEAM_DK
+
+/datum/faction/danish/base_type()
+	return "/datum/faction/danish"
 
 /datum/faction/german
 	icon_state = ""
@@ -267,5 +295,14 @@ var/global/soldiers[20]
 	else if (istype(J, /datum/job/finnish))
 		if ("[type]" == "/datum/faction/finnish")
 			soldiers[FINNISH]++
+	else if (istype(J, /datum/job/norwegian))
+		if ("[type]" == "/datum/faction/norwegian")
+			soldiers[NORWEGIAN]++
+	else if (istype(J, /datum/job/swedish))
+		if ("[type]" == "/datum/faction/swedish")
+			soldiers[SWEDISH]++
+	else if (istype(J, /datum/job/danish))
+		if ("[type]" == "/datum/faction/danish")
+			soldiers[DANISH]++
 	H.all_factions += src
 	..()
