@@ -229,14 +229,14 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/dagger
 	name = "dagger"
-	desc = "A long, sharp, swordlike knife that is used for cqc."
+	desc = "A long, sharp, swordlike knife that is used for close quarter combat."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "dagger"
 	item_state = "knife"
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.8
+	force_divisor = 0.75
 
 /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron
 	default_material = "iron"
