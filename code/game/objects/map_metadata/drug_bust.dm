@@ -21,21 +21,19 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(CIVILIAN = 0.65, RUSSIAN = 0.35)
 	battle_name = "Rednikov Drug Bust"
-	mission_start_message = "<font size=4>Rednikov have <b>5 minutes</b> to prepare SWAT raid the building!<br>The police will win if they <b>capture the Storage Depot!</b> Rednikov will win if they manage to hold off the police for <b>20 minutes!</b></font>"
+	mission_start_message = "<font size=4>Rednikov have <b>5 minutes</b> to prepare before the SWAT raid the building!<br>The Police will win if they <b>capture the Storage Depot</b> in time! Rednikov will win if they manage to hold off the Police for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = RUSSIAN
 	grace_wall_timer = 3000
 	gamemode = "Drug Bust"
 	songs = list(
 		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = "sound/music/amphetamine_cocaine.ogg",)
-		
+
 obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_heist == TRUE)
 		. = TRUE
 		if (J.title == "Police Officer")
-			J.title = "DEA Detective"
-			J.rank_abbreviation = "Detective"
 			J.max_positions = 4
 			J.total_positions = 4
 		if (J.title == "SWAT Officer")
@@ -53,7 +51,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/drug_bust/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/bank_robbery/roundend_condition_def2name(define)
+/obj/map_metadata/drug_bust/roundend_condition_def2name(define)
 	..()
 	switch (define)
 		if (CIVILIAN)
@@ -61,7 +59,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		if (RUSSIAN)
 			return "Rednikov"
 
-/obj/map_metadata/bank_robbery/roundend_condition_def2army(define)
+/obj/map_metadata/drug_bust/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (CIVILIAN)
@@ -69,38 +67,38 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		if (RUSSIAN)
 			return "Rednikov"
 
-/obj/map_metadata/bank_robbery/army2name(army)
+/obj/map_metadata/drug_bust/army2name(army)
 	..()
 	switch (army)
 		if ("CIVILIAN")
 			return "SWAT"
 		if ("Russians")
 			return "Rednikov"
-	
+
 /obj/map_metadata/drug_bust/cross_message(faction)
-	return "<font size = 4>SWAT has started the raid!</font>"
+	return "<font size = 4>SWAT have started the raid!</font>"
 
 /obj/map_metadata/drug_bust/reverse_cross_message(faction)
 	return ""
 
-/obj/map_metadata/bank_robbery/short_win_time(faction)
+/obj/map_metadata/drug_bust/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3500 // 2 minutes
+		return 1200 // 2 minutes
 
-/obj/map_metadata/bank_robbery/long_win_time(faction)
+/obj/map_metadata/drug_bust/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3500 // 5 minutes
+		return 3000 // 5 minutes
 
 /obj/map_metadata/drug_bust/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
 	if (processes.ticker.playtime_elapsed >= 20000)
 		ticker.finished = TRUE
-		var/message = "SWAT retreats out of the Storage Depot with heavy casualties, Rednikov wins!"
+		var/message = "SWAT retreat out of the Storage Depot with heavy casualties, Rednikov managed to stand their ground!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -116,7 +114,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 				if (last_win_condition != win_condition.hash)
-					current_win_condition = "SWAT is now securing the Storage Depot! They will win in {time} minutes."
+					current_win_condition = "SWAT are now securing the Storage Depot! They will win in {time} minutes."
 					next_win = world.time + short_win_time(CIVILIAN)
 					announce_current_win_condition()
 					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -124,7 +122,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 				if (last_win_condition != win_condition.hash)
-					current_win_condition = "SWAT is now securing the Storage Depot! They will win in {time} minutes."
+					current_win_condition = "SWAT are now securing the Storage Depot! They will win in {time} minutes."
 					next_win = world.time + short_win_time(CIVILIAN)
 					announce_current_win_condition()
 					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -132,7 +130,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 				if (last_win_condition != win_condition.hash)
-					current_win_condition = "SWAT is now securing the Storage Depot! They will win in {time} minutes."
+					current_win_condition = "SWAT are now securing the Storage Depot! They will win in {time} minutes."
 					next_win = world.time + short_win_time(CIVILIAN)
 					announce_current_win_condition()
 					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -140,14 +138,14 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 				if (last_win_condition != win_condition.hash)
-					current_win_condition = "SWAT is now securing the Storage Depot! They will win in {time} minutes."
+					current_win_condition = "SWAT are now securing the Storage Depot! They will win in {time} minutes."
 					next_win = world.time + short_win_time(CIVILIAN)
 					announce_current_win_condition()
 					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 		else
 			if (current_win_condition != no_winner && current_winner && current_loser)
-				world << "<font size = 3>Rednikov has regained control of the Storage Depot!</font>"
+				world << "<font size = 3>Rednikov have regained control of the Storage Depot!</font>"
 				current_winner = null
 				current_loser = null
 			next_win = -1

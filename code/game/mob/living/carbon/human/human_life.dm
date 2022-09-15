@@ -1464,6 +1464,12 @@
 					holder2.icon_state = "chechen_basic"
 				if (FINNISH)
 					holder2.icon_state = "finnish_basic"
+				if (NORWEGIAN)
+					holder2.icon_state = "norway_basic"
+				if (SWEDISH)
+					holder2.icon_state = "swedish_basic"
+				if (DANISH)
+					holder2.icon_state = "danish_basic"
 				if (JAPANESE)
 					if (original_job.is_yakuza && original_job.is_yama)
 						holder2.icon_state = "yamaguchi"
@@ -1480,6 +1486,8 @@
 						holder2.icon_state = "ru_basic"
 					else if (map.ID == MAP_BANK_ROBBERY)
 						holder2.icon_state = "robbers"
+					else if (map.ID == MAP_DRUG_BUST)
+						holder2.icon_state = "rednikov"
 					else
 						if (map.ordinal_age <= 5)
 							holder2.icon_state = "ru_basic"
@@ -1523,7 +1531,7 @@
 						holder2.icon_state = "stormcloak"
 					else if (map.ID == MAP_TANTIVEIV)
 						holder2.icon_state = "rebel_basic"
-					else if (map.ID == MAP_BANK_ROBBERY && original_job.is_law)
+					else if ((map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST)&& original_job.is_law)
 						holder2.icon_state = "police"
 					else if (map.ID == MAP_FACTORY)
 						holder2.icon_state = "ukr_basic"

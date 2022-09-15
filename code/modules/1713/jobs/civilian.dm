@@ -2419,7 +2419,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
 		else if (randcloth == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
-	H.add_note("Role", "You are a member of the police force. Your objective are to arrest (or deal justice to) as many criminals as possible!")
+	H.add_note("Role", "You are a member of the police force. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2472,7 +2472,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/m16(H), slot_belt)
-	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective are to arrest (or deal justice to) as many criminals as possible!")
+	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2483,6 +2483,65 @@
 	H.setStat("pistol", STAT_VERY_HIGH)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_HIGH)
+
+datum/job/civilian/dea_agent
+	title = "DEA Agent"
+	rank_abbreviation = "Agent"
+	spawn_location = "JoinLateCiv"
+	selection_color = "#000117"
+
+	is_heist = TRUE
+	is_law = TRUE
+	whitelisted = TRUE
+	can_be_female = TRUE
+
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/civilian/dea_agent/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Police Department"
+	give_random_name(H)
+	var/randclothes = rand(1,4)
+	switch(randclothes)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective1(H), slot_w_uniform)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective2(H), slot_w_uniform)
+		if(4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective3(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform1.attackby(hiph, H)
+	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar(null)
+	uniform1.attackby(armor,H)
+	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
+	spawn(15)
+		pb.name = "[replacetext(H.real_name,"Agent ","")] DEA badge"
+		pb.desc = "a DEA badge, with <b>[replacetext(H.real_name,"Agent ","")]</b> engraved."
+	uniform1.attackby(pb, H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/dea(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/dea(H), slot_wear_suit)
+
+	H.add_note("Role", "You are a federal agent of the Drug Enforcement Administration. Your objective is to arrest (or deal justice to) as many criminals as possible!")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
 
 /datum/job/civilian/sheriffdep
 	title = "County Deputy"

@@ -1032,6 +1032,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Revolutionaries "
 		else if (map && istype(map, /obj/map_metadata/bank_robbery))
 			dat += "[alive_civilians.len] Policemen "
+		else if (map && istype(map, /obj/map_metadata/drug_bust))
+			dat += "[alive_civilians.len] Policemen and Federal Agents "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1050,6 +1052,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_russian.len] Russian Army "
 		else if (map && istype(map, /obj/map_metadata/bank_robbery))
 			dat +="[alive_russian.len] Robbers "
+		else if (map && istype(map, /obj/map_metadata/drug_bust))
+			dat +="[alive_russian.len] Rednikov Mobsters "
 		else
 			if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
 				dat += "[alive_russian.len] Soviets "
@@ -1059,6 +1063,12 @@ var/global/redirect_all_players = null
 		dat += "[alive_chechen.len] Chechens "
 	if (FINNISH in map.faction_organization)
 		dat += "[alive_finnish.len] Finnish "
+	if (NORWEGIAN in map.faction_organization)
+		dat += "[alive_norwegian.len] Norwegians "
+	if (SWEDISH in map.faction_organization)
+		dat += "[alive_swedish.len] Swedes "
+	if (DANISH in map.faction_organization)
+		dat += "[alive_danish.len] Danes "
 	if (GERMAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
 			dat += "[alive_german.len] Reactionaries "
@@ -1102,6 +1112,9 @@ var/global/redirect_all_players = null
 		RUSSIAN = FALSE,
 		CHECHEN = FALSE,
 		FINNISH = FALSE,
+		NORWEGIAN = FALSE,
+		SWEDISH = FALSE,
+		DANISH = FALSE,
 		JAPANESE = FALSE,
 		GERMAN = FALSE,
 		AMERICAN = FALSE,
@@ -1174,6 +1187,15 @@ var/global/redirect_all_players = null
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/finnish) && !finnish_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/norwegian) && !norwegian_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/swedish) && !swedish_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/danish) && !danish_toggled)
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/german) && !german_toggled)
@@ -1250,6 +1272,11 @@ var/global/redirect_all_players = null
 						temp_name = "Police Department"
 					if (temp_name == "Russian")
 						temp_name = "Robbers"
+				else if (map && map.ID == "DRUG_BUST")
+					if (temp_name == "Civilian")
+						temp_name = "Police and Federal Agents"
+					if (temp_name == "Russian")
+						temp_name = "Rednikov Mobsters"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"

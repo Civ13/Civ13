@@ -33,12 +33,16 @@
 #define RUSSIAN "RUSSIAN"
 #define CHECHEN "CHECHEN"
 #define FINNISH "FINNISH"
+#define NORWEGIAN "NORWEGIAN"
+#define SWEDISH "SWEDISH"
+#define DANISH "DANISH"
 #define GREEK "GREEK"
 #define ARAB "ARAB"
 #define GERMAN "GERMAN"
 #define VIETNAMESE "VIETNAMESE"
 #define KOREAN "KOREAN"
 #define FILIPINO "FILIPINO"
+
 /proc/faction_const2name(constant,age = 0)
 
 	if (constant == PIRATES)
@@ -71,7 +75,7 @@
 			return "Ruhr Red Army"
 		else if (map.ID == "MAGISTRAL")
 			return "DRA Army"
-		else if (map.ID == "BANK_ROBBERY")
+		else if (map.ID == "BANK_ROBBERY" || map.ID == "DRUG_BUST")
 			return "Police Department"
 		else
 			if (age >= 6)
@@ -113,6 +117,8 @@
 			return "White Army"
 		else if (map.ID == "BANK_ROBBERY")
 			return "Robbers"
+		else if (map.ID == "DRUG_BUST")
+			return "Rednikov Mobsters"
 		else
 			if (age == 6 || age == 7)
 				return "Soviet Union"
@@ -132,6 +138,15 @@
 
 	if (constant == FINNISH)
 		return "Republic of Finland"
+
+	if (constant == NORWEGIAN)
+		return "Kingdom of Norway"
+
+	if (constant == SWEDISH)
+		return "Kingdom of Sweden"
+
+	if (constant == DANISH)
+		return "Kingdom of Denmark"
 
 	if (constant == GERMAN)
 		if (age == 6)
