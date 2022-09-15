@@ -111,7 +111,7 @@
 	worn_state = "atf"
 
 /obj/item/clothing/suit/storage/dea
-	name = "FBI jacket"
+	name = "DEA jacket"
 	desc = "A DEA jacket, standard issue for DEA agents."
 	icon_state = "dea"
 	item_state = "dea"
