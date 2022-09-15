@@ -686,7 +686,7 @@
 			if (map && !map.civilizations)
 				var/grace_period_string = ""
 				for (var/faction in map.faction_organization)
-					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, CIVILIAN, ROMAN, GREEK, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, FILIPINO, CHECHEN, CHINESE, FINNISH, VIETNAMESE).Find(faction))
+					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, CIVILIAN, ROMAN, GREEK, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, FILIPINO, CHECHEN, CHINESE, FINNISH, NORWEGIAN, SWEDISH, DANISH, VIETNAMESE).Find(faction))
 						continue
 					if (grace_period_string)
 						grace_period_string += ", "

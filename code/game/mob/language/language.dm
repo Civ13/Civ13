@@ -1,4 +1,4 @@
-1#define SCRAMBLE_CACHE_LEN 20
+#define SCRAMBLE_CACHE_LEN 20
 
 /*
 	Datum based languages. Easily editable and modular.

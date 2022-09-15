@@ -1059,6 +1059,12 @@ var/global/redirect_all_players = null
 		dat += "[alive_chechen.len] Chechens "
 	if (FINNISH in map.faction_organization)
 		dat += "[alive_finnish.len] Finnish "
+	if (NORWEGIAN in map.faction_organization)
+		dat += "[alive_norwegian.len] Norwegians "
+	if (SWEDISH in map.faction_organization)
+		dat += "[alive_swedish.len] Swedes "
+	if (DANISH in map.faction_organization)
+		dat += "[alive_danish.len] Danes "
 	if (GERMAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
 			dat += "[alive_german.len] Reactionaries "
@@ -1102,6 +1108,9 @@ var/global/redirect_all_players = null
 		RUSSIAN = FALSE,
 		CHECHEN = FALSE,
 		FINNISH = FALSE,
+		NORWEGIAN = FALSE,
+		SWEDISH = FALSE,
+		DANISH = FALSE,
 		JAPANESE = FALSE,
 		GERMAN = FALSE,
 		AMERICAN = FALSE,
@@ -1174,6 +1183,15 @@ var/global/redirect_all_players = null
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/finnish) && !finnish_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/norwegian) && !norwegian_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/swedish) && !swedish_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/danish) && !danish_toggled)
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/german) && !german_toggled)

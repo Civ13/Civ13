@@ -206,7 +206,7 @@
 		user.base_faction = new/datum/faction/finnish(user, src)
 	else if (istype(src, /datum/job/norwegian))
 		user.faction_text = "NORWEGIAN"
-		user.base_faction = new/datum/faction/norwegian/user, src)
+		user.base_faction = new/datum/faction/norwegian(user, src)
 	else if (istype(src, /datum/job/swedish))
 		user.faction_text = "SWEDISH"
 		user.base_faction = new/datum/faction/swedish(user, src)
