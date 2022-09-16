@@ -2,7 +2,7 @@
 /obj/map_metadata/compound
 	ID = MAP_COMPOUND
 	title = "Compound"
-	lobby_icon = "icons/lobby/coldwar.png"
+	lobby_icon = "icons/lobby/vietnam.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="No base has been captured."
