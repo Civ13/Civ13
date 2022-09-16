@@ -13,6 +13,7 @@
 "bg" = (/obj/item/weapon/paper/police/searchwarrant/drug,/turf/floor/plating/road,/area/caribbean)
 "bn" = (/obj/effect/floor_decal/industrial/danger{dir = 4},/obj/effect/floor_decal/grass_edge{dir = 1},/obj/structure/lamp/lamp_small/alwayson/red{dir = 4},/turf/floor/plating/road,/area/caribbean)
 "bq" = (/obj/structure/curtain/closed/red{pixel_x = -32; pixel_y = 0},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"bw" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/item/weapon/reagent_containers/cocaineblocks/six,/obj/effect/floor_decal/industrial/outline/yellow,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "by" = (/obj/structure/sign/portrait/stalin{pixel_y = -32},/turf/floor/wood,/area/caribbean/british/land/inside)
 "bC" = (/obj/structure/grille/chainlinkfence{dir = 8},/obj/structure/lamp/lamppost_small/alwayson{pixel_x = 12},/turf/floor/grass,/area/caribbean)
 "bF" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -40,7 +41,7 @@
 "fa" = (/obj/structure/window/classic/brickfull,/obj/structure/barricade/steel,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/two)
 "fv" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "fy" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/item/stack/material/bone,/turf/floor/grass,/area/caribbean)
-"fM" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/british/land/inside)
+"fM" = (/obj/covers/brick_wall,/turf/floor/grass,/area/caribbean/british/land/inside)
 "fR" = (/turf/floor/blackslateroof,/area/caribbean)
 "gk" = (/obj/structure/vending/rednikovweapons,/turf/floor/wood,/area/caribbean/british/land/inside)
 "gB" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
@@ -52,7 +53,6 @@
 "hk" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/cocaineblocks/four,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "ho" = (/obj/structure/sign/logo/red{pixel_y = 32; desc = "A sign with the logo of Rednikov Industries, logistical warehouse"},/turf/floor/grass,/area/caribbean)
 "hC" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"hH" = (/obj/covers/roads/dirt{icon_state = "d_roadfull"},/turf/floor/grass,/area/caribbean)
 "hK" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/item/stack/material/bone,/obj/item/remains/human,/turf/floor/grass,/area/caribbean)
 "hL" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 8; override_color = "#d6d6d6"; w_right = list("none",1,1,0,0.1,1,1)},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "hT" = (/obj/structure/table/modern/retable,/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -106,7 +106,7 @@
 "os" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/british/land/inside)
 "oV" = (/obj/structure/gate/barrier,/turf/floor/plating/road,/area/caribbean)
 "pb" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/pill/cocaine_line,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"pe" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
+"pe" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "pv" = (/obj/structure/gatecontrol/blastcontrol/garage{pixel_x = -28},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "pA" = (/obj/effect/floor_decal/grass_edge{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "pC" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/pill/cocaine,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
@@ -148,7 +148,7 @@
 "vk" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/effect/floor_decal/industrial/outline/yellow,/obj/item/weapon/package,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "vm" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 1},/obj/structure/vehicleparts/movement{dir = 1},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 1},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 1},/obj/structure/vehicleparts/axis/car/falcon/police{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "vq" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"vv" = (/obj/covers/brick_wall,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
+"vv" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "vx" = (/obj/item/weapon/cigbutt,/turf/floor/grass,/area/caribbean)
 "wc" = (/obj/item/weapon/broken_bottle,/turf/floor/grass,/area/caribbean)
 "wd" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
@@ -348,7 +348,7 @@
 "XF" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/item/weapon/reagent_containers/cocaineblocks/five,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "XV" = (/obj/structure/closet/crate/empty/large{name = "shipping crate"; desc = "A hefty wooden crate for shipping item's oversea's."; w_class = 20; anchored = 1},/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/item/stack/material/coca,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "XZ" = (/obj/structure/lamp/lamp_small/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
-"Yd" = (/obj/covers/brick_wall,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/two)
+"Yd" = (/obj/structure/window/classic/brickfull,/obj/structure/barricade/steel,/turf/floor/plating/steel,/area/caribbean/no_mans_land/invisible_wall/two)
 "Yo" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/package,/obj/effect/floor_decal/industrial/warning/cee{dir = 1},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Yr" = (/obj/structure/curtain/closed/red{pixel_y = -32},/obj/structure/closet/crate/sandbags,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Yv" = (/obj/structure/table/modern/retable,/obj/item/weapon/weldingtool{pixel_y = 4},/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool{pixel_y = -4},/obj/item/weapon/weldingtool{pixel_y = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
@@ -372,46 +372,46 @@ oaoaoaYGoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoa
 oajVjVYGoaoaoaoaoaoaoaoaoaoaoaoaoaoajVoaoaoaoaoaoaoaoaoaoaoaoargoaoaoaoaoamJmJfymJoaoaoaoaoaoaoaoaoaoajBoaoajV
 jVoaoaYGoaoaoargoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoafyfyfyhKEsfyfyoaoaoaoaoaoaoaoaoajBoajVoa
 oajVoaYGjVoaoaoaoaoaNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFoaoaoaoaoaoajBjVoajV
-jVoajVYGoaoaoaoaoaoaNFXAnEBxXAXAXABxnEXAXAXANFFfWzOtWzBrBrWzAbDVWzXDvkWzBrBrBrNFTVBGXAXANFoaoaoaoaoaoajBoajVjV
-oaoaoaePrkrkrkrkrkrkNFXAXAXAbOXAXAXAXAQYXAXANFOtBrMfVpBrBrBrBbvkBrDVXDBrDVAbkINFBGBGXAxPNFoaoaoaoaoaoajBoajVoa
-oajVoaYGoaoaoaoaoaoaNFDzXAXAXAXAXAXAbPOutGjGNFzNBrMfBrDVXDBrDVAbBrGEAbBrXDDVBrNFNFNFGAGANFoaoaoaoajVoajBjVoajV
-oaoajVYGRIGBGBGBGBbnNFpvXAXAXAXAXAXAXAnEXAXANFFfBrSzBrGECKBrvvvvBrXDCKBrvvvvVpBrkINFNMweNFoawcoaoaoaoajBjVoaoa
-oaoaoabCqgTkTkTkTklnjDmdusXAXAkeNFXZXAXAXAXANFVABrMfBrAbBbBrvvvvBrAbwwBrvvvvBrBrBrafuYuYNFoaoaoaoaoaoajBoajVoa
-jVoajVYGqgTkTkTkTklnjDmdusXAXAXAXAXAXAXAXAxPNFUlBrOtBrDVGEBrBbpeBrAbvkBrAbPPBrBrBrafuYgHNFoaoaoaoaoaoajBoaoajV
-oajVoaYGyxTkTkTkTklnjDmdusXAMPXAXAXAXAXAXAXAMaBrBrPRBrXDCKBrCKXFBrBrBrBrDVBbBrBrkIAhuYuYNFoaoaoaoaoaoajBjVoaoa
-oaoajVYGqgTkTkTkTkLlNFDzXAXAXAXAXAXAXAXAXAXAMaBrBrBrBrBbyABrGECKBrXDCKBrCKAbBrBrBrAhuYuYNFoaoaoaoaoaoajBoajVoa
-oajVoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGaBrBrvkTMBrDVLCBrXFQMBrLCQoBrBrLOAhdNuYNFoaoaoaoaoaoajBoaoajV
-jVoajVYGqgTkTkTkavoaNFXAapXAXAXAXAXAGUXAXAxPNFGaEBBrBrvvvvBrLCBbBrvvvvBrBrBrBrBrgWAhuYuYNFoaoaoargoaoajBjVoaoa
-oaoajVbCqgTkTkwFavqFNFDzXAXAXAkeNFXZXAXAXAXANFGaGaBrBrvvvvBrLCvkBrvvvvBrGEvkBrBrLOAhuYgHNFoaoaoaoaoaoajBoajVoa
-oajVoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGaBrBrAbCKBrvkLCBrXDCKBrAbDVBrBrLOAhdNuYNFoaoajVoaoaoajBoaoajV
-jVoajVYGqgTkTkTkavoaNFXAnEbOXAXAXAXAMPXAXAxPNFEBGaVpBrLCvkBrDVGEBrCKGEVpyAAbBrBrgWAhuYuYNFoaoaoaoaoaoajBjVoaoa
+jVoajVYGoaoaoaoaoaoaNFXAnEBxXAXAXABxnEXAXAXANFFfWzOtWzBrBrWzAbNFWzXDvkWzBrBrBrNFTVBGXAXANFoaoaoaoaoaoajBoajVjV
+oaoaoaePrkrkrkrkrkrkNFXAXAXAbOXAXAXAXAQYXAXANFOtBrMfVpBrBrBrBbNFBrDVXDBrDVAbkINFBGBGXAxPNFoaoaoaoaoaoajBoajVoa
+oajVoaYGoaoaoaoaoaoaNFDzXAXAXAXAXAXAbPOutGjGNFzNBrMfBrDVXDBrDVNFBrGEAbBrXDDVBrNFNFNFGAGANFoaoaoaoajVoajBjVoajV
+oaoajVYGRIGBGBGBGBbnNFpvXAXAXAXAXAXAXAnEXAXANFFfBrSzBrGECKkINFNFvvXDCKBrNFNFVpBrkINFNMweNFoawcoaoaoaoajBjVoaoa
+oaoaoabCqgTkTkTkTklnjDmdusXAXAkeNFXZXAXAXAXANFVABrMfBrAbBbBrNFNFBrAbwwBrNFNFBrBrBrafuYuYNFoaoaoaoaoaoajBoajVoa
+jVoajVYGqgTkTkTkTklnjDmdusXAXAXAXAXAXAXAXAxPNFUlBrOtBrDVGEBrBbNFBrAbvkBrAbPPBrBrBrafuYgHNFoaoaoaoaoaoajBoaoajV
+oajVoaYGyxTkTkTkTklnjDmdusXAMPXAXAXAXAXAXAXAMaBrBrPRBrXDCKBrbwNFBrBrBrBrDVBbBrBrkIAhuYuYNFoaoaoaoaoaoajBjVoaoa
+oaoajVYGqgTkTkTkTkLlNFDzXAXAXAXAXAXAXAXAXAXAMaBrBrBrBrBbyABrGENFBrXDCKBrCKAbBrBrBrAhuYuYNFoaoaoaoaoaoajBoajVoa
+oajVoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGaBrBrvkTMBrDVNFvvXFQMBrLCQoBrBrLOAhdNuYNFoaoaoaoaoaoajBoaoajV
+jVoajVYGqgTkTkTkavoaNFXAapXAXAXAXAXAGUXAXAxPNFGaEBBrBrNFNFBrLCNFBrNFNFBrBrBrBrBrgWAhuYuYNFoaoaoargoaoajBjVoaoa
+oaoajVbCqgTkTkwFavqFNFDzXAXAXAkeNFXZXAXAXAXANFGaGaBrBrNFNFBrLCNFBrNFNFBrGEvkBrBrLOAhuYgHNFoaoaoaoaoaoajBoajVoa
+oajVoaYGqgTkTkTkavoaNFXAXAXAXAXAXAXAXAXAXAXANFTAGaBrBrAbCKBrpeNFvvXDCKBrAbDVBrBrLOAhdNuYNFoaoajVoaoaoajBoaoajV
+jVoajVYGqgTkTkTkavoaNFXAnEbOXAXAXAXAMPXAXAxPNFEBGaVpBrLCvkBrBrBrBrCKGEVpyAAbBrBrgWAhuYuYNFoaoaoaoaoaoajBjVoaoa
 oaoajVYGqgTkTkTkavoaNFDzXAqAXAXAqAXAXAqAXAnENFfvGaBrNtCKAbNtBrBrNtvkCKNtvkyANtBrLOAhuYuYNFoavxoaoaoaoajBoajVoa
 oajVoaYGqgTkTkTkavoaNFNFafNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFNFdNuYNFoaoaoaoaoaoajBoaoajV
 jVoajVYGqgTkTkTkavoaNFuYuYnfuYuYuYuYnfuYuYuYuYnfuYQsuYuYuYuYuYuYnfuYuYuYuYnfuYuYuYuYuYuYAhoaoaoaoaoaoajBjVoaoa
 oaoajVbCqgTkTkTkavqFNFbFuYuYuYuYbFuYuYuYbFuYuYuYuYQsuYuYuYbFuYuYuYuYbFuYuYuYuYbFuYuYuYgHAhoaoaoaoaoaoajBoajVoa
-oajVoaYGqgTkTkTkavoaNFNFafNFNFNFNFNFNFNFNFNFNFNFNFNFdNuYuYAhAhAhAhAhAhAhuYuYAhAhAhAhAhAhAhoaoaoaoaoaoajBoaoajV
-oajVoaYGqgTkTkTkavoaNFCIXABxnEXAXABxXAXAXABxXAXAGsNFuYuYuYAhwDTYFBCwJSAhuYuYAhxcupbfGMxhAhoaoaoaoaoaoajBjVoaoa
-oaoajVYGqgTkTkTkavoaOZbqXAXAXAXAXAXAXAYoXAPWXAYoXANFuYuYuYAhuYuYuYuYuYAhuYgHAhuYupGMXhrPLGoaoaoaoaoaoajBoajVoa
-oajVoaYGqgTkTkTkavoaOZbqXAXACcBAMnXAXAsqXAsqXAsqxPNFdNuYgHAhRjuYuYuYuYQsuYuYAhYwuYcxuYbXLGoaoaoaoaoaoajBoaoaoa
-jVoaoaYGqgTkTkTkavoaNFqAXAXAqAXAXAXAXAsqXArDXArDXANFuYuYuYAhmBbfuYuYcIAhuYuYQsuYuYuYuYbXLGoaoaoaoaoaoajBjVoajV
-oajVoabCqgTkTkTkavqFNFNFWyNFNFNFNFDzXArDXZsqXZsqXANFuYuYuYAhAhAhAhAhAhAhuYuYAhuYuYuYuYBfAhoaoaoaoaoaoajBoajVoa
-oaoajVYGqgTkTkTkavoaNFDzXAXAXAHhNFXAXAsqXAsqXArDxPNFdNuYgHAhkCmDmDnraLljuYgHAhZnuYcVuYosAhoaoaoaoawcoajBoaoaoa
-oajVoaYGqgTkTkTkavoaNFKXXAXAXAXANFXAXArDXAsqXAsqXANFuYuYuYAhyhuYuYuYuYuYuYuYAhYwuYmvuYosAhoaoaoajVoaoajBoajVoa
-oaoajVYGqgTkTkTkavoaNFLPnHXAGPXANFDzXATpXAHtXATpXANFuYuYuYAhAsuYpKxlAkuYuYuYAhBNuYuYuYBaAhoaoaoaoaoaoajBjVoaoa
-jVoajVYGqgTkTkTkavoaNFzbLPKXPBHwNFXAqAXAAXrbrbXAxPNFdNuYgHAhAsbFaWaWaWbFNHcIAhUcuYuYuYgHAhoaoaoaoaoaoajBoajVoa
-oajVoaYGqgTkTkTkavoaNFNFNFNFNFNFNFNFNFNFOZOZOZNFNFNFGWGWGWAhAhAhLGLGLGAhAhAhAhAhAhAhAhAhAhoaoaoaoaoaoajBoaoajV
-jVoaoabCqgTkTkTkavqFYGoaoaoaoaoaoaoaoaoaoaoaoaoajBhoClhHUVhojBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoavxoaoajBoaoaoa
-oajVoaYGqgTkTkTkavoaYGoaoaoaoaoaoajpoaoaoaoaoaoajBoaClhHUVoajBoaoayPoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBjVjVoa
-jVoajVYGqgTkTkTkavoaYGoajVoaoaoaoaoaoaoaoaoaoaoajBuQClhHUVuQjBoaoaoaoaoaoaoaoaoaoaoaoaoajVoaoaoaoaoaoajBoaoaoa
-oaoajVYGqgTkTkTkavoaYGoaoaoargoaoaoaoaoaoaoaoaoajBoaClhHUVoajBoaoaoaoajVoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBoaoajV
-oajVoaYGqgTkTkTkavoaYGoaoaoaoaoaoaoaoaoajVoaoaoajBoaClhHUVoajBoaoaoawcoaoaoaoaoaoaoaoaoaoaoaoaoaoajVoajBjVoaoa
-jVoaoaYGqgTkTkTkavoaYGoaoaoaoaoaoaoaoaoaoaoaoaoajBoaClhHUVItjBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBoajVoa
-oaoajVbCqgTkTkTkavqFYGoaoaoaoaoaoaoaoaoaoaoaoaoajBoaClhHUVoajBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBoaoaoa
-oajVoaYGqgTkTkTkavoaYGoaoaoajVoaoaoaoaoayPoaoaoajBoaClhHUVoajBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBjVoajV
-oaoajVYGqgTkTkTkavoaYGoawcoaoaoaoaoaoaoaoaoaoaoajBuQClhHUVuQjBoaoaoaoaoaoaoargjVoaoaoaoaoaoaoaoavxoaoajBoaoaoa
-jVoaoaYGqgTkTkTkavoaYGoaoaoaoaoaoaoaoaoaoaoaoaoajBoaClhHUVoajBoaoaoaoaoaoaoaoaoaoaoajpoaoaoaoaoaoaoaoajBoajVoa
-oajVoagSXmoVTkVxYOrkNYrkrkrkrkrkrkrkrkrkrkrkrkrkrkNRClhHUVcfrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkEMrkrkzAjVoajV
-ATATugjAOvOvOvOvOvpApApApApApApApApApApApApApApAUppAGjGjGjpAUppApApApApApApApApApApApApApApAIeATATATATATATATAT
+oajVoaYGqgTkTkTkavoaNFNFafNFNFNFNFNFNFNFNFNFNFNFNFNFdNuYAhAhAhAhAhAhAhuYuYAhAhAhAhAhAhAhfMoaoaoaoaoaoajBoaoajV
+oajVoaYGqgTkTkTkavoaNFCIXABxnEXAXABxXAXAXABxXAXAGsNFuYuYAhwDTYFBCwJSAhuYuYAhxcupbfGMxhAhoaoaoaoaoaoaoajBjVoaoa
+oaoajVYGqgTkTkTkavoaOZbqXAXAXAXAXAXAXAYoXAPWXAYoXANFuYuYAhuYuYuYuYuYAhuYgHAhuYupGMXhrPLGoaoaoaoaoaoaoajBoajVoa
+oajVoaYGqgTkTkTkavoaOZbqXAXACcBAMnXAXAsqXAsqXAsqxPNFdNuYAhRjuYuYuYuYQsuYuYAhYwuYcxuYbXLGoaoaoaoaoaoaoajBoaoaoa
+jVoaoaYGqgTkTkTkavoaNFqAXAXAqAXAXAXAXAsqXArDXArDXANFuYuYAhmBbfuYuYcIAhuYuYQsuYuYuYuYbXLGoaoaoaoaoaoaoajBjVoajV
+oajVoabCqgTkTkTkavqFNFNFWyNFNFNFNFDzXArDXZsqXZsqXANFuYuYAhAhAhAhAhAhAhuYuYAhuYuYuYuYBfAhoaoaoaoaoaoaoajBoajVoa
+oaoajVYGqgTkTkTkavoaNFDzXAXAXAHhNFXAXAsqXAsqXArDxPNFdNuYAhkCmDmDnraLljuYgHAhZnuYcVuYosAhoaoaoaoaoawcoajBoaoaoa
+oajVoaYGqgTkTkTkavoaNFKXXAXAXAXANFXAXArDXAsqXAsqXANFuYuYAhyhuYuYuYuYuYuYuYAhYwuYmvuYosAhoaoaoaoajVoaoajBoajVoa
+oaoajVYGqgTkTkTkavoaNFLPnHXAGPXANFDzXATpXAHtXATpXANFuYuYAhAsuYpKxlAkuYuYuYAhBNuYuYuYBaAhoaoaoaoaoaoaoajBjVoaoa
+jVoajVYGqgTkTkTkavoaNFzbLPKXPBHwNFXAqAXAAXrbrbXAxPNFdNuYAhAsbFaWaWaWbFNHcIAhUcuYuYuYgHAhoaoaoaoaoaoaoajBoajVoa
+oajVoaYGqgTkTkTkavoaNFNFNFNFNFNFNFNFNFNFOZOZOZNFNFNFGWGWAhAhAhLGLGLGAhAhAhAhAhAhAhAhAhAhoaoaoaoaoaoaoajBoaoajV
+jVoaoabCqgTkTkTkavqFYGoaoaoaoaoaoaoaoaoaoaoaoaoajBhoClUVhojBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoavxoaoajBoaoaoa
+oajVoaYGqgTkTkTkavoaYGoaoaoaoaoaoajpoaoaoaoaoaoajBoaClUVoajBoaoaoayPoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBjVjVoa
+jVoajVYGqgTkTkTkavoaYGoajVoaoaoaoaoaoaoaoaoaoaoajBuQClUVuQjBoaoaoaoaoaoaoaoaoaoaoaoaoaoajVoaoaoaoaoaoajBoaoaoa
+oaoajVYGqgTkTkTkavoaYGoaoaoargoaoaoaoaoaoaoaoaoajBoaClUVoajBoaoaoaoaoajVoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBoaoajV
+oajVoaYGqgTkTkTkavoaYGoaoaoaoaoaoaoaoaoajVoaoaoajBoaClUVoajBoaoaoaoawcoaoaoaoaoaoaoaoaoaoaoaoaoaoajVoajBjVoaoa
+jVoaoaYGqgTkTkTkavoaYGoaoaoaoaoaoaoaoaoaoaoaoaoajBoaClUVItjBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBoajVoa
+oaoajVbCqgTkTkTkavqFYGoaoaoaoaoaoaoaoaoaoaoaoaoajBoaClUVoajBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBoaoaoa
+oajVoaYGqgTkTkTkavoaYGoaoaoajVoaoaoaoaoayPoaoaoajBoaClUVoajBoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajBjVoajV
+oaoajVYGqgTkTkTkavoaYGoawcoaoaoaoaoaoaoaoaoaoaoajBuQClUVuQjBoaoaoaoaoaoaoaoargjVoaoaoaoaoaoaoaoavxoaoajBoaoaoa
+jVoaoaYGqgTkTkTkavoaYGoaoaoaoaoaoaoaoaoaoaoaoaoajBoaClUVoajBoaoaoaoaoaoaoaoaoaoaoaoajpoaoaoaoaoaoaoaoajBoajVoa
+oajVoagSXmoVTkVxYOrkNYrkrkrkrkrkrkrkrkrkrkrkrkrkrkNRClUVoacfrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkEMrkrkzAjVoajV
+ATATugjAOvOvOvOvOvpApApApApApApApApApApApApApApAUppAGjGjpApAUppApApApApApApApApApApApApApApAIeATATATATATATATAT
 oaoaaJhCTkTkTkTkTkhChChChChChChChChChCmuyWhChChChChChChChChChChChChChChChChChChChChChChChChChCxDahoajVoaoajVoa
 jVoaTmzITkTkTkTkTkhChChCzIhChChChChCzIuviBhChChCzImuyWhChChCzIhChChChChCzIhChChChChCzIhChChChChCzIahoaoaoaoaoa
 oaoaTmANTkTkTkTkTkhChChChChChChChChChCmgsfmOhChChCuviBhChChChChChChChChChChChChChChChChChChChCWBhChCahoajVoajV
@@ -459,17 +459,17 @@ ycycycycycycycycycycNFXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAcKXAXAXAXAXAXAHyXA
 ycycycycycycycycycycNFmHRvXAXABTJeWAmHmHJenVmHXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAXAxPNFycycycycycycycycycycycyc
 ycycycycycycycycycycNFecRvXAXAmHDydAXAmHpbDyXAXAXAXAXAXAXAXAXAXAXACbXACbXAXAXAXAXAXANFycycycycycycycycycycycyc
 ycycycycycycycycycycNFmHWAXAqAXApbDyhdXAKwdAhdXAolXAXAXAXAXAgBXAXACbXACbXAgBXAXAXAXANFycycycycycycycycycycycyc
-ycycycycycycycycycycNFNFNFafNFNFNFNFNFNFNFNFNFNFNFafNFXAXAXANFNFXZCbXACbXANFNFVaKoKoNFycycycycycycycycycycycyc
-ycycycycycycycycycycfRfROZjjuYuYnfuYuYuYnfuYuYuYuYgHNFwdXAkeNFNFXACbXACbkeNFNFXAOxXANFycycycycycycycycycycycyc
-ycycycycycycycycycycfRfROZjjbFuYuYuYkQuYuYuYbFuYuYuYNFXAXAXAXAHyXACbXACbXAXAlwOxvqthNFycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFAhAhAhAhAhAhafYdYdYdYdYdYIVJXAXAXAXAXAXAXAXAXAXAXAuWXAwuQUOZycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFAsAsAsWquhgRuYVJdTOwOwOwgHVJwdXAqAXAXAqAXAXAXAXAXAXAOxyvvqOZycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFdNuYuYuYuYuYgHVJdTuYuYuYuYVJNFWyNFNFNFNFkDXAkDXAgBXAXAOxOxOZycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFuYuYuYuYuYuYuYVJVRuYuYrJrJVJwdXAOUTcIsNFNFWyNFNFNFNFXZXAXAOZycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFuYuYuYZZikueDkVJgkuYdtIyokVJXAXAXAXAXANFShXAXAXAlHNFXAXAXANFycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFdNuYuYAmcUuYgHVJOwuYdtAZVeVJXAXAXAXAXANFoiXAXAXAoiNFXAXAxPNFycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFEdSwuYbFbywNNlVJnXYrDtCghTVJKmoiYvNqUsNFDaEfXAXABiNFCbCbCbNFycycycycycycycycycycycyc
-ycycycycycycycycycycfRfRNFNFNFNFNFNFfMfMtStSfafafatSVJNFNFNFNFNFNFNFOZOZOZNFNFNFNFNFNFycycycycycycycycycycycyc
+ycycycycycycycycycycNFNFVJYIVJVJVJVJVJVJVJVJVJVJVJYIVJXAXAXANFNFXZCbXACbXANFNFVaKoKoNFycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRYdjjuYuYnfuYuYuYnfuYuYuYuYgHVJwdXAkeNFNFXACbXACbkeNFNFXAOxXANFycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRYdjjbFuYuYuYkQuYuYuYbFuYuYuYVJXAXAXAXAHyXACbXACbXAXAlwOxvqthNFycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJAhAhAhAhAhAhafAhAhAhAhAhafVJXAXAXAXAXAXAXAXAXAXAXAuWXAwuQUOZycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJAsAsAsWquhgRuYNFdTOwOwOwgHVJwdXAqAXAXAqAXAXAXAXAXAXAOxyvvqOZycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJdNuYuYuYuYuYgHNFdTuYuYuYuYVJNFWyNFNFNFNFkDXAkDXAgBXAXAOxOxOZycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJuYuYuYuYuYuYuYNFVRuYuYrJrJVJwdXAOUTcIsNFNFWyNFNFNFNFXZXAXAOZycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJuYuYuYZZikueDkNFgkuYdtIyokVJXAXAXAXAXANFShXAXAXAlHNFXAXAXANFycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJdNuYuYAmcUuYgHNFOwuYdtAZVeVJXAXAXAXAXANFoiXAXAXAoiNFXAXAxPNFycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJEdSwuYbFbywNNlNFnXYrDtCghTVJKmoiYvNqUsNFDaEfXAXABiNFCbCbCbNFycycycycycycycycycycycyc
+ycycycycycycycycycycfRfRVJVJVJVJVJVJtStStStSfafafatSVJNFNFNFNFNFNFNFOZOZOZNFNFNFNFNFNFycycycycycycycycycycycyc
 ycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycyc
 ycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycyc
 ycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycycyc
