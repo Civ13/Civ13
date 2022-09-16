@@ -42,7 +42,7 @@ bullet_act
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 								meat.name = "[src.name] meat"
 								meat.radiation = radiation/10
-							var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
+								var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
 								HD.name = "[src.name]'s head"
 						else
 							for(var/i=1;i<=4;i++)
