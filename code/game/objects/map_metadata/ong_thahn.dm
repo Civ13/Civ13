@@ -1,7 +1,7 @@
 /obj/map_metadata/ong_thahn
 	ID = MAP_ONG_THAHN
 	title = "Battle of Ong Thahn"
-	lobby_icon = "icons/lobby/coldwar.png"
+	lobby_icon = "icons/lobby/vietnam.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle/one, /area/caribbean/no_mans_land/invisible_wall/jungle/two)
 	victory_time = 27000
 	no_winner = "The FOB is still held by the US Army."
