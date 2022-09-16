@@ -126,6 +126,7 @@
 	spawn_location = "JoinLateCivB"
 	is_officer = TRUE
 	whitelisted = TRUE
+	is_vip = TRUE
 
 	is_1713 = TRUE
 
@@ -1152,6 +1153,7 @@
 	whitelisted = TRUE
 
 	is_pioneer = TRUE
+	is_vip = TRUE
 
 
 	min_positions = 1
@@ -1256,6 +1258,7 @@
 	spawn_location = "JoinLateCivC"
 	is_officer = TRUE
 	whitelisted = TRUE
+	is_vip = TRUE
 
 	is_pioneer = TRUE
 
@@ -2065,6 +2068,7 @@
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 /datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
@@ -2112,6 +2116,7 @@
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2161,6 +2166,7 @@
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2209,6 +2215,7 @@
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 /datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
@@ -2263,6 +2270,7 @@
 	rank_abbreviation = "Manager"
 	whitelisted = TRUE
 	additional_languages = list("Gaelic" = 100)
+	is_vip = TRUE
 
 /datum/job/civilian/businessman/mckellen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2717,6 +2725,7 @@
 	can_be_female = TRUE
 	is_deal = TRUE
 	is_officer = TRUE
+	is_vip = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -2779,6 +2788,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_deal = TRUE
+	is_vip = TRUE
 
 
 	min_positions = 1

@@ -105,6 +105,7 @@
 
 	is_officer = TRUE
 	whitelisted = TRUE
+	is_vip = TRUE
 
 	is_heist = TRUE
 	is_outlaw = TRUE

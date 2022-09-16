@@ -8,6 +8,14 @@
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter,
 /area/caribbean)
+"aj" = (
+/obj/structure/religious/monument/megalith{
+	name = "runestone";
+	desc = "A large stone rune that has many symbols carved into it."
+	},
+/obj/effect/decal/cleanable/blood,
+/turf/floor/plating/stone_old,
+/area/caribbean)
 "au" = (
 /obj/roof/thatch,
 /obj/item/flashlight/torch/on/unlimited,
@@ -33,6 +41,8 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/spline/fancy/wood,
+/obj/structure/roof_support/nordic,
+/obj/item/flashlight/torch/on/unlimited,
 /turf/floor/wood,
 /area/caribbean/houses)
 "bs" = (
@@ -59,6 +69,7 @@
 	name = "JoinLateGR"
 	},
 /obj/effect/decal/cleanable/dirt,
+/obj/item/weapon/shears,
 /turf/floor/dirt/dust,
 /area/caribbean/houses)
 "bA" = (
@@ -189,6 +200,13 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/houses)
+"eF" = (
+/obj/structure/closet/crate/empty,
+/obj/item/stack/material/leather,
+/obj/item/stack/material/leather,
+/obj/item/stack/material/leather,
+/turf/floor/wood,
+/area/caribbean)
 "eX" = (
 /obj/structure/window/classic,
 /obj/structure/curtain/leather/open,
@@ -346,6 +364,10 @@
 "iT" = (
 /turf/floor/plating/stone_old,
 /area/caribbean)
+"jg" = (
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing,
+/turf/floor/winter,
+/area/caribbean)
 "jE" = (
 /obj/structure/closet/crate/empty,
 /turf/floor/wood,
@@ -401,6 +423,8 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 1
 	},
+/obj/structure/roof_support/nordic,
+/obj/item/flashlight/torch/on/unlimited,
 /turf/floor/wood,
 /area/caribbean/houses)
 "la" = (
@@ -748,7 +772,6 @@
 "xm" = (
 /obj/structure/oven/fireplace,
 /obj/effect/damagedfloor/fire,
-/obj/structure/window/barrier/railing/stone,
 /obj/structure/window/barrier/railing/stone{
 	dir = 4;
 	icon_state = "stone"
@@ -766,6 +789,10 @@
 "xw" = (
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/ice,
+/area/caribbean)
+"xN" = (
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/stamina/minor,
+/turf/floor/winter,
 /area/caribbean)
 "xQ" = (
 /obj/structure/window/classic/stonefull,
@@ -1005,9 +1032,10 @@
 /turf/floor/winter,
 /area/caribbean)
 "Ey" = (
-/obj/map_metadata/clash,
-/turf/wall/rockwall,
-/area/caribbean/void/caves)
+/obj/covers/cobblestone,
+/obj/structure/window/barrier/rock,
+/turf/floor/beach/water,
+/area/caribbean)
 "Ez" = (
 /obj/item/weapon/material/pickaxe,
 /turf/floor/dirt/dust,
@@ -1173,12 +1201,12 @@
 /turf/floor/wood,
 /area/caribbean/houses)
 "HO" = (
-/obj/structure/bed/chair/wood{
-	dir = 8
+/obj/effect/landmark{
+	icon_state = "x3";
+	name = "JoinLateGR"
 	},
-/obj/item/clothing/head/goatpelt,
-/obj/item/clothing/head/goatpelt,
-/turf/floor/wood,
+/obj/item/weapon/reagent_containers/glass/bucket,
+/turf/floor/dirt/dust,
 /area/caribbean/houses)
 "HX" = (
 /mob/living/simple_animal/hostile/wolf/white,
@@ -1197,6 +1225,17 @@
 /obj/item/weapon/reagent_containers/food/snacks/mushroomsoup,
 /turf/floor/wood,
 /area/caribbean/houses)
+"IE" = (
+/obj/roof/wood,
+/obj/covers/roads/dirt,
+/obj/item/weapon/reagent_containers/glass/bucket,
+/turf/floor/winter,
+/area/caribbean)
+"IG" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/closet/crate/empty,
+/turf/floor/wood,
+/area/caribbean)
 "Jd" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/material/sword/longsword/iron,
@@ -1272,9 +1311,20 @@
 /mob/living/simple_animal/hostile/wolf/white/female,
 /turf/floor/winter,
 /area/caribbean)
+"KU" = (
+/obj/roof/wood,
+/obj/item/stack/material/wool,
+/obj/item/stack/material/wool,
+/turf/floor/wood,
+/area/caribbean)
 "KY" = (
 /obj/structure/farming/plant/wheat,
 /turf/floor/dirt/ploughed/flooded,
+/area/caribbean)
+"Lj" = (
+/obj/roof/wood,
+/obj/structure/loom,
+/turf/floor/wood,
 /area/caribbean)
 "Lu" = (
 /obj/structure/window/classic,
@@ -1338,6 +1388,13 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"Od" = (
+/obj/structure/bed/chair/wood{
+	dir = 8
+	},
+/obj/item/clothing/head/goatpelt,
+/turf/floor/wood,
+/area/caribbean/houses)
 "Op" = (
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/beach/water/ice,
@@ -1349,6 +1406,26 @@
 	},
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/deep,
+/area/caribbean)
+"OB" = (
+/obj/covers/stone_wall/brick/archway{
+	dir = 8
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 8;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water,
+/area/caribbean)
+"OS" = (
+/obj/covers/stone_wall/brick/archway{
+	dir = 4
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 4;
+	icon_state = "stone"
+	},
+/turf/floor/beach/water,
 /area/caribbean)
 "PJ" = (
 /turf/floor/dirt/underground/icy,
@@ -1559,6 +1636,10 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/houses)
+"Vi" = (
+/obj/structure/window/barrier/rock,
+/turf/floor/beach/water,
+/area/caribbean)
 "VV" = (
 /obj/roof/thatch,
 /obj/structure/table/wood,
@@ -1624,6 +1705,11 @@
 /obj/item/weapon/reagent_containers/glass/barrel/wine,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"XI" = (
+/obj/structure/closet/crate/empty,
+/obj/item/stack/material/wood,
+/turf/floor/wood,
+/area/caribbean)
 "XO" = (
 /obj/effect/decal/cleanable/blood/gibs/body,
 /turf/floor/winter,
@@ -1782,7 +1868,7 @@ cS
 cS
 cS
 cS
-Ey
+cS
 "}
 (2,1,1) = {"
 cS
@@ -10033,7 +10119,7 @@ Qh
 EC
 eZ
 eZ
-eZ
+jT
 eZ
 eZ
 eZ
@@ -10072,9 +10158,9 @@ eZ
 eZ
 eZ
 eZ
+aj
 eZ
-eZ
-eZ
+jg
 eZ
 eZ
 eZ
@@ -10125,7 +10211,7 @@ Qh
 EC
 EC
 eZ
-eZ
+jT
 eZ
 eZ
 eZ
@@ -10163,7 +10249,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+xN
 eZ
 eZ
 eZ
@@ -10217,7 +10303,7 @@ EC
 EC
 Xx
 Xx
-eZ
+jT
 eZ
 eZ
 eZ
@@ -10309,7 +10395,7 @@ EC
 EC
 EC
 tN
-eZ
+jT
 eZ
 eZ
 eZ
@@ -10401,7 +10487,7 @@ EC
 EC
 EC
 tN
-eZ
+jT
 eZ
 eZ
 TG
@@ -10867,7 +10953,7 @@ eZ
 Wd
 Cf
 eo
-eo
+Lj
 Wd
 Ry
 eZ
@@ -10992,8 +11078,8 @@ eZ
 EC
 EC
 EC
-gH
-gH
+Vi
+Ey
 eZ
 eZ
 eZ
@@ -11051,13 +11137,14 @@ eZ
 Wd
 yX
 eo
-eo
+KU
 Wd
 Ry
 Ry
 ml
 qm
 qm
+qm
 hk
 hk
 hk
@@ -11068,8 +11155,7 @@ hk
 hk
 hk
 hk
-hk
-hk
+qm
 qm
 qm
 ml
@@ -11084,8 +11170,8 @@ eZ
 eZ
 eZ
 gH
-gH
-gH
+Vi
+Ey
 gH
 gH
 eZ
@@ -11150,18 +11236,18 @@ Ry
 ml
 qm
 qm
+qm
 Gn
 vP
-Gn
 vP
 ET
 lI
-Gn
 Gn
 bF
 Qr
 lI
 Gn
+qm
 qm
 qm
 ml
@@ -11242,18 +11328,18 @@ Ry
 mP
 nQ
 qm
+qm
 Qg
-Gn
 Gn
 wC
 Gn
 lL
-Gn
 wC
 Is
 vP
 lL
 ET
+qm
 qm
 nQ
 mP
@@ -11334,7 +11420,8 @@ eZ
 mP
 mP
 qm
-HO
+qm
+Od
 Hl
 Hl
 Hl
@@ -11344,8 +11431,7 @@ Hl
 Hl
 Hl
 Hl
-Hl
-Hl
+qm
 qm
 mP
 mP
@@ -11405,7 +11491,7 @@ Qh
 Qh
 EC
 EC
-Xx
+eZ
 eZ
 TG
 eZ
@@ -11500,8 +11586,8 @@ EC
 eZ
 eZ
 eZ
-tN
-tN
+eZ
+eZ
 eZ
 eZ
 eZ
@@ -11592,8 +11678,8 @@ eZ
 eZ
 eZ
 eZ
-tN
-tN
+eZ
+eZ
 eZ
 eZ
 eZ
@@ -11684,8 +11770,8 @@ FL
 eZ
 eZ
 eZ
-tN
-tN
+eZ
+eZ
 eZ
 eZ
 eZ
@@ -11714,7 +11800,7 @@ mP
 bz
 Nc
 Nc
-Nc
+HO
 mP
 Ry
 Ry
@@ -12808,7 +12894,7 @@ eZ
 hs
 ez
 eZ
-DJ
+IE
 lS
 DJ
 eZ
@@ -13648,8 +13734,8 @@ eZ
 Fm
 bN
 lB
-lB
-lB
+eF
+XI
 Fm
 eZ
 "}
@@ -13741,7 +13827,7 @@ Fm
 oB
 lB
 lB
-bN
+IG
 Fm
 eZ
 "}
@@ -14516,7 +14602,7 @@ eZ
 eZ
 eZ
 CY
-wG
+OS
 CY
 CY
 cu
@@ -14796,7 +14882,7 @@ WX
 Hy
 DM
 fy
-Hy
+Os
 DM
 fy
 Os
@@ -14884,7 +14970,7 @@ FL
 FL
 FL
 CY
-Xy
+OB
 CY
 CY
 He
@@ -15716,9 +15802,9 @@ Qh
 EC
 EC
 EC
-Qh
-Qh
-Qh
+EC
+EC
+EC
 EC
 EC
 Xx
@@ -15808,9 +15894,9 @@ Qh
 EC
 EC
 EC
-Qh
-Qh
-Qh
+EC
+EC
+EC
 EC
 EC
 Xx
@@ -15901,8 +15987,8 @@ EC
 EC
 EC
 Qh
-Qh
-Qh
+EC
+EC
 EC
 Xx
 tN
@@ -17063,7 +17149,7 @@ eZ
 rb
 EH
 Sv
-HK
+eZ
 eZ
 eZ
 sE
@@ -17244,7 +17330,7 @@ eZ
 (80,1,2) = {"
 eZ
 eZ
-eZ
+HK
 YF
 QC
 eZ
