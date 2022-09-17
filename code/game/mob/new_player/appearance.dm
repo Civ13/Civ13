@@ -766,7 +766,7 @@
 		icon_state = "facial_neckbeard"
 		growth = 2
 
-	fullbeard
+	mediumbeard
 		name = "Medium Beard"
 		icon_state = "facial_smallbeard"
 		growth = 2

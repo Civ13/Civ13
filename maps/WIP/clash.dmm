@@ -3,11 +3,11 @@
 /obj/structure/curtain/leather/open,
 /obj/roof/thatch,
 /turf/floor/dirt/dust,
-/area/caribbean)
+/area/caribbean/houses)
 "ai" = (
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "aj" = (
 /obj/structure/religious/monument/megalith{
 	name = "runestone";
@@ -15,13 +15,16 @@
 	},
 /obj/effect/decal/cleanable/blood,
 /turf/floor/plating/stone_old,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
+"an" = (
+/turf/floor/winter/grass,
+/area/caribbean/no_mans_land/invisible_wall)
 "au" = (
 /obj/roof/thatch,
 /obj/item/flashlight/torch/on/unlimited,
 /obj/covers/clay_wall/redearth,
 /turf/wall/wood/straw,
-/area/caribbean)
+/area/caribbean/houses)
 "aQ" = (
 /obj/structure/multiz/ladder/ww2/tunnelbottom,
 /turf/floor/dirt/dust,
@@ -35,7 +38,7 @@
 "bh" = (
 /obj/effect/decal/cleanable/blood/writing,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "br" = (
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4
@@ -62,7 +65,7 @@
 	dir = 4
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "bz" = (
 /obj/effect/landmark{
 	icon_state = "x3";
@@ -75,7 +78,7 @@
 "bA" = (
 /obj/structure/wild/berrybush,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "bF" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/gold,
@@ -86,7 +89,7 @@
 /obj/structure/roof_support/nordic,
 /obj/roof/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "bK" = (
 /obj/covers/wood/stairs{
 	dir = 9
@@ -96,13 +99,13 @@
 "bN" = (
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "bU" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
 /obj/item/weapon/clay/mold/clayjug/fired,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "cp" = (
 /obj/covers/wood_wall/nordic,
 /obj/item/flashlight/torch/on/unlimited,
@@ -112,7 +115,7 @@
 /obj/roof/thatch,
 /obj/covers/clay_wall/redearth,
 /turf/wall/wood/straw,
-/area/caribbean)
+/area/caribbean/houses)
 "ct" = (
 /obj/structure/closet/crate/chest{
 	name = "king's chest"
@@ -129,7 +132,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "cu" = (
 /obj/covers/stone_wall/brick/archway{
@@ -140,11 +143,11 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "cP" = (
 /obj/covers/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "cS" = (
 /turf/wall/rockwall,
 /area/caribbean/void/caves)
@@ -152,46 +155,46 @@
 /obj/structure/wild/flowers,
 /obj/item/weapon/beartrap/armed,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "dh" = (
 /obj/covers/wood,
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "dm" = (
 /obj/structure/closet/crate/empty,
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "dx" = (
 /obj/structure/wild/smallbush/winter,
 /obj/item/weapon/beartrap/armed,
 /turf/floor/dirt/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "dL" = (
 /obj/structure/table/fancy,
 /obj/item/weapon/book/holybook,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "ef" = (
 /obj/structure/wild/berrybush/zelenyy,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "eo" = (
 /obj/roof/wood,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "eu" = (
 /obj/structure/wild/flowers,
 /obj/structure/wild/flowers,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ez" = (
 /obj/structure/farming/plant/tomato,
 /turf/floor/dirt/ploughed/flooded,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "eD" = (
 /obj/item/stack/material/straw,
 /obj/effect/landmark{
@@ -206,7 +209,7 @@
 /obj/item/stack/material/leather,
 /obj/item/stack/material/leather,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "eX" = (
 /obj/structure/window/classic,
 /obj/structure/curtain/leather/open,
@@ -214,7 +217,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "eY" = (
 /obj/covers/cobblestone/stairs{
@@ -222,14 +225,14 @@
 	icon_state = "rampup"
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "eZ" = (
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "fa" = (
 /obj/structure/oven/fireplace,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ff" = (
 /obj/structure/multiz/ladder/ww2/stairsup{
 	dir = 8
@@ -239,7 +242,7 @@
 "fh" = (
 /obj/structure/wild/berrybush/tinto,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "fm" = (
 /obj/structure/reagent_dispensers/largebarrel/water,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -251,7 +254,7 @@
 	},
 /obj/covers/wood,
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "fA" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/snacks/flatbread,
@@ -260,7 +263,7 @@
 "fO" = (
 /mob/living/simple_animal/crow,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "fW" = (
 /obj/item/stack/ore/gold,
 /turf/floor/dirt/dust,
@@ -277,14 +280,18 @@
 /obj/structure/pot,
 /obj/roof/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
+"gh" = (
+/obj/structure/fish,
+/turf/floor/beach/water/deep,
+/area/caribbean/no_mans_land/invisible_wall)
 "gs" = (
 /obj/structure/simple_door/fence,
 /turf/floor/dirt/dust,
 /area/caribbean/houses)
 "gH" = (
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "gK" = (
 /obj/covers/stone_wall/brick,
 /turf/wall/stone/stonebrick,
@@ -298,7 +305,7 @@
 	dir = 1
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "hk" = (
 /obj/structure/bed/chair/wood{
 	dir = 4
@@ -307,11 +314,11 @@
 /area/caribbean/houses)
 "hs" = (
 /turf/floor/dirt/ploughed/flooded,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "hv" = (
 /obj/covers/wood/stairs,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "hO" = (
 /obj/item/stack/ore/iron,
 /turf/floor/dirt/dust,
@@ -336,18 +343,18 @@
 "ib" = (
 /obj/structure/religious/impaledskull,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ie" = (
 /obj/covers/wood/stairs{
 	dir = 4;
 	icon_state = "wood2_stairs"
 	},
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "if" = (
 /obj/item/weapon/beartrap/armed,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "iR" = (
 /obj/covers/cobblestone/stairs{
 	dir = 8;
@@ -360,18 +367,18 @@
 	name = "JoinLateRO"
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "iT" = (
 /turf/floor/plating/stone_old,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "jg" = (
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "jE" = (
 /obj/structure/closet/crate/empty,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "jG" = (
 /obj/structure/shower/bathtub/big/stone,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -382,7 +389,7 @@
 	opacity = 0
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ka" = (
 /obj/covers/stone_wall/brick/archway{
 	dir = 8
@@ -392,22 +399,22 @@
 "ke" = (
 /obj/structure/wild/flowers,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ku" = (
 /obj/covers/wood_wall/nordic,
 /turf/wall/wood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "kC" = (
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "kS" = (
 /mob/living/simple_animal/hostile/bear/boar/brown,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "kW" = (
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4
@@ -431,20 +438,20 @@
 /obj/structure/table/wood,
 /obj/roof/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "lc" = (
 /obj/structure/roof_support/nordic,
 /obj/item/flashlight/torch/on/unlimited,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "lx" = (
 /obj/structure/anvil,
 /obj/roof/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "lB" = (
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "lE" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/material/sword/longsword/iron,
@@ -467,7 +474,7 @@
 /obj/roof/wood,
 /obj/covers/roads/dirt,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ma" = (
 /obj/item/stack/material/straw,
 /mob/living/simple_animal/sheep/female,
@@ -484,20 +491,20 @@
 "mm" = (
 /obj/structure/wild/rock,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "mu" = (
 /obj/structure/roof_support/nordic,
 /obj/item/flashlight/torch/on/unlimited,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "mF" = (
 /obj/structure/roof_support/nordic,
 /obj/roof,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "mL" = (
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4
@@ -514,17 +521,22 @@
 "mZ" = (
 /obj/structure/farming/plant/mushroom,
 /turf/floor/dirt/ploughed/flooded,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "nf" = (
 /obj/roof/thatch,
 /obj/item/stack/medical/advanced/herbs,
 /obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy,
 /turf/floor/dirt/dust,
-/area/caribbean)
+/area/caribbean/houses)
+"nm" = (
+/obj/roof/wood,
+/obj/covers/roads/dirt,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "nJ" = (
 /mob/living/simple_animal/horse/white,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "nQ" = (
 /obj/structure/brazier/loaded,
 /turf/floor/wood,
@@ -532,14 +544,14 @@
 "nV" = (
 /mob/living/simple_animal/deer/elk/male,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "nW" = (
 /obj/structure/window/barrier/palisade,
 /obj/structure/window/barrier/palisade{
 	dir = 1
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ok" = (
 /obj/effect/floor_decal/spline/fancy,
 /obj/effect/floor_decal/spline/fancy{
@@ -551,7 +563,7 @@
 /obj/structure/wild/tree/live_tree/pine/snow,
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "oA" = (
 /obj/structure/closet/crate/arrows/iron,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -566,29 +578,29 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead,
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "oS" = (
 /obj/structure/multiz/ladder/ww2/tunneltop,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "oU" = (
 /obj/structure/roof_support/nordic,
 /obj/roof/wood,
 /obj/covers/roads/dirt,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "pu" = (
 /obj/covers/cobblestone/stairs,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "pU" = (
 /obj/structure/wild/rock,
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "pV" = (
 /obj/structure/animalspawner/bearcave/full,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "qm" = (
 /turf/floor/wood,
 /area/caribbean/houses)
@@ -605,27 +617,27 @@
 "qB" = (
 /obj/item/remains/mouse,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ra" = (
 /mob/living/simple_animal/deer/elk/female,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "rb" = (
 /obj/structure/closet/crate/arrows/iron,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "rd" = (
 /obj/structure/window/classic/stonefull,
 /obj/structure/window/barrier/rock,
 /obj/structure/curtain/leather,
 /obj/roof/wood,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "rq" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/material/sword/broadsword,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "rz" = (
 /obj/structure/closet/crate/chest,
 /obj/item/stack/money/goldvaluables,
@@ -639,11 +651,11 @@
 "sy" = (
 /obj/covers/wood,
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "sE" = (
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "sN" = (
 /obj/item/flashlight/torch/on/unlimited,
 /turf/wall/rockwall,
@@ -656,46 +668,45 @@
 	icon_state = "rock1"
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "tl" = (
 /obj/covers/cobblestone/stairs{
 	dir = 4;
 	icon_state = "rampup"
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "tI" = (
 /obj/structure/reagent_dispensers/largebarrel/ale,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "tN" = (
 /turf/floor/dirt,
-/area/caribbean)
+/area/caribbean/no_mans_land/invisible_wall)
 "uk" = (
 /obj/structure/toilet/pit_latrine,
 /obj/roof,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "us" = (
 /obj/structure/brazier/loaded,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "ut" = (
-/obj/structure/simple_door/key_door/anyone/nordic,
-/turf/floor/wood,
-/area/caribbean)
+/turf/floor/winter,
+/area/caribbean/no_mans_land/invisible_wall)
 "ux" = (
 /obj/structure/wild/flowers,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "uz" = (
 /obj/structure/fish,
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "uS" = (
 /obj/structure/wild/rock,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "vh" = (
 /obj/structure/pot,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -704,11 +715,11 @@
 /obj/structure/wild/smallbush/winter,
 /obj/item/weapon/beartrap/armed,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "vL" = (
 /mob/living/simple_animal/deer/elk/male,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "vP" = (
 /obj/structure/table/wood,
 /obj/item/stack/money/goldvaluables,
@@ -723,7 +734,7 @@
 	icon_state = "basalt1"
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "wo" = (
 /obj/effect/decal/cleanable/blood/writing,
 /turf/floor/dirt/dust,
@@ -747,7 +758,7 @@
 	desc = "A gravestone that says: here lies the fearless wolvenhorn."
 	},
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "wG" = (
 /obj/covers/stone_wall/brick/archway{
 	dir = 4
@@ -757,18 +768,18 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "wK" = (
 /obj/structure/closet/crate/empty,
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "xi" = (
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "xm" = (
 /obj/structure/oven/fireplace,
 /obj/effect/damagedfloor/fire,
@@ -789,11 +800,11 @@
 "xw" = (
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "xN" = (
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/stamina/minor,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "xQ" = (
 /obj/structure/window/classic/stonefull,
 /obj/structure/window/barrier/rock{
@@ -802,11 +813,11 @@
 /obj/structure/curtain/leather,
 /obj/roof/wood,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "yf" = (
 /obj/covers/wood,
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "yj" = (
 /obj/structure/bed/wood,
 /obj/item/weapon/bedsheet/brown,
@@ -817,7 +828,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "yl" = (
 /obj/covers/repairedfloor,
@@ -826,21 +837,21 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "yx" = (
 /turf/floor/dirt/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "yD" = (
 /obj/covers/roads/dirt,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "yP" = (
 /obj/structure/religious/monument/megalith{
 	name = "runestone";
 	desc = "A large stone rune that has many symbols carved into it."
 	},
 /turf/floor/plating/stone_old,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "yT" = (
 /obj/structure/multiz/ladder/ww2/stairsdown{
 	dir = 4
@@ -850,13 +861,13 @@
 "yU" = (
 /obj/structure/branch,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "yX" = (
 /obj/roof/wood,
 /obj/structure/closet/crate/chest,
 /obj/item/weapon/material/pickaxe,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "zq" = (
 /obj/effect/floor_decal/spline/fancy{
 	dir = 1
@@ -869,7 +880,7 @@
 "zC" = (
 /obj/structure/farming/plant/mushroompsy,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "zJ" = (
 /mob/living/simple_animal/sheep,
 /obj/effect/landmark{
@@ -882,7 +893,7 @@
 /obj/roof/wood,
 /obj/structure/oven/fireplace,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "zO" = (
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4;
@@ -896,17 +907,17 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "zW" = (
 /obj/roof/thatch,
 /turf/floor/dirt/dust,
-/area/caribbean)
+/area/caribbean/houses)
 "Al" = (
 /obj/roof/wood,
 /obj/structure/table/wood,
 /obj/item/trash/candle,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "AL" = (
 /obj/structure/table/wood,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -915,26 +926,29 @@
 /obj/structure/wild/tree/live_tree/pine/snow,
 /obj/structure/wild/flowers,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
+"Bb" = (
+/turf/floor/dirt/flooded,
+/area/caribbean/no_mans_land/invisible_wall)
 "By" = (
 /obj/roof/wood,
 /obj/structure/curtain/leather/open,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "BE" = (
 /obj/covers/repairedfloor,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "BK" = (
 /obj/structure/animalspawner/wolfcave,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "BS" = (
 /obj/structure/window/barrier/palisade{
 	dir = 8
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Ce" = (
 /obj/covers/stone_wall/brick,
 /turf/floor/dirt,
@@ -943,14 +957,14 @@
 /obj/roof/wood,
 /obj/structure/bed/bedroll,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "Cp" = (
 /obj/structure/barricade/wood_pole,
 /obj/structure/sign/custom{
 	name = "ravenburrow"
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Cs" = (
 /obj/item/stack/material/straw,
 /mob/living/simple_animal/goat/female,
@@ -975,16 +989,16 @@
 /obj/structure/wild/rock,
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "CY" = (
 /turf/wall/stone/stonebrick,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Dk" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
 /obj/item/weapon/material/sword/gaelic/iron,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "Dl" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/reagent_containers/food/snacks/cracker,
@@ -997,7 +1011,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/cracker,
 /obj/item/weapon/reagent_containers/food/snacks/cracker,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Dw" = (
 /obj/structure/multiz/ladder/ww2/stairsdown{
 	dir = 4
@@ -1008,7 +1022,7 @@
 /obj/roof/wood,
 /obj/covers/roads/dirt,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "DM" = (
 /obj/covers/repairedfloor,
 /obj/structure/window/barrier/railing/stone{
@@ -1016,12 +1030,12 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "DY" = (
 /obj/structure/furnace/kiln/stone,
 /obj/roof/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "En" = (
 /obj/structure/religious/grave,
 /obj/structure/religious/remains,
@@ -1030,19 +1044,19 @@
 /obj/item/weapon/horn,
 /obj/item/clothing/head/helmet/horned,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Ey" = (
 /obj/covers/cobblestone,
 /obj/structure/window/barrier/rock,
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Ez" = (
 /obj/item/weapon/material/pickaxe,
 /turf/floor/dirt/dust,
 /area/caribbean/void/caves)
 "EC" = (
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ED" = (
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4
@@ -1059,7 +1073,7 @@
 /obj/item/weapon/storage/backpack/quiver,
 /obj/item/weapon/storage/backpack/quiver,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "EK" = (
 /obj/structure/window/classic/stonefull,
 /obj/structure/window/barrier/rock{
@@ -1068,11 +1082,11 @@
 /obj/structure/curtain/leather,
 /obj/roof/wood,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "EL" = (
 /obj/structure/wild/berrybush/amar,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ET" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead,
@@ -1083,32 +1097,35 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "Fm" = (
-/obj/covers/wood_wall/nordic,
-/turf/wall/wood,
-/area/caribbean)
+/turf/floor/beach/water/ice,
+/area/caribbean/no_mans_land/invisible_wall)
 "Fw" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"FH" = (
+/obj/map_metadata/clash,
+/turf/wall/rockwall,
+/area/caribbean/void/caves)
 "FL" = (
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "FO" = (
 /obj/item/remains/human,
 /obj/effect/decal/cleanable/blood/gibs/core,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "FQ" = (
 /obj/structure/religious/gravestone,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Gg" = (
 /obj/structure/roof_support/nordic,
 /obj/roof/wood,
 /obj/structure/sign/deer_trophy,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Gn" = (
 /obj/structure/table/wood,
 /turf/floor/wood,
@@ -1123,7 +1140,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "GS" = (
 /obj/structure/grille/logfence{
@@ -1132,7 +1149,7 @@
 	},
 /obj/structure/brazier/loaded,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "GU" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 8;
@@ -1140,7 +1157,7 @@
 	},
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Hd" = (
 /obj/structure/table/wood,
 /obj/item/weapon/soap/lard,
@@ -1155,7 +1172,7 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Hl" = (
 /obj/structure/bed/chair/wood{
 	dir = 8
@@ -1167,18 +1184,18 @@
 	dir = 6
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Hp" = (
 /obj/structure/wild/berrybush/azul,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Hy" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 4;
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "HE" = (
 /obj/effect/floor_decal/spline/fancy{
 	dir = 1
@@ -1192,7 +1209,7 @@
 /obj/item/weapon/shield/iron,
 /obj/item/weapon/shield/iron,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "HL" = (
 /obj/covers/cobblestone/stairs{
 	dir = 4;
@@ -1211,15 +1228,15 @@
 "HX" = (
 /mob/living/simple_animal/hostile/wolf/white,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "HZ" = (
 /obj/covers/repairedfloor,
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Ik" = (
 /obj/structure/wild/berrybush/narco,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Is" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/snacks/mushroomsoup,
@@ -1230,18 +1247,18 @@
 /obj/covers/roads/dirt,
 /obj/item/weapon/reagent_containers/glass/bucket,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "IG" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/closet/crate/empty,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "Jd" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/material/sword/longsword/iron,
 /obj/item/weapon/material/sword/longsword/iron,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Jh" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 8;
@@ -1249,18 +1266,21 @@
 	},
 /obj/covers/wood,
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
+"Jx" = (
+/turf/floor/beach/water/deep,
+/area/caribbean/no_mans_land/invisible_wall)
 "JA" = (
 /obj/item/weapon/reagent_containers/food/snacks/meat/human,
 /obj/effect/decal/cleanable/blood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "JE" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
 /obj/item/weapon/material/hatchet/battleaxe,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "JH" = (
 /obj/covers/repairedfloor,
 /obj/structure/window/barrier/railing/stone{
@@ -1268,7 +1288,7 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "JJ" = (
 /obj/structure/toilet/pit_latrine,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -1276,7 +1296,7 @@
 "JN" = (
 /obj/covers/wood,
 /turf/floor/dirt,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "JT" = (
 /obj/structure/toilet/pit_latrine,
 /obj/effect/decal/cleanable/urine,
@@ -1285,7 +1305,7 @@
 "Ka" = (
 /obj/structure/wild/smallbush/winter,
 /turf/floor/dirt/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Kj" = (
 /obj/structure/reagent_dispensers/largebarrel/beer,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -1293,7 +1313,7 @@
 "Kz" = (
 /obj/item/weapon/material/shovel,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "KC" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/snacks/pig/stomach/goat,
@@ -1306,26 +1326,26 @@
 "KO" = (
 /obj/structure/sink/puddle,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "KP" = (
 /mob/living/simple_animal/hostile/wolf/white/female,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "KU" = (
 /obj/roof/wood,
 /obj/item/stack/material/wool,
 /obj/item/stack/material/wool,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "KY" = (
 /obj/structure/farming/plant/wheat,
 /turf/floor/dirt/ploughed/flooded,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Lj" = (
 /obj/roof/wood,
 /obj/structure/loom,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "Lu" = (
 /obj/structure/window/classic,
 /obj/structure/curtain/leather/open,
@@ -1333,7 +1353,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "Ms" = (
 /obj/structure/table/wood,
@@ -1344,18 +1364,18 @@
 /obj/covers/roads/dirt,
 /obj/covers/roads/dirt,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "MN" = (
 /obj/structure/wild/berrybush,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "MT" = (
 /obj/structure/grille/logfence{
 	dir = 4;
 	opacity = 0
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "MW" = (
 /obj/effect/decal/cleanable/blood/gibs,
 /turf/floor/dirt/dust,
@@ -1364,7 +1384,7 @@
 /obj/item/weapon/beartrap/armed,
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Nc" = (
 /obj/effect/landmark{
 	icon_state = "x3";
@@ -1379,7 +1399,7 @@
 "Ny" = (
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "NP" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/reagent_containers/food/snacks/flatbread,
@@ -1398,7 +1418,7 @@
 "Op" = (
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Os" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 4;
@@ -1406,7 +1426,7 @@
 	},
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "OB" = (
 /obj/covers/stone_wall/brick/archway{
 	dir = 8
@@ -1416,7 +1436,7 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "OS" = (
 /obj/covers/stone_wall/brick/archway{
 	dir = 4
@@ -1426,7 +1446,7 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "PJ" = (
 /turf/floor/dirt/underground/icy,
 /area/caribbean/void/caves)
@@ -1438,7 +1458,7 @@
 /obj/item/stack/teeth/human,
 /obj/effect/decal/cleanable/blood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Qg" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/snacks/tossedsalad,
@@ -1446,7 +1466,7 @@
 /area/caribbean/houses)
 "Qh" = (
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Qi" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/material/sword/gaelic/iron,
@@ -1463,36 +1483,36 @@
 "Qw" = (
 /obj/structure/vehicle/carriage,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "QC" = (
 /obj/item/weapon/reagent_containers/glass/barrel/water,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "QE" = (
 /obj/covers/cobblestone/stairs{
 	dir = 8
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "QR" = (
 /obj/item/weapon/beartrap/armed,
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "QZ" = (
 /obj/structure/wild/rock{
 	icon_state = "basalt1"
 	},
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Rc" = (
 /obj/structure/brazier/loaded,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Rh" = (
 /obj/structure/branch/cleared,
 /turf/floor/dirt/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Ri" = (
 /obj/item/flashlight/torch/on/unlimited,
 /obj/covers/stone_wall/brick,
@@ -1504,28 +1524,28 @@
 /obj/item/weapon/clay/mold/fired,
 /obj/item/weapon/material/spear,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "Ry" = (
 /obj/covers/roads/dirt,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "RB" = (
 /obj/structure/branch/cleared,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "RM" = (
 /obj/structure/religious/impaledskull,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "RQ" = (
 /obj/structure/repair/grindstone,
 /obj/roof/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "RS" = (
 /obj/structure/fish,
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Sc" = (
 /obj/item/stack/material/straw,
 /obj/effect/landmark{
@@ -1546,38 +1566,38 @@
 /obj/item/clothing/head/helmet/medieval/viking,
 /obj/item/clothing/head/helmet/medieval/viking,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "SD" = (
 /obj/structure/window/barrier/palisade{
 	dir = 4
 	},
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "SV" = (
 /obj/covers/repairedfloor,
 /obj/item/weapon/fishing,
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Tn" = (
 /obj/structure/shower/bathtub/stone,
 /obj/roof,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "TD" = (
 /obj/structure/bed/chair/wood,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "TF" = (
 /obj/roof/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "TG" = (
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "TH" = (
 /obj/structure/closet/crate/empty/large,
 /obj/item/stack/ore/iron,
@@ -1593,7 +1613,7 @@
 /obj/item/stack/ore/tin,
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "TI" = (
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -1609,25 +1629,28 @@
 /obj/item/weapon/reagent_containers/food/snacks/grown/barley,
 /obj/item/weapon/reagent_containers/food/snacks/grown/barley,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
+"Us" = (
+/turf/floor/dirt,
+/area/caribbean/no_mans_land/taiga)
 "UE" = (
 /obj/structure/simple_door/key_door/anyone/nordic,
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "UL" = (
 /turf/wall/rockwall,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "UN" = (
 /mob/living/simple_animal/horse/white,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Vb" = (
 /obj/structure/farming/plant/mushroompsy,
 /turf/floor/winter/grass,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Ve" = (
 /mob/living/simple_animal/goat,
 /obj/effect/landmark{
@@ -1639,7 +1662,7 @@
 "Vi" = (
 /obj/structure/window/barrier/rock,
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "VV" = (
 /obj/roof/thatch,
 /obj/structure/table/wood,
@@ -1647,25 +1670,25 @@
 /obj/effect/decal/cleanable/blood,
 /obj/item/weapon/material/kitchen/utensil/knife/bone,
 /turf/floor/dirt/dust,
-/area/caribbean)
+/area/caribbean/houses)
 "Wa" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
 /obj/item/weapon/beartrap,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "Wd" = (
 /obj/covers/stone_wall/brick,
 /obj/roof/wood,
 /turf/wall/stone/stonebrick,
-/area/caribbean)
+/area/caribbean/houses)
 "WX" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 4;
 	icon_state = "stone"
 	},
 /turf/floor/beach/water,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "WY" = (
 /obj/covers/repairedfloor,
 /obj/structure/window/barrier/railing/stone{
@@ -1673,12 +1696,12 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/deep,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Xe" = (
 /obj/item/weapon/beartrap,
 /obj/effect/decal/cleanable/blood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Xf" = (
 /turf/floor/dirt/dust,
 /area/caribbean/void/caves)
@@ -1687,10 +1710,10 @@
 /obj/roof/wood,
 /obj/item/weapon/punji_sticks,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "Xx" = (
 /turf/floor/dirt/flooded,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Xy" = (
 /obj/covers/stone_wall/brick/archway{
 	dir = 8
@@ -1700,7 +1723,7 @@
 	icon_state = "stone"
 	},
 /turf/floor/beach/water/ice,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "XF" = (
 /obj/item/weapon/reagent_containers/glass/barrel/wine,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -1709,32 +1732,32 @@
 /obj/structure/closet/crate/empty,
 /obj/item/stack/material/wood,
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/houses)
 "XO" = (
 /obj/effect/decal/cleanable/blood/gibs/body,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Yh" = (
 /turf/wall/rockwall{
 	opacity = 0;
 	name = "rock wall"
 	},
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Yq" = (
 /obj/item/weapon/material/hatchet/battleaxe,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "Yw" = (
 /obj/structure/table/wood,
 /obj/roof/wood,
 /obj/item/weapon/shield/iron,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "Yx" = (
 /obj/roof/wood,
 /obj/structure/table/wood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/houses)
 "YC" = (
 /obj/structure/table/fancy,
 /obj/structure/potted_plant{
@@ -1743,7 +1766,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/greek{
 	location = 0;
-	name = "Roofed Greek Buildings"
+	name = "Raven King's Cabin"
 	})
 "YD" = (
 /obj/structure/simple_door/key_door/anyone/nordic,
@@ -1756,21 +1779,24 @@
 /obj/item/weapon/material/sword/armingsword/iron,
 /obj/item/weapon/material/sword/armingsword/iron,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
+"YM" = (
+/turf/floor/beach/water,
+/area/caribbean/no_mans_land/invisible_wall)
 "Zu" = (
 /obj/structure/window/barrier/palisade{
 	dir = 4
 	},
 /turf/floor/wood,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ZN" = (
 /obj/effect/decal/cleanable/blood,
 /turf/floor/winter,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ZS" = (
 /obj/structure/wild/tree/live_tree/pine/snow,
 /turf/floor/dirt,
-/area/caribbean)
+/area/caribbean/no_mans_land/taiga)
 "ZY" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/table/wood,
@@ -1868,7 +1894,7 @@ cS
 cS
 cS
 cS
-cS
+FH
 "}
 (2,1,1) = {"
 cS
@@ -10109,8 +10135,8 @@ eZ
 eZ
 Xx
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -10201,8 +10227,8 @@ eZ
 eZ
 Xx
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -10293,8 +10319,8 @@ eZ
 Xx
 EC
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -10385,8 +10411,8 @@ Xx
 Xx
 gH
 EC
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -10394,7 +10420,7 @@ EC
 EC
 EC
 EC
-tN
+Us
 jT
 eZ
 eZ
@@ -10477,8 +10503,8 @@ Xx
 EC
 EC
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -10486,7 +10512,7 @@ Qh
 EC
 EC
 EC
-tN
+Us
 jT
 eZ
 eZ
@@ -10569,8 +10595,8 @@ EC
 EC
 Qh
 Qh
-uz
-Qh
+gh
+Jx
 Qh
 uz
 Qh
@@ -10578,7 +10604,7 @@ Qh
 Qh
 gH
 EC
-tN
+Us
 jT
 Rc
 eZ
@@ -10661,8 +10687,8 @@ Qh
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -10746,15 +10772,15 @@ eZ
 eZ
 eZ
 gH
-EC
-Qh
-Qh
-Qh
-Qh
-uz
-Qh
-Qh
-Qh
+Fm
+Jx
+Jx
+Jx
+Jx
+gh
+Jx
+Jx
+Jx
 Qh
 Qh
 RS
@@ -10838,15 +10864,15 @@ eZ
 eZ
 eZ
 eZ
-EC
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
+Fm
+Jx
+Jx
+Jx
+Jx
+Jx
+Jx
+Jx
+Jx
 Qh
 gH
 EC
@@ -10930,8 +10956,8 @@ eZ
 eZ
 Xx
 EC
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11022,8 +11048,8 @@ eZ
 eZ
 Xx
 EC
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11112,10 +11138,10 @@ EC
 eZ
 eZ
 eZ
-EC
-EC
-Qh
-Qh
+Fm
+Fm
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11204,10 +11230,10 @@ EC
 EC
 eZ
 EC
-EC
-Qh
-Qh
-Qh
+Fm
+Jx
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11296,8 +11322,8 @@ EC
 EC
 eZ
 EC
-gH
-Qh
+YM
+Jx
 Qh
 Qh
 Qh
@@ -11388,8 +11414,8 @@ gH
 gH
 EC
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11480,8 +11506,8 @@ EC
 gH
 gH
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11572,8 +11598,8 @@ eZ
 EC
 gH
 EC
-gH
-Qh
+YM
+Jx
 Qh
 Qh
 Qh
@@ -11664,8 +11690,8 @@ eZ
 eZ
 EC
 EC
-EC
-Qh
+Fm
+Jx
 Qh
 Qh
 Qh
@@ -11756,8 +11782,8 @@ eZ
 EL
 eZ
 EC
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11848,8 +11874,8 @@ eZ
 eZ
 eZ
 pU
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -11938,10 +11964,10 @@ eZ
 eZ
 eZ
 eZ
-EC
-EC
-Qh
-Qh
+Fm
+Fm
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -12030,10 +12056,10 @@ eZ
 eZ
 eZ
 eZ
-EC
-EC
-Qh
-Qh
+Fm
+Fm
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -12122,8 +12148,8 @@ eZ
 eZ
 mm
 eZ
-eZ
-EC
+ut
+Fm
 Qh
 Qh
 Qh
@@ -12214,8 +12240,8 @@ eZ
 eZ
 eZ
 eZ
-eZ
-EC
+ut
+Fm
 Qh
 Qh
 Qh
@@ -12306,8 +12332,8 @@ eZ
 eZ
 eZ
 eZ
-eZ
-EC
+ut
+Fm
 Qh
 Qh
 Qh
@@ -12399,7 +12425,7 @@ eZ
 eZ
 eZ
 tN
-EC
+Fm
 Qh
 Qh
 Qh
@@ -12490,8 +12516,8 @@ eZ
 eZ
 FL
 eZ
-gH
-Qh
+YM
+Jx
 Qh
 Qh
 Qh
@@ -12582,8 +12608,8 @@ eZ
 eZ
 FL
 eZ
-gH
-Qh
+YM
+Jx
 Qh
 Qh
 Qh
@@ -12674,8 +12700,8 @@ eZ
 eZ
 FL
 eZ
-gH
-gH
+YM
+YM
 Qh
 Qh
 Qh
@@ -12766,8 +12792,8 @@ eZ
 eZ
 eZ
 eZ
-EC
-gH
+Fm
+YM
 Qh
 Qh
 Qh
@@ -12777,7 +12803,7 @@ Qh
 Qh
 gH
 gH
-tN
+Us
 eZ
 TG
 eZ
@@ -12803,7 +12829,7 @@ ez
 eZ
 eZ
 oU
-DJ
+nm
 oU
 eZ
 eZ
@@ -12858,8 +12884,8 @@ eZ
 eZ
 eZ
 eZ
-Xx
-gH
+Bb
+YM
 Qh
 Qh
 Qh
@@ -12869,7 +12895,7 @@ Qh
 Qh
 Qh
 gH
-tN
+Us
 eZ
 eZ
 eZ
@@ -12896,7 +12922,7 @@ ez
 eZ
 IE
 lS
-DJ
+nm
 eZ
 eZ
 eZ
@@ -12950,8 +12976,8 @@ eZ
 Hp
 eZ
 eZ
-Xx
-gH
+Bb
+YM
 Qh
 Qh
 Qh
@@ -12987,7 +13013,7 @@ FL
 FL
 eZ
 oU
-DJ
+nm
 oU
 eZ
 eZ
@@ -13042,8 +13068,8 @@ eZ
 eZ
 eZ
 eZ
-Xx
-gH
+Bb
+YM
 EC
 Qh
 Qh
@@ -13133,9 +13159,9 @@ eZ
 eZ
 eZ
 eZ
-tN
-EC
-gH
+Us
+Fm
+YM
 EC
 Qh
 Qh
@@ -13226,8 +13252,8 @@ eZ
 eZ
 eZ
 eZ
-EC
-gH
+Fm
+YM
 Qh
 Qh
 Qh
@@ -13237,8 +13263,8 @@ Qh
 EC
 Qh
 gH
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -13317,9 +13343,9 @@ TG
 eZ
 eZ
 eZ
-tN
-gH
-gH
+Us
+YM
+YM
 Qh
 Qh
 Qh
@@ -13330,7 +13356,7 @@ EC
 Qh
 Qh
 gH
-tN
+Us
 eZ
 eZ
 eZ
@@ -13408,21 +13434,21 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
+YM
+Jx
+Qh
+Qh
+Qh
+EC
+EC
+EC
+EC
+Qh
+Qh
 gH
-Qh
-Qh
-Qh
-Qh
-EC
-EC
-EC
-EC
-Qh
-Qh
-gH
-tN
+Us
 eZ
 eZ
 eZ
@@ -13500,10 +13526,10 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -13515,7 +13541,7 @@ Qh
 Qh
 EC
 Xx
-tN
+Us
 eZ
 eZ
 eZ
@@ -13547,12 +13573,12 @@ TG
 Ry
 Ry
 eZ
-Fm
-Fm
-ut
-ut
-Fm
-Fm
+mP
+mP
+ml
+ml
+mP
+mP
 eZ
 "}
 (39,1,2) = {"
@@ -13592,22 +13618,22 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
+Jx
+Jx
 Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-EC
-EC
 Qh
 Qh
 Qh
 EC
-tN
-tN
+EC
+Qh
+Qh
+Qh
+EC
+Us
+Us
 eZ
 eZ
 eZ
@@ -13639,12 +13665,12 @@ eZ
 Ry
 eZ
 eZ
-Fm
+mP
 lc
-lB
-lB
+qm
+qm
 lc
-Fm
+mP
 eZ
 "}
 (40,1,2) = {"
@@ -13683,11 +13709,11 @@ eZ
 eZ
 eZ
 eZ
-tN
-EC
-Qh
-Qh
-Qh
+Us
+Fm
+Jx
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -13731,12 +13757,12 @@ Ry
 Ry
 eZ
 eZ
-Fm
+mP
 bN
-lB
+qm
 eF
 XI
-Fm
+mP
 eZ
 "}
 (41,1,2) = {"
@@ -13776,10 +13802,10 @@ eZ
 eZ
 eZ
 Xx
-EC
-Qh
-Qh
-Qh
+Fm
+Jx
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -13823,12 +13849,12 @@ Ry
 eZ
 mF
 eZ
-Fm
+mP
 oB
-lB
-lB
+qm
+qm
 IG
-Fm
+mP
 eZ
 "}
 (42,1,2) = {"
@@ -13866,10 +13892,10 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 Xx
-gH
-Qh
+YM
+Jx
 Qh
 Qh
 Qh
@@ -13883,7 +13909,7 @@ Qh
 EC
 EC
 EC
-tN
+Us
 eZ
 eZ
 eZ
@@ -13915,12 +13941,12 @@ Ry
 eZ
 Tn
 eZ
-Fm
+mP
 Ub
-lB
-lB
+qm
+qm
 bN
-Fm
+mP
 eZ
 "}
 (43,1,2) = {"
@@ -13959,9 +13985,9 @@ eZ
 eZ
 eZ
 Xx
-tN
-gH
-Qh
+Us
+YM
+Jx
 Qh
 Qh
 Qh
@@ -13974,8 +14000,8 @@ Qh
 Qh
 EC
 EC
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -14007,12 +14033,12 @@ Ry
 eZ
 uk
 eZ
-Fm
+mP
 dm
 wK
-lB
-lB
-Fm
+qm
+qm
+mP
 eZ
 "}
 (44,1,2) = {"
@@ -14052,8 +14078,8 @@ eZ
 eZ
 Xx
 gH
-gH
-Qh
+YM
+Jx
 Qh
 Qh
 Qh
@@ -14066,8 +14092,8 @@ Qh
 Qh
 EC
 EC
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -14099,12 +14125,12 @@ eZ
 Ry
 mF
 eZ
-Fm
+mP
 lc
 jE
 TH
 lc
-Fm
+mP
 eZ
 "}
 (45,1,2) = {"
@@ -14141,11 +14167,11 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 Xx
 gH
-gH
-Qh
+YM
+Jx
 Qh
 Qh
 Qh
@@ -14158,7 +14184,7 @@ Qh
 EC
 EC
 EC
-tN
+Us
 eZ
 eZ
 eZ
@@ -14191,12 +14217,12 @@ Ry
 Ry
 eZ
 eZ
-Fm
-Fm
-Fm
-Fm
-Fm
-Fm
+mP
+mP
+mP
+mP
+mP
+mP
 eZ
 "}
 (46,1,2) = {"
@@ -14233,11 +14259,11 @@ eZ
 eZ
 eZ
 eZ
-tN
-tN
+Us
+Us
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -14249,7 +14275,7 @@ Qh
 Qh
 EC
 EC
-tN
+Us
 eZ
 eZ
 eZ
@@ -14325,11 +14351,11 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 gH
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -14341,7 +14367,7 @@ Qh
 EC
 EC
 EC
-tN
+Us
 eZ
 eZ
 eZ
@@ -14415,13 +14441,13 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
+ut
+ut
 tN
-gH
-Qh
-Qh
-Qh
+YM
+Jx
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -14433,7 +14459,7 @@ Qh
 EC
 EC
 EC
-tN
+Us
 eZ
 eZ
 eZ
@@ -14507,13 +14533,13 @@ eZ
 Hp
 eZ
 eZ
-eZ
-eZ
+ut
+ut
 tN
-gH
-Qh
-Qh
-Qh
+YM
+Jx
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -14524,8 +14550,8 @@ Qh
 Qh
 EC
 EC
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -14599,8 +14625,8 @@ TG
 eZ
 eZ
 eZ
-eZ
-eZ
+ut
+ut
 CY
 OS
 CY
@@ -14616,7 +14642,7 @@ CY
 CY
 wG
 CY
-tN
+Us
 eZ
 eZ
 eZ
@@ -14691,8 +14717,8 @@ TG
 eZ
 eZ
 eZ
-eZ
-eZ
+ut
+ut
 cP
 Jh
 zS
@@ -14783,8 +14809,8 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
+ut
+ut
 cP
 xw
 Qh
@@ -14875,8 +14901,8 @@ eZ
 eZ
 eZ
 FL
-FL
-FL
+an
+an
 BE
 WX
 Hy
@@ -14967,8 +14993,8 @@ eZ
 eZ
 eZ
 FL
-FL
-FL
+an
+an
 CY
 OB
 CY
@@ -15060,7 +15086,7 @@ eZ
 eZ
 eZ
 tN
-gH
+YM
 gH
 Qh
 Qh
@@ -15152,7 +15178,7 @@ eZ
 eZ
 eZ
 tN
-gH
+YM
 Qh
 Qh
 Qh
@@ -15243,8 +15269,8 @@ eZ
 eZ
 eZ
 eZ
-gH
-gH
+YM
+YM
 Qh
 Qh
 Qh
@@ -15258,7 +15284,7 @@ Qh
 Qh
 gH
 EC
-tN
+Us
 eZ
 eZ
 eZ
@@ -15334,9 +15360,9 @@ eZ
 eZ
 eZ
 eZ
-tN
-gH
-Qh
+Us
+YM
+Jx
 Qh
 Qh
 uz
@@ -15349,7 +15375,7 @@ Qh
 Qh
 Qh
 gH
-tN
+Us
 Xx
 eZ
 eZ
@@ -15425,23 +15451,23 @@ eZ
 eZ
 eZ
 eZ
-tN
-tN
+Us
+Us
+YM
+Jx
+Qh
+Qh
+Qh
+Qh
+Qh
+Qh
+Qh
+Qh
+Qh
+Qh
 gH
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
 gH
-gH
-tN
+Us
 eZ
 eZ
 eZ
@@ -15519,8 +15545,8 @@ eZ
 eZ
 eZ
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -15609,10 +15635,10 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -15703,8 +15729,8 @@ eZ
 eZ
 gH
 gH
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -15795,8 +15821,8 @@ eZ
 eZ
 gH
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 EC
@@ -15887,8 +15913,8 @@ eZ
 gH
 gH
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 EC
@@ -15979,8 +16005,8 @@ gH
 gH
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 EC
 EC
@@ -15991,7 +16017,7 @@ EC
 EC
 EC
 Xx
-tN
+Us
 eZ
 eZ
 eZ
@@ -16071,8 +16097,8 @@ gH
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 EC
 EC
@@ -16080,10 +16106,10 @@ EC
 EC
 Qh
 Qh
-tN
-tN
+Us
+Us
 Xx
-tN
+Us
 eZ
 eZ
 eZ
@@ -16163,16 +16189,16 @@ Qh
 Qh
 Qh
 Qh
+Jx
+Jx
 Qh
-Qh
-Qh
 EC
 EC
 EC
 EC
-tN
-tN
-tN
+Us
+Us
+Us
 eZ
 eZ
 eZ
@@ -16255,14 +16281,14 @@ Qh
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 EC
 EC
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -16340,20 +16366,20 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 Xx
 EC
 Qh
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 gH
 EC
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -16435,16 +16461,16 @@ eZ
 Xx
 EC
 Qh
-Qh
-Qh
-Qh
-Qh
-Qh
-Qh
+Jx
+Jx
+Jx
+Jx
+Jx
+Jx
 gH
 gH
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -16527,15 +16553,15 @@ eZ
 Xx
 EC
 Qh
-Qh
-Qh
-Qh
-Qh
-Qh
+Jx
+Jx
+Jx
+Jx
+Jx
+YM
 gH
-gH
-tN
-tN
+Us
+Us
 eZ
 eZ
 eZ
@@ -16619,8 +16645,8 @@ eZ
 EC
 EC
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -16711,8 +16737,8 @@ ke
 EC
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 Qh
@@ -16803,8 +16829,8 @@ eu
 EC
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 gH
@@ -16895,8 +16921,8 @@ EC
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 gH
 gH
@@ -16985,10 +17011,10 @@ ZS
 Qh
 Qh
 Qh
-Qh
-uz
-Qh
-Qh
+Jx
+gh
+Jx
+Jx
 gH
 gH
 eZ
@@ -17077,10 +17103,10 @@ gH
 Qh
 Qh
 Qh
-Qh
-Qh
-Qh
-Qh
+Jx
+Jx
+Jx
+Jx
 gH
 gH
 TG
@@ -17164,13 +17190,13 @@ FL
 TG
 eZ
 eZ
-tN
+Us
 gH
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 Qh
 gH
@@ -17255,14 +17281,14 @@ FL
 eZ
 eZ
 eZ
-tN
+Us
 EC
 EC
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 gH
 gH
@@ -17345,16 +17371,16 @@ FL
 FL
 eZ
 eZ
-tN
-tN
+Us
+Us
 EC
 EC
 Qh
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 Qh
 gH
 gH
@@ -17437,7 +17463,7 @@ eZ
 FL
 eZ
 FL
-tN
+Us
 EC
 EC
 gH
@@ -17445,8 +17471,8 @@ gH
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 gH
 gH
 gH
@@ -17528,7 +17554,7 @@ eZ
 UN
 eZ
 eZ
-tN
+Us
 EC
 EC
 gH
@@ -17537,8 +17563,8 @@ Qh
 Qh
 uz
 Qh
-Qh
-Qh
+Jx
+Jx
 gH
 eZ
 eZ
@@ -17620,7 +17646,7 @@ eZ
 nJ
 eZ
 eZ
-tN
+Us
 EC
 EC
 gH
@@ -17629,8 +17655,8 @@ Qh
 Qh
 Qh
 Qh
-Qh
-gH
+Jx
+YM
 gH
 eZ
 eZ
@@ -17711,7 +17737,7 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
 gH
 gH
@@ -17721,8 +17747,8 @@ Qh
 Qh
 Qh
 Qh
-Qh
-gH
+Jx
+YM
 gH
 Xx
 eZ
@@ -17802,7 +17828,7 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
 EC
 gH
@@ -17813,8 +17839,8 @@ Qh
 Qh
 Qh
 Qh
-gH
-gH
+YM
+YM
 eZ
 eZ
 eZ
@@ -17894,7 +17920,7 @@ eZ
 eZ
 TG
 eZ
-tN
+Us
 EC
 EC
 gH
@@ -17905,8 +17931,8 @@ Qh
 Qh
 Qh
 Qh
-eZ
-gH
+ut
+YM
 EC
 eZ
 eZ
@@ -17987,7 +18013,7 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
 gH
 Qh
@@ -17997,8 +18023,8 @@ Qh
 Qh
 Qh
 Qh
-Qh
-gH
+Jx
+YM
 EC
 EC
 eZ
@@ -18079,8 +18105,8 @@ eZ
 eZ
 eZ
 eZ
-tN
-tN
+Us
+Us
 EC
 Qh
 Qh
@@ -18089,8 +18115,8 @@ Qh
 Qh
 Qh
 Qh
-Qh
-gH
+Jx
+YM
 gH
 EC
 eZ
@@ -18172,7 +18198,7 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
 EC
 Qh
@@ -18181,8 +18207,8 @@ Qh
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 gH
 EC
 eZ
@@ -18264,7 +18290,7 @@ eZ
 eZ
 eZ
 eZ
-tN
+Us
 EC
 gH
 Qh
@@ -18273,8 +18299,8 @@ Qh
 Qh
 Qh
 Qh
-Qh
-Qh
+Jx
+Jx
 EC
 EC
 eZ
