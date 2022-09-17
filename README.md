@@ -5,7 +5,7 @@
 
 ## WHAT IS THIS?
 
-Civ13 (formerly 1713) is a game based on Space Station 13 code, which features several epochs of human history. (hence the name). It features both RP and Combat maps and gamemodes.
+Civ13 (formerly 1713) is a game based on Space Station 13 code, which features several epochs of human history. It features both RP and Combat maps and gamemodes.
 
 <kbd>
  <img src="https://i.imgur.com/napac0L.png">
