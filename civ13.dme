@@ -434,6 +434,7 @@
 #include "code\game\objects\map_metadata\capitol_hill.dm"
 #include "code\game\objects\map_metadata\chad_jungle.dm"
 #include "code\game\objects\map_metadata\civilizations.dm"
+#include "code\game\objects\map_metadata\clash.dm"
 #include "code\game\objects\map_metadata\colony.dm"
 #include "code\game\objects\map_metadata\compound.dm"
 #include "code\game\objects\map_metadata\cursed_island.dm"
@@ -721,6 +722,7 @@
 #include "code\modules\1713\jobs\civ_factions.dm"
 #include "code\modules\1713\jobs\civil_war.dm"
 #include "code\modules\1713\jobs\civilian.dm"
+#include "code\modules\1713\jobs\clash.dm"
 #include "code\modules\1713\jobs\coldwar.dm"
 #include "code\modules\1713\jobs\dutch.dm"
 #include "code\modules\1713\jobs\events.dm"
@@ -1065,5 +1067,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\tantiveiv.dmm"
+#include "maps\WIP\clash.dmm"
 // END_INCLUDE
