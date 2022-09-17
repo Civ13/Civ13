@@ -140,13 +140,19 @@
 		return "Republic of Finland"
 
 	if (constant == NORWEGIAN)
-		return "Kingdom of Norway"
+		if (map.ID == "CLASH")
+			return "Bear Clan"
+		else
+			return "Kingdom of Norway"
 
 	if (constant == SWEDISH)
 		return "Kingdom of Sweden"
 
 	if (constant == DANISH)
-		return "Kingdom of Denmark"
+		if (map.ID == "CLASH")
+			return "Raven Clan"
+		else
+			return "Kingdom of Denmark"
 
 	if (constant == GERMAN)
 		if (age == 6)

@@ -1064,11 +1064,17 @@ var/global/redirect_all_players = null
 	if (FINNISH in map.faction_organization)
 		dat += "[alive_finnish.len] Finnish "
 	if (NORWEGIAN in map.faction_organization)
-		dat += "[alive_norwegian.len] Norwegians "
+		if (map && istype(map, /obj/map_metadata/clash))
+			dat += "[alive_norwegian.len] Bear Clan Vikings "
+		else
+			dat += "[alive_norwegian.len] Norwegians "
 	if (SWEDISH in map.faction_organization)
 		dat += "[alive_swedish.len] Swedes "
 	if (DANISH in map.faction_organization)
-		dat += "[alive_danish.len] Danes "
+		if (map && istype(map, /obj/map_metadata/clash))
+			dat += "[alive_norwegian.len] Raven Clan Vikings "
+		else
+			dat += "[alive_danish.len] Danes "
 	if (GERMAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
 			dat += "[alive_german.len] Reactionaries "
@@ -1277,6 +1283,11 @@ var/global/redirect_all_players = null
 						temp_name = "Police and Federal Agents"
 					if (temp_name == "Russian")
 						temp_name = "Rednikov Mobsters"
+				else if (map && map.ID == "CLASH")
+					if (temp_name == "Norwegian")
+						temp_name = "Bear Clan"
+					if (temp_name == "Danish")
+						temp_name = "Raven Clan"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
