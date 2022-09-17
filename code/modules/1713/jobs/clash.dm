@@ -1,14 +1,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////BEAR CLAN///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-/datum/job/roman/bear_clan
+/datum/job/norwegian/bear_clan
 	faction = "Human"
 	is_ancient = TRUE
-/datum/job/roman/bear_clan/give_random_name(var/mob/living/human/H)
+	default_language = "Old Norse"
+	additional_languages = list()
+
+/datum/job/norwegian/bear_clan/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_oldnorse_name()
 	H.real_name = H.name
 
-/datum/job/roman/bear_clan/king
+/datum/job/norwegian/bear_clan/king
 	title = "Bear Clan King"
 	rank_abbreviation = "King"
 
@@ -20,7 +23,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/roman/bear_clan/king/equip(var/mob/living/human/H)
+/datum/job/norwegian/bear_clan/king/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
@@ -33,6 +36,7 @@
 	//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
+	H.f_style = pick("Lumberjack Beard")
 	H.add_note("Role", "You are the <b>[title]</b>, the leader of the <b>Bear Clan</b>, a fearsome clan. Organize your <b>Clan</b> and lead your fighters to victory!</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -42,12 +46,11 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.f_style = "Lumberjack"
 	give_random_name(H)
 
 	return TRUE
 
-/datum/job/roman/bear_clan/jarl	//Roman - Decurion
+/datum/job/norwegian/bear_clan/jarl
 	title = "Bear Clan Jarl"
 	rank_abbreviation = "Jarl"
 
@@ -60,7 +63,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/roman/bear_clan/jarl/equip(var/mob/living/human/H)
+/datum/job/norwegian/bear_clan/jarl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
@@ -83,11 +86,11 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.f_style = "Lumberjack"
+	H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Very Long Beard")
 	give_random_name(H)
 	return TRUE
 
-/datum/job/roman/bear_clan/berserker
+/datum/job/norwegian/bear_clan/berserker
 	title = "Berserker"
 	rank_abbreviation = "Berserker"
 
@@ -100,7 +103,7 @@
 	min_positions = 5
 	max_positions = 8
 
-/datum/job/roman/bear_clan/berserker/equip(var/mob/living/human/H)
+/datum/job/norwegian/bear_clan/berserker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
@@ -129,12 +132,11 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_HIGH)
-	H.f_style = "Lumberjack"
+	H.f_style = pick("Dwarf Beard","Very Long Beard")
 	give_random_name(H)
 	return TRUE
 
-
-/datum/job/roman/bear_clan/warrior
+/datum/job/norwegian/bear_clan/warrior
 	title = "Bear Clan Warrior"
 	rank_abbreviation = ""
 
@@ -147,7 +149,7 @@
 	min_positions = 20
 	max_positions = 100
 
-/datum/job/roman/bear_clan/warrior/equip(var/mob/living/human/H)
+/datum/job/norwegian/bear_clan/warrior/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
@@ -180,13 +182,13 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_LOW)
+	if (prob(80))
+		H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Medium Beard","Full Beard","Long Beard")
 	give_random_name(H)
 
 	return TRUE
 
-
-
-/datum/job/roman/bear_clan/healer
+/datum/job/norwegian/bear_clan/healer
 	title = "Laekir"
 	en_meaning = "Healer"
 	rank_abbreviation = "Herbalist"
@@ -199,8 +201,8 @@
 
 	min_positions = 4
 	max_positions = 5
-	
-/datum/job/roman/bear_clan/healer/equip(var/mob/living/human/H)
+
+/datum/job/norwegian/bear_clan/healer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
@@ -234,15 +236,17 @@
 /////////////////////////////////RAVEN CLAN///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-/datum/job/greek/raven_clan
+/datum/job/danish/raven_clan
 	faction = "Human"
 	is_ancient = TRUE
+	default_language = "Old Norse"
+	additional_languages = list()
 
-/datum/job/greek/raven_clan/give_random_name(var/mob/living/human/H)
+/datum/job/danish/raven_clan/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_oldnorse_name()
 	H.real_name = H.name
 
-/datum/job/greek/raven_clan/king
+/datum/job/danish/raven_clan/king
 	title = "Raven King"
 	en_meaning = ""
 	rank_abbreviation = "King"
@@ -256,7 +260,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/greek/raven_clan/king/equip(var/mob/living/human/H)
+/datum/job/danish/raven_clan/king/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
@@ -275,11 +279,11 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.f_style = "Lumberjack"
+	H.f_style = pick("Sailor Beard")
 	give_random_name(H)
 	return TRUE
 
-/datum/job/greek/raven_clan/jarl
+/datum/job/danish/raven_clan/jarl
 	title = "Raven Clan Jarl"
 	rank_abbreviation = "Jarl"
 
@@ -292,7 +296,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/greek/raven_clan/jarl/equip(var/mob/living/human/H)
+/datum/job/danish/raven_clan/jarl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
@@ -321,11 +325,11 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_HIGH)
-	H.f_style = "Lumberjack"
+	H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Very Long Beard")
 	give_random_name(H)
 	return TRUE
 
-/datum/job/greek/raven_clan/huntsman
+/datum/job/danish/raven_clan/huntsman
 	title = "Huntsman"
 	rank_abbreviation = ""
 
@@ -337,7 +341,7 @@
 	min_positions = 5
 	max_positions = 8
 
-/datum/job/greek/raven_clan/huntsman/equip(var/mob/living/human/H)
+/datum/job/danish/raven_clan/huntsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
@@ -367,10 +371,12 @@
 	H.setStat("bows", STAT_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	give_random_name(H)
+	if (prob(80))
+		H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Medium Beard","Full Beard","Long Beard")
 
 	return TRUE
 
-/datum/job/greek/raven_clan/warrior
+/datum/job/danish/raven_clan/warrior
 	title = "Raven Clan Warrior"
 	rank_abbreviation = ""
 
@@ -382,7 +388,7 @@
 	min_positions = 8
 	max_positions = 100
 
-/datum/job/greek/raven_clan/warrior/equip(var/mob/living/human/H)
+/datum/job/danish/raven_clan/warrior/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
@@ -416,10 +422,13 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_LOW)
+	if (prob(80))
+		H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Medium Beard","Full Beard","Long Beard")
+
 	give_random_name(H)
 	return TRUE
 
-/datum/job/greek/raven_clan/shaman
+/datum/job/danish/raven_clan/shaman
 	title = "Seidmadr"
 	en_meaning = "Shaman"
 	rank_abbreviation = "Seer"
@@ -433,7 +442,7 @@
 	min_positions = 3
 	max_positions = 4
 
-/datum/job/greek/raven_clan/shaman/equip(var/mob/living/human/H)
+/datum/job/danish/raven_clan/shaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
