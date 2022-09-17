@@ -38,6 +38,8 @@
 	if(user == target)
 		return 1
 	else
+		if (target.lying)
+			return 1
 		for (var/obj/item/weapon/grab/G in target.grabbed_by)
 			if (G.loc == user && G.state >= GRAB_AGGRESSIVE)
 				return 1
@@ -56,14 +58,14 @@
 
 	user.visible_message("<span class='danger'>\The [user] is attempting to put [cuff_type] on \the [H]!</span>")
 
-	if (!do_after(user,30, target))
+	if (!do_after(user,8, target))
 		return FALSE
-	
+
 	if(!can_place(target, user)) // victim may have resisted out of the grab in the meantime
 		return FALSE
 
 	admin_attack_log(user, H, "Attempted to handcuff the victim", "Was target of an attempted handcuff", "attempted to handcuff")
-	
+
 	H.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been handcuffed by [user.name] ([user.ckey])</font>")
 	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Handcuff [H.name] ([H.ckey])</font>")
 
