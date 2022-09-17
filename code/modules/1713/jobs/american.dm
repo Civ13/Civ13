@@ -22,9 +22,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_cap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/officer(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -50,7 +52,6 @@
 	spawn_location = "JoinLateRNBoatswain"
 
 	is_officer = TRUE
-	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
@@ -67,9 +68,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_1lt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -113,10 +116,11 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_2lt(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_r_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -157,9 +161,11 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_medic(H), slot_head)
 //back
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/survival(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/roller(H), slot_r_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
@@ -204,8 +210,10 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_medic(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/roller(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint/medic(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
@@ -251,12 +259,21 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/springfield/sniper, slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 //pocket
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/us_ww2/web = new /obj/item/clothing/accessory/storage/webbing/us_ww2(null)
+	uniform.attackby(web, H)
+	web.attackby(new/obj/item/stack/medical/bruise_pack/gauze, H)
+	web.attackby(new/obj/item/ammo_magazine/m3006box, H)
+	web.attackby(new/obj/item/ammo_magazine/springfield, H)
+	web.attackby(new/obj/item/ammo_magazine/springfield, H)
+	web.attackby(new/obj/item/ammo_magazine/springfield, H)
+	web.attackby(new/obj/item/ammo_magazine/springfield, H)
+	web.attackby(new/obj/item/ammo_magazine/springfield, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, fighting against the Axis! Keep the enemy off our guys and take out high value targets from a distance!")
 	H.setStat("strength", STAT_NORMAL)
@@ -295,7 +312,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/bar(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun_cleaning_kit(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
@@ -337,13 +354,24 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/american_mg(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/american_bar(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/american_bar(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/american_bar(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/us_ww2 = new /obj/item/clothing/accessory/storage/webbing/us_ww2(null)
+	uniform.attackby(us_ww2, H)
+	us_ww2.attackby(new/obj/item/stack/medical/bruise_pack/gauze, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/m1911, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/m1911, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/m1911, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/m1911, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/m1911, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/m1911, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/m1911, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, carrying the ammo for a light machine gun. Keep your squad gunner supplied!")
 	H.setStat("strength", STAT_NORMAL)
@@ -380,10 +408,23 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/us_ww2 = new /obj/item/clothing/accessory/storage/webbing/us_ww2(null)
+	uniform.attackby(us_ww2, H)
+	us_ww2.attackby(new/obj/item/stack/medical/bruise_pack/gauze, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+	us_ww2.attackby(new/obj/item/ammo_magazine/garand, H)
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
@@ -421,11 +462,18 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_tanker(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
+
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a crewman. Follow orders and use your armor to defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
@@ -464,6 +512,7 @@
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -498,7 +547,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_shirtless(H), slot_w_uniform)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/butcher(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_l_hand)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a chef. Stay at base and cook meals for the soldiers! You can try interesting recipes in your spare time or can the food to make it last.")
 	H.setStat("strength", STAT_NORMAL)
@@ -677,7 +726,6 @@
 	spawn_location = "JoinLateRNBoatswain"
 
 	is_officer = TRUE
-	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_korean_war = TRUE
@@ -1003,7 +1051,7 @@
 /datum/job/american/american_radioman_korea/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni_korean(H), slot_w_uniform)

@@ -1,7 +1,7 @@
 /obj/map_metadata/forest
 	ID = MAP_FOREST
 	title = "Forest"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
@@ -17,7 +17,7 @@
 		)
 	age = "1943"
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5, CIVILIAN = 0.2)
 	battle_name = "Forest"

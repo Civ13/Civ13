@@ -343,7 +343,7 @@ RECIPE: /material/leather/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,
 //RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
 //RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,black leather shoes,/obj/item/clothing/shoes/soldiershoes,2,60,0,1,foot wear,55,0,102,8,null
-RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots1,3,80,0,1,foot wear,55,0,102,8,null
+RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots,3,80,0,1,foot wear,55,0,102,8,null
 RECIPE: /material/leather/,leather boots,/obj/item/clothing/shoes/leatherboots1,3,80,0,1,foot wear,55,0,102,8,null
 RECIPE: /material/leather/,black riding boots,/obj/item/clothing/shoes/riding1,3,50,0,1,foot wear,0,0,102,4,null
 RECIPE: /material/leather/,riding boots,/obj/item/clothing/shoes/riding2,3,50,0,1,foot wear,0,0,102,4,null
@@ -979,6 +979,7 @@ RECIPE: /material/plastic/,pedestrian crossing sign,/obj/structure/sign/traffic/
 RECIPE: /material/plastic/,fast food cup,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/fastfoodcup,1,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,condiment bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/condiment,0.75,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/cola,1.5,15,0,1,drinks,170,0,0,8,null
+RECIPE: /material/plastic/,gallon jug,/obj/item/weapon/reagent_containers/food/drinks/plastic/gallonjug,3,15,0,1,drinks,170,0,0,8,null
 
 //*****************| PLASTIC CLOTHING & ARMOR |***************************
 
@@ -1712,6 +1713,8 @@ RECIPE: /material/tin/,large tin double doors,/obj/structure/simple_door/key_doo
 RECIPE: /material/tin/,small tin can (x3),/obj/item/weapon/can/small,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,tin can (x2),/obj/item/weapon/can,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95,0,0,8,null
+RECIPE: /material/tin/,soda can,/obj/item/weapon/reagent_containers/food/drinks/plastic/sodacan,1,50,0,1,none,160,0,0,8,null
+RECIPE: /material/tin/,beer can,/obj/item/weapon/reagent_containers/food/drinks/plastic/tallcan,1.5,50,0,1,none,160,0,0,8,null
 
 //*********************************************************
 //*********************| COPPER |**************************
@@ -2151,6 +2154,7 @@ RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,
 RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel,5,75,1,1,kitchen,19,0,0,8,null
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,kitchen,20,0,0,8,null
 RECIPE: /material/wood/,paper cup,/obj/item/weapon/reagent_containers/food/drinks/sillycup,1,30,0,1,kitchen,105,0,0,8,null
+RECIPE: /material/wood/,milk carton,/obj/item/weapon/reagent_containers/food/drinks/plastic/carton,2,30,0,1,kitchen,105,0,0,8,null
 
 //*********************| WOOD ENTERTAINMENT |**************************
 
@@ -2231,6 +2235,9 @@ RECIPE: /material/wood/,pine on the shore,/obj/structure/sign/painting7,3,40,1,1
 RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1,1,paintings,102,0,0,8,null
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,102,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,102,0,0,8,null
+RECIPE: /material/wood/,starry sky,/obj/structure/sign/painting11,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,arid desert,/obj/structure/sign/painting12,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,still life,/obj/structure/sign/painting13,3,40,1,1,paintings,65,0,0,8,null
 
 //*********************| WOOD PUNISHMENTS |**************************
 

@@ -2,7 +2,7 @@
 /obj/map_metadata/colony
 	ID = MAP_COLONY
 	title = "Colony"
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
@@ -28,10 +28,10 @@
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Colony Building RP"
 	is_RP = TRUE
-
+	grace_wall_timer = 15000
 /obj/map_metadata/colony/New()
 	..()
 	spawn(18000)
@@ -43,12 +43,6 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/colony/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/colony/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/colony/cross_message(faction)
 	return ""

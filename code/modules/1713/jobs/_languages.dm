@@ -104,6 +104,24 @@
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
 
+/datum/job/norwegian
+	default_language = "Norwegian"
+	additional_languages = list("Swedish" = 20, "Danish" = 20)
+	male_tts_voice = "Maxim"//To be replaced with a scandinavian TTS voice
+	female_tts_voice = "Tatyana"//To be replaced with a scandinavian TTS voice
+
+/datum/job/swedish
+	default_language = "Swedish"
+	additional_languages = list("Norwegian" = 20, "Danish" = 20)
+	male_tts_voice = "Maxim"//To be replaced with a scandinavian TTS voice
+	female_tts_voice = "Tatyana"//To be replaced with a scandinavian TTS voice
+
+/datum/job/danish
+	default_language = "Danish"
+	additional_languages = list("Swedish" = 20, "Norwegian" = 20)
+	male_tts_voice = "Maxim"//To be replaced with a scandinavian TTS voice
+	female_tts_voice = "Tatyana"//To be replaced with a scandinavian TTS voice
+
 /datum/job/arab/civilian/chechen
 	default_language = "Chechen"
 	additional_languages = list("Russian" = 70)
@@ -258,8 +276,20 @@
 				H.default_language = A
 				break
 		if (FINNISH)
-			for (var/datum/language/oldnorse/O in H.languages)
-				H.default_language = O
+			for (var/datum/language/finnish/FI in H.languages)
+				H.default_language = FI
+				break
+		if (NORWEGIAN)
+			for (var/datum/language/norwegian/NO in H.languages)
+				H.default_language = NO
+				break
+		if (SWEDISH)
+			for (var/datum/language/swedish/SE in H.languages)
+				H.default_language = SE
+				break
+		if (DANISH)
+			for (var/datum/language/danish/DK in H.languages)
+				H.default_language = DK
 				break
 		if (ROMAN)
 			for (var/datum/language/latin/L in H.languages)

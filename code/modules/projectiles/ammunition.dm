@@ -129,7 +129,7 @@
 /obj/item/ammo_magazine/emptyclip
 	name = "clip (5)"
 	clip = TRUE
-	icon_state = "clip-0"
+	icon_state = "clip"
 	ammo_type = null
 	caliber = null
 	max_ammo = 5
@@ -139,9 +139,19 @@
 /obj/item/ammo_magazine/emptyspeedloader
 	name = "speedloader (6)"
 	mag_type = SPEEDLOADER
-	icon_state = "38-0"
+	icon_state = "38"
 	ammo_type = null
 	caliber = null
+	max_ammo = 6
+	weight = 0.1
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m44speedloader
+	name = "speedloader (6)"
+	mag_type = SPEEDLOADER
+	icon_state = "38"
+	ammo_type = /obj/item/ammo_casing/a44magnum
+	caliber = "a44magnum"
 	max_ammo = 6
 	weight = 0.1
 	multiple_sprites = TRUE
@@ -149,7 +159,7 @@
 /obj/item/ammo_magazine/emptymagazine
 	name = "drum magazine (65)"
 	mag_type = MAGAZINE
-	icon_state = "ppsh-0"
+	icon_state = "ppsh"
 	ammo_type = null
 	caliber = null
 	max_ammo = 65
@@ -160,7 +170,7 @@
 /obj/item/ammo_magazine/emptymagazine/small
 	name = "magazine (30)"
 	mag_type = MAGAZINE
-	icon_state = "pps-0"
+	icon_state = "pps"
 	ammo_type = null
 	caliber = null
 	max_ammo = 30
@@ -169,7 +179,7 @@
 /obj/item/ammo_magazine/emptymagazine/pistol
 	name = "pistol magazine (15)"
 	mag_type = MAGAZINE
-	icon_state = "m9beretta-0"
+	icon_state = "m9beretta"
 	ammo_type = null
 	caliber = null
 	max_ammo = 15
@@ -187,7 +197,7 @@
 /obj/item/ammo_magazine/emptymagazine/pistol/a45
 	name = "pistol magazine (8)"
 	mag_type = MAGAZINE
-	icon_state = "waltherp-0"
+	icon_state = "waltherp"
 	ammo_type = null
 	caliber = null
 	max_ammo = 8
@@ -196,7 +206,7 @@
 /obj/item/ammo_magazine/emptybelt
 	name = "belt (100)"
 	mag_type = MAGAZINE
-	icon_state = "b762x54-0"
+	icon_state = "b762x54"
 	ammo_type = null
 	caliber = null
 	max_ammo = 100
@@ -207,7 +217,7 @@
 /obj/item/ammo_magazine/emptymagazine/p90
 	name = "P90 magazine (50)"
 	mag_type = MAGAZINE
-	icon_state = "p90-0"
+	icon_state = "p90"
 	ammo_type = null
 	caliber = null
 	max_ammo = 15
@@ -217,7 +227,8 @@
 	set category = null
 	set src in view(1)
 	set name = "Toggle Open"
-
+	if (istype(src,/obj/item/ammo_magazine/tibannagas))
+		return FALSE
 	if (opened)
 		opened=FALSE
 		usr << "You close the [src]."
@@ -282,7 +293,7 @@
 					desc = "an ammo pouch."
 					caliber = null
 	else
-		if (multiple_sprites && icon_keys.len)
+		if (multiple_sprites && icon_keys && icon_keys.len)
 			//find the lowest key greater than or equal to stored_ammo.len
 			var/new_state = null
 			for (var/idx in TRUE to icon_keys.len)
@@ -380,7 +391,8 @@
 /obj/item/ammo_magazine/attack_self(mob/user)
 
 	var/cont = FALSE
-	if (stored_ammo.len > 0 && stored_ammo.len < 20)
+
+	if (stored_ammo.len > 0 && stored_ammo.len < 20 && !istype(src,/obj/item/ammo_magazine/tibannagas))
 		if ((input(user, "Are you sure you want to empty the [src]?", "[src]") in list ("Yes", "No")) == "Yes")
 			cont = TRUE
 

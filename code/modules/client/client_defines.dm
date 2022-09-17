@@ -46,6 +46,7 @@
 	var/player_age = 0	//So admins know why it isn't working - Used to determine how old the account is - in days.
 
 	var/next_normal_respawn = -1
+	var/respawn_count = 0
 
 	var/last_ping = 0
 

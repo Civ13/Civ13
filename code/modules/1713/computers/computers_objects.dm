@@ -77,8 +77,14 @@
 		if (D.faction == H.civilization)
 			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
 			return
-		else if (H.civilization == "Police")
-			H << "<span class='notice'>You do not know how to decrypt this... Should put it in the evidence room instead.</span>"
+		else if (H.civilization == "Sheriff Office")
+			H << "<span class='notice'>You do not know how to decrypt this... You should put it in the evidence room instead.</span>"
+			return
+		else if (H.civilization == "Paramedics")
+			H << "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>"
+			return
+		else if (H.civilization == "Government")
+			H << "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>"
 			return
 		else if (D.used)
 			H << "<span class='notice'>This disk has already been decrypted and wiped.</span>"
@@ -159,13 +165,13 @@
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/police
 	name = "Police Processing Terminal"
-	desc = "A computer running unga OS 94 Police Edition, with access to both civilians and Police."
+	desc = "A computer running unga OS 94 Law Enforcement Edition, with access to both civilians and LEOs."
 	icon_state = "research_on"
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
 	density = TRUE
-	operatingsystem = "unga OS 94 Police Edition"
+	operatingsystem = "unga OS 94 Law Enforcement Edition"
 	New()
 		..()
 		programs += new/datum/program/permits
@@ -178,6 +184,7 @@
 		programs += new/datum/program/squadtracker
 		programs += new/datum/program/gunregistry
 		programs += new/datum/program/licenseplates
+		programs += new/datum/program/fingerprintregistry
 //////////////////////////////////////////
 /////////DISKS///////////////////////////
 
@@ -321,11 +328,11 @@
 	operatingsystem = "unga OS 94"
 
 /obj/item/weapon/disk/os/uos94pe
-	name = "unga OS 94 PE boot disk"
-	desc = "A disk used to boot unga OS 94 Police Edition."
+	name = "unga OS 94 LE boot disk"
+	desc = "A disk used to boot unga OS 94 Law Enforcement Edition."
 	icon_state = "disk_uos94"
 	item_state = "disk_uos94"
-	operatingsystem = "unga OS 94 Police Edition"
+	operatingsystem = "unga OS 94 Law Enforcement Edition"
 ///////////////components/////////////////////
 /obj/item/stack/component
 	icon = 'icons/obj/computers.dmi'
@@ -344,7 +351,7 @@
 	icon_state = "card_red"
 
 /obj/item/stack/component/green
-	name = "McGT S5R1 chip"
+	name = "KOGM S5R1 chip"
 	desc = "A highly advanced chip, manufactured by Kogama Kraftsmen."
 	icon_state = "card_ram"
 
@@ -541,7 +548,7 @@
 /obj/item/weapon/disk/program/squadtracker
 	name = "Squad-Trak installation disk"
 	desc = "Tracks the location of your squad."
-	compatible_os = list("unga OS 94","unga OS 94 Police Edition")
+	compatible_os = list("unga OS 94","unga OS 94 Law Enforcement Edition")
 	New()
 		..()
 		included = /datum/program/squadtracker

@@ -47,14 +47,36 @@
 	desc = "It's a very fancy satchel made with fine leather."
 	icon_state = "satchel"
 	base_icon = "satchel"
-	worn_state = "satchel-norm"
-	max_storage_space = 20
+	worn_state = "satchel"
+	max_storage_space = 16
 
 /obj/item/weapon/storage/backpack/satchel/gator_satchel
 	name = "alligator scale satchel"
 	desc = "A fashionable satchel lined with exotic alligator scales"
 	icon_state = "gator_satchel"
 	base_icon = "gator_satchel"
+
+/obj/item/weapon/storage/backpack/satchel/black
+	name = "black leather satchel"
+	desc = "A very fancy satchel made out of black leather."
+	icon_state = "satchel_black"
+	base_icon = "satchel_black"
+	worn_state = "satchel_black"
+
+/obj/item/weapon/storage/backpack/satchel/replicant
+	name = "synthetic backpack"
+	desc = "A very versitile backpack made out of synthetic leather."
+	icon_state = "replicant_backpack"
+	base_icon = "replicant_backpack"
+	worn_state = "replicant_backpack"
+
+/obj/item/weapon/storage/backpack/satchel/police
+	name = "police tactical pouch"
+	desc = "A tactical pouch made for law enforcement agents."
+	icon_state = "policesatchel"
+	base_icon = "policesatchel"
+	worn_state = "policesatchel"
+	max_storage_space = 12
 
 /* Backpacks */
 
@@ -181,6 +203,15 @@ obj/item/weapon/storage/backpack/ww2/american
 	max_w_class = 4
 	max_storage_space = 28
 
+/obj/item/weapon/storage/backpack/rucksack/rpg
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
 /obj/item/weapon/storage/backpack/civbag
 	name = "backpack"
 	desc = "A big backpack made for long walks."
@@ -205,7 +236,7 @@ obj/item/weapon/storage/backpack/ww2/american
 
 /obj/item/weapon/storage/backpack/buttpack
 	name = "US Army buttpack"
-	desc = "Standard issue buttpack for american military personel"
+	desc = "Standard issue buttpack for american military personel."
 	icon_state = "us_buttpack"
 	item_state = "us_buttpack"
 	item_state_slots = list(
@@ -215,6 +246,20 @@ obj/item/weapon/storage/backpack/ww2/american
 	worn_state = "us_buttpack"
 	base_icon = "us_buttpack"
 	slot_flags = SLOT_BACK
+	max_storage_space = 8
+
+/obj/item/weapon/storage/backpack/sovpack
+	name = "Sidor rucksack"
+	desc = "Soviet standard issue rucksack."
+	icon_state = "sovpack"
+	item_state = "sovpack"
+	item_state_slots = list(
+		slot_l_hand_str = "sovpack",
+		slot_r_hand_str = "sovpack",
+		)
+	worn_state = "sovpack"
+	base_icon = "sovpack"
+	slot_flags = SLOT_BACK
 	max_storage_space = 12
 
 /obj/item/weapon/storage/backpack/duffel/shaman
@@ -222,14 +267,21 @@ obj/item/weapon/storage/backpack/ww2/american
 	desc = "A duffel bag full of \"medical supplies\"."
 	New()
 		..()
+		new /obj/item/weapon/material/kitchen/utensil/knife/bone(src)
 		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
+		new /obj/item/weapon/reagent_containers/pill/opium(src)
+		new /obj/item/weapon/reagent_containers/pill/opium(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/peyote(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/flashlight/torch(src)
 		new /obj/item/weapon/pill_pack/pervitin(src)
-		new /obj/item/weapon/reagent_containers/pill/opium(src)
-		new /obj/item/weapon/reagent_containers/pill/opium(src)
 		new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(src)
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
-		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
-		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/stack/medical/advanced/herbs(src)
+		new /obj/item/stack/medical/bruise_pack/bint/leather(src)
+
+

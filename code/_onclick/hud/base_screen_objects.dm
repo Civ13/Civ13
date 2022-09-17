@@ -1038,6 +1038,16 @@ obj/screen/tactic
 	process_flag = TRUE
 	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
 
+/obj/screen/gasmask
+	icon = 'icons/mob/screen1_full.dmi'
+	icon_state = "blank"
+	name = "gas mask"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	mouse_opacity = FALSE
+	process_flag = TRUE
+	layer = 17.1 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
+
+
 /obj/screen/nvgoverlay/process()
 	update_icon()
 
@@ -1053,6 +1063,17 @@ obj/screen/tactic
 	underlays.Cut()
 	if (parentmob.thermal)
 		underlays += global_hud.thermal
+
+/obj/screen/gasmask/process()
+	update_icon()
+
+/obj/screen/gasmask/update_icon()
+	underlays.Cut()
+	if (ishuman(parentmob))
+		var/mob/living/human/H = parentmob
+		if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask/gas))
+			underlays += global_hud.gasmask
+
 
 /obj/screen/drugoverlay
 	icon = 'icons/mob/screen1_full.dmi'

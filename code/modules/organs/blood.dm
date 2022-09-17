@@ -328,7 +328,7 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 	if (source.data["virus2"])
 		B.virus2 = virus_copylist(source.data["virus2"])*/
 
-//	B.fluorescent  = FALSE
+	B.fluorescent  = FALSE
 	B.invisibility = FALSE
 	return B
 

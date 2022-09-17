@@ -3,7 +3,7 @@
 	ID = MAP_JUNGLE_COLONY
 	title = "Jungle Colony"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "imperial"
+	lobby_icon = "icons/lobby/imperial.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	has_hunger = TRUE
@@ -28,9 +28,10 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = CIVILIAN
+	grace_wall_timer = 15000
 	is_RP = TRUE
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Colony Building RP"
 obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -38,12 +39,6 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/jungle_colony/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/jungle_colony/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/jungle_colony/cross_message(faction)
 	return ""

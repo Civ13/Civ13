@@ -23,9 +23,18 @@
 
 /obj/structure/table/fancy
 	name = "table"
-	desc = "A old expensive table."
+	desc = "An old expensive table."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "fancytable"
+	flipped = -1
+	low = TRUE
+	fixedsprite = TRUE
+
+/obj/structure/table/nightstand
+	name = "nightstand"
+	desc = "A night stand."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "nightstand"
 	flipped = -1
 	low = TRUE
 	fixedsprite = TRUE
@@ -35,6 +44,16 @@
 	desc = "A store shelf."
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "shelf0"
+
+/obj/structure/table/rack/shelf/wooden
+	name = "shelf"
+	desc = "A wooden shelf."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "shelfwood"
+
+/obj/structure/table/rack/shelf/store
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "storeshelf"
 
 /obj/structure/table/rack/coatrack
 	name = "coat rack"

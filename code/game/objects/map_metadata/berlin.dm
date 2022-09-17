@@ -1,7 +1,7 @@
 /obj/map_metadata/berlin
 	ID = MAP_BERLIN
 	title = "Berlin"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_winner ="The capitol is under German control."
@@ -23,7 +23,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
 
 obj/map_metadata/berlin/job_enabled_specialcheck(var/datum/job/J)

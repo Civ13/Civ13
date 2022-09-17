@@ -2,7 +2,7 @@
 /obj/map_metadata/sibersyn
 	ID = MAP_SIBERSYN
 	title = "Battle of the Bridges"
-	lobby_icon_state = "ww1"
+	lobby_icon = "icons/lobby/rcw.png"
 	no_winner ="The battle ends in stalemate."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 600
@@ -23,8 +23,9 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Korobushka:1" = 'sound/music/korobushka.ogg')
+		"Korobushka:1" = "sound/music/korobushka.ogg")
 	gamemode = "Siege"
+	grace_wall_timer = 4200
 
 obj/map_metadata/sibersyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -40,13 +41,6 @@ obj/map_metadata/sibersyn/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/sibersyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/sibersyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/sibersyn/roundend_condition_def2name(define)
 	..()

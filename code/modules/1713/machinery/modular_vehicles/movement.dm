@@ -31,6 +31,40 @@
 /obj/structure/vehicleparts/movement/tracks/reversed
 	reversed = TRUE
 
+/obj/structure/vehicleparts/movement/tracks/left
+	icon = 'icons/obj/vehicles/tankparts.dmi'
+	icon_state = "tracks_end_left"
+	base_icon = "tracks_end_left"
+	movement_icon = "tracks_end_left_m"
+/obj/structure/vehicleparts/movement/tracks/right
+	icon = 'icons/obj/vehicles/tankparts.dmi'
+	icon_state = "tracks_end_right"
+	base_icon = "tracks_end_right"
+	movement_icon = "tracks_end_right_m"
+
+/obj/structure/vehicleparts/movement/tracks/mtlb/left
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "mtlb_tracks_end_left"
+	base_icon = "mtlb_tracks_end_left"
+	movement_icon = "mtlb_tracks_end_left_m"
+/obj/structure/vehicleparts/movement/tracks/mtlb/right
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "mtlb_tracks_end_right"
+	base_icon = "mtlb_tracks_end_right"
+	movement_icon = "mtlb_tracks_end_right_m"
+
+/obj/structure/vehicleparts/movement/tracks/left/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/right/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed
+	reversed = TRUE
+
 /obj/structure/vehicleparts/movement/update_icon()
 	if (broken)
 		icon_state = "[base_icon]_broken"

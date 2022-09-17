@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_divide
 	ID = MAP_NOMADS_DIVIDE
 	title = "Nomads (Jungle-Desert)"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
@@ -39,12 +39,6 @@
 			season = "Wet Season"
 	spawn(20000)
 		seasons()
-
-/obj/map_metadata/nomads_divide/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_divide/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_divide/cross_message(faction)
 	return ""

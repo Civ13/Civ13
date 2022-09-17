@@ -140,6 +140,7 @@
 	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
 	uniform.attackby(webbingh, H)
 	H.civilization = "Eastern Army"
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a Ranged Ashigaru of the Eastern Army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -184,6 +185,7 @@
 	uniform.attackby(katanah, H)
 	katanah.attackby(new/obj/item/weapon/material/sword/katana, H)
 	H.civilization = "Eastern Army"
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a foot soldier of the western army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -330,6 +332,7 @@
 	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
 	uniform.attackby(webbingh, H)
 	H.civilization = "Western Army"
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a Ranged Ashigaru of the Western Army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -372,6 +375,7 @@
 	uniform.attackby(katanah, H)
 	katanah.attackby(new/obj/item/weapon/material/sword/katana, H)
 	H.civilization = "Western Army"
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a foot soldier of the western army. Follow your <b>Superior's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

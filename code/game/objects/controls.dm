@@ -52,6 +52,37 @@
 					G.density = FALSE
 					G.opacity = FALSE
 			return
+/obj/structure/gatecontrol/blastcontrol/garage
+	name = "garage shutter control"
+	desc = "Controls nearby garage shutters"
+
+/obj/structure/gatecontrol/blastcontrol/garage/attack_hand(var/mob/user as mob)
+	if (cooldown <= world.time - 60)
+		if (open)
+			visible_message("[user] closes the shutters!")
+			open = FALSE
+			cooldown = world.time
+			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
+				G.icon_state = "garage_closing"
+				playsound(loc, 'sound/effects/garage.ogg', 100)
+				spawn(13)
+					G.icon_state = "garage_closed"
+					G.density = TRUE
+					G.opacity = TRUE
+			return
+		else
+			visible_message("[user] opens the shutters!")
+			open = TRUE
+			cooldown = world.time
+			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
+				G.icon_state = "garage_opening"
+				playsound(loc, 'sound/effects/garage.ogg', 100)
+				spawn(13)
+					G.icon_state = "garage_open"
+					G.density = FALSE
+					G.opacity = FALSE
+			return
+
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
 
@@ -118,6 +149,7 @@
 	var/maxhealth = 600
 	not_movable = TRUE
 	not_disassemblable = TRUE
+
 /obj/structure/gate/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
@@ -139,6 +171,7 @@
 			return
 	else
 		..()
+
 /obj/structure/gate/blast
 	name = "blast door"
 	desc = "An thick steel blast door."
@@ -151,6 +184,7 @@
 	maxhealth = 1200
 	not_movable = TRUE
 	not_disassemblable = TRUE
+
 /obj/structure/gate/blast/open
 	name = "blast door"
 	desc = "An thick steel blast door."
@@ -163,10 +197,45 @@
 	maxhealth = 1200
 	not_movable = TRUE
 	not_disassemblable = TRUE
+
 /obj/structure/gate/blast/open/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
 		..()
+
+/obj/structure/gate/blast/garage
+	name = "garage shutter"
+	desc = "A steel garage shutter."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "garage_closed"
+	anchored = TRUE
+	opacity = TRUE
+	density = TRUE
+	health = 800
+	maxhealth = 800
+	not_movable = TRUE
+/obj/structure/gate/blast/garage/open
+	name = "garage shutter"
+	desc = "A steel garage shutter."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "garage_open"
+	opacity = FALSE
+	anchored = TRUE
+	density = FALSE
+	health = 800
+	maxhealth = 800
+	not_movable = TRUE
+
+/obj/structure/gate/blast/garage/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me!
+		user << "You hit the [src] uselessly!"
+	else if (istype(W,/obj/item/weapon/weldingtool)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
+		user << "<span class='notice'>You start cutting through the [src]...</span>"
+		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
+		if (do_after(user, 30, target = src))
+			qdel(src)
+			return
+
 /obj/structure/gate/open
 	name = "gate"
 	desc = "An iron gate."
@@ -174,6 +243,7 @@
 	icon_state = "gate1"
 	anchored = TRUE
 	density = FALSE
+
 /obj/structure/gate/open/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
@@ -195,11 +265,13 @@
 			return
 	else
 		..()
+
 /obj/structure/gate/sandstone
 	name = "sandstone gate"
 	icon_state = "s_gate0"
 	anchored = TRUE
 	density = TRUE
+
 /obj/structure/gate/sandstone/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
@@ -226,6 +298,7 @@
 	icon_state = "s_gate1"
 	anchored = TRUE
 	density = FALSE
+
 /obj/structure/gate/sandstone/open/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker

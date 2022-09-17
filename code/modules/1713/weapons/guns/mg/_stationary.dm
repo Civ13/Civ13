@@ -38,6 +38,8 @@
 
 	var/zoom_amount = 10
 
+	var/hardness = 10 
+
 	gun_type = GUN_TYPE_MG
 
 	accuracy_increase_mod = 1.00

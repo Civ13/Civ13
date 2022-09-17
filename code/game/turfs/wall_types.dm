@@ -21,6 +21,11 @@
 /turf/wall/brick/New(var/newloc)
 	..(newloc,"brick")
 
+/turf/wall/generic_wall
+	icon_state = "generic0"
+turf/wall/generic_wall/New(var/newloc)
+	..(newloc,"concrete")
+
 /turf/wall/cement
 	icon_state = "cement_wall0"
 /turf/wall/cement/New(var/newloc)

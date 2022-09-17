@@ -1,7 +1,7 @@
 /obj/map_metadata/sekigahara
 	ID = MAP_SEKIGAHARA
 	title = "Sekigahara"
-	lobby_icon_state = "medieval"
+	lobby_icon = "icons/lobby/medieval.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="The fighting for sekigahara is still going on."
@@ -18,8 +18,9 @@
 	mission_start_message = "<font size=4>The <b>Eastern Army</b> and <b>Western Army</b> are facing each other outside of Sekigahara! It will start in <b>2 minutes</b></font>"
 	faction1 = JAPANESE
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	is_singlefaction = TRUE
+	grace_wall_timer = 1200
 	scores = list(
 		"Eastern Army" = 0,
 		"Western Army" = 0,
@@ -34,9 +35,6 @@
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/sekigahara/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/sekigahara/proc/points_check()
 	world << "<big><b>Current Points:</big></b>"
@@ -70,9 +68,6 @@
 			return FALSE
 		last_win_condition = win_condition.hash
 		return TRUE
-
-/obj/map_metadata/sekigahara/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/sekigahara/cross_message(faction)
 	return "<font size = 4>The grace wall is lifted!</font>"

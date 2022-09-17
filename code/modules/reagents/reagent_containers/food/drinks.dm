@@ -27,10 +27,8 @@
 	attack(mob/M as mob, mob/user as mob, def_zone)
 		if (force && !(flags & NOBLUDGEON) && user.a_intent == I_HARM)
 			return ..()
-
 		if (istype(M) && standard_feed_mob(user, M))
-			return
-
+			return TRUE
 		return FALSE
 
 	afterattack(obj/target, mob/user, proximity)
@@ -259,6 +257,22 @@
 /obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka/New()
 	..()
 	reagents.add_reagent("vodka", 60)
+
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/whiskey
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/whiskey/New()
+	..()
+	reagents.add_reagent("whiskey", 60)
+
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/tea
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/tea/New()
+	..()
+	reagents.add_reagent("tea", 60)
+
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/wine
+/obj/item/weapon/reagent_containers/food/drinks/flask/officer/wine/New()
+	..()
+	reagents.add_reagent("wine", 60)
+
 /obj/item/weapon/reagent_containers/food/drinks/flask/shiny
 	name = "shiny flask"
 	desc = "A shiny metal flask. It appears to have a Greek symbol inscribed on it."
@@ -294,13 +308,6 @@
 	icon_state = "vacuumflask"
 	volume = 60
 	center_of_mass = list("x"=15, "y"=4)
-
-/obj/item/weapon/reagent_containers/food/drinks/britcup
-	name = "cup"
-	desc = "A cup with the British flag emblazoned on it."
-	icon_state = "britcup"
-	volume = 30
-	center_of_mass = list("x"=15, "y"=13)
 
 /obj/item/weapon/reagent_containers/food/drinks/britmug
 	name = "coffee mug"

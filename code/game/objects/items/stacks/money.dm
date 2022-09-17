@@ -49,15 +49,26 @@
 	flags = CONDUCT
 /obj/item/stack/money/real/New()
 	if (map.ordinal_age >= 4)
-		name = "Dollar Bill"
-		desc = "Paper bank note valued at one dollar."
-		singular_name = "Dollar Bill"
-		icon_state = "dollar"
-		value = 4
-		novariants = FALSE
-		flags = FALSE
-		update_icon()
-		return ..()
+		if (map.ID == MAP_BANK_ROBBERY)
+			name = "Dollar Bill"
+			desc = "Paper bank note valued at 1 dollar."
+			singular_name = "Dollar Bill"
+			icon_state = "dollar"
+			value = 1
+			novariants = FALSE
+			flags = FALSE
+			update_icon()
+			return ..()
+		else
+			name = "Dollar Bill"
+			desc = "Paper bank note valued at one dollar."
+			singular_name = "Dollar Bill"
+			icon_state = "dollar"
+			value = 4
+			novariants = FALSE
+			flags = FALSE
+			update_icon()
+			return ..()
 	else if (map.ordinal_age == 3)
 		name = "spanish reales"
 		desc = "A small silver coin."
@@ -159,15 +170,26 @@
 	flags = CONDUCT
 /obj/item/stack/money/dollar/New()
 	if (map && map.ordinal_age >= 4)
-		name = "5 Dollar Bills"
-		desc = "Paper bank note valued at five dollars."
-		singular_name = "5 Dollar Bill"
-		icon_state = "5dollar"
-		value = 20
-		novariants = FALSE
-		flags = FALSE
-		update_icon()
-		return ..()
+		if (map.ID == MAP_SOVAFGHAN)
+			name = "1 Dollar Bill"
+			desc = "Paper bank note valued at 1 dollar."
+			singular_name = "1 Dollar Bill"
+			icon_state = "dollar"
+			value = 1
+			novariants = FALSE
+			flags = FALSE
+			update_icon()
+			return ..()
+		else
+			name = "5 Dollar Bills"
+			desc = "Paper bank note valued at five dollars."
+			singular_name = "5 Dollar Bill"
+			icon_state = "5dollar"
+			value = 20
+			novariants = FALSE
+			flags = FALSE
+			update_icon()
+			return ..()
 	else if (map.ordinal_age == 3)
 		name = "spanish dollars"
 		desc = "A silver coin, also called piece of eight, worth 8 reales."
@@ -405,6 +427,39 @@
 /obj/structure/carriage_tdm/proc/timer()
 	spawn(4000)
 		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>."
+		timer()
+
+/obj/structure/money_bag
+	name = "Money Bag"
+	desc = ""
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "duffel"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/prevent = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/money_bag/New()
+	..()
+	desc = "Stored Value: [storedvalue]."
+	timer()
+/obj/structure/money_bag/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
+		storedvalue += (W.value*W.amount)
+		desc = "Stored Value: [storedvalue]."
+		user << "You place \the [W] inside \the [src]."
+		qdel(W)
+		if (storedvalue >= 1500)
+			map.update_win_condition()
+	else
+		return
+/obj/structure/money_bag/proc/timer()
+	spawn(2100)
+		world << "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>."
 		timer()
 
 /obj/item/stack/money/goldvaluables

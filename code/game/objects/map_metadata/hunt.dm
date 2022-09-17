@@ -1,7 +1,7 @@
 /obj/map_metadata/hunt
 	ID = MAP_HUNT
 	title = "Hunt"
-	lobby_icon_state = "hunt"
+	lobby_icon = "icons/lobby/hunt.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
@@ -24,9 +24,10 @@
 	faction1 = INDIANS
 	faction2 = PIRATES
 	songs = list(
-		"Blade and Dagger:1" = 'sound/music/blade_and_dagger.ogg',)
+		"Blade and Dagger:1" = "sound/music/blade_and_dagger.ogg",)
 	gamemode = "Survival RP"
 	is_RP = TRUE
+	grace_wall_timer = 15000
 
 /obj/map_metadata/hunt/New()
 	..()
@@ -52,11 +53,6 @@ obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		if (J.is_warlords)
 			. = FALSE
-/obj/map_metadata/hunt/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/hunt/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hunt/cross_message(faction)
 	return "The gracewall is now removed."

@@ -1,10 +1,12 @@
 /mob/living/human/proc/togglerace(targetraceinput)
 	src << "<span> You start to change....</span>"
 	spawn(4000)
-		if (src && orc+ant+crab+wolfman+lizard+gorillaman<=0)
+		if (src && orc+goblin+ant+crab+wolfman+lizard+gorillaman<=0)
 			switch(targetraceinput)
 				if ("orc")
 					orc = 0
+				if ("goblin")
+					goblin = 0
 				if ("ant")
 					ant = 0
 				if ("crab")
@@ -16,7 +18,7 @@
 				if ("gorillaman")
 					gorillaman = 0
 /mob/living/human/proc/checkrace()
-	if(!orc && !ant && !wolfman && !lizard && !gorillaman && !crab && can_mutate)
+	if(!orc && !goblin && !ant && !wolfman && !lizard && !gorillaman && !crab && can_mutate)
 		return TRUE
 	else
 		return FALSE
@@ -31,6 +33,13 @@
 			else
 				src << "<span> Your skin starts to turn a greenish hue!</span>"
 			togglerace("orc")
+			radiation -= radiation/8 //Reduce radiation a little.
+		else if (prob(10))
+			if (prob(10))
+				src << "<span> You feel yourself getting smaller and faster!</span>"
+			else
+				src << "<span> Your skin starts to turn a greenish!</span>"
+			togglerace("goblin")
 			radiation -= radiation/8 //Reduce radiation a little.
 		else if (prob(15))
 			if (prob(50))

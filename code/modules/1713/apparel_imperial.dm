@@ -290,7 +290,7 @@
 
 /* Colonial Boots*/
 
-/obj/item/clothing/shoes/blackboots1
+/obj/item/clothing/shoes/blackboots
 	name = "black boots"
 	desc = "Classic black boots."
 	icon_state = "sailorboots1"

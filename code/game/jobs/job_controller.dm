@@ -35,6 +35,9 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[RUSSIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CHECHEN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FINNISH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[NORWEGIAN]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[SWEDISH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[DANISH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[VIETNAMESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CHINESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[AMERICAN]
@@ -200,15 +203,24 @@ var/global/datum/controller/occupations/job_master
 	if (H.original_job && H.original_job.uses_squads)
 		var/mob/living/human/HSL = null
 		if(H.original_job.is_squad_leader)
+			spawn (10)
 			for(var/mob/living/human/HM in world)
-				if(HM.original_job.is_commander && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+				if(HM && HM.original_job && (HM.original_job.is_officer || HM.original_job.is_commander) && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
 					HSL = HM
 					break
 		else if (H.squad && H.faction_text == map.faction1)
-			if (map.faction1_squad_leaders[H.squad])
+			if (H.original_job.is_tanker)
+				for(var/mob/living/human/HM in world)
+					if (HM && HM.original_job && HM.original_job.is_tankcom && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+						HSL = HM
+			else if (map.faction1_squad_leaders[H.squad] && !map.faction1_squad_leaders[H.squad].original_job.is_tankcom)
 				HSL = map.faction1_squad_leaders[H.squad]
 		else if (H.squad && H.faction_text == map.faction2)
-			if (map.faction2_squad_leaders[H.squad])
+			if (H.original_job.is_tanker)
+				for(var/mob/living/human/HM in world)
+					if (HM && HM.original_job && HM.original_job.is_tankcom && HM.stat == CONSCIOUS && HM.faction_text == H.faction_text)
+						HSL = HM
+			else if (map.faction2_squad_leaders[H.squad] && !map.faction2_squad_leaders[H.squad].original_job.is_tankcom)
 				HSL = map.faction2_squad_leaders[H.squad]
 		if (HSL && HSL.stat == CONSCIOUS)
 			var/found = FALSE
@@ -266,6 +278,20 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateIND5"
 		else
 			spawn_location = "JoinLateIND5"
+
+	if(map && map.ID == MAP_CAMPAIGN && istype(map, /obj/map_metadata/campaign/campaign5))
+		if (findtext(H.original_job_title,"RDF"))
+			spawn_location = "JoinLateRedN"
+			if(findtext(H.original_job_title,"Squad 2"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Engineer"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Anti-Tank"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Recon"))
+				spawn_location = "JoinLateRedS"
+			else if(findtext(H.original_job_title,"Armored"))
+				spawn_location = "JoinLateRedS"
 
 	var/turf/spawnpoint = null
 	var/list/turfs = latejoin_turfs[spawn_location]
@@ -403,6 +429,18 @@ var/global/datum/controller/occupations/job_master
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
 
+		if(map.ID == MAP_CAMPAIGN)
+			if(istype(job,/datum/job/pirates/redfaction))
+				H.remove_language("English")
+				H.add_language("Redmenian",FALSE)
+				for (var/datum/language/redmenian/A in H.languages)
+					H.default_language = A
+
+			else if (istype(job, /datum/job/civilian/bluefaction))
+				H.remove_language("English")
+				H.add_language("Blugoslavian",FALSE)
+				for (var/datum/language/blugoslavian/A in H.languages)
+					H.default_language = A
 
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
@@ -450,6 +488,12 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateRU"
 				if (FINNISH)
 					spawn_location = "JoinLateFI"
+				if (NORWEGIAN)
+					spawn_location = "JoinLateNO"
+				if (SWEDISH)
+					spawn_location = "JoinLateSE"
+				if (DANISH)
+					spawn_location = "JoinLateDK"
 				if (CHECHEN)
 					spawn_location = "JoinLateCC"
 				if (GERMAN)
@@ -519,7 +563,8 @@ var/global/datum/controller/occupations/job_master
 					H.stopDumbDamage = FALSE
 
 			spawn(12)
-				H.memory()
+				if(map.ID != MAP_CAMPAIGN)
+					H.memory()
 
 			return H
 
@@ -543,6 +588,9 @@ var/global/datum/controller/occupations/job_master
 	var/russian = alive_n_of_side(RUSSIAN)
 	var/chechen = alive_n_of_side(CHECHEN)
 	var/finnish = alive_n_of_side(FINNISH)
+	var/norwegian = alive_n_of_side(NORWEGIAN)
+	var/swedish = alive_n_of_side(SWEDISH)
+	var/danish = alive_n_of_side(DANISH)
 	var/american = alive_n_of_side(AMERICAN)
 	var/vietnamese = alive_n_of_side(VIETNAMESE)
 	var/chinese = alive_n_of_side(CHINESE)
@@ -564,6 +612,9 @@ var/global/datum/controller/occupations/job_master
 	var/max_russian = INFINITY
 	var/max_chechen = INFINITY
 	var/max_finnish = INFINITY
+	var/max_norwegian = INFINITY
+	var/max_swedish = INFINITY
+	var/max_danish = INFINITY
 	var/max_german = INFINITY
 	var/max_american = INFINITY
 	var/max_vietnamese = INFINITY
@@ -608,6 +659,15 @@ var/global/datum/controller/occupations/job_master
 
 		if (map.faction_distribution_coeffs.Find(FINNISH))
 			max_finnish = ceil(relevant_clients * map.faction_distribution_coeffs[FINNISH])
+
+		if (map.faction_distribution_coeffs.Find(NORWEGIAN))
+			max_norwegian = ceil(relevant_clients * map.faction_distribution_coeffs[NORWEGIAN])
+
+		if (map.faction_distribution_coeffs.Find(SWEDISH))
+			max_swedish = ceil(relevant_clients * map.faction_distribution_coeffs[SWEDISH])
+
+		if (map.faction_distribution_coeffs.Find(DANISH))
+			max_danish = ceil(relevant_clients * map.faction_distribution_coeffs[DANISH])
 
 		if (map.faction_distribution_coeffs.Find(CHECHEN))
 			max_chechen = ceil(relevant_clients * map.faction_distribution_coeffs[CHECHEN])
@@ -703,6 +763,24 @@ var/global/datum/controller/occupations/job_master
 			if (finnish_forceEnabled)
 				return FALSE
 			if (finnish >= max_finnish)
+				return TRUE
+
+		if (NORWEGIAN)
+			if (norwegian_forceEnabled)
+				return FALSE
+			if (norwegian >= max_norwegian)
+				return TRUE
+
+		if (SWEDISH)
+			if (swedish_forceEnabled)
+				return FALSE
+			if (swedish >= max_swedish)
+				return TRUE
+
+		if (DANISH)
+			if (danish_forceEnabled)
+				return FALSE
+			if (danish >= max_danish)
 				return TRUE
 
 		if (GERMAN)

@@ -156,50 +156,8 @@ obj/item/weapon/material/sword/wakazashi
 	value = 60
 	cooldownw = 6
 
-/obj/item/weapon/material/knife/tanto
-	name = "tanto"
-	desc = "A knife used by the japanese for centuries. Made to slice and slash, not chop or saw. Often the tool of choice for ritual suicide."
-	icon_state = "tanto"
-	item_state = "tanto"
-	block_chance = 10
-	force_divisor = 0.4 // 42 when wielded with hardnes 60 (steel)
-	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
-	slot_flags = SLOT_BELT
-	value = 60
-	cooldownw = 6
-	var/suicide = FALSE //To
-
-/obj/item/weapon/material/knife/tanto/proc/handle_suicide(mob/living/user)
-	..()
-	if (!ishuman(user))
-		return
-	var/mob/living/human/M = user
-	suicide = TRUE
-	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
-	if (!do_after(user, 60))
-		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
-		suicide = FALSE
-		return
-	else
-		user << "<span class = 'notice'>Ow...</span>"
-		user.apply_effect(110,AGONY,0)
-		user.apply_damage(src.sharpness*2.5, "brute", "groin")
-		user.death()
-		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
-		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
-		suicide = FALSE
-
-/obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, target_zone)
-	if (A == user)
-		if (target_zone == "groin" && !suicide)
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				if (H.faction_text == "INDIANS")
-					user << "<span class = 'danger'>You have no idea how to do this.</span>"
-					return TRUE
-			handle_suicide(user)
-			return TRUE
-	return ..(A, user, target_zone)
+obj/item/weapon/material/sword/wakazashi/yakuza
+	slot_flags = SLOT_BELT | SLOT_BACK
 
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"
@@ -385,6 +343,24 @@ obj/item/weapon/material/sword/scimitar/iron
 	block_chance = 30
 	cooldownw = 8
 	value = 45
+
+/obj/item/weapon/material/sword/longquan/iron
+	default_material = "iron"
+	value = 40
+
+/obj/item/weapon/material/sword/plasmaquan
+	name = "Plasmaquan"
+	desc = "A sword based on the longquan."
+	icon_state = "plasmaquan"
+	item_state = "plasmaquan"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 1.2 // 42 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BACK
+	block_chance = 40
+	cooldownw = 7
+	value = 100
 
 /obj/item/weapon/material/sword/longquan/iron
 	default_material = "iron"
@@ -618,3 +594,18 @@ obj/item/weapon/material/sword/rapier/iron
 	block_chance = 20
 	cooldownw = 8
 	value = 500
+
+//////////////////////////////////GAME OF THRONES////////////////////////////////////////
+/obj/item/weapon/material/sword/longclaw
+	name = "longclaw"
+	desc = "The Longclaw is a ancestral Valyrian steel bastard sword from the house of mormont."
+	icon_state = "longclaw"
+	item_state = "longsword"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 1 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 50
+	cooldownw = 11
+	value = 400

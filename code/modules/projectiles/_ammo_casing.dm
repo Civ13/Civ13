@@ -515,6 +515,36 @@
 	caliber = "a65x50"
 	value = 5
 
+/obj/item/ammo_casing/a50cal
+	name = ".50 BMG cartridge"
+	desc = "A big heavy brass casing designed to take out unarmored targets."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal
+	caliber = "a50cal"
+	value = 7
+
+/obj/item/ammo_casing/a50cal_ap
+	name = ".50 BMG AP cartridge"
+	desc = "A big heavy brass casing designed to penetrate armor."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal_ap
+	caliber = "a50cal"
+	value = 7
+
+/obj/item/ammo_casing/a50cal_he
+	name = ".50 BMG HE cartridge"
+	desc = "A big heavy brass casing designed to explode on impact."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal_he
+	caliber = "a50cal"
+	value = 7
+
 /obj/item/ammo_casing/a65x50/weak
 	projectile_type = /obj/item/projectile/bullet/rifle/a65x50/weak
 	caliber = "a65x50_weak"
@@ -581,16 +611,6 @@
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/a43
 	caliber = "a43"
-	value = 7
-
-/obj/item/ammo_casing/a50cal
-	name = ".50 caliber cartridge"
-	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
-	weight = 0.04
-	projectile_type = /obj/item/projectile/bullet/rifle/a50cal
-	caliber = "a50cal"
 	value = 7
 
 /obj/item/ammo_casing/a32
@@ -830,7 +850,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a9x19
-	name = "9x19mm Luger cartridge"
+	name = "9x19mm cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -869,14 +889,14 @@
 	caliber = "a762x25"
 	value = 2
 
-/obj/item/ammo_casing/l762x25
+/obj/item/ammo_casing/a762x25/rubber
 	name = "7.62x25mm rubber cartridge"
 	desc = "A wooden casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/rubber
-	caliber = "l762x25"
+	projectile_type = /obj/item/projectile/bullet/pistol/rubber/a762x25
+	caliber = "a762x25"
 	value = 2
 
 /obj/item/ammo_casing/a792x33
@@ -896,6 +916,15 @@
 	spent_icon = "pistolcasing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/rifle/a545x39
+	caliber = "a545x39"
+	value = 2
+/obj/item/ammo_casing/a545x39/rubber
+	name = "5.45x39mm cartridge Rubber"
+	desc = "A rubbery brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/rubber/a54x39
 	caliber = "a545x39"
 	value = 2
 
@@ -981,6 +1010,17 @@
 	projectile_type = /obj/item/projectile/bullet/pistol/a57x28
 	caliber = "a57x28"
 	value = 2
+
+/obj/item/ammo_casing/a58x42
+	name = "5.8x42mm cartridge"
+	desc = "A rimless bottlenecked casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/rifle/a58x42
+	caliber = "a58x42"
+	value = 2
+
 /obj/item/ammo_casing/shotgun
 	caliber = "12gauge"
 	weight = 0.12
@@ -1021,3 +1061,41 @@
 	spent_icon = "slshell_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
 
+/////////////////////LASERS///////////////////////////////////
+/obj/item/ammo_casing/laser
+	name = "laser bolt"
+	desc = "you shouldnt be seeing this"
+	caliber = "laser"
+	icon_state = "darts"
+	spent_icon = "darts-0"
+	projectile_type = /obj/item/projectile/laser
+	leaves_residue = FALSE
+
+/obj/item/ammo_casing/laser/b
+	projectile_type = /obj/item/projectile/laser/b
+	caliber = "laserb"
+/obj/item/ammo_casing/laser/g
+	projectile_type = /obj/item/projectile/laser/g
+	caliber = "laserg"
+/obj/item/ammo_casing/laser/pistol
+	name = "pistol laser bolt"
+	projectile_type = /obj/item/projectile/laser/pistol
+	caliber = "laser_pistol"
+
+/obj/item/ammo_casing/laser/pistol/b
+	name = "pistol laser bolt"
+	projectile_type = /obj/item/projectile/laser/pistol/b
+	caliber = "laser_pistolb"
+/obj/item/ammo_casing/laser/pistol/g
+	name = "pistol laser bolt"
+	projectile_type = /obj/item/projectile/laser/pistol/g
+	caliber = "laser_pistolg"
+
+/obj/item/ammo_casing/laser/repeating
+	name = "laser bolt"
+	desc = "you shouldnt be seeing this"
+	caliber = "laser"
+	icon_state = "darts"
+	spent_icon = "darts-0"
+	projectile_type = /obj/item/projectile/laser/repeating
+	leaves_residue = FALSE

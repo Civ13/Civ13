@@ -1,7 +1,7 @@
 /obj/map_metadata/bohemia
 	ID = MAP_BOHEMIA
 	title = "Bohemia"
-	lobby_icon_state = "medieval"
+	lobby_icon = "icons/lobby/medieval.png"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
@@ -21,7 +21,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = GERMAN
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Medieval RP"
 	is_singlefaction = TRUE
 	force_mapgen = TRUE

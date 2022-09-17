@@ -264,6 +264,13 @@
 
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
+	uniform.attackby(russbando, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier first-class employed by the Imperial Russian Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -305,6 +312,14 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
+	uniform.attackby(russbando, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	give_random_name(H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class employed by the Imperial Russian Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -351,7 +366,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rusoff(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELINA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet_officer(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -391,7 +406,10 @@
 /datum/job/russian/nkvd_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
 //head
@@ -399,7 +417,7 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_r_store)
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELINA)
@@ -436,7 +454,10 @@
 /datum/job/russian/sergeant_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
 
@@ -449,7 +470,7 @@
 
 //weapons
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (map.ID == MAP_KHALKHYN_GOL)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mosin(H), slot_r_store)
@@ -510,7 +531,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
@@ -561,7 +582,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a designated automatic rifleman of the Red Army. Keep the enemy pinned down!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -593,13 +614,19 @@
 /datum/job/russian/sniper_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	if (map.ID == MAP_KARELINA)
+	if (map.ID == MAP_KARELINA || map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_GULAG13)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+		if (prob(70))
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba(H), slot_w_uniform)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 //head
 	if (prob(80))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_pilotka(H), slot_head)
@@ -609,7 +636,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sniper of the Red Army. Keep the enemy pinned down!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -641,12 +668,15 @@
 /datum/job/russian/soldier_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(40))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
@@ -861,12 +891,9 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 
-	H.equip_to_slot_or_del(new 	/obj/item/ammo_magazine/mosin(H), slot_belt)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/ww1/soldier(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	give_random_name(H)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the White Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -999,7 +1026,7 @@
 /datum/job/civilian/russian/cheka_comissar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform)
 //head
@@ -1007,7 +1034,8 @@
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/cheka(H), slot_wear_suit)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 	give_random_name(H)
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1148,15 +1176,21 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
-
-	H.equip_to_slot_or_del(new 	/obj/item/ammo_magazine/mosin(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	give_random_name(H)
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(armband, H)
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
+	if(prob(70))
+		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
+		var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
+		uniform.attackby(russbando, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	else
+		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/ww1/soldier(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier of the Red Army. Follow your Commander's and local Chekist orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -1186,7 +1220,7 @@
 	is_tanker = TRUE
 	whitelisted = TRUE
 	is_squad_leader = TRUE
-	is_officer = TRUE
+	is_tankcom = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1194,7 +1228,7 @@
 /datum/job/russian/tank_crew_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_tanker(H), slot_w_uniform)
@@ -1208,7 +1242,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1244,8 +1278,7 @@
 /datum/job/russian/tank_crew/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_tanker(H), slot_w_uniform)
 //head
@@ -1255,7 +1288,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hip = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(hip, H)
@@ -1292,7 +1325,7 @@
 /datum/job/russian/guards_mechanized_squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_officer(H), slot_w_uniform)
@@ -1307,7 +1340,7 @@
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1345,13 +1378,13 @@
 /datum/job/russian/guards_mechanized_infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(60))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
@@ -1398,7 +1431,7 @@
 /datum/job/russian/guards_sapper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
@@ -1407,11 +1440,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/pilot(H), slot_eyes)
 //back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/sapper/russian(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, slot_wear_id)
 
@@ -1428,18 +1462,17 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 
 	return TRUE
 
 /datum/job/russian/mosmil
-	title = "Soviet Militia"
-	en_meaning = "Armed Militia"
+	title = "Opolchenets"
+	en_meaning = "Soviet Militia"
 	is_smallsiegemoscow = TRUE
-	rank_abbreviation = ""
 	spawn_location = "JoinEarlyMilita"
 	min_positions = 10
-	max_positions = 35
+	max_positions = 55
 
 /datum/job/russian/mosmil/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1458,7 +1491,7 @@
 
 
 //clothes
-	var/randjack2 = rand(1,8)
+	var/randjack2 = rand(1,9)
 	if (randjack2 == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
 	else if (randjack2 == 2)
@@ -1475,6 +1508,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
 	else if (randjack2 == 8)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
+	else if (randjack2 == 9)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 
 
 //head

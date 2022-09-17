@@ -8,11 +8,11 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		new path()
 */
 //	TODO: Make another way to eat, drink, piss, poo! Run out from crazyness of some UNITS system, with strange bitesizes etc
-//		Make a system based on volumes: liters, milliliters, etc. 
+//		Make a system based on volumes: liters, milliliters, etc.
 //	Redesign the smoking system, in which products will move into the body based on the "burning" process.
-//	Redesign the rot and decay system, where the reagents in the products will be converted based on the "rot" process. 
+//	Redesign the rot and decay system, where the reagents in the products will be converted based on the "rot" process.
 // 		Some will then go into the atmosphere, some into the earth, saturating it with reagents (chemicals and so on).
-//		Some will attract vermins (orderlies), who will consume these substances. 
+//		Some will attract vermins (orderlies), who will consume these substances.
 //	Final redesign of drying system, based on reagents and "drying" process, but not only items creation, deletion.
 /obj/item/weapon/reagent_containers/food/snacks
 	name = "snack" //Name that displays in the UI.
@@ -40,12 +40,12 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	value = null //If you think it must cost another sum - correct this; it's will be autocalculated if not set
 	roasted = FALSE //Is already roasted or not? See details in oven.dm. Also used meat.dm. And used below in this .dm
 	boiled = FALSE //Is boiled or not. See details in pot.dm
-	raw = FALSE //Is raw or not. Used in oven.dm, pot.dm and complex_production.dm. Give chance to poisoning from food. 
+	raw = FALSE //Is raw or not. Used in oven.dm, pot.dm and complex_production.dm. Give chance to poisoning from food.
 	//			    In fact, it is currently used for meat and fish products that may rot.
 	satisfaction = 0 //Mood modificator for whole item. Positive is good, negative is bad. Look at details in procedure On_Consume below
 	disgusting = FALSE //Unpleasant food. Used in oven.dm process()
 	rots = FALSE //Is it have rot mechanics in food_decay(). See details at food.dm
-	rotten = FALSE //Is it rotten or not. 
+	rotten = FALSE //Is it rotten or not.
 	rotten_icon_state = "" //Icon state for rotten product. Must be at same icons .dmi file!!!
 	flags = USEDELAY //see more at predefines.dm and atoms.dm
 
@@ -63,15 +63,15 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 //	the bites. No more contained reagents = no more bites.
 
 //It takes 23.3 units of drinks from full thirst to full saturation for standard drinks
-//It takes 13.3 units of nutriment from full hunger to full satiety (or 15.2 units from near death starvation to full satiety) for standard nutriment 
+//It takes 13.3 units of nutriment from full hunger to full satiety (or 15.2 units from near death starvation to full satiety) for standard nutriment
 //Look at Chemistry-Reagents-Food-Drinks.dm for premaded nutriments and drinks
 
-//There is only one way to add "nutriment" reagent correctly. And that are realised at New() procedure below. 
+//There is only one way to add "nutriment" reagent correctly. And that are realised at New() procedure below.
 //	If you want add another "nutriment" use list("flavour"=flavour strength, ...) as list of all flavours, that adds to "nutriment"
 //  By the way you also may add any reagent with additional custom flavour(s)
 //  If you want add already premade reagent (ANY), you must use that construction in in the definition of the item:
-//	New()																
-//		..()															
+//	New()
+//		..()
 //		reagents.add_reagent("reagent_id", amount, custom_description_list)
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/nutriments_value() //return nutrition factor of food
@@ -114,19 +114,19 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 				WV += R.volume * 40
 	return WV
 
-/obj/item/weapon/reagent_containers/food/snacks/proc/appraise() 
+/obj/item/weapon/reagent_containers/food/snacks/proc/appraise()
 //Calculate value for trading system if not set. If you want to recalculate it, set it to null before calling proc
 	if (value == null)
 		if (reagents)
 			value = max(0, ceil((nutriments_value()*2 + water_value(FALSE)*0.5)/30 + satisfaction/2  - 0.5))
 
-/obj/item/weapon/reagent_containers/food/snacks/proc/AVim()  
+/obj/item/weapon/reagent_containers/food/snacks/proc/AVim()
 //Appraise volume in milliliters. This is a very empirical approximation, but we have what we have at this moment
 //nutriments have "magical" volume, that not are visible at first look, watering reagents too have this "magic"
 	return reagents.total_volume + nutriments_value()*1.5 + water_value()
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/recalculate_bitesize()
-//Calculating biteamount if not set and 
+//Calculating biteamount if not set and
 	if (reagents)
 		var/appraise_volume_in_milliliters = AVim()
 		switch (appraise_volume_in_milliliters)
@@ -136,14 +136,14 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		if (!biteamount)
 			if (bitesize)
 				biteamount = ceil(reagents.total_volume/bitesize)
-			else	
+			else
 				biteamount = ceil(appraise_volume_in_milliliters/35) //Let's take as the norm a volume equal to 35 milliliters per bite/drink
 		if (!biteamount || biteamount<0) //we must have a value for next step calc if happens 0
-			biteamount = 1 
+			biteamount = 1
 		if (!bitesize)
 			bitesize = ceil(reagents.total_volume*10/biteamount)/10
 
-/obj/item/weapon/reagent_containers/food/snacks/New() 
+/obj/item/weapon/reagent_containers/food/snacks/New()
 	..()
 	if (nutriment_amt>0)
 		reagents.add_reagent("nutriment", nutriment_amt, nutriment_desc)
@@ -284,7 +284,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	if (istype(W,/obj/item/weapon/storage) && user.a_intent != I_HARM)
 		..() // -> item/attackby()
 		return
-	//cutting sliceable items with blades 
+	//cutting sliceable items with blades
 	if (W.edge)
 		if (!is_sliceable())
 			..()
@@ -335,12 +335,12 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/attack_generic(var/mob/living/M) //Eating food by mobs on "their own"
 	if (!isanimal(M))
 		return
-	M.visible_message("<b>[M]</b> nibbles away at \the [src].") 
+	M.visible_message("<b>[M]</b> nibbles away at \the [src].")
 	bitecount++
 	if (reagents && M.reagents)
 		reagents.trans_to_mob(M, bitesize, CHEM_INGEST)
 	On_Consume(M)
-	spawn(5) 
+	spawn(5)
 		if (!src && !M.client)
 			M.custom_emote(1,"[pick("burps", "cries for more", "burps twice", "looks at the area where the food was")]")
 
@@ -367,6 +367,51 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	New()
 		..()
 		icon_state = "hardtack[rand(1,2)]"
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknale
+	name = "hardtack soaked in ale"
+	desc = "Looks like it has been in a ship's hull for years. You soaked some ale into it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("ale", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknwine
+	name = "hardtack soaked in wine"
+	desc = "Looks like it has been in a ship's hull for years. You soaked some ale into it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("wine", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknbeer
+	name = "hardtack soaked in beer"
+	desc = "Looks like it has been in a ship's hull for years. You soaked some ale into it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("beer", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknopium
+	name = "hardtack with an opium smear"
+	desc = "Looks like it has been in a ship's hull for years. You smeared opium onto it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("opium", 0.01)
+
+/obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknkhat
+	name = "hardtack with an opium smear"
+	desc = "Looks like it has been in a ship's hull for years. You smeared khat leaves onto it before the battle started, good thinking!"
+	nutriment_desc = list("biscuits" = 1,)
+	biteamount = 2
+	New()
+		..()
+		reagents.add_reagent("cocaine", 0.01)
 
 /obj/item/weapon/reagent_containers/food/snacks/driedmeat
 	name = "dried meat"
@@ -433,79 +478,6 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	nutriment_amt = 5
 	nutriment_desc = list("sweetness" = 3, "cookie" = 2)
 	decay = 45*600
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza
-	name = "pizza"
-	desc = "A large flattened pie with toppings."
-	icon_state = "pizza"
-	center_of_mass = list("x"=16, "y"=13)
-	nutriment_amt = 8 //and 4 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "mushrooms" = 2, "cheese" = 2)
-	decay = 15*600
-	New()
-		..()
-		reagents.add_reagent("parsley", 2)
-		reagents.add_reagent("tomato", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzapepperoni
-	name = "pepperoni and cheese pizza"
-	desc = "A large flattened pie with cheese and pepperoni."
-	icon_state = "pizzapepperoni"
-	nutriment_amt = 9 //and 3 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "pepperoni" = 2, "spices" = 1, "cheese" = 2)
-	non_vegetarian = TRUE
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 2)
-		reagents.add_reagent("capsaicin", 1)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/vegetablepizza
-	name = "spicy vegetable pizza"
-	desc = "A large flattened pie with vegetables."
-	icon_state = "vegetablepizza"
-	nutriment_amt = 8 //and 4 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "paprika" = 1, "olives" = 1, "cheese" = 2)
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 2)
-		reagents.add_reagent("celery", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/meatpizza
-	name = "meatball pizza"
-	desc = "A large flattened pie with meat balls and tomato sauce."
-	icon_state = "meatpizza"
-	nutriment_amt = 6 //and 6 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "cheese" = 2)
-	non_vegetarian = TRUE
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("protein", 4)
-		reagents.add_reagent("tomato", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzasauced
-	name = "plain pizza"
-	desc = "A large flattened pie with tomato sauce."
-	icon_state = "pizzasauced"
-	nutriment_amt = 4 //and 8 are below, total 12
-	nutriment_desc = list("baked pastry" = 4)
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 8)
-
-/obj/item/weapon/reagent_containers/food/snacks/pizza/pizzacheesed
-	name = "cheese pizza"
-	desc = "A large flattened pie with cheese and tomato sauce."
-	icon_state = "pizzacheesed"
-	nutriment_amt = 10 //and 2 are below, total 12
-	nutriment_desc = list("baked pastry" = 4, "spices" = 1, "cheese" = 5)
-	New()
-		..()
-		reagents.del_reagents()
-		reagents.add_reagent("tomato", 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg
 	name = "egg"
@@ -711,6 +683,18 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	satisfaction = 6
 	non_vegetarian = TRUE
 
+/obj/item/weapon/reagent_containers/food/snacks/fishfingers/chickenbucket
+	name = "Fried Chicken Bucket"
+	desc = "A Fried Chicken Bucket."
+	icon_state = "chickenbucket"
+	filling_color = "#FFDEFE"
+	center_of_mass = list("x"=16, "y"=13)
+	nutriment_amt = 4
+	nutriment_desc = list("chicken" = 1)
+	decay = 12*600
+	satisfaction = 6
+	non_vegetarian = TRUE
+
 /obj/item/weapon/reagent_containers/food/snacks/bearmeat
 	name = "bear meat"
 	desc = "A very manly slab of meat."
@@ -728,7 +712,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		reagents.add_reagent("hyperzine", 5)
 
 /obj/item/weapon/reagent_containers/food/snacks/bearmeat/attackby(obj/item/weapon/W as obj, mob/user as mob) //TODO: REPAIR IT to slicing mechanic!
-	if (!roasted && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		var/atom/A = new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		A.name = "bear meat cutlet"
 		A.desc = replacetext(desc, "slab", "cutlet")
@@ -1027,7 +1011,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	New()
 		..()
 		reagents.add_reagent("water", 14)
-		
+
 /obj/item/weapon/reagent_containers/food/snacks/stew_wood
 	name = "stew"
 	desc = "A nice and warm stew. Healthy and strong."
@@ -1288,10 +1272,40 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	nutriment_desc = list("apple" = 8)
 	nutriment_amt = 8
 	decay = 16*600
-	value = 50	
+	value = 50
 	New()
 		..()
 		reagents.add_reagent("gold", 5)
+
+/obj/item/weapon/reagent_containers/food/snacks/ssicle
+	name = "Strawberry popsicle"
+	desc = "A nice refreshing strawberry treat for those hot days."
+	icon_state = "ssicle"
+	filling_color = "#FFDEFE"
+	satisfaction = 10
+	nutriment_amt = 5
+	nutriment_desc = list("sweetness" = 3, "popsicle" = 2)
+	decay = 12*600
+
+/obj/item/weapon/reagent_containers/food/snacks/ssicle/gsicle
+	name = "Grape popsicle"
+	desc = "A nice refreshing grape treat for those hot days."
+	icon_state = "gsicle"
+	filling_color = "#FFDEFE"
+	satisfaction = 10
+	nutriment_amt = 5
+	nutriment_desc = list("sweetness" = 3, "popsicle" = 2)
+	decay = 12*600
+
+/obj/item/weapon/reagent_containers/food/snacks/ssicle/osicle
+	name = "Orange popsicle"
+	desc = "A nice refreshing orange treat for those hot days."
+	icon_state = "osicle"
+	filling_color = "#FFDEFE"
+	satisfaction = 10
+	nutriment_amt = 5
+	nutriment_desc = list("sweetness" = 3, "popsicle" = 2)
+	decay = 12*600
 
 /////////////////////////////////////////////////Sliceable////////////////////////////////////////
 // All the food items that can be sliced into smaller bits like Meatbread and Cheesewheels
@@ -1300,6 +1314,202 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/sliceable
 	w_class = 3 //Whole pizzas and cakes shouldn't fit in a pocket, you can slice them if you want to do that.
 	decay = 17*600
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza
+	name = "pizza"
+	desc = "A large flattened pie with toppings."
+	icon_state = "pizza"
+	center_of_mass = list("x"=16, "y"=13)
+	nutriment_amt = 8 //and 4 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzaslice
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "mushrooms" = 2, "cheese" = 2)
+	decay = 15*600
+	New()
+		..()
+		reagents.add_reagent("parsley", 2)
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzaslice
+	name = "pizza slice"
+	desc = "A slice of delicious classic pizza."
+	icon_state = "vegetablepizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni
+	name = "pepperoni and cheese pizza"
+	desc = "A large flattened pie with cheese and pepperoni."
+	icon_state = "pizzapepperoni"
+	nutriment_amt = 9 //and 3 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzapepslice
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "pepperoni" = 2, "spices" = 1, "cheese" = 2)
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+		reagents.add_reagent("capsaicin", 1)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzapepslice
+	name = "pepperoni pizza slice"
+	desc = "A slice of delicious pepperoni pizza."
+	icon_state = "pizzapepperonislice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza
+	name = "spicy vegetable pizza"
+	desc = "A large flattened pie with vegetables."
+	icon_state = "vegetablepizza"
+	nutriment_amt = 8 //and 4 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzavege
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "paprika" = 1, "olives" = 1, "cheese" = 2)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+		reagents.add_reagent("celery", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzavege
+	name = "spicy vegetarian pizza slice"
+	desc = "A slice of delicious vege pizza."
+	icon_state = "vegetablepizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza
+	name = "meatball pizza"
+	desc = "A large flattened pie with meat balls and tomato sauce."
+	icon_state = "meatpizza"
+	nutriment_amt = 6 //and 6 are below, total 12
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzameat
+	slices_num = 8
+	nutriment_desc = list("baked pastry" = 4, "cheese" = 2)
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzameat
+	name = "meat pizza slice"
+	desc = "A slice of delicious meat pizza."
+	icon_state = "meatpizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced
+	name = "plain pizza"
+	desc = "A large flattened pie with tomato sauce."
+	icon_state = "pizzasauced"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/saucedsliced
+	slices_num = 8
+	nutriment_amt = 4 //and 8 are below, total 12
+	nutriment_desc = list("baked pastry" = 4)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 8)
+
+/obj/item/weapon/reagent_containers/food/snacks/saucedsliced
+	name = "sauced pizza slice"
+	desc = "A slice of delicious sauced pizza."
+	icon_state = "pizzasaucedslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed
+	name = "cheese pizza"
+	desc = "A large flattened pie with cheese and tomato sauce."
+	icon_state = "pizzacheesed"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzacheesesliced
+	slices_num = 8
+	nutriment_amt = 10 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "spices" = 1, "cheese" = 5)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzacheesesliced
+	name = "cheese pizza slice"
+	desc = "A slice of delicious cheese pizza."
+	icon_state = "pizzacheesedslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian
+	name = "hawaiian pizza"
+	desc = "A large flattened pie with cheese, ham and pineapple"
+	icon_state = "hawaiianpizza"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzahawaiiansliced
+	slices_num = 8
+	nutriment_amt = 12 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "spices" = 1, "cheese" = 5)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzahawaiiansliced
+	name = "cheese pizza slice"
+	desc = "A slice of delicious hawaiian styled pizza."
+	icon_state = "hawaiianpizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamac
+	name = "mac n cheese pizza"
+	desc = "A large flattened pie with cheese and macaroni noodles"
+	icon_state = "macpizza"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzamacsliced
+	slices_num = 8
+	nutriment_amt = 12 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "cheese" = 8)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzamacsliced
+	name = "mac n cheese pizza slice"
+	desc = "A slice of delicious mac n cheese pizza."
+	icon_state = "macpizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
+
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom
+	name = "mushroom pizza"
+	desc = "A large flattened pie with mushrooms and sauce."
+	icon_state = "mushroompizza"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/pizzamushsliced
+	slices_num = 8
+	nutriment_amt = 12 //and 2 are below, total 12
+	nutriment_desc = list("baked pastry" = 4, "mushroom" = 8)
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("tomato", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/pizzamushsliced
+	name = "mushroom pizza slice"
+	desc = "A slice of delicious mushroom pizza."
+	icon_state = "mushroompizzaslice"
+	center_of_mass = list("x"=16, "y"=13)
+	decay = 17*600
+	non_vegetarian = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/meatbread
 	name = "meatbread loaf"
@@ -1495,7 +1705,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	nutriment_amt = 10
 	decay = 70*600
 	satisfaction = 4
-	value = 40	
+	value = 40
 	New()
 		..()
 		reagents.add_reagent("protein", 10)

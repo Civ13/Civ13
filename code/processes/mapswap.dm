@@ -23,6 +23,7 @@
 		//"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
 		"Battle Royale" = 0,
+		"Fiction" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -53,6 +54,7 @@
 				"HRP TDM (Gulag, Voyage, Occupation, etc)" = 10,
 //				"Chad Mode" = 0,
 				"Battle Royale" = 6,
+				"Fiction" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
@@ -119,15 +121,18 @@
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
+				MAP_HILL_3234 = 12,
+				MAP_MAGISTRAL = 10,
 				MAP_YELTSIN = 6,
+				MAP_GROZNY = 6,
 				MAP_ALLEYWAY = 0,
 				MAP_COMPOUND = 6,
 				MAP_ROAD_TO_DAK_TO = 0,
 				MAP_HUE = 15,
 				MAP_RETREAT = 6,
-				MAP_GROZNY = 6,
 				//MAP_FACTORY = 15,
-				MAP_AFRICAN_WARLORDS = 8,
+				//MAP_AFRICAN_WARLORDS = 10,
+				MAP_WACO = 0,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
@@ -138,7 +143,9 @@
 				MAP_SMALLINGRAD = 0,
 				MAP_REICHFLAKTURM = 0,
 				MAP_PAVLOV_HOUSE = 0,
+				MAP_HOTEL = 0,
 				MAP_KHALKHYN_GOL = 8,
+				MAP_SMALLSIEGEMOSCOW = 8,
 				MAP_RIZAL_STADIUM = 10,
 				MAP_KURSK = 10,
 				MAP_STALINGRAD = 10,
@@ -168,6 +175,7 @@
 		//		MAP_SKULLISLAND = 0,
 				MAP_CURSED_ISLAND = 0,
 				MAP_SUPPLY_RAID = 0,
+				MAP_BRIDGE = 0,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
@@ -189,7 +197,6 @@
 				MAP_KARAK = 0,
 				MAP_CAMP = 0,
 				MAP_SAMMIRHAYEED = 10,
-				MAP_WHITERUN = 10,
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
 				MAP_GLADIATORS = 0,
@@ -201,7 +208,7 @@
 //				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 0,
 				MAP_HUNT = 0,
-				MAP_ABASHIRI = 6,
+//				MAP_ABASHIRI = 6,
 				MAP_VOYAGE = 6,
 //				MAP_RIVER_KWAI = 0,
 				MAP_LITTLE_CREEK = 10,
@@ -254,6 +261,10 @@
 				MAP_BATTLEROYALE_IMPERIAL = 0,
 				MAP_BATTLEROYALE_WILDWEST = 0,
 				MAP_BATTLEROYALE_MODERN = 0,)
+		else if (epoch == "Fiction")
+			maps = list(
+				MAP_TANTIVEIV = 0,
+				MAP_WHITERUN = 10,)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
 			return
@@ -590,19 +601,27 @@
 			world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
 		else if (map && map.ID == MAP_YELTSIN)
 			world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Parliamental Hall</b></big> until <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
+		else if (map && map.ID == MAP_WACO)
+			world << "<font color='yellow'><big>Siege</big><br>The <b>Branch Davidians</b> must defend the <b>Mount Carmel Compound</b></big> until <b>20 minutes</b have elapsed!<br><font size=4>All factions have <b>3 minutes</b> to prepare before the battle.</font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Siege"
-		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
-			new /area/caribbean/british/land/inside/objective(T)
-		for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
-			new /area/caribbean/british/land/inside/objective(T)
+		if (map && map.ID == MAP_WACO)
+			for (var/turf/T in get_area_turfs(/area/caribbean/british/land/inside/objective))
+				new /area/caribbean/no_mans_land/capturable(T)
+		else
+			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
+				new /area/caribbean/british/land/inside/objective(T)
+			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
+				new /area/caribbean/british/land/inside/objective(T)
 		return
 	else if (vote.voted_gamemode == "Protect the VIP")
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
 		else if (map && map.ID == MAP_YELTSIN)
 			world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>KGB</b> inside the Militia-controlled Capitol. The Soviet Army must find them!<br>They have <b>40 minutes to do it!</b></big></font>"
+		if (map && map.ID == MAP_WACO)
+			world << "<font color='yellow'><big>Protect the VIP</big><br><b>David Koresh</b> is being guarded by the <b>Branch Davidians</b> inside the Mount Carmel Compound. The ATF must find him!<br>They have <b>20 minutes to do it!</b></big></font>"
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Protect the VIP"
@@ -627,4 +646,24 @@
 		config.disable_fov = TRUE
 		config.no_respawn_delays = TRUE
 		map.gamemode = "Kills"
+		return
+
+		/// WASTELAND MODES //
+	else if (vote.voted_gamemode == "After the Fall")
+		world << "<font color='yellow'><big>After the Fall</big><br>The world has long since become lost and desolate. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+		map.gamemode = "After the Fall"
+		map.is_zombie = FALSE
+		map.nonukes = TRUE
+		return
+	else if (vote.voted_gamemode == "Nuklear")
+		world << "<font color='yellow'><big>Nuklear</big><br>To make things worse sometime between 2 and 3.5 hours a nuklear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+		map.gamemode = "Nuklear"
+		map.is_zombie = FALSE
+		map.nonukes = FALSE
+		return
+	else if (vote.voted_gamemode == "Zombie Apocalypse")
+		world << "<font color='yellow'><big>Zombie Apocalypse</big><br>Something has gone terribly wrong. Monsters roam the world and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+		map.gamemode = "Zombie Apocalypse"
+		map.is_zombie = TRUE
+		map.nonukes = TRUE
 		return

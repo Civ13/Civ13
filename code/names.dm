@@ -93,6 +93,7 @@ var/list/ancient_names = file2list("config/names/ancient_names.txt")
 var/list/epithets = file2list("config/names/epithets.txt")
 
 var/list/first_names_orc = file2list("config/names/first_orc.txt")
+var/list/first_names_goblin = file2list("config/names/first_goblin.txt")
 var/list/first_names_ant = file2list("config/names/first_ant.txt")
 var/list/first_names_gorilla = file2list("config/names/first_gorilla.txt")
 var/list/first_names_wolf = file2list("config/names/first_wolf.txt")
@@ -112,6 +113,18 @@ var/list/last_names_italian  = file2list("config/names/last_italian.txt")
 var/list/first_names_male_finnish = file2list("config/names/first_male_finnish.txt")
 var/list/first_names_female_finnish = file2list("config/names/first_female_finnish.txt")
 var/list/last_names_finnish  = file2list("config/names/last_finnish.txt")
+
+var/list/first_names_male_norwegian = file2list("config/names/first_male_oldnorse.txt")//To be changed with real Norwegian names
+var/list/first_names_female_norwegian  = file2list("config/names/first_female_oldnorse.txt")//To be changed with real Norwegian names
+var/list/last_names_norwegian  = file2list("config/names/last_oldnorse.txt")//To be changed with real Norwegian names
+
+var/list/first_names_male_swedish = file2list("config/names/first_male_oldnorse.txt")//To be changed with real Swedish names
+var/list/first_names_female_swedish  = file2list("config/names/first_female_oldnorse.txt")//To be changed with real Swedish names
+var/list/last_names_swedish  = file2list("config/names/last_oldnorse.txt")//To be changed with real Swedish names
+
+var/list/first_names_male_danish = file2list("config/names/first_male_oldnorse.txt")//To be changed with real Danish names
+var/list/first_names_female_danish  = file2list("config/names/first_female_oldnorse.txt")//To be changed with real Danish names
+var/list/last_names_danish  = file2list("config/names/last_oldnorse.txt")//To be changed with real Danish names
 
 var/list/first_names_male_oldnorse = file2list("config/names/first_male_oldnorse.txt")
 var/list/first_names_female_oldnorse  = file2list("config/names/first_female_oldnorse.txt")

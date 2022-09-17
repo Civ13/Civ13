@@ -206,3 +206,25 @@
 			new /obj/item/stack/material/glass(loc)
 			new /obj/item/stack/material/glass(loc)
 			qdel(src)
+
+/obj/structure/coolingfan
+	name = "cooling fan"
+	desc = "A rotating cooling fan. It's switched off."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "fan"
+	anchored = TRUE
+	density = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	var/on = FALSE
+
+/obj/structure/coolingfan/attack_hand(mob/user as mob)
+	if (on == FALSE)
+		usr << "You turn the cooling fan on."
+		icon_state = "fan_working"
+		on = TRUE
+	else
+		usr << "You turn the cooling fan off."
+		icon_state = "fan"
+		on = FALSE
+

@@ -1,44 +1,44 @@
-"aa" = (/turf/floor/beach/sand/desert,/area/caribbean)
-"ab" = (/turf/floor/beach/sand,/area/caribbean)
-"ac" = (/obj/structure/window/barrier/railing,/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand/desert,/area/caribbean)
-"ad" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"ae" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"af" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand,/area/caribbean)
-"ag" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand,/area/caribbean)
-"ah" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ai" = (/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand,/area/caribbean)
-"aj" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/sandstone,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"ak" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean)
-"al" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"am" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"an" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand,/area/caribbean)
-"ao" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"ap" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"aq" = (/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"ar" = (/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand/desert,/area/caribbean)
-"as" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"at" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"au" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"av" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand,/area/caribbean)
-"aw" = (/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"aa" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ab" = (/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ac" = (/obj/covers/sandstone,/obj/item/weapon/gun/projectile/bow/longbow,/obj/item/weapon/gun/projectile/bow/longbow,/obj/item/weapon/gun/projectile/bow/longbow,/obj/item/weapon/gun/projectile/bow/longbow,/obj/item/weapon/gun/projectile/bow/longbow,/obj/item/weapon/gun/projectile/bow/longbow,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"ad" = (/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"ae" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"af" = (/turf/floor/beach/sand,/area/caribbean/desert)
+"ag" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand,/area/caribbean/desert)
+"ah" = (/obj/covers/dirt_wall/blocks,/obj/covers/jail/woodjail,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"ai" = (/obj/covers/sandstone,/obj/item/weapon/material/pitchfork,/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"aj" = (/turf/floor/beach/water,/area/caribbean/desert)
+"ak" = (/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"al" = (/obj/covers/sandstone,/obj/effect/decal/cleanable/blood/drip,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"am" = (/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"an" = (/turf/floor/dirt/ploughed,/area/caribbean/desert)
+"ao" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean/desert)
+"ap" = (/obj/covers/sandstone,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"aq" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"ar" = (/obj/covers/sandstone,/obj/effect/decal/cleanable/blood,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"as" = (/obj/covers/dirt_wall/blocks,/obj/covers/jail/woodjail,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"at" = (/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"au" = (/obj/covers/dirt_wall/blocks,/obj/covers/jail/woodjail,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"av" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/flowers,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"aw" = (/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert)
 "ax" = (/obj/covers/sandstone,/obj/structure/closet/crate/rations/vegetables,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ay" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean)
-"az" = (/obj/structure/window/barrier/railing,/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand,/area/caribbean)
-"aA" = (/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand,/area/caribbean)
-"aB" = (/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand,/area/caribbean)
-"aC" = (/turf/floor/dirt/ploughed,/area/caribbean)
-"aD" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"aE" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"aF" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean/arab/sand)
-"aG" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"aH" = (/obj/covers/sandstone,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"aI" = (/obj/covers/sandstone,/obj/structure/simple_door/key_door{code = 6969; name = "Arab Camp Jail"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Jail"})
-"aJ" = (/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"aK" = (/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"aL" = (/obj/structure/window/barrier/railing,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean)
-"aM" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
+"ay" = (/obj/effect/floor_decal/carpet/blue,/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"az" = (/obj/covers/sandstone,/obj/structure/table/wood,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/oat,/obj/item/stack/farming/seeds/oat,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"aA" = (/turf/floor/dirt,/area/caribbean/desert)
+"aB" = (/turf/floor/grass,/area/caribbean/desert)
+"aC" = (/turf/floor/beach/water/deep,/area/caribbean/desert)
+"aD" = (/obj/structure/closet/crate/empty,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/turf/floor/beach/sand,/area/caribbean/desert)
+"aE" = (/obj/structure/catapult,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"aF" = (/obj/covers/sandstone,/obj/structure/simple_door/key_door/custom/jail/woodjail{custom_code = 6969; locked = 1; name = "Arab Camp Jail"},/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"aG" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean/desert)
+"aH" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/obj/covers/sandstone/stairs{dir = 1},/turf/floor/beach/sand,/area/caribbean/desert)
+"aI" = (/obj/covers/dirt_wall/blocks,/obj/item/flashlight/lantern/on/anchored,/obj/covers/jail/woodjail,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"aJ" = (/obj/covers/sandstone,/obj/covers/sandstone/stairs{dir = 1},/turf/floor/beach/sand,/area/caribbean/desert)
+"aK" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/covers/sandstone,/obj/covers/sandstone/stairs{dir = 1},/turf/floor/beach/sand,/area/caribbean/desert)
+"aL" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean/desert)
+"aM" = (/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand,/area/caribbean/desert)
 "aN" = (/obj/covers/dirt_wall/blocks,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"aO" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
+"aO" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/covers/sandstone/stairs{dir = 1},/turf/floor/beach/sand,/area/caribbean/desert)
 "aP" = (/obj/covers/sandstone,/obj/structure/closet/crate/rations/meat,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "aQ" = (/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "aR" = (/obj/covers/sandstone,/obj/structure/bookcase,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
@@ -48,69 +48,69 @@
 "aV" = (/obj/covers/sandstone,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "aW" = (/obj/covers/sandstone,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/obj/item/weapon/material/sword/scimitar,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "aX" = (/obj/covers/sandstone,/turf/floor/carpet/redcarpet,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"aY" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"aZ" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean)
-"ba" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean)
-"bb" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean)
-"bc" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean)
-"bd" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean)
-"be" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean)
-"bf" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean)
-"bg" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"bh" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/structure/barricade/sandstone_v/crenelated,/turf/floor/beach/sand/desert,/area/caribbean)
-"bi" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/barricade/sandstone_v/crenelated,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"bj" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"bk" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/structure/barricade/sandstone_v/crenelated,/turf/floor/beach/sand/desert,/area/caribbean)
-"bl" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/barricade/sandstone_v/crenelated,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"bm" = (/obj/structure/barricade/sandstone_v/crenelated,/obj/covers/sandstone,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean)
-"bn" = (/obj/structure/barricade/sandstone_h,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"bo" = (/turf/floor/beach/water/deep,/area/caribbean)
-"bp" = (/turf/floor/dirt,/area/caribbean)
-"bq" = (/turf/floor/grass,/area/caribbean)
-"br" = (/turf/floor/beach/water,/area/caribbean)
-"bs" = (/obj/structure/window/barrier/railing,/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/dirt,/area/caribbean)
-"bt" = (/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/dirt,/area/caribbean)
+"aY" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"aZ" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ba" = (/obj/structure/window/barrier/railing,/turf/floor/beach/sand,/area/caribbean/desert)
+"bb" = (/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bc" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing,/turf/floor/beach/sand,/area/caribbean/desert)
+"bd" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/turf/floor/beach/sand,/area/caribbean/desert)
+"be" = (/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bf" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bg" = (/obj/structure/window/barrier/railing,/turf/floor/dirt,/area/caribbean/desert)
+"bh" = (/obj/structure/window/barrier/railing,/turf/floor/grass,/area/caribbean/desert)
+"bi" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad3,/turf/floor/beach/sand,/area/caribbean/desert)
+"bj" = (/obj/structure/gate/sandstone{code = 1122},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"bk" = (/obj/structure/barricade/sandstone_h,/turf/floor/dirt,/area/caribbean/desert)
+"bl" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand,/area/caribbean/desert)
+"bm" = (/obj/covers/sandstone,/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand,/area/caribbean/desert)
+"bn" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/window/classic,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"bo" = (/obj/covers/sandstone,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert)
+"bp" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{code = 1122},/turf/floor/beach/sand,/area/caribbean/desert)
+"bq" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{code = 1122},/turf/floor/beach/sand,/area/caribbean/desert)
+"br" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand,/area/caribbean/desert)
+"bs" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert)
+"bt" = (/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "bu" = (/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "bv" = (/obj/covers/sandstone,/obj/structure/bookcase,/obj/structure/bookcase,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"bw" = (/obj/structure/gate/sandstone{code = 1122},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"bx" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"bw" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert)
+"bx" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "by" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "bz" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"bA" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean)
-"bB" = (/turf/floor/beach/sand/dark,/area/caribbean)
-"bC" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
+"bA" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand,/area/caribbean/desert)
+"bB" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bC" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{code = 2211},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "bD" = (/turf/floor/beach/sand/desert,/area/caribbean/arab/sand)
 "bE" = (/turf/floor/beach/sand,/area/caribbean/arab/sand)
 "bF" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "bG" = (/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"bH" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{desc = "A sign welcoming new arrivals to the coastal city of Sammir Hayeed."},/turf/floor/beach/sand/desert,/area/caribbean)
-"bI" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand/desert,/area/caribbean)
-"bJ" = (/obj/structure/sign/wide/carpet,/turf/floor/beach/sand/dark,/area/caribbean)
-"bK" = (/obj/structure/sign/wide/carpet,/turf/floor/beach/sand,/area/caribbean)
-"bL" = (/obj/covers/sandstone,/obj/effect/decal/cleanable/blood/drip,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"bH" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{code = 2211},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bI" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/sandstone,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bJ" = (/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert)
+"bK" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bL" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/window/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "bM" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand)
-"bN" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{code = 1122},/turf/floor/beach/sand,/area/caribbean)
-"bO" = (/obj/structure/window/barrier/railing,/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad3,/turf/floor/beach/sand,/area/caribbean)
-"bP" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/potted_plant,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"bQ" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad2,/turf/floor/beach/sand/desert,/area/caribbean)
-"bR" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/sandstone,/obj/structure/sign/flag/jihad4,/turf/floor/beach/sand,/area/caribbean)
-"bS" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/sandstone,/obj/structure/sign/flag/jihad4,/turf/floor/beach/sand/desert,/area/caribbean)
-"bT" = (/obj/structure/catapult{icon_state = "catapult0"; dir = 1},/turf/floor/beach/sand,/area/caribbean)
-"bU" = (/obj/structure/catapult{icon_state = "catapult0"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean)
-"bV" = (/obj/covers/sandstone,/obj/structure/bookcase,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"bW" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"bX" = (/obj/structure/window/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"bN" = (/obj/structure/window/barrier/railing,/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand,/area/caribbean/desert)
+"bO" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bP" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"bQ" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bR" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bS" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bT" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bU" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bV" = (/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"bW" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"bX" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/applecakeslice,/obj/item/weapon/reagent_containers/food/snacks/applecakeslice,/obj/item/weapon/reagent_containers/food/snacks/applecakeslice,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "bY" = (/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "bZ" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ca" = (/obj/structure/sign/wide/carpet,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"ca" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "cb" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "cc" = (/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/arab/sand)
 "cd" = (/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand)
 "ce" = (/turf/floor/beach/water/deep,/area/caribbean/arab/sand)
-"cf" = (/obj/structure/window/classic,/obj/structure/curtain,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"cg" = (/obj/covers/sandstone,/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ch" = (/obj/structure/window/classic,/obj/structure/curtain,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ci" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"cf" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"cg" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"ch" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/cherrypie,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"ci" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/csandwich,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "cj" = (/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "ck" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "cl" = (/obj/structure/barricade/horizontal,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
@@ -118,11 +118,11 @@
 "cn" = (/turf/floor/beach/sand/dark,/area/caribbean/crusader/sand)
 "co" = (/turf/floor/beach/water,/area/caribbean/crusader/sand)
 "cp" = (/obj/structure/religious/woodcross1,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
-"cq" = (/obj/covers/sandstone,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"cq" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/cherrypie,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "cr" = (/obj/structure/sink/well,/turf/floor/beach/sand/dark,/area/caribbean/crusader/sand)
-"cs" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean)
+"cs" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/obj/covers/sandstone/stairs,/turf/floor/beach/sand,/area/caribbean/desert)
 "ct" = (/turf/floor/beach/sand/desert,/area/caribbean/crusader/sand)
-"cu" = (/obj/structure/closet/crate/empty,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/turf/floor/beach/sand,/area/caribbean)
+"cu" = (/obj/covers/sandstone,/obj/covers/sandstone/stairs,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "cv" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/beach/sand/dark,/area/caribbean/crusader/sand)
 "cw" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/beach/sand/desert,/area/caribbean/crusader/sand)
 "cx" = (/obj/structure/barricade/horizontal,/turf/floor/beach/sand/desert,/area/caribbean/crusader/sand)
@@ -142,17 +142,17 @@
 "cL" = (/obj/structure/closet/crate/equipment/knight_armor,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "cM" = (/obj/structure/barricade/horizontal,/obj/structure/sign/flag/templar2,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "cN" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/obj/structure/sign/flag/templar2,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
-"cO" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean)
+"cO" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/covers/sandstone/stairs,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "cP" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
 "cQ" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
 "cR" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
-"cS" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"cS" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad1,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "cT" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
 "cU" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
-"cV" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean)
-"cW" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/table/fancy,/obj/item/weapon/storage/bible/quran,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"cX" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/obj/structure/sign/flag/jihad3,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"cY" = (/obj/structure/catapult,/turf/floor/beach/sand/desert,/area/caribbean)
+"cV" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"cW" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"cX" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"cY" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad2,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "cZ" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "da" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/carpet/redcarpet,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "db" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
@@ -164,40 +164,40 @@
 "dh" = (/obj/covers/sandstone,/obj/item/clothing/head/helmet/medieval/arab3,/obj/item/clothing/head/helmet/medieval/arab3,/obj/item/clothing/head/helmet/medieval/arab3,/obj/item/clothing/head/helmet/medieval/arab3,/obj/item/clothing/head/helmet/medieval/arab3,/obj/item/clothing/head/helmet/medieval/arab3,/obj/item/clothing/head/helmet/medieval/arab3,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/obj/item/clothing/under/medieval/arab2,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "di" = (/obj/covers/sandstone,/obj/item/clothing/head/helmet/medieval/arab,/obj/item/clothing/head/helmet/medieval/arab,/obj/item/clothing/head/helmet/medieval/arab,/obj/item/clothing/head/helmet/medieval/arab,/obj/item/clothing/head/helmet/medieval/arab,/obj/item/clothing/head/helmet/medieval/arab,/obj/item/clothing/head/helmet/medieval/arab,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/obj/item/clothing/under/medieval/arab1,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "dj" = (/obj/covers/sandstone,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/obj/item/clothing/shoes/medieval/arab,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"dk" = (/obj/covers/sandstone,/obj/effect/decal/cleanable/blood,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"dl" = (/obj/effect/floor_decal/carpet/blue,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"dm" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/window/classic,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"dn" = (/obj/effect/floor_decal/carpet/blue,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"do" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/window/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"dk" = (/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"dl" = (/obj/structure/barricade/sandstone_h,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"dm" = (/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"dn" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/potted_plant,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"do" = (/obj/effect/floor_decal/carpet/blue,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
 "dp" = (/obj/effect/floor_decal/plaque{desc = "This plaque, adorned with gold and silver, is dedicated to Sammir Hayeed who founded and defended this city against foreign invaders time and time again."; name = "In Honor Of Sammir Hayeed"},/turf/floor/beach/water/deep,/area/caribbean/arab/sand)
-"dq" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand,/area/caribbean/arab/sand)
+"dq" = (/obj/structure/sign/wide/carpet,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
 "dr" = (/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "ds" = (/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/weapon/material/sword/longsword/iron,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "dt" = (/obj/item/clothing/head/nun_hood,/obj/item/clothing/under/nun,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "du" = (/obj/structure/religious/woodcross2,/obj/item/clothing/head/helmet/medieval/templar,/obj/item/clothing/head/helmet/medieval/templar,/obj/item/clothing/suit/armor/medieval/templar,/obj/item/clothing/suit/armor/medieval/templar,/turf/floor/beach/sand/desert,/area/caribbean/crusader/sand)
 "dv" = (/obj/structure/religious/woodcross1,/obj/item/clothing/gloves/thick/leather/black,/obj/item/clothing/gloves/thick/leather/black,/obj/item/clothing/gloves/thick/leather/black,/obj/item/clothing/gloves/thick/leather/brown,/obj/item/clothing/gloves/thick/leather/brown,/obj/item/clothing/gloves/thick/leather/brown,/obj/item/clothing/gloves/thick/leather/grey,/obj/item/clothing/gloves/thick/leather/grey,/obj/item/clothing/gloves/thick/leather/grey,/obj/item/clothing/gloves/thick/leather/grey,/obj/item/clothing/gloves/thick/leather/grey,/obj/item/clothing/gloves/thick/leather/grey,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
-"dw" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean)
-"dx" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/beach/sand,/area/caribbean/arab/sand)
+"dw" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{desc = "A sign welcoming new arrivals to the coastal city of Sammir Hayeed."; name = "Welcome to Sammir Hayeed Brothers"},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dx" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{name = "Sammir Hayeed Authority"},/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand,/area/caribbean/arab/sand)
 "dy" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand)
 "dz" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/beach/sand,/area/caribbean/arab/sand)
 "dA" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand)
-"dB" = (/obj/structure/wild/tree/cactus,/turf/floor/beach/sand/desert,/area/caribbean)
-"dC" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean)
-"dD" = (/obj/structure/wild/tree/cactus,/turf/floor/beach/sand,/area/caribbean)
-"dE" = (/obj/structure/wild/tree/dead_tree,/turf/floor/beach/sand/dark,/area/caribbean)
-"dF" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/desert,/area/caribbean)
-"dG" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean)
-"dH" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean)
-"dI" = (/obj/structure/wild/burnedbush,/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean)
+"dB" = (/obj/structure/gate/sandstone{code = 2211},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"dC" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/covers/sandstone,/obj/covers/sandstone/stairs,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dD" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dE" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dF" = (/obj/covers/sandstone,/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dG" = (/obj/covers/sandstone,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dH" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dI" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "dJ" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "dK" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
-"dL" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean)
-"dM" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"dL" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dM" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/flowers,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "dN" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
-"dO" = (/obj/structure/wild/palm,/turf/floor/beach/sand,/area/caribbean)
-"dP" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/dark,/area/caribbean)
-"dQ" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean)
-"dR" = (/obj/structure/window/barrier/railing,/turf/floor/beach/sand/dark,/area/caribbean)
+"dO" = (/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"dP" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dQ" = (/obj/covers/sandstone,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"dR" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "dS" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
 "dT" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
 "dU" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
@@ -208,121 +208,121 @@
 "dZ" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/crusader/sand)
 "ea" = (/obj/structure/wild/burnedbush,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/crusader/sand)
 "eb" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/desert,/area/caribbean/crusader/sand)
-"ec" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/burnedtree,/turf/floor/beach/sand,/area/caribbean)
-"ed" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand,/area/caribbean)
-"ee" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/burnedtree,/turf/floor/beach/sand/desert,/area/caribbean)
-"ef" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand/dark,/area/caribbean)
-"eg" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand/desert,/area/caribbean)
-"eh" = (/obj/structure/wild/burnedbush,/obj/structure/wild/burnedtree,/turf/floor/beach/sand/desert,/area/caribbean)
-"ei" = (/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/twohanded/spear,/obj/item/weapon/material/pike,/obj/item/weapon/material/pike,/obj/item/weapon/material/pike,/obj/item/weapon/material/pike,/obj/item/weapon/material/pike,/obj/item/weapon/material/pike,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
-"ej" = (/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/obj/item/weapon/material/halberd,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
-"ek" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"el" = (/obj/covers/sandstone,/obj/structure/simple_door/key_door{code = 6969; name = "Arab Camp Jail"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"ec" = (/obj/structure/wild/flowers,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ed" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ee" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing,/turf/floor/beach/sand,/area/caribbean/desert)
+"ef" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"eg" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"eh" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ei" = (/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear,/obj/item/weapon/material/spear/sarissa/pike,/obj/item/weapon/material/spear/sarissa/pike,/obj/item/weapon/material/spear/sarissa/pike,/obj/item/weapon/material/spear/sarissa/pike,/obj/item/weapon/material/spear/sarissa/pike,/obj/item/weapon/material/spear/sarissa/pike,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
+"ej" = (/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/spear/halberd,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
+"ek" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/appletart,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"el" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/cookie,/obj/item/weapon/reagent_containers/food/snacks/cookie,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "em" = (/obj/covers/sandstone,/obj/item/weapon/key/japanese{name = "Arab Key"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "en" = (/obj/covers/sandstone,/obj/item/weapon/key/japanese{code = 6969; name = "Arab Key"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eo" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/simple_door/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ep" = (/obj/covers/sandstone,/obj/structure/simple_door/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eq" = (/obj/structure/simple_door/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"eo" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ep" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"eq" = (/obj/covers/sandstone,/obj/item/weapon/flame/candle,/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "er" = (/obj/covers/sandstone,/obj/structure/simple_door/key_door/japanese{code = 6969},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "es" = (/obj/item/weapon/attachment/scope,/obj/item/weapon/attachment/scope,/obj/item/weapon/attachment/scope,/obj/item/weapon/attachment/scope,/obj/item/weapon/attachment/scope,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "et" = (/obj/item/weapon/attachment/scope,/obj/item/weapon/attachment/scope,/obj/item/weapon/attachment/scope,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
 "eu" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad1,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "ev" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad3,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ew" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{name = "Sammir Hayeed Authority"},/obj/covers/dirt_wall/blocks,/turf/floor/beach/sand,/area/caribbean)
-"ex" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand)
-"ey" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad2,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ez" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad4,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eA" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{desc = "A sign advertising Sammir Hayeed's mosque."; name = "Sammir Hayeed Mosque"},/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eB" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eC" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{code = 1122},/turf/floor/beach/sand,/area/caribbean)
-"eD" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{code = 2211},/turf/floor/beach/sand/desert,/area/caribbean)
-"eE" = (/obj/structure/gate/sandstone{code = 2211},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"eF" = (/obj/covers/sandstone,/obj/structure/table/wood,/obj/item/weapon/flame/candle,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"ew" = (/obj/covers/sandstone,/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"ex" = (/obj/covers/sandstone,/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"ey" = (/obj/covers/sandstone,/obj/structure/bookcase,/obj/item/weapon/book,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"ez" = (/obj/covers/sandstone,/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"eA" = (/obj/covers/sandstone,/obj/structure/bookcase,/obj/item/weapon/book/research,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"eB" = (/obj/covers/sandstone,/obj/structure/bookcase,/obj/item/weapon/book/research,/obj/item/weapon/book/research,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"eC" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"eD" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/desert)
+"eE" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad4,/turf/floor/beach/sand,/area/caribbean/desert)
+"eF" = (/obj/covers/sandstone,/obj/structure/potted_plant,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "eG" = (/obj/item/clothing/head/chaplain_hood,/obj/item/clothing/suit/storage/jacket/chaplain,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
-"eH" = (/obj/structure/sign/wide/carpet,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eI" = (/obj/covers/sandstone,/obj/structure/potted_plant,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eJ" = (/obj/structure/potted_plant,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eK" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean)
-"eL" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad1,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean)
-"eM" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean)
-"eN" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean)
-"eO" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean)
-"eP" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean)
+"eH" = (/obj/structure/window/classic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"eI" = (/obj/effect/floor_decal/carpet/blue,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"eJ" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"eK" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand,/area/caribbean/desert)
+"eL" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"eM" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/obj/structure/sign/flag/jihad4,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"eN" = (/obj/structure/sink/well/sandstone,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"eO" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/burnedtree,/turf/floor/beach/sand,/area/caribbean/desert)
+"eP" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean/desert)
 "eQ" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
 "eR" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
 "eS" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
 "eT" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
-"eU" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
-"eV" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
+"eU" = (/obj/structure/wild/palm,/turf/floor/beach/sand,/area/caribbean/desert)
+"eV" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/desert)
 "eW" = (/obj/structure/wild/burnedbush,/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
-"eX" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"eX" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand,/area/caribbean/desert)
 "eY" = (/obj/covers/dirt_wall/blocks,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"eZ" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean)
-"fa" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean)
-"fb" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean)
-"fc" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean)
-"fd" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/potted_plant,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fe" = (/obj/effect/floor_decal/carpet/blue,/obj/covers/sandstone,/turf/floor/beach/sand,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"ff" = (/obj/structure/sign/wide/carpet,/obj/covers/sandstone,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"eZ" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fa" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fb" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fc" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fd" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad2,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fe" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"ff" = (/obj/covers/sandstone,/obj/structure/curtain/open,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "fg" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/obj/structure/sign/custom{name = "Sammir Hayeed Authority"},/turf/floor/beach/sand,/area/caribbean/arab/sand)
-"fh" = (/obj/covers/sandstone,/obj/item/weapon/flame/candle,/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fi" = (/obj/covers/sandstone,/obj/item/weapon/material/pitchfork,/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"fj" = (/obj/effect/floor_decal/carpet/blue,/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"fk" = (/obj/covers/sandstone,/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"fl" = (/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"fh" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"fi" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"fj" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fk" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fl" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain/closed/blue,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "fm" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "fn" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fo" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
-"fp" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
-"fq" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
-"fr" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
-"fs" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{desc = "A sign welcoming new arrivals to the coastal city of Sammir Hayeed."; name = "Welcome to Sammir Hayeed Brothers"},/turf/floor/beach/sand/desert,/area/caribbean)
-"ft" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fu" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/applecakeslice,/obj/item/weapon/reagent_containers/food/snacks/applecakeslice,/obj/item/weapon/reagent_containers/food/snacks/applecakeslice,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fv" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fw" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fx" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/cherrypie,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/cracker,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fy" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/csandwich,/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fz" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/cherrypie,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fA" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/appletart,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fB" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/cookie,/obj/item/weapon/reagent_containers/food/snacks/cookie,/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fC" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/obj/item/weapon/reagent_containers/food/snacks/fishfingers,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"fo" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand,/area/caribbean/desert)
+"fp" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/burnedtree,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fq" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"fr" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"fs" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"ft" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/jihad4,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fu" = (/obj/structure/sign/wide/carpet,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fv" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{desc = "A sign advertising Sammir Hayeed's mosque."; name = "Sammir Hayeed Mosque"},/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fw" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/curtain/open/blue,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fx" = (/obj/covers/sandstone,/obj/structure/bed/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fy" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/table/fancy,/obj/item/weapon/storage/bible/quran,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fz" = (/obj/structure/window/classic,/obj/structure/curtain,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fA" = (/obj/covers/sandstone,/obj/structure/simple_door/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fB" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/obj/structure/sign/flag/jihad3,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"fC" = (/obj/covers/dirt_wall/blocks,/obj/structure/sign/flag/jihad1,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "fD" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/obj/structure/bed/wood,/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fE" = (/obj/covers/sandstone,/obj/structure/bed/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fF" = (/obj/structure/bed/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
+"fE" = (/obj/effect/floor_decal/carpet/blue,/obj/structure/potted_plant,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"fF" = (/obj/effect/floor_decal/carpet/blue,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
 "fG" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand)
-"fH" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean)
-"fI" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean)
-"fJ" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
-"fK" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean)
-"fL" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean)
-"fM" = (/obj/covers/sandstone,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
-"fN" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
-"fO" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
-"fP" = (/obj/structure/barricade/sandstone_h,/turf/floor/dirt,/area/caribbean)
-"fQ" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
-"fR" = (/obj/structure/window/barrier/railing,/turf/floor/beach/sand,/area/caribbean)
-"fS" = (/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand/desert,/area/caribbean)
-"fT" = (/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand/dark,/area/caribbean)
+"fH" = (/obj/structure/wild/tree/cactus,/turf/floor/beach/sand,/area/caribbean/desert)
+"fI" = (/obj/structure/sign/wide/carpet,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"fJ" = (/obj/structure/wild/tree/cactus,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fK" = (/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fL" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"fM" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"fN" = (/obj/structure/sink/well/sandstone,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
+"fO" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand,/area/caribbean/desert)
+"fP" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand,/area/caribbean/desert)
+"fQ" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand,/area/caribbean/desert)
+"fR" = (/obj/structure/window/barrier/railing,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"fS" = (/obj/structure/window/barrier/railing,/obj/structure/gatecontrol{code = 4412},/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"fT" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/desert)
 "fU" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/no_mans_land/invisible_wall)
 "fV" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall)
 "fW" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
 "fX" = (/obj/structure/wild/palm,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
-"fY" = (/obj/covers/dirt_wall/blocks,/obj/structure/sign/flag/jihad1,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
-"fZ" = (/obj/structure/window/barrier/railing,/obj/structure/gatecontrol{code = 4412},/turf/floor/beach/sand/dark,/area/caribbean)
-"ga" = (/obj/structure/gate/sandstone{code = 4412},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"gb" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand,/area/caribbean)
+"fY" = (/obj/structure/sign/wide/carpet,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"fZ" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"ga" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/turf/floor/dirt,/area/caribbean/desert)
+"gb" = (/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "gc" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
-"gd" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand/dark,/area/caribbean)
-"ge" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand/desert,/area/caribbean)
-"gf" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean)
-"gg" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
-"gh" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean)
-"gi" = (/obj/map_metadata/sammirhayeed,/turf/floor/beach/sand/desert,/area/caribbean)
-"gj" = (/obj/covers/sandstone,/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand/desert,/area/caribbean)
-"gk" = (/obj/covers/sandstone,/obj/structure/closet/crate/arrows/iron,/turf/floor/beach/sand,/area/caribbean)
-"gl" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean)
-"gm" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean)
+"gd" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"ge" = (/obj/structure/gate/sandstone{code = 4412},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert)
+"gf" = (/obj/structure/barricade/sandstone_h/crenelated,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"gg" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/desert)
+"gh" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"gi" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/desert)
+"gj" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/desert)
+"gk" = (/obj/structure/wild/burnedbush,/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/desert)
+"gl" = (/obj/covers/sandstone,/obj/structure/bookcase,/obj/item/weapon/book/research,/obj/item/weapon/book/research,/obj/item/weapon/book/research,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gm" = (/obj/structure/barricade/sandstone_h,/obj/covers/dirt_wall/blocks,/obj/covers/dirt_wall/blocks,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
 "gn" = (/obj/structure/barricade/horizontal,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
 "go" = (/obj/structure/barricade/horizontal,/obj/structure/sign/flag/templar1,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "gp" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -331,129 +331,152 @@
 "gs" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/two)
 "gt" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "gu" = (/obj/structure/closet/crate/empty,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/obj/item/catapult_ball,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
-"gv" = (/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/obj/item/ammo_casing/arrow/iron,/turf/floor/beach/sand/desert,/area/caribbean)
-"gw" = (/obj/structure/closet/crate/bolts/iron,/turf/floor/beach/sand/dark,/area/caribbean)
-"gx" = (/obj/structure/closet/crate/bolts/iron,/turf/floor/beach/sand,/area/caribbean)
+"gv" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand,/area/caribbean/desert)
+"gw" = (/obj/structure/sign/wide/carpet,/turf/floor/beach/sand,/area/caribbean/desert)
+"gx" = (/obj/structure/wild/tree/dead_tree,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"gy" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gz" = (/obj/covers/sandstone,/obj/structure/table/wood,/obj/item/weapon/flame/candle,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gA" = (/obj/structure/window/classic,/obj/structure/curtain,/turf/floor/beach/sand,/area/caribbean/desert/buildings)
+"gB" = (/obj/structure/potted_plant,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gC" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gD" = (/obj/structure/bed/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gE" = (/obj/covers/sandstone,/obj/structure/table/wood,/obj/item/weapon/wrench,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gF" = (/obj/structure/simple_door/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/buildings)
+"gG" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"gH" = (/obj/structure/barricade/sandstone_h,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"gI" = (/obj/structure/catapult{icon_state = "catapult0"; dir = 1},/turf/floor/beach/sand,/area/caribbean/desert)
+"gJ" = (/obj/structure/catapult{icon_state = "catapult0"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"gK" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"gL" = (/obj/structure/closet/crate/bolts/iron,/turf/floor/beach/sand/dark,/area/caribbean/desert)
+"gM" = (/obj/structure/closet/crate/bolts/iron,/turf/floor/beach/sand,/area/caribbean/desert)
+"gN" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"gO" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"gP" = (/obj/structure/wild/burnedbush,/obj/structure/wild/burnedtree,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"gQ" = (/obj/map_metadata/sammirhayeed,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"gR" = (/obj/structure/wild/tallgrass2,/obj/item/weapon/wrench,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
+"gS" = (/obj/item/weapon/wrench,/turf/floor/beach/sand,/area/caribbean/crusader/sand)
+"gT" = (/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/turf/floor/beach/sand/dark,/area/caribbean/crusader/sand)
+"gU" = (/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/crossbow,/turf/floor/beach/sand/desert,/area/caribbean/crusader/sand)
 
 (1,1,1) = {"
-akakakakakakakakakakarararararararaTaTaNaTaTaTaTaTaTaTaTaTaNaTaTaTakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakak
-akaTaTaTaTaTaTaTaTaTaTaTbLaQaQcqaTaTaxaxaxaxaxaPaPaPaPaQaQaQaQaRaTakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakak
-akaTaSaSaUaVaWdgdhdidjaTaQaQbLaQaTaTcZaXdaaXdaaXdaaXdaaXdaaXaXaRaTakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakak
-akaTfDaQfDaQfDaQfDaQaQaTaQdkaQbLbGbGbuaXaXaXaXaXaXaXaXaXaXaXaXbvaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakakak
-bIaTaQaQaQaQaQaQaQaQaQaTaTaIelaTeYbudbaXdaaXdaaXdabubuaQaQaQaQaRbYaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakakak
-bIaTfDaQfDaQfDaQfDaQaQaQenememembububuaXaXaXaXaXaXbueYaTaTbybzbYbYaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaakakak
-akbZfmaQaQaQaQaQaQaQaQaQaQaQaQaQbubudbaXdaaXdaaXdabubGbDbDbEbEaYdmbWdobWdobWdobWdqbDbDbDbDbDabababababababaaaaaaaaaaabaaaaaaakakak
-akbZbZbZbZbybybybZbZbZbZbZbybybyfnbubuaXaXaXaXaXaXbubGbDbDbEbEaYbubububuftfufvbuexbEbDbDbDbEababababababababaaaaaaaaabababaaakakak
-akakakaaaaaaaaaaaaaaaaaaaaaaaaaacbbudbaXdaaXdaaXdabubGbDbDbEbDdobubububububububudqbDbDbDbEbEababababababababaaaaaaaaababababakakak
-akakanaaaaaaaaaaaaaaaaaaaaaaaaaacbbubububububububububGbDbDbDbDaYbufwbubufxfyfzbuexbDbDbEbEbEabababababababababaaaaaaababababanakak
-bZekekbZbZbZbZabababaaaaaaaaababcbbFbFeuerererevbFbFbGbDbDbDbDdobuflbubububububudqbEbxbnbnbnbnbnbnbnbnbnbnababaaaaabababababananak
-bYfdfefffefdekabababababaaaaabababababewaobMbMfgbEbEbEbDbDbDbDbWbuflbubufAfBfCbudqbEbnfhcgbVbVbVbVbVbWeIbXfiabaabrbrbrbrbrabananan
-bGdndndndndncbeybGabababababababababaaabaobMbMbEbEbEbDbDbDbDbDbWahdobWdobWdobWbuaFbEbXbubububububububWbubnawawabaCaCaCaCaCabananan
-bGdndndndndndndnbFgfabababababaaaaaaaaabaobMbMbEbEbDbDbDbDdxbDdybDdybEdxbDdybEbMbEbEbXbubububububububububuawawabbrbrbrbrbrabananan
-ezdndncabudndndneAaqaqaqababaaaaaaaaaaabaobMbMbEbEbEbEbDbDbEbEbEbDbDbEbEbEbEbEbMbEbEbXbubububububububWbubnawawabaCaCaCaCaCabananan
-cbdndndndndndndneofjawawawawaoaoaoaoaoaoaobMbMbMbMbMbMbDbDdzccdzccdzccdzccdzbEbMbEbEbnfhcgbubububufEbWeIbXfkababbrbrbrbrbrabananan
-cbcWdncabudndndneofjawawawawaoaoaoaoaoaoaobMbMbMbMbMbMbDbEccbMbMfGcefGbMbMccbEbMbEbEbnbXbXbnepbnbXbXbnbnbnababaaaaaaaaabababananan
-cbdndndndndndndnbGaqaqaqababababcbcfcbepcbcfcbbEbEbMbMbEbDdzbMdzcececedzbMdzbEbMbMbMaoaoaoaoaoaoaoaoabaaaaabaaaaaaaaaaaaababananan
-cXdndncabudndndnbFgfababababababcbfhbubububucbbEbEbMbMbEbDbMcdcecedpcececdbMbEbMbMbMaoaoaoaoaoaoaoaoababaaaaaaaaabababaaaaabananan
-cbdndndndndnbGfYbGababababababaacfbububububucbbDbDbMbMbDbDdzbMdzcececedzbMdzbEbMbMbMaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoabaaaaananan
-aTbPdleHdlbPbYababababababaaaaaacfbubububufEcbbDbEbMbMbDbEccbMbMfGcefGbMbMccbEbMbMbEabaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoabaaaaananan
-bYbYbYbYbYbYbYababababababaaaaabcbfhbubVbVbVcbbDbEbMbMbDbEdzccdzccdzccdzccdzbEbMbMbEabababababababababababaaaaaaababababaaaaananan
-anananababababababababababaaababcbcbcbcbcbcbeBbEbEbMbMbEbEbEbEbEbEbEbDbDbEbEbEbMbMbEabababababababababaaaaaaababababababababananan
-bGbGbGbFbFbFbGbGbGabababababababababababbEbEbEbEbEbMbMbMbMdybDdybDdybDdybEdAbMbMbMbEcbcbcbcbcbcbcbcbcbaaaaababababababaaaaabananan
-bGeIbubueFbubueIbFababababababababababbxbxchchbxbxbEbMbMbMbMbDbDbDbDbDbEbMbMbMbMbDbDcbeJciflfFflcieJcbaaaaabababaaaaaaaaaaabananan
-bGcgbububububububGababababababababababbnbububueIbxbEbEbDbMbMbMbEbDbDbDbMbMbMbEbEbDbDcfcicicicicicicicfaaaaaaaaaaaaaaaaaaaaabananan
-bGcgbubububububuepaoaoaoaoaoaoaoaoaoaoepbubueFbuchabaabDbDbMbMbMbEbEbMbMbMbEbEbDaaaacfcicicicicicicicfaaaaaaaaaaaaaaaaaaaaaaananan
-bGcgbubububububuepaoaoaoaoaoaoaoaoaoaoepbubueFbuchaaaaaabEbEbMbMbMbMbMbMbEbEabaaaaaacbcicicicicicicicbaabpbpbpbpbpbpbpbpaaaaananan
-bGcgbububububububGababaaaaaaababaoaoabbnbufEbueIbxaaaaababbEbEbMbMbMbMbEbEababaaaaabcbcfcbcbeqcbcbcfcbbpbpbpbpbqbqbqbqbpbpaaananan
-bGeIbubueFbubueIbFaaaaaaaaaaaaaaaoaoabbxbxchchbxbxaaaaabababbEbEbMbMbEbEabababababababababaoaoaoababaabpbqbqbqbqbrbrbqbqbqbpananan
-bGbGbGbFbFbFbGbGbGaaaaaaaaabaaaaaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobMbMbMbMaoaoaoaoaoaoaoaoaoaoaoaoaoabaaaabpbqbrbrbrbrbrbrbrbqbqananan
-anananababababababaaaaaaaaabababaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoabaabpbpbqbrbrbrbrbobrbrbrbqananan
-anananabababababaaaaaaaaaaabababababababaaaoaoaoaoaaaaaaaaaaaaaaaoaoababaaaaabababaoaoaoaoababaaaaaabpbqbqbrbrbobobobobrbrbqananan
-anananababababaaaaaaaaaaaaaaababababaaaaaaaoaoaoaoaaaaaaaaababaaaoaoaaaaaaaaababaaaoaoaoaoababaaaaaabpbqbrbrbrbobobobrbrbrbqananan
-anananababaaaaaaaaaaaaaaaaaacuaaaaaaaaaaaaaaaoaoababcuaaaaaaababaoaoaaaaabcuaaaaaaabaoaoababababaaaabpbqbrbrbobobobobrbrbrbqananan
-anananaaaaaaaaaaaaaaabaaaaaaaacYaaaaaaabababaoaoabababcYaaaaababaoaoaaaaababcYaaababaoaoababaaaaabaabpbqbrbrbrbobrbrbrbrbrbqananan
-anananaaaaaaaaaaaaabababaaaaaaaaaaabababfHaeaqaqaDfIababaaaaabaiaoaoaiabababaaaafHaeaqaqaEfJaaaaaaaabpbqbqbrbrbrbrbrbrbrbqbqananan
-anananaaaaabababababababaaaaaaaaababababagaeaqaqaEafababaaaaaaanaoaoanabababababagaeaqaqaEaZaaaaaaaabpbpbqbqbqbqbqbqbqbqbqbpananan
-anananaaaaaiazazazazazazacacacazazazazazaAaeaqaqaEaBazazazacacbObwbwbOazazazazazaAaeaqaqaEaBazazacacbsbsbsbsbsbsbsbsbsbtbpabananan
-anananaaabanfKaGaGaGaGaGaGaGaGaGaGaGaGaGaGaHaqaqaqaGaGaGaGaGaGbNasateCaGaGaGaGaGadaqaqaqaqaGaGaGaGaGaGaGaGaGaGaGaGaGfLanababananan
-anananababanaeaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaJaJaqaqaqaqaqaEasataeaqaqaqaqaqaHaqaqaqaqaJaJaJaJaJaJaJaJaJaqaqaqaqaEanababananan
-anananababanaeaqaqaqaqaqaqaqaJaJaJaJaqaqaqaqaJaJgjaJaJaqaqaqaqaEasataeaJaJaJaqaqaHaqaqaJgjaJaJaJaJaJaJaJaJaJaJaJaqaqaEanababananan
-anananaiaianavaKaqaqaqaLaMaMaMaMaMaJaJaJaMaMaMaMaMaMaMaJaJaJfoeDasateDfoaJaJaJaMaMaMajajaMaMaJaJaJaMaMaMaMaMalaJaJaJamanaiaiananan
-akakananananananaeaqaOakakakakakakakakakakakakakakakakakakakakakasatakakakakakakakakakakakakakakakakakakakakakauaJaOakakakakakakak
-akakakeKeKeKeKeKaJaJaJeKeLeKfpeKeKeKeKeKeKeKeKeKfpeKeKeKeKeKbQfseEeEfsbQeKeKeKeKeKfpeKeKeKeKeKeKeKeKeKfpeKeLeKauaJaOeKeKeKeKakakak
-akakeMeNbgbgbgbgaJaJaJglbgbgbgglbgglbgglbgglbgglbgbgglbgbhaybabAaoaobAdwbbbibgbggmbgbgglbgglbgbgglbgbgglbgbgglaJaJaJbgglbgbjbdbebe
-akakeMeOaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJbkbcdLbBaoaobBePcOblaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaObfakak
-akakeMfMaJaJaJaJgkaqaqaqaqaqaqaJaJaJaJaJaJaJgjaJaJaJaJfNbkcSeQcQcRcRcQeRdMbmfNaJaJaJaJaJaJaJaJaJaJaJaJaJgjaJaJaJaJaJaJaJaJfObfakak
-akakakaMaMaMapapapapapapapapapapaMaMaMaMaMaMaMaMapapapbRbHcSeScQcRcRcQeTdMbHbSaMaMaMaMaMaMaMaMaMaMaMaMapaMapapapapaMaMaMaMaMbfakak
-dKdKeUeUeUeUeVeVeVeVeVeVeVeVeVeVeUeUeUeUeUeUeVeVeVeVeVeVfqeTeQcQcRcRcQeRdNfreVeVeVeUeUeUeUeUeUeUeUeVeVeVeVeVeVeVeVeUeUeUeUeUeUdKdK
-dKdKcPcPcPcTcTcTcTcTcTcTdTcTcTcTcPcPcPdNcPcTdTeWdTcTdTcPcPeTeScQcRcRcQeTdNeXcTcTcTcPcPcPcPcPcPcTdTcTcTcTcTcPcPcTcTcPcPcPcPcPcPdKdK
-akakaaaaecabababababdCabababdOabaaaaaaaaaadGedababdGabaaaaeZfabBaoaobBfbfcePdGabdGaaaaaadBaaaadGdGabababaaaaaaaaabaaaaaaaaaaaaakak
-akakababdGabdGabababababdGabababaaaaaaaaabababdGdGababdBaadHaadPaoaobBaaaadHaaabdGaaaaaaaaaadHdHabababaaaaaaaaaaaadQaaaaaaaaaaakak
-akakabdGdGabababababdGdGdGdGabababdQaadFababdCababdGabababaaaadPaoaobBaaaaaaababdHdHaaaadHaadHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakak
-akanabdGabababababababababdGabdCabaaaadHabaaababdGababababdHaabBaoaodPaadHdDabdGeeaadHaadHdHabababaaaaaaaaaaaaaaaaaaaaaaaaaabBcVcV
-akanabababaaaaaaabababababababababaaaaaadHaaababdCabababababaabBaoaobBdHabababababababaaaadGdGabdOabababdDaaaaaaaaaaaaaaaabBbBcVcV
-akakaaaaaaaadGdGabdGabdDabababababaaaaaaaaaaabababababdGababaabBaoaobBaaabababdGababababababdGababababababaaaaaaaaaaaaaabBbBbBcVcV
-akakaadQaaababdGdGabababababdGababaadHdHaaabababdGababdGababbBbBaoaobBaaaaabababdHaaabdCdCdCabababababaaaaaaaaaaaabBaabBbBbBbBcVcV
-akakaaaaababababdGabaaababababababaaaaaaaadOababdCabababababbBbBaoaobBabaaabdGabaaaaaaababdCdCababababaaaaaaaaaaaabBbBbBbBbBbBcVcV
-akakdHaaababdGababaaaaaaabababdGaaaaaaaaaaaaababababababababbBbBaoaobBabdOabababaadHaaabababdGdGabaaaaaaaaaaaaaaaabBbJbBbBbBbBcVcV
-akakdHdHaaaaaaaaaaaadQabababababaaaadFaaaaaaaaabababababdGdHbBbBaoaobBabababababaadHdHababdGdGabaaaaaaaaaaaadBaaaabBbBbBbBbBbBcVcV
-akakaaaaaaaaaaaagvgvabababgvgvaaaaaagvgvaaaaaagvgvabdGababdHbBbBaoaobBabgvgvdGaaaagvgvababdGgvgvabaaaagvgvdHaaaagvgvbBbBbBbBbBcVfP
-akakakakakakakakakakabababananaaaaaaakakaaaaaaananaaababakakdRfZaoaodRfRananababaaakakaaaaaaananabaaaaakakaaaaaacVcVcVfPfPfPfPfPfP
-akakakakakakakakakggaiaiaianakfSfSfSakggfSaiaiananaiaiaianancVghgagaghanananaiaiaianakfSfSfSgganaiaifSakakfSfSfTghcVfPfPfPfPfQfQfQ
-aaaaaaaaaaaaaadHaaabdDabababdHaaaaaaaadHaaabababababdCdDabdGefbBaoaobBdGdGababababdGaaaaaaababdGdGabaaaaaaaabJbBbBbBbBbBbBbBbpbpbp
-aadQaaaaaaaaaaaaaaababababaaaaaaaadQaaaaaaaaaaabdGabababababbBbBaoaobBdGabababababababababababababdGaaaaaaaabBbBbBbBbBbBbBbBbpbpbp
-aaabaaaaaaaadHdHaaabababdHdHaaaadQaaaaaadBaaaaaaababdCabababbBbBaoaobBabababdDababdCabababababdOabdGaaaaaabBbBbBbBbBbBbBbpbpbpbpcs
-aaababaaaadHdHaaaaababaaaaaaaaaaaaaadFaadHaaaaaaaaabababdGabbBbBaoaobBababdGdGdGabdGabababababababdGabaaaabBbBbBbBbBbBbpbpbpbCcscs
-aaabababaadHaaaaaaaadHaaaaaaaadHdHaaaaaaaaaaaaaadHabababababbBbBaoaobBbBabababdGdGdGababdGababdGdGdGabaaaabBbBbBbBbBbpbpbpbCcscscs
-aaaaababaadFaaaaaaaaaaaaaaaadFaadHaaababdFaaaaaaababababdGabbBbBaoaobBbBababababababababababababdGdGabaabJbBbBbBbBbpbpbpbCbCcscscs
-aaaaaaabababaaaaaadBaaababababaadHababababaaaaaaabababdCababbBbBaoaobBaaaaabdOababababababababdCabdGabaabBbBbBbBbpbpbpbCbCbCcscscs
-aaaaaaababdGabaaaaababababababaaaaababababdGeedHaaabababababbBbBaoaobBaaaadHababababdDdGabababababababaabBbBbBbpbpbpbCbCbCcscscscs
-aaaaaaabababababababababdCabaaaaabdDababababaadHaaaaaaabababbBbBaoaobBaaaaaaabdIdCababababababababababbBbBbBbpbpbpbpbCbCbCcscscscs
-aadHaaababababababababababaaaadHabababgbababaaaaaaaadGdGabababbBaoaobBdHaaaaabababaaaaabdGabdCababababbBbBbBbpbpbpbCbCbCbCcscscscs
-aadHdHdHabababdGababababaaaaaaaaababababababaaaaababababababbBbBaoaobBaaaaababgbabaaaadGdGabababababbKbBbBbBbpbpbpbCbCbCbCcscscscs
-aadHdHaaababababababababdHdHaaaaaaabababdOabaaaadCabababababbBbBaoaobBaaabababababaaabdGababababababaabBbBbBbpbpbpbCbCbCcscscscscs
-aadHaaaadDababababababaaaadHdHaaaaabababababaaaaababababababbBbBaoaobBabababababaaababdGababdQaaaaaaaabBbBbBbpbpbpbpbCbCcscscscscs
-aadHaaaaababababababababdHaadHaaabababababababaaababdOabbBbBbBbBaoaobBbBabdGababababababababaaaaaaaaaabBbBbBbpbpbpbpbCbCcscscscscs
-aadHdHaaaaabababababdGabaaaaaaaaabdOdOababababaaabababaabBbBbBaoaoaobBbBabababaaabababababaaaaaaaadHaabBbBbBbBbpbpbpbCbCcscscscscs
-aaaadHaaaaaaababababababaaaaaaaaababababababdCaaaaaaaabBbBbBaoaoaobBbBbBaaaaaaaaabababdGdGdHaaaaaaaaaabBbJbBbBbpbpbpbCbCbCcscscscs
-aaaaababaaaaababababababdDaaaaaaababaaaaaaaaaaaaaaaabBbBbBaoaoaobBbBababaaaadHaaababababaadHdHaaaaabababbBbBbBbBbpbpbCbCbCcscscscs
+aaaaaaaaaaaaaaaaaaaaadahahahahahahadaTaNaTaTaTaTaTaTaTaTaTaNaTaTaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaTaTaTaTaTaTaTaTaTadahalamamapahadaxaxaxaxaxaPaPaPaPaQaQaQaQaRaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaTaSaSaVaWdgdhdidjadahamamalamahadcZaXdaaXdaaXdaaXdaaXdaaXaXaRaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaTfDaQfDaQfDaQfDacadahamaramalasatbuaXaXaXaXaXaXaXaXaXaXaXaXbvaTabababababababababababababababababababababababababababababaaaaaa
+aeaTaUaQaQaQaQaQaQaQacauahaFaFahaIbudbaXdaaXdaaXdabubuaQaQaQaQaRbYabababababababababababababababababababababababababababababaaaaaa
+aeaTfDaQfDaQfDaQfDaQaQaQenememembububuaXaXaXaXaXaXbueYaTaTbybzbYbYabababafababababababababababababababafababababababababababaaaaaa
+aabZfmaQaQaQaQaQaQaQaQaQaQaQaQaQbubudbaXdaaXdaaXdabubGbDbDbEbEaYbnbxbLbxbLbxbLbxbPabababababafafafafafafafabababababafabababaaaaaa
+aabZbZbZbZbybybybZbZbZbZbZbybybyfnbubuaXaXaXaXaXaXbubGbDbDbEbEaYbVbVbVbVbWbXcabVcfafabababafafafafafafafafafababababafafafabaaaaaa
+aaaaaaabababababababababababababcbbudbaXdaaXdaaXdabubGbDbDbEbDbLbVbVbVbVbVbVbVbVbPabababafafafafafafafafafafababababafafafafaaaaaa
+aaaaagabababababababababababababcbbubububububububububGbDbDbDbDaYbVcgbVbVchcicqbVcfababafafafafafafafafafafafafabababafafafafagaaaa
+cWcXcXcWcWcWcWafafafababababafafcbbFbFeuerererevbFbFbGbDbDbDbDbLbVdkbVbVbVbVbVbVbPafbPdldldldldldldldldldlafafababafafafafafagagaa
+dmdndodqdodncXafafafafafababafafafafbEdxbMbMbMfgbEbEbEbDbDbDbDbxbVdkbVbVekelepbVbPafdleqewexeyezeAeBbxeFeHaiafabajajajajajafagagag
+ateIeIeIeIeIeJfdatafafafafafafafafafbDbEbMbMbMbEbEbEbDbDbDbDbDbxfebLbxbLbxbLbxfffhafeHbVbVbVbVbVbVbVbxbVdlakakafanananananafagagag
+ateIeIeIeIeIeIeIflaoafafafafafabababbDbEbMbMbMbEbEbMbMbMbMdAbMdAbMdAbMdAbMdAbMbMbMaqeHbVbVbVbVbVbVbVffbVffakakafajajajajajafagagag
+fteIeIfubVeIeIeIfvawawawafafababababbDbEbMbMbMbEbEbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMaqeHbVbVbVbVbVbVbVbxbVdlakakafanananananafagagag
+eJeIeIeIeIeIeIeIfwayakakakakaqaqaqaqbMbMbMbMbMbMbMbMbMbDbDdzccdzccdzccdzccdzbEbEbMaqdleqewbVbVbVbVfxbxeFeHazafafajajajajajafagagag
+eJfyeIfubVeIeIeIfwayakakakakaqaqaqaqbMbMbMbMbMbMbMbMbMbDbEccbMbMfGcefGbMbMccbEbDbMaqdleHeHdlffdleHeHdldldlafafababababafafafagagag
+eJeIeIeIeIeIeIeIatawawawafafaqaqeJfzeJfAeJfzeJbEbEbMbMbEbDdzbMdzcececedzbMdzbEbEbMaqaqaqaqaqaqaqaqaqafababafababababababafafagagag
+fBeIeIfubVeIeIeIflaoafafafafaqaqeJeqbVbVbVbVeJbEbEbMbMbEbDbMcdcecedpcececdbMbEbDbMaqaqaqaqaqaqaqaqaqafafababababafafafababafagagag
+eJeIeIeIeIeIatfCatafafafafafaqaqfzbVbVbVbVfxeJbDbDbMbMbDbDdzbMdzcececedzbMdzbEbDbMaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqafababagagag
+adfEfFfYfFfEdmafafafafafafabaqaqfzbVbVbVbVbVeJbDbEbMbMbDbEccbMbMfGcefGbMbMccbEbDbMaqafaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqafababagagag
+dmdmdmdmdmdmdmafafafafafafabaqaqeJeqbVbVezgleJbDbEbMbMbDbEdzccdzccdzccdzccdzbEbEbMaqafafafafafafafafafafafabababafafafafababagagag
+agagagafafafafafafafafafafabaqaqeJeJeJeJeJeJgmbEbEbMbMbEbEbEbEbEbEbEbDbDbEbEbDbEbMaqafafafafafafafafafabababafafafafafafafafagagag
+atatatgygygyatatatafafafafafaqaqafafafafafafafbEbEbMbMbMbMdybDdybDdybDdybEdAbMbMbMaqeJeJeJeJeJeJeJeJeJababafafafafafafababafagagag
+ateFbVbVgzbVbVeFgyafafafafafaqaqafafafbPbPgAgAbPbPafaqaqaqaqabababababafaqaqaqaqababeJgBgCdkgDdkgCgBeJababafafafabababababafagagag
+atewbVbVbVbVbVbVatafafafafafaqaqafafafdlglbVbVeFbPafafabaqaqaqafabababaqaqaqafafababfzgCgCgCgCgCgCgCfzababababababababababafagagag
+atgEbVbVbVbVbVbVfAaqaqaqaqaqaqaqaqaqaqfAbVbVgzbVgAafabababaqaqaqafafaqaqaqafafabababfzgCgCgCgCgCgCgCfzabababababababababababagagag
+atgEbVbVbVbVbVbVfAaqaqaqaqaqaqaqaqaqaqfAbVbVgzbVgAabababafafaqaqaqaqaqaqafafafabababeJgCgCgCgCgCgCgCeJabaAaAaAaAaAaAaAaAababagagag
+atewbVbVbVbVbVbVatafafabababafafaqaqafdlbVfxbVeFbPababafafafafaqaqaqaqafafafafababafeJfzeJeJgFeJeJfzeJaAaAaAaAaBaBaBaBaAaAabagagag
+ateFbVbVgzbVbVeFgyabababababababaqaqafbPbPgAgAbPbPababafafafafafaqaqafafafafafafafafafafafaqaqaqafafabaAaBaBaBaBajajaBaBaBaAagagag
+atatatgygygyatatatababababafababaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqafababaAaBajajajajajajajaBaBagagag
+agagagafafafafafafababababafafafaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqafabaAaAaBajajajajaCajajajaBagagag
+agagagafafafafafabababababafafafafafafafabaqaqaqaqabababababababaqaqafafababafafafaqaqaqaqafafabababaAaBaBajajaCaCaCaCajajaBagagag
+agagagafafafafabababababababafafafafabababaqaqaqaqababababafafabaqaqababababafafabaqaqaqaqafafabababaAaBajajajaCaCaCajajajaBagagag
+agagagafafabababababababababaDabababababababaqaqafafaDabababafafaqaqababafaDabababafaqaqafafafafababaAaBajajaCaCaCaCajajajaBagagag
+agagagabababababababafababababaEabababafababaqaqafafafaEababafafaqaqababafafaEababafaqaqafafababafabaAaBajajajaCajajajajajaBagagag
+agagagababababababafafafabababababafafafaGaHaJaJaKaLafafababafaMaqaqaMafafafababaGaHaJaJaOaZababababaAaBaBajajajajajajajaBaBagagag
+agagagababbabababababababbbbbbbbbababababcaHaJaJaObdbababbbbbeagaqaqagbdbababababcaHaJaJaObfbbbbbbbbbgbgbhbhbhbhbhbhbhbhaBaAagagag
+agagagababagagagagagagagaaaaaaagagagagagagawawawawagagagagaaaabibjbjbiagagagagagagawawawawagagagaaaabkbkbkbkbkbkbkbkbkbkaAafagagag
+agagagabafagblawawawawawawawawawawawawbmawboawawawawawawawawbpagaqaqagbqawawawbmboawawawawawawawawawawawawawawawawawbragafafagagag
+agagagafafagbsawawawawawawawawawawawawawawawawawbtbtawawawawbwagaqaqagbsawawawawboawawawawbtbtbtbtbtbtbtbtbtawawawawbAagafafagagag
+agagagafafagbsawawawawawawawawawawawawawawawawawbtbtawawawawbwagaqaqagbsawawawawboawawawawbtbtbtbtbtbtbtbtbtawawawawbAagafafagagag
+agagagaMaMagbsawawawawawbBbBbBbBbBbtawawbBbBbBbBbBbBbBawawawbCagaqaqagbHbtbtawbBbBbBbIbIbBbBbtbtbtbBbBbBbBbBbtbtawawbAagaMaMagagag
+aaaaagagagagbJbKawawawbNaaaaaaaaaabObKbQaaaaaaaaaaaaaabObKbRbSaaaqaqaabSbObKbTaaaaaaaaaaaaaabObKbTaaaaaaaaaabUbtbtbtbTaaaaaaaaaaaa
+aaaaaaagagagagagcscucOaacSaacVaaaaaaaaaaaaaaaaaacVaaaaaaaaaacYdwdBdBdwcYaaaaaaaaaacVaaaaaaaaaaaaaaaaaacVaacSaadCcucOaaaaaaaaaaaaaa
+aaaadDdEbtbtdFbtbtbtbtdGbtbtbtdGbtdGbtdGbtdGdFdGbtbtdGdHdIdLdMdOaqaqdOdMdLdPdEbtdQbtbtdGbtdGbtbtdGbtbtdGdFbtdGbtbtbtbtdGbtdHdRaaaa
+aaaadDdEbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtdHdIdMdLdOaqaqdOecdMdPdEbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtdHdRaaaa
+aaaadDedbKbKbKbKeeeeeeeeeeeeeebKbKbKbKbKbKbKbKbKbKbKbKefdIdLdMcQcRcRcQavdNegehbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKeodRaaaa
+aaaaaaeCeCeCeDeDeDeDeDeDeDeDeDeDeCeCeCeCeCeCeCeCeDeDeEeKeLcQcQcQcRcRcQcQcQaaeCeMeCeCeCeCeCeCeCeCeCeCeCeDeCeDeDeDeDeCeCeCeCeCaaaaaa
+dKgGcPcPcPcPcTcTcTcTcTcTcTcTcTcTcPcPcPcPcPcPcTcTcTcTcTcPeRcQeQcQcRcRcQeRcQfLcTcTcTcPcPcPcPcPcPcPcPcTcTcTcTcTcTcTcTcPcPcPcPcPcPgHdK
+dKgGcPcPcPcTcTcTcTcTcTcTdTcTcTcTcPcPcPdNcPcTdTeWdTcTdTcPeTeNeScQcRcRcQeTfNeScPcTcTcPcPcPcPcPcPcTdTcTcTcTcTcPcPcTcTcPcPcPcPcPcPgHdK
+aadDababeOafafafafafePafafafeUafabababababeVeXafafeVafabeZfafbdOaqaqdOeZfrfcdLafeVababababababeVeVafafafababababafababababababdRaa
+aadDafafeVafeVafafafafafeVafafafababababafafafeVeVafafabafababfiaqaqdOababdLabafeVabababababdLdLafafafababababababababababababdRaa
+aadDafeVeVafafafafafeVeVeVeVafafaffjabfkafafePafafeVafaoafafaffiaqaqdOabababaoafdLdLababdLabdLababababababababababababababababdRaa
+aafoafeVafafafafafafafafafeVafePafababdLafabafafeVafafafafafabdOaqaqfiabdLafafeVfpabdLabdLdLafafafabababababababababababababdOfqfs
+aafoafafafabababafafafafafafafafafabababdLabafafePafafafafababdOaqaqdOdLafafafafafafafababeVeVafafafafafafababababababababdOdOfqfs
+aadDababababeVeVafeVaffHafafafafafabababababafafafafafeVafababdOaqaqdOabafafafeVafafafafafafeVafafafafafafabababababababdOdOdOfqfs
+aadDabfjabafafeVeVafafafafafeVafafabdLdLabafafafeVafafeVafababdOaqaqdOababafafafdLabafePePePafafafafafababababababdOabdOdOdOdOfqfs
+aadDababafafafafeVafabafafafafafafababababeUafafePafafafafafdOdOaqaqdOafabafeVafabababafafePePafafafafababababababdOdOdOdOdOdOfqfs
+aadDdLabafafeVafafabababafafafeVababababababafafafafafafafafdOdOaqaqdOafeUafafafabdLabafafafeVeVafababababababababdOfIdOdOdOdOfqfs
+aadDdLdLababababababfjafafafafafababfkababababafafafafafeVdLdOdOaqaqdOafafafafafabdLdLafafeVeVafababababababfJababdOdOdOdOdOdOfqfs
+aadDababababababfKfKafafaffKfKabababfKfKabababfKfKafeVafafdLdOdOaqaqdOaffKfKeVababfKfKafafeVfKfKafababfKfKdLababfKfKdOdOdOdOdOfqbk
+aaaafMfMfMfMfMfMfOfPafafaffQfPabababfQfPabababfQfPabafaffQfPfRfSaqaqfRbafQfPafafabfQfPabababfQfPafababfQfPabababfTfZfZgagagagabkbk
+aaaaaaaaaaaaaaaaaacVaMaMaMagaagbgbgbaacVgbaMaMagagaMaMaMagagfsgdgegegdagagagaMaMaMagaggbgbgbcVagaMaMgbaaaagbgbgfgdfsbkbkbkbkgggggg
+abababababababdLabaffHafafafdLababababdLabafafafafafePfHafeVghdOaqaqdOeVeVafafafafeVabababafafeVeVafababababfIdOdOdOdOdOdOdOaAaAaA
+abfjabababababababafafafafababababfjabababababafeVafafafafafdOdOaqaqdOeVafafafafafafafafafafafafafeVababababdOdOdOdOdOdOdOdOaAaAaA
+abafababababdLdLabafafafdLdLababfjabababfJabababafafePafafafdOdOaqaqdOafafaffHafafePafafafafafeUafeVabababdOdOdOdOdOdOdOaAaAaAaAgi
+abafafababdLdLababafafabababababababfkabdLababababafafafeVafdOdOaqaqdOafafeVeVeVafeVafafafafafafafeVafababdOdOdOdOdOdOaAaAaAgjgigi
+abafafafabdLababababdLababababdLdLabababababababdLafafafafafdOdOaqaqdOdOafafafeVeVeVafafeVafafeVeVeVafababdOdOdOdOdOaAaAaAgjgigigi
+ababafafabfkababababababababfkabdLabafaffkabababafafafafeVafdOdOaqaqdOdOafafafafafafafafafafafafeVeVafabfIdOdOdOdOaAaAaAgjgjgigigi
+abababafafafabababfJabafafafafabdLafafafafabababafafafePafafdOdOaqaqdOababafeUafafafafafafafafePafeVafabdOdOdOdOaAaAaAgjgjgjgigigi
+abababafafeVafababafafafafafafababafafafafeVfpdLabafafafafafdOdOaqaqdOababdLafafafaffHeVafafafafafafafabdOdOdOaAaAaAgjgjgjgigigigi
+abababafafafafafafafafafePafababaffHafafafafabdLabababafafafdOdOaqaqdOabababafgkePafafafafafafafafafafdOdOdOaAaAaAaAgjgjgjgigigigi
+abdLabafafafafafafafafafafababdLafafafgvafafababababeVeVafafafdOaqaqdOdLababafafafababafeVafePafafafafdOdOdOaAaAaAgjgjgjgjgigigigi
+abdLdLdLafafafeVafafafafababababafafafafafafababafafafafafafdOdOaqaqdOababafafgvafababeVeVafafafafafgwdOdOdOaAaAaAgjgjgjgjgigigigi
+abdLdLabafafafafafafafafdLdLabababafafafeUafababePafafafafafdOdOaqaqdOabafafafafafabafeVafafafafafafabdOdOdOaAaAaAgjgjgjgigigigigi
+abdLababfHafafafafafafababdLdLababafafafafafababafafafafafafdOdOaqaqdOafafafafafabafafeVafaffjababababdOdOdOaAaAaAaAgjgjgigigigigi
+abdLababafafafafafafafafdLabdLabafafafafafafafabafafeUafdOdOdOdOaqaqdOdOafeVafafafafafafafafabababababdOdOdOaAaAaAaAgjgjgigigigigi
+abdLdLababafafafafafeVafababababafeUeUafafafafabafafafabdOdOdOaqaqaqdOdOafafafabafafafafafababababdLabdOdOdOdOaAaAaAgjgjgigigigigi
+ababdLabababafafafafafafababababafafafafafafePababababdOdOdOaqaqaqdOdOdOababababafafafeVeVdLabababababdOfIdOdOaAaAaAgjgjgjgigigigi
+ababafafababafafafafafaffHabababafafababababababababdOdOdOaqaqaqdOdOafafababdLabafafafafabdLdLababafafafdOdOdOdOaAaAgjgjgjgigigigi
 cPcPcTcTdTcTcPcTcTdTcTcTcTcPcPcPcPdNcPcPcPcPcPcPcTcQcQcQcRcRcRcQcQcQcTcTcTcPcPcPcTcTcTcTcPcPdNdNcPcTcTcTcQcQcQcUcUfUfUfUfUfVfVfVfV
 cPcPcTdTdTdTcTcTcTcTcTcTcTcPcPcPcPcPcPcPcPcPcPcTcTcQcQcRcRcRcQcQcPcPcPcPcTcPdNcTcTcTfWcPcPcPcPcPcTfXcTcTcQcQcQcUcUfUfUfUfUfVfVfVfV
 cPcPcTdTcTcTcTcTcTcTcTcTcTcPcPdNcPcPdScPcPcPcTcTcQcQcRcRcRcQcQcQcQcPcPcPcTcPcPcTcTcTcPcPcPcPcPcTcTcTcTdNcQcQcQcUcUfUfUfUfUfVfVfVfV
 cPdNdNcTcTcTcTcTcTcTcTdUgccPcPcPcPcPcPcTcTdTcTcTcQcRcRcRcQcQcQcPcPdNdNcPcPcPdNdTcTcPcPcPcPcPdNcPcPcPcPdNcQcQcQcUcUfUfUfUfUfVfVfVfV
-aaaaaaaadDabdGababababababaaaaaaaaaaababababababbBaoaobBbBabaaaadHdHaaaaaadHaaabaaaaaadBaaaadHdHdHaaaadHbBdEbBbpbpbCbCbCbCcscscscs
-aaaaaaaaaaaaabababababababaaaaaaaaaaababababababbBaoaobBbBaaaaaadHaaaadQaaaaaaaaaaaaaaaaaaaaaadHdHdHaadHbBbBbBbpbpbCbCbCbCbCcscscs
-aaaaaaaaaaaaaaababdCabababaaaadBaaaaabababababbBbBaoaobBbBaaaaaadFaaaaaaaaaaaaaaaadHaaaaaaaadHdHaaaaaadHbBbBbBbBbpbCbCbCbCbCcscscs
-aadQaaaaaaaaaaabababababaaaaaaaaaaaaaaababababbBbBaoaobBaaaaaaaaaaaaaaaaaaaaaaaadHdHaaaaaaaaaadHdHababdHbBbBbBbpbpbCbCbCbCbCcscscs
-aaaaaaaaaaaaaaabababababaaaaaaaaaaaaaaaadOababbBbBaoaobBbBaaaaaaaaaaaaaadHaaaaaadHaaaaaaaaaaaaababababdHbBbBbBbpbpbCbCbCbCbCcscscs
-aaaaaaaadHaaabababababedabdGaaaaaaaaaaaaababababbBaoaobBbBaaaaaaaaaaaaaaaaaaaaaaaaaaababdGababababababaabBdPbBbpbpbCbCbCbCcscscscs
-aaaaaaaaaaabdCabababdGabababababaaaadHaaaaabababbBaoaobBaaaaaadHdHaaaaaaaaabdGababababababababababababaabBdPbBbpbpbCbCbCbCcscscscs
-aaaadHaaabababdGababababgbababababaaaaaaaaaaaaaabBaoaobBaaaaaaaaaaaaaaaaabdGabababababababababdGdDabaaaabBdPbBbpbpbCbCbCbCcscscscs
-aaaadHdGababababababababababababaaaaaaaaaaaaaaaabBaoaobBaaaaaaaaaaaaaaaaabdGabababababdGababababaaaaaaaabBbBbBbpbpbCbCbCbCcscscscs
-aaaaaadGabababababbTababababbUaaaadHaabUaaaaaaabbBaoaobBaabUaaaaaaaabUaaabababbTababababaaaaaaaaaaaaaaaabBbBbBbpbpbCbCbCbCcscscscs
-aaaaabdGababababababababababaaaaaabBbBbBaaaaaaaabBaoaobBaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaadHaaaadHaaaabBbBgdbBbpbpbCbCbCbCcscscscs
-ckckcmcmdWcmcmcmcmgucmcmcmcmguckgpgpgpgugpgpckckgpgrgrgpcmguckckckaacuabaaaaaacuaaaaaaaaaaaaaaaaaaaaaadPbBbBbBbpbpbCbCbCbCbCcscscs
-ckcmcmcmcmcmdVdWcmcmdXgngngngngogpgpgqgqgpgpgpgpgpgrgrgscmcmckckckaaabababaaaaaaaaaadHdHdHaaaaaaaaaaaabBbBbBbBbpbpbCbCbCbCbCcscscs
-aadDabababababdGdJcjeGcpdrdsdvdtcncrcocococncncncnaoaobBababaackckaadFaaababdHaaaadHdHaaaaaaaaaaaaaaaabBbBbBbpbpbpbCbCbCbCbCcscscs
-aaababababdGdGabdJcjcjcjcjcjcjcjctcvcncococncncncnaoaobBgwgxaagtckaaaaaaaaaaaaaaaadHaadHaageaadHaaaabBbBbBbBbpbpbCbCbCbCbCbCcscscs
-aaaaababdGdGababcjcjesdJetcjdJcjdcctddcnddcncncncnaoaobBgwgxaackckaaaadHdHaaaaaaaadHdHaaaaaaaaaaaabBbBbBbBbBbpbpbCbCbCbCbCbCcscscs
-aaaaaaaaaaaaaaaacwcxclclclclclcjcjctcncncnctcncncncycycncnctctckckaaaaaadHaaaaaaaaaadHaaaaaaegaaaadPbBbBbBbBbpbCbCbCbCbCbCcscscscs
-aaaaaaehdFaadHaaczcAcBcCcDeicEcjdYctdcctdcctctcncncycycnctctctckckckckckckckaaaadBaadHaadHaadHaaaabBbBbBbBbpbpbCbCbCbCbCbCcscscscs
-aadQaadFaaaaaaaaczctcjcjcDejcjdJcjctctctctctctdccndfcyddctdZctckckckckckckckaaaaaaaaaaaaaaaaaaaadPbBbBbBbBbpbpbCbCbCbCbCbCcscscscs
-aaaaaaaaaaaaaaaaczctcFctczcjdecjdectdcctdcctctcncncycycnctcxcxcxcxcxcxcGckckaaaaaaaaaaaaaaaaaaaabBbBbBbBbpbpbCbCbCbCbCbCbCcscscscs
-aaaaaaaaaaaaaaaaczcHctctczctcjcjcjctctctctctcncneacycycnctcIduducIcJcJczckckaadHaaaaaaababdGabbBbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscs
-aaaaaaabaadHaaaaczcKctctctctdccIdcctdcctddcncncycycycncnctdcctdcctdccJczckckdHdHaaabdGababababdPbBbBbBbpbpbpbCbCbCbCbCbCbCcscscscs
-aaabdOababdBaaaacwcxcxcxcxcxcxcxctctctcncncncycycycncncnctctdccjdecjcLczckckdHaaababababababbBbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscs
-aaabababababaaaaaadHaadHdHaadFaaaaaabBbBbBaoaoaobBcncnctctcJcLcLcLcLcLcDcmcmdGababdGdGdGababbBbBbBbBbpbpbpbCbCbCbCbCbCbCcscscscscs
-aaabababdCabaaaaaaaaaadHaaaaaaaaaabBbBbBaoaoaobBbBctctctebcMclclclclclcNcmcmabababdGabababbBbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscscs
-aaabababababaaaaabababdGababaadFaabBbBaoaoaobBbBaactctctcjcLcLcLcLcLcLcLcmcmababdGdGabaaabbBbBbBbBbBbpbCbCbCbCbCbCbCbCcscscscscscs
-aaabababababaaababdOababababababbBbBaoaoaobBbBbBaactctctcjcjcjcjcjcjcjcjcmdWababaaaaaaaabBbBdEbBbBbBbpbCbCbCbCbCbCbCcscscscscscscs
-aadGdGdGababababdGababdGababababbBbBaoaobBdPdPaaaadHaaaaababababababababcmdWabaaaaaaaaaabBbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscscscs
-dHdGabababdDababecababdGababdOabbBaoaoaobBbBdPaaaadHdHabdCababababdDababcmdWdGdGaaaaaabBbBbBbBbBbBbpbpbCbCbCbCbCbCcscscscscscscscs
-aaabababababababdGdGabababababdPdPaoaobBdPdPdHaadFaadHababababdGababababcmcmdGabaaaaaabBbBbBbBbBbBbpbpbCbCbCbCbCbCcscscscscscscscs
-aaababdCabababababdGabababdCbBbBbBaoaobBbBbBaaaadFdFdHdQabababababababdCcmcmdGababaabBbBbBbBbBbBbpbpbCbCbCbCbCbCcscscscscscscscscs
-ababababababababdCabababababbBbBbBaoaobBbBaaaaaaaaaaaaaaaaaaababdGdGababcmdWecababdHbBdPbBbBbpbpbpbCbCbCbCbCbCbCcscscscscscscscscs
-abababababdOababababaaaaabdPdPbBaoaobBbBbBaaaaaadHaaaaaadHaaaaaaabdGabdDcmdWabdGabbBbBbBbBbpbpbpbpbCbCbCbCbCbCcscscscscscscscscscs
-aaababababababaaaaaadOabdGdPbBaoaobBbBbBaaaaaadBaaaadHdHdHaaaaaaaadGdGabcmcmabababbBbBbBbpbpbpbCbCbCbCbCbCbCbCcscscscscscscscscscs
-giabababababaaaaababababbBbBaoaobBbBbBaaaaaaaaaaaaaadHaaaaaaaadFaaabababcmcmababbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscscscscscscscscs
+ababababfHafeVafafafafafafabababababafafafafafafdOaqaqdOdOafababdLdLabababdLabafabababfJababdLdLdLababdLdOgxdOaAaAgjgjgjgjgigigigi
+ababababababafafafafafafafabababababafafafafafafdOaqaqdOdOabababdLababfjabababababababababababdLdLdLabdLdOdOdOaAaAgjgjgjgjgjgigigi
+abababababababafafePafafafababfJababafafafafafdOdOaqaqdOdOabababfkababababababababdLababababdLdLabababdLdOdOdOdOaAgjgjgjgjgjgigigi
+abfjabababababafafafafafabababababababafafafafdOdOaqaqdOababababababababababababdLdLabababababdLdLafafdLdOdOdOaAaAgjgjgjgjgjgigigi
+abababababababafafafafafababababababababeUafafdOdOaqaqdOdOabababababababdLabababdLababababababafafafafdLdOdOdOaAaAgjgjgjgjgjgigigi
+ababababdLabafafafafafeXafeVababababababafafafafdOaqaqdOdOabababababababababababababafafeVafafafafafafabdOfidOaAaAgjgjgjgjgigigigi
+abababababafePafafafeVafafafafafababdLababafafafdOaqaqdOabababdLdLababababafeVafafafafafafafafafafafafabdOfidOaAaAgjgjgjgjgigigigi
+ababdLabafafafeVafafafafgvafafafafabababababababdOaqaqdOababababababababafeVafafafafafafafafafeVfHafababdOfidOaAaAgjgjgjgjgigigigi
+ababdLeVafafafafafafafafafafafafababababababababdOaqaqdOababababababababafeVafafafafafeVafafafafababababdOdOdOaAaAgjgjgjgjgigigigi
+abababeVafafafafafgIafafafafgJababdLabgJabababafdOaqaqdOabgJababababgJabafafafgIafafafafababababababababdOdOdOaAaAgjgjgjgjgigigigi
+ababafeVafafafafafafafafafafabababdOdOdOababababdOaqaqdOabababababababababafafababababababdLababdLababdOdOgKdOaAaAgjgjgjgjgigigigi
+ckckcmcmdWcmcmcmcmgucmcmcmcmguckgpgpgpgugpgpckckgpgrgrgpcmguckckckabaDafabababaDabababababababababababfidOdOdOaAaAgjgjgjgjgjgigigi
+ckcmcmcmcmcmdVdWcmcmdXgngngngngogpgpgqgqgpgpgpgpgpgrgrgscmcmckckckabafafafabababababdLdLdLababababababdOdOdOdOaAaAgjgjgjgjgjgigigi
+abfHafafafafafeVdJcjeGcpdrdsdvdtcncrcocococncncncnaqaqdOafafabckckabfkabafafdLababdLdLababababababababdOdOdOaAaAaAgjgjgjgjgjgigigi
+abafafafafeVeVafdJcjcjcjcjcjcjcjctcvcncococncncncnaqaqdOgLgMabgtckababababababababdLabdLabgNabdLababdOdOdOdOaAaAgjgjgjgjgjgjgigigi
+ababafafeVeVafafcjcjesgRetgSdJcjdcctddcnddcncncncnaqaqdOgLgMabckckababdLdLababababdLdLababababababdOdOdOdOdOaAaAgjgjgjgjgjgjgigigi
+ababababababababcwcxclclclclclcjcjctcncncnctcncncncycycngTgUctckckabababdLabababababdLabababgOababfidOdOdOdOaAgjgjgjgjgjgjgigigigi
+abababgPfkabdLabczcAcBcCcDeicEcjdYctdcctdcctctcncncycycnctctctckckckckckckckababfJabdLabdLabdLababdOdOdOdOaAaAgjgjgjgjgjgjgigigigi
+abfjabfkababababczctcjcjcDejcjdJcjctctctctctctdccndfcyddctdZctckckckckckckckababababababababababfidOdOdOdOaAaAgjgjgjgjgjgjgigigigi
+ababababababababczctcFctczcjdecjdectdcctdcctctcncncycycnctcxcxcxcxcxcxcGckckababababababababababdOdOdOdOaAaAgjgjgjgjgjgjgjgigigigi
+ababababababababczcHctctczctcjcjcjctctctctctcncneacycycnctcIduducIcJcJczckckabdLabababafafeVafdOdOdOdOdOaAaAgjgjgjgjgjgjgjgigigigi
+abababafabdLababczcKctctctctdccIdcctdcctddcncncycycycncnctdcctdcctdccJczckckdLdLabafeVafafafaffidOdOdOaAaAaAgjgjgjgjgjgjgjgigigigi
+abafeUafaffJababcwcxcxcxcxcxcxcxctctctcncncncycycycncncnctctdccjdecjcLczckckdLabafafafafafafdOdOdOdOdOaAaAgjgjgjgjgjgjgjgigigigigi
+abafafafafafabababdLabdLdLabfkabababdOdOdOaqaqaqdOcncnctctcJcLcLcLcLcLcDcmcmeVafafeVeVeVafafdOdOdOdOaAaAaAgjgjgjgjgjgjgjgigigigigi
+abafafafePafabababababdLabababababdOdOdOaqaqaqdOdOctctctebcMclclclclclcNcmcmafafafeVafafafdOdOdOdOdOaAaAgjgjgjgjgjgjgjgigigigigigi
+abafafafafafababafafafeVafafabfkabdOdOaqaqaqdOdOabctctctcjcLcLcLcLcLcLcLcmcmafafeVeVafabafdOdOdOdOdOaAgjgjgjgjgjgjgjgjgigigigigigi
+abafafafafafabafafeUafafafafafafdOdOaqaqaqdOdOdOabctctctcjcjcjcjcjcjcjcjcmdWafafababababdOdOgxdOdOdOaAgjgjgjgjgjgjgjgigigigigigigi
+abeVeVeVafafafafeVafafeVafafafafdOdOaqaqdOfifiababdLababafafafafafafafafcmdWafabababababdOdOdOdOdOaAaAgjgjgjgjgjgjgjgigigigigigigi
+dLeVafafaffHafafeOafafeVafafeUafdOaqaqaqdOdOfiababdLdLafePafafafaffHafafcmdWeVeVabababdOdOdOdOdOdOaAaAgjgjgjgjgjgjgigigigigigigigi
+abafafafafafafafeVeVafafafafaffifiaqaqdOfifidLabfkabdLafafafafeVafafafafcmcmeVafabababdOdOdOdOdOdOaAaAgjgjgjgjgjgjgigigigigigigigi
+abafafePafafafafafeVafafafePdOdOdOaqaqdOdOdOababfkfkdLfjafafafafafafafePcmcmeVafafabdOdOdOdOdOdOaAaAgjgjgjgjgjgjgigigigigigigigigi
+afafafafafafafafePafafafafafdOdOdOaqaqdOdOabababababababababafafeVeVafafcmdWeOafafdLdOfidOdOaAaAaAgjgjgjgjgjgjgjgigigigigigigigigi
+afafafafafeUafafafafababaffifidOaqaqdOdOdOabababdLabababdLabababafeVaffHcmdWafeVafdOdOdOdOaAaAaAaAgjgjgjgjgjgjgigigigigigigigigigi
+abafafafafafafabababeUafeVfidOaqaqdOdOdOabababfJababdLdLdLababababeVeVafcmcmafafafdOdOdOaAaAaAgjgjgjgjgjgjgjgjgigigigigigigigigigi
+gQafafafafafababafafafafdOdOaqaqdOdOdOabababababababdLababababfkabafafafcmcmafafdOdOdOdOaAaAgjgjgjgjgjgjgjgigigigigigigigigigigigi
 "}

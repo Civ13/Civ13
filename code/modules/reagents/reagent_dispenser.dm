@@ -163,6 +163,25 @@
 		..()
 		reagents.add_reagent("beer",950)
 
+/obj/structure/reagent_dispensers/largebarrel/ale
+	name = "large ale barrel"
+	desc = "A large barrel of ale. Keep it secured!"
+	amount_per_transfer_from_this = 20
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("ale",950)
+
+/obj/structure/reagent_dispensers/largebarrel/water
+	name = "large water barrel"
+	desc = "A large barrel of water. Keep it secured!"
+	amount_per_transfer_from_this = 20
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("water",950)
+
+
 
 /obj/structure/reagent_dispensers/peppertank
 	name = "Pepper Spray Refiller"
@@ -175,3 +194,13 @@
 	New()
 		..()
 		reagents.add_reagent("condensedcapsaicin",1000)
+
+/obj/structure/reagent_dispensers/fountain
+	name = "water fountain"
+	desc = "A water fountain with a big tank on top."
+	icon_state = "dispenser_water1"
+	anchored = TRUE
+	amount_per_transfer_from_this = 10
+	New()
+		..()
+		reagents.add_reagent("water",2000)

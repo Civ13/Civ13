@@ -114,7 +114,7 @@
 "cj" = (/obj/structure/barricade,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/nomads)
 "ck" = (/obj/effect/decal/cleanable/blood,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/two)
 "cl" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/two)
-"cm" = (/obj/structure/multiz/ladder/ww2/stairsup{explosion_resistance = 1e+006},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"cm" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean/sewers)
 "cn" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/road,/area/caribbean/nomads)
 "co" = (/obj/structure/barbwire,/turf/floor/plating/road,/area/caribbean/nomads)
 "cp" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/plating/road,/area/caribbean/nomads)
@@ -271,12 +271,12 @@
 "fk" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean/nomads)
 "fl" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/effect/landmark{name = "JoinLateGE"},/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean/nomads)
 "fm" = (/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean/nomads)
-"fn" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 1; explosion_resistance = 1e+006},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"fn" = (/obj/structure/table/modern/table,/obj/structure/sink,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "fo" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34,/turf/floor/trench,/area/caribbean/nomads)
 "fp" = (/obj/effect/landmark{name = "JoinLateGE"},/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean/nomads)
 "fq" = (/obj/structure/window/barrier/sandbag,/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean/nomads)
 "fr" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/turf/floor/dirt,/area/caribbean/nomads)
-"fs" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket, this one was stolen by the soviets."},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"fs" = (/obj/structure/pot,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "ft" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/obj/structure/table/modern/retable,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "fu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/obj/structure/table/modern/table,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "fv" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/obj/structure/barricade/wood_pole,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -289,15 +289,15 @@
 "fC" = (/obj/item/weapon/fire_extinguisher,/obj/item/weapon/fire_extinguisher,/obj/item/weapon/fire_extinguisher,/obj/item/weapon/fire_extinguisher,/obj/structure/shelf,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/stack/material/barbwire{amount = 20},/obj/item/stack/material/barbwire{amount = 20},/obj/item/stack/material/barbwire{amount = 20},/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/turf/floor/dirt,/area/caribbean/nomads)
 "fD" = (/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
 "fE" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"fF" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"fF" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/meatsteak,/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "fG" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
 "fH" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barricade/vertical,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "fI" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barricade/steel,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "fJ" = (/turf/floor/dirt,/area/caribbean/roofed/temperate)
 "fK" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/trench,/area/caribbean/nomads)
-"fL" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"fL" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "fM" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"fN" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"fN" = (/obj/structure/oven/stove,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "fO" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt/burned,/area/caribbean/nomads)
 "fP" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "fQ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
@@ -352,9 +352,9 @@
 "gN" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/ammo_can/german_mg,/obj/item/weapon/storage/ammo_can/german_mg,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/turf/floor/dirt,/area/caribbean/nomads)
 "gO" = (/obj/structure/closet/crate/sandbags,/turf/floor/grass,/area/caribbean/nomads)
 "gP" = (/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/nomads)
-"gQ" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"gQ" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/can/filled,/obj/item/weapon/can/filled,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "gR" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"gS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"gS" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "gT" = (/obj/structure/sign/minefield,/turf/floor/grass,/area/caribbean/nomads)
 "gU" = (/obj/structure/sign/minefield,/turf/floor/dirt,/area/caribbean/nomads)
 "gV" = (/obj/item/mine/boobytrap,/turf/floor/dirt,/area/caribbean/nomads)
@@ -366,12 +366,12 @@
 "hb" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/ammo_can/german_mg_drum,/obj/item/weapon/storage/ammo_can/german_mg_drum,/obj/item/stack/material/barbwire{amount = 20},/turf/floor/dirt,/area/caribbean/nomads)
 "hc" = (/obj/item/weapon/beartrap/armed,/turf/floor/plating/road,/area/caribbean/nomads)
 "hd" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag,/obj/structure/barricade/horizontal,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"he" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hf" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hg" = (/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hh" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"he" = (/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hf" = (/obj/structure/table/modern/table,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hg" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hh" = (/obj/structure/window/barrier/sandbag,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hi" = (/obj/structure/bed/wood,/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
-"hj" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"hj" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hk" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "hl" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{dir = 8},/obj/item/ammo_magazine/maxim,/turf/floor/trench,/area/caribbean/nomads)
 "hm" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/obj/item/ammo_magazine/maxim,/turf/floor/trench,/area/caribbean/nomads)
@@ -379,65 +379,65 @@
 "ho" = (/obj/structure/window/classic/metal,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "hp" = (/turf/floor/wood,/area/caribbean/roofed/temperate)
 "hq" = (/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"hr" = (/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"hs" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"ht" = (/obj/structure/bed/wood,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"hu" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
+"hr" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hs" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"ht" = (/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hu" = (/obj/structure/window/classic/metal,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/wood/fancywood,/area/caribbean/sewers)
 "hv" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "hw" = (/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "hx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/wood_broken,/area/caribbean/roofed/temperate)
 "hy" = (/turf/floor/wood_broken,/area/caribbean/roofed/temperate)
 "hz" = (/obj/structure/lamp/lamp_big/broken{dir = 1; icon_state = "tube_broken"},/obj/structure/toilet,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"hA" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"hB" = (/obj/structure/window/barrier/sandbag,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"hC" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
+"hA" = (/turf/floor/wood/fancywood,/area/caribbean/sewers)
+"hB" = (/obj/structure/bed/wood,/turf/floor/wood/fancywood,/area/caribbean/sewers)
+"hC" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket, this one was stolen by the soviets."},/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hD" = (/obj/structure/bed/wood,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
-"hE" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/simple_door/key_door/anyone/wood,/obj/structure/barricade/vertical,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hF" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"hE" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hF" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hG" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "hH" = (/obj/structure/table/modern/table,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hI" = (/obj/structure/window/barrier/sandbag,/obj/structure/table/modern/flipped{dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hJ" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/meatsteak,/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hK" = (/obj/structure/oven/stove,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hL" = (/obj/structure/pot,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hM" = (/obj/structure/table/modern/table,/obj/structure/sink,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hN" = (/obj/covers/cement_wall,/obj/structure/sign/painting8,/turf/wall/cement,/area/caribbean/roofed/temperate)
-"hO" = (/obj/covers/cement_wall,/obj/structure/sign/painting2,/turf/wall/cement,/area/caribbean/roofed/temperate)
-"hP" = (/obj/covers/cement_wall,/obj/structure/sign/painting10,/turf/wall/cement,/area/caribbean/roofed/temperate)
-"hQ" = (/obj/covers/cement_wall,/obj/structure/sign/portrait/lenin,/turf/wall/cement,/area/caribbean/roofed/temperate)
-"hR" = (/obj/covers/cement_wall,/obj/structure/sign/portrait/stalin,/turf/wall/cement,/area/caribbean/roofed/temperate)
+"hI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hJ" = (/obj/structure/table/modern/table,/obj/item/violin,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hK" = (/obj/item/weapon/clayshards,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hL" = (/obj/structure/table/modern/table,/obj/item/trombone,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hM" = (/obj/covers/cement_wall,/obj/structure/sign/portrait/lenin,/turf/wall/cement,/area/caribbean/sewers)
+"hN" = (/obj/covers/cement_wall,/obj/structure/sign/portrait/stalin,/turf/wall/cement,/area/caribbean/sewers)
+"hO" = (/obj/covers/cement_wall,/obj/structure/sign/painting8,/turf/wall/cement,/area/caribbean/sewers)
+"hP" = (/obj/structure/bed/chair/wood,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hQ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barricade/vertical,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hR" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/concrete,/area/caribbean/sewers)
 "hS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{dir = 4},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "hT" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
 "hU" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "hV" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hW" = (/obj/structure/window/barrier/sandbag,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hX" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"hW" = (/obj/structure/table/modern/table,/obj/item/weapon/matchbox,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"hX" = (/turf/floor/plating/steel,/area/caribbean/sewers)
 "hY" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"hZ" = (/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 4},/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
+"hZ" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/plating/steel,/area/caribbean/sewers)
 "ia" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "ib" = (/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 4},/turf/floor/wood,/area/caribbean/roofed/temperate)
-"ic" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"id" = (/obj/structure/sink,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"ic" = (/obj/structure/multiz/ladder/ww2/stairsup{explosion_resistance = 1e+006},/turf/floor/plating/steel,/area/caribbean/sewers)
+"id" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/concrete,/area/caribbean/sewers)
 "ie" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "if" = (/obj/structure/brazier/loaded,/obj/structure/roof_support/admin,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "ig" = (/obj/structure/table/modern/table,/obj/item/weapon/key/german,/turf/floor/trench,/area/caribbean/roofed/temperate)
-"ih" = (/obj/structure/table/modern/table,/obj/item/weapon/gun_cleaning_kit,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"ih" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/turf/floor/plating/concrete,/area/caribbean/sewers)
 "ii" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/weapon/telephone/wireless,/obj/structure/table/modern/table,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "ij" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/expensivewine,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "ik" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/table/modern/table,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/melee/classic_baton,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "il" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/table/modern/table,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "im" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/roofed/temperate)
-"in" = (/obj/structure/table/modern/table,/obj/item/weapon/material/knife/butcher,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"io" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"ip" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/can/filled,/obj/item/weapon/can/filled,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iq" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/wireless,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"ir" = (/obj/structure/bed/chair/wood,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"is" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"it" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iu" = (/obj/structure/table/modern/table,/obj/item/weapon/tray,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iv" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"in" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/boltaction/mosin/m30,/obj/item/ammo_magazine/mosin,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"io" = (/obj/structure/table/modern/table,/obj/item/ammo_magazine/mosinbox,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"ip" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"iq" = (/obj/structure/bookcase,/turf/floor/wood/fancywood,/area/caribbean/sewers)
+"ir" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civf1,/turf/floor/wood/fancywood,/area/caribbean/sewers)
+"is" = (/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 4},/turf/floor/wood/fancywood,/area/caribbean/sewers)
+"it" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/structure/closet/crate/sandbags,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"iu" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/plating/steel,/area/caribbean/sewers)
+"iv" = (/obj/structure/table/modern/table,/obj/item/weapon/tray,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "iw" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/structure/closet/crate/bin,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"ix" = (/obj/structure/closet/crate/bin,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"ix" = (/turf/floor/trench,/area/caribbean/sewers)
 "iy" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iz" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iA" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
@@ -449,39 +449,39 @@
 "iG" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt,/area/caribbean/nomads)
 "iH" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/obj/structure/barricade/horizontal,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iI" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass,/area/caribbean/nomads)
-"iJ" = (/obj/structure/window/classic/metal,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
+"iJ" = (/obj/covers/cement_wall,/obj/structure/sign/painting2,/turf/wall/cement,/area/caribbean/sewers)
 "iK" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/turf/floor/dirt,/area/caribbean/nomads)
 "iL" = (/obj/structure/bookcase,/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
 "iM" = (/obj/structure/closet/cabinet,/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
-"iN" = (/obj/item/weapon/clayshards,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iO" = (/obj/structure/bookcase,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"iP" = (/obj/structure/closet/cabinet,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
+"iN" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/steel,/area/caribbean/sewers)
+"iO" = (/obj/structure/window/barrier/sandbag,/obj/structure/table/modern/flipped{dir = 8},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"iP" = (/obj/structure/table/modern/table,/obj/item/weapon/pill_pack/pervitin,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "iQ" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/burned,/area/caribbean/nomads)
 "iR" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/modern/stg1915,/obj/item/weapon/grenade/modern/stg1915,/obj/item/weapon/grenade/modern/stg1915,/obj/item/weapon/grenade/modern/stg1915,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/turf/floor/grass,/area/caribbean/nomads)
 "iS" = (/obj/structure/bookcase,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "iT" = (/obj/structure/closet/cabinet,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "iU" = (/obj/structure/closet/coffin,/turf/floor/dirt,/area/caribbean/nomads)
 "iV" = (/obj/structure/closet/coffin,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads)
-"iW" = (/obj/structure/table/modern/table,/obj/item/weapon/matchbox,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iX" = (/obj/structure/table/modern/table,/obj/item/weapon/material/ashtray/bronze,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iY" = (/obj/structure/table/modern/table,/obj/item/weapon/fire_extinguisher/ww2,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iZ" = (/obj/structure/table/modern/table,/obj/item/violin,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"ja" = (/obj/structure/table/modern/table,/obj/item/trombone,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"jb" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/boltaction/mosin/m30,/obj/item/ammo_magazine/mosin,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"jc" = (/obj/structure/table/modern/table,/obj/item/ammo_magazine/mosinbox,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"jd" = (/obj/structure/table/modern/table,/obj/item/ammo_magazine/mosin,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"je" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"iW" = (/obj/structure/table/modern/table,/obj/item/ammo_magazine/mosin,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"iX" = (/obj/structure/wallclock,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"iY" = (/obj/structure/table/modern/table,/obj/item/weapon/material/ashtray/bronze,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"iZ" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 1; explosion_resistance = 1e+006},/turf/floor/plating/steel,/area/caribbean/sewers)
+"ja" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/plating/steel,/area/caribbean/sewers)
+"jb" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"jc" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"jd" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"je" = (/obj/structure/table/modern/table,/obj/item/weapon/gun_cleaning_kit,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "jf" = (/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"jg" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"jg" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/wireless,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "jh" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "ji" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/trench,/area/caribbean/nomads)
 "jj" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "jk" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "jl" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket, this one was stolen by the soviets."},/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket, this one was stolen by the soviets."},/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket, this one was stolen by the soviets."},/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket, this one was stolen by the soviets."},/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/stack/material/wood/twentyfive{amount = 50},/obj/item/stack/material/wood/twentyfive{amount = 50},/obj/item/stack/material/wood/twentyfive{amount = 50},/obj/item/stack/material/wood/twentyfive{amount = 50},/obj/item/stack/material/barbwire{amount = 20},/obj/item/stack/material/barbwire{amount = 20},/obj/item/stack/material/barbwire{amount = 20},/obj/item/stack/material/barbwire{amount = 20},/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/spade/foldable,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "jm" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"jn" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"jn" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/plating/steel,/area/caribbean/sewers)
 "jo" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"jp" = (/obj/structure/table/modern/table,/obj/item/weapon/pill_pack/pervitin,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"jp" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/sewers)
 "jq" = (/obj/structure/window/classic/metal,/obj/structure/curtain/open/red,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "jr" = (/obj/structure/bed/wood,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "js" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
@@ -625,7 +625,7 @@
 "ma" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/table/modern/table,/obj/item/weapon/storage/fancy/cigar/full,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "mb" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/table/modern/table,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "mc" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civfr,/obj/item/clothing/under/civf1,/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
-"md" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civf1,/turf/floor/wood/fancywood,/area/caribbean/roofed/temperate)
+"md" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "me" = (/obj/structure/sign/traffic/zebracrossing,/turf/floor/plating/road,/area/caribbean/nomads)
 "mf" = (/obj/covers/jail/woodjail,/obj/structure/sign/portrait/hitler,/turf/floor/trench,/area/caribbean/roofed/temperate)
 "mg" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/potted_plant,/turf/floor/trench,/area/caribbean/roofed/temperate)
@@ -646,7 +646,7 @@
 "mv" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/industrial3,/obj/item/clothing/under/blackdress,/obj/item/clothing/gloves/thick/combat,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mw" = (/obj/structure/closet/cabinet,/obj/item/weapon/book,/obj/item/weapon/crowbar,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/closet/crate/sandbags,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"my" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/structure/closet/crate/sandbags,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"my" = (/obj/structure/table/modern/table,/obj/item/weapon/fire_extinguisher/ww2,/turf/floor/plating/concrete,/area/caribbean/sewers)
 "mz" = (/obj/structure/multiz/ladder/ww2/stairsdown,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "mA" = (/obj/structure/table/modern/table,/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "mB" = (/obj/structure/cannon/mortar{dir = 1},/turf/floor/trench,/area/caribbean/nomads)
@@ -676,7 +676,7 @@
 "mZ" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/nomads)
 "na" = (/obj/structure/wild/berrybush,/turf/floor/grass,/area/caribbean/nomads)
 "nb" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/nomads)
-"nc" = (/obj/structure/wallclock,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"nc" = (/obj/covers/cement_wall,/obj/structure/sign/painting10,/turf/wall/cement,/area/caribbean/sewers)
 "nd" = (/obj/map_metadata/pavlov_house,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads)
 "ne" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "nf" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/weapon/wrench,/turf/floor/trench,/area/caribbean/nomads)
@@ -701,6 +701,28 @@
 "ny" = (/obj/effect/decal/cleanable/blood/drip,/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "nz" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "nA" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/curtain/open/red,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"nB" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"nC" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"nD" = (/obj/structure/closet/crate/bin,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"nE" = (/obj/structure/bookcase,/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nF" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nG" = (/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nH" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nI" = (/obj/structure/bed/wood,/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nJ" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/carpet/tealcarpet,/area/caribbean/sewers)
+"nK" = (/obj/structure/sink,/turf/floor/plating/steel,/area/caribbean/sewers)
+"nL" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/plating/concrete,/area/caribbean/sewers)
+"nM" = (/obj/structure/closet/cabinet,/obj/item/weapon/grenade/ww2/rgd33,/obj/item/weapon/grenade/ww2/rgd33,/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nN" = (/turf/floor/dirt,/area/caribbean/sewers)
+"nO" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/steel,/area/caribbean/sewers)
+"nP" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nQ" = (/obj/structure/window/barrier/sandbag,/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nR" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/sewers)
+"nS" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/sewers)
+"nT" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/carpet/redcarpet,/area/caribbean/sewers)
+"nU" = (/obj/covers/cement_wall,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/wall/cement,/area/caribbean/sewers)
+"nV" = (/obj/structure/window/classic/metal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade,/turf/floor/plating/concrete,/area/caribbean/sewers)
+"nW" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 
 (1,1,1) = {"
 abacacadaeadadadlClDlEahahahaiahahahagfBfCagahahahaiahagajafakalamexafafafafaoaoafiUiUiUiUiUafafafafafafapapaqaqaqaqaqaqapapafafafafafafafaf
@@ -727,24 +749,24 @@ afafdQafafafdQafaoafaoaoafaoaoaoafafafaoafiQdQbgaoafafafafafafaJafaoafafafaJafaf
 aoaoafafafdQmTaHafdQafaokXafafafafafaoaoaoafafaoafafeGafafafafafafafafafafafafafafgVkYafafaJafafafdQafafapapaqaqaqaqaqaqapapafaoaoaoafaJaoao
 aoaoaoaoaoaoafaoaodQaoafafafafaogVafafcPcPfOcPcQafafafafafafafafafafaodQafafafafaoafafafafafafafgXdQafafapapaqaqaqaqaqaqapapafajajafdQdQdQdQ
 afgVafafafdQafafafdQafafafgacPcPcPcPgaguguguguguiFcPafafafafafafafcPcPcPcPcPcPcPafafafafafafafafgYafafafapapaqaqaqaqaqaqapapafajajdQaoaoaoaf
-afafafaoafafafafafafafafafiGcOcOcOcOcOcOcOhdcOhdcOcOcOcOcOfjfJfjcOcOiHcOiHcOcOcOcOcOcOcOcOafdQafafeFafeGapapaqaqaqaqaqaqapapakalamanafafafaf
-afafafafgXafafafdQafafafafiIcOhifDfDiLcOfjfPfPfPfQiyiziAfjfjfjiBcOlAfPmxmxcOhMhLhJiohKipcOdudQafafaoafafapapaqaqaqaqaqaqapapakfWemfXafafmUaf
-afbgafafmLafdQkYafafbiaoaoiGcOhTfDfDfDcOfjfjfjfjhSiyiziAfjiBiCiDcOlBfjfjfjgRfjfjfjfjfjincOduafafafaobgafapapaqaqaqaqaqaqapapafcbecafafafafaf
-afafafafafafafafkMmNafafaoiIcOmcfDfDfDfGfEfEfjfEfRiyizfjhUiEiCiCcOiwfjfjfjcOhehWfEhhfEfjcOduafafafaoafafapapaqaqaqaqaqaqapapafaoafafbgafafaf
-afafaoaHafafaoaoafbhaoafaoiGcOcOcOcOcOcOfPfPfjfPfPcOcOgRcOcOcOcOcOfjfjfjfjhfhgcOcOhghgcOcOduafafafbgafafapapaqaqaqaqaqaqapapafafafafaobhdQao
-afaoaobtaoaoafaoaoafafafafiGiJfDfDhicOfsfjfjfjfjfjgRfjfjhXfjfjfjgRfjfjfjfjfjfjhYfjfjfjfLfHgkcPafaoafeGgVapapaqaqaqaqaqaqapapafaoafdQaoaoaoao
-afafafafafafafgVdQafafafafiGcOfDfDfDcOiZfjiNfjfjjacOcOcOhQhRcOcOhNfjfjfjfjfjfjirirfjfjfjcOeAeAduafdQafafapapaqaqaqaqaqaqapapafafaodQaoafaoao
-afaoafafaoeGafafafafafafafiGiJfDfDfDgSfMfjfjfjfjiWcOjfjfjfjgcmcmcOhVfjfjfjfjisjbjcitfjfjfSavbyexaoafiQafapapaqaqaqaqaqaqapapafbhaoaodQmVaoao
-afkXkNaoafafkZdQafgXafafafiGcOiLmdhZcOfjfjfjfjfjmycOjfjfjfjjcmcmcOfjfjfjfjfjisiujbitfjfSfSbHhnexafafafafapapaqaqaqaqaqaqapapafaoaoaoaoaHaoaf
-afafaoafafafafafafafafafafafcOcOcOcOhOhVfjfjfjfjfjjkjfjfjfjfjfjfjkhIfjfEfEfjisjpjditfjfjcOglgmduaoafafafapapaqaqaqaqaqaqapapaoafaJafaoafafaf
-afafafmOdQafafafafaoaoafaoaohohphphqcOncfjfjfjfjiXcOfnfnjmjfjfjfcOgQfjgQhFfMisjeihitfjfLfIgngoafafdQafafapapaqaqaqaqaqaqapapaoafafaoaoafafaf
-afafaodQafafafeSdQafdQafafafcOmwhpibcOfjfjfjfjfjiqcOfnfnjnjfjfjfcOhVfjfjfLfMfjivivfjfjfLcOgpduafaoeGafafapapaqaqaqaqaqaqapapaoafdQdQdQaoafgV
-afafaoafafafaoafafafafafafaohohphphphEfMfjfjfjfjiYhPcOcOcOcOcOcOcOfEfjfEhGfMfjfjfjhUfjfLfIgqeCaoafaoafafapapaqaqaqaqaqaqapapaoafdQafdQafdQaf
-afdQafafaoaoafafafafafaocQcPcOcOcOcOcOcOfjfjfjfjixcOiOhshrichrhtcOgQfjgQgQcOcOhucOcOcOcOcOgpduaoafaoafafapapaqmeaqmeaqmeapapaoafafafdQdQaoaf
-afafgVaoaHafafaoaoaHaofVeAeBfZfthzjfidcOhVfjfjiNiacOiPhrhrhrhrhrcOhVfjfjiacOhwhwhwiehwhwcOgpgrafaHbLafafapapaqmeaqmeaqmeapapaoafafafafaJaoaf
-afafaoaoafaoaoafafafdvgxfUavjfjfjfjfjfgRfjfjfjfjfjgRhrhrhrfJhrhrcOfjfjfjfjcOhwhwhwhwhwhwcOgpduafaoafafafapapaqaqaqaqaqaqapapafgVafaoaoaVafaf
-afafaolbafgYgXdQafafdvgxalajjfjfjfmMmMcOfjfEfjfEfjcOhAhBfFhjfFhCcOfEfEfEfEcOiSiSiThwhwhDcOgqeCafaoafafafapapaqaqaqaqaqaqapapafafdQdQafaoafaf
-afafaoaolcafafbgafafdvgxhlajhkcOjfgbgbcOcOfNcOfNcOcOcOfTgcfTgccOcOcOcOgdgdcOcOcOcOcOcOcOcOgpgraoaoafdqafapapaqaqaqaqaqaqapapafeGaoafaoaoafaf
+afafafaoafafafafafafafafafiGcOcOcOcOcOcOcOhdcOhdcOcOcOcOcOfjfJfjcmcmiHcOiHcOcOcOcmcmcmcmcmafdQafafeFafeGapapaqaqaqaqaqaqapapakalamanafafafaf
+afafafafgXafafafdQafafafafiIcOhifDfDiLcOfjfPfPfPfQiyiziAfjfjfjiBcOlAfPmxmxcmfnfsfFfLfNgQcmdudQafafaoafafapapaqaqaqaqaqaqapapakfWemfXafafmUaf
+afbgafafmLafdQkYafafbiaoaoiGcOhTfDfDfDcOfjfjfjfjhSiyiziAfjiBiCiDcOlBfjfjfjgShehehehehehfcOduafafafaobgafapapaqaqaqaqaqaqapapafcbecafafafafaf
+afafafafafafafafkMmNafafaoiIcOmcfDfDfDfGfEfEfjfEfRiyizfjhUiEiCiCcOiwfjfjfjcmhghhhjhrhjhecmduafafafaoafafapapaqaqaqaqaqaqapapafaoafafbgafafaf
+afafaoaHafafaoaoafbhaoafaoiGcmcmcmcmcmcmfPfPfjfPfPcOcOgRcOcOcOcOcOfjfjfjfjhshtcmcmhthtcmcmduafafafbgafafapapaqaqaqaqaqaqapapafafafafaobhdQao
+afaoaobtaoaoafaoaoafafafafiGhuhAhAhBcmhChehehehehegShehehEhehehegShehehehehehehFhehehehIfHgkcPafaoafeGgVapapaqaqaqaqaqaqapapafaoafdQaoaoaoao
+afafafafafafafgVdQafafafafiGcmhAhAhAcmhJhehKhehehLcmcmcmhMhNcmcmhOhehehehehehehPhPhehehecOeAeAduafdQafafapapaqaqaqaqaqaqapapafafaodQaoafaoao
+afaoafafaoeGafafafafafafafiGhuhAhAhAhIhRhehehehehWcmhXhXhXhZiciccmidheheheheihinioiphehefSavbyexaoafiQafapapaqaqaqaqaqaqapapafbhaoaodQmVaoao
+afkXkNaoafafkZdQafgXafafafiGcmiqiriscmheheheheheitcmhXhXhXiuiciccmheheheheheihivinipheixfSbHhnexafafafafapapaqaqaqaqaqaqapapafaoaoaoaoaHaoaf
+afafaoafafafafafafafafafafafcmcmcmcmiJidheheheheheiNhXhXhXhXhXhXiNiOhehjhjheihiPiWiphehecOglgmduaoafafafapapaqaqaqaqaqaqapapaoafaJafaoafafaf
+afafafmOdQafafafafaoaoafaoaohohphphqcmiXheheheheiYcmiZiZjahXhXhXcmjbhejbjchRihjdjeiphehIfIgngoafafdQafafapapaqaqaqaqaqaqapapaoafafaoaoafafaf
+afafaodQafafafeSdQafdQafafafcOmwhpibcmhehehehehejgcmiZiZjnhXhXhXcmidhehehIhRhejpjphehehIcOgpduafaoeGafafapapaqaqaqaqaqaqapapaoafdQdQdQaoafgV
+afafaoafafafaoafafafafafafaohohphphphQhRhehehehemynccmcmcmcmcmcmcmhjhehjnBhRhehehenChehIfIgqeCaoafaoafafapapaqaqaqaqaqaqapapaoafdQafdQafdQaf
+afdQafafaoaoafafafafafaocQcPcOcmcmcmcmcmhehehehenDcmnEnFnGnHnGnIcmjbhejbjbcmcmnJcmcmcmcmcmgpduaoafaoafafapapaqmeaqmeaqmeapapaoafafafdQdQaoaf
+afafgVaoaHafafaoaoaHaofVeAeBfZfthzjfnKcmidhehehKnLcmnMnGnGnGnGnGcmidhehenLcmhwhwhwiehwhwcmgpgrafaHbLafafapapaqmeaqmeaqmeapapaoafafafafaJaoaf
+afafaoaoafaoaoafafafdvgxfUavjfjfjfjfhXgShehehehehegSnGnGnGnNnGnGcmhehehehecmhwhwhwhwhwhwcOgpduafaoafafafapapaqaqaqaqaqaqapapafgVafaoaoaVafaf
+afafaolbafgYgXdQafafdvgxalajjfjfjfmMnOcmhehjhehjhecmnPnQnRnSnRnTcmhjhjhjhjcmiSiSiThwhwhDcOgqeCafaoafafafapapaqaqaqaqaqaqapapafafdQdQafaoafaf
+afafaoaolcafafbgafafdvgxhlajhkcOjfgbnUcmcmnVcmnVcmcOcOfTgcfTgccOcmcmcOgdgdcmcmcOcOcOcOcOcOgpgraoaoafdqafapapaqaqaqaqaqaqapapafeGaoafaoaoafaf
 afafaoajajaoafafafafdvgFalajajajamgsgggggggggggtgggtgegfgggggfghgugvgugwgwgwgwgugugwgugugugpeCaoafaoaVafapapaqaqaqaqaqaqapapafafafaoaoaoafaf
 aoaodQajajafaoaoafafdvgFbebHhmbHemgGgygigigigigygygidLdLgigigjgigigigigigigigidLdLgigigigigiaoaogVaoafafapapaqaqaqaqaqaqapapaoafdRalajaJafaf
 afafafafafafafafafaogHgqgIgJgKgKgKgrdQafdQafdQafafafdqdqaoafafafaoaoaodQafdQdQafafafafaoaoaoafafafafaJafapapaqaqaqaqaqaqapapaoaoakfWbHafeGaf
@@ -824,14 +846,14 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaajEjxjyjSjzjAmifjkdkgkjkekfkfkfkfkfkqiAfjfjfjfjfjcOfD
 aaaaaaaaaaaaaaaaaaaaaaaaaaaakEjPjRjSlocOlifEfEfElpkhkijQjQknjQjQiAfEfEjNhGfMfGfDfDfDfDjTjqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaajvjUjSjSjVjvcOjujujucOcOcOcOcOcOcOcOcOcOlvlvlvcOcOcOcOcOfGcOcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaakEjWjSjXjZcOmjklklklmocOjfjfjojjmzmzcOmAnenenengcOhphphphpmvcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacOkmlkkokpcOnhfjkGfjfjcOjfjfjfjjmzmzcOklklklklninjhvhphphphpcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacOcOcOcOcOcOkGkHkIkJfjjkjfjfjfjfjfjfnknlfjfjkGfjnmhvnnhphphpcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaanofDiMkrktcOfjfjfjkHfjcOmzmzjmjfjfjfcOnpfjfjkHfjhyhxnqhphphpnraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacOfDfDfDktcOfjkJkGnsntcOmzmzjmmCjfjfcOhVkJlhnpfjnmhvnuhphphpcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaanofDfDfDfDfGfjfjnvnwiCcOcOcOcOcOcOcOcOfjnxfjkIiBcOkukukvhphpnraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacOmhfDfDktcOnyfjnznznzcOkKljlllmlnkKcOfjkHfjfjcOcOcOcOcOcOcOcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacOmhfDfDktcOfPkGfPfPfPcOmuljmDljmEmFcOnpkIfjnpkwkxkxkxkxkxkycOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacOfDfDfDmhcOfjkHfjkIfjmGmHljljljljmDmGfjfjfjfjcOkxkxkxkxkxkxcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacOkmlkkokpcOnhfjkGkJfjcOjfjfjfjjmzmzcOklklklklninjhvhphphphpcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacOcOcOcOcOcOkGkHkIkHfjjkjfjfjfjfjfjfnknlfjfjkGfjnmhvnnhphphpcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaanofDiMkrktcOfjfjkGnsntcOmzmzjmjfjfjfcOnpfjfjkHfjhyhxnqhphphpnraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacOfDfDfDktcOfjkJnvnwiCcOmzmzjmmCjfjfcOhVkJlhnpfjnmhvnuhphphpcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaanofDfDfDfDfGfjfjnznznzcOcOcOcOcOcOcOcOfjnxfjkIiBcOkukukvhphpnraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacOmhfDfDktcOnyfjmdfPfPcOkKljlllmlnkKcOfjkHfjfjcOcOcOcOcOcOcOcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacOmhfDfDktcOfPkGnWkIfjcOmuljmDljmEmFcOnpkIfjnpkwkxkxkxkxkxkycOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacOfDfDfDmhcOfjkHfjfjfjmGmHljljljljmDmGfjfjfjfjcOkxkxkxkxkxkxcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaacOkzktkAmhcOfjlqhHlqhHcOmImJmJmKmJmIcOhHjBksjBcOkBmrmskCkxkDcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaacOcOcOcOcOcOcOnAcOnAcOcOcOnAnAnAnAcOcOcOnAcOnAcOcOcOcOcOcOcOcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

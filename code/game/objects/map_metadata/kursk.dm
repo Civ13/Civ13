@@ -2,7 +2,7 @@
 /obj/map_metadata/kursk
 	ID = MAP_KURSK
 	title = "Kursk"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/kursk.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200
 
@@ -21,9 +21,10 @@
 	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the ceasefire ends!<br></font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
+	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 
 /obj/map_metadata/kursk/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -37,12 +38,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/kursk/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/kursk/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/kursk/roundend_condition_def2name(define)
 	..()

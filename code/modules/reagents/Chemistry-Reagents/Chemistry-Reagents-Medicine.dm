@@ -445,9 +445,43 @@
 	M.add_chemical_effect(CE_SPEEDBOOST, 2)
 	M.add_chemical_effect(CE_PULSE, 4)
 	M.mood += removed*30
-/datum/reagent/opium/overdose(var/mob/living/human/M, var/alien)
+/datum/reagent/cocaine/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.make_dizzy(6)
+
+/datum/reagent/crack
+	name = "Crack cocaine"
+	id = "crack"
+	description = "A very powerful stimulant made from cocaine. Very addictive."
+	taste_description = "metallic bitterness"
+	reagent_state = SOLID
+	color = "#faeff1"
+	metabolism = REM * 0.5
+	overdose = 20
+
+/datum/reagent/crack/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	if (prob(5))
+		M.emote(pick("twitch", "blink_r", "shiver", "scream"))
+		M.hallucination = max(M.hallucination, 1)
+		if (prob(50))
+			M.forcesay(pick("Hell yes!", "Got some spare change?", "It's all because of the CIA!", "Shut up! They are listening!", "Aliens, man, fucking aliens!!", "You ain’t catchin’ me!", "Everything has a street value!", "You know they know!", "Reptilians are ruling this county!", "Watch out for the New World Order!"))
+	M.add_chemical_effect(CE_PAINKILLER, 50)
+	M.addictions["cocaine"] += 3
+	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
+	M.add_chemical_effect(CE_PULSE, 2)
+	M.make_jittery(5)
+	M.make_dizzy(10)
+	M.apply_effect(STUTTER)
+	M.mood += removed*30
+
+/datum/reagent/crack/overdose(var/mob/living/human/M, var/alien, var/removed)
+	..()
+	M.make_dizzy(6)
+	M.adjustBrainLoss(6 * removed)
+	M.add_chemical_effect(CE_PULSE, 6)
+	M.hallucination = max(M.hallucination, 3)
+	M.apply_effect(3, STUTTER)
+	M.mood -= 30
 
 /datum/reagent/pervitin
 	name = "Methamphetamine"
@@ -546,6 +580,7 @@
 
 /datum/reagent/sterilizine
 	name = "Sterilizine"
+	id = "sterilizine"
 	description = "Sterilizes wounds in preparation for surgery and thoroughly removes blood."
 	taste_description = "bitterness"
 	reagent_state = LIQUID

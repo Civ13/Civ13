@@ -1,7 +1,7 @@
 /obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
 	title = "Arab Town"
-	lobby_icon_state = "modern"
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -24,7 +24,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
+		"Al-Qussam:1" = "sound/music/alqassam.ogg",)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
 
@@ -154,7 +154,7 @@ var/no_loop_arab = FALSE
 /obj/map_metadata/arab_town_2
 	ID = MAP_ARAB_TOWN_2
 	title = "Arab Town II"
-	lobby_icon_state = "modern"
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_hardcore = FALSE
@@ -175,7 +175,7 @@ var/no_loop_arab = FALSE
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
+		"Al-Qussam:1" = "sound/music/alqassam.ogg",)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
 

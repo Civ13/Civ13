@@ -110,6 +110,7 @@
 					if(ranged)
 						H.adaptStat("bows", 1)
 		visible_message("<span class='notice'>[H] hits \the [src] with \the [proj]!</span>","<span class='notice'>You hit \the [src] with \the [proj]!</span>")
+		H << "<font size=4><b>You hit the target!</b></font>"
 		//If the user shoots at a target, check if it's an arrow or a bolt and have a chance of dropping the arrow/bolt.
 		if(istype(src, /obj/structure/practice_dummy/target))
 			if (istype(proj, /obj/item/projectile/arrow/arrow))
@@ -254,3 +255,21 @@
 	desc = "A wood target, covered in straw. Used for training ranged weapons."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "target_dummy_target"
+
+/obj/structure/practice_dummy/target/human
+	name = "practice target"
+	desc = "A cardboard target. Used for training ranged weapons."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "target_h"
+/obj/structure/practice_dummy/target/human/New()
+	..()
+	name = "practice target"
+	desc = "A cardboard target. Used for training ranged weapons."
+	icon_state = "target_h"
+
+/obj/structure/practice_dummy/target/human/indestructible
+
+/obj/structure/practice_dummy/target/human/indestructible/check_health()
+	return
+/obj/structure/practice_dummy/target/human/indestructible/ex_act()
+	return

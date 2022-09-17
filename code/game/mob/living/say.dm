@@ -76,6 +76,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 
 	if (speaking)
 		message = copytext(message,2+length(speaking.key))
+		alt_message = copytext(alt_message,2+length(speaking.key))
 	else
 		speaking = get_default_language()
 

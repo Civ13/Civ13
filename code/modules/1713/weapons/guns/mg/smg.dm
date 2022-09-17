@@ -182,6 +182,7 @@
 	force = 15
 	throwforce = 30
 	weight = 3.4
+	attachment_slots = ATTACH_BARREL
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
 		list(name="semi auto",    burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
@@ -204,7 +205,7 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name="full auto",	burst=1.2, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -224,6 +225,103 @@
 	sel_mode = 1
 	effectiveness_mod = 0.95
 
+/obj/item/weapon/gun/projectile/submachinegun/mp40/mp5
+	name = "H&K MP5"
+	desc = "German submachinegun chambered in 9mm Parabellum."
+	icon_state = "mp5"
+	item_state = "mp5"
+	base_icon = "mp5"
+	weight = 2.9
+	equiptimer = 8
+	fire_sound = 'sound/weapons/guns/fire/MP5.ogg'
+	magazine_type = /obj/item/ammo_magazine/mp40/mp5
+	good_mags = list(/obj/item/ammo_magazine/mp40/mp5)
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+	sel_mode = 1
+	effectiveness_mod = 1.2
+
+/obj/item/weapon/gun/projectile/submachinegun/uzi
+	name = "Uzi"
+	desc = "An Israeli submachinegun chambered in 9mm Parabellum."
+	icon_state = "uzi"
+	item_state = "uzi"
+	base_icon = "uzi"
+	caliber = "a9x19"
+	weight = 2.1
+	equiptimer = 5
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/uzi
+	good_mags = list(/obj/item/ammo_magazine/uzi)
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=0.9, recoil=0, move_delay=3, dispersion = list(1.3, 1.4, 1.5, 1.6, 1.7)),
+		)
+	sel_mode = 1
+	effectiveness_mod = 1.1
+
+/obj/item/weapon/gun/projectile/submachinegun/mac10
+	name = "MAC-10"
+	desc = "An American compact blowback operated submachinegun chambered in 9mm Parabellum."
+	icon_state = "mac10"
+	item_state = "mac10"
+	base_icon = "mac10"
+	weight = 1.7
+	equiptimer = 7
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
+	magazine_type = /obj/item/ammo_magazine/mac10
+	good_mags = list(/obj/item/ammo_magazine/mac10)
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=3, dispersion = list(1.5, 1.6, 1.7, 1.8, 1.9)),
+		)
+	sel_mode = 1
+	effectiveness_mod = 0.7
+
+/obj/item/weapon/gun/projectile/submachinegun/tec9
+	name = "TEC-9"
+	desc = "A blowback-operated semi-automatic pistol."
+	icon = 'icons/obj/guns/automatic.dmi'
+	icon_state = "tec-9"
+	item_state = "tec-9"
+	base_icon = "tec-9"
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/tec9.ogg'
+	magazine_type = /obj/item/ammo_magazine/tec9
+	good_mags = list(/obj/item/ammo_magazine/tec9)
+	weight = 1.3
+	equiptimer = 8
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.2, move_delay=2, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9)),
+		list(name="full auto",	burst=1, burst_delay=0.3, move_delay=4, dispersion = list(1.6, 1.7, 1.8, 1.9, 2.0)),
+		)
+	effectiveness_mod = 0.8
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS
+
+/obj/item/weapon/gun/projectile/submachinegun/skorpion
+	name = "Skorpion"
+	desc = "An Czechoslovak machinepistol chambered in 9mm Parabellum."
+	icon_state = "skorpion"
+	item_state = "skorpion"
+	base_icon = "skorpion"
+	caliber = "a9x19"
+	weight = 1.1
+	equiptimer = 6
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/skorpion
+	good_mags = list(/obj/item/ammo_magazine/skorpion)
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=0.8, recoil=0, move_delay=3, dispersion = list(1.2, 1.3, 1.4, 1.5, 1.6)),
+		)
+	sel_mode = 1
+	effectiveness_mod = 0.95
+
 /obj/item/weapon/gun/projectile/submachinegun/greasegun
 	name = "M3A1 SMG"
 	desc = "A simplistic American submachinegun, chambered in .45 ACP."
@@ -239,7 +337,7 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 7
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.6, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -260,7 +358,7 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.6, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -302,7 +400,7 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -322,8 +420,8 @@
 	weight = 3.63
 	equiptimer = 14
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="full auto",	burst=1, burst_delay=1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -342,7 +440,7 @@
 	weight = 3.04
 	equiptimer = 10
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -357,7 +455,7 @@
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
-	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
 	weight = 3.47
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -414,6 +512,12 @@
 			VERY_LONG_RANGE_MOVING = 23),
 	)
 
+/obj/item/weapon/gun/projectile/submachinegun/ak47/gold
+	name = "gold-plated AKM"
+	desc = "Iconic Soviet assault rifle, chambered in 7.62x39mm. This one is plated in gold. It looks very expensive."
+	icon_state = "ak47gold"
+	item_state = "ak47gold"
+	base_icon = "ak47gold"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
@@ -477,7 +581,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74)
+	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum,/obj/item/ammo_magazine/ak74/rubber)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -747,7 +851,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74/ak74m
-	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74)
+	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -1012,7 +1116,7 @@
 	base_icon = "m4mws"
 	icon_state = "m4mws"
 	desc = "A version of the M4 carbine made to fit the Modular Weapon System."
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att/New()
@@ -1112,6 +1216,11 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
 
+/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21
+	name = "M21 SWS"
+	desc = "An American sniper rifle, chambered in 7.62x51mm."
+	effectiveness_mod = 1.12
+
 /obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"
 	desc = "A German battle rifle, chambered in 7.62x51mm."
@@ -1132,6 +1241,71 @@
 		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
 		)
 	effectiveness_mod = 1.03
+	sel_mode = 1
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 50,
+
+			MEDIUM_RANGE_STILL = 50,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 30,
+			LONG_RANGE_MOVING = 15,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 82,
+			SHORT_RANGE_MOVING = 72,
+
+			MEDIUM_RANGE_STILL = 64,
+			MEDIUM_RANGE_MOVING = 55,
+
+			LONG_RANGE_STILL = 44,
+			LONG_RANGE_MOVING = 31,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 91,
+			SHORT_RANGE_MOVING = 81,
+
+			MEDIUM_RANGE_STILL = 76,
+			MEDIUM_RANGE_MOVING = 67,
+
+			LONG_RANGE_STILL = 55,
+			LONG_RANGE_MOVING = 43,
+
+			VERY_LONG_RANGE_STILL = 36,
+			VERY_LONG_RANGE_MOVING = 23),
+	)
+/obj/item/weapon/gun/projectile/submachinegun/fal
+	name = "FN Fal"
+	desc = "A belgian battle rifle, chambered in 7.62×51mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "fal"
+	item_state = "fal"
+	base_icon = "fal"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/guns/fire/fnfal.ogg'
+	magazine_type = /obj/item/ammo_magazine/fal
+	good_mags = list(/obj/item/ammo_magazine/fal)
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	weight = 3.8
+	equiptimer = 12
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.9, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.8)),
+		)
+	effectiveness_mod = 1.07
 	sel_mode = 1
 	accuracy_list = list(
 
@@ -1488,6 +1662,74 @@
 	effectiveness_mod = 1.15
 	sel_mode = 1
 
+/obj/item/weapon/gun/projectile/submachinegun/qbz95
+	name = "QBZ-95"
+	icon_state = "qbz95"
+	item_state = "qbz95"
+	base_icon = "qbz95"
+	desc = "A Chinese-designed bullup assault rifle, chambered in 5.8x42mm."
+	icon = 'icons/obj/guns/wip.dmi'
+	caliber = "a58x42"
+	fire_sound = 'sound/weapons/guns/fire/M14.ogg'
+	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
+	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
+	magazine_type = /obj/item/ammo_magazine/qbz95
+	good_mags = list(/obj/item/ammo_magazine/qbz95)
+	weight = 3.5
+	equiptimer = 11
+	effectiveness_mod = 1.05
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		)
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 50,
+
+			MEDIUM_RANGE_STILL = 50,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 30,
+			LONG_RANGE_MOVING = 15,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 82,
+			SHORT_RANGE_MOVING = 72,
+
+			MEDIUM_RANGE_STILL = 64,
+			MEDIUM_RANGE_MOVING = 55,
+
+			LONG_RANGE_STILL = 44,
+			LONG_RANGE_MOVING = 31,
+
+			VERY_LONG_RANGE_STILL = 10,
+			VERY_LONG_RANGE_MOVING = 5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 91,
+			SHORT_RANGE_MOVING = 81,
+
+			MEDIUM_RANGE_STILL = 76,
+			MEDIUM_RANGE_MOVING = 67,
+
+			LONG_RANGE_STILL = 55,
+			LONG_RANGE_MOVING = 43,
+
+			VERY_LONG_RANGE_STILL = 36,
+			VERY_LONG_RANGE_MOVING = 23),
+	)
+
 /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
 	name = "Makeshift AK-47"
 	desc = "Something retarded that doesn't exist."
@@ -1548,3 +1790,31 @@
 	icon_state = "black_vz58"
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
+
+//////////////////////C7///////////////////////////////
+/obj/item/weapon/gun/projectile/submachinegun/c7
+	name = "C7"
+	desc = "A Canadian Colt C7 assault rifle, chambered in 5.56x45mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "c7"
+	item_state = "g3a3"
+	base_icon = "c7"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
+	weight = 2.98
+	equiptimer = 13
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1, 1, 0.9)),
+		)
+	effectiveness_mod = 1.20
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan(src)
+	SP.attached(null,src,TRUE)

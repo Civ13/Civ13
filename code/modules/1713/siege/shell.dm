@@ -82,6 +82,24 @@
 	heavy_armor_penetration = 75
 	damage = 125
 
+/obj/item/cannon_ball/shell/tank/HE100
+	atype = "HE"
+	caliber = 100
+	heavy_armor_penetration = 20
+	damage = 333
+
+/obj/item/cannon_ball/shell/tank/AP100
+	atype = "AP"
+	caliber = 100
+	heavy_armor_penetration = 70
+	damage = 133
+
+/obj/item/cannon_ball/shell/tank/APCR100
+	atype = "APCR"
+	caliber = 100
+	heavy_armor_penetration = 100
+	damage = 100
+
 /obj/item/cannon_ball/shell/tank/HE88
 	atype = "HE"
 	caliber = 88
@@ -153,6 +171,28 @@
 	caliber = 204
 	heavy_armor_penetration = 125
 	damage = 450
+
+/obj/item/cannon_ball/shell/tank/HE150
+	atype = "HE"
+	caliber = 150
+	heavy_armor_penetration = 80
+	damage = 350
+	icon_state = "navalshell"
+	New()
+		..()
+		icon_state = "navalshell"
+
+/obj/item/cannon_ball/shell/tank/HE380
+	atype = "HE"
+	caliber = 380
+	heavy_armor_penetration = 120
+	damage = 650
+	icon_state = "navalshell"
+	New()
+		..()
+		icon_state = "navalshell"
+
+
 /obj/item/cannon_ball/shell/tank/nuclear/
 	atype = "NUCLEAR"
 	New()
@@ -339,6 +379,24 @@
 	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	update_icon()
+
+/obj/structure/shellrack/full100/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
 	update_icon()
 
 /obj/structure/shellrack/full75/american/New()

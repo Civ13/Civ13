@@ -26,27 +26,33 @@
 //sends OOC to a file readable by a bot, who then sends it to the Discord
 /proc/discord_log(name,text)
 	var/oocdiary = file("ooc.log")
-	oocdiary << "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[name]** [text]"
+	if (map)
+		oocdiary << "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[name]** [text]"
 
 /proc/discord_admin_log(name,text)
 	var/admindiary = file("admin.log")
-	admindiary << "__**\[[time_stamp()]] ([map.ID]) ASAY:**__ **[name]** [text]"
+	if (map)
+		admindiary << "__**\[[time_stamp()]] ([map.ID]) ASAY:**__ **[name]** [text]"
 
 /proc/discord_ahelp_log(name,text)
 	var/admindiary = file("admin.log")
-	admindiary << "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]"
+	if (map)
+		admindiary << "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]"
 
 /proc/discord_mentorhelp_log(name,text)
 	var/admindiary = file("admin.log")
-	admindiary << "__**\[[time_stamp()]] ([map.ID]) MENTORHELP:**__ **[name]** [text]"
+	if (map)
+		admindiary << "__**\[[time_stamp()]] ([map.ID]) MENTORHELP:**__ **[name]** [text]"
 
 /proc/discord_adminpm_log(name,text,aname)
 	var/admindiary = file("admin.log")
-	admindiary << "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]"
+	if (map)
+		admindiary << "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]"
 
 /proc/discord_admin_ban(banner,banned,duration,reason)
 	var/admindiary = file("admin.log")
-	admindiary << "__**\[[time_stamp()]] ([map.ID])** [banner] **HAS BANNED** [banned] for [duration], with the reason \"[reason]\""
+	if (map)
+		admindiary << "__**\[[time_stamp()]] ([map.ID])** [banner] **HAS BANNED** [banned] for [duration], with the reason \"[reason]\""
 
 /proc/discord_admin_unban(banner,banned)
 	var/bans_file = null

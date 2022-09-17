@@ -13,10 +13,11 @@
    11 - Cold War Balaclavas
    12 - Cold War Webbing
    13 - NBC &  Hazmat Suits
-   14 - Miscallaneous
-   14a - John Toughguy - Jungle Commando
-   14b - Swinging Sixties
-   14c - Other Miscallaneous */
+   14 - Astronaut Suit and Helmet
+   15 - Miscallaneous
+   15a - John Toughguy - Jungle Commando
+   15b - Swinging Sixties
+   15c - Other Miscallaneous */
 
 /* Coldwar Coats*/
 
@@ -102,6 +103,96 @@
 	item_state = "fbi2"
 	worn_state = "fbi2"
 
+/obj/item/clothing/suit/storage/atf
+	name = "ATF jacket"
+	desc = "An ATF jacket, standard issue for ATF agents."
+	icon_state = "atf"
+	item_state = "atf"
+	worn_state = "atf"
+
+/obj/item/clothing/suit/storage/dea
+	name = "DEA jacket"
+	desc = "A DEA jacket, standard issue for DEA agents."
+	icon_state = "dea"
+	item_state = "dea"
+	worn_state = "dea"
+
+/obj/item/clothing/suit/storage/jacket/forensics
+	name = "forensics jacket"
+	desc = "A forensic department jacket."
+	icon_state = "forensics"
+	item_state = "forensics"
+	worn_state = "forensics"
+
+/obj/item/clothing/suit/storage/jacket/police
+	name = "police jacket"
+	desc = "A police jacket."
+	icon_state = "policejacket"
+	item_state = "policejacket"
+	worn_state = "policejacket"
+	var/closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/police/New()
+	..()
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		name = "sheriff's office jacket"
+
+/obj/item/clothing/suit/storage/jacket/police/verb/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust jacket"
+	if (type != /obj/item/clothing/suit/storage/jacket/police)
+		return
+	else
+		if(closed)
+			worn_state = "policejacket_open"
+			item_state = "policejacket_open"
+			icon_state = "policejacket_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "policejacket"
+			item_state = "policejacket"
+			icon_state = "policejacket"
+			item_state_slots["w_uniform"] = "policejacket"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
+
+/obj/item/clothing/suit/storage/jacket/police/black
+	name = "police jacket"
+	desc = "A black police jacket."
+	icon_state = "policejacket_black"
+	item_state = "policejacket_black"
+	worn_state = "policejacket_black"
+	closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/police/black/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust jacket"
+	if (type != /obj/item/clothing/suit/storage/jacket/police/black)
+		return
+	else
+		if(closed)
+			worn_state = "policejacket_black_open"
+			item_state = "policejacket_black_open"
+			icon_state = "policejacket_black_open"
+			item_state_slots["w_uniform"] = "policejacket_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "policejacket_black"
+			item_state = "policejacket_black"
+			icon_state = "policejacket_black"
+			item_state_slots["w_uniform"] = "policejacket_black"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
+
 /obj/item/clothing/suit/swat //these likely need upgrading to armor
 	name = "swat heavy vest"
 	desc = "A heavy NIJ level IV vest, used by swat officers."
@@ -109,10 +200,22 @@
 	item_state = "swat"
 	worn_state = "swat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 105, arrow = 80, gun = 116, energy = 70, bomb = 74, bio = 44, rad = 40)
+	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
+
+/obj/item/clothing/suit/swat_new
+	name = "swat bulletproof vest"
+	desc = "A heavy NIJ level IV vest, used by swat officers."
+	icon_state = "policevest"
+	item_state = "policevest"
+	worn_state = "policevest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
+	var/slots = 6
+	ripable = FALSE
+	ripable = FALSE
 
 /obj/item/clothing/suit/police
 	name = "police bulletproof vest"
@@ -120,8 +223,9 @@
 	icon_state = "policevest"
 	item_state = "policevest"
 	worn_state = "policevest"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
+	var/slots = 3
 	ripable = FALSE
 
 /obj/item/clothing/under/traffic_police
@@ -137,6 +241,48 @@
 	icon_state = "traffic_cop_sup"
 	item_state = "traffic_cop_sup"
 	worn_state = "traffic_cop_sup"
+
+/obj/item/clothing/under/countysheriff
+	name = "sheriff's department sheriff outfit"
+	desc = "A law enforcement outfit worn by the town's sherrif."
+	icon_state = "sd_sheriff"
+	item_state = "sd_sheriff"
+	worn_state = "sd_sheriff"
+
+/obj/item/clothing/under/countysheriff/deputy
+	name = "sheriff's department deputy outfit"
+	desc = "A law enforcement outfit worn by the town's deputies."
+	icon_state = "sd_deputy"
+	item_state = "sd_deputy"
+	worn_state = "sd_deputy"
+
+/obj/item/clothing/under/countysheriff/deputy/short
+	name = "sheriff's department deputy outfit"
+	desc = "A law enforcement outfit worn by the town's deputies. Short sleeved version."
+	icon_state = "sd_deputy_shortsleeves"
+	item_state = "sd_deputy_shortsleeves"
+	worn_state = "sd_deputy_shortsleeves"
+
+/obj/item/clothing/head/countysheriff_hat
+	name = "sheriff's stratton hat"
+	desc = "A stratton hat worn by the LEOs of the town's Sheriff Department."
+	icon_state = "sd_sheriffhat"
+	item_state = "sd_sheriffhat"
+	worn_state = "sd_sheriffhat"
+
+/obj/item/clothing/head/countysheriff_cap
+	name = "sheriff's department cap"
+	desc = "A baseball cap worn by the LEOs of the town's Sheriff Department."
+	icon_state = "sd_cap"
+	item_state = "sd_cap"
+	worn_state = "sd_cap"
+
+/obj/item/clothing/head/countysheriff_cap/black
+	name = "sheriff's department cap"
+	desc = "A baseball cap worn by the LEOs of the town's Sheriff Department. Black version."
+	icon_state = "sd_cap_black"
+	item_state = "sd_cap_black"
+	worn_state = "sd_cap_black"
 
 /obj/item/clothing/head/traffic_police
 	name = "police cap"
@@ -315,6 +461,13 @@
 	item_state = "ushelmet_camo_lt"
 	worn_state = "ushelmet_camo_lt"
 
+/obj/item/clothing/head/helmet/modern/ushelmet/crewman
+	name = "CVC helmet"
+	desc = "A standard issue helmet for vehicle crewmen."
+	icon_state = "cvc_helmet"
+	item_state = "cvc_helmet"
+	worn_state = "cvc_helmet"
+
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1
 	name = "M1 Helmet"
@@ -440,6 +593,19 @@
 	body_parts_covered = HEAD
 	restricts_view = 1
 
+/obj/item/clothing/suit/storage/ghillie/winter
+	name = "winter ghillie suit"
+	desc = "A camo winter ghillie suit."
+	icon_state = "ghillie_winter"
+	item_state = "ghillie_winter"
+	worn_state = "ghillie_winter"
+
+/obj/item/clothing/head/ghillie/winter
+	name = "winter ghillie headcover"
+	desc = "A headcover for a winter ghillie suit."
+	icon_state = "ghillie_winter"
+	item_state = "ghillie_winter"
+
 /* Cold War Hats*/
 
 /obj/item/clothing/head/jungle_hat
@@ -530,10 +696,25 @@
 
 /obj/item/clothing/head/ww2/nkvd_cap/kgb
 	name = "KGB cap"
-	desc = "A cap and worn by KGB."
+	desc = "A cap worn by KGB."
 	icon_state = "nkvd_cap"
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
+
+/obj/item/clothing/head/coldwar/soviet_officer
+	name = "soviet officer cap"
+	desc = "A cap worn by Soviet officers."
+	icon_state = "sov_officercap2"
+	item_state = "sov_officercap2"
+	worn_state = "sov_officercap2"
+
+/obj/item/clothing/head/fieldcap/afghanka
+	name = "Afghanka field cap"
+	desc = "A field cap issued to Soviet forces in the 1980s."
+	icon_state = "fieldcap_afghanka"
+	item_state = "fieldcap_afghanka"
+	worn_state = "fieldcap_afghanka"
+	body_parts_covered = HEAD
 
 /obj/item/clothing/head/beret_rus_vdv
 	name = "VDV beret"
@@ -548,6 +729,44 @@
 	icon_state = "beret_rus_spez"
 	item_state = "beret_rus_spez"
 	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_blugoslavia
+	name = "Blugoslavian beret"
+	desc = "A beret worn by Blugoslavian Officers."
+	icon_state = "beret_rus_vdv"
+	item_state = "beret_rus_vdv"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_redmenia
+	name = "Redmenian beret"
+	desc = "A beret worn by Redmenian Officers."
+	icon_state = "beret_rus_spez"
+	item_state = "beret_rus_spez"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/cap_blugoslavia
+	name = "Blugoslavian navy cap"
+	desc = "A cap worn by Blugoslavian Officers of the Blugoslavian Naval Force."
+	icon_state = "blugoslavia_cap"
+	item_state = "blugoslavia_cap"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/cap_redmenia
+	name = "Redmenian navy cap"
+	desc = "A cap worn by Redmenian Officers of the Imperial Redmenian Navy."
+	icon_state = "redmenia_cap"
+	item_state = "redmenia_cap"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/ww2/us_sailor_hat/blugoslavia
+	name = "Blugoslavian sailor hat"
+	desc = "A hat worn by sailors of the Blugoslavian Naval Force."
+	icon_state = "upapilotka"
+	item_state = "upapilotka"
+	worn_state = "upapilotka"
+/obj/item/clothing/head/ww2/us_sailor_hat/redmenia
+	name = "Redmenian sailor hat"
+	desc = "A hat worn by sailors of the Imperial Redmenian Navy."
 
 /* Vietcong Clothes*/
 
@@ -692,18 +911,56 @@
 	worn_state = "ssh_68_sovhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 75, gun = 41, energy = 24, bomb = 66, bio = 25, rad = FALSE)
+	armor = list(melee = 55, arrow = 75, gun = 40, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
 /obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
-	name = "USSR 6B3 body armor"
-	desc = "A russian body armor, made with glory."
-	icon_state = "b3vest"
-	item_state = "b3vest"
-	worn_state = "b3vest"
+	name = "6B3 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
+	icon_state = "6b3"
+	item_state = "6b3"
+	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b3 //Accessory version
+	name = "6B3 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
+	icon_state = "6b3"
+	item_state = "6b3"
+	worn_state = "6b3"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 2
+	slowdown = 0.1
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b2
+	name = "6B2 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the early 1980s."
+	icon_state = "6b2"
+	item_state = "6b2"
+	worn_state = "6b2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 67, arrow = 95, gun = 30, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	ripable = FALSE
+	flags = CONDUCT
+	slowdown = 0.2
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b5
+	name = "6B5 body armor"
+	desc = "A ballistic vest of Soviet origin, issued in the late 1980s."
+	icon_state = "6b5"
+	item_state = "6b5"
+	worn_state = "6b5"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 70, arrow = 95, gun = 70, energy = 30, bomb = 70, bio = 20, rad = FALSE)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 2
+	slowdown = 0.1
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"
@@ -741,11 +998,21 @@
 	new/obj/item/ammo_magazine/m249(src)
 	new/obj/item/ammo_magazine/m249(src)
 
+/obj/item/weapon/storage/belt/largepouches/green/m249
+/obj/item/weapon/storage/belt/largepouches/green/m249/New()
+	..()
+	new/obj/item/ammo_magazine/m249(src)
+	new/obj/item/ammo_magazine/m249(src)
+
 /obj/item/weapon/storage/belt/largepouches/sovietmg
 /obj/item/weapon/storage/belt/largepouches/sovietmg/New()
 	..()
 	new/obj/item/ammo_magazine/dp(src)
 	new/obj/item/ammo_magazine/dp(src)
+
+/obj/item/weapon/storage/belt/largepouches/sovietmg/white
+	icon_state = "largepouches_white"
+	item_state = "largepouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/vc_officer
 /obj/item/weapon/storage/belt/smallpouches/vc_officer/New()
@@ -801,10 +1068,18 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt/New()
 	..()
-	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74
+/obj/item/weapon/storage/belt/smallpouches/green/rpk74/New()
+	..()
+	new/obj/item/ammo_magazine/rpk74(src)
+	new/obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74m/New()
@@ -846,17 +1121,85 @@
 	..()
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/ammo_magazine/tt30(src)
+	new /obj/item/ammo_magazine/makarov(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_spz
 /obj/item/weapon/storage/belt/smallpouches/green/sov_spz/New()
+	storage_slots = 6
 	..()
 	new /obj/item/weapon/grenade/antitank/rpg40(src)
-	new /obj/item/weapon/grenade/antitank/rpg40(src)
+	new /obj/item/weapon/grenade/modern/f1(src)
 	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/ak74
+/obj/item/weapon/storage/belt/smallpouches/green/ak74/New()
+	..()
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/ak47
+/obj/item/weapon/storage/belt/smallpouches/green/ak47/New()
+	..()
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/stanag
+/obj/item/weapon/storage/belt/smallpouches/green/stanag/New()
+	..()
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/m14
+/obj/item/weapon/storage/belt/smallpouches/green/m14/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/* PLA Belts */
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbza95_2
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_2/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1
+/obj/item/weapon/storage/belt/smallpouches/china_qblz1/New()
+	..()
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/ammo_magazine/tibannagas/qblz1(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer
+/obj/item/weapon/storage/belt/smallpouches/china_qbz95_officer/New()
+	..()
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/ammo_magazine/qbz95(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /* Cold War Balaclavas*/
@@ -903,6 +1246,65 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
+	New()
+		..()
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd
+	New()
+		..()
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47/drum(hold)
+		new/obj/item/ammo_magazine/ak47/drum(hold)
+		new/obj/item/ammo_magazine/ak47/drum(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red
+	name = "khaki chest webbing"
+	desc = "A khaki chest-level webbing, with three medium sized pouches."
+	icon_state = "khaki_webbing"
+	item_state = "khaki_webbing"
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/sniper
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosinbox(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/m24
+	New()
+		..()
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
 	desc = "A khaki chest-level webbing, with three medium sized pouches."
@@ -912,6 +1314,34 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/khaki_webbing/akm
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/khaki_webbing/g3
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/akm
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/g3
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/mk2(hold)
+		new/obj/item/ammo_magazine/hk(hold)
+		new/obj/item/ammo_magazine/hk(hold)
 
 /obj/item/clothing/accessory/storage/webbing/pouches
 	name = "black pouches"
@@ -1011,7 +1441,31 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier
+	name = "shotgun bandolier"
+	desc = "A bandolier with several holes made to fit shotgun shells."
+	icon_state = "us_bandolier"
+	item_state = "us_bandolier"
+	slots = 12
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing/shotgun)
 
+/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot
+	New()
+		..()
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
 /* NBC &  Hazmat Suits*/
 
 /obj/item/clothing/head/nbc
@@ -1056,7 +1510,7 @@
 
 /obj/item/clothing/suit/hazmat
 	name = "hazmat suit"
-	desc = "A bright hazard protection suit, made protect against biological, chemical and nuclear threats."
+	desc = "A bright hazard protection suit, made to protect against biological, chemical and nuclear threats."
 	icon_state = "hazmat_suit"
 	item_state = "hazmat_suit"
 	worn_state = "hazmat_suit"
@@ -1064,9 +1518,25 @@
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)
 	ripable = FALSE
 
+/* Astronaut Suit and Helmet*/
+
+/obj/item/clothing/head/astronaut
+	name = "astronaut helmet"
+	desc = "A grey helmet, made to protect against low pressure, temperature and radioactive threa"
+	icon_state = "astronaut"
+	armor = list(melee = 20, arrow = 10, gun = 5, energy = 10, bomb = 35, bio = 150, rad = 195)
+
+/obj/item/clothing/suit/astronaut
+	name = "astronaut suit"
+	desc = "A grey space suit, made protect to against low pressure, temperature and radioactive threats."
+	icon_state = "astronaut"
+	item_state = "astronaut"
+	worn_state = "astronaut"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 35, bio = 150, rad = 195)
+	ripable = FALSE
+
 /* Miscallaneous*/
-
-
 
 	/* John Toughguy - Jungle Commando defintiely does not rhyme with a certain movie franchise*/
 
@@ -1141,6 +1611,30 @@
 			usr << "You <b>close up</b> the collar of your uniform."
 			adjusted = TRUE
 			update_clothing_icon()
+
+/obj/item/clothing/under/sov_klmk
+	name = "KLMK camo uniform"
+	desc = "A suit in the KLMK camo pattern, issued by the Soviet Union in the 1970s."
+	icon_state = "sov_klmk"
+	item_state = "sov_klmk"
+	worn_state = "sov_klmk"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/sov_kzs
+	name = "KZS camo uniform"
+	desc = "A suit in the KZS camo pattern, issued by the Soviet Union in the late 1970s."
+	icon_state = "sov_kzs"
+	item_state = "sov_kzs"
+	worn_state = "sov_kzs"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/coldwar/soviet_officer
+	name = "soviet officer uniform"
+	desc = "An officer uniform, used by officers in the Soviet Army."
+	icon_state = "sovuni_officer2"
+	item_state = "sovuni_officer2"
+	worn_state = "sovuni_officer2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 	/* Swinging 60's*/
 
@@ -1270,6 +1764,39 @@
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
+obj/item/clothing/head/helmet/modern/hardhaty
+	name = "yellow hard hat"
+	desc = "A yellow hard hat used by the workers."
+	icon_state = "hardhat_yellow"
+	item_state = "hardhat_yellow"
+	worn_state = "hardhat_yellow"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
+obj/item/clothing/head/helmet/modern/hardhatw
+	name = "white hard hat"
+	desc = "A white hard hat used by the workers."
+	icon_state = "hardhat_white"
+	item_state = "hardhat_white"
+	worn_state = "hardhat_white"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
+obj/item/clothing/head/helmet/modern/hardhato
+	name = "orange hard hat"
+	desc = "A orange hard hat used by the workers."
+	icon_state = "hardhat_orange"
+	item_state = "hardhat_orange"
+	worn_state = "hardhat_orange"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
 //yare yare daze.
 
 /obj/item/clothing/head/bizarre_hat
@@ -1296,3 +1823,164 @@
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
+
+/obj/item/clothing/under/coldwar/dra/soldier
+	name = "DRA uniform"
+	desc = "A military uniform worn by DRA soldiers."
+	icon_state = "dra_uni"
+	item_state = "dra_uni"
+	worn_state = "dra_uni"
+
+/obj/item/clothing/under/coldwar/dra/nco
+	name = "DRA NCO uniform"
+	desc = "A military uniform worn by DRA NCOs."
+	icon_state = "dra_uni_nco"
+	item_state = "dra_uni_nco"
+	worn_state = "dra_uni_nco"
+
+/obj/item/clothing/under/coldwar/dra/officer
+	name = "DRA officer uniform"
+	desc = "A military uniform worn by DRA officers."
+	icon_state = "dra_uni_officer"
+	item_state = "dra_uni_officer"
+	worn_state = "dra_uni_officer"
+
+/obj/item/clothing/suit/coldwar/dra/officer
+	name = "DRA officer jacket"
+	desc = "A military jacket worn by DRA officers."
+	icon_state = "dra_officer"
+	item_state = "dra_officer"
+	worn_state = "dra_officer"
+
+/obj/item/clothing/head/custom/fieldcap/dra
+	name = "DRA field cap"
+	desc = "A cap worn by DRA military personnel."
+	color = "#767160"
+	uncolored1 = FALSE
+
+//blugoslavian and redmenian stuff
+/obj/item/clothing/under/blugoslavian_sailor
+	name = "Blugoslavian navy uniform"
+	desc = "A blue uniform of the Blugoslavian Navy."
+	icon_state = "blugoslavian_sailor"
+	item_state = "blugoslavian_sailor"
+	worn_state = "blugoslavian_sailor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+
+/obj/item/clothing/under/redmenian_sailor
+	name = "Redmenian navy uniform"
+	desc = "A red uniform of the Redmenian Navy."
+	icon_state = "redmenian_sailor"
+	item_state = "redmenian_sailor"
+	worn_state = "redmenian_sailor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+/obj/item/clothing/under/coldwar/bowling_red
+	name = "red bowling outfit"
+	desc = "A stylish red bowling shirt with black pants."
+	icon_state = "bowling_red"
+	item_state = "bowling_red"
+	worn_state = "bowling_red"
+
+/obj/item/clothing/under/coldwar/bowling_yellow
+	name = "yellow bowling outfit"
+	desc = "A stylish yellow bowling shirt with black pants."
+	icon_state = "bowling_yellow"
+	item_state = "bowling_yellow"
+	worn_state = "bowling_yellow"
+
+/obj/item/clothing/under/coldwar/bowling_green
+	name = "green bowling outfit"
+	desc = "A stylish green bowling shirt with black pants."
+	icon_state = "bowling_green"
+	item_state = "bowling_green"
+	worn_state = "bowling_green"
+
+/obj/item/clothing/under/coldwar/bowling_blue
+	name = "blue bowling outfit"
+	desc = "A stylish blue bowling shirt with black pants."
+	icon_state = "bowling_blue"
+	item_state = "bowling_blue"
+	worn_state = "bowling_blue"
+
+/obj/item/clothing/under/coldwar/hippie
+	name = "hippie outfit"
+	desc = "A tie-dye t-shirt with bootleg grey jeans. Right on, man!"
+	icon_state = "hippy"
+	item_state = "hippy"
+	worn_state = "hippy"
+
+///////MEDICAL SCRUBS//////////////
+
+/obj/item/clothing/under/scrubs
+	name = "white medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel."
+	icon_state = "scrubs_white"
+	item_state = "scrubs_white"
+	worn_state = "scrubs_white"
+
+/obj/item/clothing/under/scrubs/darkgreen
+	name = "dark green medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is dark green."
+	icon_state = "scrubs_darkgreen"
+	item_state = "scrubs_darkgreen"
+	worn_state = "scrubs_darkgreen"
+
+/obj/item/clothing/under/scrubs/lightgreen
+	name = "light green medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is light green."
+	icon_state = "scrubs_lightgreen"
+	item_state = "scrubs_lightgreen"
+	worn_state = "scrubs_lightgreen"
+
+/obj/item/clothing/under/scrubs/blue
+	name = "blue medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is blue."
+	icon_state = "scrubs_blue"
+	item_state = "scrubs_blue"
+	worn_state = "scrubs_blue"
+
+/obj/item/clothing/under/scrubs/navy
+	name = "navy medical scrubs"
+	desc = "Sanitary clothing worn by medical personnel. This one is navy."
+	icon_state = "scrubs_navy"
+	item_state = "scrubs_navy"
+	worn_state = "scrubs_navy"
+
+
+////////SURGICAL CAPS/////////
+
+/obj/item/clothing/head/surgical_cap
+	name = "white surgical cap"
+	desc = "A white sterile surgical cap."
+	icon_state = "surgcap_white"
+	item_state = "surgcap_white"
+	worn_state = "surgcap_white"
+
+/obj/item/clothing/head/surgical_cap/darkgreen
+	name = "dark green surgical cap"
+	desc = "A dark green sterile surgical cap."
+	icon_state = "surgcap_darkgreen"
+	item_state = "surgcap_darkgreen"
+	worn_state = "surgcap_darkgreen"
+
+/obj/item/clothing/head/surgical_cap/lightgreen
+	name = "light green surgical cap"
+	desc = "A light green sterile surgical cap."
+	icon_state = "surgcap_lightgreen"
+	item_state = "surgcap_lightgreen"
+	worn_state = "surgcap_lightgreen"
+
+/obj/item/clothing/head/surgical_cap/blue
+	name = "blue surgical cap"
+	desc = "A blue sterile surgical cap."
+	icon_state = "surgcap_blue"
+	item_state = "surgcap_blue"
+	worn_state = "surgcap_blue"
+
+/obj/item/clothing/head/surgical_cap/navy
+	name = "navy surgical cap"
+	desc = "A navy sterile surgical cap."
+	icon_state = "surgcap_navy"
+	item_state = "surgcap_navy"
+	worn_state = "surgcap_navy"

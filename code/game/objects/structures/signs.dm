@@ -77,15 +77,40 @@
 	desc = "A sign fat people usually like."
 	icon_state = "mcd"
 
+/obj/structure/sign/mcd/tfc
+	name = "Texas Fried Chicken"
+	desc = "A sign Texas people usually like."
+	icon_state = "tfc"
+
+/obj/structure/sign/weedshop
+	name = "Weed Shop"
+	desc = "A sign stoners usually like."
+	icon_state = "weedshop"
+
 /obj/structure/sign/mckellens
 	name = "McKellen's"
 	desc = "A sign for the McKellen's Franchise establishment."
 	icon_state = "mckellens"
 
+/obj/structure/sign/sheriff
+	name = "Sheriff's Office"
+	desc = "A sign for the local Sheriff's Office."
+	icon_state = "sheriff"
+
+/obj/structure/sign/bank
+	name = "bank"
+	desc = "A sign for the local bank."
+	icon_state = "bank"
+
 /obj/structure/sign/bar
 	name = "BAR"
 	desc = "A sign that says bar on it."
 	icon_state = "barsign"
+
+/obj/structure/sign/barbershop
+	name = "barbershop"
+	desc = "A swirly object indicating a barbershop."
+	icon_state = "barber"
 
 /obj/structure/sign/baily
 	name = "Baily post"
@@ -142,10 +167,43 @@
 	name = "Kodoku"
 	desc = "Kodoku (Solitary)."
 	icon_state = "wing3"
+
+/obj/structure/sign/japsign
+	name = "street sign"
+	desc = "A japanese street sign."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "japsign"
+/obj/structure/sign/japsign/New()
+	..()
+	var/picksign = pick("japsign", "japsign2", "japsign3", "japsign4", "japsign5", "japsign6")
+	icon_state = picksign
+
+/obj/structure/sign/mugshot
+	name = "police lineup screen"
+	desc = "A measure scale fixated to a wall. Useful for mugshots."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "mugshot"
+
 /obj/structure/sign/exit
 	name = "Exit"
 	desc = "Points to the exit."
 	icon_state = "exit"
+
+/obj/structure/sign/galacticbattles/unite
+	name = "UNITE Poster"
+	desc = "Seems to be a Galactic Republic Propaganda Poster for the fight against the Sepretists."
+	icon_state = "unite"
+
+/obj/structure/sign/galacticbattles/care
+	name = "CARE Poster"
+	desc = "Seems to be a Galactic Republic Propaganda Poster to make the public aware of infiltrators"
+	icon_state = "care"
+
+/obj/structure/sign/galacticbattles/repair
+	name = "Corelian Repair Advertisement Poster"
+	desc = "Seems to be a Corelian advertisement for Robot repairs"
+	icon_state = "repair"
+
 
 /obj/structure/sign/minefield
 	name = "Minefield"
@@ -297,3 +355,161 @@
 	name = "presence recognition"
 	icon_state = "medal"
 	desc = "A recognition plaque staight from the ministy of admission! This one seems to be for the persons presence, what an award!"
+
+/obj/structure/sign/painting11
+	desc = "A famous painting with a starry sky."
+	name = "painting"
+	icon_state = "painting11"
+
+/obj/structure/sign/painting12
+	desc = "An arrid desert, with some tents in the middle."
+	name = "painting"
+	icon_state = "painting12"
+
+/obj/structure/sign/painting13
+	desc = "A still life."
+	name = "painting"
+	icon_state = "painting13"
+
+////Restroom signs////
+
+/obj/structure/sign/restroom
+	desc = "A sign indicating the presence of a restroom."
+	name = "restroom"
+	icon_state = "restroom"
+
+/obj/structure/sign/restroom/male
+	desc = "A sign indicating the presence of a male restroom."
+	name = "restroom"
+	icon_state = "restroom_male"
+
+/obj/structure/sign/restroom/female
+	desc = "A sign indicating the presence of a female restroom."
+	name = "restroom"
+	icon_state = "restroom_female"
+
+/obj/structure/sign/justice
+	desc = "A justice sign."
+	name = "justice"
+	icon_state = "justice"
+
+/obj/structure/sign/court
+	name = "court"
+	desc = "The court house."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "court"
+	bound_width = 64
+
+/obj/structure/sign/townhall
+	name = "town hall"
+	desc = "The town hall."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "townhall"
+	bound_width = 64
+
+/obj/structure/sign/nosmoking
+	desc = "Smoking is prohibited in this area."
+	name = "no smoking"
+	icon_state = "nosmoking"
+
+/obj/structure/sign/nosmoking2
+	desc = "Smoking is prohibited in this area."
+	name = "no smoking"
+	icon_state = "nosmoking2"
+
+/obj/structure/sign/anatomy
+	desc = "A poster detailing the complexity of the human body."
+	name = "anatomy poster"
+	icon_state = "anatomy"
+
+/obj/structure/sign/xray
+	desc = "A medical lightbox used to examine X-ray images."
+	name = "lightbox"
+	icon_state = "xray_on"
+
+/obj/structure/sign/periodic
+	desc = "A tabular display of the chemical elements."
+	name = "periodic table"
+	icon_state = "periodic"
+
+/obj/structure/sign/casino
+	name = "casino"
+	desc = "A blinking casino sign."
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "casino"
+
+/obj/structure/sign/open
+	name = "open"
+	desc = "A blinking open sign."
+	icon_state = "open"
+
+/obj/structure/sign/guns
+	name = "gun store"
+	desc = "A blinking gun store sign."
+	icon_state = "gunshop"
+
+/obj/structure/sign/gas
+	name = "gas"
+	desc = "A flashing gas station sign."
+	icon_state = "gas"
+
+/obj/structure/sign/sale
+	name = "SALE sign"
+	desc = "A sign indicating a sale."
+	icon_state = "sale"
+
+/obj/structure/sign/deer_trophy
+	name = "hunting deer trophy"
+	desc = "Looks like we finally found Bambi..."
+	icon_state = "deer_trophy"
+
+/obj/structure/sign/orthodox1
+	name = "icon of Mary"
+	desc = "An icon depicting Mary, mother of Jesus. Often used in Eastern Orthodox cultures."
+	icon_state = "orthodox1"
+
+/obj/structure/sign/orthodox2
+	name = "icon of Trinity"
+	desc = "An icon depicting the saint Trinity. Often used in Eastern Orthodox cultures."
+	icon_state = "orthodox2"
+
+/obj/structure/sign/orthodox3
+	name = "icon of Archangel Michael"
+	desc = "An icon depicting Archangel Michael. Often used in Eastern Orthodox cultures."
+	icon_state = "orthodox3"
+
+/obj/structure/sign/khalif_ali1
+	name = "portrait of Khalif Ali"
+	desc = "A portrait of Khalif Ali."
+	icon_state = "khalif_ali1"
+
+/obj/structure/sign/khalif_ali2
+	icon_state = "khalif_ali2"
+
+//BILLBOARDS
+
+/obj/structure/billboard
+	name = "billboard ad"
+	desc = "Goodness, what are they selling us this time?"
+	icon = 'icons/obj/billboards.dmi'
+	icon_state = "billboard"
+	light_range = 4
+	light_power = 2
+	light_color = "#fcf8f0"
+	density = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+	layer = MOB_LAYER + 0.1
+	bound_width = 64
+	bound_height = 64
+	var/adnumber
+
+/obj/structure/billboard/Destroy()
+	set_light(0)
+	return ..()
+
+/obj/structure/billboard/New()
+	..()
+	adnumber = rand(1,14)
+	overlays += "ad[adnumber]"
+	update_icon()

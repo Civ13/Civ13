@@ -65,6 +65,6 @@
 	else
 		..()
 
-	/obj/structure/closet/fridge/icebox
+/obj/structure/closet/fridge/icebox
 	name = "ice box"
 	powerneeded = 0

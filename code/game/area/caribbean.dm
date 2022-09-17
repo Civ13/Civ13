@@ -30,7 +30,7 @@
 
 /area/caribbean/roofed/temperate
 	climate = "temperate"
-	base_turf = /turf/floor/dirt
+	base_turf = /turf/floor/dirt/burned
 
 /area/caribbean/roofed/sea
 	climate = "sea"
@@ -170,7 +170,7 @@
 
 /area/caribbean/nomads/forest
 	name = "Forest"
-	base_turf = /turf/floor/grass
+	base_turf = /turf/floor/dirt/burned
 	icon_state = "green1"
 	climate = "temperate"
 
@@ -188,10 +188,17 @@
 
 /area/caribbean/nomads/forest/Jungle
 	name = "Jungle"
-	base_turf = /turf/floor/grass/jungle
+	base_turf = /turf/floor/dirt/jungledirt
 	icon_state = "green1"
 	climate = "jungle"
 
+/area/caribbean/nomads/forest/Jungle/sea
+	base_turf = /turf/floor/beach/water/deep/saltwater
+	icon_state = "blue1"
+
+/area/caribbean/nomads/forest/Jungle/beach
+	base_turf = /turf/floor/beach/sand
+	icon_state = "yellow1"
 //lava paths
 /area/caribbean/nomads/forest/Jungle/lava_west
 	icon_state = "green3"
@@ -516,7 +523,7 @@
 	base_turf = /turf/floor/dirt/jungledirt
 /area/caribbean/no_mans_land/invisible_wall
 	name = "grace wall"
-
+	icon_state = "green5"
 /area/caribbean/no_mans_land/invisible_wall/tundra
 	name = "grace wall"
 	climate = "tundra"
@@ -541,6 +548,12 @@
 /area/caribbean/no_mans_land/invisible_wall/temperate
 	climate = "temperate"
 	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/invisible_wall/temperate/one
+	icon_state = "green1"
+	name = "I grace wall"
+/area/caribbean/no_mans_land/invisible_wall/temperate/two
+	icon_state = "green1"
+	name = "II grace wall"
 /area/caribbean/no_mans_land/invisible_wall/desert
 	climate = "desert"
 	base_turf = /turf/floor/beach/sand/desert
@@ -584,6 +597,12 @@
 /area/caribbean/no_mans_land/invisible_wall/inside
 	location = AREA_INSIDE
 
+/area/caribbean/no_mans_land/invisible_wall/inside/one
+	icon_state = "green1"
+	name = "I grace wall"
+/area/caribbean/no_mans_land/invisible_wall/inside/two
+	icon_state = "green1"
+	name = "II grace wall"
 /area/caribbean/desert
 	name = "The Desert"
 	icon_state = "red1"
@@ -676,7 +695,7 @@
 	name = "Admin Zone"
 	location = AREA_INSIDE
 	artillery_integrity = INFINITY
-	base_turf = /turf/floor/dirt
+	base_turf = /turf/floor
 	climate = "temperate"
 
 // houses in No Man's Land
@@ -785,7 +804,7 @@
 /area/caribbean/colonies/jungle
 	name = "Jungle"
 	icon_state = "red2"
-	base_turf = /turf/floor/dirt
+	base_turf = /turf/floor/dirt/jungledirt
 	ambience = list("sound/ambience/jungle1.ogg")
 	climate = "jungle"
 
@@ -878,6 +897,7 @@
 	location = AREA_INSIDE
 	icon_state = "red2"
 	base_turf = /turf/floor/plating
+	artillery_integrity = INFINITY
 
 /area/caribbean/russian/land/inside/command
 	location = AREA_INSIDE
@@ -1307,3 +1327,14 @@
 	corresponding_area_allow_subtypes = TRUE
 	name = "Fallschirmjager Plane"
 */
+
+/area/caribbean/space
+	has_gravity = FALSE
+	no_air = TRUE
+	base_turf = /turf/floor/dirt //The base turf type of the area, which can be used to override the z-level's base turf
+	sound_env = FOREST
+	icon_state = "blue1"
+	dynamic_lighting = TRUE
+	climate = "tundra"
+	location = AREA_OUTSIDE
+	ambience = list()

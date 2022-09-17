@@ -332,7 +332,7 @@ RECIPE: /material/leather/,medieval shoes,/obj/item/clothing/shoes/medieval,3,80
 RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,black leather shoes,/obj/item/clothing/shoes/soldiershoes,2,60,0,1,foot wear,55,0,25,8,null
-RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots1,3,80,0,1,foot wear,55,0,25,8,null
+RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots,3,80,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,leather boots,/obj/item/clothing/shoes/leatherboots1,3,80,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,black riding boots,/obj/item/clothing/shoes/riding1,3,50,0,1,foot wear,0,0,98,4,null
 RECIPE: /material/leather/,riding boots,/obj/item/clothing/shoes/riding2,3,50,0,1,foot wear,0,0,98,4,null
@@ -707,7 +707,10 @@ RECIPE: /material/cloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,h
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,grand turban,/obj/item/clothing/head/turban/sultan,5,110,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,custom taqiyah,/obj/item/clothing/head/custom/taqiyah,2,55,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,custom hijab,/obj/item/clothing/head/custom/hijab,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh,2,55,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,custom kippa,/obj/item/clothing/head/custom/kippa,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,phrigian hat,/obj/item/clothing/head/phrigian_hat,4,55,0,1,hats,0,0,38,2,null
 RECIPE: /material/cloth/,red phrigian hat,/obj/item/clothing/head/phrigian_hat/red,4,55,0,1,hats,0,0,38,2,null
 RECIPE: /material/cloth/,blue phrigian hat,/obj/item/clothing/head/phrigian_hat/blue,4,55,0,1,hats,0,0,38,2,null
@@ -926,6 +929,7 @@ RECIPE: /material/plastic/,dumpster,/obj/structure/closet/crate/dumpster,5,95,1,
 
 RECIPE: /material/plastic/,trash bag,/obj/item/weapon/storage/bag/trash,1,95,0,1,storage,150,0,0,8,null
 RECIPE: /material/plastic/,plastic bag,/obj/item/weapon/storage/bag/plasticbag,0.75,95,0,1,storage,150,0,0,8,null
+RECIPE: /material/plastic/,chip pack,/obj/item/weapon/storage/foodbox/chippack,0.4,35,0,1,storage,150,0,0,8,null
 
 //*****************| PLASTIC GAS MASKS |***************************
 
@@ -963,6 +967,7 @@ RECIPE: /material/plastic/,pedestrian crossing sign,/obj/structure/sign/traffic/
 RECIPE: /material/plastic/,fast food cup,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/fastfoodcup,1,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,condiment bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/condiment,0.75,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/cola,1.5,15,0,1,drinks,170,0,0,8,null
+RECIPE: /material/plastic/,gallon jug,/obj/item/weapon/reagent_containers/food/drinks/plastic/gallonjug,3,15,0,1,drinks,170,0,0,8,null
 
 //*****************| PLASTIC CLOTHING & ARMOR |***************************
 
@@ -1508,6 +1513,8 @@ RECIPE: /material/glass/,tribal pot,/obj/item/weapon/reagent_containers/food/dri
 RECIPE: /material/glass/,drinking glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,22,0,0,8,null
 RECIPE: /material/glass/,small glass bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,2,40,0,1,drinks,22,0,0,8,null
 RECIPE: /material/glass/,glass bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/large,4,60,0,1,drinks,22,0,0,8,null
+RECIPE: /material/glass/,beer bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/custom/beer,2,40,0,1,drinks,52,0,0,8,null
+RECIPE: /material/glass/,fancy beer bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/custom/fancybeer,3,70,0,1,drinks,52,0,0,8,null
 RECIPE: /material/glass/,teapot,/obj/item/weapon/reagent_containers/food/drinks/teapot,4,70,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,teacup,/obj/item/weapon/reagent_containers/food/drinks/tea/empty,2,50,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,wine glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,49,0,0,8,null
@@ -1543,13 +1550,13 @@ RECIPE: /material/glass/,green glasses,/obj/item/clothing/glasses/gglasses,6,120
 RECIPE: /material/glass/,corrective glasses,/obj/item/clothing/glasses/regular,6,120,0,1,eyewear,110,120,0,8,null
 RECIPE: /material/glass/,sunglasses,/obj/item/clothing/glasses/sunglasses,2,90,1,1,eyewear,140,0,0,8,null
 RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/large,2,90,1,1,eyewear,165,0,0,8,null
-RECIPE: /material/glass/,redglasses,/obj/item/clothing/glasses/redlense,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_r,/obj/item/clothing/glasses/univisorred,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_g,/obj/item/clothing/glasses/univisorgreen,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_y,/obj/item/clothing/glasses/univisoryellow,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_c,/obj/item/clothing/glasses/univisorcyan,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_w,/obj/item/clothing/glasses/univisorwhite,2,90,1,1,eyewear,140,0,0,8,null
-RECIPE: /material/glass/,univisor_flashy,/obj/item/clothing/glasses/univisorflashy,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,red glasses,/obj/item/clothing/glasses/redlense,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,red univisor,/obj/item/clothing/glasses/univisorred,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,green univisor,/obj/item/clothing/glasses/univisorgreen,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,yellow univisor,/obj/item/clothing/glasses/univisoryellow,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,cyan univisor,/obj/item/clothing/glasses/univisorcyan,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,white univisor,/obj/item/clothing/glasses/univisorwhite,2,90,1,1,eyewear,140,0,0,8,null
+RECIPE: /material/glass/,flashy univisor,/obj/item/clothing/glasses/univisorflashy,3,90,1,1,eyewear,140,0,0,8,null
 
 //**************************************************************
 //************************ROBERTS CARTS*************************
@@ -1697,7 +1704,8 @@ RECIPE: /material/tin/,large tin double doors,/obj/structure/simple_door/key_doo
 RECIPE: /material/tin/,small tin can (x3),/obj/item/weapon/can/small,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,tin can (x2),/obj/item/weapon/can,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95,0,0,8,null
-
+RECIPE: /material/tin/,soda can,/obj/item/weapon/reagent_containers/food/drinks/plastic/sodacan,1,50,0,1,none,160,0,0,8,null
+RECIPE: /material/tin/,beer can,/obj/item/weapon/reagent_containers/food/drinks/plastic/tallcan,1.5,50,0,1,none,160,0,0,8,null
 //*********************************************************
 //*********************| COPPER |**************************
 //*********************************************************
@@ -1851,7 +1859,6 @@ RECIPE: /material/steel/,footlocker,/obj/structure/closet/crate/footlocker,1.5,5
 RECIPE: /material/steel/,metal crate,/obj/structure/closet/crate,3,80,1,1,storage,115,0,0,8,null
 RECIPE: /material/steel/,cash register,/obj/structure/closet/crate/cash_register,3,60,1,1,storage,135,0,0,8,null
 RECIPE: /material/steel/,fridge,/obj/structure/closet/fridge,15,230,1,1,storage,150,0,178,8,null
-
 RECIPE: /material/steel/,steel rifle rack,/obj/structure/vending/craftable/rifles,5,80,1,1,storage,0,95,0,8,null
 
 RECIPE: /material/steel/,paper bin,/obj/item/weapon/paper_bin/empty,4,60,0,1,storage,95,0,0,8,null
@@ -1859,10 +1866,7 @@ RECIPE: /material/steel/,large crate,/obj/structure/closet/crate/large,15,230,1,
 RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,storage,105,0,0,8,null
 RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,storage,120,0,0,8,null
 RECIPE: /material/steel/,lunchkit,/obj/item/weapon/storage/ww2/slunch,8,180,0,1,storage,115,130,0,8,null
-RECIPE: /material/steel/,storage,/obj/structure/closet/fridge,15,230,1,1,storage,150,0,178,8,null
 
-RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,storage,105,0,0,8,null
-RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,storage,120,0,0,8,null
 
 //*********************| STEEL ELECTRICAL & COMMUNICATION|**************************
 
@@ -2145,6 +2149,8 @@ RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,
 RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel,5,75,1,1,kitchen,19,0,0,8,null
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,kitchen,20,0,0,8,null
 RECIPE: /material/wood/,paper cup,/obj/item/weapon/reagent_containers/food/drinks/sillycup,1,30,0,1,kitchen,105,0,0,8,null
+RECIPE: /material/wood/,milk carton,/obj/item/weapon/reagent_containers/food/drinks/plastic/carton,2,30,0,1,kitchen,105,0,0,8,null
+RECIPE: /material/wood/,food box,/obj/item/weapon/storage/foodbox,1.5,35,0,1,storage,90,0,0,8,null
 
 //*********************| WOOD ENTERTAINMENT |**************************
 
@@ -2225,6 +2231,9 @@ RECIPE: /material/wood/,pine on the shore,/obj/structure/sign/painting7,3,40,1,1
 RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,starry sky,/obj/structure/sign/painting11,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,arid desert,/obj/structure/sign/painting12,3,40,1,1,paintings,65,0,0,8,null
+RECIPE: /material/wood/,still life,/obj/structure/sign/painting13,3,40,1,1,paintings,65,0,0,8,null
 
 //*********************| WOOD PUNISHMENTS |**************************
 
@@ -2405,7 +2414,7 @@ RECIPE: /material/iron/,surgical drill,/obj/item/weapon/surgery/surgicaldrill,2,
 //*********************| IRON FIREARMS |**************************
 
 RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient/matchlock,18,140,0,1,firearms,0,70,0,5,null
-RECIPE: /material/iron/,matchlock tanegashima,obj/item/weapon/gun/projectile/ancient/tanegashima,18,140,0,1,firearms,0,70,0,5,null
+RECIPE: /material/iron/,matchlock tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,18,140,0,1,firearms,0,70,0,5,null
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null

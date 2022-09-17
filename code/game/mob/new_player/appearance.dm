@@ -153,6 +153,11 @@
 		icon_state = "hair_parted"
 		growth = 2
 
+	partedshort
+		name = "Parted Short"
+		icon_state = "hair_parted_short"
+		growth = 2
+
 	pompadour
 		name = "Pompadour"
 		icon_state = "hair_pompadour"
@@ -215,6 +220,10 @@
 		gender = MALE
 		growth = 1
 
+	buzz2
+		name = "Buzzcut Alt"
+		icon_state = "hair_buzzcut2"
+
 	crew
 		name = "Crewcut"
 		icon_state = "hair_crewcut"
@@ -243,6 +252,11 @@
 		icon_state = "hair_devilock"
 		growth = 1
 
+	mullethawk
+		name = "Mullet Hawk"
+		icon_state = "hair_mullethawk"
+		growth = 3
+
 	dreadlocks
 		name = "Dreadlocks"
 		icon_state = "hair_dreads"
@@ -269,6 +283,21 @@
 		icon_state = "hair_bigafro"
 		gender = MALE
 		growth = 4
+
+	rows
+		name = "Rows"
+		icon_state = "hair_rows1"
+		growth = 2
+
+	rows2
+		name = "Rows"
+		icon_state = "hair_rows2"
+		growth = 3
+
+	rowsdualtail
+		name = "Rows Dual Tail"
+		icon_state = "hair_rowsdualtail"
+		growth = 3
 
 	sargeant
 		name = "Flat Top"
@@ -329,7 +358,27 @@
 	gelled
 		name = "Gelled Back"
 		icon_state = "hair_gelled"
-		gender = FEMALE
+		gender = MALE
+		growth = 2
+
+	sideswept
+		name = "Side-Swept"
+		icon_state = "hair_sideswept"
+		growth = 2
+
+	sweptshort
+		name = "Shor-Swept"
+		icon_state = "hair_swept_short"
+		growth = 2
+
+	sweptback
+		name = "Swept-Back"
+		icon_state = "hair_swept_back"
+		growth = 2
+
+	wheeler
+		name = "Wheeler"
+		icon_state = "hair_wheeler"
 		growth = 2
 
 	gentle
@@ -341,6 +390,11 @@
 	spiky
 		name = "Spiky"
 		icon_state = "hair_spikey"
+		growth = 1
+
+	spikedshort
+		name = "Short Spiked"
+		icon_state = "hair_short_spiked"
 		growth = 1
 
 //	kusangi
@@ -398,16 +452,43 @@
 		gender = FEMALE
 		growth = 2
 
-//no idea why this is called skinhead :shrug:
 	skinhead
 		name = "Skinhead"
 		icon_state = "hair_skinhead"
 		growth = 1
 
+	trimmed
+		name = "Trimmed"
+		icon_state = "hair_trimmed"
+		growth = 1
+
+	hightight
+		name = "High Tight"
+		icon_state = "hair_hightight"
+		growth = 1
+
 	balding
 		name = "Balding Hair"
 		icon_state = "hair_e"
-		gender = MALE // turnoff!
+		gender = MALE
+		growth = 1
+
+	thinning1
+		name = "Thinning"
+		icon_state = "hair_thinning"
+		gender = MALE
+		growth = 1
+
+	thinning2
+		name = "Thinning Front"
+		icon_state = "hair_thinningfront"
+		gender = MALE
+		growth = 1
+
+	thinning3
+		name = "Thinning Rear"
+		icon_state = "hair_thinningrear"
+		gender = MALE
 		growth = 1
 
 //nonononono
@@ -447,6 +528,24 @@
 		gender = MALE
 		growth = 2
 
+	business1
+		name = "Business 1"
+		icon_state = "hair_business"
+		gender = MALE
+		growth = 2
+
+	business2
+		name = "Business 2"
+		icon_state = "hair_business2"
+		gender = MALE
+		growth = 2
+
+	business3
+		name = "Business 3"
+		icon_state = "hair_business3"
+		gender = MALE
+		growth = 2
+
 	mulder
 		name = "Mulder"
 		icon_state = "hair_mulder"
@@ -470,9 +569,9 @@
 		gender = MALE
 		growth = 1
 
-//	volaju
-//		name = "Volaju"
-//		icon_state = "hair_volaju"
+	volaju
+		name = "Volaju"
+		icon_state = "hair_volaju"
 
 //	longeralt2
 //		name = "Long Hair Alt 2"
@@ -514,12 +613,10 @@
 		gender = MALE
 		growth = 3
 
-//BANG!
-	chad
-		name = "Chad"
-		icon_state = "hair_chad"
-		gender = MALE
-		growth = 1
+	ronin
+		name = "Ronin"
+		icon_state = "hair_ronin"
+		growth = 3
 
 //BANG!
 	chad
@@ -527,7 +624,6 @@
 		icon_state = "hair_chad"
 		gender = MALE
 		growth = 1
-
 
 	slick
 		name = "Slick"
@@ -541,10 +637,44 @@
 		gender = MALE
 		growth = 1
 
+	lowfade
+		name = "Low Fade"
+		icon_state = "hair_lowfade"
+		gender = MALE
+		growth = 1
+
+	mediumfade
+		name = "Medium Fade"
+		icon_state = "hair_medfade"
+		gender = MALE
+		growth = 1
+
+	highfade
+		name = "High Fade"
+		icon_state = "hair_highfade"
+		gender = MALE
+		growth = 1
+
+	nofade
+		name = "Regulation Cut"
+		icon_state = "hair_nofade"
+		growth = 1
+
+	fadegrown
+		name = "Grown Fade"
+		icon_state = "hair_fade_grown"
+		gender = MALE
+		growth = 2
+
 	undercut
 		name = "Undercut"
 		icon_state = "hair_undercut"
 		gender = MALE
+		growth = 1
+
+	sideundercut
+		name = "Side Undercut"
+		icon_state = "hair_sideundercut"
 		growth = 1
 
 	averagejoe
@@ -571,6 +701,36 @@
 		gender = NEUTER
 		growth = 0
 
+	threeoclock
+		name = "3 O'clock Shadow"
+		icon_state = "facial_3oclock"
+		growth = 1
+
+	threeoclockstashe
+		name = "3 O'clock Shadow and Mustache"
+		icon_state = "facial_3oclockmustache"
+		growth = 1
+
+	fiveoclock
+		name = "5 O'clock Shadow and Mustache"
+		icon_state = "facial_5oclock"
+		growth = 1
+
+	fiveoclockstashe
+		name = "5 O'clock Shadow and Mustache"
+		icon_state = "facial_5oclockmustache"
+		growth = 1
+
+	sevenoclock
+		name = "7 O'clock Shadow and Mustache"
+		icon_state = "facial_7oclock"
+		growth = 1
+
+	fiveoclockstashe
+		name = "7 O'clock Shadow and Mustache"
+		icon_state = "facial_7oclockmustache"
+		growth = 1
+
 	watson
 		name = "Watson Mustache"
 		icon_state = "facial_watson"
@@ -594,6 +754,11 @@
 	selleck
 		name = "Selleck Mustache"
 		icon_state = "facial_selleck"
+		growth = 1
+
+	walrus
+		name = "Walrus Mustache"
+		icon_state = "facial_walrus"
 		growth = 1
 
 	neckbeard
@@ -621,11 +786,20 @@
 		icon_state = "facial_wise"
 		growth = 4
 
-
 	elvis
 		name = "Elvis Sideburns"
 		icon_state = "facial_elvis"
 		growth = 1
+
+	mutton
+		name = "Mutton Chops"
+		icon_state = "facial_mutton"
+		growth = 1
+
+	muttonstache
+		name = "Mutton Chops and Moustache"
+		icon_state = "facial_muttonmus"
+		growth = 2
 
 	abe
 		name = "Abraham Lincoln Beard"
@@ -660,6 +834,21 @@
 	dwarf
 		name = "Dwarf Beard"
 		icon_state = "facial_dwarf"
+		growth = 4
+
+	biker
+		name = "Biker Beard"
+		icon_state = "facial_biker"
+		growth = 3
+
+	seadog
+		name = "Sailor Beard"
+		icon_state = "facial_seadog"
+		growth = 4
+
+	lumberjack
+		name = "Lumberjack Beard"
+		icon_state = "facial_lumberjack"
 		growth = 4
 
 //skin styles - WIP

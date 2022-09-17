@@ -135,6 +135,13 @@
 	health = 80
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
+/obj/structure/grille/chainlinkfence/corner
+	name = "chain-link fence"
+	desc = "A woven steel fence."
+	icon_state = "chainlinkfence_corner"
+	health = 80
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+
 /obj/structure/wallclock
 	name = "standing clock"
 	desc = "A classic standing clock."
@@ -177,6 +184,18 @@
 /obj/structure/props/stove/old
 	icon_state = "gasstove"
 
+/obj/structure/props/radiator
+	name = "radiator"
+	desc = "A heat exchanger."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "radiator"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+
 /obj/structure/props/bathtub
 	name = "bathtub"
 	desc = "A bathtub."
@@ -184,6 +203,18 @@
 	icon_state = "bathtub"
 	flammable = FALSE
 	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/djtable
+	name = "dj table"
+	desc = "A dj table."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "djtable"
+	flammable = TRUE
+	not_movable = TRUE
 	not_disassemblable = TRUE
 	density = TRUE
 	opacity = FALSE
@@ -236,6 +267,251 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
+
+/obj/structure/props/hookah
+	name = "hookah"
+	desc = "A glass pipe used to smoke tobacco or other substances."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "hookah1"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+
+/obj/structure/props/hookah/New()
+	..()
+	var/pickhookah = pick("hookah1", "hookah2", "hookah3")
+	icon_state = pickhookah
+
+/obj/structure/props/bong
+	name = "bong"
+	desc = "A glass pipe used to smoke cannabis or other substances."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "bong"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+
+/obj/structure/props/engineprops
+	name = "generic"
+	desc = "A generic engine prop."
+	icon = 'icons/obj/engines32.dmi'
+	icon_state = "gasoline_static"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+/obj/structure/props/engineprops/gas
+	name = "gasoline engine"
+	desc = "A gasoline engine in operation."
+	icon_state = "gasoline_on"
+/obj/structure/props/engineprops/frunace
+	name = "furnace"
+	desc = "A furnace in operation."
+	icon_state = "furnace_open_on"
+/obj/structure/props/engineprops/turbine
+	name = "turbine engine"
+	desc = "A turbine engine in operation."
+	icon_state = "turbine_on"
+/obj/structure/props/engineprops/diesel
+	name = "diesel engine"
+	desc = "A diesel engine in operation."
+	icon_state = "biodiesel_on"
+/obj/structure/props/engineprops/hotbulb
+	name = "hotbulb engine"
+	desc = "A hotbulb engine in operation."
+	icon_state = "hotbulb_on"
+/obj/structure/props/engineprops/dieselgeni
+	name = "diesel genertator"
+	desc = "A diesel generator in operation."
+	icon_state = "diesel_on"
+/obj/structure/props/engineprops/hesselman
+	name = "hesselman engine"
+	desc = "A hesselman engine in operation."
+	icon_state = "hesselman_on"
+/obj/structure/props/engineprops/steam
+	name = "steam engine"
+	desc = "A steam engine in operation."
+	icon_state = "steam_on"
+/obj/structure/props/engineprops/aeolipile
+	name = "aeolipile engine"
+	desc = "An aeolipile in operation."
+	icon_state = "aeolipile_on"
+/obj/structure/props/engineprops/reactor
+	name = "reactor housing"
+	desc = "A reactor housing for nuklear fission/fussion."
+	icon_state = "reactor_3"
+/obj/structure/props/engineprops/big
+	name = "large engine"
+	desc = "A running engine. This one seems rather large."
+	icon = 'icons/obj/engines64.dmi'
+	icon_state = "static_engine_on"
+	bound_width = 64
+	bound_height = 64
+	bound_x = 32
+
+/obj/structure/props/engineprops/waterpump
+	name = "large pump"
+	desc = "A pump of rather considerable size."
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "waterpump"
+	bound_width = 96
+	bound_height = 96
+	bound_x = 32
+	anchored = TRUE
+	not_movable = TRUE
+/obj/structure/props/random/container
+	name = "a shipping container"
+	desc = "6 metal sides, two of which open. A hard concept to improve."
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "container1"
+	bound_width = 96
+	bound_height = 64
+	bound_x = 32
+	anchored = TRUE
+	not_movable = TRUE
+	density = TRUE
+/obj/structure/props/random/podlock
+	name = "podlock"
+	desc = "Sturdy pod lock, should stop anything short of a breaching charge."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "blast0"
+	anchored = TRUE
+	not_movable = TRUE
+	density = TRUE
+/obj/structure/props/random/container/two
+	icon_state = "container2"
+/obj/structure/props/random/container/three
+	icon_state = "container3"
+/obj/structure/props/random/container/four
+	icon_state = "container4"
+/obj/structure/props/random/container/five
+	icon_state = "container5"
+
+/obj/structure/props/machineprops/refinery
+	name = "smoking cylinder"
+	desc = "This stack is definitely producing steam or maybe smoke. You are not sure what it is up to."
+	icon = 'icons/obj/obj32x64.dmi'
+	icon_state = "refinery1"
+	bound_width = 32
+	bound_height = 64
+	bound_x = 32
+/obj/structure/props/computerprops
+	name = "access terminal"
+	desc = "The screen is on and the buttons all work but you aren't sure you know which ones to push."
+	light_range = 2
+	icon = 'icons/obj/computers.dmi'
+	icon_state = "1980_computer_on"
+	anchored = TRUE
+/obj/structure/props/computerprops/info_panel
+	icon_state = "info_panel"
+/obj/structure/props/computerprops/research
+	icon_state = "research_on"
+/obj/structure/props/computerprops/lab
+	icon_state = "lab_on"
+/obj/structure/props/computerprops/lunar
+	icon_state = "lunar"
+/obj/structure/props/computerprops/lunar2
+	icon_state = "lunar_on"
+/obj/structure/props/computerprops/enclave
+	icon_state = "enclave_on"
+/obj/structure/props/computerprops/machine
+	icon = 'icons/obj/device.dmi'
+	icon_state = "machine_on"
+/obj/structure/props/computerprops/tracking
+	icon = 'icons/obj/device.dmi'
+	icon_state = "tracking"
+/obj/structure/props/computerprops/modern
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "airfilter2"
+/obj/structure/props/computerprops/modern/obj34
+	icon_state = "obj34"
+/obj/structure/props/computerprops/modern/a9
+	icon_state = "a9"
+/obj/structure/props/computerprops/modern/a10
+	icon_state = "a10"
+/obj/structure/props/computerprops/modern/a11
+	icon_state = "a11"
+/obj/structure/props/computerprops/modern/smes2
+	icon_state = "smes2"
+/obj/structure/props/computerprops/modern/synth2
+	icon_state = "synth2"
+
+/obj/structure/props/computerprops/enclave
+	icon_state = "enclave_on"
+/obj/structure/props/computerprops/terminal
+	icon_state = "terminal_on"
+/obj/structure/broken_hind
+	name = "Mi-24 remains"
+	desc = "The remains of a Soviet helicopter."
+	icon = 'icons/obj/decals_huge.dmi'
+	icon_state = "brokenhind"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	anchored = TRUE
+	density = TRUE
+	layer = MOB_LAYER + 0.01
+	bound_width = 128
+	bound_height = 128
+	bound_x = 32
+
+/obj/structure/props/marketstall
+	name = "market stall"
+	desc = "A market stall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "propstall1"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+	New()
+		..()
+		icon_state ="propstall[rand(1,4)]"
+
+/obj/structure/props/keyboard
+	name = "eletric keyboard"
+	desc = "A electric keyboard."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "keyboard"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+
+/obj/structure/props/dj
+	name = "dj table"
+	desc = "A dj setup for makin sick beats."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "djtable"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+
+/obj/structure/props/micstand
+	name = "microphone stand"
+	desc = "A mic stand."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "microphone_stand"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
@@ -386,6 +662,16 @@
 	icon_state = "vietcong"
 	name = "Vietcong Flag"
 	desc = "The flag of the National Liberation Front of Vietnam."
+
+/obj/structure/flag/redmenia
+	icon_state = "redmenia"
+	name = "Redmenia Flag"
+	desc = "The flag of Redmenia."
+
+/obj/structure/flag/blugoslavia
+	icon_state = "blugoslavia"
+	name = "Blugoslavia Flag"
+	desc = "The flag of Blugoslavia."
 
 /obj/structure/flag/pole
 	icon_state = "flagpole_blank"
@@ -841,3 +1127,117 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	mouse_opacity = FALSE
+
+
+///////////////////////CARGO CONTAINERS///////////////////////////
+
+/obj/structure/cargo_container
+	name = "cargo container"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "container1"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 64
+
+/obj/structure/cargo_container/New()
+	var/number = rand(1,5)
+	icon_state = "container[number]"
+
+/////////////////////CONSTRUCTION PROPS///////////////////////
+
+/obj/structure/machinery/water_pump
+	name = "water pump"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "waterpump"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 96
+
+/obj/structure/machinery/construction_crane
+	name = "crane"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "crane"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 64
+	bound_height = 64
+
+/obj/structure/machinery/construction_crane/New()
+	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
+		bound_width = 64
+		bound_height = 64
+	else
+		bound_width = 64
+		bound_height = 64
+
+/obj/structure/machinery/construction_crane/excavator
+	name = "excavator"
+	icon_state = "excavator"
+
+/obj/structure/machinery/forklift
+	name = "forklift"
+	desc = "'A lift for forks', this one seems to be out of battery, missing the fuel tank, spark plugs an-- Oh! And the engine is missing too."
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
+	icon_state = "forklift"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 64
+	bound_height = 64
+
+/obj/structure/machinery/construction_crane/New()
+	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
+		bound_width = 64
+		bound_height = 64
+	else
+		bound_width = 64
+		bound_height = 64
+
+/obj/structure/m113
+	name = "M113 APC"
+	icon = 'icons/obj/vehicles/m113_wip.dmi'
+	icon_state = "m113"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 96
+	bound_height = 128
+
+/obj/structure/radome
+	name = "radio dome"
+	icon = 'icons/obj/decals_widest.dmi'
+	icon_state = "radome"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 128
+	bound_height = 128
+
+/obj/structure/medical_divider
+	name = "medical divider"
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "medical_divider_half"
+	density = FALSE
+	flammable = TRUE
+
+/obj/structure/medical_divider/full
+	icon_state = "medical_divider_full"
+	density = TRUE
+	flammable = TRUE

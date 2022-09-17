@@ -82,3 +82,13 @@
 	name = "Russian MRE: Potatoes"
 	desc = "A package of precooked potatoes."
 	nutriment_desc = list("potatoes" = 1,)
+
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/idf
+	name = "IDF MRE: Whitefish"
+	desc = "A package of unidentified kosher whitefish."
+	nutriment_desc = list("fish" = 1,)
+
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/space
+	name = "Ration pack"
+	desc = "A package of polystarch portion bread and veg-meat."
+	nutriment_desc = list("polystarch" = 1, "veg-meat" =1)

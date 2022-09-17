@@ -1,7 +1,7 @@
 /obj/map_metadata/hue
 	ID = MAP_HUE
 	title = "Hue"
-	lobby_icon_state = "coldwar"
+	lobby_icon = "icons/lobby/vietnam.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="No base has been captured."
@@ -18,14 +18,15 @@
 	age = "1969"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(AMERICAN = 0.4, VIETNAMESE = 0.6)
-	battle_name = "jungle compound"
+	battle_name = "Battle of Hue"
 	mission_start_message = "<font size=4>The <b>NVA</b> must defend their base from the Americans. The <b>US Army</b> must defend their base.<br>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = AMERICAN
 	faction2 = VIETNAMESE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
 	artillery_count = 8
+	grace_wall_timer = 3000
 
 /obj/map_metadata/hue/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -44,12 +45,6 @@
 
 /obj/map_metadata/hue/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
-
-/obj/map_metadata/hue/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/hue/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hue/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))

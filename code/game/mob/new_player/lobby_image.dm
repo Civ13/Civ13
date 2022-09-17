@@ -3,24 +3,15 @@
 /obj/effect/lobby_image
 	name = "Lobby"
 	desc = ""
-	icon = 'icons/_LOBBY.dmi'
-	icon_state = "civ13"
+	icon = 'icons/lobby/civ13.gif'
+	icon_state = ""
 	screen_loc = "WEST,SOUTH"
 	var/list/stored_img = list()
 /obj/effect/lobby_image/initialize()
-	if (map && map.lobby_icon_state)
-		icon_state = map.lobby_icon_state
-	else
-		var/list/known_icon_states = icon_states(icon)
-		for (var/lobby_screen in config.lobby_screens)
-			if (!(lobby_screen in known_icon_states))
-				error("Lobby screen '[lobby_screen]' did not exist in the icon set [icon].")
-				config.lobby_screens -= lobby_screen
-
-		if (config.lobby_screens.len)
-			icon_state = pick(config.lobby_screens)
-		else
-			icon_state = known_icon_states[1]
+	if (map && map.lobby_icon)
+		var/F = file(map.lobby_icon)
+		if (F)
+			icon = F
 
 /obj/effect/lobby_image/New()
 	..()

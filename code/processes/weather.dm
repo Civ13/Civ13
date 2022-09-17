@@ -47,7 +47,7 @@
 						map.blizzard = FALSE
 						change_weather(WEATHER_NONE)
 						//world << "<big>The blizzard has passed.</big>"
-	if ((season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
+	if (map && (season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
 		if (prob(1) || map.triggered_heatwave)
 			if(prob(50)|| map.triggered_heatwave)
 				world << "<big>The weather starts to get hotter than normal...</big>"

@@ -1,7 +1,7 @@
 /obj/map_metadata/battleroyale
 	ID = MAP_BATTLEROYALE_IMPERIAL
 	title = "Battle Royale: Imperial"
-	lobby_icon_state = "battleroyale"
+	lobby_icon = "icons/lobby/battleroyale.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	is_singlefaction = TRUE
@@ -25,6 +25,7 @@
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 6
+	grace_wall_timer = 1200
 	var/list/closed_areas = list()
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
@@ -40,6 +41,8 @@
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE
+	else if (J.is_event == TRUE)
+		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale) && !istype(J, /datum/job/pirates/battleroyale/modern) && !istype(J, /datum/job/pirates/battleroyale/medieval))
 		J.total_positions = 32
 		J.min_positions = 32
@@ -48,12 +51,6 @@
 	else
 		. = FALSE
 	return .
-
-/obj/map_metadata/battleroyale/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/battleroyale/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/battleroyale/cross_message(faction)
 	if (faction == PIRATES)
@@ -474,7 +471,7 @@
 /obj/map_metadata/battleroyale/two
 	ID = MAP_BATTLEROYALE_MODERN
 	title = "Battle Royale: Modern"
-	lobby_icon_state = "battleroyale_arab"
+	lobby_icon = "icons/lobby/battleroyale_arab.png"
 
 	age = "2013"
 	ordinal_age = 8

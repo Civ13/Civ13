@@ -559,6 +559,7 @@
 
 	return TRUE
 
+
 /datum/job/british/chasseur
 	title = "British Light Infantry"
 	en_meaning = "Light Infantry"
@@ -605,6 +606,7 @@
 
 
 	return TRUE
+
 //////////////////////////////////////////////////////
 ////////////////////////////WW1///////////////////////
 //////////////////////////////////////////////////////
@@ -628,7 +630,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british, slot_w_uniform)
 //head
@@ -676,7 +678,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
 //head
@@ -723,7 +725,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
 //head
@@ -912,6 +914,14 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/british/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/british(null)
 	uniform.attackby(fullwebbing, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Royal Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -949,7 +959,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british_off(H), slot_w_uniform)
 //head

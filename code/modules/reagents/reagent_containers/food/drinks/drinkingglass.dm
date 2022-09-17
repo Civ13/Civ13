@@ -168,6 +168,7 @@
 	glass_type = "mug"
 	volume = 40
 	flammable = TRUE
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tankard
 	name = "tankard"
 	icon_state = "tankard"
@@ -185,6 +186,42 @@
 	w_class = 2.0
 	volume = 70
 	flammable = TRUE
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/cognac
+	name = "cognac skin"
+	desc = "A leather for holding your cognac reserves."
+	New()
+		..()
+		reagents.add_reagent("cognac", 70)
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/tea
+	name = "tea skin"
+	desc = "A leather skin for holding your tea reserves."
+	New()
+		..()
+		reagents.add_reagent("tea", 120)
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug
+	name = "mug"
+	desc = "A clay mug."
+	icon_state = "mug"
+	glass_type = "mug"
+	volume = 30
+	center_of_mass = list("x"=15, "y"=13)
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/red
+	name = "mug"
+	desc = "A clay mug, this one is red."
+	icon_state = "r_mug"
+	glass_type = "mug"
+	volume = 30
+	center_of_mass = list("x"=15, "y"=13)
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/brit
+	name = "mug"
+	desc = "A cup with the British flag emblazoned on it."
+	icon_state = "brit_mug"
+	volume = 30
+	center_of_mass = list("x"=15, "y"=13)
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
 	name = "tribal pot"
@@ -242,54 +279,3 @@
 	New()
 		..()
 		on_reagent_change()
-
-/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom
-	var/uncolored = TRUE
-	var/image/color1
-	var/image/color2
-	var/topcolor = "#000000"
-	var/undercolor = "#FFFFFF"
-	New()
-		..()
-		color1 = image(icon, "[icon_state]_label1")
-		color2 = image(icon, "[icon_state]_label2")
-		overlays += color1
-		overlays += color2
-		update_icon()
-
-/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/update_icon()
-	..()
-	overlays.Cut()
-	overlays += color1
-	overlays += color2
-
-/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/fastfoodcup
-	volume = 40
-	name = "fast food cup"
-	desc = "A plastic fast food cup."
-	icon_state = "fastfoodcup"
-	item_state = "beer"
-	value = 1
-
-
-/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/attack_self(mob/user as mob)
-	if (uncolored)
-		var/input = WWinput(user, "Logo Symbol - Choose the logo symbol color:", "Main Color" , "#000000", "color")
-		if (input == null || input == "")
-			return
-		else
-
-			topcolor= input
-
-		input = WWinput(user, "Background color - Choose the background color:", "Background Color" , "#FFFFFF", "color")
-		if (input == null || input == "")
-			return
-		else
-
-			undercolor= input
-		uncolored = FALSE
-		color1.color = topcolor
-		color2.color = undercolor
-		update_icon()
-	else
-		..()

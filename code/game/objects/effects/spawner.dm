@@ -231,6 +231,27 @@
 	create_path = /mob/living/simple_animal/horse
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/horse/beige
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/beige
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/horse/black
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/black
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/horse/white
+	name = "beige horse spawner"
+	max_number = 4
+	max_range = 15
+	create_path = /mob/living/simple_animal/horse/white
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/panthers
 	name = "panther spawner"
 	hostile = TRUE
@@ -613,18 +634,23 @@
 	timer = 5000
 
 /obj/effect/spawner/mobspawner/cattle
-	name = "cattle cow spawner"
+	name = "random cow and bulls spawner"
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "cow_random"
 	max_number = 2
 	max_range = 8
-	create_path = /mob/living/simple_animal/cattle/cow
+	create_path = /mob/living/simple_animal/cattle
 	timer = 5000
+
+/obj/effect/spawner/mobspawner/cattle/cow
+	name = "cattle cow spawner"
+	icon_state = "cow_spawner"
+	create_path = /mob/living/simple_animal/cattle/cow
 
 /obj/effect/spawner/mobspawner/cattle/bull
 	name = "cattle bull spawner"
-	max_number = 2
-	max_range = 8
+	icon_state = "bull_spawner"
 	create_path = /mob/living/simple_animal/cattle/bull
-	timer = 5000
 
 /obj/effect/spawner/mobspawner/pig
 	name = "pig boar spawner"
@@ -756,6 +782,22 @@
 	max_number = 14
 	timer = 600
 
+/obj/effect/spawner/mobspawner/voyage/brit/sword
+	name = "brit spawner"
+	hostile = TRUE
+	max_number = 10
+	max_range = 8
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british
+	timer = 300
+
+
+/obj/effect/spawner/mobspawner/voyage/brit/ranged
+	name = "ranged brit spawner"
+	hostile = TRUE
+	max_number = 10
+	max_range = 3
+	create_path = /mob/living/simple_animal/hostile/human/voyage/british/ranged
+	timer = 300
 
 /obj/effect/spawner/mobspawner/zombies/special/getEmptyTurf()
 	var/list/turf/emptyTurfs = new

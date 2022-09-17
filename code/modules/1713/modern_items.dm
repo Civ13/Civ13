@@ -247,7 +247,10 @@
 	brightness_color = "#ffffff"
 /obj/structure/lamp/lamp_small/alwayson/red
 	brightness_color = "#da0205"
-
+/obj/structure/lamp/lamp_small/alwayson/space
+	icon_state = "spacelights"
+	base_icon = "spacelights"
+	brightness_color = "bee9e4"
 /obj/structure/lamp/lamp_small/tank
 	powerneeded = 1
 	var/obj/structure/engine/connection = null
@@ -267,7 +270,16 @@
 			return FALSE
 
 /obj/structure/lamp/lamp_small/tank/red
+	icon_state = ""
+	base_icon = ""
 	brightness_color = "#da0205"
+
+/obj/structure/lamp/lamp_small/tank/floodlight
+	brightness_color = "#fff898"
+	icon_state = ""
+	base_icon = ""
+	light_amt = 8
+
 /obj/structure/lamp/lamp_small/tank/red/police
 	name = "police lights"
 	pixel_x=32
@@ -1002,6 +1014,13 @@
 	opacity = FALSE
 	powerneeded = 0
 
+/obj/structure/floodlight/on
+	New()
+		..()
+		floodlighton = 1
+		set_light (8)
+		icon_state ="floodlight_on"
+
 /obj/structure/floodlight/Destroy()
 	set_light (0)
 	..()
@@ -1085,7 +1104,7 @@
 			return
 		if (checkmob(H))
 			bleep()
-	
+
 	proc/bleep()
 		icon_state = "metal_detector2"
 		playsound(loc, 'sound/machines/metal_detector.ogg', 100, 0)

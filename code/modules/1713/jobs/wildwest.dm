@@ -397,7 +397,7 @@
 /datum/job/civilian/townbartender/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
@@ -500,7 +500,7 @@
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 
@@ -557,7 +557,7 @@
 /datum/job/civilian/townpriest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
@@ -599,7 +599,7 @@
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes

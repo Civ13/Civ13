@@ -144,7 +144,7 @@
 /obj/item/projectile/bullet/pistol/rubber //"rubber" bullets
 	name = "rubber bullet"
 	check_armor = "melee"
-	damage = 3
+	damage = 2
 	agony = 25
 	embed = FALSE
 	sharp = FALSE
@@ -170,6 +170,17 @@
 	spread_step = 10
 	agony = 8.5
 	embed = 0
+	icon_state = "buckshot"
+
+/obj/item/projectile/bullet/pellet/rubberball
+	name = "rubber ball"
+	damage = 2
+	pellets = 12
+	range_step = 1
+	base_spread = 5
+	spread_step = 10
+	agony = 13
+	embed = TRUE
 	icon_state = "buckshot"
 
 /* "Rifle" rounds */

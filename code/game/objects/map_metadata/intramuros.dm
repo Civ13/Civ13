@@ -1,7 +1,7 @@
 /obj/map_metadata/intramuros
 	ID = MAP_INTRAMUROS
 	title = "Intramuros"
-	lobby_icon_state = "pacific"
+	lobby_icon = "icons/lobby/pacific.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -21,9 +21,10 @@
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese Army will win if they hold out for <b>35 minutes</b>. The Americans will win if they manage to capture Japanese Command within Fort Santiago!</font>"
 	faction1 = JAPANESE
 	faction2 = AMERICAN
+	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	gamemode = "Siege"
 /obj/map_metadata/intramuros/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -35,17 +36,10 @@
 		else
 			. = FALSE
 	if (istype(J, /datum/job/japanese))
-		if (J.is_ww2 == TRUE && J.is_pacific == TRUE)
+		if (J.is_ww2 == TRUE && !J.is_navy && !J.is_prison && !J.is_tanker)
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/intramuros/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/intramuros/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/intramuros/roundend_condition_def2name(define)
 	..()
@@ -88,7 +82,7 @@
 		return ""
 
 
-var/no_loop_intra = FALSE
+var/no_loop_tantive = FALSE
 
 /obj/map_metadata/intramuros/update_win_condition()
 
@@ -101,7 +95,7 @@ var/no_loop_intra = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_intra == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_tantive == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Americans</b> have captured the Japanese Command! The battle for The Walled City is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"

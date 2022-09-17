@@ -16,7 +16,6 @@
 	icon_state = "naval_cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	spritemod = FALSE
-	firedelay = 5
 	maxsway = 40
 	firedelay = 30
 	maxrange = 180
@@ -26,6 +25,42 @@
 	bound_width = 64
 	caliber = 204
 	can_assemble = FALSE
+
+/obj/structure/cannon/modern/naval/n380
+	name = "380mm naval cannon"
+	ammotype = /obj/item/cannon_ball/shell/tank
+	maxsway = 40
+	firedelay = 80
+	maxrange = 100
+	caliber = 380
+	density = FALSE
+
+/obj/structure/cannon/naval/n380/attack_hand(var/mob/attacker)
+	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
+		var/mob/living/human/H = attacker
+		if(findtext(H.original_job_title,"Marine"))
+			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
+			return
+	else
+		interact(attacker)
+
+/obj/structure/cannon/modern/naval/n150
+	name = "150mm naval cannon"
+	ammotype = /obj/item/cannon_ball/shell/tank
+	maxsway = 40
+	firedelay = 50
+	maxrange = 60
+	caliber = 150
+	density = FALSE
+
+/obj/structure/cannon/naval/n150/attack_hand(var/mob/attacker)
+	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
+		var/mob/living/human/H = attacker
+		if(findtext(H.original_job_title,"Marine"))
+			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
+			return
+	else
+		interact(attacker)
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
@@ -38,7 +73,7 @@
 	maxsway = 12
 	firedelay = 3
 	maxrange = 25
-	anchored = FALSE
+	anchored = TRUE
 	bound_height = 32
 	bound_width = 32
 	density = TRUE
@@ -182,6 +217,22 @@
 	maxsway = 14
 	maxrange = 35
 	caliber = 88
+
+/obj/structure/cannon/modern/tank/omwtc10
+	name = "OMW-TC 10 cm"
+	desc = "a 100 mm Redmenian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 100
+
+/obj/structure/cannon/modern/tank/baftkn75
+	name = "BAF TKN 75mm"
+	desc = "a 75 mm Blugoslavian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 16
+	maxrange = 30
+	caliber = 75
 
 /obj/structure/cannon/modern/tank/german88/field
 	name = "8.8 cm Pak 43 cannon"

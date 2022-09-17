@@ -2,7 +2,7 @@
 	ID = MAP_ABASHIRI
 	title = "Abashiri Prison"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "abashiri"
+	lobby_icon = "icons/lobby/abashiri.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3600
 	has_hunger = TRUE
@@ -24,7 +24,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
+		"The Great Escape:1" = "sound/music/the_great_escape.ogg")
 	gamemode = "Prison Simulation"
 	var/list/points = list(
 		list("Guards",0,0),
@@ -54,9 +54,6 @@
 
 /obj/map_metadata/abashiri/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/abashiri/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/abashiri/roundend_condition_def2name(define)
 	..()

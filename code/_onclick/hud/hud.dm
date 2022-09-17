@@ -10,6 +10,7 @@ var/list/global_huds = list(
 		global_hud.darkMask,
 		global_hud.nvg,
 		global_hud.thermal,
+		global_hud.gasmask,
 		global_hud.fov,
 		global_hud.noise,
 		global_hud.fishbed,
@@ -26,6 +27,7 @@ var/list/global_huds = list(
 	var/list/vimpaired
 	var/list/darkMask
 	var/obj/screen/nvg
+	var/obj/screen/gasmask
 	var/obj/screen/thermal
 	var/obj/screen/fov
 	var/obj/screen/fishbed
@@ -80,6 +82,16 @@ var/list/global_huds = list(
 	thermal.layer = 17
 	thermal.plane = HUD_PLANE
 	thermal.mouse_opacity = FALSE
+
+	gasmask = new /obj/screen/gasmask()
+	gasmask.icon = 'icons/mob/screen1_full.dmi'
+	gasmask.screen_loc = "4,1"
+	gasmask.icon_state = "gasmask"
+	gasmask.name = " "
+	gasmask.layer = 17
+	gasmask.plane = HUD_PLANE
+	gasmask.mouse_opacity = FALSE
+
 
 	fov = new /obj/screen/fov()
 	fov.icon = 'icons/mob/hide.dmi'

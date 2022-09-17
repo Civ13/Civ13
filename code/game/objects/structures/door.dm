@@ -92,7 +92,7 @@
 		icon_state = material.door_icon_base
 		basic_icon = material.door_icon_base
 		name = "[material.display_name] door"
-	color = material.icon_colour
+		color = material.icon_colour
 	if (material.opacity < 0.5)
 		opacity = FALSE
 	else
@@ -452,8 +452,12 @@
 
 /obj/structure/simple_door/wood2/New(var/newloc,var/material_name)
 	..(newloc, "wood")
+	icon = 'icons/obj/doors/material_doors_leonister.dmi'
 	basic_icon = "wood2"
+	icon_state = "wood2"
 	name = "Windowed"
+	opacity = 0
+	override_opacity = 1
 ///obj/structure/simple_door/resin/New(var/newloc,var/material_name)
 //	..(newloc, "resin")
 //resin is not an extant material, this is a broken door - siro

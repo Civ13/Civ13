@@ -1,13 +1,13 @@
-//TO DO TODO: global obj/item pickup_sound, drop_sound, pickup_volume, drop_volume 
-//TO DO TODO: unify all food/drinks act as /glass, all /glass act as food/drinks 
-//TO DO TODO: fix code\game\objects\items.dm , code\modules\lighting\lighting_atom.dm 
+//TO DO TODO: global obj/item pickup_sound, drop_sound, pickup_volume, drop_volume
+//TO DO TODO: unify all food/drinks act as /glass, all /glass act as food/drinks
+//TO DO TODO: fix code\game\objects\items.dm , code\modules\lighting\lighting_atom.dm
 //TO DO TODO: /obj/effect/flooding need to be fixed
 //TO DO TODO: Painstaking checking and possibly redrawing icons of small versions of items. Checking for compliance with item_state and icons in them.
-//TO DO TODO: Think about transfer accuracy. For example, there is no such thing as the exact amount that can be poured out of a bucket! 
+//TO DO TODO: Think about transfer accuracy. For example, there is no such thing as the exact amount that can be poured out of a bucket!
 //TO DO TODO: CHECK:   /obj/item/weapon/reagent_containers/glass/small_pot/german_kit_lid it may have bugs
 //TO DO TODO: Re-Check all /obj/item/weapon/reagent_containers/glass/ items, that not in this file
-//TO DO TODO: Think about concept: all /glass objects are storage, with watertight vessel sides. 
-//             All storages are vessels with non-waterproof sides and will lose liquids differs with liquid viscosity and pore size of the vessel. 
+//TO DO TODO: Think about concept: all /glass objects are storage, with watertight vessel sides.
+//             All storages are vessels with non-waterproof sides and will lose liquids differs with liquid viscosity and pore size of the vessel.
 //             I.e. /glass items have pore_size = 0 on sides and pore_size=100(?) on top of it (for vaporing).
 //             Lids have own pore_size. For example beakers lid must (may) have pore_size=0
 //TO DO TODO: Why not all pots from 'icons/obj/claystuff.dmi' are /glass objects??? Need reworking to usual concept!
@@ -80,7 +80,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			else if (istype(attacked, /turf/floor/dirt))
 				if (locate(/obj/structure/farming/plant) in attacked)
 					user.visible_message("<span class='notice'>[user] pours the contents of [src] onto [attacked]!</span>", \
-										"<span class='notice'>You pours the contents of [src] onto [attacked].</span>")
+										"<span class='notice'>You pour the contents of [src] onto [attacked].</span>")
 					proper_spill(attacked, amount_per_transfer_from_this)
 				return TRUE
 	return FALSE
@@ -92,7 +92,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		standard_splash_mob(user, M)
 	else
 		standard_feed_mob(user, M)
-	return TRUE //if opened attack resolved
+	return TRUE //open container attack will resolved anyway
 
 /obj/item/weapon/reagent_containers/glass/attack_obj(obj/attacked, mob/user, icon_x, icon_y)
 	for (var/type in not_resolved_in_attackby_objects) //Old code artefact. TO DO TODO: resolve theese objects attackby procedures (they must return TRUE for interrupt attack chain)
@@ -145,7 +145,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		reagents.add_reagent("olive_oil", 6)
 		qdel(W)
 		return
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/juniper))  //liquid transfer? 
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/juniper))  //liquid transfer?
 		if (!is_open_container())
 			user << "<span class='notice'>\The [src] is closed.</span>"
 			return
@@ -376,7 +376,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	if (!can_explode)
 		if (prob(30))
 			pierced_reagent_lost(15)
-			return TRUE		
+			return TRUE
 		else
 			return FALSE
 	if (istype(proj, /obj/item/projectile/shell))
@@ -402,7 +402,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			qdel(src)
 		else if (prob(30))
 			pierced_reagent_lost(15)
-	return TRUE		
+	return TRUE
 
 /obj/item/weapon/reagent_containers/glass/beaker
 	name = "beaker"
@@ -643,6 +643,15 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		base_name = "wood barrel"
 		reagents.add_reagent("beer",250)
 
+/obj/item/weapon/reagent_containers/glass/barrel/ale
+	name = "wood barrel (ale)"
+	label_text = "ale"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("ale",250)
+
 /obj/item/weapon/reagent_containers/glass/barrel/rum
 	name = "wood barrel (rum)"
 	label_text = "rum"
@@ -652,6 +661,51 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		base_name = "wood barrel"
 		reagents.add_reagent("rum",250)
 
+/obj/item/weapon/reagent_containers/glass/barrel/whiskey
+	name = "wood barrel (whiskey)"
+	label_text = "whiskey"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("whiskey",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/tequila
+	name = "wood barrel (tequila)"
+	label_text = "tequila"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("tequila",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/gin
+	name = "wood barrel (gin)"
+	label_text = "gin"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("gin",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/vodka
+	name = "wood barrel (vodka)"
+	label_text = "vodka"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("vodka",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/cognac
+	name = "wood barrel (cognac)"
+	label_text = "cognac"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "wood barrel"
+		reagents.add_reagent("cognac",250)
+
 /obj/item/weapon/reagent_containers/glass/barrel/wine
 	name = "wood barrel (wine)"
 	label_text = "wine"
@@ -659,7 +713,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		..()
 		flags &= ~OPENCONTAINER
 		base_name = "wood barrel"
-		reagents.add_reagent("wine",200)
+		reagents.add_reagent("wine",250)
 
 /obj/item/weapon/reagent_containers/glass/barrel/tea
 	name = "wood barrel (tea)"
@@ -704,7 +758,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		..()
 		flags &= ~OPENCONTAINER
 		base_name = "wood barrel"
-		reagents.add_reagent("ethanol",250)
+		reagents.add_reagent("pethanol",250)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern
 	name = "steel barrel"
@@ -740,6 +794,19 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		flags &= ~OPENCONTAINER
 		base_name = "steel barrel"
 		reagents.add_reagent("water",350)
+
+//////////Galactic Battles//////////////////////
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/bmilk
+	name = "steel barrel (blue milk)"
+	label_text = "blue milk"
+	New()
+		..()
+		flags &= ~OPENCONTAINER
+		base_name = "steel barrel"
+		reagents.add_reagent("bmilk",350)
+
+////////////////////////////////////////////////////////////////////////
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/oil
 	name = "steel barrel (petroleum)"
@@ -802,7 +869,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		..()
 		flags &= ~OPENCONTAINER
 		base_name = "steel barrel"
-		reagents.add_reagent("ethanol",350)
+		reagents.add_reagent("pethanol",350)
 
 /obj/item/weapon/reagent_containers/glass/barrel/jerrycan
 	name = "jerrycan"
@@ -846,9 +913,10 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	icon_state = "fueltank_large"
 	volume = 250
 	density = TRUE
+
 	New()
 		..()
-		flags &= ~OPENCONTAINER
+		flags |= OPENCONTAINER
 		flags |= CONDUCT
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/update_icon()
@@ -905,6 +973,12 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		..()
 		reagents.add_reagent("gasoline",450)
 
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledethanol
+	New()
+		..()
+		reagents.add_reagent("pethanol",450)
+
+
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
 	name = "medium fueltank"
 	icon_state = "fueltank_small_tank"
@@ -921,7 +995,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		reagents.add_reagent("diesel",180)
 
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
-	//TO DO TODO: REWORK IT'S BUGGY THING LATER!!! 
+	//TO DO TODO: REWORK IT'S BUGGY THING LATER!!!
 	name = "gunpowder barrel"
 	desc = "A barrel of gunpowder. Don't light it on fire."
 	icon_state = "barrel_wood_gunpowder"
@@ -956,7 +1030,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 
 /obj/item/weapon/reagent_containers/glass/extraction_kit
 	//TO DO TO DO: Unify to one procedure all using of extraction kit
-	//             Add restart process (by atack_self if not empty)	
+	//             Add restart process (by atack_self if not empty)
 	name = "extraction kit"
 	desc = "A professional kit for extracting elements from raw ores."
 	icon_state = "extraction_kit"

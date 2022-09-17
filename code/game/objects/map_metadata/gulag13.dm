@@ -3,7 +3,7 @@
 	ID = MAP_GULAG13
 	title = "GULAG 13"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "gulag"
+	lobby_icon = "icons/lobby/gulag.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3600
 	has_hunger = TRUE
@@ -25,7 +25,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Red Army Choir - Slavery and Suffering:1" = 'sound/music/slavery_and_suffering.ogg')
+		"Red Army Choir - Slavery and Suffering:1" = "sound/music/slavery_and_suffering.ogg")
 	gamemode = "Prison Simulation"
 	var/list/points = list(
 		list("Guards",0,0),
@@ -36,6 +36,7 @@
 	is_RP = TRUE
 	var/gracedown1 = TRUE
 	var/siren = FALSE
+	grace_wall_timer = 2400
 obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))
@@ -54,12 +55,6 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/gulag13/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/gulag13/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/gulag13/roundend_condition_def2name(define)
 	..()
@@ -348,6 +343,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 					i[2]+=S.amount*S.value
 					H << "You export \the [S]."
 					qdel(S)
+					new/obj/item/stack/money/rubles(src.loc, round(S.amount*S.value))
 					return
 	else if (istype(map, /obj/map_metadata/abashiri))
 		AB = map
@@ -357,6 +353,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 					i[2]+=S.amount*S.value
 					H << "You export \the [S]."
 					qdel(S)
+					new/obj/item/stack/money/yen(src.loc, round(S.amount*S.value))
 					return
 	else
 		return

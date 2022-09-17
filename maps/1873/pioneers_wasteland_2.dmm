@@ -244,7 +244,7 @@
 "eJ" = (/obj/structure/closet/crate/brick,/turf/floor/grass,/area/caribbean/forest)
 "eK" = (/obj/structure/closet/crate/glass,/turf/floor/grass,/area/caribbean/forest)
 "eL" = (/obj/structure/barricade/wood_pole,/obj/structure/noticeboard,/turf/floor/dirt/dust,/area/caribbean)
-"eM" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/obj/structure/table/wood,/obj/item/weapon/key/civ/room1,/obj/item/weapon/key/civ/room2,/obj/item/weapon/key/civ/room3,/obj/item/weapon/material/knife/butcher,/obj/structure/cutting_board,/turf/floor/wood,/area/caribbean/roofed)
+"eM" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/obj/structure/table/wood,/obj/item/weapon/key/civ/room1,/obj/item/weapon/key/civ/room2,/obj/item/weapon/key/civ/room3,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/obj/structure/cutting_board,/turf/floor/wood,/area/caribbean/roofed)
 "eN" = (/obj/structure/closet/crate/iron,/turf/floor/grass,/area/caribbean/forest)
 "eO" = (/obj/covers/wood,/obj/structure/barricade/steel,/obj/structure/window/classic,/obj/structure/curtain/leather/open,/turf/floor/grass,/area/caribbean/roofed)
 "eP" = (/obj/covers/wood_wall/log{icon_state = "log_wall"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/roofed)

@@ -9,6 +9,7 @@
 	var/load_method = SINGLE_CASING|SPEEDLOADER //1 = Single shells, 2 = box or quick loader, 3 = magazine
 	var/obj/item/ammo_casing/chambered = null
 	var/is_hmg = FALSE
+	var/is_laser_mg = FALSE
 	var/has_telescopic = FALSE
 	//gunporn stuff
 	var/unload_sound 	= 'sound/weapons/guns/interact/pistol_magout.ogg'
@@ -56,7 +57,7 @@
 		loaded = list()
 		chambered = null
 	else
-		if (ispath(ammo_type) && (load_method & (SINGLE_CASING|SPEEDLOADER)))
+		if (ispath(ammo_type) && ((load_method & (SINGLE_CASING|SPEEDLOADER)) || istype(src, /obj/item/weapon/gun/projectile/shotgun)))
 			for (var/i in TRUE to max_shells)
 				loaded += new ammo_type(src)
 		if (ispath(magazine_type) && (load_method & MAGAZINE))
@@ -135,10 +136,10 @@
 		var/mob/living/human/H = loc
 		if (istype(H))
 			if (!H.gloves)
-				H.gunshot_residue = chambered.caliber
+				H.gunshot_residue = chambered.name
 			else
 				var/obj/item/clothing/G = H.gloves
-				G.gunshot_residue = chambered.caliber
+				G.gunshot_residue = chambered.name
 
 	#define DISABLE_CASINGS // goodbye lag (EXPERIMENTAL) - Kachnov
 
@@ -204,8 +205,12 @@
 					user << "<span class='warning'>[src] already has a magazine loaded.</span>" //already a magazine here
 					return
 				user.remove_from_mob(AM)
-				AM.loc = src
-				ammo_magazine = AM
+				if (src.is_laser_mg == TRUE)
+					AM.loc = user.back
+					ammo_magazine = AM
+				else
+					AM.loc = src
+					ammo_magazine = AM
 
 				if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
 				cock_gun(user)

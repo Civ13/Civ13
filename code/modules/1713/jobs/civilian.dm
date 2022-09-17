@@ -72,7 +72,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -126,6 +126,7 @@
 	spawn_location = "JoinLateCivB"
 	is_officer = TRUE
 	whitelisted = TRUE
+	is_vip = TRUE
 
 	is_1713 = TRUE
 
@@ -182,7 +183,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -207,7 +208,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+	if (map.ordinal_age <= 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
@@ -245,7 +247,7 @@
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -296,7 +298,7 @@
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -351,7 +353,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -412,7 +414,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -469,7 +471,7 @@
 /datum/job/civilian/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
@@ -512,7 +514,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -570,7 +572,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -630,7 +632,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -706,7 +708,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -780,7 +782,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -822,7 +824,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -855,7 +857,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -897,7 +899,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to man an Inn or Tavern to supply the Colonists with wine and food!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -932,7 +934,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1151,6 +1153,7 @@
 	whitelisted = TRUE
 
 	is_pioneer = TRUE
+	is_vip = TRUE
 
 
 	min_positions = 1
@@ -1255,6 +1258,7 @@
 	spawn_location = "JoinLateCivC"
 	is_officer = TRUE
 	whitelisted = TRUE
+	is_vip = TRUE
 
 	is_pioneer = TRUE
 
@@ -1851,7 +1855,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/ten(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
@@ -1907,7 +1911,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/twenty(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to man an Inn or Tavern to supply the Colonists with wine and food!")
@@ -2054,18 +2058,17 @@
 	title = "Goldstein Solutions"
 	selection_color = "#7e7e06"
 	spawn_location = "JoinLateCivA"
-	additional_languages = list("Hebrew" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/yellow/CEO
 	title = "Goldstein Solutions CEO"
 	is_officer = TRUE
-	additional_languages = list("Hebrew" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 /datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
@@ -2104,17 +2107,16 @@
 	title = "Kogama Kraftsmen"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
-	additional_languages = list("Japanese" = 70)
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
 	title = "Kogama Kraftsmen CEO"
-	additional_languages = list("Japanese" = 100)
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2154,18 +2156,17 @@
 	title = "Giovanni Blu Stocks"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
-	additional_languages = list("Italian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/blue/CEO
 	title = "Giovanni Blu Stocks CEO"
 	is_officer = TRUE
-	additional_languages = list("Italian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2190,7 +2191,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessblue(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionblue(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/butcher(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_l_hand)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/longsword = new /obj/item/clothing/accessory/storage/sheath/longsword(null)
 	uniform1.attackby(longsword, H)
@@ -2204,18 +2205,17 @@
 	title = "Rednikov Industries"
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
-	additional_languages = list("Russian" = 70)
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/red/CEO
 	title = "Rednikov Industries CEO"
 	is_officer = TRUE
-	additional_languages = list("Russian" = 100)
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
+	is_vip = TRUE
 /datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
@@ -2257,7 +2257,7 @@
 	spawn_location = "JoinLateCivJ"
 	min_positions = 3
 	max_positions = 8
-	additional_languages = list("Gaelic" = 50)
+	additional_languages = list("Gaelic" = 100)
 	can_be_female = TRUE
 	is_deal = TRUE
 
@@ -2270,36 +2270,63 @@
 	rank_abbreviation = "Manager"
 	whitelisted = TRUE
 	additional_languages = list("Gaelic" = 100)
+	is_vip = TRUE
 
 /datum/job/civilian/businessman/mckellen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.add_note("Role", "You are a part of McKellen's Entreprises. Your goal is to work the restaurant and produce illegal substances secretly, while also attempting to extort other businesses for their revenue and criminal power.")
 
-
+	var/found = FALSE
+	for (var/i in whitelist_list)
+		var/temp_ckey = lowertext(i)
+		temp_ckey = replacetext(temp_ckey," ", "")
+		temp_ckey = replacetext(temp_ckey,"_", "")
+		if (temp_ckey == H.client.ckey)
+			found = TRUE
+	if (found == TRUE)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
+		var/obj/item/clothing/suit = H.wear_suit
+		var/obj/item/ammo_magazine/tommy/mag = new /obj/item/ammo_magazine/tommy(null)
+		suit.attackby(mag, H)
+		suit.attackby(mag, H)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/tommy(H), slot_l_hand)
+		H.add_note("Specialization", "You are a part of McKellen's Entreprises. You're the enforcer, the one who does what needs gettin done.")
+		H.setStat("strength", STAT_VERY_HIGH)
+		H.setStat("crafting", STAT_NORMAL)
+		H.setStat("rifle", STAT_VERY_HIGH)
+		H.setStat("dexterity", STAT_VERY_HIGH)
+		H.setStat("swords", STAT_VERY_HIGH)
+		H.setStat("pistol", STAT_VERY_VERY_HIGH)
+		H.setStat("bows", STAT_NORMAL)
+		H.setStat("medical", STAT_NORMAL)
+		H.setStat("machinegun", STAT_MAX)
 //clothes
-	var/randclothes = rand(1,3)
-	switch(randclothes)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-			if (prob(60))
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
-			else
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
-			var/obj/item/clothing/under/uniform = H.w_uniform
-			if (prob(50))
-				var/obj/item/clothing/accessory/suspenders/dark/ysuspenders = new /obj/item/clothing/accessory/suspenders/dark(null)
-				uniform.attackby(ysuspenders, H)
-		if (2)
-			if (prob(80))
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-		if (3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/kilt(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/caubeen(H), slot_head)
+		var/randclothes = rand(1,3)
+		switch(randclothes)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+				if (prob(60))
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(H), slot_head)
+				else
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+				var/obj/item/clothing/under/uniform = H.w_uniform
+				if (prob(50))
+					var/obj/item/clothing/accessory/suspenders/dark/ysuspenders = new /obj/item/clothing/accessory/suspenders/dark(null)
+					uniform.attackby(ysuspenders, H)
+			if (2)
+				if (prob(80))
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/kilt(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/caubeen(H), slot_head)
 
 //other
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_store)
@@ -2363,41 +2390,24 @@
 
 /datum/job/civilian/policeofficer
 	title = "Police Officer"
-	en_meaning = ""
-	rank_abbreviation = ""
-	whitelisted = TRUE
-	spawn_location = "JoinLateCiv"
 	rank_abbreviation = "Officer"
-	selection_color = "#4845eb"
-	can_be_female = TRUE
-	is_deal = TRUE
+	spawn_location = "JoinLateCiv"
+	selection_color = "#353575"
 
-	min_positions = 5
-	max_positions = 50
-
-/datum/job/civilian/policeofficer/supervisor
-	title = "Police Supervisor"
-	en_meaning = ""
-	rank_abbreviation = ""
-	whitelisted = TRUE
-	spawn_location = "JoinLateCivL"
-	rank_abbreviation = "Supervisor"
-	selection_color = "#4845eb"
+	is_heist = TRUE
+	is_law = TRUE
 	can_be_female = TRUE
-	is_deal = TRUE
-	is_officer = TRUE
 
 	min_positions = 1
-	max_positions = 1
+	max_positions = 50
 
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Police"
+	H.civilization = "Police Department"
 	give_random_name(H)
-	H.verbs += /mob/living/human/proc/undercover
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
@@ -2409,12 +2419,189 @@
 	uniform1.attackby(pb, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+	if(prob(60))
+		var/randcloth = rand(1,2)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
+	H.add_note("Role", "You are a member of the police force. Your objective is to arrest (or deal justice to) as many criminals as possible!")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
+
+/datum/job/civilian/swat
+	title = "SWAT Officer"
+	rank_abbreviation = "Sergeant"
+	spawn_location = "JoinLateSwat"
+	selection_color = "#1d1d42"
+
+	is_heist = TRUE
+	is_law = TRUE
+	can_be_female = TRUE
+
+	min_positions = 1
+	max_positions = 5
+	whitelisted = TRUE
+
+/datum/job/civilian/swat/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Police Department"
+	give_random_name(H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/swat_new(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat_new(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/holster/tactical/hiph = new /obj/item/clothing/accessory/holster/tactical(null)
+	uniform1.attackby(hiph, H)
+	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
+	spawn(15)
+		pb.name = "[replacetext(H.real_name,"Officer ","")] police badge"
+		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
+	uniform1.attackby(pb, H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/swat_new(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/swat_new(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+	if(prob(65))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/mp5(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/m16(H), slot_belt)
+	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective is to arrest (or deal justice to) as many criminals as possible!")
+
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("machinegun", STAT_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_HIGH)
+
+/datum/job/civilian/dea_agent
+	title = "DEA Agent"
+	rank_abbreviation = "Agent"
+	spawn_location = "JoinLateCiv"
+	selection_color = "#000117"
+
+	is_heist = TRUE
+	is_law = TRUE
+	whitelisted = TRUE
+	can_be_female = TRUE
+
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/civilian/dea_agent/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Police Department"
+	give_random_name(H)
+	var/randclothes = rand(1,4)
+	switch(randclothes)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective1(H), slot_w_uniform)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective2(H), slot_w_uniform)
+		if(4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective3(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform1.attackby(hiph, H)
+	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar(null)
+	uniform1.attackby(armor,H)
+	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
+	spawn(15)
+		pb.name = "[replacetext(H.real_name,"Agent ","")] DEA badge"
+		pb.desc = "a DEA badge, with <b>[replacetext(H.real_name,"Agent ","")]</b> engraved."
+	uniform1.attackby(pb, H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/dea(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/dea(H), slot_wear_suit)
+
+	H.add_note("Role", "You are a federal agent of the Drug Enforcement Administration. Your objective is to arrest (or deal justice to) as many criminals as possible!")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
+
+/datum/job/civilian/sheriffdep
+	title = "County Deputy"
+	rank_abbreviation = "Deputy"
+	whitelisted = TRUE
+	spawn_location = "JoinLateCiv"
+	selection_color = "#c5a562"
+	can_be_female = TRUE
+	is_deal = TRUE
+
+	min_positions = 5
+	max_positions = 50
+
+/datum/job/civilian/sheriffdep/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Sheriff Office"
+	give_random_name(H)
+	H.verbs += /mob/living/human/proc/undercover
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff/deputy(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff/deputy/short(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police/black(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform1.attackby(hiph, H)
+	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
+	spawn(15)
+		pb.name = "[replacetext(H.real_name,"Deputy ","")] Sheriff's Office badge"
+		pb.desc = "a sheriff deputy badge in star shape, with <b>[replacetext(H.real_name,"Deputy ","")]</b> engraved."
+	uniform1.attackby(pb, H)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	if (prob(50))
+		var/randhat = rand(1,2)
+		switch(randhat)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap/black(H), slot_head)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
-	H.add_note("Role", "You are a member of the police force. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
-	H.add_note("Undercover", "If you need to go undercover and conceal your officer status, toggle it under the IC tab.")
-	H.add_note("Police Codes", "As an officer, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("Role", "You are a member of the local Sheriff Department. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
+	H.add_note("Undercover", "If you need to go undercover and conceal your law enforcement officer status, toggle it under the IC tab.")
+	H.add_note("Police Codes", "As an LEO, you can use police codes for faster broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
 	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
 		<b>10-1:</b> Report in / share location.<br><br> \
 		<b>10-2:</b> Report in as being available.<br><br> \
@@ -2437,11 +2624,117 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
-/datum/job/civilian/policeofficer/supervisor/equip(var/mob/living/human/H)
+/datum/job/civilian/sheriffdep/detective
+	title = "Detective"
+	rank_abbreviation = "Detective"
+	whitelisted = TRUE
+	spawn_location = "JoinLateCiv"
+	selection_color = "#c5a562"
+	can_be_female = TRUE
+	is_deal = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/sheriffdep/detective/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.civilization = "Police"
+	H.civilization = "Sheriff Office"
 	give_random_name(H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police/supervisor(H), slot_w_uniform)
+	H.verbs += /mob/living/human/proc/undercover
+	var/randuni = rand(1,3)
+	switch(randuni)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective1(H), slot_w_uniform)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective2(H), slot_w_uniform)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective3(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	if (prob(80))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/forensics(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police/black(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	if(prob(50))
+		var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+		uniform1.attackby(hiph, H)
+	else
+		var/obj/item/clothing/accessory/holster/armpit/armh = new /obj/item/clothing/accessory/holster/armpit(null)
+		uniform1.attackby(armh, H)
+	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
+	spawn(15)
+		pb.name = "[replacetext(H.real_name,"Detective ","")] Sheriff's Office badge"
+		pb.desc = "a Sheriff's Office detective badge in star shape, with <b>[replacetext(H.real_name,"Detective ","")]</b> engraved."
+	uniform1.attackby(pb, H)
+	if (prob(80))
+		var/randtie = rand(1,3)
+		switch(randtie)
+			if (1)
+				var/obj/item/clothing/accessory/tie/tie = new /obj/item/clothing/accessory/tie(null)
+				uniform1.attackby(tie, H)
+			if (2)
+				var/obj/item/clothing/accessory/tie/tieb = new /obj/item/clothing/accessory/tie/blue(null)
+				uniform1.attackby(tieb, H)
+			if (3)
+				var/obj/item/clothing/accessory/tie/tier = new /obj/item/clothing/accessory/tie/red(null)
+				uniform1.attackby(tier, H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	if (prob(10))
+		var/randhat = rand(1,2)
+		switch(randhat)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap/black(H), slot_head)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_cap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
+	H.add_note("Role", "You are a detective of the local Sheriff Department. Your objectives are to investigate as many crimes as possible and help your fellow deputies to aprehend criminals and contraband!")
+	H.add_note("Undercover", "If you need to go undercover and conceal your law enforcement officer status, toggle it under the IC tab.")
+	H.add_note("Police Codes", "As an LEO, you can use police codes for faster broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
+		<b>10-1:</b> Report in / share location.<br><br> \
+		<b>10-2:</b> Report in as being available.<br><br> \
+		<b>10-3:</b> Report in as being busy.<br><br> \
+		<b>10-4:</b> Roger that / Affirmative.<br><br> \
+		<b>10-5:</b> Negative / Impossible.<br><br> \
+		<b>10-6:</b> Returning to the Police Station.<br><br> \
+		<b>10-7:</b> Prisoner in custody / Arrested suspect.<br><br> \
+		<b>10-8:</b> Request immediate assistance / Officer injured - All non-busy units should answer with a <b>10-0</b> and proceed to location (shows current location)<br><br> \
+		<b>10-9:</b> Officer down, all units should answer with a <b>10-0</b> and proceed to location (shows current location) - This is automatically sent if an officer gets killed, no need for manual input, use <b>10-8</b> instead.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	spawn(50)
+		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+/datum/job/civilian/sheriffdep/supervisor
+	title = "County Sheriff"
+	rank_abbreviation = "Sheriff"
+	whitelisted = TRUE
+	spawn_location = "JoinLateCivL"
+	selection_color = "#c3b091"
+	can_be_female = TRUE
+	is_deal = TRUE
+	is_officer = TRUE
+	is_vip = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/sheriffdep/supervisor/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Sheriff Office"
+	give_random_name(H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
@@ -2449,8 +2742,8 @@
 	uniform1.attackby(hiph, H)
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
-		pb.name = "[replacetext(H.real_name,"Police Supervisor ","")] police badge"
-		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Police Supervisor ","")]</b> engraved."
+		pb.name = "[replacetext(H.real_name,"Sheriff ","")] Sheriff's Office badge"
+		pb.desc = "a sheriff badge in star shape, with <b>[replacetext(H.real_name,"Sheriff ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	var/obj/item/weapon/storage/belt/keychain/KC2 = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/civ/police/po1 = new/obj/item/weapon/key/civ/police(null)
@@ -2458,13 +2751,13 @@
 	KC2.attackby(po1,H)
 	KC2.attackby(po2,H)
 	H.equip_to_slot_or_del(KC2, slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/countysheriff_hat(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/gunbox(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
-	H.add_note("Role", "You are the supervisor of the police force. Your objectives are to coordinate your fellow policemen in order to arrest as many criminal businessmen as possible and seize illegal money and disks!")
-	H.add_note("Police Codes", "As an officer, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("Role", "You are the chief of the local Sheriff Department. Your objectives are to coordinate your fellow deputies in order to arrest as many criminal businessmen as possible and seize illegal money and disks!")
+	H.add_note("Police Codes", "As a sheriff, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
 	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
 		<b>10-1:</b> Report in / share location.<br><br> \
 		<b>10-2:</b> Report in as being available.<br><br> \
@@ -2487,33 +2780,89 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
+/datum/job/civilian/judge_aotd
+	title = "County Judge"
+	rank_abbreviation = "Judge"
+
+	spawn_location = "JoinLateCivJud"
+	is_officer = TRUE
+	whitelisted = TRUE
+	is_deal = TRUE
+	is_vip = TRUE
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/judge_aotd/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
+//jacket
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
+	blazer.color = "#141414"
+	blazer.uncolored = FALSE
+	blazer.update_icon()
+	H.equip_to_slot_or_del(blazer, slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular(H), slot_eyes)
+//other
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/scarf/scarf = new /obj/item/clothing/accessory/custom/scarf(null)
+	scarf.color = "#f0f0f0"
+	scarf.setd = TRUE
+	scarf.uncolored = FALSE
+	scarf.update_icon()
+	uniform.attackby(scarf, H)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(H), slot_l_hand)
+
+	H.add_note("Role", "You are a <b>[title]</b>, the judge of the local county. Help sentence justice upon the evil doers!")
+	give_random_name(H)
+	H.civilization = "Government"
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
 /datum/job/civilian/paramedic
 	title = "Paramedic"
 	en_meaning = ""
 	rank_abbreviation = "Paramedic"
-	whitelisted = FALSE
 	spawn_location = "JoinLateCivE"
-	selection_color = "#777777"
+	selection_color = "#91a6eb"
 	is_deal = TRUE
 	can_be_female = TRUE
-	min_positions = 3
-	max_positions = 15
+	min_positions = 1
+	max_positions = 3
 
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Paramedics"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/paramedic(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/highvis/paramedic(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
-	H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
+	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(stet, H)
+	if (map.ID == MAP_BANK_ROBBERY)
+		H.add_note("Role", "You are a paramedic, and you were called to a bank where a shooting is taking place!")
+	else
+		H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -2522,14 +2871,92 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-	spawn(50)
-		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+	give_random_name(H)
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+		spawn(50)
+			H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+/datum/job/civilian/hospital_doctor
+	title = "Physician"
+	en_meaning = ""
+	rank_abbreviation = "Dr."
+	whitelisted = TRUE
+	spawn_location = "JoinLateCivE"
+	selection_color = "#91a6eb"
+	is_deal = TRUE
+	can_be_female = TRUE
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/hospital_doctor/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Paramedics"
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/scrubs/navy(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/surgical_cap/navy(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(stet, H)
+	H.add_note("Role", "You are a Physician. Take care of your patients inside the hospital!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MAX)
+	give_random_name(H)
+
+/datum/job/civilian/hospital_nurse
+	title = "Nurse"
+	en_meaning = ""
+	rank_abbreviation = "Nurse"
+	whitelisted = FALSE
+	spawn_location = "JoinLateCivE"
+	selection_color = "#91a6eb"
+	is_deal = TRUE
+	can_be_female = TRUE
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/hospital_nurse/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Paramedics"
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/scrubs/blue(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(stet, H)
+	H.add_note("Role", "You are a Nurse. Take care of your patients inside the hospital and follow directives from the physicians!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_HIGH)
+	give_random_name(H)
 
 /datum/job/civilian/mechanic
 	title = "Mechanic"
 	en_meaning = ""
 	rank_abbreviation = "Mechanic"
-	whitelisted = FALSE
+	whitelisted = TRUE
 	spawn_location = "JoinLateCivF"
 	selection_color = "#cd853f"
 	is_deal = TRUE
@@ -2543,10 +2970,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/black(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
 	H.add_note("Role", "You are a Mechanic. You can be payed to repair vehicles that have broken down in the middle of the road. If you're feeling sneaky, maybe help dispose of bodies for some extra cash on the side.")
 	H.setStat("strength", STAT_HIGH)
@@ -2560,11 +2986,9 @@
 
 /datum/job/civilian/hobo
 	title = "Homeless Man"
-	en_meaning = ""
-	rank_abbreviation = ""
 	whitelisted = FALSE
 	spawn_location = "JoinLateCivG"
-	selection_color = "#8b4513"
+	selection_color = "#402b01"
 	is_deal = TRUE
 	can_be_female = TRUE
 	min_positions = 1
@@ -2572,23 +2996,60 @@
 
 /datum/job/civilian/hobo/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/gatorpants(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/punk(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/trash(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/punk(H), slot_shoes)
-	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/armband/punk/armband = new /obj/item/clothing/accessory/armband/punk(null)
-	uniform1.attackby(armband, H)
-	H.add_note("Role", "You are a Bum. You should find a way to earn some cash. Maybe try helping out one of the gangs in the area.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	var/randoutfit = rand(1,3)
+	switch(randoutfit)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/gatorpants(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/punk(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/trash(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/punk(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/syringe(H), slot_l_store)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_r_store)
+			var/obj/item/clothing/under/uniform1 = H.w_uniform
+			var/obj/item/clothing/accessory/armband/punk/armband = new /obj/item/clothing/accessory/armband/punk(null)
+			uniform1.attackby(armband, H)
+			if (H.h_style != "Mohawk")
+				H.h_style = "Mohawk"
+
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/beggar_clothing, slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/crack(H), slot_r_store)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/pipe/glass, slot_l_store)
+		if (3)
+			var/obj/item/clothing/head/custom/fieldcap/headcap = new /obj/item/clothing/head/custom/fieldcap(null)
+			headcap.capcolor = "#932310"
+			headcap.uncolored1 = FALSE
+			headcap.update_icon()
+			H.equip_to_slot_or_del(headcap, slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2, slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket, slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless, slot_gloves)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey, slot_l_hand)
+
+	if (prob(60))
+		var/randaddiction = rand(1,4)
+		switch(randaddiction)
+			if (1)
+				H.addictions["cocaine"] += rand(10,100)
+			if (2)
+				H.addictions["opium"] += rand(10,100)
+			if (3)
+				H.addictions["tobacco"] += rand(10,100)
+			if (4)
+				H.addictions["alcohol"] += rand(10,100)
+	H.add_note("Role", "You are a Bum. You should find a way to earn some cash to fulfill your potential addicition. Maybe try helping out one of the gangs in the area.")
+	H.setStat("strength", STAT_VERY_LOW)
+	H.setStat("crafting", STAT_VERY_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_LOW)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
 /*
 /datum/job/civilian/fireperson
 	title = "Fire Response"
@@ -2880,3 +3341,22 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_LOW)
+
+/datum/job/civilian/bank_teller/modern
+	title = "Teller"
+	en_meaning = "Bank Teller"
+	rank_abbreviation = "Teller"
+	can_be_female = TRUE
+	spawn_location = "JoinLateCivB"
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/bank_teller/modern/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/onehundy(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	H.add_note("Role", "You are a bank teller. Keep your bank is working order and jew people out of their money!")
+
+	return TRUE

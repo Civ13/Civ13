@@ -771,7 +771,7 @@
 /datum/program/monkeysoftmail/does_checks_proc()
 	..()
 	if (tmp_comp_vars["mail_snd"] && origin)
-		if (islist(map.emails[tmp_comp_vars["mail_snd"]]))
+		if (map && islist(map.emails[tmp_comp_vars["mail_snd"]]))
 			for(var/i, i <= map.emails[tmp_comp_vars["mail_snd"]].len, i++)
 				if (istype(map.emails[tmp_comp_vars["mail_snd"]][i], /datum/email))
 					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]
@@ -802,8 +802,10 @@
 				mdomain = "kogama.ug"
 			if ("Goldstein Solutions")
 				mdomain = "goldstein.ug"
-			if ("Police")
+			if ("Sheriff Office")
 				mdomain = "police.gov"
+			if ("Government")
+				mdomain = "usa.gov"
 		var/cname = "mail@[mdomain]"
 		if (user.original_job_title == "Legitimate Business")
 			var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
@@ -838,8 +840,10 @@
 			mdomain = "kogama.ug"
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
-		if ("Police")
+		if ("Sheriff Office")
 			mdomain = "police.gov"
+		if ("Government")
+			mdomain = "usa.gov"
 	var/cname = "mail@[mdomain]"
 	if (user.original_job_title == "Legitimate Business")
 		var/uname = "[lowertext(replacetext(user.real_name," ","_"))]@[mdomain]"
@@ -929,7 +933,7 @@
 	mainbody = ""
 	var/u_account = user.civilization
 	if (user.original_job_title == "Legitimate Business")
-		u_account = user.name
+		u_account = user.real_name
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
@@ -1099,7 +1103,7 @@
 	compatible_os = list("unga OS 94","unga OS")
 
 /datum/program/cartrader/do_html(mob/living/human/user)
-	var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+	var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (1200)")
 	mainmenu = "<h2>CARTRADER NETWORK</h2><br>"
 	if(mainbody == "---")
 		mainbody = ""
@@ -1110,7 +1114,7 @@
 /datum/program/cartrader/Topic(href, href_list, hsrc)
 	..()
 	if (href_list["carlist"])
-		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (1200)")
 		mainbody = ""
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
@@ -1221,7 +1225,7 @@
 			spawn(5)
 				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Kazoku", basecolor))
 
-		else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (900)")
+		else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (1200)")
 			PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
 				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Shinobu 5000", basecolor))
@@ -1247,11 +1251,11 @@
 /datum/program/squadtracker
 	name = "Squad-Trak"
 	description = "Tracks the location of your squad."
-	compatible_os = list("unga OS 94","unga OS 94 Police Edition")
+	compatible_os = list("unga OS 94","unga OS 94 Law Enforcement Edition")
 
 /datum/program/squadtracker/do_html(mob/living/human/user)
 	mainmenu = "<h2>SQUAD STATUS</h2><br>"
-	if (origin.operatingsystem == "unga OS 94 Police Edition" && user.civilization != "Police" && user.civilization != "Paramedics")
+	if (origin.operatingsystem == "unga OS 94 Law Enforcement Edition" && user.civilization != "Sheriff Office" && user.civilization != "Paramedics" && user.civilization != "Government")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
 		mainbody = ""
@@ -1267,12 +1271,12 @@
 
 /datum/program/licenseplates
 	name = "License Plate Registry"
-	description = "Connects to the main Police server to check updated status on license plates."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Transportation server to check on the updated status of a license plate."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/licenseplates/do_html(mob/living/human/user)
 	mainmenu = "<h2>LICENSE PLATE DATABASE</h2><br>"
-	if (user.civilization != "Police")
+	if (user.civilization != "Sheriff Office" && user.civilization != "Government")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
 		mainbody = ""
@@ -1281,20 +1285,20 @@
 	..()
 /datum/program/permits
 	name = "Gun Permit Registry"
-	description = "Connects to the main Police server for automated gun permit requests."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Justice server for automated gun permit requests."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/permits/do_html(mob/living/human/user)
 	mainmenu = "<h2>GUN PERMITS</h2><br>"
 	mainmenu += "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
-	if (user.civilization == "Police" || user.civilization == "Paramedics")
+	if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
 		mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 	..()
 
 /datum/program/permits/Topic(href, href_list, hsrc)
 	mainbody = ""
 	if (href_list["permits"])
-		if (user.civilization == "Police" || user.civilization == "Paramedics")
+		if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
 			mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 			sleep(0.5)
 			do_html(user)
@@ -1304,12 +1308,12 @@
 			sleep(0.5)
 			do_html(user)
 			return
-		else if  (user.civilization in map.warrants)
-			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked and the issue of new ones forbidden for murdering police officers.</font>"
+		else if (user.civilization in map.warrants)
+			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked, and the issue of new ones has been suspended due to the murder of a law enforcement officer.</font>"
 			sleep(0.5)
 			do_html(user)
 			return
-		else if  (user.real_name in map.warrants)
+		else if (user.real_name in map.warrants)
 			mainbody += "<font color='red'>You have, or had, a warrant in your name, so your request was <b>denied</b>.</font>"
 			sleep(0.5)
 			do_html(user)
@@ -1332,7 +1336,7 @@
 					return
 				user.gun_permit = TRUE
 				mainbody += "<font color='green'>Your licence was <b>approved</b>.</span>"
-				map.scores["Police"] += 100
+				map.scores["Sheriff Office"] += 100
 			else
 				mainbody += "<font color='red'>You need to have 100 dollars in your hands to pay for the permit.</span>"
 				sleep(0.5)
@@ -1342,13 +1346,13 @@
 	do_html(user)
 /datum/program/warrants
 	name = "Warrant Terminal"
-	description = "Connects to the main Police server for up-to-date information on pending warrants."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Justice server for up-to-date information on pending warrants."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/warrants/do_html(mob/living/human/user)
 	if (mainmenu == "---")
 		mainmenu = "<h2>WARRANT TERMINAL</h2><br>"
-		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>"
+		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>&nbsp;<a href='?src=\ref[src];warrants=4'>Issue a Warrant</a>"
 	..()
 /datum/program/warrants/Topic(href, href_list, hsrc)
 	mainbody = ""
@@ -1358,7 +1362,7 @@
 				mainbody += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp] <a href='?src=\ref[src];warrants=w[SW.arn]'>(print)</a><br>"
 
 		if (findtext(href_list["warrants"],"w"))
-			if (user.civilization != "Police")
+			if (user.civilization != "Sheriff Office" && user.civilization != "Government")
 				mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 				sleep(0.5)
 				do_html(user)
@@ -1379,7 +1383,7 @@
 						do_html(user)
 						return
 		if (href_list["warrants"] == "3")
-			if (user.civilization != "Police" && user.civilization != "Paramedics")
+			if (user.civilization != "Sheriff Office" && user.civilization != "Paramedics" && user.civilization != "Government")
 				var/done = FALSE
 				var/found = FALSE
 				for (var/mob/living/human/S in range(2,user))
@@ -1387,7 +1391,7 @@
 						found = TRUE
 						for(var/obj/item/weapon/paper/police/warrant/SW in map.pending_warrants)
 							if (SW.tgt_mob == S)
-								map.scores["Police"] += 100
+								map.scores["Sheriff Office"] += 100
 								var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(origin.loc)
 								DLR.amount = 20
 								DLR.update_icon()
@@ -1397,8 +1401,8 @@
 								SW.forceMove(null)
 								qdel(SW)
 								for(var/mob/living/human/HP in player_list)
-									if (HP.civilization == "Police")
-										HP << "<big><font color='yellow'>A suspect with a pending warrant has been dropped off at the Police station by a citizens arrest.</font></big>"
+									if (HP.civilization == "Sheriff Office")
+										HP << "<big><font color='yellow'>A suspect with a pending warrant has been dropped off at the station by a citizens arrest.</font></big>"
 					if (!done && found)
 						mainbody += "<font color='yellow'>There are no outstanding warrants for any of the suspects.</font>"
 					else if (!done && !found)
@@ -1415,7 +1419,7 @@
 					found = TRUE
 					for(var/obj/item/weapon/paper/police/warrant/SW in map.pending_warrants)
 						if (SW.tgt_mob == S)
-							map.scores["Police"] += 300
+							map.scores["Sheriff Office"] += 300
 							done = TRUE
 							mainbody += "<font color='green'>Processed warrant no. <b>[SW.arn]</b> for <b>[SW.tgt]</b>.</font>"
 							map.pending_warrants -= SW
@@ -1427,18 +1431,77 @@
 					mainbody += "<font color='yellow'>There are no suspects present.</font>"
 				else
 					mainbody += "<font color='yellow'>There are no outstanding warrants for any of the suspects.</font>"
+		if (href_list["warrants"] == "4")
+			if (user.original_job_title != "County Judge" || user.civilization != "Government")
+				mainbody += "<font color ='red'><b>ACCESS DENIED - ONLY Government officials may use this feature.</b></font>"
+				sleep(0.5)
+				do_html(user)
+				return
+			else
+				var/list/civilians = list("Cancel")
+				var/list/crimelist = list("Cancel","Assault","Murder","Manslaugther","Kidnapping","Hostage taking","Terrorism","Arson","Fleeing & Eluding","Jailbreak","Private Property Damage","Public Property Damage","Vandalism","General Traffic Violation","Threat of Death or Bodily Harm","Trespassing","Grand Theft Auto","Possession of illegal disks","Possession of narcotics","Possession of illegal firearms","Distribution of illegal disks","Distribution of narcotics","Distribution of illegal firearms","Obstruction of Justice","Theft","Contempt of Court","Tax evasion","Medical malpractice","Neglect of duties","Police misconduct")
+				for (var/mob/living/human/M in world)
+					if(M.stat != DEAD)
+						civilians += M
+				var/choice = WWinput(usr, "Who to issue a warrant for?","Assign a person","Cancel",civilians)
+				if (choice == "Cancel" || !choice)
+					return
+				else
+					var/mob/living/human/U
+					U = choice
+					var/crimechoice = WWinput(usr, "Choose a crime:","Arrest Warrant Reason","Cancel",crimelist)
+					if (crimechoice == "Cancel" || !crimechoice)
+						return
+					else
+						if (!(U.real_name in map.warrants))
+							map.warrants += U.real_name
+							U.gun_permit = 0
+							var/obj/item/weapon/paper_bin/police/PAR = null
+							for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+								PAR = PAR2
+								break
+							if (PAR)
+								var/obj/item/weapon/paper/police/warrant/RW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+								RW.tgt_mob = U
+								RW.tgt = U.real_name
+								RW.tgtcmp = U.civilization
+								RW.reason = crimechoice
+								RW.info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Arrest Warrant No. [RW.arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to detain <b>[RW.tgt]</b>, working for <b><i>[RW.tgtcmp]</i></b>, for the following reasons:<br><br><i>- [RW.reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Law Enforcement Agencies shall bring <b>[RW.tgt]</b> forthwith to the local station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
+								RW.spawntimer = 12000
+							var/obj/item/weapon/paper/police/warrant/RW2 = new /obj/item/weapon/paper/police/warrant(null)
+							RW2.tgt_mob = U
+							RW2.tgt = U.real_name
+							RW2.tgtcmp = U.civilization
+							RW2.reason = crimechoice
+							RW2.info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Arrest Warrant No. [RW2.arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to detain <b>[RW2.tgt]</b>, working for <b><i>[RW2.tgtcmp]</i></b>, for the following reasons:<br><br><i>- [RW2.reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Law Enforcement Agencies shall bring <b>[RW2.tgt]</b> forthwith to the local station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
+							map.pending_warrants += RW2
+							RW2.forceMove(null)
+							if (U.original_job_title != "Legal Business")
+								global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [RW2.tgt], working for [RW2.tgtcmp], please detain the suspect as soon as possible.</big>")
+							else
+								global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [RW2.tgt], please detain the suspect as soon as possible.</big>")
+							mainbody += "<font color='yellow'>Warrant has been issued for [RW2.tgt].</font>"
+							sleep(0.5)
+							do_html(user)
+						else
+							mainbody += "<font color='orange'>A warrant has <b>already been issued</b> for [U.real_name].</font>"
+							sleep(0.5)
+							do_html(user)
+							return
+			return
+
 	sleep(0.5)
 	do_html(user)
 
 /datum/program/gunregistry
 	name = "Firearm Database"
-	description = "Connects to the main Police server to check updated status on all legally owned guns."
-	compatible_os = list("unga OS 94 Police Edition")
+	description = "Connects to the main Department of Justice server to check updated status on all legally owned guns."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
 
 /datum/program/gunregistry/do_html(mob/living/human/user)
 	mainmenu = "<h2>FIREARM REGISTRY DATABASE</h2><br>"
 	mainbody = ""
-	if (user.civilization != "Police")
+	if (user.civilization != "Sheriff Office" && user.civilization != "Government")
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
 	else
@@ -1446,6 +1509,21 @@
 			mainbody += "<b>[L[1]] (no. [L[2]])</b> - registered to <b>[L[3]]</b><br>"
 	..()
 
+/datum/program/fingerprintregistry
+	name = "Fingerprint Database"
+	description = "Connects to the main Department of Justice server to list all known fingerprints."
+	compatible_os = list("unga OS 94 Law Enforcement Edition")
+
+/datum/program/fingerprintregistry/do_html(mob/living/human/user)
+	mainmenu = "<h2>FINGERPRINT REGISTRY DATABASE</h2><br>"
+	mainbody = ""
+	if (user.civilization != "Sheriff Office" && user.civilization != "Government")
+		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
+		return
+	else
+		for (var/mob/living/human/M in mob_list)
+			mainbody += "<b>[M.real_name]</b> - fingerprint string:<br> <b>[M.get_full_print()]</b><br><br>"
+	..()
 
 /////////////////////////////////////////////////////////
 /////////////////////NILE.UG MARKETPLACE/////////////////
@@ -1748,6 +1826,7 @@
 					map.marketplaceaccounts[user.name] -= cost
 					sleep(0.5)
 					do_html(user)
+					return
 		if (findtext(href_list["bank"],"s"))
 			var/tcode = replacetext(href_list["bank"],"s","")
 			var/cost = (map.globalmarketplace[tcode][4])

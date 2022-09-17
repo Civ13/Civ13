@@ -185,8 +185,8 @@
 	//NAPOLEONIC AGE BRONZE CART//
 	//EARLY MODERN AGE STEEL CART//
 /obj/structure/closet/crate/cart/steel
-	name ="shopping cart"
-	desc = " A shopping cart, it's medium sized, it's steel frame make it sturdy and light"
+	name ="steel cart"
+	desc = " A steel cart, it's medium sized, it's steel frame make it sturdy and light"
 	icon_state= "st_cart_o"
 	icon_opened ="st_cart_o"
 	icon_closed = "st_cart_c"

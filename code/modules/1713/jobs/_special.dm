@@ -38,6 +38,7 @@
 /datum/job/var/is_modernday = FALSE
 /datum/job/var/is_rcw = FALSE
 /datum/job/var/is_tanker = FALSE
+/datum/job/var/is_tankcom = FALSE
 /datum/job/var/is_prison = FALSE
 /datum/job/var/is_navy = FALSE
 /datum/job/var/is_rp = FALSE
@@ -45,6 +46,7 @@
 /datum/job/var/is_ss_panzer = FALSE
 /datum/job/var/is_civil_war = FALSE
 /datum/job/var/is_deal = FALSE
+/datum/job/var/is_heist = FALSE
 /datum/job/var/is_pacific = FALSE
 /datum/job/var/is_korean_war = FALSE
 /datum/job/var/is_ancient = FALSE
@@ -79,6 +81,23 @@
 /datum/job/var/is_ukrainerussowar = FALSE
 /datum/job/var/is_russojapwar = FALSE
 /datum/job/var/is_smallsiegemoscow = FALSE
+/datum/job/var/is_lab = FALSE
+/datum/job/var/is_afghan = FALSE
+/datum/job/var/is_soviet = FALSE
+/datum/job/var/is_muj = FALSE
+/datum/job/var/is_dra = FALSE
+/datum/job/var/is_afro = FALSE
+/datum/job/var/is_waco = FALSE
+/datum/job/var/is_clash = FALSE
+/datum/job/var/is_event_role = FALSE
+/datum/job/var/is_starwars = FALSE
+/datum/job/var/is_rebel = FALSE
+/datum/job/var/is_empire = FALSE
+/datum/job/var/is_reds = FALSE
+/datum/job/var/is_interwar = FALSE
+/datum/job/var/is_pla = FALSE
+/datum/job/var/is_vip = FALSE
+
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE
 // new autobalance stuff - Kachnov
@@ -124,6 +143,12 @@
 		. = RUSSIAN
 	else if (istype(src, /datum/job/finnish))
 		. = FINNISH
+	else if (istype(src, /datum/job/norwegian))
+		. = NORWEGIAN
+	else if (istype(src, /datum/job/swedish))
+		. = SWEDISH
+	else if (istype(src, /datum/job/danish))
+		. = DANISH
 	else if (istype(src, /datum/job/arab/civilian/chechen))
 		. = CHECHEN
 	else if (istype(src, /datum/job/roman))
@@ -180,6 +205,15 @@
 	else if (istype(src, /datum/job/finnish))
 		user.faction_text = "FINNISH"
 		user.base_faction = new/datum/faction/finnish(user, src)
+	else if (istype(src, /datum/job/norwegian))
+		user.faction_text = "NORWEGIAN"
+		user.base_faction = new/datum/faction/norwegian(user, src)
+	else if (istype(src, /datum/job/swedish))
+		user.faction_text = "SWEDISH"
+		user.base_faction = new/datum/faction/swedish(user, src)
+	else if (istype(src, /datum/job/danish))
+		user.faction_text = "DANISH"
+		user.base_faction = new/datum/faction/danish(user, src)
 	else if (istype(src, /datum/job/arab/civilian/chechen))
 		user.faction_text = "CHECHEN"
 		user.base_faction = new/datum/faction/chechen(user, src)

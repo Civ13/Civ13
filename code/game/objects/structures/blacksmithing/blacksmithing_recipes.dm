@@ -88,17 +88,17 @@ var/global/list/anvil_recipes = list(
 		/*Other Weapons*/
 	"Knife" = list("Knife","knives",0,8,1,1,1,0,/obj/item/weapon/material/kitchen/utensil/knife),
 	"Throwing Knife" = list("Throwing Knife","knives",2,8,1.5,1.5,1.5,0,/obj/item/weapon/material/thrown/throwing_knife),
-	"Tanto" = list("Tanto","knives",2,5,5,5,0,0,/obj/item/weapon/material/knife/tanto),
+	"Tanto" = list("Tanto","knives",2,5,5,5,0,0,/obj/item/weapon/material/kitchen/utensil/knife/tanto),
 	"Bowie Knife" = list("Bowie Knife","knives",4,6,8,8,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie),
 	"Reproduction Bowie Knife" = list("Reproduction Bowie Knife","knives",7,8,12,12,0,0,/obj/item/weapon/material/kitchen/utensil/knife/bowie), //price inflated +4 out of era
 	"Trench Knife" = list("Trench Knife","knives",5,6,10,10,0,0,/obj/item/weapon/material/kitchen/utensil/knife/trench),
 	"Reproduction Trench Knife" = list("Reproduction Trench Knife","knives",7,8,14,14,0,0,/obj/item/weapon/material/kitchen/utensil/knife/trench), //price inflated +4 out of era
 	"Military Knife" = list("Military Knife","knives",5,7,14,14,0,0,/obj/item/weapon/material/kitchen/utensil/knife/military),
 	"Reproduction Military Knife" = list("Reproduction Military Knife","knives",8,8,18,14,0,0,/obj/item/weapon/material/kitchen/utensil/knife/military), //price inflated +4 out of era
-	"Ceremonial Tanto" = list("Ceremonial Tanto","knives",6,8,10,10,0,0,/obj/item/weapon/material/knife/tanto), //applied double cost or required 'ceremonial' subtype.
+	"Ceremonial Tanto" = list("Ceremonial Tanto","knives",6,8,10,10,0,0,/obj/item/weapon/material/kitchen/utensil/knife/tanto), //applied double cost or required 'ceremonial' subtype.
 	"Razor Blade" = list("Razor Blade","knives",0,8,2,2,2,0,/obj/item/weapon/material/kitchen/utensil/knife/razorblade),
 	"Circumcision Knife" = list("Circumcision Knife","knives",0,8,2,2,0,0,/obj/item/weapon/material/kitchen/utensil/knife/circumcision),
-	"Butcher's Cleaver" = list("Butcher's Cleaver","knives",0,8,3,3,0,0,/obj/item/weapon/material/knife/butcher),
+	"Butcher's Cleaver" = list("Butcher's Cleaver","knives",0,8,3,3,0,0,/obj/item/weapon/material/kitchen/utensil/knife/butcher),
 
 	"Hatchet Head" = list("Hatchet Head","axes",0,8,3,3,3,0,/obj/item/weapon/material/part/axehead/hatchet),
 	"Throwing Axe Head" = list("Throwing Axe Head","axes",0,8,3,3,3,0,/obj/item/weapon/material/part/axehead/throwing),
@@ -109,8 +109,8 @@ var/global/list/anvil_recipes = list(
 	"Kukri Machete" = list("Kukri Machete","machetes",4,5,12,12,0,0,/obj/item/weapon/material/sword/kukri),
 	"Reproduction Kukri Machete" = list("Reproduction Kukri Machete","machetes",6,8,16,16,0,0,/obj/item/weapon/material/sword/kukri), //price inflated +4 out of era
 
-	"Halberd" = list("Halberd","other weapons",2,3,14,10,0,0,/obj/item/weapon/material/halberd),
-	"Pike" = list("Pike","other weapons",2,2,14,12,0,0,/obj/item/weapon/material/pike),
+	"Halberd" = list("Halberd","other weapons",2,3,14,10,0,0,/obj/item/weapon/material/spear/halberd),
+	"Pike" = list("Pike","other weapons",2,2,14,12,0,0,/obj/item/weapon/material/spear/sarissa/pike),
 	"Boarding Axe" = list("Boarding Axe","other weapons",3,3,8,0,0,0,/obj/item/weapon/material/boarding_axe),
 	"Naginata" = list("Naginata","other weapons",2,3,16,14,0,0,/obj/item/weapon/material/naginata),
 

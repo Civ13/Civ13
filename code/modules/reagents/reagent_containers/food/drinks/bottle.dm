@@ -8,7 +8,7 @@
 	item_state = "broken_beer" //Generic held-item sprite until unique ones are made.
 	force = 5
 	var/shatter_duration = 5 //Directly relates to the 'weaken' duration. Lowered by armor (i.e. helmets)
-	var/isGlass = TRUE //Whether the 'bottle' is made of glass or not so that milk cartons dont shatter when someone gets hit by it
+	var/isGlass = TRUE //Whether the 'bottle' is made of glass or not so that milk s dont shatter when someone gets hit by it
 
 	var/obj/item/weapon/reagent_containers/glass/rag/rag = null
 	var/rag_underlay = "rag"
@@ -780,74 +780,6 @@
 		icon_state = "sake"
 	else
 		icon_state = "sake_empty"
-
-/obj/item/weapon/reagent_containers/food/drinks/plastic
-	var/uncolored = TRUE
-	var/image/color1
-	var/image/color2
-	var/topcolor = "#000000"
-	var/undercolor = "#FFFFFF"
-	var/image/fluid_image
-	New()
-		..()
-		color1 = image(icon, "[icon_state]_label1")
-		color2 = image(icon, "[icon_state]_label2")
-		overlays += color1
-		overlays += color2
-		fluid_image = image('icons/obj/drinks.dmi', "fluid-[icon_state]")
-		update_icon()
-
-	on_reagent_change()
-		update_icon()
-
-/obj/item/weapon/reagent_containers/food/drinks/plastic/attack_self(mob/user as mob)
-	if (uncolored)
-		var/input = WWinput(user, "Logo Symbol - Choose the logo symbol color:", "Main Color" , "#000000", "color")
-		if (input == null || input == "")
-			return
-		else
-
-			topcolor= input
-
-		input = WWinput(user, "Background color - Choose the background color:", "Background Color" , "#FFFFFF", "color")
-		if (input == null || input == "")
-			return
-		else
-
-			undercolor= input
-		uncolored = FALSE
-		color1.color = topcolor
-		color2.color = undercolor
-		update_icon()
-	else
-		..()
-
-/obj/item/weapon/reagent_containers/food/drinks/plastic/update_icon()
-	overlays.Cut()
-	overlays += color1
-	overlays += color2
-	if (reagents.total_volume > 0)
-		if (!fluid_image)
-			fluid_image = image('icons/obj/drinks.dmi', "fluid-[icon_state]")
-		fluid_image.color = reagents.get_color()
-		overlays += fluid_image
-	return
-
-/obj/item/weapon/reagent_containers/food/drinks/plastic/cola
-	volume = 70
-	name = "plastic bottle"
-	desc = "A plastic bottle."
-	icon_state = "cola"
-	item_state = "beer"
-	value = 3
-
-/obj/item/weapon/reagent_containers/food/drinks/plastic/condiment
-	volume = 25
-	name = "condiment bottle"
-	desc = "A plastic condiment bottle."
-	icon_state = "condiment"
-	item_state = "beer"
-	value = 0.5
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/cola
 	name = "Cola"

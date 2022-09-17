@@ -116,6 +116,7 @@
 	var/gorillaman = FALSE
 	var/ant = FALSE
 	var/orc = FALSE
+	var/goblin = FALSE
 	var/lizard = FALSE
 	var/wolfman = FALSE
 	var/crab = FALSE

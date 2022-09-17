@@ -78,6 +78,10 @@
 	weight = 0.34
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/mp40/mp5
+	name = "MP5 magazine (9x19mm)"
+	icon_state = "mp5"
+
 /obj/item/ammo_magazine/mg34
 	name = "MG34 magazine (7.92x57mm)"
 	icon_state = "mg34"
@@ -194,6 +198,17 @@ obj/item/ammo_magazine/dp
 	..()
 	stored_ammo.Cut()
 
+/obj/item/ammo_magazine/a45acpbox
+	name = "magazine box (.45)"
+	icon_state = "oldbox"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a45acp
+	caliber = "a45acp"
+	w_class = 3
+	max_ammo = 30
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/tt30
 	name = "TT-33 magazine (7.62x25mm)"
 	icon_state = "m1911"
@@ -206,12 +221,12 @@ obj/item/ammo_magazine/dp
 	..()
 	stored_ammo.Cut()
 
-/obj/item/ammo_magazine/tt30ll
-	name = "TT-33 magazine (rubber)"
+/obj/item/ammo_magazine/tt30ll/rubber
+	name = "TT-33 magazine (wooden)"
 	icon_state = "m1911"
 	mag_type = MAGAZINE
-	ammo_type =  /obj/item/ammo_casing/l762x25
-	caliber = "l762x25"
+	ammo_type =  /obj/item/ammo_casing/a762x25/rubber
+	caliber = "a762x25"
 	max_ammo = 8
 	multiple_sprites = TRUE
 /obj/item/ammo_magazine/tt30/empty/New()
@@ -233,7 +248,7 @@ obj/item/ammo_magazine/dp
 
 /obj/item/ammo_magazine/garand
 	name = "clip (30-06) 8 rounds"
-	icon_state = "clip"
+	icon_state = "g-clip"
 	caliber = "a3006"
 
 	ammo_type = /obj/item/ammo_casing/a3006
@@ -241,6 +256,17 @@ obj/item/ammo_magazine/dp
 	weight = 0.038
 	multiple_sprites = TRUE
 	clip = TRUE
+
+/obj/item/ammo_magazine/m3006box
+	name = "magazine box (30-06)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a3006"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
 
 /obj/item/ammo_magazine/springfield
 	name = "clip (30-06)"
@@ -287,4 +313,31 @@ obj/item/ammo_magazine/dp
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a45acp
 	max_ammo = 20
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/deagle
+	name = "Desert eagle magazine (50cal)"
+	icon_state = "deagle"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a50cal
+	caliber = "a50cal"
+	max_ammo = 7
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/deaglemagnum
+	name = "Desert eagle magazine (44.magnum)"
+	icon_state = "deagle"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a44magnum
+	caliber = "a44magnum"
+	max_ammo = 8
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/browninghp
+	name = "Browning hi-power magazine (9mm Parabellum)"
+	icon_state = "browning_hp"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 13
 	multiple_sprites = TRUE

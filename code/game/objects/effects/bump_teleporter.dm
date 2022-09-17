@@ -36,3 +36,11 @@ var/list/obj/effect/bump_teleporter/BUMP_TELEPORTERS = list()
 				spawn(timer)
 					usr.loc = BT.loc	//Teleport to location with correct id.
 			return
+
+/obj/effect/step_trigger/Crossed(H as mob|obj)
+	Bumped(H)
+
+/obj/effect/step_trigger/attack_hand(mob/living/human/H)
+	if (!ishuman(H))
+		return
+	Bumped(H)

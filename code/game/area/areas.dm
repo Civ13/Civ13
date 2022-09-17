@@ -100,7 +100,10 @@
 	if ((oldarea.has_gravity == FALSE) && (newarea.has_gravity == TRUE) && (L.m_intent == "run")) // Being ready when you change areas gives you a chance to avoid falling all together.
 		thunk(L)
 		L.update_floating( L.Check_Dense_Object() )
-
+	if ((oldarea.has_gravity == TRUE) && (newarea.has_gravity == FALSE))
+		L.update_floating( L.Check_Dense_Object() )
+	if ((oldarea.no_air == FALSE) && (newarea.no_air == TRUE))
+		no_air(L)
 	var/override_ambience = FALSE
 
 	for (var/typecheck in list(/area/caribbean/british, /area/caribbean/pirates, /area/caribbean/no_mans_land, /area/caribbean/forest, /area/caribbean/void))
@@ -190,6 +193,38 @@
 
 /area/proc/has_gravity()
 	return has_gravity
+
+/area/proc/no_air(mob)
+	if (istype(mob,/mob/living/human/))
+		var/mob/living/human/H = mob
+
+		if (istype(H.shoes, /obj/item/clothing/head/astronaut) && istype(H.shoes, /obj/item/clothing/suit/astronaut))
+			return
+		else
+			H.AdjustStunned(10)
+			H.AdjustWeakened(10)
+			H.burn_skin(25)
+			H.adjustFireLoss(25)
+			H.drop_item()
+			H.adjustOxyLoss(80)
+			H.adjustBodyTemp(-100)
+			H.emote("gasp")
+			H.emote("cry")
+			H.emote("choke")
+			mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
+			spawn(100)
+				H.burn_skin(25)
+				H.adjustFireLoss(30)
+				H.emote("gasp")
+				H.emote("choke")
+				H.adjustBodyTemp(-200)
+				mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
+				spawn(100)
+					H.burn_skin(25)
+					H.adjustFireLoss(20)
+					H.emote("gasp")
+					H.emote("choke")
+					mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
 
 /area/proc/arty_act(loss)
 	if (prob(25))

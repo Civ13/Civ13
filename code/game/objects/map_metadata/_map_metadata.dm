@@ -12,7 +12,7 @@ var/civmax_research = list(230,230,230)
 	var/ID = null // MUST be text, or aspects will break
 	var/no_winner = "Neither side has captured the other side's base."
 	var/title = null
-	var/lobby_icon_state = "civ13"
+	var/lobby_icon = "icons/lobby/civ13.gif"
 	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]
@@ -23,6 +23,8 @@ var/civmax_research = list(230,230,230)
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
 
+	var/victory_time = 36000
+	var/grace_wall_timer = 0
 //faction stuff
 	var/faction1 = BRITISH
 	var/faction2 = PIRATES
@@ -36,7 +38,7 @@ var/civmax_research = list(230,230,230)
 		list(BRITISH) = /area/caribbean/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	var/mission_start_message = "Round will start soon!"
 	var/is_RP = FALSE
 	var/squads = 1
@@ -47,6 +49,7 @@ var/civmax_research = list(230,230,230)
 		4 = list(),
 		5 = list(),
 		6 = list(),
+		7 = list(),
 	)
 	var/list/faction2_squads = list(
 		1 = list(),
@@ -55,6 +58,7 @@ var/civmax_research = list(230,230,230)
 		4 = list(),
 		5 = list(),
 		6 = list(),
+		7 = list(),
 	)
 	var/list/faction1_squad_leaders = list(
 		1 = null,
@@ -63,6 +67,7 @@ var/civmax_research = list(230,230,230)
 		4 = null,
 		5 = null,
 		6 = null,
+		7 = null,
 	)
 	var/list/faction2_squad_leaders = list(
 		1 = null,
@@ -71,6 +76,7 @@ var/civmax_research = list(230,230,230)
 		4 = null,
 		5 = null,
 		6 = null,
+		7 = null,
 	)
 	var/required_players = 1
 	var/time_both_sides_locked = -1
@@ -96,6 +102,8 @@ var/civmax_research = list(230,230,230)
 	var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
 	var/list/zlevels_without_lighting = list()
 	var/list/areas_without_lighting = list()
+
+	var/round_finished = FALSE
 
 	// fluff
 	var/meme = FALSE
@@ -144,6 +152,8 @@ var/civmax_research = list(230,230,230)
 	var/is_zombie = FALSE
 	var/is_fantrace = FALSE
 	var/perschadplus = FALSE
+	var/is_wasteland = FALSE
+	var/nonukes = FALSE
 
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active
@@ -314,12 +324,12 @@ var/civmax_research = list(230,230,230)
 					v++
 
 /obj/map_metadata/proc/religious_timer()
-	if (map.custom_religions.len > 0)
-		for (var/rel in map.custom_religions)
-			if (map.custom_religions[rel][3] > 0)
-				map.custom_religions[rel][3] -= 0.2
-			if (map.custom_religions[rel][3] < 0)
-				map.custom_religions[rel][3] = 0
+	if (custom_religions.len > 0)
+		for (var/rel in custom_religions)
+			if (custom_religions[rel][3] > 0)
+				custom_religions[rel][3] -= 0.2
+			if (custom_religions[rel][3] < 0)
+				custom_religions[rel][3] = 0
 	spawn(1200)
 		religious_timer()
 
@@ -583,11 +593,12 @@ var/civmax_research = list(230,230,230)
 				return !faction2_can_cross_blocks()
 	return FALSE
 
-/obj/map_metadata/proc/faction1_can_cross_blocks()
-	return TRUE
-
 /obj/map_metadata/proc/faction2_can_cross_blocks()
-	return TRUE
+	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)
+
+/obj/map_metadata/proc/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)
+
 
 /obj/map_metadata/proc/specialfaction_can_cross_blocks()
 	return TRUE
@@ -729,6 +740,9 @@ var/civmax_research = list(230,230,230)
 		RUSSIAN = 0,
 		CHECHEN = 0,
 		FINNISH = 0,
+		NORWEGIAN = 0,
+		SWEDISH = 0,
+		DANISH = 0,
 		GERMAN = 0,
 		AMERICAN = 0,
 		VIETNAMESE = 0,
@@ -809,8 +823,12 @@ var/civmax_research = list(230,230,230)
 		if (BRITISH)
 			return "British"
 		if (PIRATES)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Redmenian"
 			return "Pirate"
 		if (CIVILIAN)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Blugoslavian"
 			return "Colonist"
 		if (INDIANS)
 			return "Native"
@@ -841,6 +859,12 @@ var/civmax_research = list(230,230,230)
 			return "Chechen"
 		if (FINNISH)
 			return "Finnish"
+		if (NORWEGIAN)
+			return "Norwegian"
+		if (SWEDISH)
+			return "Swedish"
+		if (DANISH)
+			return "Danish"
 		if (AMERICAN)
 			return "American"
 		if (VIETNAMESE)
@@ -854,8 +878,12 @@ var/civmax_research = list(230,230,230)
 		if (BRITISH)
 			return "British Empire"
 		if (PIRATES)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Redmenia Defence Force"
 			return "Pirate crew"
 		if (CIVILIAN)
+			if (map.ID == MAP_CAMPAIGN)
+				return "Blugoslavian Armed Forces"
 			return "Colonists"
 		if (INDIANS)
 			return "Native Tribe"
@@ -884,6 +912,12 @@ var/civmax_research = list(230,230,230)
 			return "Chechen Republic of Ichkeria"
 		if (FINNISH)
 			return "Republic of Finland"
+		if (NORWEGIAN)
+			return "Kingdom of Norway"
+		if (SWEDISH)
+			return "Kingdom of Sweden"
+		if (DANISH)
+			return "Kingdom of Denmark"
 		if (GERMAN)
 			return "German Empire"
 		if (AMERICAN)
@@ -900,6 +934,10 @@ var/civmax_research = list(230,230,230)
 			return "British"
 		if ("Pirate crew")
 			return "Pirate"
+		if ("Redmenia Defence Force")
+			return "Redmenian"
+		if ("Blugoslavian Armed Forces")
+			return "Blugoslavian"
 		if ("Colonists")
 			return "Colonist"
 		if ("Native Tribe")

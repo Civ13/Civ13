@@ -854,7 +854,7 @@
 		var/new_eyes = "Black"
 		var/list/possible_h_list = list("Black")
 		var/list/possible_e_list = list("Black")
-		var/list/possible_s_list = list(-85,-200)
+		var/list/possible_s_list = list(-85,-175)
 		var/area/mob_area = get_area(src)
 		switch (mob_area.climate)
 			if ("jungle","savanna")
@@ -868,7 +868,7 @@
 				add_note("Known Languages", "Swahili")
 				possible_h_list = list("Black")
 				possible_e_list = list("Brown")
-				possible_s_list = list(-175,-200)
+				possible_s_list = list(-145,-175)
 			if ("temperate")
 				add_language("Zulu",TRUE)
 				remove_language("English")
@@ -1030,8 +1030,14 @@
 				s_tone = rand(-155,-185)
 		else if (faction_text == CIVILIAN && map.ID == MAP_AFRICAN_WARLORDS && original_job_title == "Local Policeman")
 			s_tone = rand(-155,-185)
-		else if (s_tone < -65)
-			s_tone = -65
+		else if (faction_text == AMERICAN && map.ordinal_age >= 7)
+			if (original_job.is_afro == TRUE)
+				s_tone = rand(-150,-120)
+			else
+				s_tone = rand(-40,-25)
+		else
+			if (s_tone < -65)
+				s_tone = -65
 
 	force_update_limbs()
 	update_body()

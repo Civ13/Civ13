@@ -1,7 +1,7 @@
 /obj/map_metadata/football
 	ID = MAP_FOOTBALL
 	title = "Football Match"
-	lobby_icon_state = "futebol"
+	lobby_icon = "icons/lobby/futebol.png"
 	caribbean_blocking_area_types = list(/area/caribbean/football/midfield, /area/caribbean/football/nopass)
 	respawn_delay = 0
 	no_winner ="The game is still going on."
@@ -19,7 +19,7 @@
 	ambience = list('sound/ambience/football.ogg')
 	faction1 = CIVILIAN
 	songs = list(
-		"Forever Blowing Bubbles:1" = 'sound/music/forever_blowing_bubbles.ogg',)
+		"Forever Blowing Bubbles:1" = "sound/music/forever_blowing_bubbles.ogg",)
 	is_singlefaction = TRUE
 	var/team1 = "Unga Utd."
 	var/team2 = "Chad Town F.C."
@@ -129,9 +129,6 @@
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/football/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"

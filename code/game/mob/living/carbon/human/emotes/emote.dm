@@ -225,6 +225,13 @@ var/list/vocal_emotes = list(
 				sleeping += 10 //Short-short nap
 				m_type = 1
 
+			if ("nap")
+				message = "gently nods off."
+				if (sleeping)
+					return //Can't faint while asleep
+				sleeping += 30 //short nap
+				m_type = 1
+
 			if ("cough")
 				if (miming)
 					message = "appears to cough!"
@@ -372,10 +379,19 @@ var/list/vocal_emotes = list(
 								if (CIVILIAN)
 									if (original_job.is_rcw)
 										playsound(get_turf(src), "charge_RUSSIAN", 100)
+									else if (original_job.is_event)
+										playsound(get_turf(src), "charge_BLUGOSLAVIA", 100)
+									else if (original_job.is_dra)
+										playsound(get_turf(src), "charge_IRANIAN", 100)
+									else if (original_job.is_heist && original_job.is_law)
+										playsound(get_turf(src), "charge_POLICE", 100)
 								if (PIRATES)
-									playsound(get_turf(src), "charge_PIRATES", 100)
+									if (original_job.is_event)
+										playsound(get_turf(src), "charge_REDMENIA", 100)
+									else
+										playsound(get_turf(src), "charge_PIRATES", 100)
 								if (FINNISH)
-									playsound(get_turf(src), "charge_PIRATES", 100)
+									playsound(get_turf(src), "charge_FINNISH", 100)
 								if (BRITISH)
 									playsound(get_turf(src), "charge_BRITISH", 100)
 								if (FRENCH)
@@ -406,7 +422,10 @@ var/list/vocal_emotes = list(
 								if (JAPANESE)
 									playsound(get_turf(src), "charge_JAPANESE", 100)
 								if (RUSSIAN)
-									playsound(get_turf(src), "charge_RUSSIAN", 100)
+									if (original_job.is_heist && original_job.is_outlaw)
+										playsound(get_turf(src), "charge_RUROBBERS", 100)
+									else
+										playsound(get_turf(src), "charge_RUSSIAN", 100)
 								if (GERMAN)
 									playsound(get_turf(src), "charge_GERMAN", 100)
 								if (AMERICAN)

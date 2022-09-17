@@ -518,11 +518,17 @@ var/global/FREQM = rand(101,120)
 	..()
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/item/weapon/radio/faction1/spaceradio
+	icon_state = "portable_radio5"
+	item_state = "portable_radio5"
 /obj/item/weapon/radio/faction2/New()
 	..()
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
+/obj/item/weapon/radio/faction2/spaceradio
+	icon_state = "portable_radio5"
+	item_state = "portable_radio5"
 /obj/item/weapon/radio/attack_self(mob/user)
 	interact(user)
 
@@ -683,6 +689,19 @@ var/global/FREQM = rand(101,120)
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, speaker.default_language, speaker, src, src)
 
+/obj/item/weapon/radio/galacticbattles
+	name = "portable communications backpack"
+	desc = "Used to communicate with others from a far. Set to 150kHz."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "portable_radio5"
+	item_state = "portable_radio5"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	powerneeded = 0
+	force = 4.0
+	throwforce = 3.0
+
 //////////////"POUCH SLOT" RADIOS///////////////////////////
 //For modern radios worn on your chest
 /obj/item/weapon/radio/walkietalkie
@@ -704,15 +723,42 @@ var/global/FREQM = rand(101,120)
 	..()
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+
+
+
 /obj/item/weapon/radio/walkietalkie/faction2/New()
 	..()
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
+/obj/item/weapon/radio/walkietalkie/faction1/earradio1
+	icon_state = "radio_headset"
+	item_state = "radio_headset"
+	slot_flags = SLOT_EARS | SLOT_TWOEARS
+	var/ear_safety = 2
+
+/obj/item/weapon/radio/walkietalkie/faction2/earradio2
+	icon_state = "radio_headset"
+	item_state = "radio_headset"
+	slot_flags = SLOT_EARS | SLOT_TWOEARS
+	var/ear_safety = 2
+
+/obj/item/weapon/radio/walkietalkie/faction1/comlink
+	name = "comlink"
+	icon_state = "comlink"
+	item_state = "comlink"
+
+/obj/item/weapon/radio/walkietalkie/faction2/comlink
+	name = "comlink"
+	icon_state = "comlink"
+	item_state = "comlink"
+
 /obj/item/weapon/radio/walkietalkie/factionred/New()
 	..()
 	freq = FREQR
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
 /obj/item/weapon/radio/walkietalkie/factionblue/New()
 	..()
 	freq = FREQB
@@ -820,10 +866,15 @@ var/global/FREQM = rand(101,120)
 				return TRUE
 	return FALSE
 
+/proc/reploc(message,mob/living/human/speaker)
+	if (map.ID == MAP_CAMPAIGN)
+		return "Reporting in, current location is [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
+	else
+		return message
 /proc/ten_code(message,mob/living/human/speaker)
 	if (!speaker)
 		return message
-	if (speaker.civilization != "Police")
+	if (speaker.civilization != "Sheriff Office")
 		return message
 	var/dmessage = message
 	dmessage = splittext(dmessage,"10-")

@@ -11,6 +11,11 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
+/obj/item/clothing/shoes/jackboots/jackboots2
+	icon_state = "jackboots2"
+	item_state = "jackboots2"
+	worn_state = "jackboots2"
+
 /obj/item/clothing/shoes/workboots
 	name = "workboots"
 	desc = "A pair of steel-toed work boots designed for use in industrial settings. Safety first."

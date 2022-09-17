@@ -16,6 +16,10 @@ var/GRACE_PERIOD_LENGTH = 7
 				sleep(1)
 			if (map && map.ID == MAP_FOOTBALL)
 				time_of_day = "Midday"
+			if (map && map.ID == MAP_CAMPAIGN)
+				time_of_day = "Morning"
+			if (map && map.ID == MAP_DRUG_BUST)
+				time_of_day = "Night"
 			update_lighting(time_of_day, null, FALSE)
 			if (!map || !map.meme)
 				spawn (0)
@@ -77,7 +81,7 @@ var/GRACE_PERIOD_LENGTH = 7
 /hook/roundstart/proc/do_seasonal_stuff()
 	spawn (1)
 //		world << "<span class = 'notice'>Setting up seasons.</span>"
-	if (map.ID == MAP_NOMADS_DESERT || map.ID == MAP_NOMADS_JUNGLE)
+	if (map.ID == MAP_NOMADS_DESERT || map.ID == MAP_NOMADS_JUNGLE || map.ID == MAP_ROAD_TO_DAK_TO || map.ID == MAP_ALLEYWAY)
 		season = "Wet Season"
 	else if (map.ID == MAP_NOMADS_ICE_AGE || map.ID == MAP_GULAG13)
 		season = "WINTER"

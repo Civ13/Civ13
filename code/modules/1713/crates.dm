@@ -47,6 +47,20 @@
 /obj/structure/closet/crate
 	icon = 'icons/obj/crate.dmi'*/
 
+/obj/structure/closet/crate/urn
+	name = "urn"
+	desc = "Maybe there's a treasure inside? probably just some poor sap's ashes"
+	icon_state = "urn"
+	icon_opened = "urn_open"
+	icon_closed = "urn"
+	health = 10
+	storage_capacity = 12
+
+/obj/structure/closet/crate/urn/stand
+	icon_state = "urn2"
+	icon_opened = "urn2_open"
+	icon_closed = "urn2"
+
 obj/structure/closet/crate/chest
 	name = "wood chest"
 	desc = "Maybe there's a treasure inside?"
@@ -631,9 +645,51 @@ obj/structure/closet/crate/coldwar/m18
 	name = "M18 smoke grenade crate"
 	paths = list(/obj/item/weapon/grenade/smokebomb/m18smoke = 10)
 
+obj/structure/closet/crate/ww2/vietnam/us_ammo
+	name = "US Army ammo"
+	paths = list(/obj/item/ammo_magazine/m16 = 16,
+				/obj/item/ammo_magazine/b762 = 4,
+				/obj/item/ammo_magazine/greasegun = 4,
+				/obj/item/ammo_magazine/m14 = 4,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_medical
+	name = "US Army medical supplies"
+	paths = list(/obj/item/weapon/storage/firstaid/combat/modern = 1,
+				/obj/item/weapon/storage/firstaid/adv = 1,
+				/obj/structure/iv_drip = 1,
+				/obj/item/weapon/reagent_containers/blood/OMinus = 1,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_explosives
+	name = "US Army explosives"
+	paths = list(/obj/item/weapon/grenade/coldwar/m67 = 4,
+				/obj/item/weapon/grenade/incendiary/anm14 = 2,
+				/obj/item/weapon/plastique/c4 = 2,
+				/obj/item/weapon/grenade/dynamite/ready = 2,
+				/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 2,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_engineering
+	name = "US Army engineering supplies"
+	paths = list(/obj/item/weapon/barrier/sandbag = 30,
+				/obj/item/stack/material/barbwire/ten = 2,
+				/obj/item/weapon/material/shovel/trench = 2,
+				/obj/item/weapon/material/shovel/steel = 1,
+				/obj/item/weapon/material/hatchet/steel = 1,
+				/obj/item/weapon/wirecutters/boltcutters = 1,
+				)
+
+obj/structure/closet/crate/ww2/vietnam/us_ap_mines
+	name = "US Army AP mines"
+	paths = list(/obj/item/mine/ap = 15,
+				/obj/item/weapon/wirecutters/boltcutters = 2,
+				/obj/item/weapon/material/shovel/trench = 2,
+				)
+
 obj/structure/closet/crate/ww2/mortar_shells
 	name = "mortar shells"
-	paths = list(/obj/item/cannon_ball/mortar_shell = 15)
+	paths = list(/obj/item/cannon_ball/mortar_shell = 18)
 
 obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"
@@ -711,34 +767,52 @@ obj/structure/closet/crate/airdrops/supplies
 				/obj/item/stack/medical/advanced/bruise_pack = 1,
 				/obj/item/stack/medical/advanced/ointment = 1,
 				/obj/item/stack/material/steel/twentyfive = 1,
-				/obj/item/weapon/storage/pill_bottle/potassium_iodide = 1,)
+				/obj/item/weapon/material/hatchet/steel = 1,
+				/obj/item/weapon/pill_pack/potassium_iodide = 1)
 
 obj/structure/closet/crate/airdrops/food
 	name = "food crate"
-	paths = list(/obj/item/weapon/reagent_containers/food/snacks/MRE/generic = 10,)
+	paths = list(/obj/item/weapon/reagent_containers/food/snacks/MRE/generic = 10,
+				/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2 = 1)
 
 obj/structure/closet/crate/airdrops/weapons
 	name = "weapons crate"
 	paths = list(/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47 = 1,
 				/obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt = 1,
 				/obj/item/ammo_magazine/ak47/makeshift = 2,
-				/obj/item/ammo_casing/a762x54 = 10)
+				/obj/item/ammo_magazine/mosin = 2,
+				/obj/item/weapon/attachment/bayonet/military = 1)
 
 obj/structure/closet/crate/airdrops/military
 	name = "military crate"
-	paths = list(/obj/item/weapon/gun/projectile/submachinegun/m16 = 1,
-				/obj/item/ammo_magazine/m16 = 2,
+	paths = list(/obj/item/weapon/gun/projectile/pistol/m9beretta = 1,
+				/obj/item/ammo_magazine/m9beretta = 2,
 				/obj/item/clothing/mask/gas/military = 1,
 				/obj/item/clothing/accessory/armor/nomads/thickcarrier = 1,
 				/obj/item/weapon/grenade/modern/f1 = 1,
 				/obj/item/clothing/head/helmet/modern/lwh = 1,
-				/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 2)
+				/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 1,
+				/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 1)
 
 obj/structure/closet/crate/airdrops/medicine
 	name = "medicine crate"
 	paths = list(/obj/item/weapon/storage/firstaid/combat/modern = 1,
 				/obj/item/weapon/storage/firstaid/adv = 1,
 				/obj/item/weapon/storage/pill_bottle/potassium_iodide = 1,)
+
+/obj/structure/closet/crate/airdrops/cold
+	name = "cold weather equipment crate"
+	paths = list(/obj/item/clothing/gloves/thick/leather/grey = 1,
+				/obj/item/clothing/suit/storage/coat/winter_coat = 1,
+				/obj/item/clothing/shoes/winterboots = 1,
+				/obj/item/clothing/head/ww2/sov_ushanka/nomads = 1)
+
+/obj/structure/closet/crate/airdrops/rads
+	name = "radiation equipment crate"
+	paths = list(/obj/item/clothing/suit/nbc = 1,
+				/obj/item/clothing/head/nbc = 1,
+				/obj/item/clothing/mask/gas/modern = 1,
+				/obj/item/weapon/pill_pack/potassium_iodide = 1)
 
 /obj/structure/closet/crate/arrows
 	name = "arrow crate"

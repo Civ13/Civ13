@@ -3,7 +3,7 @@
 	ID = MAP_NOMADS_NEW_WORLD
 	title = "Nomads (New World)"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/sea)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"

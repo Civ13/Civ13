@@ -171,6 +171,9 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/foxpelt/white(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>kapteeni's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -356,12 +359,13 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/pilot(H), slot_eyes)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/sapper/german(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/german(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
-	uniform.attackby(webbing, H)
+	var/obj/item/clothing/accessory/holster/hip/hip = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(hip, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sapper of the Maavoimat forces. Place mines, sabotage the soviets,ambush the soviets,and steal soviet equiptment!")
 	H.setStat("strength", STAT_HIGH)

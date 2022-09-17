@@ -286,6 +286,20 @@
 	det_time = 45
 	throw_range = 11
 
+/obj/item/weapon/grenade/modern/thermaldetonator
+	name = "Thermal Detonator"
+	desc = "A grenade-like weapon popular among military personnel, criminals, bountyhunters, and mercenaries."
+	icon_state = "detonator"
+	det_time = 35
+	throw_range = 12
+
+/obj/item/weapon/grenade/modern/t68
+	name = "Type68 grenade"
+	desc = "An advanced grenade modeled after the Type 67 hand grenade used by the Chinese."
+	icon_state = "t68"
+	det_time = 35
+	throw_range = 12
+
 /obj/item/weapon/grenade/ww2/rgd33
 	name = "RGD-33 grenade"
 	desc = "A Soviet fragmentation grenade."
@@ -323,12 +337,30 @@
 	throw_range = 9
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
+
+/obj/item/weapon/grenade/coldwar/stinger
+	name = "Stinger grenade"
+	desc = "A less then lethal  grenade that Explodes into a burst of rubber balls."
+	icon_state = "sting"
+	det_time = 50
+	throw_range = 10
+	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
+	fragment_type = /obj/item/projectile/bullet/pellet/rubberball
+	explosion_size = 0
+
 /obj/item/weapon/grenade/coldwar/m67
 	name = "M67 grenade"
 	desc = "An American grenade introduced as a replacement for the M26."
 	icon_state = "m67"
 	det_time = 50
 	throw_range = 10
+
+/obj/item/weapon/grenade/coldwar/rgd5
+	name = "RGD-5 grenade"
+	desc = "A Soviet fragmentation grenade designed in the 1950's."
+	icon_state = "rgd5"
+	det_time = 50
+	throw_range = 11
 
 /obj/item/weapon/grenade/ww2/prime()
 	set waitfor = 0

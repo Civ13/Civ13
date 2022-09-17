@@ -253,7 +253,7 @@ mob/living/human/corpse/british_sailor
 		if (!job_master)
 			qdel(src)
 			return
-		job_master.EquipRank(src, "Nitohei")
+		job_master.EquipRank(src, "Ittohei")
 		dir = pick(NORTH,SOUTH,EAST,WEST)
 		adjustBruteLoss(rand(6,7))
 		name = "Japanese Soldier"
@@ -391,6 +391,69 @@ mob/living/human/corpse/british_sailor
 		invisibility = 0
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
+
+/mob/living/human/corpse/greenistani_ambassador
+	gender = MALE
+/mob/living/human/corpse/greenistani_ambassador/New()
+	..()
+	faction = CHECHEN
+	icon_state = "human_m_s"
+	nationality = "Greenistan"
+	invisibility = 101
+	dir = pick(NORTH,SOUTH,EAST,WEST)
+	invisibility = 0
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(src), slot_shoes)
+	equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(src), slot_w_uniform)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/really_black_suit(src), slot_wear_suit)
+	equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(src), slot_r_hand)
+	h_style = "CIA"
+	s_tone = -66
+	change_skin_tone(s_tone)
+	add_language("Blugoslavian",FALSE)
+	add_language("Redmenian",FALSE)
+	add_language("Greenistani",FALSE)
+	for (var/datum/language/greenistani/A in languages)
+		default_language = A
+	spawn (50) // must be here or they won't spawn, it seems - Kachnov
+		death()
+		name = "Ambassador Bogdan Nogoonbayev"
+		real_name = "Ambassador Bogdan Nogoonbayev"
+
+/mob/living/human/corpse/war_correspondent
+	gender = MALE
+/mob/living/human/corpse/war_correspondent/New()
+	..()
+	faction = AMERICAN
+	icon_state = "human_m_s"
+	nationality = "American"
+	invisibility = 101
+	dir = pick(NORTH,SOUTH,EAST,WEST)
+	invisibility = 0
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(src), slot_shoes)
+	equip_to_slot_or_del(new /obj/item/clothing/under/reporter(src), slot_w_uniform)
+	equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kevlarhelmet/press(src), slot_head)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard/yellow(src), slot_r_store)
+	var/obj/item/clothing/under/uniform = w_uniform
+	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/press/press_armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/press(null)
+	uniform.attackby(press_armor, src)
+	h_style = "Gelled Back"
+	f_style = "Full Beard"
+	var/hex_hair = hair_colors["Dirty Blond"]
+	r_hair = hex2num(copytext(hex_hair, 2, 4))
+	g_hair = hex2num(copytext(hex_hair, 4, 6))
+	b_hair = hex2num(copytext(hex_hair, 6, 8))
+	r_facial = hex2num(copytext(hex_hair, 2, 4))
+	g_facial = hex2num(copytext(hex_hair, 4, 6))
+	b_facial = hex2num(copytext(hex_hair, 6, 8))
+	update_hair()
+	add_language("Blugoslavian",FALSE)
+	add_language("Redmenian",FALSE)
+	add_language("English",FALSE)
+	for (var/datum/language/english/A in languages)
+		default_language = A
+	spawn (50) // must be here or they won't spawn, it seems - Kachnov
+		death()
+
 
 /mob/living/human/corpse/russian_soviet
 	gender = MALE
@@ -843,3 +906,70 @@ mob/living/human/corpse/russian_soviet_tanker
 		invisibility = 0
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
+
+/mob/living/human/corpse/teller
+	gender = MALE
+
+/mob/living/human/corpse/teller/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Teller")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Bank Teller"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+/mob/living/human/corpse/teller/modern
+	gender = MALE
+
+/mob/living/human/corpse/teller/modern/New()
+	..()
+	icon_state = "human_m_s"
+	invisibility = 101
+	var/randshoes = rand(1,2)
+	switch(randshoes)
+		if(1)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(src), slot_shoes)
+		if(2)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(src), slot_shoes)
+	equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(src), slot_w_uniform)
+	var/randsuit = rand(1,5)
+	switch(randsuit)
+		if(1)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/really_black_suit(src), slot_wear_suit)
+		if(2)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(src), slot_wear_suit)
+		if(3)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(src), slot_wear_suit)
+		if(4)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/checkered_suit(src), slot_wear_suit)
+		if(5)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/burgundy_suit(src), slot_wear_suit)
+	if (prob(20))
+		equip_to_slot_or_del(new /obj/item/clothing/glasses/regular(src), slot_wear_mask)
+	h_style = pick("CIA","Business 1", "Business 2", "Business 3", "Regulation Cut")
+	f_style = pick("Shaved","Selleck Mustache","Medium Beard")
+	var/hex_hair = hair_colors[pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")]
+	r_hair = hex2num(copytext(hex_hair, 2, 4))
+	g_hair = hex2num(copytext(hex_hair, 4, 6))
+	b_hair = hex2num(copytext(hex_hair, 6, 8))
+	r_facial = hex2num(copytext(hex_hair, 2, 4))
+	g_facial = hex2num(copytext(hex_hair, 4, 6))
+	b_facial = hex2num(copytext(hex_hair, 6, 8))
+	update_hair()
+	dir = pick(NORTH,SOUTH,EAST,WEST)
+	adjustBruteLoss(rand(6,40))
+	name = "Bank Teller"
+	invisibility = 0
+	spawn (50) // must be here or they won't spawn, it seems - Kachnov
+		death()

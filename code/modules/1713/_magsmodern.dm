@@ -8,6 +8,21 @@
 	weight = 0.7
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak47/drum
+	name = "AK Drum Magazine (7.62x39mm)"
+	icon_state = "tommydrum"
+	max_ammo = 50
+
+/obj/item/ammo_magazine/sksm
+	name = "SKS-M Magazine (7.62x39mm)"
+	icon_state = "sksm"
+	mag_type = MAGAZINE
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 20
+	weight = 0.5
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ak74
 	name = "AK-74 Magazine (5.45x39mm)"
 	icon_state = "ak74"
@@ -17,6 +32,21 @@
 	max_ammo = 30
 	weight = 0.5
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/ak74/rubber
+	name = "AK-74 Magazine (5.45x39mm Rubber)"
+	icon_state = "ak74"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
+	ammo_type = /obj/item/ammo_casing/a545x39/rubber
+	max_ammo = 30
+	weight = 0.5
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/ak74/drum
+	name = "AK-74 Drum Magazine (5.45x39mm)"
+	max_ammo = 75
+	icon_state = "tommydrum"
 
 /obj/item/ammo_magazine/ak101
 	name = "AK-101 Magazine (5.46x45mm)"
@@ -28,9 +58,19 @@
 	weight = 0.35
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak101/drum
+	name = "AK-101 Drum Magazine (5.46x45mm)"
+	icon_state = "tommydrum"
+	max_ammo = 75
+
 /obj/item/ammo_magazine/ak74/ak74m
 	name = "AK-74M Magazine (5.45x39mm)"
 	icon_state = "ak74m"
+
+/obj/item/ammo_magazine/ak74/ak74m/drum
+	name = "AK-74M Drum Magazine (5.45x39mm)"
+	icon_state = "tommydrum"
+	max_ammo = 75
 
 /obj/item/ammo_magazine/bx7
 	name = "BX-7 (.50 caliber)"
@@ -89,6 +129,16 @@
 	caliber = "a762x51"
 	ammo_type = /obj/item/ammo_casing/a762x51
 	max_ammo = 20
+	weight = 0.45
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/fal
+	name = "FN Fal Magazine (7.62x51mm)"
+	icon_state = "fal"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 30
 	weight = 0.45
 	multiple_sprites = TRUE
 
@@ -156,6 +206,39 @@
 	max_ammo = 100
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/rpd
+	name = "RPD drum (7.62x39)"
+	icon_state = "rpd"
+	mag_type = MAGAZINE
+	caliber = "a762x39"
+	w_class = 3
+
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 100
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/rpk74
+	name = "RPK-74 magazine (7.62x39)"
+	icon_state = "rpk74mag"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
+
+	w_class = 2
+	ammo_type = /obj/item/ammo_casing/a545x39
+	max_ammo = 45
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/rpk74/drum
+	name = "RPK-74 drum (5.45x39)"
+	icon_state = "rpk74"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
+	w_class = 3
+
+	ammo_type = /obj/item/ammo_casing/a545x39
+	max_ammo = 75
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/m9beretta
 	name = "Beretta M9 magazine (9x19mm)"
 	icon_state = "m9beretta"
@@ -218,6 +301,16 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/sti2011
+	name = "STI 2011 magazine (9x19mm)"
+	icon_state = "sti2011"
+	mag_type = MAGAZINE
+	caliber = "a45acp"
+	ammo_type = /obj/item/ammo_casing/a45acp
+	max_ammo = 14
+	weight = 0.33
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/sig250
 	name = "SIG 250 magazine (9x19mm)"
 	icon_state = "glock17"
@@ -245,6 +338,46 @@
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/uzi
+	name = "Uzi magazine (9x19mm Parabellum)"
+	icon_state = "uzi"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 25
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/mac10
+	name = "MAC-10 magazine (.45 ACP)"
+	icon_state = "mac10"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a45acp
+	caliber = "a45acp"
+	max_ammo = 30
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tec9
+	name = "TEC-9 (9x19mm Parabellum)"
+	icon_state = "tec9"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 32
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/skorpion
+	name = "Skorpion magazine (9x19mm Parabellum)"
+	icon_state = "skorpion"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "a9x19"
+	max_ammo = 20
 	weight = 0.33
 	multiple_sprites = TRUE
 
@@ -326,4 +459,72 @@
 	ammo_type = /obj/item/ammo_casing/a9x39
 	max_ammo = 10
 	weight = 0.32
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/a50cal
+	name = "heavy bullet pouch (.50 BMG)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a50cal
+	caliber = "a50cal"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
+	pouch = TRUE
+
+/obj/item/ammo_magazine/a50cal_ap
+	name = "heavy bullet pouch (.50 BMG)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a50cal_ap
+	caliber = "a50cal"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
+	pouch = TRUE
+
+/obj/item/ammo_magazine/a50cal_he
+	name = "heavy bullet pouch (.50 BMG HE)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a50cal_he
+	caliber = "a50cal"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
+	pouch = TRUE
+
+///////////c6//////////
+/obj/item/ammo_magazine/c6belt
+	name = "C6 GPMG ammo belt"
+	icon_state = "c6belt" //generic 100 round belt
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 100
+	multiple_sprites = TRUE
+	belt = TRUE
+
+/obj/item/ammo_magazine/c6can
+	name = "C6 GPMG ammo can"
+	icon_state = "7.62x51b"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 200
+	multiple_sprites = TRUE
+	belt = TRUE
+
+/obj/item/ammo_magazine/qbz95
+	name = "QBZ-95 Magazine (5.8x42mm)"
+	icon_state = "type99"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a58x42
+	caliber = "a58x42"
+	max_ammo = 30
+	weight = 0.045
 	multiple_sprites = TRUE

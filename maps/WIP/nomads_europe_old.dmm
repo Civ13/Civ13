@@ -209,7 +209,7 @@
 "eb" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ec" = (/obj/effect/spawner/mobspawner/elk_f,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "ed" = (/mob/living/simple_animal/deer/female,/turf/floor/grass,/area/caribbean/nomads/forest)
-"ee" = (/mob/living/simple_animal/cattle/cow/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
+"ee" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ef" = (/obj/effect/spawner/mobspawner/cattle,/turf/floor/grass,/area/caribbean/nomads/forest)
 "eg" = (/obj/item/stack/farming/seeds/apple,/turf/floor/grass,/area/caribbean/nomads/forest)
 "eh" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/nomads/forest)

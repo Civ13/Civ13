@@ -28,13 +28,17 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	armour.attackby(plates1, H)
+	armour.attackby(plates2, H)
 	uniform.attackby(armour, H)
 //jacket
 	if (prob(10))
@@ -75,7 +79,14 @@
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+	var/randshoes = rand(1,3)
+	switch(randshoes)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
@@ -92,8 +103,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 //jacket
 	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
@@ -157,8 +168,8 @@
 	uniform.attackby(white, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 
 	H.civilization = "Russian Army"
 	give_random_name(H)
@@ -242,10 +253,17 @@
 /datum/job/russian/sa_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+	var/randshoes = rand(1,3)
+	switch(randshoes)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
 //clothes
-	if (prob(40))
+	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 		if (prob(65))
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rus_winter_vsr93(H), slot_wear_suit)
@@ -256,12 +274,13 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //back
@@ -299,29 +318,36 @@
 /datum/job/russian/spetznaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	armour.attackby(plates1, H)
+	armour.attackby(plates2, H)
 	uniform.attackby(armour, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/toughguy(H), slot_gloves)
-
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat(H), slot_gloves)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal(H), slot_eyes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal(H), slot_eyes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_spz(H), slot_belt)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74/ak74m, slot_r_store)
+
 	H.civilization = "Russian Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetznaz Response Team. You are the best of the best; end this conflict!")
@@ -414,13 +440,9 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/spas(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_r_store)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/saiga12(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_r_store)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
@@ -545,7 +567,7 @@
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/fancycane(H), slot_l_hand)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/hook(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/hook(H), slot_l_hand)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/scythe(H), slot_l_hand)
 		if (4)
@@ -713,7 +735,7 @@
 
 		if (2)
 			if (prob(25))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/remington870(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_l_hand)
 			else
 				if (prob(60))
 					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_l_hand)

@@ -797,6 +797,29 @@
     worn_state = "drill_hat"
     heat_protection = HEAD
 
+/obj/item/clothing/head/custom/taqiyah
+	name = "taqiyah"
+	desc = "A short, rounded skullcap usually worn for religious purposes."
+	icon_state = "taqiyah"
+	item_state = "taqiyah"
+	worn_state = "taqiyah"
+
+/obj/item/clothing/head/custom/hijab
+	name = "hijab"
+	desc = "A veil which is wrapped to cover the head and chest."
+	icon_state = "hijab"
+	item_state = "hijab"
+	worn_state = "hijab"
+	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/custom/kippa
+	name = "kippa"
+	desc = "A small, brimless cap."
+	icon_state = "kippa"
+	item_state = "kippa"
+	worn_state = "kippa"
+
 /obj/item/clothing/head/custom_keffiyeh
 	name = "keffiyeh"
 	desc = "A headdress fashioned from a scarf with a checkered pattern."
@@ -1096,6 +1119,13 @@
 	else
 		..()
 
+/obj/item/clothing/under/customuniform/facilityg
+	name = "Facility uniform"
+	desc = "A sterile white uniform."
+	shirtcolor = "#FFFFFF"
+	pantscolor = "#FFFFFF"
+	color = "#FFFFFF"
+
 /obj/item/clothing/under/customuniform/baggy
 	name = "baggy modern outfit"
 	item_state = "custom_modbaggy_full"
@@ -1123,3 +1153,123 @@
 	icon_state = "custom_col_short_full"
 	worn_state = "custom_col_short_full"
 	base_icon = "custom_col_short"
+
+/obj/item/clothing/suit/storage/jacket/custom/hoodie
+	name = "hoodie"
+	desc = "A simple comfy cloth hoodie."
+	icon_state = "customhoodie"
+	item_state = "customhoodie"
+	worn_state = "customhoodie"
+	uncolored = TRUE
+
+/obj/item/clothing/suit/storage/jacket/custom/cloth_jacket
+	name = "cloth jacket"
+	desc = "A simple cloth jacket."
+	icon_state = "customjacket"
+	item_state = "customjacket"
+	worn_state = "customjacket"
+	uncolored = TRUE
+
+/obj/item/clothing/suit/storage/jacket/custom/blazer
+	name = "suit blazer"
+	desc = "A simple cloth blazer."
+	icon_state = "customblazer"
+	item_state = "customblazer"
+	worn_state = "customblazer"
+	uncolored = TRUE
+
+////////////Track suit////////////////
+
+/obj/item/clothing/under/customtrackpants
+	name = "track pants"
+	desc = "A shirt with tracksuit pants."
+	var/uncolored = FALSE
+	var/pantscolor = 0
+	var/sidescolor = 0
+	var/shirtcolor = 0
+	item_state = "trackpants_custom"
+	icon_state = "trackpants_custom"
+	worn_state = "trackpants_custom"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customtrackpants/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!pantscolor)
+			var/input = WWinput(user, "Pants - Choose a base color:", "Pants Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				pantscolor = input
+		if (!sidescolor)
+			var/input = WWinput(user, "Pants Stripes - Choose a color:", "Pants Stripes Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				sidescolor = input
+		if (!shirtcolor)
+			var/input = WWinput(user, "Shirt - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				shirtcolor = input
+		if (pantscolor && sidescolor && shirtcolor)
+			uncolored = FALSE
+			var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_pants")
+			pants.color = pantscolor
+			var/image/sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_sides")
+			sides.color = sidescolor
+			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_shirt")
+			shirt.color = shirtcolor
+			overlays += pants
+			overlays += sides
+			overlays += shirt
+			return
+	else
+		..()
+
+/obj/item/clothing/suit/storage/jacket/customtracksuit
+	name = "track suit"
+	desc = "A sporty track suit."
+	var/uncolored = FALSE
+	var/basecolor = 0
+	var/linescolor = 0
+	item_state = "customtracksuit"
+	icon_state = "customtracksuit"
+	worn_state = "customtracksuit"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/suit/storage/jacket/customtracksuit/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!basecolor)
+			var/input = WWinput(user, "Jacket - Choose a base color:", "Jacket Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				basecolor = input
+		if (!linescolor)
+			var/input = WWinput(user, "Jacket Lines - Choose a color:", "Jacket Lines Color" , "#FFFFFF", "color")
+			if (input == null || input == "")
+				return
+			else
+				linescolor = input
+		if (basecolor && linescolor)
+			uncolored = FALSE
+			var/image/base = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_base")
+			base.color = basecolor
+			var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_lines")
+			lines.color = linescolor
+			overlays += base
+			overlays += lines
+			return
+	else
+		..()

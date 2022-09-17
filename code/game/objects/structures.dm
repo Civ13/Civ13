@@ -91,7 +91,7 @@
 /obj/structure/proc/can_climb(var/mob/living/user, post_climb_check=0)
 
 	var/movingto = get_step(get_turf(src), dir)
-	if (movingto && map.check_caribbean_block(user, movingto))
+	if (map && movingto && map.check_caribbean_block(user, movingto))
 		user << "<span class = 'warning'>You cannot pass the invisible wall until the Grace Period has ended.</span>"
 		return FALSE
 

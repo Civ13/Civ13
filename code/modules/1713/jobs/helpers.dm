@@ -74,6 +74,24 @@
 					if (H.original_job.base_type_flag() == FINNISH)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (NORWEGIAN)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == NORWEGIAN)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
+		if (SWEDISH)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == SWEDISH)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
+		if (DANISH)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == DANISH)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 		if (ROMAN)
 			for (var/mob/living/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
@@ -152,6 +170,12 @@
 			return dead_chechen.len + heavily_injured_chechen.len + alive_chechen.len
 		if (FINNISH)
 			return dead_finnish.len + heavily_injured_finnish.len + alive_finnish.len
+		if (NORWEGIAN)
+			return dead_norwegian.len + heavily_injured_norwegian.len + alive_norwegian.len
+		if (SWEDISH)
+			return dead_swedish.len + heavily_injured_swedish.len + alive_swedish.len
+		if (DANISH)
+			return dead_danish.len + heavily_injured_danish.len + alive_danish.len
 		if (CIVILIAN)
 			return dead_civilians.len + heavily_injured_civilians.len + alive_civilians.len
 		if (ROMAN)

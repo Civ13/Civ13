@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_wasteland
 	ID = MAP_NOMADS_WASTELAND
 	title = "Wasteland"
-	lobby_icon_state = "civ13"
+	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Nuclear Wasteland"
@@ -39,7 +39,8 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	age8_done = TRUE
-	var/nonukes = FALSE
+	nonukes = FALSE
+
 /obj/map_metadata/nomads_wasteland/New()
 	..()
 	spawn(18000)
@@ -48,11 +49,8 @@
 		if (!nonukes)
 			nuke_proc(randtimer)
 			supplydrop_proc()
-/obj/map_metadata/nomads_wasteland/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/nomads_wasteland/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
+		else
+			supplydrop_proc()
 
 /obj/map_metadata/nomads_wasteland/cross_message(faction)
 	return ""
@@ -77,8 +75,8 @@
 			nuke_proc(timer)
 	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
-	if (world_radiation >= 280 && !nonukes)
-		var/droptype = pick("supplies","food","weapons","medicine")
+	if ((world_radiation >= 280 && !nonukes)||is_zombie == TRUE)
+		var/droptype = pick("supplies","food","weapons","military","medicine","rad","cold")
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)
 			if("supplies")
@@ -86,7 +84,7 @@
 				new/obj/structure/closet/crate/airdrops/supplies(locationt)
 
 			if("food")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food has been airdropped in the area!</center></font>"
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food and water have been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/food(locationt)
 				new/obj/item/weapon/reagent_containers/glass/barrel/modern/water(locationt)
 
@@ -95,12 +93,21 @@
 				new/obj/structure/closet/crate/airdrops/weapons(locationt)
 
 			if("military")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>military equipment have been airdropped in the area!</center></font>"
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>military equipment has been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/military(locationt)
 
 			if("medicine")
 				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/medicine(locationt)
+
+			if("rad")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Radiation equipment has been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/rads(locationt)
+
+			if("cold")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Cold weather equipment has been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/cold(locationt)
+
 	spawn(rand(36000, 72000))
 		supplydrop_proc()
 
@@ -122,7 +129,6 @@
 	is_zombie = TRUE
 	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
-
 
 /obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)

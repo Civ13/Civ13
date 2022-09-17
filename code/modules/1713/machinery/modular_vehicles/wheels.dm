@@ -146,6 +146,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "driver_car"
 	anchored = FALSE
+	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/item/vehicleparts/wheel/modular/wheel = null
 	New()
 		..()
@@ -158,6 +159,8 @@
 	flammable = FALSE
 /obj/structure/bed/chair/drivers/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
+	if (axis)
+		axis.driver = null
 	if (M)
 		if (M != user)
 			M.visible_message(\
@@ -187,6 +190,8 @@
 	return
 
 /obj/structure/bed/chair/drivers/post_buckle_mob()
+	if (axis)
+		axis.driver = buckled_mob
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(wheel) == FALSE)
 		buckled_mob << "Your hands are full!"
 		return
@@ -204,15 +209,17 @@
 		if (buckled_mob.put_in_active_hand(wheel))
 			H << "You grab the wheel."
 			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-				if (H.stat != DEAD && H.civilization != "Police" && H.civilization != "Paramedics")
+				if (H.stat != DEAD && H.civilization != "Sheriff Office" && H.civilization != "Paramedics" && H.civilization != "Government")
 					for(var/list/L in map.vehicle_registations)
 						if (L[1]==wheel.control.axis.reg_number && L[2] != H.civilization)
 							if (!(H.real_name in map.warrants))
 								var/reason = "Grand Theft Auto"
-								if (L[2] == "Police")
-									reason = "Theft of a Police Vehicle"
+								if (L[2] == "Sheriff Office")
+									reason = "Theft of a Law Enforcement Vehicle"
 								if (L[2] == "Paramedics")
 									reason = "Theft of an Ambulance"
+								if (L[2] == "Government")
+									reason = "Theft of a Government Vehicle"
 								map.warrants += H.real_name
 								H.gun_permit = 0
 								var/obj/item/weapon/paper_bin/police/PAR = null
@@ -234,6 +241,7 @@
 								SW2.reason = reason
 								map.pending_warrants += SW2
 								SW2.forceMove(null)
+								global_broadcast(FREQP,"<big>Attention, a stolen vehicle has been reported: <b>[L[1]]</b> - <b>[L[4]] [L[3]]</b> - registered to <b>[L[2]]</b><br>. A warrant has been issued for [SW2.tgt], please intervene immediately and detain the suspect.</big>")
 								break
 			return
 	else
@@ -270,6 +278,18 @@
 		..()
 		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
 		periscope.commanderchair = src
+
+/obj/structure/bed/chair/commander/naval
+	name = "spotter's seat"
+	desc = "A spotter's seat with a long-range periscope."
+	anchored = TRUE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)
+		periscope.commanderchair = src
+
 
 /obj/structure/bed/chair/commander/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()

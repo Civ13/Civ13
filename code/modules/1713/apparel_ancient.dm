@@ -930,6 +930,12 @@
 	set category = null
 	set src in usr
 	set name = "Toggle Hood"
+
+	if (ishuman(usr))
+		var/mob/living/human/H = usr
+		if (H.head)
+			usr << "<span class = 'warning'>You cannot put your hood up, the [H.head] is in the way!</span>"
+			return
 	if (hood)
 		icon_state = "fur_jacket[colorn]"
 		item_state = "fur_jacket[colorn]"
@@ -1241,6 +1247,21 @@
 	restricts_view = 1
 	heat_protection = FACE|EYES
 	flags = CONDUCT
+
+/obj/item/clothing/under/mummywappings
+	name = "linnen wrappings"
+	icon = 'icons/mob/uniform.dmi'
+	icon_state = "mummy"
+	item_state = "mummy"
+	worn_state = "mummy"
+	canremove = FALSE
+	desc = "The musty wrappings seem to disintigrate as you examine them."
+
+/obj/item/clothing/mask/necklace/christian/gold
+	name = "christian gold necklace"
+	desc = " A chritian necklace, it's made out of gold. Expensive."
+	icon_state = "necklace_christian_gold"
+	item_state = "necklace_christian_gold"
 
 /obj/item/clothing/mask/osiris
 	name = "osiris mask"

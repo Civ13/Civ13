@@ -41,11 +41,14 @@
 	..()
 	if(corpse)
 		new corpse (src.loc)
+	else
+		icon_state = icon_dead
 	if(weapon)
 		new weapon (src.loc)
 	if(gun)
 		gun.forceMove(src.loc)
-	qdel(src)
+	if (corpse)
+		qdel(src)
 	return
 /mob/living/simple_animal/hostile/human/Life()
 	..()
@@ -65,7 +68,7 @@
 				for(var/msg in SMH.messages["injured"])
 					msg = replacetext(msg,"!!","")
 					if (findtext(message,msg))
-						say("!!Coming!", language)
+						say("!! Coming!", language)
 						target_action = "moving"
 						target_mob = null
 						target_obj = speaker
@@ -92,7 +95,7 @@
 			found_officer = TRUE
 	else if (ishuman(speaker))
 		var/mob/living/human/H = speaker
-		if(H && H.original_job && H.original_job.is_officer && H.faction_text == src.faction)
+		if(H && H.original_job && (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander) && H.faction_text == src.faction)
 			found_officer = TRUE
 	if(found_officer)
 		if (s_language && language && s_language.name == language.name)
@@ -104,7 +107,7 @@
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
 					following_mob = null
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Coming!"), language)
 					do_movement(speaker)
 					spawn(30)
 						do_movement(loc)
@@ -112,13 +115,13 @@
 
 				else if (findtext(message, "follow me") || findtext(message, "on me"))
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Following!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Following!"), language)
 					do_movement(speaker)
 					following_mob = speaker
 
 				else if (findtext(message, "stop") || findtext(message, "hold"))
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Stopping, Sir!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Stopping, Sir!"), language)
 					walk(src,0)
 					do_movement(loc)
 					following_mob = null
@@ -151,7 +154,7 @@
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
 					following_mob = null
 					if (prob(20))
-						say(pick("!!Sir yes Sir!","!!Roger that!","!!Moving out!"), language)
+						say(pick("!! Sir yes Sir!","!! Roger that!","!! Moving out!"), language)
 					if (prob(15))
 						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 					var/turf/t_dir = null
@@ -234,8 +237,10 @@
 	var/obj/item/projectile/A = new projectiletype(get_turf(user))
 	playsound(user, gun.fire_sound, 100, TRUE)
 	if(!A)	return
-	var/def_zone = pick("chest","head")
-	if (prob(8))
+	var/def_zone = "chest"
+	if (prob(20))
+		def_zone = "head"
+	else if (prob(15))
 		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
 	A.launch(target, user, src.gun, def_zone, rand(-1,1), rand(-1,1))
 	set_light(3)
@@ -278,10 +283,10 @@
 		stance = HOSTILE_STANCE_ATTACK
 		wander = FALSE
 		if(ranged)
-			if(get_dist(src, target_mob) <= 6)
+			if(get_dist(src, target_mob) <= 7)
 				walk(src,0)
 				OpenFire(target_mob)
-			else if (get_dist(src, target_mob) <= 1)
+			else if (get_dist(src, target_mob) <= 3)
 				walk_away(src, target_mob, 5, 7)
 				spawn(10)
 					walk(src,0)
@@ -300,7 +305,7 @@
 /////////////////////////////AI STUFF///////////////////////////////////////////////
 //Special behaviour for human hostile mobs, taking cover, grenades, etc.
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
-	if (!target_mob)
+	if (!target_mob && !stop_automated_movement)
 		wander = TRUE
 		if (role == "officer")
 			idle_counter++
@@ -315,7 +320,7 @@
 		wander = FALSE
 	if (prob(33))
 		var/enemy_found = 0
-		for(var/mob/living/simple_animal/hostile/human/HH in range(3,target_mob))
+		for(var/mob/living/simple_animal/hostile/human/HH in view(5,target_mob))
 			if (HH.faction != faction && HH.stat != DEAD)
 				enemy_found++
 		if (enemy_found >= 3)
@@ -461,7 +466,7 @@
 
 	a_intent = I_HARM
 
-	if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+	if (isturf(loc) && !resting && !buckled && canmove && !stop_automated_movement)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 		turns_since_move++
 		if (turns_since_move >= move_to_delay && stance==HOSTILE_STANCE_IDLE)
 			var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
@@ -639,7 +644,7 @@
 	if (t_turf)
 		do_movement(t_turf)
 		if (prob(20))
-			say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
+			say(pick("!! URAAAAA!","!! Charge!","!! Moving out!"), language)
 		if (prob(60))
 			playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 	else
@@ -653,7 +658,7 @@
 		if (t_turf && t_distance<1000)
 			do_movement(t_turf)
 			if (prob(20))
-				say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
+				say(pick("!! URAAAAA!","!! Charge!","!! Moving out!"), language)
 			if (prob(60))
 				playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 	return

@@ -446,12 +446,11 @@
 	return TRUE
 
 /datum/job/french/field_medic
-	title = "Docteur"
+	title = " Docteur"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "Doc."
 
 	spawn_location = "JoinLatePTSurgeon"
-
 	is_medic = TRUE
 	is_army = TRUE
 
@@ -604,7 +603,7 @@
 /datum/job/french/ww1captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/french, slot_w_uniform)
 //head
@@ -652,7 +651,7 @@
 /datum/job/french/ww1lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/french(H), slot_w_uniform)
 //head
@@ -700,7 +699,7 @@
 /datum/job/french/ww1second_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/french(H), slot_w_uniform)
 //head
@@ -889,6 +888,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/french/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/french(null)
 	uniform.attackby(fullwebbing, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/c8x50, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/c8x50, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the French Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

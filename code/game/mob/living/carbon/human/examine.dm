@@ -281,7 +281,7 @@
 		if ( findtext(pose,".",length(pose)) == FALSE && findtext(pose,"!",length(pose)) == FALSE && findtext(pose,"?",length(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13 && map.ID != MAP_THE_ART_OF_THE_DEAL && map.ID != MAP_OCCUPATION)
+	if (map && !map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13 && map.ID != MAP_THE_ART_OF_THE_DEAL && map.ID != MAP_OCCUPATION)
 		if (original_job)
 			if (ishuman(user) && user != src)
 				var/mob/living/human/H = user
@@ -318,9 +318,13 @@
 	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (ishuman(user) && user != src)
 			var/mob/living/human/H = user
-			if (H.civilization == "Police" && src.civilization == "Police")
-				msg += "<br><i>[T.He] is a member of the Police.</i>"
-			if (src.gun_permit && H.civilization == "Police")
+			if (H.civilization == "Sheriff Office" && src.civilization == "Sheriff Office")
+				msg += "<br><i>[T.He] is a member of the Sheriff Office.</i>"
+			if (H.civilization == "Government" && src.civilization == "Sheriff Office")
+				msg += "<br><i>[T.He] is a member of the Sheriff Office.</i>"
+			if (src.civilization == "Government")
+				msg += "<br><i>[T.He] is a member of the Government.</i>"
+			if (src.gun_permit && H.civilization == "Sheriff Office")
 				msg += "<br><b>[T.He] has a valid gun permit.</b></b>"
 	else if (map.ID == MAP_OCCUPATION)
 		if (ishuman(user) && user != src)

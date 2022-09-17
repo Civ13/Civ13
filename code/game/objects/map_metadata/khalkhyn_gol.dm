@@ -2,7 +2,7 @@
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
 	title = "Khalkhyn Gol"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 
@@ -21,9 +21,10 @@
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command</b>. The Soviets will win if they manage to capture the <b>Japanese command</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
+	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
 
 /obj/map_metadata/khalkhyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -35,13 +36,6 @@
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/khalkhyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/khalkhyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/khalkhyn/roundend_condition_def2name(define)
 	..()

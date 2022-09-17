@@ -93,6 +93,12 @@
 /datum/body_build/orc/brown/female
 	gender 			= FEMALE
 
+/datum/body_build/goblin
+	name			= "Goblin"
+	index			= "_goblin"
+	nohair = TRUE
+	nofacialhair = TRUE
+
 /datum/body_build/wolfman
 	name			= "Wolfman"
 	index			= "_wolfman"

@@ -2,7 +2,7 @@
 /obj/map_metadata/tsaritsyn
 	ID = MAP_TSARITSYN
 	title = "Tsaritsyn"
-	lobby_icon_state = "ww1"
+	lobby_icon = "icons/lobby/rcw.png"
 	no_winner ="The church is under Soviet control."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
@@ -24,8 +24,9 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	ordinal_age = 5
+	grace_wall_timer = 4200
 	songs = list(
-		"Korobushka:1" = 'sound/music/korobushka.ogg')
+		"Korobushka:1" = "sound/music/korobushka.ogg")
 	gamemode = "Siege"
 
 obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
@@ -42,13 +43,6 @@ obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/tsaritsyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/tsaritsyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/tsaritsyn/roundend_condition_def2name(define)
 	..()
@@ -165,11 +159,11 @@ var/no_loop_t = FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.faction_text == faction2)
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction1)
+				return TRUE
 		else
-			return !faction1_can_cross_blocks()
+			return !faction2_can_cross_blocks()
 	return FALSE

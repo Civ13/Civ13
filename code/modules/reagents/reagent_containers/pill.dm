@@ -136,7 +136,7 @@
 /obj/item/weapon/reagent_containers/pill/cocaine
 	name = "pile of cocaine"
 	desc = "A pile of very pure cocaine."
-	icon = 'icons/obj/items.dmi'
+	icon = 'icons/obj/drugs.dmi'
 	icon_state = "cocaine_pile"
 	var/vol = 1
 	value = 20
@@ -163,17 +163,27 @@
 		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
 		vol = reagents.get_reagent_amount("cocaine")/25
 		desc = "A pile of very pure cocaine. Contains [vol] grams."
+		qdel(I)
 	else
 		..()
 /obj/item/weapon/reagent_containers/pill/cocaine_line
 	name = "line of cocaine"
 	desc = "A line of cocaine. Ready to go up your nose."
-	icon = 'icons/obj/items.dmi'
+	icon = 'icons/obj/drugs.dmi'
 	icon_state = "cocaine_line"
 	value = 4
 	New()
 		..()
 		reagents.add_reagent("cocaine", 5)
+
+/obj/item/weapon/reagent_containers/pill/crack
+	name = "crack rock"
+	desc = "A rock of crack cocaine. Ready to be smoked."
+	icon_state = "crack"
+	value = 4
+	New()
+		..()
+		reagents.add_reagent("crack", 5)
 
 /obj/item/weapon/reagent_containers/pill/methylphenidate
 	name = "Methylphenidate pill"

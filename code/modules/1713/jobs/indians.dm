@@ -68,7 +68,7 @@
 	var/obj/item/clothing/accessory/armband/indianshaman_a = new /obj/item/clothing/accessory/armband/indianshaman(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianshaman_a, H)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/leather/shaman(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/skullmask(H), slot_wear_mask)
 
@@ -411,7 +411,7 @@ datum/job/indians/tribes/black
 	//shoes
 	var/pick1 = pick(1,2,3)
 	if (pick1 == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else if (pick1 == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
 	else

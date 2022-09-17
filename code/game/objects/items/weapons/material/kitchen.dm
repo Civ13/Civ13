@@ -17,6 +17,7 @@
 	var/shiv = 0
 	var/usespeed = 0.2
 
+
 /obj/item/weapon/material/kitchen/utensil/New()
 	..()
 	if (prob(60))
@@ -92,10 +93,39 @@
 	icon_state = "knife"
 	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
 	scoop_food = FALSE
-	slot_flags = SLOT_BELT|SLOT_POCKET
+	slot_flags = SLOT_BELT|SLOT_POCKET//|SLOT_MASK
 	edge = TRUE
 	sharp = TRUE
 	var/atk_mode = SLASH
+	var/suicide = FALSE // for the hari kiri action
+
+/obj/item/weapon/material/kitchen/utensil/knife/proc/handle_suicide(mob/living/user)
+	..()
+	if (!ishuman(user))
+		return
+	var/mob/living/human/M = user
+	suicide = TRUE
+	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
+	if (!do_after(user, 60))
+		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
+		suicide = FALSE
+		return
+	else
+		user << "<span class = 'notice'>Ow...</span>"
+		user.apply_effect(110,AGONY,0)
+		user.apply_damage(src.sharpness*2.5, "brute", "groin")
+		user.death()
+		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
+		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
+		suicide = FALSE
+
+/obj/item/weapon/material/kitchen/utensil/knife/attack(atom/A, mob/living/user, target_zone)
+	if (A == user)
+		if (target_zone == "groin" && !suicide)
+			handle_suicide(user)
+			return TRUE
+	return ..(A, user, target_zone)
+
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade
 	name = "razor blade"
 	desc = "A folding blade, used to cut beard and hairs."
@@ -126,7 +156,7 @@
 		return
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/human/M as mob, mob/living/user as mob)
-	if (user.a_intent == I_HELP && (M in range(user,1) || M == user) && ishuman(M) && ishuman(user))
+	if (user.a_intent == I_DISARM && user.targeted_organ == "head" && (M in range(user,1) || M == user) && ishuman(M) && ishuman(user))
 		visible_message("[user] starts cutting [M]'s hair...","You start cutting [M]'s hair...")
 		if (do_after(user, 80, M))
 			var/list/hairlist = M.generate_valid_hairstyles(1,1)
@@ -197,6 +227,71 @@
 /obj/item/weapon/material/kitchen/utensil/knife/bowie/iron
 	default_material = "iron"
 
+/obj/item/weapon/material/kitchen/utensil/knife/dagger
+	name = "dagger"
+	desc = "A long, sharp, swordlike knife that is used for close quarter combat."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "dagger"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.75
+
+/obj/item/weapon/material/kitchen/utensil/knife/dagger/iron
+	default_material = "iron"
+
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade
+	name = "switchblade knife"
+	desc = "A sharp, concealable, spring-loaded knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "switchblade"
+	item_state = null
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	hitsound = null
+	attack_verb = list("patted", "tapped")
+	force_divisor = 0.05
+	w_class = 2
+	throwforce = 0
+	throw_speed = 3
+	throw_range = 5
+	secondary_action = TRUE
+	drawsound = 'sound/weapons/hiddenblade_deploy.ogg'
+	var/active = FALSE
+
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade/update_force()
+	if(active)
+		edge = 1
+		sharp = 1
+		..() //Updates force.
+		throwforce = 5
+		hitsound = 'sound/weapons/bladeslice.ogg'
+		icon_state += "_open"
+		item_state = "switchblade_ext"
+		w_class = 3
+		force_divisor = 0.7
+		attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
+	else
+		edge = 0
+		sharp = 0
+		hitsound = initial(hitsound)
+		icon_state = initial(icon_state)
+		item_state = initial(item_state)
+		w_class = initial(w_class)
+		force_divisor = initial(force_divisor)
+		attack_verb = initial(attack_verb)
+
+/obj/item/weapon/material/kitchen/utensil/knife/switchblade/secondary_attack_self(mob/living/human/user)
+	active = !active
+	if(active)
+		visible_message("<span class='warning'>With a simple press, [user] extends the blade on their switchblade knife.</span>", 3)
+		playsound(loc, 'sound/weapons/switchblade.ogg', 15, 1)
+	else
+		visible_message("<span class='notice'>\The [user] retracts the blade on their switchblade knife.</span>", 3)
+	update_force()
+	add_fingerprint(user)
+
 /obj/item/weapon/material/kitchen/utensil/knife/fancy
 	name = "fancy knife"
 	desc = "A expensive knife."
@@ -207,6 +302,9 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.3
+
+/obj/item/weapon/material/kitchen/utensil/knife/fancy/silver
+	default_material = "silver"
 
 /obj/item/weapon/material/kitchen/utensil/knife/trench
 	name = "trench knife"
@@ -254,6 +352,9 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.5
+
+/obj/item/weapon/material/kitchen/utensil/knife/fish/silver
+	default_material = "silver"
 
 /obj/item/weapon/material/kitchen/utensil/knife/tacticalknife
 	name = "tactical knife"
@@ -400,6 +501,37 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/wood
 	default_material = "wood"
+
+/obj/item/weapon/material/kitchen/utensil/knife/hook
+	name = "meat hook"
+	desc = "A sharp, metal hook what sticks into things."
+	icon_state = "hook_knife"
+	item_state = "hook_knife"
+
+/obj/item/weapon/material/kitchen/utensil/knife/butcher
+	name = "butcher's cleaver"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "butch"
+	desc = "A huge knife used for chopping and chopping up meat."
+	edge = FALSE
+	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
+	attack_verb = list("cleaved", "slashed", "sliced", "torn", "ripped", "diced", "cut")
+	drawsound = 'sound/items/unholster_knife.ogg'
+	unbreakable = TRUE
+
+/obj/item/weapon/material/kitchen/utensil/knife/tanto
+	name = "tanto"
+	desc = "A knife used by the japanese for centuries. Made to slice and slash, not chop or saw. Often the tool of choice for ritual suicide."
+	icon_state = "tanto"
+	item_state = "tanto"
+	block_chance = 10
+	force_divisor = 0.4 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	value = 60
+	cooldownw = 6
+
+
+
 /*
  * Rolling Pins
  */

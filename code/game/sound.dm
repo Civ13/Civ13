@@ -37,6 +37,7 @@ var/list/slash_sound = list('sound/weapons/slash1.ogg','sound/weapons/slash2.ogg
 var/list/page_sound = list('sound/effects/pageturn1.ogg', 'sound/effects/pageturn2.ogg','sound/effects/pageturn3.ogg')
 var/list/miss_sound = list ('sound/weapons/guns/misc/miss.ogg','sound/weapons/guns/misc/miss2.ogg','sound/weapons/guns/misc/miss3.ogg','sound/weapons/guns/misc/miss4.ogg')
 var/list/ric_sound = list ('sound/weapons/guns/misc/ric1.ogg','sound/weapons/guns/misc/ric2.ogg','sound/weapons/guns/misc/ric3.ogg','sound/weapons/guns/misc/ric4.ogg','sound/weapons/guns/misc/ric5.ogg')
+var/list/laser_ric_sound = list ('sound/weapons/magic/LS_Hit_1.ogg','sound/weapons/magic/LS_Hit_3.ogg','sound/weapons/magic/LS_Hit_4.ogg')
 var/list/bullet_hit_object_sound = list('sound/weapons/guns/misc/bullethit.ogg')
 var/list/casing_sound = list ('sound/weapons/guns/misc/casingfall1.ogg','sound/weapons/guns/misc/casingfall2.ogg','sound/weapons/guns/misc/casingfall3.ogg')
 var/list/trauma_sound = list('sound/effects/gore/trauma1.ogg', 'sound/effects/gore/trauma2.ogg', 'sound/effects/gore/trauma3.ogg')
@@ -56,6 +57,11 @@ var/list/artillery_out = list( 'sound/weapons/WW2/new_exp_high_1.ogg', 'sound/we
 var/list/artillery_in = list( 'sound/weapons/WW2/new_artillery_incoming01.ogg', 'sound/weapons/WW2/new_artillery_incoming02.ogg', 'sound/weapons/WW2/new_artillery_incoming03.ogg', 'sound/weapons/WW2/new_artillery_incoming04.ogg', 'sound/weapons/WW2/new_artillery_incoming05.ogg', 'sound/weapons/WW2/new_artillery_incoming06.ogg')
 var/list/artillery_out_distance = list( 'sound/weapons/WW2/explo_distant01.ogg', 'sound/weapons/WW2/explo_distant02.ogg', 'sound/weapons/WW2/explo_distant03.ogg', 'sound/weapons/WW2/explo_distant04.ogg', 'sound/weapons/WW2/explo_distant05.ogg', 'sound/weapons/WW2/explo_distant06.ogg', 'sound/weapons/WW2/explo_distant07.ogg', 'sound/weapons/WW2/explo_distant08.ogg')
 var/list/artillery_in_distance = list( 'sound/weapons/WW2/explo_distant01.ogg', 'sound/weapons/WW2/explo_distant02.ogg', 'sound/weapons/WW2/explo_distant03.ogg', 'sound/weapons/WW2/explo_distant04.ogg', 'sound/weapons/WW2/explo_distant05.ogg', 'sound/weapons/WW2/explo_distant06.ogg', 'sound/weapons/WW2/explo_distant07.ogg', 'sound/weapons/WW2/explo_distant08.ogg')
+
+var/list/loaded_voice = list ('sound/voice/vehicle/loaded_voice1.ogg', 'sound/voice/vehicle/loaded_voice2.ogg')
+var/list/pen_voice = list ('sound/voice/vehicle/pen_voice1.ogg', 'sound/voice/vehicle/pen_voice2.ogg')
+var/list/ric_voice = list ('sound/voice/vehicle/ric_voice1.ogg', 'sound/voice/vehicle/ric_voice2.ogg')
+var/list/track_voice = list ('sound/voice/vehicle/track_voice1.ogg', 'sound/voice/vehicle/track_voice2.ogg')
 
 var/list/doorknock_sounds = list(
 	'sound/effects/doorknock1.ogg',
@@ -214,6 +220,12 @@ var/list/charge_sounds_fp = list(
 	'sound/effects/emotes/charge_fp1.ogg',)
 var/list/charge_sounds_isr = list(
 	'sound/effects/emotes/charge_isr.ogg',)
+var/list/charge_sounds_fin = list(
+	'sound/effects/emotes/charge_fin1.ogg',
+	'sound/effects/emotes/charge_fin2.ogg',
+	'sound/effects/emotes/charge_fin3.ogg',
+	'sound/effects/emotes/charge_fin4.ogg',
+	)
 var/list/charge_sounds_orc = list(
 	'sound/effects/emotes/charge_orc1.ogg',
 	'sound/effects/emotes/charge_orc2.ogg',)
@@ -248,6 +260,30 @@ var/list/charge_sounds_african = list(
 	'sound/effects/emotes/charge_afr7.ogg',
 	'sound/effects/emotes/charge_afr8.ogg',
 	'sound/effects/emotes/charge_afr9.ogg',)
+var/list/charge_sounds_iranian = list(
+	'sound/effects/emotes/charge_iran1.ogg',
+	'sound/effects/emotes/charge_iran2.ogg',
+	'sound/effects/emotes/charge_iran3.ogg',)
+var/list/charge_sounds_redmenia = list(
+	'sound/effects/emotes/redmenia1.ogg',
+	'sound/effects/emotes/redmenia2.ogg',
+	'sound/effects/emotes/redmenia3.ogg',)
+var/list/charge_sounds_police = list(
+	'sound/effects/emotes/charge_police1.ogg',
+	'sound/effects/emotes/charge_police2.ogg',
+	'sound/effects/emotes/charge_police3.ogg',
+	'sound/effects/emotes/charge_police4.ogg',)
+var/list/charge_sounds_rurobbers = list(
+	'sound/effects/emotes/robber1.ogg',
+	'sound/effects/emotes/robber2.ogg',
+	'sound/effects/emotes/robber3.ogg',
+	'sound/effects/emotes/robber4.ogg',)
+var/list/charge_sounds_blugoslavia = list()
+
+var/list/charge_sounds_gra = list(
+	'sound/effects/emotes/charge_replicant1.ogg',
+	'sound/effects/emotes/charge_replicant2.ogg',
+	'sound/effects/emotes/charge_replicant3.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -375,6 +411,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("pageturn") soundin = pick(page_sound)
 			if ("miss_sound") soundin = pick(miss_sound)
 			if ("ric_sound") soundin = pick(ric_sound)
+			if ("laser_ric_sound") soundin = pick(laser_ric_sound)
 			if ("hitobject") soundin = pick(bullet_hit_object_sound)
 			if ("trauma") soundin = pick(trauma_sound)
 			if ("chop") soundin = pick(chop_sound)
@@ -393,6 +430,11 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("artillery_in") soundin = pick(artillery_in)
 			if ("artillery_out_distance") soundin = pick(artillery_out_distance)
 			if ("artillery_in_distance") soundin = pick(artillery_in_distance)
+
+			if ("loaded_voice") soundin = pick(loaded_voice)
+			if ("pen_voice") soundin = pick(pen_voice)
+			if ("ric_voice") soundin = pick(ric_voice)
+			if ("track_voice") soundin = pick(track_voice)
 
 			// emote sounds from InterBay
 			if ("cough_male")
@@ -449,7 +491,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("charge_RUSSIAN")
 				soundin = pick(charge_sounds_ru)
 			if ("charge_FINNISH")
-				soundin = pick(charge_sounds_pir)
+				soundin = pick(charge_sounds_fin)
 			if ("charge_CHECHEN")
 				soundin = pick(charge_sounds_ar)
 			if ("charge_GREEK")
@@ -486,4 +528,14 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_gorilla)
 			if ("charge_AFRICAN")
 				soundin = pick(charge_sounds_african)
+			if ("charge_IRANIAN")
+				soundin = pick(charge_sounds_iranian)
+			if ("charge_REDMENIA")
+				soundin = pick(charge_sounds_redmenia)
+			if ("charge_BLUGOSLAVIA")
+				soundin = pick(charge_sounds_blugoslavia)
+			if ("charge_POLICE")
+				soundin = pick(charge_sounds_police)
+			if ("charge_RUROBBERS")
+				soundin = pick(charge_sounds_rurobbers)
 	return soundin

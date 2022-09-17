@@ -633,6 +633,7 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "drydirt_wall"
 	passable = TRUE
+	material = "dirt"
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
@@ -683,6 +684,26 @@
 	material = "Stone"
 	hardness = 100
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
+
+/obj/covers/divider_wall
+	name = "divider wall"
+	desc = "A divider wall so you don't see what's next to you. Looks flimsy."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "divider0"
+	base_icon_state = "divider"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 6
+	wood = TRUE
+	wall = TRUE
+	explosion_resistance = 0
+	material = "Wood"
+	hardness = 1
+	adjusts = TRUE
 
 /obj/covers/slate
 	name = "slatestone wall"

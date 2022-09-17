@@ -35,7 +35,7 @@
 			break
 
 	// somehow we have no song, pick a random one
-	if (!song_title)
+	if (!song_title && random_order_songs)
 		song_title = pick(random_order_songs)
 
 	// don't play the same song as before
@@ -46,4 +46,8 @@
 	client << "<span class = 'notice'><font size = 2>Now playing <b>[splittext(song_title, ":")[1]]</b></font></span>"
 
 /datum/lobby_music_player/proc/get_song()
-	return songs[song_title]
+	var/F = file(songs[song_title])
+	if (F)
+		return sound(F)
+	else
+		return null

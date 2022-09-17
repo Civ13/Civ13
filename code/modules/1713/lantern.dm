@@ -128,6 +128,14 @@
 	unlimited = TRUE
 	fuel = 100000
 
+/obj/item/flashlight/lamp/littlelamp/desklamp
+	name = "desk lamp"
+	on_state = "lampdesk_on"
+	off_state = "lampdesk"
+	icon_state = "lampdesk"
+	unlimited = TRUE
+	fuel = 100000
+
 /obj/item/flashlight/lantern/on/anchored
 	on_state = "lantern-on"
 	off_state = "lantern_on"
@@ -286,19 +294,14 @@
 			update_icon()
 			return
 
-/obj/item/flashlight/militarylight_alt
+/obj/item/flashlight/militarylight/alt
 	unlimited = TRUE
-	name = "military flashlight"
-	desc = "An electrical military flashlight with adjustable lenses."
 	icon_state = "militarylightalt_off"
-	item_state = "militarylight"
+	item_state = "militarylightalt"
 	on_state = "militarylightalt_on"
 	off_state = "militarylightalt_off"
-	slot_flags = SLOT_BELT | SLOT_ID | SLOT_POCKET
-	var/lens = 3
-	secondary_action = TRUE
 
-/obj/item/flashlight/militarylight_alt/secondary_attack_self(mob/living/human/user)
+/obj/item/flashlight/militarylight/alt/secondary_attack_self(mob/living/human/user)
 
 	lens +=1
 	if (lens > 3)
@@ -332,6 +335,7 @@
 			user << "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>"
 			update_icon()
 			return
+
 
 /obj/item/flashlight/japflashlight
 	unlimited = TRUE

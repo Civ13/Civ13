@@ -1,7 +1,7 @@
 /obj/map_metadata/wake_island
 	ID = MAP_WAKE_ISLAND
 	title = "Wake Island"
-	lobby_icon_state = "pacific"
+	lobby_icon = "icons/lobby/pacific.png"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
@@ -24,13 +24,14 @@
 	faction2 = JAPANESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	gamemode = "Area Control"
 	var/jap_points = 0
 	var/usa_points = 0
 	var/a1_control = "none"
 	var/a2_control = "none"
 	var/a3_control = "none"
+	grace_wall_timer = 3000
 /obj/map_metadata/wake_island/New()
 	..()
 	spawn(3000)
@@ -52,13 +53,6 @@
 			. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/wake_island/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/wake_island/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/wake_island/roundend_condition_def2name(define)
 	..()

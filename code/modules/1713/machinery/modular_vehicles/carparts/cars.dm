@@ -430,6 +430,20 @@
 	speedlist = list(1=7,2=6,3=5,4=2)
 	turntimer = 5
 
+/obj/structure/vehicleparts/axis/car/falcon/police
+	speeds = 5
+	maxpower = 1000
+	speedlist = list(1=7,2=6,3=5,4=3,5=2.5)
+	turntimer = 4
+	New()
+		..()
+		spawn(40)
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Unmarked SMC Falcon", ""))
+			doorcode = 13443
+		else
+			map.vehicle_registations += list(list("[reg_number]","Police", "Unmarked SMC Falcon", ""))
+
 /obj/structure/vehicleparts/axis/car/shinobu
 	name = "Yamasaki Shinobu"
 	desc = "A powered axis from a car."
@@ -439,6 +453,18 @@
 	maxpower = 800
 	speedlist = list(1=5,2=4,3=3,4=2,5=1.2)
 	turntimer = 4
+
+/obj/structure/vehicleparts/axis/car/shinobu/police
+	name = "Yamasaki Shinobu Police Interceptor"
+	color = "#383838"
+	New()
+		..()
+		spawn(40)
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Yamasaki Shinobu Police Interceptor", ""))
+			doorcode = 13443
+		else
+			map.vehicle_registations += list(list("[reg_number]","Police", "Yamasaki Shinobu Police Interceptor", ""))
 
 /obj/structure/vehicleparts/axis/car/kazoku
 	name = "Yamasaki Kazoku"
@@ -532,6 +558,18 @@
 /obj/structure/engine/internal/gasoline/premade/panzervi
 	enginesize = 25000
 
+/obj/structure/engine/internal/diesel/premade/omw22_2
+	name = "OMW 15 liter diesel engine"
+	enginesize = 15000
+
+/obj/structure/engine/internal/gasoline/premade/baf1_a
+	name = "BAF 12 gasoline engine"
+	enginesize = 12000
+
+/obj/structure/engine/internal/diesel/premade/mtlb
+	name = "YaMZ 238 diesel engine"
+	enginesize = 15000
+
 /obj/structure/emergency_lights
 	name = "emergency lights control"
 	desc = "controls the emergency lights and the wailing siren."
@@ -559,6 +597,9 @@
 			control.update_icon()
 /obj/structure/emergency_lights/attack_hand(mob/living/human/H)
 	if (!ishuman(H))
+		return
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL && (H.civilization != "Sheriff Office" && H.civilization != "Paramedics"))
+		usr << "<span class ='warning'>You're not part of the emergency services.</span>"
 		return
 	on = !on
 	if (on)
@@ -588,8 +629,8 @@
 	if (world.realtime >= lastsoundcheck)
 		if (on)
 			playsound(loc,'sound/machines/police_siren.ogg',100,FALSE,15)
-			lastsoundcheck = world.realtime+48
-			spawn(50)
+			lastsoundcheck = world.realtime+55
+			spawn(55)
 				check_sound()
 /obj/structure/emergency_lights/proc/check_color()
 	if (on)
@@ -609,8 +650,8 @@
 	if (world.realtime >= lastsoundcheck)
 		if (on)
 			playsound(loc,'sound/machines/ambulance_siren.ogg',100,FALSE,15)
-			lastsoundcheck = world.realtime+25
-			spawn(28)
+			lastsoundcheck = world.realtime+11
+			spawn(11)
 				check_sound()
 /obj/structure/emergency_lights/ambulance/check_color()
 	if (on)
@@ -620,6 +661,22 @@
 				pol_color = "#D3D3D3"
 			else
 				pol_color = "#FF0000"
+			check_color()
+	else
+		set_light(0)
+
+/obj/structure/emergency_lights/police2
+	atype = "police2"
+	pol_color = "#0000FF"
+
+/obj/structure/emergency_lights/police2/check_color()
+	if (on)
+		set_light(7,1,pol_color)
+		spawn(5)
+			if (pol_color == "#0000FF")
+				pol_color = "#D3D3D3"
+			else
+				pol_color = "#0000FF"
 			check_color()
 	else
 		set_light(0)

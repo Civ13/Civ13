@@ -327,11 +327,12 @@
 	single_use = TRUE
 /obj/item/weapon/reagent_containers/syringe/morphine/New()
 	..()
-	reagents.add_reagent("morphine", 5)
+	if (reagents)
+		reagents.add_reagent("morphine", 5)
 	mode = SYRINGE_INJECT
 
 /obj/item/weapon/reagent_containers/syringe/morphine/update_icon()
-	if (reagents.total_volume > 0)
+	if (reagents && reagents.total_volume > 0)
 		icon_state = "single_use0"
 	else
 		icon_state = "single_use0_empty"
@@ -371,7 +372,7 @@
 	mode = SYRINGE_INJECT
 
 /obj/item/weapon/reagent_containers/syringe/adrenaline/update_icon()
-	if (reagents.total_volume > 0)
+	if (reagents && reagents.total_volume > 0)
 		icon_state = "single_use3"
 	else
 		icon_state = "single_use3_empty"

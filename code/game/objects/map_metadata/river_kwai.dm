@@ -2,7 +2,7 @@
 	ID = MAP_RIVER_KWAI
 	title = "Bridge Over River Kwai"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "camp"
+	lobby_icon = "icons/lobby/camp.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 3600
 	has_hunger = TRUE
@@ -24,10 +24,11 @@
 	faction2 = BRITISH
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
+		"The Great Escape:1" = "sound/music/the_great_escape.ogg")
 	gamemode = "Prison Simulation"
 	var/gracedown1 = TRUE
 	var/siren = FALSE
+	grace_wall_timer = 2400
 obj/map_metadata/river_kwai/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/japanese))
@@ -42,13 +43,6 @@ obj/map_metadata/river_kwai/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 		else
 			. = FALSE
-
-/obj/map_metadata/river_kwai/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/river_kwai/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/river_kwai/roundend_condition_def2name(define)
 	..()

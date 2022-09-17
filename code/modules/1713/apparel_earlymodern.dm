@@ -346,6 +346,10 @@
 	name = "Brown Winter Coat"
 	desc = "A thick winter coat."
 
+/obj/item/clothing/suit/storage/coat/japcoat2/trench
+	name = "brown trench coat"
+	desc = "A long coat to keep you clean and dry."
+
 /obj/item/clothing/suit/storage/coat/rusoffcoat
 	name = "Russian Officer Coat."
 	desc = "A russian army  officer coat. Worn by officers, acknowledge their rank."
@@ -465,12 +469,15 @@
 	desc = "A cap worn by russian army officers."
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"
+
+////////////storage//////////////////////////
+//russo-jap
 /obj/item/weapon/storage/belt/russian
 	name = "Russian Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
-	icon_state = "japbelt"
-	item_state = "japbelt"
-	storage_slots = 12
+	icon_state = "rubelt"
+	item_state = "rubelt"
+	storage_slots = 7
 	max_w_class = 3
 	max_storage_space = 24
 	can_hold = list(
@@ -497,6 +504,50 @@
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)
+
+/obj/item/clothing/accessory/storage/webbing/russband
+	name = "Imperial Russian Army bandolier"
+	desc = "A large leather bandolier 6 small pouches for strip clips."
+	icon_state = "ru_band"
+	item_state = "ru_band"
+	slots = 6
+	New()
+		..()
+		hold.storage_slots = slots
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
+
+//world war 1
+/obj/item/weapon/storage/belt/russian/ww1
+	name = "Russian Soldier belt"
+	desc = "A belt with 2 pouches to hold 12 strip clips."
+	icon_state = "rubelt_ww1"
+	item_state = "rubelt_ww1"
+	storage_slots = 7
+	max_w_class = 3
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/material/shovel,
+		/obj/item/weapon/key,
+		/obj/item/weapon/melee/classic_baton
+		)
+/obj/item/weapon/storage/belt/russian/ww1/soldier
+/obj/item/weapon/storage/belt/russian/ww1/soldier/New()
+	..()
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
 /obj/item/weapon/storage/belt/jap
 	name = "Japanese Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
@@ -507,7 +558,7 @@
 	max_storage_space = 24
 	can_hold = list(
 		/obj/item/ammo_magazine,
-		/obj/item/weapon/material/knife,
+		/obj/item/weapon/material/kitchen/utensil/knife,
 		/obj/item/weapon/grenade,
 		/obj/item/weapon/attachment,
 		/obj/item/weapon/gun/projectile/pistol,
@@ -518,6 +569,7 @@
 		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/material,
 		/obj/item/flashlight,
 		/obj/item/weapon/whistle
 		)
@@ -578,7 +630,7 @@
 /obj/item/weapon/storage/belt/jap/abashiri_guard
 /obj/item/weapon/storage/belt/jap/abashiri_guard/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -590,7 +642,7 @@
 /obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
 	..()
 	new /obj/item/weapon/whistle(src)
-	new /obj/item/weapon/melee/classic_baton/guard(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -598,7 +650,7 @@
 /obj/item/weapon/storage/belt/jap/camp_officer
 /obj/item/weapon/storage/belt/jap/camp_officer/New()
 	..()
-	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)
@@ -724,6 +776,13 @@
 	item_state = "swat"
 	worn_state = "swat"
 
+/obj/item/clothing/under/swat_new
+	name = "swat outfit"
+	desc = "A uniform used by police special forces."
+	icon_state = "swat_new"
+	item_state = "swat_new"
+	worn_state = "swat_new"
+
 /obj/item/clothing/under/combat
 	name = "combat outfit"
 	desc = "A combat uniform plated with kevlar."
@@ -783,9 +842,9 @@
 /obj/item/clothing/under/engi
 	name = "worker outfit"
 	desc = "A outfit used by construction workers."
-	icon_state = "pmc"
-	item_state = "pmc"
-	worn_state = "pmc"
+	icon_state = "engi"
+	item_state = "engi"
+	worn_state = "engi"
 
 /obj/item/clothing/under/gorka
 	name = "gorka outfit"
@@ -1058,6 +1117,31 @@
 	icon_state = "labcoat"
 	item_state = "labcoat"
 	worn_state = "labcoat"
+	var/closed = TRUE
+
+/obj/item/clothing/suit/storage/jacket/doctor/verb/toggle()
+	set category = null
+	set src in usr
+	set name = "Adjust lab coat"
+	if (type != /obj/item/clothing/suit/storage/jacket/doctor)
+		return
+	else
+		if(closed)
+			worn_state = "labcoat_open"
+			item_state = "labcoat_open"
+			icon_state = "labcoat_open"
+			item_state_slots["w_uniform"] = "labcoat_open"
+			usr << "You <b>open up</b> your jacket."
+			closed = FALSE
+			update_clothing_icon()
+		else if (!closed)
+			worn_state = "labcoat"
+			item_state = "labcoat"
+			icon_state = "labcoat"
+			item_state_slots["w_uniform"] = "labcoat"
+			usr << "You <b>close up</b> your jacket."
+			closed = TRUE
+			update_clothing_icon()
 
 /obj/item/clothing/suit/storage/jacket/surgeon
 	name = "surgery apron"
@@ -1114,6 +1198,9 @@
 /obj/item/weapon/storage/belt/largepouches/olive
 	icon_state = "largepouches_olive"
 	item_state = "largepouches_olive"
+/obj/item/weapon/storage/belt/largepouches/white
+	icon_state = "largepouches_white"
+	item_state = "largepouches_white"
 /obj/item/weapon/storage/belt/smallpouches
 	name = "small pouches"
 	desc = "A belt with 4 small pouches, that can fit items like magazines, knives, and other small things."
@@ -1125,6 +1212,72 @@
 	max_storage_space = 8
 	show_above_suit = TRUE
 
+/obj/item/weapon/storage/belt/smallpouches/white
+	icon_state = "smallpouches_white"
+	item_state = "smallpouches_white"
+
+/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper
+	storage_slots = 6
+	max_storage_space = 12
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/weapon/handcuffs/strips(src)
+		new/obj/item/weapon/handcuffs/strips(src)
+		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
+
+/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/basic
+	New()
+		..()
+		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
+		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
+
+/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/sgt
+	New()
+		..()
+		new/obj/item/weapon/grenade/incendiary/incendiarydetonator(src)
+		new/obj/item/weapon/plastique(src)
+
+/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/flash
+	New()
+		..()
+		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
+		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
+
+/obj/item/weapon/storage/belt/smallpouches/red
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/clothing/mask/gas/military(src)
+		new/obj/item/flashlight/militarylight(src)
+
+/obj/item/weapon/storage/belt/smallpouches/rebel
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/weapon/wrench(src)
+		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
+		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
+
+/obj/item/weapon/storage/belt/smallpouches/red/white
+	icon_state = "smallpouches_white"
+	item_state = "smallpouches_white"
+
+/obj/item/weapon/storage/belt/smallpouches/blue
+	icon_state = "smallpouches_olive"
+	item_state = "smallpouches_olive"
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/clothing/mask/gas/military(src)
+		new/obj/item/flashlight/militarylight(src)
+
+/obj/item/weapon/storage/belt/smallpouches/blue/white
+	icon_state = "smallpouches_white"
+	item_state = "smallpouches_white"
+
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt/New()
 	..()
@@ -1134,17 +1287,21 @@
 	new/obj/item/ammo_magazine/thompson(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper
+	max_w_class = 3
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/ammo_magazine/springfield(src)
 	new/obj/item/ammo_magazine/springfield(src)
-	new/obj/item/ammo_magazine/springfield(src)
+	new/obj/item/ammo_magazine/m3006box(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner
+	storage_slots = 6
+	max_storage_space = 12
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner/New()
 	..()
 	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
 	new/obj/item/ammo_magazine/bar(src)
 	new/obj/item/ammo_magazine/bar(src)
 	new/obj/item/ammo_magazine/bar(src)
@@ -1190,6 +1347,31 @@
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/insuroff
+/obj/item/weapon/storage/belt/smallpouches/green/insuroff/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/horn(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/tea(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/mosin
+/obj/item/weapon/storage/belt/smallpouches/green/mosin/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/mosin (src)
+	new/obj/item/ammo_magazine/mosin (src)
+	new/obj/item/ammo_magazine/mosin (src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/mosinsniper
+	max_w_class = 3
+
+/obj/item/weapon/storage/belt/smallpouches/green/mosinsniper/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/mosin (src)
+	new/obj/item/ammo_magazine/mosinbox (src)
 
 /obj/item/weapon/storage/belt/smallpouches/rusoff
 /obj/item/weapon/storage/belt/smallpouches/rusoff/New()
@@ -1439,9 +1621,13 @@
 /obj/item/clothing/head/ph_us_war/american
 /obj/item/clothing/head/ph_us_war/american/infantry_hat
 	name = "US Army Hat"
-	desc = "A worn by enlisted men of the US Army in tropical climates."
+	desc = "A hat worn by enlisted men of the US Army in tropical climates."
 	icon_state = "us_fp_hat"
 	item_state = "us_fp_hat"
+
+/obj/item/clothing/head/ph_us_war/american/infantry_hat/civie
+	name = "cowboy hat"
+	desc = "A hat worn by stylish rural people."
 
 /obj/item/clothing/accessory/storage/webbing/filipino
 	name = "filipino webbing"
@@ -1451,7 +1637,7 @@
 	slots = 8
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/knife, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/material/shovel, /obj/item/weapon/key)
+		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/kitchen/utensil/knife, /obj/item/weapon/attachment/bayonet, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/material/shovel, /obj/item/weapon/key)
 
 /obj/item/clothing/suit/storage/coat/winter_coat
 	name = "brown winter coat"

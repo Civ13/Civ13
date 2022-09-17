@@ -477,7 +477,7 @@
 "ji" = (/obj/effect/decal/cleanable/flour,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
 "jj" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/kitchen/wood_bowl,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "jk" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
-"jl" = (/obj/structure/table/wood,/obj/item/weapon/material/knife/butcher,/turf/floor/wood,/area/caribbean/desert/buildings)
+"jl" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/wood,/area/caribbean/desert/buildings)
 "jm" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "jn" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
 "jo" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})

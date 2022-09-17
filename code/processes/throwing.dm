@@ -55,7 +55,7 @@
 									if (!step) // going off the edge of the map makes get_step return null, don't let things go off the edge
 										thrown_list -= AM
 										continue
-									if (map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
+									if (map && map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE
@@ -115,7 +115,7 @@
 									if (!step) // going off the edge of the map makes get_step return null, don't let things go off the edge
 										thrown_list -= AM
 										continue
-									if (map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
+									if (map && map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE

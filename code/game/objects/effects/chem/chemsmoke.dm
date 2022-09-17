@@ -70,8 +70,31 @@
 
 		if (destination && !dontmove)
 
-			walk_to(src, destination,0,rand(2,3),0)
-
+			walk_to(src,destination,0,rand(2,3))
+/*	spawn(30)
+		do_wind()*/
+/*
+/obj/effect/effect/smoke/chem/proc/do_wind()
+	if (!src)
+		return
+	var/area/A = get_area(src)
+	if (src && A && A.location == AREA_OUTSIDE)
+		var/turf/dest = null
+		switch(map.winddirection)
+			if("East")
+				dest = get_turf(locate(x-1,y,z))
+			if("West")
+				dest = get_turf(locate(x+1,y,z))
+			if("North")
+				dest = get_turf(locate(x,y-1,z))
+			if("South")
+				dest = get_turf(locate(x,y+1,z))
+		if(dest)
+			walk_towards(src,dest,0,rand(2,3))
+	spawn(40/map.windspeedvar)
+		if(src)
+			do_wind()
+*/
 /obj/effect/effect/smoke/chem/Destroy()
 	opacity = FALSE
 	walk(src, 0)

@@ -1,7 +1,7 @@
 /obj/map_metadata/hill203
 	ID = MAP_HILL_203
 	title = "Hill 203"
-	lobby_icon_state = "ww1"
+	lobby_icon = "icons/lobby/ww1.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 
@@ -22,7 +22,7 @@
 	faction2 = RUSSIAN
 	ordinal_age = 5
 	songs = list(
-		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
+		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg")
 	gamemode = "King of the Hill"
 /obj/map_metadata/hill203/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)

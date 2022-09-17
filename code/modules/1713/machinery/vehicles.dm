@@ -31,6 +31,7 @@
 	var/list/components = list()
 	var/current_weight = 5
 	var/lastmovementloop = 0
+	var/mob/living/human/driver = null
 
 	//matrix/turning stuff
 	var/list/corners = list()
@@ -99,6 +100,20 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+
+/obj/structure/vehicleparts/axis/heavy/mtlb
+	name = "MT-LB"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#4a5243"
+	turret_type = "none"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/panzeriv
 	name = "Panzer IV"
 	speeds = 3
@@ -122,6 +137,22 @@
 		var/pickedname = pick(tank_names_german)
 		tank_names_german -= pickedname
 		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/omw22_2
+	name = "OMW-22 mk. II"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#774D4C"
+	turret_type = "t55_turret"
+
+/obj/structure/vehicleparts/axis/heavy/baf1_a
+	name = "BAF I mod. A"
+	speeds = 4
+	speedlist = list(1=9,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#8383C2"
+	turret_type = "pt76_turret"
 
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"

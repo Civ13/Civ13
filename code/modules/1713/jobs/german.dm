@@ -28,7 +28,7 @@
 /datum/job/german/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german, slot_w_uniform)
 //head
@@ -76,7 +76,7 @@
 /datum/job/german/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
 //head
@@ -123,7 +123,7 @@
 /datum/job/german/second_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
 //head
@@ -167,7 +167,7 @@
 /datum/job/german/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
 //head
@@ -212,7 +212,7 @@
 /datum/job/german/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform) // for now
 //head
@@ -256,7 +256,7 @@
 /datum/job/german/shocktroop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
@@ -299,7 +299,7 @@
 /datum/job/german/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
@@ -312,6 +312,14 @@
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Imperial German Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -350,15 +358,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_l_hand)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	var/obj/item/clothing/accessory/armband/nsdap/armband = new /obj/item/clothing/accessory/armband/nsdap(null)
@@ -399,6 +408,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
 //weapons
@@ -416,7 +426,7 @@
 	uniform.attackby(holsterh, H)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>Hauptsturmfuhrer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -448,7 +458,7 @@
 /datum/job/german/doctor_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_doctor(H), slot_w_uniform) // for now
 //head
@@ -458,7 +468,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
@@ -523,7 +533,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/stg(H), slot_shoulder)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(webbing, H)
@@ -578,7 +588,7 @@
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(webbing, H)
@@ -640,7 +650,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/panzerfaust(H), slot_shoulder)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(30))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/volkssturm/armband = new /obj/item/clothing/accessory/armband/volkssturm(null)
 	uniform.attackby(armband, H)
@@ -690,7 +700,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/panzerfaust(H), slot_shoulder)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a young member of the Hitler's Youth. Defend the Reichstag!")
 	H.setStat("strength", STAT_NORMAL)
@@ -731,16 +741,17 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_officer(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_l_hand)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german_officer(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	var/obj/item/clothing/accessory/armband/nsdap/armband = new /obj/item/clothing/accessory/armband/nsdap(null)
@@ -783,13 +794,14 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_officer(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german_officer(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
@@ -835,13 +847,14 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_officer(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german_officer(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
@@ -885,6 +898,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
 //weapons
@@ -892,7 +906,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -940,20 +954,27 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
+	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+		var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40(null)
+		uniform.attackby(webbing, H)
 	else
 		if (prob(10))
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g43(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43(null)
+			uniform.attackby(webbing, H)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
+			uniform.attackby(webbing, H)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
-	uniform.attackby(webbing, H)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Wehrmacht forces. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -999,9 +1020,13 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/mg34(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mg34belt(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun_cleaning_kit(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mg34(H), slot_r_store)
+
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1050,17 +1075,17 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/german_mg(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/german_mg_drum(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/german_mg_drum(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/german_mg_drum(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mauser/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mauser(null)
 	uniform.attackby(webbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an ammo bearer of the Wehrmacht forces. Provide ammo to the Machinengewehr schutze and take over if they die. Follow your <b>Sergeant's</b> orders!")
@@ -1105,19 +1130,21 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/gewehr98box(H), slot_belt)
 //pockets
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(60))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper(null)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
 	uniform.attackby(webbing, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a sniper of the Wehrmacht forces.Provide suppressing fire, support your comrades, take out high value targets, and follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a sniper of the Wehrmacht forces. Provide suppressing fire, support your comrades, take out high value targets, and follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1148,17 +1175,17 @@
 /datum/job/german/mediziner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_doctor(H), slot_w_uniform) // for now
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm_medic(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-
+	H.equip_to_slot_or_del(new /obj/item/roller(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint/medic(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_back)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(armband, H)
@@ -1196,7 +1223,7 @@
 /datum/job/german/sanitater/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_doctor(H), slot_w_uniform) // for now
 //head
@@ -1204,9 +1231,10 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/roller(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/trench(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
@@ -1244,8 +1272,8 @@
 	whitelisted = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_officer = TRUE
 	uses_squads = TRUE
+	is_tankcom = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1267,7 +1295,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hip = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(hip, H)
@@ -1312,7 +1340,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hip = new /obj/item/clothing/accessory/holster/hip(null)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
@@ -1339,7 +1367,6 @@
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_officer = TRUE
 	uses_squads = TRUE
 	is_ss_panzer = TRUE
 
@@ -1362,7 +1389,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hip = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(hip, H)
@@ -1416,7 +1443,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/stg(H), slot_shoulder)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(webbing, H)
@@ -1463,7 +1490,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/sapper/german(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight_alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1474,12 +1501,12 @@
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 
 	return TRUE
 /*

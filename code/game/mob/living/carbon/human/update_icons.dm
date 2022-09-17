@@ -631,6 +631,20 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
+
+		else if (istype(w_uniform, /obj/item/clothing/under/customtrackpants))
+			var/obj/item/clothing/under/customtrackpants/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_pants")
+				pants.color = CU.pantscolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpsants_custom_sides")
+				belt.color = CU.sidescolor
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_shirt")
+				shirt.color = CU.shirtcolor
+				standing.overlays += pants
+				standing.overlays += belt
+				standing.overlays += shirt
+
 		else if (istype(w_uniform, /obj/item/clothing/under/customvicuniform))
 			var/obj/item/clothing/under/customvicuniform/CU = w_uniform
 			if (!CU.uncolored)
@@ -1072,6 +1086,17 @@ var/global/list/damage_icon_parts = list()
 			standing.overlays += base
 			standing.overlays += secondary
 			standing.overlays += tertiary
+
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customtracksuit))
+			var/obj/item/clothing/suit/storage/jacket/customtracksuit/CS = wear_suit
+			if (!CS.uncolored)
+				base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customtracksuit_base")
+				base.color = CS.basecolor
+				secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "cumstomtracksuit_lines")
+				secondary.color = CS.linescolor
+				standing.overlays += base
+				standing.overlays += secondary
+
 		if (wear_suit.blood_DNA)
 			var/obj/item/clothing/suit/S = wear_suit
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "[S.blood_overlay_type]blood")

@@ -125,7 +125,10 @@
 		if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
-		if (do_after(M, caliber/2, M, can_move = TRUE))
+		var/loadtime = caliber/2
+		if (istype(src,/obj/structure/cannon/modern/naval))
+			loadtime = caliber
+		if (do_after(M, loadtime, M, can_move = TRUE))
 			if (M && (locate(M) in range(1,src)))
 				found_loader = FALSE
 				for (var/obj/structure/bed/chair/loader/L in M.loc)
@@ -137,7 +140,8 @@
 				W.loc = src
 				loaded = W
 				M << "You load the [src]."
-				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+				playsound(loc, "loaded_voice", 100, TRUE)
 				return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
@@ -189,7 +193,10 @@
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return
 		// load first and only slot
-		if (do_after(M, 45, src, can_move = TRUE))
+		var/loadtime = caliber/2
+		if (istype(src,/obj/structure/cannon/modern/naval))
+			loadtime = caliber
+		if (do_after(M, loadtime, src, can_move = TRUE))
 			if (M && (locate(M) in range(1,src)))
 				M.remove_from_mob(W)
 				W.loc = src
@@ -273,10 +280,38 @@
 
 	if (href_list["load"])
 		var/obj/item/cannon_ball/M = user.get_active_hand()
-		if (M && istype(M) && do_after(user, caliber/2, src, can_move = istank))
-			user.remove_from_mob(M)
-			M.loc = src
-			loaded = M
+		if (istype(M, ammotype))
+			var/obj/item/cannon_ball/shell/tank/TS = M
+			if (caliber != TS.caliber && caliber != null && caliber != 0)
+				user << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
+				return
+			if (loaded)
+				user << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+				return
+			// load first and only slot
+			var/found_loader = FALSE
+			for (var/obj/structure/bed/chair/loader/L in user.loc)
+				found_loader = TRUE
+			if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+				user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
+				return FALSE
+			var/loadtime = caliber/2
+			if (istype(src,/obj/structure/cannon/modern/naval))
+				loadtime = caliber
+			if (do_after(user, loadtime, user, can_move = TRUE))
+				if (user && (locate(user) in range(1,src)))
+					found_loader = FALSE
+					for (var/obj/structure/bed/chair/loader/L in user.loc)
+						found_loader = TRUE
+					if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+						user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
+						return FALSE
+					user.remove_from_mob(M)
+					M.loc = src
+					loaded = M
+					user << "You load the [src]."
+					playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+					return
 
 	if (href_list["set_angle"])
 		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
@@ -416,7 +451,11 @@
 								if (istype(src,/obj/structure/cannon/mortar))
 									explosion(target, 1, 2, 2, 3)
 								else if (istype(src,/obj/structure/cannon/modern/naval))
-									explosion(target, 2, 3, 4, 5)
+									explosion(target, 2, 3, 3, 4)
+									if(target.z > 1)
+										var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
+										if (tgtbelow)
+											explosion(tgtbelow, 2, 3, 3, 3)
 								else
 									explosion(target, 1, 2, 3, 4)
 							if (nuclear)

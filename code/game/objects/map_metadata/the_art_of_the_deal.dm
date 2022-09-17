@@ -1,14 +1,14 @@
 /obj/map_metadata/art_of_the_deal
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
-	lobby_icon_state = "taotd"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
+	lobby_icon = "icons/lobby/taotd.png"
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3000
 	is_singlefaction = TRUE
 	has_hunger = TRUE
 	no_winner ="The fighting is still going."
 	songs = list(
-		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
+		"Woke Up This Morning:1" = "sound/music/woke_up_this_morning.ogg",)
 	faction_organization = list(
 		CIVILIAN)
 
@@ -31,11 +31,12 @@
 		"Giovanni Blu Stocks" = 0,
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,
-		"Police" = 0,)
+		"Sheriff Office" = 0,)
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
-	var/maxpoints = 2500
+	var/maxpoints = 4000
+	grace_wall_timer = 3000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 
 
@@ -66,14 +67,16 @@
 	var/newnameb = list("Giovanni Blu Stocks" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Kogama Kraftsmen" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
-	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
+	var/newnamee = list("Sheriff Office" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(230,230,230,null,0,"cross","#7F0000","#FFFFFF",0,0))
+	var/newnameg = list("Government" = list(230,230,230,null,0,"star","#E3E3E3", "#3e57a8",0,0))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
+	custom_civs += newnameg
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
 	spawn(15000)
@@ -84,10 +87,10 @@
 		assign_delivery_zones()
 		send_buy_orders()
 								//id = seller, obj, amt, price, type, id, active
-		map.globalmarketplace += list("red1" = list("Rednikov Industries",null,1,1000,"bank","red1",1))
-		map.globalmarketplace += list("blue1" = list("Giovanni Blu Stocks",null,1,1000,"bank","blue1",1))
-		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000,"bank","green1",1))
-		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000,"bank","yellow1",1))
+		map.globalmarketplace += list("red1" = list("Rednikov Industries",null,1,1000+scores["Rednikov Industries"],"bank","red1",1))
+		map.globalmarketplace += list("gio1" = list("Giovanni Blu Stocks",null,1,1000+scores["Giovanni Blu Stocks"],"bank","gio1",1))
+		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000+scores["Kogama Krafsmen"],"bank","green1",1))
+		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000+scores["Goldstein Solutions"],"bank","yellow1",1))
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
 	for(var/turf/floor/delivery/D in turfs)
 		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
@@ -101,11 +104,11 @@
 			if ("mail@kogama.ug")
 				comps = pick("GBSA-1994 chip","RDKV S-445 chip","GS-IC-M3 chip")
 			if ("mail@rednikov.ug")
-				comps = pick("GBSA-1994 chip","McGT S5R1 chip","GS-IC-M3 chip")
+				comps = pick("GBSA-1994 chip","KOGM S5R1 chip","GS-IC-M3 chip")
 			if ("mail@goldstein.ug")
-				comps = pick("GBSA-1994 chip","McGT S5R1 chip","RDKV S-445 chip")
+				comps = pick("GBSA-1994 chip","KOGM S5R1 chip","RDKV S-445 chip")
 			if ("mail@blu.ug")
-				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
+				comps = pick("KOGM S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
 		var/pay = nr*rand(500,1100)
 		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay,i)) //x,y,product,amount,payment,faction
 		delivery_orders += tlist
@@ -136,7 +139,10 @@
 			if(!findtext(J.title, "CEO"))
 				. = FALSE
 		if (clients.len <= 15)
-			if (J.title == "Paramedic" || J.title == "Legitimate Business")
+			if (J.title == "Paramedic" || J.title == "Legitimate Business" || J.title == "Nurse")
+				. = FALSE
+		if (clients.len <= 20)
+			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
 		if (clients.len <= 25)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
@@ -147,15 +153,20 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/art_of_the_deal/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/art_of_the_deal/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
+
+/*/obj/map_metadata/art_of_the_deal/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.original_job_title == "Nurse")
+				H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
+				return TRUE
+	return FALSE*/ //Commented out, to be re-implemented if players go unga.
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
 	for(var/obj/structure/closet/safe/SF in world)
@@ -207,7 +218,7 @@
 	if (prob(100))
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
-		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(300,500)), list(/obj/item/weapon/material/sword/katana,rand(300,500)))
+		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(2200,3500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1600,1900)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(800,1200)), list(/obj/item/weapon/material/sword/katana,rand(1000,2500)))
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
@@ -233,7 +244,7 @@
 	for(var/i, i<=num, i++)
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
-		chosen = list(list(/obj/item/ammo_magazine/gewehr98,rand(100,120)),list(/obj/item/ammo_magazine/mosin,rand(100,120)),list(/obj/item/ammo_magazine/shellbox,rand(120,180)),list(/obj/item/ammo_magazine/walther,rand(60,90)))
+		chosen = list(list(/obj/item/ammo_magazine/gewehr98,rand(100,120)),list(/obj/item/ammo_magazine/mosin,rand(80,120)),list(/obj/item/ammo_magazine/shellbox,rand(120,180)),list(/obj/item/ammo_magazine/walther,rand(60,90)))
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
@@ -260,16 +271,16 @@
 			tlist[2] += scores[SF.faction]
 			world << "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] points</font></big>"
 //five-o scores
-	var/list/tlist2 = list("Police",0)
+	var/list/tlist2 = list("Sheriff Office",0)
 	for(var/obj/item/I in get_area(/area/caribbean/prison/jail))
 		if (istype(I, /obj/item/weapon/disk))
 			var/obj/item/weapon/disk/D = I
 			if (D.faction && !D.used)
-				tlist2[2]+=300
+				tlist2[2]+= 400
 		if (istype(I, /obj/item/stack/money))
 			var/obj/item/stack/money/M = I
-			tlist2[2]+=M.amount*M.value/4
-	tlist2[2] += scores["Police"]
+			tlist2[2]+= M.amount*(M.value/4)
+	tlist2[2] += scores["Sheriff Office"]
 	world << "<big><font color='yellow' size=2>[tlist2[1]]: [tlist2[2]] points</font></big>"
 	spawn(3000)
 		score()
@@ -320,8 +331,8 @@
 		/obj/item/clothing/accessory/holster/chest = 10,
 		/obj/item/weapon/material/kitchen/utensil/knife/shank/iron = 10,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -351,7 +362,7 @@
 		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 300,
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 400,
 		/obj/item/weapon/gun/projectile/revolver/smithwesson = 240,
-		/obj/item/weapon/gun/projectile/shotgun/remington870 = 500,
+		/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 500,
 		/obj/item/weapon/gun/projectile/boltaction/m24 = 600,
 		/obj/item/weapon/attachment/silencer/pistol = 120,
 
@@ -389,16 +400,27 @@
 		/obj/item/clothing/mask/gas/swat = 15,
 		/obj/item/clothing/suit/police = 15,
 		/obj/item/clothing/suit/storage/jacket/highvis = 15,
-		/obj/item/clothing/head/helmet/constable = 15,
-		/obj/item/clothing/under/constable = 15,
 		/obj/item/clothing/shoes/swat = 15,
-		/obj/item/weapon/storage/backpack/civbag = 15,
+		/obj/item/clothing/under/countysheriff/deputy = 15,
+		/obj/item/clothing/under/countysheriff/deputy/short = 15,
+		/obj/item/clothing/shoes/laceup = 15,
+		/obj/item/clothing/head/countysheriff_cap = 15,
+		/obj/item/clothing/head/countysheriff_cap/black = 15,
+		/obj/item/weapon/storage/backpack/satchel/police = 10,
+		/obj/item/weapon/storage/backpack/satchel/black = 5,
+		/obj/item/weapon/storage/backpack/satchel = 5,
+		/obj/item/weapon/storage/backpack/duffel = 5,
 		/obj/item/weapon/melee/nightbaton = 15,
 		/obj/item/weapon/storage/box/handcuffs = 10,
-		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 15,
+		/obj/item/weapon/storage/box/bodybags = 3,
+		/obj/item/weapon/storage/box/evidence = 10,
+		/obj/item/taperoll/police = 10,
+//		/obj/item/clothing/head/helmet/constable = 5,
+//		/obj/item/clothing/under/constable = 5,
+//		/obj/item/clothing/under/traffic_police = 5,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -409,19 +431,20 @@
 	desc = "When the baton is not enough."
 	icon_state = "weapons_sof"
 	products = list(
-	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
+	/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 10,
 	/obj/item/ammo_magazine/shellbox/slug = 10,
 	/obj/item/ammo_magazine/shellbox = 10,
 	/obj/item/ammo_magazine/glock17 = 50,
 	/obj/item/ammo_magazine/m9beretta = 50,
 	/obj/item/ammo_magazine/c32 = 50,
 	/obj/item/ammo_magazine/c44 = 50,
+	/obj/item/weapon/grenade/coldwar/stinger = 20,
 	/obj/item/weapon/gun/projectile/boltaction/m24 = 10,
 	/obj/item/ammo_magazine/m24 = 20,
 	/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -432,7 +455,7 @@
 	desc = "Baton +."
 	icon_state = "equipment_usa"
 	products = list(
-	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
+	/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 10,
 	/obj/item/ammo_magazine/shellbox/rubber = 10,
 	/obj/item/ammo_magazine/shellbox/beanbag = 10,
 	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,
@@ -442,12 +465,13 @@
 	/obj/item/weapon/grenade/smokebomb/m18smoke = 10,
 	/obj/item/weapon/reagent_containers/spray/pepper = 10,
 	/obj/item/weapon/gun/projectile/dartgun/mag = 10,
+
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
-	/obj/item/ammo_magazine/tt30ll = 50,
+	/obj/item/weapon/gun/projectile/pistol/tt30 = 50,
 	)
-	attack_hand(mob/user as mob)
-		if (user.original_job_title == "Police Officer" || user.original_job_title == "Police Supervisor")
+	attack_hand(mob/living/human/user as mob)
+		if (user.civilization == "Sheriff Office")
 			..()
 		else
 		 user << "You do not have access to this."
@@ -492,7 +516,7 @@
 		arn = rand(1000,9999)
 		icon_state = "police_record"
 		spawn(10)
-			info = "<center>POLICE DEPARTMENT<hr><large><b>Arrest Warrant No. [arn]</b></large><hr><br>Police forces are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i></b>, for the following reasons:<br><br><i>- [reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Police forces shall bring <b>[tgt]</b> forthwith to the Police Station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
+			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Arrest Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i></b>, for the following reasons:<br><br><i>- [reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Law Enforcement Agencies shall bring <b>[tgt]</b> forthwith to the local station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
 		spawn(100)
 			if (spawntimer)
 				spawn(spawntimer)
@@ -508,7 +532,7 @@
 		arn = rand(100,999)
 		icon_state = "police_warrant"
 		spawn(10)
-			info = "<center>POLICE DEPARTMENT<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Police forces are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
+			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
@@ -534,6 +558,10 @@
 /atom/proc/get_coded_loc()
 	var/a = ceil(x/22)
 	var/b = 10-Floor(y/22)
+	if (map.ID == MAP_CAMPAIGN)
+		a = ceil(x/15)
+		b = 10-Floor(y/10)
+
 	switch(a)
 		if (0 to 1)
 			a = "A"
@@ -561,10 +589,10 @@
 /mob/living/human/proc/undercover()
 	set category = "IC"
 	set name = "Toggle Undercover"
-	set desc="Hide your identity for police operations."
+	set desc="Hide your identity for undercover police operations."
 
-	if (findtext(name, "Officer"))
-		real_name = replacetext(real_name, "Officer ", "")
+	if (findtext(name, "Deputy"))
+		real_name = replacetext(real_name, "Deputy ", "")
 		hidden_name = real_name
 		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Japanese"))
 		switch(chosen_name)
@@ -584,9 +612,9 @@
 		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
-		real_name = "Officer [hidden_name]"
-		name = "Officer [hidden_name]"
-		voice = "Officer [hidden_name]"
+		real_name = "Deputy [hidden_name]"
+		name = "Deputy [hidden_name]"
+		voice = "Deputy [hidden_name]"
 		src << "<b><big>You are now revealing your identity again.</big></b>"
 		return
 

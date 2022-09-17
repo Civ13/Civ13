@@ -51,7 +51,7 @@ default behaviour is:
 				return
 
 	else if (ishuman(AM))
-		if (map.check_caribbean_block(AM, get_step(get_turf(AM), dir)))
+		if (map && map.check_caribbean_block(AM, get_step(get_turf(AM), dir)))
 			return
 
 	spawn(0)

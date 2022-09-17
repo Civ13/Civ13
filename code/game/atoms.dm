@@ -16,7 +16,7 @@
 	var/throwpass = FALSE
 	var/germ_level = GERM_LEVEL_AMBIENT // The higher the germ level, the more germ on the atom.
 	var/simulated = TRUE //filter for actions - used by lighting overlays
-//	var/fluorescent // Shows up under a UV light.
+	var/fluorescent // Shows up under a UV light.
 	var/allow_spin = TRUE
 
 	///Chemistry.
@@ -253,6 +253,8 @@
 	if (isnull(M)) return
 	if (isnull(M.key)) return
 	if (ishuman(M))
+		//Fibers
+		add_fibers(M)
 		//Add the list if it does not exist.
 		if (!fingerprintshidden)
 			fingerprintshidden = list()
@@ -274,11 +276,11 @@
 
 		//Deal with gloves the pass finger/palm prints.
 		if (!ignoregloves)
-			if (H.gloves != src)
-				if (prob(75) && istype(H.gloves))
-					return FALSE
-				else if (H.gloves)
-					return FALSE
+			if (H.gloves && H.gloves != src)
+				if(istype(H.gloves, /obj/item/clothing/gloves))
+					var/obj/item/clothing/gloves/G = H.gloves
+					if(!prob(G.fingerprint_chance))
+						return 0
 
 		//More adminstuffz
 		if (fingerprintslast != H.key)
@@ -401,7 +403,7 @@
 /atom/proc/clean_blood()
 	if (!simulated)
 		return
-//	fluorescent = FALSE
+	fluorescent = FALSE
 	germ_level = FALSE
 	if (istype(blood_DNA, /list))
 		blood_DNA = null

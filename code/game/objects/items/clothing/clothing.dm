@@ -198,6 +198,7 @@ BLIND	 // can't see anything
 	var/wired = FALSE
 	var/obj/item/weapon/cell/cell = FALSE
 	var/clipped = FALSE
+	var/fingerprint_chance = 0 //How likely the glove is to let fingerprints through
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
 	attack_verb = list("challenged")
@@ -379,7 +380,6 @@ BLIND	 // can't see anything
 /obj/item/clothing/shoes/attackby(var/obj/item/I, var/mob/user)
 	if (can_hold_knife && istype(I, /obj/item/weapon/material/shard) || \
 	 istype(I, /obj/item/weapon/material/kitchen/utensil) || \
-	 istype(I, /obj/item/weapon/material/knife) || \
 	 istype(I, /obj/item/weapon/gun/projectile/revolver/derringer) || \
 	 istype(I, /obj/item/weapon/attachment/bayonet))
 		if (holding)

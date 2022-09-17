@@ -1,7 +1,7 @@
 /obj/map_metadata/port_arthur
 	ID = MAP_PORT_ARTHUR
 	title = "Port Arthur"
-	lobby_icon_state = "ww1"
+	lobby_icon = "icons/lobby/ww1.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	no_hardcore = TRUE
@@ -22,7 +22,7 @@
 	faction2 = JAPANESE
 	ordinal_age = 5
 	songs = list(
-		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
+		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg")
 	gamemode = "Siege"
 /obj/map_metadata/port_arthur/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)

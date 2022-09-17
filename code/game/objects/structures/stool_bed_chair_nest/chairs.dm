@@ -120,6 +120,21 @@
 /obj/structure/bed/chair/comfy/lime/New(var/newloc,var/newmaterial)
 	..(newloc,"steel","lime")
 
+/obj/structure/bed/chair/comfy/fancy_sofa
+	name = "fancy sofa"
+	desc = "A nice leather sofa."
+	base_icon = "fancysofa_l"
+	icon_state = "fancysofa_l"
+	applies_material_colour = FALSE
+	material = "leather"
+/obj/structure/bed/chair/comfy/fancy_sofa/l
+	icon_state = "fancysofa_l"
+	applies_material_colour = FALSE
+	base_icon = "fancysofa_l"
+/obj/structure/bed/chair/comfy/fancy_sofa/r
+	icon_state = "fancysofa_r"
+	applies_material_colour = FALSE
+	base_icon = "fancysofa_r"
 
 /obj/structure/bed/chair/office
 	anchored = FALSE
@@ -193,6 +208,11 @@
 	icon_state = "wooden_chair"
 	applies_material_colour = FALSE
 
+/obj/structure/bed/chair/wood/another
+	name = "wooden chair"
+	desc = "Classic is never too old to not be in fashion."
+	icon_state = "wooden_chair_alt"
+
 /obj/structure/bed/modern/chair
 	name = "steel chair"
 	desc = "A cold boring chair."
@@ -220,7 +240,7 @@
 /obj/structure/bed/chair/stone
 	name = "stone chair"
 	desc = "Old is never too old to not be in fashion."
-	icon_state = "wooden_chair"
+	icon_state = "chair"
 	material = "stone"
 	applies_material_colour = TRUE
 
@@ -231,6 +251,16 @@
 	base_icon = "steelchair"
 	material = "steel"
 	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/steel
+	name = "steel chair"
+	desc = "cold boring chair."
+	icon_state = "steelchair"
+	base_icon = "steelchair"
+	material = "steel"
+	applies_material_colour = FALSE
+
+
 
 /obj/structure/bed/chair/wood/update_icon()
 	return
@@ -254,3 +284,14 @@
 	name = "padded chair"
 	desc = "Built with padding for extra comfort."
 	icon_state = "wooden_chair_red"
+
+/obj/structure/bed/chair/wood/alt
+	icon_state = "wooden_chair_alt"
+
+/obj/structure/bed/chair/barber
+	name = "barber chair"
+	desc = "A barbershop chair."
+	icon_state = "barberchair"
+	base_icon = "barberchair"
+	material = "steel"
+	applies_material_colour = FALSE

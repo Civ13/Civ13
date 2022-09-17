@@ -71,6 +71,12 @@ Parts of code courtesy of Super3222
 	w_class = 5
 	var/checking = FALSE
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval
+	name = "periscope"
+	desc = "A solid metal periscope."
+	icon_state = "periscope"
+	max_zoom = ZOOM_CONSTANT*4
+
 /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	if (checking)
 		return

@@ -299,6 +299,47 @@
 	max_shells = 1
 	load_delay = 7
 
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal
+	name = "Barrett M99"
+	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
+	icon_state = "a50calss"
+	item_state = "a50calss"
+	base_icon = "a50calss"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+	w_class = 4
+	force = 10
+	throwforce = 5
+	max_shells = 1
+	slot_flags = SLOT_SHOULDER
+	caliber = "a50cal"
+	weight = 8
+	recoil = 3
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = list (/obj/item/ammo_casing/a50cal, /obj/item/ammo_casing/a50cal_ap, /obj/item/ammo_casing/a50cal_he)
+	magazine_type = /obj/item/ammo_magazine/mosin
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	accuracy = TRUE
+	gun_type = GUN_TYPE_RIFLE
+	accuracy_increase_mod = 2.00
+	accuracy_decrease_mod = 6.00
+	KD_chance = KD_CHANCE_HIGH
+	move_delay = 4
+	fire_delay = 4
+	equiptimer = 15
+	gun_safety = TRUE
+	load_delay = 20
+	bolt_open = FALSE
+	bolt_safety = FALSE
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the breech is open!</span>"
@@ -487,7 +528,7 @@
 	update_icon()
 	check_bolt--
 /obj/item/weapon/gun/projectile/boltaction/arisaka38/sniper
-	name = "Arisaka Type 96"
+	name = "Arisaka Type 97"
 	desc = "Japanese bolt-action rifle chambered in 6.5x50mm Arisaka ammunition."
 	effectiveness_mod = 1.06
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
@@ -789,7 +830,11 @@
 	effectiveness_mod = 1.05
 	equiptimer = 12
 
-	equiptimer = 12
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese
 	name = "Chiang Kai-Shek"
@@ -953,7 +998,7 @@
 	equiptimer = 15
 /obj/item/weapon/gun/projectile/boltaction/lebel
 	name = "Lebel 1886/M93"
-	desc = "A 8 round, bolt-action rifle, standard issue for french military, chambered in 8×50mmR Lebel."
+	desc = "A 8 round, bolt-action rifle, standard issue for french military, chambered in 8ï¿½50mmR Lebel."
 	icon_state ="lebel"
 	item_state ="lebel"
 	base_icon = "lebel"
@@ -976,7 +1021,7 @@
 	equiptimer = 16
 /obj/item/weapon/gun/projectile/boltaction/berthier
 	name = "Berthier M1907/15"
-	desc = "A 3 round, bolt-action carbine, chambered in 8×50mmR Lebel."
+	desc = "A 3 round, bolt-action carbine, chambered in 8ï¿½50mmR Lebel."
 	icon_state ="berthier"
 	item_state ="berthier"
 	base_icon = "berthier"
@@ -999,7 +1044,7 @@
 	equiptimer = 13
 /obj/item/weapon/gun/projectile/boltaction/berthier/m16
 	name = "Berthier M1907/16"
-	desc = "A 5 round, bolt-action carbine, chambered in 8×50mmR Lebel."
+	desc = "A 5 round, bolt-action carbine, chambered in 8ï¿½50mmR Lebel."
 	magazine_type = /obj/item/ammo_magazine/c8x50_5clip
 	good_mags = list(/obj/item/ammo_magazine/c8x50_3clip)
 	max_shells = 5
@@ -1018,7 +1063,7 @@
 	w_class = 2
 	effectiveness_mod = 0.77
 	value = 60
-	slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
+	slot_flags = SLOT_BELT|SLOT_HOLSTER|SLOT_SHOULDER
 	equiptimer = 9
 
 
@@ -1070,7 +1115,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/springfield
-	good_mags = list(/obj/item/ammo_magazine/springfield)
+	good_mags = list(/obj/item/ammo_magazine/springfield,/obj/item/ammo_magazine/garand)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 5
 	equiptimer = 12

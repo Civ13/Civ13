@@ -1,7 +1,7 @@
 /obj/map_metadata/iwojima
 	ID = MAP_IWO_JIMA
 	title = "Iwo Jima"
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -21,9 +21,10 @@
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese Army will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture Japanese Command within Mount Suribachi!</font>"
 	faction1 = JAPANESE
 	faction2 = AMERICAN
+	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Over There!:1" = "sound/music/overthere.ogg",)
 	gamemode = "Siege"
 /obj/map_metadata/iwojima/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -33,13 +34,6 @@
 		. = FALSE
 	else
 		. = FALSE
-
-/obj/map_metadata/iwojima/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/iwojima/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/iwojima/roundend_condition_def2name(define)
 	..()

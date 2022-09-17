@@ -10,7 +10,6 @@
 	w_class = 2.0
 	throw_speed = 2
 	throw_range = 5
-	var/elastic
 	var/dispenser = FALSE
 	var/breakouttime = 1200 //Deciseconds = 120s = 2 minutes
 	var/cuff_sound = 'sound/weapons/handcuffs.ogg'
@@ -21,29 +20,31 @@
 	if (!user.IsAdvancedToolUser())
 		return
 
-	if (!C.handcuffed)
+	if(!C.handcuffed)
 		if (C == user)
 			place_handcuffs(user, user)
 			return
 
 		//check for an aggressive grab (or robutts)
-		var/can_place
-
-		for (var/obj/item/weapon/grab/G in C.grabbed_by)
-			if (G.loc == user && G.state >= GRAB_AGGRESSIVE)
-				can_place = TRUE
-				break
-
-		if (C.lying)
-			can_place = TRUE
-
-		if (can_place)
+		if(can_place(C, user))
 			place_handcuffs(C, user)
 		else
-			user << "<span class='danger'>You need to have a firm grip on [C] before you can put \the [src] on!</span>"
+			to_chat(user, "<span class='danger'>You need to have a firm grip on [C] before you can put \the [src] on!</span>")
+	else
+		to_chat(user, "<span class='warning'>\The [C] is already handcuffed!</span>")
+
+
+/obj/item/weapon/handcuffs/proc/can_place(var/mob/target, var/mob/user)
+	if(user == target)
+		return 1
+	else
+		for (var/obj/item/weapon/grab/G in target.grabbed_by)
+			if (G.loc == user && G.state >= GRAB_AGGRESSIVE)
+				return 1
+	return 0
 
 /obj/item/weapon/handcuffs/proc/place_handcuffs(var/mob/living/human/target, var/mob/user)
-	playsound(loc, cuff_sound, 30, TRUE, -2)
+	playsound(loc, cuff_sound, 30, 1, -2)
 
 	var/mob/living/human/H = target
 	if (!istype(H))
@@ -53,14 +54,18 @@
 		user << "<span class='danger'>\The [H] needs at least two wrists before you can cuff them together!</span>"
 		return FALSE
 
-	//user.visible_message("<span class='danger'>\The [user] is attempting to put [cuff_type] on \the [H]!</span>")
+	user.visible_message("<span class='danger'>\The [user] is attempting to put [cuff_type] on \the [H]!</span>")
 
-	if (!do_after(user,0, target))
+	if (!do_after(user,30, target))
+		return FALSE
+	
+	if(!can_place(target, user)) // victim may have resisted out of the grab in the meantime
 		return FALSE
 
+	admin_attack_log(user, H, "Attempted to handcuff the victim", "Was target of an attempted handcuff", "attempted to handcuff")
+	
 	H.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been handcuffed by [user.name] ([user.ckey])</font>")
 	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Handcuff [H.name] ([H.ckey])</font>")
-	msg_admin_attack("[key_name(user)] handcuff [key_name(H)]")
 
 
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -70,14 +75,12 @@
 
 	// Apply cuffs.
 	var/obj/item/weapon/handcuffs/cuffs = src
-	if (dispenser)
+	if(dispenser)
 		cuffs = new(get_turf(user))
 	else
 		user.drop_from_inventory(cuffs)
-	cuffs.loc = target
-	target.handcuffed = cuffs
-	target.update_inv_handcuffed()
-	return TRUE
+	target.equip_to_slot(cuffs,slot_handcuffed)
+	return 1
 
 var/last_chew = FALSE
 /mob/living/human/RestrainedClickOn(var/atom/A)
@@ -92,15 +95,46 @@ var/last_chew = FALSE
 	var/obj/item/organ/external/O = H.organs_by_name[H.hand?"l_hand":"r_hand"]
 	if (!O) return
 
-	var/s = "<span class='warning'>[H.name] chews on \his [O.name]!</span>"
-	H.visible_message(s, "<span class='warning'>You chew on your [O.name]!</span>")
-	H.attack_log += text("\[[time_stamp()]\] <font color='red'>[s] ([H.ckey])</font>")
-	log_attack("[s] ([H.ckey])")
+	H.visible_message("<span class='warning'>\The [H] chews on \his [O.name]!</span>", "<span class='warning'>You chew on your [O.name]!</span>")
+	attack_log(H, "chewed on their [O.name]!")
 
 	if (O.take_damage(3,0,1,1,"teeth marks"))
 		H:UpdateDamageIcon()
 
 	last_chew = world.time
+
+
+/obj/item/weapon/handcuffs/cable
+	name = "cable restraints"
+	desc = "Looks like some cables tied together. Could be used to tie something up."
+	icon_state = "cuff_white"
+	breakouttime = 300 //Deciseconds = 30s
+	cuff_sound = 'sound/weapons/cablecuff.ogg'
+	cuff_type = "cable restraints"
+
+/obj/item/weapon/handcuffs/cable/red
+	color = "#dd0000"
+
+/obj/item/weapon/handcuffs/cable/yellow
+	color = "#dddd00"
+
+/obj/item/weapon/handcuffs/cable/blue
+	color = "#0000dd"
+
+/obj/item/weapon/handcuffs/cable/green
+	color = "#00dd00"
+
+/obj/item/weapon/handcuffs/cable/pink
+	color = "#dd00dd"
+
+/obj/item/weapon/handcuffs/cable/orange
+	color = "#dd8800"
+
+/obj/item/weapon/handcuffs/cable/cyan
+	color = "#00dddd"
+
+/obj/item/weapon/handcuffs/cable/white
+	color = "#ffffff"
 
 /obj/item/weapon/handcuffs/rope
 	name = "rope handcuffs"
@@ -115,7 +149,6 @@ var/last_chew = FALSE
 	icon = 'icons/obj/items.dmi'
 	icon_state = "oldcuff"
 	flammable = TRUE
-
 
 /obj/item/weapon/handcuffs/strips
 	name = "strip cuffs"

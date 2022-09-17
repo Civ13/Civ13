@@ -17,6 +17,10 @@
 	name = "floor"
 	icon_state = "fancywood"
 
+/turf/floor/blackslateroof
+	name = "roof"
+	icon = 'icons/turf/roofs.dmi'
+	icon_state = "black_slateroof_dm"
 
 /* when this is a subtype of /turf/floor/wood, it doesn't get the right icon.
  * not sure why right now - kachnov */
@@ -49,9 +53,9 @@
 /turf/floor/grass
 	name = "Grass patch"
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "grass1"
+	icon_state = "grass0"
 	var/deadicon = 'icons/turf/floors.dmi'//Rad stuff what to turn into
-	var/deadicon_state = "dead_grass1"//Rad stuff what to turn into
+	var/deadicon_state = "ndead_grass1"//Rad stuff what to turn into
 	var/grassamt = 1
 	New()
 		icon_state = "grass[pick("0","1","2","3")]"
@@ -148,12 +152,12 @@
 
 /turf/floor/grass/jungle/savanna
 	name = "dry grass"
-	icon_state = "grass_dry"
+	icon_state = "dry_grass"
 	initial_flooring = null
 
 /turf/floor/grass/jungle/savanna/New()
 	..()
-	icon_state = "grass_dry"
+	icon_state = "dry_grass"
 	deadicon_state = "dead_grass[pick("0","1","2","3")]"//Rad stuff what to turn into
 
 /turf/floor/winter
@@ -278,6 +282,11 @@
 	water_level = 200
 	density = FALSE
 	initial_flooring = /decl/flooring/water_deep
+	move_delay = 20
+
+/turf/floor/beach/water/deep/saltwater/shipline
+	icon_state = "ship_line"
+	initial_flooring = /decl/flooring/water_deep_salt/shipline
 
 /turf/floor/beach/water/deep/Crossed(atom/A)
 	..()
@@ -299,6 +308,8 @@
 		if (ishuman(ML))
 			var/mob/living/human/H = ML
 			if (H.driver_vehicle)
+				return
+			if (istype(H.wear_suit, /obj/item/clothing/suit/lifejacket))
 				return
 		if (ML && ML.stat == DEAD)
 			spawn(60)
@@ -337,6 +348,10 @@
 	else if (istype(mover, /obj/item/projectile))
 		return TRUE
 	else if (istype(mover, /mob) && !iscovered())
+		if (ishuman(mover))
+			var/mob/living/human/H = mover
+			if(istype(H.wear_suit, /obj/item/clothing/suit/lifejacket))
+				return TRUE
 		return FALSE
 	else
 		return ..()
@@ -539,6 +554,12 @@
 	name = "steel plated floor"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "floor"
+	interior = TRUE
+
+/turf/floor/plating/dark
+	name = "dark plating"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dark"
 	interior = TRUE
 
 /turf/floor/plating/white

@@ -350,8 +350,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
-
-
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
@@ -361,6 +359,10 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	armour.attackby(plates1, H)
+	armour.attackby(plates2, H)
 	uniform.attackby(armour, H)
 //jacket
 	if (prob(15))
@@ -414,8 +416,10 @@
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
@@ -423,7 +427,7 @@
 	if (prob(33))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
@@ -433,8 +437,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/civbag(H), slot_back)
@@ -472,7 +476,7 @@
 
 /datum/job/russian/ruff_medic
 	title = "Russian Federal Forces Corpsman"
-	rank_abbreviation = "Pfc."
+	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRUMedic"
 
@@ -487,7 +491,10 @@
 /datum/job/russian/ruff_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	if (prob(60))
@@ -514,8 +521,8 @@
 	uniform.attackby(white, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 
 	H.s_tone = rand(-32,-24)
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved","Short Facial Hair")
@@ -547,7 +554,7 @@
 /datum/job/russian/ruff_radioman
 	title = "Russian Federal Forces Artillery Liaison"
 	en_meaning = "Radio Operator"
-	rank_abbreviation = "Pfc."
+	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRURadop"
 
@@ -563,7 +570,10 @@
 /datum/job/russian/ruff_radioman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	if (prob(60))
@@ -576,8 +586,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
@@ -640,7 +650,7 @@
 
 /datum/job/russian/ruff_soldier
 	title = "Russian Federal Forces Private"
-	rank_abbreviation = "Pvt."
+	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
 
@@ -656,7 +666,10 @@
 /datum/job/russian/ruff_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	if (prob(60))
@@ -670,8 +683,8 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
@@ -758,13 +771,17 @@
 /datum/job/russian/ruff_spetznaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	armour.attackby(plates1, H)
+	armour.attackby(plates2, H)
 	uniform.attackby(armour, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -775,9 +792,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sovietbala(H), slot_wear_mask)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/civbag(H), slot_back)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia_pmk2(H), slot_r_store)
 
 	var/randarmwruspez = rand(1,3)
@@ -785,14 +800,17 @@
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/vintorez(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/vintorez, slot_l_store)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_spez(H), slot_head)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/saiga12(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_saiga(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/saiga12, slot_l_store)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding(H), slot_head)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_spz(H), slot_belt)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74/ak74m, slot_l_store)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/zsh1(H), slot_head)
 
 	H.f_style = pick("Goatee","Selleck Mustache","Shaved","Short Facial Hair")

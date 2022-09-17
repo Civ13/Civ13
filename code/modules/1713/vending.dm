@@ -143,6 +143,35 @@
 		/obj/item/weapon/attachment/bayonet/military = 25,
 	)
 
+/obj/structure/vending/rednikovweapons
+	name = "Rednikov Weapon rack"
+	desc = "A rack of Mafia equipment."
+	icon_state = "weapons_sof"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 8,
+		/obj/item/weapon/gun/projectile/submachinegun/uzi = 12,
+		/obj/item/weapon/gun/projectile/submachinegun/tec9 = 10,
+		/obj/item/ammo_magazine/ak47 = 35,
+		/obj/item/ammo_magazine/uzi = 40,
+		/obj/item/ammo_magazine/tec9 = 40,
+		/obj/item/weapon/material/kitchen/utensil/knife/military = 10,
+	)
+
+/obj/structure/vending/rednikovapparel
+	name = "Rednikov apparel rack"
+	desc = "Basic wear for the Rednikov Mafia."
+	icon_state = "apparel_sof"
+	products = list(
+		/obj/item/clothing/under/expensive/red = 40,
+		/obj/item/clothing/head/helmet/ww2/soviet = 20,
+		/obj/item/clothing/head/helmet/modern/pasgt = 10,
+		/obj/item/clothing/accessory/armor/modern/plate = 10,
+		/obj/item/clothing/accessory/armor/coldwar/plates/interceptor = 15,
+		/obj/item/weapon/armorplates = 30,
+		/obj/item/clothing/accessory/armband = 40,
+
+	)
+
 /obj/structure/vending/ww1gerweapons
 	name = "German rifle rack"
 	desc = "A rack of rifles and ammunition."
@@ -215,7 +244,7 @@
 	desc = "Basic wear for soldiers of the Imperial German Army."
 	icon_state = "apparel_german2"
 	products = list(
-		/obj/item/clothing/shoes/blackboots1 = 15,
+		/obj/item/clothing/shoes/blackboots = 15,
 		/obj/item/clothing/under/ww1/german = 15,
 		/obj/item/clothing/suit/storage/coat/germcoat = 15,
 		/obj/item/clothing/head/ww/germcap = 15,
@@ -293,7 +322,7 @@
 		/obj/item/clothing/head/ww2/chicap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
 	)
@@ -313,7 +342,7 @@
 		/obj/item/clothing/head/ww2/german_fieldcap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
 	)
@@ -363,8 +392,10 @@
 		/obj/item/ammo_magazine/garand = 50,
 		/obj/item/ammo_magazine/springfield = 40,
 		/obj/item/ammo_magazine/bar = 15,
+		/obj/item/ammo_magazine/m3006box = 10,
 		/obj/item/ammo_magazine/thompson = 15,
 		/obj/item/ammo_magazine/m1911 = 10,
+		/obj/item/ammo_magazine/a45acpbox = 10,
 	)
 
 /obj/structure/vending/japaneseapparel_ww2
@@ -376,6 +407,8 @@
 		/obj/item/clothing/under/ww2/japuni = 15,
 		/obj/item/clothing/suit/storage/coat/ww2/japcoat = 15,
 		/obj/item/clothing/head/ww2/japcap = 15,
+		/obj/item/havelock = 40,
+		/obj/item/puttees = 40,
 		/obj/item/clothing/head/helmet/ww2/japhelm = 15,
 		/obj/item/clothing/head/ww2/jap_headband = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
@@ -425,20 +458,41 @@
 		)
 
 /obj/structure/vending/yakuza
-	name = "yakuza equipment rack"
-	desc = "Basic gear for the yakuza."
+	name = "Yakuza apparel rack"
+	desc = "Basic clothing for the Yakuza."
 	icon_state = "apparel_german2"
 	products = list(
+		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/clothing/shoes/laceup = 15,
 		/obj/item/clothing/under/modern2 = 15,
 		/obj/item/clothing/head/fedora = 15,
-		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
 		/obj/item/clothing/mask/balaclava = 15,
-		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
 		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
 		/obj/item/clothing/suit/storage/jacket/blackvest = 10,
-		/obj/item/ammo_magazine/m9beretta = 15,
-		/obj/item/weapon/material/knife/tanto = 5,
+	)
+
+/obj/structure/vending/yakuza/equipment
+	name = "Yakuza equipment rack"
+	desc = "Basic gear for the Yakuza."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/m1911 = 14,
+		/obj/item/ammo_magazine/luger = 10,
+		/obj/item/ammo_magazine/walther = 10,
+		/obj/item/ammo_magazine/makarov = 10,
+		/obj/item/ammo_magazine/c8mmnambu = 10,
+		/obj/item/ammo_magazine/type100 = 4,
+		/obj/item/ammo_magazine/mosin = 4,
+		/obj/item/ammo_magazine/shellbox/slug = 2,
+		/obj/item/ammo_magazine/shellbox = 2,
+		/obj/item/ammo_magazine/c32 = 5,
+		/obj/item/ammo_magazine/c762x38mmR = 5,
+		/obj/item/ammo_magazine/c9mm_jap_revolver = 5,
+		/obj/item/ammo_magazine/c44magnum = 2,
+		/obj/item/ammo_magazine/p220 = 4,
+		/obj/item/weapon/material/kitchen/utensil/knife/tanto = 15,
+		/obj/item/ammo_magazine/emptyspeedloader = 20,
 	)
 
 /obj/structure/vending/russianapparel
@@ -545,7 +599,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
@@ -564,7 +618,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 
@@ -583,7 +637,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 
@@ -602,7 +656,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 10,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 20,
 
@@ -650,6 +704,8 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/mg34 = 10,
 		/obj/item/ammo_magazine/luger = 10,
 		/obj/item/ammo_magazine/walther = 10,
+		/obj/item/ammo_magazine/mauser = 10,
+		/obj/item/ammo_magazine/c9mm = 10
 	)
 
 /obj/structure/vending/sovietammo
@@ -668,7 +724,7 @@ obj/structure/vending/sofammo
 	)
 
 obj/structure/vending/idfammo
-	name = "IDF ammunition crates"
+	name = "IDF ammo pile"
 	desc = "ammunition and attachments for the Israeli Defense Forces."
 	icon_state = "ammo_crates"
 	products = list(
@@ -679,11 +735,12 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/coldwar/m67= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 		/obj/item/weapon/grenade/flashbang/m84 = 20,
+		/obj/item/weapon/attachment/bayonet/military = 30,
 //		/obj/item/weapon/grenade/incendiary = 20,
 	)
 
 obj/structure/vending/hezammo
-	name = "Hezbollah ammunition crates"
+	name = "Hezbollah ammo pile"
 	desc = "ammunition and attachments for the Hezbollah armed forces."
 	icon_state = "ammo_crates"
 	products = list(
@@ -691,9 +748,11 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/ak74 = 50,
 		/obj/item/ammo_magazine/tt30 = 50,
 		/obj/item/ammo_magazine/mosin = 50,
-		/obj/item/ammo_magazine/pkm/c100 = 10,
+		/obj/item/ammo_magazine/mosinbox = 20,
+		/obj/item/ammo_magazine/pkm/c100 = 15,
 		/obj/item/weapon/grenade/coldwar/m26= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
+		/obj/item/weapon/material/kitchen/utensil/knife/military = 30,
 	)
 
 /obj/structure/vending/usa_apparel_modern
@@ -701,14 +760,47 @@ obj/structure/vending/hezammo
 	desc = "Basic wear for soldiers of the USMC."
 	icon_state = "apparel_usa"
 	products = list(
-		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/shoes/usmc = 15,
 		/obj/item/clothing/under/us_uni/us_camo_dcu = 15,
 		/obj/item/clothing/head/helmet/modern/pasgt/desert = 15,
 		/obj/item/clothing/glasses/tactical_goggles = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/flashlight/militarylight = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+	)
+
+/obj/structure/vending/hez_apparel_modern
+	name = "Hezbollah apparel rack"
+	desc = "Basic wear for soldiers of Hezbollah."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah = 15,
+		/obj/item/clothing/accessory/armor/coldwar/pasgt = 15,
+		/obj/item/clothing/glasses/tactical_goggles = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight/alt = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/flatbread = 50,
+	)
+
+/obj/structure/vending/idf_apparel_modern
+	name = "IDF apparel rack"
+	desc = "Basic wear for soldiers of the IDF."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/idf = 15,
+		/obj/item/clothing/accessory/armor/coldwar/idf = 15,
+		/obj/item/clothing/glasses/tactical_goggles = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/idf = 50,
 	)
 
 /obj/structure/vending/usa_equipment_modern
@@ -726,6 +818,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m14 = 50,
 		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
+		/obj/item/weapon/attachment/bayonet/military = 20,
 	)
 
 /obj/structure/vending/usa_apparel_coldwar
@@ -733,7 +826,7 @@ obj/structure/vending/hezammo
 	desc = "Basic wear for the soldiers of the US Army."
 	icon_state = "apparel_usa"
 	products = list(
-		/obj/item/clothing/shoes/blackboots1 = 30,
+		/obj/item/clothing/shoes/blackboots = 30,
 		/obj/item/clothing/under/us_uni = 20,
 		/obj/item/clothing/under/us_uni/us_greentrousers = 10,
 		/obj/item/clothing/under/us_uni/us_lightuni = 10,
@@ -883,7 +976,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/accessory/holster/armpit = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
-		/obj/item/flashlight/militarylight_alt = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 	)
@@ -902,7 +995,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/attachment/bayonet/military = 15,
 		/obj/item/weapon/grenade/smokebomb = 15,
 		/obj/item/weapon/grenade/flashbang = 15,
-		/obj/item/weapon/grenade/modern/f1 = 15,
+		/obj/item/weapon/grenade/coldwar/rgd5 = 15,
 		/obj/item/weapon/grenade/antitank/rpg40 = 15,
 		/obj/item/weapon/plastique/c4 = 6,
 		/obj/item/weapon/shield/metal_riot = 15,
@@ -917,6 +1010,8 @@ obj/structure/vending/hezammo
 	products = list(
 		/obj/item/ammo_magazine/ak74 = 50,
 		/obj/item/ammo_magazine/pkm/c100 = 25,
+		/obj/item/ammo_magazine/rpk74 = 12,
+		/obj/item/ammo_magazine/rpk74/drum = 8,
 		/obj/item/ammo_magazine/svd = 16,
 		/obj/item/ammo_casing/grenade_l/teargas = 16,
 		/obj/item/ammo_magazine/makarov = 15,
@@ -925,4 +1020,231 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
+	)
+
+/obj/structure/vending/sovafghan/soviet/apparel
+	name = "Soviet Army apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/combat = 15,
+		/obj/item/clothing/shoes/soldiershoes = 10,
+		/obj/item/clothing/under/afghanka = 20,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b2 = 20,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b3 = 15,
+		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 20,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/smallpouches/green = 10,
+		/obj/item/weapon/storage/belt/smallpouches = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/weapon/storage/backpack/sovpack = 20,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/map_sovafghan = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+	)
+
+/obj/structure/vending/sovafghan/soviet/weapons
+	name = "Soviet Army weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 5,
+		/obj/item/weapon/gun/projectile/automatic/rpk74 = 5,
+		/obj/item/weapon/gun/projectile/pistol/makarov = 10,
+	)
+
+/obj/structure/vending/sovafghan/soviet/ammo
+	name = "Soviet Army ammo crate"
+	desc = "A large crate of ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak74 = 50,
+		/obj/item/ammo_magazine/pkm/c100 = 10,
+		/obj/item/ammo_magazine/pkm/c100 = 10,
+		/obj/item/ammo_magazine/svd = 10,
+		/obj/item/ammo_magazine/makarov = 20,
+		/obj/item/ammo_magazine/rpk74 = 12,
+		/obj/item/ammo_magazine/rpk74/drum = 6,
+	)
+
+/obj/structure/vending/sovafghan/dra/apparel
+	name = "DRA apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/soldiershoes = 20,
+		/obj/item/clothing/under/coldwar/dra/soldier = 20,
+		/obj/item/clothing/head/custom/fieldcap/dra = 20,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 10,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b2 = 5,
+		/obj/item/clothing/accessory/armband = 20,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/smallpouches/green = 10,
+		/obj/item/weapon/storage/belt/smallpouches = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/map_sovafghan = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+	)
+
+/obj/structure/vending/sovafghan/dra/weapons
+	name = "DRA weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/sks = 30,
+		/obj/item/weapon/gun/projectile/submachinegun/ak47 = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 4,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
+		/obj/item/weapon/gun/projectile/automatic/rpd = 3,
+		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
+	)
+
+/obj/structure/vending/sovafghan/dra/ammo
+	name = "DRA ammo crate"
+	desc = "A large crate of ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak47 = 40,
+		/obj/item/ammo_magazine/sks = 80,
+		/obj/item/ammo_magazine/ak74 = 12,
+		/obj/item/ammo_magazine/ak74/rubber = 15,
+		/obj/item/ammo_magazine/pkm = 5,
+		/obj/item/ammo_magazine/rpd = 6,
+		/obj/item/ammo_magazine/makarov = 10,
+	)
+
+/obj/structure/vending/coldwar/soviet/apparel
+	name = "Soviet Armed Forces apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/jackboots/soviet = 20,
+		/obj/item/clothing/under/afghanka = 20,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b3 = 20,
+		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 20,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/smallpouches/green = 10,
+		/obj/item/weapon/storage/belt/smallpouches = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/weapon/storage/backpack/sovpack = 20,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+	)
+
+///////////Star Wars stuff//////////////////////
+
+/obj/structure/vending/starwars/imperial/apparel
+	name = "Imperial uniform rack"
+	desc = "Basic wear for imperial stormtroopers."
+	icon_state = "apparel_german_old"
+	products = list(
+		/obj/item/clothing/under/bodyglove = 25,
+		/obj/item/clothing/suit/armor/stormtrooper = 25,
+		/obj/item/clothing/shoes/replicantshoes = 25,
+		/obj/item/clothing/gloves/replicantgloves = 25,
+		/obj/item/clothing/head/helmet/replicant/stormtrooper = 25,
+	)
+
+/obj/structure/vending/starwars/imperial/weapons
+	name = "Imperial weapon and ammo rack"
+	desc = "A rack of imperial blaster equipment."
+	icon_state = "blaster_munitions"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/e11 = 30,
+		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 10,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 20,
+		/obj/item/ammo_magazine/tibannagas/e11 = 60,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 4,
+		/obj/item/weapon/grenade/flashbang/galaxywars = 5,
+	)
+
+/obj/structure/vending/starwars/rebel/apparel
+	name = "Rebel uniform rack"
+	desc = "Basic wear for rebel soldiers."
+	icon_state = "apparel_german_old"
+	products = list(
+		/obj/item/clothing/under/rebel = 25,
+		/obj/item/clothing/suit/storage/jacket/rebel_vest = 25,
+		/obj/item/clothing/head/helmet/rebel = 25,
+		/obj/item/clothing/shoes/jackboots = 25,
+	)
+
+/obj/structure/vending/starwars/rebel/weapons
+	name = "Rebel weapon and ammo rack"
+	desc = "A rack of rebel blaster equipment."
+	icon_state = "blaster_munitions"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/a280 = 20,
+		/obj/item/weapon/gun/projectile/pistol/laser/dh17 = 40,
+		/obj/item/weapon/gun/projectile/pistol/laser/dl44 = 5,
+		/obj/item/ammo_magazine/tibannagas/dl44 = 15,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
+		/obj/item/ammo_magazine/tibannagas/a280 = 60,
+		/obj/item/weapon/grenade/modern/thermaldetonator = 5,
+	)
+
+/obj/structure/vending/starwars/republic/apparel
+	name = "Republic uniform rack"
+	desc = "Basic wear for republic soldiers."
+	icon_state = "apparel_german_old"
+	products = list(
+		/obj/item/clothing/under/bodyglove = 50,
+		/obj/item/clothing/suit/armor/replicant = 50,
+		/obj/item/clothing/suit/armor/replicant/pilot = 25,
+		/obj/item/clothing/shoes/replicantshoes = 75,
+		/obj/item/clothing/gloves/replicantgloves = 75,
+		/obj/item/clothing/head/helmet/replicant/ARF = 25,
+		/obj/item/clothing/head/helmet/replicant/airborne = 25,
+		/obj/item/clothing/head/helmet/replicant = 25,
+		/obj/item/clothing/head/helmet/replicant/pilot = 25,
+	)
+
+/obj/structure/vending/starwars/republic/weapons
+	name = "Republic weapon and ammo rack"
+	desc = "A rack of republic blaster equipment."
+	icon_state = "blaster_munitions"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15a = 10,
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/dc15 = 45,
+		/obj/item/weapon/gun/projectile/pistol/laser/dc17 = 10,
+		/obj/item/ammo_magazine/tibannagas/dc17 =20,
+		/obj/item/ammo_magazine/tibannagas/dc15 = 50,
+		/obj/item/ammo_magazine/tibannagas/dc15a = 25,
+	)
+
+/obj/structure/vending/starwars/gonk/gcw
+	name = "A munitions gonk droid"
+	desc = "A gonk droid that supplies tibanna magizines."
+	icon_state = "gonk"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/laser/e11 = 60,
+		/obj/item/ammo_magazine/tibannagas/dl44 = 60,
+		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
+		/obj/item/ammo_magazine/tibannagas/a280 = 60,
 	)

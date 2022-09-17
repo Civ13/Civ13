@@ -73,7 +73,21 @@
 
 	if (fueltank == null)
 		return
+
 	else
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			if (usr.original_job_title == "Mechanic")
+				on = FALSE
+				power_off_connections()
+				fueltank.anchored = FALSE
+				usr << "You disconnect the fuel tank from the [src]."
+				fueltank = null
+				update_icon()
+				return
+			else
+				usr << "<span class='warning'>You do not know how to do this.</span>"
+				return
+
 		on = FALSE
 		power_off_connections()
 		fueltank.anchored = FALSE
@@ -94,9 +108,9 @@
 			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelefficiency*5) && done == FALSE)
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
+					on = TRUE
 				playsound(loc, starting_snd, 35, FALSE, 3)
 				spawn(starting_snd_len)
-					on = TRUE
 					running_sound()
 					update_icon() //Having the update_icon here means that the icon for it being on doesn't start until after the spawn which is arguably a downside, maybe patchable
 					running()
@@ -272,7 +286,7 @@
 
 	maxpower = 86
 	torque = 1.08
-	fuelefficiency = 0.22
+	fuelefficiency = 0.37
 	fuels = list("diesel","biodiesel","gasoline")
 
 #undef FUEL_CONSUMPTION_MODIFIER

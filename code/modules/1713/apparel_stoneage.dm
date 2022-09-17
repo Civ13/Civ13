@@ -361,14 +361,6 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 5, arrow = 14, gun = 10, energy = 20, bomb = 10, bio = 10, rad = FALSE)
 
-/obj/item/clothing/mask/clown
-	name = "clown mask"
-	desc = "A mask used around the world by clowns."
-	icon_state = "clownmask"
-	item_state = "clownmask"
-	body_parts_covered = FACE|EYES
-	armor = list(melee = 5, arrow = 5, gun = 1, energy = 0, bomb = 5, bio = 0, rad = FALSE)
-
 /////////////////////////////
 
 /obj/item/clothing/head/chief_hat
@@ -384,6 +376,7 @@
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "quiver"
 	item_state = "quiver"
+	slot_flags = SLOT_BACK | SLOT_BELT
 
 /obj/item/weapon/storage/backpack/quiver/New()
 		..()
@@ -392,6 +385,10 @@
 /obj/item/weapon/storage/backpack/quiver/full/New()
 	..()
 	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
 	new /obj/item/ammo_casing/arrow/bronze(src)
 	new /obj/item/ammo_casing/arrow/bronze(src)
 	new /obj/item/ammo_casing/arrow/bronze(src)
@@ -416,10 +413,18 @@
 	new /obj/item/ammo_casing/arrow/iron(src)
 	new /obj/item/ammo_casing/arrow/iron(src)
 	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
 
 /obj/item/weapon/storage/backpack/quiver/crossbow/New()
 	..()
 	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
 	new /obj/item/ammo_casing/bolt/iron(src)
 	new /obj/item/ammo_casing/bolt/iron(src)
 	new /obj/item/ammo_casing/bolt/iron(src)

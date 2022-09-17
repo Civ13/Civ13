@@ -111,6 +111,11 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					moving = FALSE
 					stopmovementloop()
 					return FALSE
+			if (map && map.check_caribbean_block(driver,T))
+				visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+				moving = FALSE
+				stopmovementloop()
+				return FALSE
 			if (reverse)
 				T = get_turf(get_step(FR.loc,OPPOSITE_DIR(dir)))
 			if (!T)
@@ -186,14 +191,14 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 						return FALSE
 				if (!done)
 					if (O.density == TRUE && !(O in transporting))
-						if (current_weight >= 400 && !istype(O, /obj/structure/redmailbox) && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement)&& !istype(O, /obj/structure/barricade/stone_h)&& !istype(O, /obj/structure/barricade/stone_v)&& !istype(O, /obj/structure/barricade/jap_h) && !istype(O, /obj/structure/barricade/jap_v)&& !istype(O, /obj/structure/barricade/jap_h_l)&& !istype(O, /obj/structure/barricade/jap_h_r)&& !istype(O, /obj/structure/barricade/jap_v_b)&& !istype(O, /obj/structure/barricade/jap_v_t)&& !istype(O, /obj/structure/barricade/sandstone_h)&& !istype(O, /obj/structure/barricade/sandstone_v)&& !istype(O, /obj/structure/barricade/sandstone_v/crenelated)&& !istype(O, /obj/structure/barricade/sandstone_h/crenelated)&& !istype(O, /obj/structure/barricade/stone_v/crenelated) && !istype(O, /obj/structure/gate))
+						if (current_weight >= 400 && !istype(O, /obj/structure/redmailbox) && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement)&& !istype(O, /obj/structure/barricade/stone_h)&& !istype(O, /obj/structure/barricade/stone_v)&& !istype(O, /obj/structure/barricade/jap_h) && !istype(O, /obj/structure/barricade/jap_v)&& !istype(O, /obj/structure/barricade/jap_h_l)&& !istype(O, /obj/structure/barricade/jap_h_r)&& !istype(O, /obj/structure/barricade/jap_v_b)&& !istype(O, /obj/structure/barricade/jap_v_t)&& !istype(O, /obj/structure/barricade/sandstone_h)&& !istype(O, /obj/structure/barricade/sandstone_v)&& !istype(O, /obj/structure/barricade/sandstone_v/crenelated)&& !istype(O, /obj/structure/barricade/sandstone_h/crenelated)&& !istype(O, /obj/structure/barricade/stone_v/crenelated) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/billboard))
 							visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
 						else
 							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 							return FALSE
 					else if (O.density == FALSE && !(O in transporting))
-						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/cable))
+						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/cable) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/lamp/lamppost_small/) && !istype(O, /obj/structure/lamp/lamp_big/alwayson) && !istype(O, /obj/structure/lamp/lamp_small/alwayson))
 	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
 
@@ -309,7 +314,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					qdel(BAT)
 					visible_message("<span class='warning'>\the [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
-				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable))
+				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
 					transporting += M
 	return transporting.len
 
@@ -374,25 +379,22 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 			if (NORTH)
 				matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 			if (EAST)
-				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disx+1],[disy+1]")
+				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disy+1],[disx+1]")
 			if (WEST)
-				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disx+1],[disy+1]")
+				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disy+1],[disx+1]")
 	for (var/obj/effect/pseudovehicle/PV in components)
 		var/disx = abs(PV.y-FFL.y)
 		var/disy = abs(PV.x-FFL.x)
-		if (disx <= maxdist-1 && disy <= maxdist-1)
-			switch(PV.dir)
-				if (SOUTH)
-					matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
-				if (NORTH)
-					matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
-				if (EAST)
-					matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
-				if (WEST)
-					matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
-		else
-			components -= PV
-			qdel(PV)
+		switch(FFL.dir)
+			if (SOUTH)
+				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+			if (NORTH)
+				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+			if (EAST)
+				matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disy+1],[disx+1]")
+			if (WEST)
+				matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disy+1],[disx+1]")
+
 	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
@@ -556,7 +558,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					else
 						todestroy += O
 			for(var/obj/OM in todestroy)
-				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/cable))
+				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/gate) && !istype(OM, /obj/structure/lamp/lamppost_small/) && !istype(OM, /obj/structure/lamp/lamp_big/alwayson) && !istype(OM, /obj/structure/lamp/lamp_small/alwayson) && !istype(OM, /obj/structure/redmailbox) && !istype(OM, /obj/structure/billboard))
 					qdel(OM)
 	dir = newdir
 	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
@@ -594,7 +596,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 						if (!ST.density)
 							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
-					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable))
+					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable) && !istype(M,/obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
 						M.forceMove(matrix_current_locs[dlocfind][1])
 						if (istype(M, /obj))
 							var/obj/O = M

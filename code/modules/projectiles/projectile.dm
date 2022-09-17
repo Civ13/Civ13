@@ -90,6 +90,8 @@
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
+		if (penetrating == 0)
+			penetrating += 1
 		penetrating *= 2
 		armor_penetration *= 3
 		return
@@ -137,7 +139,7 @@
 //return TRUE if the projectile should be allowed to pass through after all, FALSE if not.
 /obj/item/projectile/proc/check_penetrate(var/atom/A)
 	if (istype(A, /turf/wall))
-		if (prob(50))
+		if (prob(92))
 			return FALSE
 	return TRUE
 
@@ -602,6 +604,12 @@
 												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [CVR]!</span>"
 											else
 												passthrough = FALSE
+										else if (istype(O, /obj/item/weapon/gun/projectile/automatic/stationary))
+											var/obj/covers/MG = O
+											if (prob(100-MG.hardness))
+												passthrough = TRUE
+											else
+												passthrough = FALSE
 										else
 											passthrough = FALSE
 									else if (istype(O, /obj/structure))
@@ -666,7 +674,7 @@
 			on_impact(loc) //for any final impact behaviours
 			qdel(src)
 			return
-		if (firer && map.check_caribbean_block(firer, loc) && !map.allow_bullets_through_blocks.Find(get_area(src):type))
+		if (map && firer && map.check_caribbean_block(firer, loc) && !map.allow_bullets_through_blocks.Find(get_area(src):type))
 			qdel(src)
 			return
 		if ((!( current ) || loc == current))

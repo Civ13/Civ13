@@ -2,7 +2,7 @@
 	ID = MAP_OCCUPATION
 	title = "Occupation"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "ww2"
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 4000
 	has_hunger = TRUE
@@ -24,7 +24,7 @@
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
+		"The Great Escape:1" = "sound/music/the_great_escape.ogg")
 	gamemode = "Occupation"
 	var/list/points = list(
 		list("SS",0,0),

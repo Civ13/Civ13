@@ -33,7 +33,6 @@
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/raven
 	name = "raven mask"
@@ -44,7 +43,6 @@
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/bat
 	name = "bat mask"
@@ -55,7 +53,6 @@
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/bear
 	name = "bear mask"
@@ -66,7 +63,6 @@
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/owl
 	name = "owl mask"
@@ -77,7 +73,6 @@
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /*According to all known laws of aviation, there is no way a bee should be able to fly.
 Its wings are too small to get its fat little body off the ground.
@@ -92,7 +87,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/jackal
 	name = "jackal mask"
@@ -103,7 +97,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/fox
 	name = "fox mask"
@@ -114,7 +107,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/frog
 	name = "frog mask"
@@ -124,7 +116,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/cow
 	name = "cow mask"
@@ -135,7 +126,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/pig
 	name = "pig mask"
@@ -146,7 +136,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/joy
 	name = "joy"
@@ -157,7 +146,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
 
 /obj/item/clothing/mask/gorilla
 	name = "gorilla mask"
@@ -168,4 +156,61 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	body_parts_covered = FACE
 	w_class = 1
 	blocks_scope = TRUE
-	restricts_view = 1
+
+/obj/item/clothing/mask/clown
+	name = "clown mask"
+	desc = "A mask used around the world by clowns."
+	icon_state = "clownmask"
+	item_state = "clownmask"
+	flags_inv = HIDEEARS
+	body_parts_covered = FACE|EYES
+
+/obj/item/clothing/mask/paydayclown
+	name = "clown mask"
+	desc = "A what looks plastic mask to hide your identity, used around the world by clowns."
+	icon_state = "clownmask"
+	item_state = "clownmask"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday1
+	name = "american flag mask"
+	desc = "A what looks plastic mask to hide your identity, this one has an American flag on it."
+	icon_state = "payday1"
+	item_state = "payday1"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday2
+	name = "clown mask"
+	desc = "A what looks like plastic clown mask to hide your identity."
+	icon_state = "payday2"
+	item_state = "payday2"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday3
+	name = "american flag mask"
+	desc = "A what looks like plastic clown mask to hide your identity."
+	icon_state = "payday3"
+	item_state = "payday3"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/mask/payday4
+	name = "american flag mask"
+	desc = "A what looks like plastic clown mask to hide your identity."
+	icon_state = "payday4"
+	item_state = "payday4"
+	flags_inv = HIDEEARS|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 1
+	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)

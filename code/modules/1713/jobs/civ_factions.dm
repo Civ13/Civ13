@@ -66,7 +66,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -130,7 +130,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -173,7 +173,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -218,7 +218,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -279,7 +279,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -339,7 +339,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
@@ -382,7 +382,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -440,7 +440,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -501,7 +501,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -577,7 +577,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -651,7 +651,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -693,7 +693,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -725,7 +725,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -847,7 +847,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -911,7 +911,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -954,7 +954,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -999,7 +999,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1060,7 +1060,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1118,7 +1118,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
@@ -1161,7 +1161,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1220,7 +1220,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1281,7 +1281,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -1357,7 +1357,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -1431,7 +1431,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1473,7 +1473,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1505,7 +1505,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1627,7 +1627,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1691,7 +1691,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -1734,7 +1734,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -1779,7 +1779,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1840,7 +1840,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1899,7 +1899,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
@@ -1942,7 +1942,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2001,7 +2001,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2062,7 +2062,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -2138,7 +2138,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -2212,7 +2212,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2254,7 +2254,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -2286,7 +2286,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2409,7 +2409,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2473,7 +2473,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -2516,7 +2516,7 @@
 	give_random_name(H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
@@ -2561,7 +2561,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2622,7 +2622,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2681,7 +2681,7 @@
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
@@ -2724,7 +2724,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2783,7 +2783,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -2844,7 +2844,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -2920,7 +2920,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
@@ -2994,7 +2994,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -3036,7 +3036,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -3068,7 +3068,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")

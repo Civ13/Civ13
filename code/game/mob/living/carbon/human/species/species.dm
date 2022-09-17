@@ -540,6 +540,27 @@
 		else
 			return capitalize(pick(first_names_male_finnish)) + " " + capitalize(pick(last_names_finnish))
 
+/datum/species/proc/get_random_norwegian_name(var/gender)//To be updated to proper Norwegian names
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+
+/datum/species/proc/get_random_swedish_name(var/gender)//To be updated to proper Swedish names
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+
+/datum/species/proc/get_random_danish_name(var/gender)//To be updated to proper Danish names
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+
 /datum/species/proc/get_random_inuit_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)

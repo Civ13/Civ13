@@ -261,7 +261,6 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
-
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/goldwatch(H), slot_gloves)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
@@ -283,7 +282,95 @@
 		var/obj/map_metadata/capitol_hill/CP = map
 		CP.HVT_list |= H
 	return TRUE
+//special ones for the russian mode
+/datum/job/american/hvt/specials
+	title = "President of the USA"
+	en_meaning = "VIP"
+	rank_abbreviation = "President"
 
+	is_whitehouse = TRUE
+	is_capitol = FALSE
+	whitelisted = FALSE
+	can_be_female = FALSE
+
+	min_positions = 1
+	max_positions = 1
+
+	equip(var/mob/living/human/H)
+		..()
+		H.gender = MALE
+		H.f_style = "Shaved"
+		var/hex_hair = hair_colors["Light Grey"]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+/datum/job/american/hvt/specials/vice
+	title = "Vice-President of the USA"
+	en_meaning = "VIP"
+	rank_abbreviation = "Vice-President"
+	can_be_female = FALSE
+
+	equip(var/mob/living/human/H)
+		H.gender = MALE
+		H.f_style = "Shaved"
+		var/hex_hair = hair_colors["Light Grey"]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/burgundy_suit(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/goldwatch(H), slot_gloves)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
+		uniform.attackby(armor, H)
+		var/obj/item/clothing/accessory/holster/hip/double/HOLSTER = new /obj/item/clothing/accessory/holster/hip/double(null)
+		uniform.attackby(HOLSTER, H)
+		H.add_note("Role", "You are an essential member of the U.S. Government. They are out to get you! Rely on the feds and stay alive!")
+		if (map && map.ID == MAP_CAPITOL_HILL)
+			var/obj/map_metadata/capitol_hill/CP = map
+			CP.HVT_list |= H
+		return TRUE
+/datum/job/american/hvt/specials/speaker
+	title = "Speaker of the House"
+	en_meaning = "VIP"
+	rank_abbreviation = "Speaker"
+	can_be_female = FALSE
+
+	equip(var/mob/living/human/H)
+		H.gender = MALE
+		H.f_style = "Shaved"
+		var/hex_hair = hair_colors["Light Grey"]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/goldwatch(H), slot_gloves)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/uzi(H), slot_l_hand)
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
+		uniform.attackby(armor, H)
+		H.add_note("Role", "You are an essential member of the U.S. Government. They are out to get you! Rely on the feds and stay alive!")
+		if (map && map.ID == MAP_CAPITOL_HILL)
+			var/obj/map_metadata/capitol_hill/CP = map
+			CP.HVT_list |= H
+		return TRUE
 ////////////MILITIAS/////////////
 
 /datum/job/civilian/us_militia
@@ -302,7 +389,7 @@
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
 	var/randjack = rand(1,4)
 	if (randjack == 1)
@@ -387,7 +474,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 //gunz
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/remington870(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
 	H.civilization = "Militia"

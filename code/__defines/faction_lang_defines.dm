@@ -33,12 +33,16 @@
 #define RUSSIAN "RUSSIAN"
 #define CHECHEN "CHECHEN"
 #define FINNISH "FINNISH"
+#define NORWEGIAN "NORWEGIAN"
+#define SWEDISH "SWEDISH"
+#define DANISH "DANISH"
 #define GREEK "GREEK"
 #define ARAB "ARAB"
 #define GERMAN "GERMAN"
 #define VIETNAMESE "VIETNAMESE"
 #define KOREAN "KOREAN"
 #define FILIPINO "FILIPINO"
+
 /proc/faction_const2name(constant,age = 0)
 
 	if (constant == PIRATES)
@@ -53,14 +57,31 @@
 	if (constant == CIVILIAN)
 		if (map.ID == "TSARITSYN")
 			return "Red Army"
-		if (map.ID == "YELTSIN")
+		else if (map.ID == "YELTSIN")
 			return "Militia"
-		if (map.ID == "AFRICAN_WARLORDS")
+		else if (map.ID == "AFRICAN_WARLORDS")
 			return "United Nations"
-		if (map.ID == "WHITERUN")
+		else if (map.ID == "WHITERUN")
 			return "Stormcloaks"
+		else if (map.ID == "CAPITOL_HILL")
+			return "Rioters"
+		else if (map.ID == "WACO")
+			return "Branch Davidians"
+		else if (map.ID == "MISSIONARY_RIDGE")
+			return "Confederates"
+		else if (map.ID == "TANTIVEIV")
+			return "Rebels"
+		else if (map.ID == "RUHR_UPRISING")
+			return "Ruhr Red Army"
+		else if (map.ID == "MAGISTRAL")
+			return "DRA Army"
+		else if (map.ID == "BANK_ROBBERY" || map.ID == "DRUG_BUST")
+			return "Police Department"
 		else
-			return "Colonists"
+			if (age >= 6)
+				return "Civilians"
+			else
+				return "Colonists"
 
 	if (constant == INDIANS)
 		if (map.ID == "AFRICAN_WARLORDS")
@@ -90,14 +111,21 @@
 	if (constant == RUSSIAN)
 		if (map.ID == "YELTSIN")
 			return "Russian Army"
-		if (map.ID == "GROZNY")
+		else if (map.ID == "GROZNY")
 			return "Russian Federal Forces"
-		else if (age >= 6)
-			return "Soviet Union"
-		if (map.ID == "TSARITSYN")
+		else if (map.ID == "TSARITSYN")
 			return "White Army"
+		else if (map.ID == "BANK_ROBBERY")
+			return "Robbers"
+		else if (map.ID == "DRUG_BUST")
+			return "Rednikov Mobsters"
 		else
-			return "Russian Empire"
+			if (age == 6 || age == 7)
+				return "Soviet Union"
+			else if (age >= 8)
+				return "Russian Federation"
+			else
+				return "Russian Empire"
 
 	if (constant == ROMAN)
 		if (map.ID == "WHITERUN")
@@ -111,9 +139,22 @@
 	if (constant == FINNISH)
 		return "Republic of Finland"
 
+	if (constant == NORWEGIAN)
+		return "Kingdom of Norway"
+
+	if (constant == SWEDISH)
+		return "Kingdom of Sweden"
+
+	if (constant == DANISH)
+		return "Kingdom of Denmark"
+
 	if (constant == GERMAN)
-		if (age >= 6)
+		if (age == 6)
 			return "Third Reich"
+		else if (age >= 7)
+			return "Federal Republic of Germany"
+		else if (map.ID == "RUHR_UPRISING")
+			return "Weimar Republic"
 		else
 			return "German Empire"
 	if (constant == GREEK)
@@ -123,6 +164,8 @@
 		if (age >= 6)
 			if (map.ID == "ARAB_TOWN")
 				return "Hezbollah"
+			else if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL")
+				return "Mujahideen"
 			else
 				return "Insurgents"
 		else
@@ -131,6 +174,12 @@
 	if (constant == AMERICAN)
 		if (map.ID == "ARAB_TOWN")
 			return "IDF"
+		else if (map.ID == "CAPITOL_HILL")
+			return "American Government"
+		else if (map.ID == "WACO")
+			return "ATF"
+		else if (map.ID == "TANTIVEIV")
+			return "Imperials"
 		else
 			return "United States"
 
