@@ -1072,7 +1072,7 @@ var/global/redirect_all_players = null
 		dat += "[alive_swedish.len] Swedes "
 	if (DANISH in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/clash))
-			dat += "[alive_norwegian.len] Raven Clan Vikings "
+			dat += "[alive_danish.len] Raven Clan Vikings "
 		else
 			dat += "[alive_danish.len] Danes "
 	if (GERMAN in map.faction_organization)
