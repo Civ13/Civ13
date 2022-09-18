@@ -1288,7 +1288,7 @@
 	)
 /obj/item/weapon/gun/projectile/submachinegun/fal
 	name = "FN Fal"
-	desc = "A belgian battle rifle, chambered in 7.62×51mm."
+	desc = "A Belgian battle rifle, chambered in 7.62×51mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "fal"
 	item_state = "fal"
@@ -1353,7 +1353,7 @@
 	)
 /obj/item/weapon/gun/projectile/submachinegun/scarl
 	name = "FN SCAR-L"
-	desc = "A belgian assault rifle, chambered in 5.56x45mm."
+	desc = "A Belgian assault rifle, chambered in 5.56x45mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "scarl"
 	item_state = "scarl"
@@ -1555,7 +1555,7 @@
 	)
 /obj/item/weapon/gun/projectile/submachinegun/hk417
 	name = "HK417"
-	desc = "A Modern German battle rifle, chambered in 7.62x51mm."
+	desc = "A modern German battle rifle, chambered in 7.62x51mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "hk417"
 	item_state = "hk417"
@@ -1642,7 +1642,7 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/victor
 	name = "Kriss Vector"
-	desc = "Placeholder description."
+	desc = "A compact gun using an unconventional delayed blowback system combined with in-line design to reduce perceived recoil and muzzle climb. It's chambered in 9mm"
 	icon_state = "victor"
 	item_state = "victor"
 	base_icon = "victor"
@@ -1732,7 +1732,7 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
 	name = "Makeshift AK-47"
-	desc = "Something retarded that doesn't exist."
+	desc = "Looks like someone did a really bad job at \"UpGRaDinG\" their AK."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "makeshiftak"
 	item_state = "makeshiftak"
