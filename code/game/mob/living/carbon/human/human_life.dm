@@ -1465,11 +1465,17 @@
 				if (FINNISH)
 					holder2.icon_state = "finnish_basic"
 				if (NORWEGIAN)
-					holder2.icon_state = "norway_basic"
+					if (map.ID == MAP_CLASH)
+						holder2.icon_state = "ger0_basic"
+					else
+						holder2.icon_state = "norway_basic"
 				if (SWEDISH)
 					holder2.icon_state = "swedish_basic"
 				if (DANISH)
-					holder2.icon_state = "danish_basic"
+					if (map.ID == MAP_CLASH)
+						holder2.icon_state = "barbarian_basic"
+					else
+						holder2.icon_state = "danish_basic"
 				if (JAPANESE)
 					if (original_job.is_yakuza && original_job.is_yama)
 						holder2.icon_state = "yamaguchi"

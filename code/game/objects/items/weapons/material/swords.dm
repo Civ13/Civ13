@@ -231,6 +231,30 @@ obj/item/weapon/material/sword/armingsword/copper
 obj/item/weapon/material/sword/armingsword/bronze
 	default_material = "bronze"
 
+/obj/item/weapon/material/sword/vikingsword
+	name = "carolingian sword"
+	desc = "A medium-size sword with a rounded tip used by the vikings."
+	icon_state = "viking_sword"
+	item_state = "longsword2"
+	throw_speed = 3
+	throw_range = 2
+	force_divisor = 0.10 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 38
+	cooldownw = 11
+	value = 60
+
+obj/item/weapon/material/sword/vikingsword/iron
+	default_material = "iron"
+
+obj/item/weapon/material/sword/vikingsword/copper
+	default_material = "copper"
+
+obj/item/weapon/material/sword/vikingsword/bronze
+	default_material = "bronze"
+
+
 /obj/item/weapon/material/sword/mersksword
 	name = "mersks sword"
 	desc = "A very common medieval medium-sized sword."
