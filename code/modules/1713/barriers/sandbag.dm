@@ -27,6 +27,15 @@
 	anchored = TRUE
 	climbable = TRUE
 
+/obj/structure/window/barrier/concrete
+	icon = 'icons/obj/structures.dmi'
+	name = "concrete halfwall"
+	icon_state = "concrete"
+	layer = MOB_LAYER + 2 //just above mobs
+	anchored = TRUE
+	climbable = TRUE
+	maxhealth = 500
+
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
 		if (istype(src, /obj/structure/window/barrier/railing) || istype(src, /obj/structure/window/barrier/jersey) || istype(src, /obj/structure/window/barrier/sandstone) || istype(src, /obj/structure/window/barrier/ship) || istype(src, /obj/structure/window/barrier/palisade) || istype(src, /obj/structure/window/barrier/sandstone))

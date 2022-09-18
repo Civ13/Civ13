@@ -351,6 +351,11 @@
 	name = "painting"
 	icon_state = "painting10"
 
+/obj/structure/sign/medal
+	name = "presence recognition"
+	icon_state = "medal"
+	desc = "A recognition plaque staight from the ministy of admission! This one seems to be for the persons presence, what an award!"
+
 /obj/structure/sign/painting11
 	desc = "A famous painting with a starry sky."
 	name = "painting"
