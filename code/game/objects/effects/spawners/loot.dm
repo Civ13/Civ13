@@ -32,6 +32,10 @@
 	name = "melee spawner"
 	loot = list(/obj/item/weapon/material/sword/armingsword,/obj/item/weapon/material/sword/longsword,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/saif,/obj/item/weapon/material/sword/broadsword,/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/zweihander,/obj/item/weapon/melee/mace,/obj/item/weapon/material/spear/sarissa/pike,/obj/item/weapon/material/spear/halberd,/obj/item/weapon/material/hatchet/battleaxe)
 
+/obj/effect/spawner/lootdrop/melee/medieval/clash
+	name = "melee spawner"
+	loot = list(/obj/item/weapon/material/sword/vikingsword/iron,/obj/item/weapon/material/sword/gaelic,/obj/item/weapon/material/sword/zweihander)
+
 /obj/effect/spawner/lootdrop/ammo
 	name = "ammo spawner"
 	loot = list(/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/svd)
