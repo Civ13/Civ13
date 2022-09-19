@@ -184,7 +184,7 @@
 	w_class = 1.0
 	flags = FALSE
 
-/obj/item/weapon/map_sovafghan/examine(mob/user)
+/obj/item/weapon/map_clash/examine(mob/user)
 	update_icon()
 	user << browse("<img src=clash_map.png></img>","window=popup;size=630x630")
 
