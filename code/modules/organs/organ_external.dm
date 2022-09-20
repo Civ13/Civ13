@@ -18,11 +18,13 @@
 	dir = SOUTH
 	organ_tag = "limb"
 
+	// Damage vars.
 	var/brute_mod = 1.0
 	var/burn_mod = 1.0
 
 	var/nationality = null
 
+	// Appearance vars.
 	var/icon_name = null
 	var/body_part = null
 	var/icon_position = FALSE
@@ -44,8 +46,10 @@
 	var/s_tone
 	var/list/s_col
 	var/list/h_col
+
+	// Wound and structural data.
 	var/list/wounds = list()
-	var/number_wounds = FALSE // cache the number of wounds, which is NOT wounds.len!
+	var/number_wounds = FALSE 			// cache the number of wounds, which is NOT wounds.len!
 	var/perma_injury = FALSE
 	var/obj/item/organ/external/parent
 	var/list/obj/item/organ/external/children
@@ -55,18 +59,20 @@
 	var/open = FALSE
 	var/stage = FALSE
 	var/cavity = FALSE
-	var/sabotaged = FALSE // If a prosthetic limb is emagged, it will detonate when it fails.
+	var/sabotaged = FALSE 				// If a prosthetic limb is emagged, it will detonate when it fails.
 	var/list/implants = list()
 	var/wound_update_accuracy = TRUE 	// how often wounds should be updated, a higher number means less often
-	var/joint = "joint"   // Descriptive string used in dislocation.
-	var/amputation_point  // Descriptive string used in amputation.
-	var/dislocated = FALSE	// If you target a joint, you can dislocate the limb, causing temporary damage to the organ.
-	var/can_grasp //It would be more appropriate if these two were named "affects_grasp" and "affects_stand" at this point
+	var/joint = "joint"   				// Descriptive string used in dislocation.
+	var/amputation_point  				// Descriptive string used in amputation.
+	var/dislocated = FALSE				// If you target a joint, you can dislocate the limb, causing temporary damage to the organ.
+
+	// Joint/state stuff.
+	var/can_grasp 						//It would be more appropriate if these two were named "affects_grasp" and "affects_stand" at this point
 	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
-	var/artery_name = "artery"		 // Flavour text for carotid artery, aorta, etc.
-	var/arterial_bleed_severity = 1	// Multiplier for bleeding in a limb.
+	var/artery_name = "artery"		 	// Flavour text for carotid artery, aorta, etc.
+	var/arterial_bleed_severity = 1		// Multiplier for bleeding in a limb.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
@@ -75,6 +81,7 @@
 	var/brute_ratio = 0
 	var/encased = ""
 	var/cavity_name = ""
+
 /obj/item/organ/external/New()
 	..()
 	if(isnull(pain_disability_threshold))

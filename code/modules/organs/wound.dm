@@ -6,49 +6,29 @@
 					WOUNDS
 ****************************************************/
 /datum/wound
-	// number representing the current stage
-	var/current_stage = FALSE
-
-	// description of the wound
-	var/desc = "wound" //default in case something borks
-
-	// amount of damage this wound causes
-	var/damage = FALSE
-	// ticks of bleeding left.
-	var/bleed_timer = FALSE
-	// amount of damage the current wound type requires(less means we need to apply the next healing stage)
-	var/min_damage = FALSE
-// Above this amount wounds you will need to treat the wound to stop bleeding, regardless of bleed_timer
-	var/bleed_threshold = 30
-	// is the wound bandaged?
-	var/bandaged = FALSE
-	// Similar to bandaged, but works differently
-	var/clamped = FALSE
-	// is the wound salved?
-	var/salved = FALSE
-	// is the wound disinfected?
-	var/disinfected = FALSE
+	var/current_stage = 0			// number representing the current stage
+	var/desc = "wound" 				// description of the wound, default in case something borks
+	var/damage = 0					// amount of damage this wound causes
+	var/bleed_timer = 0				// ticks of bleeding left.
+	var/min_damage = 0				// amount of damage the current wound type requires(less means we need to apply the next healing stage)
+	var/bleed_threshold = 30		// Above this amount wounds you will need to treat the wound to stop bleeding, regardless of bleed_timer
+	var/bandaged = FALSE			// is the wound bandaged?
+	var/clamped = FALSE				// Similar to bandaged, but works differently
+	var/salved = FALSE				// is the wound salved?
+	var/disinfected = FALSE			// is the wound disinfected?
 	var/created = FALSE
-	// number of wounds of this type
-	var/amount = TRUE
-	// amount of germs in the wound
-	var/germ_level = FALSE
-// the organ the wound is on, if on an organ
-	var/obj/item/organ/external/parent_organ
+	var/amount = TRUE				// number of wounds of this type
+	var/germ_level = FALSE			// amount of germs in the wound
+	var/obj/item/organ/external/parent_organ	// the organ the wound is on, if on an organ
 
 	/*  These are defined by the wound type and should not be changed */
-
-	// stages such as "cut", "deep cut", etc.
-	var/list/stages
-	// internal wounds can only be fixed through surgery
-	var/internal = FALSE
-	// maximum stage at which bleeding should still happen. Beyond this stage bleeding is prevented.
-	var/max_bleeding_stage = FALSE
-	// one of CUT, PIERCE, BRUISE, BURN
-	var/damage_type = CUT
+	
+	var/list/stages					// stages such as "cut", "deep cut", etc.
+	var/internal = FALSE			// internal wounds can only be fixed through surgery
+	var/max_bleeding_stage = FALSE	// maximum stage at which bleeding should still happen. Beyond this stage bleeding is prevented.
+	var/damage_type = CUT			// one of CUT, PIERCE, BRUISE, BURN
 	// whether this wound needs a bandage/salve to heal at all
-	// the maximum amount of damage that this wound can have and still autoheal
-	var/autoheal_cutoff = 15
+	var/autoheal_cutoff = 15		// the maximum amount of damage that this wound can have and still autoheal
 
 	// helper lists
 	var/tmp/list/embedded_objects
@@ -135,13 +115,14 @@
 	src.germ_level = max(src.germ_level, other.germ_level)
 	src.created = max(src.created, other.created)	//take the newer created time
 	qdel(other)
+
 /datum/wound/proc/can_be_infected()
-	if (damage < 8) //small cuts, tiny bruises, and moderate burns shouldn't be infectable.
+	if (damage < 8) 					//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
 		return FALSE
 	if (is_treated() && damage < 18)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
 		return FALSE
 	if (disinfected)
-		germ_level = FALSE	//reset this, just in case
+		germ_level = FALSE				//reset this, just in case
 		return FALSE
 	if (damage_type == BRUISE && !bleeding()) //bruises only infectable if bleeding
 		return FALSE
@@ -149,12 +130,12 @@
 // checks if wound is considered open for external infections
 // untreated cuts (and bleeding bruises) and burns are possibly infectable, chance higher if wound is bigger
 /datum/wound/proc/infection_check()
-	if (damage < 17)	//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
+	if (damage < 17)					//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
 		return 0
 	if (is_treated() && damage < 35)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
 		return 0
 	if (disinfected)
-		germ_level = 0	//reset this, just in case
+		germ_level = 0					//reset this, just in case
 		return 0
 
 	if (damage_type == BRUISE && !bleeding()) //bruises only infectable if bleeding
