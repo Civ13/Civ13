@@ -158,7 +158,7 @@
 					map.scores["Eastern Army"] += 5
 				else
 					map.scores["Eastern Army"] += 1
-
+/*
 	else if (map && map.ID == MAP_AFRICAN_WARLORDS)
 		if (faction_text == CIVILIAN && original_job_title == "United Nations Doctor")
 			var/mob/living/human/killer = last_harmed
@@ -182,7 +182,7 @@
 			map.scores["Yellowagwana"] -= 4
 			map.scores["Redkantu"] -= 4
 			world << "<b><big>A Local Policeman has been killed! The local population is in shock and lowered their support for the warbands!</b></big>"
-
+*/
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")
