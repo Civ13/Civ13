@@ -225,7 +225,16 @@
 		else if (on == FALSE)
 			do_torch()
 
+/obj/item/flashlight/tiki_torch/on
+	unlimited = TRUE
+	icon_state = "tikitorch-on"
+	item_state = "tikitorch-on"
+	on = TRUE
+/obj/item/flashlight/tiki_torch/on/anchor
+	anchored = TRUE
 
+/obj/item/flashlight/tiki_torch/on/anchor/unlimited
+	unlimited = TRUE
 /obj/item/flashlight/flashlight
 	unlimited = TRUE
 	name = "flashlight"

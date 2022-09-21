@@ -29,7 +29,7 @@
 		/* // NEVER USED!
 		if (material.conductive)
 			flags |= CONDUCT
-		*/ 
+		*/
 		matter = material.get_matter()
 	update_strings()
 	return TRUE
@@ -101,6 +101,8 @@
 	value = 2
 	amount = 10
 
+/obj/item/stack/material/barbwire/twnt
+	amount = 20
 /obj/item/stack/material/bronze
 	name = "bronze"
 	icon_state = "sheet-bronze"

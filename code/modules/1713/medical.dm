@@ -63,6 +63,12 @@
 	desc = "Effective painkiller."
 	pill_type = /obj/item/weapon/reagent_containers/pill/tramadol
 
+/obj/item/weapon/pill_pack/antimalaria
+	name = "Anti-Malarial pill pack"
+	desc = "Effective treatment of malaria."
+	pill_type = /obj/item/weapon/reagent_containers/pill/antimalaria
+
+
 /obj/item/weapon/pill_pack/adrenaline
 	name = "adrenaline pill pack"
 	desc = "Prevents death by pain shock."

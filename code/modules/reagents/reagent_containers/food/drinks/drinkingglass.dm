@@ -198,7 +198,13 @@
 	desc = "A leather skin for holding your tea reserves."
 	New()
 		..()
-		reagents.add_reagent("tea", 120)
+		reagents.add_reagent("tea", 70)
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/mush
+	name = "Fermented mush"
+	desc = "A leather skin for holding your personal blend of fermented mush for use as a painkiller or as a great party drink."
+	New()
+		..()
+		reagents.add_reagent("thirteenloko", 70)
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug
 	name = "mug"
