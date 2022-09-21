@@ -189,13 +189,13 @@ bullet_act
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
 					else
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], please detain the suspect as soon as possible.</big>")
-
+/*
 		else if (map.ID == MAP_AFRICAN_WARLORDS)
 			var/mob/living/human/Huser = P.firer
 			if (src.stat != DEAD && (Huser.civilization != "CIVILIAN"))
 				if (Huser.civilization != "CIVILIAN")
 					last_harmed = Huser
-
+*/
 
 		else if (!map.civilizations && !map.nomads && !map.is_RP)
 			var/mob/living/human/Huser = P.firer
