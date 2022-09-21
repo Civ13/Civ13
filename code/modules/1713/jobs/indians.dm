@@ -388,11 +388,10 @@ datum/job/indians/tribes/black
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	is_coldwar = TRUE
-	is_warlords = TRUE
 	uses_squads = FALSE
 	spawn_location = "JoinLateIND1"
 	min_positions = 40
-	max_positions = 100
+	max_positions = 1000
 	default_language = "Zulu"
 	additional_languages = list("Swahili" = 80, "English" = 10)
 
@@ -425,33 +424,38 @@ datum/job/indians/tribes/black
 	switch(randgun)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
-			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
 		if (2)
 			if(prob(40))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
-			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
-			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+	if (prob(7))
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_back)
 	if (prob(33))
 		var/obj/item/clothing/accessory/storage/webbing/us_bandolier/FJ = new /obj/item/clothing/accessory/storage/webbing/us_bandolier(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(FJ, H)
+
+
+
 /datum/job/indians/warlords/red
-	title = "Redkantu Warband Warrior"
+	title = "Redkantu Warband Mercenary"
 	spawn_location = "JoinLateIND1"
 	selection_color = "#ac0909"
+	is_warlords = TRUE
+	is_redka = TRUE
 /datum/job/indians/warlords/red/equip(var/mob/living/human/H)
 	..()
 	H.nationality = "Redkantu"
-	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
-	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
+	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and honour your contract!.")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
 
 	//hat or mask
 	if (prob(50))
@@ -504,30 +508,34 @@ datum/job/indians/tribes/black
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/shaman(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/mush(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/handle(H), slot_shoulder)
+	H.setStat("medical", STAT_VERY_HIGH)
 /datum/job/indians/warlords/red/shaman
-	title = "Redkantu Shaman"
+	title = "Redkantu Warband Shaman"
 	min_positions = 5
 	max_positions = 15
 /datum/job/indians/warlords/red/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
 	H.nationality = "Redkantu"
-	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
-	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
-
+	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and honour your contract!.")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/ab = new /obj/item/clothing/accessory/armband/british(null)
 	uniform.attackby(ab, H)
 
 /datum/job/indians/warlords/blue
-	title = "Blugisi Warband Warrior"
+	title = "Blugisi Warband Mercenary."
 	spawn_location = "JoinLateIND2"
 	selection_color = "#2a28b6"
+	is_warlords = TRUE
 /datum/job/indians/warlords/blue/equip(var/mob/living/human/H)
 	..()
 	H.nationality = "Blugisi"
-	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
-	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
+	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and honour your contract!")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
 	//hat or mask
 	if (prob(50))
 		if(prob(60))
@@ -562,27 +570,29 @@ datum/job/indians/tribes/black
 	//guns
 	give_gun(H)
 /datum/job/indians/warlords/blue/shaman
-	title = "Blugisi Shaman"
+	title = "Blugisi Warband Shaman"
 	min_positions = 5
 	max_positions = 15
 /datum/job/indians/warlords/blue/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
 	H.nationality = "Blugisi"
-	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
-	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
-
+	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and honour your contract!")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(ab, H)
 /datum/job/indians/warlords/yellow
-	title = "Yellowagwana Warband Warrior"
+	title = "Yellowagwana Warband Mercenary."
 	spawn_location = "JoinLateIND3"
 	selection_color = "#969607"
+	is_warlords = TRUE
+
 /datum/job/indians/warlords/yellow/equip(var/mob/living/human/H)
 	..()
 	H.nationality = "Yellowagwana"
-	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
-	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
+	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and honour your contract!")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
+
 	//hat or mask
 	if (prob(50))
 		if(prob(60))
@@ -617,15 +627,221 @@ datum/job/indians/tribes/black
 	//guns
 	give_gun(H)
 /datum/job/indians/warlords/yellow/shaman
-	title = "Yellowagwana Shaman"
+	title = "Yellowagwana Warband Shaman"
 	min_positions = 5
 	max_positions = 15
+
 /datum/job/indians/warlords/yellow/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
 	H.nationality = "Yellowagwana"
-	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack</b>.")
-	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent. Bring them back to the Shaman's Hut and place them in the altar to score <b>2 points</b>.<br>Be aware that collected heads will reduce the target faction's score by <b>1 point</b>.<br>Avoid the UN, they are neutral. You can enter the hospital if you are unarmed and need medical attention. Killing UN doctors will reduce your faction's score by <b>10 points</b>.")
+	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and honour your contract!.")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
+	uniform.attackby(ab, H)
+
+
+/////////////////////////////////////////////SECOND RACE 4 AND JOB FILES HEAD 2 HEAD AUTOBALANCE////////////////////////////////////////////////////
+
+/datum/job/civilian/warlords
+	title = "warlord (do not use)"
+	en_meaning = FALSE
+	rank_abbreviation = ""
+	can_be_female = TRUE
+	is_coldwar = TRUE
+	uses_squads = FALSE
+	spawn_location = "JoinLateIND1"
+	min_positions = 40
+	max_positions = 100
+	default_language = "Zulu"
+	additional_languages = list("Swahili" = 80, "English" = 10)
+
+/datum/job/civilian/warlords/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.name = H.species.get_random_zulu_name(H.gender)
+	H.real_name = H.name
+	var/new_hair = "Black"
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	//shoes
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sneakers/courier(H), slot_shoes)
+
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+
+/datum/job/civilian/warlords/proc/give_gun(var/mob/living/human/H)
+	var/randgun = pick(1,2,3,4)
+	switch(randgun)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
+		if (2)
+			if(prob(40))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/vz58(H), slot_shoulder)
+	if (prob(7))
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_back)
+	if (prob(33))
+		var/obj/item/clothing/accessory/storage/webbing/us_bandolier/FJ = new /obj/item/clothing/accessory/storage/webbing/us_bandolier(null)
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		uniform.attackby(FJ, H)
+
+/datum/job/civilian/warlords/proc/equip_shaman(mob/living/human/H)
+	if (!H)	return FALSE
+	H.name = H.species.get_random_zulu_name(H.gender)
+	H.real_name = H.name
+	var/new_hair = "Black"
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/zulu_slene(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/shaman(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/mush(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/handle(H), slot_shoulder)
+	H.setStat("medical", STAT_VERY_HIGH)
+/datum/job/civilian/warlords/yellow
+	title = "Yellowagwana Brave"
+	spawn_location = "JoinLateIND3"
+	selection_color = "#969607"
+	is_yellowag = TRUE
+/datum/job/civilian/warlords/yellow/equip(var/mob/living/human/H)
+	..()
+	H.nationality = "Yellowagwana"
+	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack for points!</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to score <b>2 points</b>.")
+	//hat or mask
+	if (prob(50))
+		if(prob(60))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/yellow(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
+	if(prob(35) || !istype(H.head, /obj/item/clothing/head/cap/yellow))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/yellowkerchief(H), slot_wear_mask)
+	//uniform
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband1(H), slot_w_uniform)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband2(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/yellow_shorts(H), slot_w_uniform)
+
+	//suit
+	var/pick2 = pick(1,2,3)
+	if (pick2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/us_jacket(H), slot_wear_suit)
+	else if (pick2 == 2)
+		if (prob(50))
+			var/obj/item/clothing/accessory/armor/coldwar/flakjacket/FJ = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(FJ, H)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
+	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(ab, H)
+	//guns
+	give_gun(H)
+/datum/job/civilian/warlords/yellow/shaman
+	title = "Yellowagwana Shaman"
+	min_positions = 5
+	max_positions = 15
+	is_yellowag = TRUE
+/datum/job/civilian/warlords/yellow/shaman/equip(mob/living/human/H)
+	equip_shaman(H)
+	H.nationality = "Yellowagwana"
+	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the your shack for points!</b>")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to score <b>2 points</b>.")
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/mush(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
+	uniform.attackby(ab, H)
+
+/datum/job/indians/warlords/bluevp
+	title = "Blugisi Brave"
+	spawn_location = "JoinLateIND2"
+	selection_color = "#2a28b6"
+	is_blugi = TRUE
+	min_positions = 40
+	max_positions = 100
+/datum/job/indians/warlords/bluevp/equip(var/mob/living/human/H)
+	..()
+	H.nationality = "Blugisi"
+	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the Shaman's shack for points !</b>")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to score <b>2 points</b>.")
+	//hat or mask
+	if (prob(50))
+		if(prob(60))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/blue(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
+	if(prob(35) || !istype(H.head, /obj/item/clothing/head/cap/yellow))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/bluekerchief(H), slot_wear_mask)
+	//uniform
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband1(H), slot_w_uniform)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband2(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/blue_shorts(H), slot_w_uniform)
+
+	//suit
+	var/pick2 = pick(1,2,3)
+	if (pick2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/us_jacket(H), slot_wear_suit)
+	else if (pick2 == 2)
+		if (prob(50))
+			var/obj/item/clothing/accessory/armor/coldwar/flakjacket/FJ = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(FJ, H)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(ab, H)
+	//guns
+	give_gun(H)
+/datum/job/indians/warlords/bluevp/shaman
+	title = "Blugisi Shaman"
+	min_positions = 5
+	max_positions = 15
+	is_blugi = TRUE
+/datum/job/indians/warlords/bluevp/shaman/equip(mob/living/human/H)
+	equip_shaman(H)
+	H.nationality = "Blugisi"
+	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the your shack for points</b>.")
+	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to score <b>2 points</b>.")
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(ab, H)
