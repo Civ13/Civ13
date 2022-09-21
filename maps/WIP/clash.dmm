@@ -120,13 +120,8 @@
 /obj/structure/closet/crate/chest{
 	name = "king's chest"
 	},
-/obj/item/weapon/material/sword/broadsword{
-	name = "Kings broadsword";
-	block_chance = 40
-	},
 /obj/item/clothing/accessory/armor/chainmail,
 /obj/item/clothing/head/helmet/gold_crown,
-/obj/item/clothing/under/medieval/blue2,
 /obj/item/clothing/shoes/fur/white,
 /obj/item/clothing/gloves/thick/leather/grey,
 /turf/floor/wood/fancywood,
@@ -170,6 +165,18 @@
 /obj/item/weapon/beartrap/armed,
 /turf/floor/dirt/winter,
 /area/caribbean/no_mans_land/taiga)
+"dz" = (
+/obj/effect/decal/cleanable/blood/writing{
+	dir = 4
+	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
+"dK" = (
+/obj/structure/wild/rock{
+	icon_state = "rock1"
+	},
+/turf/floor/dirt/flooded,
+/area/caribbean/no_mans_land/invisible_wall)
 "dL" = (
 /obj/structure/table/fancy,
 /obj/item/weapon/book/holybook,
@@ -210,6 +217,18 @@
 /obj/item/stack/material/leather,
 /turf/floor/wood,
 /area/caribbean/houses)
+"eP" = (
+/obj/effect/decal/cleanable/blood/writing{
+	dir = 9
+	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
+"eS" = (
+/obj/effect/decal/cleanable/blood/writing{
+	dir = 10
+	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "eX" = (
 /obj/structure/window/classic,
 /obj/structure/curtain/leather/open,
@@ -399,6 +418,12 @@
 "ke" = (
 /obj/structure/wild/flowers,
 /turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
+"ki" = (
+/obj/structure/wild/rock{
+	icon_state = "basalt1"
+	},
+/turf/floor/dirt/flooded,
 /area/caribbean/no_mans_land/taiga)
 "ku" = (
 /obj/covers/wood_wall/nordic,
@@ -604,6 +629,10 @@
 "qm" = (
 /turf/floor/wood,
 /area/caribbean/houses)
+"qr" = (
+/obj/structure/wild/rock,
+/turf/floor/dirt,
+/area/caribbean/no_mans_land/taiga)
 "qv" = (
 /obj/structure/table/wood,
 /obj/item/weapon/material/kitchen/utensil/knife/iron,
@@ -667,6 +696,14 @@
 /obj/structure/wild/rock{
 	icon_state = "rock1"
 	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
+"tc" = (
+/obj/effect/decal/cleanable/blood/gibs/body,
+/obj/effect/spawner/lootdrop/melee/medieval/clash,
+/obj/item/remains/human,
+/obj/item/clothing/suit/armor/ancient/chainmail,
+/obj/item/clothing/head/helmet/medieval/viking,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "tl" = (
@@ -1119,6 +1156,12 @@
 "FQ" = (
 /obj/structure/religious/gravestone,
 /turf/floor/winter/grass,
+/area/caribbean/no_mans_land/taiga)
+"Gb" = (
+/obj/effect/decal/cleanable/blood/writing{
+	dir = 8
+	},
+/turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "Gg" = (
 /obj/structure/roof_support/nordic,
@@ -1647,6 +1690,10 @@
 /mob/living/simple_animal/horse/white,
 /turf/floor/winter/grass,
 /area/caribbean/no_mans_land/taiga)
+"UP" = (
+/obj/structure/mill,
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/houses)
 "Vb" = (
 /obj/structure/farming/plant/mushroompsy,
 /turf/floor/winter/grass,
@@ -8315,7 +8362,7 @@ Xf
 Xf
 vU
 KH
-mV
+Xf
 PJ
 PJ
 PJ
@@ -8406,7 +8453,7 @@ Xf
 Xf
 Xf
 Xf
-mV
+Xf
 mV
 PJ
 PJ
@@ -8591,7 +8638,7 @@ Xf
 Xf
 mV
 mV
-mV
+Xf
 MW
 Xf
 Xf
@@ -8682,8 +8729,8 @@ PJ
 PJ
 Xf
 PJ
-mV
-mV
+Xf
+Xf
 KH
 Xf
 Xf
@@ -8775,8 +8822,8 @@ PJ
 PJ
 PJ
 PJ
-mV
-mV
+Xf
+Xf
 KH
 Xf
 Xf
@@ -10099,9 +10146,9 @@ eZ
 eZ
 Yh
 Yh
-eZ
-eZ
-eZ
+tc
+bh
+eS
 eZ
 eZ
 eZ
@@ -10193,7 +10240,7 @@ eZ
 Yh
 Yh
 Yh
-eZ
+dz
 eZ
 FL
 FL
@@ -10285,7 +10332,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+dz
 eZ
 eZ
 FL
@@ -10377,7 +10424,7 @@ eZ
 eZ
 Yh
 eZ
-eZ
+dz
 eZ
 FL
 FL
@@ -10469,7 +10516,7 @@ Yh
 Yh
 Yh
 eZ
-eZ
+dz
 eZ
 eZ
 eZ
@@ -10560,8 +10607,8 @@ Yh
 Yh
 Yh
 Yh
-eZ
-eZ
+eP
+Hn
 eZ
 eZ
 eZ
@@ -10652,7 +10699,7 @@ Yh
 Yh
 Yh
 eZ
-eZ
+Gb
 eZ
 TG
 eZ
@@ -10744,7 +10791,7 @@ Yh
 Yh
 Yh
 Yh
-eZ
+dz
 eZ
 eZ
 eZ
@@ -11816,7 +11863,7 @@ mP
 HL
 HL
 mP
-Fw
+UP
 TI
 sY
 xm
@@ -12000,7 +12047,7 @@ mP
 yT
 Dw
 mP
-AL
+Fw
 sY
 sY
 fA
@@ -12343,7 +12390,7 @@ Qh
 Qh
 Qh
 EC
-Xx
+ki
 eZ
 eZ
 eZ
@@ -12976,7 +13023,7 @@ eZ
 Hp
 eZ
 eZ
-Bb
+dK
 YM
 Qh
 Qh
@@ -13526,7 +13573,7 @@ eZ
 eZ
 eZ
 eZ
-Us
+qr
 EC
 Jx
 Jx
@@ -13789,7 +13836,7 @@ MN
 eZ
 eZ
 eZ
-eZ
+mm
 eZ
 eZ
 eZ
@@ -13837,7 +13884,7 @@ Yh
 Yh
 eZ
 eZ
-eZ
+TG
 eZ
 ku
 mu
@@ -13889,7 +13936,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+mm
 eZ
 eZ
 Us
@@ -13913,9 +13960,9 @@ Us
 eZ
 eZ
 eZ
+if
 eZ
-eZ
-eZ
+ai
 eZ
 TG
 eZ
@@ -14279,7 +14326,7 @@ Us
 eZ
 eZ
 eZ
-eZ
+vp
 eZ
 eZ
 FL
@@ -14401,7 +14448,7 @@ Ry
 eZ
 eZ
 eZ
-eZ
+TG
 eZ
 eZ
 eZ
@@ -14469,7 +14516,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+vp
 eZ
 eZ
 Yh
@@ -14497,7 +14544,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+TG
 eZ
 eZ
 "}
@@ -14919,7 +14966,7 @@ Hy
 yl
 JN
 eZ
-eZ
+vp
 eZ
 eZ
 eZ
@@ -15262,7 +15309,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+vp
 eZ
 eZ
 eZ
@@ -16046,7 +16093,7 @@ eZ
 eZ
 eZ
 eZ
-ai
+vp
 eZ
 eZ
 eZ
@@ -16114,7 +16161,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+tb
 eZ
 eZ
 eZ
@@ -16379,7 +16426,7 @@ Qh
 gH
 EC
 Us
-Us
+qr
 eZ
 eZ
 eZ
@@ -16731,7 +16778,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+tb
 ke
 ke
 EC
