@@ -101,7 +101,7 @@
 
 /obj/item/flashlight/flare
 	name = "flare"
-	desc = "A red standard-issue flare. There are instructions on the side reading 'pull cord, make light'."
+	desc = "A red standard-issue flare. There are instructions on the side reading 'pull cord, make light'. Might last over 5 minutes."
 	w_class = 2.0
 	brightness_on = 4 // Pretty bright.
 	light_power = 2
@@ -123,7 +123,7 @@
 	turn_on()
 
 /obj/item/flashlight/flare/New()
-	fuel = rand(800, 1000) // Sorry for changing this so much but I keep under-estimating how long X number of ticks last in seconds.
+	fuel = rand(290, 450) // Sorry for changing this so much but I keep under-estimating how long X number of ticks last in seconds.
 	..()
 
 /obj/item/flashlight/flare/process()
