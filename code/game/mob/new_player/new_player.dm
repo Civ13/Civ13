@@ -1012,14 +1012,20 @@ var/global/redirect_all_players = null
 		dat += "[alive_pirates.len] Pirates "
 	if (INDIANS in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "[alive_indians.len] Africans "
+			dat += "[alive_indians.len] Blugisi "
+		else if (map && istype(map, /obj/map_metadata/tadojsville))
+			dat += "[alive_indians.len] Wartribe Mercenary "
 		else
 			dat += "[alive_indians.len] Natives "
 	if (CIVILIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
 			dat += "[alive_civilians.len] Soviets "
 		else if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "[alive_civilians.len] UN Peacekeepers "
+			dat += "[alive_civilians.len] Yellowagwana 1 "
+		else if (map && istype(map, /obj/map_metadata/tadojsville))
+			dat += "[alive_civilians.len] UN Peacekeeper "
+		else if (map && istype(map, /obj/map_metadata/capitol_hill))
+			dat += "[alive_civilians.len] Rioters "
 		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_civilians.len] Rioters "
 		else if (map && istype(map, /obj/map_metadata/yeltsin))
@@ -1230,9 +1236,14 @@ var/global/redirect_all_players = null
 					temp_name = "Israeli"
 				else if (map && map.ID == "AFRICAN_WARLORDS")
 					if (temp_name == "Indians")
-						temp_name = "Africans"
+						temp_name = "Blugisi"
 					else if (temp_name == "Civilian")
-						temp_name = "United Nations"
+						temp_name = "Yellowagwana 2"
+				else if (map && map.ID == "TADOJSVILLE")
+					if (temp_name == "Indians")
+						temp_name = "Mercenary Warband"
+					else if (temp_name == "Civilian")
+						temp_name = "United Nations Peacepeeker"
 				else if (map && map.ID == "MISSIONARY_RIDGE")
 					if (temp_name == "American")
 						temp_name = "Union"
