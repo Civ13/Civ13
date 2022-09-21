@@ -984,7 +984,7 @@
 	title = "Emir"
 	en_meaning = "Lord"
 	rank_abbreviation = "Emir"
-
+	is_arabcaliph = TRUE
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
@@ -1047,6 +1047,7 @@
 	title = "Mamluk"
 	en_meaning = "Heavy Infantry"
 	rank_abbreviation = "Mamluk"
+	is_arabcaliph = TRUE
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
@@ -1101,6 +1102,7 @@
 	title = "Sayaf"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
+	is_arabcaliph = TRUE
 
 	spawn_location = "JoinLateAR"
 
@@ -1164,6 +1166,7 @@
 	title = "Alraamih"
 	en_meaning = "Spearman"
 	rank_abbreviation = ""
+	is_arabcaliph = TRUE
 
 	spawn_location = "JoinLateAR"
 
@@ -1224,6 +1227,7 @@
 	title = "Rami Alsiham"
 	en_meaning = "Archer"
 	rank_abbreviation = ""
+	is_arabcaliph = TRUE
 
 	spawn_location = "JoinLateAR"
 
@@ -1280,6 +1284,7 @@
 	title = "Imam"
 	en_meaning = "Priest"
 	rank_abbreviation = "Imam"
+	is_arabcaliph = TRUE
 
 	spawn_location = "JoinLateAR"
 

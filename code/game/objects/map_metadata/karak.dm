@@ -18,7 +18,7 @@
 	age = "1013"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(FRENCH = 0.5, ARAB = 0.5)
-	battle_name = "karak of Karak"
+	battle_name = "Karak of Karak"
 	mission_start_message = "<font size=4>The <b>Caliphate</b> troops are besieging the <b>Crusader</b> fortress of Karak! The Crusaders will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
 	faction1 = FRENCH
 	faction2 = ARAB
@@ -30,16 +30,13 @@
 
 obj/map_metadata/karak/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/arab))
-		if (J.is_coldwar || J.is_specops)
-			. = FALSE
-		else
-			. = TRUE
-	if (istype(J, /datum/job/french))
-		if (J.is_crusader == TRUE)
-			. = TRUE
-		else
-			. = FALSE
+	if (J.is_crusader && J.is_medieval)
+		. = TRUE
+	else if (J.is_arabcaliph && J.is_medieval)
+		. = TRUE
+	else
+		. = FALSE
+
 
 
 /obj/map_metadata/karak/roundend_condition_def2name(define)
