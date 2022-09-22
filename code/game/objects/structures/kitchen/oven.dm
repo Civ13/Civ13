@@ -348,6 +348,9 @@
 	max_space = 12
 	fuel = 4
 
+/obj/structure/oven/stove/old
+	icon_state = "gasstove"
+
 /obj/structure/oven/grill
 	name = "metal grill"
 	desc = "A grill with a raised inner fire-pit for refuelling."

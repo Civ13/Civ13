@@ -181,6 +181,7 @@
 	density = TRUE
 	opacity = FALSE
 	anchored = TRUE
+
 /obj/structure/props/stove/old
 	icon_state = "gasstove"
 

@@ -760,6 +760,11 @@
 	desc = "The flag of the Republic of Blugoslavia."
 	icon_state = "flag_blugoslavia"
 
+/obj/structure/sign/flag/arstotzka
+	name = "Arstotzkan flag"
+	desc = "The flag of Arstotzka."
+	icon_state = "flag_arstotzka"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."
