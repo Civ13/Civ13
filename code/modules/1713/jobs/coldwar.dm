@@ -647,6 +647,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/m18smoke/signal(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/greasegun(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
