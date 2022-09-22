@@ -3314,7 +3314,7 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m14(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/olive/madsen(H), slot_belt)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
 //back
@@ -3323,7 +3323,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/madsen(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
