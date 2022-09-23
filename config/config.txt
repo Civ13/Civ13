@@ -133,7 +133,7 @@ DONATIONURL https://www.patreon.com/1713ad
 RULESURL http://civ13.com/wiki/index.php?title=Rules
 
 ## discord address
-DISCORDURL https://discord.gg/hBEtg4x
+DISCORDURL https://civ13.com/discord
 
 ## Wiki address
 WIKIURL https://civ13.github.io/civ13-wiki/
