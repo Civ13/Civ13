@@ -691,8 +691,8 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/burnedbush/New()
 	..()
-	icon_state = "burnedbush[rand(1,9)]"
-	deadicon_state = "burnedbush[rand(1,5)]"
+	icon_state = "burnedbush[rand(1,8)]"
+	deadicon_state = "burnedbush[rand(1,4)]"
 
 /obj/structure/wild/junglebush/New()
 	..()
