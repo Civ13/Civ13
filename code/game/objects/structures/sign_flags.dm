@@ -167,6 +167,12 @@
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "kandahar"
 
+/obj/structure/sign/wide/grestin
+	name = "East Grestin sign"
+	desc = "A somewhat worn-out sign displaying East Grestin Border Checkpoint."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "grestin"
+
 /obj/structure/sign
 	anchored = TRUE
 

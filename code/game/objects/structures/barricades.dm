@@ -170,6 +170,7 @@
 	icon_state = "woodbarricade_horizontal"
 	flammable = TRUE
 	protection_chance = 80
+
 /obj/structure/barricade/vertical
 	name = "wood barrier"
 	desc = "A wood wall made of vines and logs roped together."
@@ -180,6 +181,7 @@
 /obj/structure/barricade/vertical/New()
 	..()
 	icon_state = "woodbarricade_vertical"
+
 /obj/structure/barricade/horizontal/New()
 	..()
 	icon_state = "woodbarricade_horizontal"
@@ -276,6 +278,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/sandstone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -298,6 +301,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/sandstone_v/crenelated
 	name = "crenelated sandstone wall"
 	desc = "A wall of sandstone blocks."
@@ -308,6 +312,7 @@
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 75
+
 /obj/structure/barricade/sandstone_v/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -330,6 +335,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/sandstone_h/New()
 	..()
 	icon_state = "sandstone_brick"
@@ -347,6 +353,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	color = null
+
 /obj/structure/barricade/sandstone_h/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c"
@@ -355,6 +362,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	color = null
+
 /obj/structure/barricade/sandstone_v/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c2"
@@ -363,6 +371,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	color = null
+
 /obj/structure/barricade/sandstone_h/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -423,6 +432,7 @@
 	maxhealth = 2709
 	material_name = "steel"
 	protection_chance = 50
+
 /obj/structure/barricade/debris
 	name = "debris"
 	desc = "A wall of rubble and debris."
@@ -436,6 +446,7 @@
 	New()
 		..()
 		icon_state = "debris[rand(1,4)]"
+
 /obj/structure/barricade/stone_h
 	name = "stone wall"
 	desc = "A wall of stone blocks."
@@ -446,6 +457,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 90
+
 /obj/structure/barricade/stone_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -468,6 +480,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/stone_v
 	name = "stone wall"
 	desc = "A wall of stone blocks."
@@ -478,6 +491,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 90
+
 /obj/structure/barricade/stone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -500,6 +514,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/stone_h/crenelated
 	name = "crenelated stone wall"
 	desc = "A wall of stone blocks."
@@ -510,6 +525,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 75
+
 /obj/structure/barricade/stone_h/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -532,6 +548,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/stone_v/crenelated
 	name = "crenelated stone wall"
 	desc = "A wall of stone blocks."
@@ -542,6 +559,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 75
+
 /obj/structure/barricade/stone_v/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -564,6 +582,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/stone_h/New()
 	..()
 	icon_state = "stone_brick"
@@ -571,6 +590,7 @@
 	health = 300
 	maxhealth = 300
 	color = null
+
 /obj/structure/barricade/stone_v/New()
 	..()
 	icon_state = "stone_brick2"
@@ -578,6 +598,7 @@
 	health = 300
 	maxhealth = 300
 	color = null
+
 /obj/structure/barricade/stone_h/crenelated/New()
 	..()
 	icon_state = "stone_brick_c"
@@ -585,6 +606,7 @@
 	health = 300
 	maxhealth = 300
 	color = null
+
 /obj/structure/barricade/stone_v/crenelated/New()
 	..()
 	icon_state = "stone_brick_c2"
@@ -592,6 +614,7 @@
 	health = 300
 	maxhealth = 300
 	color = null
+
 /obj/structure/barricade/stone_h/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -664,6 +687,7 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+
 /obj/structure/barricade/jap_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -719,6 +743,7 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+
 /obj/structure/barricade/jap_h_l/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -774,6 +799,7 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+
 /obj/structure/barricade/jap_h_r/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -829,6 +855,7 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+
 /obj/structure/barricade/jap_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -884,6 +911,7 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+
 /obj/structure/barricade/jap_v_t/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -939,6 +967,7 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+
 /obj/structure/barricade/jap_v_b/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -961,6 +990,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/jap_v_b/New()
 	..()
 	icon_state = "jap_wall_v_b"
@@ -1101,6 +1131,7 @@
 	protection_chance = 100
 	var/adjusts = TRUE
 	applies_material_colour = FALSE
+
 /obj/structure/barricade/jap/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	if (!adjusts)
 		return
@@ -1136,6 +1167,7 @@
 /obj/structure/barricade/jap/Destroy()
 	check_relatives(0,1)
 	..()
+
 /obj/structure/barricade/jap/ex_act(severity)
 	if (map.ID != "WHITERUN")
 		switch(severity)
@@ -1151,6 +1183,7 @@
 			return
 	else
 		return
+
 /obj/structure/barricade/jap/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -1173,6 +1206,7 @@
 		return
 	else
 		..()
+
 /obj/structure/barricade/jap/tall
 	name = "tall shingled stone wall"
 	desc = "A wall of stone blocks with some red shingles. This one is rather tall."
