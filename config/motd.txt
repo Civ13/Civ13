@@ -6,6 +6,6 @@ This server is running {server_version}, and you are running {client_version}.
 <h2>RULES: http://civ13.com/rules</h2>
 
 <h2><small>Github: https://github.com/civ13/civ13</small></h2>
-<h2><small>Discord: https://discord.gg/hBEtg4x</small></h2>
+<h2><small>Discord: https://civ13.com/discord</small></h2>
 <h2><small>Wiki: https://civ13.github.io/civ13-wiki</small></h2>
 </i>
