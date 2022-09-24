@@ -1047,7 +1047,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 
 /obj/item/weapon/reagent_containers/food/snacks/boiledspagetti
 	name = "boiled spaghetti"
-	desc = "A plain dish of noodles, this sucks."
+	desc = "A plain dish of spaghetti, this sucks."
 	icon_state = "spagettiboiled"
 	filling_color = "#FCEE81"
 	center_of_mass = list("x"=16, "y"=10)
