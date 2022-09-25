@@ -9,10 +9,7 @@
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "aj" = (
-/obj/structure/religious/monument/megalith{
-	name = "runestone";
-	desc = "A large stone rune that has many symbols carved into it."
-	},
+/obj/structure/religious/runestone,
 /obj/effect/decal/cleanable/blood,
 /turf/floor/plating/stone_old,
 /area/caribbean/no_mans_land/taiga)
@@ -924,10 +921,7 @@
 /turf/floor/winter/grass,
 /area/caribbean/no_mans_land/taiga)
 "yP" = (
-/obj/structure/religious/monument/megalith{
-	name = "runestone";
-	desc = "A large stone rune that has many symbols carved into it."
-	},
+/obj/structure/religious/runestone,
 /turf/floor/plating/stone_old,
 /area/caribbean/no_mans_land/taiga)
 "yT" = (
