@@ -955,7 +955,7 @@ var/list/seed_list_jungle
 		update_icon()
 		return
 
-/obj/structure/wild/junglebush/update_icon()
+/obj/structure/wild/junglebush/chinchona/update_icon()
 	..()
 	icon_state = "chinchona[healthamount]"
 
