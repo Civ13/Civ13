@@ -11,7 +11,7 @@
 /obj/item/ammo_magazine/ak47/drum
 	name = "AK Drum Magazine (7.62x39mm)"
 	icon_state = "tommydrum"
-	max_ammo = 50
+	max_ammo = 75
 
 /obj/item/ammo_magazine/sksm
 	name = "SKS-M Magazine (7.62x39mm)"
@@ -102,6 +102,17 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/m16/box
+	name = "magazine box (5.56x45mm)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/ar10
 	name = "AR-10 magazine (7.62x51mm)"
 	icon_state = "m16"
@@ -121,6 +132,17 @@
 	max_ammo = 20
 	weight = 0.45
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m14box
+	name = "magazine box (7.62x51mm)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
 
 /obj/item/ammo_magazine/hk
 	name = "G3 Magazine (7.62x51mm)"
@@ -173,13 +195,19 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/saiga12
-	name = "Saiga-12K magazine (12gauge)"
-	icon_state = "type99"
+	name = "Saiga-12K magazine (12gauge buckshot)"
+	icon_state = "type99redtape"
 	mag_type = MAGAZINE
 	caliber = "12gauge"
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	max_ammo = 10
 	weight = 0.75
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/saiga12/slug
+	name = "Saiga-12K magazine (12gauge slug)"
+	icon_state = "type99"
+	ammo_type = /obj/item/ammo_casing/shotgun/slug
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/pkm

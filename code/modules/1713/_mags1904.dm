@@ -32,6 +32,16 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 25
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/madsen/box
+	name = "magazine box (7.62x54mm)"
+	icon_state = "mosin_ammo"
+	mag_type = MAGAZINE
+	caliber = "a762x54"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a762x54
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
 /obj/item/ammo_magazine/b762
 	name = "belt (7.62x51mm)"
 	icon_state = "b762"

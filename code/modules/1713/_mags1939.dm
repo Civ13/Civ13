@@ -102,6 +102,17 @@
 	weight = 0.4
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/greasegun/box
+	name = "magazine box (.45 ACP)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a45acp"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a45acp
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/c762x25_pps
 	name = "PPS-43 magazine (7.62x25mm)"
 	icon_state = "pps"

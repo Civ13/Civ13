@@ -460,3 +460,20 @@
 	icon_state = "eve"
 	item_state = "eve"
 	worn_state = "eve"
+
+/obj/item/weapon/storage/backpack/quiver/modern/New()
+	..()
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
+	new /obj/item/ammo_casing/arrow/modern(src)
