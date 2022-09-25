@@ -924,14 +924,14 @@ var/list/seed_list_jungle
 	name = "chinchona"
 	desc = "you can extract quinine from it."
 	icon = 'icons/obj/flora/plants.dmi'
-	//icon_state = "chinchona1"
+	icon_state = "chinchona1"
 	opacity = FALSE
 	density = FALSE
 	healthamount = 1
 
 /obj/structure/wild/junglebush/chinchona/New()
 	..()
-	//icon_state = "chinchona1"
+	icon_state = "chinchona1"
 
 /obj/structure/wild/junglebush/chinchona/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -957,7 +957,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/junglebush/update_icon()
 	..()
-	//icon_state = "chinchona[healthamount]"
+	icon_state = "chinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
 	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)

@@ -260,7 +260,7 @@
 "eZ" = (/obj/structure/wild/smallbush/winter{icon_state = "snowbush1"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean/nomads/taiga)
 "fa" = (/obj/structure/wild/burnedbush{icon_state = "tall_grass_8"},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "fb" = (/obj/structure/wild/tree/dead_tree/destroyed{icon_state = "2"},/turf/floor/dirt/dry_lava,/area/caribbean/nomads/semiarid)
-"fc" = (/obj/structure/wild/burnedbush{icon_state = "burnedbush9"},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
+"fc" = (/obj/structure/wild/burnedbush{icon_state = "burnedlog"},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "fd" = (/mob/living/simple_animal/chick,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "fe" = (/obj/structure/wild/rock{icon_state = "rock3"},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "ff" = (/obj/structure/wild/rock{icon_state = "basalt2"},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)

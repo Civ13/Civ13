@@ -229,7 +229,7 @@
 "eu" = (/obj/structure/phoneline,/turf/floor/trench,/area/caribbean)
 "ev" = (/obj/item/weapon/material/shovel/trench,/turf/floor/trench,/area/caribbean)
 "ew" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt/winter{icon_state = "grass2"},/area/caribbean)
-"ex" = (/obj/structure/wild/burnedtree{icon_state = "burnedbush9"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
+"ex" = (/obj/structure/wild/burnedtree{icon_state = "burnedlog"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "ey" = (/obj/structure/barbwire,/obj/structure/phoneline,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "ez" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eA" = (/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)

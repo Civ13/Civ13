@@ -356,7 +356,7 @@
 "gR" = (/turf/floor/carpet/redcarpet{icon_state = "carpet15-14"},/area/caribbean/houses)
 "gS" = (/turf/floor/carpet/redcarpet{icon_state = "carpet11-8"},/area/caribbean/houses)
 "gT" = (/obj/structure/wild/junglebush,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
-"gU" = (/obj/structure/wild/burnedtree{icon_state = "burnedbush9"},/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
+"gU" = (/obj/structure/wild/burnedtree{icon_state = "burnedlog"},/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
 "gV" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "gW" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/dirt/burned,/area/caribbean/houses)
 "gX" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/houses)
