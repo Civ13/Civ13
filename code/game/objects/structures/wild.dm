@@ -691,8 +691,8 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/burnedbush/New()
 	..()
-	icon_state = "burnedbush[rand(1,9)]"
-	deadicon_state = "burnedbush[rand(1,5)]"
+	icon_state = "burnedbush[rand(1,8)]"
+	deadicon_state = "burnedbush[rand(1,4)]"
 
 /obj/structure/wild/junglebush/New()
 	..()
@@ -955,7 +955,7 @@ var/list/seed_list_jungle
 		update_icon()
 		return
 
-/obj/structure/wild/junglebush/update_icon()
+/obj/structure/wild/junglebush/chinchona/update_icon()
 	..()
 	icon_state = "chinchona[healthamount]"
 
