@@ -192,6 +192,7 @@
 			else
 				var/list/split_desc = splittext(P.desc, ". Rechambered into")
 				P.desc = "[split_desc[1]]. Rechambered into [choice]."
+
 /obj/structure/gunbench/attack_hand(var/mob/user as mob)
 	var/mob/living/human/H = user
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
@@ -209,6 +210,7 @@
 	if (!found)
 		user << "You don't have enough money to make a new blueprint! You need 50 gold or equivalent in one of your hands."
 		return FALSE
+		
 ////////////////STOCK///////////////////////////////
 	var/list/display = list("Cancel")
 	if (map.ordinal_age == 5)
@@ -246,6 +248,7 @@
 		using_wood = 0
 		using_steel = 0
 		return FALSE
+
 ////////////////RECEIVER///////////////////////////////
 	var/list/display2 = list("Cancel")
 	if (map.ordinal_age == 5)
