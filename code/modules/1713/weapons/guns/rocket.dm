@@ -257,7 +257,7 @@
 		..()
 
 /obj/item/weapon/gun/launcher/rocket/fatman
-	name = "Fatman"
+	name = "FATMAN"
 	desc = "An American rocket launcher made for firing small nuclear rockets."
 	icon_state = "fatman_empty"
 	var/caliber = "nuclear"
