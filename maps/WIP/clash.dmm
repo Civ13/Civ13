@@ -584,10 +584,10 @@
 /area/caribbean/houses)
 "mQ" = (
 /obj/structure/closet/old_coffin,
-/obj/item/weapon/material/sword/magic/crimsonedge,
 /obj/effect/decal/cleanable/cobweb2{
 	dir = 1
 	},
+/obj/item/weapon/material/sword/magic/crimsonedge/lesser,
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
 "mV" = (
@@ -1588,7 +1588,7 @@
 /area/caribbean/no_mans_land/taiga)
 "OZ" = (
 /obj/structure/closet/old_coffin,
-/obj/item/weapon/material/sword/zweihander,
+/obj/item/weapon/material/sword/claymore/iron,
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
 "PJ" = (

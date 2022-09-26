@@ -461,6 +461,24 @@ obj/item/weapon/material/sword/longsword/diamond
 	cooldownw = 30
 	value = 60
 
+/obj/item/weapon/material/sword/claymore
+	name = "Claymore"
+	desc = "A Scottish longsword which is longer."
+	icon_state = "claymore"
+	item_state = "longsword"
+	throw_speed = 1
+	throw_range = 2
+	force_divisor = 1.80 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 65
+	cooldownw = 20
+	value = 60
+
+obj/item/weapon/material/sword/claymore/iron
+	default_material = "iron"
+
+
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
