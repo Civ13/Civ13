@@ -299,6 +299,7 @@
 	maxsway = 7
 	firedelay = 12
 	w_class = 8
+
 /obj/structure/cannon/mortar/type89
 	name = "Type 89 Mortar"
 	icon_state = "type89"
@@ -309,6 +310,7 @@
 	maxsway = 15
 	firedelay = 8
 	w_class = 6
+
 /obj/structure/cannon/mortar/type89/verb/Get()
 	set src in oview(1, usr)
 	set category = null
@@ -321,6 +323,7 @@
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new/obj/item/weapon/type89_mortar, prioritize_active_hand = TRUE)
 		visible_message("<span class = 'warning'>[user] gets their type 89 from the ground.</span>")
+
 /obj/structure/cannon/mortar/type89/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91))
 		if (loaded)
@@ -338,6 +341,7 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
+
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
 	icon = 'icons/obj/cannon.dmi'
@@ -360,6 +364,7 @@
 	maxsway = 8
 	firedelay = 24
 	w_class = 8
+
 /obj/structure/cannon/davycrockett/attackby(obj/item/W as obj, mob/M as mob)
 	if (loaded)
 		icon_state = "m29_davy_crockett_loaded"

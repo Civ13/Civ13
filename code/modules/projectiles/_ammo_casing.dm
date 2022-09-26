@@ -19,10 +19,10 @@
 
 /obj/item/ammo_casing/musketball_pistol
 	name = "pistol cartridge"
-	projectile_type = /obj/item/projectile/bullet/rifle/musketball_pistol
-	weight = 0.015
 	icon_state = "musketball_pistol_gunpowder"
 	spent_icon = null
+	projectile_type = /obj/item/projectile/bullet/rifle/musketball_pistol
+	weight = 0.015
 	caliber = "musketball_pistol"
 	value = 2
 
@@ -34,7 +34,8 @@
 	weight = 0.035
 	caliber = "blunderbuss"
 	value = 3
-//arrows
+
+//Arrows
 
 /obj/item/ammo_casing/arrow
 	name = "arrow shaft"
@@ -48,6 +49,7 @@
 	slot_flags = SLOT_BELT
 	value = 2
 	var/volume = 5
+
 /obj/item/ammo_casing/arrow/gods
 	name = "gods finger"
 	desc = "A arrow that radiates holy wrath."
@@ -210,7 +212,9 @@
 	projectile_type = /obj/item/projectile/arrow/bolt/vial
 	weight = 0.18
 	volume = 15
- //Sling
+
+//Sling
+
 /obj/item/ammo_casing/stone
 	name = "rock"
 	desc = "Use a sling to launch it."
@@ -222,15 +226,13 @@
 	caliber = "stone"
 	value = 1
 
-//ARROWHEADS
+//Arrowheads
 
 /obj/item/ammo_casing/arrow/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)
 			new/obj/item/ammo_casing/arrow/flint(user.loc)
-			//F.amount--
-			//if (F.amount<1)
 			qdel(F)
 			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
 			user << "<span class = 'notice'>You attach the [F] to the [src]</span>"
@@ -271,8 +273,6 @@
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)
 			new/obj/item/ammo_casing/bolt/flint(user.loc)
-			//F.amount--
-			//if (F.amount<1)
 			qdel(F)
 		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
 		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
@@ -345,7 +345,8 @@
 	desc = "Attach it to a arrow shaft."
 	icon_state = "vial_arrowhead"
 
-//AMMO WITH GUNPOWDER
+//Ammo with gunpoweder
+
 /obj/item/stack/ammopart
 	var/resultpath = /obj/item/ammo_casing/musketball
 	amount = 1
@@ -400,6 +401,7 @@
 	resultpath = /obj/item/ammo_casing/blunderbuss
 	value = 2
 	weight = 0.1
+
 /obj/item/stack/ammopart/casing
 	max_amount = 40
 	singular_name = "casing"
@@ -430,18 +432,6 @@
 	resultpath = null
 	gunpowder_max = 1
 
-/obj/item/stack/ammopart/casing/artillery
-	name = "empty artillery casing"
-	desc = "A large empty brass casing."
-	icon = 'icons/obj/cannon_ball.dmi'
-	icon_state = "casing"
-	force = WEAPON_FORCE_HARMLESS+1
-	throwforce = WEAPON_FORCE_HARMLESS+2
-	resultpath = null
-	gunpowder_max = 5
-	max_amount = 1
-	value = 4
-
 /obj/item/stack/ammopart/casing/tank
 	name = "empty cannon casing"
 	desc = "A large empty brass casing."
@@ -454,6 +444,18 @@
 	max_amount = 1
 	value = 4
 	var/caliber = 75
+
+/obj/item/stack/ammopart/casing/artillery
+	name = "empty artillery casing"
+	desc = "A large empty brass casing."
+	icon = 'icons/obj/cannon_ball.dmi'
+	icon_state = "casing"
+	force = WEAPON_FORCE_HARMLESS+1
+	throwforce = WEAPON_FORCE_HARMLESS+2
+	resultpath = null
+	gunpowder_max = 5
+	max_amount = 1
+	value = 4
 
 /obj/item/stack/ammopart/casing/artillery/wired
 	name = "wired empty artillery casing"
@@ -1048,7 +1050,7 @@
 
 /obj/item/ammo_casing/shotgun/rubber
 	name = "rubber shot"
-	desc = "A rubber shell ."
+	desc = "A rubber shell."
 	icon_state = "rubber"
 	spent_icon = "rubber_casing"
 	projectile_type = /obj/item/projectile/bullet/pellet/rubber
