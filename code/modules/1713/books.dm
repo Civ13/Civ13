@@ -143,29 +143,30 @@
 
 				<h3>Law Enforcement Code of Conduct</h3>
 
-				A police officer may use lethal force if the suspect:
-				- is discharging a firearm towards another person;
-				- is attempting to run over another person;
-				- attempts to fire at, run over, or physically harm a police officer;
-				- is armed and refuses to disarm, or be disarmed, upon request by an officer;
-				- is armed and is about to discharge their firearm at another person. (Judged within reason and the circumstances, do not rely on this rule.)
+				A police officer may use lethal force if the suspect:<br>
+				- is discharging a firearm towards another person;<br>
+				- is attempting to run over another person;<br>
+				- attempts to fire at, run over, or physically harm a police officer;<br>
+				- is armed and refuses to disarm, or be disarmed, upon request by an officer;<br>
+				- is armed and is about to discharge their firearm at another person.<br> (Judged within reason and the circumstances, do not rely on this rule.)
+				<br>
+	<br>
+				A police officer may arrest a suspect if they:<br>
 
-				A police officer may arrest a suspect if they:
-
-				- are openly carrying firearms, explosives, silencers, or are found to be in possession of them while being searched;
-				- are in possession of a disk of any company, even their own;
-				- are trespassing another company’s property, as confirmed by a member of that company;
-				- are trespassing inside the police station’s restricted area (anything after a warning stripe mark);
-				- are trespassing inside a restricted area to the public in a government building;
-				- are in possession of police equipment, such as police armor, police firearms, police keys and police radios;
-				- are in possession of stolen goods;
-				- have a pending arrest warrant;
-				- are resisting or refusing being searched by an officer in a public space. This also applies to vehicles. For company properties, a search warrant is needed.
-
-				The following items can be confiscated, without an arrest being necessary:
-
-				- a vehicle being driven by a member of another faction, if claimed as stolen by the owner;
-				- possession of more than 500$ in cash.
+				- are openly carrying firearms, explosives, silencers, or are found to be in possession of them while being searched;<br>
+				- are in possession of a disk of any company, even their own;<br>
+				- are trespassing another company’s property, as confirmed by a member of that company;<br>
+				- are trespassing inside the police station’s restricted area (anything after a warning stripe mark);<br>
+				- are trespassing inside a restricted area to the public in a government building;<br>
+				- are in possession of police equipment, such as police armor, police firearms, police keys and police radios;<br>
+				- are in possession of stolen goods;<br>
+				- have a pending arrest warrant;<br>
+				- are resisting or refusing being searched by an officer in a public space.<br>This also applies to vehicles. For company properties, a search warrant is needed.
+	<br><br>
+				The following items can be confiscated, without an arrest being necessary:<br>
+	<br>
+				- a vehicle being driven by a member of another faction, if claimed as stolen by the owner;<br>
+				- possession of more than 500$ in cash.<br>
 
 				<h3>Custody and Bail Conduct</h3>
 
@@ -177,17 +178,17 @@
 				This sum is to be delivered in cash at the station and is to be stored in the Evidence room.
 				As for violent crimes, a suspect may be released, after serving some time, on the Sheriff’s responsability or on a court order from the Judge (or from an admin request).
 
-				<h3>List of Contraband<h3>
+				<h3>List of Contraband</h3>
 
-				- Company Disks
-				- Unregistered Weapons
-				- Unregistered Vehicles
-				- Cash sums above 500$
-				- Narcotics
-				- Stolen property
-				- Government assets, including police equipment
-				- Explosives
-				- Any police evidence material
+				- Company Disks<br>
+				- Unregistered Weapons<br>
+				- Unregistered Vehicles<br>
+				- Cash sums above 500$<br>
+				- Narcotics<br>
+				- Stolen property<br>
+				- Government assets, including police equipment<br>
+				- Explosives<br>
+				- Any police evidence material<br>
 
 				</body>
 			</html>
