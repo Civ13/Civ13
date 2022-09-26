@@ -170,6 +170,11 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/wood,
 /area/caribbean/houses)
+"dp" = (
+/obj/structure/closet/old_coffin,
+/obj/item/remains,
+/turf/floor/plating/stone_old,
+/area/caribbean/void/caves)
 "dx" = (
 /obj/structure/wild/smallbush/winter,
 /obj/item/weapon/beartrap/armed,
@@ -577,6 +582,14 @@
 /obj/covers/wood_wall/nordic,
 /turf/wall/wood,
 /area/caribbean/houses)
+"mQ" = (
+/obj/structure/closet/old_coffin,
+/obj/item/weapon/material/sword/magic/crimsonedge,
+/obj/effect/decal/cleanable/cobweb2{
+	dir = 1
+	},
+/turf/floor/plating/stone_old,
+/area/caribbean/void/caves)
 "mV" = (
 /turf/floor/dirt/underground/empty,
 /area/caribbean/void/caves)
@@ -595,6 +608,13 @@
 /obj/covers/roads/dirt,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
+"nA" = (
+/obj/structure/reagent_dispensers/largebarrel/beer,
+/obj/effect/decal/cleanable/cobweb2{
+	dir = 4
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/houses)
 "nJ" = (
 /mob/living/simple_animal/horse/white,
 /turf/floor/winter,
@@ -614,6 +634,14 @@
 	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
+"og" = (
+/obj/structure/roof_support/nordic,
+/obj/item/flashlight/torch/on/unlimited,
+/obj/effect/decal/cleanable/cobweb2{
+	dir = 1
+	},
+/turf/floor/wood,
+/area/caribbean/houses)
 "ok" = (
 /obj/effect/floor_decal/spline/fancy,
 /obj/effect/floor_decal/spline/fancy{
@@ -706,6 +734,7 @@
 "rq" = (
 /obj/structure/closet/crate/empty,
 /obj/item/weapon/material/sword/broadsword,
+/obj/item/weapon/material/sword/broadsword,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "rz" = (
@@ -716,6 +745,9 @@
 /obj/item/stack/material/gold,
 /obj/item/clothing/head/helmet/gold_crown,
 /obj/effect/decal/cleanable/dirt,
+/obj/effect/decal/cleanable/cobweb2{
+	dir = 8
+	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "sy" = (
@@ -940,6 +972,12 @@
 /obj/item/weapon/material/pickaxe,
 /turf/floor/wood,
 /area/caribbean/houses)
+"ze" = (
+/obj/structure/closet/old_coffin,
+/obj/item/remains,
+/obj/effect/decal/cleanable/cobweb2,
+/turf/floor/plating/stone_old,
+/area/caribbean/void/caves)
 "zq" = (
 /obj/effect/floor_decal/spline/fancy{
 	dir = 1
@@ -1548,6 +1586,11 @@
 	},
 /turf/floor/beach/water,
 /area/caribbean/no_mans_land/taiga)
+"OZ" = (
+/obj/structure/closet/old_coffin,
+/obj/item/weapon/material/sword/zweihander,
+/turf/floor/plating/stone_old,
+/area/caribbean/void/caves)
 "PJ" = (
 /turf/floor/dirt/underground/icy,
 /area/caribbean/void/caves)
@@ -1684,7 +1727,10 @@
 /turf/floor/beach/water,
 /area/caribbean/no_mans_land/taiga)
 "Ta" = (
-/obj/item/weapon/material/sword/magic/crimsonedge,
+/obj/structure/religious/impaledskull,
+/obj/effect/decal/cleanable/cobweb2{
+	dir = 1
+	},
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
 "Tn" = (
@@ -1699,6 +1745,9 @@
 /area/caribbean/no_mans_land/taiga)
 "TB" = (
 /obj/item/clothing/mask/skullmask,
+/obj/effect/decal/cleanable/cobweb2{
+	dir = 4
+	},
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
 "TD" = (
@@ -1863,6 +1912,9 @@
 /area/caribbean/no_mans_land/taiga)
 "XF" = (
 /obj/item/weapon/reagent_containers/glass/barrel/wine,
+/obj/effect/decal/cleanable/cobweb{
+	dir = 4
+	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "XI" = (
@@ -3598,7 +3650,7 @@ sY
 sY
 iR
 gK
-Kj
+nA
 sY
 sY
 XF
@@ -6517,7 +6569,7 @@ cS
 cS
 cS
 cS
-cj
+Ta
 sN
 Cz
 GJ
@@ -6705,7 +6757,7 @@ GJ
 Sw
 GJ
 GJ
-Ta
+GJ
 cS
 cS
 cS
@@ -6788,8 +6840,8 @@ cS
 cS
 cS
 cS
-cS
-cS
+GJ
+GJ
 pd
 GJ
 GJ
@@ -6879,9 +6931,9 @@ cS
 cS
 cS
 cS
-cS
-cS
-cS
+OZ
+GJ
+GJ
 cS
 DL
 cS
@@ -6970,9 +7022,9 @@ cS
 cS
 cS
 cS
-cS
-cS
-cS
+GJ
+GJ
+GJ
 cS
 cS
 cS
@@ -7062,9 +7114,9 @@ cS
 cS
 cS
 cS
-cS
-cS
-cS
+dp
+Sw
+GJ
 cS
 cS
 cS
@@ -7154,9 +7206,9 @@ cS
 cS
 cS
 cS
-cS
-cS
-cS
+GJ
+GJ
+GJ
 cS
 cS
 cS
@@ -7246,11 +7298,11 @@ cS
 cS
 cS
 cS
-cS
-cS
-cS
-cS
-cS
+ze
+GJ
+GJ
+GJ
+mQ
 cS
 cS
 cS
@@ -7339,9 +7391,9 @@ cS
 cS
 cS
 cS
-cS
-cS
-cS
+GJ
+Vy
+GJ
 cS
 cS
 cS
@@ -13817,7 +13869,7 @@ mP
 lc
 qm
 qm
-lc
+og
 mP
 eZ
 "}
