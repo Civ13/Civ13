@@ -32,6 +32,7 @@
 	w_class = 4.0
 	value = 20
 	atype = "HE"
+
 /obj/item/cannon_ball/shell/tank
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "cannon shell"
@@ -246,6 +247,7 @@
 /obj/item/cannon_ball/rocket/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Nuclear Rocket"
+	desc = "You might want to step back a bit..."
 	icon_state = "shell_nuclear_rocket"
 	w_class = 4.0
 	value = 80
@@ -253,6 +255,7 @@
 /obj/item/cannon_ball/shell/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Nuclear Shell"
+	desc = "A nuclear shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
 	value = 25
@@ -260,6 +263,7 @@
 /obj/item/cannon_ball/shell/nuclear/makeshift
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Makeshift Nuclear Shell"
+	desc = "A makeshift nuclear shell, once the genie is out of the bottle you can't put it back in..."
 	icon_state = "shell_nuclear"
 	w_class = 4.0
 	value = 20
@@ -267,6 +271,7 @@
 /obj/item/cannon_ball/shell/nuclear/W9
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W9 Atomic Demolition Munition"
+	desc = "A W9 nuclear shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
 	value = 40
@@ -274,6 +279,7 @@
 /obj/item/cannon_ball/shell/nuclear/W19
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W19 Katie Nuclear Shell"
+	desc = "A W19 Katie nuclear shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
 	value = 30
@@ -281,6 +287,7 @@
 /obj/item/cannon_ball/shell/nuclear/W33
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W33 Nuclear Shell"
+	desc = "A W33 nuclear shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
 	value = 20
@@ -288,7 +295,8 @@
 /obj/item/cannon_ball/shell/nuclear/W33Boosted
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Boosted W33 Nuclear Shell"
-	icon_state = "shell_nuclear"
+	desc = "A boosted nuclear shell for extra destruction"
+	icon_state = "shell_nuclear_boosted"
 	w_class = 4.0
 	value = 50
 

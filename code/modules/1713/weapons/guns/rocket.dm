@@ -256,6 +256,38 @@
 	else
 		..()
 
+/obj/item/weapon/gun/launcher/rocket/fatman
+	name = "FATMAN"
+	desc = "An American rocket launcher made for firing small nuclear rockets."
+	icon_state = "fatman_empty"
+	var/caliber = "nuclear"
+	item_state = "bazooka"
+	slot_flags = SLOT_SHOULDER
+	force = 10
+
+/obj/item/weapon/gun/launcher/rocket/fatman/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "fatman"
+	else
+		icon_state = "fatman_empty"
+
+/obj/item/weapon/gun/launcher/rocket/fatman/proc/unload(mob/user)
+	if(rockets.len)
+		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
+		rockets.len--
+		user.put_in_hands(G)
+		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
+		update_icon()
+	else
+		user << "<span class='warning'>\The [src] is empty.</span>"
+
+/obj/item/weapon/gun/launcher/rocket/fatman/attack_hand(mob/user)
+	if(user.get_inactive_hand() == src)
+		unload(user)
+	else
+		..()
+
 ////////////////////////////////////////AMMO///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/ammo_casing/rocket
 	name = "RPG rocket"
@@ -299,6 +331,15 @@
 	desc = "A fragmentation warhead and propeller designed to be fired from a RPG-7 launcher."
 	icon_state = "og7v"
 	projectile_type = /obj/item/missile/fragmentation
+
+/obj/item/ammo_casing/rocket/nuclear
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "Nuclear Rocket"
+	desc = "A nuclear fucking rocket, you might want to step back a bit..."
+	icon_state = "shell_nuclear_rocket"
+	projectile_type = /obj/item/missile/nuclear
+	caliber = "nuclear"
+	w_class = 4.0
 
 /obj/item/missile
 	icon = 'icons/obj/grenade.dmi'
@@ -402,6 +443,18 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 3)
+			handle_vehicle_hit(hit_atom,firer)
+			qdel(src)
+		else
+			..()
+		return
+
+/obj/item/missile/nuclear
+	heavy_armor_penetration = 40
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 1, 1, 2, 4)
+			radiation_pulse(hit_atom, 6, 20, 700, TRUE)
 			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
