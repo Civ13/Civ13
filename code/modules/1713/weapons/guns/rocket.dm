@@ -259,7 +259,7 @@
 /obj/item/weapon/gun/launcher/rocket/fatman
 	name = "Fatman"
 	desc = "An American rocket launcher made for firing small nuclear rockets."
-	icon_state = "bazooka_empty"
+	icon_state = "fatman_empty"
 	var/caliber = "nuclear"
 	item_state = "bazooka"
 	slot_flags = SLOT_SHOULDER
@@ -268,9 +268,9 @@
 /obj/item/weapon/gun/launcher/rocket/fatman/update_icon()
 	..()
 	if(rockets.len)
-		icon_state = "bazooka"
+		icon_state = "fatman"
 	else
-		icon_state = "bazooka_empty"
+		icon_state = "fatman_empty"
 
 /obj/item/weapon/gun/launcher/rocket/fatman/proc/unload(mob/user)
 	if(rockets.len)
