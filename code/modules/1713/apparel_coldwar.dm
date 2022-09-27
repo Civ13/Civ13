@@ -1466,6 +1466,29 @@
 		new /obj/item/ammo_casing/shotgun/buckshot(hold)
 		new /obj/item/ammo_casing/shotgun/buckshot(hold)
 		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+
+/obj/item/clothing/accessory/storage/webbing/m79_vest
+	name = "US Army M79 Vest"
+	desc = "A large webbing with several small pockets."
+	icon_state = "m79_vest"
+	item_state = "m79_vest"
+	slots = 8
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing/grenade_l,/obj/item/weapon/key)
+
+/obj/item/clothing/accessory/storage/webbing/m79_vest/filled
+	New()
+		..()
+		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/ammo_casing/grenade_l(hold)
+
 /* NBC &  Hazmat Suits*/
 
 /obj/item/clothing/head/nbc
