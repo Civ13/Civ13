@@ -197,6 +197,7 @@
 				MAP_KARAK = 0,
 				MAP_CAMP = 0,
 				MAP_SAMMIRHAYEED = 10,
+				MAP_OASIS = 0,
 				MAP_HERACLEA = 0,
 				MAP_CLASH = 0,
 				MAP_SIEGE = 0,
