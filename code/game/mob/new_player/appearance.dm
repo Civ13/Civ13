@@ -712,7 +712,7 @@
 		growth = 1
 
 	fiveoclock
-		name = "5 O'clock Shadow and Mustache"
+		name = "5 O'clock Shadow"
 		icon_state = "facial_5oclock"
 		growth = 1
 
@@ -722,7 +722,7 @@
 		growth = 1
 
 	sevenoclock
-		name = "7 O'clock Shadow and Mustache"
+		name = "7 O'clock Shadow"
 		icon_state = "facial_7oclock"
 		growth = 1
 
