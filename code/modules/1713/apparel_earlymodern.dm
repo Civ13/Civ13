@@ -1398,7 +1398,7 @@
 	..()
 	new/obj/item/ammo_magazine/m16(src)
 	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/weapon/grenade/coldwar/m67
+	new/obj/item/weapon/grenade/coldwar/m67(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
