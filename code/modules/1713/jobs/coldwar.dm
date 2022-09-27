@@ -408,12 +408,12 @@
 	uniform.attackby(fj, H)
 
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	H.s_tone = rand(-40,-25)
-	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
@@ -468,12 +468,12 @@
 	uniform.attackby(fj, H)
 
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	H.s_tone = rand(-40,-25)
-	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Vietcong!")
@@ -523,12 +523,12 @@
 	uniform.attackby(lw, H)
 
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	H.s_tone = rand(-40,-25)
-	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
@@ -594,12 +594,12 @@
 		uniform.attackby(fj2, H)
 
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	H.s_tone = rand(-40,-25)
-	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
@@ -662,12 +662,12 @@
 		uniform.attackby(fj2, H)
 
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	H.s_tone = rand(-40,-25)
-	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of your squad communications. Keep the line open between the <b>Squad Leader</b> and HQ!")
@@ -724,12 +724,12 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
 
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	H.s_tone = rand(-40,-25)
-	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+	H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, fighting against the Vietcong!")
@@ -742,6 +742,88 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/american/american_grenadier
+	title = "USA Grenadier"
+	rank_abbreviation = "Pfc."
+
+	spawn_location = "JoinLateRN"
+
+	is_coldwar = TRUE
+	uses_squads = TRUE
+	is_afro = FALSE
+	whitelisted = TRUE
+
+	min_positions = 2
+	max_positions = 5
+
+/datum/job/american/american_grenadier/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
+
+//clothes
+	var/randuni2 = rand(1,4)
+	switch(randuni2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_greentrousers(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni3(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/grenadelauncher/M79(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/us_gren(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
+
+	if (prob(45))
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+	else
+		H.f_style = pick("Shaved")
+	if (prob(20))
+		H.original_job.is_afro = TRUE
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut")
+		var/new_hair = "Black"
+		var/hex_hair = hair_colors[new_hair]
+		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+		H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+		H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	else
+		H.original_job.is_afro = FALSE
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(15))
+		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969(null)
+		uniform.attackby(fj, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj2 = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+		uniform.attackby(fj2, H)
+	var/obj/item/clothing/accessory/storage/webbing/m79_vest/filled/vest = new /obj/item/clothing/accessory/storage/webbing/m79_vest/filled(null)
+	uniform.attackby(vest, H)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a M79 grenade launcher specialist. Support your squad by using your main weapon, but avoid firing near them! You can holster your side-arm in your belt.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 /datum/job/american/american_lmg
@@ -785,13 +867,13 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
 
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	if (prob(20))
 		H.original_job.is_afro = TRUE
-		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut")
 		var/new_hair = "Black"
 		var/hex_hair = hair_colors[new_hair]
 		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -802,7 +884,7 @@
 		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
 		H.original_job.is_afro = FALSE
-		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(15))
@@ -878,13 +960,13 @@
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
 	if (prob(45))
-		H.f_style = pick("Selleck Mustache", "Van Dyke Mustache","Elvis Sideburns","Goatee")
+		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
 		H.f_style = pick("Shaved")
 
 	if (prob(20))
 		H.original_job.is_afro = TRUE
-		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut","Joestar")
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Afro","Mohawk","Skinhead","Flat Top","Balding Hair","Mulder","Slick","Fade","Average Joe","Undercut")
 		var/new_hair = "Black"
 		var/hex_hair = hair_colors[new_hair]
 		H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -895,7 +977,7 @@
 		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 	else
 		H.original_job.is_afro = FALSE
-		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Joestar","Slick","Fade","Average Joe","Undercut")
+		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
