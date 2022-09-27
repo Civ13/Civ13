@@ -1,7 +1,7 @@
 /obj/map_metadata/clash2
-	ID = MAP_CLASH2
-	title = "Clash2"
-	lobby_icon = "icons/lobby/clash.png"
+	ID = MAP_VENDETTA
+	title = "Vendetta"
+	lobby_icon = "icons/lobby/vendetta.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	victory_time = 21600
 	no_winner = "The fort is still held by the Bear Clan."
