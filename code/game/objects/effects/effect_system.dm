@@ -202,6 +202,19 @@ steam.start() -- spawns the effect
 /obj/effect/effect/smoke/purple
 	color = "#800080"
 	time_to_live = 600
+/obj/effect/effect/smoke/red
+	color = "#a83232"
+	time_to_live = 600
+/obj/effect/effect/smoke/green
+	color = "#366b36"
+	time_to_live = 600
+/obj/effect/effect/smoke/orange
+	color = "#c47f18"
+	time_to_live = 600
+/obj/effect/effect/smoke/blue
+	color = "#3a5087"
+	time_to_live = 600
+
 /////////////////////////////////////////////
 // Illumination
 /////////////////////////////////////////////
@@ -380,6 +393,18 @@ steam.start() -- spawns the effect
 /datum/effect/effect/system/smoke_spread/purple
 	smoke_type = /obj/effect/effect/smoke/purple
 
+/datum/effect/effect/system/smoke_spread/green
+	smoke_type = /obj/effect/effect/smoke/green
+
+/datum/effect/effect/system/smoke_spread/blue
+	smoke_type = /obj/effect/effect/smoke/blue
+
+/datum/effect/effect/system/smoke_spread/red
+	smoke_type = /obj/effect/effect/smoke/red
+
+/datum/effect/effect/system/smoke_spread/orange
+	smoke_type = /obj/effect/effect/smoke/orange
+
 /////////////////////////////////////////////
 //////// Attach a steam trail to an object (eg. a reacting beaker) that will follow it
 // even if it's carried of thrown.
@@ -482,3 +507,29 @@ steam.start() -- spawns the effect
 				round(min(light, BOMBCAP_LIGHT_RADIUS)),
 				round(min(flash, BOMBCAP_FLASH_RADIUS))
 				)
+
+/obj/effect/helicopter_flyby
+	name = "helicopter flyby"
+	icon_state = ""
+	mouse_opacity = FALSE
+
+/obj/effect/helicopter_flyby/uh1/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 100)
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-1."
+/obj/effect/helicopter_flyby/uh60/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 100)
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-60 Black Hawk."
+/obj/effect/helicopter_flyby/mi8/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 100)
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-8."
+/obj/effect/helicopter_flyby/mi24/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/mi24.ogg', 100, TRUE, extrarange = 100)
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-24 Hind."

@@ -637,7 +637,7 @@ var/global/list/damage_icon_parts = list()
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_pants")
 				pants.color = CU.pantscolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpsants_custom_sides")
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_sides")
 				belt.color = CU.sidescolor
 				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_shirt")
 				shirt.color = CU.shirtcolor
@@ -1092,7 +1092,7 @@ var/global/list/damage_icon_parts = list()
 			if (!CS.uncolored)
 				base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customtracksuit_base")
 				base.color = CS.basecolor
-				secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "cumstomtracksuit_lines")
+				secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customtracksuit_lines")
 				secondary.color = CS.linescolor
 				standing.overlays += base
 				standing.overlays += secondary
