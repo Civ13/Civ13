@@ -24,12 +24,7 @@
 	anchored = TRUE
 
 /obj/structure/religious/runestone/runestone2
-	name = "runestone"
-	desc = "A large rock with a symbol carved into it."
-	icon = 'icons/obj/statue.dmi'
 	icon_state = "runestone_2"
-	density = FALSE
-	anchored = TRUE
 
 /obj/structure/religious/totem
 	name = "stone totem"
