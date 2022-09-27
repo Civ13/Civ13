@@ -23,6 +23,9 @@
 	density = FALSE
 	anchored = TRUE
 
+/obj/structure/religious/runestone/runestone2
+	icon_state = "runestone_2"
+
 /obj/structure/religious/totem
 	name = "stone totem"
 	desc = "A stone statue, representing a spirit animal of this tribe."
