@@ -462,8 +462,8 @@ obj/item/weapon/material/sword/longsword/diamond
 	value = 60
 
 /obj/item/weapon/material/sword/claymore
-	name = "Claymore"
-	desc = "A Scottish longsword which is longer."
+	name = "claymore"
+	desc = "A Scottish longsword."
 	icon_state = "claymore"
 	item_state = "longsword"
 	throw_speed = 1
