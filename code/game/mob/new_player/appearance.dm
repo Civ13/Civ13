@@ -726,7 +726,7 @@
 		icon_state = "facial_7oclock"
 		growth = 1
 
-	fiveoclockstashe
+	sevenoclockstashe
 		name = "7 O'clock Shadow and Mustache"
 		icon_state = "facial_7oclockmustache"
 		growth = 1
