@@ -421,6 +421,10 @@
 	..(newloc, "iron")
 	basic_icon = "cell"
 	name = "Cell"
+
+/obj/structure/simple_door/fence
+	basic_icon = "fence"
+	icon_state = "fence"
 /obj/structure/simple_door/fence/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	basic_icon = "fence"
@@ -428,13 +432,19 @@
 	name = "fence gate"
 	override_opacity = TRUE
 	opacity = FALSE
+
+/obj/structure/simple_door/fence/picket
+	basic_icon = "picketfence"
+	icon_state = "picketfence"
 /obj/structure/simple_door/fence/picket/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	basic_icon = "picketfence"
 	icon_state = "picketfence"
 	name = "picket fence gate"
+
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
+
 /obj/structure/simple_door/stone/New(var/newloc,var/material_name)
 	..(newloc, "stone")
 
@@ -450,6 +460,10 @@
 /obj/structure/simple_door/wood/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 
+/obj/structure/simple_door/wood2
+	icon = 'icons/obj/doors/material_doors_leonister.dmi'
+	basic_icon = "wood2"
+	icon_state = "wood2"
 /obj/structure/simple_door/wood2/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	icon = 'icons/obj/doors/material_doors_leonister.dmi'
@@ -458,20 +472,32 @@
 	name = "Windowed"
 	opacity = 0
 	override_opacity = 1
+
 ///obj/structure/simple_door/resin/New(var/newloc,var/material_name)
 //	..(newloc, "resin")
 //resin is not an extant material, this is a broken door - siro
+
+/obj/structure/simple_door/key_door/custom/jail/woodjail
+	basic_icon = "woodcell"
+	icon_state = "woodcell"
 /obj/structure/simple_door/key_door/custom/jail/woodjail/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	basic_icon = "woodcell"
 	icon_state = "woodcell"
 
+/obj/structure/simple_door/key_door/custom/jail/woodjail/abashiri
+	icon = 'icons/obj/doors/material_doors_leonister.dmi'
+	basic_icon = "abashiricell"
+	icon_state = "abashiricell"
 /obj/structure/simple_door/key_door/custom/jail/woodjail/abashiri/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	icon = 'icons/obj/doors/material_doors_leonister.dmi'
 	basic_icon = "abashiricell"
 	icon_state = "abashiricell"
 
+/obj/structure/simple_door/key_door/custom/jail/steeljail
+	basic_icon = "cell"
+	icon_state = "cell"
 /obj/structure/simple_door/key_door/custom/jail/steeljail/New(var/newloc,var/material_name)
 	..(newloc, "steel")
 	basic_icon = "cell"

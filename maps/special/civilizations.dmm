@@ -264,7 +264,7 @@
 "fd" = (/obj/covers/carpet/redcarpet,/obj/structure/gatecontrol{distance = 2},/turf/floor/dirt,/area/caribbean/nomads/forest{location = 0; name = "West Area Keep"})
 "fe" = (/obj/structure/barricade/stone_h,/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean/nomads/forest{location = 0; name = "West Area Keep"})
 "ff" = (/obj/structure/gate,/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean/nomads/forest{location = 0; name = "West Area Keep"})
-"fg" = (/obj/effect/spawner/mobspawner/deer_f,/turf/floor/grass,/area/caribbean/nomads/forest{name = "West Area"})
+"fg" = (/obj/effect/spawner/mobspawner/deer/female,/turf/floor/grass,/area/caribbean/nomads/forest{name = "West Area"})
 "fh" = (/obj/covers/cobblestone,/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest{name = "West Area"})
 "fi" = (/obj/structure/barricade/stone_v,/turf/floor/dirt,/area/caribbean/nomads/forest{icon_state = "red1"; name = "East Area"})
 "fj" = (/obj/covers/cobblestone,/obj/covers/cobblestone/stairs,/turf/floor/dirt,/area/caribbean/nomads/forest{icon_state = "red1"; name = "East Area"})
