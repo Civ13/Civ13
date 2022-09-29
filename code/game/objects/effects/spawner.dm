@@ -534,14 +534,21 @@
 	create_path = /mob/living/simple_animal/crab/small/trilobite
 	timer = 5000
 
-/obj/effect/spawner/mobspawner/deer_m
+/obj/effect/spawner/mobspawner/deer
+	name = "deer spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/deer
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/deer/male
 	name = "stag spawner"
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/deer/male
 	timer = 3000
 
-/obj/effect/spawner/mobspawner/deer_f
+/obj/effect/spawner/mobspawner/deer/female
 	name = "doe spawner"
 	max_number = 2
 	max_range = 10

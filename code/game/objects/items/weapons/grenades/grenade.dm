@@ -337,7 +337,6 @@
 	throw_range = 9
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
-
 /obj/item/weapon/grenade/coldwar/stinger
 	name = "Stinger grenade"
 	desc = "A less then lethal  grenade that Explodes into a burst of rubber balls."
@@ -447,8 +446,10 @@
 	secondary_action = TRUE
 	var/explosion_size = 2
 	var/spread_range = 7
+
 /obj/item/weapon/grenade/modern
 	secondary_action = TRUE
+
 /obj/item/weapon/grenade/coldwar
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 37  //total number of fragments produced by the grenade
@@ -460,6 +461,7 @@
 	var/spread_range = 7
 	secondary_action = TRUE
 	var/explosion_size = 2
+
 /obj/item/weapon/grenade/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you wan't to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
@@ -718,17 +720,25 @@
 
 /obj/item/weapon/grenade/coldwar/nonfrag/custom
 	name = "explosive grenade"
-	desc = "An explosive grenade with no shrapnel."
+	desc = "An explosive grenade with no shrapnel."	//This is a plain lie
 	icon_state = "m26"
 	det_time = 50
-	throw_range = 10
+	throw_range = 9
+
+/obj/item/weapon/grenade/antitank/custom
+	name = "anti-tank grenade"
+	desc = "An anti-tank grenade with no shrapnel."
+	icon_state = "rpg40"
+	det_time = 50
+	throw_range = 3
+	heavy_armor_penetration = 18
 
 /obj/item/weapon/grenade/modern/custom
 	name = "shrapnel grenade"
 	desc = "A grenade filled with metallic shrapnel."
 	icon_state = "mk2"
 	det_time = 50
-	throw_range = 9
+	throw_range = 10
 
 /obj/item/weapon/grenade/antitank
 	name = "anti-tank grenade"
@@ -751,6 +761,7 @@
 	det_time = 50
 	throw_range = 8
 	secondary_action = TRUE
+
 /obj/item/weapon/grenade/antitank/type99/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you wan't to place a mine here?", "Mining", "No", list("Yes","No"))

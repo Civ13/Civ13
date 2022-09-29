@@ -74,3 +74,24 @@
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
 		seasons()
+
+/obj/map_metadata/nationsrp/coldwar
+	ID = MAP_NATIONSRP_COLDWAR
+	title = "Nations RP Cold War"
+	mission_start_message = "<big>Two imperial nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	age = "the Cold War"
+	default_research = 175
+	ordinal_age = 3
+
+/obj/map_metadata/nationsrp/coldwar/New()
+	..()
+	civname_a = "Redmenian Nation"
+	civname_b = "Blugoslavian Nation"
+	var/newnamea = list("Redmenian Nation" = list(default_research,default_research,default_research,null,0,"star","#D7A326","#DA1515"))
+	var/newnameb = list("Blugoslavian Nation" = list(default_research,default_research,default_research,null,0,"sun","B5AA6C","#2A44CF"))
+	custom_civs += newnamea
+	custom_civs += newnameb
+	civa_research = list(default_research,default_research,default_research,null)
+	civb_research = list(default_research,default_research,default_research,null)
+	spawn(18000)
+		seasons()
