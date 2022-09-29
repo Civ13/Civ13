@@ -513,8 +513,8 @@
 /area/caribbean/no_mans_land/taiga)
 "lE" = (
 /obj/structure/closet/crate/empty,
-/obj/item/weapon/material/sword/longsword/iron,
-/obj/item/weapon/material/sword/longsword/iron,
+/obj/item/weapon/material/sword/claymore/iron,
+/obj/item/weapon/material/sword/claymore/iron,
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
@@ -786,6 +786,10 @@
 	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
+"tm" = (
+/obj/structure/farming/plant/mushroom,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "tI" = (
 /obj/structure/reagent_dispensers/largebarrel/ale,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -885,6 +889,12 @@
 	},
 /turf/floor/beach/water/ice,
 /area/caribbean/no_mans_land/taiga)
+"wJ" = (
+/obj/structure/closet/old_coffin,
+/obj/item/clothing/head/helmet/horned,
+/obj/item/weapon/material/sword/gaelic/iron,
+/turf/floor/plating/stone_old,
+/area/caribbean/void/caves)
 "wK" = (
 /obj/structure/closet/crate/empty,
 /obj/item/stack/material/wood/twentyfive,
@@ -1025,7 +1035,7 @@
 "Al" = (
 /obj/roof/wood,
 /obj/structure/table/wood,
-/obj/item/trash/candle,
+/obj/item/trash/candle/lard,
 /turf/floor/wood,
 /area/caribbean/houses)
 "AL" = (
@@ -1392,8 +1402,8 @@
 /area/caribbean/no_mans_land/taiga)
 "Jd" = (
 /obj/structure/closet/crate/empty,
-/obj/item/weapon/material/sword/longsword/iron,
-/obj/item/weapon/material/sword/longsword/iron,
+/obj/item/weapon/material/sword/claymore/iron,
+/obj/item/weapon/material/sword/claymore/iron,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "Jh" = (
@@ -1418,12 +1428,9 @@
 /turf/floor/winter,
 /area/caribbean/houses)
 "JH" = (
-/obj/covers/repairedfloor,
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
-	},
-/turf/floor/beach/water/ice,
+/obj/roof/wood,
+/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,
+/turf/floor/dirt/dust,
 /area/caribbean/no_mans_land/taiga)
 "JJ" = (
 /obj/structure/toilet/pit_latrine,
@@ -1673,6 +1680,10 @@
 /obj/covers/roads/dirt,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
+"RA" = (
+/obj/structure/farming/plant/herbs,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "RB" = (
 /obj/structure/branch/cleared,
 /turf/floor/winter,
@@ -1790,6 +1801,10 @@
 /obj/effect/decal/cleanable/poo,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"TP" = (
+/obj/item/weapon/book/holybook,
+/turf/floor/plating/stone_old,
+/area/caribbean/no_mans_land/taiga)
 "Ub" = (
 /obj/structure/closet/crate/empty,
 /obj/effect/decal/cleanable/dirt,
@@ -6662,7 +6677,7 @@ cS
 pd
 Cz
 GJ
-Vy
+wJ
 GJ
 GJ
 pd
@@ -6754,7 +6769,7 @@ TB
 GJ
 GJ
 GJ
-Sw
+GJ
 GJ
 GJ
 GJ
@@ -6840,7 +6855,7 @@ cS
 cS
 cS
 cS
-GJ
+cj
 GJ
 pd
 GJ
@@ -12139,7 +12154,7 @@ eZ
 eZ
 yx
 TG
-eZ
+zC
 yx
 Yh
 Yh
@@ -12506,7 +12521,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+zC
 Yh
 Yh
 Yh
@@ -12612,7 +12627,7 @@ Yh
 Yh
 eZ
 eZ
-eZ
+tm
 eZ
 eZ
 eZ
@@ -13059,8 +13074,8 @@ eZ
 eZ
 Yh
 Yh
-eZ
-eZ
+zC
+tm
 Yh
 Yh
 eZ
@@ -13148,7 +13163,7 @@ FL
 eZ
 eZ
 eZ
-eZ
+RA
 Yh
 Yh
 TG
@@ -14261,7 +14276,7 @@ Yh
 eZ
 eZ
 eZ
-eZ
+TG
 eZ
 eZ
 eZ
@@ -14352,7 +14367,7 @@ Yh
 eZ
 eZ
 TG
-TG
+eZ
 FL
 eZ
 eZ
@@ -14445,7 +14460,7 @@ eZ
 eZ
 eZ
 eZ
-FL
+sE
 eZ
 eZ
 eZ
@@ -14932,7 +14947,7 @@ Qh
 xi
 Qh
 Qh
-JH
+xw
 cP
 eZ
 eZ
@@ -15222,7 +15237,7 @@ QR
 eZ
 UL
 oS
-if
+eZ
 TG
 eZ
 eZ
@@ -15340,7 +15355,7 @@ eZ
 eZ
 FL
 WT
-kd
+JH
 kd
 EE
 eZ
@@ -15524,7 +15539,7 @@ eZ
 eZ
 eZ
 WT
-kd
+JH
 Zg
 EE
 eZ
@@ -15963,7 +15978,7 @@ eZ
 eY
 iT
 yP
-iT
+TP
 pu
 eZ
 eZ
@@ -17159,7 +17174,7 @@ eZ
 eZ
 eZ
 ux
-eZ
+RA
 eZ
 eZ
 eZ

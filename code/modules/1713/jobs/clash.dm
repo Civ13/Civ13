@@ -124,7 +124,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_r_hand)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword/iron(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/claymore/iron(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_r_hand)
 
@@ -177,7 +177,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/grey(H), slot_wear_suit)
 	//weapons
 	if(prob(60))
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword/iron(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/claymore/iron(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_belt)
 	else if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/shortbow(H), slot_shoulder)
@@ -328,7 +328,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/viking(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/claymore/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
