@@ -3,7 +3,7 @@
 	title = "Clash"
 	lobby_icon = "icons/lobby/clash.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	victory_time = 27600
+	victory_time = 21600
 	no_winner = "The settlement is still held by the Raven Clan."
 	respawn_delay = 300
 	no_hardcore = TRUE
@@ -20,7 +20,7 @@
 	ordinal_age = 3
 	faction_distribution_coeffs = list(DANISH = 0.5, NORWEGIAN = 0.5)
 	battle_name = "Clan War"
-	mission_start_message = "<font size=4>The <b>Bear</b> clan is sieging the <b>Raven</b> clan's settlement hidden away in the snowy fjords! The Bear clan will win if they manage to <b>capture the Raven King's Cabin</b>.<br> The Raven Clan must <b>defend their settlement for 40 minutes</b>.<br> The siege will start after <b>6 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Bear</b> clan is sieging the <b>Raven</b> clan's settlement hidden away in the snowy fjords! The Bear clan will win if they manage to <b>capture the Raven King's Cabin</b>.<br> The Raven Clan must <b>defend their settlement for 30 minutes</b>.<br> The siege will start after <b>6 minutes</b>.</font>"
 	faction1 = DANISH
 	faction2 = NORWEGIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
@@ -36,7 +36,7 @@
 		. = FALSE
 
 /obj/map_metadata/clash/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 27600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 21600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/clash/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
@@ -126,19 +126,3 @@ var/no_loop_clash = FALSE
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
-
-/obj/map_metadata/clash/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
-

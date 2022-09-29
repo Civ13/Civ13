@@ -34,7 +34,7 @@
 
 /obj/effect/spawner/lootdrop/melee/medieval/clash
 	name = "melee spawner"
-	loot = list(/obj/item/weapon/material/sword/vikingsword/iron,/obj/item/weapon/material/sword/gaelic,/obj/item/weapon/material/sword/zweihander)
+	loot = list(/obj/item/weapon/material/sword/vikingsword/iron,/obj/item/weapon/material/sword/gaelic,/obj/item/weapon/material/sword/claymore/iron)
 
 /obj/effect/spawner/lootdrop/ammo
 	name = "ammo spawner"

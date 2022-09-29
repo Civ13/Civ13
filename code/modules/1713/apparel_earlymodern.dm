@@ -1394,27 +1394,43 @@
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/m16/sf
+	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/m16/sf/New()
 	..()
 	new/obj/item/ammo_magazine/m16(src)
 	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/weapon/grenade/coldwar/m67
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/weapon/grenade/coldwar/m67(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
+	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt/New()
 	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_lt
+	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/us_lt/New()
 	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/us_gren
+	can_hold = list(
+		/obj/item/weapon/gun/projectile/pistol
+	)
+/obj/item/weapon/storage/belt/smallpouches/olive/us_gren/New()
+	..()
+	new/obj/item/ammo_magazine/m1911(src)
+	new/obj/item/ammo_magazine/m1911(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/m14

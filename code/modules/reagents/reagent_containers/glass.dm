@@ -818,7 +818,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		reagents.add_reagent("petroleum",350)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline
-	name = "steel barrel (gasoline)."
+	name = "steel barrel (gasoline)"
 	label_text = "gasoline"
 	New()
 		..()
