@@ -1879,29 +1879,6 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	satisfaction = 3
 	decay = 25*600
 
-/obj/item/weapon/reagent_containers/food/snacks/bun/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	// Bun + meatpatty = burger
-	/*
-	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/meatball))
-		new /obj/item/weapon/reagent_containers/food/snacks/monkeyburger(src)
-		user << "You make a burger."
-		qdel(W)
-		qdel(src)
-
-	// Bun + cutlet = hamburger
-	else if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/cutlet))
-		new /obj/item/weapon/reagent_containers/food/snacks/monkeyburger(src)
-		user << "You make a burger."
-		qdel(W)
-		qdel(src)*/
-
-	// Bun + sausage = hotdog
-	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/sausage))
-		new /obj/item/weapon/reagent_containers/food/snacks/hotdog(src)
-		user << "You make a hotdog."
-		qdel(W)
-		qdel(src)
-
 /obj/item/weapon/reagent_containers/food/snacks/burger
 	name = "burger"
 	desc = "Does not contain ham, probably."
@@ -1914,9 +1891,43 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		..()
 		reagents.add_reagent("protein", 6)
 
-/*
+/obj/item/weapon/reagent_containers/food/snacks/cheeseburger
+	name = "cheeseburger"
+	desc = "Contains cheese, duh."
+	icon_state = "cheeseburger"
+	satisfaction = 6
+	center_of_mass = list("x"=16, "y"=17)
+	decay = 17*600
+	nutriment_desc = list("bun" = 4, "cheese" = 3)
+	New()
+		..()
+		reagents.add_reagent("protein", 8)
+
+/obj/item/weapon/reagent_containers/food/snacks/bun/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	// Bun + meatpatty = burger
+	
+	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/patty))
+		new /obj/item/weapon/reagent_containers/food/snacks/burger(src)
+		user << "You make a burger."
+		qdel(W)
+		qdel(src)
+
+	// Bun + cutlet = hamburger
+	else if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/cutlet))
+		new /obj/item/weapon/reagent_containers/food/snacks/burger(src)
+		user << "You make a burger."
+		qdel(W)
+		qdel(src)
+
+	// Bun + sausage = hotdog
+	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/sausage))
+		new /obj/item/weapon/reagent_containers/food/snacks/hotdog(src)
+		user << "You make a hotdog."
+		qdel(W)
+		qdel(src)
+
 // Burger + cheese wedge = cheeseburger
-/obj/item/weapon/reagent_containers/food/snacks/monkeyburger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
+/obj/item/weapon/reagent_containers/food/snacks/burger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
 	if (istype(W))// && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/cheesewedge))
 		new /obj/item/weapon/reagent_containers/food/snacks/cheeseburger(src)
 		user << "You make a cheeseburger."
@@ -1924,7 +1935,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		qdel(src)
 		return
 	else
-		..()*/
+		..()
 /*
 // Human Burger + cheese wedge = cheeseburger
 /obj/item/weapon/reagent_containers/food/snacks/human/burger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
