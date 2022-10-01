@@ -63,6 +63,7 @@
 			. = TRUE
 	else
 		. = FALSE
+
 /obj/map_metadata/tadojsville/update_win_condition()
 
 	if (world.time >= 21000)
@@ -141,7 +142,7 @@
 	else
 		return 2400 // 5 minutes
 
-/obj/map_metadata/african_warlords/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/tadojsville/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -158,7 +159,7 @@
 		return !faction1_can_cross_blocks()
 	return FALSE
 
-/obj/map_metadata/oasis/cross_message(faction)
+/obj/map_metadata/tadojsville/cross_message(faction)
 	if (faction == INDIANS)
 		return "<font size = 4>The Warbands have recieved the attack order! Cross the river and attack the clinic!</font>"
 	else if (faction == CIVILIAN)
@@ -166,7 +167,7 @@
 	else
 		return "<font size = 4>Warband Mercenaries are attacking from across the river!"
 
-/obj/map_metadata/oasis/reverse_cross_message(faction)
+/obj/map_metadata/tadojsville/reverse_cross_message(faction)
 	if (faction == INDIANS)
 		return "<span class = 'userdanger'>The Warbands have been ordered to halt! No forces may cross the river until the order is given!</span>"
 	else if (faction == CIVILIAN)
