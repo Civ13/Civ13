@@ -232,6 +232,10 @@
 						qdel(src)
 		else
 			..()
+/obj/item/stack/ore/uranium/random
+	New()
+		..()
+		amount = rand(1,25)
 /obj/item/stack/ore/saltpeter
 	name = "saltpeter rock"
 	desc = "A yellowish cristal, consisting of potassium nitrate. A common precursor to many explosives, including gunpowder."

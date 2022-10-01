@@ -520,7 +520,7 @@
 	icon_state = "tripe"
 	bitesize = 1
 	raw = FALSE
-	rotten_icon_state = "rottentripe"
+	rotten_icon_state = "tripe_rotten"
 	rots = TRUE
 	decay = 15*1200
 	satisfaction = -1
@@ -603,7 +603,7 @@
 	decay = 0
 	New()
 		..()
-		reagents.add_reagent("protein", 2)
+		reagents.add_reagent("protein", 4)
 
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
@@ -629,6 +629,7 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
+
 /////////////////////////////////////////////////
 ////////////////////MINCER///////////////////////
 /////////////////////////////////////////////////
@@ -652,6 +653,7 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 2)
+
 /obj/item/weapon/reagent_containers/food/snacks/meatball
 	name = "meatball"
 	desc = "Round meat."
@@ -741,6 +743,7 @@
 			..()
 	else
 		..()
+
 ///////////////////////////////////////////
 /////////////CUTTING BOARD/////////////////
 ///////////////////////////////////////////
@@ -753,14 +756,27 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/input
-/*/obj/structure/cutting_board/attack_hand(var/mob/living/human/H)
+	var/input = null
+
+/obj/structure/cutting_board/attack_hand(var/mob/living/human/H)
 	if(input != null)
-		H << "You scrape off the cutting board"
-		new input(src.loc)
-		input = null
-		icon_state = "cutting_board_dirty"
-		return*/ //Cutting board removing of the object doesn't work for some reason and I cannot figure out why.
+		if(do_after(H, 20))
+			H << "You scrape off the cutting board"
+			input = null
+			icon_state = "cutting_board_dirty"
+			return
+		else
+			H << "You stop scraping off the cutting board"
+			return
+	else if(input == null && icon_state == "cutting_board_dirty")
+		if(do_after(H, 15))
+			H << "You clean the cutting board of all it's filty grime"
+			icon_state = "cutting_board"
+			return
+		else
+			H << "You stop cleaning the cutting board"
+			return
+
 /obj/structure/cutting_board/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		if(input != null)
