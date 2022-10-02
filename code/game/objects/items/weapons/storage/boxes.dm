@@ -320,7 +320,12 @@
 	icon_state = "advfirstaid2"
 	item_state = "advfirstaid2"
 	w_class = 2
-
+	can_hold = list(
+		/obj/item/stack/medical/advanced/bruise_pack,
+		/obj/item/stack/medical/advanced/ointment,
+		/obj/item/stack/medical/splint,
+		/obj/item/weapon/pill_pack/tramadol
+		)
 /obj/item/weapon/storage/box/firstaid/advsmall/New()
 	..()
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
