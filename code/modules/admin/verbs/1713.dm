@@ -655,33 +655,101 @@ var/filipino_forceEnabled = FALSE
 	var/mortality_chinese = round(mortality_coefficient_chinese*100)
 	var/mortality_filipino = round(mortality_coefficient_filipino*100)
 
-	var/msg1 = "British: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
-	var/msg2 = "Pirates: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
-	if(map.ID == MAP_CAMPAIGN)
-		msg2 = "Redmenia: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
-	var/msg3 = "Civilians: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
-	if(map.ID == MAP_CAMPAIGN)
-		msg3 = "Blugoslavia: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
-	var/msg4 = "Spanish: [alive_spanish.len] alive, [heavily_injured_spanish.len] heavily injured or unconscious, [dead_spanish.len] deceased. Mortality rate: [mortality_spanish]%"
-	var/msg5 = "Portuguese: [alive_portuguese.len] alive, [heavily_injured_portuguese.len] heavily injured or unconscious, [dead_portuguese.len] deceased. Mortality rate: [mortality_portuguese]%"
-	var/msg6 = "French: [alive_french.len] alive, [heavily_injured_french.len] heavily injured or unconscious, [dead_french.len] deceased. Mortality rate: [mortality_french]%"
-	var/msg8 = "Dutch: [alive_dutch.len] alive, [heavily_injured_dutch.len] heavily injured or unconscious, [dead_dutch.len] deceased. Mortality rate: [mortality_dutch]%"
-	var/msg7 = "Natives: [alive_indians.len] alive, [heavily_injured_indians.len] heavily injured or unconscious, [dead_indians.len] deceased. Mortality rate: [mortality_indians]%"
-	var/msg9 = "Romans: [alive_roman.len] alive, [heavily_injured_roman.len] heavily injured or unconscious, [dead_roman.len] deceased. Mortality rate: [mortality_roman]%"
-	var/msg10 = "Greeks: [alive_greek.len] alive, [heavily_injured_greek.len] heavily injured or unconscious, [dead_greek.len] deceased. Mortality rate: [mortality_greek]%"
-	var/msg11 = "Arabs: [alive_arab.len] alive, [heavily_injured_arab.len] heavily injured or unconscious, [dead_arab.len] deceased. Mortality rate: [mortality_arab]%"
-	var/msg12 = "Japanese: [alive_japanese.len] alive, [heavily_injured_japanese.len] heavily injured or unconscious, [dead_japanese.len] deceased. Mortality rate: [mortality_japanese]%"
-	var/msg13 = "Russian: [alive_russian.len] alive, [heavily_injured_russian.len] heavily injured or unconscious, [dead_russian.len] deceased. Mortality rate: [mortality_russian]%"
-	var/msg14 = "German: [alive_german.len] alive, [heavily_injured_german.len] heavily injured or unconscious, [dead_german.len] deceased. Mortality rate: [mortality_german]%"
-	var/msg15 = "American: [alive_american.len] alive, [heavily_injured_american.len] heavily injured or unconscious, [dead_american.len] deceased. Mortality rate: [mortality_american]%"
-	var/msg16 = "Vietnamese: [alive_vietnamese.len] alive, [heavily_injured_vietnamese.len] heavily injured or unconscious, [dead_vietnamese.len] deceased. Mortality rate: [mortality_vietnamese]%"
-	var/msg17 = "Chinese: [alive_chinese.len] alive, [heavily_injured_chinese.len] heavily injured or unconscious, [dead_chinese.len] deceased. Mortality rate: [mortality_chinese]%"
-	var/msg18 = "Filipino: [alive_filipino.len] alive, [heavily_injured_filipino.len] heavily injured or unconscious, [dead_filipino.len] deceased. Mortality rate: [mortality_filipino]%"
-	var/msg19 = "Chechen: [alive_chechen.len] alive, [heavily_injured_chechen.len] heavily injured or unconscious, [dead_chechen.len] deceased. Mortality rate: [mortality_chechen]%"
-	var/msg20 = "Finnish: [alive_finnish.len] alive, [heavily_injured_finnish.len] heavily injured or unconscious, [dead_finnish.len] deceased. Mortality rate: [mortality_finnish]%"
-	var/msg21 = "Norwegian: [alive_norwegian.len] alive, [heavily_injured_norwegian.len] heavily injured or unconscious, [dead_norwegian.len] deceased. Mortality rate: [mortality_norwegian]%"
-	var/msg22 = "Swedish: [alive_swedish.len] alive, [heavily_injured_swedish.len] heavily injured or unconscious, [dead_swedish.len] deceased. Mortality rate: [mortality_swedish]%"
-	var/msg23 = "Danish: [alive_danish.len] alive, [heavily_injured_danish.len] heavily injured or unconscious, [dead_danish.len] deceased. Mortality rate: [mortality_danish]%"
+	var/fact1 = "British"
+	var/fact2 = "Pirates"
+	var/fact3 = "Civilians"
+	var/fact4 = "Spanish"
+	var/fact5 = "Portuguese"
+	var/fact6 = "French"
+	var/fact7 = "Natives"
+	var/fact8 = "Dutch"
+	var/fact9 = "Romans"
+	var/fact10 = "Greeks"
+	var/fact11 = "Arabs"
+	var/fact12 = "Japanese"
+	var/fact13 = "Russians"
+	var/fact14 = "Germans"
+	var/fact15 = "Americans"
+	var/fact16 = "Vietnamese"
+	var/fact17 = "Chinese"
+	var/fact18 = "Filipino"
+	var/fact19 = "Chechen"
+	var/fact20 = "Finnish"
+	var/fact21 = "Norwegian"
+	var/fact22 = "Swedish"
+	var/fact23 = "Danish"
+
+	if (map.ID == MAP_CAMPAIGN)
+		fact2 = "Redmenia"
+		fact3 = "Blugoslavia"
+	else if (map.ID == MAP_WHITERUN)
+		fact3 = "Stormcloaks"
+		fact9 = "Imperials"
+	else if (map.ID == MAP_CLASH)
+		fact21 = "Bear Clan"
+		fact23 = "Raven Clan"
+	else if (map.ID == MAP_MISSIONARY_RIDGE)
+		fact3 = "Confederate Army"
+		fact15 = "Union Army"
+	else if (map.ID == MAP_RUHR_UPRISING)
+		fact3 = "Ruhr Red Army"
+	else if (map.ID == MAP_SIBERSYN || map.ID == MAP_TSARITSYN)
+		fact3 = "Red Army"
+		fact13 = "White Army"
+	else if (map.ID == MAP_SOVAFGHAN || map.ID == MAP_MAGISTRAL || map.ID == MAP_HILL_3234)
+		fact3 = "DRA and Civilians"
+		fact11 = "Mujahideen"
+	else if (map.ID == MAP_HOSTAGES || map.ID == MAP_ARAB_TOWN_2)
+		fact11 = "Insurgents"
+	else if (map.ID == MAP_ARAB_TOWN)
+		fact11 = "Hezbollah"
+		fact15 = "IDF"
+	else if (map.ID == MAP_CAPITOL_HILL)
+		fact3 = "Militia"
+		fact15 = "Government"
+	else if (map.ID == MAP_GROZNY)
+		fact13 = "Russian Federal Forces"
+	else if (map.ID == MAP_YELTSIN)
+		fact3 = "Militia"
+		fact13 = "Russian Army"
+	else if (map.ID == MAP_WACO)
+		fact3 = "Davidians"
+		fact15 = "ATF"
+	else if (map.ID == MAP_BANK_ROBBERY)
+		fact3 = "Police"
+		fact13 = "Robbers"
+	else if (map.ID == MAP_DRUG_BUST)
+		fact3 = "Police"
+		fact13 = "Rednikov"
+	else if (map.ID == MAP_TANTIVEIV)
+		fact3 = "Rebels"
+		fact15 = "Empire"
+	else if (map.ordinal_age >= 6 && map.ordinal_age < 8)
+		fact13 = "Soviets"
+
+	var/msg1 = "[fact1]: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
+	var/msg2 = "[fact2]: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
+	var/msg3 = "[fact3]: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+	var/msg4 = "[fact4]: [alive_spanish.len] alive, [heavily_injured_spanish.len] heavily injured or unconscious, [dead_spanish.len] deceased. Mortality rate: [mortality_spanish]%"
+	var/msg5 = "[fact5]: [alive_portuguese.len] alive, [heavily_injured_portuguese.len] heavily injured or unconscious, [dead_portuguese.len] deceased. Mortality rate: [mortality_portuguese]%"
+	var/msg6 = "[fact6]: [alive_french.len] alive, [heavily_injured_french.len] heavily injured or unconscious, [dead_french.len] deceased. Mortality rate: [mortality_french]%"
+	var/msg8 = "[fact8]: [alive_dutch.len] alive, [heavily_injured_dutch.len] heavily injured or unconscious, [dead_dutch.len] deceased. Mortality rate: [mortality_dutch]%"
+	var/msg7 = "[fact7]: [alive_indians.len] alive, [heavily_injured_indians.len] heavily injured or unconscious, [dead_indians.len] deceased. Mortality rate: [mortality_indians]%"
+	var/msg9 = "[fact9]: [alive_roman.len] alive, [heavily_injured_roman.len] heavily injured or unconscious, [dead_roman.len] deceased. Mortality rate: [mortality_roman]%"
+	var/msg10 = "[fact10]: [alive_greek.len] alive, [heavily_injured_greek.len] heavily injured or unconscious, [dead_greek.len] deceased. Mortality rate: [mortality_greek]%"
+	var/msg11 = "[fact11]: [alive_arab.len] alive, [heavily_injured_arab.len] heavily injured or unconscious, [dead_arab.len] deceased. Mortality rate: [mortality_arab]%"
+	var/msg12 = "[fact12]: [alive_japanese.len] alive, [heavily_injured_japanese.len] heavily injured or unconscious, [dead_japanese.len] deceased. Mortality rate: [mortality_japanese]%"
+	var/msg13 = "[fact13]: [alive_russian.len] alive, [heavily_injured_russian.len] heavily injured or unconscious, [dead_russian.len] deceased. Mortality rate: [mortality_russian]%"
+	var/msg14 = "[fact14]: [alive_german.len] alive, [heavily_injured_german.len] heavily injured or unconscious, [dead_german.len] deceased. Mortality rate: [mortality_german]%"
+	var/msg15 = "[fact15]: [alive_american.len] alive, [heavily_injured_american.len] heavily injured or unconscious, [dead_american.len] deceased. Mortality rate: [mortality_american]%"
+	var/msg16 = "[fact16]: [alive_vietnamese.len] alive, [heavily_injured_vietnamese.len] heavily injured or unconscious, [dead_vietnamese.len] deceased. Mortality rate: [mortality_vietnamese]%"
+	var/msg17 = "[fact17]: [alive_chinese.len] alive, [heavily_injured_chinese.len] heavily injured or unconscious, [dead_chinese.len] deceased. Mortality rate: [mortality_chinese]%"
+	var/msg18 = "[fact18]: [alive_filipino.len] alive, [heavily_injured_filipino.len] heavily injured or unconscious, [dead_filipino.len] deceased. Mortality rate: [mortality_filipino]%"
+	var/msg19 = "[fact19]: [alive_chechen.len] alive, [heavily_injured_chechen.len] heavily injured or unconscious, [dead_chechen.len] deceased. Mortality rate: [mortality_chechen]%"
+	var/msg20 = "[fact20]: [alive_finnish.len] alive, [heavily_injured_finnish.len] heavily injured or unconscious, [dead_finnish.len] deceased. Mortality rate: [mortality_finnish]%"
+	var/msg21 = "[fact21]: [alive_norwegian.len] alive, [heavily_injured_norwegian.len] heavily injured or unconscious, [dead_norwegian.len] deceased. Mortality rate: [mortality_norwegian]%"
+	var/msg22 = "[fact22]: [alive_swedish.len] alive, [heavily_injured_swedish.len] heavily injured or unconscious, [dead_swedish.len] deceased. Mortality rate: [mortality_swedish]%"
+	var/msg23 = "[fact23]: [alive_danish.len] alive, [heavily_injured_danish.len] heavily injured or unconscious, [dead_danish.len] deceased. Mortality rate: [mortality_danish]%"
 
 	var/msg_npcs = "NPCs: [faction1_npcs] americans alive, [faction2_npcs] japanese alive."
 
