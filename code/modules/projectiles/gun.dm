@@ -27,7 +27,7 @@
 		slot_r_hand_str = 'icons/mob/items/righthand_guns.dmi',
 		)
 	icon_state = "detective"
-	item_state = "gun"
+	item_state = "pistol"
 	flags =  CONDUCT
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
 	w_class = 3
