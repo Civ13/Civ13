@@ -801,6 +801,7 @@
 			load_delay = 4
 			aim_miss_chance_divider = 3.00
 		if ("Revolver")
+			item_state = "pistol"
 			gtype = "pistol"
 			stat = "pistol"
 			w_class = 2
@@ -875,7 +876,7 @@
 			fire_delay = 3
 			equiptimer -= 1
 			gun_type = GUN_TYPE_PISTOL
-			slot_flags = SLOT_HOLSTER
+			slot_flags = SLOT_BELT | SLOT_HOLSTER
 			good_mags = list(/obj/item/ammo_magazine)
 			accuracy_list = list(
 				// small body parts: head, hand, feet
@@ -1057,7 +1058,6 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Open-Bolt (large)")
 			item_state = "negev"
 			stat = "machinegun"
@@ -1130,7 +1130,6 @@
 			load_method = MAGAZINE
 			sel_mode = 1
 			full_auto = TRUE
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Dual Selective Fire")
 			good_mags = list(/obj/item/ammo_magazine)
 			item_state = "ak47"
@@ -1198,7 +1197,6 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Triple Selective Fire")
 			good_mags = list(/obj/item/ammo_magazine)
 			item_state = "m16"
@@ -1267,7 +1265,6 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Pump-Action")
 			item_state = "shotgun-f"
 			stat = "rifle"
@@ -1332,7 +1329,6 @@
 			load_method = SINGLE_CASING
 			ammo_type = /obj/item/ammo_casing/shotgun
 			handle_casings = HOLD_CASINGS
-			stat = "rifle"
 			move_delay = 4
 			load_delay = 5
 	switch(feeding_type)
