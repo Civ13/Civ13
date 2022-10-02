@@ -75,6 +75,27 @@
 	spawn(18000)
 		seasons()
 
+/obj/map_metadata/nationsrp/ww2
+	ID = MAP_NATIONSRP_WW2
+	title = "Nations RP World War 2"
+	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	default_research = 145
+	ordinal_age = 6
+	age4_done = FALSE
+
+/obj/map_metadata/nationsrp/ww2/New()
+	..()
+	civname_a = "Russian Nation"
+	civname_b = "German Nation"
+	var/newnamea = list("Russian Nation" = list(default_research,default_research,default_research,null,0,"saltire","#D4AF37","#660000"))
+	var/newnameb = list("German Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
+	custom_civs += newnamea
+	custom_civs += newnameb
+	civa_research = list(default_research,default_research,default_research,null)
+	civb_research = list(default_research,default_research,default_research,null)
+	spawn(18000)
+		seasons()
+
 /obj/map_metadata/nationsrp/coldwar
 	ID = MAP_NATIONSRP_COLDWAR
 	title = "Nations RP Cold War"

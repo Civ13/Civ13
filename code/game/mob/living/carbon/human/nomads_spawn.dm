@@ -921,6 +921,7 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+		
 	else if (map.ID == MAP_NATIONSRP)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -1019,6 +1020,54 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+	else if (map.ID == MAP_NATIONSRP_WW2)
+		var/new_hair = "Dark Brown"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Light Brown","Dark Brown","Black")
+		var/list/possible_e_list = list("Green","Brown","Black")
+		var/list/possible_s_list = list(-45,-110)
+		spawn(5)
+			//east Russian
+			if (original_job_title == "Civilization A Citizen")
+				add_language("Russian",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/russian/A in languages)
+					default_language = A
+				name = species.get_random_russian_name(gender)
+				real_name = name
+				add_note("Known Languages", "Russian")
+				possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-10,-28)
+			//west German
+			else if (original_job_title == "Civilization B Citizen")
+				add_language("German",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/german/A in languages)
+					default_language = A
+				name = species.get_random_german_name(gender)
+				real_name = name
+				add_note("Known Languages", "German")
+				possible_h_list = list("Light Brown","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-15,-30)
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
 	else if (map.ID == MAP_NATIONSRP_COLDWAR)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -1031,27 +1080,27 @@
 				add_language("Blugoslavian",TRUE)
 				remove_language("English")
 				remove_note("Known Languages","English")
-				for (var/datum/language/gaelic/A in languages)
+				for (var/datum/language/blugoslavian/A in languages)
 					default_language = A
-				name = species.get_random_name(gender)
+				name = species.get_random_russian_name(gender)
 				real_name = name
 				add_note("Known Languages", "Blugoslavian")
-				possible_h_list = list("Orange","Light Brown","Red","Brown")
-				possible_e_list = list("Green","Blue")
-				possible_s_list = list(-15,-30)
+				possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-10,-28)
 			//west Redmenian
 			else if (original_job_title == "Civilization A Citizen")
 				add_language("Redmenian",TRUE)
 				remove_language("English")
 				remove_note("Known Languages","English")
-				for (var/datum/language/latin/A in languages)
+				for (var/datum/language/redmenian/A in languages)
 					default_language = A
-				name = species.get_random_english_name(gender)
+				name = species.get_random_chechen_name(gender)
 				real_name = name
 				add_note("Known Languages", "Redmenian")
 				possible_h_list = list("Light Brown","Dark Brown","Black","Brown")
-				possible_e_list = list("Green","Brown","Black")
-				possible_s_list = list(-35,-60)
+				possible_e_list = list("Green","Brown","Blue")
+				possible_s_list = list(-15,-30)
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)
 		s_tone = rand(possible_s_list[2],possible_s_list[1])

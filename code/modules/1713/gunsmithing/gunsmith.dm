@@ -685,7 +685,7 @@
 	caliber = "caliber"
 	ammo_type = /obj/item/ammo_casing
 	magazine_type = /obj/item/ammo_magazine/emptypouch
-	good_mags = list(/obj/item/ammo_magazine)
+	good_mags = list()
 
 /obj/item/weapon/gun/projectile/custom/New()
 	..()
@@ -752,7 +752,7 @@
 			stat = "rifle"
 			move_delay = 2
 			fire_delay = 2
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptyclip)
 			accuracy_list = list(
 
 				// small body parts: head, hand, feet
@@ -817,7 +817,7 @@
 			single_action = FALSE
 			equiptimer -= 1
 			slot_flags = SLOT_HOLSTER
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptyspeedloader)
 			accuracy_list = list(
 				// small body parts: head, hand, feet
 				"small" = list(
@@ -877,7 +877,7 @@
 			equiptimer -= 1
 			gun_type = GUN_TYPE_PISTOL
 			slot_flags = SLOT_BELT | SLOT_HOLSTER
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptymagazine/pistol)
 			accuracy_list = list(
 				// small body parts: head, hand, feet
 				"small" = list(
@@ -933,7 +933,7 @@
 			gtype = "rifle"
 			w_class = 4
 			slot_flags = SLOT_SHOULDER
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptymagazine/small)
 			accuracy_list = list(
 
 				// small body parts: head, hand, feet
@@ -1002,7 +1002,7 @@
 			sel_mode = 1
 			full_auto = TRUE
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptymagazine)
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
 				)
@@ -1065,7 +1065,7 @@
 			w_class = 5
 			heavy = TRUE
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptybelt)
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),
 				)
@@ -1131,7 +1131,7 @@
 			sel_mode = 1
 			full_auto = TRUE
 		if ("Dual Selective Fire")
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptymagazine)
 			item_state = "ak47"
 			gtype = "rifle"
 			stat = "rifle"
@@ -1198,7 +1198,7 @@
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
 		if ("Triple Selective Fire")
-			good_mags = list(/obj/item/ammo_magazine)
+			good_mags = list(/obj/item/ammo_magazine/emptymagazine)
 			item_state = "m16"
 			gtype = "rifle"
 			stat = "rifle"
