@@ -34,13 +34,13 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 /obj/item/ammo_magazine/madsen/box
 	name = "magazine box (7.62x54mm)"
-	icon_state = "mosin_ammo"
+	icon_state = "mhbox"
 	mag_type = MAGAZINE
 	caliber = "a762x54"
 	w_class = 3
 	ammo_type = /obj/item/ammo_casing/a762x54
-	max_ammo = 50
-	multiple_sprites = FALSE
+	max_ammo = 65
+	multiple_sprites = TRUE
 	is_box = TRUE
 /obj/item/ammo_magazine/b762
 	name = "belt (7.62x51mm)"
@@ -231,6 +231,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 250
 	multiple_sprites = TRUE
 	belt = TRUE
+
+/obj/item/ammo_magazine/vickers/box
+	name = "magazine box (.303 British)"
+	icon_state = "wood_ammobox"
+	mag_type = MAGAZINE
+	caliber = "a303_weak"
+	w_class = 5
+	ammo_type = /obj/item/ammo_casing/a303/weak
+	max_ammo = 650
+	multiple_sprites = TRUE
+	is_box = TRUE
+	slowdown = 2.0
 
 /obj/item/ammo_magazine/hotchkiss
 	name = "Hotchkiss ammo belt"

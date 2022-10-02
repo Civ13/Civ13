@@ -104,13 +104,13 @@
 
 /obj/item/ammo_magazine/m16/box
 	name = "magazine box (5.56x45mm)"
-	icon_state = "ammo"
+	icon_state = "556x45"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	w_class = 3
 	ammo_type = /obj/item/ammo_casing/a556x45
-	max_ammo = 50
-	multiple_sprites = FALSE
+	max_ammo = 65
+	multiple_sprites = TRUE
 	is_box = TRUE
 
 /obj/item/ammo_magazine/ar10
@@ -135,13 +135,13 @@
 
 /obj/item/ammo_magazine/m14box
 	name = "magazine box (7.62x51mm)"
-	icon_state = "ammo"
+	icon_state = "762x51"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	w_class = 3
-	ammo_type = /obj/item/ammo_casing/a3006
-	max_ammo = 50
-	multiple_sprites = FALSE
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 65
+	multiple_sprites = TRUE
 	is_box = TRUE
 
 /obj/item/ammo_magazine/hk
@@ -277,6 +277,16 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/m9beretta/box
+	name = "magazine box (9x19mm)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 65
+	multiple_sprites = TRUE
+	is_box = TRUE
 
 /obj/item/ammo_magazine/jericho
 	name = "Jericho 941 magazine (9x19mm)"

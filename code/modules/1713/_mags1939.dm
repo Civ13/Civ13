@@ -104,13 +104,13 @@
 
 /obj/item/ammo_magazine/greasegun/box
 	name = "magazine box (.45 ACP)"
-	icon_state = "ammo"
+	icon_state = "oldbox"
 	mag_type = MAGAZINE
 	caliber = "a45acp"
 	w_class = 3
 	ammo_type = /obj/item/ammo_casing/a45acp
-	max_ammo = 50
-	multiple_sprites = FALSE
+	max_ammo = 65
+	multiple_sprites = TRUE
 	is_box = TRUE
 
 /obj/item/ammo_magazine/c762x25_pps
