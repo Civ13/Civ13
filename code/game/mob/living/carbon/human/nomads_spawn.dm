@@ -1095,7 +1095,7 @@
 				remove_note("Known Languages","English")
 				for (var/datum/language/redmenian/A in languages)
 					default_language = A
-				name = species.get_random_dutch_name(gender)
+				name = species.get_random_chechen_name(gender)
 				real_name = name
 				add_note("Known Languages", "Redmenian")
 				possible_h_list = list("Light Brown","Dark Brown","Black","Brown")
