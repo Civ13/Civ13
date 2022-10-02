@@ -353,5 +353,5 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/ammo_magazine/greasegun(src)
 		new /obj/item/ammo_magazine/greasegun(src)
 		new /obj/item/ammo_magazine/m9beretta(src)
-		new new /obj/item/weapon/grenade/coldwar/m67(src)
+		new /obj/item/weapon/grenade/coldwar/m67(src)
 		new /obj/item/weapon/grenade/incendiary/anm14(src)
