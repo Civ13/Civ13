@@ -711,10 +711,26 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 				/obj/item/weapon/grenade/smokebomb/m18smoke = 4,
 				)
 
+/obj/structure/closet/crate/ww2/un/m16ammoboxes
+	name = "UN Peacekeeping bulk 5.56x45mm ammunition"
+	paths = list(/obj/item/ammo_magazine/m16/box = 10)
+
+/obj/structure/closet/crate/ww2/un/ammoboxes
+	name = "UN Peacekeeping bulk specialty ammunition"
+	paths = list(/obj/item/ammo_magazine/m9beretta/box = 4,
+				/obj/item/ammo_magazine/madsen/box = 3,
+				/obj/item/ammo_magazine/m14box = 3,
+				/obj/item/ammo_magazine/greasegun/box = 2,
+				)
+
+/obj/structure/closet/crate/ww2/un/vickersboxes
+	name = "UN Peacekeeping bulk .303 British ammunition"
+	paths = list(/obj/item/ammo_magazine/vickers/box = 6)
 
 /obj/structure/closet/crate/ww2/un/meals
 	name = "UN Peacekeeping mealkits"
 	paths = list(/obj/item/weapon/storage/ww2/unmeal = 10)
+
 obj/structure/closet/crate/ww2/mortar_shells
 	name = "mortar shells"
 	paths = list(/obj/item/cannon_ball/mortar_shell = 18)
