@@ -123,7 +123,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 #undef RULES_FILE
 
 /client/verb/hotkeys_help()
-	set name = "hotkeys-help"
+	set name = "Hotkeys Help"
 	set category = "OOC"
 
 	src << HOTKEY_MODE_OPTIONS
