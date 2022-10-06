@@ -29,7 +29,7 @@
 	songs = list(
 		"George Baker Selection - Little Green Bag:1" = "sound/music/little_green_bag.ogg",)
 
-	var/list/civilians_evacuated = 0
+	var/civilians_evacuated = 0
 	var/list/civilians_killed = list(
 		"Police" = 0,
 		"Robbers" = 0,
@@ -39,6 +39,7 @@
 	civ_collector()
 	civ_status()
 	civ_complete()
+	police_supplies()
 
 obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -198,7 +199,7 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 			if(CVL.stat != DEAD)
 				qdel(CVL)
 				civilians_evacuated++
-	spawn(600)
+	spawn(300)
 		civ_collector()
 	return
 
@@ -216,3 +217,56 @@ obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 			world << "<big><span class = 'notice'>The Police Department has successfully evacuated all the civilian hostages: Additional SWAT units are coming to assist!</span></big>"
 			spam_check = TRUE
 	civ_complete()
+
+/obj/map_metadata/bank_robbery/proc/police_supplies()
+	var/next_level = 0
+	if (civilians_evacuated >= 4 && civilians_evacuated < 6)
+		if (next_level == 0)
+			world << "<big><span class = 'notice'>4 out of the 12 civilians have been evacuated, additional equipment is issued to the Police.</span></big>"
+			next_level = 1
+			for (var/obj/structure/altar/stone/D in world)
+				var/turf/T = get_turf(D)
+				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
+				new /obj/item/ammo_magazine/shellbox/beanbag(T)
+				if (prob(50))
+					new /obj/item/ammo_magazine/shellbox(T)
+			return
+	if (civilians_evacuated >= 6 && civilians_evacuated < 8)
+		if (next_level == 1)
+			world << "<big><span class = 'notice'>6 out of the 12 civilians have been evacuated, additional equipment is issued to the Police.</span></big>"
+			next_level = 2
+			for (var/obj/structure/altar/stone/D in world)
+				var/turf/T = get_turf(D)
+				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
+				new /obj/item/ammo_magazine/shellbox/beanbag(T)
+				if (prob(70))
+					new /obj/item/ammo_magazine/shellbox(T)
+			return
+	if (civilians_evacuated >= 8 && civilians_evacuated < 10)
+		if (next_level == 2)
+			world << "<big><span class = 'notice'>8 out of the 12 civilians have been evacuated, additional equipment is issued to the Police.</span></big>"
+			next_level = 3
+			for (var/obj/structure/altar/stone/D in world)
+				var/turf/T = get_turf(D)
+				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
+				new /obj/item/ammo_magazine/shellbox/beanbag(T)
+				new /obj/item/ammo_magazine/shellbox(T)
+				if (prob(70))
+					new /obj/item/ammo_magazine/shellbox/rubber(T)
+			return
+	if (civilians_evacuated >= 10)
+		if (next_level == 3)
+			world << "<big><span class = 'notice'>10 out of the 12 civilians have been evacuated, additional equipment is issued to the Police.</span></big>"
+			next_level = 4
+			for (var/obj/structure/altar/stone/D in world)
+				var/turf/T = get_turf(D)
+				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
+				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
+				new /obj/item/ammo_magazine/shellbox/beanbag(T)
+				new /obj/item/ammo_magazine/shellbox(T)
+				new /obj/item/ammo_magazine/shellbox(T)
+				new /obj/item/ammo_magazine/shellbox/rubber(T)
+			return
+	spawn(10)
+		police_supplies()
+	return
