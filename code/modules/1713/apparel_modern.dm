@@ -1176,6 +1176,10 @@
 		/obj/item/weapon/pen,
 		/obj/item/stack/money,
 		/obj/item/weapon/key,
+		/obj/item/flashlight,
+		/obj/item/weapon/reagent_containers/spray/pepper,
+		/obj/item/clothing/accessory/armband/policebadge,
+		/obj/item/weapon/clipboard,
 		)
 /obj/item/weapon/storage/belt/police/modern
 /obj/item/weapon/storage/belt/police/modern/New()
