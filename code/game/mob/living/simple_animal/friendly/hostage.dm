@@ -50,7 +50,7 @@
 	uniquenum = rand(10000,99999)
 	icon_state = "civilian_[rand(1,9)]"
 	if (map && map.ID == MAP_BANK_ROBBERY)
-		icon_state = pick("civilian_[rand(1,2)]","civilian_5]","civilian_[rand(7,9)]","hostage_m[rand(1,3)]")
+		icon_state = pick("civilian_[rand(1,2)]","civilian_5","civilian_[rand(7,9)]","hostage_m[rand(1,3)]")
 		harmer_factions = list("Police" = 0, "Robbers" = 0)
 	icon_living = icon_state
 	icon_dead = "[icon_state]_dead"
@@ -94,9 +94,9 @@ var/global/civvies_killed = list()
 		else if (harmer_factions["Police"] == harmer_factions["Robbers"] && harmer_factions["Robbers"] > 0)
 			killer = "both sides"
 		if (BR.civilians_killed["Robbers"] == 4)
-			world << "<font size=3><span class = 'warning'>At least 4 additional civilians have been killed: the situation is critical!</span></font>"
+			world << "<big><font size=3><span class = 'warning'>At least 4 additional civilians have been killed: the situation is critical!</span></font></big>"
 		if (BR.civilians_killed["Robbers"] == 5)
-			world << "<span class = 'danger'>Too many civilians have been killed: Additional SWAT units are on the way!</span>"
+			world << "<big><span class = 'danger'>Too many civilians have been killed: Additional SWAT units are on the way!</span></big>"
 		if (killer != "none")
 			civvies_killed += list(uniquenum)
 			switch(killer)
