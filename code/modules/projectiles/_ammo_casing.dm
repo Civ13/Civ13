@@ -495,7 +495,7 @@
 
 /obj/item/stack/ammopart/casing/grenade
 	name = "empty grenade casing"
-	desc = "A large empty grenade casing."
+	desc = "An empty grenade casing."
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "casing"
 	force = WEAPON_FORCE_HARMLESS+4
@@ -506,6 +506,27 @@
 	value = 4
 	var/finished = FALSE
 	var/stype = "explosive"
+
+/obj/item/stack/ammopart/casing/booster
+	name = "empty rocket booster"
+	desc = "A large empty rocket booster."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "rocketcasing_booster"
+	force = WEAPON_FORCE_HARMLESS+5
+	throwforce = WEAPON_FORCE_HARMLESS+7
+	resultpath = null
+	gunpowder_max = 15
+	max_amount = 1
+	value = 10
+
+/obj/item/stack/ammopart/warhead
+	name = "empty rocket warhead"
+	desc = "A large empty rocket warhead."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "rocketcasing_warhead"
+	force = WEAPON_FORCE_HARMLESS+3
+	throwforce = WEAPON_FORCE_HARMLESS+6
+	value = 20
 
 /obj/item/ammo_casing/a65x50
 	name = "6.5x50mm Arisaka cartridge"
@@ -1037,30 +1058,30 @@
 /obj/item/ammo_casing/shotgun/slug
 	name = "shotgun slug"
 	desc = "A 12 gauge slug."
-	icon_state = "slshell"
-	spent_icon = "slshell_casing"
+	icon_state = "slug-shell"
+	spent_icon = "slug-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/slug
 
 /obj/item/ammo_casing/shotgun/beanbag
 	name = "beanbag shell"
 	desc = "A beanbag shell."
-	icon_state = "bshell"
-	spent_icon = "bshell_casing"
+	icon_state = "beanbag-shell"
+	spent_icon = "beanbag-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
 
 /obj/item/ammo_casing/shotgun/rubber
 	name = "rubber shot"
 	desc = "A rubber shell."
-	icon_state = "rubber"
-	spent_icon = "rubber_casing"
+	icon_state = "rubbershot-shell"
+	spent_icon = "rubbershot-spent"
 	projectile_type = /obj/item/projectile/bullet/pellet/rubber
 
 
 /obj/item/ammo_casing/shotgun/incendiary
 	name = "shotgun slug"
 	desc = "A 12 gauge incendiary slug."
-	icon_state = "slshell"
-	spent_icon = "slshell_casing"
+	icon_state = "dragons-breath-shell"
+	spent_icon = "dragons-breath-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
 
 /////////////////////LASERS///////////////////////////////////

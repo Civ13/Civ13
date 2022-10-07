@@ -2,7 +2,7 @@
  * The 'fancy' path is for objects like donut boxes that show how many items are in the storage item on the sprite itself
  * .. Sorry for the shitty path name, I couldnt think of a better one.
  *
- * WARNING: var/icon_type is used for both examine text and sprite name. Please look at the procs below and adjust your sprite names accordingly
+ * WARNING: var/key_type is used for both examine text and sprite name. Please look at the procs below and adjust your sprite names accordingly
  *		TODO: Cigarette boxes should be ported to this standard
  *
  * Contains:
@@ -15,29 +15,56 @@
  *		Pickle Jar
  */
 
-/obj/item/weapon/storage/fancy/
-	icon = 'icons/obj/food/food.dmi'
-	icon_state = "donutbox6"
-	name = "donut box"
-	var/icon_type = "donut"
+/obj/item/weapon/storage/fancy
+	item_state = "syringe_kit" //placeholder, many of these don't have inhands
+	var/obj/item/key_type //path of the key item that this "fancy" container is meant to store
+	var/opened = 0 //if an item has been removed from this container
 
-/obj/item/weapon/storage/fancy/update_icon(var/itemremoved = FALSE)
-	var/total_contents = contents.len - itemremoved
-	icon_state = "[icon_type]box[total_contents]"
-	return
+/obj/item/weapon/storage/fancy/remove_from_storage()
+	. = ..()
+	if(!opened && .)
+		opened = 1
+		update_icon()
+
+
+/obj/item/weapon/storage/fancy/update_icon()
+	if(!opened)
+		src.icon_state = initial(icon_state)
+	else
+		var/key_count = count_by_type(contents, key_type)
+		src.icon_state = "[initial(icon_state)][key_count]"
 
 /obj/item/weapon/storage/fancy/examine(mob/user)
-	if (!..(user, TRUE))
+	if(!..(user, 1))
 		return
 
-	if (contents.len <= 0)
-		user << "There are no [icon_type]s left in the box."
-	else if (contents.len == TRUE)
-		user << "There is one [icon_type] left in the box."
+	var/key_name = initial(key_type.name)
+	if(!contents.len)
+		to_chat(user, "There are no [key_name]s left in the box.")
 	else
-		user << "There are [contents.len] [icon_type]s in the box."
+		var/key_count = count_by_type(contents, key_type)
+		to_chat(user, "There [key_count == 1? "is" : "are"] [key_count] [key_name]\s in the box.")
 
-	return
+/*
+ * Egg Box
+ */
+
+/obj/item/weapon/storage/fancy/egg_box
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "eggbox"
+	name = "egg box"
+	storage_slots = 12
+
+	key_type = /obj/item/weapon/reagent_containers/food/snacks/egg
+	can_hold = list(
+		/obj/item/weapon/reagent_containers/food/snacks/egg,
+		/obj/item/weapon/reagent_containers/food/snacks/boiledegg
+		)
+
+	startswith = list(/obj/item/weapon/reagent_containers/food/snacks/egg = 12)
+
+/obj/item/weapon/storage/fancy/egg_box/empty
+	startswith = null
 
 /*
  * Donut box //Code needs complete overhaul, especially for the icon updates
@@ -83,27 +110,6 @@
 	overlays += image(icon = initial(icon), icon_state = "[base_icon_state]_top")
 
 /*
- * Egg Box
- */
-
-/obj/item/weapon/storage/fancy/egg_box
-	icon = 'icons/obj/food/food.dmi'
-	icon_state = "eggbox"
-	icon_type = "egg"
-	name = "egg box"
-	storage_slots = 12
-	can_hold = list(
-		/obj/item/weapon/reagent_containers/food/snacks/egg,
-		/obj/item/weapon/reagent_containers/food/snacks/boiledegg
-		)
-
-/obj/item/weapon/storage/fancy/egg_box/New()
-	..()
-	for (var/i=1; i <= storage_slots; i++)
-		new /obj/item/weapon/reagent_containers/food/snacks/egg(src)
-	return
-
-/*
  * Candle Box
  */
 
@@ -111,20 +117,15 @@
 	name = "candle pack"
 	desc = "A pack of red candles."
 	icon = 'icons/obj/candle.dmi'
-	icon_state = "candlebox5"
-	icon_type = "candle"
-	item_state = "candlebox5"
-	throwforce = WEAPON_FORCE_HARMLESS
+	icon_state = "candlebox"
+	opened = 1 //no closed state
+	throwforce = 2
+	w_class = 1
+	max_storage_space = 5
 	slot_flags = SLOT_BELT
-	storage_slots = 5
-	max_w_class = 2
 
-
-/obj/item/weapon/storage/fancy/candle_box/New()
-	..()
-	for (var/i=1; i <= 5; i++)
-		new /obj/item/weapon/flame/candle(src)
-	return
+	key_type = /obj/item/weapon/flame/candle
+	startswith = list(/obj/item/weapon/flame/candle = 5)
 
 
 ////////////
@@ -134,29 +135,27 @@
 	name = "cigarette packet"
 	desc = "A cigarette packet."
 	icon = 'icons/obj/cigarettes.dmi'
-	icon_state = "cigpacket0"
+	icon_state = "cigpacket"
 	item_state = "cigpacket"
-	w_class = TRUE
+	w_class = 1
 	throwforce = WEAPON_FORCE_HARMLESS
 	slot_flags = SLOT_BELT
-	storage_slots = 6
+	max_storage_space = 6
+
 	can_hold = list(/obj/item/clothing/mask/smokable/cigarette, /obj/item/weapon/flame/lighter)
-	icon_type = "cigarette"
+	key_type = /obj/item/clothing/mask/smokable/cigarette
+	startswith = list(/obj/item/clothing/mask/smokable/cigarette = 6)
+
 	var/customcolor = "#000000"
 	var/lighter = FALSE //set to TRUE to make it spawn with a lighter inside
 
-/obj/item/weapon/storage/fancy/cigarettes/update_icon()
-	return
 
 /obj/item/weapon/storage/fancy/cigarettes/New()
 	..()
-	flags |= NOREACT
+	flags |= NOREACT|OPENCONTAINER
 	if (lighter)
 		new /obj/item/weapon/flame/lighter/random(src)
-	for (var/i = TRUE to storage_slots)
-		new /obj/item/clothing/mask/smokable/cigarette(src)
 	create_reagents(15 * storage_slots)//so people can inject cigarettes without opening a packet, now with being able to inject the whole one
-	flags |= OPENCONTAINER
 
 /obj/item/weapon/storage/fancy/cigarettes/randompack
 	var/randomize = TRUE
@@ -164,7 +163,7 @@
 /obj/item/weapon/storage/fancy/cigarettes/randompack/New()
 	..()
 	if (randomize)
-		icon_state = pick("luckystrike","marlboro","prima","ls","tm","atika","pachka_papiros")
+		icon_state = pick("luckystrike","marlboro","LSpacket","TMpacket","atika","pachka_papiros","prima")
 
 /obj/item/weapon/storage/fancy/cigarettes/randompack/lighter
 	lighter = TRUE
@@ -230,198 +229,99 @@
 	item_state = "cigarcase"
 	icon = 'icons/obj/cigarettes.dmi'
 	w_class = 1
+	max_storage_space = 6
 	throwforce = WEAPON_FORCE_HARMLESS
 	slot_flags = SLOT_BELT
 	storage_slots = 7
+
 	can_hold = list(/obj/item/clothing/mask/smokable/cigarette/cigar)
-	icon_type = "cigar"
+	key_type = /obj/item/clothing/mask/smokable/cigarette/cigar
+	startswith = list(/obj/item/clothing/mask/smokable/cigarette/cigar = 6)
+
+/obj/item/weapon/storage/fancy/cigar/New()
+	..()
+	flags |= NOREACT|OPENCONTAINER
+	create_reagents(10 * storage_slots)
 
 /obj/item/weapon/storage/fancy/medal
 	name = "medal case"
 	desc = "A case for holding medals to be awarded."
 	icon_state = "medalcase"
 	item_state = "medalcase"
-	icon_type = "medal"
+	key_type = "medal"
 	icon = 'icons/obj/cigarettes.dmi'
 	w_class = 1
 	throwforce = WEAPON_FORCE_HARMLESS
 	slot_flags = SLOT_BELT
 	storage_slots = 14
 	can_hold = list(/obj/item/clothing/accessory/medal)
+
 /obj/item/weapon/storage/fancy/medal/update_icon()
 	icon_state = "[initial(icon_state)][contents.len]"
 	return
+
 /obj/item/weapon/storage/fancy/medal/german_full
 	name = "German medal case"
-/obj/item/weapon/storage/fancy/medal/german_full/New()
-	..()
-	new /obj/item/clothing/accessory/medal/german/ww2/eastern_front(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/eastern_front(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
+	startswith = list( /obj/item/clothing/accessory/medal/german/ww2/eastern_front,
+						/obj/item/clothing/accessory/medal/german/ww2/assault_badge,
+						/obj/item/clothing/accessory/medal/german/ww2/tank_destruction,
+						/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold,
+						/obj/item/clothing/accessory/medal/german/ww2/wound,
+						/obj/item/clothing/accessory/medal/german/ww2/wound_silver,
+						/obj/item/clothing/accessory/medal/german/ww2/wound_gold,
+						/obj/item/clothing/accessory/medal/german/ww2/eastern_front,
+						/obj/item/clothing/accessory/medal/german/ww2/assault_badge,
+						/obj/item/clothing/accessory/medal/german/ww2/tank_destruction,
+						/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold,
+						/obj/item/clothing/accessory/medal/german/ww2/wound,
+						/obj/item/clothing/accessory/medal/german/ww2/wound_silver,
+						/obj/item/clothing/accessory/medal/german/ww2/wound_gold)
 
 /obj/item/weapon/storage/fancy/medal/german_iron
 	name = "German Iron Cross case"
-/obj/item/weapon/storage/fancy/medal/german_iron/New()
-	..()
-	new /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_gold_oak(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_gold_oak(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_oak(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_oak(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(src)
+	startswith = list( /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_gold_oak = 2,
+						/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_oak = 2,
+						/obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight = 2,
+						/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st = 4,
+						/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd = 4)
 
 /obj/item/weapon/storage/fancy/medal/occupation/german_party
 	name = "German Party Pin case"
-/obj/item/weapon/storage/fancy/medal/occupation/german_party/New()
-	..()
-	new /obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/ss_pin(src)
+	startswith = list( 	/obj/item/clothing/accessory/medal/german/ww2/nsdap_pin = 7,
+						/obj/item/clothing/accessory/medal/german/ww2/ss_pin = 7)
 
 /obj/item/weapon/storage/fancy/medal/occupation/minefarm
 	name = "A case with miner and farmer union pins."
-/obj/item/weapon/storage/fancy/medal/occupation/minefarm/New()
-	..()
-	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/farmer(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/miner(src)
+	startswith = list( 	/obj/item/clothing/accessory/medal/pin/worker/farmer = 7,
+						/obj/item/clothing/accessory/medal/pin/worker/miner = 7)
 
 /obj/item/weapon/storage/fancy/medal/occupation/factolabo
 	name = "A case with labourer and factory worker union pins."
-/obj/item/weapon/storage/fancy/medal/occupation/factolabo/New()
-	..()
-	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/factory(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/labour(src)
+	startswith = list( 	/obj/item/clothing/accessory/medal/pin/worker/factory = 7,
+						/obj/item/clothing/accessory/medal/pin/worker/labour = 7)
 
 /obj/item/weapon/storage/fancy/medal/occupation/hospimedi
 	name = "A case with labourer and factory worker union pins."
-/obj/item/weapon/storage/fancy/medal/occupation/hospimedi/New()
-	..()
-	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/aristocrat(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
-	new /obj/item/clothing/accessory/medal/pin/worker/medic(src)
-
+	startswith = list( 	/obj/item/clothing/accessory/medal/pin/worker/aristocrat = 7,
+						/obj/item/clothing/accessory/medal/pin/worker/medic = 7)
 
 /obj/item/weapon/storage/fancy/medal/german_action
 	name = "German Action Medals case"
-/obj/item/weapon/storage/fancy/medal/german_action/New()
-	..()
-	new /obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
-	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/wound(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/wound(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
-	new /obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
+	startswith = list( 	/obj/item/clothing/accessory/medal/german/ww2/assault_badge = 5,
+						/obj/item/clothing/accessory/medal/german/ww2/wound = 4,
+						/obj/item/clothing/accessory/medal/german/ww2/wound_silver = 3,
+						/obj/item/clothing/accessory/medal/german/ww2/wound_gold = 2)
 
 /obj/item/weapon/storage/fancy/medal/japanese_pacific_full
 	name = "japanese medal case"
-/obj/item/weapon/storage/fancy/medal/japanese_pacific_full/New()
-	..()
-	new /obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new /obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
+	startswith = list( 	/obj/item/clothing/accessory/medal/japanese/ww2/east_asia = 10,
+						/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun = 4)
 
 obj/item/weapon/storage/fancy/medal/japanese_china_full
 	name = "japanese medal case"
-/obj/item/weapon/storage/fancy/medal/japanese_china_full/New()
-	..()
-	new /obj/item/clothing/accessory/medal/japanese/ww2/china_incident1931(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1931(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1931(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1931(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937(src)
-	new /obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
-	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
+	startswith = list( 	/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1931 = 4,
+						/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937 =6,
+						/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun = 4)
 
 
 /obj/item/weapon/storage/fancy/cigar/full
@@ -457,16 +357,11 @@ obj/item/weapon/storage/fancy/medal/japanese_china_full
 	desc = "a jar filled with pickles and vinegar"
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "picklejar"
-	icon_type = "pickles"
+	key_type = "pickles"
 	throwforce = WEAPON_FORCE_NORMAL
 	storage_slots = 7
 
-
-/obj/item/weapon/storage/fancy/picklejar/New()
-	..()
-	for (var/i=1; i <= 14; i++)
-		new /obj/item/weapon/reagent_containers/food/snacks/pickle(src)
-	return
+	startswith = list(/obj/item/weapon/reagent_containers/food/snacks/pickle = 14)
 
 /obj/item/weapon/storage/fancy/picklejar/update_icon()
 	if (contents.len == 0)

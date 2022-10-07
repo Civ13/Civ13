@@ -97,6 +97,7 @@
 	// are we an ammo box
 	var/is_box = FALSE
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;stored_ammo"
+
 /obj/item/ammo_magazine/secondary_attack_self(mob/living/human/user)
 	if (stored_ammo.len >= max_ammo)
 		user << "<span class='warning'>[src] is full!</span>"
@@ -203,6 +204,7 @@
 	max_ammo = 8
 	weight = 0.1
 	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/emptybelt
 	name = "belt (100)"
 	mag_type = MAGAZINE
@@ -214,6 +216,7 @@
 	w_class = 4
 	multiple_sprites = TRUE
 	belt = TRUE
+
 /obj/item/ammo_magazine/emptymagazine/p90
 	name = "P90 magazine (50)"
 	mag_type = MAGAZINE
@@ -223,6 +226,7 @@
 	max_ammo = 15
 	weight = 0.2
 	multiple_sprites = TRUE
+	
 /obj/item/ammo_magazine/verb/toggle_open()
 	set category = null
 	set src in view(1)

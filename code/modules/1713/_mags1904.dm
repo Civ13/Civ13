@@ -598,10 +598,10 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 /obj/item/ammo_magazine/shellbox/beanbag
 	name = "shotgun beanbag box (.12 gauge)"
-	icon_state = "beanbox"
+	icon_state = "beanbagbox"
 	ammo_type = /obj/item/ammo_casing/shotgun/beanbag
 
 /obj/item/ammo_magazine/shellbox/rubber
 	name = "shotgun rubber box (.12 gauge)"
-	icon_state = "beanbox"
+	icon_state = "beanbagbox"
 	ammo_type = /obj/item/ammo_casing/shotgun/rubber

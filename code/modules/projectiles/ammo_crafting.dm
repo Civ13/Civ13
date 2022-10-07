@@ -84,6 +84,54 @@
 			return
 	return
 
+//Rockets!
+/obj/item/stack/ammopart/casing/booster/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user << "<span class = 'notice'>You need enough gunpowder in the container to fill the booster.</span>"
+				return
+			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
+				user << "You fill the booster with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user << "<span class = 'notice'>You need enough gunpowder in the container to fill the booster.</span>"
+				return
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+				user << "You fill the booster with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+	if (istype(W, /obj/item/stack/ammopart/warhead))
+		if (!(gunpowder >= gunpowder_max*amount))
+			user << "<span class = 'notice'>You need to fill the booster with gunpowder before attaching the charge.</span>"
+			return
+		else if (W.amount < amount)
+			user << "<span class = 'notice'>Not enough warheads. Add more warheads to the stack.</span>"
+		else if (W.amount >= amount)
+			var/list/listing = list("Cancel")	//Make the list
+			listing = list("HEAT", "Fragmentation", "Cancel")	//What is in the list
+			var/input = WWinput(user, "What warhead do you want to make?", "Rocket Propeled Grenade Making", "Cancel", listing)	//define the input
+			if (input == "Cancel")	//Did they cancel?
+				return
+			else if (input == "HEAT")	//Is it HEAT?
+				resultpath = /obj/item/ammo_casing/rocket/pg7v
+			else if (input == "Fragmentation")	//Is it Fragmentation?
+				resultpath = /obj/item/ammo_casing/rocket/og7v
+			if (resultpath != null && gunpowder >= gunpowder_max)	//If the gunpowder is more or equal to the max amount continue
+				W.amount -= amount
+				if (W.amount <= 0)
+					qdel(W)
+				new resultpath(user.loc)	//Spawn 'resultpath' under user's feet
+				qdel(src)
+				return
+			else	//if something else happens for some reason, return
+				return
+
 /obj/item/stack/ammopart/casing/artillery/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
