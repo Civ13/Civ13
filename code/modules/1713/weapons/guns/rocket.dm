@@ -55,6 +55,7 @@
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
 	return TRUE
+
 /obj/item/weapon/gun/launcher/rocket
 	name = "rocket launcher"
 	desc = "MAGGOT."
@@ -74,6 +75,7 @@
 	fire_delay = 6
 	equiptimer = 28
 	load_delay = 18
+
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
 	if(!..(user, 2))
 		return
@@ -110,6 +112,7 @@
 	update_icon()
 	..()
 
+//RPG-7
 /obj/item/weapon/gun/launcher/rocket/rpg7
 	name = "RPG-7"
 	desc = "Russian multi-use rocket."
@@ -142,7 +145,17 @@
 	else
 		..()
 
+/obj/item/weapon/gun/launcher/rocket/rpg7/makeshift
+	name = "RPG-7"
+	desc = "Multi-use rocket."
+	icon_state = "rpg7_empty"
+	item_state = "rpg"
+	slot_flags = SLOT_SHOULDER
+	force = 10
+	recoil = 2
+	load_delay = 50
 
+//Panzerfaust
 /obj/item/weapon/gun/launcher/rocket/panzerfaust
 	name = "Panzerfaust 60"
 	desc = "German single-use rocket."
@@ -183,7 +196,7 @@
 /obj/item/weapon/gun/launcher/rocket/panzerfaust/attack_hand(mob/user)
 	..()
 
-//mlaw
+//MLAW
 /obj/item/weapon/gun/launcher/rocket/m72law
 	name = "M72 LAW"
 	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-tank weapon."
@@ -224,6 +237,8 @@
 /obj/item/weapon/gun/launcher/rocket/m72law/attack_hand(mob/user)
 	..()
 
+
+//Bazooka
 /obj/item/weapon/gun/launcher/rocket/bazooka
 	name = "M1A1 Bazooka"
 	desc = "An American rocket launcher made for cracking open fortified defenses and enemy armor."
@@ -256,8 +271,9 @@
 	else
 		..()
 
+//Fatman
 /obj/item/weapon/gun/launcher/rocket/fatman
-	name = "FATMAN"
+	name = "Fatman"
 	desc = "An American rocket launcher made for firing small nuclear rockets."
 	icon_state = "fatman_empty"
 	var/caliber = "nuclear"
@@ -321,10 +337,9 @@
 
 /obj/item/ammo_casing/rocket/pg7v
 	name = "PG-7V rocket"
-	desc = "A HEAT anti-tank warhead and propeller designed to be fired from a RPG-7 launcher."
+	desc = "A High Explosive Anti-Tank (HEAT) warhead and propeller designed to be fired from a RPG-7 launcher."
 	icon_state = "pg7v"
 	projectile_type = /obj/item/missile/explosive
-
 
 /obj/item/ammo_casing/rocket/og7v
 	name = "OG-7V rocket"
@@ -336,7 +351,8 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Nuclear Rocket"
 	desc = "A nuclear fucking rocket, you might want to step back a bit..."
-	icon_state = "shell_nuclear_rocket"
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "nuclear"
 	projectile_type = /obj/item/missile/nuclear
 	caliber = "nuclear"
 	w_class = 4.0

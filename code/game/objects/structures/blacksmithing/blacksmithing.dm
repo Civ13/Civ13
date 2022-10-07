@@ -206,7 +206,7 @@
 				else if (map.ordinal_age == 5)
 					optlist = list("cancel","helmets","mk1 brodie","m15 adrian")
 				else if (map.ordinal_age == 6)
-					optlist = list("cancel","helmets","armor")
+					optlist = list("cancel","helmets")
 				else if (map.ordinal_age == 7)
 					optlist = list("cancel","helmets","ussr heavy visored helmets","guns")
 				else if (map.ordinal_age == 8)

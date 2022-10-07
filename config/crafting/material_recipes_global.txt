@@ -1876,6 +1876,9 @@ RECIPE: /material/steel/,cell tower,/obj/structure/cell_tower,15,180,1,1,none,21
 
 //*********************| STEEL PROJECTILES|**************************
 
+RECIPE: /material/steel/,rocket propeled booster,/obj/item/stack/ammopart/casing/booster,5,200,0,1,ammunition,120,0,0,8,null
+RECIPE: /material/steel/,rocket propeled warhead,/obj/item/stack/ammopart/warhead,10,400,0,1,ammunition,120,0,0,8,null
+
 //*********************| STEEL DECORATION|**************************
 
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel

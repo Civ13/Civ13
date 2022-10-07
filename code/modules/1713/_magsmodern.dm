@@ -497,7 +497,7 @@
 ///////////c6//////////
 /obj/item/ammo_magazine/c6belt
 	name = "C6 GPMG ammo belt"
-	icon_state = "c6belt" //generic 100 round belt
+	icon_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	w_class = 4

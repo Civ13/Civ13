@@ -15,6 +15,7 @@
 	var/max_w_class = 3 //Max size of objects that this object can store (in effect only if can_hold isn't set)
 	var/max_storage_space = 8 //The sum of the storage costs of all the items in this storage item.
 	var/storage_slots = null //The number of storage slots in this container.
+
 	var/obj/screen/storage/boxes = null
 	var/obj/screen/storage/storage_start = null //storage UI
 	var/obj/screen/storage/storage_continue = null
@@ -23,6 +24,7 @@
 	var/obj/screen/storage/stored_continue = null
 	var/obj/screen/storage/stored_end = null
 	var/obj/screen/close/closer = null
+
 	var/use_to_pickup	//Set this to make it possible to use this item in an inverse way, so you can have the item in your hand and click items on the floor to pick them up.
 	var/display_contents_with_number	//Set this to make the storage item group contents of the same type and display them as a number.
 	var/allow_quick_empty	//Set this variable to allow the object to have the 'empty' verb, which dumps all the contents on the floor.
@@ -30,6 +32,8 @@
 	var/collection_mode = TRUE;  //0 = pick one at a time, TRUE = pick all on tile
 	var/use_sound = "rustle"	//sound played when used. null for no sound.
 	var/base_icon = ""
+	var/list/startswith
+
 /obj/item/weapon/storage/verb/name_storage()
 	set category = null
 	set name = "Name"
@@ -43,6 +47,21 @@
 			return
 		name = sanitize(_name, 20)
 	return
+
+/obj/item/weapon/storage/initialize()
+	if(startswith)
+		for(var/item_path in startswith)
+			var/list/data = startswith[item_path]
+			if(islist(data))
+				var/qty = data[1]
+				var/list/argsl = data.Copy()
+				argsl[1] = src
+				for(var/i in 1 to qty)
+					new item_path(arglist(argsl))
+			else
+				for(var/i in 1 to (isnull(data)? 1 : data))
+					new item_path(src)
+		update_icon()
 
 /obj/item/weapon/storage/Destroy()
 	close_all()
