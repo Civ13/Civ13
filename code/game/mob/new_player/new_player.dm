@@ -1021,11 +1021,9 @@ var/global/redirect_all_players = null
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
 			dat += "[alive_civilians.len] Soviets "
 		else if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "[alive_civilians.len] Yellowagwana 1 "
+			dat += "[alive_civilians.len] Yellowagwana"
 		else if (map && istype(map, /obj/map_metadata/tadojsville))
 			dat += "[alive_civilians.len] UN Peacekeeper "
-		else if (map && istype(map, /obj/map_metadata/capitol_hill))
-			dat += "[alive_civilians.len] Rioters "
 		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_civilians.len] Rioters "
 		else if (map && istype(map, /obj/map_metadata/yeltsin))
@@ -1238,7 +1236,7 @@ var/global/redirect_all_players = null
 					if (temp_name == "Indians")
 						temp_name = "Blugisi"
 					else if (temp_name == "Civilian")
-						temp_name = "Yellowagwana 2"
+						temp_name = "Yellowagwana"
 				else if (map && map.ID == "TADOJSVILLE")
 					if (temp_name == "Indians")
 						temp_name = "Mercenary Warband"
