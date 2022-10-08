@@ -512,6 +512,10 @@ datum/job/indians/tribes/black
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/mush(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/handle(H), slot_shoulder)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
+	uniform.attackby(holsterh, H)
+
 	H.setStat("medical", STAT_VERY_HIGH)
 /datum/job/indians/warlords/red/shaman
 	title = "Redkantu Warband Shaman"
@@ -645,7 +649,7 @@ datum/job/indians/tribes/black
 /////////////////////////////////////////////SECOND RACE 4 AND JOB FILES HEAD 2 HEAD AUTOBALANCE////////////////////////////////////////////////////
 
 /datum/job/civilian/warlords
-	title = "warlord (do not use)"
+	title = "warlord (do not uze)"
 	en_meaning = FALSE
 	rank_abbreviation = ""
 	can_be_female = TRUE
@@ -727,6 +731,10 @@ datum/job/indians/tribes/black
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/mush(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/handle(H), slot_shoulder)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
+	uniform.attackby(holsterh, H)
+
 	H.setStat("medical", STAT_VERY_HIGH)
 /datum/job/civilian/warlords/yellow
 	title = "Yellowagwana Brave"
