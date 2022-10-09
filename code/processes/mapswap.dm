@@ -117,22 +117,23 @@
 		if (epoch == "Modern Fire Arms (1949-2021)")
 	// 2013 - TDM
 			maps = list(
-				MAP_CAPITOL_HILL = 6,
-				MAP_HOSTAGES = 0,
-				MAP_ARAB_TOWN = 0,
-				MAP_ARAB_TOWN_2 = 0,
-				MAP_HILL_3234 = 12,
+				MAP_RETREAT = 6,
+				MAP_ROAD_TO_DAK_TO = 0,
+				MAP_COMPOUND = 6,
+				MAP_HUE = 15,
 				MAP_MAGISTRAL = 10,
+				MAP_HILL_3234 = 12,
+				MAP_ALLEYWAY = 0,
+				MAP_WACO = 0,
 				MAP_YELTSIN = 6,
 				MAP_GROZNY = 6,
-				MAP_ALLEYWAY = 0,
-				MAP_COMPOUND = 6,
-				MAP_ROAD_TO_DAK_TO = 0,
-				MAP_HUE = 15,
-				MAP_RETREAT = 6,
+				MAP_BANK_ROBBERY = 0,
 				//MAP_FACTORY = 15,
 				//MAP_AFRICAN_WARLORDS = 10,
-				MAP_WACO = 0,
+				MAP_ARAB_TOWN = 0,
+				MAP_ARAB_TOWN_2 = 0,
+				MAP_HOSTAGES = 0,
+				MAP_CAPITOL_HILL = 6,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
