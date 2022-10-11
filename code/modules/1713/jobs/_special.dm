@@ -23,6 +23,7 @@
 /datum/job/var/is_marooned = FALSE //marooned pirate
 /datum/job/var/is_medieval = FALSE //self explanatory
 /datum/job/var/is_crusader = FALSE //self explanatory
+/datum/job/var/is_arabcaliph = FALSE
 /datum/job/var/is_nomad = FALSE //self explanatory
 /datum/job/var/is_gladiator = FALSE
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
@@ -61,6 +62,10 @@
 /datum/job/var/is_abashiri = FALSE
 /datum/job/var/is_nva = FALSE
 /datum/job/var/is_warlords = FALSE
+/datum/job/var/is_redka = FALSE
+/datum/job/var/is_blugi = FALSE
+/datum/job/var/is_yellowag = FALSE
+/datum/job/var/is_un = FALSE
 /datum/job/var/is_capitol = FALSE
 /datum/job/var/is_paratrooper = FALSE
 /datum/job/var/is_vietcong = FALSE

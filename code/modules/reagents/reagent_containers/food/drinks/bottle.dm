@@ -827,3 +827,13 @@
 		..()
 		reagents.add_reagent("beer", 25)
 		reagents.add_reagent("water", 10)
+
+/obj/item/weapon/reagent_containers/food/drinks/can/water
+	name = "can of water"
+	desc = "A can of regular water."
+	icon_state = "bud"
+	base_icon = "bud"
+	volume = 50
+	New()
+		..()
+		reagents.add_reagent("water", 50)

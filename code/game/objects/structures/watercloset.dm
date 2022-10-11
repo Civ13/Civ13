@@ -156,6 +156,15 @@
 			return
 	return
 
+/obj/structure/toilet/pit_latrine/floorgrate
+	name = "floor drain"
+	desc = "A simple hole covered in a light grating, allows waste to be removed easily."
+	icon = 'icons/turf/flooring/decals.dmi'
+	icon_state = "techfloor_hole_left"
+	layer = 2.1
+/obj/structure/toilet/pit_latrine/floorgrate/New()
+	open = TRUE
+
 /obj/structure/toilet/outhouse
 	name = "outhouse"
 	desc = "An outhouse, more privacy than a pit latrine!"
@@ -289,7 +298,8 @@
 				return
 		if (3.0)
 			return
-
+/obj/structure/shower/coldshower
+	watertemp = "freezing"
 //ROBERTS BATHTUBS
 
 //BATHTUB FRAMEWORK V1//

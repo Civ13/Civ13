@@ -29,17 +29,12 @@
 	grace_wall_timer = 2400
 
 obj/map_metadata/oasis/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/arab))
-		if (J.is_coldwar || J.is_specops)
-			. = FALSE
-		else
-			. = TRUE
-	if (istype(J, /datum/job/french))
-		if (J.is_crusader == TRUE)
-			. = TRUE
-		else
-			. = FALSE
+	if (J.is_crusader && J.is_medieval)
+		. = TRUE
+	else if (J.is_arabcaliph && J.is_medieval)
+		. = TRUE
+	else
+		. = FALSE
 
 /obj/map_metadata/oasis/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

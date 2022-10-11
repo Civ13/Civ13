@@ -61,6 +61,25 @@
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
 		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
 
+/obj/item/weapon/storage/box/sandbags
+	name = "box of sandbags"
+	desc = "This is a very heavy box, it has a picture of sandbags on it.  Makes up to 4 barricades."
+	can_hold = list(/obj/item/weapon/barrier/sandbag)
+	New()
+		..()
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+		new /obj/item/weapon/barrier/sandbag(src)
+
 /obj/item/weapon/storage/box/specialtyglass
 	name = "box of specialty glasses"
 	desc = "It has a picture of different drinking glasses on it."
@@ -301,7 +320,12 @@
 	icon_state = "advfirstaid2"
 	item_state = "advfirstaid2"
 	w_class = 2
-
+	can_hold = list(
+		/obj/item/stack/medical/advanced/bruise_pack,
+		/obj/item/stack/medical/advanced/ointment,
+		/obj/item/stack/medical/splint,
+		/obj/item/weapon/pill_pack/tramadol
+		)
 /obj/item/weapon/storage/box/firstaid/advsmall/New()
 	..()
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
@@ -355,3 +379,20 @@
 			playsound(loc, 'sound/items/matchstick_hit.ogg', 25, FALSE, -1)
 	W.update_icon()
 	return
+
+/obj/item/weapon/storage/box/flare
+	name = "box of flares"
+	desc = "Contains 10 red standard-issue flares."
+	icon_state = "donk_kit"
+	New()
+		..()
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)
+		new /obj/item/flashlight/flare(src)

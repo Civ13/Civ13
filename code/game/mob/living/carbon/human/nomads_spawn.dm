@@ -1121,12 +1121,13 @@
 			s_tone = -90
 
 		else if (faction_text == INDIANS)
-			if (map.ID != MAP_AFRICAN_WARLORDS)
-				s_tone = -115
-			else
+			if ((map.ID == MAP_AFRICAN_WARLORDS)||(map.ID == MAP_TADOJSVILLE))
 				s_tone = rand(-155,-185)
-		else if (faction_text == CIVILIAN && map.ID == MAP_AFRICAN_WARLORDS && original_job_title == "Local Policeman")
-			s_tone = rand(-155,-185)
+			else
+				s_tone = -115
+		else if (faction_text == CIVILIAN)
+			if (map.ID == MAP_AFRICAN_WARLORDS)
+				s_tone = rand(-155,-185)
 		else if (faction_text == AMERICAN && map.ordinal_age >= 7)
 			if (original_job.is_afro == TRUE)
 				s_tone = rand(-150,-120)

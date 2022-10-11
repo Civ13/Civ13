@@ -28,6 +28,25 @@
 		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
 		new /obj/item/weapon/material/kitchen/utensil/knife( src )
 
+/obj/item/weapon/storage/ww2/unmeal
+	name = "UN messkit"
+	desc = "It's a cheap tin messkit for all peacekeeping personel."
+	max_w_class = 2
+	can_hold = new/list(
+	/obj/item/weapon/material/kitchen/utensil,
+	/obj/item/weapon/reagent_containers/food/snacks/MRE/generic,
+	/obj/item/kitchen/snack_bowl,
+	/obj/item/kitchen/wood_bowl,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2,
+	/obj/item/weapon/reagent_containers/food/drinks/can/water,
+	)
+	New()
+		..()
+		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
+		new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic( src )
+		new /obj/item/weapon/reagent_containers/food/drinks/can/water( src )
+		new /obj/item/weapon/reagent_containers/food/drinks/can/water( src )
+
 /obj/item/weapon/storage/ww2/german/proc/handle_item_insertion1(obj/item/W as obj, prevent_warning = FALSE)
 	if (!istype(W)) return FALSE
 	if (usr)

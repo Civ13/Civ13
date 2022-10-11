@@ -60,7 +60,9 @@
 		else if (map.ID == "YELTSIN")
 			return "Militia"
 		else if (map.ID == "AFRICAN_WARLORDS")
-			return "United Nations"
+			return "Yellowagwana Wartribe"
+		else if (map.ID == "TADOJSVILLE")
+			return "United Nations Peacekeepers"
 		else if (map.ID == "WHITERUN")
 			return "Stormcloaks"
 		else if (map.ID == "CAPITOL_HILL")
@@ -85,7 +87,9 @@
 
 	if (constant == INDIANS)
 		if (map.ID == "AFRICAN_WARLORDS")
-			return "Africans"
+			return "Blugisi Wartibe"
+		else if (map.ID == "TADOJSVILLE")
+			return "Mercenary Warbands"
 		else
 			return "Native Tribe"
 

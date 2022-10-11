@@ -267,21 +267,91 @@ obj/item/weapon/storage/backpack/ww2/american
 	desc = "A duffel bag full of \"medical supplies\"."
 	New()
 		..()
+		new /obj/item/stack/medical/bruise_pack/bint/leather(src)
+		new /obj/item/stack/medical/advanced/herbs(src)
+		new /obj/item/stack/medical/splint(src)
 		new /obj/item/weapon/material/kitchen/utensil/knife/bone(src)
+		new /obj/item/stack/material/rope(src)
+		new /obj/item/flashlight/torch(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
+		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
 		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 		new /obj/item/weapon/reagent_containers/pill/opium(src)
 		new /obj/item/weapon/reagent_containers/pill/opium(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/grown/peyote(src)
-		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
-		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
-		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
-		new /obj/item/flashlight/torch(src)
 		new /obj/item/weapon/pill_pack/pervitin(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/stack/medical/advanced/herbs(src)
-		new /obj/item/stack/medical/bruise_pack/bint/leather(src)
 
 
+/obj/item/weapon/storage/backpack/duffel/ungineer
+	name = "United Nations Enigneer's duffel"
+	desc = "A duffel bag full of engineering supplies."
+	New()
+		..()
+		new /obj/item/weapon/storage/box/sandbags(src)
+		new /obj/item/weapon/storage/box/sandbags(src)
+		new /obj/item/stack/material/barbwire/twnt(src)
+		new /obj/item/stack/material/wood/twentyfive(src)
+		new /obj/item/weapon/material/shovel/spade/small(src)
+		new /obj/item/weapon/grenade/smokebomb(src)
+		new /obj/item/ammo_magazine/m9beretta(src)
+
+/obj/item/weapon/storage/backpack/duffel/unsniper
+	name = "United Nations Marksman's duffel"
+	desc = "A duffel bag full of marksman supplies."
+	New()
+		..()
+		new /obj/item/weapon/gun_cleaning_kit(src)
+		new /obj/item/ammo_magazine/m14box(src)
+		new /obj/item/ammo_magazine/m14box(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/m14(src)
+		new /obj/item/ammo_magazine/m14(src)
+		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+
+/obj/item/weapon/storage/backpack/duffel/unmg
+	name = "United Nations Gunner's duffel"
+	desc = "A duffel bag full of gunner's supplies."
+	New()
+		..()
+		new /obj/item/weapon/gun_cleaning_kit(src)
+		new /obj/item/ammo_magazine/madsen/box(src)
+		new /obj/item/ammo_magazine/madsen/box(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/madsen(src)
+		new /obj/item/ammo_magazine/madsen(src)
+		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/weapon/grenade/coldwar/m67(src)
+
+/obj/item/weapon/storage/backpack/duffel/unbasic
+	name = "United Nations Peacekeeper duffel"
+	desc = "A duffel bag full of basic supplies."
+	New()
+		..()
+		new /obj/item/weapon/gun_cleaning_kit(src)
+		new /obj/item/ammo_magazine/m16/box(src)
+		new /obj/item/ammo_magazine/m16/box(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/m16(src)
+		new /obj/item/ammo_magazine/m16(src)
+		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/weapon/grenade/coldwar/m67(src)
+
+/obj/item/weapon/storage/backpack/duffel/unsgt
+	name = "United Nations Sergeant's duffel"
+	desc = "A duffel bag full of Sergeant's supplies."
+	New()
+		..()
+		new /obj/item/weapon/storage/box/firstaid/advsmall(src)
+		new /obj/item/ammo_magazine/greasegun/box(src)
+		new /obj/item/ammo_magazine/greasegun/box(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/greasegun(src)
+		new /obj/item/ammo_magazine/greasegun(src)
+		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/weapon/grenade/coldwar/m67(src)
+		new /obj/item/weapon/grenade/incendiary/anm14(src)

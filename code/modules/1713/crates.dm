@@ -536,34 +536,34 @@ obj/structure/closet/crate/ww1/ammo_hotchkiss
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_magazine/hotchkiss = 3)
+	paths = list(/obj/item/ammo_magazine/hotchkiss = 10)
 
 obj/structure/closet/crate/ww1/ammo_type3
 	name = "Type 3 belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_magazine/type3 = 3)
+	paths = list(/obj/item/ammo_magazine/type3 = 10)
 
 obj/structure/closet/crate/ww1/ammo_vickers
 	name = "Vickers belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_magazine/vickers = 3)
+	paths = list(/obj/item/ammo_magazine/vickers = 10)
 
 obj/structure/closet/crate/ww1/ammo_mg08
 	name = "MG08 belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_magazine/mg08 = 3)
+	paths = list(/obj/item/ammo_magazine/mg08 = 10)
 obj/structure/closet/crate/ww1/ammo_maxim
 	name = "Maxim belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_magazine/maxim = 3)
+	paths = list(/obj/item/ammo_magazine/maxim = 10)
 
 obj/structure/closet/crate/ww2
 	icon_state = "mil_crate_closed"
@@ -588,7 +588,7 @@ obj/structure/closet/crate/ww2/ammo_mg34
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_magazine/mg34belt = 3)
+	paths = list(/obj/item/ammo_magazine/mg34belt = 10)
 obj/structure/closet/crate/ww2/panzerfaust
 	name = "Panzerfaust crate"
 	paths = list(/obj/item/weapon/gun/launcher/rocket/panzerfaust = 6)
@@ -661,6 +661,7 @@ obj/structure/closet/crate/ww2/vietnam/us_medical
 				/obj/item/weapon/reagent_containers/blood/OMinus = 1,
 				)
 
+
 obj/structure/closet/crate/ww2/vietnam/us_explosives
 	name = "US Army explosives"
 	paths = list(/obj/item/weapon/grenade/coldwar/m67 = 4,
@@ -686,6 +687,49 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 				/obj/item/weapon/wirecutters/boltcutters = 2,
 				/obj/item/weapon/material/shovel/trench = 2,
 				)
+
+/obj/structure/closet/crate/ww2/un/ammo
+	name = "UN Peacekeeping ammunition"
+	paths = list(/obj/item/ammo_magazine/m16 = 16,
+				/obj/item/ammo_magazine/m9beretta = 8,
+				/obj/item/ammo_magazine/greasegun = 4,
+				/obj/item/ammo_magazine/m14 = 4,
+				)
+
+/obj/structure/closet/crate/ww2/un/ap
+	name = "UN Peacekeeping area denial"
+	paths = list(/obj/item/mine/ap = 10,
+				/obj/item/stack/material/barbwire/ten = 3,
+				/obj/item/weapon/material/shovel/trench = 2,
+				/obj/item/weapon/wirecutters/boltcutters = 1,
+				)
+
+/obj/structure/closet/crate/ww2/un/explosives
+	name = "UN Peacekeeping handgrenades"
+	paths = list(/obj/item/weapon/grenade/coldwar/m67 = 8,
+				/obj/item/weapon/grenade/incendiary/anm14 = 4,
+				/obj/item/weapon/grenade/smokebomb/m18smoke = 4,
+				)
+
+/obj/structure/closet/crate/ww2/un/m16ammoboxes
+	name = "UN Peacekeeping bulk 5.56x45mm ammunition"
+	paths = list(/obj/item/ammo_magazine/m16/box = 10)
+
+/obj/structure/closet/crate/ww2/un/ammoboxes
+	name = "UN Peacekeeping bulk specialty ammunition"
+	paths = list(/obj/item/ammo_magazine/m9beretta/box = 4,
+				/obj/item/ammo_magazine/madsen/box = 3,
+				/obj/item/ammo_magazine/m14box = 3,
+				/obj/item/ammo_magazine/greasegun/box = 2,
+				)
+
+/obj/structure/closet/crate/ww2/un/vickersboxes
+	name = "UN Peacekeeping bulk .303 British ammunition"
+	paths = list(/obj/item/ammo_magazine/vickers/box = 6)
+
+/obj/structure/closet/crate/ww2/un/meals
+	name = "UN Peacekeeping mealkits"
+	paths = list(/obj/item/weapon/storage/ww2/unmeal = 10)
 
 obj/structure/closet/crate/ww2/mortar_shells
 	name = "mortar shells"

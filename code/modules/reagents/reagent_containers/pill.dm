@@ -246,6 +246,16 @@
 	New()
 		..()
 		reagents.add_reagent("penicillin", 15)
+quinine
+
+/obj/item/weapon/reagent_containers/pill/antimalaria
+	name = "Anti-Malarial pill"
+	desc = "Anti-Malarial agents."
+	icon_state = "pill7"
+	New()
+		..()
+		reagents.add_reagent("quinine", 1)
+
 
 //WW2
 

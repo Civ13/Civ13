@@ -405,7 +405,7 @@
 	icon_state = "unitednations"
 	item_state = "unitednations"
 	worn_state = "unitednations"
-
+	flash_protection = FLASH_PROTECTION_MODERATE
 /obj/item/clothing/head/helmet/modern/ushelmet/un/medic
 	name = "UN medic helmet"
 	desc = "A typical blue UN helmet, with doctor markings."
@@ -992,6 +992,11 @@
 	new/obj/item/ammo_magazine/b762(src)
 	new/obj/item/ammo_magazine/b762(src)
 
+/obj/item/weapon/storage/belt/largepouches/olive/madsen
+/obj/item/weapon/storage/belt/largepouches/olive/madsen/New()
+	..()
+	new/obj/item/ammo_magazine/madsen(src)
+	new/obj/item/ammo_magazine/madsen(src)
 /obj/item/weapon/storage/belt/largepouches/m249
 /obj/item/weapon/storage/belt/largepouches/m249/New()
 	..()
