@@ -249,7 +249,6 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
-
 /obj/item/ammo_magazine/jericho
 	name = "Jericho 941 magazine (9x19mm)"
 	icon_state = "m9beretta"

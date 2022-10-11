@@ -419,8 +419,8 @@
 /obj/item/weapon/gun/projectile/revolver/taurus
 	name = "Taurus Judge Revolver"
 	desc = "The Taurus Judge is a five shot revolver designed and produced by Taurus International, chambered for (.45 Colt)."
-	icon_state = "biggi"
-	base_icon = "biggi"
+	icon_state = "judge"
+	base_icon = "judge"
 	w_class = 2
 	caliber = "a45"
 	handle_casings = CYCLE_CASINGS
@@ -623,7 +623,7 @@
 /obj/item/weapon/gun/projectile/revolver/derringer/update_icon()
 	..()
 	if (open)
-		icon_state = "derringer_opened"
+		icon_state = "derringer_open"
 	else
 		icon_state = "derringer"
 
@@ -640,7 +640,7 @@
 		else
 			open = TRUE
 			user << "<span class='notice'>You break open \the [src].</span>"
-			icon_state = "derringer_opened"
+			icon_state = "derringer_open"
 		recentpump = world.time
 
 /obj/item/weapon/gun/projectile/revolver/derringer/load_ammo(var/obj/item/A, mob/user)
