@@ -277,6 +277,7 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+
 /obj/item/ammo_magazine/m9beretta/box
 	name = "magazine box (9x19mm)"
 	icon_state = "ammo"
