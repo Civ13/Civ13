@@ -1429,6 +1429,7 @@
 		if (FM.fire_delay == -1)
 			FM.fire_delay = fire_delay
 	update_icon()
+	
 /obj/item/weapon/gun/projectile/custom/update_icon()
 	if (!override_sprite)
 		if (stock_type == "Folding Stock")
