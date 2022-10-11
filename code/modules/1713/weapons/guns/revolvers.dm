@@ -623,7 +623,7 @@
 /obj/item/weapon/gun/projectile/revolver/derringer/update_icon()
 	..()
 	if (open)
-		icon_state = "derringer_opened"
+		icon_state = "derringer_open"
 	else
 		icon_state = "derringer"
 
@@ -640,7 +640,7 @@
 		else
 			open = TRUE
 			user << "<span class='notice'>You break open \the [src].</span>"
-			icon_state = "derringer_opened"
+			icon_state = "derringer_open"
 		recentpump = world.time
 
 /obj/item/weapon/gun/projectile/revolver/derringer/load_ammo(var/obj/item/A, mob/user)

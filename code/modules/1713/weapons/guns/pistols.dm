@@ -113,7 +113,7 @@
 	if (ammo_magazine)
 		icon_state = "nambu_ww2"
 	else
-		icon_state = "nambu_ww20"
+		icon_state = "nambu_ww2_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/luger
@@ -136,7 +136,7 @@
 	if (ammo_magazine)
 		icon_state = "luger"
 	else
-		icon_state = "luger0"
+		icon_state = "luger_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/waltherp38
@@ -201,7 +201,7 @@
 	if (ammo_magazine)
 		icon_state = "glock17"
 	else
-		icon_state = "glock170"
+		icon_state = "glock17_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/sig250
@@ -354,7 +354,7 @@
 	if (ammo_magazine)
 		icon_state = "iogb7"
 	else
-		icon_state = "iogb7-open"
+		icon_state = "iogb7_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/mauser
@@ -378,7 +378,7 @@
 	if (ammo_magazine)
 		icon_state = "mauser"
 	else
-		icon_state = "mauser0"
+		icon_state = "mauser_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/borchardt
@@ -400,7 +400,7 @@
 	if (ammo_magazine)
 		icon_state = "borchardt"
 	else
-		icon_state = "borchardt0"
+		icon_state = "borchardt_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/colthammerless
@@ -578,7 +578,7 @@
 	if (ammo_magazine)
 		icon_state = "makarov"
 	else
-		icon_state = "makarov0"
+		icon_state = "makarov_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/makarov/silenced/New()
@@ -615,6 +615,28 @@
 
 	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
 	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/pistol/m9beretta/tan
+	name = "Beretta M9"
+	desc = "The standard issue pistol of US Armed Forces from 1985 to 2017. Chambered in 9mm Luger. This one blends in with the desert"
+	icon_state = "tanm9"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/m9beretta
+	good_mags = list(/obj/item/ammo_magazine/m9beretta)
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.12
+
+/obj/item/weapon/gun/projectile/pistol/m9beretta/tan/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "tanm9"
+	else
+		icon_state = "tanm9_open"
 
 /obj/item/weapon/gun/projectile/pistol/jericho941
 	name = "Jericho 941"
