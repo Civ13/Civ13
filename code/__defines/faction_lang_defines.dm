@@ -87,7 +87,7 @@
 
 	if (constant == INDIANS)
 		if (map.ID == "AFRICAN_WARLORDS")
-			return "Blugisi Wartibe"
+			return "Blugisi Wartribe"
 		else if (map.ID == "TADOJSVILLE")
 			return "Mercenary Warbands"
 		else
