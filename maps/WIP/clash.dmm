@@ -63,14 +63,14 @@
 /turf/floor/dirt/dust,
 /area/caribbean/void/caves)
 "bx" = (
-/obj/structure/grille/logfence{
-	dir = 1;
-	opacity = 0
+/obj/structure/window/barrier/palisade{
+	dir = 8;
+	not_disassemblable = 1
 	},
 /obj/structure/window/barrier/palisade{
-	dir = 4
+	not_disassemblable = 1
 	},
-/turf/floor/winter,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "bz" = (
 /obj/effect/landmark{
@@ -90,6 +90,15 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/gold,
 /turf/floor/wood,
 /area/caribbean/houses)
+"bH" = (
+/obj/structure/window/barrier/palisade{
+	not_disassemblable = 1
+	},
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
+/turf/floor/wood,
+/area/caribbean/no_mans_land/taiga)
 "bJ" = (
 /obj/structure/table/wood,
 /obj/structure/roof_support/nordic,
@@ -295,10 +304,11 @@
 /area/caribbean/houses)
 "fJ" = (
 /obj/structure/window/barrier/palisade{
-	dir = 8
+	dir = 8;
+	not_disassemblable = 1
 	},
-/obj/structure/wild/smallbush/winter,
-/turf/floor/winter,
+/obj/structure/window/barrier/palisade,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "fO" = (
 /mob/living/simple_animal/crow,
@@ -324,6 +334,10 @@
 /obj/structure/fish,
 /turf/floor/beach/water/deep,
 /area/caribbean/no_mans_land/invisible_wall)
+"gi" = (
+/obj/item/weapon/material/sword/magic/elec/lesser,
+/turf/floor/plating/stone_old,
+/area/caribbean/no_mans_land/taiga)
 "gs" = (
 /obj/structure/simple_door/fence,
 /turf/floor/dirt/dust,
@@ -336,14 +350,8 @@
 /turf/wall/stone/stonebrick,
 /area/caribbean/houses)
 "gP" = (
-/obj/structure/grille/logfence{
-	dir = 4;
-	opacity = 0
-	},
-/obj/structure/window/barrier/palisade{
-	dir = 1
-	},
-/turf/floor/winter,
+/obj/structure/brazier/loaded,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "hk" = (
 /obj/structure/bed/chair/wood{
@@ -355,7 +363,7 @@
 /turf/floor/dirt/ploughed/flooded,
 /area/caribbean/no_mans_land/taiga)
 "hv" = (
-/obj/covers/wood/stairs,
+/obj/structure/window/barrier/palisade,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "hO" = (
@@ -384,9 +392,12 @@
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "ie" = (
-/obj/covers/wood/stairs{
-	dir = 4;
-	icon_state = "wood2_stairs"
+/obj/structure/window/barrier/palisade{
+	dir = 8;
+	not_disassemblable = 1
+	},
+/obj/structure/window/barrier/palisade{
+	dir = 1
 	},
 /turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
@@ -433,11 +444,10 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "jT" = (
-/obj/structure/grille/logfence{
-	dir = 1;
-	opacity = 0
+/obj/structure/window/barrier/palisade{
+	not_disassemblable = 1
 	},
-/turf/floor/winter,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "ka" = (
 /obj/covers/stone_wall/brick/archway{
@@ -469,6 +479,11 @@
 "kC" = (
 /obj/structure/wild/smallbush/winter,
 /turf/floor/winter/grass,
+/area/caribbean/no_mans_land/taiga)
+"kK" = (
+/obj/covers/roads/dirt,
+/obj/structure/window/barrier/palisade,
+/turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "kS" = (
 /mob/living/simple_animal/hostile/bear/boar/brown,
@@ -628,11 +643,10 @@
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "nW" = (
-/obj/structure/window/barrier/palisade,
 /obj/structure/window/barrier/palisade{
 	dir = 1
 	},
-/turf/floor/winter,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "og" = (
 /obj/structure/roof_support/nordic,
@@ -684,6 +698,13 @@
 /obj/effect/decal/cleanable/blood,
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
+"pp" = (
+/obj/covers/roads/dirt,
+/obj/structure/window/barrier/palisade{
+	dir = 1
+	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "pu" = (
 /obj/covers/cobblestone/stairs,
 /turf/floor/winter,
@@ -896,12 +917,13 @@
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
 "wK" = (
-/obj/structure/closet/crate/empty,
-/obj/item/stack/material/wood/twentyfive,
-/obj/item/stack/material/wood/twentyfive,
-/obj/item/stack/material/wood/twentyfive,
-/turf/floor/wood,
-/area/caribbean/houses)
+/obj/covers/roads/dirt,
+/obj/structure/window/barrier/palisade{
+	dir = 8
+	},
+/obj/structure/closet/crate/arrows/iron,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "xi" = (
 /obj/covers/repairedfloor,
 /turf/floor/beach/water/deep,
@@ -954,6 +976,11 @@
 "yl" = (
 /obj/structure/practice_dummy,
 /turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
+"yw" = (
+/obj/covers/stone_wall/brick,
+/obj/structure/sign/flag/blue,
+/turf/wall/stone/stonebrick,
 /area/caribbean/no_mans_land/taiga)
 "yx" = (
 /turf/floor/dirt/winter,
@@ -1105,6 +1132,13 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"Cw" = (
+/obj/structure/window/barrier/palisade{
+	dir = 8
+	},
+/obj/structure/closet/crate/arrows/iron,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "Cz" = (
 /obj/structure/closet/old_coffin,
 /obj/item/remains/human,
@@ -1227,6 +1261,15 @@
 /obj/structure/distillery,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"Fd" = (
+/obj/structure/window/barrier/palisade{
+	dir = 1
+	},
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
+/turf/floor/wood,
+/area/caribbean/no_mans_land/taiga)
 "Fm" = (
 /turf/floor/beach/water/ice,
 /area/caribbean/no_mans_land/invisible_wall)
@@ -1390,10 +1433,9 @@
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "IG" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/structure/closet/crate/empty,
-/turf/floor/wood,
-/area/caribbean/houses)
+/obj/covers/wood/stairs,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "IK" = (
 /obj/covers/wood_wall/nordic,
 /obj/roof/wood,
@@ -1453,6 +1495,20 @@
 /obj/structure/reagent_dispensers/largebarrel/beer,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"Kv" = (
+/obj/structure/window/barrier/palisade{
+	dir = 8;
+	not_disassemblable = 1
+	},
+/turf/floor/wood,
+/area/caribbean/no_mans_land/taiga)
+"Kw" = (
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
+/obj/structure/closet/crate/arrows/iron,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "Kz" = (
 /obj/item/weapon/material/shovel,
 /turf/floor/winter,
@@ -1508,16 +1564,26 @@
 /obj/covers/roads/dirt,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
+"ML" = (
+/obj/covers/roads/dirt,
+/obj/covers/wood/stairs{
+	dir = 4;
+	icon_state = "wood2_stairs"
+	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "MN" = (
 /obj/structure/wild/berrybush,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "MT" = (
-/obj/structure/grille/logfence{
-	dir = 4;
-	opacity = 0
+/obj/structure/window/barrier/palisade{
+	dir = 4
 	},
-/turf/floor/winter,
+/obj/structure/window/barrier/palisade{
+	dir = 1
+	},
+/turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "MW" = (
 /obj/effect/decal/cleanable/blood/gibs,
@@ -1605,6 +1671,9 @@
 /obj/item/weapon/reagent_containers/glass/barrel/water,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"PV" = (
+/turf/floor/winter,
+/area/caribbean/houses)
 "Qe" = (
 /obj/item/stack/teeth/human,
 /obj/effect/decal/cleanable/blood,
@@ -1626,6 +1695,13 @@
 /obj/item/weapon/material/sword/gaelic/iron,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
+"Qj" = (
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
+/obj/structure/window/barrier/palisade,
+/turf/floor/wood,
+/area/caribbean/no_mans_land/taiga)
 "Qr" = (
 /obj/structure/table/wood,
 /obj/item/weapon/reagent_containers/food/snacks/tomatosoup,
@@ -1657,7 +1733,8 @@
 /turf/floor/winter/grass,
 /area/caribbean/no_mans_land/taiga)
 "Rc" = (
-/obj/structure/brazier/loaded,
+/obj/covers/roads/dirt,
+/obj/covers/wood/stairs,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "Rh" = (
@@ -1732,6 +1809,12 @@
 	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
+"SL" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/closet/crate/empty,
+/obj/item/stack/material/wood,
+/turf/floor/wood,
+/area/caribbean/houses)
 "SV" = (
 /obj/covers/repairedfloor,
 /obj/item/weapon/fishing,
@@ -1744,6 +1827,13 @@
 	},
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
+"Ti" = (
+/obj/covers/roads/dirt,
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "Tn" = (
 /obj/structure/shower/bathtub/stone,
 /obj/roof,
@@ -1802,9 +1892,10 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "TP" = (
-/obj/item/weapon/book/holybook,
-/turf/floor/plating/stone_old,
-/area/caribbean/no_mans_land/taiga)
+/obj/covers/wood_wall/nordic,
+/obj/structure/sign/flag/blue,
+/turf/wall/wood,
+/area/caribbean/houses)
 "Ub" = (
 /obj/structure/closet/crate/empty,
 /obj/effect/decal/cleanable/dirt,
@@ -10360,8 +10451,12 @@ Qh
 EC
 eZ
 eZ
-jT
-zS
+eZ
+eZ
+eZ
+ie
+Kv
+bx
 zS
 zS
 zS
@@ -10371,10 +10466,6 @@ zS
 zS
 zS
 ZD
-zS
-zS
-zS
-zS
 zS
 zS
 zS
@@ -10452,8 +10543,12 @@ Qh
 EC
 EC
 eZ
-jT
 eZ
+eZ
+eZ
+nW
+gP
+jT
 eZ
 eZ
 eZ
@@ -10469,10 +10564,6 @@ eZ
 eZ
 eZ
 WY
-eZ
-eZ
-eZ
-TG
 eZ
 eZ
 eZ
@@ -10544,9 +10635,13 @@ EC
 EC
 Xx
 Xx
+eZ
+eZ
+eZ
+nW
+lB
 jT
-eZ
-eZ
+SD
 eZ
 eZ
 eZ
@@ -10561,10 +10656,6 @@ GS
 TF
 FL
 FL
-eZ
-eZ
-eZ
-eZ
 eZ
 eZ
 eZ
@@ -10636,12 +10727,16 @@ EC
 EC
 EC
 Us
-jT
 eZ
+eZ
+eZ
+nW
+lB
+lB
+IG
 eZ
 eZ
 yl
-eZ
 eZ
 eZ
 eZ
@@ -10653,10 +10748,6 @@ eZ
 eZ
 eZ
 TG
-eZ
-eZ
-eZ
-eZ
 eZ
 eZ
 wE
@@ -10728,12 +10819,16 @@ EC
 EC
 EC
 Us
-jT
 eZ
 eZ
-TG
+eZ
+nW
+lB
+lB
+IG
+Ry
+eZ
 yl
-eZ
 eZ
 eZ
 eZ
@@ -10746,10 +10841,6 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-TG
 eZ
 FQ
 eZ
@@ -10820,12 +10911,16 @@ Qh
 gH
 EC
 Us
+eZ
+eZ
+eZ
+nW
+lB
 jT
-Rc
+Cw
 eZ
-Gg
+Ry
 DM
-eZ
 eZ
 FL
 FL
@@ -10838,10 +10933,6 @@ eZ
 eZ
 eZ
 TG
-eZ
-eZ
-eZ
-eZ
 eZ
 FQ
 Kz
@@ -10912,20 +11003,20 @@ gH
 gH
 EC
 eZ
+eZ
+eZ
+eZ
+nW
+lB
 jT
-Ry
-Ry
+eZ
 eZ
 eZ
 eZ
 Ry
 FL
 FL
-eZ
-eZ
-eZ
-eZ
-eZ
+Gg
 eZ
 eZ
 eZ
@@ -11004,12 +11095,12 @@ HZ
 EC
 EC
 eZ
+eZ
+eZ
+eZ
+nW
+lB
 jT
-Ry
-eZ
-Ry
-Ry
-eZ
 eZ
 eZ
 Ry
@@ -11097,13 +11188,13 @@ xw
 Ry
 Ry
 eZ
-Ry
 eZ
-Wd
-Wd
-rd
-Wd
-Wd
+eZ
+nW
+lB
+jT
+eZ
+eZ
 Ry
 eZ
 eZ
@@ -11191,14 +11282,14 @@ Ry
 eZ
 eZ
 eZ
-Wd
-Cf
-eo
-Lj
-Wd
+nW
+lB
+jT
+eZ
+eZ
 Ry
 eZ
-mP
+TP
 mP
 bK
 kX
@@ -11215,7 +11306,7 @@ mL
 br
 bK
 mP
-mP
+TP
 eZ
 Ry
 eZ
@@ -11280,14 +11371,14 @@ EC
 EC
 eZ
 eZ
-jT
-Ry
 eZ
-rd
-Al
-eo
-eo
-rd
+eZ
+eZ
+nW
+lB
+jT
+eZ
+eZ
 Ry
 eZ
 mP
@@ -11372,14 +11463,14 @@ eZ
 eZ
 eZ
 eZ
-jT
-Ry
 eZ
-Wd
-yX
-eo
-KU
-Wd
+eZ
+eZ
+nW
+lB
+jT
+eZ
+eZ
 Ry
 Ry
 ml
@@ -11464,14 +11555,14 @@ eZ
 eZ
 eZ
 eZ
-jT
-Ry
 eZ
-Wd
-Wd
-By
-Wd
-Wd
+eZ
+eZ
+nW
+lB
+jT
+eZ
+eZ
 Ry
 Ry
 ml
@@ -11556,14 +11647,14 @@ eZ
 eZ
 eZ
 eZ
-jT
-FL
 eZ
-DJ
-DJ
-DJ
-DJ
-bJ
+eZ
+eZ
+nW
+gP
+jT
+eZ
+eZ
 Ry
 Ry
 mP
@@ -11648,17 +11739,17 @@ eZ
 eZ
 eZ
 TG
-jT
-FL
 eZ
-DJ
-DJ
-DJ
-DJ
-Yw
+eZ
+eZ
+nW
+lB
+jT
+eZ
+eZ
 Ry
 eZ
-mP
+TP
 mP
 qm
 qm
@@ -11675,7 +11766,7 @@ Hl
 qm
 qm
 mP
-mP
+TP
 Ry
 Ry
 eZ
@@ -11740,14 +11831,14 @@ eZ
 eZ
 eZ
 eZ
-jT
-Ry
 eZ
-Wa
-Xh
-Yx
-DJ
-Ru
+eZ
+eZ
+nW
+lB
+jT
+eZ
+eZ
 Ry
 eZ
 eZ
@@ -11832,14 +11923,14 @@ eZ
 eZ
 eZ
 eZ
+eZ
+eZ
+eZ
+nW
+lB
 jT
-Ry
 eZ
 eZ
-Ny
-DY
-DJ
-Ny
 yD
 eZ
 eZ
@@ -11924,14 +12015,14 @@ eZ
 eZ
 eZ
 eZ
+eZ
+eZ
+eZ
+nW
+lB
 jT
-Mu
 eZ
 eZ
-bJ
-zM
-DJ
-bJ
 eZ
 eZ
 eZ
@@ -12016,14 +12107,14 @@ eZ
 eZ
 eZ
 eZ
+eZ
+eZ
+eZ
+nW
+lB
 jT
 eZ
 eZ
-eZ
-la
-lx
-DJ
-bU
 Ry
 eZ
 eZ
@@ -12108,14 +12199,14 @@ eZ
 eZ
 ke
 ke
+eZ
+eZ
+eZ
+nW
+lB
 jT
 eZ
 eZ
-eZ
-la
-RQ
-DJ
-Dk
 Ry
 eZ
 eZ
@@ -12200,14 +12291,14 @@ eZ
 TG
 eZ
 eZ
+eZ
+eZ
+eZ
+nW
+lB
 jT
+Kw
 eZ
-eZ
-Ry
-Ny
-la
-JE
-Ny
 Ry
 eZ
 eZ
@@ -12292,13 +12383,13 @@ eZ
 eZ
 eZ
 eZ
-jT
-SD
-Ry
-Ry
-Ry
-Ry
-Ry
+eZ
+eZ
+eZ
+nW
+lB
+lB
+Rc
 eZ
 Ry
 FL
@@ -12384,13 +12475,13 @@ eZ
 eZ
 eZ
 eZ
+eZ
+eZ
+eZ
 nW
 lB
-ie
+lB
 Rc
-ke
-eZ
-Ry
 eZ
 yD
 FL
@@ -12476,13 +12567,13 @@ eZ
 eZ
 eZ
 eZ
+eZ
+eZ
+eZ
 nW
 lB
-lB
 hv
-eZ
-eZ
-eZ
+BS
 Ry
 Ry
 eZ
@@ -12568,12 +12659,12 @@ eZ
 eZ
 eZ
 eZ
-nW
-Zu
-Zu
-Zu
-gP
 eZ
+eZ
+eZ
+nW
+gP
+hv
 eZ
 eZ
 eZ
@@ -12604,7 +12695,7 @@ eZ
 FL
 FL
 FL
-QZ
+FL
 FL
 eZ
 eZ
@@ -12661,11 +12752,11 @@ eZ
 eZ
 eZ
 eZ
-fJ
-BS
-BS
 eZ
-jT
+eZ
+Fd
+Zu
+Qj
 eZ
 eZ
 Ry
@@ -12695,8 +12786,8 @@ eZ
 (27,1,2) = {"
 FL
 FL
-QZ
-QZ
+FL
+FL
 uS
 eZ
 ke
@@ -12938,10 +13029,10 @@ eZ
 QR
 eZ
 eZ
-eZ
-eZ
 Cp
-jT
+ie
+Kv
+bx
 eZ
 eZ
 eZ
@@ -13031,10 +13122,10 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
+nW
+gP
 jT
-eZ
+Kw
 eZ
 eZ
 eZ
@@ -13123,12 +13214,12 @@ eZ
 ai
 eZ
 eZ
-eZ
-eZ
-jT
-eZ
-eZ
-eZ
+nW
+lB
+lB
+Rc
+Ry
+Ry
 eZ
 Ry
 eZ
@@ -13215,12 +13306,12 @@ eZ
 eZ
 eZ
 eZ
+nW
+lB
+lB
+Rc
 eZ
-eZ
-jT
-eZ
-eZ
-eZ
+Ry
 eZ
 Ry
 eZ
@@ -13307,12 +13398,12 @@ eZ
 eZ
 eZ
 eZ
+nW
+lB
+hv
+BS
 eZ
-TG
-jT
-Jh
-nm
-Jh
+eZ
 Ry
 Ry
 eZ
@@ -13399,13 +13490,13 @@ eZ
 TG
 eZ
 eZ
-eZ
-eZ
+nW
+lB
 jT
+eZ
+Jh
 nm
-EK
-nm
-Ry
+Jh
 eZ
 eZ
 KY
@@ -13491,13 +13582,13 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
+nW
+lB
 jT
-fy
-nm
-fy
 eZ
+nm
+EK
+nm
 Ry
 eZ
 mZ
@@ -13583,13 +13674,13 @@ eZ
 fh
 eZ
 eZ
-eZ
-TG
+nW
+lB
 jT
 eZ
-eZ
-eZ
-eZ
+fy
+nm
+fy
 Ry
 Ry
 eZ
@@ -13604,12 +13695,12 @@ eZ
 eZ
 Ry
 Ry
-eZ
-eZ
-eZ
-Ry
-eZ
-eZ
+mP
+mP
+ml
+ml
+mP
+mP
 eZ
 "}
 (37,1,2) = {"
@@ -13675,10 +13766,10 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
+nW
+lB
 jT
-eZ
+SD
 eZ
 eZ
 eZ
@@ -13696,12 +13787,12 @@ eZ
 eZ
 Ry
 eZ
-eZ
-eZ
-Ry
-Ry
-eZ
-eZ
+mP
+lc
+qm
+qm
+og
+mP
 eZ
 "}
 (38,1,2) = {"
@@ -13767,13 +13858,13 @@ eZ
 eZ
 if
 eZ
+nW
+lB
+lB
+Rc
 eZ
-eZ
-jT
-eZ
-eZ
-eZ
-eZ
+Ry
+Ry
 Ry
 Ry
 Yh
@@ -13789,10 +13880,10 @@ Ry
 Ry
 eZ
 mP
-mP
-ml
-ml
-mP
+bN
+qm
+eF
+jE
 mP
 eZ
 "}
@@ -13859,11 +13950,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-jT
+nW
+lB
+lB
 Rc
-eZ
+Ry
 eZ
 eZ
 eZ
@@ -13881,10 +13972,10 @@ Ry
 eZ
 eZ
 mP
-lc
+oB
 qm
 qm
-og
+SL
 mP
 eZ
 "}
@@ -13951,10 +14042,10 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-Yh
-eZ
+nW
+gP
+hv
+Cw
 eZ
 Yh
 eZ
@@ -13973,10 +14064,10 @@ Ry
 eZ
 eZ
 mP
-bN
+Ub
 qm
-eF
-XI
+qm
+bN
 mP
 eZ
 "}
@@ -14043,9 +14134,9 @@ eZ
 eZ
 eZ
 eZ
-eZ
-TG
-Yh
+Fd
+Zu
+bH
 Yh
 Yh
 Yh
@@ -14065,10 +14156,10 @@ eZ
 mF
 eZ
 mP
-oB
+dm
+XI
 qm
-qm
-IG
+Vs
 mP
 eZ
 "}
@@ -14157,10 +14248,10 @@ eZ
 Tn
 eZ
 mP
-Ub
-qm
-qm
-bN
+lc
+jE
+TH
+lc
 mP
 eZ
 "}
@@ -14233,7 +14324,7 @@ Yh
 Yh
 Yh
 Yh
-jT
+eZ
 Ry
 Ry
 eZ
@@ -14249,10 +14340,10 @@ eZ
 uk
 eZ
 mP
-dm
-wK
-qm
-Vs
+mP
+mP
+mP
+mP
 mP
 eZ
 "}
@@ -14324,9 +14415,9 @@ Yh
 Yh
 Yh
 UL
-TG
-jT
-eZ
+ie
+Kv
+bx
 Ry
 eZ
 eZ
@@ -14340,12 +14431,12 @@ eZ
 Ry
 mF
 eZ
-mP
-lc
-jE
-TH
-lc
-mP
+eZ
+eZ
+eZ
+eZ
+eZ
+eZ
 eZ
 "}
 (45,1,2) = {"
@@ -14416,9 +14507,9 @@ Yh
 Yh
 Yh
 UL
-eZ
+nW
+gP
 jT
-Ry
 Ry
 eZ
 eZ
@@ -14432,12 +14523,12 @@ Ry
 Ry
 eZ
 eZ
-mP
-mP
-mP
-mP
-mP
-mP
+eZ
+Wd
+Wd
+rd
+Wd
+Wd
 eZ
 "}
 (46,1,2) = {"
@@ -14508,11 +14599,11 @@ Yh
 Yh
 Yh
 eZ
+nW
+lB
+jT
 eZ
-bx
-Ry
-Ry
-rb
+eZ
 eZ
 ku
 mu
@@ -14525,11 +14616,11 @@ Ry
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+Wd
+Cf
+eo
+Lj
+Wd
 eZ
 "}
 (47,1,2) = {"
@@ -14602,9 +14693,9 @@ TG
 eZ
 nW
 lB
-ie
-Rc
-ke
+jT
+eZ
+eZ
 Ry
 ku
 ku
@@ -14616,12 +14707,12 @@ Ry
 Ry
 eZ
 eZ
-TG
 eZ
-eZ
-eZ
-eZ
-eZ
+rd
+Al
+eo
+eo
+rd
 eZ
 "}
 (48,1,2) = {"
@@ -14694,8 +14785,8 @@ eZ
 eZ
 nW
 lB
-lB
-hv
+jT
+Ry
 eZ
 eZ
 eZ
@@ -14709,11 +14800,11 @@ Ry
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-TG
-eZ
+Wd
+yX
+eo
+KU
+Wd
 eZ
 "}
 (49,1,2) = {"
@@ -14785,28 +14876,28 @@ Yh
 eZ
 eZ
 nW
-Zu
-Zu
-Zu
-gP
-MT
-MT
-MT
-MT
-MT
-MT
-MT
+lB
+jT
+Ti
 eZ
 Ry
-MT
-MT
-MT
-MT
-MT
-MT
-MT
-MT
-MT
+Ry
+eZ
+eZ
+eZ
+eZ
+eZ
+Ry
+eZ
+eZ
+eZ
+eZ
+Wd
+Wd
+By
+Wd
+Wd
+eZ
 "}
 (50,1,2) = {"
 eZ
@@ -14842,7 +14933,7 @@ eZ
 eZ
 ut
 ut
-CY
+yw
 OS
 CY
 CY
@@ -14856,7 +14947,7 @@ cu
 CY
 CY
 wG
-CY
+yw
 Us
 eZ
 eZ
@@ -14876,11 +14967,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
-BS
-BS
-BS
-eZ
+nW
+lB
+lB
+Rc
+Ry
 eZ
 eZ
 eZ
@@ -14889,15 +14980,15 @@ eZ
 eZ
 eZ
 Ry
+eZ
+eZ
 Ry
-Cp
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+Ry
+DJ
+DJ
+DJ
+DJ
+bJ
 eZ
 "}
 (51,1,2) = {"
@@ -14928,7 +15019,7 @@ Qe
 XO
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 eZ
@@ -14968,28 +15059,28 @@ TG
 eZ
 eZ
 eZ
+nW
+lB
+lB
+Rc
+eZ
+eZ
+eZ
 TG
 eZ
 eZ
+mm
 eZ
-eZ
-eZ
-eZ
-TG
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+Ry
+Ry
+Ry
+Ry
+FL
+DJ
+DJ
+DJ
+DJ
+Yw
 eZ
 "}
 (52,1,2) = {"
@@ -15060,6 +15151,10 @@ eZ
 eZ
 eZ
 eZ
+nW
+lB
+jT
+wK
 eZ
 eZ
 eZ
@@ -15068,20 +15163,16 @@ eZ
 eZ
 eZ
 eZ
+Ry
 eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-TG
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+Wa
+Xh
+Yx
+DJ
+Ru
 eZ
 "}
 (53,1,2) = {"
@@ -15152,28 +15243,28 @@ eZ
 eZ
 eZ
 TG
+nW
+lB
+jT
 eZ
 eZ
 eZ
 eZ
 eZ
+ai
 eZ
 eZ
 eZ
 eZ
+Ry
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-EE
-EE
-EE
-EE
-EE
+PV
+Ny
+DY
+DJ
+Ny
 eZ
 "}
 (54,1,2) = {"
@@ -15210,7 +15301,7 @@ eZ
 FL
 an
 an
-CY
+yw
 OB
 CY
 CY
@@ -15224,7 +15315,7 @@ He
 CY
 CY
 Xy
-CY
+yw
 eZ
 eZ
 eZ
@@ -15244,9 +15335,9 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
+nW
+lB
+jT
 eZ
 eZ
 TG
@@ -15257,15 +15348,15 @@ eZ
 eZ
 eZ
 eZ
+Ry
 eZ
 eZ
 eZ
-FL
-kd
-WT
-HY
-Wi
-EE
+PV
+bJ
+zM
+DJ
+bJ
 eZ
 "}
 (55,1,2) = {"
@@ -15333,31 +15424,31 @@ vp
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
 KO
 eZ
 eZ
+nW
+lB
+jT
+eZ
+ai
+ai
+eZ
+eZ
+eZ
+TG
+eZ
+eZ
+Ry
 eZ
 eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-FL
-WT
-JH
-kd
-EE
+la
+lx
+DJ
+bU
 eZ
 "}
 (56,1,2) = {"
@@ -15381,7 +15472,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 eZ
@@ -15428,12 +15519,9 @@ eZ
 eZ
 TG
 eZ
-eZ
-eZ
-TG
-eZ
-eZ
-eZ
+nW
+lB
+jT
 eZ
 eZ
 eZ
@@ -15441,15 +15529,18 @@ eZ
 eZ
 eZ
 eZ
+ai
+eZ
+Ry
+Ry
 eZ
 eZ
-TG
 eZ
 eZ
-jk
-FU
-FU
-IK
+la
+RQ
+DJ
+Dk
 eZ
 "}
 (57,1,2) = {"
@@ -15520,28 +15611,28 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+nW
+lB
+jT
+Ry
+rb
 TG
 eZ
 eZ
 eZ
 eZ
 eZ
+Ry
+Ry
+Ry
+Ry
+Ry
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-WT
-JH
-Zg
-EE
+Ny
+la
+JE
+Ny
 eZ
 "}
 (58,1,2) = {"
@@ -15612,28 +15703,28 @@ eZ
 eZ
 eZ
 eZ
+nW
+lB
+jT
 eZ
 eZ
 eZ
 eZ
 eZ
 eZ
+Ry
+Ry
+eZ
+Ry
+eZ
+eZ
+Ry
+Ry
 eZ
 eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-TG
-eZ
-eZ
-eZ
-eZ
-Tq
-HY
-HY
-EE
 eZ
 "}
 (59,1,2) = {"
@@ -15704,28 +15795,28 @@ eZ
 eZ
 eZ
 eZ
+nW
+lB
+jT
+eZ
+eZ
+Ry
+kK
+ML
+ML
+pp
+rb
+eZ
+eZ
+Ry
+kK
+ML
+ML
+pp
+rb
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-EE
-EE
-EE
-EE
-EE
 eZ
 "}
 (60,1,2) = {"
@@ -15771,7 +15862,7 @@ Qh
 Qh
 Qh
 Qh
-EC
+gH
 gH
 gH
 Xx
@@ -15792,33 +15883,33 @@ eZ
 eZ
 eZ
 eZ
-QE
-QE
-QE
 eZ
 eZ
+TG
 eZ
+nW
+lB
+lB
+Kv
+Kv
+Kv
+Kv
+lB
+lB
+Kv
+Kv
+fJ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-FL
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+Ry
+ie
+lB
+lB
+Kv
+Kv
+Kv
+Kv
+Kv
+fJ
 "}
 (61,1,2) = {"
 eZ
@@ -15861,8 +15952,8 @@ Qh
 Qh
 Qh
 Qh
-EC
-EC
+Qh
+Qh
 EC
 EC
 Xx
@@ -15883,34 +15974,34 @@ eZ
 eZ
 eZ
 eZ
-eY
-iT
-iT
-iT
-pu
 eZ
 eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-FL
-FL
-TG
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-TG
-eZ
-eZ
-eZ
-eZ
+nW
+gP
+lB
+lB
+lB
+lB
+lB
+lB
+lB
+lB
+gP
+hv
+Ry
+Ry
+nW
+lB
+lB
+lB
+lB
+lB
+lB
+gP
+hv
 "}
 (62,1,2) = {"
 eZ
@@ -15951,10 +16042,10 @@ Qh
 Qh
 Qh
 Qh
-EC
-EC
-EC
-EC
+Qh
+Qh
+gH
+gH
 EC
 Xx
 Xx
@@ -15975,34 +16066,34 @@ eZ
 eZ
 eZ
 eZ
-eY
-iT
-yP
-TP
-pu
-eZ
-eZ
-eZ
-eZ
-eZ
-TG
-eZ
-eZ
-FL
-FL
-eZ
-eZ
-eZ
-eZ
 TG
 eZ
 eZ
 eZ
 eZ
+MT
+Zu
+Zu
+Zu
+Zu
+Zu
+Zu
+Zu
+Zu
+Zu
+Zu
+Qj
 eZ
 eZ
-eZ
-eZ
+MT
+Zu
+Zu
+Zu
+Zu
+Zu
+Zu
+Zu
+Qj
 "}
 (63,1,2) = {"
 eZ
@@ -16042,12 +16133,12 @@ Qh
 Qh
 Qh
 Qh
-EC
-EC
-EC
+Qh
+Qh
+Qh
 EC
 gH
-EC
+gH
 Xx
 Xx
 eZ
@@ -16067,11 +16158,11 @@ eZ
 eZ
 eZ
 eZ
-eY
-iT
-iT
-iT
-pu
+eZ
+eZ
+eZ
+eZ
+eZ
 eZ
 eZ
 eZ
@@ -16086,7 +16177,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+Cp
 eZ
 eZ
 eZ
@@ -16118,7 +16209,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 eZ
@@ -16134,12 +16225,12 @@ Qh
 Qh
 Qh
 Qh
+Qh
+Qh
+EC
 EC
 gH
-EC
-EC
-EC
-EC
+gH
 Xx
 eZ
 eZ
@@ -16160,9 +16251,9 @@ TG
 eZ
 eZ
 eZ
-tl
-tl
-tl
+eZ
+eZ
+eZ
 eZ
 eZ
 eZ
@@ -16184,7 +16275,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 "}
@@ -16254,7 +16345,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+TG
 eZ
 eZ
 eZ
@@ -16273,11 +16364,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+EE
+EE
+EE
+EE
+EE
 eZ
 "}
 (66,1,2) = {"
@@ -16343,7 +16434,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+TG
 eZ
 eZ
 eZ
@@ -16365,11 +16456,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+kd
+WT
+HY
+Wi
+EE
 eZ
 "}
 (67,1,2) = {"
@@ -16439,7 +16530,7 @@ eZ
 eZ
 eZ
 ai
-TG
+eZ
 eZ
 eZ
 FL
@@ -16457,11 +16548,11 @@ TG
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+FL
+WT
+JH
+kd
+EE
 eZ
 "}
 (68,1,2) = {"
@@ -16550,10 +16641,10 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
+jk
+FU
+FU
+IK
 eZ
 "}
 (69,1,2) = {"
@@ -16624,7 +16715,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+TG
 eZ
 eZ
 eZ
@@ -16642,10 +16733,10 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
+WT
+JH
+Zg
+EE
 eZ
 "}
 (70,1,2) = {"
@@ -16734,10 +16825,10 @@ RB
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
+Tq
+HY
+HY
+EE
 eZ
 "}
 (71,1,2) = {"
@@ -16825,11 +16916,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
-TG
-eZ
-eZ
-eZ
+EE
+EE
+EE
+EE
+EE
 eZ
 "}
 (72,1,2) = {"
@@ -16848,7 +16939,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 eZ
@@ -17211,7 +17302,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 FL
 eZ
 eZ
@@ -17307,7 +17398,7 @@ FL
 eZ
 FL
 eZ
-TG
+eZ
 eZ
 FL
 eZ
@@ -17490,7 +17581,7 @@ eZ
 eZ
 eZ
 FL
-TG
+eZ
 eZ
 FL
 eZ
@@ -17564,7 +17655,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+TG
 eZ
 eZ
 "}
@@ -17650,15 +17741,15 @@ eZ
 eZ
 eZ
 eZ
+Yh
+Yh
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+Yh
+Yh
+Yh
+Yh
+Yh
 "}
 (81,1,2) = {"
 eZ
@@ -17740,17 +17831,17 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+Yh
+Yh
+Yh
+Yh
+Yh
+Yh
+Yh
+Yh
+Yh
+Yh
+Yh
 "}
 (82,1,2) = {"
 eZ
@@ -17831,15 +17922,15 @@ eZ
 eZ
 eZ
 eZ
+Yh
+Yh
+Yh
+Yh
+eZ
+Yh
+Yh
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-TG
 eZ
 eZ
 eZ
@@ -17922,17 +18013,17 @@ eZ
 eZ
 eZ
 eZ
-eZ
-TG
-eZ
-eZ
-TG
+Yh
+Yh
+Yh
 eZ
 eZ
 eZ
 eZ
 eZ
 eZ
+eZ
+kS
 eZ
 eZ
 "}
@@ -18013,9 +18104,9 @@ eZ
 TG
 eZ
 eZ
-eZ
-eZ
-eZ
+Yh
+Yh
+Yh
 eZ
 eZ
 eZ
@@ -18105,16 +18196,16 @@ eZ
 eZ
 eZ
 eZ
+if
 eZ
 eZ
 eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
+QE
+QE
+QE
 eZ
 eZ
 eZ
@@ -18194,6 +18285,7 @@ eZ
 eZ
 eZ
 eZ
+Yh
 eZ
 eZ
 eZ
@@ -18202,12 +18294,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+eY
+iT
+iT
+iT
+pu
 eZ
 eZ
 eZ
@@ -18257,7 +18348,6 @@ eZ
 eZ
 eZ
 eZ
-TG
 eZ
 eZ
 eZ
@@ -18286,6 +18376,9 @@ eZ
 eZ
 eZ
 eZ
+Yh
+Yh
+Yh
 eZ
 eZ
 eZ
@@ -18293,13 +18386,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-TG
-eZ
-eZ
-eZ
+eY
+iT
+yP
+gi
+pu
 eZ
 eZ
 eZ
@@ -18377,22 +18468,22 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-eZ
-TG
-eZ
-eZ
-eZ
-eZ
+Yh
+Yh
 eZ
 eZ
 eZ
 eZ
 TG
+eZ
+eZ
+eZ
+eY
+iT
+iT
+iT
+pu
+eZ
 eZ
 eZ
 "}
@@ -18469,6 +18560,8 @@ eZ
 eZ
 eZ
 eZ
+Yh
+Yh
 eZ
 eZ
 eZ
@@ -18478,11 +18571,9 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
-eZ
-eZ
-eZ
+tl
+tl
+tl
 eZ
 eZ
 eZ
@@ -18561,8 +18652,8 @@ eZ
 eZ
 eZ
 eZ
-eZ
-eZ
+Yh
+Yh
 eZ
 eZ
 eZ
