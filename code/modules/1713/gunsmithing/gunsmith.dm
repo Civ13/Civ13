@@ -1418,7 +1418,7 @@
 		if ("a556x45")
 			tempdesc = "5.56x45mm intermediate rifle rounds"
 
-	desc = "A gun chambered in [tempdesc]. The feed system is [lowertext(feeding_type)]."
+	desc = "A gun chambered in [tempdesc] with a(n) [lowertext(feeding_type)]. It has a [lowertext(stock_type)] and a [lowertext(barrel_type)]."
 	if (!firemodes.len)
 		firemodes += new firemode_type
 	else
@@ -1429,7 +1429,7 @@
 		if (FM.fire_delay == -1)
 			FM.fire_delay = fire_delay
 	update_icon()
-	
+
 /obj/item/weapon/gun/projectile/custom/update_icon()
 	if (!override_sprite)
 		if (stock_type == "Folding Stock")
