@@ -106,7 +106,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition =  "The Warband Mercenaries have control over most of the clinic! They will win in {time} minutes."
-				next_win = world.time +  short_win_time(ARAB)
+				next_win = world.time +  short_win_time(CIVILIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -115,7 +115,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The Warband Mercenaries have control over most of the clinic! They will win in {time} minutes."
-				next_win = world.time + short_win_time(ARAB)
+				next_win = world.time + short_win_time(CIVILIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
