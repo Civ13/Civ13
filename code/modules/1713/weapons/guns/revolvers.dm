@@ -419,8 +419,8 @@
 /obj/item/weapon/gun/projectile/revolver/taurus
 	name = "Taurus Judge Revolver"
 	desc = "The Taurus Judge is a five shot revolver designed and produced by Taurus International, chambered for (.45 Colt)."
-	icon_state = "biggi"
-	base_icon = "biggi"
+	icon_state = "judge"
+	base_icon = "judge"
 	w_class = 2
 	caliber = "a45"
 	handle_casings = CYCLE_CASINGS

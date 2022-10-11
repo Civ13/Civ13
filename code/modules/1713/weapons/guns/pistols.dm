@@ -90,7 +90,7 @@
 	if (ammo_magazine)
 		icon_state = "nambu"
 	else
-		icon_state = "nambu0"
+		icon_state = "nambu_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu
@@ -160,7 +160,7 @@
 	if (ammo_magazine)
 		icon_state = "waltherp38"
 	else
-		icon_state = "waltherp380"
+		icon_state = "waltherp38_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/waltherp38/silenced/New()
@@ -542,7 +542,7 @@
 	if (ammo_magazine)
 		icon_state = "tt30"
 	else
-		icon_state = "tt300"
+		icon_state = "tt30_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/tt30/silenced/New()
