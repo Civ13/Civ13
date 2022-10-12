@@ -200,6 +200,32 @@
 	shockpower = 15
 	applies_material_colour = TRUE
 
+//blunt//
+/obj/item/weapon/material/sword/magic/mjolnir
+	name = "Mjolnir"
+	default_material = "steel"
+	icon_state = "mjolnir"
+	item_state = "hammer"
+	base_icon = "mjolnir"
+	desc = "Only for the worthy."
+	slot_flags = SLOT_BELT
+	force_divisor = 1.6 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 1.2 // 10 when thrown with weight 20 (steel)
+	attack_verb = list("bashed","struck","beaten")
+	hitsound = 'sound/items/trayhit2.ogg'
+	drawsound = 'sound/items/trayhit1.ogg'
+	sharpness = 0
+	block_chance = 10
+	shocks = 100
+	shockpower = 150
+	cooldownw = 12
+	unbreakable = TRUE
+
+/obj/item/weapon/material/sword/magic/mjolnir/lesser
+	name = "Mjolnir"
+	shocks = 45
+	shockpower = 15
+
 // Odis' Beamblade collection
 
 /obj/item/weapon/material/sword/magic/onoff
