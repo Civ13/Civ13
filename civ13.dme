@@ -461,7 +461,7 @@
 #include "code\game\objects\map_metadata\iwojima.dm"
 #include "code\game\objects\map_metadata\jungle_colony.dm"
 #include "code\game\objects\map_metadata\karak.dm"
-#include "code\game\objects\map_metadata\karelina.dm"
+#include "code\game\objects\map_metadata\karelia.dm"
 #include "code\game\objects\map_metadata\kenobis_weeb_shit.dm"
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
 #include "code\game\objects\map_metadata\kursk.dm"
