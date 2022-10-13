@@ -724,6 +724,9 @@ var/filipino_forceEnabled = FALSE
 	else if (map.ID == MAP_TANTIVEIV)
 		fact3 = "Rebels"
 		fact15 = "Empire"
+	else if (map.ID == MAP_TADOJSVILLE)
+		fact3 = "UN Soldiers"
+		fact7 = "Mercenaries"
 	else if (map.ordinal_age >= 6 && map.ordinal_age < 8)
 		fact13 = "Soviets"
 
