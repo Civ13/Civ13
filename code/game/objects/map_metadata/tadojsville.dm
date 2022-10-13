@@ -48,7 +48,7 @@
 			return "Warband Mercenaries"
 
 /obj/map_metadata/tadojsville/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/tadojsville/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
@@ -156,7 +156,7 @@
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/three))
 			if (H.nationality != "Yellowagwana")
 				return TRUE
-		return !faction1_can_cross_blocks()
+		return !faction2_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/tadojsville/cross_message(faction)

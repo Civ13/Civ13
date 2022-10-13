@@ -505,8 +505,6 @@ datum/job/indians/tribes/black
 	//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/zulu_slene(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/shaman(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908(H), slot_l_hand)
@@ -526,6 +524,8 @@ datum/job/indians/tribes/black
 	H.nationality = "Redkantu"
 	H.add_note("Role", "You are a member of <b>Redkantu Freedom Movement</b>. Stick with your warband and honour your contract!.")
 	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/cape(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/fez(H), slot_head)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/ab = new /obj/item/clothing/accessory/armband/british(null)
 	uniform.attackby(ab, H)
@@ -582,6 +582,8 @@ datum/job/indians/tribes/black
 	H.nationality = "Blugisi"
 	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and honour your contract!")
 	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/surgeon(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/fiendish/blugi(H), slot_head)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(ab, H)
@@ -640,7 +642,8 @@ datum/job/indians/tribes/black
 	H.nationality = "Yellowagwana"
 	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and honour your contract!.")
 	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
 	uniform.attackby(ab, H)
@@ -724,8 +727,6 @@ datum/job/indians/tribes/black
 	//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/flipflops(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/zulu_slene(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/shaman(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908(H), slot_l_hand)
@@ -734,7 +735,6 @@ datum/job/indians/tribes/black
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
 	uniform.attackby(holsterh, H)
-
 	H.setStat("medical", STAT_VERY_HIGH)
 /datum/job/civilian/warlords/yellow
 	title = "Yellowagwana Brave"
@@ -789,6 +789,8 @@ datum/job/indians/tribes/black
 	H.nationality = "Yellowagwana"
 	H.add_note("Role", "You are a member of <b>Yellowagwana Liberation Army</b>. Stick with your warband and collect skulls! <b>Bring them back to the your shack for points!</b>")
 	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to score <b>2 points</b>.")
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/mush(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
@@ -850,6 +852,8 @@ datum/job/indians/tribes/black
 	H.add_note("Role", "You are a member of <b>Blugisi People's Front</b>. Stick with your warband and collect skulls! <b>Bring them back to the your shack for points</b>.")
 	H.add_note("Winning Conditions", "Collect enemy heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to score <b>2 points</b>.")
 
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/surgeon(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/fiendish/blugi(H), slot_head)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/ab = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(ab, H)

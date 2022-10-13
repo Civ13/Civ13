@@ -738,6 +738,10 @@
 	worn_state = "fiendish"
 	flags_inv = BLOCKHEADHAIR
 
+/obj/item/clothing/head/fiendish/blugi
+	color = "#2a28b6"
+
+
 /obj/item/clothing/head/semitic_cap
 	name = "semitic cap"
 	desc = "A yellow knob-headed hat applied to denote jews amongst themselves and those ruling over them."
