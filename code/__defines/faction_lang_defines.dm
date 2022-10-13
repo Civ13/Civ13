@@ -90,6 +90,8 @@
 			return "Blugisi Wartribe"
 		else if (map.ID == "TADOJSVILLE")
 			return "Mercenary Warbands"
+		else if (map.ID == "EAST_LOS_SANTOS")
+			return "Ballas"
 		else
 			return "Native Tribe"
 
@@ -190,6 +192,8 @@
 			return "ATF"
 		else if (map.ID == "TANTIVEIV")
 			return "Imperials"
+		else if (map.ID == "EAST_LOS_SANTOS")
+			return "Grove Street Families"
 		else
 			return "United States"
 

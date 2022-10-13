@@ -1015,6 +1015,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_indians.len] Blugisi "
 		else if (map && istype(map, /obj/map_metadata/tadojsville))
 			dat += "[alive_indians.len] Wartribe Mercenary "
+		else if (map && istype(map, /obj/map_metadata/east_los_santos))
+			dat += "[alive_indians.len] Ballas "
 		else
 			dat += "[alive_indians.len] Natives "
 	if (CIVILIAN in map.faction_organization)
@@ -1093,6 +1095,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Union Soldiers "
 		else if (map && istype(map, /obj/map_metadata/tantiveiv))
 			dat += "[alive_american.len] Imperials "
+		else if (map && istype(map, /obj/map_metadata/east_los_santos))
+			dat += "[alive_american.len] Grove Street "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)

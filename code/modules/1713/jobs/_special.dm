@@ -102,6 +102,7 @@
 /datum/job/var/is_interwar = FALSE
 /datum/job/var/is_pla = FALSE
 /datum/job/var/is_vip = FALSE
+/datum/job/var/is_gta = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE

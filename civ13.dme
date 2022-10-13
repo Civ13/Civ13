@@ -731,6 +731,7 @@
 #include "code\modules\1713\jobs\faction.dm"
 #include "code\modules\1713\jobs\finnish.dm"
 #include "code\modules\1713\jobs\french.dm"
+#include "code\modules\1713\jobs\gangsters.dm"
 #include "code\modules\1713\jobs\german.dm"
 #include "code\modules\1713\jobs\grozny.dm"
 #include "code\modules\1713\jobs\helpers.dm"
