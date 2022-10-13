@@ -1435,7 +1435,6 @@
 					else
 						holder2.icon_state = "pt2_basic"
 				if (INDIANS)
-					holder2.icon_state = "ind_basic"
 					if (map.ID == MAP_AFRICAN_WARLORDS)
 						if(nationality == "Yellowagwana")
 							holder2.icon_state = "civ4"
@@ -1443,6 +1442,10 @@
 							holder2.icon_state = "civ1"
 						if(nationality == "Blugisi")
 							holder2.icon_state = "civ3"
+					else if (map.ID == MAP_EAST_LOS_SANTOS)
+						holder2.icon_state = "ballas"
+					else
+						holder2.icon_state = "ind_basic"
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
@@ -1513,6 +1516,8 @@
 						holder2.icon_state = "idf_basic"
 					else if (map.ID == MAP_TANTIVEIV)
 						holder2.icon_state = "imp_basic"
+					else if (map.ID == MAP_EAST_LOS_SANTOS)
+						holder2.icon_state = "civ2"
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
@@ -1539,8 +1544,10 @@
 						holder2.icon_state = "rebel_basic"
 					else if ((map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST)&& original_job.is_law)
 						holder2.icon_state = "police"
-					else if (map.ID == MAP_FACTORY)
-						holder2.icon_state = "ukr_basic"
+					else if (map.ID == MAP_TADOJSVILLE)
+						holder2.icon_state = "un"
+					else if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN)
+						holder2.icon_state = "sov_basic"
 					else if (map.ID == MAP_GULAG13)
 						if(nationality == "Polish")
 							holder2.icon_state = "pol_basic"
@@ -1562,8 +1569,6 @@
 						holder2.icon_state = "civ6"
 					else
 						holder2.icon_state = ""
-					if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN)
-						holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
 			if (faction_text == CIVILIAN && map.ID == MAP_GULAG13)
 				switch(original_job_title)
