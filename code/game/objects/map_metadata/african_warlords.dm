@@ -18,7 +18,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(INDIANS = 0.5, CIVILIAN = 0.5)
 	battle_name = "Skull competition"
-	mission_start_message = "<font size=4>Two African warlords are fighting to humiliate the other's tribe. They will need to collect <b>Enemy Skulls</b> and bring them to their camp shaman's altar to score. First team to reach <b>40 points</b> wins.<br></font>"
+	mission_start_message = "<font size=4>Two African warlords are fighting to humilate the other's tribe. They will need to collect <b>Enemy Skulls</b> and bring them to their camp shaman's altar to score. Each skull is worth two points and first team to reach <b>30 points</b> wins.<br></font>"
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -58,6 +58,7 @@
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/three))
 			if (H.nationality != "Yellowagwana")
 				return TRUE
+		return !faction2_can_cross_blocks() && !faction1_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/african_warlords/proc/points_check()
@@ -71,7 +72,7 @@
 	if (processes.ticker.playtime_elapsed > 4800)
 		if (win_condition_spam_check)
 			return FALSE
-		if (!(scores["Yellowagwana"] >= 40 || scores["Blugisi"] >= 40))
+		if (!(scores["Yellowagwana"] >= 30 || scores["Blugisi"] >= 30))
 			return TRUE
 		ticker.finished = TRUE
 		var/message = ""
