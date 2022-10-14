@@ -1,7 +1,7 @@
 /obj/map_metadata/tadojsville
 	ID = MAP_TADOJSVILLE
 	title = "Tadojsville Siege"
-	lobby_icon = "icons/lobby/africanwarlords.png"
+	lobby_icon = "icons/lobby/tadojsville.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one,/area/caribbean/no_mans_land/invisible_wall/jungle/two,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	respawn_delay = 300
 	no_winner ="No warband has captured the clinic yet."
@@ -9,27 +9,35 @@
 	faction_organization = list(
 		CIVILIAN,
 		INDIANS)
-
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/russian/land/inside,
 		list(INDIANS) = /area/caribbean/colonies,
 		)
 	age = "1969."
 	ordinal_age = 7
-	artillery_count = 8
-	valid_artillery = list("Explosive","Napalm","Creeping Barrage")
+	artillery_count = 3
+	valid_artillery = list("Explosive")
 	faction_distribution_coeffs = list(CIVILIAN = 0.4, INDIANS = 0.6)
 	battle_name = "The Siege of Tadojsville"
 	mission_start_message = "<font size=4>Three <b>Mercenary Warbands</b> have been hired together to capture the local clinic! It will take <b>5 minutes</b> for the Warbands to capture the clinic but the <b>United Nations Peacekeepers</b> garrisoned there will be reinforced and drive off the attackers if they manage to hold out for 35 minutes. <br> The Warbands will start to cross the river in <b>6 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = INDIANS
 	ambience = list('sound/ambience/jungle1.ogg')
-	songs = list(
-		"Divinitus:1" = "sound/music/divinitus.ogg",)
 	gamemode = "Siege"
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Barrington Levy - Murderer:1" = "sound/music/murderer.ogg",)
+		"The Hygrades - Rough Rider:1" = "sound/music/roughrider.ogg",)
+
+/obj/map_metadata/tadojsville/job_enabled_specialcheck(var/datum/job/J)
+	..()
+
+	if (J.is_un)
+		. = TRUE
+	else if (J.is_warlords)
+		if (J.title != "warlord (do not use)")
+			. = TRUE
+	else
+		. = FALSE
 
 /obj/map_metadata/tadojsville/roundend_condition_def2name(define)
 	..()
@@ -48,21 +56,10 @@
 			return "Warband Mercenaries"
 
 /obj/map_metadata/tadojsville/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/tadojsville/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/tadojsville/job_enabled_specialcheck(var/datum/job/J)
-	..()
-
-	if (J.is_un)
-		. = TRUE
-	else if (J.is_warlords)
-		if (J.title != "warlord (do not use)")
-			. = TRUE
-	else
-		. = FALSE
 
 /obj/map_metadata/tadojsville/update_win_condition()
 
@@ -156,7 +153,7 @@
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/three))
 			if (H.nationality != "Yellowagwana")
 				return TRUE
-		return !faction2_can_cross_blocks()
+		return !faction1_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/tadojsville/cross_message(faction)
