@@ -144,7 +144,7 @@ var/no_loop_clash = FALSE
 			return
 		if (!head_nationality || head_nationality == "none")
 			return
-		user << "You offer the head to odin."
+		user << "You offer the head as a tribute to Odin."
 
 		if	(prob(20))
 			var/randmed = rand(1,3)
