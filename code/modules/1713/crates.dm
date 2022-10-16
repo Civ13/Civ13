@@ -714,13 +714,17 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 /obj/structure/closet/crate/ww2/un/m16ammoboxes
 	name = "UN Peacekeeping bulk 5.56x45mm ammunition"
 	paths = list(/obj/item/ammo_magazine/m16/box = 10)
+/obj/structure/closet/crate/ww2/un/falammoboxes
+	name = "UN Peacekeeping bulk 7.62x51mm ammunition"
+	paths = list(/obj/item/ammo_magazine/m14box = 10)
 
 /obj/structure/closet/crate/ww2/un/ammoboxes
 	name = "UN Peacekeeping bulk specialty ammunition"
-	paths = list(/obj/item/ammo_magazine/m9beretta/box = 4,
+	paths = list(/obj/item/ammo_magazine/a45acpbox = 4,
 				/obj/item/ammo_magazine/madsen/box = 3,
 				/obj/item/ammo_magazine/m14box = 3,
 				/obj/item/ammo_magazine/greasegun/box = 2,
+				/obj/item/ammo_magazine/c455 = 2,
 				)
 
 /obj/structure/closet/crate/ww2/un/vickersboxes
