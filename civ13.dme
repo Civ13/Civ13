@@ -467,6 +467,7 @@
 #include "code\game\objects\map_metadata\kursk.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
+#include "code\game\objects\map_metadata\long_march.dm"
 #include "code\game\objects\map_metadata\magistral.dm"
 #include "code\game\objects\map_metadata\missionary_ridge.dm"
 #include "code\game\objects\map_metadata\moscow194.dm"

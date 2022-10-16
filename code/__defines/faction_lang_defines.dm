@@ -79,6 +79,8 @@
 			return "DRA Army"
 		else if (map.ID == "BANK_ROBBERY" || map.ID == "DRUG_BUST")
 			return "Police Department"
+		else if (map.ID == "LONG_MARCH")
+			return "Red Army"
 		else
 			if (age >= 6)
 				return "Civilians"
@@ -201,7 +203,10 @@
 		return "Vietnamese"
 
 	if (constant == CHINESE)
-		return "Chinese"
+		if (map.ID == "LONG_MARCH")
+			return "National Army"
+		else
+			return "Chinese"
 
 	if (constant == EGYPTIAN)
 		return "Egyptian"
