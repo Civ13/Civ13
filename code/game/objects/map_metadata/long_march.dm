@@ -1,5 +1,5 @@
 /obj/map_metadata/long_march
-	ID = MAP_long_march
+	ID = MAP_LONG_MARCH
 	title = "long_march"
 	lobby_icon = "icons/lobby/longmarch.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/inside,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -11,7 +11,7 @@
 
 	roundend_condition_sides = list(
 		list(CHINESE) = /area/caribbean/russian/land/inside/command,
-		list(CIVILIAN) = /area/caribbean/CIVILIAN/land/inside/command,
+		list(CIVILIAN) = /area/caribbean/japanese/land/inside/command,
 		)
 	age = "1937"
 	ordinal_age = 6
@@ -70,7 +70,7 @@
 		return ""
 	else
 		return ""
-var/no_loop_nk = FALSE
+var/no_loop_lm = FALSE
 
 /obj/map_metadata/long_march/update_win_condition()
 
@@ -83,7 +83,7 @@ var/no_loop_nk = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_nk == TRUE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_lm == TRUE)
 		ticker.finished = TRUE
 		var/message = "The <b>Red Army</b> managed to reach their destination in time! The retreat has been succesful!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
