@@ -374,7 +374,6 @@
 	icon_state = "container1"
 	bound_width = 96
 	bound_height = 64
-	bound_x = 32
 	anchored = TRUE
 	not_movable = TRUE
 	density = TRUE
