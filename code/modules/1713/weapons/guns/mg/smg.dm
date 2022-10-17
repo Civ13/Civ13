@@ -177,7 +177,7 @@
 	slot_flags = SLOT_SHOULDER
 	handle_casings = EJECT_CASINGS
 	load_method = MAGAZINE
-	good_mags = list(/obj/item/ammo_magazine/saiga12)
+	good_mags = list(/obj/item/ammo_magazine/saiga12, /obj/item/ammo_magazine/saiga12/slug)
 	recoil = 1
 	force = 15
 	throwforce = 30
