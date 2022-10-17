@@ -16,7 +16,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -61,7 +61,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -106,7 +106,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -151,7 +151,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_squad_leader = TRUE
-	is_karelina = TRUE
+	is_karelia = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -195,7 +195,7 @@
 
 	spawn_location = "JoinLateGE"
 
-	is_karelina = TRUE
+	is_karelia = TRUE
 	uses_squads = TRUE
 
 	min_positions = 8
@@ -244,7 +244,7 @@
 
 	spawn_location = "JoinLateGE"
 
-	is_karelina = TRUE
+	is_karelia = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -294,7 +294,7 @@
 	spawn_location = "JoinLateGEDoc"
 
 	is_medic = TRUE
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 
 	min_positions = 2
@@ -341,7 +341,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGESap"
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 	min_positions = 2
 	max_positions = 12

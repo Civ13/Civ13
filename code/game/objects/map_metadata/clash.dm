@@ -126,3 +126,62 @@ var/no_loop_clash = FALSE
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+///////////map specific objs/////////
+/obj/structure/religious/runestone/odinsgift
+	var/faction = "none"
+
+/obj/structure/religious/runestone/odinsgift/attackby(obj/item/W, mob/living/human/user)
+	if(faction != user.nationality)
+		return
+	if (istype(W, /obj/item/organ/external/head) && map.ID == MAP_CLASH)
+		if (!W)
+			return
+		var/obj/item/organ/external/head/HD = W
+		var/head_nationality = HD.nationality
+		qdel(W)
+		if (faction == head_nationality || faction != user.nationality)
+			return
+		if (!head_nationality || head_nationality == "none")
+			return
+		user << "You offer the head as a tribute to Odin."
+
+		if	(prob(20))
+			var/randmed = rand(1,3)
+			switch (randmed)
+				if (1)
+					new/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(user.loc)
+				if (2)
+					new/obj/item/weapon/reagent_containers/food/drinks/bottle/small/stamina/minor(user.loc)
+				if (3)
+					new/obj/item/stack/medical/advanced/herbs(user.loc)
+		else if (prob (20))
+			var/randcloth = rand(1,2)
+			switch(randcloth)
+				if (1)
+					new/obj/item/clothing/head/helmet/medieval/viking/varangian(user.loc)
+					new/obj/item/clothing/suit/armor/medieval/varangian(user.loc)
+				if (2)
+					new/obj/item/clothing/accessory/armor/chainmail(user.loc)
+					new/obj/item/clothing/head/helmet/medieval/viking(user.loc)
+		else if (prob (25))
+			var/randmelee = rand(1,3)
+			switch(randmelee)
+				if (1)
+					new/obj/item/weapon/material/sword/claymore/iron(user.loc)
+				if (2)
+					new/obj/item/weapon/material/hatchet/battleaxe(user.loc)
+				if (3)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo(user.loc)
+		else if (prob (20))
+			new/obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy(user.loc)
+		else if (prob (15))
+			new/obj/item/weapon/reagent_containers/food/snacks/meatpie(user.loc)
+		else if (prob (15))
+			new/obj/item/weapon/reagent_containers/food/snacks/rawfish(user.loc)
+		else if (prob (10))
+			new/obj/item/weapon/material/sword/magic/mjolnir/lesser(user.loc)
+		return
+
+
+

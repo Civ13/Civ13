@@ -347,7 +347,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_ww2 = TRUE
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -367,7 +367,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rusoff(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
-	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELINA)
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet_officer(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -397,7 +397,7 @@
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	is_karelina = TRUE
+	is_karelia = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 1
@@ -420,7 +420,7 @@
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_r_store)
-	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELINA)
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet_officer(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -446,7 +446,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = TRUE
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -480,7 +480,7 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_pps(H), slot_r_store)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_pps(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
-	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELINA)
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
@@ -510,7 +510,7 @@
 	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRUDoc"
-	is_karelina = TRUE
+	is_karelia = TRUE
 	is_ww2 = TRUE
 	is_medic = TRUE
 	min_positions = 1
@@ -556,7 +556,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-	is_karelina = TRUE
+	is_karelia = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
@@ -575,7 +575,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_pilotka(H), slot_head)
-	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELINA)
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
 //weapons
@@ -603,7 +603,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-	is_karelina = TRUE
+	is_karelia = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
@@ -619,7 +619,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	if (map.ID == MAP_KARELINA || map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_GULAG13)
+	if (map.ID == MAP_KARELIA || map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_GULAG13)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
 	else
 		if (prob(70))
@@ -660,7 +660,7 @@
 	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_karelina = TRUE
+	is_karelia = TRUE
 
 	min_positions = 20
 	max_positions = 100
@@ -683,7 +683,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_pilotka(H), slot_head)
 //weapons
-	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELINA)
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	if (map.ID == MAP_REICHSTAG)
 		if (prob(15))
@@ -1213,7 +1213,7 @@
 	rank_abbreviation = "Kom."
 
 	spawn_location = "JoinLateRU"
-	is_karelina = TRUE
+	is_karelia = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
@@ -1266,7 +1266,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
-	is_karelina = TRUE
+	is_karelia = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
@@ -1314,7 +1314,7 @@
 
 	spawn_location = "JoinLateRU"
 	is_ss_panzer = TRUE
-	is_karelina = FALSE
+	is_karelia = FALSE
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -1371,7 +1371,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_ss_panzer = TRUE
-	is_karelina = FALSE
+	is_karelia = FALSE
 	min_positions = 6
 	max_positions = 30
 
@@ -1422,7 +1422,7 @@
 
 	spawn_location = "JoinLateRUSap"
 	is_ss_panzer = TRUE
-	is_karelina = TRUE
+	is_karelia = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 2

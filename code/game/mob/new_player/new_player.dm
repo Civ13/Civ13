@@ -1015,15 +1015,17 @@ var/global/redirect_all_players = null
 			dat += "[alive_indians.len] Blugisi "
 		else if (map && istype(map, /obj/map_metadata/tadojsville))
 			dat += "[alive_indians.len] Wartribe Mercenary "
+		else if (map && istype(map, /obj/map_metadata/east_los_santos))
+			dat += "[alive_indians.len] Ballas "
 		else
 			dat += "[alive_indians.len] Natives "
 	if (CIVILIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
 			dat += "[alive_civilians.len] Soviets "
 		else if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "[alive_civilians.len] Yellowagwana"
+			dat += "[alive_civilians.len] Yellowagwana "
 		else if (map && istype(map, /obj/map_metadata/tadojsville))
-			dat += "[alive_civilians.len] UN Peacekeeper "
+			dat += "[alive_civilians.len] UN Peacekeepers "
 		else if (map && istype(map, /obj/map_metadata/capitol_hill))
 			dat += "[alive_civilians.len] Rioters "
 		else if (map && istype(map, /obj/map_metadata/yeltsin))
@@ -1093,6 +1095,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Union Soldiers "
 		else if (map && istype(map, /obj/map_metadata/tantiveiv))
 			dat += "[alive_american.len] Imperials "
+		else if (map && istype(map, /obj/map_metadata/east_los_santos))
+			dat += "[alive_american.len] Grove Street "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1297,6 +1301,11 @@ var/global/redirect_all_players = null
 						temp_name = "Bear Clan"
 					if (temp_name == "Danish")
 						temp_name = "Raven Clan"
+				else if (map && map.ID == "EAST_LOS_SANTOS")
+					if (temp_name == "Indians")
+						temp_name = "Ballas"
+					if (temp_name == "American")
+						temp_name = "Grove Street Families"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"

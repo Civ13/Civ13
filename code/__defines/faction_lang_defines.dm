@@ -79,6 +79,8 @@
 			return "DRA Army"
 		else if (map.ID == "BANK_ROBBERY" || map.ID == "DRUG_BUST")
 			return "Police Department"
+		else if (map.ID == "LONG_MARCH")
+			return "Red Army"
 		else
 			if (age >= 6)
 				return "Civilians"
@@ -90,6 +92,8 @@
 			return "Blugisi Wartribe"
 		else if (map.ID == "TADOJSVILLE")
 			return "Mercenary Warbands"
+		else if (map.ID == "EAST_LOS_SANTOS")
+			return "Ballas"
 		else
 			return "Native Tribe"
 
@@ -190,6 +194,8 @@
 			return "ATF"
 		else if (map.ID == "TANTIVEIV")
 			return "Imperials"
+		else if (map.ID == "EAST_LOS_SANTOS")
+			return "Grove Street Families"
 		else
 			return "United States"
 
@@ -197,7 +203,10 @@
 		return "Vietnamese"
 
 	if (constant == CHINESE)
-		return "Chinese"
+		if (map.ID == "LONG_MARCH")
+			return "National Army"
+		else
+			return "Chinese"
 
 	if (constant == EGYPTIAN)
 		return "Egyptian"

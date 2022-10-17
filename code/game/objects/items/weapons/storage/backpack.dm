@@ -336,9 +336,9 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/ammo_magazine/m16/box(src)
 		new /obj/item/ammo_magazine/m16/box(src)
 		new /obj/item/weapon/material/shovel/trench(src)
-		new /obj/item/ammo_magazine/m16(src)
-		new /obj/item/ammo_magazine/m16(src)
-		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/ammo_magazine/fal(src)
+		new /obj/item/ammo_magazine/fal(src)
+		new /obj/item/ammo_magazine/m1911(src)
 		new /obj/item/weapon/grenade/coldwar/m67(src)
 
 /obj/item/weapon/storage/backpack/duffel/unsgt

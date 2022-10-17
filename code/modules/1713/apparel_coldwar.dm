@@ -412,6 +412,12 @@
 	icon_state = "unitednations_medic"
 	item_state = "unitednations_medic"
 	worn_state = "unitednations_medic"
+/obj/item/clothing/head/un_beret
+	name = "UN beret"
+	desc = "A blue UN beret."
+	icon_state = "unitednations_beret"
+	item_state = "unitednations_beret"
+	worn_state = "unitednations_beret"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/sgt
 	name = "M1 helmet 2nd LT"
@@ -1060,6 +1066,14 @@
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/un_fal
+/obj/item/weapon/storage/belt/smallpouches/un_fal/New()
+	..()
+	new /obj/item/ammo_magazine/fal(src)
+	new /obj/item/ammo_magazine/fal(src)
+	new /obj/item/ammo_magazine/fal(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74
@@ -2012,3 +2026,10 @@ obj/item/clothing/head/helmet/modern/hardhato
 	icon_state = "surgcap_navy"
 	item_state = "surgcap_navy"
 	worn_state = "surgcap_navy"
+
+/obj/item/clothing/under/un_irish
+	name = "irish olive uniform"
+	desc = "A uniform worn by the UN Irish troops."
+	icon_state = "un_irish"
+	item_state = "un_irish"
+	worn_state = "un_irish"

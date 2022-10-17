@@ -708,9 +708,30 @@
 
 	return TRUE
 
+/*///////////////////1930s Chinese Red Army/////////////// TO BE COMPLETED
 
-	////////////////////MODERN PLA//////////////////
-	
+/datum/job/civilian/chinese
+	default_language = "Chinese"
+	additional_languages = list()
+/datum/job/civilian/chinse/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_chinese_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/civilian/chinese/cra_soldier
+	title = "CRA Volunteer"
+	spawn_location = "JoinLateRU"
+	uses_squads = TRUE
+	is_ccw = TRUE
+
+	min_positions = 2
+	max_positions = 100
+
+/datum/job/civilian/chinese/cra_soldier/equip(var/mob/living/human/H)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)*/
+
+////////////////////MODERN PLA/////////////////////
+
 /datum/job/chinese/pla/sergeant
 	title = "Zhong Shi"
 	en_meaning = "PLA Sergeant"
