@@ -1415,10 +1415,12 @@
 /obj/item/clothing/head/cap/verb/flip()
 	set category = null
 	set src in usr
+	set name = "Flip cap"
 
 	flipped = !flipped
 	update_icon()
-	/* IOG armor*/
+	update_clothing_icon()
+	usr << "You flip your cap around."
 
 /obj/item/clothing/head/cap/update_icon()
 	..()
