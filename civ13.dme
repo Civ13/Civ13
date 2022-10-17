@@ -285,6 +285,7 @@
 #include "code\game\objects\farming.dm"
 #include "code\game\objects\items.dm"
 #include "code\game\objects\objs.dm"
+#include "code\game\objects\random.dm"
 #include "code\game\objects\roof_stuff.dm"
 #include "code\game\objects\structures.dm"
 #include "code\game\objects\weapons.dm"

@@ -190,7 +190,7 @@
 	name = "SKS"
 	desc = "Soviet semi-automatic rifle chambered in 7.62x39mm."
 	icon_state = "sks"
-	item_state = "sks"
+	item_state = "mosin"
 	base_icon = "sks"
 	fire_sound = 'sound/weapons/guns/fire/SKS.ogg'
 	w_class = 4
