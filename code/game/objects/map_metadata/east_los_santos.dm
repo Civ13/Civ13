@@ -20,6 +20,46 @@
 	gamemode = "Turf War"
 	songs = list(
 		"Compton\'s Most Wanted - Hood Took Me Under:1" = "sound/music/hood_took_me_under.ogg",)
+	var/grove_points = 0
+	var/ballas_points = 0
+	var/a1_control = "None"
+	/*var/a2_control = "None"
+	var/a3_control = "None"
+	var/a4_control = "None"*/
+
+/obj/map_metadata/east_los_santos/proc/points_check()
+	if (processes.ticker.playtime_elapsed > 4800)
+		var/c1 = 0
+		var/c2 = 0
+		var/cust_color = "white"
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
+				if (H.faction_text == "AMERICAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "INDIANS" && H.stat == CONSCIOUS)
+					c2++
+		if ((c1 == c2) && c1 != 0)
+			a1_control = "none"
+			cust_color= "white"
+		else if (c1 > c2)
+			a1_control = "Grove Street"
+			cust_color= "green"
+		else if (c2 > c1)
+			a1_control = "Ballas"
+			cust_color= "purple"
+		if (a1_control != "none")
+			if (a1_control == "Grove Street")
+				cust_color = "green"
+				grove_points++
+			else if (a1_control == "Ballas")
+				cust_color = "purple"
+				ballas_points++
+			else
+				cust_color = "white"
+			world << "<big><font color='[cust_color]'><b>Area 1</b>: [a1_control]</font></big>"
+		else
+			world << "<big><b>Area 1</b>: Nobody</big>"
 
 /obj/map_metadata/east_los_santos/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -94,6 +134,51 @@
 	worn_state = "ballas3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/grove1
+	name = "green sweatshirt and jeans"
+	desc = "An oversized green sweatshirt and jeans."
+	icon_state = "grove1"
+	item_state = "grove1"
+	worn_state = "grove1"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/grove2
+	name = "green checkered outfit"
+	desc = "A green checkered shirt and beige pants."
+	icon_state = "grove2"
+	item_state = "grove2"
+	worn_state = "grove2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/grove3
+	name = "green jersey and jeans"
+	desc = "A green basketball jersey and black jeans."
+	icon_state = "grove3"
+	item_state = "grove3"
+	worn_state = "grove3"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
 /obj/item/clothing/head/custom/custom_beanie/black
 	color = "#0d0d0d"
 	uncolored1 = FALSE
+
+/obj/item/clothing/head/bandana_ballas
+	name = "purple bandana"
+	desc = "A purple bandana tied in the front."
+	icon_state = "bandana_ballas1"
+	item_state = "bandana_ballas1"
+	worn_state = "bandana_ballas1"
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/head/bandana_ballas/two
+	icon_state = "bandana_ballas2"
+	item_state = "bandana_ballas2"
+	worn_state = "bandana_ballas2"
+
+/obj/item/clothing/head/bandana_grove
+	name = "green bandana"
+	desc = "A green bandana tied in the front."
+	icon_state = "bandana_grove"
+	item_state = "bandana_grove"
+	worn_state = "bandana_grove"
+	flags_inv = BLOCKHEADHAIR
