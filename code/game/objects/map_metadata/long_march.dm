@@ -17,13 +17,13 @@
 	ordinal_age = 5
 	faction_distribution_coeffs = list(CHINESE = 0.6, CIVILIAN = 0.4)
 	battle_name = "The Long March"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The Red Army will win if they manage to reach their destination up North, in the Mountains. They have <b>30 minutes</b> before they get completely encircled by the National Army.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Red Army will win if they manage to reach their destination up North, in the Mountains. They have <b>30 minutes</b> to do it before they get completely encircled by the National Army.</font>"
 	faction1 = CHINESE
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Red Sun Up in the Sky:1" = "sound/music/redsun.ogg",)
-	grace_wall_timer = 3000
+	grace_wall_timer = 4800
 
 /obj/map_metadata/long_march/job_enabled_specialcheck(var/datum/job/J)
 	..()
