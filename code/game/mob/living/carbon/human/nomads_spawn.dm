@@ -921,7 +921,7 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
-		
+
 	else if (map.ID == MAP_NATIONSRP)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -1132,6 +1132,8 @@
 				s_tone = rand(-155,-185)
 		else if (faction_text == AMERICAN && map.ordinal_age >= 7)
 			if (original_job.is_afro == TRUE || original_job.is_gta)
+				s_tone = rand(-150,-120)
+			else if (map.ID == MAP_EAST_LOS_SANTOS)
 				s_tone = rand(-150,-120)
 			else
 				s_tone = rand(-40,-25)

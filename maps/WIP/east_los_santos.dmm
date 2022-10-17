@@ -79,6 +79,13 @@
 	},
 /turf/floor/wood,
 /area/caribbean)
+"fF" = (
+/obj/effect/landmark{
+	name = "JoinLateGRV";
+	icon_state = "x3"
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "fI" = (
 /obj/structure/chemical_dispenser/drinks,
 /turf/floor/plating/tiled/darker,
@@ -1790,7 +1797,7 @@ CQ
 CQ
 CQ
 CQ
-CQ
+fF
 CQ
 CQ
 CQ
