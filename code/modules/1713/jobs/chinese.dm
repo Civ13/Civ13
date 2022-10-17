@@ -708,27 +708,172 @@
 
 	return TRUE
 
-/*///////////////////1930s Chinese Red Army/////////////// TO BE COMPLETED
+///////////////////1930s Chinese Red Army/////////////// TO BE COMPLETED
 
 /datum/job/civilian/chinese
 	default_language = "Chinese"
 	additional_languages = list()
-/datum/job/civilian/chinse/give_random_name(var/mob/living/human/H)
+/datum/job/civilian/chinese/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_chinese_name(H.gender)
 	H.real_name = H.name
+	var/new_hair = "Black"
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
+		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
 
-/datum/job/civilian/chinese/cra_soldier
-	title = "CRA Volunteer"
-	spawn_location = "JoinLateRU"
+/datum/job/civilian/chinese/cra_off
+	title = "Chinese Red Army Officer"
+	spawn_location = "JoinLateCiv"
+	is_officer = TRUE
+	is_ccw = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/chinese/cra_off/equip(var/mob/living/human/H)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	uniform.attackby(armband, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Lead your men to your destination!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/civilian/chinese/cra_sl
+	title = "Chinese Red Army Squad Leader"
+	spawn_location = "JoinLateCiv"
+	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ccw = TRUE
 
 	min_positions = 2
-	max_positions = 100
+	max_positions = 10
+
+/datum/job/civilian/chinese/cra_sl/equip(var/mob/living/human/H)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	var/obj/item/weapon/storage/belt/russian/soldier/belt1 = new /obj/item/weapon/storage/belt/russian/soldier(null)
+	var/obj/item/weapon/storage/belt/russian/ww1/soldier/belt2 = new /obj/item/weapon/storage/belt/russian/ww1/soldier(null)
+	belt1.name = "leather pouches"
+	belt2.name = "leather pouches"
+	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	uniform.attackby(armband, H)
+	if(prob(70))
+		H.equip_to_slot_or_del(belt1, slot_belt)
+		var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
+		uniform.attackby(russbando, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	else
+		H.equip_to_slot_or_del(belt2, slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Lead your squad to your destination!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/civilian/chinese/cra_soldier
+	title = "Chinese Red Army Volunteer"
+	spawn_location = "JoinLateCiv"
+	uses_squads = TRUE
+	is_ccw = TRUE
+
+	min_positions = 2
+	max_positions = 200
 
 /datum/job/civilian/chinese/cra_soldier/equip(var/mob/living/human/H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)*/
+//head
+	var/randhat = rand(1,3)
+	switch(randhat)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap2(H), slot_head)
+	var/randclothes = rand(1,3)
+	switch(randclothes)
+		if(1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+		if(2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+		if(3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	var/obj/item/weapon/storage/belt/russian/soldier/belt1 = new /obj/item/weapon/storage/belt/russian/soldier(null)
+	var/obj/item/weapon/storage/belt/russian/ww1/soldier/belt2 = new /obj/item/weapon/storage/belt/russian/ww1/soldier(null)
+	belt1.name = "leather pouches"
+	belt2.name = "leather pouches"
+	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(armband, H)
+	if(prob(70))
+		H.equip_to_slot_or_del(belt1, slot_belt)
+		var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
+		uniform.attackby(russbando, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	else
+		H.equip_to_slot_or_del(belt2, slot_belt)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Follow your leader's orders and reach your destination!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
 
 ////////////////////MODERN PLA/////////////////////
 
