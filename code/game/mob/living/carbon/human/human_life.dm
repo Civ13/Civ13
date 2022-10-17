@@ -1546,7 +1546,7 @@
 						holder2.icon_state = "police"
 					else if (map.ID == MAP_TADOJSVILLE)
 						holder2.icon_state = "un"
-					else if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN)
+					else if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN || map.ID == MAP_LONG_MARCH)
 						holder2.icon_state = "sov_basic"
 					else if (map.ID == MAP_GULAG13)
 						if(nationality == "Polish")

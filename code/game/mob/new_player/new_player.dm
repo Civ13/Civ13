@@ -1040,6 +1040,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Policemen "
 		else if (map && istype(map, /obj/map_metadata/drug_bust))
 			dat += "[alive_civilians.len] Policemen and Federal Agents "
+		else if (map && istype(map, /obj/map_metadata/long_march))
+			dat += "[alive_civilians.len] Chinese Red Army "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1102,7 +1104,10 @@ var/global/redirect_all_players = null
 	if (VIETNAMESE in map.faction_organization)
 		dat += "[alive_vietnamese.len] Vietnamese "
 	if (CHINESE in map.faction_organization)
-		dat += "[alive_chinese.len] Chinese "
+		if (map && istype(map, /obj/map_metadata/long_march))
+			dat += "[alive_chinese.len] Chinese National Army "
+		else
+			dat += "[alive_chinese.len] Chinese "
 	if (FILIPINO in map.faction_organization)
 		dat += "[alive_filipino.len] Filipino "
 	dat += "<br>"
@@ -1306,6 +1311,11 @@ var/global/redirect_all_players = null
 						temp_name = "Ballas"
 					if (temp_name == "American")
 						temp_name = "Grove Street Families"
+				else if (map && map.ID == "LONG_MARCH")
+					if (temp_name == "Civilian")
+						temp_name = "Chinese Red Army"
+					if (temp_name == "Chinese")
+						temp_name = "Chinese National Army"
 				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
