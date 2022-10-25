@@ -1206,7 +1206,7 @@
 		bound_width = 64
 		bound_height = 64
 
-/obj/structure/m113
+/*/obj/structure/m113
 	name = "M113 APC"
 	icon = 'icons/obj/vehicles/m113_wip.dmi'
 	icon_state = "m113"
@@ -1216,7 +1216,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	bound_width = 96
-	bound_height = 128
+	bound_height = 128*/ //To be replaced when finished - Treez, 10/22
 
 /obj/structure/radome
 	name = "radio dome"
