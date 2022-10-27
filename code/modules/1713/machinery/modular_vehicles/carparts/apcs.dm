@@ -68,11 +68,11 @@
 
 /obj/structure/vehicleparts/frame/m113/lbc
 	icon_state = "m113_frame_steel_middle_back_left"
-	w_left = list("m113_middle_back_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_left = list("m113_middle_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/m113/rbc
 	icon_state = "m113_frame_steel_middle_back_right"
-	w_right = list("m113_middle_back_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_right = list("m113_middle_back_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/m113/lb
 	icon_state = "m113_frame_steel_back_left"
@@ -95,5 +95,5 @@
 	icon_state = "m113_frame_steel_middle_back"
 
 /obj/structure/vehicleparts/frame/m113/back
-	icon_state = "m113_frame_steel_back_middle"
+	icon_state = "m113_frame_steel_back"
 	w_back = list("m113_front_middle_frame",TRUE,TRUE,40,50,TRUE,TRUE)
