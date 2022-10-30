@@ -296,7 +296,7 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/stack/material/wood/twentyfive(src)
 		new /obj/item/weapon/material/shovel/spade/small(src)
 		new /obj/item/weapon/grenade/smokebomb(src)
-		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/weapon/grenade/smokebomb(src)
 
 /obj/item/weapon/storage/backpack/duffel/unsniper
 	name = "United Nations Marksman's duffel"
@@ -309,7 +309,7 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/weapon/material/shovel/trench(src)
 		new /obj/item/ammo_magazine/m14(src)
 		new /obj/item/ammo_magazine/m14(src)
-		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/ammo_magazine/m1911(src)
 		new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
 
 /obj/item/weapon/storage/backpack/duffel/unmg
@@ -323,8 +323,8 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/weapon/material/shovel/trench(src)
 		new /obj/item/ammo_magazine/madsen(src)
 		new /obj/item/ammo_magazine/madsen(src)
-		new /obj/item/ammo_magazine/m9beretta(src)
-		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/ammo_magazine/m1911(src)
+		new /obj/item/ammo_magazine/m1911(src)
 		new /obj/item/weapon/grenade/coldwar/m67(src)
 
 /obj/item/weapon/storage/backpack/duffel/unbasic
@@ -333,8 +333,8 @@ obj/item/weapon/storage/backpack/ww2/american
 	New()
 		..()
 		new /obj/item/weapon/gun_cleaning_kit(src)
-		new /obj/item/ammo_magazine/m16/box(src)
-		new /obj/item/ammo_magazine/m16/box(src)
+		new /obj/item/ammo_magazine/m14box(src)
+		new /obj/item/ammo_magazine/m14box(src)
 		new /obj/item/weapon/material/shovel/trench(src)
 		new /obj/item/ammo_magazine/fal(src)
 		new /obj/item/ammo_magazine/fal(src)
@@ -352,6 +352,6 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/weapon/material/shovel/trench(src)
 		new /obj/item/ammo_magazine/greasegun(src)
 		new /obj/item/ammo_magazine/greasegun(src)
-		new /obj/item/ammo_magazine/m9beretta(src)
+		new /obj/item/ammo_magazine/m1911(src)
 		new /obj/item/weapon/grenade/coldwar/m67(src)
 		new /obj/item/weapon/grenade/incendiary/anm14(src)

@@ -13,7 +13,7 @@
 		list(CIVILIAN) = /area/caribbean/russian/land/inside,
 		list(INDIANS) = /area/caribbean/colonies,
 		)
-	age = "1969."
+	age = "1962"
 	ordinal_age = 7
 	artillery_count = 3
 	valid_artillery = list("Explosive")
