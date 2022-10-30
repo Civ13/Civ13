@@ -690,8 +690,8 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 
 /obj/structure/closet/crate/ww2/un/ammo
 	name = "UN Peacekeeping ammunition"
-	paths = list(/obj/item/ammo_magazine/m16 = 16,
-				/obj/item/ammo_magazine/m9beretta = 8,
+	paths = list(/obj/item/ammo_magazine/fal = 16,
+				/obj/item/ammo_magazine/m1911 = 8,
 				/obj/item/ammo_magazine/greasegun = 4,
 				/obj/item/ammo_magazine/m14 = 4,
 				)
