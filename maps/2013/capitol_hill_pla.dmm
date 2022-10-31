@@ -11,7 +11,7 @@
 "ak" = (/obj/structure/closet/anchored,/obj/item/weapon/storage/toolbox/mechanical,/obj/item/weapon/storage/toolbox/electrical,/obj/item/weapon/storage/toolbox/emergency,/obj/structure/multiz/ladder/ww2/teleporter/two{name = "to basement"},/turf/floor/plating/concrete,/area/caribbean/forest)
 "am" = (/obj/structure/table/wood,/obj/structure/table/wood,/obj/structure/railing{dir = 1; icon_state = "railing0"},/turf/floor/carpet/redcarpet,/area/caribbean/no_mans_land/capturable/two)
 "ap" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/marble/raw,/area/caribbean/british/land/inside)
-"aq" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"aq" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka{name = "Baiju"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
 "au" = (/turf/floor/plating/marble/tile,/area/caribbean/british/land/inside)
 "av" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/plating/steel,/area/caribbean/void/caves)
 "aw" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/obj/structure/multiz/ladder/ww2/stairsdown,/turf/floor/plating/marble/raw,/area/caribbean/british/land/inside)
@@ -275,7 +275,7 @@
 "yS" = (/obj/structure/bed/chair/wood/red{dir = 4},/turf/floor/carpet/tealcarpet,/area/caribbean/british/land/inside)
 "yW" = (/obj/structure/bed/chair/wood/bleacher{dir = 1},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/carpet/redcarpet,/area/caribbean/no_mans_land/capturable/two)
 "yY" = (/obj/structure/table/glass,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/obj/item/weapon/material/kitchen/utensil/knife/razorblade,/turf/floor/plating/white,/area/caribbean/british/land/inside)
-"zc" = (/obj/map_metadata/capitol_hill/russians,/turf/floor/grass,/area/caribbean/forest)
+"zc" = (/obj/map_metadata/capitol_hill/pla_offensive,/turf/floor/grass,/area/caribbean/forest)
 "zg" = (/obj/structure/table/wood,/obj/structure/railing{dir = 4; icon_state = "railing0"},/obj/item/weapon/paper,/turf/floor/carpet/bluecarpet,/area/caribbean/no_mans_land/capturable/one)
 "zi" = (/obj/structure/table,/obj/item/weapon/newspaper,/turf/floor/wood,/area/caribbean/british/land/inside)
 "zj" = (/turf/floor/carpet/tealcarpet,/area/caribbean/british/land/inside)
@@ -761,8 +761,8 @@ XlXlXlXlXlXlXlXlXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlIRIRIRHsHsHsHsHsHsHsHsHsHsHsHsHs
 XlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlIRIRIRHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsHsIRIRIRXlXlXlXlXlXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlXlXlXlXlXl
 XlokXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRWxWxWxxEIRIRIRCECECEWzWzWzIRqYXIPhnvnvWxIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXl
 XlXlXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlXlXlokXlXlXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRWxWxWxIRYlaqIRIoIoIoIoIoIoIRUWbxFEWxWxWxIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXl
-XlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRWxWxLJIRaqYlIRHaHaHaoIoIoIIRIRIRIRLJWxWxIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXl
-XlXlXlXlokXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRWxWxWxIRIRaqYlIoIoIoIoIoIoIRzuIRzuWxWxWxIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlokXlXlXlXlXlXlXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlokXlXlXlXl
+XlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRWxWxLJIRIRYlIRHaHaHaoIoIoIIRIRIRIRLJWxWxIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXl
+XlXlXlXlokXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRWxWxWxIRaqIRYlIoIoIoIoIoIoIRzuIRzuWxWxWxIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlokXlXlXlXlXlXlXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlokXlXlXlXl
 XlXlXlXlXlXlXlXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlXlXlokXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRWxWxWxIRYlIRIRIoIoIoIoIoIoIRzuIRzuWxWxWxIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlXlXlXlXlXlXlokXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXl
 zcXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRaqIRIoIoIoIoIoIoIRIRIRIRruUdIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRIRXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXlXl
 "}

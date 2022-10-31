@@ -58,7 +58,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			return
 		if (map.persistence)
 			return
-		if (map.ID == MAP_CAPITOL_HILL && istype(map, /obj/map_metadata/capitol_hill/russians))
+		if (map.ID == MAP_CAPITOL_HILL && istype(map, /obj/map_metadata/capitol_hill/pla_offensive))
 			return
 		if (map.ID == MAP_CAPITOL_HILL || map.ID == MAP_YELTSIN)
 			initiate_vote("gamemode","the server", TRUE)
