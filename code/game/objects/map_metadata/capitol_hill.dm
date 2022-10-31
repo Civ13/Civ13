@@ -302,9 +302,10 @@ var/no_loop_capitol = FALSE
 	return FALSE
 
 ///CHINESES!!!!//////////
-/obj/map_metadata/capitol_hill/russians
-	title = "Russian Attack at the Capitol Hill"
-	lobby_icon = "icons/lobby/capitol.png"
+/obj/map_metadata/capitol_hill/pla_offensive
+	ID = MAP_CAPITOL_HILL_PLA
+	title = "PLA Offensive on the Capitol Hill"
+	lobby_icon = "icons/lobby/capitolchina.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -321,19 +322,19 @@ var/no_loop_capitol = FALSE
 		)
 	age = "2022"
 	faction_distribution_coeffs = list(AMERICAN = 0.4, CHINESE = 0.6)
-	battle_name = "battle for the Capitol Hill"
+	battle_name = "Battle for the Capitol Hill"
 	mission_start_message = ""
 	faction1 = AMERICAN
 	faction2 = CHINESE
 	songs = list(
-		"Some Russian Song IDK:1" = "sound/music/gruppakrovi.ogg",)
+		"Red Sun Up in the Sky (Remix):1" = "sound/music/redsunintheskytrap.ogg",)
 	valid_artillery = list()
 	scores = list(
-		"Russians" = 0,
+		"Peoples Liberation Army" = 0,
 		"National Guard" = 0,
 	)
 
-/obj/map_metadata/capitol_hill/russians/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/capitol_hill/pla_offensive/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if(istype(J, /datum/job/american))
 		if (J.is_capitol == TRUE && !(J.title == "US HVT"))
@@ -346,17 +347,14 @@ var/no_loop_capitol = FALSE
 	else if (istype(J, /datum/job/chinese/pla))
 		. = TRUE
 
-
-
-
-/obj/map_metadata/capitol_hill/russians/roundend_condition_def2name(define)
+/obj/map_metadata/capitol_hill/pla_offensive/roundend_condition_def2name(define)
 	..()
 	switch (define)
 		if (CHINESE)
 			return "China"
 		if (AMERICAN)
 			return "USA"
-/obj/map_metadata/capitol_hill/russians/roundend_condition_def2army(define)
+/obj/map_metadata/capitol_hill/pla_offensive/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (CHINESE)
@@ -364,7 +362,7 @@ var/no_loop_capitol = FALSE
 		if (AMERICAN)
 			return "Americans"
 
-/obj/map_metadata/capitol_hill/russians/army2name(army)
+/obj/map_metadata/capitol_hill/pla_offensive/army2name(army)
 	..()
 	switch (army)
 		if ("Chinese")
@@ -373,19 +371,19 @@ var/no_loop_capitol = FALSE
 			return "USA"
 
 
-/obj/map_metadata/capitol_hill/russians/cross_message(faction)
+/obj/map_metadata/capitol_hill/pla_offensive/cross_message(faction)
 	if (faction == CHINESE)
 		return "<font size = 4>The Chinese may now cross the invisible wall!</font>"
 	else
 		return ""
 
-/obj/map_metadata/capitol_hill/russians/reverse_cross_message(faction)
+/obj/map_metadata/capitol_hill/pla_offensive/reverse_cross_message(faction)
 	if (faction == CHINESE)
 		return "<span class = 'userdanger'>The Chinese may no longer cross the invisible wall!</span>"
 	else
 		return ""
 
-/obj/map_metadata/capitol_hill/russians/update_win_condition()
+/obj/map_metadata/capitol_hill/pla_offensive/update_win_condition()
 	var/message = ""
 	if (processes.ticker.playtime_elapsed >= 18000)
 		if (win_condition_spam_check)
