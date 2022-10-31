@@ -732,6 +732,7 @@
 	title = "Chinese Red Army Officer"
 	spawn_location = "JoinLateCiv"
 	is_officer = TRUE
+	is_commander = TRUE
 	is_ccw = TRUE
 
 	min_positions = 1
@@ -740,7 +741,7 @@
 /datum/job/civilian/chinese/cra_off/equip(var/mob/living/human/H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/cra_uni(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -776,7 +777,7 @@
 /datum/job/civilian/chinese/cra_sl/equip(var/mob/living/human/H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/cra_uni(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -813,15 +814,60 @@
 	return TRUE
 
 /datum/job/civilian/chinese/cra_soldier
+	title = "Chinese Red Army Soldier"
+	spawn_location = "JoinLateCiv"
+	uses_squads = TRUE
+	is_ccw = TRUE
+
+	min_positions = 2
+	max_positions = 100
+
+/datum/job/civilian/chinese/cra_soldier/equip(var/mob/living/human/H)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/cra_cap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/cra_uni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	var/obj/item/weapon/storage/belt/russian/soldier/belt1 = new /obj/item/weapon/storage/belt/russian/soldier(null)
+	var/obj/item/weapon/storage/belt/russian/ww1/soldier/belt2 = new /obj/item/weapon/storage/belt/russian/ww1/soldier(null)
+	belt1.name = "leather pouches"
+	belt2.name = "leather pouches"
+	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(armband, H)
+	if(prob(70))
+		H.equip_to_slot_or_del(belt1, slot_belt)
+		var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
+		uniform.attackby(russbando, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	else
+		H.equip_to_slot_or_del(belt2, slot_belt)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Follow your leader's orders and reach your destination!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/civilian/chinese/cra_volunteer
 	title = "Chinese Red Army Volunteer"
 	spawn_location = "JoinLateCiv"
 	uses_squads = TRUE
 	is_ccw = TRUE
 
 	min_positions = 2
-	max_positions = 200
+	max_positions = 100
 
-/datum/job/civilian/chinese/cra_soldier/equip(var/mob/living/human/H)
+/datum/job/civilian/chinese/cra_volunteer/equip(var/mob/living/human/H)
 //head
 	var/randhat = rand(1,3)
 	switch(randhat)
