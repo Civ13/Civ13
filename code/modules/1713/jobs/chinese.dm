@@ -741,7 +741,7 @@
 /datum/job/civilian/chinese/cra_off/equip(var/mob/living/human/H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/cra_uni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/cra_uni(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -777,7 +777,7 @@
 /datum/job/civilian/chinese/cra_sl/equip(var/mob/living/human/H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/cra_uni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/cra_uni(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -824,8 +824,8 @@
 
 /datum/job/civilian/chinese/cra_soldier/equip(var/mob/living/human/H)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cra_cap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/cra_uni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/cra_cap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/cra_uni(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
