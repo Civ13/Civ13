@@ -1406,6 +1406,21 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "fieldcap_china2"
 	item_state = "fieldcap_china2"
 	worn_state = "fieldcap_china2"
+
+/obj/item/clothing/under/ww2/cra_uni
+	name = "Chinese Red Army uniform"
+	desc = "An uniform worn by the Chinese Red Army troops."
+	icon_state = "cra_uni"
+	item_state = "cra_uni"
+	worn_state = "cra_uni"
+
+obj/item/clothing/head/ww2/cra_cap
+	name = "Chinese Red Army cap"
+	desc = "A cap worn by the Chinese Red Army."
+	icon_state = "cra_cap"
+	item_state = "cra_cap"
+	worn_state = "cra_cap"
+
 ///////////WW1 UNIFORMS///////////
 /obj/item/clothing/under/ww1/german
 	name = "german uniform"
