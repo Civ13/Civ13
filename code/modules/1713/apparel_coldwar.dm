@@ -2033,3 +2033,10 @@ obj/item/clothing/head/helmet/modern/hardhato
 	icon_state = "un_irish"
 	item_state = "un_irish"
 	worn_state = "un_irish"
+
+/obj/item/clothing/under/afr_merc
+	name = "african mercenary uniform"
+	desc = "A light uniform worn by mercenaries."
+	icon_state = "afr_merc"
+	item_state = "afr_merc"
+	worn_state = "arc_merc"
