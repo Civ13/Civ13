@@ -114,6 +114,19 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/m113
+	name = "M113 APC"
+	speeds = 4
+	speedlist = list(1=14,2=10,3=8)
+	reg_number = ""
+	turret_type = "none"
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+
 /obj/structure/vehicleparts/axis/heavy/panzeriv
 	name = "Panzer IV"
 	speeds = 3

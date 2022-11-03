@@ -570,6 +570,10 @@
 	name = "YaMZ 238 diesel engine"
 	enginesize = 15000
 
+/obj/structure/engine/internal/diesel/premade/m113
+	name = "Detroit 6V53T diesel engine"
+	enginesize = 15000
+
 /obj/structure/emergency_lights
 	name = "emergency lights control"
 	desc = "controls the emergency lights and the wailing siren."

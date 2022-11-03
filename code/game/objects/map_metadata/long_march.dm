@@ -1,6 +1,6 @@
 /obj/map_metadata/long_march
 	ID = MAP_LONG_MARCH
-	title = "long_march"
+	title = "The Long March"
 	lobby_icon = "icons/lobby/longmarch.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/inside,/area/caribbean/no_mans_land/invisible_wall/two)
 	no_hardcore = TRUE
@@ -10,24 +10,26 @@
 		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(CHINESE) = /area/caribbean/russian/land/inside/command,
+		list(CHINESE) = /area/caribbean/no_mans_land/tundra,
 		list(CIVILIAN) = /area/caribbean/japanese/land/inside/command,
 		)
 	age = "1937"
-	ordinal_age = 6
+	ordinal_age = 5
 	faction_distribution_coeffs = list(CHINESE = 0.6, CIVILIAN = 0.4)
 	battle_name = "The Long March"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The Red Army will win if they manage to reach their destination up North, in the mountains. They have <b>30 minutes</b> before they get completely encircled by the National Army.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Red Army will win if they manage to reach their destination up North, in the Mountains. They have <b>30 minutes</b> to do it before they get completely encircled by the National Army.</font>"
 	faction1 = CHINESE
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
-	grace_wall_timer = 3000
+		"Red Sun Up in the Sky:1" = "sound/music/redsun.ogg",)
+	grace_wall_timer = 4800
 
 /obj/map_metadata/long_march/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper))
+		. = TRUE
+	else if (J.is_ccw == TRUE)
 		. = TRUE
 	else
 		. = FALSE
@@ -73,8 +75,7 @@
 var/no_loop_lm = FALSE
 
 /obj/map_metadata/long_march/update_win_condition()
-
-	if (world.time >= 12000)
+	if (world.time >= 18000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
@@ -143,12 +144,13 @@ var/no_loop_lm = FALSE
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction2)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
 			if (H.faction_text == faction1)
 				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside))
+			if (H.faction_text == faction2)
+				return TRUE
 		else
+			return !faction1_can_cross_blocks()
 			return !faction2_can_cross_blocks()
 	return FALSE

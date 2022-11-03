@@ -60,6 +60,49 @@
 		for (var/i in elements)
 			dispensable_reagents += list(list(i,400))
 
+/obj/structure/chemical_dispenser/soda
+	name = "soda dispenser"
+	icon_state = "soda_dispenser"
+	ui_title = "Soda Dispenser"
+	accept_glass = TRUE
+	New()
+		..()
+		var/list/elements = list("ice","water","cola","lemonade","lemonjuice","limejuice","orangejuice","applejuice","tomatojuice","tonic")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,400))
+
+/obj/structure/chemical_dispenser/juice
+	name = "juice dispenser"
+	icon_state = "soda_dispenser"
+	ui_title = "Juice Dispenser"
+	accept_glass = TRUE
+	New()
+		..()
+		var/list/elements = list("banana", "grapejuice", "berryjuice","carrotjuice","lemonjuice","limejuice","orangejuice","applejuice","tomatojuice","watermelonjuice")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,400))
+
+/obj/structure/chemical_dispenser/alcohol
+	name = "alcoholic beverages dispenser"
+	icon_state = "booze_dispenser"
+	ui_title = "Alcoholic Beverages Dispenser"
+	accept_glass = TRUE
+	New()
+		..()
+		var/list/elements = list("ice","ale","beer","wheatbeer","cider","cognac", "gin", "kahlua", "watermelonliquor", "rum", "tequilla", "vodka", "whiskey","mezcal","vermouth")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,400))
+
+/obj/structure/chemical_dispenser/coffee
+	name = "coffee dispenser"
+	icon_state = "coffee_dispenser"
+	ui_title = "Coffee Dispenser"
+	accept_glass = TRUE
+	New()
+		..()
+		var/list/elements = list("ice","coffee","tea","hot_coco","milkshake","milk","cream")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,400))
  /**
   * The ui_interact proc is used to open and update Nano UIs
   * If ui_interact is not used then the UI will not update correctly

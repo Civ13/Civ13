@@ -2,7 +2,7 @@
 	ID = MAP_TADOJSVILLE
 	title = "Tadojsville Siege"
 	lobby_icon = "icons/lobby/tadojsville.png"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one,/area/caribbean/no_mans_land/invisible_wall/jungle/two,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 	respawn_delay = 300
 	no_winner ="No warband has captured the clinic yet."
 	no_hardcore = TRUE
@@ -13,7 +13,7 @@
 		list(CIVILIAN) = /area/caribbean/russian/land/inside,
 		list(INDIANS) = /area/caribbean/colonies,
 		)
-	age = "1969."
+	age = "1962"
 	ordinal_age = 7
 	artillery_count = 3
 	valid_artillery = list("Explosive")
@@ -24,6 +24,7 @@
 	faction2 = INDIANS
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "Siege"
+	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"The Hygrades - Rough Rider:1" = "sound/music/roughrider.ogg",)
@@ -52,17 +53,22 @@
 	switch (define)
 		if (CIVILIAN)
 			return "United Nations"
-		if (ARAB)
+		if (INDIANS)
 			return "Warband Mercenaries"
 
-/obj/map_metadata/tadojsville/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
+/obj/map_metadata/ong_thahn/short_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 600
+	else
+		return 3000 // 5 minutes
 
-/obj/map_metadata/tadojsville/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+/obj/map_metadata/ong_thahn/long_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 600
+	else
+		return 3000 // 5 minutes
 
 /obj/map_metadata/tadojsville/update_win_condition()
-
 	if (world.time >= 21000)
 		if (win_condition_spam_check)
 			return FALSE
@@ -143,17 +149,11 @@
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/two))
-			if (H.nationality != "Blugisi")
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/one))
+			if (H.faction_text == faction1)
 				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/one))
-			if (H.nationality != "Redkantu")
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle/three))
-			if (H.nationality != "Yellowagwana")
-				return TRUE
-		return !faction1_can_cross_blocks()
+			return !faction1_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/tadojsville/cross_message(faction)
