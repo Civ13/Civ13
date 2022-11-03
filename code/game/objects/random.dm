@@ -48,14 +48,14 @@
 	name = "DO NOT USE"
 	desc = "This is a random gun."
 	icon_state = "dice"
-
+/*
 /obj/random/gun/random_ak
 	name = "random ak"
 	desc = "This is a random ak."
 	icon_state = "dice"
 	var/gun = pick(/obj/random/gun/ak47,/obj/random/gun/ak74,/obj/random/gun/ak_modern)
 /obj/random/gun/random_ak/New()
-	
+*/
 
 /obj/random/gun/ak47
 	name = "random old ak"
