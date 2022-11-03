@@ -717,10 +717,10 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 20
+	health = 50
 	wood = FALSE
 	wall = TRUE
-	explosion_resistance = 4
+	explosion_resistance = 2
 	material = "Wood"
 	hardness = 1
 	adjusts = TRUE
