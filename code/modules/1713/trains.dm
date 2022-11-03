@@ -743,3 +743,26 @@
 	else
 		..()
 
+/obj/structure/rails/wide
+	name = "rails"
+	desc = "Rails used by trains."
+	icon = 'icons/obj/vehicles/trains.dmi'
+	icon_state = "middle" //Thanks жендос#0897 for the icons!
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	layer = 2.5
+
+/obj/structure/rails/corner
+	name = "rails"
+	desc = "Rails used by trains."
+	icon = 'icons/obj/vehicles/trains.dmi'
+	icon_state = "corner" //Thanks жендос#0897 for the icons!
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	layer = 2.5

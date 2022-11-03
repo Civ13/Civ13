@@ -705,6 +705,26 @@
 	hardness = 1
 	adjusts = TRUE
 
+/obj/covers/tent
+	name = "tent wall"
+	desc = "A tent wall to protect you against the elements, neat! It looks flimsy though."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "tent0"
+	base_icon_state = "tent"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 20
+	wood = FALSE
+	wall = TRUE
+	explosion_resistance = 4
+	material = "Wood"
+	hardness = 1
+	adjusts = TRUE
+
 /obj/covers/slate
 	name = "slatestone wall"
 	desc = "A slate wall."

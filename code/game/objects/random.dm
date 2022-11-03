@@ -49,11 +49,19 @@
 	desc = "This is a random gun."
 	icon_state = "dice"
 
+/obj/random/gun/random_ak
+	name = "random ak"
+	desc = "This is a random ak."
+	icon_state = "dice"
+	var/gun = pick(/obj/random/gun/ak47,/obj/random/gun/ak74,/obj/random/gun/ak_modern)
+/obj/random/gun/random_ak/New()
+	
+
 /obj/random/gun/ak47
 	name = "random old ak"
 	desc = "This is a random ak."
 	icon_state = "ak_old"
-/obj/random/gun/ak_old/spawn_choices()
+/obj/random/gun/ak47/spawn_choices()
 	return list(/obj/item/weapon/gun/projectile/submachinegun/ak47,
 				/obj/item/weapon/gun/projectile/submachinegun/ak47/akms)
 
@@ -61,7 +69,7 @@
 	name = "random old ak"
 	desc = "This is a random ak."
 	icon_state = "ak_old"
-/obj/random/gun/ak_old/spawn_choices()
+/obj/random/gun/ak74/spawn_choices()
 	return list(/obj/item/weapon/gun/projectile/submachinegun/ak74,
 				/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74,
                 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u,

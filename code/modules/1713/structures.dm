@@ -142,6 +142,40 @@
 	health = 80
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
+/obj/structure/grille/metalsheetfence
+	name = "metal fence"
+	desc = "A sheet metal fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "metal_fence1"
+	health = 120
+	opacity = TRUE
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+/obj/structure/grille/metalsheetfence/blue
+	icon_state = "metal_fence2"
+/obj/structure/grille/metalsheetfence/red
+	icon_state = "metal_fence3"
+/obj/structure/grille/metalsheetfence/green
+	icon_state = "metal_fence4"
+/obj/structure/grille/metalsheetfence/yellow
+	icon_state = "metal_fence5"
+
+/obj/structure/grille/metalsheetfence/corner
+	name = "metal-sheet fence"
+	desc = "A woven steel fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "metal_fence_corner1"
+	health = 120
+	opacity = TRUE
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+/obj/structure/grille/metalsheetfence/corner/blue
+	icon_state = "metal_fence_corner2"
+/obj/structure/grille/metalsheetfence/corner/red
+	icon_state = "metal_fence_corner3"
+/obj/structure/grille/metalsheetfence/corner/green
+	icon_state = "metal_fence_corner4"
+/obj/structure/grille/metalsheetfence/corner/yellow
+	icon_state = "metal_fence_corner5"
+
 /obj/structure/wallclock
 	name = "standing clock"
 	desc = "A classic standing clock."
@@ -169,6 +203,35 @@
 /obj/structure/props/junk/New()
 	..()
 	icon_state = "Junk_[rand(1,14)]"
+
+/obj/structure/props/barrel
+	name = "barrel"
+	desc = "A barrel with god knows what in it."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "barrel1"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+/obj/structure/props/barrel/New()
+	..()
+	icon_state = "barrel[rand(1,5)]"
+
+/obj/structure/props/fueltank
+	name = "Fueltank"
+	desc = "A HUUUGE industrial fueltank"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "fueltank"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+	bound_width = 64
+	bound_height = 32
 
 /obj/structure/props/stove
 	name = "stove"
@@ -452,6 +515,20 @@
 	desc = "The remains of a Soviet helicopter."
 	icon = 'icons/obj/decals_huge.dmi'
 	icon_state = "brokenhind"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	anchored = TRUE
+	density = TRUE
+	layer = MOB_LAYER + 0.01
+	bound_width = 128
+	bound_height = 128
+	bound_x = 32
+/obj/structure/broken_hind_tail
+	name = "Helicopter tail"
+	desc = "The tail of a helicopter."
+	icon = 'icons/obj/decals_huge.dmi'
+	icon_state = "brokenhind_tail"
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -1216,6 +1293,19 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	bound_width = 96
+	bound_height = 128
+
+/obj/structure/truck
+	name = "Transport Truck"
+	desc = "Doesn't look like this is moving soon."
+	icon = 'icons/obj/vehicles/wip_vehicles.dmi'
+	icon_state = "truck"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	bound_width = 64
 	bound_height = 128
 
 /obj/structure/radome

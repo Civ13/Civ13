@@ -763,3 +763,33 @@
 	wood = FALSE
 	layer = 1.99
 	flammable = TRUE
+
+/obj/covers/catwalk
+	name = "catwalk"
+	desc = "A cat wouldn't like this"
+	icon_state = "catwalk_plated"
+	material = "Steel"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 1
+	layer = 1.99
+
+/obj/covers/catwalk/white
+	name = "white catwalk"
+	desc = "A cat wouldn't like this"
+	icon_state = "catwalk_platedwhite"
+	material = "Steel"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 1
+	layer = 1.99
+
+/obj/covers/catwalk/dark
+	name = "white catwalk"
+	desc = "A cat wouldn't like this"
+	icon_state = "catwalk_plateddark"
+	material = "Steel"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 1
+	layer = 1.99
