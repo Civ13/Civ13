@@ -71,7 +71,7 @@
 	name = "ladder"
 	desc = "A ladder.  You can climb it up and down."
 	icon_state = "ladderdown"
-	layer = 2.4 // below crates
+	layer = 2.4 // below crates and tables
 
 /obj/structure/multiz/ladder/New()
 	..()
@@ -318,7 +318,7 @@
 	name = "ladder downwards"
 	desc = "A ladder.  You can climb down it but you'll have to look closer to see more."
 	icon_state = "ladderdown"
-	layer = 2.4 // below crates
+	layer = 2.4 // below crates and tables
 /obj/structure/multiz/ladder/ww2/teleporter/up
 	icon_state = "ladderup"
 	istop = FALSE
