@@ -220,8 +220,8 @@
 	icon_state = "barrel[rand(1,5)]"
 
 /obj/structure/props/fueltank
-	name = "Fueltank"
-	desc = "A HUUUGE industrial fueltank"
+	name = "fueltank"
+	desc = "A huge industrial fueltank."
 	icon = 'icons/obj/decals_wider.dmi'
 	icon_state = "fueltank"
 	flammable = FALSE
