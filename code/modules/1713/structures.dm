@@ -525,7 +525,7 @@
 	bound_height = 128
 	bound_x = 32
 /obj/structure/broken_hind_tail
-	name = "Helicopter tail"
+	name = "helicopter tail"
 	desc = "The tail of a helicopter."
 	icon = 'icons/obj/decals_huge.dmi'
 	icon_state = "brokenhind_tail"
@@ -1283,20 +1283,8 @@
 		bound_width = 64
 		bound_height = 64
 
-/*/obj/structure/m113
-	name = "M113 APC"
-	icon = 'icons/obj/vehicles/m113_wip.dmi'
-	icon_state = "m113"
-	density = TRUE
-	anchored = TRUE
-	flammable = FALSE
-	not_movable = TRUE
-	not_disassemblable = TRUE
-	bound_width = 96
-	bound_height = 128*/ //To be replaced when finished - Treez, 10/22
-
 /obj/structure/truck
-	name = "Transport Truck"
+	name = "transport truck"
 	desc = "Doesn't look like this is moving soon."
 	icon = 'icons/obj/vehicles/wip_vehicles.dmi'
 	icon_state = "truck"
