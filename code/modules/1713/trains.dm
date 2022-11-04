@@ -8,6 +8,7 @@
 	opacity = FALSE
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	flammable = FALSE
 	layer = 2.5
 	var/switched = "forward"
 	var/turn_dir = null
