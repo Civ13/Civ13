@@ -279,7 +279,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/tree/dead_tree/destroyed/New()
 	..()
-	icon_state = "[rand(1,8)]"
+	icon_state = "[rand(1,7)]"
 
 /obj/structure/wild/tree/live_tree
 	name = "tree"
