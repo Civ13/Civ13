@@ -266,16 +266,14 @@ var/global/datum/controller/occupations/job_master
 		spawn_location = H.original_job.spawn_location
 	if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		if (H.original_job_title in map.availablefactions)
-			if (H.original_job_title == map.availablefactions[1])
+			if (H.original_job_title == "Human tribesman")
 				spawn_location = "JoinLateIND1"
-			else if (H.original_job_title == map.availablefactions[2])
+			else if (H.original_job_title == "Crustacean tribesman")
 				spawn_location = "JoinLateIND2"
-			else if (H.original_job_title == map.availablefactions[3])
+			else if (H.original_job_title == "Orc tribesman")
 				spawn_location = "JoinLateIND3"
-			else if (H.original_job_title == map.availablefactions[4])
+			else if (H.original_job_title == "Lizard tribesman")
 				spawn_location = "JoinLateIND4"
-			else
-				spawn_location = "JoinLateIND5"
 		else
 			spawn_location = "JoinLateIND5"
 
