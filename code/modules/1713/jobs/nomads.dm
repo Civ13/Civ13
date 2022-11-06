@@ -750,8 +750,8 @@
 					name = species.get_random_english_name(gender)
 					real_name = name
 					give_clothes()
-		spawn(10)
-			if (map.ID == MAP_NOMADS_CONTINENTAL || MAP_NOMADS_PANGEA)
+		else if (map.ID == MAP_NOMADS_CONTINENTAL || MAP_NOMADS_PANGEA)
+			spawn(10)
 				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
 					var/found = FALSE
 					for (var/i in whitelist_list)
