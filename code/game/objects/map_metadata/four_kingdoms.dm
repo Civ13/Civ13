@@ -14,10 +14,10 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "the lost time"
+	age = "The Lost Time"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the four kingdoms"
+	battle_name = "The Four Kingdoms"
 	mission_start_message = "<big>Several tribes are settling in this land. Will they be able to get along?.</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
