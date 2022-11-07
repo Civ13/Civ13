@@ -56,13 +56,13 @@
 		if (INDIANS)
 			return "Warband Mercenaries"
 
-/obj/map_metadata/ong_thahn/short_win_time(faction)
+/obj/map_metadata/tadojsville/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
 		return 3000 // 5 minutes
 
-/obj/map_metadata/ong_thahn/long_win_time(faction)
+/obj/map_metadata/tadojsville/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
