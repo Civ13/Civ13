@@ -13,8 +13,8 @@
 	emote_see = list("stares", "moves slowly","groans")
 	speak_chance = TRUE
 	speed = 12
-	maxHealth = 80
-	health = 80
+	maxHealth = 100 //Buffed, might need more
+	health = 100 //Buffed, might need more
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 18
 	melee_damage_lower = 10
