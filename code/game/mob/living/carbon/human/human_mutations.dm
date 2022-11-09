@@ -78,24 +78,25 @@
 			radiation -= radiation/4 //Reduce radiation because you ain't resistant.
 	if(radiation >= 350) //Corpse gotta be pretty bad tbh.
 		if(stat == DEAD) //if dead.
-			if (prob(30)) //decent chance.
-				var/i
-				for(i=1,i<contents.len,i++)//dump all items on ground
-					drop_item(contents[i])
-				var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
-				playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
-				//transferring vars.
-				playerzombie.loc = loc
-				playerzombie.name = real_name
-				playerzombie.desc = "A zombie... looks like they were once someone."
-				playerzombie.harm_intent_damage = 14 * getStatCoeff("strength")
-				playerzombie.melee_damage_lower = 8 * getStatCoeff("strength")
-				playerzombie.melee_damage_upper = 14 * getStatCoeff("strength")
-				playerzombie.move_to_delay = 12 / getStatCoeff("dexterity")
-				playerzombie.maxHealth = maxHealth //set health
-				playerzombie.health = maxHealth //heal
-				if(prob(1))
-					playerzombie.desc = "A zombie... looks like it still remembers its faction."
-					playerzombie.faction = faction
-				qdel(src) //bye bye old body!
+			if(!istype(get_area(src), /area/caribbean/admin)) //To prevent people from mutating into zombies in the sleepzone.
+				if (prob(30)) //decent chance.
+					var/i
+					for(i=1,i<contents.len,i++)//dump all items on ground
+						drop_item(contents[i])
+					var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
+					playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
+					//transferring vars.
+					playerzombie.loc = loc
+					playerzombie.name = real_name
+					playerzombie.desc = "A zombie... looks like they were once someone."
+					playerzombie.harm_intent_damage = 14 * getStatCoeff("strength")
+					playerzombie.melee_damage_lower = 8 * getStatCoeff("strength")
+					playerzombie.melee_damage_upper = 14 * getStatCoeff("strength")
+					playerzombie.move_to_delay = 12 / getStatCoeff("dexterity")
+					playerzombie.maxHealth = maxHealth //set health
+					playerzombie.health = maxHealth //heal
+					if(prob(1))
+						playerzombie.desc = "A zombie... looks like it still remembers its faction."
+						playerzombie.faction = faction
+					qdel(src) //bye bye old body!
 	return
