@@ -110,9 +110,10 @@
 
 /obj/item/weapon/storage/fancy/donut_box/attack_hand(mob/living/user)
 	..()
-	if(!opened)
-		opened = 1
-		update_icon()
+	if(loc == user)
+		if(!opened)
+			opened = 1
+			update_icon()
 	return
 
 /obj/item/weapon/storage/fancy/donut_box/update_icon()
@@ -126,6 +127,13 @@
 		for(var/obj/item/weapon/reagent_containers/food/snacks/donut/D in contents)
 			overlays += image('icons/obj/food/donuts.dmi', icon_state = "[D.icon_state]_inbox", pixel_x = i * 3)
 			i++
+
+/obj/item/weapon/storage/fancy/donut_box/empty/
+/obj/item/weapon/storage/fancy/donut_box/empty/New()
+	..()
+	random_donut = null
+	random_donut2 = null
+	random_donut3 = null
 
 /*
  * Candle Box
