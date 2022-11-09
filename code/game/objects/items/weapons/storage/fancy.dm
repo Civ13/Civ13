@@ -74,40 +74,66 @@
 	name = "donut box"
 	desc = "Mmm. Donuts."
 	icon = 'icons/obj/food/donuts.dmi'
-	icon_state = "donutbox_open"
+	icon_state = "donutbox"
 	storage_slots = 6
 	throwforce = WEAPON_FORCE_HARMLESS
+	key_type = /obj/item/weapon/reagent_containers/food/snacks/donut
 	can_hold = list(
-		/obj/item/weapon/reagent_containers/food/snacks/donut
+		/obj/item/weapon/reagent_containers/food/snacks/donut,
 		)
-	var/is_open = TRUE
-	var/base_icon_state = "donutbox"
+	var/list/donut_types = list(
+		/obj/item/weapon/reagent_containers/food/snacks/donut/plain,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/berry,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/cherry,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/apple,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/caramel,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/chocolate,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/mint,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/banana,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/lime,
+		/obj/item/weapon/reagent_containers/food/snacks/donut/grenadine,
+		)
+	var/random_donut
+	var/random_donut2
+	var/random_donut3
 
 /obj/item/weapon/storage/fancy/donut_box/New()
 	..()
-	for (var/i=1; i <= storage_slots; i++)
-		new /obj/item/weapon/reagent_containers/food/snacks/donut(src)
+	random_donut = pick(donut_types)
+	random_donut2 = pick(donut_types)
+	random_donut3 = pick(donut_types)
+	for (var/i=1; i <= 2; i++)
+		new random_donut(src)
+		new random_donut2(src)
+		new random_donut3(src)
+	return
+
+/obj/item/weapon/storage/fancy/donut_box/attack_hand(mob/living/user)
+	..()
+	if(loc == user)
+		if(!opened)
+			opened = 1
+			update_icon()
 	return
 
 /obj/item/weapon/storage/fancy/donut_box/update_icon()
-	. = ..()
-	icon_state = "[base_icon_state][is_open ? "_inner" : null]"
+	..()
+	if(!opened)
+		src.icon_state = "donutbox"
+	else
+		overlays.Cut()
+		src.icon_state = "donutbox_open"
+		var/i = 0
+		for(var/obj/item/weapon/reagent_containers/food/snacks/donut/D in contents)
+			overlays += image('icons/obj/food/donuts.dmi', icon_state = "[D.icon_state]_inbox", pixel_x = i * 3)
+			i++
 
-/obj/item/weapon/storage/fancy/donut_box/proc/update_overlays()
-	. = ..()
-	if(!is_open)
-		return
-
-	var/donuts = 0
-	for(var/_donut in contents)
-		var/obj/item/weapon/reagent_containers/food/snacks/donut = _donut
-		if (!istype(donut))
-			continue
-
-		overlays += image(icon = initial(icon), icon_state = "[donut.icon_state]_inbox", pixel_x = donuts * 3)
-		donuts += 1
-
-	overlays += image(icon = initial(icon), icon_state = "[base_icon_state]_top")
+/obj/item/weapon/storage/fancy/donut_box/empty/
+/obj/item/weapon/storage/fancy/donut_box/empty/New()
+	..()
+	random_donut = null
+	random_donut2 = null
+	random_donut3 = null
 
 /*
  * Candle Box
