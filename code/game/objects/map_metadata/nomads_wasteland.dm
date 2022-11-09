@@ -127,6 +127,7 @@
 	gamemode = "Wasteland"
 	nonukes = TRUE
 	is_zombie = TRUE
+	lobby_icon = "icons/lobby/wasteland2.png"
 	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 
