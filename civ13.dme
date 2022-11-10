@@ -255,6 +255,7 @@
 #include "code\game\mob\living\simple_animal\hostile\panther.dm"
 #include "code\game\mob\living\simple_animal\hostile\pirate.dm"
 #include "code\game\mob\living\simple_animal\hostile\pmc.dm"
+#include "code\game\mob\living\simple_animal\hostile\russian.dm"
 #include "code\game\mob\living\simple_animal\hostile\russo-jap.dm"
 #include "code\game\mob\living\simple_animal\hostile\sabertooth.dm"
 #include "code\game\mob\living\simple_animal\hostile\skeleton.dm"
