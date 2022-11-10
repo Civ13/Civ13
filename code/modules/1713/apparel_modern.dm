@@ -1910,3 +1910,10 @@
 	icon_state = "cartel1"
 	item_state = "cartel1"
 	worn_state = "cartel1"
+
+/obj/item/clothing/head/black_beanie
+	name = "black beanie"
+	desc = "A woolcloth black skull cap."
+	icon_state = "black_beanie"
+	item_state = "black_beanie"
+	cold_protection = HEAD
