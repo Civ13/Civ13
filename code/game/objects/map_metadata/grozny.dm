@@ -91,7 +91,7 @@
 
 var/no_loop_groz = FALSE
 /obj/map_metadata/grozny/update_win_condition()
-	if (world.time >= 18000)
+	if (world.time >= 21000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
