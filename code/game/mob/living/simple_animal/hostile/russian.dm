@@ -57,4 +57,5 @@
 		icon_dead = "[icon_state]_dead"
 		grenades = 0
 		gun = new/obj/item/weapon/gun/projectile/semiautomatic/svd(src)
+		overlays.Cut()
 		overlays += image('icons/mob/items/righthand_guns.dmi', icon_state = "svd")
