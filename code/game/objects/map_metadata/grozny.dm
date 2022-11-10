@@ -72,7 +72,6 @@
 		if ("Russians")
 			return "Russian"
 
-
 /obj/map_metadata/grozny/cross_message(faction)
 	if (faction == RUSSIAN)
 		return "<font size = 4>The Russian Federal Forces may now cross the invisible wall!</font>"
@@ -88,6 +87,18 @@
 		return ""
 	else
 		return ""
+
+/obj/map_metadata/grozny/short_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 600
+	else
+		return 3000 // 5 minutes
+
+/obj/map_metadata/grozny/long_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 1200
+	else
+		return 3000 // 5 minutes
 
 var/no_loop_groz = FALSE
 /obj/map_metadata/grozny/update_win_condition()
