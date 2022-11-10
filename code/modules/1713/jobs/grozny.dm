@@ -702,7 +702,7 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
 		if (3)
 			if (prob(60))
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap_fed(H), slot_head)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/black_beanie(H), slot_head)
 			else
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/olivebandana(H), slot_head)
 //back
