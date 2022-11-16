@@ -123,7 +123,7 @@
 	name = "Tactical AK-74M"
 	desc = "A russian tactical rifle used by the Spetsnaz."
 	icon_state = "tactical"
-	item_state = "tactical"
+	item_state = "ak74m"
 	base_icon = "tactical"
 	weight = 3.97
 	caliber = "a545x39"

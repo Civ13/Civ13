@@ -401,6 +401,13 @@ Current Defines (_defines/attachment.dm)
 		G.overlays -= G.optics_ico
 	else
 		return
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/pso1
+	name = "PSO-1 scope"
+	icon_state = "pso1"
+	desc = "A soviet 4x scope."
+	max_zoom = ZOOM_CONSTANT+3
+
 /obj/item/weapon/attachment/scope/adjustable/advanced/acog
 	name = "4x ACOG scope"
 	icon_state = "acog"
