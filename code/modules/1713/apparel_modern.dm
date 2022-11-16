@@ -675,6 +675,16 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/sfera //1990's helmet for reference, specific date unknown.
+	name = "Sfera helmet"
+	desc = "A russian combat armoured helmet, often used by internal troops in the USSR and Russia."
+	icon_state = "sfera_helmet"
+	item_state = "sfera_helmet"
+	worn_state = "sfera_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
+
 /obj/item/clothing/head/helmet/modern/zsh1 //1990's helmet for reference, specific date unknown.
 	name = "ZSh-1 helmet"
 	desc = "A russian heavy armoured helmet, often used by USSR infantry forces in the late 20th century."
