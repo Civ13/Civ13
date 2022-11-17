@@ -19,7 +19,7 @@
 	valid_artillery = list("Explosive")
 	faction_distribution_coeffs = list(CIVILIAN = 0.4, INDIANS = 0.6)
 	battle_name = "The Siege of Tadojsville"
-	mission_start_message = "<font size=4>Three <b>Mercenary Warbands</b> have been hired together to capture the local clinic! It will take <b>5 minutes</b> for the Warbands to capture the clinic but the <b>United Nations Peacekeepers</b> garrisoned there will be reinforced and drive off the attackers if they manage to hold out for 35 minutes. <br> The Warbands will start to cross the river in <b>6 minutes!</b></font>"
+	mission_start_message = "<font size=4><b>The Katnegwa Mercenaries</b> have been hired together to capture the local clinic! It will take <b>5 minutes</b> for the Warbands to capture the clinic but the <b>United Nations Peacekeepers</b> garrisoned there will be reinforced and drive off the attackers if they manage to hold out for 35 minutes. <br> The Warbands will start to cross the river in <b>6 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = INDIANS
 	ambience = list('sound/ambience/jungle1.ogg')
@@ -156,6 +156,7 @@
 			if (H.faction_text == faction1)
 				return TRUE
 			return !faction1_can_cross_blocks()
+			return !faction2_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/tadojsville/cross_message(faction)
