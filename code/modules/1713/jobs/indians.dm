@@ -426,7 +426,7 @@ datum/job/indians/tribes/black
 			if (1)
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_shoulder)
 			if (2)
-				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/fal(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)
 			if (3)
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
 			if (4)
