@@ -335,7 +335,7 @@
 	whitelisted = TRUE
 
 	min_positions = 1
-	max_positions = 3
+	max_positions = 1
 
 /datum/job/russian/ruff_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -421,8 +421,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/milrus_vsr93(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //head
-	if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sfera(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //back
@@ -455,7 +455,7 @@
 
 	H.civilization = "Russian"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, lead your squad against the chechen insurgents!")
+	H.add_note("Role", "You are a <b>[title]</b>, lead and coordinate your squad with your officer! Remember to issue coordinates to your Radio Operator.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -629,7 +629,7 @@
 
 	H.civilization = "Russian"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday, but unlike your other comrades, they gave you a radio with your rifle and some additional evening classes during bootcamp! What a joy! Follow orders given by your superiors and defeat the enemy!")
+	H.add_note("Role", "You are a <b>[title]</b>, follow orders given by your superiors and call in airstrikes using the coordinates given to you.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
@@ -821,7 +821,7 @@
 
 	H.civilization = "Russian"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetznaz GRU. You are the best of the best; put an end to this conflict!")
+	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetsnaz GRU. You are the best of the best; put an end to this conflict!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_HIGH)
