@@ -31,12 +31,14 @@
 
 /obj/map_metadata/tadojsville/job_enabled_specialcheck(var/datum/job/J)
 	..()
-
 	if (J.is_un)
 		. = TRUE
 	else if (J.is_warlords)
-		if (J.title != "warlord (do not use)")
-			. = TRUE
+		if (J.is_tadoj)
+			if (J.title != "Mercenary (do not use)")
+				. = TRUE
+		else
+			. = FALSE
 	else
 		. = FALSE
 

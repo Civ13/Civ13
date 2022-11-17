@@ -443,8 +443,6 @@ datum/job/indians/tribes/black
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(FJ, H)
 
-
-
 /datum/job/indians/warlords/red
 	title = "Redkantu Warband Mercenary"
 	spawn_location = "JoinLateIND1"
@@ -648,6 +646,97 @@ datum/job/indians/tribes/black
 	var/obj/item/clothing/accessory/armband/spanish/ab = new /obj/item/clothing/accessory/armband/spanish(null)
 	uniform.attackby(ab, H)
 
+///////TADOJSVILLE///////////
+/datum/job/indians/warlords/tadojsville
+	title = "Mercenary (do not use)"
+
+/datum/job/indians/warlords/tadojsville/sergeant
+	title = "Katnegwa Mercenary Sergeant"
+	spawn_location = "JoinLateIND3"
+	selection_color = "#3a6916"
+	is_warlords = TRUE
+	is_tadoj = TRUE
+	uses_squads = TRUE
+	is_squad_leader = TRUE
+	min_positions = 1
+	max_positions = 12
+
+/datum/job/indians/warlords/tadojsville/sergeant/equip(var/mob/living/human/H)
+	H.nationality = "Katnegwa"
+	H.add_note("Role", "You are a member of <b>Katnegwa Mercenary Force</b>. Lead your fellow mercs and honour your contract!")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
+	//hat or mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+	if(prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_wear_mask)
+	//uniform
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/afr_merc(H), slot_w_uniform)
+	//suit
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
+	//guns
+	give_gun(H)
+
+/datum/job/indians/warlords/tadojsville/shaman
+	title = "Katnegwa Shaman"
+	spawn_location = "JoinLateIND3"
+	selection_color = "#3a6916"
+	is_warlords = TRUE
+	is_tadoj = TRUE
+	is_medic = TRUE
+	max_positions = 10
+
+/datum/job/indians/warlords/tadojsville/shaman/equip(mob/living/human/H)
+	equip_shaman(H)
+	H.nationality = "Katnegwa"
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your warband and keep it medicated!")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/zulu_mbata(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/zulu_umghele(H), slot_head)
+
+/datum/job/indians/warlords/tadojsville/soldier
+	title = "Katnegwa Mercenary"
+	spawn_location = "JoinLateIND3"
+	selection_color = "#3a6916"
+	is_warlords = TRUE
+	is_tadoj = TRUE
+	uses_squads = TRUE
+	max_positions = 300
+
+/datum/job/indians/warlords/tadojsville/soldier/equip(var/mob/living/human/H)
+	..()
+	H.nationality = "Katnegwa"
+	H.add_note("Role", "You are a member of <b>Katnegwa Mercenary Force</b>. Stick with your fellow mercs and honour your contract!")
+	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
+
+	//hat or mask
+	if (prob(50))
+		if(prob(60))
+			var/obj/item/clothing/head/custom/fieldcap/FC = new /obj/item/clothing/head/custom/fieldcap(null)
+			FC.color = "#A4804B"
+			FC.uncolored1 = FALSE
+			FC.update_icon()
+			H.equip_to_slot_or_del(FC, slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet(H), slot_head)
+	if(prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_wear_mask)
+	//uniform
+	var/pick1 = pick(1,2,3)
+	if (pick1 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband1(H), slot_w_uniform)
+	else if (pick1 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/warband2(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/afr_merc/alt(H), slot_w_uniform)
+
+	//suit
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/japcoat/sand(H), slot_wear_suit)
+	//guns
+	give_gun(H)
 
 /////////////////////////////////////////////SECOND RACE 4 AND JOB FILES HEAD 2 HEAD AUTOBALANCE////////////////////////////////////////////////////
 
