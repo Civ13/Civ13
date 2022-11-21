@@ -71,7 +71,7 @@ var/list/preferences_datums = list()
 	var/list/preferences_enabled = list("CHAT_OVERLAY","CHAT_TIPS","SOUND_MIDI", "SOUND_LOBBY", "SOUND_AMBIENCE",
 		"CHAT_GHOSTEARS", "CHAT_GHOSTSIGHT", "CHAT_GHOSTRADIO", "CHAT_SHOWICONS",
 		"SHOW_TYPING", "CHAT_OOC", "CHAT_LOOC", "CHAT_DEAD", "SHOW_PROGRESS",
-		"CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
+		"FIT_VIEWPORT", "CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
 
 	var/list/preferences_disabled = list("CHAT_TTS")
 

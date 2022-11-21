@@ -60,3 +60,6 @@
 
 	//set macro to normal incase it was overriden.
 	winset(client, null, "mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true input.background-color=#D3B5B5")
+
+	if (client.is_preference_enabled(/datum/client_preference/fit_viewport))
+		client.fit_viewport()
