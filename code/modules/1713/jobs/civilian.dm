@@ -3194,7 +3194,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_un = TRUE
 	can_be_female = TRUE
@@ -3220,7 +3219,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/unbasic(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3252,7 +3250,6 @@
 	spawn_location = "JoinLateUNSgt"
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_radioman = TRUE
 	can_get_coordinates = TRUE
 	is_un = TRUE
 	can_be_female = TRUE
@@ -3277,7 +3274,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3311,9 +3307,10 @@
 	can_be_female = TRUE
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 15)
+	uses_squads = TRUE
 
 	min_positions = 2
-	max_positions = 107
+	max_positions = 102
 /datum/job/civilian/unitednations/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -3334,7 +3331,6 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3347,6 +3343,65 @@
 	give_random_name(H)
 	H.nationality = "United Nations"
 	H.add_note("Role", "You are a <b>[title]</b>. Follow orders and keep everyone safe!")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+
+/datum/job/civilian/unitednations/radop
+	title = "United Nations Radio Operator"
+	en_meaning = ""
+	rank_abbreviation = "UN Pfc."
+	spawn_location = "JoinLateUN"
+	is_un = TRUE
+	is_radioman
+	can_be_female = TRUE
+	selection_color = "#53ADD0"
+	additional_languages = list("Zulu" = 30)
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/civilian/unitednations/radop/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/un_fal(H), slot_belt)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/un_beret(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/un/blue = new /obj/item/clothing/accessory/armband/un(null)
+	uniform.attackby(blue, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.nationality = "United Nations"
+	H.add_note("Role", "You are a <b>[title]</b>. Follow orders, ensure communication between your squad and your superiors and call in airstrikes!")
 
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -3385,7 +3440,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3436,7 +3490,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3489,7 +3542,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/stethoscope(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/un/white = new /obj/item/clothing/accessory/armband/un(null)
 	uniform.attackby(white, H)
@@ -3535,7 +3587,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/ungineer(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/earradio1(H), slot_l_ear)
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 
