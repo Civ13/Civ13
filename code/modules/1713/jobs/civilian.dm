@@ -3194,7 +3194,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_un = TRUE
 	can_be_female = TRUE
