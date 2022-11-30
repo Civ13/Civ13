@@ -529,7 +529,7 @@
 	id = "fat_oil"
 	description = "A thick and smelling oil. Good for seasoning and lamps."
 	taste_description = "greasy"
-	color = "##9B7653"
+	color = "#9B7653"
 
 /datum/reagent/drink/fat_oil/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
