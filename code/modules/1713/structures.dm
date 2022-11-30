@@ -1180,7 +1180,8 @@
 
 /obj/structure/torch_stand/attackby(obj/item/W as obj, mob/user as mob)
 	..()
-	storage.attackby(W, user)
+	if (storage)
+		storage.attackby(W, user)
 	update_icon()
 
 /obj/structure/torch_stand/full

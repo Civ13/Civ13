@@ -848,6 +848,8 @@ bullet_act
 		O.throwing = FALSE		//it hit, so stop moving
 
 		var/obj/item/organ/external/affecting = get_organ(zone)
+		if (!affecting)
+			return
 		var/hit_area = affecting.name
 		if (!hit_area)
 			return
