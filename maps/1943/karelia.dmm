@@ -427,7 +427,7 @@
 "im" = (/obj/structure/toilet/pit_latrine,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command{name = "Soviet HQ"})
 "in" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command{name = "Soviet HQ"})
 "io" = (/obj/structure/bed/chair{dir = 4; icon_state = "chair"},/turf/floor/wood,/area/caribbean/russian/land/inside/command{name = "Soviet HQ"})
-"ip" = (/obj/map_metadata/karelina,/turf/floor/wood,/area/caribbean/russian/land/inside/command{name = "Soviet HQ"})
+"ip" = (/obj/map_metadata/karelia,/turf/floor/wood,/area/caribbean/russian/land/inside/command{name = "Soviet HQ"})
 "iq" = (/obj/structure/window_frame/brickfull,/obj/structure/window/barrier/sandbag,/obj/structure/barricade,/turf/floor/wood,/area/caribbean/roofed)
 "ir" = (/obj/covers/brick_wall,/obj/structure/sign/flag/sov,/turf/floor/wood,/area/caribbean/roofed)
 "is" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
