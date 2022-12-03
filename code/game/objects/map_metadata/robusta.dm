@@ -31,7 +31,7 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
-	else if (J.is_warlords)
+	else if (J.is_warlords == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
 		. = FALSE
@@ -40,6 +40,10 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
+	else if (J.is_gta == TRUE)
+		. = FALSE
+	else if (J.is_blugi == TRUE)
 		. = FALSE
 	else
 		. = TRUE
