@@ -10,8 +10,8 @@
 	edge = 1
 	var/atk_mode = SLASH
 	block_chance = 35
-	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
-	hitsound = 'sound/weapons/bladeslice.ogg'
+	attack_verb = list("slashed", "diced")
+	hitsound = "slash_sound"
 	drawsound = 'sound/items/unholster_sword01.ogg'
 	sharpness = 25
 	var/stat = "swords"
@@ -64,7 +64,6 @@
 		sharp = 1
 		attack_verb = list("stabbed")
 		hitsound = "stab_sound"
-		return
 
 	else if(atk_mode == STAB)
 		atk_mode = BASH
@@ -73,17 +72,14 @@
 		sharp = 0
 		attack_verb = list("bashed", "smacked")
 		hitsound = "swing_hit"
-		return
-
 
 	else if(atk_mode == BASH)
 		atk_mode = SLASH
 		user << "<span class='notice'>You will now slash.</span>"
-		attack_verb = list("slashed", "diced")
-		hitsound = "slash_sound"
 		edge = 1
 		sharp = 1
-		return
+		attack_verb = list("slashed", "diced")
+		hitsound = "slash_sound"
 
 /obj/item/weapon/material/sword/training
 	name = "training sword"
@@ -127,7 +123,7 @@
 	edge = FALSE
 	default_material = "bamboo"
 
-/obj/item/weapon/material/sword/attack_self(mob/user)
+/obj/item/weapon/material/sword/training/attack_self(mob/user)
 	..()
 	edge = 0
 	sharp = 0
