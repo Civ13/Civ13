@@ -1,19 +1,38 @@
+/*
+A little documentation of the mess I've made here :D --Bierkraan 2022
+
+You can spawn a random object of your desire, just return it in the proc spawn_choises().
+Because we're calling all /obj/random on spawn and not on Initialize you can spawn in a /random in the middle of a round and get an object, though this might lag out the round on roundstart (untill someone finds a better solution).
+Example for later use:
+
+/obj/random/myItems
+	name = "gun or health kit"
+	desc "Nobody will EVER read this exept a curious mapper"
+	icon = 'icons/misc/mark.dmi'
+	icon_state = "dice"
+	spawn_nothing_percentage = 0 // This variable determines the likelyhood that this random object will not spawn anything
+
+/obj/random/myItems/spawn_choices()
+	return list(/obj/item/weapon/gun/myverycoolgun,
+				/obj/item/stack/medical/myveryhealthykit)
+*/
+
 /obj/random
 	name = "random object"
 	desc = "This item type is used to spawn random objects at round-start."
-	icon = 'icons/misc/mark.dmi'
+	icon = 'icons/misc/mark.dmi' // This is where all the /random icons are located
 	icon_state = "rup"
-	var/spawn_nothing_percentage = 0 // this variable determines the likelyhood that this random object will not spawn anything
+	var/spawn_nothing_percentage = 0 // This variable determines the likelyhood that this random object will not spawn anything
 
 	var/spawn_method = /obj/random/proc/spawn_item
 
-// creates a new object and deletes itself
-/obj/random/initialize()
+// Creates a new object and deletes itself
+/obj/random/New()
 	..()
 	call(src, spawn_method)()
 	qdel(src)
 
-// creates the random item
+// Creates the random item
 /obj/random/proc/spawn_item()
 	if(prob(spawn_nothing_percentage))
 		return
@@ -46,28 +65,25 @@
 
 /obj/random/gun
 	name = "DO NOT USE"
-	desc = "This is a random gun."
 	icon_state = "dice"
-/*
+
 /obj/random/gun/random_ak
 	name = "random ak"
-	desc = "This is a random ak."
-	icon_state = "dice"
-	var/gun = pick(/obj/random/gun/ak47,/obj/random/gun/ak74,/obj/random/gun/ak_modern)
+	icon_state = "ak_old"
 /obj/random/gun/random_ak/New()
-*/
+	..()
+	pick(new /obj/random/gun/ak47(src),new /obj/random/gun/ak74(src))
+
 
 /obj/random/gun/ak47
-	name = "random old ak"
-	desc = "This is a random ak."
+	name = "random ak47"
 	icon_state = "ak_old"
 /obj/random/gun/ak47/spawn_choices()
 	return list(/obj/item/weapon/gun/projectile/submachinegun/ak47,
 				/obj/item/weapon/gun/projectile/submachinegun/ak47/akms)
 
 /obj/random/gun/ak74
-	name = "random old ak"
-	desc = "This is a random ak."
+	name = "random ak74"
 	icon_state = "ak_old"
 /obj/random/gun/ak74/spawn_choices()
 	return list(/obj/item/weapon/gun/projectile/submachinegun/ak74,
@@ -77,7 +93,6 @@
 
 /obj/random/gun/ak_modern
 	name = "random modern ak"
-	desc = "This is a random ak."
 	icon_state = "ak_modern"
 /obj/random/gun/ak_modern/spawn_choices()
 	return list(/obj/item/weapon/gun/projectile/submachinegun/ak101,
@@ -90,23 +105,61 @@
 
 /obj/random/magazine
 	name = "DO NOT USE"
-	desc = "This is a random magazine."
 	icon_state = "dice"
 
 /obj/random/magazine/ak47
     name = "random ak magazine"
     icon_state = "magazine"
 /obj/random/magazine/ak47/spawn_choices()
-	return list(/obj/item/ammo_magazine/ak47 = rand(1,3),
-                /obj/item/ammo_magazine/ak47 = rand(1,2),
-                /obj/item/ammo_magazine/ak47,
+	return list(/obj/item/ammo_magazine/ak47,
                 /obj/item/ammo_magazine/ak47/drum)
 
 /obj/random/magazine/ak74
     name = "random ak magazine"
     icon_state = "magazine"
 /obj/random/magazine/ak74/spawn_choices()
-	return list(/obj/item/ammo_magazine/ak74 = rand(1,3),
-                /obj/item/ammo_magazine/ak74 = rand(1,2),
-                /obj/item/ammo_magazine/ak74,
+	return list(/obj/item/ammo_magazine/ak74,
                 /obj/item/ammo_magazine/ak74/drum)
+
+		
+////////////////Medical////////////////
+/obj/item/weapon/storage/eft/medical
+	name = "medical bag"
+	desc = "Probably contains basic medical treatments."
+	icon_state = "medical_bag"
+	item_state = "medical_bag"
+	anchored = TRUE
+/obj/item/weapon/storage/eft/medical/New()
+	..()
+	if(prob(80))
+		new /obj/random/medical/bandage(src)
+		if(prob(50))
+			new /obj/random/medical/bandage(src)
+	if(prob(60))
+		new /obj/random/medical/drugs(src)
+
+/obj/random/medical
+	name = "Medical Supplies"
+	icon_state = "medical"
+
+/obj/random/medical/bandage
+	name = "Medical Bandages"
+	icon_state = "bandage"
+	spawn_nothing_percentage = 10
+/obj/random/medical/spawn_choices()
+	return list(/obj/item/stack/medical/advanced/sulfa/small = rand(1,2),
+                /obj/item/stack/medical/advanced/herbs/small = rand(1,3),
+                /obj/item/stack/medical/bruise_pack/bint/small = rand(1,2))
+
+/obj/random/medical/drugs
+	name = "Medical Drugs"
+	icon_state = "drug"
+	spawn_nothing_percentage = 18
+/obj/random/medical/spawn_choices()
+	return list(/obj/item/weapon/reagent_containers/syringe/morphine,
+				/obj/item/weapon/reagent_containers/syringe/morphine,
+				/obj/item/weapon/reagent_containers/syringe/morphine,
+                /obj/item/weapon/reagent_containers/syringe/adrenaline,
+				/obj/item/weapon/reagent_containers/syringe/adrenaline,
+				/obj/item/weapon/reagent_containers/syringe/adrenaline,
+                /obj/item/weapon/reagent_containers/syringe/thc)

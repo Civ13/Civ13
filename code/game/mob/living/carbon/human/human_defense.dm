@@ -362,7 +362,7 @@ bullet_act
 							qdel(P)
 							return
 
-		// get knocked back once in a while
+		
 
 		var/KD_check = FALSE
 
@@ -375,8 +375,8 @@ bullet_act
 			if (B.buckled_mob == src)
 				KD_check = TRUE
 				break
-
-		if (prob(P.KD_chance/2) && !KD_check)
+		// Get knocked back once in a while
+		if (prob(P.KD_chance/2) && !KD_check && (!istype get_turf(src), var/obj/structure/vehicleparts/frame/V))
 			SpinAnimation(5,1)
 			// P.firer_original_dir is more accurate, since P.dir is never explicitly set? - Kachnov
 			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir)
@@ -890,8 +890,8 @@ bullet_act
 			var/sharp = O.sharp
 			var/edge = O.edge
 			if(prob(armor))
-				edge = 0
-				sharp = 0
+				edge = FALSE
+				sharp = FALSE
 			apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
 
 		if (ismob(O.thrower))

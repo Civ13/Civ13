@@ -288,8 +288,8 @@
 		new_force = 200
 		new_damage = DAMAGE_OH_GOD
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		atk_mode = SLASH
 		set_light(2, 0.25, "#FFFFFF")
 		update_icon()
@@ -364,8 +364,8 @@ obj/item/weapon/material/sword/magic/onoff/blue
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#0000FF")
 		atk_mode = SLASH
 	else
@@ -436,8 +436,8 @@ obj/item/weapon/material/sword/magic/onoff/red
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#FF0000")
 		atk_mode = SLASH
 	else
@@ -508,8 +508,8 @@ obj/item/weapon/material/sword/magic/onoff/green
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#00FF00")
 		atk_mode = SLASH
 	else
@@ -580,8 +580,8 @@ obj/item/weapon/material/sword/magic/onoff/lightgreen
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#90EE90")
 		atk_mode = SLASH
 	else
@@ -652,8 +652,8 @@ obj/item/weapon/material/sword/magic/onoff/darkgreen
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#013220")
 		atk_mode = SLASH
 	else
@@ -724,8 +724,8 @@ obj/item/weapon/material/sword/magic/onoff/purple
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#800080")
 		atk_mode = SLASH
 	else
@@ -796,8 +796,8 @@ obj/item/weapon/material/sword/magic/onoff/teal
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#008080")
 		atk_mode = SLASH
 	else
@@ -868,8 +868,8 @@ obj/item/weapon/material/sword/magic/onoff/cyan
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#00FFFF")
 		atk_mode = SLASH
 	else
@@ -940,8 +940,8 @@ obj/item/weapon/material/sword/magic/onoff/magenta
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#FF00FF")
 		atk_mode = SLASH
 	else
@@ -1012,8 +1012,8 @@ obj/item/weapon/material/sword/magic/onoff/redpink
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#ffc0cb")
 		atk_mode = SLASH
 	else
@@ -1084,8 +1084,8 @@ obj/item/weapon/material/sword/magic/onoff/yellow
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#FFFF00")
 		atk_mode = SLASH
 	else
@@ -1156,8 +1156,8 @@ obj/item/weapon/material/sword/magic/onoff/gold
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#FFD700")
 		atk_mode = SLASH
 	else
@@ -1228,8 +1228,8 @@ obj/item/weapon/material/sword/magic/onoff/orange
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#FFA500")
 		atk_mode = SLASH
 	else
@@ -1300,8 +1300,8 @@ obj/item/weapon/material/sword/magic/onoff/darkorange
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#ff8c00")
 		atk_mode = SLASH
 	else
@@ -1372,8 +1372,8 @@ obj/item/weapon/material/sword/magic/onoff/bronze
 		hitsound = hitsound_on
 		drawsound = drawsound_on
 		state = "ON"
-		sharp = 1
-		edge = 1
+		sharp = TRUE
+		edge = TRUE
 		set_light(2, 0.25, "#CD7F32")
 		atk_mode = SLASH
 	else

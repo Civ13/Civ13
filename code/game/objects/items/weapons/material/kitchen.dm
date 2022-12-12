@@ -140,8 +140,8 @@
 	if(atk_mode == SLASH)
 		atk_mode = STAB
 		user << "<span class='notice'>You will now stab.</span>"
-		edge = 0
-		sharp = 1
+		edge = FALSE
+		sharp = TRUE
 		attack_verb = list("stabbed")
 		hitsound = "stab_sound"
 		return
@@ -151,8 +151,8 @@
 		user << "<span class='notice'>You will now slash.</span>"
 		attack_verb = list("slashed", "diced")
 		hitsound = "slash_sound"
-		edge = 1
-		sharp = 1
+		edge = TRUE
+		sharp = TRUE
 		return
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/human/M as mob, mob/living/user as mob)
@@ -262,8 +262,8 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/switchblade/update_force()
 	if(active)
-		edge = 1
-		sharp = 1
+		edge = TRUE
+		sharp = TRUE
 		..() //Updates force.
 		throwforce = 5
 		hitsound = 'sound/weapons/bladeslice.ogg'
@@ -273,8 +273,8 @@
 		force_divisor = 0.7
 		attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	else
-		edge = 0
-		sharp = 0
+		edge = FALSE
+		sharp = FALSE
 		hitsound = initial(hitsound)
 		icon_state = initial(icon_state)
 		item_state = initial(item_state)

@@ -127,6 +127,8 @@
 			return "Robbers"
 		else if (map.ID == "DRUG_BUST")
 			return "Rednikov Mobsters"
+		else if (map.ID == "EFT_FACTORY")
+			return "BEAR"
 		else
 			if (age == 6 || age == 7)
 				return "Soviet Union"
@@ -196,6 +198,8 @@
 			return "Imperials"
 		else if (map.ID == "EAST_LOS_SANTOS")
 			return "Grove Street Families"
+		else if (map.ID == "EFT_FACTORY")
+			return "USEC"
 		else
 			return "United States"
 

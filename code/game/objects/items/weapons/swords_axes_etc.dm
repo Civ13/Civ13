@@ -238,8 +238,8 @@
 	attack_verb = list("smacked", "hit", "bludgeoned")
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_ROBUST
-	sharp = 1
-	edge = 1
+	sharp = TRUE
+	edge = TRUE
 	sharpness = 15
 	w_class = 3.0
 	flammable = FALSE

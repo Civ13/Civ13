@@ -169,8 +169,8 @@ Current Defines (_defines/attachment.dm)
 	if(atk_mode == SLASH)
 		atk_mode = STAB
 		user << "<span class='notice'>You will now stab.</span>"
-		edge = 0
-		sharp = 1
+		edge = FALSE
+		sharp = TRUE
 		attack_verb = list("stabbed")
 		hitsound = "stab_sound"
 		return
@@ -180,8 +180,8 @@ Current Defines (_defines/attachment.dm)
 		user << "<span class='notice'>You will now slash.</span>"
 		attack_verb = list("slashed", "diced")
 		hitsound = "slash_sound"
-		edge = 1
-		sharp = 1
+		edge = TRUE
+		sharp = TRUE
 		return
 /obj/item/weapon/attachment/bayonet/attached(var/mob/user = null, obj/item/weapon/gun/G, var/quick = FALSE)
 	if (quick)

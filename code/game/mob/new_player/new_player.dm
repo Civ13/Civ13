@@ -1062,6 +1062,8 @@ var/global/redirect_all_players = null
 			dat +="[alive_russian.len] Robbers "
 		else if (map && istype(map, /obj/map_metadata/drug_bust))
 			dat +="[alive_russian.len] Rednikov Mobsters "
+		else if (map && istype(map, /obj/map_metadata/eft_factory))
+			dat +="[alive_russian.len] BEAR PMCs "
 		else
 			if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
 				dat += "[alive_russian.len] Soviets "
@@ -1099,6 +1101,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Imperials "
 		else if (map && istype(map, /obj/map_metadata/east_los_santos))
 			dat += "[alive_american.len] Grove Street "
+		else if (map && istype(map, /obj/map_metadata/eft_factory))
+			dat += "[alive_american.len] USEC PMCs "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)

@@ -1653,6 +1653,7 @@
 	worn_state = "russian_emr"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
+
 /obj/item/clothing/under/russian/verb/roll_sleeves()
 	set category = null
 	set src in usr
@@ -1676,6 +1677,20 @@
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
+
+/obj/item/clothing/head/cap/usec
+	name = "USEC field cap"
+	desc = "An USEC pattern field cap, standard issue for USEC PMCs"
+	icon_state = "usec_cap"
+	item_state = "usec_cap"
+	worn_state = "usec_cap"
+
+/obj/item/clothing/head/cap/bear
+	name = "BEAR field cap"
+	desc = "A BEAR pattern field cap, standard issue for BEAR PMCs"
+	icon_state = "bear_cap"
+	item_state = "bear_cap"
+	worn_state = "bear_cap"
 
 //african militias
 /obj/item/clothing/under/warband1

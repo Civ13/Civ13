@@ -1806,7 +1806,7 @@
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
-obj/item/clothing/head/helmet/modern/hardhaty
+/obj/item/clothing/head/helmet/modern/hardhaty
 	name = "yellow hard hat"
 	desc = "A yellow hard hat used by the workers."
 	icon_state = "hardhat_yellow"
@@ -1817,7 +1817,7 @@ obj/item/clothing/head/helmet/modern/hardhaty
 	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
 	health = 30
 
-obj/item/clothing/head/helmet/modern/hardhatw
+/obj/item/clothing/head/helmet/modern/hardhatw
 	name = "white hard hat"
 	desc = "A white hard hat used by the workers."
 	icon_state = "hardhat_white"
@@ -1828,7 +1828,7 @@ obj/item/clothing/head/helmet/modern/hardhatw
 	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
 	health = 30
 
-obj/item/clothing/head/helmet/modern/hardhato
+/obj/item/clothing/head/helmet/modern/hardhato
 	name = "orange hard hat"
 	desc = "A orange hard hat used by the workers."
 	icon_state = "hardhat_orange"
@@ -2040,3 +2040,12 @@ obj/item/clothing/head/helmet/modern/hardhato
 	icon_state = "afr_merc"
 	item_state = "afr_merc"
 	worn_state = "arc_merc"
+
+
+/obj/item/clothing/under/bear
+	name = "BEAR uniform with rolled sleeves"
+	desc = "A rolled-sleeves version of the US Army OG-107 uniform."
+	icon_state = "bear_lightuni"
+	item_state = "bear_lightuni"
+	worn_state = "bear_lightuni"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS

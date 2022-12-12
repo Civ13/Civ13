@@ -1307,6 +1307,11 @@
 
 /area/caribbean/football/nopass
 	icon_state = "green1"
+
+/area/caribbean/extract
+	name = "extract"
+	icon_state = "green1"
+
 /////////////////////////////////////////////////////////////
 /////////////leben paratooper code///////////////////////////
 /*

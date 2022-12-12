@@ -257,8 +257,8 @@
 /obj/item/weapon/gun/projectile/pistol/mp443
 	name = "MP-443"
 	desc = "A modern pistol, loaded on 9x19mm, made by Russia."
-	icon_state = "pl14"
-	fire_delay = 3.3
+	icon_state = "mp443"
+	fire_delay = 3.15
 	w_class = 2
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
