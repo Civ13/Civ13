@@ -637,6 +637,10 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+/obj/item/weapon/gun/projectile/submachinegun/ak74/pso1/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
 	name = "AKS-74"

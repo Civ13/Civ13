@@ -45,6 +45,8 @@
 				if ((LL && LL.is_stump() && LL.prosthesis == FALSE || !LL))
 					visible_message("[user] starts to attatch \the [src] to [C]'s left leg stump...","You start attaching \the [src] to [C]'s left leg stump...")
 					if (do_after(user, 150*user.getStatCoeff("medical"), C))
+						if (!LL)
+							return
 						visible_message("[user] finishes attaching \the [src] to [C]'s left leg stump.","You finish attaching \the [src] to [C]'s left leg stump.")
 						LL.prosthesis = TRUE
 						LL.prosthesis_type = icon_state

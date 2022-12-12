@@ -146,6 +146,12 @@ var/list/_client_preferences_by_type
 	enabled_description = "Show"
 	disabled_description = "Hide"
 
+/datum/client_preference/fit_viewport
+	description = "Auto-adjust game screen"
+	key = "FIT_VIEWPORT"
+	enabled_description = "Yes"
+	disabled_description = "No"
+
 /********************
 * Admin Preferences *
 ********************/

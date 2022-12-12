@@ -776,6 +776,16 @@
 	name = "Flagpole"
 	desc = "Flagless, apply cloth or a flag."
 
+/obj/structure/flag/bearclan
+	icon_state = "bearclan"
+	name = "Bearclan Banner"
+	desc = "A Bearclan banner."
+
+/obj/structure/flag/ravenclan
+	icon_state = "ravenclan"
+	name = "Raven Banner"
+	desc = "A Ravenclan banner."
+
 /obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/cloth))
 		if(W.amount >= 5)
@@ -1201,7 +1211,8 @@
 
 /obj/structure/torch_stand/attackby(obj/item/W as obj, mob/user as mob)
 	..()
-	storage.attackby(W, user)
+	if (storage)
+		storage.attackby(W, user)
 	update_icon()
 
 /obj/structure/torch_stand/full

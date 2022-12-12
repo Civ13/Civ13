@@ -525,7 +525,7 @@
 				adjustBrainLoss(rand(4,6))
 				apply_effect(6, DROWSY, FALSE)
 				bodytemperature = 313.35
-			else if (disease_progression >= 240 && prob(50))
+			else if (disease_progression >= 240 && prob(50) && !istype(get_area(src), /area/caribbean/admin))
 				adjustBrainLoss(200)
 				var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
 				playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
@@ -1727,7 +1727,7 @@
 									for (var/obj/item/organ/external/head/H in organs)
 										found = TRUE
 										break
-									if ((map.is_zombie) && found)
+									if ((map.is_zombie) && found && !istype(get_area(src), /area/caribbean/admin))
 										var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
 										playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
 										//transferring vars.

@@ -2041,6 +2041,10 @@
 	item_state = "afr_merc"
 	worn_state = "arc_merc"
 
+/obj/item/clothing/under/afr_merc/alt
+	icon_state = "afr_merc2"
+	item_state = "afr_merc2"
+	worn_state = "arc_merc2"
 
 /obj/item/clothing/under/bear
 	name = "BEAR uniform with rolled sleeves"

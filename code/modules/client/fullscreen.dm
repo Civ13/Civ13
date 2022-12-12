@@ -2,6 +2,8 @@ client/New()
 	..()
 	winset(src, "mainwindow", "can-resize=true;titlebar=true;menu=menu")
 	winset(src, "mainwindow.mainvsplit", "splitter=75")
+	if(is_preference_enabled(/datum/client_preference/fit_viewport))
+		fit_viewport()
 
 client/verb/updateFullscreen()
 	set name = "updateFullscreen"

@@ -10,10 +10,6 @@
 "aj" = (/turf/floor/dirt/underground,/area/caribbean/nomads)
 "ak" = (/turf/floor/dirt/underground,/area/caribbean/void/caves)
 "al" = (/turf/floor/grass,/area/caribbean/nomads)
-"am" = (/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
-"an" = (/turf/floor/dirt/underground/icy/rock,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
-"ao" = (/turf/floor/dirt/winter,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
-"ap" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 "aq" = (/turf/floor/winter,/area/caribbean/no_mans_land/tundra)
 "ar" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/tundra)
 "as" = (/turf/floor/dirt/winter,/area/caribbean/no_mans_land/tundra)
@@ -213,7 +209,6 @@
 "ee" = (/obj/item/stack/material/barbwire/twnt,/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
 "ef" = (/obj/structure/wild/rock,/turf/floor/winter,/area/caribbean/no_mans_land/tundra)
 "eg" = (/obj/structure/wild/rock,/turf/floor/winter,/area/caribbean/nomads/snow)
-"eh" = (/obj/structure/wild/rock,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 "ei" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/nomads/snow)
 "ej" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/nomads)
 "ek" = (/obj/structure/wild/rock,/turf/floor/dirt/dark_dirt,/area/caribbean/nomads)
@@ -264,7 +259,7 @@
 "fd" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/no_mans_land/tundra)
 "fe" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/no_mans_land/tundra)
 "ff" = (/obj/structure/wild/tree/live_tree/snow{icon_state = "tree_3"},/turf/floor/winter,/area/caribbean/no_mans_land/tundra)
-"fg" = (/obj/structure/wild/tree/live_tree/snow{icon_state = "tree_2"},/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
+"fg" = (/obj/structure/wild/tree/live_tree/snow{icon_state = "tree_2"},/turf/floor/winter,/area/caribbean/no_mans_land/tundra)
 "fh" = (/obj/structure/wild/tree/live_tree/snow{icon_state = "tree_5"},/turf/floor/winter,/area/caribbean/nomads/snow)
 "fi" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/nomads/snow)
 "fj" = (/obj/structure/wild/tree/live_tree/snow{icon_state = "tree_4"},/turf/floor/winter,/area/caribbean/nomads/snow)
@@ -350,7 +345,7 @@
 "gL" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
 "gM" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/trench,/area/caribbean/nomads)
 "gN" = (/obj/item/clothing/under/civf1,/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/no_mans_land/tundra)
-"gO" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt/winter,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
+"gO" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt/winter,/area/caribbean/no_mans_land/tundra)
 "gP" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 "gQ" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 "gR" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
@@ -416,8 +411,6 @@
 "hZ" = (/obj/structure/wild/tree/live_tree,/obj/item/flashlight/torch/on/unlimited,/turf/floor/grass,/area/caribbean/nomads)
 "ia" = (/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/item/weapon/grenade/antitank,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/nomads)
 "ib" = (/obj/item/weapon/storage/box/handcuffs,/turf/floor/trench,/area/caribbean/nomads)
-"ud" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
-"vR" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 "DN" = (/obj/structure/vehicle/carriage{dir = 4; icon_state = "simple_carriage2"},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/two)
 "IV" = (/obj/map_metadata/long_march,/turf/floor/grass,/area/caribbean/nomads)
 "Xo" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt/underground/icy/rock,/area/caribbean/nomads/snow)
@@ -436,9 +429,9 @@ aqatatatatatatatatatataqefaqaqatatataqaqaqaqaqaqaqaqaqatatatatatatataqaqaqaqaqaq
 aqatatatatatatatatatataqaqatatatatatatataqaqaqaqaqaqaqatatatatatataqaqaqaqaqaqaqaqaqaqaqaqaqasasasaraqaqaqatatatatatatatatatatatatatataqaqaqaqaqaqaqatatataqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqatatatat
 aqaqatatatatataqaqaqaqaqatatatatatatatatataqaqaqaqaqatatatatatataqaqaqaqaqaqaqaqaqaqaqaqaqaqaqasasaraqasasatatatatatatatatatatatataqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqatataqaqaqaqaqaqaqaqaqatatatatat
 aqefaqatatataqaqaqaqaqatatatatatatatatatatatataqaqaqaqatatatataqaqaqaqaqaqaqatataqaqaqaqaqaqaqasasaqaqasasatatatatatatatatatataqfdaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqatatatataqaqaqaqaqaqaqaqaqatatatatat
-amamamamamamamamamananananananananananananananananamamamamamamamamamamamanananananamamamamamamaoapapamaoaoamamananananananananamamehamamanananamamamamamamamamamanananananamamamamamamamudamamananananan
-amvRamamamamamamananananananananananananananananamamamamamfgamamanananananananananananamamamamaoapamamaoamamamanananananamamamamamananananananananamamamamamamanananananamamamamamamamamamamamamananamam
-amamamamamamanananananananananananananananamamamamamamamamamamanananananananananananananamamamaoaoamgOaoamamamamananamamamamamamamamamanananananananamamamamanananananamamamamamamehamamamamamamamamamam
+aqaqaqaqaqaqaqaqaqatatatatatatatatatatatatatatatataqaqaqaqaqaqaqaqaqaqaqatatatatataqaqaqaqaqaqasararaqasasaqaqatatatatatatatataqaqefaqaqatatataqaqaqaqaqaqaqaqaqatatatatataqaqaqaqaqaqaqfdaqaqatatatatat
+aqfeaqaqaqaqaqaqatatatatatatatatatatatatatatatataqaqaqaqaqfgaqaqatatatatatatatatatatataqaqaqaqasaraqaqasaqaqaqatatatatataqaqaqaqaqatatatatatatatataqaqaqaqaqaqatatatatataqaqaqaqaqaqaqaqaqaqaqaqatataqaq
+aqaqaqaqaqaqatatatatatatatatatatatatatatataqaqaqaqaqaqaqaqaqaqatatatatatatatatatatatatataqaqaqasasaqgOasaqaqaqaqatataqaqaqaqaqaqaqaqaqatatatatatatataqaqaqaqatatatatataqaqaqaqaqaqefaqaqaqaqaqaqaqaqaqaq
 aaaaaaaaflaaadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadadadadaaaaaaaaabaaacacabaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadaaaaaaaaaaaaaaadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaegaaaaaa
 aaaaaaaaaaaaadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadaaaaaaaaaaaaacaaabacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadaaaaaaaaaaaaaaaaaaacabacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadegaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadaaaaaaaaaa

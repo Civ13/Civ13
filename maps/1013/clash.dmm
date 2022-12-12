@@ -433,6 +433,12 @@
 "iT" = (
 /turf/floor/plating/stone_old,
 /area/caribbean/no_mans_land/taiga)
+"iY" = (
+/obj/covers/roads/dirt,
+/obj/structure/window/barrier/palisade,
+/obj/effect/floor_decal/spline/fancy/wood,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "jg" = (
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing,
 /turf/floor/winter,
@@ -744,6 +750,9 @@
 /obj/structure/window/barrier/palisade{
 	dir = 1
 	},
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 1
+	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "pu" = (
@@ -974,6 +983,10 @@
 	dir = 8
 	},
 /obj/structure/closet/crate/arrows/iron,
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 8;
+	pixel_y = 3
+	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "xi" = (
@@ -1030,9 +1043,8 @@
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "yw" = (
-/obj/covers/stone_wall/brick,
-/obj/structure/sign/flag/blue,
-/turf/wall/stone/stonebrick,
+/obj/structure/flag/ravenclan,
+/turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "yx" = (
 /turf/floor/dirt/winter,
@@ -1067,6 +1079,10 @@
 /obj/effect/decal/cleanable/cobweb2,
 /turf/floor/plating/stone_old,
 /area/caribbean/void/caves)
+"zh" = (
+/obj/structure/catapult,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "zq" = (
 /obj/effect/floor_decal/spline/fancy{
 	dir = 1
@@ -1167,6 +1183,10 @@
 /obj/structure/window/barrier/palisade{
 	dir = 8
 	},
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 8;
+	pixel_y = 3
+	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "Ce" = (
@@ -1219,6 +1239,10 @@
 	dir = 8
 	},
 /obj/structure/closet/crate/arrows/iron,
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 8;
+	pixel_y = 3
+	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "Cz" = (
@@ -1231,6 +1255,10 @@
 "CB" = (
 /obj/structure/wild/rock,
 /obj/structure/wild/tree/live_tree/pine/snow,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
+"CP" = (
+/obj/structure/flag/bearclan,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "CY" = (
@@ -1503,6 +1531,10 @@
 /turf/floor/beach/water,
 /turf/floor/beach/water,
 /area/caribbean/no_mans_land/taiga)
+"If" = (
+/obj/structure/gate,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "Ii" = (
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 1;
@@ -1604,6 +1636,10 @@
 	dir = 4
 	},
 /obj/structure/closet/crate/arrows/iron,
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 4;
+	pixel_y = 3
+	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "Kz" = (
@@ -1879,6 +1915,18 @@
 /obj/structure/branch/cleared,
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
+"RC" = (
+/obj/covers/roads/dirt,
+/obj/covers/wood/stairs{
+	dir = 4;
+	icon_state = "wood2_stairs"
+	},
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 1;
+	pixel_y = 3
+	},
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "RM" = (
 /obj/structure/religious/impaledskull,
 /turf/floor/winter/grass,
@@ -1921,6 +1969,10 @@
 /obj/structure/window/barrier/palisade{
 	dir = 4
 	},
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 4;
+	pixel_y = 3
+	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
 "SL" = (
@@ -1944,6 +1996,10 @@
 /obj/covers/roads/dirt,
 /obj/structure/window/barrier/palisade{
 	dir = 4
+	},
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 4;
+	pixel_y = 3
 	},
 /turf/floor/winter,
 /area/caribbean/no_mans_land/taiga)
@@ -2005,10 +2061,12 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/houses)
 "TP" = (
-/obj/covers/wood_wall/nordic,
-/obj/structure/sign/flag/blue,
-/turf/wall/wood,
-/area/caribbean/houses)
+/obj/structure/window/barrier/palisade{
+	dir = 4
+	},
+/obj/structure/gatecontrol,
+/turf/floor/wood,
+/area/caribbean/no_mans_land/taiga)
 "Ub" = (
 /obj/structure/closet/crate/empty,
 /obj/effect/decal/cleanable/dirt,
@@ -2053,6 +2111,14 @@
 /obj/structure/window/barrier/rock,
 /turf/floor/beach/water,
 /area/caribbean/no_mans_land/taiga)
+"Vl" = (
+/obj/structure/closet/crate/empty,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/weapon/wrench,
+/turf/floor/winter,
+/area/caribbean/no_mans_land/taiga)
 "Vs" = (
 /mob/living/simple_animal/mouse/white,
 /turf/floor/wood,
@@ -2087,6 +2153,14 @@
 /obj/roof/wood,
 /mob/living/simple_animal/horse/black,
 /turf/floor/dirt/dust,
+/area/caribbean/no_mans_land/taiga)
+"Wm" = (
+/obj/structure/window/barrier/palisade{
+	dir = 8;
+	not_disassemblable = 1
+	},
+/obj/structure/gatecontrol,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/taiga)
 "WT" = (
 /obj/structure/simple_door/fence,
@@ -11412,7 +11486,7 @@ eZ
 eZ
 Ry
 eZ
-TP
+mP
 mP
 qm
 kX
@@ -11429,7 +11503,7 @@ kW
 br
 qm
 mP
-TP
+mP
 eZ
 Ry
 eZ
@@ -11872,7 +11946,7 @@ eZ
 eZ
 Ry
 eZ
-TP
+mP
 mP
 qm
 dR
@@ -11889,7 +11963,7 @@ Hl
 Od
 qm
 mP
-TP
+mP
 Ry
 Ry
 eZ
@@ -12694,7 +12768,7 @@ eZ
 eZ
 eZ
 nW
-lB
+gP
 hv
 BS
 Ry
@@ -12782,11 +12856,11 @@ eZ
 eZ
 eZ
 eZ
-eZ
+yw
 eZ
 eZ
 nW
-gP
+lB
 hv
 eZ
 eZ
@@ -12878,7 +12952,7 @@ eZ
 eZ
 eZ
 Fd
-Zu
+TP
 Qj
 eZ
 eZ
@@ -12969,7 +13043,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+If
 Ry
 Ry
 Ry
@@ -13061,7 +13135,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+If
 eZ
 Ry
 Ry
@@ -13154,7 +13228,7 @@ eZ
 eZ
 Cp
 ie
-Kv
+Wm
 bx
 eZ
 eZ
@@ -13246,7 +13320,7 @@ eZ
 eZ
 eZ
 nW
-gP
+lB
 jT
 Kw
 eZ
@@ -13338,7 +13412,7 @@ ai
 eZ
 eZ
 nW
-lB
+gP
 lB
 Rc
 Ry
@@ -14276,7 +14350,7 @@ mu
 ku
 Ry
 eZ
-mF
+eZ
 eZ
 mP
 dm
@@ -14368,7 +14442,7 @@ GK
 ku
 Ry
 eZ
-Tn
+eZ
 eZ
 mP
 lc
@@ -14460,7 +14534,7 @@ GK
 UE
 Ry
 eZ
-uk
+eZ
 eZ
 mP
 mP
@@ -14552,7 +14626,7 @@ GK
 UE
 eZ
 Ry
-mF
+eZ
 eZ
 eZ
 eZ
@@ -15009,7 +15083,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+mF
 Ry
 eZ
 eZ
@@ -15056,7 +15130,7 @@ eZ
 eZ
 ut
 ut
-yw
+CY
 OS
 CY
 CY
@@ -15070,7 +15144,7 @@ cu
 CY
 CY
 wG
-yw
+CY
 Us
 eZ
 eZ
@@ -15101,7 +15175,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+Tn
 Ry
 eZ
 eZ
@@ -15191,9 +15265,9 @@ eZ
 eZ
 TG
 eZ
-eZ
 mm
 eZ
+uk
 Ry
 Ry
 Ry
@@ -15285,7 +15359,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+mF
 Ry
 eZ
 eZ
@@ -15365,7 +15439,7 @@ vp
 eZ
 eZ
 eZ
-TG
+eZ
 nW
 lB
 jT
@@ -15424,7 +15498,7 @@ eZ
 FL
 an
 an
-yw
+CY
 OB
 CY
 CY
@@ -15438,7 +15512,7 @@ He
 CY
 CY
 Xy
-yw
+CY
 eZ
 eZ
 eZ
@@ -15640,7 +15714,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 eZ
 nW
 lB
@@ -15658,7 +15732,7 @@ Ry
 Ry
 eZ
 eZ
-eZ
+TG
 Ry
 la
 RQ
@@ -15925,14 +15999,14 @@ eZ
 eZ
 Ry
 kK
-ML
+RC
 ML
 pp
 rb
 eZ
 eZ
 Ry
-kK
+iY
 ML
 ML
 pp
@@ -16111,8 +16185,8 @@ lB
 lB
 lB
 lB
-lB
 gP
+lB
 hv
 Ry
 Ry
@@ -16204,12 +16278,12 @@ Zu
 Zu
 Zu
 Zu
-Zu
+TP
 Qj
-eZ
-eZ
+If
+If
 MT
-Zu
+TP
 Zu
 Zu
 Zu
@@ -16479,10 +16553,10 @@ vp
 eZ
 eZ
 eZ
+yw
 eZ
 eZ
 eZ
-TG
 eZ
 eZ
 eZ
@@ -16846,7 +16920,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 eZ
@@ -17113,7 +17187,7 @@ eZ
 TG
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 eZ
@@ -17209,11 +17283,11 @@ FL
 FL
 FL
 FL
-TG
 eZ
 eZ
 eZ
-TG
+eZ
+eZ
 eZ
 eZ
 eZ
@@ -17309,7 +17383,7 @@ eZ
 eZ
 eZ
 eZ
-TG
+eZ
 eZ
 eZ
 eZ
@@ -17423,7 +17497,7 @@ eZ
 eZ
 eZ
 eZ
-eZ
+CP
 eZ
 eZ
 FL
@@ -17609,10 +17683,10 @@ eZ
 eZ
 sE
 eZ
+Vl
 eZ
 eZ
-eZ
-eZ
+zh
 FL
 eZ
 FL

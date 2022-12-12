@@ -1887,7 +1887,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		required = 2*(inpt/75)
 	if (use(required,H))
 		var/atom/O
-		if (recipe.use_material)
+		if (recipe && recipe.use_material && recipe.result_type)
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)

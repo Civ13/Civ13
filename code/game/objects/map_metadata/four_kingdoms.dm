@@ -14,10 +14,10 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "the lost time"
+	age = "The Lost Time"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the four kingdoms"
+	battle_name = "The Four Kingdoms"
 	mission_start_message = "<big>Several tribes are settling in this land. Will they be able to get along?.</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
@@ -33,10 +33,10 @@
 		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	gamemode = "Faction-Based RP"
 /obj/map_metadata/four_kingdoms/New()
-	var/newnamea = list("Orc Horde" = list(48,48,48,null,0,"skull","#7F6865","#252232",0,0))
+	var/newnamea = list("Orc Horde" = list(48,49,48,null,0,"skull","#7F6865","#252232",0,0))
 	var/newnameb = list("Ant Colony" = list(35,35,35,null,0,"star","#0C1EA7","#67A7CE",0,0))
 	var/newnamec = list("Gorilla Tribe" = list(40,40,40,null,0,"sun","#9A9A9A","#098518",0,0))
-	var/newnamed = list("Human Kingdom" = list(62,75,62,null,0,"cross","#496382","#FFFFFF",0,0))
+	var/newnamed = list("Human Kingdom" = list(62,80,62,null,0,"cross","#496382","#FFFFFF",0,0))
 	var/newnamee = list("Lizard Clan" = list(45,35,45,null,0,"big_cross","#669932","#1E1E1E",0,0))
 	var/newnamef = list("Wolfpack" = list(35,35,35,null,0,"moon","#FFFFFF","#848484",0,0))
 	var/newnameg = list("Crustacean Union" = list(35,35,100,null,0,"seashell","#EEEEEE","#7F0000",0,0))

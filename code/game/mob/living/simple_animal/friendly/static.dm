@@ -123,6 +123,8 @@
 		if (ishuman(H))
 			var/dam_zone = pick("l_foot", "r_foot", "l_leg", "r_leg")
 			var/obj/item/organ/external/affecting = H.get_organ(dam_zone)
+			if (!affecting)
+				return
 			if (prob(25))
 				H.apply_damage(25, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 			else

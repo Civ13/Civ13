@@ -1341,12 +1341,14 @@
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/rusoff
+	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/green/rusoff/New()
 	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/insuroff
 /obj/item/weapon/storage/belt/smallpouches/green/insuroff/New()
