@@ -376,7 +376,7 @@ bullet_act
 				KD_check = TRUE
 				break
 		// Get knocked back once in a while
-		if (prob(P.KD_chance/2) && !KD_check && (!istype get_turf(src), var/obj/structure/vehicleparts/frame/V))
+		if (prob(P.KD_chance/2) && !KD_check && !istype(get_turf(src), /obj/structure/vehicleparts/frame))
 			SpinAnimation(5,1)
 			// P.firer_original_dir is more accurate, since P.dir is never explicitly set? - Kachnov
 			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir)

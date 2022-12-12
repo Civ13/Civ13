@@ -87,19 +87,6 @@
 		return "<span class = 'userdanger'>The BEAR may no longer cross the invisible wall!</span>"
 	else if (faction == AMERICAN)
 		return "<span class = 'userdanger'>The USEC may no longer cross the invisible wall!</span>"
-/*
-/obj/map_metadata/eft_factory/proc/extract()
-	for(var/turf/T in get_area_turfs(/area/caribbean/extract))
-		for (var/mob/living/human/H in T)
-			if(H.stat != DEAD)
-				H << "Extracting, wait 10 seconds." 
-				world << "[H.name] is extracting!"
-				spawn(100)
-					if(H.stat != DEAD)
-						extractees += H.name
-						qdel(H)
-			extract()
-*/
 
 /obj/map_metadata/eft_factory/proc/show_extractees()
 	spawn(3000)
@@ -107,8 +94,7 @@
 		show_extractees()
 
 
-
-
+/*
 /area/caribbean/extract/Entered(A)
 	if(!istype(A,/mob/living/human))	return
 
@@ -122,10 +108,7 @@
 				//extractees += H.ckey
 				qdel(H)
 
-/*
 /datum/extract/proc/check(var/list/areas, var/list/extractess)
-
-	
 	for (var/human in human_mob_list)
 		var/mob/living/human/H = human
 		if (H && H.original_job && H.client && H.stat == CONSCIOUS && !H.restrained() && !iscloset(H.loc))
@@ -137,6 +120,11 @@
 					qdel(H)
 	return FALSE
 */
+
+/area/caribbean/extract
+	name = "extract"
+	icon_state = "green1"
+
 ///////////////////////////////Keys//////////////////////////////////////////////
 
 /obj/item/weapon/key/eft/gate0
