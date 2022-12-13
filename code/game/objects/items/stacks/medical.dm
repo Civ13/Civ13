@@ -179,6 +179,9 @@
 	item_state = null
 	amount = 10
 	heal_brute = 0
+/obj/item/stack/medical/advanced/herbs/small
+	amount = 1
+
 /obj/item/stack/medical/advanced/herbs/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
@@ -246,6 +249,8 @@
 	amount = 20
 	heal_brute = 0
 	flammable = TRUE
+/obj/item/stack/medical/advanced/sulfa/small
+	amount = 5
 
 /obj/item/stack/medical/advanced/sulfa/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
@@ -379,6 +384,9 @@
 	icon_state = "bint"
 	heal_brute = 10 // for healing dogs and other animals
 	amount = 10
+
+/obj/item/stack/medical/bruise_pack/bint/small
+	amount = 1
 
 /obj/item/stack/medical/bruise_pack/bint/medic
 	amount = 40

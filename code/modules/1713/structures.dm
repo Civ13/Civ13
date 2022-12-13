@@ -189,6 +189,27 @@
 	..()
 	user << "<big>It is now [clock_time()].</big>"
 
+/obj/structure/props/server
+	name = "server hub"
+	desc = "A big and scary looking server connecting other servers."
+	icon = 'icons/obj/machines/servers.dmi'
+	icon_state = "hub"
+
+/obj/structure/props/server/controller
+	name = "server controller"
+	desc = "A controller for a server... and stuff... You have no clue what this is used for."
+	icon_state = "controller"
+
+/obj/structure/props/server/processor
+	name = "server processor"
+	desc = "A processor to process stuff into stuff, weird IT department with their names..."
+	icon_state = "processor"
+
+/obj/structure/props/server/comm
+	name = "communication server"
+	desc = "A communication server to communicate with other servers and people, do I really need to explain this?"
+	icon_state = "comm_server"
+
 /obj/structure/props/junk
 	name = "junk"
 	desc = "A pile of junk."

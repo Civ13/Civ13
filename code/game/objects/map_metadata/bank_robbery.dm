@@ -41,7 +41,7 @@
 	civ_complete()
 	police_supplies()
 
-obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/bank_robbery/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_heist == TRUE)
 		. = TRUE

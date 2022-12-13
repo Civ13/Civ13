@@ -48,6 +48,7 @@
 /datum/job/var/is_civil_war = FALSE
 /datum/job/var/is_deal = FALSE
 /datum/job/var/is_heist = FALSE
+/datum/job/var/is_eft = FALSE
 /datum/job/var/is_pacific = FALSE
 /datum/job/var/is_korean_war = FALSE
 /datum/job/var/is_ancient = FALSE

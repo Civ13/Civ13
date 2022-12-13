@@ -83,8 +83,8 @@
 	desc = "Truly, the weapon of a madman. Who would think to fight fire with an axe?"
 	unwielded_force_divisor = 0.25
 	force_divisor = 0.7 // 10/42 with hardness 60 (steel) and 0.25 unwielded divisor
-	sharp = 1
-	edge = 1
+	sharp = TRUE
+	edge = TRUE
 	w_class = 4.0
 	slot_flags = SLOT_BACK
 	force_wielded = 30
@@ -118,8 +118,8 @@
 	unwielded_force_divisor = 0.65 // 14 when unwielded based on above
 	thrown_force_divisor = 1.5 // 20 when thrown with weight 15 (glass)
 	throw_speed = 3
-	edge = 1
-	sharp = 1
+	edge = TRUE
+	sharp = TRUE
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	attack_verb = list("attacked", "poked", "jabbed", "torn", "gored")
 	default_material = "glass"

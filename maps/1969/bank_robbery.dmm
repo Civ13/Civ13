@@ -203,7 +203,7 @@
 "zI" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/table/modern/table,/obj/item/weapon/pen,/obj/item/weapon/pen{pixel_y = 4},/obj/item/weapon/pen{pixel_y = 8},/turf/floor/wood,/area/caribbean/british/land/inside)
 "zN" = (/turf/floor/carpet,/area/caribbean/british/land/inside)
 "zT" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"zY" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/british/land/outside)
+"zY" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/british/land/outside{name = "Evacuation Zone"})
 "zZ" = (/obj/structure/table/modern/retable,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Vault Room"})
 "Af" = (/obj/structure/table/rack/shelf,/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/weapon/gun/projectile/pistol/glock17,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/no_mans_land/invisible_wall/two)
 "Ar" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 4},/area/caribbean)
@@ -217,7 +217,7 @@
 "Bh" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Bi" = (/obj/structure/simple_door/key_door/anyone/wood{name = "Bank Door"},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Bm" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
-"Bt" = (/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside)
+"Bt" = (/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside{name = "Evacuation Zone"})
 "Bv" = (/obj/structure/filingcabinet/chestdrawer,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/carpet,/area/caribbean/british/land/inside)
 "Bw" = (/obj/structure/grille/chainlinkfence{dir = 1},/obj/structure/sign/custom{desc = "Civilian collection point. Civilians will be collected every minute."; name = "Civilian Evacuation"},/turf/floor/plating/road/whiteline,/area/caribbean)
 "Bx" = (/obj/covers/divider_wall,/obj/structure/sign/bar{icon = 'icons/obj/vehicles/vehicleparts.dmi'; icon_state = "license_plate_us"; name = "name plate"; desc = "A small plate with the workers name, here works Ter Aginson"; pixel_x = 4; pixel_y = -9},/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -245,7 +245,6 @@
 "DE" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 4; override_color = "#d6d6d6"},/obj/structure/bed/chair/carseat/right/dark{dir = 4},/turf/floor/plating/road,/area/caribbean)
 "DR" = (/turf/floor/plating/road/yellowline,/area/caribbean)
 "DV" = (/obj/structure/closet/safe,/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Vault Room"})
-"Ed" = (/turf/floor/plating/road/whiteline{dir = 1},/area/caribbean/british/land/outside)
 "En" = (/obj/structure/simple_door/key_door/custom/jail/steeljail,/turf/floor/plating/steel,/area/caribbean/void/caves)
 "Eo" = (/obj/structure/vehicleparts/frame/car/falcon/rfc{icon_state = "frame_steel"; dir = 1; override_color = "#d6d6d6"},/obj/structure/bed/chair/carseat/right/dark{icon_state = "carseat_right"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "Ev" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/carpet,/area/caribbean/british/land/inside)
@@ -388,7 +387,7 @@
 "Wf" = (/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 8},/area/caribbean)
 "Wr" = (/obj/effect/decal/cleanable/blood,/obj/structure/mine_support/stone/ionic,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Wu" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
-"WA" = (/turf/floor/plating/road,/area/caribbean/british/land/outside)
+"WA" = (/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Evacuation Zone"})
 "WJ" = (/obj/item/tape/police{icon_state = "tape_dir_0"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "WL" = (/obj/structure/sign/traffic/crossing,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "WM" = (/obj/structure/grille/chainlinkfence,/obj/effect/floor_decal/industrial/warning,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -511,7 +510,7 @@ mPmPmPmPOhnQoVbLArWfHGHGHGWumPmPmPmPmFIzzAJYQVwEzNeWDvDvDvDvDvDvDvDvORORORORxNTL
 mPmPmPmPOhuAepUDHGHGHGHGHGWumPmPBfmPmFhczAzNzNzNtTgADvUxlKYrYrIdcaNxsnORORORORORORORORORMmokokokokokokokokMmlzSCtMtMtMHGyqeTkZHGtMtMtMtMmP
 mPmPmPmPHGuAIvfNHGHGHGHGHGWumPmPmPhUmFOjzAzNzNzNzNFADveeuZkknmnmqGNxTzORORORORORORORORJyMmokDvDvDvDvDvDvokMmrtuAHGHGHGHGcHQSHGHGMvIIIIIIWM
 mPmPmPmPHGuAHGHGArWfHGHGHGWumPmPmPmPNqGCzAzNzNzNzNvwDvUWnmhdnmQkhdQFORORORORORSVORORORHKMmDvDvdVIEBhncDvokMmlzVabcbcbcHGHGHGHGHGzsBtBtBtzY
-mPmPmPmPHGuAHGHGArWfHGHGHGWumPmPmPmPNqxfzAzNzNzNzNOaDvULHuhdvWhdhdNxlmlmorTxlmmFORORORORVSdVKRIEIEBhBhDvokMmlzSCtMtMtMHGHGHGHGHGTqEdvoEdzY
+mPmPmPmPHGuAHGHGArWfHGHGHGWumPmPmPmPNqxfzAzNzNzNzNOaDvULHuhdvWhdhdNxlmlmorTxlmmFORORORORVSdVKRIEIEBhBhDvokMmlzSCtMtMtMHGHGHGHGHGTqvovovozY
 mPmPIpmPHGuAHGHGArWfHGHGHGWumPIpmPmPNqmDzAzNzNzNzNgADvNxJhJhJhFkQFNxORjCORORjUmFORNEORUTMmDvDvYUIEBhPvDvokMmlzuAHGHGHGHGHGSxzvHGVkWAWAWAzY
 mPmPmPFLHGuAHGHGArCEHpHGHGWumPmPmPhUmFQKtCXHXHXHXHkrDvhdnmnmnmnmhdNxyKORORORlBmFORORORJyMmokDvDvDvDvDvDvokMmlzVabcbcbcHGHGSohCHGXxvIBwlOML
 mPmPmPmPOhuAHGHGHGQREoHGHGWumPmPmPmPmFVVaGORORORWrVVDvxHfeqAAfdnXWNxohudtGyQwDmFirCZJrPeMmokokokokokokokokMmlzSCtMtMtMHGHGKFCtkZsJAQZPZPsz
