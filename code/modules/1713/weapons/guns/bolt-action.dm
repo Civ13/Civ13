@@ -368,7 +368,7 @@
 	move_delay = 4
 	fire_delay = 4
 	equiptimer = 20
-	gun_safety = TRUE
+	gun_safety = FALSE
 	load_delay = 20
 	bolt_open = FALSE
 	bolt_safety = FALSE
