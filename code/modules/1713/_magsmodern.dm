@@ -540,6 +540,16 @@
 	multiple_sprites = TRUE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/ptrd/ap
+	name = "14.5x114mm AP cartridge box"
+	icon_state = "145x114AP"
+	ammo_type = /obj/item/ammo_casing/a145_ap
+	caliber = "a145"
+	max_ammo = 20
+	weight = 0.8
+	multiple_sprites = TRUE
+	is_box = TRUE
+
 ///////////c6//////////
 /obj/item/ammo_magazine/c6belt
 	name = "C6 GPMG ammo belt"
