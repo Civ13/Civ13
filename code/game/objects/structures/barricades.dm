@@ -1053,7 +1053,7 @@
 	health = 50
 	maxhealth = 50
 	material_name = "steel"
-	protection_chance = 5
+	protection_chance = 10
 	opacity = FALSE
 	density = TRUE
 
@@ -1078,6 +1078,18 @@
 	icon_state = "construction2"
 	if (dir == NORTH)
 		pixel_y = 6
+
+/obj/structure/barricade/steel_crowd
+	name = "steel crowd control barrier"
+	desc = "A steel barrier used to control pedestrian traffic."
+	icon_state = ""
+	health = 50
+	maxhealth = 50
+	material_name = "steel"
+	protection_chance = 5
+	opacity = FALSE
+	density = TRUE
+	anchored = FALSE
 
 /obj/structure/shelf
 	name = "shelf"
