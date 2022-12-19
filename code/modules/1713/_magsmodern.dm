@@ -508,7 +508,6 @@
 	max_ammo = 10
 	weight = 0.8
 	multiple_sprites = TRUE
-
 	pouch = TRUE
 
 /obj/item/ammo_magazine/a50cal_ap
@@ -519,7 +518,6 @@
 	max_ammo = 10
 	weight = 0.8
 	multiple_sprites = TRUE
-
 	pouch = TRUE
 
 /obj/item/ammo_magazine/a50cal_he
@@ -530,8 +528,17 @@
 	max_ammo = 10
 	weight = 0.8
 	multiple_sprites = TRUE
-
 	pouch = TRUE
+
+/obj/item/ammo_magazine/ptrd
+	name = "14.5x114mm cartridge box"
+	icon_state = "145x114"
+	ammo_type = /obj/item/ammo_casing/a145
+	caliber = "a145"
+	max_ammo = 20
+	weight = 0.8
+	multiple_sprites = TRUE
+	is_box = TRUE
 
 ///////////c6//////////
 /obj/item/ammo_magazine/c6belt

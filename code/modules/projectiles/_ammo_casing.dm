@@ -531,8 +531,8 @@
 /obj/item/ammo_casing/a65x50
 	name = "6.5x50mm Arisaka cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a65x50
 	caliber = "a65x50"
@@ -568,6 +568,16 @@
 	caliber = "a50cal"
 	value = 7
 
+/obj/item/ammo_casing/a145
+	name = "14.5x114 cartridge"
+	desc = "A big heavy brass casing designed to penetrate armor."
+	icon_state = "big-bullet"
+	spent_icon = "big-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a145
+	caliber = "a145"
+	value = 7
+
 /obj/item/ammo_casing/a65x50/weak
 	projectile_type = /obj/item/projectile/bullet/rifle/a65x50/weak
 	caliber = "a65x50_weak"
@@ -575,8 +585,8 @@
 /obj/item/ammo_casing/a65x52
 	name = "6.5x52mm Carcano cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a65x52
 	caliber = "a65x52"
@@ -585,8 +595,8 @@
 /obj/item/ammo_casing/a8x53
 	name = "8x53mm Murata cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a8x53
 	caliber = "a8x53"
@@ -595,8 +605,8 @@
 /obj/item/ammo_casing/a8x50
 	name = "8x50mmR Lebel cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a8x50
 	caliber = "a8x50"
@@ -609,8 +619,8 @@
 /obj/item/ammo_casing/c9mm_jap_revolver
 	name = "9x22mm Type 26 cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
@@ -619,8 +629,8 @@
 /obj/item/ammo_casing/a41
 	name = ".41 Short cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/a41
 	caliber = "a41"
@@ -629,8 +639,8 @@
 /obj/item/ammo_casing/a43
 	name = ".43 Spanish cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/a43
 	caliber = "a43"
@@ -639,8 +649,8 @@
 /obj/item/ammo_casing/a32
 	name = ".32 S&W cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/a32
 	caliber = "a32"
@@ -649,8 +659,8 @@
 /obj/item/ammo_casing/a38
 	name = ".38 cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/a38
 	caliber = "a38"
@@ -658,8 +668,8 @@
 /obj/item/ammo_casing/a380acp
     name = ".380 ACP Cartridge"
     desc = "A short but medium sized pistol cartridge."
-    icon_state = "pistol_bullet_anykind"
-    spent_icon = "pistolcasing"
+    icon_state = "pistol-bullet"
+    spent_icon = "pistol-casing"
     weight = 0.05
     projectile_type = /obj/item/projectile/bullet/pistol/a380acp
     caliber = "a380acp"
@@ -668,8 +678,8 @@
 /obj/item/ammo_casing/a45
 	name = ".45 Long Colt cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a45
 	caliber = "a45"
@@ -678,8 +688,8 @@
 /obj/item/ammo_casing/a45acp
 	name = ".45 ACP cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a45
 	caliber = "a45acp"
@@ -688,8 +698,8 @@
 /obj/item/ammo_casing/a455
 	name = ".455 Webley cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a455
 	caliber = "a455"
@@ -698,8 +708,8 @@
 /obj/item/ammo_casing/a44
 	name = ".44-40 Winchester cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a44
 	caliber = "a44"
@@ -708,8 +718,8 @@
 /obj/item/ammo_casing/a44magnum
 	name = ".44 Magnum cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a44magnum
 	caliber = "a44magnum"
@@ -718,8 +728,8 @@
 /obj/item/ammo_casing/a4570
 	name = ".45-70 Government cartridge"
 	desc = "A brass casing."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a4570
 	caliber = "a4570"
@@ -728,8 +738,8 @@
 /obj/item/ammo_casing/a792x57
 	name = "7.92x57mm Mauser cartridge"
 	desc = "A brass casing."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a792x57
 	caliber = "a792x57"
@@ -742,8 +752,8 @@
 /obj/item/ammo_casing/a765x53
 	name = "7.65x53mm Belgian cartridge"
 	desc = "A brass casing."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a765x53
 	caliber = "a765x53"
@@ -752,8 +762,8 @@
 /obj/item/ammo_casing/a765x25
 	name = "7.65x25mm Borchardt cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a765x25
 	caliber = "a765x25"
@@ -762,8 +772,8 @@
 /obj/item/ammo_casing/a7x57
 	name = "7x57mm Mauser cartridge"
 	desc = "A brass casing."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.076
 	projectile_type = /obj/item/projectile/bullet/rifle/a7x57
 	caliber = "a7x57"
@@ -772,8 +782,8 @@
 /obj/item/ammo_casing/a77x58
 	name = "7.7x58mm Arisaka cartridge"
 	desc = "A brass casing."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.076
 	projectile_type = /obj/item/projectile/bullet/rifle/a77x58
 	caliber = "a77x58"
@@ -782,8 +792,8 @@
 /obj/item/ammo_casing/a77x58_wood
 	name = "7.7x58mm bullet"
 	desc = "A brass casing."
-	icon_state = "kclip-bullet"
-	spent_icon = "kclip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.076
 	projectile_type = /obj/item/projectile/bullet/rifle/a77x58_wood
 	caliber = "a77x58_wood"
@@ -792,8 +802,8 @@
 /obj/item/ammo_casing/a577
 	name = ".577/450 Martini-Henry cartridge"
 	desc = "A brass casing."
-	icon_state = "clip-bullet"
-	spent_icon = "clip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.11
 	projectile_type = /obj/item/projectile/bullet/rifle/a577
 	caliber = "a577"
@@ -803,8 +813,8 @@
 /obj/item/ammo_casing/a762x54
 	name = "7.62x54mmR cartridge"
 	desc = "A brass casing."
-	icon_state = "clip-bullet"
-	spent_icon = "clip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
 	caliber = "a762x54"
@@ -817,8 +827,8 @@
 /obj/item/ammo_casing/a303
 	name = ".303 british cartridge"
 	desc = "A brass casing."
-	icon_state = "clip-bullet"
-	spent_icon = "clip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a303
 	caliber = "a303"
@@ -831,8 +841,8 @@
 /obj/item/ammo_casing/a3006
 	name = ".30-06 cartridge"
 	desc = "A brass casing."
-	icon_state = "clip-bullet"
-	spent_icon = "clip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a3006
 	caliber = "a3006"
@@ -845,8 +855,8 @@
 /obj/item/ammo_casing/a762x38
 	name = "7.62x38mmR cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
 	caliber = "a762x38"
@@ -855,8 +865,8 @@
 /obj/item/ammo_casing/a8x27
 	name = "8x27mmR french ordnance cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a8x27
 	caliber = "a8x27"
@@ -865,8 +875,8 @@
 /obj/item/ammo_casing/c8mmnambu
 	name = "8x22mm Nambu Cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c8mmnambu
 	caliber = "c8mmnambu"
@@ -875,8 +885,8 @@
 /obj/item/ammo_casing/a9x19
 	name = "9x19mm cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a9x19
 	caliber = "a9x19"
@@ -885,8 +895,8 @@
 /obj/item/ammo_casing/a9x18
 	name = "9x18mm Makarov cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a9x18
 	caliber = "a9x18"
@@ -895,8 +905,8 @@
 /obj/item/ammo_casing/a765x25
 	name = "7.65x25 Borchardt cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a765x25
 	caliber = "a765x25"
@@ -905,8 +915,8 @@
 /obj/item/ammo_casing/a762x25
 	name = "7.62x25mm TT cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a762x25
 	caliber = "a762x25"
@@ -915,8 +925,8 @@
 /obj/item/ammo_casing/a762x25/rubber
 	name = "7.62x25mm rubber cartridge"
 	desc = "A wooden casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/rubber/a762x25
 	caliber = "a762x25"
@@ -925,8 +935,8 @@
 /obj/item/ammo_casing/a792x33
 	name = "7.92x33mm cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a792x33
 	caliber = "a792x33"
@@ -935,8 +945,8 @@
 /obj/item/ammo_casing/a545x39
 	name = "5.45x39mm cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/rifle/a545x39
 	caliber = "a545x39"
@@ -944,8 +954,8 @@
 /obj/item/ammo_casing/a545x39/rubber
 	name = "5.45x39mm cartridge Rubber"
 	desc = "A rubbery brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/rubber/a54x39
 	caliber = "a545x39"
@@ -954,8 +964,8 @@
 /obj/item/ammo_casing/a32acp
 	name = ".32 ACP cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.03
 	projectile_type = /obj/item/projectile/bullet/pistol/a32acp
 	caliber = "a32acp"
@@ -964,8 +974,8 @@
 /obj/item/ammo_casing/webly445
 	name = "Bugged bullet"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.03
 	projectile_type = /obj/item/projectile/bullet/pistol/webly445
 	caliber = "webly445"
@@ -974,8 +984,8 @@
 /obj/item/ammo_casing/a556x45
 	name = "5.56x45mm NATO cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/rifle/a556x45
 	caliber = "a556x45"
@@ -983,8 +993,8 @@
 /obj/item/ammo_casing/a762x51
 	name = "7.62x51mm NATO cartridge"
 	desc = "A brass casing."
-	icon_state = "clip-bullet"
-	spent_icon = "clip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.06
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x51
 	caliber = "a762x51"
@@ -997,8 +1007,8 @@
 /obj/item/ammo_casing/a762x39
 	name = "7.62x39mm cartridge"
 	desc = "A brass casing."
-	icon_state = "clip-bullet"
-	spent_icon = "clip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.06
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x39
 	caliber = "a762x39"
@@ -1007,8 +1017,8 @@
 /obj/item/ammo_casing/a9x39
 	name = "9x39mm cartridge"
 	desc = "A brass soviet rifle casing."
-	icon_state = "clip-bullet"
-	spent_icon = "clip-casing"
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
 	weight = 0.09
 	projectile_type = /obj/item/projectile/bullet/rifle/a9x39
 	caliber = "a9x39"
@@ -1017,8 +1027,8 @@
 /obj/item/ammo_casing/a44p
 	name = "Bugged bullet"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a44p
 	caliber = "a44p"
@@ -1027,8 +1037,8 @@
 /obj/item/ammo_casing/a57x28
 	name = "57x28mm cartridge"
 	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a57x28
 	caliber = "a57x28"
@@ -1037,8 +1047,8 @@
 /obj/item/ammo_casing/a58x42
 	name = "5.8x42mm cartridge"
 	desc = "A rimless bottlenecked casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = "pistolcasing"
+	icon_state = "pistol-bullet"
+	spent_icon = "pistol-casing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/rifle/a58x42
 	caliber = "a58x42"

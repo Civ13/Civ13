@@ -221,6 +221,8 @@
 	max_shells = 1
 	gun_safety = FALSE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	var/bolt_delay = 2
+
 /obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry
 	name = "Martini-Henry Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .577/450 cartridges."
@@ -301,7 +303,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal
 	name = "Barrett M99"
-	desc = "A single-shot anti-materiel rifle designed by the Barrett Firearms Company."
+	desc = "A single-shot anti-material rifle designed by the Barrett Firearms Company."
 	icon_state = "a50calss"
 	item_state = "a50calss"
 	base_icon = "a50calss"
@@ -310,7 +312,7 @@
 	force = 10
 	throwforce = 5
 	max_shells = 1
-	slot_flags = SLOT_SHOULDER
+	slot_flags = null
 	caliber = "a50cal"
 	weight = 8
 	recoil = 3
@@ -321,10 +323,8 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	accuracy = TRUE
-	gun_type = GUN_TYPE_RIFLE
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
-	KD_chance = KD_CHANCE_HIGH
 	move_delay = 4
 	fire_delay = 4
 	equiptimer = 15
@@ -332,6 +332,7 @@
 	load_delay = 20
 	bolt_open = FALSE
 	bolt_safety = FALSE
+	bolt_delay = 3
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper
 
@@ -339,6 +340,39 @@
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd
+	name = "PTRD-41"
+	desc = "A soviet anti-material rifle chamber in 14.5x114mm designed to take out tanks."
+	icon_state = "ptrd"
+	item_state = "ptrd"
+	base_icon = "ptrd"
+	attachment_slots = ATTACH_IRONSIGHTS
+	w_class = 4
+	force = 10
+	throwforce = 5
+	max_shells = 1
+	slot_flags = null
+	caliber = "a145"
+	weight = 8
+	recoil = 3
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = list (/obj/item/ammo_casing/a145)
+	magazine_type = /obj/item/ammo_magazine/mosin
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
+	accuracy = TRUE
+	accuracy_increase_mod = 2.00
+	accuracy_decrease_mod = 6.00
+	move_delay = 4
+	fire_delay = 4
+	equiptimer = 20
+	gun_safety = TRUE
+	load_delay = 20
+	bolt_open = FALSE
+	bolt_safety = FALSE
+	bolt_delay = 6
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
 	if (bolt_open)
@@ -349,7 +383,7 @@
 /obj/item/weapon/gun/projectile/boltaction/singleshot/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
-		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
+		if (!do_after(user, bolt_delay, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
 			check_bolt--
 			return
 	else return
@@ -636,6 +670,7 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
@@ -861,6 +896,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 12
+
 /obj/item/weapon/gun/projectile/boltaction/carcano
 	name = "carcano 1891"
 	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
@@ -883,6 +919,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 14
+
 /obj/item/weapon/gun/projectile/boltaction/arisaka35
 	name = "Arisaka Type 35"
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
@@ -962,6 +999,7 @@
 	good_mags = list(/obj/item/ammo_magazine/mosin)
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 17
+
 /obj/item/weapon/gun/projectile/boltaction/berdan/update_icon(var/add_scope = FALSE)
 	if (bolt_open)
 		if (!findtext(icon_state, "_open"))
@@ -996,9 +1034,10 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 10
 	equiptimer = 15
+
 /obj/item/weapon/gun/projectile/boltaction/lebel
 	name = "Lebel 1886/M93"
-	desc = "A 8 round, bolt-action rifle, standard issue for french military, chambered in 8�50mmR Lebel."
+	desc = "A 8 round, bolt-action rifle, standard issue for french military, chambered in 8x50mmR Lebel."
 	icon_state ="lebel"
 	item_state ="lebel"
 	base_icon = "lebel"
@@ -1019,9 +1058,10 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 8
 	equiptimer = 16
+
 /obj/item/weapon/gun/projectile/boltaction/berthier
 	name = "Berthier M1907/15"
-	desc = "A 3 round, bolt-action carbine, chambered in 8�50mmR Lebel."
+	desc = "A 3 round, bolt-action carbine, chambered in 8x50mmR Lebel."
 	icon_state ="berthier"
 	item_state ="berthier"
 	base_icon = "berthier"
@@ -1042,13 +1082,15 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 3
 	equiptimer = 13
+
 /obj/item/weapon/gun/projectile/boltaction/berthier/m16
 	name = "Berthier M1907/16"
-	desc = "A 5 round, bolt-action carbine, chambered in 8�50mmR Lebel."
+	desc = "A 5 round, bolt-action carbine, chambered in 8x50mmR Lebel."
 	magazine_type = /obj/item/ammo_magazine/c8x50_5clip
 	good_mags = list(/obj/item/ammo_magazine/c8x50_3clip)
 	max_shells = 5
 	equiptimer = 13
+
 /obj/item/weapon/gun/projectile/boltaction/mosin/obrez
 	name = "Mosin-Nagant \"Obrez\""
 	desc = "A makeshift sawn-off Mosin \"pistol\", chambered in 7.62x54mmR cartridges."
