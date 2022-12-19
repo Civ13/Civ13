@@ -525,7 +525,7 @@ obj/item/projectile/bullet/rifle/a556x45
 	penetrating = 2
 	armor_penetration = 43
 
-obj/item/projectile/bullet/rifle/a58x42
+/obj/item/projectile/bullet/rifle/a58x42
 	damage = DAMAGE_HIGH + 2
 	penetrating = 3
 	armor_penetration = 16
@@ -534,11 +534,13 @@ obj/item/projectile/bullet/rifle/a58x42
 	damage = DAMAGE_OH_GOD + 95
 	penetrating = 10
 	armor_penetration = 50
+	heavy_armor_penetration = 10
 
 /obj/item/projectile/bullet/rifle/a50cal_ap
 	damage = DAMAGE_MEDIUM + 5
 	penetrating = 100
 	armor_penetration = 100
+	heavy_armor_penetration = 25
 
 /obj/item/projectile/bullet/rifle/a50cal_he
 	damage = DAMAGE_LOW + 20
@@ -546,7 +548,7 @@ obj/item/projectile/bullet/rifle/a58x42
 	armor_penetration = 15
 	atype = "HE"
 
-/obj/item/projectile/bullet/rifle/a50cal_he/on_impact(var/atom/A) 	//Dont ask how, it works
+/obj/item/projectile/bullet/rifle/a50cal_he/on_impact(var/atom/A)
 	impact_effect(effect_transform)
 	playsound(src, "ric_sound", 50, TRUE, -2)
 	if (istype(A, /turf))
@@ -575,6 +577,12 @@ obj/item/projectile/bullet/rifle/a58x42
 		if (src)
 			qdel(src)
 	return TRUE
+
+/obj/item/projectile/bullet/rifle/a145
+	damage = DAMAGE_OH_GOD + 95
+	penetrating = 20
+	armor_penetration = 100
+	heavy_armor_penetration = 40
 
 /obj/item/projectile/bullet/pistol/a44p
 	damage = DAMAGE_LOW - 20
@@ -606,7 +614,6 @@ obj/item/projectile/bullet/rifle/a58x42
 	agony = 60
 	embed = FALSE
 	sharp = FALSE
-
 
 /obj/item/projectile/bullet/shotgun/incendiary
 	name = "incendiary slug"
