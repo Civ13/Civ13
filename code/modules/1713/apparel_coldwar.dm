@@ -1463,8 +1463,8 @@
 /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier
 	name = "shotgun bandolier"
 	desc = "A bandolier with several holes made to fit shotgun shells."
-	icon_state = "us_bandolier"
-	item_state = "us_bandolier"
+	icon_state = "shotgun_bandolier"
+	item_state = "shotgun_bandolier"
 	slots = 12
 	New()
 		..()

@@ -513,3 +513,20 @@
 	adnumber = rand(1,14)
 	overlays += "ad[adnumber]"
 	update_icon()
+
+
+///CHRISTMAS
+
+/obj/structure/sign/christmas/lights
+	name = "christmas lights"
+	desc = "Flashy."
+	icon = 'icons/obj/christmas.dmi'
+	icon_state = "xmaslights"
+	layer = 6.2
+
+/obj/structure/sign/christmas/wreath
+	name = "wreath"
+	desc = "Prickly and overrated."
+	icon = 'icons/obj/christmas.dmi'
+	icon_state = "doorwreath"
+	layer = 6.3
