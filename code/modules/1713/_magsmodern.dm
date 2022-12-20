@@ -530,7 +530,27 @@
 	multiple_sprites = TRUE
 	pouch = TRUE
 
-/obj/item/ammo_magazine/ptrd
+/obj/item/ammo_magazine/ptrd_pouch
+	name = "heavy bullet pouch (14.5x114mm)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a145
+	caliber = "a145"
+	max_ammo = 6
+	weight = 0.8
+	multiple_sprites = TRUE
+	pouch = TRUE
+
+/obj/item/ammo_magazine/ptrd_pouch/ap
+	name = "heavy bullet pouch (14.5x114mm)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a145_ap
+	caliber = "a145"
+	max_ammo = 6
+	weight = 0.8
+	multiple_sprites = TRUE
+	pouch = TRUE
+
+/obj/item/ammo_magazine/ptrd_box
 	name = "14.5x114mm cartridge box"
 	icon_state = "145x114"
 	ammo_type = /obj/item/ammo_casing/a145
@@ -540,7 +560,7 @@
 	multiple_sprites = TRUE
 	is_box = TRUE
 
-/obj/item/ammo_magazine/ptrd/ap
+/obj/item/ammo_magazine/ptrd_box/ap
 	name = "14.5x114mm AP cartridge box"
 	icon_state = "145x114AP"
 	ammo_type = /obj/item/ammo_casing/a145_ap
