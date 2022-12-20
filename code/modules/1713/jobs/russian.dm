@@ -598,7 +598,7 @@
 	return TRUE
 
 /datum/job/russian/antitank_soldier_soviet
-	title = "K.A. Protivotankovyy"
+	title = "K.A. Protivotankovyy Strelok"
 	en_meaning = "Red Army Anti-Tank Rifleman"
 	rank_abbreviation = ""
 
@@ -647,7 +647,7 @@
 	return TRUE
 
 /datum/job/russian/antitank_assistant_soldier_soviet
-	title = "K.A. Pomoshchnik Protivotankovyy"
+	title = "K.A. Pomoshnik Protivotankovo Strelka"
 	en_meaning = "Red Army Assistant Anti-Tank Rifleman"
 	rank_abbreviation = ""
 
