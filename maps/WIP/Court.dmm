@@ -106,7 +106,7 @@
 "cc" = (/obj/structure/flag/us,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "cd" = (/obj/structure/flag/british,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "ce" = (/obj/structure/flag/german_modern,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"cf" = (/obj/structure/flag/dutch,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"cf" = (/obj/structure/flag/dutch_old,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "cg" = (/obj/structure/flag/japanese,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "ch" = (/obj/structure/wild/flowers{icon_state = "flower11"},/turf/floor/grass,/area/caribbean)
 "ci" = (/obj/structure/wild/flowers{icon_state = "flower8"},/turf/floor/grass,/area/caribbean)
