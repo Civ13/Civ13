@@ -489,12 +489,12 @@
 	desc = "The flag of the United Nations."
 	icon_state = "un_flag"
 
-/obj/structure/sign/flag/netherlands
+/obj/structure/sign/flag/dutch
 	name = "Dutch flag"
 	desc = "The flag of Netherlands."
 	icon_state = "flag_netherlands"
 
-/obj/structure/sign/flag/dutch
+/obj/structure/sign/flag/dutch_old
 	name = "Prince's flag"
 	desc = "The Dutch flag."
 	icon_state = "flag_netherlands_old"
