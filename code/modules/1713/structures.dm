@@ -687,7 +687,12 @@
 	desc = "A white flag with the Portuguese Coat of Arms in the middle."
 
 /obj/structure/flag/dutch
-	icon_state = "dutch"
+	icon_state = "netherlands"
+	name = "Dutch Flag"
+	desc = "The tricolor Dutch flag."
+
+/obj/structure/flag/dutch_old
+	icon_state = "netherlands_old"
 	name = "Dutch Flag"
 	desc = "The tricolor Dutch flag."
 

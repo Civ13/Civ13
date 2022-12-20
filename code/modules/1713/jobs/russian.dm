@@ -597,6 +597,124 @@
 
 	return TRUE
 
+/datum/job/russian/antitank_soldier_soviet
+	title = "K.A. Protivotankovyy Strelok"
+	en_meaning = "Red Army Anti-Tank Rifleman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+	can_be_female = TRUE
+	is_ww2 = TRUE
+	uses_squads = TRUE
+	is_karelia = TRUE
+
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/russian/antitank_soldier_soviet/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		if (prob(40))
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_pilotka(H), slot_head)
+//weapons
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_l_store)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/russian/antitank_assistant_soldier_soviet
+	title = "K.A. Pomoshnik Protivotankovo Strelka"
+	en_meaning = "Red Army Assistant Anti-Tank Rifleman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+	can_be_female = TRUE
+	is_ww2 = TRUE
+	uses_squads = TRUE
+	is_karelia = TRUE
+
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/russian/antitank_assistant_soldier_soviet/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		if (prob(40))
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_pilotka(H), slot_head)
+//weapons
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+	if (map.ID == MAP_REICHSTAG)
+		if (prob(15))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
+		else
+			if (prob(15))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+	else
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+		else
+			if (prob(10))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch/ap(H), slot_r_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+
 /datum/job/russian/sniper_soviet
 	title = "K.A. Snaiper"
 	en_meaning = "Red Army Sniper"
@@ -1144,6 +1262,7 @@
 
 
 	return TRUE
+
 /datum/job/civilian/russian/red_army_soldier
 	title = "Krasny Armiya Strelok"
 	en_meaning = "Red Army Rifleman"

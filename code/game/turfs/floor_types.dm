@@ -534,6 +534,9 @@
 /turf/floor/plating/road/yellowline
 	icon_state = "road_yellowline"
 
+/turf/floor/plating/road/yellowline_center
+	icon_state = "road_center_yellowline"
+
 /turf/floor/plating/concrete/New()
 	..()
 	icon_state = pick("road_1","road_2","road_3")
