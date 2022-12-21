@@ -146,7 +146,7 @@ Example for later use:
 	name = "Medical Bandages"
 	icon_state = "bandage"
 	spawn_nothing_percentage = 10
-/obj/random/medical/spawn_choices()
+/obj/random/medical/bandage/spawn_choices()
 	return list(/obj/item/stack/medical/advanced/sulfa/small = rand(1,2),
                 /obj/item/stack/medical/advanced/herbs/small = rand(1,3),
                 /obj/item/stack/medical/bruise_pack/bint/small = rand(1,2))
@@ -155,7 +155,7 @@ Example for later use:
 	name = "Medical Drugs"
 	icon_state = "drug"
 	spawn_nothing_percentage = 18
-/obj/random/medical/spawn_choices()
+/obj/random/medical/drugs/spawn_choices()
 	return list(/obj/item/weapon/reagent_containers/syringe/morphine,
 				/obj/item/weapon/reagent_containers/syringe/morphine,
 				/obj/item/weapon/reagent_containers/syringe/morphine,
@@ -163,3 +163,34 @@ Example for later use:
 				/obj/item/weapon/reagent_containers/syringe/adrenaline,
 				/obj/item/weapon/reagent_containers/syringe/adrenaline,
                 /obj/item/weapon/reagent_containers/syringe/thc)
+
+////////////////Barricades, Mines & Trees////////////////
+/obj/random/mine/ap
+	name = "Anti Personnel Mine"
+	icon_state = "mine"
+	spawn_nothing_percentage = 70
+/obj/random/mine/ap/spawn_choices()
+	return list(/obj/item/mine/ap/armed)
+
+/obj/random/barricade/random
+	name = "Random Barricade"
+	icon_state = "barricade"
+	spawn_nothing_percentage = 50
+/obj/random/barricade/random/spawn_choices()
+	return list(/obj/structure/barricade/antitank,
+				/obj/structure/barricade/horizontal,
+				/obj/structure/barricade/vertical)
+
+/obj/random/tree/alive
+	name = "Tree"
+	icon_state = "tree"
+	spawn_nothing_percentage = 40
+/obj/random/tree/alive/spawn_choices()
+	return list(/obj/structure/wild/tree/live_tree)
+
+/obj/random/tree/snow
+	name = "Snowy Tree"
+	icon_state = "tree"
+	spawn_nothing_percentage = 40
+/obj/random/tree/snow/spawn_choices()
+	return list(/obj/structure/wild/tree/live_tree/snow)

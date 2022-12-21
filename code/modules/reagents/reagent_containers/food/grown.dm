@@ -272,6 +272,15 @@
 		..()
 		reagents.add_reagent("coconutmilk", 20)
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa //Added proper reagents to food.
+	name = "cocoa beans"
+	icon_state = "coco"
+	satisfaction = -2
+	decay = 150*600
+	New()
+		..()
+		reagents.add_reagent("cocoa", 20)
+
 // misc crops
 /obj/item/weapon/reagent_containers/food/snacks/grown/rice
 	name = "rice stalk"

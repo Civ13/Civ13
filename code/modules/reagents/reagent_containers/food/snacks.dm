@@ -1838,7 +1838,13 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			new /obj/item/weapon/reagent_containers/food/snacks/spaghetti(get_turf(src))
 		qdel(src)
 
-// slicable into 3xdoughslices
+// Dough attack self = Bun
+/obj/item/weapon/reagent_containers/food/snacks/dough/attack_self(mob/user)
+	new /obj/item/weapon/reagent_containers/food/snacks/bun(get_turf(src))
+	user << "You form the dough into a bun."
+	qdel(src)
+
+// Slicable into 3xdoughslices
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough
 	name = "flat dough"
 	desc = "A flattened dough."
@@ -1905,7 +1911,6 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 
 /obj/item/weapon/reagent_containers/food/snacks/bun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	// Bun + meatpatty = burger
-	
 	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/patty))
 		new /obj/item/weapon/reagent_containers/food/snacks/burger(src)
 		user << "You make a burger."
@@ -1926,6 +1931,13 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		qdel(W)
 		qdel(src)
 
+	// Bun + cocoa beans = cookie
+	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa))
+		new /obj/item/weapon/reagent_containers/food/snacks/cookie(src)
+		user << "You make a cookie!"
+		qdel(W)
+		qdel(src)
+		
 // Burger + cheese wedge = cheeseburger
 /obj/item/weapon/reagent_containers/food/snacks/burger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
 	if (istype(W))// && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/cheesewedge))
