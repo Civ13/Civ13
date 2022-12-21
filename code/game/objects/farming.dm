@@ -841,7 +841,7 @@
 	desc = "A coco tree."
 	icon = 'icons/farming/fruits.dmi'
 	icon_state = "coco-grow1"
-	plant = "coconut"
+	plant = "coco"
 	biomes = list("temperate", "jungle")
 	max_water = 100
 
