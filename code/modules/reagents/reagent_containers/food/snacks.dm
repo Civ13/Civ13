@@ -1931,8 +1931,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		qdel(W)
 		qdel(src)
 
-	// Bun + coco beans = cookie
-	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/grown/coco))
+	// Bun + cocoa beans = cookie
+	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa))
 		new /obj/item/weapon/reagent_containers/food/snacks/cookie(src)
 		user << "You make a cookie!"
 		qdel(W)
