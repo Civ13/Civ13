@@ -9,7 +9,7 @@
 		reagents.add_reagent("pervitin", TRUE)
 		reagents.add_reagent("nutriment", 2)
 		reagents.add_reagent("sugar", 2)
-		reagents.add_reagent("coco", 2)
+		reagents.add_reagent("cocoa", 2)
 		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/chocolatebar
@@ -22,6 +22,6 @@
 		..()
 		reagents.add_reagent("nutriment", 2)
 		reagents.add_reagent("sugar", 2)
-		reagents.add_reagent("coco", 2)
+		reagents.add_reagent("cocoa", 2)
 		bitesize = 4
 

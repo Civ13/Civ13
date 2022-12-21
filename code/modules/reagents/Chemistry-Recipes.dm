@@ -768,7 +768,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Hot Coco"
 	id = "hot_coco"
 	result = "hot_coco"
-	required_reagents = list("water" = 5, "coco" = 1)
+	required_reagents = list("water" = 5, "cocoa" = 1)
 	result_amount = 5
 
 /datum/chemical_reaction/cheesewheel
