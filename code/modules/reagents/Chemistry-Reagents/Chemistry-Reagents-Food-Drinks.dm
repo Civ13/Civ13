@@ -107,10 +107,10 @@
 	new /obj/effect/decal/cleanable/flour(T)
 /datum/reagent/nutriment/barleyflour/touch_turf(var/turf/T)
 	new /obj/effect/decal/cleanable/flour(T)
-/datum/reagent/nutriment/coco
-	name = "Coco Powder"
-	id = "coco"
-	description = "A fatty, bitter paste made from coco beans."
+/datum/reagent/nutriment/cocoa
+	name = "Cocoa Powder"
+	id = "cocoa"
+	description = "A fatty, bitter paste made from cocoa beans."
 	taste_description = "bitterness"
 	taste_mult = 1.3
 	reagent_state = SOLID
