@@ -330,6 +330,12 @@
 	icon_state = "coconut"
 	biomes = list("sea", "jungle")
 
+/obj/item/stack/farming/seeds/coco
+	name = "coco seeds"
+	plant = "coco"
+	color = "#4a2601" //chocolate brown
+	biomes = list("temperate", "jungle")
+
 /obj/item/stack/farming/seeds/sapodilla
 	name = "sapodilla seeds"
 	plant = "sapodilla"
@@ -828,6 +834,15 @@
 	icon_state = "coconut-grow1"
 	plant = "coconut"
 	biomes = list("sea", "jungle")
+	max_water = 100
+
+/obj/structure/farming/plant/coco
+	name = "coco"
+	desc = "A coco tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "coco-grow1"
+	plant = "coconut"
+	biomes = list("temperate", "jungle")
 	max_water = 100
 
 /obj/structure/farming/plant/sapote
