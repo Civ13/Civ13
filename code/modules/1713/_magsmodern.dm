@@ -541,7 +541,7 @@
 	pouch = TRUE
 
 /obj/item/ammo_magazine/ptrd_pouch/ap
-	name = "heavy bullet pouch (14.5x114mm)"
+	name = "heavy bullet pouch (14.5x114mm AP)"
 	icon_state = "pouch_closed"
 	ammo_type = /obj/item/ammo_casing/a145_ap
 	caliber = "a145"
