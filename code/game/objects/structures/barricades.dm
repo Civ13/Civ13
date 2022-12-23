@@ -1082,7 +1082,7 @@
 /obj/structure/barricade/steel_crowd
 	name = "steel crowd control barrier"
 	desc = "A steel barrier used to control pedestrian traffic."
-	icon_state = ""
+	icon_state = "crowd_barrier"
 	health = 50
 	maxhealth = 50
 	material_name = "steel"
@@ -1090,6 +1090,10 @@
 	opacity = FALSE
 	density = TRUE
 	anchored = FALSE
+
+/obj/structure/barricade/steel_crowd/New()
+	name = "steel crowd control barrier"
+	icon_state = "crowd_barrier"
 
 /obj/structure/shelf
 	name = "shelf"
