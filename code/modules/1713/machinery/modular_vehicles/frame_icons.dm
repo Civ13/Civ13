@@ -211,17 +211,57 @@
 			if (roof_turret && axis && axis.color)
 				roof_turret.color = axis.color
 			if (C.dir == NORTH)
-				roof_turret.pixel_y = 0
-				roof_turret.pixel_x = -32
+				if (dir == NORTH)
+					roof_turret.pixel_x = 32
+					roof_turret.pixel_y = 40
+				else if (dir == SOUTH)
+					roof_turret.pixel_x = 32
+					roof_turret.pixel_y = 40
+				else if (dir == WEST)
+					roof_turret.pixel_x = 32
+					roof_turret.pixel_y = 40
+				else if (dir == EAST)
+					roof_turret.pixel_x = 32
+					roof_turret.pixel_y = 40
 			else if (C.dir == SOUTH)
-				roof_turret.pixel_x = -32
-				roof_turret.pixel_y = -40
+				if (dir == NORTH)
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
+				else if (dir == SOUTH)
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
+				else if (dir == WEST)
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
+				else if (dir == EAST)
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 			else if (C.dir == WEST)
-				roof_turret.pixel_x = -32
-				roof_turret.pixel_y = -32
+				if (dir == NORTH)
+					roof_turret.pixel_x = -40
+					roof_turret.pixel_y = -32
+				else if (dir == SOUTH)
+					roof_turret.pixel_x = -40				
+					roof_turret.pixel_y = -32
+				else if (dir == WEST)
+					roof_turret.pixel_x = -40
+					roof_turret.pixel_y = -32
+				else if (dir == EAST)
+					roof_turret.pixel_x = -40
+					roof_turret.pixel_y = -32
 			else if (C.dir == EAST)
-				roof_turret.pixel_x = -16
-				roof_turret.pixel_y = -16
+				if (dir == NORTH)
+					roof_turret.pixel_x = 40
+					roof_turret.pixel_y = -32
+				else if (dir == SOUTH)
+					roof_turret.pixel_x = 40
+					roof_turret.pixel_y = -32
+				else if (dir == WEST)
+					roof_turret.pixel_x = 40
+					roof_turret.pixel_y = -32
+				else if (dir == EAST)
+					roof_turret.pixel_x = 40
+					roof_turret.pixel_y = -16
 			roof.overlays += roof_turret
 		for (var/obj/CC in T)
 			if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
