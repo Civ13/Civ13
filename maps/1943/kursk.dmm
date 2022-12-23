@@ -395,7 +395,7 @@
 "hE" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
 "hF" = (/obj/structure/cannon/mortar{icon_state = "mortar"; dir = 1},/obj/item/weapon/wrench,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
 "hG" = (/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
-"zl" = (/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd,/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd,/turf/floor/dirt,/area/caribbean/german)
+"zl" = (/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd{name = "Panzerbüchse 783"},/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd{name = "Panzerbüchse 783"},/turf/floor/dirt,/area/caribbean/german)
 "Wl" = (/obj/item/ammo_magazine/ptrd_pouch/ap,/obj/item/ammo_magazine/ptrd_pouch/ap,/obj/item/ammo_magazine/ptrd_pouch/ap,/turf/floor/grass,/area/caribbean/german)
 
 (1,1,1) = {"
