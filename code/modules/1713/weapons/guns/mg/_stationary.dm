@@ -154,3 +154,48 @@
 	if (istype(mover, /obj/item/projectile))
 		return TRUE
 	return FALSE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/rotate_to(mob/user, atom/A)
+	var/shot_dir = get_carginal_dir(src, A)
+	dir = shot_dir
+
+	//if (zoomed)
+		//zoom(user, FALSE) //Stop Zoom
+
+	user.forceMove(loc)
+	user.dir = dir
+
+// helpers
+
+/mob/var/using_MG = null
+/mob/proc/use_MG(o)
+	if (!o || !istype(o, /obj/item/weapon/gun/projectile/automatic/stationary))
+		using_MG = null
+	else
+		using_MG = o
+
+/mob/proc/handle_MG_operation(var/stop_using = FALSE)
+	if (using_MG && istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/mg = using_MG
+		if (!(locate(src) in range(mg.maximum_use_range, mg)) || stop_using)
+			use_MG(null)
+			mg.stopped_using(src)
+	else if (!locate(using_MG) in range(1, src) || stop_using)
+		use_MG(null)
+
+/mob/living/human/Move()
+	handle_MG_operation()
+	..()
+
+/mob/living/human/update_canmove()
+	if (lying || stat)
+		handle_MG_operation(stop_using = TRUE)
+	..()
+
+/obj/item/weapon/gun/projectile/automatic/stationary/update_icon()
+	if (ammo_magazine)
+		icon_state = base_icon
+	else
+		icon_state = "[base_icon][0]"
+	update_held_icon()
+	return

@@ -1064,6 +1064,28 @@
 	caliber = "a58x42"
 	value = 2
 
+/obj/item/ammo_casing/a3ubr6
+	name = "3UBR6 AP"
+	desc = "A VERY big brass casing."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/a3ubr6
+	caliber = "a30"
+	value = 2
+
+/obj/item/ammo_casing/frag/a3uor6
+	name = "3UOR6 HE"
+	desc = "A VERY big brass casing."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/frag/a3uor6
+	caliber = "a30"
+	value = 2
+
+// Shotguns
+
 /obj/item/ammo_casing/shotgun
 	caliber = "12gauge"
 	weight = 0.12
@@ -1104,7 +1126,8 @@
 	spent_icon = "dragons-breath-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
 
-/////////////////////LASERS///////////////////////////////////
+// Lasers
+
 /obj/item/ammo_casing/laser
 	name = "laser bolt"
 	desc = "you shouldnt be seeing this"

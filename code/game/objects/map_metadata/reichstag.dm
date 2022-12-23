@@ -27,7 +27,8 @@
 	songs = list(
 		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
-obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
+
+/obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/german))
 		if (J.is_ss_panzer == TRUE || J.is_tanker == TRUE)
@@ -43,6 +44,8 @@ obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 		else if (istype(J, /datum/job/russian/doctor))
 			. = TRUE
+		else if (istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet))
+			. = FALSE
 		else
 			. = FALSE
 

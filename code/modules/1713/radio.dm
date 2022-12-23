@@ -40,6 +40,15 @@
 	transmitter_on = TRUE
 	powerneeded = 20
 
+/obj/structure/radio/transmitter_receiver/nopower/tank
+	name = "tank radio"
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances."
+	icon_state = "tankradio"
+	transmitter = TRUE
+	receiver = TRUE
+	receiver_on = TRUE
+	transmitter_on = TRUE
+
 /obj/structure/radio/transmitter_receiver/nopower
 	name = "two-way radio"
 	icon_state = "radio"

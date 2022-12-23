@@ -34,6 +34,8 @@
 		. = FALSE
 	else if (J.is_ww2 == TRUE)
 		. = TRUE
+	else if (istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet))
+		. = FALSE
 	else
 		. = FALSE
 

@@ -170,7 +170,7 @@ Example for later use:
 	icon_state = "mine"
 	spawn_nothing_percentage = 70
 /obj/random/mine/ap/spawn_choices()
-	return list(/obj/item/mine/ap/armed)
+	return list(/obj/item/mine/ap/armed, /obj/item/mine/boobytrap)
 
 /obj/random/barricade/random
 	name = "Random Barricade"

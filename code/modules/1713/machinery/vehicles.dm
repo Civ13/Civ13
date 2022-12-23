@@ -126,6 +126,18 @@
 		tank_names_usa -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/bmd2
+	name = "BMD-2"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#787859"
+	turret_type = "bmd2_turret"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/panzeriv
 	name = "Panzer IV"
@@ -138,6 +150,7 @@
 		var/pickedname = pick(tank_names_german)
 		tank_names_german -= pickedname
 		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/panzervi
 	name = "Panzer VI Tiger"
 	speeds = 4

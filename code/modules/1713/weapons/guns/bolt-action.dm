@@ -312,6 +312,7 @@
 	force = 10
 	throwforce = 5
 	max_shells = 1
+	KD_chance = KD_CHANCE_HIGH
 	slot_flags = null
 	caliber = "a50cal"
 	weight = 8
@@ -352,6 +353,7 @@
 	force = 10
 	throwforce = 5
 	max_shells = 1
+	KD_chance = KD_CHANCE_HIGH
 	slot_flags = null
 	caliber = "a145"
 	weight = 8

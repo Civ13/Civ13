@@ -286,7 +286,7 @@
 "fz" = (/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/obj/structure/table/wood,/turf/floor/plating/road,/area/caribbean/houses)
 "fA" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean/houses)
 "fB" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"},/turf/floor/plating/road,/area/caribbean/houses)
-"fC" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/flame/lighter/zippo,/turf/floor/plating/road,/area/caribbean/houses)
+"fC" = (/obj/structure/table/wood,/obj/item/ammo_magazine/ptrd_pouch/ap,/obj/item/ammo_magazine/ptrd_pouch/ap,/turf/floor/plating/road,/area/caribbean/houses)
 "fD" = (/turf/floor/beach/sand,/area/caribbean/forest)
 "fE" = (/obj/item/lightbulb,/obj/item/lightbulb,/obj/item/lightbulb,/obj/item/lightbulb,/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 8},/turf/floor/plating/road,/area/caribbean/houses)
 "fF" = (/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 4},/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/plating/road,/area/caribbean/houses)
@@ -395,6 +395,8 @@
 "hE" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
 "hF" = (/obj/structure/cannon/mortar{icon_state = "mortar"; dir = 1},/obj/item/weapon/wrench,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
 "hG" = (/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
+"zl" = (/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd{name = "Panzerbüchse 783"},/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd{name = "Panzerbüchse 783"},/turf/floor/dirt,/area/caribbean/german)
+"Wl" = (/obj/item/ammo_magazine/ptrd_pouch/ap,/obj/item/ammo_magazine/ptrd_pouch/ap,/obj/item/ammo_magazine/ptrd_pouch/ap,/turf/floor/grass,/area/caribbean/german)
 
 (1,1,1) = {"
 aaaaaaaaaaabababacababadababadababababaaaaabaHapayazayayayayaDaGaybWaJaLaMaSaSaSaSaSaSaLaLaJapbJcsababaaaaabaaagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
@@ -407,7 +409,7 @@ abababababababababababacababababafabacaaaaaaaHapaGazcrayaycvcmcmaGaGaGaGaGaGaGaG
 abababaiababababababababababababgahfabaaaactaHapapapazcxaycyaGcyayaGczczcAcAcBcBaGcCaGcCaGaGapbJaaaaaadRfogZfyfzfpdRadababacabababadabababaaaeaeanabababacabfLfLfLfLababaiabfLfLfLfLfLfLafababafabafabaa
 adababababababaiababababababababfZheaaababaacNcOapapazazcDaGaGaGaGayaycDayaGayayaGaGclclaGaGapbJctaaaadRfqgZgZfyfrdRbeababababaaaeaaabaaababaeaeaeaoababadabfLfLfNfLababababfLfLfNfLfMfLabababaaabababaa
 abababacabababababababababaaaaekhphqabababcsabcsaHapayazazayaDayayaGayefeSaGefeSaGaGayaGaGaGapbJabaaaafsftfngZgZfufvbDabadaaabaeaeaeaaamaaaaaeaeadaaababababfLfNfLfLababababfLfLfMfLfNfLacababababababab
-abababababacababababababababaaaagbhbabafababaiabaHapcEazcFayaycGaycGaGayayaGaGaGayaDaGayaGaGapbJctaaaacsababaaabaactaaababababaaaeaeaeaeaaaaaeajaaaaabababacfLfLfLfMabadababfMfLfLfLfLfLabababababababab
+abababababacababababababababaaaagbhbabafababaiabaHapcEazcFayaycGaycGzlWlayaGaGaGayaDaGayaGaGapbJctaaaacsababaaabaactaaababababaaaeaeaeaeaaaaaeajaaaaabababacfLfLfLfMabadababfMfLfLfLfLfLabababababababab
 abacabababababababarabahababaaaahchdaaabaaababctaHapapbTbJaeaeaHapapapapapapapapapapapapapapapbJaaaaaaabacabaaaaaaabaaacababababaaaaaaaeaeaeaeaaababababababababababagababababacabababababababababababab
 adababababaiababababababababaaaaaaaaaaaaaaaaababgDcOcOcOcQaeaecPcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOgEcsaaabababacabaaaaacaaabababacababaaaaaaaeaeamaaababadabababacabagababafabababababababadabababababababaf
 abababafabababababababababababababaaabaaaaabababcsabctaactabaecsabcsabcsaacsabctaactabcsaactaactabaaababababababaaaaaaababagabadabababaaaeaeanababababababababagabababadacababaiabababacabababadacabafab
