@@ -487,7 +487,7 @@
 /obj/structure/sign/flag/un
 	name = "UN flag"
 	desc = "The flag of the United Nations."
-	icon_state = "un_flag"
+	icon_state = "flag_un"
 
 /obj/structure/sign/flag/dutch
 	name = "Dutch flag"
