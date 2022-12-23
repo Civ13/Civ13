@@ -562,7 +562,7 @@ obj/item/projectile/bullet/rifle/a556x45
 			TU.ChangeTurf(/turf/floor/dirt/burned)
 		explosion(T, 1, 0, 2, 1)
 	if (istype(A, /obj/structure/simple_door))
-		var/obj/structure/simple_door = A
+		var/obj/structure/simple_door/T = A
 		var/turf/TU
 		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
 			TU.ChangeTurf(/turf/floor/dirt/burned)
@@ -630,7 +630,7 @@ obj/item/projectile/bullet/rifle/a556x45
 			TU.ChangeTurf(/turf/floor/dirt/burned)
 		explosion(T, 0, 1, 3, 1)
 	if (istype(A, /obj/structure/simple_door))
-		var/obj/structure/simple_door = A
+		var/obj/structure/simple_door/T = A
 		var/turf/TU
 		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
 			TU.ChangeTurf(/turf/floor/dirt/burned)
