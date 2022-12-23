@@ -1105,7 +1105,7 @@
 "awq" = (/obj/structure/barricade,/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/temperate/three{ambience = list("sound/ambience/battle1.ogg")})
 "awr" = (/obj/structure/barricade/antitank,/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/temperate/three{ambience = list("sound/ambience/battle1.ogg")})
 "aws" = (/obj/structure/curtain{pixel_x = -32; pixel_y = 0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/roofed/temperate)
-"awt" = (/obj/structure/closet/cabinet,/obj/item/stack/material/bronze{amount = "50"},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/wood,/area/caribbean/roofed/temperate)
+"awt" = (/obj/structure/closet/cabinet,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "awu" = (/obj/covers/brick_wall/incomplete,/obj/structure/window/barrier/railing/brick{desc = "A bunch of bricks, can be used as a cover."; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/temperate/two{ambience = list("sound/ambience/battle1.ogg")})
 "awv" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/curtain{pixel_x = 0; pixel_y = 32},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "aww" = (/obj/structure/lamp/lamp_big{dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/wood,/area/caribbean/roofed/temperate)
