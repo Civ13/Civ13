@@ -224,7 +224,7 @@
 	if (!anchored)
 		m << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
 		user = null
-	else if (!anchored && istype(src, /obj/structure/cannon/mortar/type89))
+	else if (!anchored && istype(src, /obj/structure/cannon/mortar/foldable))
 		user = m
 		do_html(user)
 	if (user && user != m)

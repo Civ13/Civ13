@@ -708,6 +708,10 @@
 					for (var/obj/structure/barricade/B in src_loc)
 						if (get_dist(firer, B) == 1)
 							_untouchable += B
+					if (src == /obj/item/projectile/bullet/autocannon)
+						for (var/obj/structure/vehicleparts/frame/F in src_loc)
+							if (get_dist(firer, F) <= 2)
+								_untouchable += F
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()

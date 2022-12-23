@@ -546,3 +546,22 @@
 	"2,4" = list(/obj/structure/vehicleparts/frame/m113/back),
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/m113/lb),
 	)
+
+/obj/effects/premadevehicles/apc/bmd2
+	name = "MT-LB"
+	icon_state = "3x3"
+	custom_color = "#4A5243"
+	axis = /obj/structure/vehicleparts/axis/heavy/bmd2
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/bmd2/right,/obj/structure/vehicleparts/frame/bmd2/rf,/obj/structure/bed/chair/drivers/tank),
+	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/bmd2/left,/obj/structure/vehicleparts/frame/bmd2/lf),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2/rfc),
+	"2,2" = list(/obj/structure/vehicleparts/frame/bmd2/lfc),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/bmd2/rbc),
+	"2,3" = list(/obj/structure/vehicleparts/frame/bmd2/lbc),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed,/obj/structure/vehicleparts/frame/bmd2/rb,/obj/structure/engine/internal/diesel/premade/bmd2),
+	"2,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed,/obj/structure/vehicleparts/frame/bmd2/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
+	)
