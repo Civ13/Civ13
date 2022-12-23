@@ -622,24 +622,24 @@ obj/item/projectile/bullet/rifle/a556x45
 		var/turf/T = A
 		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 			T.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 0, 1, 3, 1)
+		explosion(T, 0, 0, 2, 1)
 	if (istype(A, /obj/structure/vehicleparts/frame))
 		var/obj/structure/vehicleparts/frame/T = A
 		var/turf/TU
 		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
 			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 0, 1, 3, 1)
+		explosion(T, 0, 0, 2, 1)
 	if (istype(A, /obj/structure/simple_door))
 		var/obj/structure/simple_door/T = A
 		var/turf/TU
 		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
 			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 0, 1, 3, 1)
+		explosion(T, 0, 0, 2, 1)
 	else
 		var/turf/T = A
 		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 			T.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 0, 1, 3, 1)
+		explosion(T, 0, 0, 2, 1)
 
 // Shotguns
 
