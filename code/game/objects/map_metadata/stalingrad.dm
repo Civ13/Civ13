@@ -252,7 +252,7 @@
 
 /obj/map_metadata/stalingrad/minigrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
+	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew) || istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet))
 		. = FALSE
 	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
