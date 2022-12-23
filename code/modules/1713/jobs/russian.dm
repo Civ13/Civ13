@@ -633,6 +633,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tt30(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -680,24 +682,16 @@
 //weapons
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	if (map.ID == MAP_REICHSTAG)
-		if (prob(15))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
-		else
-			if (prob(15))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 	else
-		if (prob(10))
+		if (prob(40))
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
 		else
 			if (prob(10))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch/ap(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box/ap(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(webbing, H)

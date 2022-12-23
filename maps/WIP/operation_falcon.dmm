@@ -1,17 +1,21 @@
 "a" = (/turf/floor/grass,/area/caribbean)
 "c" = (/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/omwtc10{name = "125 mm 2A46"},/turf/floor/plating/road,/area/caribbean)
 "d" = (/turf/floor/plating/road,/area/caribbean)
+"e" = (/obj/structure/vehicleparts/frame/bmd2/rf,/obj/structure/vehicleparts/movement/tracks/bmd2/right,/turf/floor/plating/road,/area/caribbean)
 "f" = (/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{anchored = 1; pixel_y = 8},/obj/structure/vehicleparts/frame/omw22_2/rf,/obj/structure/vehicleparts/movement/tracks/right,/turf/floor/plating/road,/area/caribbean)
 "g" = (/turf/floor/beach/water/deep,/area/caribbean)
+"h" = (/obj/effect/autoassembler,/turf/floor/plating/road,/area/caribbean)
 "i" = (/turf/floor/plating/road/whiteline{dir = 8},/area/caribbean)
 "j" = (/turf/floor/plating/road/whiteline{dir = 6},/area/caribbean)
 "m" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/omw22_2,/turf/floor/plating/road,/area/caribbean)
 "n" = (/obj/structure/vehicleparts/frame/omw22_2/back,/obj/structure/shellrack/full100,/turf/floor/plating/road,/area/caribbean)
 "p" = (/turf/floor/plating/road/whiteline{dir = 10},/area/caribbean)
+"q" = (/obj/structure/vehicleparts/frame/bmd2/lf,/obj/structure/bed/chair/drivers/tank{icon_state = "driver_car"; pixel_y = 16},/obj/structure/vehicleparts/movement/tracks/bmd2/left,/obj/structure/vehicleparts/axis/heavy/bmd2,/turf/floor/plating/road,/area/caribbean)
 "s" = (/turf/floor/plating/road/whiteline,/area/caribbean)
 "t" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/obj/structure/vehicleparts/frame/omw22_2/left,/turf/floor/plating/road,/area/caribbean)
 "u" = (/turf/floor/plating/road/whiteline{dir = 5},/area/caribbean)
 "v" = (/obj/structure/bed/chair/commander,/obj/structure/vehicleparts/frame/omw22_2/right,/turf/floor/plating/road,/area/caribbean)
+"w" = (/obj/structure/vehicleparts/frame/bmd2/lfc,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean)
 "x" = (/obj/structure/barricade/hescobastion,/turf/floor/plating/road,/area/caribbean)
 "z" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/vehicleparts/movement/tracks/left,/turf/floor/plating/road,/area/caribbean)
 "A" = (/obj/covers/road,/turf/floor/beach/water/deep,/area/caribbean)
@@ -22,13 +26,18 @@
 "I" = (/obj/structure/flag/dutch,/turf/floor/plating/road,/area/caribbean)
 "J" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/road,/area/caribbean)
 "K" = (/turf/floor/plating/road/whiteline{dir = 1},/area/caribbean)
+"L" = (/obj/structure/vehicleparts/frame/bmd2/rbc,/obj/item/ammo_magazine/a3ubr6,/obj/item/ammo_magazine/a3ubr6,/obj/item/ammo_magazine/a3uor6,/obj/item/ammo_magazine/a3uor6,/turf/floor/plating/road,/area/caribbean)
 "M" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/structure/vehicleparts/movement/tracks/right/reversed,/turf/floor/plating/road,/area/caribbean)
 "N" = (/turf/floor/plating/road/whiteline{dir = 4},/area/caribbean)
 "O" = (/obj/structure/vehicleparts/frame/omw22_2/front,/obj/structure/vehicleparts/axis/heavy/omw22_2{color = "#5C5C4C"; name = "T-90A"; turret_type = "t90_turret"},/turf/floor/plating/road,/area/caribbean)
+"P" = (/obj/structure/vehicleparts/frame/bmd2/lb,/obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed,/turf/floor/plating/road,/area/caribbean)
 "R" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 4975},/turf/floor/plating/road,/area/caribbean)
 "S" = (/obj/structure/vehicleparts/frame/omw22_2/rb,/obj/structure/engine/internal/diesel/premade/omw22_2{name = "V12 diesel engine"},/obj/structure/vehicleparts/movement/tracks/left/reversed,/turf/floor/plating/road,/area/caribbean)
+"T" = (/obj/structure/vehicleparts/frame/bmd2/rb,/obj/structure/vehicleparts/movement/tracks/mtlb/left,/obj/structure/engine/internal/diesel/premade/bmd2,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/turf/floor/plating/road,/area/caribbean)
 "U" = (/turf/wall/brick,/area/caribbean)
+"V" = (/obj/structure/vehicleparts/frame/bmd2/lbc,/turf/floor/plating/road,/area/caribbean)
 "W" = (/turf/floor/plating/road/whiteline{dir = 9},/area/caribbean)
+"X" = (/obj/structure/vehicleparts/frame/bmd2/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon,/turf/floor/plating/road,/area/caribbean)
 "Z" = (/obj/structure/barricade/hescobastion,/obj/structure/sign/flag/dutch{pixel_y = -4},/turf/floor/plating/road,/area/caribbean)
 
 (1,1,1) = {"
@@ -305,10 +314,10 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaaagggggggggggggggggaaaaaaaaaadxxxxxxxxxxxxxxxxxxxxxxxxxxxxdaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaaagggggggggggggggggaaaaaaaaaadxxxxxxxxxxxxxxxxxxxxxxxxxxxxdaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggggaaaaaaaaaaadxxddddddddddddddddddddddddxxdaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggggaaaaaaaaaaadxxdSnMddddddddddddddddddddxxGaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaaggggggggggggggggaaaaaaaaaaaadxxdRmEddddddddddddddddddddFxdaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaaggggggggggggggggaaaaaaaaaaaadxxdvctddddddddddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggaaaaaaaaaaaaadxxdfOzddddddddddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggggaaaaaaaaaaadxxdSnMddTPddddddddddddddddxxGaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaaggggggggggggggggaaaaaaaaaaaadxxdRmEddLVddddddddddddddddFxdaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaaggggggggggggggggaaaaaaaaaaaadxxdvctdhXwddddddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggaaaaaaaaaaaaadxxdfOzddeqddddddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggaaaaaaaaaaaaadxxddddddddddddddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggaaaaaaaaaaaaadxxddddddddddddddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddddaaaaaaagggggggggggggggaaaaaaaaaaaaadxxJdddddddddddddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

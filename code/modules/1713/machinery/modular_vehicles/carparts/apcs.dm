@@ -97,3 +97,45 @@
 /obj/structure/vehicleparts/frame/m113/back
 	icon_state = "m113_frame_steel_back"
 	w_back = list("m113_front_middle_frame",TRUE,TRUE,40,50,TRUE,TRUE)
+
+//BMD-1
+
+/obj/structure/vehicleparts/frame/bmd2
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	normal_icon = 'icons/obj/vehicles/apcparts.dmi'
+
+/obj/structure/vehicleparts/frame/bmd2/lf
+	icon_state = "bmd2_frame_steel_front_left"
+	w_front = list("bmd2_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmd2/rf
+	icon_state = "bmd2_frame_steel_front_right"
+	w_front = list("bmd2_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmd2/lfc
+	icon_state = "bmd2_frame_steel_middle_front_left"
+	w_left = list("bmd2_middle_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmd2/rfc
+	icon_state = "bmd2_frame_steel_middle_front_right"
+	w_right = list("bmd2_middle_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmd2/lbc
+	icon_state = "bmd2_frame_steel_middle_back_left"
+	w_left = list("bmd2_middle_back_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmd2/rbc
+	icon_state = "bmd2_frame_steel_middle_back_right"
+	w_right = list("bmd2_middle_back_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmd2/lb
+	icon_state = "bmd2_frame_steel_back_left"
+	w_back = list("bmd2_back_left_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmd2/rb
+	icon_state = "bmd2_frame_steel_back_right"
+	w_back = list("bmd2_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)

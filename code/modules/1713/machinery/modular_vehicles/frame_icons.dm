@@ -41,6 +41,35 @@
 						if (EAST)
 							movemento.pixel_x = -28
 							movemento.pixel_y = 0
+			if (istype(mwheel, /obj/structure/vehicleparts/movement/tracks/bmd2/))
+				if (axis.corners[1] == src || axis.corners[2] == src)
+					switch(dir)
+						if (NORTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = 20
+						if (SOUTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = -20
+						if (WEST)
+							movemento.pixel_x = -20
+							movemento.pixel_y = 0
+						if (EAST)
+							movemento.pixel_x = 20
+							movemento.pixel_y = 0
+				else if (axis.corners[3] == src || axis.corners[4] == src)
+					switch(dir)
+						if (NORTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = -20
+						if (SOUTH)
+							movemento.pixel_x = 0
+							movemento.pixel_y = 20
+						if (WEST)
+							movemento.pixel_x = 20
+							movemento.pixel_y = 0
+						if (EAST)
+							movemento.pixel_x = -20
+							movemento.pixel_y = 0
 			else
 				if (axis.corners[1] == src || axis.corners[2] == src)
 					switch(dir)
@@ -169,6 +198,30 @@
 				else if (dir == EAST)
 					roof_turret.pixel_x = -16
 					roof_turret.pixel_y = -16
+			roof.overlays += roof_turret
+
+		for(var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/C in T)
+			var/ic = 'icons/obj/vehicles/vehicles96x96.dmi'
+			if (axis && (axis.turret_type == "bmd2_turret"))
+				ic = 'icons/obj/vehicles/vehicles128x128.dmi'
+			if (axis)
+				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+			else
+				roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
+			if (roof_turret && axis && axis.color)
+				roof_turret.color = axis.color
+			if (C.dir == NORTH)
+				roof_turret.pixel_y = 0
+				roof_turret.pixel_x = -32
+			else if (C.dir == SOUTH)
+				roof_turret.pixel_x = -32
+				roof_turret.pixel_y = -40
+			else if (C.dir == WEST)
+				roof_turret.pixel_x = -32
+				roof_turret.pixel_y = -32
+			else if (C.dir == EAST)
+				roof_turret.pixel_x = -16
+				roof_turret.pixel_y = -16
 			roof.overlays += roof_turret
 		for (var/obj/CC in T)
 			if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))

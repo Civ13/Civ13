@@ -34,7 +34,10 @@
 	usespeed = 2.1
 	flags = CONDUCT
 
-/obj/item/weapon/type89_mortar
+/obj/item/weapon/mortar
+	var/mortar
+
+/obj/item/weapon/mortar/type89_mortar
 	name = "Type 89 Mortar"
 	desc = "A light-weight portable mortar"
 	icon_state = "type89"
@@ -46,16 +49,31 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
+	mortar = /obj/structure/cannon/mortar/foldable/type89
 
-/obj/item/weapon/type89_mortar/attack_self(var/mob/user as mob)
+/obj/item/weapon/mortar/generic
+	name = "Foldable Mortar"
+	desc = "A light-weight portable mortar"
+	icon_state = "mortar"
+	force = 12.0
+	throwforce = 6.0
+	item_state = "mortar"
+	w_class = 6.0
+	attack_verb = list("bashed", "bludgeoned")
+	sharp = FALSE
+	edge = TRUE
+	slot_flags = SLOT_BACK|SLOT_BELT
+	mortar = /obj/structure/cannon/mortar/foldable/generic
+
+/obj/item/weapon/mortar/attack_self(var/mob/user as mob)
 	var/target = get_step(user, user.dir)
 	if (target)
-		visible_message("<span class = 'warning'>[user] starts to deploy a type 89 mortar.</span>")
+		visible_message("<span class = 'warning'>[user] starts to deploy a [src].</span>")
 		if (do_after(user, 10, get_turf(user)))
-			visible_message("<span class = 'warning'>[user] deploys a type 89 mortar.</span>")
+			visible_message("<span class = 'warning'>[user] deploys a [src].</span>")
 			user.remove_from_mob(src)
 			qdel(src)
-			var/atom/A = new/obj/structure/cannon/mortar/type89(get_turf(user))
+			var/atom/A = new mortar
 			A.dir = user.dir
 
 /obj/item/weapon/material/shovel

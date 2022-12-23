@@ -541,7 +541,7 @@
 	pouch = TRUE
 
 /obj/item/ammo_magazine/ptrd_pouch/ap
-	name = "heavy bullet pouch (14.5x114mm)"
+	name = "heavy bullet pouch (14.5x114mm AP)"
 	icon_state = "pouch_closed"
 	ammo_type = /obj/item/ammo_casing/a145_ap
 	caliber = "a145"
@@ -604,3 +604,29 @@
 	max_ammo = 30
 	weight = 0.045
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/a3ubr6
+	name = "3UBR6 AP ammo belt"
+	icon_state = "maximbelt"
+	worn_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a30"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a3ubr6
+	max_ammo = 10
+	multiple_sprites = TRUE
+	belt = TRUE
+
+/obj/item/ammo_magazine/a3uor6
+	name = "3UOR6 HE ammo belt"
+	icon_state = "maximbelt"
+	worn_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a30"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/frag/a3uor6
+	max_ammo = 10
+	multiple_sprites = TRUE
+	belt = TRUE

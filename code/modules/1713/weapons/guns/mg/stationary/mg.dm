@@ -1,7 +1,7 @@
 
-///////////////////////
+////////////////////////
 ////Stationary maxim////
-///////////////////////
+////////////////////////
 /obj/item/weapon/gun/projectile/automatic/stationary/modern
 	name = "Maxim 1895"
 	desc = "Heavy Maxim machinegun on cart mount."
@@ -23,50 +23,6 @@
 	full_auto = TRUE
 	fire_delay = 3
 	is_hmg = TRUE
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/rotate_to(mob/user, atom/A)
-	var/shot_dir = get_carginal_dir(src, A)
-	dir = shot_dir
-
-	//if (zoomed)
-		//zoom(user, FALSE) //Stop Zoom
-
-	user.forceMove(loc)
-	user.dir = dir
-
-// helpers
-
-/mob/var/using_MG = null
-/mob/proc/use_MG(o)
-	if (!o || !istype(o, /obj/item/weapon/gun/projectile/automatic/stationary))
-		using_MG = null
-	else
-		using_MG = o
-
-/mob/proc/handle_MG_operation(var/stop_using = FALSE)
-	if (using_MG && istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
-		var/obj/item/weapon/gun/projectile/automatic/stationary/mg = using_MG
-		if (!(locate(src) in range(mg.maximum_use_range, mg)) || stop_using)
-			use_MG(null)
-			mg.stopped_using(src)
-	else if (!locate(using_MG) in range(1, src) || stop_using)
-		use_MG(null)
-
-/mob/living/human/Move()
-	handle_MG_operation()
-	..()
-
-/mob/living/human/update_canmove()
-	if (lying || stat)
-		handle_MG_operation(stop_using = TRUE)
-	..()
-
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/update_icon()
-	if (ammo_magazine)
-		icon_state = base_icon
-	else
-		icon_state = "[base_icon][0]"
-	update_held_icon()
-	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim
 	name = "Maxim 1895"
@@ -83,7 +39,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	is_hmg = TRUE
 
-obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	name = "Maxim"
 	desc = "Russian version of the original Maxim machinegun, on cart mount. Uses Russian 7.62x54mm rounds."
 	icon_state = "maxim_ww2"
@@ -215,3 +171,23 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	is_hmg = TRUE
+
+// Autocannons
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon
+	name = "30mm 2A42 'Shipunov' Autocannon"
+	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds."
+	icon_state = "browning"
+	base_icon = "browning"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a3ubr6
+	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	firemodes = list(
+		list(name="semi auto",	burst=2, burst_delay=10, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a3ubr6
+	is_hmg = TRUE
+	

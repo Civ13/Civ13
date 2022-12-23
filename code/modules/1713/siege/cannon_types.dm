@@ -300,7 +300,10 @@
 	firedelay = 12
 	w_class = 8
 
-/obj/structure/cannon/mortar/type89
+/obj/structure/cannon/mortar/foldable
+	var/mortar
+
+/obj/structure/cannon/mortar/foldable/type89
 	name = "Type 89 Mortar"
 	icon_state = "type89"
 	anchored = TRUE
@@ -310,21 +313,34 @@
 	maxsway = 15
 	firedelay = 8
 	w_class = 6
+	mortar = /obj/item/weapon/mortar/type89_mortar
 
-/obj/structure/cannon/mortar/type89/verb/Get()
+/obj/structure/cannon/mortar/foldable/generic
+	name = "mortar"
+	icon_state = "mortar"
+	anchored = TRUE
+	ammotype = /obj/item/cannon_ball/mortar_shell
+	explosion = TRUE
+	maxrange = 30
+	maxsway = 15
+	firedelay = 8
+	w_class = 6
+	mortar = /obj/item/weapon/mortar/generic
+
+/obj/structure/cannon/mortar/foldable/verb/Get()
 	set src in oview(1, usr)
 	set category = null
 	if (usr.l_hand && usr.r_hand)
 		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
 		return
 	usr.face_atom(src)
-	visible_message("<span class = 'warning'>[usr] starts to get their type 89 from the ground.</span>")
+	visible_message("<span class = 'warning'>[usr] starts to get their [src] from the ground.</span>")
 	if (do_after(usr, 10, get_turf(usr)))
 		qdel(src)
-		usr.put_in_any_hand_if_possible(new/obj/item/weapon/type89_mortar, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[user] gets their type 89 from the ground.</span>")
+		usr.put_in_any_hand_if_possible(new mortar, prioritize_active_hand = TRUE)
+		visible_message("<span class = 'warning'>[user] gets their [src] from the ground.</span>")
 
-/obj/structure/cannon/mortar/type89/attackby(obj/item/W as obj, mob/M as mob)
+/obj/structure/cannon/mortar/foldable/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91))
 		if (loaded)
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"

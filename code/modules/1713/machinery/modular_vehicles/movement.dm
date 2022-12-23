@@ -41,6 +41,10 @@
 	icon_state = "tracks_end_right"
 	base_icon = "tracks_end_right"
 	movement_icon = "tracks_end_right_m"
+/obj/structure/vehicleparts/movement/tracks/left/reversed
+	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/right/reversed
+	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/tracks/mtlb/left
 	icon = 'icons/obj/vehicles/apcparts.dmi'
@@ -52,18 +56,21 @@
 	icon_state = "mtlb_tracks_end_right"
 	base_icon = "mtlb_tracks_end_right"
 	movement_icon = "mtlb_tracks_end_right_m"
-
-/obj/structure/vehicleparts/movement/tracks/left/reversed
-	reversed = TRUE
-
-/obj/structure/vehicleparts/movement/tracks/right/reversed
-	reversed = TRUE
-
 /obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed
 	reversed = TRUE
-
 /obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed
 	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/bmd2/left
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "bmd2_tracks_end_left"
+	base_icon = "bmd2_tracks_end_left"
+	movement_icon = "bmd2_tracks_end_left_m"
+/obj/structure/vehicleparts/movement/tracks/bmd2/right
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "bmd2_tracks_end_right"
+	base_icon = "bmd2_tracks_end_right"
+	movement_icon = "bmd2_tracks_end_right_m"
 
 /obj/structure/vehicleparts/movement/update_icon()
 	if (broken)
