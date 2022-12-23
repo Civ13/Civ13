@@ -562,6 +562,6 @@
 	"1,3" = list(/obj/structure/vehicleparts/frame/bmd2/rbc),
 	"2,3" = list(/obj/structure/vehicleparts/frame/bmd2/lbc),
 
-	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed,/obj/structure/vehicleparts/frame/bmd2/rb,/obj/structure/engine/internal/diesel/premade/bmd2/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed,/obj/structure/vehicleparts/frame/bmd2/rb,/obj/structure/engine/internal/diesel/premade/bmd2,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
 	"2,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed,/obj/structure/vehicleparts/frame/bmd2/lb),
 	)
