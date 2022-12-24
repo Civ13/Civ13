@@ -614,7 +614,7 @@
 	w_class = 4
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a3ubr6
-	max_ammo = 10
+	max_ammo = 16
 	multiple_sprites = TRUE
 	belt = TRUE
 
@@ -627,6 +627,6 @@
 	w_class = 4
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/frag/a3uor6
-	max_ammo = 10
+	max_ammo = 16
 	multiple_sprites = TRUE
 	belt = TRUE
