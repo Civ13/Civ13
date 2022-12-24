@@ -212,17 +212,17 @@
 				roof_turret.color = axis.color
 			if (C.dir == NORTH)
 				if (dir == NORTH)
-					roof_turret.pixel_x = 32
-					roof_turret.pixel_y = 40
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 				else if (dir == SOUTH)
-					roof_turret.pixel_x = 32
-					roof_turret.pixel_y = 40
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 				else if (dir == WEST)
-					roof_turret.pixel_x = 32
-					roof_turret.pixel_y = 40
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 				else if (dir == EAST)
-					roof_turret.pixel_x = 32
-					roof_turret.pixel_y = 40
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 			else if (C.dir == SOUTH)
 				if (dir == NORTH)
 					roof_turret.pixel_x = -32
