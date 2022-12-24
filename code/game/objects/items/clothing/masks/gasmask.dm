@@ -68,11 +68,11 @@
 	desc = "A panoramic gas mask intented for civilian use and civil denfense."
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
-/obj/item/clothing/mask/gas/russia_pmk2
-	icon_state = "russiamask_pmk2"
-	item_state = "russiamask_pmk2"
-	name = "PMK-2 gas mask"
-	desc = "Compact combined mask designed in the early 1990's, issued to the Russian Armed Forces"
+/obj/item/clothing/mask/gas/soviet/pmk1
+	icon_state = "pmk1"
+	item_state = "pmk1"
+	name = "PMK-1 gas mask"
+	desc = "Compact combined mask designed in the late 1970s, used by Soviet and Russian Armed Forces."
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/swat

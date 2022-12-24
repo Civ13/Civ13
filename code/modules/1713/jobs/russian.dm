@@ -1554,6 +1554,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/pilot(H), slot_eyes)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/sapper/russian(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper(H), slot_belt)

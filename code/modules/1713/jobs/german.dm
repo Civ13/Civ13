@@ -1488,6 +1488,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/sapper/german(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
