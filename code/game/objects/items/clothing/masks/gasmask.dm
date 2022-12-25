@@ -11,7 +11,7 @@
 	permeability_coefficient = 0.01
 	siemens_coefficient = 0.9
 	var/gas_filter_strength = TRUE			//For gas mask filters
-	var/list/filtered_gases = list("plasma", "sleeping_agent")
+	var/list/filtered_gases = list("plasma", "sleeping_agent, xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 	slot_flags = SLOT_BELT|SLOT_MASK
 	blocks_scope = TRUE
 	restricts_view = 2
@@ -34,63 +34,59 @@
 /obj/item/clothing/mask/gas/german
 	icon_state = "german_gasmask"
 	item_state = "german_gasmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/british
 	icon_state = "british_gasmask"
 	item_state = "british_gasmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/french
 	icon_state = "french_gasmask"
 	item_state = "french_gasmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/modern
 	icon_state = "modern_gasmask"
 	item_state = "modern_gasmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/military
 	icon_state = "military_gasmask"
 	item_state = "military_gasmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/modern2
 	icon_state = "moderngasmask"
 	item_state = "moderngasmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
+/obj/item/clothing/mask/gas/japanese
+	icon_state = "t99"
+	item_state = "t99"
 
 /obj/item/clothing/mask/gas/russia
 	icon_state = "russiamask"
 	item_state = "russiamask"
 	name = "GP-9 gas mask"
 	desc = "A panoramic gas mask intented for civilian use and civil denfense."
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
+/obj/item/clothing/mask/gas/soviet
+	name = "ShM-1 gas mask"
+	desc = "A Soviet helmet styled-rubber mask introduced right before WW2."
+	icon_state = "shm1"
+	item_state = "shm1"
+
+/obj/item/clothing/mask/gas/soviet/gp5
+	name = "GP-5 gas mask"
+	desc = "A Soviet helmet styled-rubber mask."
+	icon_state = "gp5"
+	item_state = "gp5"
 
 /obj/item/clothing/mask/gas/soviet/pmk1
 	icon_state = "pmk1"
 	item_state = "pmk1"
 	name = "PMK-1 gas mask"
 	desc = "Compact combined mask designed in the late 1970s, used by Soviet and Russian Armed Forces."
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/swat
 	icon_state = "swatmask"
 	item_state = "swatmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/swat_new
 	icon_state = "swat_new"
 	item_state = "swat_new"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
-
-/obj/item/clothing/mask/gas/soviet
-	icon_state = "sovietmask"
-	item_state = "sovietmask"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
-
-/obj/item/clothing/mask/gas/japanese
-	icon_state = "t99"
-	item_state = "t99"
-	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
