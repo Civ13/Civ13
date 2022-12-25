@@ -29,8 +29,10 @@
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/soviet/guard/G1 = new/obj/item/weapon/key/soviet/guard(null)
 	var/obj/item/weapon/key/soviet/guard/G2 = new/obj/item/weapon/key/soviet/guard/max(null)
+	var/obj/item/weapon/key/soviet/guard/G3 = new/obj/item/weapon/key/soviet/guard/max/command(null)
 	KC.attackby(G1,H)
 	KC.attackby(G2,H)
+	KC.attackby(G3,H)
 	H.equip_to_slot_or_del(KC, slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)

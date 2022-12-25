@@ -400,6 +400,9 @@
 /datum/keyslot/soviet/guard/max
 	code = RU_CODE+2
 
+/datum/keyslot/soviet/guard/max/command
+	code = RU_CODE+8
+
 /obj/item/weapon/key/soviet
 	code = RU_CODE
 	name = "Soviet key"
@@ -411,18 +414,22 @@
 /obj/item/weapon/key/soviet/guard/max
 	code = RU_CODE+2
 	name = "Maximum Security guard key"
-	health = 90000
+/obj/item/weapon/key/soviet/guard/max/command
+	code = RU_CODE+8
+	name = "Maximum Security commander key"
+
 /obj/structure/simple_door/key_door/soviet
 	keyslot_type = /datum/keyslot/soviet
 	unique_door_name = "Soviet locked"
-
 /obj/structure/simple_door/key_door/soviet/guard
 	keyslot_type = /datum/keyslot/soviet/guard
 	unique_door_name = "GULAG locked"
-
 /obj/structure/simple_door/key_door/soviet/guard/max
 	keyslot_type = /datum/keyslot/soviet/guard/max
 	unique_door_name = "Maximum Security locked"
+/obj/structure/simple_door/key_door/soviet/guard/max/command
+	keyslot_type = /datum/keyslot/soviet/guard/max/command
+	unique_door_name = "Maximum Security - Command Only locked"
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard
 	unique_door_name = "GULAG locked"
 	locked = TRUE
@@ -430,6 +437,9 @@
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard/max
 	unique_door_name = "Maximum Security locked"
 	custom_code = RU_CODE+2
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/max/command
+	unique_door_name = "Maximum Security - Command Only locked"
+	custom_code = RU_CODE+8
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard/open
 	starts_open = TRUE
