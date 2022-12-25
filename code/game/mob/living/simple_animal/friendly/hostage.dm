@@ -64,6 +64,7 @@ var/global/civvies_killed = list()
 	var/killer = "none"
 	var/obj/map_metadata/campaign/CM = map
 	var/obj/map_metadata/bank_robbery/BR = map
+	var/obj/map_metadata/sovafghan/SA = map
 	if (map.ID == MAP_CAMPAIGN && CM)
 		if (harmer_factions["Redmenia"] > harmer_factions["Blugoslavia"])
 			killer = "Redmenia"
@@ -106,6 +107,31 @@ var/global/civvies_killed = list()
 				if("Police")
 					world << "<font size=2>A <b>[name]</b> has been killed by the <font color='blue'><b>[killer]</b></font>! This is unacceptable!</font>"
 					BR.civilians_killed["Police"]++
+	else if (map.ID == MAP_SOVAFGHAN && SA)
+		if (harmer_factions["Soviets"] > (harmer_factions["DRA"]||harmer_factions["Mujahideen"]))
+			killer = "Soviets"
+		else if (harmer_factions["Mujahideen"] > (harmer_factions["DRA"]||harmer_factions["Soviets"]))
+			killer = "Mujahideen"
+		else if (harmer_factions["DRA"] > (harmer_factions["Mujahideen"]||harmer_factions["Soviets"]))
+			killer = "DRA"
+		if (killer != "none")
+			civvies_killed = list(uniquenum)
+			switch(killer)
+				if("Soviets")
+					world << "A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>. The alliance is losing local support!"
+					SA.sov_points -= 1
+					SA.muj_points += 1
+				if("DRA")
+					world << "A <b>[name]</b> has been killed by the <font color='green'><b>[killer]</b></font>. The alliance is losing local support!"
+					SA.sov_points -= 1
+					SA.muj_points += 1
+				if("Mujahideen")
+					world << "A <b>[name]</b> has been killed by the <font color='black'><b>[killer]</b></font>. They are losing local support!"
+					SA.muj_points -= 1
+					SA.sov_points += 1
+			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x],[src.y],[src.z])!"
+			game_log("CIVDEATH: [msg]")
+			message_admins(msg)
 	else
 		var/msg = "Civilian ([name]-[uniquenum]) killed by UNKNOWN at ([src.x],[src.y],[src.z])!"
 		game_log("CIVDEATH: [msg]")
@@ -116,11 +142,19 @@ var/global/civvies_killed = list()
 	if (P.firer && ishuman(P.firer))
 		var/mob/living/human/H = P.firer
 		var/obj/map_metadata/bank_robbery/BR = map
+		var/obj/map_metadata/sovafghan/SA = map
 		if (BR && map.ID == MAP_BANK_ROBBERY)
 			if (H.faction_text == CIVILIAN)
 				harmer_factions["Police"]++
 			else if (H.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
+		else if (SA && map.ID == MAP_SOVAFGHAN)
+			if (H.faction_text == RUSSIAN)
+				harmer_factions["Soviets"]++
+			else if (H.faction_text == CIVILIAN && H.original_job.is_dra == TRUE)
+				harmer_factions["DRA"]++
+			else if (H.faction_text == ARAB)
+				harmer_factions["Mujahideen"]++
 		else
 			if(H.faction_text == PIRATES)
 				harmer_factions["Redmenia"]++
@@ -135,6 +169,13 @@ var/global/civvies_killed = list()
 				harmer_factions["Police"]++
 			else if (M.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
+		else if (map && map.ID == MAP_SOVAFGHAN)
+			if (M.faction_text == RUSSIAN)
+				harmer_factions["Soviets"]++
+			else if (M.faction_text == CIVILIAN && M.original_job.is_dra == TRUE)
+				harmer_factions["DRA"]++
+			else if (M.faction_text == ARAB)
+				harmer_factions["Mujahideen"]++
 		else
 			if(M.faction_text == PIRATES)
 				harmer_factions["Redmenia"]++
@@ -149,6 +190,13 @@ var/global/civvies_killed = list()
 				harmer_factions["Police"]++
 			else if (H.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
+		else if (map && map.ID == MAP_SOVAFGHAN)
+			if (H.faction_text == RUSSIAN)
+				harmer_factions["Soviets"]++
+			else if (H.faction_text == CIVILIAN && H.original_job.is_dra == TRUE)
+				harmer_factions["DRA"]++
+			else if (H.faction_text == ARAB)
+				harmer_factions["Mujahideen"]++
 		else
 			if(H.faction_text == PIRATES)
 				harmer_factions["Redmenia"]++
@@ -169,4 +217,45 @@ var/global/civvies_killed = list()
 		icon_state = "greenistani_2"
 		icon_living = "greenistani_2"
 		icon_dead = "greenistani_2_dead"
+		update_icons()
+
+/mob/living/simple_animal/civilian/afghan
+	name = "villager"
+	desc = "A peaceful local rural inhabitant."
+	icon_state = "afghciv1"
+	icon_living = "afghciv1"
+	icon_dead = "afghciv1_dead"
+	meat_amount = 0
+	harmer_factions = list("Soviets" = 0, "DRA" = 0, "Mujahideen" = 0)
+	New()
+		..()
+		icon_state = "afghciv[rand(1,4)]"
+		icon_living = icon_state
+		icon_dead = "[icon_state]_dead"
+		update_icons()
+
+/mob/living/simple_animal/civilian/afghan/city
+	name = "citizen"
+	desc = "A peaceful local citizen."
+	icon_state = "afghciv5"
+	icon_living = "afghciv5"
+	icon_dead = "afghciv5_dead"
+	New()
+		..()
+		icon_state = pick("afghciv5","afghciv[rand(7,9)]")
+		icon_living = icon_state
+		icon_dead = "[icon_state]_dead"
+		update_icons()
+
+/mob/living/simple_animal/civilian/afghan/woman
+	name = "woman"
+	desc = "A peaceful local citizen."
+	icon_state = "afghciv6"
+	icon_living = "afghciv6"
+	icon_dead = "afghciv6_dead"
+	New()
+		..()
+		icon_state = "afghciv6"
+		icon_living = "afghciv6"
+		icon_dead = "afghciv6_dead"
 		update_icons()
