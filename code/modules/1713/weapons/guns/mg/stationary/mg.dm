@@ -231,10 +231,8 @@
 	var/mode = "autocannon"
 
 	var/ammo_type_norm = /obj/item/ammo_casing/a3ubr6
-	var/magazine_type_norm = /obj/item/ammo_magazine/a3ubr6
 	
 	var/ammo_type_alt = /obj/item/ammo_casing/rocket/atgm
-	var/magazine_type_alt = /obj/item/ammo_magazine/pg7v
 
 	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
 	var/max_rockets = 2
@@ -256,7 +254,6 @@
 		handle_casings = EJECT_CASINGS
 
 		ammo_type = ammo_type_norm
-		magazine_type = magazine_type_norm
 	else if (mode == "autocannon")
 		user.show_message("You switch the gun to ATGM")
 		switch_firemodes(user)
@@ -266,7 +263,6 @@
 		handle_casings = REMOVE_CASINGS
 
 		ammo_type = ammo_type_alt
-		magazine_type = magazine_type_alt
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo))
