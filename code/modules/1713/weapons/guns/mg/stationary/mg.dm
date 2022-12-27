@@ -275,11 +275,21 @@
 		else
 			usr << "The ATGM cannot hold more rockets."
 
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_click_empty(mob/user)
+	if (mode != "atgm")
+		if (user)
+			user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+			
+		else
+			visible_message("*click click*")
+		playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
+
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/consume_next_projectile()
 	if (mode == "atgm")
 		if (rockets.len)
 			var/obj/item/ammo_casing/rocket/I = rockets[1]
 			var/obj/item/missile/M = new I.projectile_type(src)
+			playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
 			if (ishuman(src.loc))
 				M.dir = src.loc.dir
 			M.primed = 1
