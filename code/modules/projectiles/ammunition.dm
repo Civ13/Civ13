@@ -39,6 +39,8 @@
 	BB = null
 	..()
 /obj/item/ammo_casing/proc/randomrotation()
+	if (src ==  /obj/item/ammo_casing/rocket/atgm)
+		return
 	transform = matrixangle(rand(1,360))
 	spawn(1)
 		pixel_x = rand(-10, 10)

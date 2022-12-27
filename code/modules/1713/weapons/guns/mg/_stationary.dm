@@ -81,7 +81,7 @@
 		user.show_message("<span class='warning'>You can't do this while using \the [src].</span>")
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A, params)
-	if (A == src)
+	if ((A == src) && (src != /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm))
 		switch_firemodes(user)
 
 	if (check_direction(user, A))
@@ -196,6 +196,6 @@
 	if (ammo_magazine)
 		icon_state = base_icon
 	else
-		icon_state = "[base_icon][0]"
+		icon_state = "[base_icon]_empty"
 	update_held_icon()
 	return

@@ -579,7 +579,7 @@
 	else
 		full_auto = FALSE
 /obj/item/weapon/gun/attack_self(mob/user)
-	if (firemodes.len > 1)
+	if ((firemodes.len > 1) && (src != /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm))
 		switch_firemodes(user)
 /*
 /obj/item/weapon/gun/proc/wield(mob/user as mob)

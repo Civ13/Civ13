@@ -175,10 +175,10 @@
 // Autocannons
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon
-	name = "30mm 2A42 'Shipunov' Autocannon"
+	name = "30mm Autocannon"
 	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds."
-	icon_state = "browning"
-	base_icon = "browning"
+	icon_state = "maxim_stationary"
+	base_icon = "maxim_stationary"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	load_method = MAGAZINE
@@ -186,8 +186,128 @@
 	magazine_type = /obj/item/ammo_magazine/a3ubr6
 	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
 	firemodes = list(
-		list(name="semi auto",	burst=2, burst_delay=10, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 	is_hmg = TRUE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov
+	name = "30mm 2A42 'Shipunov' Autocannon"
+	icon_state = "shipunov"
+	base_icon = "shipunov"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a3ubr6
+	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	firemodes = list(
+		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a3ubr6
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov/update_icon()
+	icon_state = "shipunov[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 16) : "-empty"]"
+
+
+// ATGM Autocannons
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm
+	name = "30mm Autocannon with ATGM"
+	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds. It includes an Anti Tank Guide Missle system, to use it right-click the gun and press 'Toggle ATGM Mode'"
+	icon_state = "maxim_stationary"
+	base_icon = "maxim_stationary"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a3ubr6
+	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	firemodes = list(
+		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name="semi auto",	burst=1, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a3ubr6
+	is_hmg = TRUE
+	var/mode = "autocannon"
+
+	var/ammo_type_norm = /obj/item/ammo_casing/a3ubr6
+	var/magazine_type_norm = /obj/item/ammo_magazine/a3ubr6
 	
+	var/ammo_type_alt = /obj/item/ammo_casing/rocket/atgm
+	var/magazine_type_alt = /obj/item/ammo_magazine/pg7v
+
+	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
+	var/max_rockets = 2
+	var/list/rockets = new/list()
+	var/release_force = 0
+	var/throw_distance = 30
+	
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/verb/switch_firingmode(mob/user)
+	set category = null 
+	set name = "Toggle ATGM Mode"
+	set src in range(1, usr)
+	if (mode == "atgm")
+		user.show_message("You switch the gun to autocannon")
+		switch_firemodes(user)
+		mode = "autocannon"
+		caliber = "a30"
+		load_method = MAGAZINE
+		handle_casings = EJECT_CASINGS
+
+		ammo_type = ammo_type_norm
+		magazine_type = magazine_type_norm
+	else if (mode == "autocannon")
+		user.show_message("You switch the gun to ATGM")
+		switch_firemodes(user)
+		mode = "atgm"
+		caliber = "rocket"
+		load_method = SINGLE_CASING
+		handle_casings = REMOVE_CASINGS
+
+		ammo_type = ammo_type_alt
+		magazine_type = magazine_type_alt
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, atgm_ammo))
+		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
+			user.drop_item()
+			I.loc = src
+			rockets += I
+			user << "You put the rocket in the ATGM."
+			update_icon()
+		else
+			usr << "The ATGM cannot hold more rockets."
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/consume_next_projectile()
+	if (mode == "atgm")
+		if (rockets.len)
+			var/obj/item/ammo_casing/rocket/I = rockets[1]
+			var/obj/item/missile/M = new I.projectile_type(src)
+			if (ishuman(src.loc))
+				M.dir = src.loc.dir
+			M.primed = 1
+			rockets -= I
+			return M
+		return null
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_post_fire(mob/user, atom/target)
+	if (mode == "atgm")
+		message_admins("[key_name_admin(user)] fired an ATGM at [target].")
+		log_game("[key_name_admin(user)] used an ATGM at [target].")
+		update_icon()
+		..()
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null, var/pointblank=0, var/reflex=0)
+	if (mode == "atgm")
+		projectile.loc = get_turf(user)
+		projectile.throw_at(target, throw_distance, release_force, user)
+		projectile.dir = get_dir(src.loc, target.loc)
+		if (ishuman(user) && istype(projectile, /obj/item/missile))
+			var/obj/item/missile/MS = projectile
+			MS.firer = user
+		if (istype(projectile, /obj/item/missile))
+			var/obj/item/missile/M = projectile
+			M.startingturf = get_turf(user)
+		update_icon(projectile)
+		return TRUE
