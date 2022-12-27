@@ -138,7 +138,7 @@
 	is_hmg = TRUE
 	attachment_slots = ATTACH_SCOPE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98/update_icon()
-	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "-empty"]"
+	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning
 	name = "M1919A1 browning machine gun"
@@ -155,7 +155,7 @@
 	ammo_type = /obj/item/ammo_casing/a3006
 	is_hmg = TRUE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
-	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "-empty"]"
+	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
@@ -206,7 +206,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov/update_icon()
-	icon_state = "shipunov[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 16) : "-empty"]"
+	icon_state = "shipunov[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 16) : "_empty"]"
 
 
 // ATGM Autocannons
@@ -214,8 +214,8 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm
 	name = "30mm Autocannon with ATGM"
 	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds. It includes an Anti Tank Guide Missle system, to use it right-click the gun and press 'Toggle ATGM Mode'"
-	icon_state = "maxim_stationary"
-	base_icon = "maxim_stationary"
+	icon_state = "atgm"
+	base_icon = "atgm"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	load_method = MAGAZINE

@@ -279,7 +279,7 @@
 	if (ammo_magazine)
 		icon_state = base_icon
 	else
-		icon_state = "[base_icon]_open"
+		icon_state = "[base_icon]_empty"
 	update_held_icon()
 	return
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/handle_post_fire()
