@@ -11,7 +11,7 @@
 
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
-	return 1
+	return TRUE
 
 //Override this to avoid a runtime with suicide handling.
 /obj/item/weapon/gun/launcher/handle_suicide(mob/living/user)
@@ -31,7 +31,7 @@
 
 
 /obj/item/weapon/gun/launcher/proc/update_release_force(obj/item/projectile)
-	return 0
+	return FALSE
 
 /obj/item/weapon/gun/launcher/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null, var/pointblank=0, var/reflex=0)
 	update_release_force(projectile)
@@ -45,7 +45,7 @@
 		var/obj/item/missile/M = projectile
 		M.startingturf = get_turf(user)
 	update_icon(projectile)
-	return 1
+	return TRUE
 
 /obj/item/weapon/gun/launcher/special_check(mob/user)
 	if (!user.has_empty_hand(both = FALSE))
@@ -305,6 +305,9 @@
 		..()
 
 ////////////////////////////////////////AMMO///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Rocket items
+
 /obj/item/ammo_casing/rocket
 	name = "RPG rocket"
 	desc = "A high explosive warhead and propeller designed to be fired from a rocket launcher."
@@ -337,7 +340,7 @@
 
 /obj/item/ammo_casing/rocket/pg7v
 	name = "PG-7V rocket"
-	desc = "A High Explosive Anti-Tank (HEAT) warhead and propeller designed to be fired from a RPG-7 launcher."
+	desc = "A High-Explosive Anti-Tank (HEAT) warhead and propeller designed to be fired from a RPG-7 launcher."
 	icon_state = "pg7v"
 	projectile_type = /obj/item/missile/explosive
 
@@ -356,6 +359,26 @@
 	projectile_type = /obj/item/missile/nuclear
 	caliber = "nuclear"
 	w_class = 4.0
+
+/obj/item/ammo_casing/rocket/atgm
+	name = "ATGM rocket"
+	desc = "A High-Explosive (HEAT) guided missile warhead and propeller designed to be fired from a ATGM system."
+	icon_state = "atgmAP"
+	projectile_type = /obj/item/missile/explosive/atgm
+
+/obj/item/ammo_casing/rocket/atgm/apcr
+	name = "APCR ATGM rocket"
+	desc = "A Armor-piercing composite rigid (APCR) guided missile warhead and propeller designed to be fired from a ATGM system."
+	icon_state = "atgmAPCR"
+	projectile_type = /obj/item/missile/explosive/atgm/apcr
+
+/obj/item/ammo_casing/rocket/atgm/he
+	name = "HEAT ATGM rocket"
+	desc = "A High-Explosive Anti-Tank (HEAT) guided missile warhead and propeller designed to be fired from a ATGM system."
+	icon_state = "atgmHE"
+	projectile_type = /obj/item/missile/explosive/atgm/he
+
+// Missile projectiles
 
 /obj/item/missile
 	icon = 'icons/obj/grenade.dmi'
@@ -510,7 +533,37 @@
 		else
 			..()
 		return
-///////////////////M79
+
+// ATGM
+
+
+/obj/item/missile/explosive/atgm
+	icon_state = "atgm_missile"
+	heavy_armor_penetration = 700
+
+/obj/item/missile/explosive/atgm/he
+	heavy_armor_penetration = 20
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 2, 2, 2, 2)
+			handle_vehicle_hit(hit_atom,firer)
+			qdel(src)
+		else
+			..()
+		return
+
+/obj/item/missile/explosive/atgm/apcr
+	heavy_armor_penetration = 600
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 0, 2, 2)
+			handle_vehicle_hit(hit_atom,firer)
+			qdel(src)
+		else
+			..()
+		return
+
+// M79
 /obj/item/weapon/gun/launcher/grenadelauncher
 	name = "grenade launcher"
 	desc = "MAGGOT."

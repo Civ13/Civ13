@@ -301,7 +301,7 @@
 	w_class = 8
 
 /obj/structure/cannon/mortar/foldable
-	var/mortar
+	var/path
 
 /obj/structure/cannon/mortar/foldable/type89
 	name = "Type 89 Mortar"
@@ -313,7 +313,7 @@
 	maxsway = 15
 	firedelay = 8
 	w_class = 6
-	mortar = /obj/item/weapon/mortar/type89_mortar
+	path = /obj/item/weapon/foldable/type89_mortar
 
 /obj/structure/cannon/mortar/foldable/generic
 	name = "mortar"
@@ -325,11 +325,12 @@
 	maxsway = 15
 	firedelay = 8
 	w_class = 6
-	mortar = /obj/item/weapon/mortar/generic
+	path = /obj/item/weapon/foldable/generic
 
-/obj/structure/cannon/mortar/foldable/verb/Get()
-	set src in oview(1, usr)
-	set category = null
+/obj/structure/cannon/mortar/foldable/verb/Retrieve()
+	set category = null 
+	set name = "Retrieve"
+	set src in range(1, usr)
 	if (usr.l_hand && usr.r_hand)
 		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
 		return
@@ -337,8 +338,8 @@
 	visible_message("<span class = 'warning'>[usr] starts to get their [src] from the ground.</span>")
 	if (do_after(usr, 10, get_turf(usr)))
 		qdel(src)
-		usr.put_in_any_hand_if_possible(new mortar, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[user] gets their [src] from the ground.</span>")
+		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
+		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91))
@@ -351,7 +352,7 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
-				if (M == user)
+				if (M == usr)
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)

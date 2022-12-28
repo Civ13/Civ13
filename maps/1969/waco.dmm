@@ -233,7 +233,7 @@
 "iJ" = (/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/structure/table/wood,/turf/floor/dirt/dust,/area/caribbean)
 "iN" = (/obj/covers/marble_wall/grecian/archway/modern{dir = 8},/turf/floor/plating/marble/tile,/area/caribbean/houses)
 "iO" = (/obj/structure/closet/crate/bin,/turf/floor/plating/marble/grid,/area/caribbean/houses)
-"iR" = (/obj/structure/table/iron,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/marble/grid,/area/caribbean/houses)
+"iR" = (/obj/structure/table/modern,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/marble/grid,/area/caribbean/houses)
 "iS" = (/obj/structure/closet/crate/rations/beer,/turf/floor/wood,/area/caribbean/houses)
 "iW" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/carpet,/area/caribbean/houses)
 "ja" = (/obj/structure/vehicleparts/frame/car/van/lfc{color = "#000057"},/obj/structure/bed/chair/drivers/car/dark,/obj/structure/vehicleparts/axis/car{color = "#444444"; speedlist = list(7,5,4,2.5,1.8); name = "Negotiator van"},/turf/floor/dirt/dust,/area/caribbean)

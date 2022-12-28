@@ -193,13 +193,8 @@
 		..()
 		icon_state = "navalshell"
 
+// Mortar
 
-/obj/item/cannon_ball/shell/tank/nuclear/
-	atype = "NUCLEAR"
-	New()
-		..()
-		icon = 'icons/obj/cannon_ball.dmi'
-		icon_state = "shell_nuclear"
 /obj/item/cannon_ball/mortar_shell
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "mortar shell"
@@ -213,6 +208,8 @@
 	icon_state = "shell_mortar_89"
 	w_class = 4.0
 	value = 20
+
+// Chemical
 
 /obj/item/cannon_ball/shell/gas/chlorine
 	reagent_payload = "chlorine_gas"
@@ -243,6 +240,15 @@
 	reagent_payload = "zyclon_b"
 	name = "Zyklon B Shell"
 	icon_state = "shell_xb"
+
+// Nuclear
+
+/obj/item/cannon_ball/shell/tank/nuclear/
+	atype = "NUCLEAR"
+	New()
+		..()
+		icon = 'icons/obj/cannon_ball.dmi'
+		icon_state = "shell_nuclear"
 
 /obj/item/cannon_ball/rocket/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'

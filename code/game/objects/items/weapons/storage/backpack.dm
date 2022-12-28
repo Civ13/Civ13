@@ -102,10 +102,10 @@
 /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate
 	name = "japanese ammo crate"
 	desc = "It's a crate equipped with straps for carrying, often used by assistant gunners."
-	icon_state = "japammo"
-	item_state = "japammo"
-	worn_state = "japammo"
-	base_icon = "japammo"
+	icon_state = "ammo_crate"
+	item_state = "ammo_crate"
+	worn_state = "ammo_crate"
+	base_icon = "ammo_crate"
 	max_storage_space = 24
 	can_hold = list(
 		/obj/item/ammo_magazine,
@@ -194,9 +194,9 @@ obj/item/weapon/storage/backpack/ww2/american
 
 /obj/item/weapon/storage/backpack/rucksack
 	name = "rucksack"
-	desc = "A big backpack made for long walks."
+	desc = "A big rucksack made for long walks."
 	icon_state = "rucksack"
-	item_state = "rucksack"
+	item_state = "backpack"
 	base_icon = "rucksack"
 	w_class = 4
 	slot_flags = SLOT_BACK
@@ -212,11 +212,33 @@ obj/item/weapon/storage/backpack/ww2/american
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 		new/obj/item/ammo_casing/rocket/pg7v(src)
+
+/obj/item/weapon/storage/backpack/heavyrucksack
+	name = "heavy rucksack"
+	desc = "A big heavyduty rucksack made for big, heavy objects."
+	icon_state = "heavyrucksack"
+	item_state = "backpack"
+	base_icon = "heavyrucksack"
+	w_class = 5
+	slot_flags = SLOT_BACK
+	max_w_class = 5
+	max_storage_space = 28
+
+/obj/item/weapon/storage/backpack/heavyrucksack/atgm
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/atgm(src)
+		new/obj/item/ammo_casing/rocket/atgm(src)
+		new/obj/item/ammo_casing/rocket/atgm/apcr(src)
+		new/obj/item/ammo_casing/rocket/atgm/apcr(src)
+		new/obj/item/ammo_casing/rocket/atgm/he(src)
+		new/obj/item/ammo_casing/rocket/atgm/he(src)
+
 /obj/item/weapon/storage/backpack/civbag
 	name = "backpack"
 	desc = "A big backpack made for long walks."
 	icon_state = "civback"
-	item_state = "civback"
+	item_state = "backpack"
 	base_icon = "civback"
 	w_class = 4
 	slot_flags = SLOT_BACK

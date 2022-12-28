@@ -440,19 +440,6 @@
 		L.Weaken(5)
 	qdel(src)
 
-/*
- * Iron tables
- */
-
-
-/obj/structure/table/iron
-	name = "iron table"
-	desc = "A very hard table."
-	icon_state = "table"
-	frame = /obj/structure/table_frame
-	framestack = /obj/item/stack/material/iron
-	buildstack = /obj/item/stack/material/iron
-	flipped_icon = "table-flipped"
 /obj/structure/table/marble
 	name = "marble table"
 	desc = "A very hard table."
@@ -495,6 +482,22 @@
 		..()
 		update_icon()
 
+/obj/structure/table/modern
+	name = "iron table"
+	desc = "A very hard table."
+	icon_state = "table"
+	flipped_icon = "table-flipped"
+	frame = /obj/structure/table_frame
+	framestack = /obj/item/stack/material/iron
+	buildstack = /obj/item/stack/material/iron
+
+/obj/structure/table/modern/flipped
+	icon_state = "table-flipped"
+	flipped = TRUE
+	New()
+		..()
+		update_icon()
+
 /obj/structure/table/modern/table
 	name = "wooden table"
 	desc = "Do not apply fire to this. Rumour says it burns easily."
@@ -505,7 +508,7 @@
 	buildstack = /obj/item/stack/material/wood
 	flammable = TRUE
 
-/obj/structure/table/modern/flipped
+/obj/structure/table/modern/table/flipped
 	icon_state = "woodtable-flipped"
 	flipped = TRUE
 	New()

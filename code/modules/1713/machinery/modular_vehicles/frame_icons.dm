@@ -251,17 +251,17 @@
 					roof_turret.pixel_y = -32
 			else if (C.dir == EAST)
 				if (dir == NORTH)
-					roof_turret.pixel_x = 40
-					roof_turret.pixel_y = -32
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 				else if (dir == SOUTH)
-					roof_turret.pixel_x = 40
-					roof_turret.pixel_y = -32
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 				else if (dir == WEST)
-					roof_turret.pixel_x = 40
-					roof_turret.pixel_y = -32
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 				else if (dir == EAST)
-					roof_turret.pixel_x = 40
-					roof_turret.pixel_y = -16
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -40
 			roof.overlays += roof_turret
 		for (var/obj/CC in T)
 			if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))

@@ -138,7 +138,7 @@
 	is_hmg = TRUE
 	attachment_slots = ATTACH_SCOPE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98/update_icon()
-	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "-empty"]"
+	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning
 	name = "M1919A1 browning machine gun"
@@ -155,7 +155,7 @@
 	ammo_type = /obj/item/ammo_casing/a3006
 	is_hmg = TRUE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
-	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "-empty"]"
+	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
@@ -175,10 +175,10 @@
 // Autocannons
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon
-	name = "30mm 2A42 'Shipunov' Autocannon"
+	name = "30mm Autocannon"
 	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds."
-	icon_state = "browning"
-	base_icon = "browning"
+	icon_state = "autocannon"
+	base_icon = "autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	load_method = MAGAZINE
@@ -186,8 +186,231 @@
 	magazine_type = /obj/item/ammo_magazine/a3ubr6
 	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
 	firemodes = list(
-		list(name="semi auto",	burst=2, burst_delay=10, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 	is_hmg = TRUE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov
+	name = "30mm 2A42 'Shipunov' Autocannon"
+	icon_state = "autocannon"
+	base_icon = "autocannon"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a3ubr6
+	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	firemodes = list(
+		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a3ubr6
+
+// ATGM Autocannons
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm
+	name = "30mm Autocannon with ATGM"
+	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds. It includes an Anti Tank Guide Missle system, to use it right-click the gun and press 'Toggle ATGM Mode'"
+	icon_state = "atgm_autocannon"
+	base_icon = "atgm_autocannon"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a3ubr6
+	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	firemodes = list(
+		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name="semi auto",	burst=1, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a3ubr6
+	is_hmg = TRUE
+	anchored = TRUE
+	var/mode = "autocannon"
+
+	var/ammo_type_norm = /obj/item/ammo_casing/a3ubr6
+	
+	var/ammo_type_alt = /obj/item/ammo_casing/rocket/atgm
+
+	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
+	var/max_rockets = 2
+	var/list/rockets = new/list()
+	var/release_force = 0
+	var/throw_distance = 30
+	
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/verb/switch_firingmode(mob/user)
+	set category = null 
+	set name = "Toggle ATGM Mode"
+	set src in range(1, usr)
+	if (mode == "atgm")
+		user.show_message("You switch the gun to autocannon")
+		switch_firemodes(user)
+		mode = "autocannon"
+		caliber = "a30"
+		load_method = MAGAZINE
+		handle_casings = EJECT_CASINGS
+
+		ammo_type = ammo_type_norm
+	else if (mode == "autocannon")
+		user.show_message("You switch the gun to ATGM")
+		switch_firemodes(user)
+		mode = "atgm"
+		caliber = "rocket"
+		load_method = SINGLE_CASING
+		handle_casings = REMOVE_CASINGS
+
+		ammo_type = ammo_type_alt
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, atgm_ammo))
+		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
+			user.drop_item()
+			I.loc = src
+			rockets += I
+			user << "You put the rocket in the ATGM."
+			update_icon()
+		else
+			usr << "The ATGM cannot hold more rockets."
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_click_empty(mob/user)
+	if (mode != "atgm")
+		if (user)
+			user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+		else
+			visible_message("*click click*")
+		playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/consume_next_projectile()
+	if (mode == "atgm")
+		if (rockets.len)
+			var/obj/item/ammo_casing/rocket/I = rockets[1]
+			var/obj/item/missile/M = new I.projectile_type(src)
+			playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
+			if (ishuman(src.loc))
+				M.dir = src.loc.dir
+			M.primed = 1
+			rockets -= I
+			return M
+		return null
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_post_fire(mob/user, atom/target)
+	if (mode == "atgm")
+		message_admins("[key_name_admin(user)] fired an ATGM at [target].")
+		log_game("[key_name_admin(user)] used an ATGM at [target].")
+		update_icon()
+		..()
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null, var/pointblank=0, var/reflex=0)
+	if (mode == "atgm")
+		projectile.loc = get_turf(user)
+		projectile.throw_at(target, throw_distance, release_force, user)
+		projectile.dir = get_dir(src.loc, target.loc)
+		if (ishuman(user) && istype(projectile, /obj/item/missile))
+			var/obj/item/missile/MS = projectile
+			MS.firer = user
+		if (istype(projectile, /obj/item/missile))
+			var/obj/item/missile/M = projectile
+			M.startingturf = get_turf(user)
+		update_icon(projectile)
+		return TRUE
+
+// ATGMs
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm
+	name = "Stationary ATGM"
+	desc = "An ATGM system capable of taking out armored targets. This one is firmly bolted to the ground."
+	icon_state = "atgm"
+	base_icon = "atgm"
+	caliber = "rocket"
+	fire_sound = 'sound/weapons/guns/fire/rpg7.ogg'
+	load_method = SINGLE_CASING
+	handle_casings = REMOVE_CASINGS
+	magazine_type = /obj/item/ammo_magazine/mosin
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/rocket/atgm
+	is_hmg = TRUE
+	anchored = TRUE
+
+	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
+	var/max_rockets = 1
+	var/list/rockets = new/list()
+	var/release_force = 0
+	var/throw_distance = 30
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, atgm_ammo))
+		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
+			user.drop_item()
+			I.loc = src
+			rockets += I
+			user << "You put the rocket in the ATGM."
+			update_icon()
+		else
+			usr << "The ATGM cannot hold more rockets."
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/handle_click_empty(mob/user)
+	if (rockets.len <= 0)
+		if (user)
+			user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+		else
+			visible_message("*click click*")
+		playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/consume_next_projectile()
+	if (rockets.len)
+		var/obj/item/ammo_casing/rocket/I = rockets[1]
+		var/obj/item/missile/M = new I.projectile_type(src)
+		playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
+		if (ishuman(src.loc))
+			M.dir = src.loc.dir
+		M.primed = 1
+		rockets -= I
+		return M
+	return null
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/handle_post_fire(mob/user, atom/target)
+	message_admins("[key_name_admin(user)] fired an ATGM at [target].")
+	log_game("[key_name_admin(user)] used an ATGM at [target].")
+	update_icon()
+	..()
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null, var/pointblank=0, var/reflex=0)
+	projectile.loc = get_turf(user)
+	projectile.throw_at(target, throw_distance, release_force, user)
+	projectile.dir = get_dir(src.loc, target.loc)
+	if (ishuman(user) && istype(projectile, /obj/item/missile))
+		var/obj/item/missile/MS = projectile
+		MS.firer = user
+	if (istype(projectile, /obj/item/missile))
+		var/obj/item/missile/M = projectile
+		M.startingturf = get_turf(user)
+	update_icon(projectile)
+	return TRUE
+
+// Foldable ATGMs
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
+	name = "Foldable ATGM"
+	desc = "An ATGM system capable of taking out armored targets. You can move this one around by right-clicking it and pressing 'Retrieve'"
+	icon_state = "foldable_atgm"
+	base_icon = "foldable_atgm"
+	var/path = /obj/item/weapon/foldable/atgm
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/Retrieve()
+	set category = null 
+	set name = "Retrieve"
+	set src in range(1, usr)
+	if (usr.l_hand && usr.r_hand)
+		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
+		return
+	usr.face_atom(src)
+	visible_message("<span class = 'warning'>[usr] starts to get their [src] from the ground.</span>")
+	if (do_after(usr, 50, get_turf(usr)))
+		qdel(src)
+		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
+		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
+
 	
