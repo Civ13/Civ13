@@ -34,24 +34,21 @@
 	usespeed = 2.1
 	flags = CONDUCT
 
-/obj/item/weapon/mortar
-	var/mortar
+/obj/item/weapon/foldable
+	var/path
 
-/obj/item/weapon/mortar/type89_mortar
-	name = "Type 89 Mortar"
-	desc = "A light-weight portable mortar"
-	icon_state = "type89"
-	force = 12.0
-	throwforce = 6.0
-	item_state = "type89"
-	w_class = 6.0
-	attack_verb = list("bashed", "bludgeoned")
-	sharp = FALSE
-	edge = TRUE
-	slot_flags = SLOT_BACK|SLOT_BELT
-	mortar = /obj/structure/cannon/mortar/foldable/type89
+/obj/item/weapon/foldable/attack_self(var/mob/user as mob)
+	var/target = get_step(user, user.dir)
+	if (target)
+		visible_message("<span class = 'warning'>[user] starts to deploy \the [src].</span>")
+		if (do_after(user, 25, get_turf(user)))
+			visible_message("<span class = 'warning'>[user] deploys \the [src].</span>")
+			var/atom/A = new path(get_turf(src))
+			A.dir = user.dir
+			user.remove_from_mob(src)
+			qdel(src)
 
-/obj/item/weapon/mortar/generic
+/obj/item/weapon/foldable/generic
 	name = "Foldable Mortar"
 	desc = "A light-weight portable mortar"
 	icon_state = "mortar"
@@ -61,20 +58,38 @@
 	w_class = 6.0
 	attack_verb = list("bashed", "bludgeoned")
 	sharp = FALSE
-	edge = TRUE
-	slot_flags = SLOT_BACK|SLOT_BELT
-	mortar = /obj/structure/cannon/mortar/foldable/generic
+	edge = FALSE
+	slot_flags = null
+	path = /obj/structure/cannon/mortar/foldable/generic
 
-/obj/item/weapon/mortar/attack_self(var/mob/user as mob)
-	var/target = get_step(user, user.dir)
-	if (target)
-		visible_message("<span class = 'warning'>[user] starts to deploy a [src].</span>")
-		if (do_after(user, 10, get_turf(user)))
-			visible_message("<span class = 'warning'>[user] deploys a [src].</span>")
-			user.remove_from_mob(src)
-			qdel(src)
-			var/atom/A = new mortar
-			A.dir = user.dir
+/obj/item/weapon/foldable/type89_mortar
+	name = "Type 89 Mortar"
+	desc = "A light-weight portable mortar"
+	icon_state = "type89"
+	force = 12.0
+	throwforce = 6.0
+	item_state = "type89"
+	w_class = 6.0
+	attack_verb = list("bashed", "bludgeoned")
+	sharp = FALSE
+	edge = FALSE
+	slot_flags = null
+	path = /obj/structure/cannon/mortar/foldable/type89
+
+/obj/item/weapon/foldable/atgm
+	name = "Anti-Tank Guide Missle system"
+	desc = "A light-weight portable ATGM"
+	icon_state = "atgm"
+	force = 12.0
+	throwforce = 6.0
+	item_state = "atgm"
+	w_class = 6.0
+	attack_verb = list("bashed", "bludgeoned")
+	sharp = FALSE
+	edge = FALSE
+	slot_flags = null
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
+
 
 /obj/item/weapon/material/shovel
 	name = "shovel"

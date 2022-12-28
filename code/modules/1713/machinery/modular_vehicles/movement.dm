@@ -15,6 +15,17 @@
 /obj/structure/vehicleparts/movement/reversed
 	reversed = TRUE
 
+/obj/structure/vehicleparts/movement/armored
+	name = "armored wheels"
+	icon_state = "wheel_t_dark"
+	base_icon = "wheel_t_dark"
+	movement_icon = "wheel_t_dark_m"
+	ntype = "wheel"
+	var/left = FALSE
+
+/obj/structure/vehicleparts/movement/armored/reversed
+	reversed = TRUE
+
 /obj/structure/vehicleparts/movement/tracks
 	name = "armored tracks"
 	icon_state = "tracks_end"
@@ -145,6 +156,22 @@
 
 
 /obj/structure/vehicleparts/movement/tracks/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			if (prob(40))
+				Destroy()
+				return
+		if (2.0)
+			if (prob(10))
+				Destroy()
+				return
+		if (3.0)
+			if (!broken && prob(80))
+				broken = TRUE
+				visible_message("<span class='danger'>\The [name] breaks down!</span>")
+			return
+
+/obj/structure/vehicleparts/movement/armored/ex_act(severity)
 	switch(severity)
 		if (1.0)
 			if (prob(40))

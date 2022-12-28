@@ -211,8 +211,8 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm
 	name = "30mm Autocannon with ATGM"
 	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds. It includes an Anti Tank Guide Missle system, to use it right-click the gun and press 'Toggle ATGM Mode'"
-	icon_state = "atgm"
-	base_icon = "atgm"
+	icon_state = "atgm_autocannon"
+	base_icon = "atgm_autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	load_method = MAGAZINE
@@ -276,7 +276,6 @@
 	if (mode != "atgm")
 		if (user)
 			user.visible_message("*click click*", "<span class='danger'>*click*</span>")
-			
 		else
 			visible_message("*click click*")
 		playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
@@ -314,3 +313,117 @@
 			M.startingturf = get_turf(user)
 		update_icon(projectile)
 		return TRUE
+
+// ATGMs
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm
+	name = "Stationary ATGM"
+	desc = "An ATGM system capable of taking out armored targets. This one is firmly bolted to the ground."
+	icon_state = "atgm"
+	base_icon = "atgm"
+	caliber = "rocket"
+	fire_sound = 'sound/weapons/guns/fire/rpg7.ogg'
+	load_method = SINGLE_CASING
+	handle_casings = REMOVE_CASINGS
+	magazine_type = /obj/item/ammo_magazine/mosin
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/rocket/atgm
+	is_hmg = TRUE
+
+	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
+	var/max_rockets = 1
+	var/list/rockets = new/list()
+	var/release_force = 0
+	var/throw_distance = 30
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, atgm_ammo))
+		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
+			user.drop_item()
+			I.loc = src
+			rockets += I
+			user << "You put the rocket in the ATGM."
+			update_icon()
+		else
+			usr << "The ATGM cannot hold more rockets."
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/handle_click_empty(mob/user)
+	if (rockets.len <= 0)
+		if (user)
+			user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+		else
+			visible_message("*click click*")
+		playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/consume_next_projectile()
+	if (rockets.len)
+		var/obj/item/ammo_casing/rocket/I = rockets[1]
+		var/obj/item/missile/M = new I.projectile_type(src)
+		playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
+		if (ishuman(src.loc))
+			M.dir = src.loc.dir
+		M.primed = 1
+		rockets -= I
+		return M
+	return null
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/handle_post_fire(mob/user, atom/target)
+	message_admins("[key_name_admin(user)] fired an ATGM at [target].")
+	log_game("[key_name_admin(user)] used an ATGM at [target].")
+	update_icon()
+	..()
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null, var/pointblank=0, var/reflex=0)
+	projectile.loc = get_turf(user)
+	projectile.throw_at(target, throw_distance, release_force, user)
+	projectile.dir = get_dir(src.loc, target.loc)
+	if (ishuman(user) && istype(projectile, /obj/item/missile))
+		var/obj/item/missile/MS = projectile
+		MS.firer = user
+	if (istype(projectile, /obj/item/missile))
+		var/obj/item/missile/M = projectile
+		M.startingturf = get_turf(user)
+	update_icon(projectile)
+	return TRUE
+
+// Foldable ATGMs
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
+	name = "Foldable ATGM"
+	desc = "An ATGM system capable of taking out armored targets. You can move this one around by right-clicking it and pressing 'Retrieve'"
+	icon_state = "foldable_atgm"
+	base_icon = "foldable_atgm"
+	var/path = /obj/item/weapon/foldable/atgm
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, atgm_ammo))
+		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
+			user.drop_item()
+			I.loc = src
+			rockets += I
+			user << "You put the rocket in the ATGM."
+			update_icon()
+		else
+			usr << "The ATGM cannot hold more rockets."
+	if (istype(I, /obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		usr << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/Retrieve()
+	set category = null 
+	set name = "Retrieve"
+	set src in range(1, usr)
+	if (usr.l_hand && usr.r_hand)
+		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
+		return
+	usr.face_atom(src)
+	visible_message("<span class = 'warning'>[usr] starts to get their [src] from the ground.</span>")
+	if (do_after(usr, 50, get_turf(usr)))
+		qdel(src)
+		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
+		visible_message("<span class = 'warning'>[usr] gets their [src] from the ground.</span>")
+
+	
