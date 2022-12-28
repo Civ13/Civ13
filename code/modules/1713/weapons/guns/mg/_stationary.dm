@@ -81,8 +81,9 @@
 		user.show_message("<span class='warning'>You can't do this while using \the [src].</span>")
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A, params)
-	if ((A == src) && (src != /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm))
-		switch_firemodes(user)
+	if (A == src)
+		if (src != /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm)
+			switch_firemodes(user)
 
 	if (check_direction(user, A))
 		afterattack(A, user, FALSE, params)

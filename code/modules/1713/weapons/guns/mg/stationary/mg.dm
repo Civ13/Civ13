@@ -177,8 +177,8 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon
 	name = "30mm Autocannon"
 	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds."
-	icon_state = "maxim_stationary"
-	base_icon = "maxim_stationary"
+	icon_state = "autocannon"
+	base_icon = "autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	load_method = MAGAZINE
@@ -193,8 +193,8 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov
 	name = "30mm 2A42 'Shipunov' Autocannon"
-	icon_state = "shipunov"
-	base_icon = "shipunov"
+	icon_state = "autocannon"
+	base_icon = "autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	load_method = MAGAZINE
@@ -205,9 +205,6 @@
 		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov/update_icon()
-	icon_state = "shipunov[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 16) : "_empty"]"
-
 
 // ATGM Autocannons
 
