@@ -1176,6 +1176,8 @@
 		else if (faction_text == CIVILIAN)
 			if (map.ID == MAP_AFRICAN_WARLORDS)
 				s_tone = rand(-155,-185)
+			else if (original_job.is_dra == TRUE || original_job.is_afghan == TRUE)
+				s_tone = rand(-75,95)
 		else if (faction_text == AMERICAN && map.ordinal_age >= 7)
 			if (original_job.is_afro == TRUE || original_job.is_gta)
 				s_tone = rand(-150,-120)
