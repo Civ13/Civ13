@@ -3287,7 +3287,7 @@
 	icon_state = "railing0";
 	dir = 1
 	},
-/obj/structure/table/iron,
+/obj/structure/table/modern,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
 "uG" = (
@@ -5016,7 +5016,7 @@
 	icon_state = "railing0";
 	dir = 1
 	},
-/obj/structure/table/iron,
+/obj/structure/table/modern,
 /obj/structure/gatecontrol/blastcontrol,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
