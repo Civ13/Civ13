@@ -225,6 +225,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 	is_hmg = TRUE
+	anchored = TRUE
 	var/mode = "autocannon"
 
 	var/ammo_type_norm = /obj/item/ammo_casing/a3ubr6
@@ -396,23 +397,7 @@
 	desc = "An ATGM system capable of taking out armored targets. You can move this one around by right-clicking it and pressing 'Retrieve'"
 	icon_state = "foldable_atgm"
 	base_icon = "foldable_atgm"
-	anchored = FALSE
 	var/path = /obj/item/weapon/foldable/atgm
-
-/obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, atgm_ammo))
-		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
-			user.drop_item()
-			I.loc = src
-			rockets += I
-			user << "You put the rocket in the ATGM."
-			update_icon()
-		else
-			usr << "The ATGM cannot hold more rockets."
-	if (istype(I, /obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		usr << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-		anchored = !anchored
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/Retrieve()
 	set category = null 
@@ -426,6 +411,6 @@
 	if (do_after(usr, 50, get_turf(usr)))
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[usr] gets their [src] from the ground.</span>")
+		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
 
 	

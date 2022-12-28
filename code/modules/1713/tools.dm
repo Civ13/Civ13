@@ -54,7 +54,7 @@
 	icon_state = "mortar"
 	force = 12.0
 	throwforce = 6.0
-	item_state = "mortar"
+	item_state = "type89"
 	w_class = 6.0
 	attack_verb = list("bashed", "bludgeoned")
 	sharp = FALSE
@@ -83,13 +83,12 @@
 	force = 12.0
 	throwforce = 6.0
 	item_state = "atgm"
-	w_class = 6.0
+	w_class = 8.0
 	attack_verb = list("bashed", "bludgeoned")
 	sharp = FALSE
 	edge = FALSE
 	slot_flags = null
 	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
-
 
 /obj/item/weapon/material/shovel
 	name = "shovel"

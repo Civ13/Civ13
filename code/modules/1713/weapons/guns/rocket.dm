@@ -545,7 +545,7 @@
 	heavy_armor_penetration = 20
 	throw_impact(atom/hit_atom)
 		if(primed)
-			explosion(hit_atom, 1, 0, 2, 1)
+			explosion(hit_atom, 2, 2, 2, 2)
 			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else

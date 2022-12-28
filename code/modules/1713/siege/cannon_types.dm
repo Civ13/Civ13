@@ -339,7 +339,7 @@
 	if (do_after(usr, 10, get_turf(usr)))
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[usr] gets their [src] from the ground.</span>")
+		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91))
