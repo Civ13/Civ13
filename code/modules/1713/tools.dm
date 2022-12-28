@@ -77,7 +77,7 @@
 	path = /obj/structure/cannon/mortar/foldable/type89
 
 /obj/item/weapon/foldable/atgm
-	name = "Anti-Tank Guide Missle system"
+	name = "Anti-Tank Guided Missile system"
 	desc = "A light-weight portable ATGM"
 	icon_state = "atgm"
 	force = 12.0
