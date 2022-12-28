@@ -331,6 +331,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/rocket/atgm
 	is_hmg = TRUE
+	anchored = TRUE
 
 	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
 	var/max_rockets = 1
@@ -395,6 +396,7 @@
 	desc = "An ATGM system capable of taking out armored targets. You can move this one around by right-clicking it and pressing 'Retrieve'"
 	icon_state = "foldable_atgm"
 	base_icon = "foldable_atgm"
+	anchored = FALSE
 	var/path = /obj/item/weapon/foldable/atgm
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
@@ -411,7 +413,7 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		usr << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
-		
+
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/Retrieve()
 	set category = null 
 	set name = "Retrieve"
