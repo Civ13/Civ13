@@ -136,7 +136,7 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1.03
+	effectiveness_mod = 1.04
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/avtomat
@@ -163,7 +163,7 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1.80
+	effectiveness_mod = 1.1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/remington11
@@ -210,7 +210,7 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1.02
+	effectiveness_mod = 1.05
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/sks/sksm
@@ -220,7 +220,7 @@
 	item_state = "sks"
 	base_icon = "sksm"
 	weight = 3.8
-	effectiveness_mod = 1.04
+	effectiveness_mod = 1.06
 	max_shells = 0
 	magazine_type = /obj/item/ammo_magazine/sksm
 	good_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/sksm, /obj/item/ammo_magazine/ak47)
@@ -317,7 +317,7 @@
 	force = 10
 	throwforce = 20
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
-	effectiveness_mod = 1.07
+	effectiveness_mod = 1.06
 
 /obj/item/weapon/gun/projectile/semiautomatic/m1garand
 	name = "M1 Garand"
