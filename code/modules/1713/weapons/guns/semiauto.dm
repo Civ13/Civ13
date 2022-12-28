@@ -163,7 +163,7 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1.1
+	effectiveness_mod = 1.08
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/remington11
@@ -390,7 +390,7 @@
 		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
 		)
 	gun_type = GUN_TYPE_RIFLE
-	effectiveness_mod = 1.3
+	effectiveness_mod = 1.09
 	equiptimer = 8
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
