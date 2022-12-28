@@ -708,7 +708,7 @@
 					for (var/obj/structure/barricade/B in src_loc)
 						if (get_dist(firer, B) == 1)
 							_untouchable += B
-					if (src == /obj/item/projectile/bullet/autocannon)
+					if ((src == /obj/item/projectile/bullet/autocannon) || (src == /obj/item/missile/explosive/atgm))
 						for (var/obj/structure/vehicleparts/frame/F in src_loc)
 							if (get_dist(firer, F) <= 2)
 								_untouchable += F

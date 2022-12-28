@@ -221,46 +221,36 @@
 	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
 	firemodes = list(
 		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
-		list(name="semi auto",	burst=1, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 	is_hmg = TRUE
 	anchored = TRUE
 	var/mode = "autocannon"
 
-	var/ammo_type_norm = /obj/item/ammo_casing/a3ubr6
-	
-	var/ammo_type_alt = /obj/item/ammo_casing/rocket/atgm
-
 	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
-	var/max_rockets = 2
+	var/max_rockets = 1
 	var/list/rockets = new/list()
 	var/release_force = 0
 	var/throw_distance = 30
 	
 
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/verb/switch_firingmode(mob/user)
-	set category = null 
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/verb/switch_firingmode()
 	set name = "Toggle ATGM Mode"
+	set category = null
 	set src in range(1, usr)
 	if (mode == "atgm")
-		user.show_message("You switch the gun to autocannon")
-		switch_firemodes(user)
+		usr << "You switch the gun to fire the autocannon"
 		mode = "autocannon"
 		caliber = "a30"
 		load_method = MAGAZINE
 		handle_casings = EJECT_CASINGS
 
-		ammo_type = ammo_type_norm
 	else if (mode == "autocannon")
-		user.show_message("You switch the gun to ATGM")
-		switch_firemodes(user)
+		usr << "You switch the gun to fire the ATGM"
 		mode = "atgm"
 		caliber = "rocket"
 		load_method = SINGLE_CASING
 		handle_casings = REMOVE_CASINGS
-
-		ammo_type = ammo_type_alt
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo))
