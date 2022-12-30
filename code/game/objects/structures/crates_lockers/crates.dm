@@ -133,7 +133,7 @@
 	name = "lead safe"
 	desc = "A large lead safe, good to store radioactive things."
 	icon_state = "largermetal"
-	icon_opened = "largermetalopen"
+	icon_opened = "largermetal_open"
 	icon_closed = "largermetal"
 	health = 999999
 	anchored = TRUE
