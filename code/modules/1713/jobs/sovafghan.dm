@@ -750,7 +750,6 @@
 		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
-	H.s_tone = rand(-85,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -831,7 +830,6 @@
 		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
-	H.s_tone = rand(-90,-70)
 	var/new_hair = pick("Dark Brown","Black")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -908,7 +906,6 @@
 		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
-	H.s_tone = rand(-90,-70)
 	var/new_hair = pick("Dark Brown","Black")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -982,7 +979,6 @@
 		H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
-	H.s_tone = rand(-95,-75)
 	var/new_hair = pick("Dark Brown","Black")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -1047,7 +1043,6 @@
 		H.f_style = pick("Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
-	H.s_tone = rand(-90,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -1196,7 +1191,6 @@
 			H.f_style = pick("Shaved","Full Beard","Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache")
 		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
-	H.s_tone = rand(-90,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -1294,7 +1288,6 @@
 		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 
-	H.s_tone = rand(-90,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -1364,7 +1357,6 @@
 		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 
-	H.s_tone = rand(-90,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -1428,7 +1420,6 @@
 		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 
-	H.s_tone = rand(-90,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -1539,7 +1530,6 @@
 		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 
-	H.s_tone = rand(-90,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
@@ -1638,7 +1628,6 @@
 		if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 
-	H.s_tone = rand(-90,-65)
 	var/new_hair = pick("Dark Brown","Black","Grey")
 	var/hex_hair = hair_colors[new_hair]
 	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
