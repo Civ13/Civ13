@@ -584,15 +584,22 @@
 		if (9 to 10)
 			a = "J"
 	return "[a][b]"
+
 /mob/living/human/var/hidden_name = ""
 
 /mob/living/human/proc/undercover()
 	set category = "IC"
 	set name = "Toggle Undercover"
-	set desc="Hide your identity for undercover police operations."
+	set desc= "Hide your identity for undercover police operations."
 
-	if (findtext(name, "Deputy"))
-		real_name = replacetext(real_name, "Deputy ", "")
+	var/jobtype = "none"
+	if (findtext(name, "Deputy") || findtext(name, "Detective"))
+		if (findtext(name, "Deputy"))
+			real_name = replacetext(real_name, "Deputy ", "")
+			jobtype = "Deputy"
+		else if (findtext(name, "Detective"))
+			real_name = replacetext(real_name, "Detective ", "")
+			jobtype = "Detective"
 		hidden_name = real_name
 		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Japanese"))
 		switch(chosen_name)
@@ -612,9 +619,14 @@
 		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
-		real_name = "Deputy [hidden_name]"
-		name = "Deputy [hidden_name]"
-		voice = "Deputy [hidden_name]"
+		if (jobtype == "Deputy")
+			real_name = "Deputy [hidden_name]"
+			name = "Deputy [hidden_name]"
+			voice = "Deputy [hidden_name]"
+		else
+			real_name = "Detective [hidden_name]"
+			name = "Detective [hidden_name]"
+			voice = "Detective [hidden_name]"
 		src << "<b><big>You are now revealing your identity again.</big></b>"
 		return
 
