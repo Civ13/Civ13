@@ -13,7 +13,7 @@
 	icon_state = "pwig"
 	item_state = "pwig"
 
-/obj/item/clothing/head/that
+/obj/item/clothing/head/tophat
 	name = "top-hat"
 	desc = "It's an amish looking hat."
 	icon_state = "tophat"
@@ -126,4 +126,11 @@
 	name = "orange bandana"
 	desc = "An orange piece of cloth, worn on the head."
 	icon_state = "orange_bandana"
+	body_parts_covered = FALSE
+
+/obj/item/clothing/head/catears
+	name  = "cat tail and ears"
+	desc = "You godless creature..."
+	icon_state = "kitty"
+	worn_state = "kitty"
 	body_parts_covered = FALSE

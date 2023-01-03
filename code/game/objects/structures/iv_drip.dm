@@ -1,7 +1,7 @@
 /obj/structure/iv_drip
 	name = "\improper IV drip"
 	icon = 'icons/obj/surgery.dmi'
-	icon_state = "hooked0"
+	icon_state = "iv_drip_unhooked"
 	anchored = FALSE
 	density = TRUE
 	var/mob/living/human/attached = null
@@ -18,9 +18,9 @@
 
 /obj/structure/iv_drip/update_icon()
 	if (attached)
-		icon_state = "hooked"
+		icon_state = "iv_drip"
 	else
-		icon_state = "hooked0"
+		icon_state = "iv_drip_unhooked"
 
 	overlays = null
 

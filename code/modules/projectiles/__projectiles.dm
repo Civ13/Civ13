@@ -274,7 +274,7 @@
 	armor_penetration = 37
 /obj/item/projectile/bullet/rifle/a65x50/weak/New()
 	..()
-	damage = (DAMAGE_VERY_HIGH)/2
+	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 10
 
@@ -387,7 +387,7 @@
 
 /obj/item/projectile/bullet/rifle/a792x57/weak/New()
 	..()
-	damage = (DAMAGE_VERY_HIGH)/2
+	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 20
 
@@ -418,7 +418,7 @@
 
 /obj/item/projectile/bullet/rifle/a77x58/weak/New()
 	..()
-	damage = (DAMAGE_VERY_HIGH)/2
+	damage = (damage)/2
 	penetrating = 4
 	armor_penetration = 22
 
@@ -434,7 +434,7 @@
 
 /obj/item/projectile/bullet/rifle/a303/weak/New()
 	..()
-	damage = (DAMAGE_VERY_HIGH)/2
+	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 22
 
@@ -445,7 +445,7 @@
 
 /obj/item/projectile/bullet/rifle/a3006/weak/New()
 	..()
-	damage = (DAMAGE_VERY_HIGH)/2
+	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 24
 
@@ -501,7 +501,7 @@ obj/item/projectile/bullet/rifle/a545x39
 	penetrating = 5
 	armor_penetration = 42
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
-	damage = (DAMAGE_VERY_HIGH)/2
+	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 21
 
