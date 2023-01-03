@@ -37,6 +37,7 @@
 	var/mob/last_user = null
 
 	var/zoom_amount = 10
+	is_hmg = TRUE
 
 	var/hardness = 10 
 
