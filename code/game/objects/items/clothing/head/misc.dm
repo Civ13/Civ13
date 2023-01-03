@@ -130,6 +130,6 @@
 
 /obj/item/clothing/head/catears
 	name  = "cat tail and ears"
-	desc "You godless creature..."
+	desc = "You godless creature..."
 	icon_state = "kitty"
 	body_parts_covered = FALSE
