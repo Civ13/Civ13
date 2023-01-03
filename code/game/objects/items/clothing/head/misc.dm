@@ -127,3 +127,9 @@
 	desc = "An orange piece of cloth, worn on the head."
 	icon_state = "orange_bandana"
 	body_parts_covered = FALSE
+
+/obj/item/clothing/head/catears
+	name  = "cat tail and ears"
+	desc "You godless creature..."
+	icon_state = "kitty"
+	body_parts_covered = FALSE
