@@ -417,7 +417,7 @@
 	user.visible_message("<span class='notice'>[user] starts trying to revive [M].</span>", "<span class='notice'>You determinately start trying to perfom the work of gods on [M].</span>")
 	if (do_after(user, 120, src))
 		M.revive()
-		if (!ckey && lastKnownCkey)
+		if (!M.ckey && M.lastKnownCkey)
 			M.ckey = M.lastKnownCkey
 		user.visible_message("<font size=4>[user] delivers a message from the GODS by reviving from [M] the dead!</font>", "<font size=4>You something only a GOD could achieve by reviving [M]!</font>")
 		playsound(get_turf(M), 'sound/hallelujah!.ogg', 200, FALSE)
