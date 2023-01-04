@@ -12,13 +12,13 @@
 		//"Imperial Age (1650-1780)" = 0,
 		//"Industrial Age (1850-1895)" = 0,
 		//"Early Modern Era (1896-1930)" = 0,
-		"PVE (Voyage, Hunt, Colony, Wasteland, Etc)" = 0,
+		"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
 		"Early Fire Arms (1650-1930)" = 0,
 		"World War II (1931-1948)" = 0,
 		//"Cold War Era (1949-1984)" = 0,
 		//"Modern Era (1985-2020)" = 0,
 		"Modern Fire Arms (1949-2021)" = 0,
-		"HRP TDM (Gulag, Voyage, Occupation, etc)" = 10,
+		"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
 		"Civilization 13 (Nomads)" = 0,
 		"Civilization 13 (Colony & Pioneers)" = 0,
 		//"Civilization 13 (Prison Camps)" = 15,
@@ -47,28 +47,41 @@
 			var/obj/map_metadata/voyage/nmap = map
 			nmap.show_stats()
 		if (config.allowedgamemodes == "TDM")
-			if (clients.len > 26)
-				epochs = list(
-					"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
-					"Early Fire Arms (1650-1930)" = 0,
-					"World War II (1931-1948)" = 0,
-					"Modern Fire Arms (1949-2021)" = 0,
-					"Fiction" = 0,
-					"Battle Royale" = 6,
-					"Chad Mode" = 30,
-				)
+			if (clients.len > 25) // Temporary solution
+				for (var/client/C in admins) // Temporary solution
+					if ((R_MOD & C.holder.rights)) // Temporary solution
+						epochs = list(
+							"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
+							"Early Fire Arms (1650-1930)" = 0,
+							"World War II (1931-1948)" = 0,
+							"Modern Fire Arms (1949-2021)" = 0,
+							"Fiction" = 0,
+							"Battle Royale" = 6,
+							"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
+							"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
+		//					"Chad Mode" = 0,
+						)
+					else
+						epochs = list(
+							"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
+							"Early Fire Arms (1650-1930)" = 0,
+							"World War II (1931-1948)" = 0,
+							"Modern Fire Arms (1949-2021)" = 0,
+							"Fiction" = 0,
+							"Battle Royale" = 6,
+							"Chad Mode" = 30,
+						)
 			else
 				epochs = list(
 					"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 					"Early Fire Arms (1650-1930)" = 0,
 					"World War II (1931-1948)" = 0,
 					"Modern Fire Arms (1949-2021)" = 0,
-					"PVE (Voyage, Hunt, Colony, Wasteland, Etc)" = 0,
 					"Fiction" = 0,
 					"Battle Royale" = 6,
-					"HRP TDM (Gulag, Voyage, Occupation, etc)" = 10,
+					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
+					"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
 //					"Chad Mode" = 0,
-
 				)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
@@ -168,7 +181,7 @@
 				MAP_OMAHA = 20,
 //				MAP_IWO_JIMA = 40,
 				MAP_FOREST = 20,
-				MAP_KARELIA = 14,
+//				MAP_KARELIA = 14,
 				MAP_INTRAMUROS = 14,
 				MAP_WAKE_ISLAND = 14,
 				MAP_BERLIN = 20,
@@ -220,7 +233,7 @@
 				MAP_TEUTOBURG = 8,
 				MAP_HERACLEA = 8,
 			)
-		else if (epoch == "HRP TDM (Gulag, Voyage, Occupation, etc)")
+		else if (epoch == "HRP TDM (Gulag, Occupation, AOTD, etc)")
 			maps = list(
 //				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 6,
@@ -230,7 +243,7 @@
 				MAP_OCCUPATION = 10,
 				MAP_THE_ART_OF_THE_DEAL = 18,
 			)
-		else if (epoch == "PVE (Voyage, Hunt, Colony, Wasteland, Etc)")
+		else if (epoch == "PvE (Voyage, Hunt, Colony, Wasteland, etc)")
 			maps = list(
 				MAP_HUNT = 0,
 				MAP_CURSED_ISLAND = 0,
@@ -241,7 +254,7 @@
 				MAP_NOMADS_WASTELAND = 0,
 				MAP_NOMADS_WASTELAND_2 = 0,
 				MAP_VOYAGE = 6,
-				MAP_BOHEMIA = 6,
+				MAP_BOHEMIA = 10,
 //				MAP_FOUR_COLONIES = 20,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
