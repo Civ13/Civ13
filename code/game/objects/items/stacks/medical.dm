@@ -419,7 +419,7 @@
 		M.revive()
 		if (!M.ckey && M.lastKnownCkey)
 			M.ckey = M.lastKnownCkey
-		user.visible_message("<font size=4>[user] delivers a message from the GODS by reviving from [M] the dead!</font>", "<font size=4>You something only a GOD could achieve by reviving [M]!</font>")
+		user.visible_message("<font size=4>[user] delivers a message from the GODS by reviving from [M] the dead!</font>", "<font size=4>You did something only a GOD could achieve by reviving [M]!</font>")
 		playsound(get_turf(M), 'sound/hallelujah!.ogg', 200, FALSE)
 		if (M.ckey == user.ckey)
 			user << "You were greedy and now you don't feel so good..."
