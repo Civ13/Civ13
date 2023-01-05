@@ -555,12 +555,16 @@
 	title = "Eerste Luitenant"
 	en_meaning = "Lieutenant"
 	rank_abbreviation = "Lt"
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRNCap"
 
 	is_operation_falcon = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 	is_commander = TRUE
+	is_officer = TRUE
 
 	uses_squads = TRUE
+	whitelisted = TRUE
 
 	additional_languages = list("English" = 70)
 	min_positions = 1
@@ -602,6 +606,8 @@
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
@@ -646,6 +652,8 @@
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 	is_medic = TRUE
 
 	uses_squads = TRUE
@@ -706,6 +714,8 @@
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 	is_radioman = TRUE
 
 	uses_squads = TRUE
@@ -751,6 +761,8 @@
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
+	is_modernday = TRUE
+	is_ww2 = FALSE
 
 	uses_squads = TRUE
 

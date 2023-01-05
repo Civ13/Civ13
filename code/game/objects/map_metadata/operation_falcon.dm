@@ -5,7 +5,7 @@
 	lobby_icon = "icons/lobby/operation_falcon.png"
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 0
+	respawn_delay = 600
 
 	faction_organization = list(
 		DUTCH,
@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, Eastern Suburbs, Factory and Lumber Company</b>.<br>First team to reach <b>60</b> points wins!</font>"
 	faction1 = DUTCH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -28,14 +28,14 @@
 	gamemode = "Area Control"
 	var/rus_points = 0
 	var/dutch_points = 0
-	var/win_points = 40 // Amount of points needed to win
-	var/a1_control = "none"
+	var/win_points = 60 // Amount of points needed to win
+	var/a1_control = "nobody"
 	var/a1_name = "Radio Post"
-	var/a2_control = "none"
+	var/a2_control = "nobody"
 	var/a2_name = "Eastern Suburbs"
-	var/a3_control = "none"
+	var/a3_control = "nobody"
 	var/a3_name = "Factory"
-	var/a4_control = "none"
+	var/a4_control = "nobody"
 	var/a4_name = "Lumber Company"
 	grace_wall_timer = 3000
 /obj/map_metadata/operation_falcon/New()
@@ -104,7 +104,7 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a1_control = "none"
+			a1_control = "nobody"
 			cust_color="white"
 		else if (c1 > c2)
 			a1_control = "Dutch Royal Army"
@@ -115,7 +115,7 @@
 			cust_color="red"
 			rus_points++
 		if (a1_control != prev_control)
-			if (prev_control != "none")
+			if (prev_control != "nobody")
 				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a1_name]</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a1_control]</font> captured the <b>[a1_name]</b>!</big>"
@@ -130,7 +130,7 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a2_control = "none"
+			a2_control = "nobody"
 			cust_color="white"
 		else if (c1 > c2)
 			a2_control = "Dutch Royal Army"
@@ -141,7 +141,7 @@
 			cust_color="red"
 			rus_points++
 		if (a2_control != prev_control)
-			if (prev_control != "none")
+			if (prev_control != "nobody")
 				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a2_name]</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>[a2_name]</b>!</big>"
@@ -156,7 +156,7 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a3_control = "none"
+			a3_control = "nobody"
 			cust_color="white"
 		else if (c1 > c2)
 			a3_control = "Dutch Royal Army"
@@ -167,7 +167,7 @@
 			cust_color="red"
 			rus_points++
 		if (a3_control != prev_control)
-			if (prev_control != "none")
+			if (prev_control != "nobody")
 				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a3_name]</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a3_control]</font> captured the <b>[a3_name]</b>!</big>"
@@ -182,7 +182,7 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a4_control = "none"
+			a4_control = "nobody"
 			cust_color="white"
 		else if (c1 > c2)
 			a4_control = "Dutch Royal Army"
@@ -193,7 +193,7 @@
 			cust_color="red"
 			rus_points++
 		if (a1_control != prev_control)
-			if (prev_control != "none")
+			if (prev_control != "nobody")
 				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a4_name]</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a4_control]</font> captured the <b>[a4_name]</b>!</big>"
