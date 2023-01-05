@@ -47,7 +47,7 @@
 			var/obj/map_metadata/voyage/nmap = map
 			nmap.show_stats()
 		if (config.allowedgamemodes == "TDM")
-			if (clients.len >= 15) // Temporary solution
+			if (clients.len >= 25) // Temporary solution
 				for (var/client/C in admins) // Temporary solution
 					if (R_MOD & C.holder.rights && !is_mentor(C)) // Temporary solution
 						epochs = list(
