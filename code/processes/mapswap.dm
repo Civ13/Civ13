@@ -47,9 +47,9 @@
 			var/obj/map_metadata/voyage/nmap = map
 			nmap.show_stats()
 		if (config.allowedgamemodes == "TDM")
-			if (clients.len > 25) // Temporary solution
+			if (clients.len >= 15) // Temporary solution
 				for (var/client/C in admins) // Temporary solution
-					if ((R_MOD & C.holder.rights)) // Temporary solution
+					if (R_MOD & C.holder.rights && !is_mentor(C)) // Temporary solution
 						epochs = list(
 							"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 							"Early Fire Arms (1650-1930)" = 0,
