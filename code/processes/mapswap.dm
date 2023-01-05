@@ -49,7 +49,7 @@
 		if (config.allowedgamemodes == "TDM")
 			if (clients.len > 25) // Temporary solution
 				for (var/client/C in admins) // Temporary solution
-					if ((R_MOD & C.holder.rights)) // Temporary solution
+					if ((R_MOD & C.holder.rights) && (!R_MENTOR & C.holder.rights)) // Temporary solution
 						epochs = list(
 							"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 							"Early Fire Arms (1650-1930)" = 0,
