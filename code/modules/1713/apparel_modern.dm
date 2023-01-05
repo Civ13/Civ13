@@ -352,6 +352,20 @@
 	w_class = 4
 	weight = 1.0
 	slots = 3
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b45
+	name = "6B45 body armor"
+	desc = "A modern body armor of Russian origin."
+	icon_state = "6b45"
+	item_state = "6b45"
+	worn_state = "6b45"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.2
+	w_class = 4
+	weight = 3.8
+
 /* Us Army*/
 
 	/* Us Army Armor*/
