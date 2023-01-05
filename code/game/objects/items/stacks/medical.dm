@@ -423,7 +423,6 @@
 		playsound(get_turf(M), 'sound/hallelujah!.ogg', 200, FALSE)
 		if (M.ckey == user.ckey)
 			user << "You were greedy and now you don't feel so good..."
-			spawn(50)
 			M.gib()
 		qdel(src)
 	else
