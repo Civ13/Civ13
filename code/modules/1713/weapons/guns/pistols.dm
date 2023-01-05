@@ -215,7 +215,7 @@
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/sig250
 	weight = 0.594
-	max_shells = 17 //Glock 17 real capacity
+	max_shells = 17
 	ammo_type = /obj/item/ammo_casing/a9x19
 	good_mags = list(/obj/item/ammo_magazine/sig250)
 	load_method = MAGAZINE
@@ -240,7 +240,7 @@
 	magazine_type = /obj/item/ammo_magazine/pl14
 	good_mags = list(/obj/item/ammo_magazine/pl14)
 	weight = 0.594
-	max_shells = 16 //Glock 17 real capacity
+	max_shells = 16
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
@@ -289,7 +289,7 @@
 	magazine_type = /obj/item/ammo_magazine/glock17
 	good_mags = list(/obj/item/ammo_magazine/glock17)
 	weight = 0.594
-	max_shells = 17 //Glock 17 real capacity
+	max_shells = 17
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
@@ -344,7 +344,7 @@
 	magazine_type = /obj/item/ammo_magazine/glock17
 	good_mags = list(/obj/item/ammo_magazine/glock17)
 	weight = 0.594
-	max_shells = 17 //Glock 17 real capacity
+	max_shells = 17
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS

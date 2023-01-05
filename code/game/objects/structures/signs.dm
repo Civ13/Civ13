@@ -269,6 +269,14 @@
 		overlays += icon(icon, "signpost_east")
 	if (findtext(desc, "<b>South:</b>"))
 		overlays += icon(icon, "signpost_south")
+/obj/structure/sign/signpost/everywhere/New()
+	..()
+	spawn(1)
+		overlays += icon(icon, "signpost_west")
+		overlays += icon(icon, "signpost_north")
+		overlays += icon(icon, "signpost_east")
+		overlays += icon(icon, "signpost_south")
+
 //numbers
 /obj/structure/sign/n1
 	desc = "A silver sign which reads 'I'."

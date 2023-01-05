@@ -146,6 +146,22 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
 	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning
+	name = "M2HB browning machine gun"
+	desc = "An american heavy machinegun. Uses .50 cal rounds."
+	icon_state = "browning"
+	base_icon = "browning"
+	caliber = "a50cal"
+	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
+	magazine_type = /obj/item/ammo_magazine/a50cal_can
+	good_mags = list(/obj/item/ammo_magazine/a50cal_can)
+	firemodes = list(
+		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a50cal/weak
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning/update_icon()
+	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 150) : "_empty"]"
+
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"
 	desc = "A german heavy machinegun, using 7.92x57 Mauser rounds."
@@ -165,8 +181,8 @@
 	icon_state = "mg34hmg"
 	base_icon = "mg34hmg"
 	caliber = "a792x57_weak"
-	magazine_type = /obj/item/ammo_magazine/b762
-	good_mags = list(/obj/item/ammo_magazine/b762)
+	magazine_type = /obj/item/ammo_magazine/mg3belt
+	good_mags = list(/obj/item/ammo_magazine/mg3belt)
 	firemodes = list(
 		list(name="full auto", burst=4, burst_delay=1, fire_delay=1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
