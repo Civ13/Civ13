@@ -500,6 +500,7 @@
 #include "code\game\objects\map_metadata\occupation.dm"
 #include "code\game\objects\map_metadata\omaha.dm"
 #include "code\game\objects\map_metadata\ong_thahn.dm"
+#include "code\game\objects\map_metadata\operation_falcon.dm"
 #include "code\game\objects\map_metadata\pavlov_house.dm"
 #include "code\game\objects\map_metadata\pioneers.dm"
 #include "code\game\objects\map_metadata\port_arthur.dm"
@@ -1076,5 +1077,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\WIP\operation_falcon.dmm"
 // END_INCLUDE
