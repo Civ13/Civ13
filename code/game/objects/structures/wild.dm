@@ -640,6 +640,17 @@ var/list/seed_list_jungle
 	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "burnedtree[rand(1,5)]"
 
+/obj/structure/wild/tree_stump
+	name = "tree stump"
+	icon_state = "tree_stump"
+	deadicon = 'icons/obj/flora/wild.dmi'
+	deadicon_state = "tree_stump"
+	opacity = FALSE
+	density = FALSE
+	flammable = FALSE
+	health = 50
+	maxhealth = 50
+
 /obj/structure/wild/tallgrass
 	name = "tall grass"
 	icon = 'icons/obj/flora/wild.dmi'

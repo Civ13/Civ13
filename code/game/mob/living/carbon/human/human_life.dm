@@ -1447,7 +1447,10 @@
 					else
 						holder2.icon_state = "ind_basic"
 				if (DUTCH)
-					holder2.icon_state = "nl_basic"
+					if (map.ordinal_age >= 6)
+						holder2.icon_state = "nl_basic"
+					else
+						holder2.icon_state = "nl_old_basic"
 				if (ARAB)
 					if (map.ordinal_age >= 6)
 						if (map.ID == MAP_ARAB_TOWN)

@@ -33,11 +33,15 @@ faggot,gay
 SS13,game
 brb,be right back
 smh,oh boy
-afk,busy
+mfw,oh boy
+afk,i am busy
 noob,newbie
 omg,oh my god
+tf,what the fuck!
+1984,the opression!
 gtg,i have to go
 unga,barbarian
+bunga,barbarian
 :(,ugh
 ;(,urgh
 :),haha

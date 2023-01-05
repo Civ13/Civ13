@@ -410,7 +410,7 @@
 
 /obj/item/revival_kit
 	name = "revival kit"
-	desc = "A full sized hospital and multiple years of rehabilitation in only couple of seconds, a true gift from the gods!"
+	desc = "A full sized hospital and multiple years of rehabilitation in only couple of seconds, a true gift from the gods! Better not be greedy..."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "revival"
 /obj/item/revival_kit/attack(var/mob/living/human/M as mob, var/mob/user as mob)
@@ -421,6 +421,10 @@
 			M.ckey = M.lastKnownCkey
 		user.visible_message("<font size=4>[user] delivers a message from the GODS by reviving from [M] the dead!</font>", "<font size=4>You something only a GOD could achieve by reviving [M]!</font>")
 		playsound(get_turf(M), 'sound/hallelujah!.ogg', 200, FALSE)
+		if (M.ckey == user.ckey)
+			user << "You were greedy and now you don't feel so good..."
+			spawn(50)
+			M.gib()
 		qdel(src)
 	else
 		user.visible_message("<span class='notice'>[user] stops trying to revive [M].</span>", "<span class='notice'>You stop trying to revive [M].</span>")
