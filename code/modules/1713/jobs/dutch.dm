@@ -583,7 +583,7 @@
 //equipment
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/com(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
+	var/obj/item/weapon/gun/projectile/submachinegun/c7/c8/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7/c8(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
@@ -629,7 +629,7 @@
 //equipment
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/sl(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
+	var/obj/item/weapon/gun/projectile/submachinegun/c7/c8/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7/c8(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
