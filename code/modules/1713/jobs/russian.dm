@@ -1734,14 +1734,11 @@
 
 // Modern
 /datum/job/russian/modern_lieutenant
-	title = "Poruchik"
-	en_meaning = "Lieutenant"
-	rank_abbreviation = "Lt."
-	spawn_location = "JoinLateRUCap"
+	title = "Starshiy Leitenant"
+	en_meaning = "1st Lieutenant"
+	rank_abbreviation = "Stl."
 
 	is_operation_falcon = TRUE
-	is_modernday = TRUE
-	is_ww2 = FALSE
 	is_commander = TRUE
 	is_officer = TRUE
 
