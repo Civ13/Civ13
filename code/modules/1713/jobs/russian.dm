@@ -1757,17 +1757,24 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+	uniform.attackby(b45, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	uniform.attackby(plates1, H)
+	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/com(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	
 	var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1783,12 +1790,10 @@
 /datum/job/russian/modern_squadleader
 	title = "Serjant"
 	en_meaning = "Squad Leader"
-	rank_abbreviation = ""
+	rank_abbreviation = "Srj."
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
-	is_modernday = TRUE
-	is_ww2 = FALSE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
@@ -1805,17 +1810,24 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+	uniform.attackby(b45, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	uniform.attackby(plates1, H)
+	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/sl(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	
 	var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1835,8 +1847,6 @@
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
-	is_modernday = TRUE
-	is_ww2 = FALSE
 	is_medic = TRUE
 
 	uses_squads = TRUE
@@ -1852,19 +1862,30 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+	uniform.attackby(b45, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	uniform.attackby(plates1, H)
+	uniform.attackby(plates2, H)
 	var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(medicalarm, H)
 //equipment
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	
+	var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
+	H.equip_to_slot_or_del(HGUN, slot_shoulder)
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+	SP.attached(null,HGUN,TRUE)
+	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+	FP.attached(null,HGUN,TRUE)
+
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1885,8 +1906,6 @@
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
-	is_modernday = TRUE
-	is_ww2 = FALSE
 	is_radioman = TRUE
 
 	uses_squads = TRUE
@@ -1903,19 +1922,25 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+	uniform.attackby(b45, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	uniform.attackby(plates1, H)
+	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	
 	var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1933,13 +1958,11 @@
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
-	is_modernday = TRUE
-	is_ww2 = FALSE
 
 	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
-	min_positions = 10
+	min_positions = 5
 	max_positions = 100
 
 /datum/job/russian/modern_rifleman/equip(var/mob/living/human/H)
@@ -1950,17 +1973,24 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+	uniform.attackby(b45, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	uniform.attackby(plates1, H)
+	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+
 	var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1976,18 +2006,16 @@
 /datum/job/russian/modern_tanker
 	title = "Tankist"
 	en_meaning = "Armored Crewman"
-	rank_abbreviation = ""
+	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
-	is_modernday = TRUE
-	is_ww2 = FALSE
 
 	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
-	min_positions = 10
-	max_positions = 100
+	min_positions = 1
+	max_positions = 6
 
 /datum/job/russian/modern_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1997,17 +2025,18 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+	uniform.attackby(b45, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	uniform.attackby(plates1, H)
+	uniform.attackby(plates2, H)
 //equipment
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
-	var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
-	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
-	SP.attached(null,HGUN,TRUE)
-	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
-	FP.attached(null,HGUN,TRUE)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp443(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mp443(H), slot_belt)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
