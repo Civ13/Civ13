@@ -511,9 +511,6 @@
 
 	return TRUE
 
-
-	return TRUE
-
 /datum/job/dutch/chasseur
 	title = "Jager"
 	en_meaning = "Light Infantry"
@@ -522,7 +519,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_army = TRUE
-
 
 	min_positions = 4
 	max_positions = 20
@@ -550,6 +546,289 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+// Modern
+/datum/job/dutch/modern_lieutenant
+	title = "Eerste Luitenant"
+	en_meaning = "Lieutenant"
+	rank_abbreviation = "Lt"
+	spawn_location = "JoinLateRN"
+
+	is_operation_falcon = TRUE
+	is_commander = TRUE
+
+	uses_squads = TRUE
+
+	additional_languages = list("English" = 70)
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/dutch/modern_lieutenant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
+//equipment
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/com(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
+	H.equip_to_slot_or_del(HGUN, slot_shoulder)
+	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+	FP.attached(null,HGUN,TRUE)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/dutch/modern_squadleader
+	title = "Sergeant"
+	en_meaning = "Squad Leader"
+	rank_abbreviation = "Sgt"
+	spawn_location = "JoinLateRN"
+
+	is_operation_falcon = TRUE
+	is_squad_leader = TRUE
+
+	uses_squads = TRUE
+
+	additional_languages = list("English" = 70)
+	min_positions = 10
+	max_positions = 10
+
+/datum/job/dutch/modern_squadleader/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
+//equipment
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/sl(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
+	H.equip_to_slot_or_del(HGUN, slot_shoulder)
+	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+	FP.attached(null,HGUN,TRUE)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/dutch/modern_medic
+	title = "Veld Arts"
+	en_meaning = "Doctor"
+	rank_abbreviation = "AR"
+	spawn_location = "JoinLateRN"
+
+	is_operation_falcon = TRUE
+	is_medic = TRUE
+
+	uses_squads = TRUE
+
+	additional_languages = list("English" = 15)
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/dutch/modern_medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+//armor
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(medicalarm, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+//equipment
+	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
+	H.equip_to_slot_or_del(HGUN, slot_shoulder)
+	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+	FP.attached(null,HGUN,TRUE)
+
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/dutch/modern_radioman
+	title = "Korporaal"
+	en_meaning = "Radioman"
+	rank_abbreviation = "Kpl"
+	spawn_location = "JoinLateRN"
+
+	is_operation_falcon = TRUE
+	is_radioman = TRUE
+
+	uses_squads = TRUE
+
+	additional_languages = list("English" = 15)
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/dutch/modern_radioman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
+//equipment
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
+	H.equip_to_slot_or_del(HGUN, slot_shoulder)
+	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+	FP.attached(null,HGUN,TRUE)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/dutch/modern_rifleman
+	title = "Soldaat der Eerste Klasse"
+	en_meaning = "Soldier First Class"
+	rank_abbreviation = "Sld1"
+	spawn_location = "JoinLateRN"
+
+	is_operation_falcon = TRUE
+
+	uses_squads = TRUE
+
+	additional_languages = list("English" = 15)
+	min_positions = 10
+	max_positions = 100
+
+/datum/job/dutch/modern_rifleman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
+//equipment
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
+	H.equip_to_slot_or_del(HGUN, slot_shoulder)
+	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+	FP.attached(null,HGUN,TRUE)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/dutch/modern_tanker
+	title = "Huzaar Cavalerie"
+	en_meaning = "Tanker"
+	rank_abbreviation = "Sgt"
+	spawn_location = "JoinLateRN"
+
+	is_operation_falcon = TRUE
+
+	uses_squads = TRUE
+
+	additional_languages = list("English" = 15)
+	min_positions = 10
+	max_positions = 100
+
+/datum/job/dutch/modern_tanker/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+//equipment
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/dutch(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
 	give_random_name(H)
 
 	return TRUE
