@@ -102,7 +102,7 @@
 			cust_color = "white"
 		else if (c1 > c2)
 			a1_control = "Dutch Royal Army"
-			cust_color = "FFA500"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a1_control = "Russian Armed Forces"
 			cust_color = "red"
@@ -111,7 +111,7 @@
 				cust_color = "red"
 				rus_points++
 			else if (a1_control == "Dutch Royal Army")
-				cust_color = "FFA500"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"
@@ -132,7 +132,7 @@
 			cust_color = "white"
 		else if (c1 > c2)
 			a2_control = "Dutch Royal Army"
-			cust_color = "FFA500"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a2_control = "Russian Armed Forces"
 			cust_color = "red"
@@ -141,7 +141,7 @@
 				cust_color = "red"
 				rus_points++
 			else if (a2_control == "Dutch Royal Army")
-				cust_color = "FFA500"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"
@@ -162,7 +162,7 @@
 			cust_color = "white"
 		else if (c1 > c2)
 			a3_control = "Dutch Royal Army"
-			cust_color = "FFA500"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a3_control = "Russian Armed Forces"
 			cust_color = "red"
@@ -171,7 +171,7 @@
 				cust_color = "red"
 				rus_points++
 			else if (a3_control == "Dutch Royal Army")
-				cust_color = "FFA500"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"
@@ -192,7 +192,7 @@
 			cust_color = "white"
 		else if (c1 > c2)
 			a4_control = "Dutch Royal Army"
-			cust_color = "FFA500"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a4_control = "Russian Armed Forces"
 			cust_color = "red"
@@ -201,7 +201,7 @@
 				cust_color = "red"
 				rus_points++
 			else if (a4_control == "Dutch Royal Army")
-				cust_color = "FFA500"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"

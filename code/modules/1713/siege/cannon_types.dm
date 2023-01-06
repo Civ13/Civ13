@@ -82,6 +82,10 @@
 		..()
 		w_class = caliber/2
 
+/obj/structure/cannon/modern/tank/autoloader
+	name = "tank cannon with autoloader"
+	desc = "a barebones cannon made to be carried by vehicles."
+
 /obj/structure/cannon/modern/tank/voyage
 	spritemod = TRUE
 	w_class = 5
@@ -219,6 +223,14 @@
 	caliber = 88
 
 /obj/structure/cannon/modern/tank/omwtc10
+	name = "OMW-TC 10 cm"
+	desc = "a 100 mm Redmenian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 100
+
+/obj/structure/cannon/modern/tank/autoloader/omwtc10
 	name = "OMW-TC 10 cm"
 	desc = "a 100 mm Redmenian tank-based cannon."
 	icon_state = "tank_cannon"
