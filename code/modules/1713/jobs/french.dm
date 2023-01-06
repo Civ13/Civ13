@@ -324,7 +324,7 @@
 
 //head
 	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/red_sailorberet(H), slot_head)
 	var/randweapon = rand(1,2)
 	if (randweapon == 1)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
@@ -420,7 +420,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/french_soldier(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/french_officer(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/red_sailorberet(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol(H), slot_shoulder)
