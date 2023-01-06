@@ -25,6 +25,8 @@ roblox,game
 Minecraft,game
 Fortnite,game
 admin pm,pray to the gods
+admin,god
+admins,gods
 pm the admins,pray to the gods
 soyboy,weakling
 cuck,weakling
