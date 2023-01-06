@@ -501,6 +501,7 @@ obj/item/projectile/bullet/rifle/a545x39
 	penetrating = 5
 	armor_penetration = 42
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
+	..()
 	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 21
@@ -535,6 +536,12 @@ obj/item/projectile/bullet/rifle/a556x45
 	penetrating = 10
 	armor_penetration = 50
 	heavy_armor_penetration = 10
+
+/obj/item/projectile/bullet/rifle/a50cal/weak/New()
+	..()
+	damage = (damage)/2
+	penetrating = 10
+	armor_penetration = 20
 
 /obj/item/projectile/bullet/rifle/a50cal_ap
 	damage = DAMAGE_MEDIUM + 5

@@ -81,6 +81,7 @@
 /datum/job/var/can_be_minor = FALSE
 /datum/job/var/is_karelia = FALSE
 /datum/job/var/is_grozny = FALSE
+/datum/job/var/is_operation_falcon = FALSE
 /datum/job/var/is_skyrim = FALSE
 /datum/job/var/is_imperial = FALSE
 /datum/job/var/is_stormcloak = FALSE

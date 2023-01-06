@@ -452,19 +452,19 @@
 	location = AREA_INSIDE
 
 /area/caribbean/no_mans_land/capturable/one
-	name = "Telephone Central"
+	name = "Capture Area 1"
 
 /area/caribbean/no_mans_land/capturable/two
-	name = "Train Station"
+	name = "Capture Area 2"
 
 /area/caribbean/no_mans_land/capturable/three
-	name = "City Hall"
+	name = "Capture Area 3"
 
 /area/caribbean/no_mans_land/capturable/four
-	name = "Hospital"
+	name = "Capture Area 4"
 
 /area/caribbean/no_mans_land/capturable/five
-	name = "Library"
+	name = "Capture Area 5"
 
 /area/caribbean/no_mans_land/tundra
 	name = "No Man's Land"

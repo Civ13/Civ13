@@ -181,16 +181,52 @@ Example for later use:
 				/obj/structure/barricade/horizontal,
 				/obj/structure/barricade/vertical)
 
-/obj/random/tree/alive
+/obj/random/plants/tree
 	name = "Tree"
 	icon_state = "tree"
-	spawn_nothing_percentage = 40
-/obj/random/tree/alive/spawn_choices()
-	return list(/obj/structure/wild/tree/live_tree)
+	spawn_nothing_percentage = 15
+/obj/random/plants/tree/spawn_choices()
+	return list(/obj/structure/wild/tree/live_tree,
+				/obj/structure/wild/tallgrass,
+				/obj/structure/wild/rock,
+				/obj/structure/wild/rock/basalt,
+				/obj/structure/wild/tree_stump,
+				/obj/structure/wild/bush,
+				/obj/structure/wild/smallbush,
+				/obj/structure/wild/tallgrass)
 
-/obj/random/tree/snow
+/obj/random/plants/tree_lowchance
+	name = "Tree"
+	icon_state = "tree"
+	spawn_nothing_percentage = 75
+/obj/random/plants/tree/spawn_choices()
+	return list(/obj/structure/wild/tree/live_tree,
+				/obj/structure/wild/tallgrass,
+				/obj/structure/wild/rock,
+				/obj/structure/wild/rock/basalt,
+				/obj/structure/wild/tree_stump,
+				/obj/structure/wild/bush,
+				/obj/structure/wild/smallbush,
+				/obj/structure/wild/tallgrass)
+
+/obj/random/plants/tree_snow
 	name = "Snowy Tree"
 	icon_state = "tree"
-	spawn_nothing_percentage = 40
-/obj/random/tree/snow/spawn_choices()
-	return list(/obj/structure/wild/tree/live_tree/snow)
+	spawn_nothing_percentage = 15
+/obj/random/plants/snow/spawn_choices()
+	return list(/obj/structure/wild/tree/live_tree/snow,
+				/obj/structure/wild/rock,
+				/obj/structure/wild/rock/basalt,
+				/obj/structure/wild/tree_stump,
+				/obj/structure/wild/smallbush/winter)
+
+/obj/random/plants/tree_snow_lowchance
+	name = "Snowy Tree"
+	icon_state = "tree"
+	spawn_nothing_percentage = 15
+/obj/random/plants/snow/spawn_choices()
+	return list(/obj/structure/wild/tree/live_tree/snow,
+				/obj/structure/wild/rock,
+				/obj/structure/wild/rock/basalt,
+				/obj/structure/wild/tree_stump,
+				/obj/structure/wild/smallbush/winter)

@@ -281,6 +281,17 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = TRUE
 	belt = TRUE
 
+/obj/item/ammo_magazine/mg3belt
+	name = "belt (7.62x51mm)"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a762x51_weak"
+	w_class = 4
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x51/weak
+	max_ammo = 100
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/c8mmnambu
 	name = "Nambu magazine"
 	icon_state = "lugermag"
