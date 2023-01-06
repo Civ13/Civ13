@@ -615,7 +615,7 @@
 "lY" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/forest)
 "lZ" = (/obj/structure/table/rack,/obj/item/trombone,/turf/floor/wood,/area/caribbean/houses)
 "ma" = (/obj/structure/table/rack,/obj/item/violin,/turf/floor/wood,/area/caribbean/houses)
-"mb" = (/obj/structure/table/rack,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/turf/floor/wood,/area/caribbean/houses)
+"mb" = (/obj/structure/table/rack,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/turf/floor/wood,/area/caribbean/houses)
 "mc" = (/obj/structure/table/rack,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/turf/floor/wood,/area/caribbean/houses)
 "md" = (/obj/structure/table/rack,/obj/item/lightbulb,/obj/item/lightbulb,/turf/floor/wood,/area/caribbean/houses)
 "me" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/forest)

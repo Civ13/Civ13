@@ -503,7 +503,7 @@
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/clothing/accessory/storage/webbing/russband
 	name = "Imperial Russian Army bandolier"
@@ -547,7 +547,7 @@
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 /obj/item/weapon/storage/belt/jap
 	name = "Japanese Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
@@ -582,7 +582,7 @@
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/ammo_magazine/arisaka(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier
 /obj/item/weapon/storage/belt/jap/ww2soldier/New()
@@ -593,7 +593,7 @@
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier100
 /obj/item/weapon/storage/belt/jap/ww2soldier100/New()
@@ -614,7 +614,7 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard
 /obj/item/weapon/storage/belt/jap/camp_guard/New()
@@ -622,7 +622,7 @@
 	new /obj/item/weapon/melee/classic_baton(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
@@ -653,7 +653,7 @@
 	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 	new /obj/item/ammo_magazine/c8mmnambu(src)
 	new /obj/item/ammo_magazine/c8mmnambu(src)
 /////////////////////////////////////////////////////////////////////////////////
@@ -1248,7 +1248,7 @@
 	New()
 		..()
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/weapon/attachment/bayonet(src)
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
 
@@ -1270,7 +1270,7 @@
 	New()
 		..()
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/weapon/attachment/bayonet(src)
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
 

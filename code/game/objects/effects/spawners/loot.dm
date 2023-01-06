@@ -26,7 +26,7 @@
 
 /obj/effect/spawner/lootdrop/melee
 	name = "melee spawner"
-	loot = list(/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/material/sword/gladius/iron,/obj/item/weapon/material/sword/armingsword,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/hatchet/battleaxe,/obj/item/weapon/melee/classic_baton)
+	loot = list(/obj/item/weapon/attachment/bayonet,/obj/item/weapon/material/sword/gladius/iron,/obj/item/weapon/material/sword/armingsword,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/hatchet/battleaxe,/obj/item/weapon/melee/classic_baton)
 
 /obj/effect/spawner/lootdrop/melee/medieval
 	name = "melee spawner"

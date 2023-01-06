@@ -311,7 +311,7 @@
 "fY" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "fZ" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "ga" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/iron,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
-"gb" = (/obj/structure/closet/cabinet,/obj/item/weapon/attachment/bayonet/military,/obj/item/ammo_magazine/shellbox,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"gb" = (/obj/structure/closet/cabinet,/obj/item/weapon/attachment/bayonet,/obj/item/ammo_magazine/shellbox,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "gc" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 9},/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "gd" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 1},/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 4},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "ge" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 1},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})

@@ -218,7 +218,7 @@ obj/structure/closet/crate/loottreasurechest/New()
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/weapon/attachment/bayonet/military = 10)
+	paths = list(/obj/item/weapon/attachment/bayonet = 10)
 	cratevalue = 132//100 base value from 100 planks of wood
 
 /obj/structure/closet/crate/sandbags
@@ -829,7 +829,7 @@ obj/structure/closet/crate/airdrops/weapons
 				/obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt = 1,
 				/obj/item/ammo_magazine/ak47/makeshift = 2,
 				/obj/item/ammo_magazine/mosin = 2,
-				/obj/item/weapon/attachment/bayonet/military = 1)
+				/obj/item/weapon/attachment/bayonet = 1)
 
 obj/structure/closet/crate/airdrops/military
 	name = "military crate"

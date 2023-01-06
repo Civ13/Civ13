@@ -140,7 +140,7 @@
 		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
 		/obj/item/ammo_magazine/mosin = 50,
 		/obj/item/ammo_magazine/mosinbox = 10,
-		/obj/item/weapon/attachment/bayonet/military = 25,
+		/obj/item/weapon/attachment/bayonet = 25,
 	)
 
 /obj/structure/vending/rednikovweapons
@@ -180,7 +180,7 @@
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98 = 15,
 		/obj/item/ammo_magazine/gewehr98 = 50,
 		/obj/item/ammo_magazine/mauser = 20,
-		/obj/item/weapon/attachment/bayonet/military = 25,
+		/obj/item/weapon/attachment/bayonet = 25,
 	)
 
 /obj/structure/vending/ww1britweapons
@@ -191,7 +191,7 @@
 		/obj/item/weapon/gun/projectile/boltaction/enfield = 15,
 		/obj/item/ammo_magazine/enfield = 50,
 		/obj/item/ammo_magazine/c455 = 20,
-		/obj/item/weapon/attachment/bayonet/military = 25,
+		/obj/item/weapon/attachment/bayonet = 25,
 	)
 /obj/structure/vending/ww1frenchweapons
 	name = "French rifle rack"
@@ -202,7 +202,7 @@
 		/obj/item/ammo_magazine/c8x50 = 20,
 		/obj/item/ammo_magazine/c8x50_3clip = 30,
 		/obj/item/ammo_magazine/c8x27 = 20,
-		/obj/item/weapon/attachment/bayonet/military = 25,
+		/obj/item/weapon/attachment/bayonet = 25,
 	)
 /obj/structure/vending/ww1frenchapparel
 	name = "French Army apparel rack"
@@ -265,7 +265,7 @@
 		/obj/item/weapon/gun/projectile/boltaction/arisaka30 = 15,
 		/obj/item/ammo_magazine/arisakabox = 10,
 		/obj/item/ammo_magazine/arisaka = 50,
-		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet = 15,
 	)
 
 /obj/structure/vending/japaneseapparel
@@ -294,7 +294,7 @@
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese = 15,
 		/obj/item/ammo_magazine/gewehr98box = 10,
 		/obj/item/ammo_magazine/gewehr98 = 50,
-		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet = 15,
 	)
 
 /obj/structure/vending/chineseweapons_korean_war
@@ -308,7 +308,7 @@
 		/obj/item/ammo_magazine/c762x25_ppsh = 15,
 		/obj/item/ammo_magazine/dp = 15,
 		/obj/item/ammo_magazine/mauser = 10,
-		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet = 15,
 	)
 /obj/structure/vending/chineseapparel_korean_war
 	name = "Chinese apparel rack"
@@ -445,7 +445,7 @@
 			/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
 			/obj/item/ammo_magazine/arisakabox = 5,
 			/obj/item/ammo_magazine/arisaka = 50,
-			/obj/item/weapon/attachment/bayonet/military = 15,
+			/obj/item/weapon/attachment/bayonet = 15,
 		)
 	else
 		products = list(
@@ -454,7 +454,7 @@
 			/obj/item/ammo_magazine/arisakabox = 5,
 			/obj/item/ammo_magazine/arisaka = 50,
 			/obj/item/ammo_magazine/arisaka99 = 40,
-			/obj/item/weapon/attachment/bayonet/military = 15,
+			/obj/item/weapon/attachment/bayonet = 15,
 		)
 
 /obj/structure/vending/yakuza
@@ -562,7 +562,7 @@
 		/obj/item/weapon/grenade/flashbang/m84 = 15,
 		/obj/item/weapon/grenade/incendiary/anm14 = 15,
 		/obj/item/weapon/plastique/c4 = 6,
-		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet = 15,
 	)
 
 obj/structure/vending/sofammo
@@ -668,8 +668,8 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/attachment/bayonet/military = 15,
-		/obj/item/weapon/attachment/bayonet/military = 25,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/weapon/attachment/bayonet = 25,
 	)
 
 /obj/structure/vending/sovietweapons
@@ -678,7 +678,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_british"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 15,
-		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet = 15,
 	)
 
 
@@ -688,7 +688,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_british"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
-		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet = 15,
 	)
 
 /obj/structure/vending/wehrmachtammo
@@ -735,7 +735,7 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/coldwar/m67= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 		/obj/item/weapon/grenade/flashbang/m84 = 20,
-		/obj/item/weapon/attachment/bayonet/military = 30,
+		/obj/item/weapon/attachment/bayonet = 30,
 //		/obj/item/weapon/grenade/incendiary = 20,
 	)
 
@@ -818,7 +818,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m14 = 50,
 		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
-		/obj/item/weapon/attachment/bayonet/military = 20,
+		/obj/item/weapon/attachment/bayonet = 20,
 	)
 
 /obj/structure/vending/usa_apparel_coldwar
@@ -863,7 +863,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m14 = 30,
 		/obj/item/ammo_magazine/b762 = 15,
 		/obj/item/ammo_magazine/m1911 = 50,
-		/obj/item/weapon/attachment/bayonet/military = 30,
+		/obj/item/weapon/attachment/bayonet = 30,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 		/obj/item/weapon/grenade/coldwar/m67 = 15,
 		/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 15,
@@ -992,7 +992,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/semiautomatic/svd = 4,
 		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 4,
 		/obj/item/weapon/gun/projectile/pistol/makarov  = 15,
-		/obj/item/weapon/attachment/bayonet/military = 15,
+		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/grenade/smokebomb = 15,
 		/obj/item/weapon/grenade/flashbang = 15,
 		/obj/item/weapon/grenade/coldwar/rgd5 = 15,

@@ -7669,7 +7669,7 @@
 	})
 "TO" = (
 /obj/structure/closet/crate/footlocker,
-/obj/item/weapon/attachment/bayonet/military,
+/obj/item/weapon/attachment/bayonet,
 /turf/floor/dirt,
 /area/caribbean/void/caves{
 	base_turf = /turf/floor/dirt;

@@ -581,7 +581,7 @@
 "li" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/dust,/area/caribbean/desert)
 "lj" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
 "lk" = (/obj/structure/closet/cabinet,/obj/item/ammo_magazine/sharps,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Inn"})
-"ll" = (/obj/structure/closet/cabinet,/obj/item/weapon/attachment/bayonet/military,/obj/item/ammo_magazine/shellbox,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"ll" = (/obj/structure/closet/cabinet,/obj/item/weapon/attachment/bayonet,/obj/item/ammo_magazine/shellbox,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "lm" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
 "ln" = (/obj/structure/closet/crate/empty{name = "Slugshot ammunition crate"},/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "lo" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/shotgun/coachgun,/turf/floor/wood,/area/caribbean/desert/buildings)

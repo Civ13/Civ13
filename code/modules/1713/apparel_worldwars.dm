@@ -2076,8 +2076,8 @@ obj/item/clothing/head/ww2/cra_cap
 	flags = CONDUCT
 
 /obj/item/clothing/head/ww2/soviet_tanker
-	name = "soviet tanker cap"
-	desc = "A cap and worn by soviet tank crewmen of the red army."
+	name = "russian tanker cap"
+	desc = "A cap and worn by russian tank crewmen."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
