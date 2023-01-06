@@ -48,29 +48,32 @@
 			nmap.show_stats()
 		if (config.allowedgamemodes == "TDM")
 			if (clients.len >= 25) // Temporary solution
-				for (var/client/C in admins) // Temporary solution
-					if (R_MOD & C.holder.rights) // Temporary solution
-						epochs = list(
-							"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
-							"Early Fire Arms (1650-1930)" = 0,
-							"World War II (1931-1948)" = 0,
-							"Modern Fire Arms (1949-2021)" = 0,
-							"Fiction" = 0,
-							"Battle Royale" = 6,
-							"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-							"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
-		//					"Chad Mode" = 0,
-						)
-					else
-						epochs = list(
-							"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
-							"Early Fire Arms (1650-1930)" = 0,
-							"World War II (1931-1948)" = 0,
-							"Modern Fire Arms (1949-2021)" = 0,
-							"Fiction" = 0,
-							"Battle Royale" = 6,
-							"Chad Mode" = 30,
-						)
+				var/moderator_present = FALSE
+				for (var/client/C in admins)
+					if(R_MOD||R_ADMIN & C.holder.rights)
+						moderator_present = TRUE
+						break
+				if (moderator_present == TRUE)
+					epochs = list(
+						"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
+						"Early Fire Arms (1650-1930)" = 0,
+						"World War II (1931-1948)" = 0,
+						"Modern Fire Arms (1949-2021)" = 0,
+						"Fiction" = 0,
+						"Battle Royale" = 6,
+						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
+						"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
+					)
+				else
+					epochs = list(
+						"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
+						"Early Fire Arms (1650-1930)" = 0,
+						"World War II (1931-1948)" = 0,
+						"Modern Fire Arms (1949-2021)" = 0,
+						"Fiction" = 0,
+						"Battle Royale" = 6,
+						"Chad Mode" = 30,
+					)
 			else
 				epochs = list(
 					"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
