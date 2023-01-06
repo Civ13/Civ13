@@ -20,10 +20,10 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment
 	var/attachable = TRUE
-	var/attachment_type //Use the 'ATTACH_' defines above (should only use one for this)
-	var/A_attached = FALSE //Is attached
+	var/attachment_type // Use the 'ATTACH_' defines above (should only use one for this)
+	var/A_attached = FALSE // Is attached?
 	w_class = 2
-	var/list/fits = list("pistol", "smg", "rifle", "shotgun", "mg")
+	var/list/fits = list("pistol", "smg", "rifle", "shotgun", "mg") // What does it fit on?
 
 /obj/item/weapon/attachment/proc/attached(mob/user, obj/item/weapon/gun/G)
 	user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
@@ -55,7 +55,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/gun
 	var/list/attachments = list()
-	var/attachment_slots = null //Use the 'ATTACH_' defines above; can ise in combination Ex. ATTACH_SCOPE|ATTACH_BARREL
+	var/attachment_slots = null // Use the 'ATTACH_' defines above; can ise in combination Ex. ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/examine(mob/user)
 	..()
@@ -84,7 +84,7 @@ Current Defines (_defines/attachment.dm)
 	for (var/obj/item/weapon/attachment/A in attachments)
 		A.removed(user, src)
 
-//Use this under /New() of weapons if they spawn with attachments
+// Use this under /New() of weapons if they spawn with attachments
 /obj/item/weapon/gun/proc/spawn_add_attachment(obj/item/weapon/attachment/A)
 	A.A_attached = TRUE
 	attachment_slots -= A.attachment_type
@@ -103,7 +103,7 @@ Current Defines (_defines/attachment.dm)
 		return
 	attach_A(A, user)
 
-//Do not use this; use try_attach instead
+// Do not use this; use try_attach instead
 /obj/item/weapon/gun/proc/attach_A(obj/item/weapon/attachment/A, mob/user)
 	switch(A.attachment_type)
 		if (ATTACH_IRONSIGHTS)
@@ -144,13 +144,15 @@ Current Defines (_defines/attachment.dm)
 				user << "[A] cannot be attached to the [src]."
 		else
 			user << "[A] cannot be attached to the [src]."
-//ATTACHMENTS
+
+
+/////////////////MISC ATTACHMENTS//////////////////////////////
 
 //Scope code is found in code/modules/WW2/weapons/zoom.dm
 
 /obj/item/weapon/attachment/bayonet
 	name = "bayonet"
-	icon = 'icons/obj/kitchen.dmi'
+	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "bayonet"
 	item_state = "knife"
 	flags = CONDUCT
@@ -159,9 +161,11 @@ Current Defines (_defines/attachment.dm)
 	attack_verb = list("slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	attachment_type = ATTACH_BARREL
 	force = 65
+	weight = 0.450
+	value = 12
 	var/attack_sound = 'sound/weapons/slice.ogg'
 	var/weakens = 0
-	//var/datum/action/bayonet/amelee
+//	var/datum/action/bayonet/amelee
 	var/atk_mode = SLASH
 
 /obj/item/weapon/attachment/bayonet/attack_self(mob/user)
@@ -211,11 +215,11 @@ Current Defines (_defines/attachment.dm)
 				G.update_attachment_actions(user)
 				user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 				if (istype(src, /obj/item/weapon/attachment/bayonet/flag) && G.bayonet_ico)
-					G.bayonet_ico.icon_state = "jap_flag"
+					G.bayonet_ico.icon_state = "[icon_state]_ongun"
 					G.bayonet_ico.pixel_x = 0
 					G.bayonet_ico.pixel_y = 0
 				else
-					G.bayonet_ico.icon_state = "bayonet"
+					G.bayonet_ico.icon_state = "[icon_state]_ongun"
 					G.bayonet_ico.pixel_x = 6
 					G.bayonet_ico.pixel_y = 6
 			loc = G
@@ -223,7 +227,6 @@ Current Defines (_defines/attachment.dm)
 			G.overlays += G.bayonet_ico
 		else
 			return
-
 
 /obj/item/weapon/attachment/bayonet/removed(mob/user, obj/item/weapon/gun/G)
 	if (do_after(user, 15, user))
@@ -242,7 +245,6 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/bayonet/flag
 	name = "japanese flag"
-	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "jap_flag"
 	item_state = "jap_flag"
 	sharp = FALSE
@@ -254,11 +256,8 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/bayonet/flag/attack_self(mob/user)
 	return
 
-/obj/item/weapon/attachment/bayonet/military
-	force = 65
-//	weakens = 1
-	weight = 0.450
-	value = 12
+
+/////////////////OPTICS//////////////////////////////
 
 /obj/item/weapon/attachment/scope/iron_sights
 	name = "iron sights"
@@ -346,8 +345,8 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
 	return
 
-/////////////////ADVANCED OPTICS//////////////////////////////
 
+/////////////////ADVANCED OPTICS//////////////////////////////
 
 /obj/item/weapon/attachment/scope/adjustable/advanced
 	icon = 'icons/obj/gun_att.dmi'
@@ -405,13 +404,13 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/adjustable/advanced/pso1
 	name = "PSO-1 scope"
 	icon_state = "pso1"
-	desc = "A soviet 4x scope."
+	desc = "A soviet 4x scope. Increases magnification but does not increase accuracy."
 	max_zoom = ZOOM_CONSTANT+3
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/acog
 	name = "4x ACOG scope"
 	icon_state = "acog"
-	desc = "A 4x scope."
+	desc = "A 4x scope. Increases magnification but does not increase accuracy."
 	max_zoom = ZOOM_CONSTANT+3
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/reddot
@@ -438,8 +437,12 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/adjustable/advanced/elcan
 	name = "C79A2 Elcan sight"
 	icon_state = "elcan"
-	desc = "A 3.4x scope."
+	desc = "A 3.4x scope. Increases magnification and reduces some parallax error."
 	max_zoom = ZOOM_CONSTANT+2
+	acc_modifier = 1.1
+
+
+/////////////////UNDER BARREL//////////////////////////////
 
 /obj/item/weapon/attachment/under
 	icon = 'icons/obj/gun_att.dmi'
@@ -508,9 +511,19 @@ Current Defines (_defines/attachment.dm)
 	acc_modifier = 1.4
 	scopeonly = FALSE
 
+/obj/item/weapon/attachment/under/foregrip/alt
+	name = "foregrip"
+	icon_state = "foregrip_alt"
+	desc = "a foregrip, to increase stability when firing."
+	acc_modifier = 1.4
+	scopeonly = FALSE
+
 /obj/item/weapon/gun
 	var/silencer_ico
 	var/obj/item/weapon/attachment/silencer/silencer = null
+
+
+/////////////////SILENCERS//////////////////////////////
 
 /obj/item/weapon/attachment/silencer
 	icon = 'icons/obj/gun_att.dmi'
@@ -572,6 +585,7 @@ Current Defines (_defines/attachment.dm)
 	else
 		return
 
+// Improvised
 /obj/item/weapon/attachment/silencer/plastic_bottle
 	name = "plastic bottle suppressor"
 	icon_state = "plastic_bottle_suppressor"
@@ -586,6 +600,7 @@ Current Defines (_defines/attachment.dm)
 	reduction = 35
 	fits = list("smg", "rifle")
 
+// Normal
 /obj/item/weapon/attachment/silencer/pistol
 	name = "pistol suppressor"
 	icon_state = "modern_pistol_suppressor"
@@ -598,3 +613,36 @@ Current Defines (_defines/attachment.dm)
 	icon_state = "ww2_pistol_suppressor"
 	desc = "a pistol suppressor."
 	reduction = 35
+
+/obj/item/weapon/attachment/silencer/rifle
+	name = "rifle suppressor"
+	icon_state = "modern_rifle_suppressor"
+	desc = "a rifle suppressor."
+	reduction = 50
+	fits = list("rifle")
+
+/obj/item/weapon/attachment/silencer/rifle/ww2
+	name = "rifle suppressor"
+	icon_state = "ww2_rifle_suppressor"
+	desc = "a rifle suppressor."
+	reduction = 35
+
+/obj/item/weapon/attachment/silencer/smg
+	name = "smg suppressor"
+	icon_state = "modern_smg_suppressor"
+	desc = "a smg suppressor."
+	reduction = 50
+	fits = list("smg")
+
+/obj/item/weapon/attachment/silencer/smg/ww2
+	name = "smg suppressor"
+	icon_state = "ww2_smg_suppressor"
+	desc = "a smg suppressor."
+	reduction = 35
+
+/obj/item/weapon/attachment/silencer/shotgun
+	name = "shotgun suppressor"
+	icon_state = "modern_shotgun_suppressor"
+	desc = "a shotgun suppressor."
+	reduction = 40
+	fits = list("shotgun")

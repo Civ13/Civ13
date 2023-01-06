@@ -646,7 +646,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet/New()
 	..()
-	var/obj/item/weapon/attachment/bayonet/military/SP = new/obj/item/weapon/attachment/bayonet/military(src)
+	var/obj/item/weapon/attachment/bayonet/SP = new/obj/item/weapon/attachment/bayonet(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training

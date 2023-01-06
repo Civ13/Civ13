@@ -458,7 +458,7 @@
 "BF" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "BO" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/plating/marble/tile,/area/caribbean/houses)
 "BS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean)
-"BV" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper,/obj/item/weapon/attachment/bayonet/military,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
+"BV" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper,/obj/item/weapon/attachment/bayonet,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "BX" = (/obj/structure/bed/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "BZ" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean)
 "Ca" = (/turf/floor/carpet/tealcarpet,/area/caribbean/houses)

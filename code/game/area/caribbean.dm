@@ -453,18 +453,28 @@
 
 /area/caribbean/no_mans_land/capturable/one
 	name = "Capture Area 1"
+/area/caribbean/no_mans_land/capturable/one/outside
+	location = AREA_OUTSIDE
 
 /area/caribbean/no_mans_land/capturable/two
 	name = "Capture Area 2"
+/area/caribbean/no_mans_land/capturable/two/outside
+	location = AREA_OUTSIDE
 
 /area/caribbean/no_mans_land/capturable/three
 	name = "Capture Area 3"
+/area/caribbean/no_mans_land/capturable/three/outside
+	location = AREA_OUTSIDE
 
 /area/caribbean/no_mans_land/capturable/four
 	name = "Capture Area 4"
+/area/caribbean/no_mans_land/capturable/four/outside
+	location = AREA_OUTSIDE
 
 /area/caribbean/no_mans_land/capturable/five
 	name = "Capture Area 5"
+/area/caribbean/no_mans_land/capturable/five/outside
+	location = AREA_OUTSIDE
 
 /area/caribbean/no_mans_land/tundra
 	name = "No Man's Land"

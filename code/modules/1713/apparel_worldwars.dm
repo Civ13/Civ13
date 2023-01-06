@@ -2077,10 +2077,15 @@ obj/item/clothing/head/ww2/cra_cap
 
 /obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
-	desc = "A cap and worn by soviet tank crewmen of the red army."
+	desc = "A cap worn by soviet tank crewmen."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
+/obj/item/clothing/head/ww2/soviet_tanker/New()
+	..()
+	if (map.ordinal_age >= 8)
+		name = "russian tanker cap"
+		desc = "A cap worn by russian tank crewmen."
 
 /obj/item/clothing/head/ww2/ger_officercap
 	name = "german officer cap"

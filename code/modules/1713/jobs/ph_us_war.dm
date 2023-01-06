@@ -109,7 +109,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/american/infantry_hat(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
@@ -151,7 +151,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/american/infantry_hat(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock(H), slot_shoulder)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
@@ -233,7 +233,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/american/infantry_hat(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock(H), slot_shoulder)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a well trained sniper. Follow orders and take out priority targets from a distance!")
