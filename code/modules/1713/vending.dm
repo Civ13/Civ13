@@ -1248,3 +1248,12 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
 	)
+
+/obj/structure/vending/grenade_crate
+	name = "grenade crate"
+	desc = "A crate full of grenades."
+	icon_state = "grenade_crate"
+	products = list()
+/obj/structure/vending/grenade_crate/alt/New()
+	..()
+	icon_state = "grenade_crate_alt"
