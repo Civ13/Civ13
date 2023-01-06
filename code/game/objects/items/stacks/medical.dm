@@ -423,7 +423,8 @@
 		playsound(get_turf(M), 'sound/hallelujah!.ogg', 200, FALSE)
 		if (M.ckey == user.ckey)
 			user << "You were greedy and now you don't feel so good..."
-			M.gib()
+			spawn(30)
+				M.gib()
 		qdel(src)
 	else
 		user.visible_message("<span class='notice'>[user] stops trying to revive [M].</span>", "<span class='notice'>You stop trying to revive [M].</span>")
