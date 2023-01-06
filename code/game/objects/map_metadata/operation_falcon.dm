@@ -26,6 +26,7 @@
 	songs = list(
 		"Doe Maar - The Bomb (De Bom):1" = "sound/music/de_bom.ogg",)
 	gamemode = "Area Control"
+	ambience = list('sound/ambience/battle1.ogg')
 	var/rus_points = 0
 	var/dutch_points = 0
 	var/win_points = 100 // Amount of points needed to win
