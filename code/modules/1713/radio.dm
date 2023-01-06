@@ -1,7 +1,7 @@
 /////////////////////////////RADIO/////////////////////////////////////
 /obj/structure/radio
 	name = "radio receiver"
-	desc = "Used to communicate with distant places. Set to 150kHz."
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
 	icon = 'icons/obj/device.dmi'
 	icon_state = "radio_vintage"
 	flammable = FALSE
@@ -42,12 +42,22 @@
 
 /obj/structure/radio/transmitter_receiver/nopower/tank
 	name = "tank radio"
-	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances."
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
 	icon_state = "tankradio"
 	transmitter = TRUE
 	receiver = TRUE
 	receiver_on = TRUE
 	transmitter_on = TRUE
+
+/obj/structure/radio/transmitter_receiver/nopower/tank/faction1/New()
+	..()
+	freq = FREQ1
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
+
+/obj/structure/radio/transmitter_receiver/nopower/tank/faction2/New()
+	..()
+	freq = FREQ2
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
 
 /obj/structure/radio/transmitter_receiver/nopower
 	name = "two-way radio"
