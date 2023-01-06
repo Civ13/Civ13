@@ -112,16 +112,16 @@
 			cust_color="white"
 		else if (c1 > c2)
 			a1_control = "Dutch Royal Army"
-			cust_color="black"
+			cust_color="orange"
 		else if (c2 > c1)
 			a1_control = "Russian Armed Forces"
-			cust_color="red"
+			cust_color="blue"
 		if (a1_control != "none")
 			if (a1_control == "Russian Armed Forces")
-				cust_color = "red"
+				cust_color = "blue"
 				rus_points++
 			else if (a1_control == "Dutch Royal Army")
-				cust_color = "black"
+				cust_color = "orange"
 				dutch_points++
 			else
 				cust_color = "white"
@@ -142,16 +142,16 @@
 			cust_color="white"
 		else if (c1 > c2)
 			a2_control = "Dutch Royal Army"
-			cust_color="black"
+			cust_color="orange"
 		else if (c2 > c1)
 			a2_control = "Russian Armed Forces"
-			cust_color="red"
+			cust_color="blue"
 		if (a2_control != "none")
 			if (a2_control == "Russian Armed Forces")
-				cust_color = "red"
+				cust_color = "blue"
 				rus_points++
 			else if (a2_control == "Dutch Royal Army")
-				cust_color = "black"
+				cust_color = "orange"
 				dutch_points++
 			else
 				cust_color = "white"
@@ -172,16 +172,16 @@
 			cust_color="white"
 		else if (c1 > c2)
 			a3_control = "Dutch Royal Army"
-			cust_color="black"
+			cust_color="orange"
 		else if (c2 > c1)
 			a3_control = "Russian Armed Forces"
-			cust_color="red"
+			cust_color="blue"
 		if (a3_control != "none")
 			if (a3_control == "Russian Armed Forces")
-				cust_color = "red"
+				cust_color = "blue"
 				rus_points++
 			else if (a3_control == "Dutch Royal Army")
-				cust_color = "black"
+				cust_color = "orange"
 				dutch_points++
 			else
 				cust_color = "white"
@@ -202,16 +202,16 @@
 			cust_color="white"
 		else if (c1 > c2)
 			a4_control = "Dutch Royal Army"
-			cust_color="black"
+			cust_color="orange"
 		else if (c2 > c1)
 			a4_control = "Russian Armed Forces"
-			cust_color="red"
+			cust_color="blue"
 		if (a4_control != "none")
 			if (a4_control == "Russian Armed Forces")
-				cust_color = "red"
+				cust_color = "blue"
 				rus_points++
 			else if (a4_control == "Dutch Royal Army")
-				cust_color = "black"
+				cust_color = "orange"
 				dutch_points++
 			else
 				cust_color = "white"
