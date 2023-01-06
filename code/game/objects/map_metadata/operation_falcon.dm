@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, Eastern Suburbs, Factory and Lumber Company</b>.<br>First team to reach <b>60</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, Eastern Suburbs, Factory and Lumber Company</b>.<br>First team to reach <b>100</b> points wins!</font>"
 	faction1 = DUTCH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -28,16 +28,20 @@
 	gamemode = "Area Control"
 	var/rus_points = 0
 	var/dutch_points = 0
-	var/win_points = 60 // Amount of points needed to win
+	var/win_points = 100 // Amount of points needed to win
 	var/a1_control = "nobody"
 	var/a1_name = "Radio Post"
+
 	var/a2_control = "nobody"
 	var/a2_name = "Eastern Suburbs"
+
 	var/a3_control = "nobody"
 	var/a3_name = "Factory"
+
 	var/a4_control = "nobody"
 	var/a4_name = "Lumber Company"
 	grace_wall_timer = 3000
+
 /obj/map_metadata/operation_falcon/New()
 	..()
 	spawn(3000)
@@ -76,7 +80,7 @@
 
 /obj/map_metadata/operation_falcon/cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<font size = 4>Both teams may now cross the invisible wall!</font>"
+		return "<font size = 4>Operation Falcon has begun!</font>"
 	else if (faction == DUTCH)
 		return ""
 	else
@@ -91,11 +95,10 @@
 		return ""
 
 /obj/map_metadata/operation_falcon/proc/points_check()
-	var/cust_color = "white"
-	if (processes.ticker.playtime_elapsed > 3600)
+	if (processes.ticker.playtime_elapsed > 3000)
 		var/c1 = 0
 		var/c2 = 0
-		var/prev_control = a1_control
+		var/cust_color = "white"
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
@@ -104,24 +107,28 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a1_control = "nobody"
+			a1_control = "none"
 			cust_color="white"
 		else if (c1 > c2)
 			a1_control = "Dutch Royal Army"
-			cust_color="orange"
-			dutch_points++
+			cust_color="black"
 		else if (c2 > c1)
 			a1_control = "Russian Armed Forces"
 			cust_color="red"
-			rus_points++
-		if (a1_control != prev_control)
-			if (prev_control != "nobody")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a1_name]</b>!</big>"
+		if (a1_control != "none")
+			if (a1_control == "Russian Armed Forces")
+				cust_color = "red"
+				rus_points++
+			else if (a1_control == "Dutch Royal Army")
+				cust_color = "black"
+				dutch_points++
 			else
-				world << "<big><font color='[cust_color]'>[a1_control]</font> captured the <b>[a1_name]</b>!</big>"
+				cust_color = "white"
+			world << "<big><font color='[cust_color]'><b>[a1_name]</b>: [a1_control]</font></big>"
+		else
+			world << "<big><b>[a1_name]</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a2_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
@@ -130,24 +137,28 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a2_control = "nobody"
+			a2_control = "none"
 			cust_color="white"
 		else if (c1 > c2)
 			a2_control = "Dutch Royal Army"
-			cust_color="orange"
-			dutch_points++
+			cust_color="black"
 		else if (c2 > c1)
 			a2_control = "Russian Armed Forces"
 			cust_color="red"
-			rus_points++
-		if (a2_control != prev_control)
-			if (prev_control != "nobody")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a2_name]</b>!</big>"
+		if (a2_control != "none")
+			if (a2_control == "Russian Armed Forces")
+				cust_color = "red"
+				rus_points++
+			else if (a2_control == "Dutch Royal Army")
+				cust_color = "black"
+				dutch_points++
 			else
-				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>[a2_name]</b>!</big>"
+				cust_color = "white"
+			world << "<big><font color='[cust_color]'><b>[a2_name]</b>: [a2_control]</font></big>"
+		else
+			world << "<big><b>[a2_name]</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a3_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
@@ -156,24 +167,28 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a3_control = "nobody"
+			a3_control = "none"
 			cust_color="white"
 		else if (c1 > c2)
 			a3_control = "Dutch Royal Army"
-			cust_color="orange"
-			dutch_points++
+			cust_color="black"
 		else if (c2 > c1)
 			a3_control = "Russian Armed Forces"
 			cust_color="red"
-			rus_points++
-		if (a3_control != prev_control)
-			if (prev_control != "nobody")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a3_name]</b>!</big>"
+		if (a3_control != "none")
+			if (a3_control == "Russian Armed Forces")
+				cust_color = "red"
+				rus_points++
+			else if (a3_control == "Dutch Royal Army")
+				cust_color = "black"
+				dutch_points++
 			else
-				world << "<big><font color='[cust_color]'>[a3_control]</font> captured the <b>[a3_name]</b>!</big>"
+				cust_color = "white"
+			world << "<big><font color='[cust_color]'><b>[a3_name]</b>: [a3_control]</font></big>"
+		else
+			world << "<big><b>[a3_name]</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a4_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/four))
@@ -182,51 +197,35 @@
 				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a4_control = "nobody"
+			a4_control = "none"
 			cust_color="white"
 		else if (c1 > c2)
 			a4_control = "Dutch Royal Army"
-			cust_color="orange"
-			dutch_points++
+			cust_color="black"
 		else if (c2 > c1)
 			a4_control = "Russian Armed Forces"
 			cust_color="red"
-			rus_points++
-		if (a1_control != prev_control)
-			if (prev_control != "nobody")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>[a4_name]</b>!</big>"
+		if (a4_control != "none")
+			if (a4_control == "Russian Armed Forces")
+				cust_color = "red"
+				rus_points++
+			else if (a4_control == "Dutch Royal Army")
+				cust_color = "black"
+				dutch_points++
 			else
-				world << "<big><font color='[cust_color]'>[a4_control]</font> captured the <b>[a4_name]</b>!</big>"
-		
-	if (a1_control == "Russian Armed Forces")
-		cust_color = "red"
-	else
-		cust_color = "orange"
-	world << "<big><font color='[cust_color]'><b>[a1_name]</b>: [a1_control]</font></big>"
-	if (a2_control == "Russian Armed Forces")
-		cust_color = "red"
-	else
-		cust_color = "orange"
-	world << "<big><font color='[cust_color]'><b>[a2_name]</b>: [a2_control]</font></big>"
-	if (a3_control == "Russian Armed Forces")
-		cust_color = "red"
-	else
-		cust_color = "orange"
-	world << "<big><font color='[cust_color]'><b>[a3_name]</b>: [a3_control]</font></big>"
-	if (a4_control == "Russian Armed Forces")
-		cust_color = "red"
-	else
-		cust_color = "orange"
-	world << "<big><font color='[cust_color]'><b>[a4_name]</b>: [a4_control]</font></big>"
-
-	world << "<big><b>Current Points:</big></b>"
-	world << "<big>Dutch: [dutch_points]</big>"
-	world << "<big>Russians: [rus_points]</big>"
-	spawn(300)
+				cust_color = "white"
+			world << "<big><font color='[cust_color]'><b>[a4_name]</b>: [a4_control]</font></big>"
+		else
+			world << "<big><b>[a4_name]</b>: Nobody</big>"
+	spawn(600)
 		points_check()
+		spawn(300)
+			world << "<big><b>Current Points:</big></b>"
+			world << "<big>Dutch: [dutch_points]</big>"
+			world << "<big>Russian: [rus_points]</big>"
 
 /obj/map_metadata/operation_falcon/update_win_condition()
-	if (processes.ticker.playtime_elapsed > 6000)
+	if (processes.ticker.playtime_elapsed > 3000)
 		if (rus_points < win_points && dutch_points < win_points)
 			return TRUE
 		if (rus_points >= win_points && rus_points > dutch_points)
