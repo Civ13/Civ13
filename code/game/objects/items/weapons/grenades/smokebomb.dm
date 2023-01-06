@@ -2,9 +2,9 @@
 	desc = "It is set to detonate in 2 seconds."
 	name = "smoke grenade"
 	icon = 'icons/obj/grenade.dmi'
-	icon_state = "m18smoke"
+	icon_state = "smoke_grenade"
 	det_time = 20
-	item_state = "m18smoke"
+	item_state = "smoke_grenade"
 	slot_flags = SLOT_BELT
 	var/datum/effect/effect/system/smoke_spread/bad/smoke
 
@@ -47,6 +47,13 @@
 	icon_state = "m18smoke"
 	det_time = 20
 	item_state = "m18smoke"
+
+/obj/item/weapon/grenade/smokebomb/rdg2
+	desc = "It is set to detonate in 2 seconds."
+	name = "RDG-2 smoke grenade"
+	icon_state = "rdg2"
+	det_time = 20
+	item_state = "rdg2"
 
 //////////Signal Smoke//////////////////////////////////////////
 
