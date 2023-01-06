@@ -14,7 +14,7 @@
 		list(RUSSIAN) = /area/caribbean/no_mans_land/capturable,
 		list(GERMAN) = /area/caribbean/british,
 		)
-	age = "1943"
+	age = "1942"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(RUSSIAN = 0.5, GERMAN = 0.5)
 	battle_name = "Battle for Moscow"
@@ -85,7 +85,7 @@ obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Soviets</b> have sucessfuly defended Moscow! The Germans halted the attack!"
+		var/message = "The <b>Soviets</b> have sucessfuly defended Moscow! The Germans stopped the attack!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

@@ -1211,6 +1211,9 @@
 	max_w_class = 2
 	max_storage_space = 8
 	show_above_suit = TRUE
+	can_hold = list(
+		/obj/item/weapon/foldable_shovel,
+		)
 
 /obj/item/weapon/storage/belt/smallpouches/white
 	icon_state = "smallpouches_white"
@@ -1404,6 +1407,16 @@
 	new/obj/item/ammo_magazine/m16(src)
 	new/obj/item/weapon/grenade/coldwar/m67(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke
+	storage_slots = 5
+/obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke/New()
+	..()
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new/obj/item/stack/medical/advanced/sulfa/small(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
 	storage_slots = 5

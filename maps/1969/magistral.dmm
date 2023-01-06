@@ -317,7 +317,7 @@
 "ge" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gf" = (/obj/structure/toilet,/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gg" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civf1{desc = "A dark dress, used by REAL MEN ONLY."; name = "dress"},/obj/item/clothing/suit/storage/jacket/custom/hoodie,/obj/item/clothing/suit/storage/hazard/green,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/under/civ1,/obj/item/clothing/under/insurgent_black,/turf/floor/wood,/area/caribbean/roofed/desert)
-"gh" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/beret,/obj/item/clothing/under/insurgent_sand,/turf/floor/wood,/area/caribbean/roofed/desert)
+"gh" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/beret_red,/obj/item/clothing/under/insurgent_sand,/turf/floor/wood,/area/caribbean/roofed/desert)
 "gi" = (/obj/structure/sink,/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gj" = (/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gk" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean/roofed/desert)

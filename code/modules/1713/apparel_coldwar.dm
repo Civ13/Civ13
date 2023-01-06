@@ -291,11 +291,32 @@
 	item_state = "traffic_cop"
 	worn_state = "traffic_cop"
 
-/obj/item/clothing/head/beret_black
+/obj/item/clothing/head/beret_red
+	name = "red beret"
+	desc = "A red beret."
+	icon_state = "beret_red"
+	item_state = "beret_red"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_black/insig
 	name = "black beret"
 	desc = "A black beret with golden insignia."
-	icon_state = "beret_black"
-	item_state = "beret_black"
+	icon_state = "beret_black_insig"
+	item_state = "beret_black_insig"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_green
+	name = "green beret"
+	desc = "A green beret."
+	icon_state = "beret_green"
+	item_state = "beret_green"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_green/insig
+	name = "green beret"
+	desc = "A green beret with golden insignia."
+	icon_state = "beret_green_insig"
+	item_state = "beret_green_insig"
 	body_parts_covered = HEAD
 
 /* US Army Clothes*/
