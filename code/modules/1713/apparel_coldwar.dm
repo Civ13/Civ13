@@ -298,6 +298,13 @@
 	item_state = "beret_red"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/beret_black
+	name = "black beret"
+	desc = "A black military beret."
+	icon_state = "beret_black"
+	item_state = "beret_black"
+	body_parts_covered = HEAD
+
 /obj/item/clothing/head/beret_black/insig
 	name = "black beret"
 	desc = "A black beret with golden insignia."

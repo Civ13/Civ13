@@ -652,7 +652,7 @@
 	//head
 		var/randhead = rand(1,5)
 		if (randhead == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_sailorberet(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
 		else if (randhead== 3)
@@ -728,7 +728,7 @@
 	//head
 		var/randhead = rand(1,5)
 		if (randhead == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_sailorberet(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
 		else if (randhead== 3)
@@ -801,7 +801,7 @@
 	//head
 		var/randhead = rand(1,5)
 		if (randhead == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_sailorberet(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
 		else if (randhead== 3)
@@ -876,7 +876,7 @@
 	//head
 		var/randhead = rand(1,5)
 		if (randhead == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_sailorberet(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
 		else if (randhead== 3)
@@ -953,7 +953,7 @@
 	//head
 		var/randhead = rand(1,5)
 		if (randhead == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_sailorberet(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
 		else if (randhead== 3)

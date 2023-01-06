@@ -511,7 +511,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/french_soldier(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/french_officer_army(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_sailorberet(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/charleville(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_r_store)

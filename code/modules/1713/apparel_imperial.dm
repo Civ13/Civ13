@@ -212,20 +212,14 @@
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
 
-/obj/item/clothing/head/red_beret
+/obj/item/clothing/head/red_sailorberet
 	name = "red sailor beret"
 	desc = "A red beret."
 	icon_state = "redberet"
 	item_state = "redberet"
 
-/obj/item/clothing/head/beret_black
-	name = "black beret"
-	desc = "A black military beret."
-	icon_state = "beret_black"
-	item_state = "blackberret"
-
-/obj/item/clothing/head/blue_beret
-	name = "blue beret"
+/obj/item/clothing/head/blue_sailorberet
+	name = "blue sailor beret"
 	desc = "A blue beret."
 	icon_state = "blueberet"
 	item_state = "blueberet"

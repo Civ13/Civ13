@@ -336,7 +336,7 @@
 
 //head
 	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_sailorberet(H), slot_head)
 	var/randweapon = rand(1,2)
 	if (randweapon == 1)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
