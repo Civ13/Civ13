@@ -80,20 +80,10 @@
 
 
 /obj/map_metadata/operation_falcon/cross_message(faction)
-	if (faction == RUSSIAN)
-		return "<font size = 4>Operation Falcon has begun!</font>"
-	else if (faction == DUTCH)
-		return ""
-	else
-		return ""
+	return "<font size = 4>Operation Falcon has begun!</font>"
 
 /obj/map_metadata/operation_falcon/reverse_cross_message(faction)
-	if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>Both teams may no longer cross the invisible wall!</span>"
-	else if (faction == DUTCH)
-		return ""
-	else
-		return ""
+	return "<span class = 'userdanger'>Both teams may no longer cross the invisible wall!</span>"
 
 /obj/map_metadata/operation_falcon/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 3000)
@@ -109,23 +99,23 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a1_control = "none"
-			cust_color="white"
+			cust_color = "white"
 		else if (c1 > c2)
 			a1_control = "Dutch Royal Army"
-			cust_color="orange"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a1_control = "Russian Armed Forces"
-			cust_color="blue"
+			cust_color = "red"
 		if (a1_control != "none")
 			if (a1_control == "Russian Armed Forces")
-				cust_color = "blue"
+				cust_color = "red"
 				rus_points++
 			else if (a1_control == "Dutch Royal Army")
-				cust_color = "orange"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>[a1_name]</b>: [a1_control]</font></big>"
+			world << "<big><b>[a1_name]</b>: <font color='[cust_color]'>[a1_control]</font></big>"
 		else
 			world << "<big><b>[a1_name]</b>: Nobody</big>"
 		c1 = 0
@@ -139,23 +129,23 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a2_control = "none"
-			cust_color="white"
+			cust_color = "white"
 		else if (c1 > c2)
 			a2_control = "Dutch Royal Army"
-			cust_color="orange"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a2_control = "Russian Armed Forces"
-			cust_color="blue"
+			cust_color = "red"
 		if (a2_control != "none")
 			if (a2_control == "Russian Armed Forces")
-				cust_color = "blue"
+				cust_color = "red"
 				rus_points++
 			else if (a2_control == "Dutch Royal Army")
-				cust_color = "orange"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>[a2_name]</b>: [a2_control]</font></big>"
+			world << "<big><b>[a2_name]</b>: <font color='[cust_color]'>[a2_control]</font></big>"
 		else
 			world << "<big><b>[a2_name]</b>: Nobody</big>"
 		c1 = 0
@@ -169,23 +159,23 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a3_control = "none"
-			cust_color="white"
+			cust_color = "white"
 		else if (c1 > c2)
 			a3_control = "Dutch Royal Army"
-			cust_color="orange"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a3_control = "Russian Armed Forces"
-			cust_color="blue"
+			cust_color = "red"
 		if (a3_control != "none")
 			if (a3_control == "Russian Armed Forces")
-				cust_color = "blue"
+				cust_color = "red"
 				rus_points++
 			else if (a3_control == "Dutch Royal Army")
-				cust_color = "orange"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>[a3_name]</b>: [a3_control]</font></big>"
+			world << "<big><b>[a3_name]</b>: <font color='[cust_color]'>[a3_control]</font></big>"
 		else
 			world << "<big><b>[a3_name]</b>: Nobody</big>"
 		c1 = 0
@@ -199,23 +189,23 @@
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a4_control = "none"
-			cust_color="white"
+			cust_color = "white"
 		else if (c1 > c2)
 			a4_control = "Dutch Royal Army"
-			cust_color="orange"
+			cust_color = "#FFA500"
 		else if (c2 > c1)
 			a4_control = "Russian Armed Forces"
-			cust_color="blue"
+			cust_color = "red"
 		if (a4_control != "none")
 			if (a4_control == "Russian Armed Forces")
-				cust_color = "blue"
+				cust_color = "red"
 				rus_points++
 			else if (a4_control == "Dutch Royal Army")
-				cust_color = "orange"
+				cust_color = "#FFA500"
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>[a4_name]</b>: [a4_control]</font></big>"
+			world << "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
 		else
 			world << "<big><b>[a4_name]</b>: Nobody</big>"
 	spawn(600)

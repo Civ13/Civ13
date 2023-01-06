@@ -51,18 +51,6 @@
 	desc = "Typical priest robe."
 	icon_state = "chaplain_hoodie"
 
-//Mime
-/obj/item/clothing/head/beret
-	name = "beret"
-	desc = "A beret, an artists favorite headwear."
-	icon_state = "beret"
-	body_parts_covered = FALSE
-
-/obj/item/clothing/head/beret
-	name = "black beret"
-	desc = "A beret, used by fancy military people."
-	icon_state = "blackberret"
-	body_parts_covered = FALSE
 
 /*
  * Welding mask

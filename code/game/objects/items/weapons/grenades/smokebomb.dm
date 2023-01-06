@@ -58,13 +58,13 @@
 //////////Signal Smoke//////////////////////////////////////////
 
 /obj/item/weapon/grenade/smokebomb/m18smoke/signal
-	desc = "It is set to detonate in 2 seconds. A US Army helicopter will drop a crate of supplies at its location."
+	desc = "It is set to detonate in 2 seconds. An Army helicopter will drop a crate of supplies at its location."
 	name = "M18 signal smoke grenade (supplies)"
 	icon_state = "m18smoke_purple"
 	det_time = 20
 	item_state = "m18smoke_purple"
 	var/datum/effect/effect/system/smoke_spread/purple
-	var/triggered_by_us = FALSE
+	var/triggered = FALSE
 
 /obj/item/weapon/grenade/smokebomb/m18smoke/signal/New()
 	..()
@@ -97,7 +97,53 @@
 						if (ishuman(user))
 							var/mob/living/human/C = user
 							C.throw_mode_on()
-						triggered_by_us = TRUE
+						triggered = TRUE
+						sleep(500)
+						new new_type(get_turf(src))
+			else
+				visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
+		else if (user.faction_text == "DUTCH")
+			if (time_of_day != "Night")
+				var/list/options = list()
+				options["Ammunition"] = list(/obj/structure/closet/crate/ww2/un/m16ammo)
+				options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
+				options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
+				options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
+				var/choice = input(user,"What type of supply drop?") as null|anything in options
+				if(src && choice)
+					var/list/things_to_spawn = options[choice]
+					for(var/new_type in things_to_spawn)
+						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+						firer = user
+						activate(user)
+						add_fingerprint(user)
+						if (ishuman(user))
+							var/mob/living/human/C = user
+							C.throw_mode_on()
+						triggered = TRUE
+						sleep(500)
+						new new_type(get_turf(src))
+			else
+				visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
+		else if (user.faction_text == "RUSSIAN")
+			if (time_of_day != "Night")
+				var/list/options = list()
+				options["Ammunition"] = list(/obj/structure/closet/crate/ww2/russian/ammo)
+				options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
+				options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
+				options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
+				var/choice = input(user,"What type of supply drop?") as null|anything in options
+				if(src && choice)
+					var/list/things_to_spawn = options[choice]
+					for(var/new_type in things_to_spawn)
+						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+						firer = user
+						activate(user)
+						add_fingerprint(user)
+						if (ishuman(user))
+							var/mob/living/human/C = user
+							C.throw_mode_on()
+						triggered = TRUE
 						sleep(500)
 						new new_type(get_turf(src))
 			else
@@ -116,7 +162,7 @@
 		smoke.set_up(5, FALSE, usr ? usr.loc : loc)
 		spawn(0)
 			smoke.start()
-		if (triggered_by_us == TRUE)
+		if (triggered == TRUE)
 			sleep(300)
 			if (time_of_day != "Night")
 				world << "The sound of a helicopter rotor can be heard in the distance."
@@ -127,7 +173,7 @@
 				else
 					playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
-					visible_message("<span class = 'notice'>A US Army UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location.</span>")
+					visible_message("<span class = 'notice'>A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location.</span>")
 		sleep(20)
 		qdel(src)
 		return

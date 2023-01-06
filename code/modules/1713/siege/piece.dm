@@ -157,6 +157,39 @@
 			loader_chair = W
 			W.anchored = TRUE
 
+/obj/structure/cannon/modern/tank/autoloader/attackby(obj/item/W as obj, mob/M as mob)
+	if (broken && istype(W, /obj/item/weapon/weldingtool))
+		visible_message("[M] starts repairing the [src]...")
+		if (do_after(M, 200, src))
+			visible_message("[M] sucessfully repairs the [src].")
+			broken = FALSE
+			return
+	if (istype(W, ammotype))
+		var/obj/item/cannon_ball/shell/tank/TS = W
+		if (caliber != TS.caliber && caliber != null && caliber != 0)
+			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
+			return
+		if (loaded)
+			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+			return
+		// load first and only slot
+		if (M && (locate(M) in range(1,src)))
+			M.remove_from_mob(W)
+			W.loc = src
+			loaded = W
+			M << "You load the [src]."
+			playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+			//playsound(loc, "loaded_voice", 100, TRUE)
+			return
+	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (can_assemble && assembled)
+		if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
+			M.remove_from_mob(W)
+			gunner_chair = W
+			W.anchored = TRUE
 
 /obj/structure/cannon/New()
 	..()
