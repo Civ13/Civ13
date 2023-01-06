@@ -1211,9 +1211,6 @@
 	max_w_class = 2
 	max_storage_space = 8
 	show_above_suit = TRUE
-	can_hold = list(
-		/obj/item/weapon/foldable_shovel,
-		)
 
 /obj/item/weapon/storage/belt/smallpouches/white
 	icon_state = "smallpouches_white"

@@ -474,9 +474,9 @@ RECIPE: /material/woolcloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0
 //RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
 //RECIPE: /material/woolcloth/,custom hennin,/obj/item/clothing/head/custom_hennin,2,40,0,1,hats,0,0,38,3,null
 //RECIPE: /material/woolcloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats,0,0,52,3,null
-RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats,0,0,62,8,null
+RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_sailorberet,2,55,0,1,hats,0,0,62,8,null
 RECIPE: /material/woolcloth/,custom beret,/obj/item/clothing/head/custom/customberet,2,55,0,1,hats,0,0,62,8,null
-RECIPE: /material/woolcloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats,0,0,62,8,null
+RECIPE: /material/woolcloth/,blue beret,/obj/item/clothing/head/blue_sailorberet,2,55,0,1,hats,0,0,62,8,null
 RECIPE: /material/woolcloth/,brown flatcap,/obj/item/clothing/head/flatcap1,2,55,0,1,hats,0,0,109,8,null
 RECIPE: /material/woolcloth/,blue flatcap,/obj/item/clothing/head/flatcap2,2,55,0,1,hats,0,0,109,8,null
 RECIPE: /material/woolcloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,0,1,hats,0,0,109,8,null
@@ -740,8 +740,8 @@ RECIPE: /material/cloth/,custom feather cap,/obj/item/clothing/head/custom_feath
 //RECIPE: /material/cloth/,jingasa hat,/obj/item/clothing/head/helmet/jingasa,5,75,0,1,hats,0,0,40,8,null
 //RECIPE: /material/cloth/,gat hat,/obj/item/clothing/head/gat,2,55,0,1,hats,0,0,52,8,null
 //RECIPE: /material/cloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats,0,0,52,3,null
-RECIPE: /material/cloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats,0,0,102,8,null
-RECIPE: /material/cloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats,0,0,102,8,null
+RECIPE: /material/cloth/,red beret,/obj/item/clothing/head/red_sailorberet,2,55,0,1,hats,0,0,102,8,null
+RECIPE: /material/cloth/,blue beret,/obj/item/clothing/head/blue_sailorberet,2,55,0,1,hats,0,0,102,8,null
 RECIPE: /material/cloth/,custom beret,/obj/item/clothing/head/custom/customberet,2,55,0,1,hats,0,0,102,8,null
 RECIPE: /material/cloth/,black bicorne,/obj/item/clothing/head/bicorne_british_soldier,2,95,0,1,hats,0,0,102,4,null
 RECIPE: /material/cloth/,black tricorne,/obj/item/clothing/head/tricorne_black,3,75,0,1,hats,0,0,102,4,null

@@ -201,7 +201,7 @@
 	force = 1.0
 	var/path = /obj/item/weapon/material/shovel/spade/foldable
 	secondary_action = TRUE
-	slot_flags = SLOT_BELT | SLOT_POCKET
+	w_class = 2
 
 /obj/item/weapon/foldable_shovel/trench
 	name = "foldable entrenching tool"

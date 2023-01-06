@@ -357,7 +357,7 @@
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
 		if (3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_sailorberet(H), slot_head)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 //clothes
