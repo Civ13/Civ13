@@ -210,7 +210,7 @@
 			world << "<big><b>[a4_name]</b>: Nobody</big>"
 	spawn(600)
 		points_check()
-		spawn(300)
+		spawn(5)
 			world << "<big><b>Current Points:</big></b>"
 			world << "<big>Dutch: [dutch_points]</big>"
 			world << "<big>Russian: [rus_points]</big>"
