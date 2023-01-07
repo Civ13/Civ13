@@ -708,8 +708,11 @@
 					for (var/obj/structure/barricade/B in src_loc)
 						if (get_dist(firer, B) == 1)
 							_untouchable += B
-					if ((src == /obj/item/projectile/bullet/autocannon) || (src == /obj/item/missile/explosive/atgm))
+					if ((src == /obj/item/projectile/bullet/autocannon) || (src == /obj/item/missile/explosive/atgm) || (src == /obj/item/projectile/bullet/rifle/a50cal/weak))
 						for (var/obj/structure/vehicleparts/frame/F in src_loc)
+							if (get_dist(firer, F) <= 2)
+								_untouchable += F
+						for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/F)
 							if (get_dist(firer, F) <= 2)
 								_untouchable += F
 
