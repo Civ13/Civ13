@@ -136,8 +136,8 @@
 
 /obj/item/weapon/material/shovel/spade/foldable/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		if (do_after(user, 20, src))
-			usr << "You quickly snap your [src] closed."
+		if (do_after(user, 10, src))
+			usr << "You fold your [src] closed."
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
@@ -165,10 +165,10 @@
 	usespeed = 0.8
 	path = /obj/item/weapon/foldable_shovel/trench/etool
 
-/obj/item/weapon/material/shovel/spade/foldable/secondary_attack_self(mob/living/human/user)
+/obj/item/weapon/material/shovel/trench/foldable/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		if (do_after(user, 20, src))
-			usr << "You quickly snap your [src] closed."
+		if (do_after(user, 10, src))
+			usr << "You fold your [src] closed."
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
@@ -219,8 +219,8 @@
 
 /obj/item/weapon/foldable_shovel/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		if (do_after(user, 20, src))
-			usr << "You quickly fold your [src] open."
+		if (do_after(user, 5, src))
+			usr << "You quickly snap your [src] open."
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 

@@ -154,7 +154,7 @@
 				pixel_x = 0
 				pixel_y = -16
 	if (broken)
-		icon_state = "engine_broken"
+		icon_state = "[engineclass]_broken"
 		return
 	if (on)
 		icon_state = "[engineclass]_on"
