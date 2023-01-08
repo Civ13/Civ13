@@ -36,7 +36,7 @@
 		C.throw_mode_on()
 
 
-/obj/item/weapon/grenade/proc/activate(mob/user as mob)
+/obj/item/weapon/grenade/proc/activate(mob/living/human/user as mob)
 	if (active)
 		return
 
@@ -51,7 +51,7 @@
 
 	spawn(det_time)
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
-		prime()
+		prime(user)
 		return
 
 /obj/item/weapon/grenade/proc/fast_activate()

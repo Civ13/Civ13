@@ -1998,7 +1998,7 @@
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/foldable_shovel/trench/etool(H), slot_l_store)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
