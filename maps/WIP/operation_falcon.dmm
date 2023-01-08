@@ -378,7 +378,7 @@
 "ML" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/dark,/area/caribbean/british/land/inside)
 "MM" = (/obj/structure/curtain/black{pixel_y = -32},/obj/structure/TV/active,/turf/floor/plating/tiled/darker,/area/caribbean/no_mans_land/capturable/two)
 "MS" = (/obj/structure/barricade/car,/turf/floor/plating/road,/area/caribbean)
-"MX" = (/obj/structure/vehicleparts/frame/omw22_2/front,/obj/structure/vehicleparts/axis/heavy/omw22_2{color = "#5C5C4C"; name = "Leopard 2A6"; turret_type = "t90_turret"},/turf/floor/plating/road,/area/caribbean)
+"MX" = (/obj/structure/vehicleparts/frame/omw22_2/front,/obj/structure/vehicleparts/axis/heavy/omw22_2{color = "#5C5C4C"; name = "Leopard 2A6"; turret_type = "2a6_turret"},/turf/floor/plating/road,/area/caribbean)
 "MY" = (/obj/structure/bed/chair,/turf/floor/plating/tiled/woodv,/area/caribbean/no_mans_land/capturable/two)
 "MZ" = (/obj/structure/grille/fence,/obj/structure/grille/fence{dir = 4},/turf/floor/grass,/area/caribbean)
 "Na" = (/obj/structure/TV/active,/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/two)
