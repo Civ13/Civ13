@@ -322,20 +322,20 @@
 	ammotype = /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91
 	explosion = TRUE
 	maxrange = 30
-	maxsway = 15
+	maxsway = 10
 	firedelay = 8
 	w_class = 6
 	path = /obj/item/weapon/foldable/type89_mortar
 
 /obj/structure/cannon/mortar/foldable/generic
-	name = "mortar"
+	name = "foldable mortar"
 	icon_state = "mortar"
 	anchored = TRUE
 	ammotype = /obj/item/cannon_ball/mortar_shell
 	explosion = TRUE
 	maxrange = 30
-	maxsway = 15
-	firedelay = 8
+	maxsway = 7
+	firedelay = 12
 	w_class = 6
 	path = /obj/item/weapon/foldable/generic
 
@@ -354,7 +354,7 @@
 		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/W as obj, mob/M as mob)
-	if (istype(W, /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91))
+	if (istype(W, ammotype))
 		if (loaded)
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return
