@@ -58,10 +58,10 @@
 //////////Signal Smoke//////////////////////////////////////////
 
 /obj/item/weapon/grenade/smokebomb/m18smoke/signal
-	desc = "It is set to detonate in 2 seconds. An Army helicopter will drop a crate of supplies at its location."
+	desc = "It is set to detonate in 5 seconds. An Army helicopter will drop a crate of supplies at its location."
 	name = "M18 signal smoke grenade (supplies)"
 	icon_state = "m18smoke_purple"
-	det_time = 20
+	det_time = 50
 	item_state = "m18smoke_purple"
 	var/datum/effect/effect/system/smoke_spread/purple
 	var/triggered = FALSE

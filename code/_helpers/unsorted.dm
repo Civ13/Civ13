@@ -201,7 +201,8 @@ Turf and target are seperate in case you want to teleport some distance from a t
 /proc/sign(x)
 	return x!=0?x/abs(x):0
 
-/proc/getline(atom/M,atom/N, var/exclude_m_turf = FALSE)//Ultra-Fast Bresenham Line-Drawing Algorithm
+//Ultra-Fast Bresenham Line-Drawing Algorithm
+/proc/getline(atom/M,atom/N, var/exclude_m_turf = FALSE)
 	var/px=M.x		//starting x
 	var/py=M.y
 	var/line[] = list()
@@ -235,6 +236,54 @@ Turf and target are seperate in case you want to teleport some distance from a t
 			py+=sdy
 			line+=locate(px,py,M.z)
 	return line
+
+//Bresenham's algorithm. This one deals efficiently with all 8 octants.
+/proc/getline2(atom/from_atom, atom/to_atom, include_from_atom = TRUE)
+	if(!from_atom || !to_atom) return 0
+	var/list/turf/turfs = list()
+
+	var/cur_x = from_atom.x
+	var/cur_y = from_atom.y
+
+	var/w = to_atom.x - from_atom.x
+	var/h = to_atom.y - from_atom.y
+	var/dx1 = 0
+	var/dx2 = 0
+	var/dy1 = 0
+	var/dy2 = 0
+	if(w < 0)
+		dx1 = -1
+		dx2 = -1
+	else if(w > 0)
+		dx1 = 1
+		dx2 = 1
+	if(h < 0) dy1 = -1
+	else if(h > 0) dy1 = 1
+	var/longest = abs(w)
+	var/shortest = abs(h)
+	if(!(longest > shortest))
+		longest = abs(h)
+		shortest = abs(w)
+		if(h < 0) dy2 = -1
+		else if (h > 0) dy2 = 1
+		dx2 = 0
+
+	var/numerator = longest >> 1
+	var/i
+	for(i = 0; i <= longest; i++)
+		if(i > 0 || include_from_atom)
+			turfs += locate(cur_x,cur_y,from_atom.z)
+		numerator += shortest
+		if(!(numerator < longest))
+			numerator -= longest
+			cur_x += dx1
+			cur_y += dy1
+		else
+			cur_x += dx2
+			cur_y += dy2
+
+
+	return turfs
 
 /proc/getstraightline(atom/M, atom/N, var/exclude_m_turf = FALSE, var/skip_turfs = FALSE)//Ultra-Fast Bresenham Line-Drawing Algorithm
 	var/list/line = list()

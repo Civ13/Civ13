@@ -46,12 +46,12 @@
 	for (var/client/X in admins)
 		if ((R_MENTOR & X.holder.rights) && !((R_ADMIN|R_MOD) & X.holder.rights))
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
-				X << 'sound/effects/mentorhelp.ogg'
+				X << 'sound/items/bikehorn.ogg'
 			X << mentormsg
 
 		else if ((R_ADMIN|R_MOD) & X.holder.rights)
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
-				X << 'sound/effects/mentorhelp.ogg'
+				X << 'sound/items/bikehorn.ogg'
 			X << adminmsg
 
 	return
