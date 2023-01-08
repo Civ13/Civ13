@@ -42,41 +42,41 @@
 		prime()
 
 /obj/item/weapon/grenade/smokebomb/m18smoke
-	desc = "It is set to detonate in 2 seconds."
+	desc = "It is set to detonate in 3 seconds."
 	name = "M18 smoke grenade"
 	icon_state = "m18smoke"
-	det_time = 20
+	det_time = 30
 	item_state = "m18smoke"
 
 /obj/item/weapon/grenade/smokebomb/rdg2
-	desc = "It is set to detonate in 2 seconds."
+	desc = "It is set to detonate in 3 seconds."
 	name = "RDG-2 smoke grenade"
 	icon_state = "rdg2"
-	det_time = 20
+	det_time = 30
 	item_state = "rdg2"
 
 //////////Signal Smoke//////////////////////////////////////////
 
-/obj/item/weapon/grenade/smokebomb/m18smoke/signal
-	desc = "It is set to detonate in 5 seconds. An Army helicopter will drop a crate of supplies at its location."
+/obj/item/weapon/grenade/smokebomb/signal
+	desc = "It is set to detonate in 5 seconds. A helicopter will drop a crate of supplies at its location."
 	name = "M18 signal smoke grenade (supplies)"
 	icon_state = "m18smoke_purple"
 	det_time = 50
 	item_state = "m18smoke_purple"
-	var/datum/effect/effect/system/smoke_spread/purple
+	var/smoke_color = /datum/effect/effect/system/smoke_spread/purple
 	var/triggered = FALSE
 
-/obj/item/weapon/grenade/smokebomb/m18smoke/signal/New()
+/obj/item/weapon/grenade/smokebomb/signal/New()
 	..()
-	smoke = PoolOrNew(/datum/effect/effect/system/smoke_spread/purple)
+	smoke = PoolOrNew(smoke_color)
 	smoke.attach(src)
 
-/obj/item/weapon/grenade/smokebomb/m18smoke/signal/Destroy()
+/obj/item/weapon/grenade/smokebomb/signal/Destroy()
 	qdel(smoke)
 	smoke = null
 	return ..()
 
-/obj/item/weapon/grenade/smokebomb/m18smoke/signal/attack_self(mob/living/human/user as mob)
+/obj/item/weapon/grenade/smokebomb/signal/attack_self(mob/living/human/user as mob)
 	if (!active)
 		if (user.faction_text == "AMERICAN")
 			if (time_of_day != "Night")
@@ -156,7 +156,7 @@
 				var/mob/living/human/C = user
 				C.throw_mode_on()
 
-/obj/item/weapon/grenade/smokebomb/m18smoke/signal/prime()
+/obj/item/weapon/grenade/smokebomb/signal/prime()
 	if (active)
 		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
 		smoke.set_up(5, FALSE, usr ? usr.loc : loc)
@@ -170,6 +170,14 @@
 					playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
 					visible_message("<span class = 'notice'>A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location.</span>")
+				if (user.faction_text == "RUSSIAN")
+					playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 70)
+					sleep(200)
+					visible_message("<span class = 'notice'>A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location.</span>")
+				if (user.faction_text == "DUTCH")
+					playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 70)
+					sleep(200)
+					visible_message("<span class = 'notice'>A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location.</span>")
 				else
 					playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
@@ -178,13 +186,31 @@
 		qdel(src)
 		return
 
-/obj/item/weapon/grenade/smokebomb/m18smoke/signal/fast_activate()
+/obj/item/weapon/grenade/smokebomb/signal/fast_activate()
 	spawn(round(det_time/10))
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
 		active = TRUE
 		prime()
-
 ///////////////////////////////////////////////////////////////////////////////
+
+/obj/item/weapon/grenade/smokebomb/signal/rdg2_yellow
+	desc = "It is set to detonate in 5 seconds. A helicopter will drop a crate of supplies at its location."
+	name = "RDG-2 yellow signal smoke grenade (supplies)"
+	icon_state = "rdg2_yellow"
+	det_time = 50
+	item_state = "rdg2_yellow"
+	smoke_color = /datum/effect/effect/system/smoke_spread/yellow
+
+/obj/item/weapon/grenade/smokebomb/signal/m18_red
+	desc = "It is set to detonate in 5 seconds. A helicopter will drop a crate of supplies at its location."
+	name = "M18 signal smoke grenade (supplies)"
+	icon_state = "m18smoke_red"
+	det_time = 50
+	item_state = "m18smoke_red"
+	smoke_color = /datum/effect/effect/system/smoke_spread/red
+	
+///////////////////////////////////////////////////////////////////////////////
+
 /obj/item/weapon/grenade/incendiary
 	desc = "It is set to detonate in 6 seconds."
 	name = "incendiary grenade"

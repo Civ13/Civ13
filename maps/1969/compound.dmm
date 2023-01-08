@@ -203,7 +203,7 @@
 "dU" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{name = "American Tent"})
 "dV" = (/obj/structure/window/barrier/sandbag,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{name = "American Tent"})
 "dW" = (/obj/structure/religious/woodcross1,/obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory{layer = 6},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "American Camp"})
-"dX" = (/obj/structure/table/wood,/obj/structure/camonet,/obj/item/weapon/newspaper,/obj/item/weapon/grenade/smokebomb/m18smoke/signal,/turf/floor/trench,/area/caribbean/british/land/inside{name = "American Tent"})
+"dX" = (/obj/structure/table/wood,/obj/structure/camonet,/obj/item/weapon/newspaper,/obj/item/weapon/grenade/smokebomb/signal,/turf/floor/trench,/area/caribbean/british/land/inside{name = "American Tent"})
 "dY" = (/obj/structure/flag/us{layer = 6.1; pixel_x = -16; pixel_y = 16},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "American Camp"})
 "dZ" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "ea" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
