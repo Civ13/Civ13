@@ -533,7 +533,7 @@ steam.start() -- spawns the effect
 /obj/effect/helicopter_flyby/ch47/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/ch48.ogg', 100, TRUE, extrarange = 100)
+		playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Boeing CH-47 Chinook."
 /obj/effect/helicopter_flyby/mi8/New()
 	..()

@@ -156,7 +156,7 @@
 				var/mob/living/human/C = user
 				C.throw_mode_on()
 
-/obj/item/weapon/grenade/smokebomb/signal/prime()
+/obj/item/weapon/grenade/smokebomb/signal/prime(mob/living/human/user as mob)
 	if (active)
 		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
 		smoke.set_up(5, FALSE, usr ? usr.loc : loc)
