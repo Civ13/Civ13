@@ -1774,7 +1774,7 @@
 	FP.attached(null,HGUN,TRUE)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H)(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_r_store)
 
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
