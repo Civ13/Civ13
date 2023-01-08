@@ -42,6 +42,7 @@
 	var/a4_control = "nobody"
 	var/a4_name = "Lumber Company"
 	grace_wall_timer = 3000
+	no_hardcore = TRUE
 
 /obj/map_metadata/operation_falcon/New()
 	..()
