@@ -156,7 +156,7 @@
 				var/mob/living/human/C = user
 				C.throw_mode_on()
 
-/obj/item/weapon/grenade/smokebomb/signal/prime(mob/living/human/user as mob)
+/obj/item/weapon/grenade/smokebomb/signal/prime()
 	if (active)
 		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
 		smoke.set_up(5, FALSE, usr ? usr.loc : loc)
@@ -170,11 +170,11 @@
 					playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
 					visible_message("<span class = 'notice'>A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location.</span>")
-				if (user.faction_text == "RUSSIAN")
+				//if (user.faction_text == "RUSSIAN")
 					playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
 					visible_message("<span class = 'notice'>A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location.</span>")
-				if (user.faction_text == "DUTCH")
+				if (map.id == "OPERATION_FALCON")
 					playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
 					visible_message("<span class = 'notice'>A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location.</span>")
