@@ -174,7 +174,7 @@
 					playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
 					visible_message("<span class = 'notice'>A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location.</span>")
-				if (map.id == "OPERATION_FALCON")
+				if (map.ID == "MAP_OPERATION_FALCON")
 					playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 70)
 					sleep(200)
 					visible_message("<span class = 'notice'>A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location.</span>")
