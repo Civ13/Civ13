@@ -209,6 +209,9 @@ steam.start() -- spawns the effect
 /obj/effect/effect/smoke/green
 	color = "#366b36"
 	time_to_live = 600
+/obj/effect/effect/smoke/yellow
+	color = "#ffff00"
+	time_to_live = 600
 /obj/effect/effect/smoke/orange
 	color = "#c47f18"
 	time_to_live = 600
@@ -403,6 +406,9 @@ steam.start() -- spawns the effect
 /datum/effect/effect/system/smoke_spread/red
 	smoke_type = /obj/effect/effect/smoke/red
 
+/datum/effect/effect/system/smoke_spread/yellow
+	smoke_type = /obj/effect/effect/smoke/yellow
+
 /datum/effect/effect/system/smoke_spread/orange
 	smoke_type = /obj/effect/effect/smoke/orange
 
@@ -524,6 +530,11 @@ steam.start() -- spawns the effect
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-60 Black Hawk."
+/obj/effect/helicopter_flyby/ch47/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 100)
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Boeing CH-47 Chinook."
 /obj/effect/helicopter_flyby/mi8/New()
 	..()
 	spawn(10)
