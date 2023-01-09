@@ -17,7 +17,13 @@
 	dir = 4
 	},
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
+"bc" = (
+/obj/structure/sign/traffic/central{
+	dir = 4
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/one/outside)
 "bn" = (
 /obj/item/trash/tray,
 /obj/item/weapon/storage/bag/trash,
@@ -41,7 +47,7 @@
 	},
 /obj/structure/sign/traffic/central,
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "cA" = (
 /obj/structure/table/modern/table,
 /obj/item/weapon/tray,
@@ -50,6 +56,12 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean)
+"dn" = (
+/obj/structure/sign/traffic/central{
+	dir = 1
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/one/outside)
 "dD" = (
 /obj/structure/table/modern/table,
 /obj/item/weapon/reagent_containers/food/drinks/bottle/cognac,
@@ -79,13 +91,6 @@
 	},
 /turf/floor/wood,
 /area/caribbean)
-"fF" = (
-/obj/effect/landmark{
-	name = "JoinLateGRV";
-	icon_state = "x3"
-	},
-/turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
 "fI" = (
 /obj/structure/chemical_dispenser/drinks,
 /turf/floor/plating/tiled/darker,
@@ -98,6 +103,10 @@
 /obj/structure/wild/tree/live_tree,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"fW" = (
+/obj/structure/sign/traffic/central,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/one/outside)
 "gb" = (
 /obj/effect/decal/cleanable/blood/oil,
 /turf/floor/plating/cobblestone/vertical,
@@ -112,6 +121,12 @@
 "hc" = (
 /turf/floor/wood,
 /area/caribbean)
+"ht" = (
+/turf/wall/indestructable/black,
+/area/caribbean)
+"hR" = (
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/one/outside)
 "iy" = (
 /turf/floor/plating/road/yellowline{
 	dir = 1
@@ -207,7 +222,11 @@
 /obj/structure/sign/traffic/semicircle,
 /obj/item/weapon/basketball,
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
+"ou" = (
+/obj/structure/sign/traffic/central,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall)
 "oC" = (
 /obj/covers/cobblestone/stairs{
 	dir = 1
@@ -217,7 +236,7 @@
 "oS" = (
 /obj/structure/sign/traffic/semicircle,
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "pb" = (
 /obj/structure/barricade/debris,
 /turf/floor/plating/cobblestone/vertical,
@@ -236,13 +255,6 @@
 /obj/structure/table/modern/retable,
 /obj/covers/jail/steeljail,
 /turf/floor/wood/fancywood,
-/area/caribbean)
-"pN" = (
-/obj/effect/landmark{
-	name = "JoinLateBAL";
-	icon_state = "x1"
-	},
-/turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "ql" = (
 /obj/structure/window/barrier/railing{
@@ -308,6 +320,23 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"uk" = (
+/obj/structure/sign/traffic/central{
+	dir = 4
+	},
+/obj/structure/sign/traffic/central{
+	dir = 1
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/one/outside)
+"uF" = (
+/obj/covers/sidewalk,
+/obj/effect/landmark{
+	name = "JoinLateGRV";
+	icon_state = "x3"
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
 "vn" = (
 /obj/covers/sidewalk,
 /turf/floor/plating/road,
@@ -321,6 +350,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"vF" = (
+/obj/structure/sign/traffic/central{
+	dir = 8
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/one/outside)
 "wW" = (
 /obj/structure/lamp/lamp_big/alwayson{
 	dir = 8
@@ -407,7 +442,7 @@
 	dir = 1
 	},
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "AN" = (
 /obj/effect/decal/cleanable/ash,
 /turf/floor/plating/cobblestone/vertical,
@@ -431,6 +466,13 @@
 /obj/structure/lamp/lamp_big/alwayson,
 /turf/floor/carpet/purplecarpet,
 /area/caribbean)
+"BH" = (
+/obj/structure/sign/traffic/central,
+/obj/structure/sign/traffic/central{
+	dir = 4
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/one/outside)
 "BV" = (
 /obj/item/weapon/clay/advclaybricks/fired/cement,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -464,7 +506,7 @@
 	},
 /obj/structure/sign/traffic/central,
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "CQ" = (
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
@@ -479,7 +521,7 @@
 	},
 /obj/structure/sign/traffic/central,
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "Eh" = (
 /obj/structure/table/modern/table,
 /obj/structure/lamp/lamp_big/broken{
@@ -523,6 +565,14 @@
 /obj/covers/cement_wall,
 /turf/wall/cement,
 /area/caribbean)
+"Ic" = (
+/obj/covers/sidewalk,
+/obj/effect/landmark{
+	name = "JoinLateBAL";
+	icon_state = "x1"
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
 "Id" = (
 /obj/structure/bed/custsofa/right{
 	dir = 1
@@ -546,6 +596,10 @@
 /obj/structure/closet/crate/bin,
 /turf/floor/plating/tiled/darker,
 /area/caribbean)
+"JD" = (
+/obj/covers/sidewalk,
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/no_mans_land/invisible_wall)
 "Ke" = (
 /turf/floor/wood/fancywood,
 /area/caribbean)
@@ -581,6 +635,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"LC" = (
+/obj/structure/sign/traffic/central{
+	dir = 8
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall)
 "LD" = (
 /obj/covers/wood/stairs{
 	dir = 4;
@@ -615,7 +675,7 @@
 	dir = 8
 	},
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "PH" = (
 /obj/structure/oven/stove,
 /turf/floor/plating/marble/tile,
@@ -632,6 +692,9 @@
 	},
 /turf/floor/wood/fancywood,
 /area/caribbean)
+"Rs" = (
+/turf/floor/grass,
+/area/caribbean/no_mans_land/invisible_wall)
 "RJ" = (
 /obj/item/stack/money/real/fifty{
 	name = "dollars";
@@ -642,6 +705,10 @@
 "RY" = (
 /obj/covers/sidewalk,
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
+"Sb" = (
+/obj/covers/sidewalk,
+/turf/wall/indestructable/black,
 /area/caribbean)
 "Sn" = (
 /obj/structure/grille/chainlinkfence,
@@ -660,7 +727,7 @@
 	dir = 1
 	},
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "Uj" = (
 /obj/effect/decal/cleanable/graffiti{
 	color = "#40e0d0"
@@ -677,6 +744,9 @@
 	},
 /turf/floor/plating/marble/black,
 /area/caribbean)
+"Vi" = (
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall)
 "Vx" = (
 /turf/floor/plating/road/whiteline,
 /area/caribbean)
@@ -748,7 +818,7 @@
 	},
 /obj/structure/sign/traffic/central,
 /turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
+/area/caribbean/no_mans_land/capturable/one/outside)
 "ZO" = (
 /obj/structure/sign/traffic/central{
 	dir = 4
@@ -905,15 +975,15 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
-RY
+ht
+ht
+Ic
 RY
 oC
 oC
 oC
 CQ
-Tg
+ou
 Cp
 ZO
 ZO
@@ -932,8 +1002,8 @@ ZO
 Pa
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 jA
@@ -1087,15 +1157,15 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
+Ic
 RY
-RY
 oC
 oC
 oC
 CQ
-CQ
+Vi
 mb
 mb
 mb
@@ -1114,8 +1184,8 @@ mb
 mb
 CQ
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -1269,14 +1339,15 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
+Ic
 RY
-RY
 oC
 oC
 oC
 CQ
+Vi
 CQ
 CQ
 CQ
@@ -1295,9 +1366,8 @@ CQ
 CQ
 CQ
 CQ
-CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -1451,14 +1521,15 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 oC
 oC
 oC
 CQ
+Vi
 CQ
 CQ
 CQ
@@ -1477,9 +1548,8 @@ CQ
 CQ
 CQ
 CQ
-CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -1633,15 +1703,15 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
 EE
 EE
 CQ
-CQ
+Vi
 ZO
 ZO
 ZO
@@ -1660,8 +1730,8 @@ ZO
 ZO
 CQ
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -1790,14 +1860,14 @@ CQ
 CQ
 CQ
 CQ
-pN
 CQ
 CQ
 CQ
 CQ
 CQ
 CQ
-fF
+CQ
+CQ
 CQ
 CQ
 CQ
@@ -1815,35 +1885,35 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
 EE
 EE
 CQ
-Tg
+ou
 Ay
-mb
-mb
-mb
-mb
-mb
-mb
+vF
+vF
+vF
+vF
+vF
+vF
 DH
 Ay
-mb
-mb
-mb
-mb
-mb
-mb
+vF
+vF
+vF
+vF
+vF
+vF
 DH
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -1997,35 +2067,35 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
 qv
 EE
 CQ
-Tg
+ou
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
 jE
 CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -2179,35 +2249,35 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
 EE
 EE
 CQ
-Tg
+ou
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
 jE
 CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -2361,35 +2431,35 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
-RY
-RY
-EE
-EE
-EE
-CQ
-Tg
-Cp
-ZO
-ZO
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-CQ
-ZO
-ZO
+ht
+ht
+JD
+JD
+Rs
+Rs
+Rs
+Vi
+ou
+uk
+bc
+bc
+hR
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+hR
+bc
+bc
 Cv
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -2543,8 +2613,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -2553,25 +2623,25 @@ EE
 CQ
 Tg
 Ay
-mb
+vF
 DH
-jE
-CQ
+dn
+hR
 nE
-CQ
+hR
 cm
-jE
-CQ
+dn
+hR
 oS
-CQ
+hR
 cm
 Pm
-mb
+vF
 DH
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -2725,8 +2795,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -2735,25 +2805,25 @@ EE
 CQ
 Tg
 TT
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
+hR
+fW
+dn
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+fW
+dn
+hR
 ZM
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -2907,8 +2977,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -2916,26 +2986,26 @@ qv
 EE
 CQ
 Tg
-Cp
-ZO
+uk
+bc
 Cv
-jE
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-Tg
+dn
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+fW
 aZ
-ZO
+bc
 Cv
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -3089,8 +3159,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -3099,25 +3169,25 @@ EE
 CQ
 Tg
 Ay
-mb
-mb
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-CQ
-mb
-mb
+vF
+vF
+hR
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+hR
+vF
+vF
 DH
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -3271,8 +3341,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -3280,26 +3350,26 @@ EE
 EE
 CQ
 Tg
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
 jE
 CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -3453,8 +3523,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -3462,26 +3532,26 @@ EE
 EE
 CQ
 Tg
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
+dn
+hR
+hR
+hR
+hR
+hR
+hR
+fW
 jE
 CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-CQ
-CQ
-CQ
-CQ
-CQ
-Tg
-jE
-CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -3635,8 +3705,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -3644,26 +3714,26 @@ EE
 EE
 CQ
 Tg
-Cp
-ZO
-ZO
-ZO
-ZO
-ZO
-ZO
+uk
+bc
+bc
+bc
+bc
+bc
+bc
 Cv
-Cp
-ZO
-ZO
-ZO
-ZO
-ZO
-ZO
-Pa
+uk
+bc
+bc
+bc
+bc
+bc
+bc
+BH
 jE
 CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -3817,8 +3887,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -3833,19 +3903,19 @@ mb
 mb
 mb
 mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-CQ
-CQ
-EE
-EE
+LC
+LC
+LC
+LC
+LC
+LC
+LC
+LC
+LC
+Vi
+Vi
+ht
+ht
 EE
 EE
 EE
@@ -3999,8 +4069,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -4015,6 +4085,7 @@ CQ
 CQ
 CQ
 CQ
+Vi
 CQ
 CQ
 CQ
@@ -4025,9 +4096,8 @@ CQ
 CQ
 CQ
 CQ
-CQ
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -4181,8 +4251,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 EE
@@ -4193,23 +4263,23 @@ zk
 EE
 EE
 EE
+qv
+EE
+EE
+EE
+Rs
+EE
+EE
+EE
+EE
+qv
 EE
 EE
 EE
 EE
 EE
-EE
-EE
-EE
-EE
-EE
-EE
-EE
-EE
-EE
-EE
-EE
-EE
+ht
+ht
 EE
 EE
 EE
@@ -4363,8 +4433,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 RY
@@ -4379,6 +4449,7 @@ RY
 RY
 RY
 RY
+JD
 RY
 RY
 RY
@@ -4389,9 +4460,8 @@ RY
 RY
 RY
 RY
-RY
-RY
-RY
+Sb
+Sb
 RY
 RY
 RY
@@ -4545,8 +4615,8 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
+ht
+ht
 RY
 RY
 RY
@@ -4561,6 +4631,7 @@ RY
 RY
 RY
 RY
+JD
 RY
 RY
 RY
@@ -4568,12 +4639,11 @@ RY
 RY
 RY
 RY
-RY
-RY
-RY
-RY
-RY
-RY
+uF
+uF
+uF
+Sb
+Sb
 RY
 RY
 RY
@@ -4727,38 +4797,38 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
 "}
 (23,1,1) = {"
 BZ
@@ -4909,38 +4979,38 @@ Zh
 Zh
 Zh
 Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
+ht
 "}
 (24,1,1) = {"
 BZ
