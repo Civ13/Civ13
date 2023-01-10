@@ -258,5 +258,5 @@
 	return FALSE
 
 /obj/map_metadata/operation_falcon/proc/jet_flyby()
-	new/obj/effect/plane_flyby/f16/New(src)
+	new/obj/effect/plane_flyby/f16(src)
 	spawn(rand(1200,3000))
