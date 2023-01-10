@@ -653,14 +653,14 @@ obj/item/projectile/bullet/rifle/a556x45
 /obj/item/projectile/bullet/pellet/buckshot
 	name = "buckshot"
 	damage = DAMAGE_VERY_HIGH + 35
-	armor_penetration = 33
+	armor_penetration = 10
 	icon_state = "buckshot"
 
 /obj/item/projectile/bullet/shotgun/slug
 	name = "shotgun slug"
 	damage = DAMAGE_MEDIUM_HIGH
 	damage = DAMAGE_VERY_HIGH + 67
-	armor_penetration = 10
+	armor_penetration = 33
 
 /obj/item/projectile/bullet/shotgun/beanbag
 	name = "beanbag"
@@ -674,14 +674,4 @@ obj/item/projectile/bullet/rifle/a556x45
 /obj/item/projectile/bullet/shotgun/incendiary
 	name = "incendiary slug"
 	damage = DAMAGE_LOW
-	armor_penetration = 10
-
-
-/obj/item/projectile/bullet/shotgun/incendiary/fire/on_impact(mob/living/human/M as mob)
-	if (prob(10))
-		M.fire_stacks += 1
-	if (M)
-		M.IgniteMob()
-	spawn (0.01)
-		qdel(src)
-	..()
+	armor_penetration = 5

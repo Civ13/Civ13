@@ -46,8 +46,10 @@
 
 /obj/map_metadata/operation_falcon/New()
 	..()
-	spawn(3000)
-		points_check()
+	spawn(2500)
+		jet_flyby()
+		spawn(500)
+			points_check()
 
 /obj/map_metadata/operation_falcon/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -254,3 +256,9 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+/obj/map_metadata/operation_falcon/proc/jet_flyby()
+	playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, is_global = TRUE)
+	world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. There is a F-16 Fighting Falcon flying overhead"
+	spawn(rand(1200,3000))
+		jet_flyby()

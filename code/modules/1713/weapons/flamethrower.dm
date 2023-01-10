@@ -17,7 +17,7 @@
 	slot_flags = SLOT_BELT
 	var/active = FALSE
 	var/lastfire = 0
-	var/max_range = 3
+	var/max_range = 4
 	var/firing_sound = 'sound/weapons/flamethrower.ogg'
 
 /obj/item/weapon/flamethrower/update_icon()
@@ -72,10 +72,6 @@
 		
 		var/turf/prev_T = source_turf
 
-		
-		if(user)
-			prev_T = user.loc
-
 		var/distance = 0
 		var/stop_at_turf = FALSE
 
@@ -92,32 +88,26 @@
 				stop_at_turf = TRUE
 			else
 				if (distance > 0)
-					var/obj/effect/fire/flamethrower/temp = new/obj/effect/fire/flamethrower(prev_T) //I CAST THE FLAMES OF HELL UPON THY SOUL!
-					ignite_turf(get_turf(temp))
-					var/atom/A = LinkBlocked(temp, prev_T, T)
+					var/obj/effect/fire/flamethrower/flame = new/obj/effect/fire/flamethrower(T) //I CAST THE FLAMES OF HELL UPON THY SOUL!
+					ignite_turf(get_turf(flame), 40)
 
+					var/atom/A = LinkBlocked(flame, prev_T, T)
 					if(A)
 						if (A.flags & ON_BORDER)
 							break
 						stop_at_turf = TRUE
 
-			if(T == target.loc || (user && T == user.loc))
+			if(T == target.loc)
 				if(stop_at_turf)
 					break
 				prev_T = T
 				continue
+
 			if(stop_at_turf)
 				break
 			
 			distance++
 			prev_T = T
-
-/obj/item/weapon/flamethrower/proc/ignite_turf(turf/target)
-	for (var/mob/living/HM in target)
-		HM.adjustFireLoss(35)
-		HM.fire_stacks += rand(4,5)
-		HM.IgniteMob()
-	return
 
 /obj/item/weapon/reagent_containers/glass/flamethrower
 	name = "M2 Flamethrower backpack"
@@ -173,6 +163,21 @@
 	item_state = "type100_flamethrower"
 
 /obj/item/weapon/reagent_containers/glass/flamethrower/type100/filled/New()
+	..()
+	reagents.add_reagent("gasoline",100)
+
+/obj/item/weapon/flamethrower/roks2
+	name = "ROKS2 Flamethrower hose"
+	icon_state = "roks2_flamethrower"
+	item_state = "roks2_flamethrower"
+	base_icon = "roks2_flamethrower"
+
+/obj/item/weapon/reagent_containers/glass/flamethrower/roks2
+	name = "ROKS2 Flamethrower Canister"
+	icon_state = "roks2_flamethrower_back"
+	item_state = "roks2_flamethrower"
+
+/obj/item/weapon/reagent_containers/glass/flamethrower/roks2/filled/New()
 	..()
 	reagents.add_reagent("gasoline",100)
 

@@ -552,18 +552,8 @@ steam.start() -- spawns the effect
 	icon_state = ""
 	mouse_opacity = FALSE
 
-/obj/effect/plane_flyby/f16/center/New()
+/obj/effect/plane_flyby/f16/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, extrarange = 100)
-		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"
-/obj/effect/plane_flyby/f16/left/New()
-	..()
-	spawn(10)
-		playsound(get_turf(src), 'sound/effects/f16_left-right.ogg', 100, TRUE, extrarange = 100)
-		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"
-/obj/effect/plane_flyby/f16/right/New()
-	..()
-	spawn(10)
-		playsound(get_turf(src), 'sound/effects/f16_right-left.ogg', 100, TRUE, extrarange = 100)
+		playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, is_global = TRUE)
 		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"

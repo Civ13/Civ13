@@ -1359,7 +1359,7 @@
 
 /datum/job/german/ss_panzergrenadier_squad_leader
 	title = "Waffen-SS Unterscharfuhrer Panzergrenadier"
-	en_meaning = "Waffen-SS Mechanized Infantry"
+	en_meaning = "Mechanized Infantry Squad Leader"
 	rank_abbreviation = "Uscha."
 
 	spawn_location = "JoinLateGE"
@@ -1409,7 +1409,7 @@
 
 /datum/job/german/ss_panzergrenadier
 	title = "Waffen-SS Panzergrenadier"
-	en_meaning = "Waffen-SS Mechanized Infantry"
+	en_meaning = "Mechanized Infantry"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGE"
@@ -1463,7 +1463,7 @@
 
 /datum/job/german/ss_pionier
 	title = "Waffen-SS Pionier"
-	en_meaning = "Waffen-SS Sapper"
+	en_meaning = "Sapper"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGESap"
@@ -1511,6 +1511,53 @@
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 
 	return TRUE
+
+/datum/job/german/ss_flamethrower
+	title = "Waffen-SS Flammenwerfer"
+	en_meaning = "Flamethrower Unit"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+
+	is_ww2 = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/german/ss_flamethrower/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/ss(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/german(H), slot_wear_mask)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/flammenwerfer(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/flammenwerfer/filled(H), slot_back)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Waffen-SS tasks with spraying the flaming fires of hell upon your enemies. Follow your commander's orders!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+	return TRUE
+
 /*
 /datum/job/german/schutze_fallschirmjager
 	title = "Fallschirmjäger"

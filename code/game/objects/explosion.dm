@@ -27,6 +27,13 @@
 
 	return data
 
+/proc/ignite_turf(turf/target, damage)
+	for (var/mob/living/HM in target)
+		HM.adjustFireLoss(damage)
+		HM.fire_stacks += rand(1,3)
+		HM.IgniteMob()
+	return
+
 /turf
 	var/explosion_resistance
 

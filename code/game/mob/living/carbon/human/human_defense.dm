@@ -227,8 +227,9 @@ bullet_act
 				explosion(loc, 1, 2, 2, 3)
 				qdel(FM)
 				adjustFireLoss(100)
-				for(var/turf/T in range(2,src))
+				for(var/turf/T in range(1,src))
 					new/obj/effect/fire(T)
+					ignite_turf(T,30)
 	if (def_zone == "mouth")
 		if (wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
 			var/obj/item/weapon/grenade/G = wear_mask
@@ -438,6 +439,10 @@ bullet_act
 		crush()
 	if (istype(P, /obj/item/projectile/arrow/arrow/fire))
 		if (prob(5))
+			fire_stacks += 1
+		IgniteMob()
+	if (istype(P, /obj/item/projectile/bullet/shotgun/incendiary))
+		if (prob(15))
 			fire_stacks += 1
 		IgniteMob()
 
