@@ -82,6 +82,10 @@
 		..()
 		w_class = caliber/2
 
+/obj/structure/cannon/modern/tank/autoloader
+	name = "tank cannon with autoloader"
+	desc = "a barebones cannon made to be carried by vehicles."
+
 /obj/structure/cannon/modern/tank/voyage
 	spritemod = TRUE
 	w_class = 5
@@ -226,6 +230,14 @@
 	maxrange = 35
 	caliber = 100
 
+/obj/structure/cannon/modern/tank/autoloader/omwtc10
+	name = "OMW-TC 10 cm"
+	desc = "a 100 mm Redmenian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 100
+
 /obj/structure/cannon/modern/tank/baftkn75
 	name = "BAF TKN 75mm"
 	desc = "a 75 mm Blugoslavian tank-based cannon."
@@ -310,20 +322,20 @@
 	ammotype = /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91
 	explosion = TRUE
 	maxrange = 30
-	maxsway = 15
+	maxsway = 10
 	firedelay = 8
 	w_class = 6
 	path = /obj/item/weapon/foldable/type89_mortar
 
 /obj/structure/cannon/mortar/foldable/generic
-	name = "mortar"
+	name = "foldable mortar"
 	icon_state = "mortar"
 	anchored = TRUE
 	ammotype = /obj/item/cannon_ball/mortar_shell
 	explosion = TRUE
 	maxrange = 30
-	maxsway = 15
-	firedelay = 8
+	maxsway = 7
+	firedelay = 12
 	w_class = 6
 	path = /obj/item/weapon/foldable/generic
 
@@ -342,7 +354,7 @@
 		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/W as obj, mob/M as mob)
-	if (istype(W, /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91))
+	if (istype(W, ammotype))
 		if (loaded)
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return

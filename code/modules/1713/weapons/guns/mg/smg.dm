@@ -1795,13 +1795,12 @@
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
 
-//////////////////////C7///////////////////////////////
 /obj/item/weapon/gun/projectile/submachinegun/c7
 	name = "C7"
 	desc = "A Canadian Colt C7 assault rifle, chambered in 5.56x45mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "c7"
-	item_state = "g3a3"
+	item_state = "m16"
 	base_icon = "c7"
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
@@ -1817,6 +1816,12 @@
 	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/c8
+	name = "C8"
+	desc = "A Canadian Colt C8 assault rifle, chambered in 5.56x45mm."
+	equiptimer = 11
+	effectiveness_mod = 1.23
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/New()
 	..()

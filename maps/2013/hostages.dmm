@@ -356,7 +356,7 @@
 "gR" = (/obj/structure/closet/anchored,/obj/item/clothing/accessory/storage/webbing/light,/obj/item/weapon/storage/belt/smallpouches/green,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gS" = (/obj/structure/closet/anchored,/obj/item/weapon/material/sword/arabsword,/obj/item/weapon/material/sword/arabsword,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gT" = (/obj/structure/closet/anchored,/obj/item/clothing/accessory/storage/webbing/khaki_webbing,/obj/item/clothing/accessory/storage/webbing/khaki_webbing,/obj/item/weapon/storage/belt/largepouches/green,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gU" = (/obj/structure/closet/anchored,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/turf/floor/dirt,/area/caribbean/arab/caves)
+"gU" = (/obj/structure/closet/anchored,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gV" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/mop,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gW" = (/obj/structure/closet/anchored,/obj/item/clothing/accessory/storage/webbing/green_webbing,/obj/item/clothing/accessory/storage/webbing/light,/obj/item/weapon/storage/belt/largepouches/green,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gX" = (/obj/item/weapon/wrench,/turf/floor/dirt,/area/caribbean/arab/caves)

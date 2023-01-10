@@ -23,6 +23,11 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/bed/fieldbed
+	name = "field bed"
+	desc = "This is an easy to move field bed for sleeping while on the move."
+	icon_state = "fieldbed"
+
 /obj/structure/bed/wood
 	material = "wood"
 

@@ -69,7 +69,7 @@
 "bq" = (/obj/covers/wood,/obj/structure/oven/woodstove,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
 "br" = (/obj/covers/wood,/obj/structure/table/wood,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
 "bs" = (/obj/covers/wood,/obj/structure/pot,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
-"bt" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/clothing/head/blue_beret,/turf/floor/dirt,/area/caribbean/sea/bottom/roofed)
+"bt" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/clothing/head/blue_sailorberet,/turf/floor/dirt,/area/caribbean/sea/bottom/roofed)
 "bu" = (/obj/covers/wood,/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/mob/living/simple_animal/hostile/human/voyage/pirate/friendly/female,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
 "bv" = (/obj/covers/wood,/mob/living/simple_animal/hostile/human/voyage/merchant,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)
 "bw" = (/obj/covers/wood,/mob/living/simple_animal/hostile/human/voyage/civilian,/turf/floor/beach/sand,/area/caribbean/sea/bottom/roofed)

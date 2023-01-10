@@ -925,11 +925,11 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		var/image/lid = image(icon, src, "lid_fueltank")
 		overlays += lid
 	else
-		var/image/filling = image(icon, src, "fueltank5")
+		var/image/filling = image(icon, src, "full_fueltank")
 		var/percent = round((reagents.total_volume / volume) * 100)
 		switch(percent)
-			if (0 to 5)		filling.icon_state = "fueltank-5"
-			else			filling.icon_state = "fueltank5"
+			if (0 to 5)		filling.icon_state = "empty_fueltank"
+			else			filling.icon_state = "full_fueltank"
 		filling.color = reagents.get_color()
 		overlays += filling
 

@@ -125,12 +125,52 @@
 	health = 7.5
 	maxhealth = 7.5
 
+// Foldable shovels
+/obj/item/weapon/material/shovel/spade/foldable
+	name = "foldable shovel"
+	icon_state = "trench_shovel"
+	item_state = "lopata"
+	usespeed = 0.9
+	var/path = /obj/item/weapon/foldable_shovel
+	secondary_action = TRUE
+
+/obj/item/weapon/material/shovel/spade/foldable/secondary_attack_self(mob/living/human/user)
+	if (secondary_action)
+		if (do_after(user, 10, src))
+			usr << "You fold your [src] closed."
+			qdel(src)
+			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
+
 /obj/item/weapon/material/shovel/trench
 	name = "entrenching tool"
 	desc = "A shovel used specifically for digging trenches."
-	icon_state = "german_shovel2"
+	icon_state = "trench_shovel"
 	var/dig_speed = 7
 	usespeed = 0.8
+
+/obj/item/weapon/material/shovel/trench/foldable
+	name = "foldable entrenching tool"
+	desc = "A foldable shovel used specifically for digging trenches."
+	icon_state = "trench_shovel"
+	dig_speed = 8
+	usespeed = 0.8
+	var/path = /obj/item/weapon/foldable_shovel/trench
+	secondary_action = TRUE
+
+/obj/item/weapon/material/shovel/trench/foldable/etool
+	name = "foldable entrenching tool"
+	desc = "A foldable shovel used specifically for digging trenches."
+	icon_state = "etool"
+	dig_speed = 8
+	usespeed = 0.8
+	path = /obj/item/weapon/foldable_shovel/trench/etool
+
+/obj/item/weapon/material/shovel/trench/foldable/secondary_attack_self(mob/living/human/user)
+	if (secondary_action)
+		if (do_after(user, 10, src))
+			usr << "You fold your [src] closed."
+			qdel(src)
+			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
 /obj/item/weapon/material/shovel/spade
 	name = "spade"
@@ -149,11 +189,40 @@
 	material = "wood"
 	icon_state = "spadem"
 
-/obj/item/weapon/material/shovel/spade/foldable
+// Foldable shovel items
+/obj/item/weapon/foldable_shovel
 	name = "foldable shovel"
-	icon_state = "german_shovel2"
+	icon = 'icons/obj/items.dmi'
+	desc = "A foldable shovel which is currently, folded"
+	icon_state = "trench_shovel_folded"
 	item_state = "lopata"
-	usespeed = 0.9
+	edge = FALSE
+	sharp = FALSE
+	force = 1.0
+	var/path = /obj/item/weapon/material/shovel/spade/foldable
+	secondary_action = TRUE
+	w_class = 2
+
+/obj/item/weapon/foldable_shovel/trench
+	name = "foldable entrenching tool"
+	desc = "A foldable entrenching tool which is currently, folded"
+	icon_state = "trench_shovel_folded"
+	item_state = "lopata"
+	path = /obj/item/weapon/material/shovel/trench/foldable
+
+/obj/item/weapon/foldable_shovel/trench/etool
+	name = "foldable entrenching tool"
+	desc = "A foldable entrenching tool which is currently, folded"
+	icon_state = "etool_folded"
+	item_state = "lopata"
+	path = /obj/item/weapon/material/shovel/trench/foldable/etool
+
+/obj/item/weapon/foldable_shovel/secondary_attack_self(mob/living/human/user)
+	if (secondary_action)
+		if (do_after(user, 5, src))
+			usr << "You quickly snap your [src] open."
+			qdel(src)
+			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
 /obj/item/weapon/material/shovel/spade/small
 	name = "small shovel"

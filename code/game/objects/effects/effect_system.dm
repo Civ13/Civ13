@@ -1,4 +1,5 @@
-/* This is an attempt to make some easily reusable "particle" type effect, to stop the code
+/*
+This is an attempt to make some easily reusable "particle" type effect, to stop the code
 constantly having to be rewritten. An item like the jetpack that uses the ion_trail_follow system, just has one
 defined, then set up when it is created with New(). Then this same system can just be reused each time
 it needs to create more trails.A beaker could have a steam_trail_follow system set up, then the steam
@@ -41,7 +42,7 @@ would spawn and follow the beaker, even if it is carried or thrown.
 /////////////////////////////////////////////
 // GENERIC STEAM SPREAD SYSTEM
 
-//Usage: set_up(number of bits of steam, use North/South/East/West only, spawn location)
+// Usage: set_up(number of bits of steam, use North/South/East/West only, spawn location)
 // The attach(atom/atom) proc is optional, and can be called to attach the effect
 // to something, like a smoking beaker, so then you can just call start() and the steam
 // will always spawn at the items location, even if it's moved.
@@ -207,6 +208,9 @@ steam.start() -- spawns the effect
 	time_to_live = 600
 /obj/effect/effect/smoke/green
 	color = "#366b36"
+	time_to_live = 600
+/obj/effect/effect/smoke/yellow
+	color = "#ffff00"
 	time_to_live = 600
 /obj/effect/effect/smoke/orange
 	color = "#c47f18"
@@ -402,6 +406,9 @@ steam.start() -- spawns the effect
 /datum/effect/effect/system/smoke_spread/red
 	smoke_type = /obj/effect/effect/smoke/red
 
+/datum/effect/effect/system/smoke_spread/yellow
+	smoke_type = /obj/effect/effect/smoke/yellow
+
 /datum/effect/effect/system/smoke_spread/orange
 	smoke_type = /obj/effect/effect/smoke/orange
 
@@ -523,6 +530,11 @@ steam.start() -- spawns the effect
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-60 Black Hawk."
+/obj/effect/helicopter_flyby/ch47/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 100)
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Boeing CH-47 Chinook."
 /obj/effect/helicopter_flyby/mi8/New()
 	..()
 	spawn(10)
@@ -533,3 +545,25 @@ steam.start() -- spawns the effect
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/mi24.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-24 Hind."
+
+
+/obj/effect/plane_flyby
+	name = "jet flyby"
+	icon_state = ""
+	mouse_opacity = FALSE
+
+/obj/effect/plane_flyby/f16/center/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, extrarange = 100)
+		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"
+/obj/effect/plane_flyby/f16/left/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/f16_left-right.ogg', 100, TRUE, extrarange = 100)
+		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"
+/obj/effect/plane_flyby/f16/right/New()
+	..()
+	spawn(10)
+		playsound(get_turf(src), 'sound/effects/f16_right-left.ogg', 100, TRUE, extrarange = 100)
+		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"

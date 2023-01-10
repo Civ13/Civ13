@@ -503,7 +503,7 @@
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/clothing/accessory/storage/webbing/russband
 	name = "Imperial Russian Army bandolier"
@@ -547,7 +547,7 @@
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 /obj/item/weapon/storage/belt/jap
 	name = "Japanese Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
@@ -582,7 +582,7 @@
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/ammo_magazine/arisaka(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier
 /obj/item/weapon/storage/belt/jap/ww2soldier/New()
@@ -593,7 +593,7 @@
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier100
 /obj/item/weapon/storage/belt/jap/ww2soldier100/New()
@@ -614,7 +614,7 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard
 /obj/item/weapon/storage/belt/jap/camp_guard/New()
@@ -622,7 +622,7 @@
 	new /obj/item/weapon/melee/classic_baton(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
@@ -653,7 +653,7 @@
 	new /obj/item/weapon/material/classic_baton/guard(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/attachment/bayonet(src)
 	new /obj/item/ammo_magazine/c8mmnambu(src)
 	new /obj/item/ammo_magazine/c8mmnambu(src)
 /////////////////////////////////////////////////////////////////////////////////
@@ -1248,7 +1248,7 @@
 	New()
 		..()
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/weapon/attachment/bayonet(src)
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
 
@@ -1270,7 +1270,7 @@
 	New()
 		..()
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/attachment/bayonet/military(src)
+		new/obj/item/weapon/attachment/bayonet(src)
 		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
 
@@ -1405,6 +1405,16 @@
 	new/obj/item/weapon/grenade/coldwar/m67(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke
+	storage_slots = 5
+/obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke/New()
+	..()
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new/obj/item/stack/medical/advanced/sulfa/small(src)
+
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt/New()
@@ -1451,6 +1461,14 @@
 	new/obj/item/ammo_magazine/greasegun(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke
+/obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke/New()
+	..()
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+	new /obj/item/stack/medical/advanced/sulfa/small(src)
 
 /obj/item/clothing/under/blue_shorts
 	name = "blue shorts"

@@ -1447,7 +1447,10 @@
 					else
 						holder2.icon_state = "ind_basic"
 				if (DUTCH)
-					holder2.icon_state = "nl_basic"
+					if (map.ordinal_age >= 6)
+						holder2.icon_state = "nl_basic"
+					else
+						holder2.icon_state = "nl_old_basic"
 				if (ARAB)
 					if (map.ordinal_age >= 6)
 						if (map.ID == MAP_ARAB_TOWN)
@@ -1491,7 +1494,7 @@
 					else
 						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
-					if (map.ID == MAP_YELTSIN || map.ID == MAP_GROZNY || map.ID == MAP_FACTORY)
+					if (map.ID == MAP_YELTSIN || map.ID == MAP_GROZNY || map.ID == MAP_FACTORY || map.ID == MAP_OPERATION_FACLON)
 						holder2.icon_state = "ru_basic"
 					else if (map.ID == MAP_BANK_ROBBERY)
 						holder2.icon_state = "robbers"

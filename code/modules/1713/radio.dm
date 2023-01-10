@@ -49,6 +49,19 @@
 	receiver_on = TRUE
 	transmitter_on = TRUE
 
+/obj/structure/radio/transmitter_receiver/nopower/tank/New()
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
+
+/obj/structure/radio/transmitter_receiver/nopower/tank/faction1/New()
+	..()
+	freq = FREQ1
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
+
+/obj/structure/radio/transmitter_receiver/nopower/tank/faction2/New()
+	..()
+	freq = FREQ2
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
+
 /obj/structure/radio/transmitter_receiver/nopower
 	name = "two-way radio"
 	icon_state = "radio"

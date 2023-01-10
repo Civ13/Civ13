@@ -360,7 +360,7 @@
 	recoil = 3
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
-	ammo_type = list (/obj/item/ammo_casing/a145)
+	ammo_type = list (/obj/item/ammo_casing/a145, /obj/item/ammo_casing/a145_ap)
 	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
@@ -646,7 +646,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet/New()
 	..()
-	var/obj/item/weapon/attachment/bayonet/military/SP = new/obj/item/weapon/attachment/bayonet/military(src)
+	var/obj/item/weapon/attachment/bayonet/SP = new/obj/item/weapon/attachment/bayonet(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training

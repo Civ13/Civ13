@@ -130,13 +130,17 @@
 	icon_state = "burning_fire2"
 	alpha = 230
 	spawn(30)
-		if (runonce == 0)
+		if (runonce == FALSE)
 			burningproc()
-			runonce = 1
+			runonce = TRUE
 	set_light(3)
 	spawn(timer)
 		set_light(0)
 		qdel(src)
+
+/obj/effect/fire/flamethrower
+	timer = 60
+	var/turf/target_clicked
 
 /obj/effect/fire/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))

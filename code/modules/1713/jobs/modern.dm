@@ -81,7 +81,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/officer(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -130,7 +130,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/roller(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
@@ -186,7 +186,7 @@
 	uniform.attackby(pasgt_armor, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, fighting against the Insurgents!")
@@ -290,7 +290,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/att(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
@@ -398,7 +398,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/jericho941(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/idfoff(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -446,7 +446,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/jericho941(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 
@@ -503,7 +503,7 @@
 	uniform.attackby(idf_armor, H)
 	var/obj/item/clothing/accessory/storage/webbing/green_webbing/m24/web = new /obj/item/clothing/accessory/storage/webbing/green_webbing/m24(null)
 	uniform.attackby(web, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, fighting against the Hezbollah! Provide your squad with accurate fire.")
@@ -605,7 +605,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/idf(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)

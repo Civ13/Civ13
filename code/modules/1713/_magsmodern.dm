@@ -48,6 +48,17 @@
 	max_ammo = 75
 	icon_state = "tommydrum"
 
+/obj/item/ammo_magazine/ak74/box
+	name = "magazine box (5.45x39mm)"
+	icon_state = "ak74"
+	mag_type = MAGAZINE
+	caliber = "a545x39"
+	w_class = 3
+	ammo_type = /obj/item/ammo_casing/a545x39
+	max_ammo = 65
+	multiple_sprites = TRUE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/ak101
 	name = "AK-101 Magazine (5.46x45mm)"
 	icon_state = "ak47"
@@ -570,6 +581,17 @@
 	multiple_sprites = TRUE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/a50cal_can
+	name = ".50 BMG ammo can"
+	icon_state = "b762x51"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a50cal/weak
+	caliber = "a50cal"
+	max_ammo = 150
+	weight = 0.8
+	multiple_sprites = TRUE
+	belt = TRUE
+
 ///////////c6//////////
 /obj/item/ammo_magazine/c6belt
 	name = "C6 GPMG ammo belt"
@@ -585,7 +607,7 @@
 
 /obj/item/ammo_magazine/c6can
 	name = "C6 GPMG ammo can"
-	icon_state = "7.62x51b"
+	icon_state = "b762x51"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	w_class = 4

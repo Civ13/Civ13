@@ -969,7 +969,7 @@
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
 			uniform.attackby(webbing, H)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -1076,7 +1076,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/german_mg(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/german_mg_drum(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -1133,7 +1133,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/gewehr98box(H), slot_belt)
 //pockets
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(60))

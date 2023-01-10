@@ -22,7 +22,6 @@
 		)
 	full_auto = TRUE
 	fire_delay = 3
-	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim
 	name = "Maxim 1895"
@@ -37,7 +36,6 @@
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
-	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	name = "Maxim"
@@ -53,7 +51,6 @@
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
-	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08
 	name = "Maschinengewehr 08"
@@ -68,7 +65,6 @@
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
-	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm
 	name = "PKM machine gun"
@@ -82,7 +78,6 @@
 		list(name="full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
-	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
 	name = "Vickers machine gun"
@@ -97,8 +92,6 @@
 		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a303/weak
-	is_hmg = TRUE
-
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/hotchkiss1914
 	name = "Hotchkiss M1914 machine gun"
@@ -109,7 +102,6 @@
 	magazine_type = /obj/item/ammo_magazine/hotchkiss
 	good_mags = list(/obj/item/ammo_magazine/hotchkiss)
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
-	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type3
 	name = "Type 3 machine gun"
@@ -120,7 +112,6 @@
 	magazine_type = /obj/item/ammo_magazine/type3
 	good_mags = list(/obj/item/ammo_magazine/type3)
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
-	is_hmg = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98
 	name = "Type 92 machine gun"
@@ -135,7 +126,6 @@
 		list(name="full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a77x58
-	is_hmg = TRUE
 	attachment_slots = ATTACH_SCOPE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
@@ -153,10 +143,24 @@
 		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a3006
-	is_hmg = TRUE
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
 	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning
+	name = "M2HB browning machine gun"
+	desc = "An american heavy machinegun. Uses .50 cal rounds."
+	icon_state = "browning"
+	base_icon = "browning"
+	caliber = "a50cal"
+	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
+	magazine_type = /obj/item/ammo_magazine/a50cal_can
+	good_mags = list(/obj/item/ammo_magazine/a50cal_can)
+	firemodes = list(
+		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a50cal/weak
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning/update_icon()
+	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 150) : "_empty"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"
@@ -170,7 +174,19 @@
 		list(name="full auto", burst=4, burst_delay=1, fire_delay=1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
-	is_hmg = TRUE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg3
+	name = "MG 3 machine gun"
+	desc = "A german heavy machinegun, using 7.62x51 NATO rounds."
+	icon_state = "mg34hmg"
+	base_icon = "mg34hmg"
+	caliber = "a792x57_weak"
+	magazine_type = /obj/item/ammo_magazine/mg3belt
+	good_mags = list(/obj/item/ammo_magazine/mg3belt)
+	firemodes = list(
+		list(name="full auto", burst=4, burst_delay=1, fire_delay=1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a762x51/weak
 
 // Autocannons
 
@@ -223,7 +239,6 @@
 		list(name="full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
-	is_hmg = TRUE
 	anchored = TRUE
 	var/mode = "autocannon"
 
