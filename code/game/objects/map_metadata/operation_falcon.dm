@@ -46,8 +46,10 @@
 
 /obj/map_metadata/operation_falcon/New()
 	..()
-	spawn(3000)
-		points_check()
+	spawn(2500)
+		jet_flyby()
+		spawn(500)
+			points_check()
 
 /obj/map_metadata/operation_falcon/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -254,3 +256,7 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+/obj/map_metadata/operation_falcon/proc/jet_flyby()
+	new/obj/effect/plane_flyby/f16/New(src)
+	spawn(rand(1200,3000))
