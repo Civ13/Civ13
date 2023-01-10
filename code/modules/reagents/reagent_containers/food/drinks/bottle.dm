@@ -837,3 +837,14 @@
 	New()
 		..()
 		reagents.add_reagent("water", 50)
+
+//////////////////milk//////////////////
+obj/item/weapon/reagent_containers/food/drinks/can/milk
+	name = "milk jug"
+	desc = "A jug of milk."
+	icon_state = "milk"
+	base_icon = "milk"
+	volume = 200
+	New()
+		..()
+		reagents.add_reagent("milk", 200)
