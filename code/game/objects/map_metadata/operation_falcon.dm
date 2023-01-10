@@ -258,5 +258,7 @@
 	return FALSE
 
 /obj/map_metadata/operation_falcon/proc/jet_flyby()
-	new/obj/effect/plane_flyby/f16(src)
+	playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, is_global = TRUE)
+	world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. There is a F-16 Fighting Falcon flying overhead"
 	spawn(rand(1200,3000))
+		jet_flyby()
