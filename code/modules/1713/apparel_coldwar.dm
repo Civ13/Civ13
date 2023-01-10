@@ -338,7 +338,7 @@
 
 /obj/item/clothing/under/us_uni/us_camo
 	name = "woodland camo uniform"
-	desc = "The standard US Army camo uniform the mid-20th century."
+	desc = "The standard US Army camo uniform implemented in the early 1980s. Still used during the present day by many countries."
 	icon_state = "us_camo"
 	item_state = "us_camo"
 	worn_state = "us_camo"
