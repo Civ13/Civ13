@@ -499,6 +499,31 @@
 	desc = "The Dutch flag."
 	icon_state = "flag_netherlands_old"
 
+/obj/structure/sign/flag/chetnik
+	name = "Chetnik flag"
+	desc = "A Chetnik flag."
+	icon_state = "flag_cetnik"
+
+/obj/structure/sign/flag/yugoslavia
+	name = "Yugoslavian flag"
+	desc = "The flag of Yugoslavia."
+	icon_state = "flag_yugo"
+
+/obj/structure/sign/flag/yugoslavia/partisan
+	name = "Yugoslavian flag"
+	desc = "The flag of Yugoslavian partisans."
+	icon_state = "flag_yugopart"
+
+/obj/structure/sign/flag/gns
+	name = "GNS flag"
+	desc = "The flag of Goverment National Salvation."
+	icon_state = "flag_gns"
+
+/obj/structure/sign/flag/ssg
+	name = "SSG flag"
+	desc = "The flag of the Serbain State Guard."
+	icon_state = "flag_gns"
+
 /obj/structure/sign/flag/australia
 	name = "Australian flag"
 	desc = "The flag of Australia."
@@ -768,7 +793,7 @@
 
 /obj/structure/sign/flag/arstotzka
 	name = "Arstotzkan flag"
-	desc = "The flag of Arstotzka."
+	desc = "Glory to Arstotzka!"
 	icon_state = "flag_arstotzka"
 
 /obj/structure/sign/flag/custom
