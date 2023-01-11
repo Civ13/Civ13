@@ -763,6 +763,14 @@
 	det_time = 50
 	throw_range = 5
 
+/obj/item/weapon/grenade/antitank/stg24_bundle
+	name = "M1924 Stielhandgranate bundle"
+	desc = "A bundle of M1924 grenades tied together, useful against armored vehicles."
+	icon_state = "stgbundle"
+	det_time = 50
+	throw_range = 6
+	heavy_armor_penetration = 18
+
 /obj/item/weapon/grenade/antitank/type99
 	name = "Type 99 AT mine"
 	icon_state = "type99"
