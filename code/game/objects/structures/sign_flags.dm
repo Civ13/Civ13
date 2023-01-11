@@ -502,7 +502,7 @@
 /obj/structure/sign/flag/chetnik
 	name = "Chetnik flag"
 	desc = "A Chetnik flag."
-	icon_state = "flag_cetnik"
+	icon_state = "flag_chetnik"
 
 /obj/structure/sign/flag/yugoslavia
 	name = "Yugoslavian flag"
@@ -516,13 +516,13 @@
 
 /obj/structure/sign/flag/gns
 	name = "GNS flag"
-	desc = "The flag of Goverment National Salvation."
+	desc = "The flag of the Goverment of National Salvation."
 	icon_state = "flag_gns"
 
 /obj/structure/sign/flag/ssg
 	name = "SSG flag"
-	desc = "The flag of the Serbain State Guard."
-	icon_state = "flag_gns"
+	desc = "The flag of the Serbian State Guard."
+	icon_state = "flag_ssg"
 
 /obj/structure/sign/flag/australia
 	name = "Australian flag"
