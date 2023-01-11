@@ -708,6 +708,53 @@
 
 	return TRUE
 
+/datum/job/russian/flamethrower_soviet
+	title = "K.A. Ognemet"
+	en_meaning = "Red Army Flamethrower Unit"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+	can_be_female = TRUE
+	is_ww2 = TRUE
+	uses_squads = TRUE
+	is_karelia = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/russian/flamethrower_soviet/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/soviet(H), slot_wear_mask)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/roks2(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/roks2/filled(H), slot_back)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a flamethrower for the Red Army. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
 
 /datum/job/russian/sniper_soviet
 	title = "K.A. Snaiper"

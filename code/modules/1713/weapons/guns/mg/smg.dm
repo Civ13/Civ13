@@ -379,7 +379,7 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.0, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -405,6 +405,29 @@
 
 	sel_mode = 1
 	effectiveness_mod = 1.04
+
+
+/obj/item/weapon/gun/projectile/submachinegun/sten
+	name = "Sten MK II"
+	desc = "A British submachinegun, chambered in 9x19 Parabellum."
+	icon_state = "sten2"
+	item_state = "sten2"
+	base_icon = "sten2"
+	weight = 3.2
+	attachment_slots = ATTACH_BARREL
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/Thompson.ogg'
+	magazine_type = /obj/item/ammo_magazine/sten2
+	good_mags = list(/obj/item/ammo_magazine/sten2)
+	full_auto = TRUE
+	slot_flags = SLOT_SHOULDER
+	equiptimer = 8
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.25, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.4)),
+		)
+
+	sel_mode = 1
+	effectiveness_mod = 0.99
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
@@ -444,6 +467,39 @@
 		)
 
 	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/ppd
+	name = "PPD-40"
+	desc = "Soviet submachinegun typically equipped with drum magazines. Chambered in 7.62x25mm Tokarev."
+	icon_state = "ppd"
+	item_state = "ppsh"
+	base_icon = "ppd"
+	caliber = "a762x25"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
+	full_auto = TRUE
+	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
+	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
+	weight = 3.7
+	equiptimer = 15
+	effectiveness_mod = 0.96
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.3, 0.4, 0.5, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.3, 1.4, 1.6)),
+		)
+
+	sel_mode = 1
+/obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon()
+	if (ammo_magazine)
+		if (ammo_magazine == /obj/item/ammo_magazine/c762x25_ppsh)
+			icon_state = "[base_icon]_drum"
+			return
+		else
+			icon_state = "[base_icon]_mag"
+			return
+	else
+		icon_state = "[base_icon]_open"
+		item_state = "[base_icon]_open"
+	update_held_icon()
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47
 	name = "AKM"
