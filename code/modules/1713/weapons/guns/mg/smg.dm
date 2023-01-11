@@ -416,10 +416,11 @@
 	weight = 3.2
 	attachment_slots = ATTACH_BARREL
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/Type100.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Thompson.ogg'
 	magazine_type = /obj/item/ammo_magazine/sten2
 	good_mags = list(/obj/item/ammo_magazine/sten2)
 	full_auto = TRUE
+	slot_flags = SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.25, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.4)),
