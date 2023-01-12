@@ -538,3 +538,13 @@
 	icon = 'icons/obj/christmas.dmi'
 	icon_state = "doorwreath"
 	layer = 6.3
+
+///MAP BOARD///
+/obj/structure/sign/map_board
+	name = "map of the area"
+	desc = "A large board with the map of the area."
+	icon_state = "map_board"
+
+/obj/structure/sign/map_board/attack_hand(var/mob/user as mob)
+	update_icon()
+	user << browse("<img src=sovafghan_map.png></img>","window=popup;size=630x630")

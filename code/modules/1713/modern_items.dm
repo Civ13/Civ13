@@ -225,6 +225,17 @@
 /obj/structure/lamp/lamppost_small/alwayson
 	powerneeded = 0
 	on = TRUE
+/obj/structure/lamp/streetlight
+	name = "street light"
+	desc = "A street light, good for illuminating the streets."
+	icon = 'icons/obj/lighting_32x64.dmi'
+	icon_state = "streetlight"
+	powerneeded = 3
+	light_amt = 7
+/obj/structure/lamp/streetlight/alwayson
+	powerneeded = 0
+	on = TRUE
+
 
 /obj/structure/lamp/lamp_small
 	name = "small lightbulb"

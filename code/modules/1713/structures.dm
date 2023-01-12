@@ -380,6 +380,18 @@
 	density = FALSE
 	opacity = FALSE
 
+/obj/structure/props/car_wreck
+	name = "car wreck"
+	desc = "Looks like it has been here for a while."
+	icon = 'icons/obj/vehicles/wip_vehicles.dmi'
+	icon_state = "car_wreck"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	bound_width = 96
+	bound_height = 64
+
 /obj/structure/props/engineprops
 	name = "generic"
 	desc = "A generic engine prop."
