@@ -239,7 +239,6 @@
 
 	"1,4" = list(/obj/structure/vehicleparts/frame/car/wyoming/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,4" = list(/obj/structure/vehicleparts/frame/car/wyoming/lb,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/us/centered),
-
 	)
 //Yamasaki
 //Shinobu
@@ -313,7 +312,79 @@
 	"1,2" = list(/obj/structure/bed/chair/drivers/car/type95,/obj/structure/vehicleparts/frame/car/type95/rc),
 	"2,2" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lc),
 	)
+///////////////////////////////////////////////JEEPS///////////////////////////////////////////////////////
+/obj/effects/premadevehicles/jeep
 
+//Dutch Jeep
+/obj/effects/premadevehicles/truck/mercedes
+	name = "Mercedes-Benz G280"
+	icon_state = "3x3"
+	custom_color = "#45453b"
+	axis = /obj/structure/vehicleparts/axis/car/mercedes
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/vehicleparts/movement/armored),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/lb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed),
+	)
+/obj/effects/premadevehicles/truck/mercedes/mg
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/vehicleparts/movement/armored),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/lb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed),
+	)
+
+///////////////////////////////////////////////TRUCKS///////////////////////////////////////////////////////
+/obj/effects/premadevehicles/truck
+
+//Dutch Truck
+/obj/effects/premadevehicles/truck/daf
+	name = "DAF YA-4442 Truck"
+	icon_state = "4x4"
+	custom_color = "#45453b"
+	axis = /obj/structure/vehicleparts/axis/car/daf
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/gasoline/premade/v6,/obj/structure/vehicleparts/movement),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/right/armored),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/left/armored),
+
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/right/armored,/obj/structure/vehicleparts/movement/reversed),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/vehicleparts/movement/reversed),
+	)
+
+//Russian Truck
+/obj/effects/premadevehicles/truck/kamaz
+	name = "KamAZ-4350 Truck"
+	icon_state = "4x4"
+	custom_color = "#45453b"
+	axis = /obj/structure/vehicleparts/axis/car/kamaz
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/gasoline/premade/v6,/obj/structure/vehicleparts/movement),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/right/armored),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/left/armored),
+
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/right/armored,/obj/structure/vehicleparts/movement/reversed),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/vehicleparts/movement/reversed),
+	)
 
 ///////////////////////////////////////////////TANKS///////////////////////////////////////////////////////
 /obj/effects/premadevehicles/tank
@@ -502,13 +573,59 @@
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/panzeriv/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	)
 
+/obj/effects/premadevehicles/tank/t90a
+	name = "T-90A"
+	icon_state = "4x4"
+	custom_color = "#3d5931"
+	axis = /obj/structure/vehicleparts/axis/heavy/t90a
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/omw22_2/rf,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2),
+	"2,1" = list(/obj/structure/vehicleparts/frame/omw22_2/front),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/omw22_2/right, /obj/structure/bed/chair/commander),
+	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/autoloader/t90a),
+	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left, /obj/structure/bed/chair/gunner),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 4975}),
+	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/lamp/lamp_small/alwayson),
+	"3,3" = list(/obj/structure/vehicleparts/frame/omw22_2/left),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb, /obj/structure/engine/internal/diesel/premade/v12),
+	"2,4" = list(/obj/structure/vehicleparts/frame/omw22_2/back, /obj/structure/shellrack/full100),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled)
+	)
+
+/obj/effects/premadevehicles/tank/leopard
+	name = "Leopard 2A6"
+	icon_state = "4x4"
+	custom_color = "#3d5931"
+	axis = /obj/structure/vehicleparts/axis/heavy/leopard
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/omw22_2/rf,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2),
+	"2,1" = list(/obj/structure/vehicleparts/frame/omw22_2/front),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/omw22_2/right,/obj/structure/bed/chair/commander),
+	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/leopard),
+	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left,/obj/structure/bed/chair/gunner),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 5970}),
+	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/bed/chair/loader,/obj/structure/lamp/lamp_small/alwayson),
+	"3,3" = list(/obj/structure/vehicleparts/frame/omw22_2/left),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb, /obj/structure/engine/internal/diesel/premade/v12),
+	"2,4" = list(/obj/structure/vehicleparts/frame/omw22_2/back, /obj/structure/shellrack/full100),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled)
+	)
+
 ////////////APCS/////////////
 
 /obj/effects/premadevehicles/apc
 
 /obj/effects/premadevehicles/apc/mtlb
 	name = "MT-LB"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#4A5243"
 	axis = /obj/structure/vehicleparts/axis/heavy/mtlb
 	tocreate = list(
@@ -548,20 +665,20 @@
 	)
 
 /obj/effects/premadevehicles/apc/bmd2
-	name = "MT-LB"
-	icon_state = "3x3"
+	name = "BMD-2"
+	icon_state = "4x4"
 	custom_color = "#4A5243"
 	axis = /obj/structure/vehicleparts/axis/heavy/bmd2
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/bmd2/right,/obj/structure/vehicleparts/frame/bmd2/rf),
-	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/bmd2/left,/obj/structure/vehicleparts/frame/bmd2/lf,/obj/structure/bed/chair/drivers/tank),
+	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/bmd2/left,/obj/structure/vehicleparts/frame/bmd2/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov),
-	"2,2" = list(/obj/structure/vehicleparts/frame/bmd2/lfc,/obj/item/ammo_magazine/a3ubr6,/obj/item/ammo_magazine/a3ubr6,/obj/item/ammo_magazine/a3uor6,/obj/item/ammo_magazine/a3uor6),
+	"2,2" = list(/obj/structure/vehicleparts/frame/bmd2/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/bmd2/rbc),
+	"1,3" = list(/obj/structure/vehicleparts/frame/bmd2/rbc,/obj/structure/lamp/lamp_small/tank/red),
 	"2,3" = list(/obj/structure/vehicleparts/frame/bmd2/lbc),
 
-	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed,/obj/structure/vehicleparts/frame/bmd2/rb,/obj/structure/engine/internal/diesel/premade/bmd2,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed,/obj/structure/vehicleparts/frame/bmd2/rb,/obj/structure/engine/internal/diesel/premade/bmd2,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0}),
 	"2,4" = list(/obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed,/obj/structure/vehicleparts/frame/bmd2/lb),
 	)

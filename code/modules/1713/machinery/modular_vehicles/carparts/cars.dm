@@ -514,6 +514,35 @@
 	speedlist = list(1=7,2=5.5,3=4.5,4=3)
 	turntimer = 9
 
+/obj/structure/vehicleparts/axis/car/daf
+	name = "DAF YA-4442 Truck"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=10,2=6,3=4,4=3)
+	turntimer = 8
+
+/obj/structure/vehicleparts/axis/car/mercedes
+	name = "Mercedes-Benz G280"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=10,2=5,3=4,4=3,5=2)
+	turntimer = 8
+
+/obj/structure/vehicleparts/axis/car/kamaz
+	name = "KamAZ-4350 Truck"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=10,2=6,3=4,4=3)
+	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/volle/ambulance
 	name = "Ubermacht Volle KW Ambulance"
@@ -528,6 +557,10 @@
 
 /obj/structure/engine/internal/gasoline/premade/quattroporte
 	enginesize = 3000
+
+/obj/structure/engine/internal/gasoline/premade/v6
+	name = "V6 gasoline engine"
+	enginesize = 7000
 
 /obj/structure/engine/internal/diesel/premade/erstenklasse
 	enginesize = 5500
@@ -565,6 +598,14 @@
 /obj/structure/engine/internal/gasoline/premade/baf1_a
 	name = "BAF 12 gasoline engine"
 	enginesize = 12000
+
+/obj/structure/engine/internal/diesel/premade/v12
+	name = "V12 diesel engine"
+	enginesize = 15000
+
+/obj/structure/engine/internal/diesel/premade/v6
+	name = "V6 diesel engine"
+	enginesize = 8000
 
 /obj/structure/engine/internal/diesel/premade/mtlb
 	name = "YaMZ 238 diesel engine"
