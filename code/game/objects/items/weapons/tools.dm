@@ -27,6 +27,19 @@
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
+/obj/item/weapon/metalfile
+	name = "metalfile"
+	desc = "A metal file, maybe you could file through metal with this."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "metalfile"
+	flags = CONDUCT
+	slot_flags = SLOT_POCKET
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	w_class = 2.0
+
+	attack_verb = list("bapped", "bonked", "slapped", "whacked")
+
 /*
  * Fire Extinguisher
  */
