@@ -17,7 +17,7 @@
 		list(CIVILIAN) = /area/caribbean/japanese/land/inside/command, //doesn't exist on the map
 		)
 
-	age = "1986"
+	age = "1993"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(CIVILIAN = 0.65, RUSSIAN = 0.35)
 	battle_name = "Goldstein Bank Heist"

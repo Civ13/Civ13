@@ -24,6 +24,7 @@ var/datum/process_list/processes = new
 	var/process/movement/movement = null
 	var/process/nanoUI/nanoUI = null
 	var/process/obj/obj = null
+	var/process/paratrooper_plane/paratrooper_plane = null
 	var/process/ping_track/ping_track = null
 	var/process/projectile/projectile = null
 	var/process/RNG/RNG = null

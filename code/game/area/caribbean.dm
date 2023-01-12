@@ -355,8 +355,20 @@
 	name = "No Man's Sky"
 	icon_state = "purple1"
 	base_turf = /turf/floor/broken_floor/sky
+	dynamic_lighting = FALSE
+	ambience = list("sound/effect/wind/wind_4_1.ogg")
 	var/corresponding_area_type = null
 	var/corresponding_area_allow_subtypes = FALSE
+
+/area/caribbean/no_mans_land/sky/paratrooper_drop_zone
+	corresponding_area_type = /area/caribbean/forest
+	corresponding_area_allow_subtypes = TRUE
+	name = "The Sky"
+
+/area/caribbean/no_mans_land/sky/paratrooper_drop_zone/plane
+	corresponding_area_type = /area/caribbean/forest
+	corresponding_area_allow_subtypes = TRUE
+	name = "Plane"
 
 /area/caribbean/no_mans_land
 	name = "No Man's Land"
@@ -1321,27 +1333,6 @@
 /area/caribbean/football/nopass
 	icon_state = "green1"
 	
-
-/////////////////////////////////////////////////////////////
-/////////////leben paratooper code///////////////////////////
-/*
-/area/caribbean/void/sky
-	icon_state = "purple1"
-	name = "The Sky"
-	dynamic_lighting = FALSE
-	var/corresponding_area_type = null
-	var/corresponding_area_allow_subtypes = FALSE
-
-/area/caribbean/void/sky/paratrooper_drop_zone
-	corresponding_area_type = /area/caribbean/forest
-	corresponding_area_allow_subtypes = TRUE
-	name = "The Sky"
-
-/area/caribbean/void/sky/paratrooper_drop_zone/plane
-	corresponding_area_type = /area/caribbean/forest
-	corresponding_area_allow_subtypes = TRUE
-	name = "Fallschirmjager Plane"
-*/
 
 /area/caribbean/space
 	has_gravity = FALSE
