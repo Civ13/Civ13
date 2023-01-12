@@ -387,6 +387,7 @@
 	icon_state = "car_wreck"
 	flammable = FALSE
 	not_movable = TRUE
+	anchored = TRUE
 	not_disassemblable = TRUE
 	density = TRUE
 	bound_width = 96
@@ -398,11 +399,13 @@
 	icon = 'icons/obj/decals_widest.dmi'
 	icon_state = "watts_tower"
 	flammable = FALSE
+	anchored = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	density = TRUE
 	bound_width = 64
 	bound_height = 64
+	layer = MOB_LAYER+1
 
 /obj/structure/props/engineprops
 	name = "generic"
