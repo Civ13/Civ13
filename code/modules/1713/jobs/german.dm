@@ -1558,8 +1558,7 @@
 
 	return TRUE
 
-/*
-/datum/job/german/schutze_fallschirmjager
+/datum/job/german/paratrooper
 	title = "Fallschirmjäger"
 	en_meaning = "Paratrooper"
 	rank_abbreviation = ""
@@ -1570,11 +1569,13 @@
 	is_reichstag = FALSE
 	uses_squads = TRUE
 	is_paratrooper = TRUE
+	var/paratrooper_spawnzone = null
+	var/list/paratrooper_spawnpoints = list()
 
 	min_positions = 4
 	max_positions = 8
 
-/datum/job/german/schutze_fallschirmjager/equip(var/mob/living/human/H)
+/datum/job/german/paratrooper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1583,12 +1584,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
 
 //head
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
 //back
-	if (prob(15))
+	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
 	else
 		if (prob(10))
@@ -1597,11 +1595,23 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
+	
+	if (!paratrooper_spawnzone)
+		paratrooper_spawnzone = pick(paradrop_landmarks)
+		paradrop_landmarks = list()
+		for (var/turf/T in orange(5, paratrooper_spawnzone))
+			paratrooper_spawnpoints += T
+		H.loc = get_turf(paratrooper_spawnzone)
+	else
+		H.loc = pick(paratrooper_spawnpoints)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(webbing, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Wehrmacht forces. Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a paratrooper. Your job is to help any other units that need assistance.")
+	if (processes.paratrooper_plane)
+		H << processes.paratrooper_plane.getMessage()
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1613,4 +1623,3 @@
 
 
 	return TRUE
-*/
