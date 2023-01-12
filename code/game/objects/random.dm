@@ -230,3 +230,58 @@ Example for later use:
 				/obj/structure/wild/rock/basalt,
 				/obj/structure/wild/tree_stump,
 				/obj/structure/wild/smallbush/winter)
+
+/obj/item/weapon/hiddenstash
+	name = "Hidden Stach"
+	desc = "Ooooh what could be inside??? If you see this report it to a developer"
+	icon = 'icons/misc/mark.dmi'
+	icon_state = "dice"
+	w_class = 2
+	var/stashed = list()
+
+/obj/item/weapon/hiddenstash/New()
+	..()
+	var/rand_object = rand(1,4)
+	switch (rand_object)
+		if (1)
+			name = "newspaper"
+			desc = "An issue of a local Newspaper. It looks a bit off..."
+			icon = 'icons/obj/bureaucracy.dmi'
+			icon_state = "newspaper"
+		if (2)
+			name = "toolbox"
+			desc = "Danger. Very robust. It looks a bit off..."
+			icon = 'icons/obj/storage.dmi'
+			icon_state = "toolbox_red"
+			item_state = "toolbox_red"
+		if (3)
+			name = "briefcase"
+			desc = "It's made of AUTHENTIC faux-leather and has a price-tag still attached. Its owner must be a real professional. It looks a bit off..."
+			icon = 'icons/obj/storage.dmi'
+			icon_state = "briefcase"
+			item_state = "briefcase"
+		if (4)
+			name = "package"
+			desc = "Some kind of package..."
+			icon = 'icons/obj/bureaucracy.dmi'
+			icon_state = "deliverypackage"
+			item_state = "deliverypackage"
+
+/obj/item/weapon/hiddenstash/attack_self()
+	var/build_path = pickweight(stashed)
+	new build_path(src.loc)
+
+/obj/item/weapon/hiddenstash/sten
+	stashed = list(	/obj/item/weapon/gun/projectile/submachinegun/sten,
+					/obj/item/ammo_magazine/sten2 = 2)
+/obj/item/weapon/hiddenstash/mp40
+	stashed = list(	/obj/item/weapon/gun/projectile/submachinegun/mp40,
+					/obj/item/ammo_magazine/mp40 = 2)
+/obj/item/weapon/hiddenstash/grenade
+	stashed = list(	/obj/item/weapon/grenade/modern/custom)
+/obj/item/weapon/hiddenstash/makarov
+	stashed = list(	/obj/item/weapon/gun/projectile/pistol/makarov,
+					/obj/item/ammo_magazine/makarov = 3)
+/obj/item/weapon/hiddenstash/luger
+	stashed = list(	/obj/item/weapon/gun/projectile/pistol/luger,
+					/obj/item/ammo_magazine/luger = 3)
