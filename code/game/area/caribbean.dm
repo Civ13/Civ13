@@ -651,6 +651,9 @@
 	base_turf = /turf/floor/grass
 	climate = "temperate"
 
+/area/caribbean/forest/one
+/area/caribbean/forest/two
+
 /area/caribbean/forest/cobbleroad
 	name = "Road"
 	icon_state = "purple2"
