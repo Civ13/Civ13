@@ -555,5 +555,5 @@ steam.start() -- spawns the effect
 /obj/effect/plane_flyby/f16/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, is_global = TRUE)
+		playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, extrarange = 500)
 		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"

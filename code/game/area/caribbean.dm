@@ -669,6 +669,9 @@
 /area/caribbean/supply/dutch
 	name = "Dutch Supply Arrival"
 
+/area/caribbean/supply/russian
+	name = "Russian Supply Arrival"
+
 /area/caribbean/transport
 	name = "Boat"
 	icon_state = "red1"

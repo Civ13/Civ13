@@ -1,6 +1,6 @@
 
 /obj/map_metadata/operation_falcon
-	ID = MAP_OPERATION_FACLON
+	ID = MAP_OPERATION_FALCON
 	title = "Operation Falcon"
 	lobby_icon = "icons/lobby/operation_falcon.png"
 	no_winner = "The battle for the city is still going on."
@@ -46,10 +46,10 @@
 
 /obj/map_metadata/operation_falcon/New()
 	..()
-	spawn(2500)
-		jet_flyby()
-		spawn(500)
-			points_check()
+	spawn(3000)
+		points_check()
+		spawn(rand(500,800))
+			jet_flyby()
 
 /obj/map_metadata/operation_falcon/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -258,7 +258,8 @@
 	return FALSE
 
 /obj/map_metadata/operation_falcon/proc/jet_flyby()
-	playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, is_global = TRUE)
-	world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. There is a F-16 Fighting Falcon flying overhead"
+	playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, extrarange = 1000)
+	spawn(30)
+		world << "The air vibrates as a F-16 flies overhead."
 	spawn(rand(1200,3000))
 		jet_flyby()
