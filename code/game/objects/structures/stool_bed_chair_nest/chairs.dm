@@ -136,6 +136,23 @@
 	applies_material_colour = FALSE
 	base_icon = "fancysofa_r"
 
+/obj/structure/bed/chair/comfy/diner_booth
+	name = "diner booth seating"
+	desc = "A comfy red dining booth seating."
+	base_icon = "diner_booth_right"
+	icon_state = "diner_booth_right"
+	applies_material_colour = FALSE
+	material = "leather"
+	color = "#FFFFFF"
+/obj/structure/bed/chair/comfy/diner_booth/l
+	base_icon = "diner_booth_left"
+	icon_state = "diner_booth_left"
+	applies_material_colour = FALSE
+/obj/structure/bed/chair/comfy/diner_booth/r
+	base_icon = "diner_booth_right"
+	icon_state = "diner_booth_right"
+	applies_material_colour = FALSE
+
 /obj/structure/bed/chair/office
 	anchored = FALSE
 	buckle_movable = TRUE
