@@ -2,7 +2,7 @@
 	ID = MAP_EAST_LOS_SANTOS
 	title = "East Los Santos"
 	lobby_icon = "icons/lobby/east_los_santos.png"
-	no_winner = "The fight for the hoods is still going on."
+	no_winner = "The fight for the hood is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	faction_organization = list(
