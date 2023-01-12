@@ -381,7 +381,6 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_RUSSIAN", 100)
 									else if (original_job.is_warlords)
 										playsound(get_turf(src), "charge_AFRICAN", 100)
-
 									else if (original_job.is_yellowag)
 										playsound(get_turf(src), "charge_AFRICAN", 100)
 									else if (original_job.is_event)
@@ -413,6 +412,8 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_AFRICAN", 100)
 									else if (original_job.is_blugi)
 										playsound(get_turf(src), "charge_AFRICAN", 100)
+									else if (original_job.is_gta)
+										playsound(get_turf(src), "charge_BALLAS", 100)
 									else
 										playsound(get_turf(src), "charge_INDIANS", 100)
 
@@ -440,6 +441,8 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_ISRAELI", 100)
 									else if (original_job_title == "Filipino Scout")
 										playsound(get_turf(src), "charge_FILIPINO", 100)
+									else if (original_job.is_gta)
+										playsound(get_turf(src), "charge_GROVE", 100)
 									else
 										playsound(get_turf(src), "charge_AMERICAN", 100)
 								if (VIETNAMESE)

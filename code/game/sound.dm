@@ -284,6 +284,35 @@ var/list/charge_sounds_gra = list(
 	'sound/effects/emotes/charge_replicant1.ogg',
 	'sound/effects/emotes/charge_replicant2.ogg',
 	'sound/effects/emotes/charge_replicant3.ogg',)
+var/list/charge_sounds_grove = list(
+	'sound/effects/emotes/grove1.ogg',
+	'sound/effects/emotes/grove2.ogg',
+	'sound/effects/emotes/grove3.ogg',
+	'sound/effects/emotes/grove4.ogg',
+	'sound/effects/emotes/grove5.ogg',
+	'sound/effects/emotes/grove6.ogg',
+	'sound/effects/emotes/grove7.ogg',
+	'sound/effects/emotes/grove8.ogg',
+	'sound/effects/emotes/grove_vsbal1.ogg',
+	'sound/effects/emotes/grove_vsbal2.ogg',
+	'sound/effects/emotes/grove_vsbal3.ogg',
+	'sound/effects/emotes/grove_vsbal4.ogg',
+	'sound/effects/emotes/grove_vsbal5.ogg',
+	'sound/effects/emotes/grove_vsbal6.ogg',)
+var/list/charge_sounds_ballas = list(
+	'sound/effects/emotes/ballas1.ogg',
+	'sound/effects/emotes/ballas2.ogg',
+	'sound/effects/emotes/ballas3.ogg',
+	'sound/effects/emotes/ballas4.ogg',
+	'sound/effects/emotes/ballas5.ogg',
+	'sound/effects/emotes/ballas6.ogg',
+	'sound/effects/emotes/ballas7.ogg',
+	'sound/effects/emotes/ballas8.ogg',
+	'sound/effects/emotes/ballas9.ogg',
+	'sound/effects/emotes/ballas_vsgrov1.ogg',
+	'sound/effects/emotes/ballas_vsgrov2.ogg',
+	'sound/effects/emotes/ballas_vsgrov3.ogg',
+	'sound/effects/emotes/ballas_vsgrov4.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -538,4 +567,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_police)
 			if ("charge_RUROBBERS")
 				soundin = pick(charge_sounds_rurobbers)
+			if ("charge_GROVE")
+				soundin = pick(charge_sounds_grove)
+			if ("charge_BALLAS")
+				soundin = pick(charge_sounds_ballas)
 	return soundin
