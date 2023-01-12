@@ -229,6 +229,7 @@
 	name = "street light"
 	desc = "A street light, good for illuminating the streets."
 	icon = 'icons/obj/lighting_32x64.dmi'
+	base_icon = "streetlight"
 	icon_state = "streetlight"
 	powerneeded = 3
 	light_amt = 7
