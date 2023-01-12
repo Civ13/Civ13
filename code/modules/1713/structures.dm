@@ -392,6 +392,18 @@
 	bound_width = 96
 	bound_height = 64
 
+/obj/structure/props/watts_tower
+	name = "sculpture tower"
+	desc = "An achitectural scultpural tower."
+	icon = 'icons/obj/decals_widest.dmi'
+	icon_state = "watts_tower"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	bound_width = 64
+	bound_height = 64
+
 /obj/structure/props/engineprops
 	name = "generic"
 	desc = "A generic engine prop."
