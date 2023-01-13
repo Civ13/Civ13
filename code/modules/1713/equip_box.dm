@@ -5,6 +5,11 @@
 	icon_state = "ammo_can" //temp
 	flags = CONDUCT
 
+/obj/item/gunbox/police
+	name = "equipment kit"
+	desc = "A secure box containing your sidearm."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "ammo_can" //temp
 /obj/item/gunbox/attack_self(mob/living/user)
 	var/list/options = list()
 	options["Colt Police - revolver"] = list(/obj/item/weapon/gun/projectile/revolver/coltpolicepositive,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32)
@@ -19,4 +24,22 @@
 			var/atom/movable/AM = new new_type(get_turf(src))
 			if(istype(AM, /obj/item/weapon/gun/))
 				to_chat(user, "You have chosen \the [AM]. This is probably worth more than what your paycheck can be used for.")
+		qdel(src)
+
+/obj/item/gunbox/emplacement
+	name = "equipment kit"
+	desc = "A secure box containing your emplacement choice."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "ammo_can" //temp
+	flags = CONDUCT
+
+/obj/item/gunbox/emplacement/attack_self(mob/living/user)
+	var/list/options = list()
+	options["Foldable Anti-Tank Guide Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack)
+	options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack)
+	var/choice = input(user,"What type of equipment?") as null|anything in options
+	if(src && choice)
+		var/list/things_to_spawn = options[choice]
+		for(var/new_type in things_to_spawn)
+			new new_type(get_turf(src))
 		qdel(src)
