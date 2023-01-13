@@ -720,9 +720,6 @@
 //				stat("Weather:", get_weather())
 				stat("Time of Day:", time_of_day)
 
-				if (z == 2 && map && map.ID == "FOREST")
-					stat("Altitude:", "[processes.paratrooper_plane.altitude] meters")
-
 			// give the client some information about how the server is running
 			if (processes.ping_track && client)
 				var/our_ping = ceil(client.last_ping)

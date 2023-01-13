@@ -80,7 +80,7 @@
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "foam"
 
-	decay_timer = 2400
+	decay_timer = 300
 
 
 /obj/effect/decal/cleanable/cobweb
