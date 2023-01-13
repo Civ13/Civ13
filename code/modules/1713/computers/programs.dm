@@ -1916,8 +1916,8 @@
 	compatible_os = list("unga OS 94","unga OS")
 	var/list/dutch_choice = list("2A6 Leopard Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
 	var/list/rus_choice = list("T-90A (1000)","BMD-2 Infantry Fighting Vehicle (600)", "KamAZ-4350 Truck (300)")
-	var/dutch_loadout_points = 1000
-	var/rus_loadout_points = 1000
+	var/dutch_loadout_points = 1600
+	var/rus_loadout_points = 1400
 
 /datum/program/carspawn/do_html(mob/living/human/user)
 	var/list/choice
