@@ -13,12 +13,12 @@
 	processes.paratrooper_plane = src
 
 /process/paratrooper_plane/fire()
-	if (altitude <= first_nonlethal_altitude || !latejoin_turfs["Fallschirm"] || !latejoin_turfs["Fallschirm"]:len)
+	if (altitude <= first_nonlethal_altitude || !latejoin_turfs["Paratrooper"] || !latejoin_turfs["Paratrooper"]:len)
 		return
 	try
 		if (!my_turfs.len)
-			if (latejoin_turfs["Fallschirm"] && latejoin_turfs["Fallschirm"]:len)
-				for (var/turf/T in range(10, latejoin_turfs["Fallschirm"][1]))
+			if (latejoin_turfs["Paratrooper"] && latejoin_turfs["Paratrooper"]:len)
+				for (var/turf/T in range(10, latejoin_turfs["Paratrooper"][1]))
 					my_turfs += T
 
 		// make our pixel x different from before
@@ -46,7 +46,7 @@
 				return // we're done
 			altitude -= 500
 			for (var/mob/living/human/H in player_list)
-				if (H.original_job && istype(H.original_job, /datum/job/german/paratrooper))
+				if (H.original_job.is_paratrooper)
 					if (H.z == 2)
 						H << getMessage()
 

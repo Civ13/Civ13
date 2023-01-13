@@ -141,13 +141,14 @@
 	base_icon = "germanpack"
 	max_storage_space = 24
 
-/obj/item/weapon/storage/backpack/ww2/paratrooper
+/obj/item/weapon/storage/backpack/paratrooper
 	desc = "A backpack with a built in parachute."
-	icon_state = "germanpack"
-	item_state = "germanpack"
-	worn_state = "germanpack"
-	base_icon = "germanpack"
-	max_storage_space = 24
+	icon_state = "parachute0"
+	item_state = "backpack"
+	worn_state = "parachute"
+	base_icon = "parachute"
+	w_class = 5
+	max_storage_space = 0
 
 /obj/item/weapon/storage/backpack/ww2/german/sapper
 	New()

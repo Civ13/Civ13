@@ -108,7 +108,7 @@ var/list/sky_drop_map = list()
 					L << "<span class = 'good'>You land softly onto the ground.</span>"
 			else
 				var/mob/living/human/H = mover
-				if (processes.paratrooper_plane.isLethalToJump() || !H.back || !istype(H.back, /obj/item/weapon/storage/backpack/ww2/paratrooper))
+				if (processes.paratrooper_plane.isLethalToJump() || !H.back || !istype(H.back, /obj/item/weapon/storage/backpack/paratrooper))
 					if (prob(10))
 						H << "<span class = 'userdanger'><b>You smack face first onto the ground, damn.</b></span>"
 					else

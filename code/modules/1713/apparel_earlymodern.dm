@@ -1405,9 +1405,9 @@
 	new/obj/item/weapon/grenade/coldwar/m67(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
-/obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke
+/obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke
 	storage_slots = 5
-/obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke/New()
+/obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke/New()
 	..()
 	new/obj/item/ammo_magazine/m16(src)
 	new/obj/item/ammo_magazine/m16(src)
@@ -1468,6 +1468,15 @@
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+	new /obj/item/stack/medical/advanced/sulfa/small(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/ak74m_grenade
+/obj/item/weapon/storage/belt/smallpouches/green/ak74m_grenade/New()
+	..()
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 	new /obj/item/stack/medical/advanced/sulfa/small(src)
 
 /obj/item/clothing/under/blue_shorts

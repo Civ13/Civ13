@@ -1563,10 +1563,9 @@
 	en_meaning = "Paratrooper"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateGEfall"
+	spawn_location = "JoinLateGEpara" //Not used
 
-	is_ww2 = TRUE
-	is_reichstag = FALSE
+	//is_ww2 = TRUE
 	uses_squads = TRUE
 	is_paratrooper = TRUE
 	var/paratrooper_spawnzone = null
@@ -1582,7 +1581,7 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/paratrooper(H), slot_back)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
 //back
