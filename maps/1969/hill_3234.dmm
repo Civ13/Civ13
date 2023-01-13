@@ -219,7 +219,7 @@
 "ek" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/trench,/area/caribbean/nomads/desert)
 "el" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand,/area/caribbean/nomads/desert)
 "em" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
-"en" = (/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/foldable/generic,/turf/floor/beach/sand/dark,/area/caribbean/nomads/desert)
+"en" = (/obj/item/weapon/foldable/generic,/turf/floor/beach/sand/dark,/area/caribbean/nomads/desert)
 "eo" = (/obj/item/weapon/deck/cards,/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/three)
 "ep" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/camonet{color = "#736043"},/turf/floor/trench,/area/caribbean/nomads/desert)
 "eq" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"; pixel_x = 0},/obj/structure/table/modern/table,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/structure/camonet{color = "#736043"},/turf/floor/trench,/area/caribbean/nomads/desert)
@@ -291,9 +291,9 @@
 "fE" = (/obj/structure/camonet{color = "#736043"},/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one)
 "fF" = (/obj/item/weapon/foldable/atgm,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "fG" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/three)
-"fH" = (/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/turf/floor/beach/sand,/area/caribbean/nomads/desert)
+"fH" = (/obj/item/weapon/storage/backpack/heavyrucksack,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "fI" = (/obj/structure/wild/smallbush,/obj/structure/wild/rock/basalt,/obj/structure/closet/crate/empty,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
-"fJ" = (/obj/item/weapon/storage/backpack/heavyrucksack,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"fK" = (/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/turf/floor/beach/sand,/area/caribbean/nomads/desert)
 "fL" = (/obj/random/mine/ap,/turf/floor/beach/sand,/area/caribbean/nomads/desert)
 "fM" = (/obj/random/mine/ap,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/two)
 "hk" = (/turf/floor/dirt/burned,/area/caribbean/nomads/desert)
@@ -458,8 +458,8 @@ KMKMKMKMKMKMKMKMKMadadacaaaaaceEacaaadadadKMKMKMKMKMKMKMKMKMadadadadadaaaabGdWeU
 KMKMKMKMKMKMKMKMKMadadaaaaaaacacacacadadadadKMKMKMKMKMKMKMKMadadadadaaamambFdYaaaaaaaaababaadQbFaaaaabadKMKMKMKMKMKMKMKMKMadadavakavakakakakavbdbdbdbdakakakahahfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfj
 KMKMKMKMKMKMadadadadababaaaaaaacacacabadadadKMKMKMKMKMKMKMKMadadabaaaaamambFdZaaehehaaaaeeaadXbFaaaaaaadadadadadKMKMKMadadadadakakakavakavdBavbdbdbdbdakakakavahahahfjfjfjahahahahahahahfjfjfjfjfjfjfjfj
 KMKMKMadadadadadadadaaaaaaaaaaacacacaaadadadKMKMKMKMKMKMadadadaaaaaaaaamambFfvabehehbNaaeeaaebbFaaaaaaabaaaaaaadadadadadadaaaaaaaaaaababababacacacacacacaaaaaaabadadadadadadaaadadadadadadadadadadKMKMKM
-adadadadadadadadadadaaaaaaaaababacacaaadadadadadadadadadadadadaaaaaaaaamambFeaaaehehdpbBaaaaecbFfHaaaaaaaaaaaaaapvaaaapvpvaaaaaaaaaaaadIababacacacacacaaaaaaabababaaabaaaaaaaaaaaaaaaaaaadadadadadadadad
-adadaaaaabaaaaaaaaaaaaaaabaaaaacabacaaabadadadadadadadadadabaaaaaaaadIaaameSbbaaeheheJbMaaaaegeTfJaaaaaaaaaaaaaaaaATaaaaaaaaaaaaaaaaaaabaaaaacacacacaaaaababaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaa
+adadadadadadadadadadaaaaaaaaababacacaaadadadadadadadadadadadadaaaaaaaaamambFeaaaehehdpbBaaaaecbFfKaaaaaaaaaaaaaapvaaaapvpvaaaaaaaaaaaadIababacacacacacaaaaaaabababaaabaaaaaaaaaaaaaaaaaaadadadadadadadad
+adadaaaaabaaaaaaaaaaaaaaabaaaaacabacaaabadadadadadadadadadabaaaaaaaadIaaameSbbaaeheheJbMaaaaegeTfHaaaaaaaaaaaaaaaaATaaaaaaaaaaaaaaaaaaabaaaaacacacacaaaaababaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaa
 aaaaaaabababdEaaaaababaaaaaaacacabacaaaaaaaaaaaaaaaaaaaaabaaaadxaaaaaaaaaabFSNaaehehaMfyaaaadFbGfFaaaaaaaaaaaaaaaaabaapvaaaaaaaaaaaaaaaaaaacacacacaaaaabdwaaaaaaaaaaabaaaaaaacacacaaaaaaaaaaaaaaaaaaaaaa
 ababaaabacacabacababaadLaaaaaaaaacacacacabababababdwabababaaabaaaaaaabababbFaYaaaaaaaaaaaaacenbGacaaababababaaabababababaaaaaaabababababacacacacacababaaaaaaaaaaaaaaabdCaaabababacacacabaaaaaaaaaaaaaaaa
 acacacacacacacacacababacacacacacacacacacababababababacacacababacacabababacacacacacacacacabababababababababababacacacacacababacabababababacacacdyababababababacabacacacacacacacabababdxabababababacacacac
