@@ -101,35 +101,26 @@ var/list/sky_drop_map = list()
 		if (isliving(mover))
 			var/mob/living/L = mover
 			if (!ishuman(mover))
-				if (processes.paratrooper_plane.isLethalToJump())
-					L << "<span class = 'userdanger'><b>You land hard on the ground.</b></span>"
-					L.adjustBruteLoss(rand(150,300))
-				else
-					L << "<span class = 'good'>You land softly onto the ground.</span>"
+				L << "<span class = 'good'>You land softly onto the ground.</span>"
 			else
 				var/mob/living/human/H = mover
-				if (processes.paratrooper_plane.isLethalToJump() || !H.back || !istype(H.back, /obj/item/weapon/storage/backpack/paratrooper))
+				if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack/paratrooper))
 					if (prob(10))
 						H << "<span class = 'userdanger'><b>You smack face first onto the ground, damn.</b></span>"
 					else
-						H << "<span class = 'userdanger'><b>You laand hard on the ground.</b></span>"
-					H.adjustBruteLossByPart(75, "l_leg")
-					H.adjustBruteLossByPart(75, "r_leg")
+						H << "<span class = 'userdanger'><b>You land hard on the ground!</b></span>"
+					H.adjustBruteLossByPart(300, "l_leg")
+					H.adjustBruteLossByPart(300, "r_leg")
 				else
 					#define FALL_STEPS 12
 					try
 						H.client.canmove = FALSE
 						var/image/I = image('icons/misc/parachute.dmi', H, layer = MOB_LAYER + 1.0)
 						I.pixel_x = -16
-						I.pixel_y = 32
+						I.pixel_y = 16
 
 						// hack to stop overlays from resetting when you shoot and stuff (wtf)
 						// this gets called world.fps times a second but it's usually just searching a list, no big deal
-						spawn (0)
-							while (H && !isDeleted(I))
-								if (!H.overlays.Find(I))
-									H.overlays += I
-								sleep(world.tick_lag)
 
 						H.overlays += I
 						H.pixel_y += FALL_STEPS*10
