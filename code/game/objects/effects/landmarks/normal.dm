@@ -25,7 +25,7 @@
 			latejoin += loc
 			delete_me = TRUE
 			return
-		else if ("Paratrooper")
+		else if ("Paradrop")
 			paradrop_landmarks += loc
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()
