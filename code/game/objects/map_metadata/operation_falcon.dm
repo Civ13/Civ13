@@ -15,7 +15,7 @@
 		list(DUTCH) = /area/caribbean/german/reichstag/roof/objective,
 		list(RUSSIAN) = /area/caribbean/german/reichstag/roof/objective,
 		)
-	age = "2026"
+	age = "2017"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
@@ -29,7 +29,7 @@
 	ambience = list('sound/ambience/battle1.ogg')
 	var/rus_points = 0
 	var/dutch_points = 0
-	var/win_points = 100 // Amount of points needed to win
+	var/win_points = 70 // Amount of points needed to win
 	var/a1_control = "nobody"
 	var/a1_name = "Radio Post"
 
