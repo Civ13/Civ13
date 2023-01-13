@@ -39,7 +39,7 @@
 				user.put_in_hands(SHK)
 				user << "\The [I] turns into a shank."
 				qdel(I)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/metalfile)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker
 
 	else if (istype(W,/obj/item/weapon/weldingtool))//if it is a welding tool
@@ -63,6 +63,17 @@
 				for (var/i = TRUE, i <= buildstackamount, i++)
 					new buildstack(get_turf(src))
 				qdel(src)
+	else if (istype(W,/obj/item/weapon/metalfile))//if it is a metalfile
+		if (material != "Steel")
+			user << "This is the wrong tool."
+		else
+			user << "<span class='notice'>You start filing through the [src]...</span>"
+			playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+			if (do_after(user, 1000, target = src))
+				for (var/i = TRUE, i <= buildstackamount, i++)
+					new buildstack(get_turf(src))
+				qdel(src)
+				return
 				return
 	return TRUE
 

@@ -502,6 +502,12 @@
 	flammable = FALSE
 	stucco_window = FALSE
 
+//obj/structure/window_frame/ruinedbars
+//	icon_state = "ruinedbars"
+//	health = 500
+//	flammable = FALSE
+//	stucco_window = FALSE
+
 /obj/structure/window_frame/portholefull
 	icon_state = "metal_porthole_fullframe"
 	name = "full metal porthole frame"
