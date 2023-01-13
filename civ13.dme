@@ -1061,7 +1061,6 @@
 #include "code\processes\mob.dm"
 #include "code\processes\nanoui.dm"
 #include "code\processes\obj.dm"
-#include "code\processes\paratrooper_plane_controller.dm"
 #include "code\processes\ping_track.dm"
 #include "code\processes\projectile.dm"
 #include "code\processes\python.dm"
