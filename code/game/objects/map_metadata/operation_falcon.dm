@@ -258,7 +258,7 @@
 	return FALSE
 
 /obj/map_metadata/operation_falcon/proc/jet_flyby()
-	playsound(locate(200,200,1), 'sound/effects/f16_center.ogg', 100, TRUE, extrarange = 400)
+	playsound(locate(200,200,1), 'sound/effects/f16_center.ogg', 100, FALSE, extrarange = 400)
 	spawn(30)
 		world << "The air vibrates as a F-16 flies overhead."
 	spawn(rand(1200,3000))
