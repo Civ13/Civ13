@@ -64,7 +64,7 @@
 		cdir = user.dir
 	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 5)
 		FM.reagents.remove_reagent("gasoline",5)
-		lastfire = world.time+30
+		lastfire = world.time+20
 		//message_admins("[user.name] ([user.ckey]) fired a flamethrower from: X=[user.x];Y=[user.y];Z[user.z]")
 		var/turf/source_turf = get_turf(user)
 
