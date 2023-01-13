@@ -89,7 +89,7 @@
 			else
 				if (distance > 0)
 					var/obj/effect/fire/flamethrower/flame = new/obj/effect/fire/flamethrower(T) //I CAST THE FLAMES OF HELL UPON THY SOUL!
-					ignite_turf(get_turf(flame), 40)
+					ignite_turf(get_turf(flame), 70)
 
 					var/atom/A = LinkBlocked(flame, prev_T, T)
 					if(A)
