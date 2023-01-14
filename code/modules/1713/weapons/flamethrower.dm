@@ -23,8 +23,10 @@
 /obj/item/weapon/flamethrower/update_icon()
 	if (active)
 		icon_state = "[base_icon]_on"
+		item_state = "[base_icon]_on"
 	else
 		icon_state = base_icon
+		item_state = base_icon
 
 /obj/item/weapon/flamethrower/attack_self(var/mob/living/H)
 	if (active)
