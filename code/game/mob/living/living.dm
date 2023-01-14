@@ -460,6 +460,13 @@ default behaviour is:
 	sdisabilities = FALSE
 	disabilities = FALSE
 
+	// fix all disseases
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		H.disease = FALSE
+		H.disease_progression = 0
+		H.disease_type = "none"
+
 	// fix blindness and deafness
 	blinded = FALSE
 	eye_blind = FALSE
