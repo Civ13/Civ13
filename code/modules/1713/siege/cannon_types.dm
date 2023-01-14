@@ -329,6 +329,7 @@
 	w_class = 8
 
 /obj/structure/cannon/mortar/foldable
+	anchored = TRUE
 	var/path
 
 /obj/structure/cannon/mortar/foldable/type89
@@ -355,7 +356,7 @@
 	w_class = 6
 	path = /obj/item/weapon/foldable/generic
 
-/obj/structure/cannon/mortar/foldable/verb/Retrieve()
+/obj/structure/cannon/mortar/foldable/verb/Retrieve(mob/M as mob)
 	set category = null 
 	set name = "Retrieve"
 	set src in range(1, usr)
@@ -363,11 +364,15 @@
 		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
 		return
 	usr.face_atom(src)
-	visible_message("<span class = 'warning'>[usr] starts to get their [src] from the ground.</span>")
-	if (do_after(usr, 10, get_turf(usr)))
+	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
+	if (loaded)
+		loaded.loc = get_turf(src)
+		loaded = null
+		visible_message("<span class = 'warning'>[usr] unloads the [src].</span>")
+	if (do_after(usr, 25, get_turf(usr)))
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
+		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
@@ -382,10 +387,6 @@
 				loaded = W
 				if (M == usr)
 					do_html(M)
-	else if (istype(W,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-		anchored = !anchored
 
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
