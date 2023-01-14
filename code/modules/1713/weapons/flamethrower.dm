@@ -71,8 +71,6 @@
 		var/turf/source_turf = get_turf(user)
 
 		var/list/turfs = getline2(source_turf, target)
-		
-		var/turf/prev_T = source_turf
 
 		var/distance = 0
 		var/stop_at_turf = FALSE
@@ -87,29 +85,22 @@
 				break
 
 			if(T.density)
-				stop_at_turf = TRUE
+				if(!istype(T, /obj/structure/barricade) || !istype(T, /obj/structure/window/barrier))
+					stop_at_turf = TRUE
 			else
 				if (distance > 0)
 					var/obj/effect/fire/flamethrower/flame = new/obj/effect/fire/flamethrower(T) //I CAST THE FLAMES OF HELL UPON THY SOUL!
 					ignite_turf(get_turf(flame), 70)
 
-					var/atom/A = LinkBlocked(flame, prev_T, T)
-					if(A)
-						if (A.flags & ON_BORDER)
-							break
-						stop_at_turf = TRUE
-
 			if(T == target.loc)
 				if(stop_at_turf)
 					break
-				prev_T = T
 				continue
 
 			if(stop_at_turf)
 				break
 			
 			distance++
-			prev_T = T
 
 /obj/item/weapon/reagent_containers/glass/flamethrower
 	name = "M2 Flamethrower backpack"
