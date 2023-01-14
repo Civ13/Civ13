@@ -17,9 +17,9 @@
 	if (check_rights(R_MENTOR|R_MOD,0))
 		for (var/client/C in admins)
 			if (R_MOD & C.holder.rights)
-				C << "<span class='admin_channel'>" + create_text_tag("asay", "ASAY:", C) + " <EM>[C.holder.OOC_rank()]</EM> <span class='name'>[key_name(usr, TRUE)]</span>([admin_jump_link(mob, src)]): <span class='message'>[msg]</span></span>"
+				C << "<span class='admin_channel'>" + create_text_tag("asay", "ASAY:", C) + " <span class='name'>[key_name(usr, TRUE)]</span>([admin_jump_link(mob, src)]): <span class='message'>[msg]</span></span>"
 			else if (R_MENTOR & C.holder.rights)
-				C << "<span class='admin_channel'>" + create_text_tag("asay", "ASAY:", C) + " <EM>[C.holder.OOC_rank()]</EM> <span class='name'>[key_name(usr, TRUE)]</span>([admin_jump_link(mob, src)]): <span class='message'>[msg]</span></span>"
+				C << "<span class='admin_channel'>" + create_text_tag("asay", "ASAY:", C) + " <span class='name'>[key_name(usr, TRUE)]</span>([admin_jump_link(mob, src)]): <span class='message'>[msg]</span></span>"
 
 //for if something goes terribly wrong
 /client/verb/a55af5()
