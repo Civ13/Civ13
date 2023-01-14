@@ -592,7 +592,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/dutch(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -647,7 +647,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/dutch(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -722,9 +722,9 @@
 	return TRUE
 
 /datum/job/dutch/modern_radioman
-	title = "Korporaal"
+	title = "Korporaal der Eerste Klasse"
 	en_meaning = "Radioman"
-	rank_abbreviation = "Kpl"
+	rank_abbreviation = "Kpl1"
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
@@ -759,7 +759,7 @@
 	FP.attached(null,HGUN,TRUE)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal/m18_red(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -812,7 +812,7 @@
 	FP.attached(null,HGUN,TRUE)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/foldable_shovel/trench/etool(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16/smoke(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -863,6 +863,54 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/dutch/modern_emplaced_gunner
+	title = "Emplaced Weapons Specialist"
+	rank_abbreviation = "Kpl"
+	spawn_location = "JoinLateRN"
+
+	is_operation_falcon = TRUE
+
+	uses_squads = TRUE
+
+	additional_languages = list("English" = 15)
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/dutch/modern_emplaced_gunner/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/jackboots2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	uniform.attackby(carrier, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	uniform.attackby(plates1, H)
+	uniform.attackby(plates2, H)
+//equipment
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/gunbox/emplacement(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/foldable_shovel/trench/etool(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_belt)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)

@@ -824,7 +824,7 @@ obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
 			H.z = newloc.z
 			var/image/I = image('icons/effects/parachute.dmi', H, layer = MOB_LAYER + 1.0)
 			I.pixel_x = -16
-			I.pixel_y = 32
+			I.pixel_y = 16
 
 			H.overlays += I
 			playsound(get_turf(H), 'sound/effects/bamf.ogg', 20)

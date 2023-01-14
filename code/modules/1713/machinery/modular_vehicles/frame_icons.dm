@@ -146,55 +146,55 @@
 				if (roof_turret && axis && axis.color)
 					roof_turret.color = axis.color
 				if (C.dir == NORTH)
-					if (dir == NORTH) // Tested, good
+					if (dir == NORTH)
 						roof_turret.pixel_x = -48
 						roof_turret.pixel_y = -74
-					else if (dir == SOUTH) // Tested, good
+					else if (dir == SOUTH)
 						roof_turret.pixel_x = -48
 						roof_turret.pixel_y = 32
-					else if (dir == EAST) // Tested, good
+					else if (dir == EAST)
 						roof_turret.pixel_x = -32
 						roof_turret.pixel_y = -26
-					else if (dir == WEST) // Tested, good
+					else if (dir == WEST)
 						roof_turret.pixel_x = -96
 						roof_turret.pixel_y = -26
 				else if (C.dir == SOUTH)
-					if (dir == NORTH) // Tested, good
+					if (dir == NORTH)
 						roof_turret.pixel_x = -48
 						roof_turret.pixel_y = -128
-					else if (dir == SOUTH) // Tested, good
+					else if (dir == SOUTH)
 						roof_turret.pixel_x = -48
 						roof_turret.pixel_y = -32
-					else if (dir == EAST) // Tested, good
+					else if (dir == EAST)
 						roof_turret.pixel_x = -96
 						roof_turret.pixel_y = -72
-					else if (dir == WEST) // Tested, good
+					else if (dir == WEST)
 						roof_turret.pixel_x = 0
 						roof_turret.pixel_y = -72
 				else if (C.dir == EAST)
-					if (dir == NORTH) // Tested, good
+					if (dir == NORTH)
 						roof_turret.pixel_x = -24
 						roof_turret.pixel_y = -88
-					else if (dir == SOUTH) // Tested, good
+					else if (dir == SOUTH)
 						roof_turret.pixel_x = -24
 						roof_turret.pixel_y = 8
-					else if (dir == EAST) // Tested, good
+					else if (dir == EAST)
 						roof_turret.pixel_x = -72
 						roof_turret.pixel_y = -48
-					else if (dir == WEST) // Tested, good
+					else if (dir == WEST)
 						roof_turret.pixel_x = 24
 						roof_turret.pixel_y = -48
 				else if (C.dir == WEST)
-					if (dir == NORTH) // Tested, good
+					if (dir == NORTH)
 						roof_turret.pixel_x = -72
 						roof_turret.pixel_y = -88
-					else if (dir == SOUTH) // Tested, good
+					else if (dir == SOUTH)
 						roof_turret.pixel_x = -72
 						roof_turret.pixel_y = 8
-					else if (dir == EAST) // Tested, good
+					else if (dir == EAST)
 						roof_turret.pixel_x = -128
 						roof_turret.pixel_y = -48
-					else if (dir == WEST) // Tested, good
+					else if (dir == WEST)
 						roof_turret.pixel_x = -32
 						roof_turret.pixel_y = -48
 				roof.overlays += roof_turret
@@ -209,56 +209,56 @@
 					roof_turret.color = axis.color
 				if (C.dir == NORTH)
 					if (dir == NORTH)
-						roof_turret.pixel_x = -32
-						roof_turret.pixel_y = 0
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -106
 					else if (dir == SOUTH)
-						roof_turret.pixel_x = -32
-						roof_turret.pixel_y = -16
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = 64
 					else if (dir == EAST)
-						roof_turret.pixel_x = -32
-						roof_turret.pixel_y = 0
+						roof_turret.pixel_x = -64
+						roof_turret.pixel_y = -58
 					else if (dir == WEST)
-						roof_turret.pixel_x = -48
-						roof_turret.pixel_y = -48
+						roof_turret.pixel_x = -128
+						roof_turret.pixel_y = -58
 				else if (C.dir == SOUTH)
 					if (dir == NORTH)
-						roof_turret.pixel_x = -32
-						roof_turret.pixel_y = -32
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -160
 					else if (dir == SOUTH)
-						roof_turret.pixel_x = -32
-						roof_turret.pixel_y = -56
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -64
 					else if (dir == EAST)
-						roof_turret.pixel_x = -32
-						roof_turret.pixel_y = -48
+						roof_turret.pixel_x = -128
+						roof_turret.pixel_y = -104
 					else if (dir == WEST)
-						roof_turret.pixel_x = -48
-						roof_turret.pixel_y = -48
+						roof_turret.pixel_x = 0 //???
+						roof_turret.pixel_y = -104
 				else if (C.dir == EAST)
 					if (dir == NORTH)
-						roof_turret.pixel_x = 0
-						roof_turret.pixel_y = -16
+						roof_turret.pixel_x = -56
+						roof_turret.pixel_y = -120
 					else if (dir == SOUTH)
-						roof_turret.pixel_x = 0
-						roof_turret.pixel_y = -32
+						roof_turret.pixel_x = -56
+						roof_turret.pixel_y = 40
 					else if (dir == EAST)
-						roof_turret.pixel_x = -16
-						roof_turret.pixel_y = -16
+						roof_turret.pixel_x = -104
+						roof_turret.pixel_y = -80
 					else if (dir == WEST)
-						roof_turret.pixel_x = 0
-						roof_turret.pixel_y = -16
+						roof_turret.pixel_x = 56
+						roof_turret.pixel_y = -80
 				else if (C.dir == WEST)
 					if (dir == NORTH)
-						roof_turret.pixel_x = -64
-						roof_turret.pixel_y = -16
+						roof_turret.pixel_x = -104
+						roof_turret.pixel_y = -120
 					else if (dir == SOUTH)
-						roof_turret.pixel_x = -64
-						roof_turret.pixel_y = -32
+						roof_turret.pixel_x = -104
+						roof_turret.pixel_y = 40
 					else if (dir == EAST)
-						roof_turret.pixel_x = -64
-						roof_turret.pixel_y = -16
+						roof_turret.pixel_x = -160
+						roof_turret.pixel_y = -80
 					else if (dir == WEST)
-						roof_turret.pixel_x = -32
-						roof_turret.pixel_y = -32
+						roof_turret.pixel_x = -64
+						roof_turret.pixel_y = -80
 				roof.overlays += roof_turret
 		else if (axis && (axis.turret_type == "bmd2_turret"))
 			for(var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/C in T)

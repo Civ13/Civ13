@@ -162,6 +162,18 @@
 		..()
 		programs += new/datum/program/cartrader
 
+/obj/structure/computer/nopower/carspawn
+	name = "Vehicle Supply Terminal"
+	desc = "A computer terminal connected to the supply network."
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
+	operatingsystem = "unga OS 94"
+	New()
+		..()
+		programs += new/datum/program/carspawn
+
+
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/police
 	name = "Police Processing Terminal"

@@ -1,6 +1,6 @@
 
 /obj/map_metadata/operation_falcon
-	ID = MAP_OPERATION_FACLON
+	ID = MAP_OPERATION_FALCON
 	title = "Operation Falcon"
 	lobby_icon = "icons/lobby/operation_falcon.png"
 	no_winner = "The battle for the city is still going on."
@@ -15,7 +15,7 @@
 		list(DUTCH) = /area/caribbean/german/reichstag/roof/objective,
 		list(RUSSIAN) = /area/caribbean/german/reichstag/roof/objective,
 		)
-	age = "2026"
+	age = "2017"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
@@ -29,7 +29,7 @@
 	ambience = list('sound/ambience/battle1.ogg')
 	var/rus_points = 0
 	var/dutch_points = 0
-	var/win_points = 100 // Amount of points needed to win
+	var/win_points = 70 // Amount of points needed to win
 	var/a1_control = "nobody"
 	var/a1_name = "Radio Post"
 
@@ -46,10 +46,10 @@
 
 /obj/map_metadata/operation_falcon/New()
 	..()
-	spawn(2500)
-		jet_flyby()
-		spawn(500)
-			points_check()
+	spawn(3000)
+		points_check()
+		spawn(rand(500,800))
+			jet_flyby()
 
 /obj/map_metadata/operation_falcon/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -258,7 +258,8 @@
 	return FALSE
 
 /obj/map_metadata/operation_falcon/proc/jet_flyby()
-	playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, is_global = TRUE)
-	world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. There is a F-16 Fighting Falcon flying overhead"
+	playsound(locate(200,200,1), 'sound/effects/f16_center.ogg', 100, FALSE, extrarange = 400)
+	spawn(30)
+		world << "The air vibrates as a F-16 flies overhead."
 	spawn(rand(1200,3000))
 		jet_flyby()

@@ -23,8 +23,10 @@
 /obj/item/weapon/flamethrower/update_icon()
 	if (active)
 		icon_state = "[base_icon]_on"
+		item_state = "[base_icon]_on"
 	else
 		icon_state = base_icon
+		item_state = base_icon
 
 /obj/item/weapon/flamethrower/attack_self(var/mob/living/H)
 	if (active)
@@ -64,7 +66,7 @@
 		cdir = user.dir
 	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 5)
 		FM.reagents.remove_reagent("gasoline",5)
-		lastfire = world.time+30
+		lastfire = world.time+20
 		//message_admins("[user.name] ([user.ckey]) fired a flamethrower from: X=[user.x];Y=[user.y];Z[user.z]")
 		var/turf/source_turf = get_turf(user)
 
@@ -89,7 +91,7 @@
 			else
 				if (distance > 0)
 					var/obj/effect/fire/flamethrower/flame = new/obj/effect/fire/flamethrower(T) //I CAST THE FLAMES OF HELL UPON THY SOUL!
-					ignite_turf(get_turf(flame), 40)
+					ignite_turf(get_turf(flame), 70)
 
 					var/atom/A = LinkBlocked(flame, prev_T, T)
 					if(A)

@@ -1,4 +1,4 @@
-/*/process/paratrooper_plane
+/process/paratrooper_plane
 	var/altitude = 10000  // takes ~9.5 minutes to get to nonlethal altitude ((1000 - (19*500)) = 500, 19 * 30 = 570 seconds)
 	var/first_nonlethal_altitude = 500
 	var/tmpTime = 0
@@ -13,12 +13,12 @@
 	processes.paratrooper_plane = src
 
 /process/paratrooper_plane/fire()
-	if (altitude <= first_nonlethal_altitude || !latejoin_turfs["Fallschirm"] || !latejoin_turfs["Fallschirm"]:len)
+	if (altitude <= first_nonlethal_altitude || !latejoin_turfs["Paratrooper"] || !latejoin_turfs["Paratrooper"]:len)
 		return
 	try
 		if (!my_turfs.len)
-			if (latejoin_turfs["Fallschirm"] && latejoin_turfs["Fallschirm"]:len)
-				for (var/turf/T in range(10, latejoin_turfs["Fallschirm"][1]))
+			if (latejoin_turfs["Paratrooper"] && latejoin_turfs["Paratrooper"]:len)
+				for (var/turf/T in range(10, latejoin_turfs["Paratrooper"][1]))
 					my_turfs += T
 
 		// make our pixel x different from before
@@ -41,12 +41,12 @@
 		if (tmpTime >= 300)
 			tmpTime = 0
 			if (altitude == round(initial(altitude)/2, 500) && mobs)
-				src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
+				world << "A plane flies overhead dropping Paratroopers."
 			if (altitude <= first_nonlethal_altitude)
 				return // we're done
 			altitude -= 500
 			for (var/mob/living/human/H in player_list)
-				if (istype(H, /datum/job/german/schutze_soldaten))
+				if (H.original_job.is_paratrooper)
 					if (H.z == 2)
 						H << getMessage()
 
@@ -59,5 +59,3 @@
 /process/paratrooper_plane/proc/getMessage()
 	return "<big><span class = 'red'>The plane's current altitude is [altitude]m. <b>It is lethal to jump</b> until it has descended to [first_nonlethal_altitude]m."
 
-#undef SMOOTH_MOVEMENT
-*/

@@ -826,6 +826,11 @@ var/global/redirect_all_players = null
 					WWalert(usr,"This job is reserved as a punishment for those who break server rules.","Error")
 			return FALSE
 
+	if (job.is_paratrooper)
+		if (map && map.faction1_can_cross_blocks())
+			WWalert(usr,"This job is not available for joining after the grace period has ended","Error")
+			return FALSE
+
 	if (job.is_deathmatch)
 		if (map && map.faction1_can_cross_blocks())
 			WWalert(usr,"This job is not available for joining after the grace period has ended.","Error")

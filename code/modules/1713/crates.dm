@@ -687,6 +687,9 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 				/obj/item/weapon/material/shovel/trench = 2,
 				)
 
+/obj/structure/closet/crate/ww2
+	storagecap = 15
+
 /obj/structure/closet/crate/ww2/un/ammo
 	name = "UN Peacekeeping ammunition"
 	paths = list(/obj/item/ammo_magazine/fal = 16,
@@ -768,7 +771,7 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 
 /obj/structure/closet/crate/ww2/mortar_shells
 	name = "mortar shells"
-	paths = list(/obj/item/cannon_ball/mortar_shell = 18)
+	paths = list(/obj/item/cannon_ball/mortar_shell = 15)
 
 /obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"

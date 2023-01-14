@@ -238,6 +238,22 @@
 	maxrange = 35
 	caliber = 100
 
+/obj/structure/cannon/modern/tank/autoloader/t90a
+	name = "125 mm 2A46"
+	desc = "a 125 mm Russian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 100
+
+/obj/structure/cannon/modern/tank/leopard
+	name = "Rheinmetall 120 mm"
+	desc = "a 20 mm German tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 100
+
 /obj/structure/cannon/modern/tank/baftkn75
 	name = "BAF TKN 75mm"
 	desc = "a 75 mm Blugoslavian tank-based cannon."
@@ -248,7 +264,7 @@
 
 /obj/structure/cannon/modern/tank/german88/field
 	name = "8.8 cm Pak 43 cannon"
-	desc = "a 88 mm german anti-tank cannon."
+	desc = "a 88 mm German anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxsway = 18
@@ -262,7 +278,7 @@
 
 /obj/structure/cannon/modern/tank/russian76
 	name = "76 mm M1940 F-34"
-	desc = "a 76.2 mm russian tank-based cannon."
+	desc = "a 76.2 mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 27
@@ -270,7 +286,7 @@
 
 /obj/structure/cannon/modern/tank/russian85
 	name = "85 mm M1939 D5-T"
-	desc = "a 85 mm russian tank-based cannon."
+	desc = "a 85 mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 33

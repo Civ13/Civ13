@@ -180,6 +180,22 @@
 	color = "#8383C2"
 	turret_type = "pt76_turret"
 
+/obj/structure/vehicleparts/axis/heavy/t90a
+	name = "T-90A"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#5C5C4C"
+	turret_type = "t90_turret"
+
+/obj/structure/vehicleparts/axis/heavy/leopard
+	name = "Leopard 2A6"
+	speeds = 4
+	speedlist = list(1=9,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#5C5C4C"
+	turret_type = "2a6_turret"
+
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
 	speeds = 4

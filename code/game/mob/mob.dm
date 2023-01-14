@@ -720,7 +720,6 @@
 //				stat("Weather:", get_weather())
 				stat("Time of Day:", time_of_day)
 
-
 			// give the client some information about how the server is running
 			if (processes.ping_track && client)
 				var/our_ping = ceil(client.last_ping)
