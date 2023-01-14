@@ -135,7 +135,7 @@ var/list/sky_drop_map = list()
 							qdel(I)
 
 						spawn ((FALL_STEPS+0.5)*5)
-							playsound(get_turf(H), 'sound/effects/bamf.ogg', 20)
+							playsound(get_turf(H), 'sound/effects/thud.ogg', 100)
 							shake_camera(H, 2)
 							H.client.canmove = TRUE
 
