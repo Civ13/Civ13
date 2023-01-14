@@ -33,6 +33,7 @@ a, a:link, a:visited, :active, a:hover
 .ooc .everyone			{color: #1E8CBE;}
 .ooc .looc				{color: #75B5B5;}
 .ooc .elevated			{color: #2e78d9;}
+.ooc .mentor			{color: #2e78d9;}
 .ooc .moderator			{color: #2E78D9;}
 .ooc .developer			{color: #39ac41;}
 .ooc .admin				{color: #b82e00;}

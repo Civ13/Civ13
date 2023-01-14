@@ -322,6 +322,8 @@
 	var/ooc_style = "everyone"
 	if (holder && !holder.fakekey && holder.rank != "HHost")
 		ooc_style = "elevated"
+		if (holder.rights & R_MENTOR)
+			ooc_style = "mentor"
 		if (holder.rights & R_MOD)
 			ooc_style = "moderator"
 		if (holder.rights & R_DEBUG)
