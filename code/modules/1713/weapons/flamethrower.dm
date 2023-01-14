@@ -71,8 +71,6 @@
 		var/turf/source_turf = get_turf(user)
 
 		var/list/turfs = getline2(source_turf, target)
-		
-		var/turf/prev_T = source_turf
 
 		var/distance = 0
 		var/stop_at_turf = FALSE
@@ -87,29 +85,22 @@
 				break
 
 			if(T.density)
-				stop_at_turf = TRUE
+				if(!istype(T, /obj/structure/barricade) || !istype(T, /obj/structure/window/barrier))
+					stop_at_turf = TRUE
 			else
 				if (distance > 0)
 					var/obj/effect/fire/flamethrower/flame = new/obj/effect/fire/flamethrower(T) //I CAST THE FLAMES OF HELL UPON THY SOUL!
 					ignite_turf(get_turf(flame), 70)
 
-					var/atom/A = LinkBlocked(flame, prev_T, T)
-					if(A)
-						if (A.flags & ON_BORDER)
-							break
-						stop_at_turf = TRUE
-
 			if(T == target.loc)
 				if(stop_at_turf)
 					break
-				prev_T = T
 				continue
 
 			if(stop_at_turf)
 				break
 			
 			distance++
-			prev_T = T
 
 /obj/item/weapon/reagent_containers/glass/flamethrower
 	name = "M2 Flamethrower backpack"
@@ -183,3 +174,33 @@
 	..()
 	reagents.add_reagent("gasoline",100)
 
+
+/obj/item/weapon/reagent_containers/glass/flamethrower_mg
+	name = "Stationary Flamethrower Tank"
+	desc = "A flamethrower tank. Up to 200 liters of gasoline."
+	icon = 'icons/obj/guns/gun.dmi'
+	icon_state = "coaxflam_ammo"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
+	item_state = "ammo_can"
+	flags = CONDUCT
+	sharp = FALSE
+	edge = FALSE
+	nothrow = TRUE
+	flags = CONDUCT
+	attack_verb = list("bashed", "hit")
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	flammable = TRUE
+	w_class = 14
+	slot_flags = null
+	throw_speed = 1
+	throw_range = 1
+	amount_per_transfer_from_this = 25
+	volume = 200
+	density = FALSE
+/obj/item/weapon/reagent_containers/glass/flamethrower_mg/filled/New()
+	..()
+	reagents.add_reagent("gasoline",200)

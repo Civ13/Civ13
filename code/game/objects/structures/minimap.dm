@@ -1,6 +1,6 @@
 /obj/structure/sign/map
-	desc = "A detailed area map for planning operations."
 	name = "area map"
+	desc = "A detailed area map for planning operations."
 	icon_state = "areamap"
 	var/image/img
 	var/list/overlay_list = list()
@@ -105,7 +105,9 @@
 
 /obj/structure/sign/map/attack_hand(mob/user)
 	examine(user)
+
 //////////////////////////////////////////
+
 /obj/item/weapon/map
 	desc = "A portable map of the area."
 	name = "folding map"
@@ -190,4 +192,26 @@
 
 /obj/item/weapon/map_clash/attack_self(mob/user)
 	update_icon()
+	examine(user)
+
+
+///MAP BOARD///
+
+/obj/structure/sign/map_board
+	name = "map of the area"
+	desc = "A large board with the map of the area."
+	icon_state = "map_board"
+	var/image/img
+
+/obj/structure/sign/map_board/New()
+	..()
+	if (map.ID == "SOVAFGHAN")
+		img = image(icon = 'icons/minimaps.dmi', icon_state = "sovafghan_map")
+	else if (map.ID == "OPERATION_FALCON")
+		img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
+
+/obj/structure/sign/map_board/examine(mob/user)
+	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+
+/obj/structure/sign/map_board/attack_hand(mob/user)
 	examine(user)

@@ -490,15 +490,14 @@
 	sel_mode = 1
 /obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon()
 	if (ammo_magazine)
-		if (ammo_magazine == /obj/item/ammo_magazine/c762x25_ppsh)
-			icon_state = "[base_icon]_drum"
+		if (magazine_type == /obj/item/ammo_magazine/c762x25_pps)
+			icon_state = "[base_icon]_mag"
 			return
 		else
-			icon_state = "[base_icon]_mag"
+			icon_state = "[base_icon]_drum"
 			return
 	else
 		icon_state = "[base_icon]_open"
-		item_state = "[base_icon]_open"
 	update_held_icon()
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47

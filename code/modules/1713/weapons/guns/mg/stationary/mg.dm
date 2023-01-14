@@ -348,7 +348,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo))
 		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
-			user.drop_item()
+			user.remove_from_mob(I)
 			I.loc = src
 			rockets += I
 			user << "You put the rocket in the ATGM."
@@ -412,10 +412,11 @@
 		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
 		return
 	usr.face_atom(src)
-	visible_message("<span class = 'warning'>[usr] starts to get their [src] from the ground.</span>")
-	if (do_after(usr, 50, get_turf(usr)))
+	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
+	for (var/obj/item/ammo_casing/rocket/I in rockets)
+		I.loc = get_turf(src)
+		rockets -= I
+	if (do_after(usr, 40, get_turf(usr)))
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[usr] retrieves their [src] from the ground.</span>")
-
-	
+		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
