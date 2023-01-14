@@ -342,7 +342,7 @@
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
 			var/mob/living/human/H = user
-			if (map.ID == MAP_NATIONSRP)
+			if (|| map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 				if (H.original_job_title == original_job_title)
 					if (original_job_title == "Civilization A Citizen")
 						msg += "<br><i><font color='green'>You recognize [T.him] as a citizen of your nation, <b>[civname_a]</b>.</i></font>"
