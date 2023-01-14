@@ -183,3 +183,33 @@
 	..()
 	reagents.add_reagent("gasoline",100)
 
+
+/obj/item/weapon/reagent_containers/glass/flamethrower_mg
+	name = "Stationary Flamethrower Tank"
+	desc = "A flamethrower tank. Up to 200 liters of gasoline."
+	icon = 'icons/obj/guns/gun.dmi'
+	icon_state = "coaxflam_ammo"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
+	item_state = "ammo_can"
+	flags = CONDUCT
+	sharp = FALSE
+	edge = FALSE
+	nothrow = TRUE
+	flags = CONDUCT
+	attack_verb = list("bashed", "hit")
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	flammable = TRUE
+	w_class = 14
+	slot_flags = null
+	throw_speed = 1
+	throw_range = 1
+	amount_per_transfer_from_this = 25
+	volume = 200
+	density = FALSE
+/obj/item/weapon/reagent_containers/glass/flamethrower_mg/filled/New()
+	..()
+	reagents.add_reagent("gasoline",200)
