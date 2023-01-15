@@ -237,6 +237,18 @@
 	var/min_soil_nutrition = 0
 	initial_flooring = /decl/flooring/dirt
 
+/turf/floor/dirt/examine(mob/user)
+	if (get_dist(src, user) <= 1)
+		if (soil_nutrition >= 80)
+			user << "<span class='notice'>The soil looks alive and in good condition, plants would grow very well here.</span>"
+		else if (soil_nutrition >= 25)
+			user << "<span class='notice'>The soil seems half dead and the plants would not develop as well as they should here.</span>"
+		else if (soil_nutrition > 0)
+			user << "<span class='notice'>The soil here looks pretty dead and the plants would have a tough time growing here.</span>"
+		else
+			user << "<span class='notice'>The soil looks dead and plants would hardly grow here.</span>"
+	return ...
+
 /turf/floor/dirt/space
 	name = "space"
 	icon = 'icons/turf/floors.dmi'
