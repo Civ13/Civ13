@@ -882,8 +882,8 @@
 		fruitpath = "/obj/item/stack/[stack]"
 		I = new fruitpath(loc, stack_amount)
 		I.radiation = radiation/2
-		if (fertilized)
-			I.amount *= 2
+		if (plant_nutrition > 80)
+			I.amount *= rand(1, 3) // If the soil is fed, randomly increase production from 1 to 3
 	else
 		if (condiment <> "product_name") // Routine to spawn produces when condiment
 			fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"
@@ -891,9 +891,11 @@
 			fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 		I = new fruitpath(loc)
 		I.radiation = radiation/2
-		if (fertilized)
-			I = new fruitpath(loc)
-			I.radiation = radiation/2
+		if (plant_nutrition > 80) // If the soil is fed, randomly increase production from 1 to 3
+			var/extra_rand_produces = rand(1, 3)
+			for(extra_rand_produces)
+				I = new fruitpath(loc)
+				I.radiation = radiation/2
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
