@@ -232,6 +232,9 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
+	var/soil_nutrition = 50
+	var/max_soil_nutrition = 200
+	var/min_soil_nutrition = 0
 	initial_flooring = /decl/flooring/dirt
 
 /turf/floor/dirt/space
