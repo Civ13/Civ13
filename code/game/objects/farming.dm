@@ -878,16 +878,16 @@
 /obj/structure/farming/plant/proc/spawn_produce()
 	var/fruitpath
 	var/obj/item/I
-	if (stack <> "product_name")
+	if (stack <> "product_name") // Routine to spawn produces when in stack
 		fruitpath = "/obj/item/stack/[stack]"
 		I = new fruitpath(loc, stack_amount)
 		I.radiation = radiation/2
 		if (fertilized)
 			I.amount *= 2
 	else
-		if (condiment <> "product_name")
+		if (condiment <> "product_name") // Routine to spawn produces when condiment
 			fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"
-		else
+		else // Routine to spawn produces when fruit itself
 			fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 		I = new fruitpath(loc)
 		I.radiation = radiation/2
@@ -935,7 +935,7 @@
 				if (src && get_area(get_turf(src)))
 					if (get_area(get_turf(src)).location == 0)
 						if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
-							stage += 1
+							stageGrowth()
 					else
 						var/currcl = get_area(get_turf(src)).climate
 						var/count = 0
@@ -947,8 +947,14 @@
 									if (season == k)
 										count++
 						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_EUROPE))
-							stage += 1
+							stageGrowth()
 					growth()
+
+/obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
+	if(plant_nutrition > 80) // Good soil, keep growing
+		stage += 1
+	else if (prob(plant_nutrition))
+		stage += 1
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
@@ -966,6 +972,8 @@
 
 /obj/structure/farming/plant/proc/soil_nutrition_proc()
 	var/turf/floor/dirt/D = get_turf(loc)
+	var/nutrition_consumed = 5
+	D.soil_nutrition -= nutrition_consumed // Plant eats nutrition from the soil
 	src.plant_nutrition = D.soil_nutrition
 
 /obj/structure/farming/plant/proc/water_proc()
