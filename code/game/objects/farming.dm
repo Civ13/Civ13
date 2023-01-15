@@ -977,7 +977,7 @@
 
 /obj/structure/farming/plant/proc/soil_nutrition_proc()
 	var/turf/floor/dirt/D = get_turf(loc)
-	var/nutrition_consumed = 5
+	var/nutrition_consumed = 3
 	D.soil_nutrition -= nutrition_consumed // Plant eats nutrition from the soil
 	if(D.soil_nutrition < D.min_soil_nutrition)
 		D.soil_nutrition = D.min_soil_nutrition // Cap soil nutrition at mininum possible

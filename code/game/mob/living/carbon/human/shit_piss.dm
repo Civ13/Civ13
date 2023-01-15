@@ -147,7 +147,7 @@
 	desc = "Makes good fertilizer at least."
 	dry_size = 6
 	dried_type = /obj/item/stack/dung
-	fertilizer_value = 5
+	fertilizer_value = 10
 	New()
 		..()
 		icon_state = pick("animal1", "animal2", "animal3")
@@ -158,7 +158,7 @@
 	decay = 120*600
 	dry_size = 6
 	dried_type = /obj/item/stack/dung
-	fertilizer_value = 10
+	fertilizer_value = 60
 	New()
 		..()
 		icon_state = pick("animal1", "animal2", "animal3")
@@ -171,7 +171,7 @@
 	value = 0
 	can_stack = TRUE
 	singular_name = "dry dung"
-	fertilizer_value = 10
+	fertilizer_value = 20
 	max_amount = 40
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/throw_impact(atom/hit_atom)
