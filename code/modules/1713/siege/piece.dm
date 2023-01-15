@@ -494,18 +494,32 @@
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
 									radiation_pulse(target, 10, 60, 1400, TRUE)
+									explosion(target, 2, 2, 2, 100)
+									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W19))
 									radiation_pulse(target, 8, 70, 1400, TRUE)
+									explosion(target, 2, 2, 2, 100)
+									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33))
 									radiation_pulse(target, 10, 45, 1000, TRUE)
+									explosion(target, 2, 2, 2, 100)
+									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
 									radiation_pulse(target, 10, 50, 1400, TRUE)
+									explosion(target, 2, 2, 2, 100)
+									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/makeshift))
 									radiation_pulse(target, 10, 65, 1400, TRUE)
+									explosion(target, 2, 2, 2, 100)
+									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>
 								else if (istype(src,/obj/item/cannon_ball/rocket/nuclear))
 									radiation_pulse(target, 12, 80, 1400, TRUE)
+									explosion(target, 2, 2, 2, 30)
+									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>
 								else
 									radiation_pulse(target, 4, 50, 800, TRUE)
+									explosion(target, 2, 2, 2, 100)
+									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>
 
 								var/target_area_original_integrity = target_area.artillery_integrity
 								if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
