@@ -882,8 +882,8 @@
 		fruitpath = "/obj/item/stack/[stack]"
 		I = new fruitpath(loc, stack_amount)
 		I.radiation = radiation/2
-		if (plant_nutrition > 80)
-			I.amount *= rand(1, 3) // If the soil is fed, randomly increase production from 1 to 3
+		if (plant_nutrition >= 80)
+			I.amount *= rand(0, 2) // If the soil is fed, randomly increase production from 1 to 3
 	else
 		if (condiment <> "product_name") // Routine to spawn produces when condiment
 			fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"
@@ -891,9 +891,8 @@
 			fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 		I = new fruitpath(loc)
 		I.radiation = radiation/2
-		if (plant_nutrition > 80) // If the soil is fed, randomly increase production from 1 to 3
-			var/extra_rand_produces = rand(1, 3)
-			for(extra_rand_produces)
+		if (plant_nutrition >= 80) // If the soil is fed, randomly increase production from 1 to 3
+			for(rand(0, 2) > 0)
 				I = new fruitpath(loc)
 				I.radiation = radiation/2
 
@@ -955,7 +954,11 @@
 /obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
 	if(plant_nutrition > 80) // Good soil, keep growing
 		stage += 1
-	else if (prob(plant_nutrition))
+	else if (plant_nutrition >= 25 && prob(plant_nutrition))
+		stage += 1
+	else if (plant_nutrition > 0 && plant_nutrition < 25 && prob(10))
+		stage += 1
+	else if(prob(5))
 		stage += 1
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -976,6 +979,8 @@
 	var/turf/floor/dirt/D = get_turf(loc)
 	var/nutrition_consumed = 5
 	D.soil_nutrition -= nutrition_consumed // Plant eats nutrition from the soil
+	if(D.soil_nutrition < D.min_soil_nutrition)
+		D.soil_nutrition = D.min_soil_nutrition // Cap soil nutrition at mininum possible
 	src.plant_nutrition = D.soil_nutrition
 
 /obj/structure/farming/plant/proc/water_proc()
