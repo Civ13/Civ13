@@ -381,6 +381,7 @@
 	var/fertilized = FALSE
 	var/water = 60
 	var/max_water = 60
+	var/plant_nutrition = 100
 
 /obj/structure/farming/plant/New()
 	..()
@@ -916,6 +917,7 @@
 /obj/structure/farming/plant/proc/growth()
 	if (!vstatic)
 		if (stage < 12)
+			soil_nutrition_proc()
 			water_proc()
 			if (stage < readyStageMin)
 				icon_state = "[plant]-grow[stage]"
@@ -961,6 +963,10 @@
 		else // destroy
 			user << "<span class = 'bad'>You uproot the dead [name].</span>"
 			qdel(src)
+
+/obj/structure/farming/plant/proc/soil_nutrition_proc()
+	var/turf/floor/dirt/D = get_turf(loc)
+	src.plant_nutrition = D.soil_nutrition
 
 /obj/structure/farming/plant/proc/water_proc()
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
