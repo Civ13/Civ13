@@ -23,7 +23,7 @@
 	availablefactions = list("Civilization A Citizen", "Civilization B Citizen")
 	mission_start_message = "<big>Two industrial towns govern this land. The grace wall will end in <b>90 minutes</b>. This is an RP focused map; people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
-	nomads = FALSE
+	nomads = TRUE
 	availablefactions_run = FALSE
 	songs = list(
 		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)

@@ -14,6 +14,7 @@
 	var/obj/item/weapon/gun/projectile/custom/current_gun = null
 
 /obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
+	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 	if (istype(P, /obj/item/stack/material/wood))
 		user << "You begin cutting the wood..."
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
@@ -195,6 +196,7 @@
 
 /obj/structure/gunbench/attack_hand(var/mob/user as mob)
 	var/mob/living/human/H = user
+	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
 		user << "You don't have the skills to design a new gun! Use an existing blueprint."
 		return FALSE
@@ -1460,7 +1462,13 @@
 			else
 				icon_state = "[base_icon]_open"
 
-		if (receiver_type == "Semi-Auto (large)" || receiver_type == "Semi-Auto (small)" )
+		if (receiver_type == "Semi-Auto (large)" || receiver_type == "Semi-Auto (small)")
+			if (!ammo_magazine)
+				icon_state = "[base_icon]_open"
+			else
+				icon_state = "[base_icon]"
+
+		if (receiver_type == "Dual Selective Fire" || receiver_type == "Triple Selective Fire")
 			if (!ammo_magazine)
 				icon_state = "[base_icon]_open"
 			else

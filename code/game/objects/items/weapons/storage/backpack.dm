@@ -142,6 +142,7 @@
 	max_storage_space = 24
 
 /obj/item/weapon/storage/backpack/paratrooper
+	name = "Parachute"
 	desc = "A backpack with a built in parachute."
 	icon_state = "parachute0"
 	item_state = "backpack"
