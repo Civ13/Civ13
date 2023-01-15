@@ -892,7 +892,7 @@
 		I = new fruitpath(loc)
 		I.radiation = radiation/2
 		if (plant_nutrition >= 80) // If the soil is fed, randomly increase production from 1 to 3
-			for(rand(0, 3) > 0)
+			for(var/l = 1, l <= rand(0, 2) && l > 0, l++) // If 0, no extra crops. Up to 2 extras, 3 counting with the main produce
 				I = new fruitpath(loc)
 				I.radiation = radiation/2
 
