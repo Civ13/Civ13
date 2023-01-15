@@ -417,10 +417,10 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" =1, "calcium" = 1, "oxygen" = 3 )
 	result_amount = 2
 
-/datum/chemical_reaction/carbon_dioxyde
-	name = "Carbon dioxyde"
-	id = "carbon_dioxyde"
-	result = "carbon_dioxyde"
+/datum/chemical_reaction/carbon_dioxide
+	name = "Carbon dioxide"
+	id = "carbon_dioxide"
+	result = "carbon_dioxide"
 	required_reagents = list("carbon" =1,  "oxygen" = 2 )
 	result_amount = 2
 
