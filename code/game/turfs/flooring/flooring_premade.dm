@@ -432,12 +432,30 @@
 	else
 		ChangeTurf(/turf/floor/dirt)
 
+/turf/floor/dirt/fertile
+	soil_nutrition = 100
+
+/turf/floor/dirt/medium_fertile
+	soil_nutrition = 50
+
+/turf/floor/dirt/infertile
+	soil_nutrition = 0
+
 /turf/floor/dirt/ploughed
 	name = "ploughed field"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
 	initial_flooring = null
+
+/turf/floor/dirt/ploughed/fertile
+	soil_nutrition = 100
+
+/turf/floor/dirt/ploughed/medium_fertile
+	soil_nutrition = 50
+
+/turf/floor/dirt/ploughed/infertile
+	soil_nutrition = 0
 
 /turf/floor/dirt/ploughed/flooded
 	name = "ploughed field"
