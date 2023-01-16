@@ -1537,10 +1537,10 @@
 		new /obj/item/ammo_casing/grenade_l(hold)
 
 /obj/item/clothing/accessory/storage/webbing/survival
-	name = "Survival Webbing"
-	desc = "A green set of chest and knee level pouches for storing a pistol, magazines and other things needed to survive in the wilderniss."
+	name = "survival bebbing"
+	desc = "A green set of chest and knee-level pouches for storing a pistol, magazines and other gear needed to survive in the wilderness."
 	slots = 11
-	w_class = 4 // Heavier because it can hold a lot of shit
+	w_class = 4 // Heavier because it can hold a lot of stuff.
 	icon_state = "survival_webbing"
 	item_state = "survival_webbing"
 	New()
