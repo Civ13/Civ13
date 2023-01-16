@@ -232,14 +232,26 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
-	var/soil_nutrition = 25
+	var/soil_nutrition = 150
 	var/max_soil_nutrition = 150
 	var/min_soil_nutrition = 0
 	initial_flooring = /decl/flooring/dirt
 
 /turf/floor/dirt/New()
-	soil_nutrition = rand(25, 150)
+	soil_nutrition_recover() // Starts soil nutrition recover
 	return ...
+
+/turf/floor/dirt/proc/soil_nutrition_recover()
+	spawn(12000) // Every 20 minutes the soil will recover
+		if(soil_nutrition < max_soil_nutrition)
+			if (!locate(/obj/structure/farming/plant) in src) // Soil recovers when no farming plants
+				var/nutrition_to_be_recovered = rand(20, 40)
+				if(soil_nutrition + nutrition_to_be_recovered > max_soil_nutrition)
+					soil_nutrition = max_soil_nutrition
+				else
+					soil_nutrition += nutrition_to_be_recovered
+		soil_nutrition_recover();
+		return
 
 /turf/floor/dirt/examine(mob/user)
 	if (get_dist(src, user) <= 1)
