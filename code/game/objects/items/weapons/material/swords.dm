@@ -60,24 +60,24 @@
 	if(atk_mode == SLASH)
 		atk_mode = STAB
 		user << "<span class='notice'>You will now stab.</span>"
-		edge = 0
-		sharp = 1
+		edge = FALSE
+		sharp = TRUE
 		attack_verb = list("stabbed")
 		hitsound = "stab_sound"
 
 	else if(atk_mode == STAB)
 		atk_mode = BASH
 		user << "<span class='notice'>You will now bash.</span>"
-		edge = 0
-		sharp = 0
+		edge = FALSE
+		sharp = FALSE
 		attack_verb = list("bashed", "smacked")
 		hitsound = "swing_hit"
 
 	else if(atk_mode == BASH)
 		atk_mode = SLASH
 		user << "<span class='notice'>You will now slash.</span>"
-		edge = 1
-		sharp = 1
+		edge = TRUE
+		sharp = TRUE
 		attack_verb = list("slashed", "diced")
 		hitsound = "slash_sound"
 
@@ -125,8 +125,8 @@
 
 /obj/item/weapon/material/sword/training/attack_self(mob/user)
 	..()
-	edge = 0
-	sharp = 0
+	edge = FALSE
+	sharp = FALSE
 
 /obj/item/weapon/material/sword/katana
 	name = "katana"
