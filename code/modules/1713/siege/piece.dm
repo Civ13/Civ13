@@ -421,7 +421,7 @@
 				if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
 					explosion = FALSE
 					nuclear = TRUE
-				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/napalm))
+				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/incendiary))
 					explosion = FALSE
 					incendiary = TRUE
 				qdel(loaded)
