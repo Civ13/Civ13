@@ -19,6 +19,7 @@
 	var/ammotype = /obj/item/cannon_ball
 	var/spritemod = TRUE //if true, uses 32x64
 	var/explosion = TRUE
+	var/incendiary = FALSE
 	var/nuclear = FALSE
 	var/reagent_payload = "none"
 	var/maxrange = 50
@@ -418,8 +419,11 @@
 					explosion = FALSE
 					reagent_payload = loaded.reagent_payload
 				if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
-					explosion = TRUE
+					explosion = FALSE
 					nuclear = TRUE
+				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/napalm))
+					explosion = FALSE
+					incendiary = TRUE
 				qdel(loaded)
 				loaded = null
 
@@ -491,6 +495,23 @@
 											explosion(tgtbelow, 2, 3, 3, 3)
 								else
 									explosion(target, 1, 2, 3, 4)
+							if (incendiary)
+								if (istype(src,/obj/structure/cannon/mortar))
+									explosion(target, 0, 1, 3, 4)
+									for (var/turf/floor/T in range(3,target))
+										for (var/mob/living/LS1 in T)
+											LS1.adjustFireLoss(35)
+											LS1.fire_stacks += rand(3,6)
+											LS1.IgniteMob()
+										new/obj/effect/fire(T)
+								else
+									explosion(target, 0, 1, 3, 4)
+									for (var/turf/floor/T in range(3,target))
+										for (var/mob/living/LS1 in T)
+											LS1.adjustFireLoss(35)
+											LS1.fire_stacks += rand(4,8)
+											LS1.IgniteMob()
+										new/obj/effect/fire(T)
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
 									radiation_pulse(target, 10, 60, 1400, TRUE)

@@ -464,7 +464,7 @@
 	return TRUE
 
 /obj/item/projectile/proc/handleTurf(var/turf/T, forced=0, var/list/untouchable = list())
-	if(atype =="NUCLEAR")
+	if(atype == "NUCLEAR")
 		radiation_pulse(T, damage / 100, damage / 10, damage / 25, 0)
 	if (!T || !istype(T))
 		return FALSE

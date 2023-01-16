@@ -211,7 +211,13 @@
 	reagent_payload = "smokescreen"
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "smoke mortar shell"
-	icon_state = "shell_mortar"
+	icon_state = "shell_mortar_smoke"
+
+/obj/item/cannon_ball/mortar_shell/incendiary
+	atype = "INCENDIARY"
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "incendiary mortar shell"
+	icon_state = "shell_mortar_incendiary"
 
 // Chemical
 
@@ -247,7 +253,7 @@
 
 // Nuclear
 
-/obj/item/cannon_ball/shell/tank/nuclear/
+/obj/item/cannon_ball/shell/tank/nuclear
 	atype = "NUCLEAR"
 	New()
 		..()
