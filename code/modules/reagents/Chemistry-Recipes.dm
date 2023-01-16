@@ -555,6 +555,14 @@ datum/admins/proc/print_chemical_reactions()
 	result_amount = 2
 	log_is_important = TRUE
 
+/datum/chemical_reaction/nitroglycerin/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/exloc = get_turf(holder.my_atom)
+	if (created_volume >= 20)
+		for (var/mob/living/human/H in range(exloc,3))
+			H << "<big><span class = 'red'>The reagent begins to combust violenty, uh oh...</span></big>"
+		spawn(30)
+		explosion(exloc, 0, 1, 2, 6)
+
 /datum/chemical_reaction/nitrocellulose
 	name = "Nitrocellulose"
 	id = "nitrocellulose"
@@ -584,30 +592,6 @@ datum/admins/proc/print_chemical_reactions()
 	result_amount = 3
 	log_is_important = TRUE
 
-/datum/chemical_reaction/gunpowder_charcoal
-	name = "Gunpowder"
-	id = "gunpowder"
-	result = "gunpowder"
-	required_reagents = list("sulfur" = 1, "charcoal" = 1, "potassium" = 1)
-	result_amount = 3
-	log_is_important = TRUE
-
-/datum/chemical_reaction/saltpeter_urine
-	name = "Saltpeter"
-	id = "potassium"
-	result = "potassium"
-	required_reagents = list("poo" = 2, "urine" = 1)
-	result_amount = 1
-	log_is_important = TRUE
-
-/datum/chemical_reaction/saltpeter_fertilizer
-	name = "Saltpeter"
-	id = "potassium"
-	result = "potassium"
-	required_reagents = list("fertilizer" = 2, "urine" = 1)
-	result_amount = 1
-	log_is_important = TRUE
-
 /datum/chemical_reaction/gunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()
@@ -632,6 +616,29 @@ datum/admins/proc/print_chemical_reactions()
 			holder.clear_reagents()
 		break
 
+/datum/chemical_reaction/gunpowder_charcoal
+	name = "Gunpowder"
+	id = "gunpowder"
+	result = "gunpowder"
+	required_reagents = list("sulfur" = 1, "charcoal" = 1, "potassium" = 1)
+	result_amount = 3
+	log_is_important = TRUE
+
+/datum/chemical_reaction/saltpeter_urine
+	name = "Saltpeter"
+	id = "potassium"
+	result = "potassium"
+	required_reagents = list("poo" = 2, "urine" = 1)
+	result_amount = 1
+	log_is_important = TRUE
+
+/datum/chemical_reaction/saltpeter_fertilizer
+	name = "Saltpeter"
+	id = "potassium"
+	result = "potassium"
+	required_reagents = list("fertilizer" = 2, "urine" = 1)
+	result_amount = 1
+	log_is_important = TRUE
 
 /datum/chemical_reaction/napalm
 	name = "Napalm"
@@ -639,7 +646,6 @@ datum/admins/proc/print_chemical_reactions()
 	result = "napalm"
 	required_reagents = list("gasoline" = 1, "cotton" = 1)
 	result_amount = TRUE
-
 
 /datum/chemical_reaction/chemsmoke
 	name = "Chemsmoke"

@@ -7,7 +7,7 @@
 
 
 /obj/structure/chemical_dispenser
-	name = "chem dispenser"
+	name = "chemical dispenser"
 	density = TRUE
 	anchored = TRUE
 	icon = 'icons/obj/chemical.dmi'

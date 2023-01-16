@@ -263,7 +263,7 @@
 		..()
 		reagents.add_reagent("cherryjelly", 10)
 
-/obj/item/weapon/reagent_containers/food/snacks/grown/coconut //Added proper reagents to food.
+/obj/item/weapon/reagent_containers/food/snacks/grown/coconut
 	name = "coconut"
 	icon_state = "coconut"
 	satisfaction = 3
@@ -272,9 +272,9 @@
 		..()
 		reagents.add_reagent("coconutmilk", 20)
 
-/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa //Added proper reagents to food.
+/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa
 	name = "cocoa beans"
-	icon_state = "coco"
+	icon_state = "cocoa"
 	satisfaction = -2
 	decay = 150*600
 	New()

@@ -1536,6 +1536,53 @@
 		new /obj/item/ammo_casing/grenade_l(hold)
 		new /obj/item/ammo_casing/grenade_l(hold)
 
+/obj/item/clothing/accessory/storage/webbing/survival
+	name = "survival bebbing"
+	desc = "A green set of chest and knee-level pouches for storing a pistol, magazines and other gear needed to survive in the wilderness."
+	slots = 11
+	w_class = 4 // Heavier because it can hold a lot of stuff.
+	icon_state = "survival_webbing"
+	item_state = "survival_webbing"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/gun/projectile/pistol,
+							/obj/item/weapon/gun/projectile/revolver,
+							/obj/item/weapon/key,
+							/obj/item/ammo_casing, 
+							/obj/item/ammo_magazine,
+							/obj/item/weapon/grenade,
+							/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+							/obj/item/weapon/reagent_containers/food/snacks/MRE/generic,
+							/obj/item/weapon/material/hatchet,
+							/obj/item/weapon/material/shovel/trench/foldable,
+							/obj/item/weapon/attachment/scope/adjustable/binoculars,
+							/obj/item/stack/medical/bruise_pack,
+							/obj/item/stack/medical/advanced/sulfa)
+
+/obj/item/clothing/accessory/storage/webbing/survival/white
+	desc = "A white set of chest and knee level pouches for storing a pistol, magazines and other things needed to survive in the wilderniss."
+	icon_state = "survival_webbing_white"
+	item_state = "survival_webbing_white"
+
+/obj/item/clothing/accessory/storage/webbing/survival/filled
+	New()
+		..()
+		new /obj/item/weapon/material/shovel/trench/foldable/etool(hold)
+		new /obj/item/weapon/material/hatchet/steel(hold)
+		new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(hold)
+		new /obj/item/flashlight/flare(hold)
+		new /obj/item/stack/medical/advanced/sulfa(hold)
+		new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen(hold)
+		new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic(hold)
+		new /obj/item/weapon/grenade/smokebomb/signal/rdg2_yellow(hold)
+
+/obj/item/clothing/accessory/storage/webbing/survival/filled/soviet
+	New()
+		..()
+		new /obj/item/weapon/gun/projectile/pistol/tt30(hold)
+		new /obj/item/ammo_magazine/tt30(hold)
+		new /obj/item/ammo_magazine/tt30(hold)
+
 /* NBC &  Hazmat Suits*/
 
 /obj/item/clothing/head/nbc

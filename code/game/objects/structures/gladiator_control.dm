@@ -142,7 +142,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
-	var/active_emperor = 0
+	var/active_emperor = FALSE
 	var/arena = "Arena I"
 
 	var/combat_running = FALSE
@@ -164,14 +164,27 @@
 	spawn(1200)
 		run_proc()
 
+/obj/structure/gladiator_control/proc/pick_combat()
+	if (human_clients_mob_list.len <= 8)
+		current_style = "1 vs 1"
+		return
+	else if (human_clients_mob_list.len > 8 && human_clients_mob_list.len <= 16)
+		current_style = pick("1 vs 1","2 vs 2","4 people free-for-all")
+		return
+	else
+		current_style = pick("1 vs 1","2 vs 2","4 people free-for-all","6 people free-for-all")
+		return
+
 /obj/structure/gladiator_control/proc/run_proc()
-	active_emperor = 0
+	active_emperor = FALSE
 /*
 	for(var/mob/living/human/EMP in world)
 		if (EMP.original_job_title == "Imperator" && EMP.stat == CONSCIOUS)
-			active_emperor++
+			active_emperor = TRUE
+		else
+			active_emperor = FALSE
 */
-	if (active_emperor <= 0 || automode)
+	if (!active_emperor || automode)
 		if (combat_running == 1)
 			prepare_combat()
 		else if (combat_running == 0)
@@ -183,17 +196,6 @@
 			check_combat()
 	spawn(10)
 		run_proc()
-
-/obj/structure/gladiator_control/proc/pick_combat()
-	if (human_clients_mob_list.len <= 8)
-		current_style = "1 vs 1"
-		return
-	else if (human_clients_mob_list.len > 8 && human_clients_mob_list.len <= 16)
-		current_style = pick("1 vs 1","2 vs 2","4 people free-for-all")
-		return
-	else
-		current_style = pick("1 vs 1","2 vs 2","4 people free-for-all","6 people free-for-all")
-		return
 
 /obj/structure/gladiator_control/proc/prepare_combat()
 	count = 0
