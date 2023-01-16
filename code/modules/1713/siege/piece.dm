@@ -549,6 +549,8 @@
 											new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
 										if ("phosgene_gas")
 											new/obj/effect/effect/smoke/chem/payload/phosgene(target)
+										if ("smokescreen")
+											new/obj/effect/effect/smoke/bad(target)
 					sleep(0.5)
 
 	do_html(user)
