@@ -6,17 +6,24 @@
 
 /mob/living/human/proc/getStatCoeff(statname)
 	var/smod = 1
-	if (find_trait("Gigantism"))
-		smod = 1.5
-	else if (find_trait("Dwarfism"))
+	var/dmod = 1
+	if (find_trait("Dwarfism"))
 		smod = 0.7
+		dmod = 1.6
 	else if (find_trait("Short"))
 		smod = 0.85
+		dmod = 1.2
 	else if (find_trait("Tall"))
 		smod = 1.15
+		dmod = 0.85
+	if (find_trait("Gigantism"))
+		smod = 1.5
+		dmod = 0.7
 	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
 		if (statname == "strength")
 			return (stats[lowertext(statname)][1]/100)*mood_modifier*smod
+		if (statname == "dexterity")
+			return (stats[lowertext(statname)][1]/100)*mood_modifier*dmod
 		else
 			return (stats[lowertext(statname)][1]/100)*mood_modifier
 	else
