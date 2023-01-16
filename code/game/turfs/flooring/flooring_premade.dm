@@ -237,6 +237,10 @@
 	var/min_soil_nutrition = 0
 	initial_flooring = /decl/flooring/dirt
 
+/turf/floor/dirt/New()
+	soil_nutrition = rand(25, 150)
+	return ...
+
 /turf/floor/dirt/examine(mob/user)
 	if (get_dist(src, user) <= 1)
 		if (soil_nutrition >= 130)
