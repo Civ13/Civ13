@@ -954,11 +954,11 @@
 /obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
 	if(plant_nutrition > 80) // Good soil, keep growing
 		stage += 1
-	else if (plant_nutrition >= 25 && prob(plant_nutrition))
+	else if (plant_nutrition >= 40 && prob(plant_nutrition))
 		stage += 1
-	else if (plant_nutrition > 0 && plant_nutrition < 25 && prob(10))
+	else if (plant_nutrition > 0 && plant_nutrition < 40 && prob(40))
 		stage += 1
-	else if(prob(5))
+	else if(prob(20))
 		stage += 1
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
