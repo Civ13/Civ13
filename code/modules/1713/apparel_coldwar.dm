@@ -947,6 +947,11 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 75, gun = 40, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/ssh_68/winter
+	icon_state = "ssh_68_winter"
+	item_state = "ssh_68_winter"
+	worn_state = "ssh_68_winter"
+
 /obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
 	name = "6B3 body armor"
 	desc = "A ballistic vest of Soviet origin, issued in the mid 1980s."
@@ -1548,7 +1553,7 @@
 		hold.can_hold = list(/obj/item/weapon/gun/projectile/pistol,
 							/obj/item/weapon/gun/projectile/revolver,
 							/obj/item/weapon/key,
-							/obj/item/ammo_casing, 
+							/obj/item/ammo_casing,
 							/obj/item/ammo_magazine,
 							/obj/item/weapon/grenade,
 							/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
