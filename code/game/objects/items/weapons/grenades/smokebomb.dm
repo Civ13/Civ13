@@ -192,7 +192,6 @@
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
 		active = TRUE
 		prime()
-///////////////////////////////////////////////////////////////////////////////
 
 /obj/item/weapon/grenade/smokebomb/signal/rdg2_yellow
 	desc = "It is set to detonate in 5 seconds. A helicopter will drop a crate of supplies at its location."
@@ -210,7 +209,7 @@
 	item_state = "m18smoke_red"
 	smoke_color = /datum/effect/effect/system/smoke_spread/red
 	
-///////////////////////////////////////////////////////////////////////////////
+//////////Incendiary//////////////////////////////////////////
 
 /obj/item/weapon/grenade/incendiary
 	desc = "It is set to detonate in 6 seconds."
@@ -238,11 +237,7 @@
 		var/turf/LT = get_turf(src)
 		explosion(LT,0,1,1,3)
 		for (var/turf/floor/T in range(spread_range,LT))
-			for (var/mob/living/LS1 in T)
-				LS1.adjustFireLoss(35)
-				LS1.fire_stacks += rand(8,10)
-				LS1.IgniteMob()
-			new/obj/effect/fire(T)
+			ignite_turf(T, 12, 35)
 		sleep(50)
 		qdel(src)
 		return
@@ -253,6 +248,7 @@
 		active = TRUE
 		prime()
 
+//////////Chemical//////////////////////////////////////////
 
 /obj/item/weapon/grenade/chemical
 	desc = "It is set to detonate in 5 seconds."

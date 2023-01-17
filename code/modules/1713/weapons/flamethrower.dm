@@ -89,8 +89,7 @@
 					stop_at_turf = TRUE
 			else
 				if (distance > 0)
-					var/obj/effect/fire/flamethrower/flame = new/obj/effect/fire/flamethrower(T) //I CAST THE FLAMES OF HELL UPON THY SOUL!
-					ignite_turf(get_turf(flame), 70)
+					ignite_turf(get_turf(T), 6, 70) // 6 seconds 70 damage flame
 
 			if(T == target.loc)
 				if(stop_at_turf)

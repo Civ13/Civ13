@@ -138,10 +138,6 @@
 		set_light(0)
 		qdel(src)
 
-/obj/effect/fire/flamethrower
-	timer = 60
-	var/turf/target_clicked
-
 /obj/effect/fire/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/CT = W
@@ -168,7 +164,7 @@
 		qdel(src)
 
 	for (var/mob/living/L in src.loc)
-		L.adjustFireLoss(rand(15,25))
+		L.adjustFireLoss(rand(20, 40))
 		if (prob(40))
 			L.fire_stacks += rand(1,2)
 		L.IgniteMob()
@@ -246,8 +242,9 @@
 		var/obj/item/flashlight/OO = W
 		if (OO.on)
 			visible_message("[user] sets the [src] on fire!","You set the [src] on fire!")
-			new/obj/effect/fire(src.loc)
+			ignite_turf(src.loc, 18, 20)
 			return
+			
 /obj/effect/decal/cleanable/blood/oil/dry()
 	return
 
