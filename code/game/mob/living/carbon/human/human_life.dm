@@ -1524,7 +1524,10 @@
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
-					holder2.icon_state = "vc_basic"
+					if (original_job.is_nva)
+						holder2.icon_state = "vn_basic"
+					else
+						holder2.icon_state = "vc_basic"
 				if (FILIPINO)
 					holder2.icon_state = "fp_basic"
 				if (CHINESE)
