@@ -1612,11 +1612,8 @@
 
 /datum/job/vietnamese/vietcong_nva/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/nva(H), slot_w_uniform)
-//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/vchelmet/two(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/nva(H), slot_w_uniform)
@@ -1641,11 +1638,8 @@
 					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 				else
 					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
-				var/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/mosinp = new /obj/item/clothing/accessory/storage/webbing/nlfsmallpouches(null)
+				var/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/mosinp = new /obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/filled_mosin(null)
 				uniform.attackby(mosinp, H)
-				for (var/i=1, i <= 7, i++)
-					mosinp.attackby(new/obj/item/ammo_magazine/mosin, H)
-				mosinp.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
 		H.setStat("machinegun", STAT_MEDIUM_LOW)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpd(H), slot_shoulder)
@@ -1653,7 +1647,7 @@
 		H.equip_to_slot_or_del(mgbelt, slot_belt)
 		mgbelt.attackby(new /obj/item/ammo_magazine/rpd, H)
 		mgbelt.attackby(new /obj/item/ammo_magazine/rpd, H)
-		H.setStat("machinegun", STAT_MEDIUM_HIGH)
+		H.setStat("machinegun", STAT_HIGH)
 		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)

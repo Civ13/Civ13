@@ -886,6 +886,11 @@
 	for (var/i=1; i <= 7; i++)
 		new /obj/item/ammo_magazine/sks(hold)
 	new /obj/item/stack/medical/bruise_pack/bint(hold)
+/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/filled_mosin/New()
+	..()
+	for (var/i=1; i <= 7; i++)
+		new /obj/item/ammo_magazine/mosin(hold)
+	new /obj/item/stack/medical/bruise_pack/bint(hold)
 
 /obj/item/clothing/accessory/storage/webbing/nlfchestrig
 	name = "NLF chestrig"
