@@ -1625,7 +1625,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/nva/green(H), slot_w_uniform)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	if (prob(50))
+	if (prob(90))
 		var/pickgun = rand(1,3)
 		switch(pickgun)
 			if (1)
