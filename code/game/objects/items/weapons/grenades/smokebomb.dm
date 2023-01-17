@@ -209,7 +209,7 @@
 	det_time = 50
 	item_state = "m18smoke_red"
 	smoke_color = /datum/effect/effect/system/smoke_spread/red
-	
+
 ///////////////////////////////////////////////////////////////////////////////
 
 /obj/item/weapon/grenade/incendiary
@@ -321,3 +321,7 @@
 /obj/item/weapon/grenade/chemical/zyklon_b
 	name = "Zyklon B gas grenade"
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/zyklon_b
+
+/obj/item/weapon/grenade/chemical/cs_gas
+	name = "CS gas grenade"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/csgas

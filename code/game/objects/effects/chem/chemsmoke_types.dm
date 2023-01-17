@@ -21,6 +21,9 @@
 /obj/effect/effect/smoke/chem/payload/xylyl_bromide
 	reagent_id = "xylyl_bromide"
 
+/obj/effect/effect/smoke/chem/payload/csgas
+	reagent_id = "chlorobenzalmalononitrile"
+
 /obj/effect/effect/smoke/chem/payload/phosgene
 	reagent_id = "phosgene_gas"
 
