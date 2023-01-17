@@ -1041,7 +1041,7 @@
 			user << "\The [src] seems <b>[water_desc]</b>."
 		else if (H.getStatCoeff("farming") >= 2.2)
 			user << "[src]'s water level is at <b>[water]/[max_water]</b>."
-		if (H.getStatCoeff("farming")>= 1.3)
 			user << "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>."
+		if (H.getStatCoeff("farming")>= 1.3)
 			if (plant_nutrition > 80)
 				user << "The plant looks good and healthy, it may give extra crops."
