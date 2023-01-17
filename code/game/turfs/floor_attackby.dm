@@ -116,10 +116,11 @@
 			var/turf/floor/dirt/D = src
 			if (do_after(user, 60/H.getStatCoeff("farming"), src))
 				user << "You fertilize the dirt around this plot."
-				if(D.soil_nutrition + C.fertilizer_value <= D.max_soil_nutrition) // Do not let players over fertilize the dirt
-					D.soil_nutrition += C.fertilizer_value
-				else
-					D.soil_nutrition = D.max_soil_nutrition // Capped at max soil nutrition
+				for (D in range(1,src))
+					if(D.soil_nutrition + C.fertilizer_value <= D.max_soil_nutrition) // Do not let players over fertilize the dirt
+						D.soil_nutrition += C.fertilizer_value
+					else
+						D.soil_nutrition = D.max_soil_nutrition // Capped at max soil nutrition
 				if (istype(C, /obj/item/stack/dung))
 					C.amount--
 					if (C.amount <= 0)
