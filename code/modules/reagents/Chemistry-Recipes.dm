@@ -114,7 +114,7 @@ datum/admins/proc/print_chemical_reactions()
 	var/list/required_reagents = list()
 	var/list/catalysts = list()
 	var/list/inhibitors = list()
-	var/result_amount = FALSE
+	var/result_amount = 0
 
 	//how far the reaction proceeds each time it is processed. Used with either REACTION_RATE or HALF_LIFE macros.
 	var/reaction_rate = HALF_LIFE(0)
@@ -258,7 +258,7 @@ datum/admins/proc/print_chemical_reactions()
 	result = "oxycodone"
 	required_reagents = list("ethanol" = 1, "tramadol" = 1)
 	catalysts = list("tungsten" = 5)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/adrenaline
 	name = "Adrenaline"
@@ -287,7 +287,7 @@ datum/admins/proc/print_chemical_reactions()
 	id = "chloralhydrate"
 	result = "chloralhydrate"
 	required_reagents = list("ethanol" = 1, "hclacid" = 3, "water" = 1)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/potassium_chloride
 	name = "Potassium Chloride"
@@ -315,7 +315,7 @@ datum/admins/proc/print_chemical_reactions()
 	id = "foaming_agent"
 	result = "foaming_agent"
 	required_reagents = list("lithium" = 1, "hydrazine" = 1)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/hclacid
 	name = "Hydrochloric Acid"
@@ -494,7 +494,7 @@ datum/admins/proc/print_chemical_reactions()
 	result = "condensedcapsaicin"
 	required_reagents = list("capsaicin" = 2)
 	catalysts = list("tungsten" = 5)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/methylphenidate
 	name = "Methylphenidate"
@@ -510,7 +510,6 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("mindbreaker" = 1, "carbon" = 1)
 	result_amount = 3
 
-
 /datum/chemical_reaction/paroxetine
 	name = "Paroxetine"
 	id = "paroxetine"
@@ -524,6 +523,7 @@ datum/admins/proc/print_chemical_reactions()
 	result = "mindbreaker"
 	required_reagents = list("enzyme" = 1, "diethylamine" = 1)
 	result_amount = 2
+
 /* Grenade reactions */
 
 /datum/chemical_reaction/explosion_potassium
@@ -645,7 +645,7 @@ datum/admins/proc/print_chemical_reactions()
 	id = "napalm"
 	result = "napalm"
 	required_reagents = list("gasoline" = 1, "cotton" = 1)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/chemsmoke
 	name = "Chemsmoke"
@@ -783,7 +783,7 @@ datum/admins/proc/print_chemical_reactions()
 	result = null
 	required_reagents = list("milk" = 40)
 	catalysts = list("enzyme" = 5)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/cheesewheel/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
@@ -809,14 +809,14 @@ datum/admins/proc/print_chemical_reactions()
 	id = "dough"
 	result = null
 	required_reagents = list("water" = 5, "flour" = 10)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/sweetdough
 	name = "Sweet Dough"
 	id = "sweet_dough"
 	result = null
 	required_reagents = list("egg" = 3, "flour" = 10, "sugar" = 2)
-	result_amount = TRUE
+	result_amount = 1
 
 /* Alcohol */
 
@@ -1151,7 +1151,7 @@ datum/admins/proc/print_chemical_reactions()
 	id = "lard_soap"
 	result = null
 	required_reagents = list("lard" = 20, "lye" = 2)
-	result_amount = TRUE
+	result_amount = 1
 
 /datum/chemical_reaction/lard_soap/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
