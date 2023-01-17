@@ -382,6 +382,7 @@
 	var/water = 60
 	var/max_water = 60
 	var/plant_nutrition = 100
+	var/max_plant_nutrition = 150
 
 /obj/structure/farming/plant/New()
 	..()
@@ -1041,5 +1042,6 @@
 		else if (H.getStatCoeff("farming") >= 2.2)
 			user << "[src]'s water level is at <b>[water]/[max_water]</b>."
 		if (H.getStatCoeff("farming")>= 1.3)
-			if (fertilized)
-				user << "The ground is fertilized."
+			user << "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>."
+			if (plant_nutrition > 80)
+				user << "The plant looks good and healthy, it may give extra crops."
