@@ -1199,7 +1199,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_svd
 /obj/item/weapon/storage/belt/smallpouches/green/sov_svd/New()
 	..()
-	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 	new /obj/item/ammo_magazine/svd(src)
 	new /obj/item/ammo_magazine/svd(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -1207,7 +1207,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez
 /obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez/New()
 	..()
-	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 	new /obj/item/ammo_magazine/vintorez(src)
 	new /obj/item/ammo_magazine/vintorez(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -1216,7 +1216,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_saiga/New()
 	storage_slots = 5
 	..()
-	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 	new /obj/item/ammo_magazine/saiga12(src)
 	new /obj/item/ammo_magazine/saiga12(src)
 	new /obj/item/ammo_magazine/saiga12(src)
