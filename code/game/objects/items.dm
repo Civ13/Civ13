@@ -27,6 +27,8 @@
 	var/amount = 1
 	var/value = 0 //the cost of an item.
 
+	var/fertilizer_value = 0 // the value as fertilizer
+
 	var/sharpness = 0
 
 	var/heat_protection = FALSE //flags which determine which body parts are protected from heat. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm

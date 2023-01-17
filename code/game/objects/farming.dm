@@ -381,6 +381,7 @@
 	var/fertilized = FALSE
 	var/water = 60
 	var/max_water = 60
+	var/plant_nutrition = 100
 
 /obj/structure/farming/plant/New()
 	..()
@@ -877,22 +878,23 @@
 /obj/structure/farming/plant/proc/spawn_produce()
 	var/fruitpath
 	var/obj/item/I
-	if (stack <> "product_name")
+	if (stack <> "product_name") // Routine to spawn produces when in stack
 		fruitpath = "/obj/item/stack/[stack]"
 		I = new fruitpath(loc, stack_amount)
 		I.radiation = radiation/2
-		if (fertilized)
-			I.amount *= 2
+		if (plant_nutrition >= 80)
+			I.amount *= rand(1, 3) // If the soil is fed, randomly increase production from 1 to 3
 	else
-		if (condiment <> "product_name")
+		if (condiment <> "product_name") // Routine to spawn produces when condiment
 			fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"
-		else
+		else // Routine to spawn produces when fruit itself
 			fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 		I = new fruitpath(loc)
 		I.radiation = radiation/2
-		if (fertilized)
-			I = new fruitpath(loc)
-			I.radiation = radiation/2
+		if (plant_nutrition >= 80) // If the soil is fed, randomly increase production from 1 to 3
+			for(var/l = 1, l <= rand(0, 2) && l > 0, l++) // If 0, no extra crops. Up to 2 extras, 3 counting with the main produce
+				I = new fruitpath(loc)
+				I.radiation = radiation/2
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
@@ -916,6 +918,7 @@
 /obj/structure/farming/plant/proc/growth()
 	if (!vstatic)
 		if (stage < 12)
+			soil_nutrition_proc()
 			water_proc()
 			if (stage < readyStageMin)
 				icon_state = "[plant]-grow[stage]"
@@ -933,7 +936,7 @@
 				if (src && get_area(get_turf(src)))
 					if (get_area(get_turf(src)).location == 0)
 						if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
-							stage += 1
+							stageGrowth()
 					else
 						var/currcl = get_area(get_turf(src)).climate
 						var/count = 0
@@ -945,8 +948,18 @@
 									if (season == k)
 										count++
 						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_EUROPE))
-							stage += 1
+							stageGrowth()
 					growth()
+
+/obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
+	if(plant_nutrition > 80) // Good soil, keep growing
+		stage += 1
+	else if (plant_nutrition >= 40 && prob(plant_nutrition))
+		stage += 1
+	else if (plant_nutrition > 0 && plant_nutrition < 40 && prob(40))
+		stage += 1
+	else if(prob(20))
+		stage += 1
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
@@ -961,6 +974,14 @@
 		else // destroy
 			user << "<span class = 'bad'>You uproot the dead [name].</span>"
 			qdel(src)
+
+/obj/structure/farming/plant/proc/soil_nutrition_proc()
+	var/turf/floor/dirt/D = get_turf(loc)
+	var/nutrition_consumed = 3
+	D.soil_nutrition -= nutrition_consumed // Plant eats nutrition from the soil
+	if(D.soil_nutrition < D.min_soil_nutrition)
+		D.soil_nutrition = D.min_soil_nutrition // Cap soil nutrition at mininum possible
+	src.plant_nutrition = D.soil_nutrition
 
 /obj/structure/farming/plant/proc/water_proc()
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
