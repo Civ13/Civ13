@@ -232,7 +232,40 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
+	var/soil_nutrition = 150
+	var/max_soil_nutrition = 150
+	var/min_soil_nutrition = 0
 	initial_flooring = /decl/flooring/dirt
+
+/turf/floor/dirt/New()
+	soil_nutrition_recover() // Starts soil nutrition recover
+	return ...
+
+/turf/floor/dirt/proc/soil_nutrition_recover()
+	spawn(12000) // Every 20 minutes the soil will recover
+		if(soil_nutrition < max_soil_nutrition)
+			if (!locate(/obj/structure/farming/plant) in src) // Soil recovers when no farming plants
+				var/nutrition_to_be_recovered = rand(20, 40)
+				if(soil_nutrition + nutrition_to_be_recovered > max_soil_nutrition)
+					soil_nutrition = max_soil_nutrition
+				else
+					soil_nutrition += nutrition_to_be_recovered
+		soil_nutrition_recover();
+		return
+
+/turf/floor/dirt/examine(mob/user)
+	if (get_dist(src, user) <= 1)
+		if (soil_nutrition >= 130)
+			user << "<span class='notice'>The soil looks very alive and the plants will grow very easily.</span>"
+		else if (soil_nutrition >= 80)
+			user << "<span class='notice'>The soil looks alive, plants would grow very well.</span>"
+		else if (soil_nutrition >= 25)
+			user << "<span class='notice'>The soil seems half dead and the plants would not develop as well as they should.</span>"
+		else if (soil_nutrition > 0)
+			user << "<span class='notice'>The soil looks pretty dead and the plants would have a tough time growing.</span>"
+		else
+			user << "<span class='notice'>The soil looks dead and plants would hardly grow.</span>"
+	return ...
 
 /turf/floor/dirt/space
 	name = "space"
@@ -417,12 +450,30 @@
 	else
 		ChangeTurf(/turf/floor/dirt)
 
+/turf/floor/dirt/fertile
+	soil_nutrition = 150
+
+/turf/floor/dirt/medium_fertile
+	soil_nutrition = 50
+
+/turf/floor/dirt/infertile
+	soil_nutrition = 0
+
 /turf/floor/dirt/ploughed
 	name = "ploughed field"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
 	initial_flooring = null
+
+/turf/floor/dirt/ploughed/fertile
+	soil_nutrition = 150
+
+/turf/floor/dirt/ploughed/medium_fertile
+	soil_nutrition = 50
+
+/turf/floor/dirt/ploughed/infertile
+	soil_nutrition = 0
 
 /turf/floor/dirt/ploughed/flooded
 	name = "ploughed field"

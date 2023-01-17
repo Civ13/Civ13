@@ -109,14 +109,17 @@
 				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
 				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
-	if (istype(src, /turf/floor/dirt/ploughed))
-		if ((istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) || istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer) || istype(C, /obj/item/stack/dung)))
-			user << "You start fertilizing the ploughed field..."
+	if (istype(src, /turf/floor/dirt))
+		if (C.fertilizer_value > 0)
+			user << "You start fertilizing the dirt..."
 			var/mob/living/human/H = user
+			var/turf/floor/dirt/D = src
 			if (do_after(user, 60/H.getStatCoeff("farming"), src))
-				user << "You fertilize the ploughed field around this plot."
-				for (var/obj/structure/farming/plant/P in range(1,src))
-					P.fertilized = TRUE
+				user << "You fertilize the dirt around this plot."
+				if(D.soil_nutrition + C.fertilizer_value <= D.max_soil_nutrition) // Do not let players over fertilize the dirt
+					D.soil_nutrition += C.fertilizer_value
+				else
+					D.soil_nutrition = D.max_soil_nutrition // Capped at max soil nutrition
 				if (istype(C, /obj/item/stack/dung))
 					C.amount--
 					if (C.amount <= 0)
