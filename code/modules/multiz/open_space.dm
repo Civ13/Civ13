@@ -75,7 +75,7 @@ var/list/sky_drop_map = list()
 		var/area/caribbean/no_mans_land/sky/A = get_area(src)
 		if (!istype(A))
 			return
-		if (!A.corresponding_area_type)
+		if (!A.landing_area)
 			return
 		if (!istype(mover, /mob/observer))
 			if (sky_drop_map.len)
@@ -85,18 +85,16 @@ var/list/sky_drop_map = list()
 							continue
 						mover.forceMove(T)
 			else
-				if (A.corresponding_area_allow_subtypes )
+				if (A.allow_area_subtypes)
 					for (var/area/AA in area_list)
-						if (istype(AA, A.corresponding_area_type))
+						if (istype(AA, A.landing_area))
 							mover.forceMove(pick(AA.contents))
-							mover.loc = get_turf(mover.loc)
-							sky_drop_map["[mover.x],[mover.y],[mover.z]"] = mover.loc
+							sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover.loc)
 							break
 				else
-					var/area/AA = locate(A.corresponding_area_type)
+					var/area/AA = locate(A.landing_area)
 					mover.forceMove(pick(AA.contents))
-					mover.loc = get_turf(mover.loc)
-					sky_drop_map["[mover.x],[mover.y],[mover.z]"] = mover.loc
+					sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover.loc)
 
 		if (isliving(mover))
 			var/mob/living/L = mover
@@ -113,12 +111,15 @@ var/list/sky_drop_map = list()
 					H.adjustBruteLossByPart(300, "l_leg")
 					H.adjustBruteLossByPart(300, "r_leg")
 					if (hasorgans(H))
-						if (prob(70))
-							var/l_leg = H.get_organ("l_leg")
-							l_leg.fracture()
-						if (prob(70))
-							var/r_leg = H.get_organ("r_leg")
-							r_leg.fracture()
+						var/obj/item/organ/external/affected
+						if (prob(50))
+							affected = H.get_organ("l_leg")
+							affected.fracture()
+							affected = H.get_organ("r_leg")
+							affected.fracture()
+						else
+							affected = H.get_organ(pick("l_leg", "r_leg"))
+							affected.fracture()
 				else
 					#define FALL_STEPS 12
 					try
