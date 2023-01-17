@@ -109,8 +109,16 @@ var/list/sky_drop_map = list()
 						H << "<span class = 'userdanger'><b>You smack face first onto the ground, damn.</b></span>"
 					else
 						H << "<span class = 'userdanger'><b>You land hard on the ground!</b></span>"
+					
 					H.adjustBruteLossByPart(300, "l_leg")
 					H.adjustBruteLossByPart(300, "r_leg")
+					if (hasorgans(H))
+						if (prob(70))
+							var/l_leg = H.get_organ("l_leg")
+							l_leg.fracture()
+						if (prob(70))
+							var/r_leg = H.get_organ("r_leg")
+							r_leg.fracture()
 				else
 					#define FALL_STEPS 12
 					try
