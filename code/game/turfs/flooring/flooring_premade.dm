@@ -265,6 +265,10 @@
 			user << "<span class='notice'>The soil looks pretty dead and the plants would have a tough time growing.</span>"
 		else
 			user << "<span class='notice'>The soil looks dead and plants would hardly grow.</span>"
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.getStatCoeff("farming")>= 1.3)
+			user << "[src]'s nutrition level is at <b>[soil_nutrition]/[max_soil_nutrition]</b>."
 	return ...
 
 /turf/floor/dirt/space
