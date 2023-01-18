@@ -66,44 +66,50 @@ var/global/list/valid_coordinates = list()
 		var/tdist = get_dist(src,TSL)
 		var/tdir = dir2text(get_dir(src,TSL))
 		src << "<big><font color='yellow'>Your squad leader is [tdist] meters [tdir] from you.</font></big>"
+
 /mob/living/human/proc/Squad_Announcement()
 	set category = "Officer"
 	set name = "Squad Announcement"
 	set desc="Announce to everyone in your squad."
-	var/messaget = "Squad Leader Message"
-	var/message = input("Global message to send:", "IC Announcement", null, null)
-	if (message)
-		message = sanitize(message, 500, extra = FALSE)
-		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
-	for (var/mob/living/human/M)
-		if (faction_text == M.faction_text && original_job.is_squad_leader && M.squad == squad && world.time > announcement_cooldown)
-			messaget = "Squad Leader Message:"
-			M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-	announcement_cooldown = world.time+600
-	log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
-
+	if (stat != DEAD)
+		var/messaget = "Squad Leader Message"
+		var/message = input("Global message to send:", "IC Announcement", null, null)
+		if (message)
+			message = sanitize(message, 500, extra = FALSE)
+			message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
+		for (var/mob/living/human/M)
+			if (faction_text == M.faction_text && original_job.is_squad_leader && M.squad == squad && world.time > announcement_cooldown)
+				messaget = "Squad Leader Message:"
+				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
+		announcement_cooldown = world.time+600
+		log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
+	else
+		usr << "You can't make an annoucement while you're dead!"
 
 /mob/living/human/proc/Commander_Announcement()
 	set category = "Officer"
 	set name = "Faction Announcement"
 	set desc="Announce to everyone in your faction."
-	var/messaget = "Announcement"
-	var/message = input("Global message to send:", "IC Announcement", null, null)
-	if (message && message != "")
-		message = sanitize(message, 500, extra = FALSE)
-		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
-	for (var/mob/living/human/M)
-		if (!map.civilizations)
-			if (faction_text == M.faction_text)
-				messaget = "[name] announces:"
-				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-			log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")
-		else
-			if (civilization == M.civilization && civilization != "none" && world.time > announcement_cooldown)
-				messaget = "[name] announces:"
-				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-	announcement_cooldown = world.time+1800
-	log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
+	if (stat != DEAD)
+		var/messaget = "Announcement"
+		var/message = input("Global message to send:", "IC Announcement", null, null)
+		if (message && message != "")
+			message = sanitize(message, 500, extra = FALSE)
+			message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
+		for (var/mob/living/human/M)
+			if (!map.civilizations)
+				if (faction_text == M.faction_text)
+					messaget = "[name] announces:"
+					M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
+				log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")
+			else
+				if (civilization == M.civilization && civilization != "none" && world.time > announcement_cooldown)
+					messaget = "[name] announces:"
+					M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
+		announcement_cooldown = world.time+1800
+		log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
+	else
+		usr << "You can't make an annoucement while you're dead!"
 
 /mob/living/human/proc/Check_Coordinates()
 	set category = "Officer"
