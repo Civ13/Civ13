@@ -5,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle/one, /area/caribbean/no_mans_land/invisible_wall/jungle/two)
 	victory_time = 27000
 	no_winner = "The FOB is still held by the US Army."
+	no_hardcore = TRUE
 
 	faction_organization = list(
 		AMERICAN,

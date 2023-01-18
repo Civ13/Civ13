@@ -170,6 +170,7 @@
 	icon_state = "woodbarricade_horizontal"
 	flammable = TRUE
 	protection_chance = 80
+	layer = 2.98
 
 /obj/structure/barricade/vertical
 	name = "wood barrier"
@@ -177,6 +178,7 @@
 	icon_state = "woodbarricade_vertical"
 	flammable = TRUE
 	protection_chance = 80
+	layer = 2.98
 
 /obj/structure/barricade/vertical/New()
 	..()

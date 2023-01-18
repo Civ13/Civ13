@@ -7,7 +7,7 @@
 admin pm,pray to the gods
 ahelp,pray to the gods
 mhelp,ask an angel
-admin,god
+admeme,god
 admins,gods
 afk,i am busy
 bluepill,stupid

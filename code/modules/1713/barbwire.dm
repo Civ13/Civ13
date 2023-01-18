@@ -6,6 +6,7 @@
 	var/capture = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	layer = 2.98
 
 /obj/structure/barbwire/ex_act(severity)
 	switch (severity)
