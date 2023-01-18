@@ -82,7 +82,7 @@
 
 	switch (dir)
 		if (NORTH)
-			layer = MOB_LAYER - 0.01
+			layer = MOB_LAYER - 1.01
 			pixel_y = FALSE
 		if (SOUTH)
 			layer = MOB_LAYER + 2
