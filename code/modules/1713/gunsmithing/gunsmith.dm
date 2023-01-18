@@ -59,19 +59,19 @@
 					caliber_options = list("shotgun","Cancel")
 
 				if ("Bolt-Action","Semi-Auto (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata","Cancel")
 
 				if ("Open-Bolt (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-					caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+					caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 
 				if ("Dual Selective Fire", "Triple Selective Fire")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","Cancel")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 			if (PC.feeding_type == "Internal Magazine (Removable)")
-				caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+				caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 		else
 			switch (PC.receiver_type)
 				if ("Pump-Action")
@@ -84,27 +84,27 @@
 					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-					caliber_options = list("9mm pistol",".45 pistol","Cancel")
+					caliber_options = list("9x19 Parabellum",".45 Colt","Cancel")
 
 				if ("Dual Selective Fire", "Triple Selective Fire")
 					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 			if (PC.feeding_type == "Internal Magazine (Removable)")
-				caliber_options = list("9mm pistol",".45 pistol","Cancel")
+				caliber_options = list("9x19 Parabellum",".45 Colt","Cancel")
 	//others
 	if (map.ID == MAP_NOMADS_KARAFUTO)
 		if (istype(P, /obj/item/weapon/gun/projectile/automatic))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
-			caliber_options = list("6.5x50mm arisaka","7.62x54mm mosin", "Cancel")
+			caliber_options = list("6.5x50mm arisaka","7.62x54mmR", "Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
-			caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+			caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin", "Cancel")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR", "Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
-			caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+			caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 		else
 			caliber_options = list("Cancel")
 	else
@@ -115,7 +115,7 @@
 		else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
 			caliber_options = list("6.5x50mm small rifle","5.56x45mm intermediate rifle","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
-			caliber_options = list("9mm pistol",".45 pistol","Cancel")
+			caliber_options = list("9x19 Parabellum",".45 Colt","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
 			caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
@@ -130,61 +130,53 @@
 		H << "You start converting \the [P] into [choice]..."
 		playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
 		if (do_after(H, 100, src))
+			switch (choice)
+				if ("7.92x57mm large rifle")
+					P.caliber = "a792x57"
+					P.ammo_type = /obj/item/ammo_casing/a792x57
+
+				if ("6.5x50mm small rifle")
+					P.caliber = "a65x50"
+					P.ammo_type = /obj/item/ammo_casing/a65x50
+
+				if (".45 Colt")
+					P.caliber = "a45"
+					P.ammo_type = /obj/item/ammo_casing/a45
+
+				if ("9x19 Parabellum")
+					P.caliber = "a9x19"
+					P.ammo_type = /obj/item/ammo_casing/a9x19
+
+				if ("7.62x39mm intermediate rifle")
+					P.caliber = "a762x39"
+					P.ammo_type = /obj/item/ammo_casing/a762x39
+				if ("5.56x45mm intermediate rifle")
+					P.caliber = "a556x45"
+					P.ammo_type = /obj/item/ammo_casing/a556x45
+
+				if ("7.7x58mm arisaka")
+					P.caliber = "a77x58"
+					P.ammo_type = /obj/item/ammo_casing/a77x58
+				if ("6.5x50mm arisaka")
+					P.caliber = "a65x50"
+					P.ammo_type = /obj/item/ammo_casing/a65x50
+				if ("7.62x54mmR")
+					P.caliber = "a762x54"
+					P.ammo_type = /obj/item/ammo_casing/a762x54
+				if ("8x53mm murata")
+					P.caliber = "a8x53"
+					P.ammo_type = /obj/item/ammo_casing/a8x53
+				if ("8x22mmB nambu")
+					P.caliber = "c8mmnambu"
+					P.ammo_type = /obj/item/ammo_casing/c8mmnambu
+				if ("9x22mm nambu")
+					P.caliber = "c9mm_jap_revolver"
+					P.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
+				if ("7.62x38mmR")
+					P.caliber = "a762x38"
+					P.ammo_type = /obj/item/ammo_casing/a762x38
+
 			H << "You successfully convert \the [P]."
-			P.caliber = null
-
-			if (choice == "7.92x57mm large rifle")
-				P.caliber = "a792x57"
-				P.ammo_type = /obj/item/ammo_casing/a792x57
-
-			else if (choice == "6.5x50mm small rifle")
-				P.caliber = "a65x50"
-				P.ammo_type = /obj/item/ammo_casing/a65x50
-
-			else if (choice == ".45 pistol")
-				P.caliber = "a45"
-				P.ammo_type = /obj/item/ammo_casing/a45
-
-			else if (choice == "9mm pistol")
-				P.caliber = "a9x19"
-				P.ammo_type = /obj/item/ammo_casing/a9x19
-
-			else if (choice == "7.62x39mm intermediate rifle")
-				P.caliber = "a762x39"
-				P.ammo_type = /obj/item/ammo_casing/a762x39
-
-			else if (choice == "5.56x45mm intermediate rifle")
-				P.caliber = "a556x45"
-				P.ammo_type = /obj/item/ammo_casing/a556x45
-
-			else if (choice == "7.7x58mm arisaka")
-				P.caliber = "a77x58"
-				P.ammo_type = /obj/item/ammo_casing/a77x58
-			else if (choice == "6.5x50mm arisaka")
-				P.caliber = "a65x50"
-				P.ammo_type = /obj/item/ammo_casing/a65x50
-			else if (choice == "7.62x54mm mosin")
-				P.caliber = "a762x54"
-				P.ammo_type = /obj/item/ammo_casing/a762x54
-			else if (choice == "7.62x54mm maxim")
-				P.caliber = "a762x54"
-				P.ammo_type = /obj/item/ammo_casing/a762x54/weak
-			else if (choice == "8x53mm murata")
-				P.caliber = "a8x53"
-				P.ammo_type = /obj/item/ammo_casing/a8x53
-			else if (choice == "9x19 Parabellum")
-				P.caliber = "a9x19"
-				P.ammo_type = /obj/item/ammo_casing/a9x19
-			else if (choice == "8x22mmB nambu")
-				P.caliber = "c8mmnambu"
-				P.ammo_type = /obj/item/ammo_casing/c8mmnambu
-			else if (choice == "9x22mm nambu")
-				P.caliber = "c9mm_jap_revolver"
-				P.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
-			else if (choice == "7.62x38mmR")
-				P.caliber = "a762x38"
-				P.ammo_type = /obj/item/ammo_casing/a762x38
-
 			P.effectiveness_mod *= 0.9
 			if (!findtext(P.name,"(rechambered)"))
 				P.name = "[P.name] (rechambered)"
@@ -223,21 +215,23 @@
 		display = list("Rifle Wooden Stock","Carbine Wooden Stock", "Pistol Grip", "Steel Stock", "Folding Stock", "Cancel")
 	var/choice_stock = WWinput(user, "Choose the Stock:", "Gunsmith - [steel_amt] steel, [wood_amt] wood", "Cancel", display)
 	current_gun = new /obj/item/weapon/gun/projectile/custom(src)
-	if (choice_stock == "Cancel")
-		current_gun = null
-		using_wood = 0
-		using_steel = 0
-		return FALSE
-	else if (choice_stock == "Rifle Wooden Stock")
-		using_wood = 7
-	else if (choice_stock == "Carbine Wooden Stock")
-		using_wood = 5
-	else if (choice_stock == "Pistol Grip")
-		using_steel = 3
-	else if (choice_stock == "Steel Stock")
-		using_steel = 5
-	else if (choice_stock == "Folding Stock")
-		using_steel = 7
+	switch (choice_stock)
+		if ("Cancel")
+			current_gun = null
+			using_wood = 0
+			using_steel = 0
+			return FALSE
+		if ("Rifle Wooden Stock")
+			using_wood = 7
+		if ("Carbine Wooden Stock")
+			using_wood = 5
+		if ("Pistol Grip")
+			using_steel = 3
+		if ("Steel Stock")
+			using_steel = 5
+		if ("Folding Stock")
+			using_steel = 7
+
 	if (current_gun)
 		current_gun.stock_type = choice_stock
 		current_gun.step = 1
@@ -260,29 +254,31 @@
 	else if (map.ordinal_age >= 7)
 		display2 = list("Bolt-Action","Revolver", "Semi-Auto (small)", "Semi-Auto (large)","Open-Bolt (small)", "Open-Bolt (large)","Pump-Action", "Dual Selective Fire", "Triple Selective Fire", "Cancel")
 	var/choice_receiver = WWinput(user, "Choose the receiver:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display2)
-	if (choice_receiver == "Cancel")
-		current_gun = null
-		using_wood = 0
-		using_steel = 0
-		return FALSE
-	else if (choice_receiver == "Bolt-Action")
-		using_steel += 5
-	else if (choice_receiver == "Revolver")
-		using_steel += 4
-	else if (choice_receiver == "Semi-Auto (small)")
-		using_steel += 6
-	else if (choice_receiver == "Semi-Auto (large)")
-		using_steel += 8
-	else if (choice_receiver == "Open-Bolt (small)")
-		using_steel += 8
-	else if (choice_receiver == "Open-Bolt (large)")
-		using_steel += 11
-	else if (choice_receiver == "Dual Selective Fire")
-		using_steel += 13
-	else if (choice_receiver == "Triple Selective Fire")
-		using_steel += 14
-	else if (choice_receiver == "Pump-Action")
-		using_steel += 5
+	switch (choice_receiver)
+		if ("Cancel")
+			current_gun = null
+			using_wood = 0
+			using_steel = 0
+			return FALSE
+		if ("Bolt-Action")
+			using_steel += 5
+		if ("Pump-Action")
+			using_steel += 5
+		if ("Revolver")
+			using_steel += 4
+		if ("Semi-Auto (small)")
+			using_steel += 6
+		if ("Semi-Auto (large)")
+			using_steel += 8
+		if ("Open-Bolt (small)")
+			using_steel += 8
+		if ("Open-Bolt (large)")
+			using_steel += 11
+		if ("Dual Selective Fire")
+			using_steel += 13
+		if ("Triple Selective Fire")
+			using_steel += 14
+
 	if (current_gun)
 		current_gun.receiver_type = choice_receiver
 		current_gun.step = 2
@@ -306,31 +302,33 @@
 		display3 = list("Tubular")
 	if (choice_receiver == "Revolver")
 		display3 = list("Revolving")
-	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (small)" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine")
-	if (choice_stock == "Pistol Grip" && choice_receiver != "Revolver")
+	if (choice_receiver =="Semi-Auto (small)")
 		display3 += "Internal Magazine (Removable)"
+	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine")	
 	display3 += "Cancel"
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
-	if (choice_feeding == "Cancel")
-		current_gun = null
-		using_wood = 0
-		using_steel = 0
-		return
-	else if (choice_feeding == "Internal Magazine")
-		using_steel += 4
-	else if (choice_feeding == "Internal Magazine (Removable)")
-		using_steel += 6
-	else if (choice_feeding == "Tubular")
-		using_steel += 5
-	else if (choice_feeding == "Revolving")
-		using_steel += 3
-	else if (choice_feeding == "External Magazine")
-		using_steel += 8
-	else if (choice_feeding == "Large External Magazine")
-		using_steel += 10
-	else if (choice_feeding == "Open (Belt-Fed)")
-		using_steel += 6
+	switch (choice_feeding)
+		if ("Cancel")
+			current_gun = null
+			using_wood = 0
+			using_steel = 0
+			return
+		if ("Internal Magazine")
+			using_steel += 4
+		if ("Internal Magazine (Removable)")
+			using_steel += 6
+		if ("Tubular")
+			using_steel += 5
+		if ("Revolving")
+			using_steel += 3
+		if ("External Magazine")
+			using_steel += 8
+		if ("Large External Magazine")
+			using_steel += 10
+		if ("Open (Belt-Fed)")
+			using_steel += 6
+
 	if (current_gun)
 		current_gun.feeding_type = choice_feeding
 		current_gun.step = 3
@@ -353,21 +351,23 @@
 	if (choice_feeding == "Open (Belt-Fed)")
 		display4 = list("Air-Cooled Barrel","Cancel")
 	var/choice_barrel = WWinput(user, "Choose the barrel:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display4)
-	if (choice_barrel == "Cancel")
-		current_gun = null
-		using_wood = 0
-		using_steel = 0
-		return
-	else if (choice_barrel == "Pistol Barrel")
-		using_steel += 4
-	else if (choice_barrel == "Carbine Barrel")
-		using_steel += 5
-	else if (choice_barrel == "Rifle Barrel")
-		using_steel += 3
-	else if (choice_barrel == "Long Rifle Barrel")
-		using_steel += 8
-	else if (choice_barrel == "Air-Cooled Barrel")
-		using_steel += 10
+	switch (choice_barrel)
+		if ("Cancel")
+			current_gun = null
+			using_wood = 0
+			using_steel = 0
+			return
+		if ("Pistol Barrel")
+			using_steel += 4
+		if ("Carbine Barrel")
+			using_steel += 5
+		if ("Rifle Barrel")
+			using_steel += 3
+		if ("Long Rifle Barrel")
+			using_steel += 8
+		if ("Air-Cooled Barrel")
+			using_steel += 10
+
 	if (current_gun)
 		current_gun.barrel_type = choice_barrel
 		current_gun.step = 4
@@ -387,19 +387,19 @@
 				caliberlist = list("shotgun","Cancel")
 
 			if ("Bolt-Action","Semi-Auto (large)")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata","Cancel")
 
 			if ("Open-Bolt (large)")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-				caliberlist = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+				caliberlist = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt","Cancel")
 
 			if ("Dual Selective Fire", "Triple Selective Fire")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","Cancel")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 		if (choice_feeding == "Internal Magazine (Removable)")
-			caliberlist = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
+			caliberlist = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 	else
 		switch (choice_receiver)
 			if ("Pump-Action")
@@ -412,68 +412,66 @@
 				caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-				caliberlist = list("9mm pistol",".45 pistol","Cancel")
+				caliberlist = list("9x19 Parabellum",".45 Colt","Cancel")
 
 			if ("Dual Selective Fire", "Triple Selective Fire")
 				caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 		if (choice_feeding == "Internal Magazine (Removable)")
-			caliberlist = list("9mm pistol",".45 pistol","Cancel")
+			caliberlist = list("9x19 Parabellum",".45 Colt","Cancel")
 
 	var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
-	if (choice_caliber == "Cancel")
-		current_gun = null
-		using_wood = 0
-		using_steel = 0
-		return
-	else if (choice_caliber == "shotgun")
-		current_gun.caliber = "12gauge"
-		current_gun.ammo_type = /obj/item/ammo_casing/shotgun
-	else if (choice_caliber == "7.92x57mm large rifle")
-		current_gun.caliber = "a792x57"
-		current_gun.ammo_type = /obj/item/ammo_casing/a792x57
-	else if (choice_caliber == "6.5x50mm small rifle")
-		current_gun.caliber = "a65x50"
-		current_gun.ammo_type = /obj/item/ammo_casing/a65x50
-	else if (choice_caliber == ".45 pistol")
-		current_gun.caliber = "a45"
-		current_gun.ammo_type = /obj/item/ammo_casing/a45
-	else if (choice_caliber == "9mm pistol")
-		current_gun.caliber = "a9x19"
-		current_gun.ammo_type = /obj/item/ammo_casing/a9x19
-	else if (choice_caliber == "7.62x39mm intermediate rifle")
-		current_gun.caliber = "a762x39"
-		current_gun.ammo_type = /obj/item/ammo_casing/a762x39
-	else if (choice_caliber == "5.56x45mm intermediate rifle")
-		current_gun.caliber = "a556x45"
-		current_gun.ammo_type = /obj/item/ammo_casing/a556x45
-	else if (choice_caliber == "7.7x58mm arisaka")
-		current_gun.caliber = "a77x58"
-		current_gun.ammo_type = /obj/item/ammo_casing/a77x58
-	else if (choice_caliber == "6.5x50mm arisaka")
-		current_gun.caliber = "a65x50"
-		current_gun.ammo_type = /obj/item/ammo_casing/a65x50
-	else if (choice_caliber == "7.62x54mm mosin")
-		current_gun.caliber = "a762x54"
-		current_gun.ammo_type = /obj/item/ammo_casing/a762x54
-	else if (choice_caliber == "7.62x54mm maxim")
-		current_gun.caliber = "a762x54"
-		current_gun.ammo_type = /obj/item/ammo_casing/a762x54/weak
-	else if (choice_caliber == "8x53mm murata")
-		current_gun.caliber = "a8x53"
-		current_gun.ammo_type = /obj/item/ammo_casing/a8x53
-	else if (choice_caliber == "9x19 Parabellum")
-		current_gun.caliber = "a9x19"
-		current_gun.ammo_type = /obj/item/ammo_casing/a9x19
-	else if (choice_caliber == "8x22mmB nambu")
-		current_gun.caliber = "c8mmnambu"
-		current_gun.ammo_type = /obj/item/ammo_casing/c8mmnambu
-	else if (choice_caliber == "9x22mm nambu")
-		current_gun.caliber = "c9mm_jap_revolver"
-		current_gun.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
-	else if (choice_caliber == "7.62x38mmR")
-		current_gun.caliber = "a762x38"
-		current_gun.ammo_type = /obj/item/ammo_casing/a762x38
+	switch (choice_caliber)
+		if ("Cancel")
+			current_gun = null
+			using_wood = 0
+			using_steel = 0
+			return
+		if ("shotgun")
+			current_gun.caliber = "12gauge"
+			current_gun.ammo_type = /obj/item/ammo_casing/shotgun
+		if ("7.92x57mm large rifle")
+			current_gun.caliber = "a792x57"
+			current_gun.ammo_type = /obj/item/ammo_casing/a792x57
+		if ("6.5x50mm small rifle")
+			current_gun.caliber = "a65x50"
+			current_gun.ammo_type = /obj/item/ammo_casing/a65x50
+		if (".45 Colt")
+			current_gun.caliber = "a45"
+			current_gun.ammo_type = /obj/item/ammo_casing/a45
+		if ("9x19 Parabellum")
+			current_gun.caliber = "a9x19"
+			current_gun.ammo_type = /obj/item/ammo_casing/a9x19
+		if ("7.62x39mm intermediate rifle")
+			current_gun.caliber = "a762x39"
+			current_gun.ammo_type = /obj/item/ammo_casing/a762x39
+		if ("5.56x45mm intermediate rifle")
+			current_gun.caliber = "a556x45"
+			current_gun.ammo_type = /obj/item/ammo_casing/a556x45
+		if ("7.7x58mm arisaka")
+			current_gun.caliber = "a77x58"
+			current_gun.ammo_type = /obj/item/ammo_casing/a77x58
+		if ("6.5x50mm arisaka")
+			current_gun.caliber = "a65x50"
+			current_gun.ammo_type = /obj/item/ammo_casing/a65x50
+		if ("7.62x54mmR")
+			current_gun.caliber = "a762x54"
+			current_gun.ammo_type = /obj/item/ammo_casing/a762x54
+		if ("8x53mm murata")
+			current_gun.caliber = "a8x53"
+			current_gun.ammo_type = /obj/item/ammo_casing/a8x53
+		if ("9x19 Parabellum")
+			current_gun.caliber = "a9x19"
+			current_gun.ammo_type = /obj/item/ammo_casing/a9x19
+		if ("8x22mmB nambu")
+			current_gun.caliber = "c8mmnambu"
+			current_gun.ammo_type = /obj/item/ammo_casing/c8mmnambu
+		if ("9x22mm nambu")
+			current_gun.caliber = "c9mm_jap_revolver"
+			current_gun.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
+		if ("7.62x38mmR")
+			current_gun.caliber = "a762x38"
+			current_gun.ammo_type = /obj/item/ammo_casing/a762x38
 
 	var/do_skn_override = WWinput(user, "Do you want to give this gun a different appearance or keep the default look?", "Gunsmithing", "Keep", list("Keep","Change"))
 	if (do_skn_override == "Change")
@@ -559,9 +557,9 @@
 			newgunbp.custom_name = current_gun.name
 			newgunbp.custom_name = replacetext(newgunbp.name, " blueprint", "")
 			if (choice_caliber == "shotgun")
-				newgunbp.desc = "A blueprint for a gun chambered in 12 gauge. The feed system is [lowertext(current_gun.feeding_type)]."
+				newgunbp.desc = "A blueprint for a gun chambered in 12 gauge. The feed system is [lowertext(current_gun.feeding_type)]. It has a [lowertext(current_gun.stock_type)] and a [lowertext(current_gun.barrel_type)]."
 			else
-				newgunbp.desc = "A blueprint for a gun chambered in [choice_caliber] rounds. The feed system is [lowertext(current_gun.feeding_type)]."
+				newgunbp.desc = "A blueprint for a gun chambered in [choice_caliber]. The feed system is [lowertext(current_gun.feeding_type)]. It has a [lowertext(current_gun.stock_type)] and a [lowertext(current_gun.barrel_type)]."
 			newgunbp.receiver_type = current_gun.receiver_type
 			newgunbp.stock_type = current_gun.stock_type
 			newgunbp.barrel_type = current_gun.barrel_type
@@ -645,6 +643,7 @@
 		if (user)
 			user << "You assemble a new [NEWGUN.name]."
 		return
+
 /obj/item/weapon/gun/projectile/custom
 	name = "unfinished gun"
 	desc = "an unfinished gun"
@@ -666,6 +665,11 @@
 	var/override_icon = 'icons/obj/guns/gun.dmi'
 
 	gun_safety = TRUE
+	caliber = "caliber"
+	ammo_type = /obj/item/ammo_casing
+	magazine_type = /obj/item/ammo_magazine/emptypouch
+	good_mags = list()
+
 	//bolt action
 	var/step = 0
 	var/bolt_open = FALSE
@@ -676,18 +680,16 @@
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1
+
 	//revolver
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
 	var/folded = FALSE
+
 	//shotgun
 	var/recentpump = FALSE // to prevent spammage
-	caliber = "caliber"
-	ammo_type = /obj/item/ammo_casing
-	magazine_type = /obj/item/ammo_magazine/emptypouch
-	good_mags = list()
 
 /obj/item/weapon/gun/projectile/custom/New()
 	..()
@@ -715,7 +717,7 @@
 	else
 		icon = override_icon
 		icon_state = override_sprite
-	switch(stock_type)
+	switch (stock_type)
 		if ("Rifle Wooden Stock")
 			equiptimer = 15
 			effectiveness_mod = 1.1
@@ -732,7 +734,7 @@
 			equiptimer = 12
 			effectiveness_mod = 0.92
 
-	switch(receiver_type)
+	switch (receiver_type)
 		if ("Bolt-Action")
 			item_state = "mosin"
 			gtype = "rifle"
@@ -803,8 +805,8 @@
 			load_delay = 4
 			aim_miss_chance_divider = 3.00
 		if ("Revolver")
-			item_state = "pistol"
-			gtype = "pistol"
+			item_state = "revolver"
+			gtype = "revolver"
 			stat = "pistol"
 			w_class = 2
 			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
@@ -813,7 +815,7 @@
 			unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 			reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 			cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-			fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
+			fire_sound 		= 'sound/weapons/guns/fire/revolver.ogg'
 			magazine_based = FALSE
 			gun_type = GUN_TYPE_PISTOL
 			single_action = FALSE
@@ -996,7 +998,7 @@
 				list(name="single shot",burst=1, move_delay=2, fire_delay=6)
 				)
 		if ("Open-Bolt (small)")
-			item_state = "greasegun"
+			item_state = "pps"
 			stat = "machinegun"
 			gtype = "smg"
 			w_class = 3
@@ -1268,7 +1270,7 @@
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
 		if ("Pump-Action")
-			item_state = "shotgun-f"
+			item_state = "shotgun"
 			stat = "rifle"
 			gtype = "shotgun"
 			gun_type = GUN_TYPE_SHOTGUN
@@ -1333,7 +1335,8 @@
 			handle_casings = HOLD_CASINGS
 			move_delay = 4
 			load_delay = 5
-	switch(feeding_type)
+
+	switch (feeding_type)
 		if ("Internal Magazine")
 			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING | SPEEDLOADER
@@ -1344,10 +1347,9 @@
 			handle_casings = EJECT_CASINGS
 			load_method = MAGAZINE
 			if (receiver_type == "Semi-Auto (small)")
-				if (caliber == "a9x19")
-					magazine_type = /obj/item/ammo_casing/a9x19
-				else
-					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
+				magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+			else
+				magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
 		if ("Tubular")
 			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING
@@ -1360,13 +1362,11 @@
 		if ("External Magazine")
 			handle_casings = EJECT_CASINGS
 			load_method = MAGAZINE
-			magazine_type = /obj/item/ammo_magazine/emptymagazine/small
-			if (receiver_type == "Semi-Auto (small)")
-				if (caliber == "a9x19")
-					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
-				else
-					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
 			slot_flags &= ~SLOT_HOLSTER
+			if (receiver_type == "Semi-Auto (small)")
+				magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+			else
+				magazine_type = /obj/item/ammo_magazine/emptymagazine/small
 		if ("Large External Magazine")
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine
@@ -1375,7 +1375,7 @@
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptybelt
 
-	switch(barrel_type)
+	switch (barrel_type)
 		if ("Pistol Barrel")
 			effectiveness_mod *= 0.8
 			equiptimer -= 1
@@ -1397,30 +1397,38 @@
 			slot_flags &= ~SLOT_HOLSTER
 			slot_flags &= ~SLOT_BELT
 			equiptimer += 5
+
 	var/tempdesc = ""
-	switch(caliber)
+	switch (caliber)
 		if ("12gauge")
 			tempdesc = "12 gauge"
-
 		if ("a792x57")
 			tempdesc = "7.92x57mm large rifle rounds"
-
 		if ("a65x50")
 			tempdesc = "6.5x50mm small rifle rounds"
-
 		if ("a45")
-			tempdesc = ".45 pistol rounds"
-
+			tempdesc = ".45 Colt rounds"
 		if ("a9x19")
-			tempdesc = "9mm pistol rounds"
-
+			tempdesc = "9x19 Parabellum rounds"
 		if ("a762x39")
 			tempdesc = "7.62x39mm intermediate rifle rounds"
-
 		if ("a556x45")
 			tempdesc = "5.56x45mm intermediate rifle rounds"
+		if ("a762x38")
+			tempdesc = "7.62x38mmR rifle rounds"
 
-	desc = "A gun chambered in [tempdesc] with a(n) [lowertext(feeding_type)]. It has a [lowertext(stock_type)] and a [lowertext(barrel_type)]."
+		if ("a77x58")
+			tempdesc = "7.7x58mm arisaka rifle rounds"
+		if ("a762x54")
+			tempdesc = "7.62x54mmR rifle rounds"
+		if ("a8x53")
+			tempdesc = "8x53mm murata rifle rounds"
+		if ("c8mmnambu")
+			tempdesc = "8x22mmB nambu rounds"
+		if ("c9mm_jap_revolver")
+			tempdesc = "9x22mm nambu rounds"
+
+	desc = "A gun chambered in [tempdesc] with a [lowertext(feeding_type)]. It has a [lowertext(stock_type)] and a [lowertext(barrel_type)]."
 	if (!firemodes.len)
 		firemodes += new firemode_type
 	else
