@@ -674,6 +674,7 @@ RECIPE: /material/cloth/,purple hawaiian shirt,/obj/item/clothing/suit/hawaiian/
 RECIPE: /material/cloth/,green hawaiian shirt,/obj/item/clothing/suit/hawaiian/green,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,motorist jacket,/obj/item/clothing/under/motorist,6,110,0,1,jackets & vests,0,0,180,8,null
 RECIPE: /material/cloth/pimp coat,,/obj/item/clothing/suit/pimpcoat,6,109,0,1,jackets & vests,0,0,180,8,null
+
 //*****************| CLOTH ARMOR |***************************
 
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,3,null
@@ -886,6 +887,10 @@ RECIPE: /material/cloth/,conquistador uniform,/obj/item/clothing/under/conquista
 RECIPE: /material/cloth/,constable outfit,/obj/item/clothing/under/constable,5,75,0,1,military & law enforcement clothes,0,0,138,8,null
 RECIPE: /material/cloth/,police outfit,/obj/item/clothing/under/traffic_police,5,75,0,1,military & law enforcement clothes,0,0,160,8,null
 RECIPE: /material/cloth/,custom camo uniform,/obj/item/clothing/under/customuniform_modern,4,100,0,1,military & law enforcement clothes,0,0,130,8,null
+
+//*****************| CLOTH STORAGE |***************************
+
+RECIPE: /material/cloth/,rucksack,/obj/item/weapon/storage/backpack/rucksack,16,105,0,1,clothing,0,0,48,2,null
 
 //**************************************************************
 //*********************| BARBWIRE |*****************************

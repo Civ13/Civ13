@@ -1630,8 +1630,6 @@
 		..()
 
 /obj/item/weapon/gun/projectile/custom/load_ammo(var/obj/item/A, mob/user)
-	if (!good_mags.Find(A.type))
-		good_mags.Add(A.type)
 	if (receiver_type == "Bolt-Action")
 		if (!bolt_open)
 			return
