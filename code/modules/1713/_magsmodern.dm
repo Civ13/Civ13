@@ -289,14 +289,14 @@
 	multiple_sprites = TRUE
 
 
-/obj/item/ammo_magazine/m9beretta/box
+/obj/item/ammo_magazine/9mm_box
 	name = "magazine box (9x19mm)"
-	icon_state = "ammo"
+	icon_state = "9mm"
 	mag_type = MAGAZINE
 	caliber = "a9x19"
 	w_class = 3
 	ammo_type = /obj/item/ammo_casing/a9x19
-	max_ammo = 65
+	max_ammo = 60
 	multiple_sprites = TRUE
 	is_box = TRUE
 
