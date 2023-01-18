@@ -134,7 +134,7 @@
 
 /obj/item/weapon/storage/backpack/ww2/german
 	name = "german backpack"
-	desc = "It's a standard issue backpack for german military personel"
+	desc = "It's a standard issue backpack for German military personel"
 	icon_state = "germanpack"
 	item_state = "germanpack"
 	worn_state = "germanpack"
@@ -160,25 +160,28 @@
 		new /obj/item/weapon/material/shovel/spade/small(src)
 		new /obj/item/weapon/grenade/antitank(src)
 		new /obj/item/weapon/plastique/russian(src)
-		new /obj/item/weapon/grenade/smokebomb(src)
-		new /obj/item/weapon/grenade/smokebomb(src)
 
 /obj/item/weapon/storage/backpack/ww2/german/sapper/german
 	New()
 		..()
 		new /obj/item/weapon/grenade/ww2/stg1924(src)
 		new /obj/item/weapon/grenade/ww2/stg1924(src)
+		new /obj/item/weapon/grenade/smokebomb(src)
+		new /obj/item/weapon/grenade/smokebomb(src)
 
 /obj/item/weapon/storage/backpack/ww2/german/sapper/russian
 	name = "russian backpack"
-	desc = "It's a standard issue backpack for russian military personel"
+	desc = "It's a standard issue backpack for Soviet military personel"
 	New()
 		..()
 		new /obj/item/weapon/grenade/ww2/rgd33(src)
 		new /obj/item/weapon/grenade/ww2/rgd33(src)
+		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+
 obj/item/weapon/storage/backpack/ww2/american
 	name = "american backpack"
-	desc = "It's a standard issue backpack for american military personel"
+	desc = "It's a standard issue backpack for American military personel"
 	icon_state = "uspack"
 	item_state = "uspack"
 	worn_state = "uspack"
