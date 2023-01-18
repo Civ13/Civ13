@@ -59,10 +59,10 @@
 					caliber_options = list("shotgun","Cancel")
 
 				if ("Bolt-Action","Semi-Auto (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","8x53mm murata","Cancel")
 
 				if ("Open-Bolt (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","Cancel")
 
 				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
 					caliber_options = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
@@ -94,9 +94,9 @@
 	//others
 	if (map.ID == MAP_NOMADS_KARAFUTO)
 		if (istype(P, /obj/item/weapon/gun/projectile/automatic))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin", "8x53mm murata","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
 			caliber_options = list("6.5x50mm arisaka","7.62x54mm mosin", "Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
@@ -166,9 +166,6 @@
 			else if (choice == "7.62x54mm mosin")
 				P.caliber = "a762x54"
 				P.ammo_type = /obj/item/ammo_casing/a762x54
-			else if (choice == "7.62x54mm maxim")
-				P.caliber = "a762x54"
-				P.ammo_type = /obj/item/ammo_casing/a762x54/weak
 			else if (choice == "8x53mm murata")
 				P.caliber = "a8x53"
 				P.ammo_type = /obj/item/ammo_casing/a8x53
@@ -387,10 +384,10 @@
 				caliberlist = list("shotgun","Cancel")
 
 			if ("Bolt-Action","Semi-Auto (large)")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim", "8x53mm murata","Cancel")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin", "8x53mm murata","Cancel")
 
 			if ("Open-Bolt (large)")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","7.62x54mm maxim","Cancel")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mm mosin","Cancel")
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
 				caliberlist = list("9x19 Parabellum", "8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 pistol","Cancel")
@@ -456,9 +453,6 @@
 	else if (choice_caliber == "7.62x54mm mosin")
 		current_gun.caliber = "a762x54"
 		current_gun.ammo_type = /obj/item/ammo_casing/a762x54
-	else if (choice_caliber == "7.62x54mm maxim")
-		current_gun.caliber = "a762x54"
-		current_gun.ammo_type = /obj/item/ammo_casing/a762x54/weak
 	else if (choice_caliber == "8x53mm murata")
 		current_gun.caliber = "a8x53"
 		current_gun.ammo_type = /obj/item/ammo_casing/a8x53
@@ -1414,13 +1408,16 @@
 		if ("a9x19")
 			tempdesc = "9mm pistol rounds"
 
+		if ("a762x54")
+			tempdesc = "7.62x54mm intermediate rifle rounds"
+
 		if ("a762x39")
 			tempdesc = "7.62x39mm intermediate rifle rounds"
 
 		if ("a556x45")
 			tempdesc = "5.56x45mm intermediate rifle rounds"
 
-	desc = "A gun chambered in [tempdesc] with a(n) [lowertext(feeding_type)]. It has a [lowertext(stock_type)] and a [lowertext(barrel_type)]."
+	desc = "A gun chambered in [tempdesc] with a [lowertext(feeding_type)] feeding system. It has a [lowertext(stock_type)] and a [lowertext(barrel_type)]."
 	if (!firemodes.len)
 		firemodes += new firemode_type
 	else
@@ -1456,7 +1453,7 @@
 		if (receiver_type == "Pump-Action" || receiver_type == "Revolver")
 			return
 
-		if (feeding_type == "Bolt-Action")
+		if (receiver_type == "Bolt-Action")
 			if (!bolt_open)
 				icon_state = "[base_icon]"
 			else
