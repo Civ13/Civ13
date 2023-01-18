@@ -65,7 +65,6 @@
 		/obj/item/weapon/surgery,
 		)
 
-/obj/item/weapon/storage/belt/medical/full_vc
 /obj/item/weapon/storage/belt/medical/full_vc/New()
 	..()
 	new /obj/item/stack/medical/bruise_pack/bint/medic(src)

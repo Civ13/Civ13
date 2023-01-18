@@ -826,265 +826,245 @@
 	var/new_icon_state = "White"
 
 /obj/item/flagmaker/attack_self(mob/user)
-	var/stop = FALSE
-
 	var/list/display1 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "Cancel")
+
 	var/choice1 = WWinput(user, "What background color do you want for the flag?", "Flag Maker", "Cancel", display1)
-	switch (choice1)
-		if ("Cancel")
-			new_icon_state = "none"
-			icon_state = "none"
-			stop = TRUE
-			return
-		if ("White")
-			new_icon_state = "f_white"
-			icon_state = "f_white"
-		if ("Black")
-			new_icon_state = "f_black"
-			icon_state = "f_black"
-		if ("Yellow")
-			new_icon_state = "f_yellow"
-			icon_state = "f_yellow"
-		if ("Blue")
-			new_icon_state = "f_blue"
-			icon_state = "f_blue"
-		if ("Red")
-			new_icon_state = "f_red"
-			icon_state = "f_red"
-		if ("Green")
-			new_icon_state = "f_green"
-			icon_state = "f_green"
+	if (choice1 == "Cancel")
+		return
+	if (choice1 == "White")
+		new_icon_state = "f_white"
+		icon_state = "f_white"
+	if (choice1 == "Black")
+		new_icon_state = "f_black"
+		icon_state = "f_black"
+	if (choice1 == "Yellow")
+		new_icon_state = "f_yellow"
+		icon_state = "f_yellow"
+	if (choice1 == "Blue")
+		new_icon_state = "f_blue"
+		icon_state = "f_blue"
+	if (choice1 == "Red")
+		new_icon_state = "f_red"
+		icon_state = "f_red"
+	if (choice1 == "Green")
+		new_icon_state = "f_green"
+		icon_state = "f_green"
 
 	var/list/display2 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
-	var/choice2 = WWinput(user, "Add a left-half color?", "Flag Maker", "No", display2)
-	switch (choice2)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_white")
-			overlays += flag_left
-		if ("Black")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_black")
-			overlays += flag_left
-		if ("Yellow")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_yellow")
-			overlays += flag_left
-		if ("Blue")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_blue")
-			overlays += flag_left
-		if ("Red")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_red")
-			overlays += flag_left
-		if ("Green")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_green")
-			overlays += flag_left
-			
-	var/list/display3 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
-	var/choice3 = WWinput(user, "Add a right-half color?", "Flag Maker", "No", display3)
-	switch (choice3)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_white")
-			overlays += flag_left
-		if ("Black")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_black")
-			overlays += flag_left
-		if ("Yellow")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_yellow")
-			overlays += flag_left
-		if ("Blue")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_blue")
-			overlays += flag_left
-		if ("Red")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_red")
-			overlays += flag_left
-		if ("Green")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_green")
-			overlays += flag_left
 
+	var/choice2 = WWinput(user, "Add a left-half color?", "Flag Maker", "No", display2)
+	if (choice2 == "No")
+		icon_state = new_icon_state
+	if (choice2 == "White")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_white")
+		overlays += flag_left
+	if (choice2 == "Black")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_black")
+		overlays += flag_left
+	if (choice2 == "Yellow")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_yellow")
+		overlays += flag_left
+	if (choice2 == "Blue")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_blue")
+		overlays += flag_left
+	if (choice2 == "Red")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_red")
+		overlays += flag_left
+	if (choice2 == "Green")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_green")
+		overlays += flag_left
+	var/list/display3 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
+
+	var/choice3 = WWinput(user, "Add a right-half color?", "Flag Maker", "No", display3)
+	if (choice3 == "No")
+		icon_state = new_icon_state
+	if (choice3 == "White")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_white")
+		overlays += flag_left
+	if (choice3 == "Black")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_black")
+		overlays += flag_left
+	if (choice3 == "Yellow")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_yellow")
+		overlays += flag_left
+	if (choice3 == "Blue")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_blue")
+		overlays += flag_left
+	if (choice3 == "Red")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_red")
+		overlays += flag_left
+	if (choice3 == "Green")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_green")
+		overlays += flag_left
 	var/list/display4 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
+
 	var/choice4 = WWinput(user, "Add a left-third color?", "Flag Maker", "No", display4)
-	switch (choice4)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_white")
-			overlays += flag_left
-		if ("Black")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_black")
-			overlays += flag_left
-		if ("Yellow")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_yellow")
-			overlays += flag_left
-		if ("Blue")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_blue")
-			overlays += flag_left
-		if ("Red")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_red")
-			overlays += flag_left
-		if ("Green")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_green")
-			overlays += flag_left
+	if (choice4 == "No")
+		icon_state = new_icon_state
+	if (choice4 == "White")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_white")
+		overlays += flag_left
+	if (choice4 == "Black")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_black")
+		overlays += flag_left
+	if (choice4 == "Yellow")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_yellow")
+		overlays += flag_left
+	if (choice4 == "Blue")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_blue")
+		overlays += flag_left
+	if (choice4 == "Red")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_red")
+		overlays += flag_left
+	if (choice4 == "Green")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_green")
+		overlays += flag_left
 
 	var/list/display5 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
+
 	var/choice5 = WWinput(user, "Add a center-third color?", "Flag Maker", "No", display5)
-	switch (choice5)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_white")
-			overlays += flag_left
-		if ("Black")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_black")
-			overlays += flag_left
-		if ("Yellow")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_yellow")
-			overlays += flag_left
-		if ("Blue")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_blue")
-			overlays += flag_left
-		if ("Red")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_red")
-			overlays += flag_left
-		if ("Green")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_green")
-			overlays += flag_left
+	if (choice5 == "No")
+		icon_state = new_icon_state
+	if (choice5 == "White")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_white")
+		overlays += flag_left
+	if (choice5 == "Black")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_black")
+		overlays += flag_left
+	if (choice5 == "Yellow")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_yellow")
+		overlays += flag_left
+	if (choice5 == "Blue")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_blue")
+		overlays += flag_left
+	if (choice5 == "Red")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_red")
+		overlays += flag_left
+	if (choice5 == "Green")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_green")
+		overlays += flag_left
 
 	var/list/display6 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
+
 	var/choice6 = WWinput(user, "Add a right-third color?", "Flag Maker", "No", display6)
-	switch (choice6)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_white")
-			overlays += flag_left
-		if ("Black")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_black")
-			overlays += flag_left
-		if ("Yellow")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_yellow")
-			overlays += flag_left
-		if ("Blue")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_blue")
-			overlays += flag_left
-		if ("Red")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_red")
-			overlays += flag_left
-		if ("Green")
-			var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_green")
-			overlays += flag_left
+	if (choice6 == "No")
+		icon_state = new_icon_state
+	if (choice6 == "White")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_white")
+		overlays += flag_left
+	if (choice6 == "Black")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_black")
+		overlays += flag_left
+	if (choice6 == "Yellow")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_yellow")
+		overlays += flag_left
+	if (choice6 == "Blue")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_blue")
+		overlays += flag_left
+	if (choice6 == "Red")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_red")
+		overlays += flag_left
+	if (choice6 == "Green")
+		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_green")
+		overlays += flag_left
 
-	var/list/display7 = list("White Cross", "Black Cross", "Blue Cross", "Red Cross", "Green Cross", "No")
-	var/choice7 = WWinput(user, "Add a cross?", "Flag Maker", "No", display7)
-	switch (choice7)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross0")
-			overlays += cross
-		if ("Black Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross1")
-			overlays += cross
-		if ("Blue Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross2")
-			overlays += cross
-		if ("Red Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross3")
-			overlays += cross
-		if ("Green Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross4")
-			overlays += cross
+	var/list/display8 = list("White Cross", "Black Cross", "Blue Cross", "Red Cross", "Green Cross", "No")
+	var/choice8 = WWinput(user, "Add a cross?", "Flag Maker", "No", display8)
+	if (choice8 == "No")
+		icon_state = new_icon_state
+	if (choice8 == "White Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross2")
+		overlays += cross
+	if (choice8 == "Black Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross0")
+		overlays += cross
+	if (choice8 == "Blue Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross3")
+		overlays += cross
+	if (choice8 == "Red Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross1")
+		overlays += cross
+	if (choice8 == "Green Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross4")
+		overlays += cross
 
-	var/list/display8 = list("White Saltire", "Black Saltire", "Blue Saltire", "Red Saltire", "Green Saltire", "No")
-	var/choice8 = WWinput(user, "Add a saltire?", "Flag Maker", "No", display8)
-	switch (choice8)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire0")
-			overlays += saltire
-		if ("Black Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire1")
-			overlays += saltire
-		if ("Blue Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire2")
-			overlays += saltire
-		if ("Red Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire3")
-			overlays += saltire
-		if ("Green Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire4")
-			overlays += saltire
+	var/list/display9 = list("White Saltire", "Black Saltire", "Blue Saltire", "Red Saltire", "Green Saltire", "No")
+	var/choice9 = WWinput(user, "Add a saltire?", "Flag Maker", "No", display9)
+	if (choice9 == "No")
+		icon_state = new_icon_state
+	if (choice9 == "White Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire2")
+		overlays += saltire
+	if (choice9 == "Black Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire0")
+		overlays += saltire
+	if (choice9 == "Blue Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire3")
+		overlays += saltire
+	if (choice9 == "Red Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire1")
+		overlays += saltire
+	if (choice9 == "Green Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire4")
+		overlays += saltire
 
-	var/list/display9 = list("White Star", "Golden Star", "Black Star", "White Moon", "Golden Moon", "Black Moon", "White Cross", "Golden Cross", "Black Cross", "Red Circle", "Thin Red Sun", "Thick Red Sun", "White Skull", "White Peace Sign", "Black Peace Sign", "No")
-	var/choice9 = WWinput(user, "Add a symbol?", "Flag Maker", "No", display9)
-	switch (choice9)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White Star")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star0")
-			overlays += flag_symbol
-		if ("Golden Star")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star1")
-			overlays += flag_symbol
-		if ("Black Star")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star2")
-			overlays += flag_symbol
+	var/list/display7 = list("White Star", "Black Star", "Golden Star", "White Moon", "Black Moon", "Golder Moon", "White Cross", "Black Cross", "Golden Cross","Red Circle","Red Sun","White Skull", "White Peace Sign", "Black Peace Sign", "No")
 
-		if ("White Moon")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon0")
-			overlays += flag_symbol
-		if ("Golden Moon")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon1")
-			overlays += flag_symbol
-		if ("Black Moon")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon2")
-			overlays += flag_symbol
+	var/choice7 = WWinput(user, "Add a symbol?", "Flag Maker", "No", display7)
+	if (choice7 == "No")
+		icon_state = new_icon_state
+	if (choice7 == "White Star")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star0")
+		overlays += flag_symbol
+	if (choice7 == "Black Star")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star2")
+		overlays += flag_symbol
+	if (choice7 == "Golden Star")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star1")
+		overlays += flag_symbol
+	if (choice7 == "White Moon")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon0")
+		overlays += flag_symbol
+	if (choice7 == "Black Moon")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon2")
+		overlays += flag_symbol
+	if (choice7 == "Golden Moon")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon1")
+		overlays += flag_symbol
+	if (choice7 == "White Cross")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross0")
+		overlays += flag_symbol
+	if (choice7 == "Black Cross")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross2")
+		overlays += flag_symbol
+	if (choice7 == "Golden Cross")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross1")
+		overlays += flag_symbol
+	if (choice7 == "Red Circle")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_circle0")
+		overlays += flag_symbol
+	if (choice7 == "Red Sun")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_sun1")
+		overlays += flag_symbol
+	if (choice7 == "Black Peace Sign")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace0")
+		overlays += flag_symbol
+	if (choice7 == "White Peace Sign")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace1")
+		overlays += flag_symbol
+	if (choice7 == "White Skull")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_skull0")
+		overlays += flag_symbol
 
-		if ("White Cross")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross0")
-			overlays += flag_symbol
-		if ("Golden Cross")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross1")
-			overlays += flag_symbol
-		if ("Black Cross")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross2")
-			overlays += flag_symbol
-			
-		if ("Red Circle")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_circle0")
-			overlays += flag_symbol
-		if ("Thin Red Sun")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_sun0")
-			overlays += flag_symbol
-		if ("Thick Red Sun")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_sun1")
-			overlays += flag_symbol
-
-		if ("Black Peace Sign")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace0")
-			overlays += flag_symbol
-		if ("White Peace Sign")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace1")
-			overlays += flag_symbol
-
-		if ("White Skull")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_skull0")
-			overlays += flag_symbol
-
-	var/flag_name = input(usr, "Name the flag:") as text|null
-	if (flag_name == "" || flag_name == null)
+	var/_name = input(usr, "Name the flag:") as text|null
+	if (_name == "" || _name == null)
 		name = "flag"
 	else
-		name = sanitize(flag_name, 50)
+		name = sanitize(_name, 50)
 
 	var/obj/structure/sign/flag/custom/CF = new/obj/structure/sign/flag/custom(user.loc)
 	CF.overlays = overlays
 	CF.icon_state = new_icon_state
 	CF.name = name
-	if (stop)
-		qdel(CF)
-	else
-		qdel(src)
+	qdel(src)
 	return

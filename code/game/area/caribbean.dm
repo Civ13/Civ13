@@ -357,17 +357,17 @@
 	base_turf = /turf/floor/broken_floor/sky
 	dynamic_lighting = FALSE
 	ambience = list("sound/effect/wind/wind_4_1.ogg")
-	var/landing_area = null
-	var/allow_area_subtypes = FALSE
+	var/corresponding_area_type = null
+	var/corresponding_area_allow_subtypes = FALSE
 
 /area/caribbean/no_mans_land/sky/paratrooper_drop_zone
-	landing_area = /area/caribbean/forest
-	allow_area_subtypes = TRUE
+	corresponding_area_type = /area/caribbean/forest
+	corresponding_area_allow_subtypes = TRUE
 	name = "The Sky"
 
 /area/caribbean/no_mans_land/sky/paratrooper_drop_zone/plane
-	landing_area = /area/caribbean/forest
-	allow_area_subtypes = TRUE
+	corresponding_area_type = /area/caribbean/forest
+	corresponding_area_allow_subtypes = TRUE
 	name = "Plane"
 
 /area/caribbean/no_mans_land

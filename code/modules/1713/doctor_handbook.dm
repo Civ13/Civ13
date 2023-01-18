@@ -4,7 +4,7 @@
 	name = "doctor's handbook"
 	desc = "A book the size of your hand, containing a compact encyclopedia of the dark wonders of war - diseases, conditions, and documentation of all degrees of injury."
 	icon = 'icons/obj/library.dmi'
-	icon_state = "book1"
+	icon_state = "bookmed"
 	item_state = "bible" // I couldn't find any better placeholder for now
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = TRUE
