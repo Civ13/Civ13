@@ -178,6 +178,7 @@
 	playsound(src.loc, "sound/effects/squishy.ogg", 40, 1)
 	var/turf/T = src.loc
 	new /obj/effect/decal/cleanable/poo(T)
+	qdel(src)
 	..()
 
 //PISS

@@ -656,6 +656,13 @@
 	item_state = "khaki_boonie"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/jungle_hat/og107
+	name = "olive green boonie"
+	desc = "A wide brim, soft jungle hat."
+	icon_state = "og107_boonie"
+	item_state = "og107_boonie"
+	body_parts_covered = HEAD
+
 /obj/item/clothing/head/rice_hat
 	name = "rice hat"
 	desc = "A wide brim, rice farmer hat."
@@ -860,23 +867,60 @@
 
 /obj/item/clothing/accessory/storage/webbing/nlfsmallpouches
 	name = "NLF small pouches"
-	desc = "A green chest-level webbing, with 5 medium sized pouches."
-	slots = 5
+	desc = "A green chest-level webbing with multiple small-sized pouches."
+	slots = 8
 	icon_state = "nlfchestrig_v2"
 	item_state = "nlfchestrig_v2"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,
+			/obj/item/weapon/key,
+			/obj/item/ammo_casing,
+			/obj/item/ammo_magazine,
+			/obj/item/weapon/grenade,
+			/obj/item/weapon/attachment,
+			/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/filled_sks/New()
+	..()
+	for (var/i=1; i <= 7; i++)
+		new /obj/item/ammo_magazine/sks(hold)
+	new /obj/item/stack/medical/bruise_pack/bint(hold)
+/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/filled_mosin/New()
+	..()
+	for (var/i=1; i <= 7; i++)
+		new /obj/item/ammo_magazine/mosin(hold)
+	new /obj/item/stack/medical/bruise_pack/bint(hold)
 
 /obj/item/clothing/accessory/storage/webbing/nlfchestrig
 	name = "NLF chestrig"
-	desc = "A green chest-level webbing, with three medium sized pouches."
+	desc = "A green chest-level webbing, with three medium-sized pouches along with two smaller ones."
 	slots = 5
 	icon_state = "nlfchestrig_v1"
 	item_state = "nlfchestrig_v1"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,
+			/obj/item/weapon/key,
+			/obj/item/ammo_casing,
+			/obj/item/ammo_magazine,
+			/obj/item/weapon/grenade,
+			/obj/item/weapon/attachment,
+			/obj/item/weapon/gun/projectile/pistol,
+			/obj/item/weapon/gun/projectile/revolver,
+			/obj/item/weapon/handcuffs,
+			/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+			/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/nlfchestrig/filled_akm/New()
+	..()
+	for (var/i=1; i <= 3; i++)
+		new /obj/item/ammo_magazine/ak47(hold)
+	new /obj/item/stack/medical/bruise_pack/bint(hold)
+	if (prob(50))
+		new /obj/item/weapon/grenade/smokebomb/rdg2(hold)
+	else
+		new /obj/item/weapon/grenade/modern/f1(hold)
 
 /obj/item/clothing/shoes/nlfsandal1
 	name = "leather sandals"
@@ -911,9 +955,25 @@
 	item_state = "NVAuni"
 	worn_state = "NVAuni"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+/obj/item/clothing/under/nva/green
+	desc = "A green uniform of the North Vietnamese Army."
+	icon_state = "NVAuni_green"
+	item_state = "NVAuni_green"
+	worn_state = "NVAuni_green"
+/obj/item/clothing/under/nva/sl
+	name = "NVA sergeant uniform"
+	desc = "A khaki uniform of the North Vietnamese Army. This one is bearing the ranks of a sergeant."
+	icon_state = "NVAuni_sl"
+	item_state = "NVAuni_sl"
+	worn_state = "NVAuni_sl"
+/obj/item/clothing/under/nva/sl/green
+	desc = "A green uniform of the North Vietnamese Army. This one is bearing the ranks of a sergeant."
+	icon_state = "NVAuni_green_sl"
+	item_state = "NVAuni_green_sl"
+	worn_state = "NVAuni_green_sl"
 /obj/item/clothing/under/nva/officer
 	name = "NVA officer uniform"
-	desc = "A khaki uniform of the North Vietnamese Army. This one bearing the ranks of an officer"
+	desc = "A khaki uniform of the North Vietnamese Army. This one is bearing the ranks of an officer"
 	icon_state = "NVAuni_off"
 	item_state = "NVAuni_off"
 	worn_state = "NVAuni_off"
@@ -1144,7 +1204,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_svd
 /obj/item/weapon/storage/belt/smallpouches/green/sov_svd/New()
 	..()
-	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 	new /obj/item/ammo_magazine/svd(src)
 	new /obj/item/ammo_magazine/svd(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -1152,7 +1212,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez
 /obj/item/weapon/storage/belt/smallpouches/green/sov_vintorez/New()
 	..()
-	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 	new /obj/item/ammo_magazine/vintorez(src)
 	new /obj/item/ammo_magazine/vintorez(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -1161,7 +1221,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_saiga/New()
 	storage_slots = 5
 	..()
-	new /obj/item/weapon/grenade/modern/custom(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 	new /obj/item/ammo_magazine/saiga12(src)
 	new /obj/item/ammo_magazine/saiga12(src)
 	new /obj/item/ammo_magazine/saiga12(src)
@@ -1885,6 +1945,15 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
+
+/obj/item/clothing/head/helmet/modern/vchelmet/two
+	icon_state = "viet_pith2"
+	item_state = "viet_pith2"
+	worn_state = "viet_pith2"
+/obj/item/clothing/head/helmet/modern/vchelmet/three
+	icon_state = "viet_pith3"
+	item_state = "viet_pith3"
+	worn_state = "viet_pith3"
 
 /obj/item/clothing/head/helmet/modern/hardhaty
 	name = "yellow hard hat"
