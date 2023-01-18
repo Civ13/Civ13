@@ -27,6 +27,9 @@
 	name = "field bed"
 	desc = "This is an easy to move field bed for sleeping while on the move."
 	icon_state = "fieldbed"
+	base_icon = "bed"
+	applies_material_colour = FALSE
+	material = "steel"
 
 /obj/structure/bed/wood
 	material = "wood"
