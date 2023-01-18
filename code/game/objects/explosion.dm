@@ -32,7 +32,7 @@
 		HM.adjustFireLoss(damage)
 		HM.fire_stacks += rand(1,3)
 		HM.IgniteMob()
-	var/obj/effect/fire/F new/obj/effect/fire(T)
+	var/obj/effect/fire/F = new /obj/effect/fire(target)
 	F.timer = duration * 10 // So it's in seconds
 	return
 
