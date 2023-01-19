@@ -133,6 +133,9 @@
 			if (src)
 				qdel(src)
 
+/obj/item/mine/kick_act() //Can't kick mines
+	return
+
 //TYPES//
 //Explosive
 /obj/item/mine/proc/explosive(obj)
