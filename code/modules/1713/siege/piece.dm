@@ -499,48 +499,47 @@
 								if (istype(src,/obj/structure/cannon/mortar))
 									explosion(target, 0, 1, 3, 4)
 									for (var/turf/floor/T in range(3,target))
-										for (var/mob/living/LS1 in T)
-											LS1.adjustFireLoss(35)
-											LS1.fire_stacks += rand(3,6)
-											LS1.IgniteMob()
-										new/obj/effect/fire(T)
+										ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
 									for (var/turf/floor/T in range(3,target))
-										for (var/mob/living/LS1 in T)
-											LS1.adjustFireLoss(35)
-											LS1.fire_stacks += rand(4,8)
-											LS1.IgniteMob()
-										new/obj/effect/fire(T)
+										ignite_turf(T, 12, 90)
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
 									radiation_pulse(target, 10, 60, 1400, TRUE)
 									explosion(target, 2, 2, 2, 100)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+									map.pollutionmeter += 250
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W19))
 									radiation_pulse(target, 8, 70, 1400, TRUE)
 									explosion(target, 2, 2, 2, 100)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+									map.pollutionmeter += 250
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33))
 									radiation_pulse(target, 10, 45, 1000, TRUE)
 									explosion(target, 2, 2, 2, 100)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+									map.pollutionmeter += 250
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
 									radiation_pulse(target, 10, 50, 1400, TRUE)
 									explosion(target, 2, 2, 2, 100)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+									map.pollutionmeter += 250
 								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/makeshift))
 									radiation_pulse(target, 10, 65, 1400, TRUE)
 									explosion(target, 2, 2, 2, 100)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+									map.pollutionmeter += 250
 								else if (istype(src,/obj/item/cannon_ball/rocket/nuclear))
 									radiation_pulse(target, 12, 80, 1400, TRUE)
 									explosion(target, 2, 2, 2, 30)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+									map.pollutionmeter += 250
 								else
 									radiation_pulse(target, 4, 50, 800, TRUE)
 									explosion(target, 2, 2, 2, 100)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+									map.pollutionmeter += 250
 
 								var/target_area_original_integrity = target_area.artillery_integrity
 								if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))

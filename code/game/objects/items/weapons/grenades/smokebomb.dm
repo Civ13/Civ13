@@ -238,11 +238,7 @@
 		var/turf/LT = get_turf(src)
 		explosion(LT,0,1,1,3)
 		for (var/turf/floor/T in range(spread_range,LT))
-			for (var/mob/living/LS1 in T)
-				LS1.adjustFireLoss(35)
-				LS1.fire_stacks += rand(8,10)
-				LS1.IgniteMob()
-			new/obj/effect/fire(T)
+			ignite_turf(T, 12, 35)
 		sleep(50)
 		qdel(src)
 		return

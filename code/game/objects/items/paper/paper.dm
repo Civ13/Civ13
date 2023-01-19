@@ -95,7 +95,7 @@
 
 /obj/item/weapon/paper/verb/airplane()
 	set name = "Make Paper Airplane"
-	set category = "Object"
+	set category = null
 	set src in usr
 	src.icon_state = "paper_plane"
 	src.throw_range = 14

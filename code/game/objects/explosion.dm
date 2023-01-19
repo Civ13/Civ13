@@ -27,11 +27,13 @@
 
 	return data
 
-/proc/ignite_turf(turf/target, damage)
+/proc/ignite_turf(turf/target, duration, damage)
 	for (var/mob/living/HM in target)
 		HM.adjustFireLoss(damage)
 		HM.fire_stacks += rand(1,3)
 		HM.IgniteMob()
+	var/obj/effect/fire/F = new /obj/effect/fire(target)
+	F.timer = duration * 10 // So it's in seconds
 	return
 
 /turf

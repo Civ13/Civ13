@@ -229,7 +229,7 @@ bullet_act
 				adjustFireLoss(100)
 				for(var/turf/T in range(1,src))
 					new/obj/effect/fire(T)
-					ignite_turf(T,30)
+					ignite_turf(T,15,30)
 	if (def_zone == "mouth")
 		if (wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
 			var/obj/item/weapon/grenade/G = wear_mask
