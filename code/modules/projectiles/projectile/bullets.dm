@@ -164,21 +164,21 @@
 
 /obj/item/projectile/bullet/pellet/rubber
 	name = "rubbershot"
-	damage = 2
+	damage = 0
 	pellets = 10
-	range_step = 1
 	spread_step = 10
+	range_step = 3
 	agony = 8.5
-	embed = 0
+	embed = FALSE
 	icon_state = "buckshot"
 
 /obj/item/projectile/bullet/pellet/rubberball
 	name = "rubber ball"
 	damage = 2
 	pellets = 12
-	range_step = 1
 	base_spread = 5
 	spread_step = 10
+	range_step = 3
 	agony = 13
 	embed = TRUE
 	icon_state = "buckshot"

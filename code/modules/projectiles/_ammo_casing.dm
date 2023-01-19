@@ -1130,7 +1130,7 @@
 
 
 /obj/item/ammo_casing/shotgun/incendiary
-	name = "shotgun slug"
+	name = "incendiary shotgun slug"
 	desc = "A 12 gauge incendiary slug."
 	icon_state = "dragons-breath-shell"
 	spent_icon = "dragons-breath-spent"
