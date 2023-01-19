@@ -149,8 +149,8 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning
 	name = "M2HB browning machine gun"
 	desc = "An american heavy machinegun. Uses .50 cal rounds."
-	icon_state = "browning"
-	base_icon = "browning"
+	icon_state = "m2"
+	base_icon = "m2"
 	caliber = "a50cal"
 	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
 	magazine_type = /obj/item/ammo_magazine/a50cal_can
@@ -159,8 +159,6 @@
 		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a50cal/weak
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning/update_icon()
-	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 150) : "_empty"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"
@@ -178,8 +176,8 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg3
 	name = "MG 3 machine gun"
 	desc = "A german heavy machinegun, using 7.62x51 NATO rounds."
-	icon_state = "mg34hmg"
-	base_icon = "mg34hmg"
+	icon_state = "mg3"
+	base_icon = "mg3"
 	caliber = "a792x57_weak"
 	magazine_type = /obj/item/ammo_magazine/mg3belt
 	good_mags = list(/obj/item/ammo_magazine/mg3belt)
@@ -247,7 +245,7 @@
 	var/list/rockets = new/list()
 	var/release_force = 0
 	var/throw_distance = 30
-	
+
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/verb/switch_firingmode()
 	set name = "Toggle ATGM Mode"
@@ -405,7 +403,7 @@
 	var/path = /obj/item/weapon/foldable/atgm
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/Retrieve()
-	set category = null 
+	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)
 	if (usr.l_hand && usr.r_hand)

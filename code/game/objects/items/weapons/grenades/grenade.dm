@@ -469,7 +469,7 @@
 
 /obj/item/weapon/grenade/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		var/inp = WWinput(user, "Are you sure you wan't to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
+		var/inp = WWinput(user, "Are you sure that you want to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
 		if (inp == "Yes")
 			user << "Placing the booby trap..."
 			if (do_after(user, 100, src))
@@ -478,6 +478,8 @@
 					var/obj/item/mine/boobytrap/BT = new /obj/item/mine/boobytrap(get_turf(user))
 					BT.origin = src.type
 					firer = user
+					message_admins("[user.name] ([user.ckey]) placed a boobytrap from \a [src] at ([user.x],[user.y],[user.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+					log_game("[user.name] ([user.ckey]) placed a boobytrap from \a [src] at ([user.x],[user.y],[user.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 					qdel(src)
 		else
 			return
