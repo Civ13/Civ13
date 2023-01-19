@@ -150,7 +150,7 @@
 	name = "M2HB browning machine gun"
 	desc = "An american heavy machinegun. Uses .50 cal rounds."
 	icon_state = "m2"
-	base_icon = "m2_empty"
+	base_icon = "m2"
 	caliber = "a50cal"
 	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
 	magazine_type = /obj/item/ammo_magazine/a50cal_can
@@ -159,8 +159,6 @@
 		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a50cal/weak
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning/update_icon()
-	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 150) : "_empty"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"
