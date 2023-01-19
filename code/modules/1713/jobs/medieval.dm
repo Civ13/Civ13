@@ -1592,7 +1592,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)
@@ -1651,7 +1651,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)
@@ -1714,7 +1714,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)
@@ -1775,7 +1775,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)
@@ -1835,7 +1835,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)
@@ -1896,7 +1896,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)
@@ -1956,7 +1956,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)
@@ -2016,7 +2016,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
 		var/randcloth = rand(1,5)
 		if (randcloth == 1)

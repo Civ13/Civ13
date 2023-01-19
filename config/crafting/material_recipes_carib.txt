@@ -341,7 +341,7 @@ RECIPE: /material/leather/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,
 //RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,black leather shoes,/obj/item/clothing/shoes/soldiershoes,2,60,0,1,foot wear,55,0,102,8,null
 RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots,3,80,0,1,foot wear,55,0,102,8,null
-RECIPE: /material/leather/,leather boots,/obj/item/clothing/shoes/leatherboots1,3,80,0,1,foot wear,55,0,102,8,null
+RECIPE: /material/leather/,leather boots,/obj/item/clothing/shoes/leatherboots,3,80,0,1,foot wear,55,0,102,8,null
 RECIPE: /material/leather/,black riding boots,/obj/item/clothing/shoes/riding1,3,50,0,1,foot wear,0,0,102,4,null
 RECIPE: /material/leather/,riding boots,/obj/item/clothing/shoes/riding2,3,50,0,1,foot wear,0,0,102,4,null
 RECIPE: /material/leather/,work boots,/obj/item/clothing/shoes/workboots,4,80,0,1,foot wear,120,0,112,8,null

@@ -328,7 +328,7 @@
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
@@ -395,7 +395,7 @@
 /datum/job/civilian/disciple/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 
 //clothes
 	if (prob(40))
@@ -449,7 +449,7 @@
 /datum/job/civilian/healer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern7(H), slot_w_uniform)

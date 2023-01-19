@@ -1570,7 +1570,7 @@
 "Ek" = (/obj/structure/closet/anchored,/obj/item/weapon/gun/projectile/leveraction/goldchester,/obj/item/ammo_magazine/c44,/obj/item/ammo_magazine/c44,/obj/item/ammo_magazine/c44,/obj/covers/fancywood,/turf/floor/wood,/area/caribbean/roofed)
 "El" = (/obj/structure/window/classic/metal,/obj/covers/jail/steeljail,/obj/structure/curtain/open/shower/security,/obj/covers/fancywood,/obj/structure/window/classic,/turf/floor/wood,/area/caribbean/roofed)
 "Em" = (/obj/structure/table/wood,/obj/item/weapon/globe,/turf/floor/wood,/area/caribbean/roofed)
-"En" = (/obj/structure/closet/cabinet,/obj/item/weapon/melee/classic_baton/whip,/obj/item/clothing/head/cowboyhat,/obj/item/clothing/under/ww2/us_mp,/obj/item/clothing/shoes/leatherboots1,/turf/floor/wood,/area/caribbean/roofed)
+"En" = (/obj/structure/closet/cabinet,/obj/item/weapon/melee/classic_baton/whip,/obj/item/clothing/head/cowboyhat,/obj/item/clothing/under/ww2/us_mp,/obj/item/clothing/shoes/leatherboots,/turf/floor/wood,/area/caribbean/roofed)
 "Eo" = (/obj/covers/steelplating/white,/obj/structure/mine_support/stone/concrete,/obj/covers/marble_checkerboard,/turf/floor/plating/steel,/area/caribbean/roofed)
 "Ep" = (/obj/structure/table/fancy,/obj/item/flashlight/lamp/littlelamp,/obj/covers/marble_checkerboard,/turf/floor/plating/steel,/area/caribbean/roofed)
 "Eq" = (/obj/structure/table,/obj/structure/radio/receiver/loudspeaker{icon_state = "loudspeaker"; dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed)

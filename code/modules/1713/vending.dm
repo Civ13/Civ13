@@ -209,7 +209,7 @@
 	desc = "Basic wear for soldiers of the French Army."
 	icon_state = "apparel_france"
 	products = list(
-		/obj/item/clothing/shoes/leatherboots1 = 15,
+		/obj/item/clothing/shoes/leatherboots = 15,
 		/obj/item/clothing/under/ww1/french = 15,
 		/obj/item/clothing/suit/storage/coat/frenchcoat = 15,
 		/obj/item/clothing/head/ww/frenchcap = 15,
@@ -226,7 +226,7 @@
 	desc = "Basic wear for soldiers of the Royal Army."
 	icon_state = "apparel_russia"
 	products = list(
-		/obj/item/clothing/shoes/leatherboots1 = 15,
+		/obj/item/clothing/shoes/leatherboots = 15,
 		/obj/item/clothing/under/ww1/british = 15,
 		/obj/item/clothing/suit/storage/coat/britishcoat = 15,
 		/obj/item/clothing/head/ww/britishcap = 15,

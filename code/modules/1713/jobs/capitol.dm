@@ -387,7 +387,7 @@
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 //clothes
@@ -452,7 +452,7 @@
 /datum/job/civilian/us_patriot/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 
 //clothes
 	var/randjack = rand(1,3)
@@ -505,7 +505,7 @@
 /datum/job/civilian/us_shaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern_shaman(H), slot_w_uniform)

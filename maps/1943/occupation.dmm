@@ -566,7 +566,7 @@
 "kT" = (/obj/structure/table/rack/shelf,/obj/item/clothing/suit/storage/jacket/checkered_suit,/obj/item/clothing/suit/storage/jacket/checkered_suit,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed)
 "kU" = (/obj/structure/table/rack/shelf,/obj/item/clothing/shoes/riding1,/obj/item/clothing/shoes/riding1,/obj/item/clothing/shoes/riding1,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "kV" = (/obj/structure/table/rack/shelf,/obj/item/clothing/suit/storage/jacket/charcoal_suit,/obj/item/clothing/suit/storage/jacket/charcoal_suit,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed)
-"kW" = (/obj/structure/table/rack/shelf,/obj/item/clothing/shoes/leatherboots1,/obj/item/clothing/shoes/leatherboots1,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
+"kW" = (/obj/structure/table/rack/shelf,/obj/item/clothing/shoes/leatherboots,/obj/item/clothing/shoes/leatherboots,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "kX" = (/obj/item/weapon/paper/crumpled,/turf/floor/plating/tiled,/area/caribbean/roofed)
 "kY" = (/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/road,/area/caribbean/german)
 "kZ" = (/obj/structure/table/rack/shelf,/obj/item/clothing/suit/storage/jacket/black_suit,/obj/item/clothing/suit/storage/jacket/black_suit,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed)

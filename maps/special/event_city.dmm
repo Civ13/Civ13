@@ -571,7 +571,7 @@
 "lI" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/crate/lead,/obj/item/stack/money/rubles{amount = 50},/turf/floor/wood,/area/caribbean/roofed)
 "lJ" = (/obj/structure/table/rack,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
 "lK" = (/obj/structure/table/rack,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/turf/floor/wood,/area/caribbean/roofed)
-"lL" = (/obj/structure/table/rack/shelf,/obj/item/clothing/shoes/leatherboots1,/obj/item/clothing/shoes/leatherboots1,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
+"lL" = (/obj/structure/table/rack/shelf,/obj/item/clothing/shoes/leatherboots,/obj/item/clothing/shoes/leatherboots,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "lM" = (/obj/structure/table/rack/shelf,/obj/item/clothing/suit/storage/jacket/black_suit,/obj/item/clothing/suit/storage/jacket/black_suit,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed)
 "lN" = (/obj/covers/jail/steeljail,/turf/floor/plating/tiled,/area/caribbean/roofed)
 "lO" = (/obj/structure/table/rack/shelf,/obj/item/clothing/shoes/laceup,/obj/item/clothing/shoes/laceup,/obj/item/clothing/shoes/laceup,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)

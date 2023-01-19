@@ -32,7 +32,7 @@
 "nm" = (/obj/covers/wood,/obj/item/stack/material/iron,/obj/item/stack/material/iron,/obj/item/stack/material/iron,/obj/item/stack/material/iron,/obj/item/stack/material/iron,/obj/item/stack/material/iron,/obj/item/stack/material/iron,/turf/floor/grass/jungle,/area/caribbean/sea/bottom/roofed)
 "nr" = (/obj/structure/wild/burnedbush,/mob/living/simple_animal/hostile/human/voyage/british/ranged,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "nF" = (/obj/covers/wood,/obj/structure/closet/crate/musketball,/turf/floor/dirt/jungledirt,/area/caribbean/sea/bottom/roofed)
-"nM" = (/obj/item/clothing/shoes/leatherboots1,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sea/bottom)
+"nM" = (/obj/item/clothing/shoes/leatherboots,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sea/bottom)
 "nN" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "oh" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "os" = (/obj/structure/barricade/stone_h,/obj/structure/flag/british,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
