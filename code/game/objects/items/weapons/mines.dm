@@ -101,6 +101,14 @@
 	else
 		..()
 
+/obj/item/mine/kick_act(mob/user as mob)
+	if (anchored)
+		if(ishuman(user))
+			user.visible_message("<span class = 'warning'>\The [user] kicks \the [src]! What an idiot!</span>")
+			Bumped(user)
+	else
+		..()
+
 //Triggering
 /obj/item/mine/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return
