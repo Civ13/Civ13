@@ -497,7 +497,7 @@
 "jC" = (/obj/structure/shelf,/obj/item/clothing/shoes/blackboots,/obj/item/clothing/shoes/blackboots,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "jD" = (/obj/structure/shelf,/obj/item/clothing/shoes/japboots,/obj/item/clothing/shoes/japboots,/obj/item/clothing/shoes/japboots,/obj/item/clothing/shoes/japboots,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "jE" = (/obj/structure/shelf,/obj/item/clothing/shoes/laceup,/obj/item/clothing/shoes/laceup,/obj/item/clothing/shoes/laceup,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
-"jF" = (/obj/structure/shelf,/obj/item/clothing/shoes/leatherboots1,/obj/item/clothing/shoes/leatherboots1,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
+"jF" = (/obj/structure/shelf,/obj/item/clothing/shoes/leatherboots,/obj/item/clothing/shoes/leatherboots,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "jG" = (/obj/structure/shelf,/obj/item/clothing/shoes/riding1,/obj/item/clothing/shoes/riding1,/obj/item/clothing/shoes/riding1,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "jH" = (/obj/structure/shelf,/obj/item/clothing/shoes/riding2,/obj/item/clothing/shoes/riding2,/obj/item/clothing/shoes/riding2,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "jI" = (/obj/structure/shelf,/obj/item/clothing/shoes/winterboots,/obj/item/clothing/shoes/winterboots,/obj/item/clothing/shoes/winterboots,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)

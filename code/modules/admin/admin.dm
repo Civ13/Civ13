@@ -1226,7 +1226,7 @@ client/proc/debug_variables_map()
 	src << "Wolves: [wolf_count.len]"
 	src << "Bears: [bear_count.len]"
 
-/datum/admins/proc/set_world_radiation()
+/datum/admins/proc/set_global_radiation()
 	set category = "Debug"
 	set desc="Change the radiation level of the world."
 	set name="Change World Radiation"
@@ -1237,7 +1237,7 @@ client/proc/debug_variables_map()
 	set_global_radiation(num)
 	world.log << "[usr] set the worlds radiation to [num]."
 
-/datum/admins/proc/set_world_pollution()
+/datum/admins/proc/set_global_pollution()
 	set category = "Debug"
 	set desc="Change the pollution level of the world."
 	set name="Change World Pollution"

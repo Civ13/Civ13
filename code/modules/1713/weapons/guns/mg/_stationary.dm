@@ -201,3 +201,6 @@
 		icon_state = "[base_icon]_empty"
 	update_held_icon()
 	return
+
+/obj/item/weapon/gun/projectile/automatic/stationary/kick_act() //Can't kick them
+	return

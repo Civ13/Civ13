@@ -758,7 +758,7 @@
 
 /obj/effect/spawner/mobspawner/cockroach/nuclear/spawnerproc()
 
-	if (world_radiation > 190)
+	if (global_radiation > 190)
 		if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
 			spawning = TRUE
 		if (current_number < 0)

@@ -97,7 +97,7 @@
 /obj/structure/heatsource/proc/do_light()
 	if (on)
 		fuel--
-		map.pollutionmeter += 0.015
+		change_global_pollution(0.015)
 		if (fuel <= 0)
 			on = FALSE
 			icon_state = "furnace_open_off"

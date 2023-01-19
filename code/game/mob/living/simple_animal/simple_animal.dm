@@ -1129,7 +1129,7 @@
 
 /mob/living/simple_animal/handle_mutations_and_radiation()
 	if (z == world.maxz)
-		rad_act((world_radiation/1000))
+		rad_act((global_radiation/1000))
 	if (radiation < 0)
 		radiation = 0
 	if(radiation > 0)

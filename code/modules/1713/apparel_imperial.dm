@@ -39,7 +39,7 @@
 	item_state = "imperial_breastplate"
 	worn_state = "imperial_breastplate"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 50, arrow = 50, gun = 12, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 50, gun = 12, energy = 15, bomb = 40, bio = 20, rad = 0)
 	value = 20
 	slowdown = 0.4
 	health = 50
@@ -267,7 +267,7 @@
 	worn_state = "morion_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = 0)
 	health = 32
 
 /obj/item/clothing/head/helmet/imperial/cabasset
@@ -278,7 +278,7 @@
 	worn_state = "morion_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 35, arrow = 32, gun = 8, energy = 15, bomb = 41, bio = 21, rad = FALSE)
+	armor = list(melee = 35, arrow = 32, gun = 8, energy = 15, bomb = 41, bio = 21, rad = 0)
 	health = 34
 
 
@@ -291,20 +291,20 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	armor = list(melee = 10, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 0)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
-/obj/item/clothing/shoes/leatherboots1
+/obj/item/clothing/shoes/leatherboots
 	name = "leather boots"
 	desc = "Classic leather boots."
 	icon_state = "sailorboots2"
 	item_state = "sailorboots2"
 	worn_state = "sailorboots2"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	armor = list(melee = 10, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 0)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -317,7 +317,7 @@
 	item_state = "winterboots"
 	worn_state = "winterboots"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 40)
+	armor = list(melee = 15, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 5)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.9
 	cold_protection = FEET
@@ -330,7 +330,7 @@
 	item_state = "whiteput"
 	worn_state = "whiteput"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	armor = list(melee = 10, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 0)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -675,9 +675,11 @@
 	item_state = "soldier_shoes"
 	worn_state = "soldier_shoes"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 30, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 10, rad = 15)
+	armor = list(melee = 30, arrow = 25, gun = 10, energy = 15, bomb = 30, bio = 10, rad = 5)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 /obj/item/clothing/shoes/sailorboots1
 	name = "black sailor boots"
@@ -686,7 +688,7 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 0)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -699,7 +701,7 @@
 	item_state = "sailorboots2"
 	worn_state = "sailorboots2"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	armor = list(melee = 80, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 30)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -712,7 +714,7 @@
 	item_state = "usmc"
 	worn_state = "usmc"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 40)
+	armor = list(melee = 30, arrow = 20, gun = 10, energy = 25, bomb = 50, bio = 10, rad = 0)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.7
 	cold_protection = FEET
@@ -1236,7 +1238,7 @@
 	item_state = "nap_lea_infantry_cap"
 	worn_state = "nap_lea_infantry_cap"
 	body_parts_covered = HEAD
-	armor = list(melee = 30, arrow = 25, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //leather with more bomb + gun protection
+	armor = list(melee = 20, arrow = 25, gun = 8, energy = 25, bomb = 50, bio = 10, rad = 0)
 	health = 25
 
 /obj/item/clothing/head/helmet/leather_infantry/brown
@@ -1251,7 +1253,7 @@
 	icon_state = "prussian_lea_infantry_cap"
 	item_state = "prussian_lea_infantry_cap"
 	worn_state = "prussian_lea_infantry_cap"
-	armor = list(melee = 35, arrow = 50, gun = 15, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 35, arrow = 25, gun = 10, energy = 15, bomb = 40, bio = 20, rad = 0)
 	health = 35
 
 /obj/item/clothing/head/helmet/leather_infantry/blue //for nomads
@@ -1273,7 +1275,7 @@
 	item_state = "nap_satsuma"
 	worn_state = "nap_satsuma"
 	body_parts_covered = HEAD
-	armor = list(melee = 30, arrow = 25, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //equal to infantry cap
+	armor = list(melee = 20, arrow = 25, gun = 8, energy = 25, bomb = 50, bio = 10, rad = 0) //equal to infantry cap
 	health = 25
 
 /obj/item/clothing/head/helmet/napoleonic/dragoon
@@ -1284,7 +1286,7 @@
 	worn_state = "dragoon"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, arrow = 40, gun = 8, energy = 15, bomb = 45, bio = 20, rad = FALSE) //slightly stronger than a kettle helmet being its equal, protective conical outclasses it
+	armor = list(melee = 45, arrow = 40, gun = 8, energy = 15, bomb = 45, bio = 20, rad = 0) //slightly stronger than a kettle helmet being its equal, protective conical outclasses it
 	health = 32
 
 /obj/item/clothing/head/helmet/napoleonic/bearskin
@@ -1295,7 +1297,7 @@
 	worn_state = "nap_bearskin_hat"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, arrow = 40, gun = 8, energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 40, gun = 8, energy = 15, bomb = 45, bio = 20, rad = 0)
 	health = 30
 
 /obj/item/clothing/head/helmet/napoleonic/bearskin/brown
@@ -1333,5 +1335,5 @@
 	icon_state = "commissar"
 	item_state = "commissar"
 	worn_state = "commissar"
-	armor = list(melee = 35, arrow = 50, gun = 15, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 35, arrow = 50, gun = 15, energy = 15, bomb = 40, bio = 20, rad = 0)
 	health = 35

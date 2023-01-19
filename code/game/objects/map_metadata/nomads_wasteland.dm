@@ -75,7 +75,7 @@
 			nuke_proc(timer)
 	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
-	if ((world_radiation >= 280 && !nonukes)||is_zombie == TRUE)
+	if ((global_radiation >= 280 && !nonukes)||is_zombie == TRUE)
 		var/droptype = pick("supplies","food","weapons","military","medicine","rad","cold")
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)

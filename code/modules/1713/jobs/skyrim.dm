@@ -35,7 +35,7 @@
 /datum/job/roman/skyrim/imperial/balgruuf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial/bolgruf(H), slot_w_uniform)
 		//head
@@ -82,7 +82,7 @@
 /datum/job/roman/skyrim/imperial/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/tes13/imperial(H), slot_wear_suit)
@@ -123,7 +123,7 @@
 /datum/job/roman/skyrim/imperial/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/tes13/imperial(H), slot_wear_suit)
@@ -165,7 +165,7 @@
 /datum/job/roman/skyrim/imperial/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
 		//head
@@ -204,7 +204,7 @@
 /datum/job/roman/skyrim/imperial/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
 		//head
@@ -243,7 +243,7 @@
 /datum/job/roman/skyrim/imperial/archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
 		//head
@@ -389,7 +389,7 @@
 /datum/job/civilian/skyrim/stormcloak/ulfric/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/ulfirc(H), slot_w_uniform)
 		//head
@@ -576,7 +576,7 @@
 /datum/job/civilian/skyrim/stormcloak/archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 		//clothes
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak(H), slot_w_uniform)

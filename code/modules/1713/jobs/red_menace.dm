@@ -602,7 +602,7 @@
 				give_random_name(H)
 			if (5)
 			//shoes
-				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 			//clothes
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
 			//head

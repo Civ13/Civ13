@@ -477,7 +477,7 @@
 		if (gunpowder >= gunpowder_max && bulletn >= amount)
 			var/list/listing = list("Cancel")
 			if (map.ordinal_age >= 6)
-				listing = list("7.92x57mm mauser","7.62x54mmR","7.92x57mm MG", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+				listing = list("7.92x57mm mauser","7.62x54mmR","7.92x57mm MG", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","12 Gauge (Rubbershot)","Cancel")
 
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			switch (input)
@@ -489,6 +489,8 @@
 					resultpath = /obj/item/ammo_casing/shotgun/slug
 				if ("12 Gauge (Beanbag)")
 					resultpath = /obj/item/ammo_casing/shotgun/beanbag
+				if ("12 Gauge (Rubbershot)")
+					resultpath = /obj/item/ammo_casing/shotgun/rubber
 				if ("7.92x57mm mauser")
 					resultpath = /obj/item/ammo_casing/a792x57
 				if ("7.62x54mmR")
@@ -514,9 +516,9 @@
 			if (map.ordinal_age == 4)
 				listing = list("8x53mm murata", "7.62x54mmR", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
 			if (map.ordinal_age == 5)
-				listing = list("8x53mm murata", "7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+				listing = list("8x53mm murata", "7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","12 Gauge (Rubbershot)","Cancel")
 			if (map.ordinal_age >= 6)
-				listing = list("7.7x58mm arisaka","7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+				listing = list("7.7x58mm arisaka","7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","12 Gauge (Rubbershot)","Cancel")
 
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			switch (input)
@@ -528,6 +530,8 @@
 					resultpath = /obj/item/ammo_casing/shotgun/slug
 				if ("12 Gauge (Beanbag)")
 					resultpath = /obj/item/ammo_casing/shotgun/beanbag
+				if ("12 Gauge (Rubbershot)")
+					resultpath = /obj/item/ammo_casing/shotgun/rubber
 				if ("8x53mm murata")
 					resultpath = /obj/item/ammo_casing/a8x53
 				if ("7.62x54mmR")
@@ -553,11 +557,11 @@
 		if (gunpowder >= gunpowder_max && bulletn >= amount)
 			var/list/listing = list("Cancel")
 			if (map.ordinal_age == 4)
-				listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
+				listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)",".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
 			else if (map.ordinal_age == 5)
-				listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "Cancel")
+				listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)", "Cancel")
 			else if (map.ordinal_age >= 6)
-				listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+				listing = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)", "Cancel")
 
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			switch (input)
@@ -573,6 +577,8 @@
 					resultpath = /obj/item/ammo_casing/shotgun/slug
 				if ("12 Gauge (Beanbag)")
 					resultpath = /obj/item/ammo_casing/shotgun/beanbag
+				if ("12 Gauge (Rubbershot)")
+					resultpath = /obj/item/ammo_casing/shotgun/rubber
 				if ("7.65x53 Mauser")
 					resultpath = /obj/item/ammo_casing/a765x53
 					inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))

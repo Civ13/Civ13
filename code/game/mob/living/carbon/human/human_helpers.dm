@@ -164,11 +164,11 @@
 /mob/living/human/handle_mutations_and_radiation()
 	get_rads_from_equipment()
 
-	if (world_radiation > 125)
+	if (global_radiation > 125)
 		var/area/A = get_area(src)
 		var/multiplier = 0.7
 		if (A.location == 1)
-			if (world_radiation >= 300)
+			if (global_radiation >= 300)
 				switch(A.weather)
 					if (WEATHER_NONE)
 						multiplier = 1
@@ -179,7 +179,7 @@
 					if (WEATHER_SMOG)
 						multiplier = 1
 		if (z == world.maxz)
-			rad_act((world_radiation/1000)*multiplier)
+			rad_act((global_radiation/1000)*multiplier)
 	if(radiation > 0)
 		radiation -= 0.05
 		if (stat != DEAD)
