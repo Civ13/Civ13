@@ -37,6 +37,7 @@
 					visible_message("<span class='danger'>The roof catches fire!<span>")
 			return
 	if (istype(W, /obj/item/weapon/hammer))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		user << "You start removing \the [src]..."
 		if (do_after(user, 60, src) && src)
 			user << "You removed \the [src]."

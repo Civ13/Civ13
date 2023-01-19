@@ -198,7 +198,7 @@
 	if (istype(W, /obj/item/weapon/hammer))
 		if (!wall)
 			user << "You start removing \the [src]..."
-			if (do_after(user, 70, src))
+			if (do_after(user, 50, src))
 				user << "You removed \the [src] from the floor."
 				qdel(src)
 				return
