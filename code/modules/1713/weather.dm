@@ -1,25 +1,25 @@
 /var/global/weather = WEATHER_NONE
 /var/global/weather_intensity = 1.0
-/var/global/world_pollution = 0.0
-/var/global/world_radiation = 0.0
+/var/global/global_pollution = 0.0
+/var/global/global_radiation = 0.0
 
 /proc/change_global_radiation(amount)
-	world_radiation += amount
+	global_radiation += amount
 
 /proc/set_global_radiation(amount)
-	world_radiation = amount
+	global_radiation = amount
 
 /proc/get_global_radiation()
-	return world_radiation
+	return global_radiation
 
 /proc/change_global_pollution(amount)
-	world_pollution += amount
+	global_pollution += amount
 
 /proc/set_global_pollution(amount)
-	world_pollution = amount
+	global_pollution = amount
 
 /proc/get_global_pollution()
-	return world_pollution
+	return global_pollution
 
 /proc/change_weather(_weather = WEATHER_NONE, var/bypass_same_weather_check = FALSE)
 
@@ -270,7 +270,10 @@
 				A.icon_state = ""
 				A.weather = WEATHER_NONE
 				A.weather_intensity = weather_intensity
-			if (world_radiation >= 300)
+			if (global_pollution >= 1000)
+				A.icon_state = "smog"
+				A.weather = WEATHER_SMOG
+			if (global_radiation >= 300)
 				A.icon_state = "rad_[A.icon_state]"
 
 /*
@@ -306,11 +309,11 @@
 		if ("Dry Season")
 			possibilities = list(WEATHER_NONE,WEATHER_EXTREME)
 		if ("SUMMER")
-			possibilities = list(WEATHER_NONE,WEATHER_WET,WEATHER_EXTREME)
+			possibilities = list(WEATHER_NONE,WEATHER_WET)
 		if ("FALL")
 			possibilities = list(WEATHER_WET,WEATHER_NONE)
 	if (map)
-		if (map.pollutionmeter >= 2000)
+		if (global_pollution >= 2000)
 			possibilities += WEATHER_SMOG
 	if (possibilities.len)
 		change_weather(pick(possibilities))

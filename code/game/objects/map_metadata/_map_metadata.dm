@@ -201,8 +201,6 @@ var/civmax_research = list(230,230,230)
 
 	var/orespawners = 0
 
-	var/pollutionmeter = 0
-
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
 	var/list/pending_warrants = list()
@@ -367,12 +365,13 @@ var/civmax_research = list(230,230,230)
 
 /obj/map_metadata/proc/pollution()
 
-	if (pollutionmeter >= 1000)
+	if (global_pollution >= 1000)
 		change_weather(WEATHER_SMOG)
 		world << "The air gets smoggy..."
-	pollutionmeter -= 80
-	if (pollutionmeter < 0)
-		pollutionmeter = 0
+	if (global_pollution < 0)
+		set_global_pollution(0)
+	else
+		change_global_pollution(-80)
 	spawn(9000) //every 15 mins
 		pollution()
 
