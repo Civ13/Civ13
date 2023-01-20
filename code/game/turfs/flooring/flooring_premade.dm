@@ -239,12 +239,12 @@
 
 /turf/floor/dirt/New()
 	soil_nutrition_recover() // Starts soil nutrition recover
-	return ...
+	return ..()
 
 /turf/floor/dirt/proc/soil_nutrition_recover()
-	if(!istype(src, /turf/floor/dirt)) // If its not a dirt tile, do nothing and kills the recover for src
-		return
 	spawn(12000) // Every 20 minutes the soil will recover
+		if(!istype(src, /turf/floor/dirt)) // It could be that the turf has ceased to be dirt during the wait
+			return
 		if(soil_nutrition < max_soil_nutrition)
 			if (!locate(/obj/structure/farming/plant) in src) // Soil recovers when no farming plants
 				var/nutrition_to_be_recovered = rand(20, 40)
@@ -252,7 +252,7 @@
 					soil_nutrition = max_soil_nutrition
 				else
 					soil_nutrition += nutrition_to_be_recovered
-		soil_nutrition_recover();
+		soil_nutrition_recover()
 		return
 
 /turf/floor/dirt/examine(mob/user)
