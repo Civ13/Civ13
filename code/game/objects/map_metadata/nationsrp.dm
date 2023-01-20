@@ -5,8 +5,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/sea/temperate)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
-
-
 	faction_organization = list(
 		CIVILIAN,)
 
@@ -54,6 +52,7 @@
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
 		seasons()
+		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nationsrp/cross_message(faction)
 	return "<big><b>THE GRACE PERIOD HAS ENDED!</b></big>"
@@ -78,6 +77,7 @@
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
 		seasons()
+		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nationsrp/ww2
 	ID = MAP_NATIONSRP_WW2
@@ -100,10 +100,12 @@
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
 		seasons()
+		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nationsrp/coldwar
 	ID = MAP_NATIONSRP_COLDWAR
 	title = "Nations RP Cold War"
+	lobby_icon = "icons/lobby/coldwar.png"
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
@@ -126,10 +128,12 @@
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
 		seasons()
+		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nationsrp/coldwar_campaign
 	ID = MAP_NATIONSRP_COLDWAR_CAMPAIGN
 	title = "Nations RP Cold War"
+	lobby_icon = "icons/lobby/coldwar.png"
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
@@ -152,3 +156,4 @@
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
 		seasons()
+		config.no_respawn_delays = FALSE
