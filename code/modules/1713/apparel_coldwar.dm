@@ -922,32 +922,6 @@
 	else
 		new /obj/item/weapon/grenade/modern/f1(hold)
 
-/obj/item/clothing/shoes/nlfsandal1
-	name = "leather sandals"
-	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot."
-	icon_state = "nlfsandals_v2"
-	item_state = "nlfsandals_v2"
-	worn_state = "nlfsandals_v2"
-	force = WEAPON_FORCE_WEAK
-	item_flags = NOSLIP
-	siemens_coefficient = 0.6
-	cold_protection = FEET
-	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-	var/colorn = 1
-
-/obj/item/clothing/shoes/nlfsandal2
-	name = "leather sandals"
-	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot and wraps around the ankle."
-	icon_state = "nlfsandals_v1"
-	item_state = "nlfsandals_v1"
-	worn_state = "nlfsandals_v1"
-	force = WEAPON_FORCE_WEAK
-	item_flags = NOSLIP
-	siemens_coefficient = 0.6
-	cold_protection = FEET
-	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-	var/colorn = 1
-
 /obj/item/clothing/under/nva
 	name = "NVA uniform"
 	desc = "A khaki uniform of the North Vietnamese Army."

@@ -31,10 +31,7 @@
 /datum/job/vietnamese/vietcong_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(60))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal1(H), slot_shoes)
-	else if (prob(40))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal2(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal/leather(H), slot_shoes)
 
 //clothes
 	var/pickuni = rand(1,5)
@@ -109,10 +106,7 @@
 /datum/job/vietnamese/vietcong_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(60))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal1(H), slot_shoes)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal2(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal/leather(H), slot_shoes)
 
 //clothes
 	var/pickuni = rand(1,5)
@@ -194,10 +188,8 @@
 /datum/job/vietnamese/vietcong_comms/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(60))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal1(H), slot_shoes)
-	else if (prob(40))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal2(H), slot_shoes)
+	if (prob(90))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal/leather(H), slot_shoes)
 
 //clothes
 	var/pickuni = rand(1,5)
@@ -275,10 +267,7 @@
 /datum/job/vietnamese/vietcong/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(60))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal1(H), slot_shoes)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/nlfsandal2(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal/leather(H), slot_shoes)
 
 //clothes
 	var/pickuni = rand(1,5)

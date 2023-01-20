@@ -1563,9 +1563,8 @@
 	en_meaning = "Paratrooper"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateGEpara" //Not used
+	spawn_location = "Paradrop"
 
-	//is_ww2 = TRUE
 	uses_squads = TRUE
 	is_paratrooper = TRUE
 
@@ -1576,10 +1575,8 @@
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/paratrooper(H), slot_back)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
 //back
@@ -1590,9 +1587,9 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g43(H), slot_shoulder)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
-	if (map.ID == MAP_STALINGRAD)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
-
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(webbing, H)
