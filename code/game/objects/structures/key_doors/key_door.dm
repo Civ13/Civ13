@@ -202,7 +202,17 @@ var/list/nonbreaking_types = list(
 						user << "<span class='warning'>You failed to pick the lock!</span>"
 						return
 				return
-
+	else if (istype(W, /obj/item/weapon/gun/projectile/shotgun/pump))
+		var/obj/item/weapon/gun/projectile/shotgun/pump/pump = W
+		if (istype(pump) && istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) && keyslot.locked && pump.consume_next_projectile())
+			keyslot.locked = FALSE
+			update_icon()
+			visible_message("<span class='warning'>[user] breaks the lock on the [src]!</span>")
+			pump.Fire(src, user)
+			playsound(src.loc, 'sound/weapons/heavysmash.ogg', 50, 1)
+			Open()
+			new/obj/effect/sparks(src.loc)
+			return
 	else
 		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HARM) && check_can_break_doors(W))
 			if (!user.hitting_key_door)
