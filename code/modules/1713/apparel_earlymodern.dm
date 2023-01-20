@@ -1409,21 +1409,21 @@
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke/New()
 	..()
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
-	new/obj/item/stack/medical/advanced/sulfa/small(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_grenade
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_grenade/New()
 	..()
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/weapon/grenade/coldwar/m67(src)
-	new/obj/item/stack/medical/advanced/sulfa/small(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/weapon/grenade/coldwar/m67(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
 	storage_slots = 5
@@ -1479,7 +1479,7 @@
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
-	new /obj/item/stack/medical/advanced/sulfa/small(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/ak74m_trench
 	storage_slots = 5
@@ -1489,7 +1489,7 @@
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/weapon/foldable_shovel/trench/etool(src)
-	new /obj/item/stack/medical/advanced/sulfa/small(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/clothing/under/blue_shorts
 	name = "blue shorts"
