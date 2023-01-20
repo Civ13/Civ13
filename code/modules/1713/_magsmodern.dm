@@ -652,3 +652,81 @@
 	max_ammo = 16
 	multiple_sprites = TRUE
 	belt = TRUE
+
+/obj/item/flare_pouch
+	name = "flare pouch"
+	desc = "A pouch for holding flares."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "flarepouch"
+	var/max = 6
+	var/initial_amount = null
+	var/opened = FALSE
+	var/flare_type = null
+	var/list/stored = list()
+
+/obj/item/flare_pouch/verb/toggle_open()
+	set category = null
+	set src in view(1)
+	set name = "Toggle Open"
+	if (opened)
+		opened=FALSE
+		usr << "You close the [src]."
+	else
+		opened=TRUE
+		usr << "You open the [src]."
+	update_icon()
+	return
+
+/obj/item/flare_pouch/attack_hand(mob/user as mob)
+	if (opened)
+		if (stored.len > 0)
+			var/obj/item/flashlight/flare/C = stored[stored.len]
+			stored.len--
+			user.put_in_hands(C)
+			visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
+			update_icon()
+			return
+		else
+			user << "<span class='warning'>[src] is empty.</span>"
+			update_icon()
+	else
+		return ..()
+	desc = "A pouch for holding flares. It currently holds [stored.len] flares."
+
+/obj/item/flare_pouch/update_icon()
+	if (!opened)
+		icon_state = "[initial(icon_state)]"
+	else
+		if (stored.len > 0)
+			icon_state = "[initial(icon_state)]-[stored.len]"
+		else 
+			icon_state = "[initial(icon_state)]-0"
+
+/obj/item/flare_pouch/attackby(var/obj/item/W, mob/user as mob)
+	if (W == src)
+		return
+	if (istype(W, flare_type))
+		if (stored.len >= max)
+			user << "<span class='warning'>[src] is full!</span>"
+			return
+		user.remove_from_mob(W)
+		W.loc = src
+		stored.Insert(1, W)
+		update_icon()
+	desc = "A pouch for holding flares. It currently holds [stored.len] flares."
+
+/obj/item/flare_pouch/New()
+	..()
+	if (isnull(initial_amount) && flare_type != null)
+		initial_amount = max
+
+	if (initial_amount && flare_type != null)
+		for (var/i in TRUE to initial_amount)
+			stored += new flare_type(src)
+	update_icon()
+
+/obj/item/flare_pouch/normal_full
+	flare_type = /obj/item/flashlight/flare
+
+/obj/item/flare_pouch/white_full
+	flare_type = /obj/item/flashlight/flare/white

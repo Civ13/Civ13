@@ -559,9 +559,8 @@
 		return
 	if ((istype(target, /obj) && target.density == TRUE) || (istype(target, /turf) && target.density == TRUE))
 		return
-	for (var/obj/Obj in range(0,user))
-		if (istype(Obj,/obj/structure/vehicleparts/frame))
-			return
+	if (locate(get_turf(user),/obj/structure/vehicleparts/frame))
+		return
 	for (var/obj/O in get_turf(target))
 		if (O.density)
 			user << "<span class='danger'>You hit the [O]!</span>"
