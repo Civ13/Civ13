@@ -382,7 +382,7 @@
 
 /obj/item/weapon/storage/box/flare
 	name = "box of flares"
-	desc = "Contains 10 red standard-issue flares."
+	desc = "Contains 10 red flares."
 	icon_state = "donk_kit"
 	New()
 		..()

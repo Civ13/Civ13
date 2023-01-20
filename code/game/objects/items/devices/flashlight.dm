@@ -103,14 +103,12 @@
 
 /obj/item/flashlight/flare
 	name = "flare"
-	desc = "A red flare. There are instructions on the side reading 'pull cord, make light'. Might last over 5 minutes."
+	desc = "A red flare. There are instructions on the side reading 'pull cord, make light'. Lasts for about 5 minutes."
 	w_class = 2.0
 	brightness_on = 4 // Pretty bright.
 	light_power = 2
 	light_color = "#e58775"
 	icon_state = "flare"
-	off_state = "flare"
-	on_state = "flare-on"
 	item_state = "flare"
 	turn_on_sound = 'sound/effects/Custom_flare.ogg'
 	fuel = 0
@@ -200,7 +198,7 @@
 	// All good, turn it on.
 	if(.)
 		user.visible_message(SPAN_NOTICE("[user] activates the flare."), SPAN_NOTICE("You pull the cord on the flare, activating it!"))
-		//playsound(src,'sound/handling/flare_activate_2.ogg', 50, TRUE)
+		playsound(src,turn_on_sound, 50, TRUE)
 		turn_on()
 		var/mob/living/human/H = user
 		if(istype(H) && !H.in_throw_mode)
@@ -208,6 +206,11 @@
 
 /obj/item/flashlight/flare/proc/activate_signal(mob/living/carbon/human/user)
 	return
+
+/obj/item/flashlight/flare/white
+	name = "white phosphorus flare"
+	desc = "A white phosphorus flare. There are instructions on the side reading 'pull cord, make light'. Lasts for about 5 minutes. This seems dangerous..."
+	icon_state = "flareW"
 
 /obj/item/flashlight/flare/on/New()
 	. = ..()
