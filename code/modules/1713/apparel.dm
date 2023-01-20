@@ -172,9 +172,9 @@
 /obj/item/clothing/shoes/replicantshoes
 	name = "plastoid boots"
 	desc = "A pair of plastoid boots."
-	icon_state = "replicant_boots"
-	item_state = "replicant_boots"
-	worn_state = "replicant_boots"
+	icon_state = "white"
+	item_state = "white"
+	worn_state = "white"
 	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
 	armor = list(melee = 45, arrow = 70, gun = 50, energy = 45, bomb = 35, bio = 15, rad = FALSE)

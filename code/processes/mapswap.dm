@@ -699,9 +699,9 @@
 		map.is_zombie = FALSE
 		map.nonukes = TRUE
 		return
-	else if (vote.voted_gamemode == "Nuklear")
-		world << "<font color='yellow'><big>Nuklear</big><br>To make things worse sometime between 2 and 3.5 hours a nuklear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
-		map.gamemode = "Nuklear"
+	else if (vote.voted_gamemode == "Nuclear")
+		world << "<font color='yellow'><big>Nuclear</big><br>To make things worse sometime between 2 and 3.5 hours a nuclear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+		map.gamemode = "Nuclear"
 		map.is_zombie = FALSE
 		map.nonukes = FALSE
 		return

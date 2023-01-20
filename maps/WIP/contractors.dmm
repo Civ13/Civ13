@@ -866,7 +866,7 @@
 /area/caribbean/arab/caves)
 "ob" = (
 /turf/floor/dirt/underground/sandy{
-	opacity = o
+	opacity = 0
 	},
 /area/caribbean)
 "od" = (
@@ -2545,7 +2545,7 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "QF" = (
-/obj/item/flashlight/flare/nighttime,
+/obj/item/flashlight/flare/alwayson,
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "QH" = (

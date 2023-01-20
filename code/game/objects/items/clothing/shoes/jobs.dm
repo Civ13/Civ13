@@ -11,7 +11,7 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
-/obj/item/clothing/shoes/jackboots/jackboots2
+/obj/item/clothing/shoes/jackboots/modern
 	icon_state = "jackboots2"
 	item_state = "jackboots2"
 	worn_state = "jackboots2"

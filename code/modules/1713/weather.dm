@@ -270,9 +270,10 @@
 				A.icon_state = ""
 				A.weather = WEATHER_NONE
 				A.weather_intensity = weather_intensity
-			if (global_pollution >= 1000)
-				A.icon_state = "smog"
-				A.weather = WEATHER_SMOG
+			if (global_pollution >= 2000)
+				if (map.nomads || map.civilizations )
+					A.icon_state = "smog"
+					A.weather = WEATHER_SMOG
 			if (global_radiation >= 300)
 				A.icon_state = "rad_[A.icon_state]"
 
@@ -314,7 +315,8 @@
 			possibilities = list(WEATHER_WET,WEATHER_NONE)
 	if (map)
 		if (global_pollution >= 2000)
-			possibilities += WEATHER_SMOG
+			if (map.nomads || map.civilizations )
+				possibilities += WEATHER_SMOG
 	if (possibilities.len)
 		change_weather(pick(possibilities))
 

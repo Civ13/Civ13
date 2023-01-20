@@ -32,9 +32,15 @@
 
 	// clicking a grenade a second time turned throw mode off, this fixes that
 	if (ishuman(user))
-		var/mob/living/human/C = user
-		C.throw_mode_on()
+		var/mob/living/human/H = user
+		if(istype(H) && !H.in_throw_mode)
+			H.throw_mode_on()
 
+/obj/item/weapon/grenade/dropped(mob/user)
+	. = ..()
+	if(ishuman(user) && active)
+		var/mob/living/human/H = user
+		H.throw_mode_off()
 
 /obj/item/weapon/grenade/proc/activate(mob/living/human/user as mob)
 	if (active)
@@ -164,8 +170,9 @@
 
 			// clicking a grenade a second time turned throw mode off, this fixes that
 			if (ishuman(user))
-				var/mob/living/human/C = user
-				C.throw_mode_on()
+				var/mob/living/human/H = user
+				if(istype(H) && !H.in_throw_mode)
+					H.throw_mode_on()
 			return
 	else if (state == 1 && istype(W, /obj/item/stack/material/rope))
 		var/obj/item/stack/material/rope/R = W
@@ -189,6 +196,12 @@
 			return
 	else
 		return
+
+/obj/item/weapon/grenade/dynamite/dropped(mob/user)
+	. = ..()
+	if(ishuman(user) && active)
+		var/mob/living/human/H = user
+		H.throw_mode_off()
 
 /obj/item/weapon/grenade/dynamite/ready
 	state = 2

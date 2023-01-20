@@ -29,6 +29,8 @@
 	..()
 	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = TRUE
+	else if (istype(J, /datum/job/german/paratrooper))
+		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
 	else if (J.is_occupation == TRUE)

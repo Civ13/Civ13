@@ -28,8 +28,8 @@
 				timeout = world.time + 600
 				refill()
 				return
-	else if (istype(O, /obj/item/flashlight))
-		var/obj/item/flashlight/OO = O
+	else if (istype(O, /obj/item/flashlight/torch))
+		var/obj/item/flashlight/torch/OO = O
 		if (counter > 0 && OO.on)
 			visible_message("[user] sets the [src] on fire!","You set the [src] on fire!")
 			counter = 0
@@ -238,8 +238,8 @@
 	basecolor="#030303"
 
 /obj/effect/decal/cleanable/blood/oil/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/flashlight))
-		var/obj/item/flashlight/OO = W
+	if (istype(W, /obj/item/flashlight/torch))
+		var/obj/item/flashlight/torch/OO = W
 		if (OO.on)
 			visible_message("[user] sets the [src] on fire!","You set the [src] on fire!")
 			ignite_turf(src.loc, 18, 20)

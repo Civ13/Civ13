@@ -2403,7 +2403,7 @@ obj/item/clothing/head/helmet/samurai/black
 	slowdown = 0.1
 	health = 50
 
-/obj/item/clothing/shoes/tes13/dwemmer
+/obj/item/clothing/shoes/dwemmer
 	name = "dwemmer boots"
 	desc = "A pair of plated boots made of dwemmer metal."
 	icon_state = "dwoots"
