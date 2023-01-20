@@ -240,7 +240,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						if (!default)
 							default = "Normal"
 					else if (map.is_wasteland)
-						options = list("After the Fall", "Nuklear","Zombie Apocalypse")
+						options = list("After the Fall", "Nuclear","Zombie Apocalypse")
 					else if (map.nomads || map.civilizations)
 						options = list("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
 						if (!default)

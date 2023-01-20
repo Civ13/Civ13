@@ -457,7 +457,7 @@
 	icon_state = "aeolipile_on"
 /obj/structure/props/engineprops/reactor
 	name = "reactor housing"
-	desc = "A reactor housing for nuklear fission/fussion."
+	desc = "A reactor housing for nuclear fission/fussion."
 	icon_state = "reactor_3"
 /obj/structure/props/engineprops/big
 	name = "large engine"
