@@ -38,7 +38,7 @@
 
 /obj/item/weapon/grenade/dropped(mob/user)
 	. = ..()
-	if(ishuman(user) && on)
+	if(ishuman(user) && active)
 		var/mob/living/human/H = user
 		H.throw_mode_off()
 
@@ -199,7 +199,7 @@
 
 /obj/item/weapon/grenade/dynamite/dropped(mob/user)
 	. = ..()
-	if(ishuman(user) && on)
+	if(ishuman(user) && active)
 		var/mob/living/human/H = user
 		H.throw_mode_off()
 
