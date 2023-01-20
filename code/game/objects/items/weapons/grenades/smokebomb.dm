@@ -95,8 +95,9 @@
 						activate(user)
 						add_fingerprint(user)
 						if (ishuman(user))
-							var/mob/living/human/C = user
-							C.throw_mode_on()
+							var/mob/living/human/H = user
+							if(istype(H) && !H.in_throw_mode)
+								H.throw_mode_on()
 						triggered = TRUE
 						sleep(500)
 						new new_type(get_turf(src))
@@ -118,8 +119,9 @@
 						activate(user)
 						add_fingerprint(user)
 						if (ishuman(user))
-							var/mob/living/human/C = user
-							C.throw_mode_on()
+							var/mob/living/human/H = user
+							if(istype(H) && !H.in_throw_mode)
+								H.throw_mode_on()
 						triggered = TRUE
 						sleep(500)
 						new new_type(get_turf(src))
@@ -141,8 +143,9 @@
 						activate(user)
 						add_fingerprint(user)
 						if (ishuman(user))
-							var/mob/living/human/C = user
-							C.throw_mode_on()
+							var/mob/living/human/H = user
+							if(istype(H) && !H.in_throw_mode)
+								H.throw_mode_on()
 						triggered = TRUE
 						sleep(500)
 						new new_type(get_turf(src))
@@ -153,8 +156,9 @@
 			activate(user)
 			add_fingerprint(user)
 			if (ishuman(user))
-				var/mob/living/human/C = user
-				C.throw_mode_on()
+				var/mob/living/human/H = user
+				if(istype(H) && !H.in_throw_mode)
+					H.throw_mode_on()
 
 /obj/item/weapon/grenade/smokebomb/signal/prime(mob/living/human/user as mob)
 	if (active)

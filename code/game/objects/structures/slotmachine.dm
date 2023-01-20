@@ -81,7 +81,7 @@
 
 /obj/machinery/slot_machine/attackby(obj/item/I, mob/living/user)
 	if(istype(I, /obj/item/stack/money/dollar))
-		to_chat(user, span_notice("You insert [I.value] dollars into [src]'s slot!"))
+		to_chat(user, SPAN_NOTICE("You insert [I.value] dollars into [src]'s slot!"))
 		balance += I.value
 		qdel(I)
 	else
@@ -138,7 +138,7 @@
 	var/the_name
 	if(user)
 		the_name = user.real_name
-		visible_message(span_notice("[user] pulls the lever and the slot machine starts spinning!"))
+		visible_message(SPAN_NOTICE("[user] pulls the lever and the slot machine starts spinning!"))
 	else
 		the_name = "Someone"
 
@@ -222,7 +222,7 @@
 		give_money(SMALL_PRIZE)
 
 	else if(linelength == 3)
-		to_chat(user, span_notice("You win three free games!"))
+		to_chat(user, SPAN_NOTICE("You win three free games!"))
 		balance += SPIN_PRICE * 4
 		money = max(money - SPIN_PRICE * 4, money)
 

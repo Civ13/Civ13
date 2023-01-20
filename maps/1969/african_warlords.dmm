@@ -380,7 +380,7 @@
 "hp" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/pill/pervitin,/obj/item/weapon/reagent_containers/pill/pervitin,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "hq" = (/obj/structure/shelf,/obj/item/stack/material/hemp,/obj/item/stack/material/hemp,/turf/floor/wood,/area/caribbean/roofed/jungle)
 "hr" = (/obj/item/flashlight/flare,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
-"hs" = (/obj/item/flashlight/flare/nighttime,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"hs" = (/obj/item/flashlight/flare/alwayson,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "ht" = (/obj/item/flashlight/tiki_torch/on/anchor,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "hu" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/table/wood,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "hv" = (/obj/structure/props/sofa,/turf/floor/wood,/area/caribbean/roofed/jungle)

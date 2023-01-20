@@ -117,8 +117,7 @@
 	icon_state = "oldlamp"
 	anchored = FALSE
 	unlimited = TRUE
-	fuel = 100000
-	unlimited = TRUE
+	fuel = INFINITY
 
 /obj/item/flashlight/lamp/littlelamp
 	name = "small lamp"
@@ -126,7 +125,7 @@
 	off_state = "littlelamp"
 	icon_state = "littlelamp"
 	unlimited = TRUE
-	fuel = 100000
+	fuel = INFINITY
 
 /obj/item/flashlight/lamp/littlelamp/desklamp
 	name = "desk lamp"
@@ -134,7 +133,7 @@
 	off_state = "lampdesk"
 	icon_state = "lampdesk"
 	unlimited = TRUE
-	fuel = 100000
+	fuel = INFINITY
 
 /obj/item/flashlight/lantern/on/anchored
 	on_state = "lantern-on"
