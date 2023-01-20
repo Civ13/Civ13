@@ -1626,7 +1626,7 @@
 	worn_state = "64b7"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 70, arrow = 67, gun = 73, energy = 18, bomb = 65, bio = 20, rad = FALSE)
+	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
 /obj/item/clothing/under/ukraine
 	name = "ACU pattern uniform"
