@@ -611,7 +611,7 @@
 	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left,/obj/structure/bed/chair/gunner),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 5970}),
-	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/bed/chair/loade),
+	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/bed/chair/loader),
 	"3,3" = list(/obj/structure/vehicleparts/frame/omw22_2/left),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb, /obj/structure/engine/internal/diesel/premade/v12),
