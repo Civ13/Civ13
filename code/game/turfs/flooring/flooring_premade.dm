@@ -242,6 +242,8 @@
 	return ...
 
 /turf/floor/dirt/proc/soil_nutrition_recover()
+	if(!istype(src, /turf/floor/dirt)) // If its not a dirt tile, do nothing and kills the recover for src
+		return
 	spawn(12000) // Every 20 minutes the soil will recover
 		if(soil_nutrition < max_soil_nutrition)
 			if (!locate(/obj/structure/farming/plant) in src) // Soil recovers when no farming plants
