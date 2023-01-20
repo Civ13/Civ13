@@ -1234,8 +1234,9 @@ client/proc/debug_variables_map()
 	var/num = input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", 0) as num
 	if (!isnum(num) || num<0)
 		return
-	set_global_radiation(num)
-	world.log << "[usr] set the worlds radiation to [num]."
+	else
+		set_global_radiation(num)
+		world.log << "[usr] set the worlds radiation to [num]."
 
 /datum/admins/proc/set_global_pollution()
 	set category = "Debug"
@@ -1245,8 +1246,9 @@ client/proc/debug_variables_map()
 	var/num = input(usr, "Enter what you want the world's pollution to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Pollution", 0) as num
 	if (!isnum(num) || num<0)
 		return
-	set_global_pollution(num)
-	world.log << "[usr] set the worlds pollution to [num]."
+	else
+		set_global_pollution(num)
+		world.log << "[usr] set the worlds pollution to [num]."
 
 /datum/admins/proc/zombiemechanic()
 	set category = "Fun"
