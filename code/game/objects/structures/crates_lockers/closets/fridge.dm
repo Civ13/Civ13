@@ -68,3 +68,10 @@
 /obj/structure/closet/fridge/icebox
 	name = "ice box"
 	powerneeded = 0
+
+/obj/structure/closet/fridge/icecreamcooler
+	name = "icecream cooler"
+	icon_state = "icecream_cooler1"
+	icon_closed = "icecream_cooler"
+	icon_opened = "icecream_cooler_open"
+	powerneeded = 0
