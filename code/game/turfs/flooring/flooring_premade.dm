@@ -239,7 +239,7 @@
 
 /turf/floor/dirt/New()
 	soil_nutrition_recover() // Starts soil nutrition recover
-	return ...
+	return ..()
 
 /turf/floor/dirt/proc/soil_nutrition_recover()
 	if(!istype(src, /turf/floor/dirt)) // If its not a dirt tile, do nothing and kills the recover for src
