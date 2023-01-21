@@ -369,8 +369,8 @@
 "he" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
 "hf" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "hg" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barricade/steel,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"hh" = (/obj/structure/bed/bedroll,/mob/living/simple_animal/civilian,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"hi" = (/obj/structure/bed/bedroll,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/mob/living/simple_animal/civilian,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
+"hh" = (/obj/structure/bed/bedroll,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
+"hi" = (/obj/structure/bed/bedroll,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
 "hj" = (/obj/structure/barricade/vertical,/obj/structure/barricade/steel,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
 "hk" = (/obj/structure/table/modern/flipped{dir = 8},/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
 "hl" = (/obj/structure/table/modern/table,/obj/item/ammo_magazine/mosinbox,/obj/item/weapon/gun/projectile/boltaction/mosin,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
@@ -653,7 +653,6 @@
 "mC" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mD" = (/obj/structure/iv_drip,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mE" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/item/violin,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
-"mF" = (/mob/living/simple_animal/civilian,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
 "mG" = (/obj/item/weapon/storage/ammo_can/german_mg,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "mH" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mI" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/structure/window/barrier/sandbag,/obj/structure/barricade/steel,/obj/structure/barricade/horizontal,/obj/structure/barbwire,/turf/floor/wood,/area/caribbean/roofed/temperate)
@@ -717,15 +716,13 @@
 "nO" = (/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "nP" = (/obj/structure/closet/cabinet,/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "nQ" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
-"nR" = (/obj/structure/bed/bedroll,/mob/living/simple_animal/civilian,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
-"nS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/bed/bedroll,/mob/living/simple_animal/civilian,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
+"nS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/bed/bedroll,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "nT" = (/obj/item/weapon/bedsheet,/obj/structure/bed/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "nU" = (/obj/structure/closet/cabinet,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "nV" = (/obj/structure/bed/bedroll,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "nW" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/structure/bed/bedroll,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "nX" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "nY" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/box/canned,/obj/item/weapon/storage/box/canned,/obj/item/weapon/storage/ww2,/obj/item/weapon/storage/ww2,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"nZ" = (/mob/living/simple_animal/civilian,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "oa" = (/obj/covers/brick_wall,/obj/covers/brick_wall,/obj/item/weapon/fire_extinguisher/ww2,/turf/wall/brick,/area/caribbean/roofed/temperate)
 "ob" = (/obj/item/weapon/fire_extinguisher/ww2,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "oc" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/item/weapon/storage/ww2,/turf/floor/carpet/pinkcarpet,/area/caribbean/roofed/temperate)
@@ -817,7 +814,7 @@ aoafaoaoaoaofNdEdEfjfcfcfcfcfcfcfcfcfcgAgCgDeVfcfcfcfcfcfceVdEdEftgEgEgEgFgIgEgE
 afaoaoafaffTgqgKgOfcfcfcgQfcgQgRgQfcfcgAfcgDeVfcgwgwgwfcfceVdEgSgUgEgEgEgXgIgEgEgEfcgJeHduaoaofNduaffNcBaoafkVcBaoafapapaqaqaqaqaqaqapapbzao
 aoafafaoaffTgqgKgOfcfcdEnbhedEdEdEgSfcfcfcgZfcfcfcfcfcfcfceVdEdEhcgEhdgEgEhegEgEgEgEhfhggWcBaffTduafowcBaoaffToxafafapapaqaqaqaqaqaqapapafaJ
 aoafaoafaofTgqgKgOfcfcdEhhgEhdgEhidEgAfcfcgDfcfcfcfcfcfcfceVdEdEfcgEhjhkgXgIgEhlhmgEhfhggWcBaffTcBeujgafaoaofTduafaoapapaqaqaqaqaqaqapapdQdQ
-aoafaoafaoaofNeHeHhnhodEhhmFgEgEhhdEfdhpnegDfchqfcfcfcfcfcfcgZfcfcgEhjhkgXgIgEgEgEgEhfhggWcBafaofUeuotaoaoafaoafafaoapapaqaqaqaqaqaqapapaoao
+aoafaoafaoaofNeHeHhnhodEhhgEgEgEhhdEfdhpnegDfchqfcfcfcfcfcfcgZfcfcgEhjhkgXgIgEgEgEgEhfhggWcBafaofUeuotaoaoafaoafafaoapapaqaqaqaqaqaqapapaoao
 aoafafaoaoafcPdEdEdEdEdEdEdEbSdEdEdEdEdEdEdEdEdEdEfhfcfcfcgSdEdEfchqhrgAgJguhshshthsgJdEduaoaoafaoaoaofNduafaoafaoaoapapaqaqaqaqaqaqapapafaf
 afgHgHhxgHgGgydEdEdEdEdEdEdEdEdEdEdEdEnbdEdEdEgSdEgwfcfcgwdEdEdEdEdEdEdEdEdEdEdEdEdEdEdEcBafafafoKaoaffVdueuaofNcBaoapapaqaqaqaqaqaqapapafaf
 affJfJdLfJhygydEdEdEdEhuhvhwhwhuhGhKfcfcfdhLhMhNhOfcfcfcfcfcdEdEdEdEdEdEdEdEdEdEdEdEdEdEgycPaoafaoiSaofNduafeufTcBafapapaqaqaqaqaqaqapapafaf
@@ -881,7 +878,6 @@ afaoaoafafaoafeueuafafafeueuaoaoafafafafaoaoafeudNcoaoaophapapaqaqaqaqaqaqapapaf
 afaoafafeueuaoeueuaoeuaoaoaoaoaoaoaoaoaoaoeuaoafdTcrafaopaapapaqaqaqaqaqaqapiViUbgaoakalajajajajajajajamandWaodWafarildXedlQlRlRlQedlYedimaQ
 bpafaoaoaoafafafafaoeueueueuafafafafafafaoaoafafdTcsmGafecapapaqaqaqaqaqaqiViViUiUafcMenbcaGaTaFbdajbceogMgLgNcnhbepbRbRbRekeklTlTbRbRememes
 "}
-
 (1,1,2) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -905,15 +901,15 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaeLeLiEeLeLeLiEeLdEdEiEeLeLeLiEeLeLeLiEeLeLeLiEeLeLeLeLeLeLeLkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaadEeLlFeSlHeLlSlSmceLmimjmjeLmlmzmzeLmjmjmAeLmJmzmzeLeLeLeLeLeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaeLeLmhfcfceLmKnCnDeLnEnjnFeLnGnZnIeLnJnjmdeLnLnHnMeLngnhneeLeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaeLeLmhfcfceLmKnCnDeLnEnjnFeLnGnHnIeLnJnjmdeLnLnHnMeLngnhneeLeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaeLeLeLgZeLeLeLgZeLnceLgZeLeLeLgZeLeLeLgZeLeLeLgZeLkcinneneeLeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaakdmYfcfcfcfcfcfcfcfcfcfcfcjffcfcfcjffcfcfcjffcfckekfinfcfchfkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaakdmYhqfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfchfkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaadEdEdEdEgUfcfcfcfcfcfchshsfcfcfcfcfcfcfcfcfcmCmCmHkfinfcfceLeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaadEdEdEdEmUfdnnmWnKfcfcfcfcdEgSgZdEdEdEgZdEdEdEmIdEkhinfcgCeLeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaadEdEdEdEdEdEdEdEdEdEgSfhfcdEgxnOnPdEnQnlnydEnRnSnRdEinfcfchfkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaadEdEdEdEdEdEdEdEnbdEdEfcfcdEnTnOnOdEnlnUnkdEnRnRnVdEfcfcfchfkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaadEdEdEdEhuhvkikihuhGhKfcfcdEdEdEdEdEdEdEdEdEnRnHnWdEfcfcfcoaeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaadEdEdEdEdEdEdEdEdEdEgSfhfcdEgxnOnPdEnQnlnydEnVnSnVdEinfcfchfkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaadEdEdEdEdEdEdEdEnbdEdEfcfcdEnTnOnOdEnlnUnkdEnVnVnVdEfcfcfchfkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaadEdEdEdEhuhvkikihuhGhKfcfcdEdEdEdEdEdEdEdEdEnVnHnWdEfcfcfcoaeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaadEdEdEdEhuhukikihuhGhKfcfceLlAfcgCeLmPnXnleLnVnHnHeLfcfcfceLeLkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaadEdEdEdEkjkjkkkliskmhKfcfceLmmfclBeLnNnlnyeLnHnHnIeLfcfcfchfkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaadEdEdEdEididknkriskmhKfcfceLeLgZeLeLeLgZeLeLeLgZeLeLhQfchQiFkgkbkbkbkbkbkbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
