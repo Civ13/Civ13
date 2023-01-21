@@ -128,8 +128,21 @@
 		user.put_in_hands(O)
 		O.add_fingerprint(user)
 
+	if (!H.ear_deaf)
+		H.ear_deaf = max(H.ear_deaf, TRUE)
 	if (istype(src,/obj/item/clothing/ears/offear))
 		qdel(src)
+
+/obj/item/clothing/ears/Destroy(mob/user as mob)
+	if (!user) return
+
+	if (loc != user || !istype(user,/mob/living/human))
+		..()
+		return
+
+	var/mob/living/human/H = user
+	if (H.ear_deaf)
+		H.ear_deaf = max(H.ear_deaf, FALSE)
 
 /obj/item/clothing/ears/update_clothing_icon()
 	if (ismob(loc))

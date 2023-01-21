@@ -6,7 +6,7 @@
 	slot_flags = SLOT_SHOULDER
 	var/load_delay = 10
 	var/release_force = 0
-	var/throw_distance = 10
+	var/throw_distance = 18
 	fire_sound_text = "a launcher firing"
 
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
@@ -195,6 +195,102 @@
 
 /obj/item/weapon/gun/launcher/rocket/panzerfaust/attack_hand(mob/user)
 	..()
+
+// Flare gun
+
+/obj/item/weapon/gun/launcher/flaregun
+	name = "flare gun"
+	desc = "A flare gun used in emergency or combat situations for signaling to other people are asking for help."
+	icon = 'icons/obj/guns/pistols.dmi'
+	icon_state = "flaregun"
+	item_state = "flaregun"
+	fire_sound = 'sound/weapons/guns/fire/flaregun.ogg'
+	secondary_action = TRUE
+
+	var/open = FALSE
+	var/recentpump = FALSE // to prevent spammage
+	var/max_flares = 1
+	var/list/flares = new/list()
+
+	load_delay = 20
+	release_force = 0
+	throw_distance = 10
+
+/obj/item/weapon/gun/launcher/flaregun/update_icon()
+	..()
+	if (open)
+		icon_state = "flaregun_open"
+		if (flares.len)
+			icon_state = "flaregun_open_loaded"
+	else
+		icon_state = "flaregun"
+
+/obj/item/weapon/gun/launcher/flaregun/attack_self(mob/living/user as mob)
+	if (world.time >= recentpump + 5)
+		if (open)
+			open = FALSE
+			user << SPAN_NOTICE("You close \the [src].")
+			update_icon()
+		else
+			open = TRUE
+			user << SPAN_NOTICE("You break open \the [src].")
+			update_icon()
+		recentpump = world.time
+
+/obj/item/weapon/gun/launcher/flaregun/attackby(obj/item/I, mob/user as mob)
+	if (open)
+		if(istype(I, /obj/item/flashlight/flare))
+			var/obj/item/flashlight/flare/F = I
+			if(F.on)
+				user << SPAN_WARNING("You can't put a lit flare in [src]!")
+				return
+			if(!F.fuel)
+				user << SPAN_WARNING("You can't put a burnt out flare in [src]!")
+				return
+			if(flares.len < max_flares && do_after(user, load_delay, src, can_move = TRUE))
+				user.remove_from_mob(I)
+				I.loc = src
+				flares += I
+				playsound(user, 'sound/weapons/guns/interact/shotgun_insert.ogg', 25, TRUE)
+				user.visible_message("[user] load \the [F] into \the [src].",SPAN_NOTICE("You load \the [F] into \the [src]."))
+				update_icon()
+			else
+				user << SPAN_WARNING("\The [src] is already loaded!")
+		else
+			user << SPAN_WARNING("That's not a flare!")
+	else
+		user << SPAN_WARNING("\The [src] is closed!")
+
+/obj/item/weapon/gun/launcher/flaregun/consume_next_projectile()
+	if(flares.len)
+		var/obj/item/flashlight/flare/I = flares[1]
+		var/obj/item/flashlight/flare/on/M = new /obj/item/flashlight/flare/on(src)
+		if (ishuman(src.loc))
+			M.dir = src.loc.dir
+		flares -= I
+		return M
+	return null
+
+/obj/item/weapon/gun/launcher/flaregun/special_check(mob/user)
+	if (open)
+		user << "<span class='warning'>You can't fire \the [src] while it is break open!</span>"
+		return FALSE
+	return TRUE
+
+/obj/item/weapon/gun/launcher/flaregun/handle_post_fire(mob/user, atom/target)
+	log_game("[key_name_admin(user)] used a flare gun ([src.name]) at [target].")
+	update_icon()
+	..()
+
+/obj/item/weapon/gun/launcher/flaregun/secondary_attack_self(mob/living/human/user)
+	if (secondary_action)
+		if (!open && flares.len > 0)
+			user.visible_message(SPAN_WARNING("[user] aims their [src] into the air"),SPAN_WARNING("You aim your [src] into the air."))
+			if (do_after(user, 50, src, can_move = TRUE))
+				var/obj/item/flashlight/flare/I = flares[1]
+				flares -= I
+				playsound(user, 'sound/weapons/guns/fire/flaregun.ogg', 90, TRUE)
+				user.visible_message(SPAN_WARNING("[user] fires a [I] into the air!"),SPAN_WARNING("You fire a [I] into the air!"))
 
 //MLAW
 /obj/item/weapon/gun/launcher/rocket/m72law

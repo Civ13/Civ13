@@ -272,7 +272,7 @@
 				A.weather_intensity = weather_intensity
 			if (global_pollution >= 2000)
 				if (map.nomads || map.civilizations )
-					A.icon_state = "smog"
+					A.icon_state = "fog"
 					A.weather = WEATHER_SMOG
 			if (global_radiation >= 300)
 				A.icon_state = "rad_[A.icon_state]"
