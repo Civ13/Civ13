@@ -637,15 +637,17 @@ Shinobi's unfinished welder stuff - siro*/
 	w_class = 1.0
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
+	var/time = 100
+	var/max_offset = 6
 
 /obj/item/weapon/compass/attack_self(mob/user as mob)
-	var/offset = rand(-5,5)
+	var/offset = rand(-max_offset,max_offset)
 	var/pos_x = user.x + offset
 	var/pos_y = user.y + offset
 	var/pos_dir_x = "-UNKNOWN"
 	var/pos_dir_y = "UNKNOWN"
 	var/pos_message = "You're in the [pos_dir_y][pos_dir_x] of the area."
-	if (do_after(user,60,src))
+	if (do_after(user,time,src))
 		if ((pos_x > round(world.maxx/2)+15 || pos_x < round(world.maxx/2)-15) && (pos_y > round(world.maxy/2)+15 || pos_y < round(world.maxy/2)-15))
 			if (pos_x != round(world.maxx/2))
 				if (pos_x > round(world.maxx/2))
@@ -667,6 +669,11 @@ Shinobi's unfinished welder stuff - siro*/
 	desc = "A tablet programmed specifically to navigate people through rough terrain and to let them know where they are."
 	icon_state = "compass_modern"
 	slot_flags = SLOT_BELT
+	time = 3
+	max_offset = 2
+/obj/item/weapon/compass/modern/tacmap
+	name = "tactical map"
+	desc = "A tablet programmed specifically to navigate combatants through rough terrain and to let them know where they are."
 
 //////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/lockpick
