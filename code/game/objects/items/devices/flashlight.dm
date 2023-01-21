@@ -114,6 +114,7 @@
 	fuel = 0
 
 	var/burnt_out = FALSE
+	var/projectile_type  = /obj/item/flashlight/flare/on
 
 	var/show_flame = TRUE
 	var/flame_tint = "#ffcccc"
@@ -207,16 +208,30 @@
 /obj/item/flashlight/flare/proc/activate_signal(mob/living/carbon/human/user)
 	return
 
-/obj/item/flashlight/flare/white
-	name = "white phosphorus flare"
-	desc = "A white phosphorus flare. There are instructions on the side reading 'pull cord, make light'. Lasts for about 5 minutes. This seems dangerous..."
-	icon_state = "flareW"
-
 /obj/item/flashlight/flare/on/New()
 	. = ..()
 	turn_on()
-
 /obj/item/flashlight/flare/alwayson/New()
 	..()
 	fuel = INFINITY
 	turn_on()
+
+/obj/item/flashlight/flare/white
+	name = "white phosphorus flare"
+	desc = "A white phosphorus flare. There are instructions on the side reading 'pull cord, make light'. Lasts for about 5 minutes. This seems dangerous..."
+	icon_state = "flareW"
+	flame_base_tint = "#eeeeee"
+	projectile_type = /obj/item/flashlight/flare/white/on
+/obj/item/flashlight/flare/white/on/New()
+	. = ..()
+	turn_on()
+
+/obj/item/projectile/flare
+	icon_state = "flare"
+	damage = 10
+	damage_type = BURN
+/obj/item/projectile/flare/on_impact(mob/living/human/M as mob)
+	ignite_turf_lowchance(get_turf(M),3,70)
+	spawn (0.01)
+		qdel(src)
+	..()

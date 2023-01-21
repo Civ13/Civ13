@@ -653,6 +653,16 @@
 	multiple_sprites = TRUE
 	belt = TRUE
 
+/obj/item/ammo_magazine/flare
+	name = "flare casing pouch (.50 BMG)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/flare
+	caliber = "flare"
+	max_ammo = 8
+	weight = 0.8
+	multiple_sprites = TRUE
+	pouch = TRUE
+
 /obj/item/flare_pouch
 	name = "flare pouch"
 	desc = "A pouch for holding flares."
