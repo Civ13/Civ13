@@ -279,7 +279,6 @@
 
 		if (istype(projectile, /obj/item/projectile))
 			var/obj/item/projectile/P = projectile
-
 			if (istype(P.firedfrom, /obj/item/weapon/gun/projectile))
 				var/obj/item/weapon/gun/projectile/proj = P.firedfrom
 				P.KD_chance = proj.KD_chance
@@ -372,7 +371,6 @@
 	var/obj/item/projectile/P = projectile
 	if (!istype(P))
 		return //default behaviour only applies to true projectiles
-
 	//default point blank multiplier
 	var/damage_mult = 1.33
 

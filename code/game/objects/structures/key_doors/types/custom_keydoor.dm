@@ -61,11 +61,13 @@
 	material = "steel"
 	health = 400
 	desc = "A large set of reinforced steel doors, it has a lock."
+	breachable = FALSE
 
 /obj/structure/simple_door/key_door/custom/doubledoor/silver
 	name = "large silver double"
 	material = "silver"
 	desc = "A large set of shimmering silver doors, it has a lock."
+	breachable = FALSE
 
 /obj/structure/simple_door/key_door/custom/doubledoor/gold
 	name = "large gold double"
