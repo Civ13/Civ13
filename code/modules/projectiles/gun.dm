@@ -278,7 +278,6 @@
 		var/disp = firemode.dispersion[min(i, firemode.dispersion.len)]
 
 		if (istype(projectile, /obj/item/projectile))
-
 			var/obj/item/projectile/P = projectile
 			if (istype(P.firedfrom, /obj/item/weapon/gun/projectile))
 				var/obj/item/weapon/gun/projectile/proj = P.firedfrom
