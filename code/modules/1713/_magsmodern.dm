@@ -712,7 +712,7 @@
 		if (stored.len > 0)
 			icon_state = "[initial(icon_state)]-[stored.len]"
 		else 
-			icon_state = "[initial(icon_state)]-0"
+			icon_state = "flarepouch-0"
 
 /obj/item/flare_pouch/attackby(var/obj/item/W, mob/user as mob)
 	if (W == src)
@@ -741,4 +741,5 @@
 	flare_type = /obj/item/flashlight/flare
 
 /obj/item/flare_pouch/white_full
+	icon_state = "flarepouchW"
 	flare_type = /obj/item/flashlight/flare/white
