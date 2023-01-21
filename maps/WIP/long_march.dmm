@@ -419,7 +419,7 @@
 "ic" = (/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/nomads{ambience = list("sound/ambience/woodland1.ogg")})
 "id" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/woodland1.ogg")})
 "ie" = (/obj/item/weapon/map,/obj/item/weapon/map,/obj/item/weapon/map,/turf/floor/dirt,/area/caribbean/void/caves)
-"if" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/turf/floor/dirt,/area/caribbean/void/caves)
+"if" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/obj/effect/landmark{name = "JoinLateRUCap"},/turf/floor/dirt,/area/caribbean/void/caves)
 "ig" = (/obj/item/clothing/head/helmet/ww/stahlhelm,/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/item/clothing/head/helmet/ww/stahlhelm{desc = "A german helmet"},/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/void/caves)
 "ih" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/woodland1.ogg")})
 "ii" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/nomads{ambience = list("sound/ambience/woodland1.ogg")})
@@ -450,6 +450,8 @@
 "iH" = (/obj/item/weapon/gun_cleaning_kit,/obj/item/weapon/gun_cleaning_kit,/turf/floor/grass,/area/caribbean/nomads{ambience = list("sound/ambience/woodland1.ogg")})
 "DN" = (/obj/structure/vehicle/carriage{dir = 4; icon_state = "simple_carriage2"},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/two{ambience = list("sound/ambience/woodland1.ogg")})
 "IV" = (/obj/map_metadata/long_march,/turf/floor/grass,/area/caribbean/nomads{ambience = list("sound/ambience/woodland1.ogg")})
+"UY" = (/obj/effect/landmark{name = "JoinLateRUDoc"},/turf/floor/dirt/dark_dirt,/area/caribbean/void/caves)
+"Wg" = (/obj/effect/landmark{name = "JoinLateRUDoc"},/turf/floor/dirt,/area/caribbean/void/caves)
 
 (1,1,1) = {"
 atatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatataqaqaqaqaqaqaqaqaqaqaqaqaqarasarasaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqatatatatatatatatatatatatatatatatatatatat
@@ -543,8 +545,8 @@ bpaCaCaCaCaCaCaCaCaCaRaCaCaCaCaCaCaBakawauauauauauauauaAaAaAaAaAaAaAakakakakakak
 bpaRaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaBakawauaBaBaBaBiDauaAaAaAaAaAaAakakakakakakakakaiaiaiagaiagagagagagagagagagahahahahahagagagagagagagagagagaiaiaiagagejagagajajajajajagagagagagaiagaiaiaiaieseseseseses
 bpaCaCbnaCaDaDaCblaCieaCaCaCaCaCaZaBbkaAaAaBaCcRaCauauaAaAaAakakakakakakajajakaiaiaiaiaiagagagagagagagagagagagagahahahagagagagagagagagagagaiaiaiaiagagagagajajajajagagagagagagagagaiaiaiaiaiaiesesesesag
 bpaCaCboaCaDaDaCblaCbjbjaCaCaCaSakaBaBaBbhaBaCiEifauauaAakakakakakakajajajajajajaiaiaiaiagagagagagagagagagagagahahahahahagagagagagageOagagagaiaiaiaiagagagajajagagagagagaiaiaiaiaiaiaiaiesaiaiaiesesagai
-bpaCaRaCaCaCaCaCaCaCaCaCaCaVaWakakakbkaAaAaBaCixaCiDauakakakakakajajajajajajajajajaiaiagagagagagagagagagagagagahahahejahahagagagagagagagagagagaiagaiagagagagagagagaiagezagagagaiaiaiesaiaiaiagekagaiaiai
-ivaCaCaCaCaCaCaCaCaCbbaBaXakakakakakaAaAaAauauauauawawakakakakakajajajajajajajajajaiaiagejagagagagagagagezagahahahahahahagagagagagagagagaiaiesagaiagaiagagagagagaiagagagagaiaiaiaiesesesagaiaiagaiaiaiag
+bpaCaRaCaCaCaCaCaCaCaCWgaCaVaWakakakbkaAaAaBaCixaCiDauakakakakakajajajajajajajajajaiaiagagagagagagagagagagagagahahahejahahagagagagagagagagagagaiagaiagagagagagagagaiagezagagagaiaiaiesaiaiaiagekagaiaiai
+ivaCaCaCaCaCaCaCaCaCbbUYaXakakakakakaAaAaAauauauauawawakakakakakajajajajajajajajajaiaiagejagagagagagagagezagahahahahahahagagagagagagagagaiaiesagaiagaiagagagagagaiagagagagaiaiaiaiesesesagaiaiagaiaiaiag
 aEaFaEaFaIaYfgaGaHaMaNbaakakakakaAaAaAaAaAauawawawawakakakakaiaiaiaiajajajajajajajajaiagagagagagagagagagagahahagahahahahagagagagagagagaiaiaiaiesesaiaiaiagagagaiagagagagagaiaiaiesesesesaiagagaiaiaiagag
 akakakakakakakakakakakakakakauauauauauawawawawakakakakakaiaiaiaiaiaiaiaiajajajajajajaiagagagezagagagagahahahahagahahahahagagagagagagaiaiaiaiaiesesesaiaiaiaiagagaiaiaiaiaiaiaiesesesesaiaiaiaiaiaiagagag
 auauauauauauauauauauauauauauauauauauawawawawakakakakaiaiaiaiaiaiaiaiaiagagagajajajajajagagagagagagagagahahahagahahahahagagagagagagaiaiaiaiaiaiaiagaiagaiaiaiaiaiaiesesesagaiaiaiaiaiagageOagagagagagagag
