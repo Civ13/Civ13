@@ -278,8 +278,8 @@
 		var/disp = firemode.dispersion[min(i, firemode.dispersion.len)]
 
 		if (istype(projectile, /obj/item/projectile))
-			var/obj/item/projectile/P = projectile
 
+			var/obj/item/projectile/P = projectile
 			if (istype(P.firedfrom, /obj/item/weapon/gun/projectile))
 				var/obj/item/weapon/gun/projectile/proj = P.firedfrom
 				P.KD_chance = proj.KD_chance
@@ -287,7 +287,6 @@
 		process_accuracy(projectile, user, target, accuracy_mod, disp)
 
 		if (pointblank)
-			visible_message("This should be hitting")
 			if (istype(projectile, /obj/item/projectile))
 				var/obj/item/projectile/P = projectile
 				P.KD_chance = 100
@@ -373,14 +372,6 @@
 	var/obj/item/projectile/P = projectile
 	if (!istype(P))
 		return //default behaviour only applies to true projectiles
-
-	var/obj/structure/simple_door/key_door/door = target
-	if (istype(door) && istype(src, /obj/item/weapon/gun/projectile/shotgun/pump) && istype(projectile, /obj/item/projectile/bullet/pellet/buckshot) && door.keyslot.locked)
-		door.keyslot.locked = FALSE
-		door.state = TRUE
-		door.update_icon()
-		visible_message("<span class='warning'>[user] breaks the lock on the [door]!</span>")
-
 	//default point blank multiplier
 	var/damage_mult = 1.33
 
