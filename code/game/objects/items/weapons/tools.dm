@@ -639,10 +639,28 @@ Shinobi's unfinished welder stuff - siro*/
 	throwforce = WEAPON_FORCE_HARMLESS
 
 /obj/item/weapon/compass/attack_self(mob/user as mob)
-	var/pos_x = user.x + rand(-5,5)
-	var/pos_y = user.y + rand(-5,5)
+	var/offset = rand(-5,5)
+	var/pos_x = user.x + offset
+	var/pos_y = user.y + offset
+	var/pos_dir_x = "-UNKNOWN"
+	var/pos_dir_y = "UNKNOWN"
+	var/pos_message = "You're in the [pos_dir_y][pos_dir_x] of the area."
 	if (do_after(user,60,src))
-		usr << "You estimate your position to be [pos_x];[pos_y]."
+		if ((pos_x > round(world.maxx/2)+15 || pos_x < round(world.maxx/2)-15) && (pos_y > round(world.maxy/2)+15 || pos_y < round(world.maxy/2)-15))
+			if (pos_x != round(world.maxx/2))
+				if (pos_x > round(world.maxx/2))
+					pos_dir_x = "-EAST"
+				else
+					pos_dir_x = "-WEST"
+			if (pos_y != round(world.maxy/2))
+				if (pos_y > round(world.maxy/2))
+					pos_dir_y = "NORTH"
+				else
+					pos_dir_y = "SOUTH"
+			pos_message = "You're in the [pos_dir_y][pos_dir_x] of the area."
+		else
+			pos_message = "You're in the CENTER of the area."
+		usr << "You estimate your position to be [pos_x];[pos_y]. [pos_message]"
 
 
 //////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
