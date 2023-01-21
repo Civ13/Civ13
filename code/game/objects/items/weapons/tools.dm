@@ -628,6 +628,23 @@ Shinobi's unfinished welder stuff - siro*/
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	w_class = 1.0
 
+/obj/item/weapon/compass
+	name = "compass"
+	desc = "An instrument containing a magnetized pointer which shows the direction of magnetic north and bearings from it."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "compass"
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	w_class = 1.0
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+
+/obj/item/weapon/compass/attack_self(mob/user as mob)
+	var/pos_x = user.x + rand(-5,5)
+	var/pos_y = user.y + rand(-5,5)
+	if (do_after(user,60,src))
+		usr << "You estimate your position to be [pos_x];[pos_y]."
+
+
 //////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/lockpick
 	name = "lockpick"
