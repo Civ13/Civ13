@@ -2048,9 +2048,9 @@
 				PV = new /obj/effects/premadevehicles/tank/leopard(locate(origin.x+3,origin.y-5,origin.z))
 			if ("Mercedes-Benz G280 Jeep with MG (500)")
 				PV = new /obj/effects/premadevehicles/truck/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
-			if (href_list["vehiclegiver"] == "DAF YA-4442 Supply Truck (400)")
+			if ("DAF YA-4442 Supply Truck (400)")
 				PV = new /obj/effects/premadevehicles/truck/daf(locate(origin.x+3,origin.y-5,origin.z))
-			if (href_list["vehiclegiver"] == "Mercedes-Benz G280 Jeep without MG (200)")
+			if ("Mercedes-Benz G280 Jeep without MG (200)")
 				PV = new /obj/effects/premadevehicles/truck/mercedes(locate(origin.x+3,origin.y-5,origin.z))
 			
 			if ("T-90A Tank (1000)")
