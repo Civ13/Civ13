@@ -418,7 +418,7 @@
 		else
 			if (istype(T, /turf/floor/grass/jungle)) //whyyyyyyy????? don't know, seriously...
 				user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
-				return 
+				return
 			else if (istype(T, /turf/floor/dirt/burned))
 				user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
 				return
@@ -492,13 +492,15 @@
 			playsound(src, 'sound/items/Crowbar.ogg', 80, TRUE)
 			return
 		else if (istype(C, /obj/item/weapon/hammer) && (flooring.flags & TURF_REMOVE_SCREWDRIVER))
-			if (broken || burnt)
+			if (broken || burnt || src.z > 1)
 				return
 			user << "<span class='notice'>You unscrew and remove the [flooring.descriptor].</span>"
 			make_grass()
 			playsound(src, 'sound/items/Screwdriver.ogg', 80, TRUE)
 			return
 		else if (istype(C, /obj/item/weapon/wrench) && (flooring.flags & TURF_REMOVE_WRENCH))
+			if (src.z > 1)
+				return
 			user << "<span class='notice'>You unwrench and remove the [flooring.descriptor].</span>"
 			make_grass()
 			playsound(src, 'sound/items/Ratchet.ogg', 80, TRUE)
