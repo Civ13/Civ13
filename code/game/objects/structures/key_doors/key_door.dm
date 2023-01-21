@@ -1,4 +1,4 @@
-// types that can't break down doors - Kachnov
+ // types that can't break down doors - Kachnov
 var/list/nonbreaking_types = list(
 	/obj/item/clothing,
 	/obj/item/weapon/handcuffs)
@@ -18,6 +18,7 @@ var/list/nonbreaking_types = list(
 	var/unique_door_name = null
 	var/starts_open = FALSE
 	var/next_attack_hand = -1
+	var/breachable = TRUE
 	material = "iron"
 	icon = 'icons/obj/doors/material_doors_leonister.dmi'
 
@@ -204,7 +205,7 @@ var/list/nonbreaking_types = list(
 				return
 	else if (istype(W, /obj/item/weapon/gun/projectile/shotgun/pump))
 		var/obj/item/weapon/gun/projectile/shotgun/pump/pump = W
-		if (istype(pump) && istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) && keyslot.locked && pump.consume_next_projectile())
+		if   (breachable && istype(pump) && istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) && keyslot.locked && pump.consume_next_projectile())
 			keyslot.locked = FALSE
 			update_icon()
 			visible_message("<span class='warning'>[user] breaks the lock on the [src]!</span>")
