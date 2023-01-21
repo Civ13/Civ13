@@ -1103,7 +1103,7 @@
 /obj/item/ammo_casing/shotgun/buckshot
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot."
-	icon_state = "shell-bullet"
+	icon_state = "shell-shell"
 	spent_icon = "shell-casing"
 	projectile_type = /obj/item/projectile/bullet/pellet/buckshot
 
@@ -1135,6 +1135,13 @@
 	icon_state = "dragons-breath-shell"
 	spent_icon = "dragons-breath-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/incendiary
+
+/obj/item/ammo_casing/flare
+	name = "flare shell"
+	desc = "A flare shell."
+	icon_state = "flaregun-shell"
+	spent_icon = "flaregun-spent"
+	projectile_type = /obj/item/projectile/flare
 
 // Lasers
 

@@ -36,6 +36,17 @@
 	F.timer = duration * 10 // So it's in seconds
 	return
 
+/proc/ignite_turf_lowchance(turf/target, duration, damage)
+	for (var/mob/living/HM in target)
+		HM.adjustFireLoss(damage)
+		if (prob(30))
+			HM.fire_stacks += rand(1)
+		HM.IgniteMob()
+	if (prob(30))
+		var/obj/effect/fire/F = new /obj/effect/fire(target)
+		F.timer = duration * 10 // So it's in seconds
+	return
+
 /turf
 	var/explosion_resistance
 

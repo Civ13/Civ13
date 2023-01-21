@@ -200,30 +200,31 @@
 
 /obj/item/weapon/gun/launcher/flaregun
 	name = "flare gun"
-	desc = "A flare gun used in emergency or combat situations for signaling to other people are asking for help."
+	desc = "A flare gun combat situations for signaling to other people are asking for help."
 	icon = 'icons/obj/guns/pistols.dmi'
 	icon_state = "flaregun"
 	item_state = "flaregun"
 	fire_sound = 'sound/weapons/guns/fire/flaregun.ogg'
 	secondary_action = TRUE
 
+	load_delay = 20
+	release_force = 0
+	throw_distance = 16
+
 	var/open = FALSE
 	var/recentpump = FALSE // to prevent spammage
 	var/max_flares = 1
 	var/list/flares = new/list()
-
-	load_delay = 20
-	release_force = 0
-	throw_distance = 10
+	var/good_flare = /obj/item/flashlight/flare
 
 /obj/item/weapon/gun/launcher/flaregun/update_icon()
 	..()
 	if (open)
-		icon_state = "flaregun_open"
+		icon_state = "[initial(icon_state)]_open"
 		if (flares.len)
-			icon_state = "flaregun_open_loaded"
+			icon_state = "[initial(icon_state)]_open_loaded"
 	else
-		icon_state = "flaregun"
+		icon_state = "[initial(icon_state)]"
 
 /obj/item/weapon/gun/launcher/flaregun/attack_self(mob/living/user as mob)
 	if (world.time >= recentpump + 5)
@@ -239,7 +240,7 @@
 
 /obj/item/weapon/gun/launcher/flaregun/attackby(obj/item/I, mob/user as mob)
 	if (open)
-		if(istype(I, /obj/item/flashlight/flare))
+		if(istype(I, good_flare))
 			var/obj/item/flashlight/flare/F = I
 			if(F.on)
 				user << SPAN_WARNING("You can't put a lit flare in [src]!")
@@ -264,7 +265,7 @@
 /obj/item/weapon/gun/launcher/flaregun/consume_next_projectile()
 	if(flares.len)
 		var/obj/item/flashlight/flare/I = flares[1]
-		var/obj/item/flashlight/flare/on/M = new /obj/item/flashlight/flare/on(src)
+		var/obj/item/flashlight/flare/on/M = new I.projectile_type(src)
 		if (ishuman(src.loc))
 			M.dir = src.loc.dir
 		flares -= I
@@ -291,6 +292,40 @@
 				flares -= I
 				playsound(user, 'sound/weapons/guns/fire/flaregun.ogg', 90, TRUE)
 				user.visible_message(SPAN_WARNING("[user] fires a [I] into the air!"),SPAN_WARNING("You fire a [I] into the air!"))
+
+/obj/item/weapon/gun/launcher/flaregun/civilian
+	name = "flare gun"
+	desc = "A flare gun used in emergency situations for signaling to asking for help."
+	icon_state = "flaregun_civ"
+	item_state = "flaregun_civ"
+
+/obj/item/weapon/gun/launcher/flaregun/civilian/attackby(obj/item/I, mob/user as mob)
+	if (open)
+		if(istype(I, good_flare))
+			var/obj/item/ammo_casing/flare/F = I
+			if(flares.len < max_flares && do_after(user, load_delay, src, can_move = TRUE))
+				user.remove_from_mob(I)
+				I.loc = src
+				flares += I
+				playsound(user, 'sound/weapons/guns/interact/shotgun_insert.ogg', 25, TRUE)
+				user.visible_message("[user] load \the [F] into \the [src].",SPAN_NOTICE("You load \the [F] into \the [src]."))
+				update_icon()
+			else
+				user << SPAN_WARNING("\The [src] is already loaded!")
+		else
+			user << SPAN_WARNING("That's not a flare casing!")
+	else
+		user << SPAN_WARNING("\The [src] is closed!")
+
+/obj/item/weapon/gun/launcher/flaregun/civilian/consume_next_projectile()
+	if(flares.len)
+		var/obj/item/ammo_casing/flare/I = flares[1]
+		var/obj/item/projectile/flare/M = new I.projectile_type(src)
+		if (ishuman(src.loc))
+			M.dir = src.loc.dir
+		flares -= I
+		return M
+	return null
 
 //MLAW
 /obj/item/weapon/gun/launcher/rocket/m72law
