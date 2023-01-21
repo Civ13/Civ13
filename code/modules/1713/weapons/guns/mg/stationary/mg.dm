@@ -349,7 +349,7 @@
 			user.remove_from_mob(I)
 			I.loc = src
 			rockets += I
-			user << "You put the rocket in the ATGM."
+			user.visible_message("[user] loads a rocket in the [src].","You load a rocket into the [src]")
 			update_icon()
 		else
 			usr << "The ATGM cannot hold more rockets."
