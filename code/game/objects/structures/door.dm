@@ -281,6 +281,7 @@
 	var/buildstack = /obj/item/stack/rods //the item it is made with.
 	override_opacity = TRUE
 	opacity = FALSE
+	breachable = FALSE
 
 /obj/structure/simple_door/key_door/custom/jail/woodjail/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
