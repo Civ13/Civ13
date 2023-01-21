@@ -668,6 +668,7 @@
 	desc = "A pouch for holding flares."
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "flarepouch"
+	w_class = 1.0
 	var/max = 6
 	var/initial_amount = null
 	var/opened = FALSE

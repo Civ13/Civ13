@@ -104,7 +104,7 @@
 /obj/item/flashlight/flare
 	name = "flare"
 	desc = "A red flare. There are instructions on the side reading 'pull cord, make light'. Lasts for about 5 minutes."
-	w_class = 2.0
+	w_class = 1.0
 	brightness_on = 4 // Pretty bright.
 	light_power = 2
 	light_color = "#e58775"
