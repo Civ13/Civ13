@@ -271,7 +271,7 @@
 		var/mob/living/human/H = user
 		if (H.getStatCoeff("farming")>= 2.2)
 			user << "[src]'s nutrition level is at <b>[soil_nutrition]/[max_soil_nutrition]</b>."
-	return ...
+	return ..()
 
 /turf/floor/dirt/space
 	name = "space"
