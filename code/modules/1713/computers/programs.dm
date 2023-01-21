@@ -1940,7 +1940,7 @@
 	if (href_list["vehiclelist"])
 		var/list/choice
 		switch (user.faction_text)
-			if ("DUTCH")"
+			if ("DUTCH")
 				mainbody = "Current Loadout Points: [dutch_loadout_points]<br>"
 				choice = dutch_choice
 			if ("RUSSIAN")
@@ -1953,7 +1953,7 @@
 	if (href_list["vehiclegiver"])
 		var/found = FALSE
 		switch (user.faction_text)
-			if ("DUTCH")"
+			if ("DUTCH")
 				for(var/turf/T in get_area_turfs(/area/caribbean/supply/dutch))
 					if (found)
 						break
