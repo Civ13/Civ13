@@ -644,6 +644,11 @@ Shinobi's unfinished welder stuff - siro*/
 	if (do_after(user,60,src))
 		usr << "You estimate your position to be [pos_x];[pos_y]."
 
+/obj/item/weapon/compass/modern
+	name = "navigation tablet"
+	desc = "A tablet programmed specifically to navigate people through rough terrain and to let them know where they are."
+	icon_state = "compass_modern"
+	slot_flags = SLOT_BELT
 
 //////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/lockpick
