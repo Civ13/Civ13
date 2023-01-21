@@ -669,6 +669,7 @@
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "flarepouch"
 	w_class = 1.0
+	slot_flags = SLOT_BELT|SLOT_POCKET
 	var/max = 6
 	var/initial_amount = null
 	var/opened = FALSE
