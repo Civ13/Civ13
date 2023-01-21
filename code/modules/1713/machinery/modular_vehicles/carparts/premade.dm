@@ -126,6 +126,7 @@
 		reg_number = tempnum
 		license_plate_numbers += tempnum
 		return tempnum
+		
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //ASNO
@@ -143,7 +144,6 @@
 
 	"1,3" = list(/obj/structure/table/carboot,/obj/structure/vehicleparts/frame/car/piccolino/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,3" = list(/obj/structure/table/carboot,/obj/structure/vehicleparts/frame/car/piccolino/lb,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/eu/centered),
-
 	)
 
 /obj/effects/premadevehicles/asno/quattroporte
@@ -155,11 +155,11 @@
 	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/quattroporte/rf),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/quattroporte/lf,/obj/structure/engine/internal/gasoline/premade/quattroporte,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
 
-	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/quattroporte/rb,/obj/structure/vehicleparts/movement/reversed),
-	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/quattroporte/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
-
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/quattroporte/rc),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/quattroporte/lc),
+	
+	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/quattroporte/rb,/obj/structure/vehicleparts/movement/reversed),
+	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/quattroporte/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
 	)
 //Ubermacht
 /obj/effects/premadevehicles/ubermacht/erstenklasse
@@ -179,7 +179,6 @@
 
 	"1,4" = list(/obj/structure/vehicleparts/frame/car/umek/rb,/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed),
 	"2,4" = list(/obj/structure/vehicleparts/frame/car/umek/lb,/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed),
-
 	)
 
 //SMC
@@ -244,7 +243,7 @@
 //Shinobu
 /obj/effects/premadevehicles/yamasaki/shinobu
 	name = "Yamasaki Shinobu 5000"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#7F0000"
 	axis = /obj/structure/vehicleparts/axis/car/shinobu
 	tocreate = list(
@@ -264,7 +263,7 @@
 
 /obj/effects/premadevehicles/yamasaki/shinobu/police
 	name = "Yamasaki Police Interceptor Shinobu"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#383838"
 	axis = /obj/structure/vehicleparts/axis/car/shinobu/police
 	tocreate = list(
@@ -290,11 +289,12 @@
 	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/kazoku/rf),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/kazoku/lf,/obj/structure/engine/internal/gasoline/premade/kazoku,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
 
-	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rb,/obj/structure/vehicleparts/movement/reversed),
-	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/kazoku/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
-
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rc),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/kazoku/lc),
+
+	
+	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rb,/obj/structure/vehicleparts/movement/reversed),
+	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/kazoku/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
 	)
 //Kurogane Type 95
 /obj/effects/premadevehicles/kurogane/type95
@@ -306,11 +306,11 @@
 	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/type95/rf),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/type95/lf,/obj/structure/engine/internal/gasoline/premade/type95,/obj/structure/vehicleparts/movement),
 
-	"1,3" = list(/obj/structure/bed/chair/carseat/right/type95,/obj/structure/vehicleparts/frame/car/type95/rb,/obj/structure/vehicleparts/movement/reversed),
-	"2,3" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lb,/obj/structure/vehicleparts/movement/reversed),
-
 	"1,2" = list(/obj/structure/bed/chair/drivers/car/type95,/obj/structure/vehicleparts/frame/car/type95/rc),
 	"2,2" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lc),
+
+	"1,3" = list(/obj/structure/bed/chair/carseat/right/type95,/obj/structure/vehicleparts/frame/car/type95/rb,/obj/structure/vehicleparts/movement/reversed),
+	"2,3" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lb,/obj/structure/vehicleparts/movement/reversed),
 	)
 ///////////////////////////////////////////////JEEPS///////////////////////////////////////////////////////
 /obj/effects/premadevehicles/jeep
@@ -322,7 +322,7 @@
 	custom_color = "#45453b"
 	axis = /obj/structure/vehicleparts/axis/car/mercedes
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/vehicleparts/movement/armored),
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/vehicleparts/movement/armored),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark),
@@ -333,7 +333,7 @@
 	)
 /obj/effects/premadevehicles/truck/mercedes/mg
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/lamp/lamp_small/alwayson,/obj/structure/vehicleparts/movement/armored),
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/vehicleparts/movement/armored),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning),
@@ -391,7 +391,7 @@
 
 /obj/effects/premadevehicles/tank/panzeriv
 	name = "Panzer IV"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#585A5C"
 	axis = /obj/structure/vehicleparts/axis/heavy/panzeriv
 	tocreate = list(
@@ -414,7 +414,7 @@
 
 /obj/effects/premadevehicles/tank/omw22_2
 	name = "OMW-22 mk. II"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#774D4C"
 	axis = /obj/structure/vehicleparts/axis/heavy/omw22_2
 	tocreate = list(
@@ -437,7 +437,7 @@
 
 /obj/effects/premadevehicles/tank/baf1_a
 	name = "BAF I mod. A"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#8383C2"
 	axis = /obj/structure/vehicleparts/axis/heavy/baf1_a
 	tocreate = list(
@@ -460,7 +460,7 @@
 
 /obj/effects/premadevehicles/tank/chiha
 	name = "Type 97 Chi-Ha"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#6a5a3d"
 	axis = /obj/structure/vehicleparts/axis/heavy/chi_ha
 	tocreate = list(
@@ -483,7 +483,7 @@
 
 /obj/effects/premadevehicles/tank/t34
 	name = "T34"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#3d5931"
 	axis = /obj/structure/vehicleparts/axis/heavy/t34
 	tocreate = list(
@@ -506,7 +506,7 @@
 
 /obj/effects/premadevehicles/tank/kv1
 	name = "KV-1A"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#3d5931"
 	axis = /obj/structure/vehicleparts/axis/heavy/kv1a
 	tocreate = list(
@@ -529,7 +529,7 @@
 
 /obj/effects/premadevehicles/tank/m4
 	name = "M4-Sherman"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#293822"
 	axis = /obj/structure/vehicleparts/axis/heavy/m4
 	tocreate = list(
@@ -552,7 +552,7 @@
 
 /obj/effects/premadevehicles/tank/panzervi
 	name = "Panzer VI"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	custom_color = "#585A5C"
 	axis = /obj/structure/vehicleparts/axis/heavy/panzervi
 	tocreate = list(
@@ -588,7 +588,7 @@
 	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left, /obj/structure/bed/chair/gunner),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 4975}),
-	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/lamp/lamp_small/alwayson),
+	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2),
 	"3,3" = list(/obj/structure/vehicleparts/frame/omw22_2/left),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb, /obj/structure/engine/internal/diesel/premade/v12),

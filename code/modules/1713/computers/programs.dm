@@ -1939,40 +1939,41 @@
 	..()
 	if (href_list["vehiclelist"])
 		var/list/choice
-		if (user.faction_text == "DUTCH")
-			mainbody = "Current Loadout Points: [dutch_loadout_points]<br>"
-		else if (user.faction_text == "RUSSIAN")
-			mainbody = "Current Loadout Points: [rus_loadout_points]<br>"
-		if (user.faction_text == "DUTCH")
-			choice = dutch_choice
-		else if (user.faction_text == "RUSSIAN")
-			choice = rus_choice
+		switch (user.faction_text)
+			if ("DUTCH")"
+				mainbody = "Current Loadout Points: [dutch_loadout_points]<br>"
+				choice = dutch_choice
+			if ("RUSSIAN")
+				mainbody = "Current Loadout Points: [rus_loadout_points]<br>"
+				choice = rus_choice
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];vehiclegiver=[i]'>[i]</a><br>"
 		sleep(0.5)
 		do_html(user)
 	if (href_list["vehiclegiver"])
 		var/found = FALSE
-		if (user.faction_text == "DUTCH")
-			for(var/turf/T in get_area_turfs(/area/caribbean/supply/dutch))
-				if (found)
-					break
-				for (var/obj/structure/ST in T)
-					found = TRUE
-					break
-				for (var/mob/living/human/HT in T)
-					found = TRUE
-					break
-		else if (user.faction_text == "RUSSIAN")
-			for(var/turf/T in get_area_turfs(/area/caribbean/supply/russian))
-				if (found)
-					break
-				for (var/obj/structure/ST in T)
-					found = TRUE
-					break
-				for (var/mob/living/human/HT in T)
-					found = TRUE
-					break
+		switch (user.faction_text)
+			if ("DUTCH")"
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply/dutch))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
+			if ("RUSSIAN")
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply/russian))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
+
 		if (found)
 			mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Clear the supply area first.</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 			sleep(0.5)
@@ -1984,85 +1985,87 @@
 
 		var/obj/effects/premadevehicles/PV
 		var/basecolor
-		if (user.faction_text == "DUTCH")
-			basecolor = "#5C5C4C"
-		else if (user.faction_text == "RUSSIAN")
-			basecolor = "#5C5C4C"
-		if (user.faction_text == "DUTCH")
-			for(var/turf/T in get_area_turfs(/area/caribbean/supply/dutch))
-				if (found)
-					break
-				for (var/obj/structure/ST in T)
-					found = TRUE
-					break
-				for (var/mob/living/human/HT in T)
-					found = TRUE
-					break
-		else if (user.faction_text == "RUSSIAN")
-			for(var/turf/T in get_area_turfs(/area/caribbean/supply/russian))
-				if (found)
-					break
-				for (var/obj/structure/ST in T)
-					found = TRUE
-					break
-				for (var/mob/living/human/HT in T)
-					found = TRUE
-					break
+		switch (user.faction_text)
+			if ("DUTCH")
+				basecolor = "#5C5C4C"
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply/dutch))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
+			if ("RUSSIAN")
+				basecolor = "#5C5C4C"
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply/russian))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
 		if (found)
 			mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Clear the arrival area first.</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 			sleep(0.5)
 			do_html(user)
 			return
-		if (user.faction_text == "DUTCH")
-			if (dutch_loadout_points)
-				if (dutch_loadout_points >= cost)
-					dutch_loadout_points -= cost
+		switch (user.faction_text)
+			if ("DUTCH")
+				if (dutch_loadout_points)
+					if (dutch_loadout_points >= cost)
+						dutch_loadout_points -= cost
+					else
+						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
+						sleep(0.5)
+						do_html(user)
+						return
 				else
 					mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 					sleep(0.5)
 					do_html(user)
 					return
-			else
-				mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
-				sleep(0.5)
-				do_html(user)
-				return
-		else if (user.faction_text == "RUSSIAN")
-			if (rus_loadout_points)
-				if (rus_loadout_points >= cost)
-					rus_loadout_points -= cost
-				else
-					mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
-					sleep(0.5)
-					do_html(user)
-					return
+			if ("RUSSIAN")
+				if (rus_loadout_points)
+					if (rus_loadout_points >= cost)
+						rus_loadout_points -= cost
+					else
+						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
+						sleep(0.5)
+						do_html(user)
+						return
 			else
 				mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 				sleep(0.5)
 				do_html(user)
 				return
 
-		if (href_list["vehiclegiver"] == "2A6 Leopard Tank (1000)")
-			PV = new /obj/effects/premadevehicles/tank/leopard(locate(origin.x+3,origin.y-4,origin.z))
-		else if (href_list["vehiclegiver"] == "Mercedes-Benz G280 Jeep with MG (500)")
-			PV = new /obj/effects/premadevehicles/truck/mercedes/mg(locate(origin.x+3,origin.y-4,origin.z))
-		else if (href_list["vehiclegiver"] == "DAF YA-4442 Supply Truck (400)")
-			PV = new /obj/effects/premadevehicles/truck/daf(locate(origin.x+3,origin.y-4,origin.z))
-		else if (href_list["vehiclegiver"] == "Mercedes-Benz G280 Jeep without MG (200)")
-			PV = new /obj/effects/premadevehicles/truck/mercedes(locate(origin.x+3,origin.y-4,origin.z))
-		
-		else if (href_list["vehiclegiver"] == "T-90A Tank (1000)")
-			PV = new /obj/effects/premadevehicles/tank/t90a(locate(origin.x+3,origin.y-4,origin.z))
-		else if (href_list["vehiclegiver"] == "BMD-2 Infantry Fighting Vehicle (600)")
-			PV = new /obj/effects/premadevehicles/apc/bmd2(locate(origin.x+3,origin.y-4,origin.z))
-		else if (href_list["vehiclegiver"] == "KamAZ-4350 Truck (300)")
-			PV = new /obj/effects/premadevehicles/truck/kamaz(locate(origin.x+3,origin.y-4,origin.z))
+		switch (href_list["vehiclegiver"])
+			if ("2A6 Leopard Tank (1000)")
+				PV = new /obj/effects/premadevehicles/tank/leopard(locate(origin.x+3,origin.y-5,origin.z))
+			if ("Mercedes-Benz G280 Jeep with MG (500)")
+				PV = new /obj/effects/premadevehicles/truck/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
+			if (href_list["vehiclegiver"] == "DAF YA-4442 Supply Truck (400)")
+				PV = new /obj/effects/premadevehicles/truck/daf(locate(origin.x+3,origin.y-5,origin.z))
+			if (href_list["vehiclegiver"] == "Mercedes-Benz G280 Jeep without MG (200)")
+				PV = new /obj/effects/premadevehicles/truck/mercedes(locate(origin.x+3,origin.y-5,origin.z))
+			
+			if ("T-90A Tank (1000)")
+				PV = new /obj/effects/premadevehicles/tank/t90a(locate(origin.x+3,origin.y-5,origin.z))
+			if ("BMD-2 Infantry Fighting Vehicle (600)")
+				PV = new /obj/effects/premadevehicles/apc/bmd2(locate(origin.x+3,origin.y-5,origin.z))
+			if ("KamAZ-4350 Truck (300)")
+				PV = new /obj/effects/premadevehicles/truck/kamaz(locate(origin.x+3,origin.y-5,origin.z))
 
 		if (PV)
 			PV.custom_color = basecolor
-			if (user.faction_text == "DUTCH")
-				PV.doorcode = 5970
-				new /obj/item/weapon/key/dutch(src)
-			else if (user.faction_text == "RUSSIAN")
-				PV.doorcode = 4975
-				new /obj/item/weapon/key/russian(src)
+			switch (user.faction_text)
+				if ("DUTCH")
+					PV.doorcode = 5970
+					new /obj/item/weapon/key/dutch(src)
+				if ("RUSSIAN")
+					PV.doorcode = 4975
+					new /obj/item/weapon/key/russian(src)
