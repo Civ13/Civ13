@@ -93,8 +93,7 @@
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
 	for (var/HUDname in species.hud.ProcessHUD)
-		if (!(HUDdatum.HUDneed.Find(HUDname)))
-		else
+		if(HUDdatum.HUDneed.Find(HUDname))
 			var/HUDtype = HUDdatum.HUDneed[HUDname]["type"]
 			var/obj/screen/HUD = new HUDtype(HUDname, HUDdatum.HUDneed[HUDname]["loc"], H, HUDdatum.HUDneed[HUDname]["icon"] ? HUDdatum.HUDneed[HUDname]["icon"] : HUDdatum.icon, HUDdatum.HUDneed[HUDname]["icon_state"] ? HUDdatum.HUDneed[HUDname]["icon_state"] : null)
 

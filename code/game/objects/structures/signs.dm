@@ -17,7 +17,6 @@
 		if (3.0)
 			qdel(src)
 			return
-		else
 	return
 
 /obj/structure/sign/attackby(obj/item/tool as obj, mob/user as mob)	//deconstruction

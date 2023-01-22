@@ -24,7 +24,6 @@
 	while (i)
 		var/char = text2ascii(hex, i)
 		switch(char)
-			if (48)								  // FALSE -- do nothing
 			if (49 to 57) num += (char - 48) * power // TRUE-9
 			if (97,  65)  num += power * 10		  // A
 			if (98,  66)  num += power * 11		  // B

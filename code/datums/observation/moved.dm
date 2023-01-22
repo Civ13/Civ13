@@ -45,9 +45,3 @@ var/decl/observ/moved/moved_event = new()
 	. = ..()
 	if (. && !loc)
 		moved_event.raise_event(src, old_loc, null)
-
-/atom/movable/forceMove(atom/destination, var/special_event)
-	var/old_loc = loc
-	. = ..()
-	if (. && !loc && !special_event)
-		moved_event.raise_event(src, old_loc, null)

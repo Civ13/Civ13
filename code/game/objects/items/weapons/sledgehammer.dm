@@ -18,7 +18,6 @@
 	if (!(user.has_empty_hand(both = FALSE)))
 		user << "<span class='warning'>You need both hands to swing the [src]!</span>"
 		return FALSE
-	..()
 
 /obj/item/weapon/sledgehammer/stone/sledgehammer
 	name = "Stone Sledgehammer"

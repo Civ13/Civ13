@@ -291,7 +291,6 @@
 							msg += "<br><i>You recognize [T.him] as a <b>[original_job.title] ([original_job.en_meaning])</b>.</i>"
 						else
 							msg += "<br><i>You recognize [T.him] as a <b>[original_job.title]</b>.</i>"
-					else // examining someone on another team
 
 			else if (isobserver(user))
 				msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"

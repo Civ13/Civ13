@@ -87,16 +87,6 @@
 	..()
 	maxhealth = health
 
-/obj/item/equipped()
-	..()
-	var/mob/M = loc
-	if (!istype(M))
-		return
-	if (M.l_hand)
-		M.l_hand.update_held_icon()
-	if (M.r_hand)
-		M.r_hand.update_held_icon()
-
 /obj/item/Destroy()
 	actions = list()
 	if (ismob(loc))
@@ -139,7 +129,6 @@
 			if (prob(5))
 				qdel(src)
 				return
-		else
 	return
 
 /obj/item/examine(mob/user, var/distance = -1)
@@ -266,7 +255,6 @@
 
 // apparently called whenever an item is removed from a slot, container, or anything else.
 /obj/item/proc/dropped(mob/user as mob)
-	..()
 	plane = GAME_PLANE
 	spawn (1)
 		if (dropsound)
@@ -310,8 +298,17 @@
 /obj/item/proc/equipped(var/mob/user, var/slot)
 	layer = 20
 	plane = HUD_PLANE
-	if (user.client)	user.client.screen |= src
-	if (user.pulling == src) user.stop_pulling()
+	if (user.client)
+		user.client.screen |= src
+	if (user.pulling == src)
+		user.stop_pulling()
+	var/mob/M = loc
+	if (!istype(M))
+		return
+	if (M.l_hand)
+		M.l_hand.update_held_icon()
+	if (M.r_hand)
+		M.r_hand.update_held_icon()
 	return
 
 //Defines which slots correspond to which slot flags

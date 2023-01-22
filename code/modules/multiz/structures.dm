@@ -142,8 +142,6 @@
 			"You hear the grunting and clanging of a metal ladder being used."
 		)
 
-/mob/living/human/var/laddervision = null
-
 /obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/human/user as mob)
 	if (!user || !istype(user))
 		return

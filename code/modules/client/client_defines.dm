@@ -62,5 +62,4 @@
 
 	var/fullscreen = FALSE
 
-
-/client/authenticate = FALSE
+	authenticate = FALSE
