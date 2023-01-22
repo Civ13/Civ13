@@ -991,3 +991,47 @@
 			else if (mast.sailhealth <= 25)
 				olay.icon_state = "sails_overlay_h25"
 			overlays += olay
+
+/obj/effect/flooding
+	name = "flooded floor"
+	desc = "The water seems to be about 50cm deep."
+	icon = 'icons/misc/beach.dmi'
+	icon_state = "flood_overlay1"
+	layer = 2
+	density = FALSE
+	anchored = TRUE
+	var/flood_level = 1
+
+	New()
+		..()
+		spawn(30)
+			for(var/obj/effect/flooding/FLD in loc)
+				if (src != FLD)
+					flood_level = min(3,flood_level+FLD.flood_level)
+					qdel(FLD)
+					update_icon()
+		spawn(6000)
+			if (src)
+				flood_level--
+				if (flood_level <= 0)
+					qdel(src)
+	update_icon()
+		icon_state = "flood_overlay[flood_level]"
+		desc = "The water seems to be about [flood_level*50]cm deep."
+
+	attackby(obj/item/I, mob/living/human/user)
+		if(istype(I, /obj/item/weapon/reagent_containers/glass))
+			if (I.reagents.get_free_space() >= 50)
+				user << "You start filling \the [I]..."
+				if (do_after(user,40,src))
+					if (I.reagents.get_free_space() >= 50)
+						I.reagents.add_reagent("sodiumchloride", 8)
+						I.reagents.add_reagent("water", 42)
+						user << "You fill \the [I]."
+						playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+						flood_level--
+						if (flood_level <= 0)
+							qdel(src)
+			else
+				user << "<span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
+		return TRUE

@@ -312,6 +312,7 @@ var/list/seed_list_jungle
 		icon = current_icon
 
 /obj/structure/wild/tree/live_tree/proc/change_season()
+	..()
 	if (radiation >= 15)
 		icon = deadicon
 		icon_state = deadicon_state

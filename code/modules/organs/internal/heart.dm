@@ -87,7 +87,7 @@
 				owner << "<span class='warning'>You feel extremely [pick("dizzy","woosey","faint")]</span>"
 				owner.adjustOxyLoss(10.0)
 				owner.adjustToxLoss(7.0)
-		else
+		else if (blood_volume < BLOOD_VOLUME_SURVIVE)
 			owner.death()
 
 	//Blood regeneration if there is some space

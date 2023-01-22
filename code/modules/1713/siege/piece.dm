@@ -244,12 +244,11 @@
 
 
 /obj/structure/cannon/interact(var/mob/m)
-	var/found_gunner = FALSE
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
 	restart
-	found_gunner = FALSE
+	var/found_gunner = FALSE
 	for (var/obj/structure/bed/chair/gunner/G in m.loc)
 		found_gunner = TRUE
 	if (found_gunner == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
