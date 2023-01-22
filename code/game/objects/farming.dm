@@ -917,7 +917,11 @@
 		return TRUE
 
 /obj/structure/farming/plant/proc/growth()
-	if (!vstatic)
+	var/turf/floor/dirt/D = get_turf(loc)
+	if(!istype(D, /turf/floor/dirt/ploughed))
+		water_proc() // Plant will still consume resources and respond to the climate, but will not be able to develop
+		return // Stops plant growth if the soil is no longer ploughed
+	else if (!vstatic)
 		if (stage < 12)
 			soil_nutrition_proc()
 			water_proc()
