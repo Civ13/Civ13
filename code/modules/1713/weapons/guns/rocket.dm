@@ -283,21 +283,68 @@
 	update_icon()
 	..()
 
-/obj/item/weapon/gun/launcher/flaregun/secondary_attack_self(mob/living/human/user)
-	if (secondary_action)
+/obj/item/weapon/gun/launcher/flaregun/secondary_attack_self(mob/living/human/user as mob)
+	if (user && secondary_action)
 		if (!open && flares.len > 0)
 			user.visible_message(SPAN_WARNING("[user] aims their [src] into the air"),SPAN_WARNING("You aim your [src] into the air."))
-			if (do_after(user, 50, src, can_move = TRUE))
-				var/obj/item/flashlight/flare/I = flares[1]
-				flares -= I
-				playsound(user, 'sound/weapons/guns/fire/flaregun.ogg', 90, TRUE)
-				user.visible_message(SPAN_WARNING("[user] fires a [I] into the air!"),SPAN_WARNING("You fire a [I] into the air!"))
+			if (time_of_day == "Night" || time_of_day == "Evening")
+				var/list/options = list()
+				options["Ammunition"] = list(/obj/structure/closet/crate/ww2/russian/ammo)
+				options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
+				options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
+				options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
+				var/choice = input(user,"What type of supply drop?") as null|anything in options
+				if(src && choice)
+					var/list/things_to_spawn = options[choice]
+					for(var/new_type in things_to_spawn)
+						if (do_after(user, 30, src, can_move = TRUE))
+							var/fired_from = get_turf(src)
+
+							var/obj/item/flashlight/flare/I = flares[1]
+							flares -= I
+							playsound(user, 'sound/weapons/guns/fire/flaregun.ogg', 90, TRUE)
+							user.visible_message(SPAN_WARNING("[user] fires a flare into the air!"),SPAN_WARNING("You fire a flare into the air!"))
+							spawn(40)
+								new /obj/effect/flare/red(fired_from)
+							fired_flare(user)
+							spawn(460)
+								new new_type(fired_from)
+			else
+				if (do_after(user, 30, src, can_move = TRUE))
+					var/obj/item/flashlight/flare/I = flares[1]
+					flares -= I
+					playsound(user, 'sound/weapons/guns/fire/flaregun.ogg', 90, TRUE)
+					user.visible_message(SPAN_WARNING("[user] fires a flare into the air! Although it isn't night..."),SPAN_WARNING("You fire a flare into the air! And feel a little stupid for firing it while it's day..."))
+
+/obj/item/weapon/gun/launcher/flaregun/proc/fired_flare(mob/living/human/user as mob)
+	if (user)
+		if (time_of_day == "Night" || time_of_day == "Evening")
+			sleep (300)
+			world << "The sound of a helicopter rotor can be heard in the distance."
+			if (map.ID == "ROAD_TO_DAK_TO" || map.ID == "COMPOUND" || map.ID == "HUE" || map.ID == "ONG_THAHN")
+				playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 70)
+				sleep(200)
+				visible_message("<span class = 'notice'>A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location.</span>")
+			else if (user.faction_text == "RUSSIAN")
+				playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 70)
+				sleep(200)
+				visible_message("<span class = 'notice'>A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location.</span>")
+			else if (user.faction_text == "DUTCH")
+				playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 70)
+				sleep(200)
+				visible_message("<span class = 'notice'>A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location.</span>")
+			else
+				playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 70)
+				sleep(200)
+				visible_message("<span class = 'notice'>A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location.</span>")
+			return
 
 /obj/item/weapon/gun/launcher/flaregun/civilian
 	name = "flare gun"
 	desc = "A flare gun used in emergency situations for signaling to asking for help."
 	icon_state = "flaregun_civ"
 	item_state = "flaregun_civ"
+	good_flare = /obj/item/ammo_casing/flare
 
 /obj/item/weapon/gun/launcher/flaregun/civilian/attackby(obj/item/I, mob/user as mob)
 	if (open)

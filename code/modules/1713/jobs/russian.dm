@@ -2112,7 +2112,7 @@
 	return TRUE
 
 /datum/job/russian/modern_emplaced_gunner
-	title = "Emplaced Weapons Specialist"
+	title = "Emplaced Weapons Specialist "
 	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
 
@@ -2167,6 +2167,7 @@
 
 	is_operation_falcon = TRUE
 	is_paratrooper = TRUE
+	whitelisted = TRUE
 
 	uses_squads = TRUE
 

@@ -96,6 +96,7 @@
 		for (var/list/i in items_for_sale)
 			if (i[1] == "merchant" || i[1] == "both")
 				display += "[i[2]] - [(i[4]/age_modifier)+((i[4]/age_modifier)*(import_tax_rate/100))] [money_string]"
+				display += "Cancel"
 
 	else
 		import_tax_rate = input(user, "Set the import tax rate: (0%-100%)") as num
@@ -106,6 +107,7 @@
 		for (var/list/i in items_for_sale)
 			if (i[1] == "governor" || i[1] == "both")
 				display += "[i[2]] - [(i[4]/age_modifier)+((i[4]/age_modifier)*(import_tax_rate/100))] [money_string]"
+				display += "Cancel"
 
 	var/choice = WWinput(user, "Order a crate: (Current Money: [money/age_modifier] [money_string]; included IT: [import_tax_rate]%)", "Imports", "Cancel", display)
 

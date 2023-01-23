@@ -145,7 +145,7 @@
 	name = "Parachute"
 	desc = "A backpack with a built in parachute."
 	icon_state = "parachute0"
-	item_state = "backpack"
+	item_state = "parachute"
 	worn_state = "parachute"
 	base_icon = "parachute"
 	w_class = 5

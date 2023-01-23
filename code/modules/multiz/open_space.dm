@@ -83,18 +83,21 @@ var/list/sky_drop_map = list()
 					for (var/turf/T in range(5, sky_drop_map[locstr]))
 						if (locate(/mob/living) in T)
 							continue
+						if (locate(/obj/structure/wild/tree) in T)
+							continue
 						mover.forceMove(T)
 			else
 				if (A.allow_area_subtypes)
-					for (var/area/AA in area_list)
+					var/area/AA = locate(A.landing_area)
+					for (AA in area_list)
 						if (istype(AA, A.landing_area))
-							mover.forceMove(pick(AA.contents))
-							sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover.loc)
+							mover.forceMove(pick(AA.get_turfs()))
+							sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 							break
 				else
 					var/area/AA = locate(A.landing_area)
-					mover.forceMove(pick(AA.contents))
-					sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover.loc)
+					mover.forceMove(pick(AA.get_turfs()))
+					sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 
 		if (isliving(mover))
 			var/mob/living/L = mover
