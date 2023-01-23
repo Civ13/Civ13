@@ -808,6 +808,14 @@
 			gallows = TRUE
 			prone = FALSE
 			update_icons()
+	for (var/obj/structure/post_execution/G in get_turf(src))
+		if (G.hanging == src)
+			lying = FALSE
+			canmove = FALSE
+			anchored = TRUE
+			gallows = TRUE
+			prone = FALSE
+			update_icons()
 	if (!gallows)
 		if (buckled)
 			anchored = TRUE
