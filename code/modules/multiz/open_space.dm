@@ -207,7 +207,7 @@ var/list/sky_drop_map = list()
 				A.forceMove(get_step(src,push_dir))
 				return
 			A.z -= 1
-			A.visible_message("[A] falls from the level above and slams into \the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch.")
+			A.visible_message("[A] falls from the level above and slams into the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch.")
 			if (istype(A, /mob/living/human))
 				playsound(A.loc, 'sound/effects/gore/fallsmash.ogg', 50, TRUE)
 				var/mob/living/human/H = A

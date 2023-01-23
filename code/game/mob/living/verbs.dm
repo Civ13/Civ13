@@ -18,4 +18,12 @@
 			qdel(P)	// qdel
 
 	face_atom(A)
+
+	if (stat || !canmove || restrained())
+		return FALSE
+	if (status_flags & FAKEDEATH)
+		return FALSE
+
+	usr.visible_message("<b>[src]</b> points to [A].")
+
 	return TRUE
