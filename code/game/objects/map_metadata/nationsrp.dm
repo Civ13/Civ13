@@ -75,9 +75,6 @@
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
-	spawn(18000)
-		seasons()
-		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nationsrp/ww2
 	ID = MAP_NATIONSRP_WW2
@@ -98,9 +95,6 @@
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
-	spawn(18000)
-		seasons()
-		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nationsrp/coldwar
 	ID = MAP_NATIONSRP_COLDWAR
@@ -126,9 +120,6 @@
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
-	spawn(18000)
-		seasons()
-		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nationsrp/coldwar_campaign
 	ID = MAP_NATIONSRP_COLDWAR_CAMPAIGN
@@ -154,6 +145,3 @@
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
-	spawn(18000)
-		seasons()
-		config.no_respawn_delays = FALSE
