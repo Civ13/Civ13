@@ -442,7 +442,6 @@
 	if (istype(target_mob, /mob/living/simple_animal/hostile/human) && target_mob.stat != DEAD && prob(33))
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
 		playsound(loc, pick(screamlist), 100, extrarange = 50)
-	..()
 	//admin logs
 	if (!no_attack_log)
 		if (istype(firer, /mob))

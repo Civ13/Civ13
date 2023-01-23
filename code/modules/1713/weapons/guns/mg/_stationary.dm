@@ -114,8 +114,6 @@
 		layer = FLY_LAYER
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/living/human/user)
-	..()
-
 	user.forceMove(loc)
 	user.dir = dir
 
@@ -138,8 +136,6 @@
 			break
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/stopped_using(mob/user as mob)
-	..()
-
 	for (var/datum/action/A in actions)
 		if (istype(A, /datum/action/toggle_scope))
 			var/mob/living/human/H = user

@@ -12,10 +12,14 @@
 	var/resistance = 150
 	var/obj/structure/vehicleparts/axis/axis = null
 	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
-	var/list/w_front = list("",FALSE,FALSE,0,0,FALSE,FALSE)
-	var/list/w_back = list("",FALSE,FALSE,0,0,FALSE,FALSE)
-	var/list/w_left = list("",FALSE,FALSE,0,0,FALSE,FALSE)
-	var/list/w_right = list("",FALSE,FALSE,0,0,FALSE,FALSE)
+	var/list/w_front
+	var/list/w_back
+	var/list/w_left
+	var/list/w_right
+	w_front = list("",FALSE,FALSE,0,0,FALSE,FALSE)
+	w_back = list("",FALSE,FALSE,0,0,FALSE,FALSE)
+	w_left = list("",FALSE,FALSE,0,0,FALSE,FALSE)
+	w_right = list("",FALSE,FALSE,0,0,FALSE,FALSE)
 	var/obj/structure/vehicleparts/movement/mwheel = null
 
 	var/doorcode = 0 //if it has a door on it, what the key code is
@@ -538,9 +542,11 @@
 			visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
 			new/obj/effect/effect/smoke/small(loc)
 			update_icon()
+	var/adjdam = 0
+	var/obj/item/projectile/shell/PS
 	if (penloc)
 		if (istype(proj, /obj/item/projectile/shell))
-			var/obj/item/projectile/shell/PS = proj
+			PS = proj
 			if (mwheel && prob(60))
 				if (mwheel.ntype == "wheel")
 					mwheel.broken = TRUE
@@ -573,7 +579,6 @@
 								new/obj/effect/effect/smoke/small(loc)
 								update_icon()
 			else
-				var/adjdam = 0
 				switch (PS.atype)
 					if ("HE")
 						for (var/mob/living/M in axis.transporting)
@@ -587,7 +592,7 @@
 									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 									//playsound(loc, "pen_voice", 100, TRUE)
 						adjdam = proj.damage * 0.08
-					else if ("APCR")
+					if ("APCR")
 						for (var/mob/living/M in axis.transporting)
 							shake_camera(M, 1, 1)
 							if (M.loc == loc)
@@ -599,17 +604,18 @@
 									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 									//playsound(loc, "pen_voice", 100, TRUE)
 						adjdam = proj.damage * 0.5
-					else if ("AP")
+					if ("AP")
 						for (var/mob/living/M in axis.transporting)
-							shake_camera(M, 1, 1)
-							if (M.loc == loc)
+							var/mob/living/MM = M
+							if (MM.loc == loc)
 								var/tprob = 80
-								if (M.lying || M.prone)
+								if (MM.lying || MM.prone)
 									tprob = 35
 								if (prob(tprob))
 									M.adjustBruteLoss(PS.damage)
 									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 									//playsound(loc, "pen_voice", 100, TRUE)
+							shake_camera(M, 1, 1)
 						adjdam = proj.damage * 0.3
 					else
 						for (var/mob/living/M in axis.transporting)
