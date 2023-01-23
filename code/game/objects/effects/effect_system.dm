@@ -560,3 +560,19 @@ steam.start() -- spawns the effect
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, extrarange = 500)
 		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"
+
+/obj/effect/flare
+	name = "flare"
+	icon_state = ""
+	mouse_opacity = FALSE
+	var/flare_range = 8
+
+/obj/effect/flare/red/New()
+	..()
+	set_light(range, 0.75, "#ff0000")
+	spawn(rand(600,750))
+		for (var/v in 1 to flare_range)
+			spawn (v*5)
+				flare_range--
+				update_light()
+		qdel(src)
