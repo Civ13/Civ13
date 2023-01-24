@@ -36,6 +36,7 @@
 		if (3.0)
 			if (prob(25))
 				density = FALSE
+		else
 	return
 
 /obj/structure/optable/attack_hand(mob/user as mob)

@@ -236,11 +236,8 @@ var/list/delayed_garbage = list()
 // This should be overridden to remove all references pointing to the object being destroyed.
 // Return true if the the GC controller should allow the object to continue existing. (Useful if pooling objects.)
 /datum/proc/Destroy()
-	weakref = null // Clear this reference to ensure it's kept for as brief duration as possible.
 	nanomanager.close_uis(src)
 	tag = null
-	if (destroyed_event)
-		destroyed_event.raise_event(src)
 	return
 
 /client/var/running_find_references

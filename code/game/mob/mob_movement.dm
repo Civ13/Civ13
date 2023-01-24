@@ -709,7 +709,8 @@
 								. = ..()
 								if (isturf(M.loc))
 									var/diag = get_dir(mob, M)
-									if (!((diag - 1) & diag))
+									if ((diag - 1) & diag)
+									else
 										diag = null
 									if ((get_dist(mob, M) > 1 || diag))
 										step(M, get_dir(M.loc, T))

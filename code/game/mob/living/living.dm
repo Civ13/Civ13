@@ -6,6 +6,18 @@
 	if (AM.Adjacent(src))
 		start_pulling(AM)
 
+//mob verbs are faster than object verbs. See above.
+/mob/living/pointed(atom/A as mob|obj|turf in view())
+	if (stat || !canmove || restrained())
+		return FALSE
+	if (status_flags & FAKEDEATH)
+		return FALSE
+	if (!..())
+		return FALSE
+
+	usr.visible_message("<b>[src]</b> points to [A].")
+	return TRUE
+
 /*one proc, four uses
 swapping: if it's TRUE, the mobs are trying to switch, if FALSE, non-passive is pushing passive
 default behaviour is:
@@ -515,7 +527,8 @@ default behaviour is:
 
 		if (!restrained())
 			var/diag = get_dir(src, pulling)
-			if (!((diag - 1) & diag))
+			if ((diag - 1) & diag)
+			else
 				diag = null
 			if ((get_dist(src, pulling) > 1 || diag))
 				if (isliving(pulling))

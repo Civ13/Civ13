@@ -3,7 +3,7 @@
 	appearance_flags = TILE_BOUND
 	var/level = 2
 	var/flags = FALSE
-	mouse_drop_zone = FALSE
+
 	var/list/fingerprints
 	var/list/fingerprintshidden
 	var/fingerprintslast = null

@@ -694,7 +694,7 @@
 					TS.icon_state = "shellHE"
 					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
-				if ("AP")
+				else if ("AP")
 					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
 					TS.atype = "AP"
 					TS.caliber = caliber
@@ -703,9 +703,8 @@
 					TS.icon_state = "shellAP"
 					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
-				if ("APCR")
-					var/obj/item/cannon_ball/shell/tank/TS
-					TS = new/obj/item/cannon_ball/shell/tank(user.loc)
+				else if ("APCR")
+					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
 					TS.atype = "APCR"
 					TS.caliber = caliber
 					TS.heavy_armor_penetration = 75*(caliber/75)
