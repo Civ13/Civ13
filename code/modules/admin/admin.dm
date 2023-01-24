@@ -796,7 +796,7 @@ var/list/atom_types = null
 	set desc = "Export Atom List"
 	set name = "Export Atoms (C14)"
 
-	chosen = WWinput(usr, "Warning", "If you don't know what this is for, you probably shouldn't be clicking on it. This is meant to be used LOCALLY ONLY and -NEVER- on a live server! It will lag MASSIVELY.", "Cancel", list("Cancel","OK"))
+	var/chosen = WWinput(usr, "If you don't know what this is for, you probably shouldn't be clicking on it. This is meant to be used LOCALLY ONLY and -NEVER- on a live server! It will lag MASSIVELY.","Warning", "Cancel", list("Cancel","OK"))
 	if (chosen != "OK")
 		return
 	var/atom_file = file("atom_exports.yml")
@@ -807,40 +807,110 @@ var/list/atom_types = null
 	atom_types = typesof(/atom)
 	var/list/reflist = list()
 	for (var/path in atom_types)
-		if (istype(path, /obj/structure) || istype(path, /obj/covers) || istype(path, /obj/item))
-			if(istype(path, /obj/item/clothing))
-				if (istype(path, /obj/item/clothing/head))
-					var/obj/O = new path(null)
+		path = path2text(path)
+		if (findtext(path, "/obj/structure") || findtext(path, "/obj/covers") || findtext(path, "/obj/item"))
+			if(findtext(path, "/obj/item/clothing"))
+				var/parsedID = replacetext(path2text(path),"/obj/item/clothing/","")
+				parsedID = replacetext(parsedID,"/","-")
+				if (findtext(path, "/obj/item/clothing/head"))
+					var/obj/item/clothing/head/O = new path(null)
+					var/parsedICO = replacetext(path2text(O.icon),"/icons/","")
+					parsedICO = replacetext(parsedICO,".dmi","")
 					reflist += O
 					atom_file << "\n"
 					atom_file << "- type: entity"
 					atom_file << "  parent: ClothingHeadBase"
-					atom_file << "  id: " + path
+					atom_file << "  id: " + parsedID
 					atom_file << "  name: " + O.name
 					atom_file << "  description: " + O.desc
 					atom_file << "  components:"
 					atom_file << "  - type: Sprite"
-					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "    sprite: [parsedICO].rsi"
 					atom_file << "  - type: Clothing"
-					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "    sprite: [parsedICO].rsi"
+					if (O.armor["melee"] || O.armor["melee"] || O.armor["gun"] || O.armor["arrow"] || O.armor["rad"] || O.armor["energy"])
+						atom_file << "  - type: Armor"
+						atom_file << "     modifiers:"
+						atom_file << "       coefficients:"
+						atom_file << "         Blunt: [O.armor["melee"]]"
+						atom_file << "         Slash: [O.armor["melee"]]"
+						atom_file << "         Piercing: [O.armor["gun"]]"
+						atom_file << "         Arrow: [O.armor["arrow"]]"
+						atom_file << "         Heat: [O.armor["energy"]]"
+						atom_file << "         Radiation: [O.armor["rad"]]"
 					atom_file << "\n"
-				else if (istype(path, /obj/item/clothing/head))
-					var/obj/O = new path(null)
+					reflist = list()
+					qdel(O)
+				else if (findtext(path, "/obj/item/clothing/under"))
+					var/obj/item/clothing/under/O = new path(null)
+					var/parsedICO = replacetext(path2text(O.icon),"/icons/","")
+					parsedICO = replacetext(parsedICO,".dmi","")
 					reflist += O
 					atom_file << "\n"
 					atom_file << "- type: entity"
-					atom_file << "  parent: ClothingHeadBase"
-					atom_file << "  id: " + path
+					atom_file << "  parent: ClothingUniformBase"
+					atom_file << "  id: " + parsedID
 					atom_file << "  name: " + O.name
 					atom_file << "  description: " + O.desc
 					atom_file << "  components:"
 					atom_file << "  - type: Sprite"
-					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "    sprite: [parsedICO].rsi"
 					atom_file << "  - type: Clothing"
-					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "    sprite: [parsedICO].rsi"
 					atom_file << "\n"
-			reflist = list()
-			qdel(O)
+					reflist = list()
+					qdel(O)
+				else if (findtext(path, "/obj/item/clothing/shoes"))
+					var/obj/item/clothing/shoes/O = new path(null)
+					var/parsedICO = replacetext(path2text(O.icon),"/icons/","")
+					parsedICO = replacetext(parsedICO,".dmi","")
+					reflist += O
+					atom_file << "\n"
+					atom_file << "- type: entity"
+					atom_file << "  parent: ClothingShoesBase"
+					atom_file << "  id: " + parsedID
+					atom_file << "  name: " + O.name
+					atom_file << "  description: " + O.desc
+					atom_file << "  components:"
+					atom_file << "  - type: Sprite"
+					atom_file << "    sprite: [parsedICO].rsi"
+					atom_file << "  - type: Clothing"
+					atom_file << "    sprite: [parsedICO].rsi"
+					atom_file << "\n"
+					reflist = list()
+					qdel(O)
+				else if (findtext(path, "/obj/item/clothing/suit"))
+					var/obj/item/clothing/suit/O = new path(null)
+					var/parsedICO = replacetext(path2text(O.icon),"/icons/","")
+					parsedICO = replacetext(parsedICO,".dmi","")
+					reflist += O
+					atom_file << "\n"
+					atom_file << "- type: entity"
+					if (findtext(path, "/obj/item/clothing/suit/storage"))
+						atom_file << "  parent: ClothingOuterStorageBase"
+					else
+						atom_file << "  parent: ClothingOuterBase"
+					atom_file << "  id: " + parsedID
+					atom_file << "  name: " + O.name
+					atom_file << "  description: " + O.desc
+					atom_file << "  components:"
+					atom_file << "  - type: Sprite"
+					atom_file << "    sprite: [parsedICO].rsi"
+					atom_file << "  - type: Clothing"
+					atom_file << "    sprite: [parsedICO].rsi"
+					if (O.armor["melee"] || O.armor["melee"] || O.armor["gun"] || O.armor["arrow"] || O.armor["rad"] || O.armor["energy"])
+						atom_file << "  - type: Armor"
+						atom_file << "     modifiers:"
+						atom_file << "       coefficients:"
+						atom_file << "         Blunt: [O.armor["melee"]]"
+						atom_file << "         Slash: [O.armor["melee"]]"
+						atom_file << "         Piercing: [O.armor["gun"]]"
+						atom_file << "         Arrow: [O.armor["arrow"]]"
+						atom_file << "         Heat: [O.armor["energy"]]"
+						atom_file << "         Radiation: [O.armor["rad"]]"
+					atom_file << "\n"
+					reflist = list()
+					qdel(O)
 	var/msg = "[key_name(usr)] tried to export atoms to a file."
 	message_admins(msg)
 
