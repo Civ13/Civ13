@@ -229,28 +229,28 @@
 /obj/item/flashlight/flare/signal
 	name = "signal flare"
 	desc = "A signal flare for signalling spot to aircraft above. There are instructions on the side reading 'pull cord, make light'. Lasts for about 2 minutes."
+	icon_state = "flareW"
 	flame_base_tint = "#07d800"
 
 /obj/item/flashlight/flare/signal/activate_signal(mob/living/human/user as mob)
-	var/target = get_turf(src)
+	var/turf/target = get_turf(src)
 	var/strikenum = 4
-	var/xoffset = 6
-	var/yoffset = 6
-	var/inputz = 1
-	spawn(10)
-		switch(user.faction_text)
-			if ("DUTCH")
-				new /obj/effect/plane_flyby/f16_no_message(target)
-				world << SPAN_DANGER("<font size=3>The air lights up as a F-16 comes through the clouds and fires off a burst of rockets from their LAU-3!</font>")
-			if ("RUSSIAN")
-				new /obj/effect/plane_flyby/su25_no_message(target)
-				world << SPAN_DANGER("<font size=3>The air lights up as a Su-25 comes through the clouds and fires off a burst of rockets from their UB-23!</font>")
-		sleep(15)
-		for (var/i = 1, i <= strikenum, i++)
-			spawn(i*5)
-				var/turf/O = get_turf(locate(rand(-xoffset,xoffset),rand(-yoffset,yoffset),inputz))
-				explosion(O,1,1,3,3)
-
+	var/xoffset
+	var/yoffset
+	switch(user.faction_text)
+		if ("DUTCH")
+			new /obj/effect/plane_flyby/f16_no_message(target)
+			world << SPAN_DANGER("<font size=4>The air lights up as a F-16 comes through the clouds and fires off a burst of rockets from their LAU-3!</font>")
+		if ("RUSSIAN")
+			new /obj/effect/plane_flyby/su25_no_message(target)
+			world << SPAN_DANGER("<font size=4>The air lights up as a Su-25 comes through the clouds and fires off a burst of rockets from their UB-23!</font>")
+	sleep(15)
+	for (var/i = 1, i <= strikenum, i++)
+		spawn(i*8)
+			xoffset = rand(-5,5)
+			yoffset = rand(-5,5)
+			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),1,1,3,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+	qdel(src)
 
 /obj/item/flashlight/flare/signal/attack_self(mob/living/user as mob)
 	if(!fuel)
@@ -276,6 +276,7 @@
 		var/mob/living/human/H = user
 		if(istype(H) && !H.in_throw_mode)
 			H.throw_mode_on()
+		sleep(rand(80,120))
 		activate_signal(user)
 
 // Projectile
