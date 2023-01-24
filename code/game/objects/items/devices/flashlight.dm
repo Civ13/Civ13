@@ -205,7 +205,7 @@
 		if(istype(H) && !H.in_throw_mode)
 			H.throw_mode_on()
 
-/obj/item/flashlight/flare/proc/activate_signal(mob/living/carbon/human/user as mob)
+/obj/item/flashlight/flare/proc/activate_signal(mob/living/human/user as mob)
 	return
 
 /obj/item/flashlight/flare/on/New()
@@ -231,13 +231,13 @@
 	desc = "A signal flare for signalling spot to aircraft above. There are instructions on the side reading 'pull cord, make light'. Lasts for about 2 minutes."
 	flame_base_tint = "#07d800"
 
-/obj/item/flashlight/flare/signal/activate_signal(mob/living/carbon/human/user as mob)
+/obj/item/flashlight/flare/signal/activate_signal(mob/living/human/user as mob)
 	var/target = get_turf(src)
 	var/strikenum = 4
 	var/xoffset = 6
 	var/yoffset = 6
 	var/inputz = 1
-	wait(10)
+	spawn(10)
 		switch(user.faction_text)
 			if ("DUTCH")
 				new /obj/effect/plane_flyby/f16_no_message(target)
@@ -248,7 +248,7 @@
 		sleep(15)
 		for (var/i = 1, i <= strikenum, i++)
 			spawn(i*5)
-				var/turf/O = get_turf(locate(rand(-xoffsetmin,xoffset),rand(-yoffset,yoffset),inputz))
+				var/turf/O = get_turf(locate(rand(-xoffset,xoffset),rand(-yoffset,yoffset),inputz))
 				explosion(O,1,1,3,3)
 
 

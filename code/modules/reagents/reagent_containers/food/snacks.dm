@@ -487,14 +487,14 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	filling_color = "#7D5F46"
 	nutriment_amt = 4
 	bitesize = 4
-	nutriment_desc = list("nutriment" 2, "sugar" 2, "cocoa", 2)
+	nutriment_desc = list("nutriment" = 2, "sugar" = 2, "cocoa" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/chocolatebar/pervitin
 	name = "Panzerschokolade bar"
 	desc = "Such sweet, fattening food. You feel so empowered after tasting it!"
 
 	bitesize = 2
-	nutriment_desc = list("nutriment" 2, "sugar" 2, "cocoa", 2)
+	nutriment_desc = list("nutriment" = 2, "sugar" = 2, "cocoa" = 2)
 	New()
 		..()
 		reagents.add_reagent("pervitin", 1)
