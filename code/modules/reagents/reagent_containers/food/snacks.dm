@@ -402,7 +402,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	biteamount = 2
 	New()
 		..()
-		reagents.add_reagent("opium", 0.01)
+		reagents.add_reagent("opium", 0.5)
 
 /obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknkhat
 	name = "hardtack with an opium smear"
@@ -411,7 +411,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	biteamount = 2
 	New()
 		..()
-		reagents.add_reagent("cocaine", 0.01)
+		reagents.add_reagent("cocaine", 0.5)
 
 /obj/item/weapon/reagent_containers/food/snacks/driedmeat
 	name = "dried meat"
@@ -475,9 +475,29 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	icon_state = "COOKIE!!!"
 	center_of_mass = list("x"=17, "y"=18)
 	filling_color = "#DBC94F"
-	nutriment_amt = 5
-	nutriment_desc = list("sweetness" = 3, "cookie" = 2)
+	nutriment_amt = 6
+	nutriment_desc = list("sweetness" = 3, "cookie" = 2, "nutriment" = 2, "sugar" = 2, "cocoa" = 2)
 	decay = 45*600
+	biteamount = 5
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolatebar
+	name = "Chocolate bar"
+	desc = "Such sweet, fattening food. You feel so empowered after tasting it!"
+	icon_state = "chocolatebar"
+	filling_color = "#7D5F46"
+	nutriment_amt = 4
+	bitesize = 4
+	nutriment_desc = list("nutriment" 2, "sugar" 2, "cocoa", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolatebar/pervitin
+	name = "Panzerschokolade bar"
+	desc = "Such sweet, fattening food. You feel so empowered after tasting it!"
+
+	bitesize = 2
+	nutriment_desc = list("nutriment" 2, "sugar" 2, "cocoa", 2)
+	New()
+		..()
+		reagents.add_reagent("pervitin", 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg
 	name = "egg"
