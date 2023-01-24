@@ -701,19 +701,15 @@ Note that amputating the affected organ does in fact remove the infection from t
 			switch(W.damage_type)
 				if (BURN)
 					burn_dam += W.damage
-
-				if (PIERCE)
+				else if (PIERCE)
 					brute_dam += W.damage
 					pierce_dam += W.damage
-
-				if (CUT)
+				else if (CUT)
 					brute_dam += W.damage
 					cut_dam += W.damage
-
-				if (BRUISE)
+				else if (BRUISE)
 					brute_dam += W.damage
 					blunt_dam += W.damage
-					
 		if (W.bleeding() && (H && !(H.species.flags & NO_BLOOD)))
 			W.bleed_timer--
 			status |= ORGAN_BLEEDING

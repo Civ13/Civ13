@@ -86,7 +86,8 @@ var/global/redirect_all_players = null
 				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
-			new_player << "<span class = 'ping'><small>LOBBY</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]"
+			new_player << "<span class = 'ping'><small>["\["]LOBBY["\]"]</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]"
+
 	return TRUE
 
 /mob/new_player/verb/new_player_panel()

@@ -11,18 +11,18 @@ var/z_levels = FALSE // Each bit represents a connection between adjacent levels
 		z_levels |= (1 << (z+i-1))
 */
 // The storage of connections between adjacent levels means some bitwise magic is needed.
-/proc/HasAbove(var/z)
+proc/HasAbove(var/z)
 	if (z >= world.maxz || z > 16 || z < 1)
 		return FALSE
 	return z_levels & (1 << (z - 1))
 
-/proc/HasBelow(var/z)
+proc/HasBelow(var/z)
 	if (z > world.maxz || z > 17 || z < 2)
 		return FALSE
 	return z_levels & (1 << (z - 2))
 
 // Thankfully, no bitwise magic is needed here.
-/proc/GetAbove(var/atom/atom)
+proc/GetAbove(var/atom/atom)
 
 	var/turf/turf = get_turf(atom)
 	if (!turf)
@@ -30,7 +30,7 @@ var/z_levels = FALSE // Each bit represents a connection between adjacent levels
 	return HasAbove(turf.z) ? get_step(turf, UP) : null
 
 
-/proc/GetBelow(var/atom/atom)
+proc/GetBelow(var/atom/atom)
 
 	var/turf/turf = get_turf(atom)
 	if (!turf)

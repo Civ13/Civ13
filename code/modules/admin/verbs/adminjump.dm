@@ -24,10 +24,14 @@
 			++tries
 			if (tries >= 20)
 				break
+
 		if (new_location)
 			usr.loc = new_location
 			log_admin("[key_name(usr)] jumped to [A]")
 			message_admins("[key_name_admin(usr)] jumped to [A]", TRUE)
+		else
+
+
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
 

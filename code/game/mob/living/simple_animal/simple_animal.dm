@@ -1158,5 +1158,6 @@
 /mob/living/simple_animal/proc/mutate()
 	if(mutation_variants == null)
 		return
+	..()
 
 #undef GRAIN
