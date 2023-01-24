@@ -11,7 +11,7 @@
 	var/image/product_image			//an image to be used as an overlay in the vending machine
 	var/list/product_item = list()	//the actual objects
 	var/is_stack = FALSE
-/datum/data/vending_product/New(var/_vending_machine, var/path, var/name = null, var/_amount = 1, var/_price = 0, var/_color = null, var/_icon = null, var/_icon_state = null, var/atom/movable/M = null)
+/datum/data/vending_product/New(var/_vending_machine, var/path, var/name = null, var/_amount = 1, var/_price = 0, var/_color = null, var/_icon = null, var/_icon_state = null, var/_color = null, var/atom/movable/M = null)
 	..()
 
 	product_path = path

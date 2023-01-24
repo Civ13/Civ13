@@ -128,6 +128,7 @@
 					new /obj/effect/effect/water(loc)
 					qdel(src)
 					return
+			else
 		return
 
 /obj/structure/reagent_dispensers/verb/switch_mode()

@@ -67,7 +67,7 @@ dmm_suite/proc/loadAttribute(value, list/strings)
 	// Check for lists
 		// To Do
 
-dmm_suite/read_map(dmm_text as text, coordX as num, coordY as num, coordZ as num)
+dmm_suite/proc/read_map(dmm_text as text, coordX as num, coordY as num, coordZ as num)
 	// Split Key/Model list into lines
 	var/key_len = length(copytext(dmm_text, 2, findtext(dmm_text, quote, 2, 0)))
 	var/list/grid_models[0]

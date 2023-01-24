@@ -241,6 +241,7 @@
 		if (3.0)
 			qdel(src)
 			return
+		else
 	return
 
 /obj/structure/railing/do_climb(var/mob/living/user)

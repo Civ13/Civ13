@@ -10,11 +10,10 @@
 		return
 
 	var/list/types = list()
-	var/_type = ""
-	
+
 	while (TRUE)
 		retype
-		_type = input(src, "What is the type you want in the crate? Cancel to stop.") as text
+		var/_type = input(src, "What is the type you want in the crate? Cancel to stop.") as text
 
 		if (lowertext(_type) == "cancel")
 			return
@@ -32,14 +31,14 @@
 
 	var/list/objects = list()
 
-	for (var/__type in types)
-		var/amount = types[__type]
-		if (findtext(__type, "obj/item/stack"))
-			var/path = text2path(__type)
+	for (var/_type in types)
+		var/amount = types[_type]
+		if (findtext(_type, "obj/item/stack"))
+			var/path = text2path(_type)
 			objects += new path (null, amount)
 		else
 			for (var/v in 1 to amount)
-				var/path = text2path(__type)
+				var/path = text2path(_type)
 				objects += new path (null)
 
 	if (!src || !mob || !mob.loc)
