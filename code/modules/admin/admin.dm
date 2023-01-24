@@ -791,6 +791,59 @@ var/list/atom_types = null
 
 	log_and_message_admins("spawned [chosen] at ([usr.x],[usr.y],[usr.z])")
 
+/datum/admins/proc/atom_export_data()
+	set category = "Debug"
+	set desc = "Export Atom List"
+	set name = "Export Atoms (C14)"
+
+	chosen = WWinput(usr, "Warning", "If you don't know what this is for, you probably shouldn't be clicking on it. This is meant to be used LOCALLY ONLY and -NEVER- on a live server! It will lag MASSIVELY.", "Cancel", list("Cancel","OK"))
+	if (chosen != "OK")
+		return
+	var/atom_file = file("atom_exports.yml")
+	if (fexists(atom_file))
+		fdel(atom_file)
+	if (!check_rights(R_SPAWN))	return
+
+	atom_types = typesof(/atom)
+	var/list/reflist = list()
+	for (var/path in atom_types)
+		if (istype(path, /obj/structure) || istype(path, /obj/covers) || istype(path, /obj/item))
+			if(istype(path, /obj/item/clothing))
+				if (istype(path, /obj/item/clothing/head))
+					var/obj/O = new path(null)
+					reflist += O
+					atom_file << "\n"
+					atom_file << "- type: entity"
+					atom_file << "  parent: ClothingHeadBase"
+					atom_file << "  id: " + path
+					atom_file << "  name: " + O.name
+					atom_file << "  description: " + O.desc
+					atom_file << "  components:"
+					atom_file << "  - type: Sprite"
+					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "  - type: Clothing"
+					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "\n"
+				else if (istype(path, /obj/item/clothing/head))
+					var/obj/O = new path(null)
+					reflist += O
+					atom_file << "\n"
+					atom_file << "- type: entity"
+					atom_file << "  parent: ClothingHeadBase"
+					atom_file << "  id: " + path
+					atom_file << "  name: " + O.name
+					atom_file << "  description: " + O.desc
+					atom_file << "  components:"
+					atom_file << "  - type: Sprite"
+					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "  - type: Clothing"
+					atom_file << "    sprite: " + O.icon + ".rsi"
+					atom_file << "\n"
+			reflist = list()
+			qdel(O)
+	var/msg = "[key_name(usr)] tried to export atoms to a file."
+	message_admins(msg)
+
 /datum/admins/proc/spawn_player_as_job()
 	set category = "Admin"
 	set desc = "Spawn a player in as a job"
