@@ -29,7 +29,7 @@
 		if ("Cancel")
 			return
 		if ("No")
-			return
+			; // do nothing
 
 	callproc_targetpicked(targetselected, target)
 
@@ -120,7 +120,7 @@
 				if (!current)
 					switch(WWinput(src, "\The [M] appears to not have an area; do you want to pass null instead?", "Callproc", "Yes", list("Yes", "Cancel")))
 						if ("Yes")
-							return
+							; // do nothing
 						if ("Cancel")
 							return
 
@@ -129,7 +129,7 @@
 				if (!current)
 					switch(WWinput(src, "You do not currently have a marked datum; do you want to pass null instead?", "Callproc", "Yes", list("Yes", "Cancel")))
 						if ("Yes")
-							return
+							; // do nothing
 						if ("Cancel")
 							return
 		if (!done)

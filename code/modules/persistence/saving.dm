@@ -141,6 +141,7 @@
 			else if(A.vars[v] != initial(A.vars[v]) || v == "pixel_x" || v == "pixel_y")
 				savefile.cd = "/entries/[ref]"
 				savefile["[v]"] << A.vars[v]
-
+		else
+			// message_admins("trying to save an invalid var |[v]|")
 	savefile.cd = ".."
 	return ref

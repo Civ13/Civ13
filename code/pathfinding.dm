@@ -145,6 +145,7 @@
 				var/mob/M = O
 				if (M.anchored)
 					return FALSE // an anchored mob is a blocking mob
+				else
 			return FALSE // not a special case, so this is a blocking object
 	return TRUE
 

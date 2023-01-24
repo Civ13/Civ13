@@ -81,6 +81,7 @@
 			health -= initial(health)/10
 			try_destroy()
 			return
+		else
 	return
 
 /obj/covers/New()
