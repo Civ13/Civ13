@@ -35,6 +35,13 @@
 	flags = CONDUCT
 
 /obj/item/weapon/foldable
+	force = 12
+	nothrow = TRUE
+	w_class = 6
+	sharp = FALSE
+	edge = FALSE
+	slot_flags = null
+	attack_verb = list("bashed", "bludgeoned")
 	var/path
 
 /obj/item/weapon/foldable/attack_self(var/mob/user as mob)
@@ -52,43 +59,33 @@
 	name = "Foldable Mortar"
 	desc = "A light-weight portable mortar"
 	icon_state = "mortar"
-	force = 12.0
-	throwforce = 6.0
 	item_state = "type89"
-	w_class = 6.0
-	attack_verb = list("bashed", "bludgeoned")
-	sharp = FALSE
-	edge = FALSE
-	slot_flags = null
 	path = /obj/structure/cannon/mortar/foldable/generic
 
 /obj/item/weapon/foldable/type89_mortar
 	name = "Type 89 Mortar"
 	desc = "A light-weight portable mortar"
 	icon_state = "type89"
-	force = 12.0
-	throwforce = 6.0
 	item_state = "type89"
-	w_class = 6.0
-	attack_verb = list("bashed", "bludgeoned")
-	sharp = FALSE
-	edge = FALSE
-	slot_flags = null
 	path = /obj/structure/cannon/mortar/foldable/type89
 
 /obj/item/weapon/foldable/atgm
 	name = "Anti-Tank Guided Missile system"
 	desc = "A light-weight portable ATGM"
 	icon_state = "atgm"
-	force = 12.0
-	throwforce = 6.0
 	item_state = "atgm"
-	w_class = 8.0
-	attack_verb = list("bashed", "bludgeoned")
-	sharp = FALSE
-	edge = FALSE
-	slot_flags = null
 	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
+
+/obj/item/weapon/foldable/pkm
+	name = "Foldable PKM machine gun"
+	desc = "A soviet machinegun chambered in 7.62x54mmR rounds."
+	icon_state = "pkmp_foldable"
+	item_state = "pkmp_foldable"
+	force = 20
+	throwforce = 30
+	weight = 7.5
+	slot_flags = SLOT_SHOULDER
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/foldable/pkm
 
 /obj/item/weapon/material/shovel
 	name = "shovel"
