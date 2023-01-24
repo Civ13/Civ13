@@ -46,14 +46,19 @@ proc/NewStutter(phrase,stunned)
 			first_letter = first_sound
 
 		//Repeat the first letter to create a stutter.
-		var/rnum = rand(1,3)
-		switch(rnum)
-			if (1)
+		if (prob(80))
+			if (prob(10))
 				word = "[first_letter]-[word]"
-			if (2)
-				word = "[first_letter]-[first_letter]-[word]"
-			if (3)
-				word = "[first_letter]-[word]"
+			else
+				if (prob(40))
+					word = "[first_letter]-[first_letter]-[word]"
+				else
+					if (prob(5))
+						word = "[word]"
+					else
+						word = "[first_letter]-[word]"
+		else
+			word = "[word]"
 
 		split_phrase[index] = word
 

@@ -694,7 +694,6 @@
 #include "code\modules\1713\researchcost.dm"
 #include "code\modules\1713\roundstart_etc.dm"
 #include "code\modules\1713\signs_portraits_propaganda.dm"
-#include "code\modules\1713\snacks.dm"
 #include "code\modules\1713\structures.dm"
 #include "code\modules\1713\supplysystem.dm"
 #include "code\modules\1713\telegraph.dm"

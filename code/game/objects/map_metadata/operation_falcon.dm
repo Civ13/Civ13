@@ -258,8 +258,57 @@
 	return FALSE
 
 /obj/map_metadata/operation_falcon/proc/jet_flyby()
-	playsound(locate(200,200,1), 'sound/effects/f16_center.ogg', 100, FALSE, extrarange = 400)
-	spawn(30)
-		world << "The air vibrates as a F-16 flies overhead."
-	spawn(rand(1200,3000))
+	var/flyby_type = rand(1,4)
+	switch (flyby_type)
+		if (1)
+			var/direction = rand(1,3)
+			var/sound/uploaded_sound
+			switch (direction)
+				if (1)
+					uploaded_sound = sound('sound/effects/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				if (2)
+					uploaded_sound = sound('sound/effects/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				if (3)
+					uploaded_sound = sound('sound/effects/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			uploaded_sound.priority = 250
+			for (var/mob/M in player_list)
+				if (!new_player_mob_list.Find(M))
+					M << SPAN_NOTICE("<font size=3>The air rumbles as a F-16 flies overhead.</font>")
+					M.client << uploaded_sound
+		if(2)
+			var/direction = rand(1,3)
+			var/sound/uploaded_sound
+			switch (direction)
+				if (1)
+					uploaded_sound = sound('sound/effects/su25_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				if (2)
+					uploaded_sound = sound('sound/effects/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				if (3)
+					uploaded_sound = sound('sound/effects/su25_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			uploaded_sound.priority = 250
+			for (var/mob/M in player_list)
+				if (!new_player_mob_list.Find(M))
+					M << SPAN_NOTICE("<font size=3>The air rumbles as a Su-25 flies overhead.</font>")
+					M.client << uploaded_sound
+		if(3)
+			var/direction = rand(1,2)
+			var/sound/uploaded_sound1
+			var/sound/uploaded_sound2
+			switch (direction)
+				if (1)
+					uploaded_sound1 = sound('sound/effects/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound2 = sound('sound/effects/su25_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				if (2)
+					uploaded_sound1 = sound('sound/effects/su25_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound2 = sound('sound/effects/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			uploaded_sound1.priority = 250
+			uploaded_sound2.priority = 250
+			for (var/mob/M in player_list)
+				if (!new_player_mob_list.Find(M))
+					M << SPAN_DANGER("<font size=4>The air lights up as a Su-25 flies overhead closely in pursuit by a F-16.</font>")
+					M.client << uploaded_sound1
+					spawn(15)
+						M.client << uploaded_sound2
+
+	spawn(rand(1600,4000))
 		jet_flyby()

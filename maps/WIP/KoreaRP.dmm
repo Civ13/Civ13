@@ -1006,7 +1006,7 @@
 "tr" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,/turf/floor/wood,/area/caribbean)
 "ts" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/item/weapon/reagent_containers/glass/small_pot/german_kit_lid,/turf/floor/wood,/area/caribbean)
 "tt" = (/obj/structure/oven/stove,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,/turf/floor/wood,/area/caribbean)
-"tu" = (/obj/structure/table/rack/shelf,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/item/weapon/reagent_containers/food/snacks/pervitinchocolatebar,/turf/floor/wood,/area/caribbean)
+"tu" = (/obj/structure/table/rack/shelf,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/item/weapon/reagent_containers/food/snacks/chocolatebar/pervitin,/turf/floor/wood,/area/caribbean)
 "tv" = (/obj/structure/table/rack/shelf,/obj/item/weapon/reagent_containers/glass/small_pot/german_kit_lid,/obj/item/weapon/reagent_containers/glass/small_pot/german_kit_lid,/turf/floor/wood,/area/caribbean)
 "tw" = (/obj/structure/sink,/turf/floor/plating/steel,/area/caribbean)
 "tx" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/vermouth,/turf/floor/wood,/area/caribbean)

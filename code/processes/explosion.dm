@@ -58,7 +58,7 @@
 	if (!sound)
 		sound = get_sfx("explosion")
 	if (config.use_recursive_explosions)
-		explosion_rec(epicenter, power)
+		explosion_rec(epicenter, power, sound)
 		return
 
 	epicenter = get_turf(epicenter)
@@ -115,11 +115,11 @@
 					if (reception == 2 && (M.ear_deaf <= 0 || !M.ear_deaf))//Dont play sounds to deaf people
 						// If inside the blast radius + 7 - 2
 						if (dist <= closedist)
-							M.playsound_local(epicenter, get_sfx("explosion"), min(100, volume), TRUE, frequency, falloff = 5) // get_sfx() is so that everyone gets the same sound
+							M.playsound_local(epicenter, sound, min(100, volume), TRUE, frequency, falloff = 5) // get_sfx() is so that everyone gets the same sound
 							//You hear a far explosion if you're outside the blast radius. Small bombs shouldn't be heard all over the station.
 
 						else
-							volume = M.playsound_local(epicenter, 'sound/effects/explosionfar.ogg', volume, TRUE, frequency, falloff = 1000)
+							volume = M.playsound_local(epicenter, sound, volume, TRUE, frequency, falloff = 1000)
 							//Playsound local will return the final volume the sound is actually played at
 							//It will return FALSE if the sound volume falls to FALSE due to falloff or pressure
 							//Also return zero if sound playing failed for some other reason
@@ -184,7 +184,7 @@
 	if (prob(25))
 		new/obj/effect/fire(epicenter)
 
-/process/explosion/proc/explosion_rec(turf/epicenter, power)
+/process/explosion/proc/explosion_rec(turf/epicenter, power, sound)
 	if (power <= 0) return
 	epicenter = get_turf(epicenter)
 	if (!epicenter) return
@@ -192,8 +192,8 @@
 	message_admins("Explosion with size ([power]) in area [epicenter.loc.name] ([epicenter.x],[epicenter.y],[epicenter.z])")
 	log_game("Explosion with size ([power]) in area [epicenter.loc.name] ")
 
-	playsound(epicenter, 'sound/effects/explosionfar.ogg', 100, TRUE, round(power*2,1) )
-	playsound(epicenter, "explosion", 100, TRUE, round(power,1) )
+	playsound(epicenter, sound, 100, TRUE, round(power*2,1) )
+	playsound(epicenter, sound, 100, TRUE, round(power,1) )
 
 	explosion_in_progress = TRUE
 	explosion_turfs = list()

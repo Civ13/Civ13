@@ -558,8 +558,40 @@ steam.start() -- spawns the effect
 /obj/effect/plane_flyby/f16/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/f16_center.ogg', 100, TRUE, extrarange = 500)
-		world << "The air vibrates as the sound of heavy jet engines can be heard from the sky. Sounds like a F-16 Fighting Falcon"
+		var/sound/uploaded_sound = sound('sound/effects/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M << SPAN_NOTICE("<font size=3>The air vibrates as a F-16 Fighting Falcon flies overhead.</font>")
+				M.client << uploaded_sound
+
+/obj/effect/plane_flyby/f16_no_message/New()
+	..()
+	spawn(10)
+		var/sound/uploaded_sound = sound('sound/effects/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M.client << uploaded_sound
+
+/obj/effect/plane_flyby/su25/New()
+	..()
+	spawn(10)
+		var/sound/uploaded_sound = sound('sound/effects/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M << SPAN_NOTICE("<font size=3>The air vibrates as a Su-25 Rook flies overhead.</font>")
+				M.client << uploaded_sound
+
+/obj/effect/plane_flyby/su25_no_message/New()
+	..()
+	spawn(10)
+		var/sound/uploaded_sound = sound('sound/effects/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M.client << uploaded_sound
 
 /obj/effect/flare
 	name = "flare"
@@ -569,7 +601,7 @@ steam.start() -- spawns the effect
 
 /obj/effect/flare/red/New()
 	..()
-	set_light(range, 0.75, "#ff0000")
+	set_light(flare_range, 0.75, "#ff0000")
 	spawn(rand(600,750))
 		for (var/v in 1 to flare_range)
 			spawn (v*5)

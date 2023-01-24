@@ -167,6 +167,10 @@
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
 			qdel(I)
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/cocoa))
+			contents += new /obj/item/weapon/reagent_containers/food/snacks/chocolatebar(src)
+			contents -= I
+			qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/flatbread(src)
 			contents -= I
