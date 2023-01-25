@@ -276,6 +276,14 @@
 		loader_chair = new /obj/structure/bed/chair/loader(src)
 		gunner_chair = new /obj/structure/bed/chair/gunner(src)
 
+/obj/structure/cannon/modern/tank/russian122
+	name = "122 mm M1943 D-25T"
+	desc = "a 122 mm Russian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 27
+	caliber = 122
+
 /obj/structure/cannon/modern/tank/russian76
 	name = "76 mm M1940 F-34"
 	desc = "a 76.2 mm Russian tank-based cannon."
@@ -357,7 +365,7 @@
 	path = /obj/item/weapon/foldable/generic
 
 /obj/structure/cannon/mortar/foldable/verb/Retrieve()
-	set category = null 
+	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)
 	if (usr.l_hand && usr.r_hand)

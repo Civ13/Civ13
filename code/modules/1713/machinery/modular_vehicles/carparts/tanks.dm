@@ -1,6 +1,7 @@
 //wall format (w_type var): type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
 
 //tanks
+
 /obj/structure/vehicleparts/frame/panzervi
 
 /obj/structure/vehicleparts/frame/panzervi/front
@@ -322,3 +323,85 @@
 	w_front = list("mt_front_left_frame",TRUE,TRUE,50,50,FALSE,FALSE)
 	override_roof_icon = "baf1_fl"
 	override_frame_icon = "mt_front_left_frame"
+
+///IS-3
+
+/obj/structure/vehicleparts/frame/is3
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	/obj/structure/vehicleparts/frame/is3.pixel_x = -32
+	/obj/structure/vehicleparts/frame/is3.pixel_y = -32
+
+/// front
+
+/obj/structure/vehicleparts/frame/is3/lf
+	icon_state = "is3_frame_steel_front_left"
+	w_front = list("is3_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/is3/front
+	icon_state = "is3_frame_steel_front_middle"
+	w_front = list("is3_front_middle_frame",TRUE,TRUE,40,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/is3/rf
+	icon_state = "is3_frame_steel_front_right"
+	w_front = list("is3_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/// middle-front
+
+/obj/structure/vehicleparts/frame/is3/lfc
+	icon_state = "is3_frame_steel_middle_front_left"
+	w_left = list("is3_middle_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/is3/fc
+	icon_state = "is3_frame_steel_middle_front"
+
+/obj/structure/vehicleparts/frame/is3/rfc
+	icon_state = "is3_frame_steel_middle_front_right"
+	w_right = list("is3_middle_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/// middle
+
+/obj/structure/vehicleparts/frame/is3/lc
+	icon_state = "is3_frame_steel_middle_left"
+	w_left = list("is3_middle_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/is3/c
+	icon_state = "is3_frame_steel_middle"
+
+/obj/structure/vehicleparts/frame/is3/rc
+	icon_state = "is3_frame_steel_middle_right"
+	w_right = list("is3_middle_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/// middle-back
+
+/obj/structure/vehicleparts/frame/is3/lbc
+	icon_state = "is3_frame_steel_middle_back_left"
+	w_left = list("is3_middle_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/is3/bc
+	icon_state = "is3_frame_steel_middle_back"
+
+/obj/structure/vehicleparts/frame/is3/rbc
+	icon_state = "is3_frame_steel_middle_back_right"
+	w_right = list("is3_middle_back_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/// back
+
+/obj/structure/vehicleparts/frame/is3/lb
+	icon_state = "is3_frame_steel_back_left"
+	w_back = list("is3_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/is3/back
+	icon_state = "is3_frame_steel_back"
+	w_back = list("is3_back_middle_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/is3/rb
+	icon_state = "is3_frame_steel_back_right"
+	w_back = list("is3_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+
+
