@@ -364,7 +364,7 @@
 	w_class = 6
 	path = /obj/item/weapon/foldable/generic
 
-/obj/structure/cannon/mortar/foldable/verb/Retrieve(mob/M as mob)
+/obj/structure/cannon/mortar/foldable/verb/Retrieve()
 	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)
