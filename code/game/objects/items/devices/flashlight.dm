@@ -249,7 +249,7 @@
 		spawn(i*8)
 			xoffset = rand(-5,5)
 			yoffset = rand(-5,5)
-			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),1,1,3,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
 	qdel(src)
 
 /obj/item/flashlight/flare/signal/attack_self(mob/living/user as mob)
