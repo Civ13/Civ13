@@ -37,7 +37,7 @@
 
 /obj/item/weapon/grenade/smokebomb/fast_activate()
 	spawn(round(det_time/10))
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!"))
 		active = TRUE
 		prime()
 
@@ -174,26 +174,26 @@
 					if (map.ID == "ROAD_TO_DAK_TO" || map.ID == "COMPOUND" || map.ID == "HUE" || map.ID == "ONG_THAHN")
 						playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)
-						visible_message("<span class = 'notice'>A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location."))
 					else if (user.faction_text == "RUSSIAN")
 						playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)
-						visible_message("<span class = 'notice'>A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location."))
 					else if (user.faction_text == "DUTCH")
 						playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)
-						visible_message("<span class = 'notice'>A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location."))
 					else
 						playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)
-						visible_message("<span class = 'notice'>A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location."))
 			sleep(20)
 			qdel(src)
 			return
 
 /obj/item/weapon/grenade/smokebomb/signal/fast_activate()
 	spawn(round(det_time/10))
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!"))
 		active = TRUE
 		prime()
 ///////////////////////////////////////////////////////////////////////////////
@@ -249,7 +249,7 @@
 
 /obj/item/weapon/grenade/incendiary/fast_activate()
 	spawn(round(det_time/10))
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!</span>")
 		active = TRUE
 		prime()
 
@@ -294,7 +294,7 @@
 
 /obj/item/weapon/grenade/chemical/fast_activate()
 	spawn(round(det_time/10))
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!</span>")
 		active = TRUE
 		prime()
 
