@@ -306,7 +306,7 @@
 							user.visible_message(SPAN_WARNING("[user] fires a flare into the air!"),SPAN_WARNING("You fire a flare into the air!"))
 							spawn(40)
 								new /obj/effect/flare/red(fired_from)
-							fired_flare(user)
+							fired_flare(user,fired_from)
 							spawn(460)
 								new new_type(fired_from)
 			else
@@ -316,27 +316,30 @@
 					playsound(user, 'sound/weapons/guns/fire/flaregun.ogg', 90, TRUE)
 					user.visible_message(SPAN_WARNING("[user] fires a flare into the air! Although it isn't night..."),SPAN_WARNING("You fire a flare into the air! And feel a little stupid for firing it while it's day..."))
 
-/obj/item/weapon/gun/launcher/flaregun/proc/fired_flare(mob/living/human/user as mob)
+/obj/item/weapon/gun/launcher/flaregun/proc/fired_flare(mob/living/human/user as mob,var/turf/fired_from)
 	if (user)
 		if (time_of_day == "Night" || time_of_day == "Evening")
+			supplydrop_turfs += fired_from
 			spawn(300)
-				world << "The sound of a helicopter rotor can be heard in the distance."
+				world << SPAN_NOTICE("<font size=3>The sound of a helicopter rotor can be heard in the distance.</font>")
 				if (map.ID == "ROAD_TO_DAK_TO" || map.ID == "COMPOUND" || map.ID == "HUE" || map.ID == "ONG_THAHN")
 					playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location."))
 				else if (user.faction_text == "RUSSIAN")
 					playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location."))
 				else if (user.faction_text == "DUTCH")
 					playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location."))
 				else
 					playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location."))
+				spawn(600)
+					supplydrop_turfs -= fired_from
 				return
 
 /obj/item/weapon/gun/launcher/flaregun/civilian

@@ -113,15 +113,9 @@ var/list/sky_drop_map = list()
 					H.adjustBruteLossByPart(300, "l_leg")
 					H.adjustBruteLossByPart(300, "r_leg")
 					if (hasorgans(H))
-						var/obj/item/organ/external/affected
-						if (prob(50))
-							affected = H.get_organ("l_leg")
-							affected.fracture()
-							affected = H.get_organ("r_leg")
-							affected.fracture()
-						else
-							affected = H.get_organ(pick("l_leg", "r_leg"))
-							affected.fracture()
+						var/dam_zone = pick("l_leg", "r_leg")
+						var/obj/item/organ/external/affecting = H.get_organ(dam_zone)
+						affecting.fracture()
 				else
 					#define FALL_STEPS 12
 					try

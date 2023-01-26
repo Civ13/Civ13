@@ -16,6 +16,7 @@
 	desc = "supports wheels."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
+	var/vehicle_size = "3x4"
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
@@ -75,6 +76,20 @@
 	maxpower = 2500
 	speedlist = list(1=12,2=8,3=6)
 
+/obj/structure/vehicleparts/axis/heavy/is3
+	name = "IS-3"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#5C5C4C"
+	turret_type = "is3_turret"
+	vehicle_size = "3x5"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/t34
 	name = "T-34"
 	speeds = 4
@@ -108,6 +123,7 @@
 	reg_number = ""
 	color = "#4a5243"
 	turret_type = "none"
+	vehicle_size = "2x4"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -133,6 +149,7 @@
 	reg_number = ""
 	color = "#787859"
 	turret_type = "bmd2_turret"
+	vehicle_size = "2x4"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -145,6 +162,7 @@
 	speedlist = list(1=12,2=8,3=6)
 	reg_number = ""
 	color = "#585A5C"
+	turret_type = "pzvi_turret"
 	New()
 		..()
 		var/pickedname = pick(tank_names_german)
@@ -186,7 +204,7 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	reg_number = ""
 	color = "#5C5C4C"
-	turret_type = "t90_turret"
+	turret_type = "t90a_turret"
 
 /obj/structure/vehicleparts/axis/heavy/leopard
 	name = "Leopard 2A6"
