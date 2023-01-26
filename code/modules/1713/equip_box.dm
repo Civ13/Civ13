@@ -6,7 +6,7 @@
 	flags = CONDUCT
 	var/list/options = list()
 
-/obj/item/gunbox/attack_self(mob/living/user as mob)
+/obj/item/gunbox/attack_self(mob/living/human/user as mob)
 	var/choice = input(user,"What type of equipment?") as null|anything in options
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
@@ -20,7 +20,7 @@
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "ammo_can" //temp
 
-/obj/item/gunbox/police/attack_self(mob/living/user as mob)
+/obj/item/gunbox/police/attack_self(mob/living/human/user as mob)
 	options["Colt Police - revolver"] = list(/obj/item/weapon/gun/projectile/revolver/coltpolicepositive,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32)
 	options["Glock 17 - pistol"] = list(/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17)
 	options["Peace maker - revolver"] = list(/obj/item/weapon/gun/projectile/revolver/frontier,/obj/item/ammo_magazine/c44,/obj/item/ammo_magazine/c44,/obj/item/ammo_magazine/c44)
@@ -34,7 +34,7 @@
 	icon_state = "ammo_can" //temp
 	flags = CONDUCT
 
-/obj/item/gunbox/emplacement/attack_self(mob/living/user as mob)
+/obj/item/gunbox/emplacement/attack_self(mob/living/human/user as mob)
 	options["Foldable Anti-Tank Guide Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack)
 	options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack)
 
@@ -45,7 +45,7 @@
 	icon_state = "ammo_can" //temp
 	flags = CONDUCT
 
-/obj/item/gunbox/specialist/attack_self(mob/living/user as mob)
+/obj/item/gunbox/specialist/attack_self(mob/living/human/user as mob)
 	switch (user.faction_text)
 		if ("DUTCH")
 			options["Sniper"] = list(/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal,/obj/item/ammo_magazine/a50cal,/obj/item/ammo_magazine/a50cal)
