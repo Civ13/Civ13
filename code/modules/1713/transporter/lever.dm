@@ -12,8 +12,6 @@
 	var/next_activation = -1;
 
 /obj/structure/transport_lever/attack_hand(var/mob/user as mob)
-//f (user && istype(user, /mob/living/human))
-//function(user)
 	if (world.time < next_activation)
 		next_activation = world.time + 50
 		visible_message("This Landing Craft isn't ready to depart yet.</span>")
@@ -23,13 +21,13 @@
 			M.playsound_local(get_turf(M), depart_sound, 100 - get_dist(M, src))
 		if (position == "docked")
 			visible_message("The Landing Craft is departing!</span>")
-			if (icon_state == none_state)
+			if (icon_state == none_state) // Push lever
 				icon_state = pushed_state
 			for (var/turf/floor/plating/concrete/T in range(10, src))
 				T.opacity = TRUE
 				T.density = TRUE
 			spawn (3)
-				icon_state = none_state
+				icon_state = none_state // Reset lever
 			spawn (200)
 				for (var/mob/M in range(5, src))
 					if (M.z == 1)
@@ -131,17 +129,15 @@
 	var/next_activation = -1;
 
 /obj/structure/aircraft_lever/attack_hand(var/mob/user as mob)
-//f (user && istype(user, /mob/living/human))
-//function(user)
 	if (world.time < next_activation)
 		next_activation = world.time + 50
-		visible_message("The aircraft isn't ready to take off yet.</span>")
+		visible_message("The aircraft isn't ready to take off yet.")
 	else
 		next_activation = world.time + 400 //to give it time to reach the destination
 		for (var/mob/M in range(10, src))
 			M.playsound_local(get_turf(M), depart_sound, 100 - get_dist(M, src))
 		if (position == "landed")
-			visible_message("The aircraft is taking off!</span>")
+			visible_message("The aircraft is taking off again!") // Return to home
 			if (icon_state == none_state) // Push lever
 				icon_state = pushed_state
 			for (var/turf/floor/plating/concrete/T in range(10, src))
@@ -160,14 +156,14 @@
 						O.z = 2
 					else if (O.z == 2)
 						O.z = 1
-				visible_message("The aircraft has arrived.</span>")
+				visible_message("The aircraft has arrived.")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(10, src))
 						T.opacity = FALSE
 						T.density = FALSE
 				spawn (400)
 					if (z == 1)
-						visible_message("The aircraft is returning!</span>")
+						visible_message("The aircraft is returning!")
 						for (var/mob/M in range(10, src))
 							M.playsound_local(get_turf(M), 'sound/landing_craft.ogg', 100 - get_dist(M, src))
 						for (var/mob/M in range(5, src))
@@ -188,7 +184,7 @@
 							T.density = FALSE
 			position = "launched"
 		else if (position == "launched")
-			visible_message("The Landing Craft is departing!</span>")
+			visible_message("The Landing Craft is taking off!") // Go to destination
 			if (icon_state == none_state) // Push lever
 				icon_state = pushed_state
 			for (var/turf/floor/plating/concrete/T in range(10, src))
@@ -209,14 +205,14 @@
 							O.z = 2
 						else if (O.z == 2)
 							O.z = 1
-				visible_message("The aircraft has arrived.</span>")
+				visible_message("The aircraft has arrived.")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(10, src))
 						T.opacity = FALSE
 						T.density = FALSE
 				spawn (400)
 					if (z == 1)
-						visible_message("The aircraft is returning!</span>")
+						visible_message("The aircraft is returning!")
 						for (var/mob/M in range(10, src))
 							M.playsound_local(get_turf(M), 'sound/landing_craft.ogg', 100 - get_dist(M, src))
 						for (var/mob/M in range(5, src))
