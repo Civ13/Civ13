@@ -12,14 +12,6 @@
 	..()
 	update_layer()
 
-/*
-/obj/structure/bed/chair/attack_tk(mob/user as mob)
-	if (buckled_mob)
-		..()
-	else
-		rotate()
-	return
-*/
 /obj/structure/bed/chair/post_buckle_mob()
 	update_icon()
 
@@ -66,8 +58,8 @@
 	if (buckled_mob)
 		buckled_mob.set_dir(dir)
 
-/obj/structure/bed/chair/verb/rotate()
-	set name = "Rotate Chair"
+/obj/structure/bed/chair/verb/rotate_right()
+	set name = "Rotate Right"
 	set category = null
 	set src in oview(1)
 
@@ -85,6 +77,28 @@
 			return
 
 		set_dir(turn(dir, 90))
+
+		return
+
+/obj/structure/bed/chair/verb/rotate_left()
+	set name = "Rotate Left"
+	set category = null
+	set src in oview(1)
+
+	if (config.ghost_interaction)
+		set_dir(turn(dir, -90))
+
+		return
+
+	else
+		if (istype(usr,/mob/living/simple_animal/mouse))
+			return
+		if (!usr || !isturf(usr.loc))
+			return
+		if (usr.stat || usr.restrained())
+			return
+
+		set_dir(turn(dir, -90))
 
 		return
 

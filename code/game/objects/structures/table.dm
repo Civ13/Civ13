@@ -76,25 +76,30 @@
 
 		update_icon()
 
-/obj/structure/table/verb/Rotate()
+/obj/structure/table/verb/rotate_left()
+	set name = "Rotate left"
 	set category = null
-	set src in view(1)
+	set src in oview(1)
 
 	if (!istype(usr, /mob/living))
 		return
-	//rotates clockwise
-	if (flipped)
-		visible_message("[usr] rotates the table.")
-		switch(dir)
-			if (NORTH)
-				dir = EAST
-			if (SOUTH)
-				dir = WEST
-			if (WEST)
-				dir = NORTH
-			if (EAST)
-				dir = SOUTH
-		update_icon()
+
+	set_dir(turn(dir, -90))
+	update_icon()
+	return
+
+/obj/structure/table/verb/rotate_right()
+	set name = "Rotate right"
+	set category = null
+	set src in oview(1)
+
+	if (!istype(usr, /mob/living))
+		return
+
+	set_dir(turn(dir, 90))
+	update_icon()
+	return
+
 /obj/structure/table/update_icon()
 	if (flipped)
 		icon_state = flipped_icon

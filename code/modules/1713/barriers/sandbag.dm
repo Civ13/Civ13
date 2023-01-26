@@ -193,18 +193,18 @@
 /obj/structure/window/barrier/attack_generic(var/mob/user, var/damage)
 	return FALSE
 
-/obj/structure/window/barrier/rotate()
+/obj/structure/window/barrier/rotate_left()
 	return
 
-/obj/structure/window/barrier/revrotate()
+/obj/structure/window/barrier/rotate_right()
 	return
 
 /obj/structure/window/barrier/is_fulltile()
 	return FALSE
 
 /obj/structure/window/barrier/update_verbs()
-	verbs -= /obj/structure/window/proc/rotate
-	verbs -= /obj/structure/window/proc/revrotate
+	verbs -= /obj/structure/window/proc/rotate_left
+	verbs -= /obj/structure/window/proc/rotate_right
 
 //merges adjacent full-tile windows into one (blatant ripoff from game/smoothwall.dm)
 /obj/structure/window/barrier/update_icon()
