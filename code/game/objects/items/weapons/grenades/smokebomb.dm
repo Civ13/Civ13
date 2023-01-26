@@ -249,7 +249,7 @@
 
 /obj/item/weapon/grenade/incendiary/fast_activate()
 	spawn(round(det_time/10))
-		visible_message(SPAN_WARNING("\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!</span>"))
 		active = TRUE
 		prime()
 
@@ -294,7 +294,7 @@
 
 /obj/item/weapon/grenade/chemical/fast_activate()
 	spawn(round(det_time/10))
-		visible_message(SPAN_WARNING("\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!</span>"))
 		active = TRUE
 		prime()
 
