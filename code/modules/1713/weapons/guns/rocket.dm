@@ -321,23 +321,23 @@
 		if (time_of_day == "Night" || time_of_day == "Evening")
 			supplydrop_turfs += fired_from
 			spawn(300)
-				world << "The sound of a helicopter rotor can be heard in the distance."
+				world << SPAN_NOTICE("<font size=3>The sound of a helicopter rotor can be heard in the distance.</font>")
 				if (map.ID == "ROAD_TO_DAK_TO" || map.ID == "COMPOUND" || map.ID == "HUE" || map.ID == "ONG_THAHN")
 					playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location."))
 				else if (user.faction_text == "RUSSIAN")
 					playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location."))
 				else if (user.faction_text == "DUTCH")
 					playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location."))
 				else
 					playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
-						visible_message("<span class = 'notice'>A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location.</span>")
+						visible_message(SPAN_NOTICE("A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location."))
 				spawn(600)
 					supplydrop_turfs -= fired_from
 				return
