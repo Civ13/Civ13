@@ -764,6 +764,7 @@
 	layer = MOB_LAYER + 0.02
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
+	glassed = TRUE
 
 
 /obj/structure/window/clean/reinforced
@@ -772,6 +773,8 @@
 	maxhealth = 200.0
 	not_movable = TRUE
 	not_disassemblable = TRUE
+/obj/structure/window/clean/reinforced/metal
+	icon_state = "windowmetal"
 
 /obj/structure/window/classic/shoji
 	icon_state = "shoji_windownew"
