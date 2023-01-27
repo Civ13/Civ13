@@ -41,3 +41,16 @@
 
 	fix_broken_daylights()
 	update_icon()
+
+/turf/proc/transport_properties_from(turf/other)
+	if(!istype(other, src.type))
+		return FALSE
+	src.set_dir(other.dir)
+	src.icon_state = other.icon_state
+	src.icon = other.icon
+	// copy_overlays(other)
+	src.underlays = other.underlays.Copy()
+	if(other.decals)
+		src.decals = other.decals.Copy()
+		src.update_icon()
+	return TRUE

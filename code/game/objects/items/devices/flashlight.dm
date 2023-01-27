@@ -204,6 +204,8 @@
 		var/mob/living/human/H = user
 		if(istype(H) && !H.in_throw_mode)
 			H.throw_mode_on()
+		sleep(rand(80,120))
+		activate_signal(user)
 
 /obj/item/flashlight/flare/proc/activate_signal(mob/living/human/user as mob)
 	return
@@ -218,7 +220,7 @@
 
 /obj/item/flashlight/flare/white
 	name = "white phosphorus flare"
-	desc = "A white phosphorus flare. There are instructions on the side reading 'pull cord, make light'. Lasts for about 5 minutes. This seems dangerous..."
+	desc = "A white phosphorus flare. There are instructions on the side reading 'pull cord, make light'. Lasts for about 5 minutes."
 	icon_state = "flareW"
 	flame_base_tint = "#eeeeee"
 	projectile_type = /obj/item/flashlight/flare/white/on
@@ -249,35 +251,8 @@
 		spawn(i*8)
 			xoffset = rand(-5,5)
 			yoffset = rand(-5,5)
-			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),1,1,3,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
 	qdel(src)
-
-/obj/item/flashlight/flare/signal/attack_self(mob/living/user as mob)
-	if(!fuel)
-		to_chat(user, SPAN_NOTICE("It's out of fuel."))
-		return FALSE
-	if(on)
-		if(!do_after(user, 2.5 SECONDS, src))
-			return
-		if(!on)
-			return
-		user.visible_message(SPAN_WARNING("[user] snuffs out [src]."), SPAN_WARNING("You snuff out [src], burning your hand."))
-		user.adjustFireLoss(7)
-		burn_out()
-		//TODO: add snuff out sound
-		return
-
-	. = ..()
-	// All good, turn it on.
-	if(.)
-		user.visible_message(SPAN_NOTICE("[user] activates the flare."), SPAN_NOTICE("You pull the cord on the flare, activating it!"))
-		playsound(src,turn_on_sound, 50, TRUE)
-		turn_on()
-		var/mob/living/human/H = user
-		if(istype(H) && !H.in_throw_mode)
-			H.throw_mode_on()
-		sleep(rand(80,120))
-		activate_signal(user)
 
 // Projectile
 /obj/item/projectile/flare

@@ -246,6 +246,16 @@
 		throwmode = 1
 	thrown_list += src
 
+/atom/movable/proc/throw_at_random(var/include_own_turf, var/maxrange, var/speed)
+	var/list/turfs = trange(maxrange, src)
+	if(!maxrange)
+		maxrange = 1
+
+	if(!include_own_turf)
+		turfs -= get_turf(src)
+	if (length(turfs))
+		throw_at(pick(turfs), maxrange, speed)
+
 /atom/movable/proc/finished_throwing()
 	thrown_list -= src
 	var/turf/new_loc = get_turf(src)

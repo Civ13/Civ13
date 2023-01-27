@@ -329,8 +329,8 @@
 /obj/structure/vehicleparts/frame/is3
 	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/tankparts96x96.dmi'
-	/obj/structure/vehicleparts/frame/is3.pixel_x = -32
-	/obj/structure/vehicleparts/frame/is3.pixel_y = -32
+	pixel_x = -32
+	pixel_y = -32
 
 /// front
 

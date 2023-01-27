@@ -102,7 +102,6 @@
 		usr << "You place \the [VP] in \the [axis]."
 		VP.forceMove(loc)
 		VP.anchored = TRUE
-		VP.dir = dir
 		var/obj/structure/bed/chair/drivers/VPP = VP
 		axis.wheel = VPP.wheel
 		axis.wheel.control = src

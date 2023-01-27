@@ -491,7 +491,7 @@
 /obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon()
 	if (ammo_magazine)
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
-			icon_state = "[base_icon]_drum"
+			icon_state = "[base_icon]"
 			item_state = "ppsh"
 			return
 		else

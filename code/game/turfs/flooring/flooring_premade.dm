@@ -273,7 +273,7 @@
 			user << "[src]'s nutrition level is at <b>[soil_nutrition]/[max_soil_nutrition]</b>."
 	return ..()
 
-/turf/floor/dirt/space
+/turf/floor/space
 	name = "space"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "space"

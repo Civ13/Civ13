@@ -318,8 +318,8 @@
 	return
 
 
-/obj/structure/window/proc/rotate()
-	set name = "Rotate Window Counter-Clockwise"
+/obj/structure/window/proc/rotate_right()
+	set name = "Rotate Right"
 	set category = null
 	set src in oview(1)
 
@@ -334,9 +334,8 @@
 	updateSilicate()
 	return
 
-
-/obj/structure/window/proc/revrotate()
-	set name = "Rotate Window Clockwise"
+/obj/structure/window/proc/rotate_left()
+	set name = "Rotate Left"
 	set category = null
 	set src in oview(1)
 
@@ -348,7 +347,7 @@
 		return FALSE
 
 
-	set_dir(turn(dir, 270))
+	set_dir(turn(dir, -90))
 	updateSilicate()
 
 	return
@@ -405,11 +404,11 @@
 //Updates the availabiliy of the rotation verbs
 /obj/structure/window/proc/update_verbs()
 	if (anchored)
-		verbs -= /obj/structure/window/proc/rotate
-		verbs -= /obj/structure/window/proc/revrotate
+		verbs -= /obj/structure/window/proc/rotate_left
+		verbs -= /obj/structure/window/proc/rotate_right
 	else
-		verbs += /obj/structure/window/proc/rotate
-		verbs += /obj/structure/window/proc/revrotate
+		verbs += /obj/structure/window/proc/rotate_left
+		verbs += /obj/structure/window/proc/rotate_right
 
 //merges adjacent full-tile windows into one (blatant ripoff from game/smoothwall.dm)
 /obj/structure/window/update_icon()
@@ -765,6 +764,7 @@
 	layer = MOB_LAYER + 0.02
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
+	glassed = TRUE
 
 
 /obj/structure/window/clean/reinforced
@@ -773,6 +773,8 @@
 	maxhealth = 200.0
 	not_movable = TRUE
 	not_disassemblable = TRUE
+/obj/structure/window/clean/reinforced/metal
+	icon_state = "windowmetal"
 
 /obj/structure/window/classic/shoji
 	icon_state = "shoji_windownew"

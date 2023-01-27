@@ -295,7 +295,7 @@
 "fI" = (/obj/structure/bed/chair/loader{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "fJ" = (/obj/structure/shellrack/full85,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "fK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
-"fL" = (/obj/structure/cannon/modern/tank/russian85/field{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads/desert)
+"fL" = (/obj/structure/cannon/modern/tank/russian85/field{dir = 1; icon_state = "feldkanone18_assembled"; assembled = 1},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "fM" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "fN" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt/dust,/area/caribbean/roofed/desert)
 "fO" = (/obj/structure/sink/well,/turf/floor/beach/sand/dark,/area/caribbean/nomads/desert)

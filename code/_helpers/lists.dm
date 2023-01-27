@@ -56,24 +56,11 @@
 
 //Returns a list in plain english as a string
 /proc/english_list(var/list/input, nothing_text = "nothing", and_text = " and ", comma_text = ", ", final_comma_text = "" )
-	var/total = input.len
-	if (!total)
-		return "[nothing_text]"
-	else if (total == TRUE)
-		return "[input[1]]"
-	else if (total == 2)
-		return "[input[1]][and_text][input[2]]"
-	else
-		var/output = ""
-		var/index = TRUE
-		while (index < total)
-			if (index == total - 1)
-				comma_text = final_comma_text
-
-			output += "[input[index]][comma_text]"
-			index++
-
-		return "[output][and_text][input[index]]"
+	switch(length(input))
+		if(0) return nothing_text
+		if(1) return "[input[1]]"
+		if(2) return "[input[1]][and_text][input[2]]"
+		else  return "[jointext(input, comma_text, 1, -1)][final_comma_text][and_text][input[input.len]]"
 
 //Returns list element or null. Should prevent "index out of bounds" error.
 proc/listgetindex(var/list/list,index)
@@ -223,6 +210,12 @@ proc/listclearnulls(list/list)
 	. = list()
 	for (var/i in L)
 		. |= i
+
+// Return a list of the values in an assoc list (including null)
+/proc/list_values(var/list/L)
+	. = list()
+	for(var/e in L)
+		. += L[e]
 
 //Mergesort: divides up the list into halves to begin the sort
 /proc/sortKey(var/list/client/L, var/order = TRUE)

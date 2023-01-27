@@ -2,41 +2,25 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/var/climbers = list()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_left()
-	set category = null
 	set name = "Rotate left"
-	set src in range(2, usr)
+	set category = null
+	set src in oview(1)
 
 	if (!istype(usr, /mob/living))
 		return
 
-	switch(dir)
-		if (EAST)
-			dir = NORTH
-		if (WEST)
-			dir = SOUTH
-		if (NORTH)
-			dir = WEST
-		if (SOUTH)
-			dir = EAST
+	set_dir(turn(dir, -90))
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_right()
-	set category = null
 	set name = "Rotate right"
-	set src in range(2, usr)
+	set category = null
+	set src in oview(1)
 
 	if (!istype(usr, /mob/living))
 		return
 
-	switch(dir)
-		if (EAST)
-			dir = SOUTH
-		if (WEST)
-			dir = NORTH
-		if (NORTH)
-			dir = EAST
-		if (SOUTH)
-			dir = WEST
+	set_dir(turn(dir, 90))
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/MouseDrop_T(mob/target, mob/user)

@@ -344,6 +344,12 @@
 	icon_state = "outrigger_frame3"
 	health = 130
 
+/obj/structure/vehicle/boat/rib
+	name = "rigidbody inflatable motor boat"
+	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
+	icon_state = "rib"
+	health = 200
+
 /obj/structure/vehicle/boat/sailboat
 	name = "sailing outrigger"
 	desc = "A sailing boat. Powered by the wind."

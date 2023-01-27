@@ -24,7 +24,7 @@ proc/get_base_turf_by_area(var/turf/T)
 	if (!choice)
 		return
 
-	var/new_base_path = WWinput(src, "Please select a turf path (cancel to reset to /turf/space).", "Set Base Turf", WWinput_first_choice(typesof(/turf)), WWinput_list_or_null(typesof(/turf)))
+	var/new_base_path = WWinput(src, "Please select a turf path (cancel to reset to /turf/floor/dirt).", "Set Base Turf", WWinput_first_choice(typesof(/turf)), WWinput_list_or_null(typesof(/turf)))
 	if (!ispath(new_base_path))
 		new_base_path = /turf/floor/dirt
 	base_turf_by_z["[choice]"] = new_base_path
