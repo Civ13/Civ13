@@ -81,7 +81,7 @@
 			if(distance > max_range)
 				break
 
-			if(istype(T, /turf/floor/dirt/space))
+			if(istype(T, /turf/floor/space))
 				break
 
 			if(T.density)
