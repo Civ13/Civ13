@@ -244,15 +244,15 @@
 	w_class = 2.0
 
 	attack_verb = list("attacked", "whacked")
-	var/cooldown_whistle = FALSE
+	var/cooldown = FALSE
 
 /obj/item/weapon/whistle/attack_self(mob/user as mob)
-	if (cooldown_whistle == FALSE)
+	if (!cooldown)
 		playsound(loc, 'sound/effects/whistle.ogg', 100, FALSE, 5)
 		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
-		cooldown_whistle = TRUE
-		spawn(100)
-			cooldown_whistle = FALSE
+		cooldown = TRUE
+		spawn(10 SECONDS)
+			cooldown = FALSE
 		return
 
 /obj/item/weapon/deathwhistle
@@ -268,15 +268,15 @@
 	w_class = 2.0
 
 	attack_verb = list("attacked", "whacked")
-	var/cooldown_whistle = FALSE
+	var/cooldown = FALSE
 
 /obj/item/weapon/deathwhistle/attack_self(mob/user as mob)
-	if (cooldown_whistle == FALSE)
+	if (!cooldown)
 		playsound(loc, 'sound/effects/death-whistle.ogg', 100, FALSE, 5)
 		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
-		cooldown_whistle = TRUE
-		spawn(100)
-			cooldown_whistle = FALSE
+		cooldown = TRUE
+		spawn(10 SECONDS)
+			cooldown = FALSE
 		return
 
 /obj/item/weapon/siegeladder

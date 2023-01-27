@@ -58,6 +58,6 @@ obj/structure/bell_stand/attackby(var/obj/item/I, var/mob/living/human/H)
 		playsound(loc, 'sound/effects/handbell.ogg', 100, FALSE, 5)
 		user.visible_message("<span class='warning'>[user] rings the [name]!</span>")
 		cooldown_handbell = TRUE
-		spawn(30)
+		spawn(5 SECONDS)
 			cooldown_handbell = FALSE
 		return
