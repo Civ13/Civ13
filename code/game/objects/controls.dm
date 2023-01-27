@@ -10,6 +10,7 @@
 	density = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	layer = 3.01
 
 /obj/structure/gatecontrol/blastcontrol
 	name = "blast door control"

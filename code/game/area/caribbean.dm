@@ -365,6 +365,24 @@
 	allow_area_subtypes = TRUE
 	name = "The Sky"
 
+/area/caribbean/helicopter/takeoff
+	name = "Helicopter Takeoff Pad"
+	icon_state = "blue2"
+
+/area/caribbean/helicopter/transit
+	name = "Helicopter Transit"
+	icon_state = "blue2"
+
+/area/caribbean/helicopter/landing_pad/one
+	name = "Helicopter Landing Pad 1"
+	icon_state = "blue2"
+/area/caribbean/helicopter/landing_pad/two
+	name = "Helicopter Takeoff Pad 2"
+	icon_state = "blue2"
+/area/caribbean/helicopter/landing_pad/three
+	name = "Helicopter Takeoff Pad 3"
+	icon_state = "blue2"
+
 /area/caribbean/no_mans_land/sky/paratrooper_drop_zone/plane
 	landing_area = /area/caribbean/forest
 	allow_area_subtypes = TRUE
