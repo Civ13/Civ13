@@ -265,11 +265,11 @@
 			var/sound/uploaded_sound
 			switch (direction)
 				if (1)
-					uploaded_sound = sound('sound/effects/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound = sound('sound/effects/aircraft/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				if (2)
-					uploaded_sound = sound('sound/effects/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound = sound('sound/effects/aircraft/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				if (3)
-					uploaded_sound = sound('sound/effects/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound = sound('sound/effects/aircraft/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 			uploaded_sound.priority = 250
 			for (var/mob/M in player_list)
 				if (!new_player_mob_list.Find(M))
@@ -280,11 +280,11 @@
 			var/sound/uploaded_sound
 			switch (direction)
 				if (1)
-					uploaded_sound = sound('sound/effects/su25_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound = sound('sound/effects/aircraft/su25_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				if (2)
-					uploaded_sound = sound('sound/effects/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound = sound('sound/effects/aircraft/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				if (3)
-					uploaded_sound = sound('sound/effects/su25_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound = sound('sound/effects/aircraft/su25_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 			uploaded_sound.priority = 250
 			for (var/mob/M in player_list)
 				if (!new_player_mob_list.Find(M))
@@ -296,11 +296,11 @@
 			var/sound/uploaded_sound2
 			switch (direction)
 				if (1)
-					uploaded_sound1 = sound('sound/effects/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound1 = sound('sound/effects/aircraft/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 					uploaded_sound2 = sound('sound/effects/su25_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				if (2)
-					uploaded_sound1 = sound('sound/effects/su25_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-					uploaded_sound2 = sound('sound/effects/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound1 = sound('sound/effects/aircraft/su25_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound2 = sound('sound/effects/aircraft/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 			uploaded_sound1.priority = 250
 			uploaded_sound2.priority = 250
 			for (var/mob/M in player_list)

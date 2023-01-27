@@ -526,27 +526,27 @@ steam.start() -- spawns the effect
 /obj/effect/helicopter_flyby/uh1/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/uh1.ogg', 100, TRUE, extrarange = 100)
+		playsound(get_turf(src), 'sound/effects/aircraft/uh1.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-1."
 /obj/effect/helicopter_flyby/uh60/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/uh60.ogg', 100, TRUE, extrarange = 100)
+		playsound(get_turf(src), 'sound/effects/aircraft/uh60.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-60 Black Hawk."
 /obj/effect/helicopter_flyby/ch47/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/ch47.ogg', 100, TRUE, extrarange = 100)
+		playsound(get_turf(src), 'sound/effects/aircraft/ch47.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Boeing CH-47 Chinook."
 /obj/effect/helicopter_flyby/mi8/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/mi8.ogg', 100, TRUE, extrarange = 100)
+		playsound(get_turf(src), 'sound/effects/aircraft/mi8.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-8."
 /obj/effect/helicopter_flyby/mi24/New()
 	..()
 	spawn(10)
-		playsound(get_turf(src), 'sound/effects/mi24.ogg', 100, TRUE, extrarange = 100)
+		playsound(get_turf(src), 'sound/effects/aircraft/mi24.ogg', 100, TRUE, extrarange = 100)
 		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-24 Hind."
 
 
@@ -558,7 +558,7 @@ steam.start() -- spawns the effect
 /obj/effect/plane_flyby/f16/New()
 	..()
 	spawn(10)
-		var/sound/uploaded_sound = sound('sound/effects/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
@@ -568,7 +568,7 @@ steam.start() -- spawns the effect
 /obj/effect/plane_flyby/f16_no_message/New()
 	..()
 	spawn(10)
-		var/sound/uploaded_sound = sound('sound/effects/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/f16_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
@@ -577,7 +577,7 @@ steam.start() -- spawns the effect
 /obj/effect/plane_flyby/su25/New()
 	..()
 	spawn(10)
-		var/sound/uploaded_sound = sound('sound/effects/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
@@ -587,7 +587,7 @@ steam.start() -- spawns the effect
 /obj/effect/plane_flyby/su25_no_message/New()
 	..()
 	spawn(10)
-		var/sound/uploaded_sound = sound('sound/effects/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/su25_center.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
