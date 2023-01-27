@@ -121,7 +121,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 	callHook("roundstart")
 
-	shuttle_controller.initialize_shuttles()
+	//shuttle_controller.initialize_shuttles()
 
 	spawn(0)//Forking here so we dont have to wait for this to finish
 
