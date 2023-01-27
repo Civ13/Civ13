@@ -2216,9 +2216,9 @@
 
 	return TRUE
 
-/datum/job/russian/modern_rifleman
-	title = "Private"
-	rank_abbreviation = "Ryad."
+/datum/job/russian/weapon_specialist
+	title = "Weapons Specialist "
+	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
@@ -2226,10 +2226,10 @@
 	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
-	min_positions = 5
-	max_positions = 100
+	min_positions = 1
+	max_positions = 2
 
-/datum/job/russian/modern_rifleman/equip(var/mob/living/human/H)
+/datum/job/russian/weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
