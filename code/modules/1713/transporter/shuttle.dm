@@ -9,11 +9,55 @@
 
 	var/arrive_time = 0	//the time at which the shuttle arrives when long jumping
 	var/process_state = IDLE_STATE //Used with SHUTTLE_FLAGS_PROCESS, as well as to store current state.
+	var/flags = SHUTTLE_FLAGS_NONE
 
 	var/sound_takeoff = 'sound/landing_craft.ogg'
 	var/sound_landing = 'sound/landing_craft.ogg'
 
 	var/knockdown = TRUE //whether shuttle downs non-buckled people when it moves
+
+/datum/shuttle/New(_name, var/obj/effect/shuttle_landmark/initial_location)
+	..()
+	if(_name)
+		src.name = _name
+
+	var/list/areas = list()
+	if(!islist(shuttle_area))
+		shuttle_area = list(shuttle_area)
+	for(var/T in shuttle_area)
+		var/area/A = locate(T)
+		if(!istype(A))
+			CRASH("Shuttle \"[name]\" couldn't locate area [T].")
+		areas += A
+	shuttle_area = areas
+
+	if(initial_location)
+		current_location = initial_location
+	else
+		current_location = SSshuttle.get_landmark(current_location)
+	if(!istype(current_location))
+		CRASH("Shuttle \"[name]\" could not find its starting location.")
+
+	if(src.name in SSshuttle.shuttles)
+		CRASH("A shuttle with the name '[name]' is already defined.")
+	SSshuttle.shuttles[src.name] = src
+	if(flags & SHUTTLE_FLAGS_PROCESS)
+		SSshuttle.process_shuttles += src
+	if(flags & SHUTTLE_FLAGS_SUPPLY)
+		if(SSsupply.shuttle)
+			CRASH("A supply shuttle is already defined.")
+		SSsupply.shuttle = src
+
+/datum/shuttle/Destroy()
+	current_location = null
+
+	SSshuttle.shuttles -= src.name
+	SSshuttle.process_shuttles -= src
+	SSshuttle.shuttle_logs -= src
+	if(SSsupply.shuttle == src)
+		SSsupply.shuttle = null
+
+	. = ..()
 
 /datum/shuttle/proc/short_jump(var/obj/effect/shuttle_landmark/destination)
 	if(moving_status != SHUTTLE_IDLE) return
@@ -70,9 +114,10 @@
 		moving_status = SHUTTLE_IDLE
 
 
-
-
-
+/*****************
+* Shuttle Moved Handling * (Observer Pattern Implementation: Shuttle Moved)
+* Shuttle Pre Move Handling * (Observer Pattern Implementation: Shuttle Pre Move)
+*****************/
 
 /datum/shuttle/proc/attempt_move(var/obj/effect/shuttle_landmark/destination)
 	if(current_location == destination)
@@ -143,3 +188,6 @@
 	if(!next_location)
 		return "None"
 	return next_location.name
+
+/obj/effect/shuttle_landmark/transit
+	flags = SLANDMARK_FLAG_ZERO_G

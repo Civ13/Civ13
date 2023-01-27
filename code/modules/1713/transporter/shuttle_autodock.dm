@@ -15,7 +15,7 @@
 	var/obj/effect/shuttle_landmark/landmark_transition  //This variable is type-abused initially: specify the landmark_tag, not the actual landmark.
 	var/move_time = 120		//the time spent in the transition area
 
-	flags = 1
+	flags = SHUTTLE_FLAGS_PROCESS | SHUTTLE_FLAGS_ZERO_G
 
 /datum/shuttle/autodock/New(var/_name, var/obj/effect/shuttle_landmark/start_waypoint)
 	..(_name, start_waypoint)
@@ -25,10 +25,10 @@
 	update_docking_target(current_location)
 	if(active_docking_controller)
 		set_docking_codes(active_docking_controller.docking_codes)
-	else if(GLOB.using_map.use_overmap)
+	/* else if(GLOB.using_map.use_overmap)
 		var/obj/effect/overmap/visitable/location = map_sectors["[current_location.z]"]
 		if(location && location.docking_codes)
-			set_docking_codes(location.docking_codes)
+			set_docking_codes(location.docking_codes) */
 	dock()
 
 	//Optional transition area
