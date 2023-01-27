@@ -617,3 +617,8 @@
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(20,40), 0)
 	user.throw_at(target, 5, 0.5, user)
 	user.setClickCooldown(22)
+
+/atom/proc/SetName(var/new_name)
+	var/old_name = name
+	if(old_name != new_name)
+		name = new_name

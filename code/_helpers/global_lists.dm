@@ -113,6 +113,9 @@ var/global/list/blood = list()
 // magic
 var/list/all_spells = list()
 
+// shuttles
+var/global/list/SSshuttle = list()
+
 // Strings which corraspond to bodypart covering flags, useful for outputting what something covers.
 var/global/list/string_part_flags = list(
 	"head" = HEAD,
