@@ -288,7 +288,7 @@
 	base_icon = "pkmp"
 	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/pkm/c100
-	good_mags = list(/obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim)
+	good_mags = list(/obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim, /obj/item/ammo_magazine/pkm)
 	weight = 7.5
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
