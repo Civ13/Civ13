@@ -106,7 +106,7 @@
 	base_icon = "pkm_foldable"
 	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/pkm
-	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/maxim)
+	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/maxim, /obj/item/ammo_magazine/pkm)
 	firemodes = list(
 		list(name="full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
