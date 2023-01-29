@@ -26,14 +26,14 @@
 	not_disassemblable = TRUE
 
 /obj/structure/gatecontrol/blastcontrol/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 30)
+	if (cooldown <= world.time)
 		if (open)
 			visible_message("[user] closes the blast doors!")
 			open = FALSE
-			cooldown = world.time
+			cooldown = world.time + 3 SECONDS
 			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/rollermove.ogg', 100)
-				G.icon_state = "blast_closing"
+				flick("blast_closing",G)
 				spawn(10)
 					playsound(loc, 'sound/effects/lever.ogg', 100)
 					G.icon_state = "blast0"
@@ -43,10 +43,10 @@
 		else
 			visible_message("[user] opens the blast doors!")
 			open = TRUE
-			cooldown = world.time
+			cooldown = world.time + 3 SECONDS
 			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/lever.ogg', 100)
-				G.icon_state = "blast_opening"
+				flick("blast_opening",G)
 				spawn(10)
 					playsound(loc, 'sound/effects/rollermove.ogg', 100)
 					G.icon_state = "blast1"
@@ -58,13 +58,13 @@
 	desc = "Controls nearby garage shutters"
 
 /obj/structure/gatecontrol/blastcontrol/garage/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 60)
+	if (cooldown <= world.time)
 		if (open)
 			visible_message("[user] closes the shutters!")
 			open = FALSE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
-				G.icon_state = "garage_closing"
+				flick("garage_closing",G)
 				playsound(loc, 'sound/effects/garage.ogg', 100)
 				spawn(13)
 					G.icon_state = "garage_closed"
@@ -74,9 +74,9 @@
 		else
 			visible_message("[user] opens the shutters!")
 			open = TRUE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
-				G.icon_state = "garage_opening"
+				flick("garage_opening",G)
 				playsound(loc, 'sound/effects/garage.ogg', 100)
 				spawn(13)
 					G.icon_state = "garage_open"
@@ -88,11 +88,11 @@
 	name = "gate control"
 
 /obj/structure/gatecontrol/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 60)
+	if (cooldown <= world.time)
 		if (open)
 			visible_message("[user] closes the gates!")
 			open = FALSE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/G in range(distance,src.loc))
 				if (G.name == "gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
@@ -104,7 +104,7 @@
 		else
 			visible_message("[user] opens the gates!")
 			open = TRUE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/G in range(distance,src.loc))
 				if (G.name == "gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
@@ -115,14 +115,14 @@
 			return
 
 /obj/structure/gatecontrol/sandstone/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 60)
+	if (cooldown <= world.time)
 		if (open)
 			visible_message("[user] closes the gates!")
 			open = FALSE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-				G.icon_state = "s_gate_closing"
+				flick("s_gate_closing",G)
 				spawn(30)
 					G.icon_state = "s_gate0"
 					G.density = TRUE
@@ -130,10 +130,10 @@
 		else
 			visible_message("[user] opens the gates!")
 			open = TRUE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-				G.icon_state = "s_gate_opening"
+				flick("s_gate_opening",G)
 				spawn(30)
 					G.icon_state = "s_gate1"
 					G.density = FALSE
@@ -368,11 +368,11 @@
 
 /obj/structure/gate/ex_act(severity)
 	switch(severity)
-		if (1.0)
+		if (1)
 			health -= 150
-		if (2.0)
+		if (2)
 			health -= 100
-		if (3.0)
+		if (3)
 			health -= 50
 	if (health <= 0)
 		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
@@ -393,22 +393,22 @@
 	not_disassemblable = TRUE
 
 /obj/structure/gatecontrol/whiterun/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 60)
+	if (cooldown <= world.time)
 		if (open)
 			visible_message("[user] closes the gates!")
 			open = FALSE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
 				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-					G.icon_state = "whiterun2_closing"
+					flick("whiterun2_closing",G)
 					spawn(30)
 						G.icon_state = "whiterun2"
 						G.density = TRUE
 			for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
 				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-					G.icon_state = "whiterun1_closing"
+					flick("whiterun1_closing",G)
 					spawn(30)
 						G.icon_state = "whiterun1"
 						G.density = TRUE
@@ -416,18 +416,18 @@
 		else
 			visible_message("[user] opens the gates!")
 			open = TRUE
-			cooldown = world.time
+			cooldown = world.time + 6 SECONDS
 			for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
 				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-					G.icon_state = "whiterun2_opening"
+					flick("whiterun2_opening",G)
 					spawn(30)
 						G.icon_state = "whiterun2_open"
 						G.density = FALSE
 			for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
 				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-					G.icon_state = "whiterun1_opening"
+					flick("whiterun1_opening",G)
 					spawn(30)
 						G.icon_state = "whiterun1_open"
 						G.density = FALSE
@@ -473,11 +473,11 @@
 	bound_height = 64 // Only left facing version present because the rest of those variables, a solution would be to separate the open states from the closed states by making two separate .dmi files, where one's icon sizes are 64x32px, while the other one is 32x64px (not tested though)
 
 /obj/structure/gate/barrier/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 20)
+	if (cooldown <= world.time)
 		if (open)
 			visible_message("[user] closes the barrier gate!")
 			open = FALSE
-			cooldown = world.time
+			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)
 			icon_state = "barriergate"
 			density = TRUE
@@ -485,18 +485,18 @@
 		else
 			visible_message("[user] opens the barrier gate!")
 			open = TRUE
-			cooldown = world.time
+			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)
 			icon_state = "barriergate_open"
 			density = FALSE
 			return
 
 /obj/structure/gate/barrier/vertical/attack_hand(var/mob/user as mob)
-	if (cooldown <= world.time - 20)
+	if (cooldown <= world.time)
 		if (open)
 			visible_message("[user] closes the barrier gate!")
 			open = FALSE
-			cooldown = world.time
+			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)
 			icon_state = "barriergate_vertical_left"
 			density = TRUE
@@ -504,7 +504,7 @@
 		else
 			visible_message("[user] opens the barrier gate!")
 			open = TRUE
-			cooldown = world.time
+			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)
 			icon_state = "barriergate_vertical_left_open"
 			density = FALSE

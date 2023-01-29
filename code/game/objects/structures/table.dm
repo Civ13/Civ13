@@ -121,7 +121,7 @@
 					if (1)
 						inv_direction = 2
 					if (2)
-						inv_direction = TRUE
+						inv_direction = 1
 					if (4)
 						inv_direction = 8
 					if (8)
@@ -154,9 +154,9 @@
 							if (direction == 9)
 								dir_sum += 128
 
-			var/table_type = FALSE //stand_alone table
+			var/table_type = 0 //stand_alone table
 			if (dir_sum%16 in cardinal)
-				table_type = TRUE //endtable
+				table_type = 1 //endtable
 				dir_sum %= 16
 			if (dir_sum%16 in list(3,12))
 				table_type = 2 //1 tile thick, streight table
@@ -243,7 +243,7 @@
 			else
 				dir = 2
 	else
-		..()
+		icon_state = "[initial(icon_state)]"
 /obj/structure/table/ex_act(severity, target)
 	..()
 	if (severity == 3)

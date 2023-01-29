@@ -249,6 +249,19 @@
 	icon_state = pick("road_1","road_2","road_3")
 	base_icon_state = icon_state
 
+/obj/covers/road_yellowline
+	name = "road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "road_yellowline"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
 /obj/covers/romanroad
 	name = "roman road"
 	icon = 'icons/turf/floors.dmi'

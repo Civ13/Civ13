@@ -1083,7 +1083,7 @@
 "uQ" = (/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean/nomads/snow)
 "uR" = (/obj/structure/sign/traffic/zebracrossing,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "uS" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"; pixel_x = 0},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barricade/antitank,/turf/floor/winter,/area/caribbean/nomads/snow)
-"uT" = (/obj/map_metadata/siegemoscow/small,/turf/floor/plating/road,/area/caribbean/nomads/snow)
+"uT" = (/obj/map_metadata/smallsiegemoscow,/turf/floor/plating/road,/area/caribbean/nomads/snow)
 "uU" = (/turf/floor/dirt/winter,/area/caribbean/no_mans_land/invisible_wall/tundra)
 "uV" = (/obj/structure/wild/smallbush,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/tundra)
 "uW" = (/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/roofed/tundra)

@@ -162,7 +162,7 @@
 ////////////////////////////////SMALLSEIGE/////////////////
 ///////////////////////////////////////////////////////////
 
-/obj/map_metadata/siegemoscow/small
+/obj/map_metadata/smallsiegemoscow
 	ID = MAP_SMALLSIEGEMOSCOW
 	title = "Central Siege of Moscow"
 	grace_wall_timer = 4800
@@ -172,7 +172,58 @@
 	battle_name = "Battle for Moscow"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach and hold the Politburo in the Administration building!</font>"
 
-/obj/map_metadata/siegemoscow/small/update_win_condition()
+/obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if ((J.is_ww2 == TRUE && J.is_reichstag == FALSE && J.is_occupation == FALSE) || J.is_smallsiegemoscow == TRUE)
+		. = TRUE
+	else if (J.is_ss_panzer == TRUE)
+		. = TRUE
+	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
+		. = TRUE
+	else
+		. = FALSE
+
+/obj/map_metadata/smallsiegemoscow/roundend_condition_def2name(define)
+	..()
+	switch (define)
+		if (RUSSIAN)
+			return "Soviet"
+		if (GERMAN)
+			return "German"
+/obj/map_metadata/smallsiegemoscow/roundend_condition_def2army(define)
+	..()
+	switch (define)
+		if (RUSSIAN)
+			return "Soviet"
+		if (GERMAN)
+			return "Germans"
+
+/obj/map_metadata/smallsiegemoscow/army2name(army)
+	..()
+	switch (army)
+		if ("Soviets")
+			return "Soviet"
+		if ("Germans")
+			return "German"
+
+
+/obj/map_metadata/smallsiegemoscow/cross_message(faction)
+	if (faction == GERMAN)
+		return "<font size = 4>The Germans may now cross the invisible wall!</font>"
+	else if (faction == RUSSIAN)
+		return ""
+	else
+		return ""
+
+/obj/map_metadata/smallsiegemoscow/reverse_cross_message(faction)
+	if (faction == GERMAN)
+		return "<span class = 'userdanger'>The Germans may no longer cross the invisible wall!</span>"
+	else if (faction == RUSSIAN)
+		return ""
+	else
+		return ""
+
+/obj/map_metadata/smallsiegemoscow/update_win_condition()
 
 	if (world.time >= 24000)
 		if (win_condition_spam_check)
@@ -238,7 +289,7 @@
 	last_win_condition = win_condition.hash
 	return TRUE
 
-/obj/map_metadata/siegemoscow/small/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/smallsiegemoscow/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)

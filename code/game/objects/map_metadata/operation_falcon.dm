@@ -296,18 +296,24 @@
 			var/sound/uploaded_sound2
 			switch (direction)
 				if (1)
-					uploaded_sound1 = sound('sound/effects/aircraft/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-					uploaded_sound2 = sound('sound/effects/aircraft/su25_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					uploaded_sound1 = sound('sound/effects/aircraft/su25_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					if (prob(50))
+						uploaded_sound2 = sound('sound/effects/aircraft/f16_left-right_firing.ogg', repeat = FALSE, wait = TRUE, channel = 776)
+					else
+						uploaded_sound2 = sound('sound/effects/aircraft/f16_left-right.ogg', repeat = FALSE, wait = TRUE, channel = 776)
 				if (2)
 					uploaded_sound1 = sound('sound/effects/aircraft/su25_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-					uploaded_sound2 = sound('sound/effects/aircraft/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+					if (prob(50))
+						uploaded_sound2 = sound('sound/effects/aircraft/f16_right-left_firing.ogg', repeat = FALSE, wait = TRUE, channel = 776)
+					else
+						uploaded_sound2 = sound('sound/effects/aircraft/f16_right-left.ogg', repeat = FALSE, wait = TRUE, channel = 776)
 			uploaded_sound1.priority = 250
 			uploaded_sound2.priority = 250
 			for (var/mob/M in player_list)
 				if (!new_player_mob_list.Find(M))
-					M << SPAN_DANGER("<font size=4>The air lights up as a Su-25 flies overhead closely in pursuit by a F-16.</font>")
+					M << SPAN_DANGER("<font size=4>The air lights up as a Su-25 and a pursuing F-16 fly overhead.</font>")
 					M.client << uploaded_sound1
-					spawn(15)
+					spawn(5 SECONDS)
 						M.client << uploaded_sound2
 
 	spawn(rand(1600,4000))
