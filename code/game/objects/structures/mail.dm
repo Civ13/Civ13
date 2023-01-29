@@ -12,6 +12,7 @@
 	storagecap = 5
 	var/mailbox_color = null
 	var/contents_stored = 0
+	layer = 3.01
 
 /obj/structure/closet/crate/wall_mailbox/open()
 	..()
