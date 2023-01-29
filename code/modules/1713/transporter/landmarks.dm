@@ -32,9 +32,8 @@
 		base_area = locate(base_area || world.area)
 
 	SetName(name + " ([x],[y])")
-	SSshuttle.register_landmark(landmark_tag, src)
 
-/obj/effect/shuttle_landmark/proc/is_valid(var/datum/shuttle/shuttle)
+/obj/effect/shuttle_landmark/proc/is_valid(var/obj/structure/aircraft_lever/shuttle)
 	if(shuttle.current_location == src)
 		return FALSE
 	for(var/area/A in shuttle.shuttle_area)
