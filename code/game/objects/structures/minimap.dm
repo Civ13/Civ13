@@ -205,10 +205,11 @@
 
 /obj/structure/sign/map_board/New()
 	..()
-	if (map.ID == "SOVAFGHAN")
-		img = image(icon = 'icons/minimaps.dmi', icon_state = "sovafghan_map")
-	else if (map.ID == "OPERATION_FALCON")
-		img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
+	switch (map.ID)
+		if ("SOVAFGHAN")
+			img = image(icon = 'icons/minimaps.dmi', icon_state = "sovafghan_map")
+		if ("OPERATION_FALCON")
+			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
 
 /obj/structure/sign/map_board/examine(mob/user)
 	user << browse(getFlatIcon(img),"window=popup;size=630x630")
