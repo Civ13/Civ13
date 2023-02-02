@@ -2364,8 +2364,10 @@ RECIPE: /material/iron/,unlocked large iron double doors,/obj/structure/simple_d
 
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 
+RECIPE: /material/iron/,iron picket fence,/obj/structure/grille/fence/steel_picket,3,60,1,1,construction,50,0,0,8,null
 RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
 RECIPE: /material/iron/,chainlink fence,/obj/structure/grille/chainlinkfence,3,80,1,1,construction,120,0,0,8,null
+RECIPE: /material/iron/,metal sheet fence,/obj/structure/grille/metalsheetfence,3,80,1,1,construction,145,0,0,8,null
 RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,construction,120,0,0,8,null
 
 //*********************| IRON PROJECTILES & BULLETS |**************************

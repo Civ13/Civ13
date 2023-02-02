@@ -24,15 +24,10 @@
 	name = "fence"
 	desc = "An old wooden fence."
 	icon = 'icons/obj/fence.dmi'
-	icon_state = "1"
+	icon_state = "fence"
 	health = 16
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 	flammable = TRUE
-
-/obj/structure/grille/fence/New()
-	..()
-	icon_state = "[rand(1,3)]"
-	color = "#c8c8c8"
 
 /obj/structure/grille/fence/attackby(obj/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/leash))
@@ -46,20 +41,25 @@
 			return
 	else
 		..()
+	if (health >= initial(health))
+		icon_state = "[initial(icon_state)]"
+	else if (health >= initial(health)*0.6)
+		icon_state = "[initial(icon_state)]2"
+	else if (health >= initial(health)*0.3)
+		icon_state = "[initial(icon_state)]3"
 
 /obj/structure/grille/fence/picket
 	name = "picket fence"
 	desc = "A traditional wooden fence."
-	icon = 'icons/obj/fence.dmi'
-	icon_state = "p1"
+	icon_state = "picket"
 	health = 30
-	hitsound = 'sound/effects/wooddoorhit.ogg'
-	flammable = TRUE
 
-/obj/structure/grille/fence/picket/New()
-	..()
-	icon_state = "p[rand(1,3)]"
-	color = "#c8c8c8"
+/obj/structure/grille/fence/steel_picket
+	name = "picket fence"
+	desc = "A traditional metal fence."
+	icon_state = "steel_picket"
+	health = 60
+	flammable = FALSE
 
 /obj/structure/barricade/wood_pole/attackby(obj/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/leash))
@@ -124,7 +124,7 @@
 	desc = "A wrought iron fence."
 	icon = 'icons/obj/fence.dmi'
 	icon_state = "iron_fence"
-	health = 50
+	health = 70
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
 /obj/structure/grille/chainlinkfence
@@ -132,14 +132,13 @@
 	desc = "A woven steel fence."
 	icon = 'icons/obj/fence.dmi'
 	icon_state = "chainlinkfence"
-	health = 80
+	health = 50
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
 /obj/structure/grille/chainlinkfence/corner
 	name = "chain-link fence"
 	desc = "A woven steel fence."
 	icon_state = "chainlinkfence_corner"
-	health = 80
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
 /obj/structure/grille/metalsheetfence
@@ -147,7 +146,7 @@
 	desc = "A sheet metal fence."
 	icon = 'icons/obj/fence.dmi'
 	icon_state = "metal_fence1"
-	health = 120
+	health = 80
 	opacity = TRUE
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 /obj/structure/grille/metalsheetfence/blue
