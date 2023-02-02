@@ -4,7 +4,6 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "gate_control"
 	anchored = TRUE
-	var/open = FALSE
 	var/cooldown = 0
 	var/distance = 3
 	density = TRUE
@@ -18,7 +17,6 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "blast_control"
 	anchored = TRUE
-	open = FALSE
 	cooldown = 3
 	distance = 5
 	density = FALSE
@@ -27,117 +25,114 @@
 
 /obj/structure/gatecontrol/blastcontrol/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
-		if (open)
-			visible_message("[user] closes the blast doors!")
-			open = FALSE
-			cooldown = world.time + 3 SECONDS
-			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
-				playsound(loc, 'sound/effects/rollermove.ogg', 100)
+		for (var/obj/structure/gate/blast/G in range(distance,src.loc))
+			if (G.open)
+				visible_message("[user] closes the blast doors!")
+				G.open = FALSE
+				cooldown = world.time + 3 SECONDS
+				playsound(G.loc, 'sound/effects/rollermove.ogg', 100)
 				flick("blast_closing",G)
 				spawn(10)
-					playsound(loc, 'sound/effects/lever.ogg', 100)
+					playsound(G.loc, 'sound/effects/lever.ogg', 100)
 					G.icon_state = "blast0"
 					G.density = TRUE
 					G.opacity = TRUE
-			return
-		else
-			visible_message("[user] opens the blast doors!")
-			open = TRUE
-			cooldown = world.time + 3 SECONDS
-			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
-				playsound(loc, 'sound/effects/lever.ogg', 100)
+				return
+			else
+				visible_message("[user] opens the blast doors!")
+				G.open = TRUE
+				cooldown = world.time + 3 SECONDS
+				playsound(G.loc, 'sound/effects/lever.ogg', 100)
 				flick("blast_opening",G)
 				spawn(10)
-					playsound(loc, 'sound/effects/rollermove.ogg', 100)
+					playsound(G.loc, 'sound/effects/rollermove.ogg', 100)
 					G.icon_state = "blast1"
 					G.density = FALSE
 					G.opacity = FALSE
-			return
+				return
+
 /obj/structure/gatecontrol/blastcontrol/garage
 	name = "garage shutter control"
 	desc = "Controls nearby garage shutters"
 
 /obj/structure/gatecontrol/blastcontrol/garage/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
-		if (open)
-			visible_message("[user] closes the shutters!")
-			open = FALSE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
+		for (var/obj/structure/gate/blast/G in range(distance,src.loc))
+			if (G.open)
+				visible_message("[user] closes the shutters!")
+				G.open = FALSE
+				cooldown = world.time + 6 SECONDS
 				flick("garage_closing",G)
-				playsound(loc, 'sound/effects/garage.ogg', 100)
+				playsound(G.loc, 'sound/effects/garage.ogg', 100)
 				spawn(13)
 					G.icon_state = "garage_closed"
 					G.density = TRUE
 					G.opacity = TRUE
-			return
-		else
-			visible_message("[user] opens the shutters!")
-			open = TRUE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/blast/G in range(distance,src.loc))
+				return
+			else
+				visible_message("[user] opens the shutters!")
+				G.open = TRUE
+				cooldown = world.time + 6 SECONDS
 				flick("garage_opening",G)
-				playsound(loc, 'sound/effects/garage.ogg', 100)
+				playsound(G.loc, 'sound/effects/garage.ogg', 100)
 				spawn(13)
 					G.icon_state = "garage_open"
 					G.density = FALSE
 					G.opacity = FALSE
-			return
+				return
 
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
 
 /obj/structure/gatecontrol/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
-		if (open)
-			visible_message("[user] closes the gates!")
-			open = FALSE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/G in range(distance,src.loc))
+		for (var/obj/structure/gate/G in range(distance,src.loc))
+			if (G.open)
+				visible_message("[user] closes the gates!")
+				G.open = FALSE
+				cooldown = world.time + 6 SECONDS
 				if (G.name == "gate")
-					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+					playsound(G.loc, 'sound/effects/castle_gate.ogg', 100)
 					G.icon_state = "gate_closing"
 					spawn(30)
 						G.icon_state = "gate0"
 						G.density = TRUE
-			return
-		else
-			visible_message("[user] opens the gates!")
-			open = TRUE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/G in range(distance,src.loc))
+				return
+			else
+				visible_message("[user] opens the gates!")
+				G.open = TRUE
+				cooldown = world.time + 6 SECONDS
 				if (G.name == "gate")
-					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+					playsound(G.loc, 'sound/effects/castle_gate.ogg', 100)
 					G.icon_state = "gate_opening"
 					spawn(30)
 						G.icon_state = "gate1"
 						G.density = FALSE
-			return
+				return
 
 /obj/structure/gatecontrol/sandstone/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
-		if (open)
-			visible_message("[user] closes the gates!")
-			open = FALSE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
-				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+		for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
+			if (G.open)
+				visible_message("[user] closes the gates!")
+				G.open = FALSE
+				cooldown = world.time + 6 SECONDS
+				playsound(G.loc, 'sound/effects/castle_gate.ogg', 100)
 				flick("s_gate_closing",G)
 				spawn(30)
 					G.icon_state = "s_gate0"
 					G.density = TRUE
-			return
-		else
-			visible_message("[user] opens the gates!")
-			open = TRUE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
-				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+				return
+			else
+				visible_message("[user] opens the gates!")
+				G.open = TRUE
+				cooldown = world.time + 6 SECONDS
+				playsound(G.loc, 'sound/effects/castle_gate.ogg', 100)
 				flick("s_gate_opening",G)
 				spawn(30)
 					G.icon_state = "s_gate1"
 					G.density = FALSE
-			return
+				return
 
 /obj/structure/gate
 	name = "gate"
@@ -146,10 +141,20 @@
 	icon_state = "gate0"
 	anchored = TRUE
 	density = TRUE
+	var/open = FALSE
 	var/health = 600
 	var/maxhealth = 600
 	not_movable = TRUE
 	not_disassemblable = TRUE
+
+/obj/structure/gate/open
+	name = "gate"
+	desc = "An iron gate."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "gate1"
+	anchored = TRUE
+	density = FALSE
+	open = TRUE
 
 /obj/structure/gate/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
@@ -198,10 +203,11 @@
 	maxhealth = 1200
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	open = TRUE
 
-/obj/structure/gate/blast/open/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/gate/blast/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
+		user << "You hit the wall uselessly!"
 		..()
 
 /obj/structure/gate/blast/garage
@@ -215,6 +221,7 @@
 	health = 800
 	maxhealth = 800
 	not_movable = TRUE
+
 /obj/structure/gate/blast/garage/open
 	name = "garage shutter"
 	desc = "A steel garage shutter."
@@ -226,6 +233,7 @@
 	health = 800
 	maxhealth = 800
 	not_movable = TRUE
+	open = TRUE
 
 /obj/structure/gate/blast/garage/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me!
@@ -233,39 +241,9 @@
 	else if (istype(W,/obj/item/weapon/weldingtool)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
 		user << "<span class='notice'>You start cutting through the [src]...</span>"
 		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
-		if (do_after(user, 30, target = src))
+		if (do_after(user, 50, target = src))
 			qdel(src)
 			return
-
-/obj/structure/gate/open
-	name = "gate"
-	desc = "An iron gate."
-	icon = 'icons/obj/doors/material_doors.dmi'
-	icon_state = "gate1"
-	anchored = TRUE
-	density = FALSE
-
-/obj/structure/gate/open/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-	if (istype(W, /obj/item/weapon/siegeladder))
-		visible_message(
-			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
-			"<span class='danger'>You start deploying \the [W.name].</span>")
-		if (do_after(user, 80, src))
-			visible_message(
-				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
-				"<span class='danger'>You have deployed \the [W.name]!</span>")
-			qdel(W)
-			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
-			ANCH.anchored = TRUE
-			src.climbable = TRUE
-			ANCH.deployed = TRUE
-			ANCH.icon_state = ANCH.depicon
-			ANCH.dir = src.dir
-			return
-	else
-		..()
 
 /obj/structure/gate/sandstone
 	name = "sandstone gate"
@@ -273,34 +251,13 @@
 	anchored = TRUE
 	density = TRUE
 
-/obj/structure/gate/sandstone/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-	if (istype(W, /obj/item/weapon/siegeladder))
-		visible_message(
-			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
-			"<span class='danger'>You start deploying \the [W.name].</span>")
-		if (do_after(user, 80, src))
-			visible_message(
-				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
-				"<span class='danger'>You have deployed \the [W.name]!</span>")
-			qdel(W)
-			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
-			ANCH.anchored = TRUE
-			src.climbable = TRUE
-			ANCH.deployed = TRUE
-			ANCH.icon_state = ANCH.depicon
-			ANCH.dir = src.dir
-			return
-	else
-		..()
-
 /obj/structure/gate/sandstone/open
 	icon_state = "s_gate1"
 	anchored = TRUE
 	density = FALSE
+	open = TRUE
 
-/obj/structure/gate/sandstone/open/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/gate/sandstone/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
 	if (istype(W, /obj/item/weapon/siegeladder))
@@ -336,6 +293,7 @@
 	layer = MOB_LAYER + 0.01
 	bound_width = 64
 	bound_height = 64
+
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the doors uselessly!"//sucker
@@ -385,7 +343,6 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "gate_control"
 	anchored = TRUE
-	open = FALSE
 	cooldown = 0
 	distance = 6
 	density = TRUE
@@ -394,44 +351,52 @@
 
 /obj/structure/gatecontrol/whiterun/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
-		if (open)
-			visible_message("[user] closes the gates!")
-			open = FALSE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
+		for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
+			if (G.open)
+				visible_message("[user] closes the gates!")
+				G.open = FALSE
+				cooldown = world.time + 6 SECONDS
 				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 					flick("whiterun2_closing",G)
 					spawn(30)
 						G.icon_state = "whiterun2"
 						G.density = TRUE
-			for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
-				if (G.name == "Whiterun gate")
-					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
-					flick("whiterun1_closing",G)
-					spawn(30)
-						G.icon_state = "whiterun1"
-						G.density = TRUE
-			return
-		else
-			visible_message("[user] opens the gates!")
-			open = TRUE
-			cooldown = world.time + 6 SECONDS
-			for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
+				return
+			else
+				visible_message("[user] opens the gates!")
+				G.open = TRUE
+				cooldown = world.time + 6 SECONDS
 				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 					flick("whiterun2_opening",G)
 					spawn(30)
 						G.icon_state = "whiterun2_open"
 						G.density = FALSE
-			for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
+				return
+		for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
+			if (G.open)
+				visible_message("[user] closes the gates!")
+				G.open = FALSE
+				cooldown = world.time + 6 SECONDS
+				if (G.name == "Whiterun gate")
+					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+					flick("whiterun1_closing",G)
+					spawn(30)
+						G.icon_state = "whiterun1"
+						G.density = TRUE
+				return
+			else
+				visible_message("[user] opens the gates!")
+				G.open = TRUE
+				cooldown = world.time + 6 SECONDS
 				if (G.name == "Whiterun gate")
 					playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 					flick("whiterun1_opening",G)
 					spawn(30)
 						G.icon_state = "whiterun1_open"
 						G.density = FALSE
-			return
+				return
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -449,7 +414,7 @@
 	not_disassemblable = TRUE
 	layer = MOB_LAYER + 0.01
 	climbable = TRUE
-	var/open = FALSE
+	open = FALSE
 	var/cooldown = 0
 	bound_width = 64
 

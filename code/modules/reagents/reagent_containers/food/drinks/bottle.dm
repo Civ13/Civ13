@@ -5,6 +5,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle
 	amount_per_transfer_from_this = 10
 	volume = 100
+	icon = 'icons/obj/drinks.dmi'
 	item_state = "broken_beer" //Generic held-item sprite until unique ones are made.
 	force = 5
 	var/shatter_duration = 5 //Directly relates to the 'weaken' duration. Lowered by armor (i.e. helmets)
@@ -18,6 +19,14 @@
 	dropsound = 'sound/effects/drop_glass.ogg'
 
 	w_class = 3
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/New(mob/user)
+	..()
+	var/obj/item/weapon/reagent_containers/glass/rag/ragg = new /obj/item/weapon/reagent_containers/glass/rag(null)
+	rag = ragg
+	rag.forceMove(src)
+	flags &= ~OPENCONTAINER
+	update_icon()
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/on_reagent_change()
 	update_icon()
