@@ -598,12 +598,14 @@
 			using_wood = 0
 			using_steel = 0
 			current_gun = null
+			user << "Canceled gun crafting."
 			return
 
 	else
-		current_gun = null
 		using_wood = 0
 		using_steel = 0
+		current_gun = null
+		user << "Canceled gun crafting."
 		return
 
 /obj/structure/gunbench/proc/assemble_from_blueprint(var/mob/living/user = null, var/obj/item/blueprint/gun/bpsource = null)
@@ -1082,7 +1084,7 @@
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptybelt)
 			firemodes = list(
-				list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),
+				list(name="full auto",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5)),
 				)
 			weight = 10
 			slot_flags = 0
@@ -1429,7 +1431,7 @@
 		if ("a9x19")
 			tempdesc = "9x19 Parabellum rounds"
 		if ("a9x18")
-			tempdesc = "0x18 Makarov rounds"
+			tempdesc = "9x18 Makarov rounds"
 		if ("a762x39")
 			tempdesc = "7.62x39mm intermediate rifle rounds"
 		if ("a556x45")
@@ -1467,13 +1469,10 @@
 				stock_img = image("icon" = src.icon, "icon_state" = "[src.stock_type]")
 			else
 				stock_img = image("icon" = src.icon, "icon_state" = "none")
-		if (feeding_type == "Open (Belt-Fed)" || feeding_type == "External Magazine" || feeding_type == "Large External Magazine")
-			if (ammo_magazine)
-				feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_loaded")
-			else
-				feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
+		if (ammo_magazine)
+			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_loaded")
 		else
-			feeding_img = image("icon" = src.icon, "icon_state" = "none")
+			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
 		overlays.Cut()
 		overlays += stock_img
 		overlays += barrel_img
@@ -1508,7 +1507,6 @@
 			else
 				icon_state = "[base_icon]"
 	..()
-
 
 
 /obj/item/weapon/gun/projectile/custom/special_check(mob/user)
@@ -1606,7 +1604,6 @@
 	update_icon()
 
 
-
 /obj/item/weapon/gun/projectile/custom/attack_self(mob/user)
 	if (receiver_type == "Pump-Action")
 		if (world.time >= recentpump + 10)
@@ -1658,6 +1655,10 @@
 	if (receiver_type == "Revolver")
 		chamber_offset = 0
 	update_icon()
+	if (istype(A, /obj/item/ammo_magazine))
+		var/obj/item/ammo_magazine/AM = A
+		if (caliber != AM.caliber && !AM in src.good_mags)
+			return // incompatible
 	..()
 
 /obj/item/weapon/gun/projectile/custom/unload_ammo(mob/user, var/allow_dump=1)
