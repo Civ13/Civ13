@@ -2389,7 +2389,7 @@ RECIPE: /material/iron/,cannon ball,/obj/item/cannon_ball,5,40,0,1,projectiles,0
 RECIPE: /material/iron/,revolver speedloader (6),/obj/item/ammo_magazine/emptyspeedloader,1,45,0,1,magazines,100,0,0,8,null
 RECIPE: /material/iron/,pistol magazine (8),/obj/item/ammo_magazine/emptymagazine/pistol/a45,2,45,0,1,magazines,105,0,0,8,null
 RECIPE: /material/iron/,pistol magazine (15),/obj/item/ammo_magazine/emptymagazine/pistol,3,45,0,1,magazines,105,0,0,8,null
-RECIPE: /material/iron/,magazine (30),/obj/item/ammo_magazine/emptymagazine/small,4,45,0,1,magazines,130,0,0,8,null
+RECIPE: /material/iron/,magazine (30),/obj/item/ammo_magazine/emptymagazine/rifle,4,45,0,1,magazines,130,0,0,8,null
 RECIPE: /material/iron/,drum magazine (65),/obj/item/ammo_magazine/emptymagazine,7,45,0,1,magazines,135,0,0,8,null
 
 //*********************| IRON CLOTHING & ACCESSORIES |**************************
