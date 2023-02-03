@@ -9,7 +9,7 @@
 			prob1 *= 1.2
 		if(prob(prob1))
 			do_dodge()
-			return	1
+			return TRUE
 
 /mob/living/proc/do_dodge()
 	var/lol = pick(cardinal)//get a direction.

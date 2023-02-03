@@ -164,7 +164,6 @@ Current Defines (_defines/attachment.dm)
 	weight = 0.450
 	value = 12
 	var/attack_sound = 'sound/weapons/slice.ogg'
-	var/weakens = 0
 //	var/datum/action/bayonet/amelee
 	var/atk_mode = SLASH
 
