@@ -168,15 +168,23 @@
 	multiple_sprites = TRUE
 
 
-/obj/item/ammo_magazine/emptymagazine/small
+/obj/item/ammo_magazine/emptymagazine/rifle
 	name = "magazine (30)"
 	mag_type = MAGAZINE
-	icon_state = "pps"
+	icon_state = "ak47"
 	ammo_type = null
 	caliber = null
 	max_ammo = 30
 	weight = 0.25
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/emptymagazine/rifle/m16
+	icon_state = "m16"
+/obj/item/ammo_magazine/emptymagazine/rifle/ak74
+	icon_state = "ak74"
+/obj/item/ammo_magazine/emptymagazine/rifle/mp40
+	icon_state = "mp40"
+
 /obj/item/ammo_magazine/emptymagazine/pistol
 	name = "pistol magazine (15)"
 	mag_type = MAGAZINE
@@ -184,9 +192,8 @@
 	ammo_type = null
 	caliber = null
 	max_ammo = 15
-	weight = 0.2
+	weight = 0.15
 	multiple_sprites = TRUE
-
 
 /obj/item/ammo_magazine/emptymagazine/pistol/filled
 	name = "pistol magazine (9mm)"
