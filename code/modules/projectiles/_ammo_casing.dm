@@ -770,7 +770,7 @@
 	caliber = "a792x57_weak"
 
 /obj/item/ammo_casing/a765x53
-	name = "7.65x53mm Belgian cartridge"
+	name = "7.65x53mm Mauser cartridge"
 	desc = "A brass casing."
 	icon_state = "rifle-bullet"
 	spent_icon = "rifle-casing"
