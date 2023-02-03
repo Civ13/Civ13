@@ -14,8 +14,8 @@
 	speed = 6
 	move_to_delay = 3
 	stop_automated_movement_when_pulled = 0
-	maxHealth = 300
-	health = 300
+	maxHealth = 250
+	health = 250
 	move_to_delay = 4
 	harm_intent_damage = 10
 	melee_damage_lower = 35
@@ -29,7 +29,7 @@
 	faction = PIRATES
 	ranged = 1
 	rapid = 2
-	projectiletype = /obj/item/projectile/bullet/rifle/a577
+	projectiletype = /obj/item/projectile/bullet/rifle/a762x51
 	casingtype = null
 
 	New()
