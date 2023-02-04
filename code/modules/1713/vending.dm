@@ -602,6 +602,8 @@ obj/structure/vending/sofammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 1,
+		/obj/item/weapon/compass = 1,
 
 	)
 
@@ -621,6 +623,8 @@ obj/structure/vending/sofammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 1,
+		/obj/item/weapon/compass = 1,
 
 	)
 
@@ -640,6 +644,8 @@ obj/structure/vending/sofammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 2,
+		/obj/item/weapon/compass = 1,
 
 	)
 
@@ -659,7 +665,8 @@ obj/structure/vending/sofammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 10,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 20,
-
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 2,
+		/obj/item/weapon/compass = 2,
 	)
 
 /obj/structure/vending/wehrmachtweapons

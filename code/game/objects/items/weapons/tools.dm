@@ -633,7 +633,7 @@ Shinobi's unfinished welder stuff - siro*/
 	desc = "An instrument containing a magnetized pointer which shows the direction of magnetic north and bearings from it."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "compass"
-	slot_flags = SLOT_BELT | SLOT_POCKET
+	slot_flags = SLOT_BELT | SLOT_POCKET | SLOT_ID
 	w_class = 1.0
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS

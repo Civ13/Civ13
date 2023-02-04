@@ -143,6 +143,7 @@
 	desc = "A shovel used specifically for digging trenches."
 	icon_state = "trench_shovel"
 	var/dig_speed = 7
+	force = 35
 	usespeed = 0.8
 
 /obj/item/weapon/material/shovel/trench/foldable
