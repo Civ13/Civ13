@@ -469,8 +469,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
 
 //weapons
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/compass(H), slot_wear_id)
 	if (map.ID == MAP_KHALKHYN_GOL)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mosin(H), slot_r_store)
@@ -583,6 +582,10 @@
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+//webbing
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun(null)
+	uniform.attackby(webbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a designated automatic rifleman of the Red Army. Keep the enemy pinned down!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -635,6 +638,16 @@
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tt30(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -671,9 +684,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		if (prob(40))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/compass(H), slot_wear_id)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
@@ -682,21 +693,31 @@
 //weapons
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	else
-		if (prob(40))
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,5)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
+			uniform.attackby(webbing, H)
+		if (2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-		else
-			if (prob(10))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault(null)
+			uniform.attackby(webbing, H)
+
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box/ap(H), slot_r_store)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
+//Extra AT weapon
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov(H), slot_l_hand)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/antitank/rpg40(H), slot_l_hand)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank assistant, find your Anti-tank gunner and assist him. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -735,6 +756,7 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/roks2(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/roks2/filled(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -742,13 +764,19 @@
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(webbing, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a flamethrower for the Red Army. Follow your <b>Sergeant's</b> orders!")
+	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	H.add_note("Role", "You are a <b>[title]</b>, a flamethrower solider of the red army, Assault enemy positions and tanks with your flamethrower. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
@@ -793,6 +821,9 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
+	uniform.attackby(webbing, H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -844,25 +875,27 @@
 //weapons
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	if (map.ID == MAP_REICHSTAG)
-		if (prob(15))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
-		else
-			if (prob(15))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
-	else
-		if (prob(10))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-		else
-			if (prob(10))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+//weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
+	var/randimpw = rand(1,4)
+	switch(randimpw)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt(null)
+			uniform.attackby(webbing, H)
+
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Red Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1504,8 +1537,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
 	give_random_name(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a squad of Soviet Guards Mechanized Infantry. Coordinate with the Tanks and defeat the enemy!")
@@ -1548,18 +1579,22 @@
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
-//back
-	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-	else
-		if (prob(70))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/pps(H), slot_belt)
-		else
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-
+//weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
+	var/randimpw = rand(1,5)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/pps(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault(null)
+			uniform.attackby(webbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Soviet Guards Mechanized Infantry. Follow your commander's orders and coordinate with the Tanks!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1615,7 +1650,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a sapper of the Guards. Place mines, sandbags, barbed wire, and help repair the vehicles!")
+	H.add_note("Role", "You are a <b>[title]</b>, a sapper of the Guards. Place mines or remove them, sandbags, barbed wire,destroy enemy tanks and positions, and help repair the vehicles!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1734,7 +1769,7 @@
 
 		if (2)
 			if (prob(60))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_hand)
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_l_hand)
@@ -1766,15 +1801,15 @@
 	else if (randsuits == 6)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
 
-	H.add_note("Role", "You are a <b>[title]</b>, you volunteered to defend Moscow. Good luck, comrade!")
+	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted or volunteered to fight for the soviet union,with minimal training you will defend fascism!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
