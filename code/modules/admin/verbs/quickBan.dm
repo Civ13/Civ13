@@ -150,6 +150,8 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	var/list/fields = list() // as much storage as we need
 
+	var/duration_in_x_units
+
 	if (option == "Manual Input")
 		fields["ckey"] = input(src, "What is the person's ckey? (optional)") as null|text
 		fields["cID"] = input(src, "What is the person's cID? (optional)") as null|text
@@ -242,7 +244,9 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	reenter_bantime
 
-	var/duration_in_x_units = input(src, "How long do you want the ban to last ('5 hours', '4 days': the default unit is days)") as text
+	duration_in_x_units = ""
+
+	duration_in_x_units = input(src, "How long do you want the ban to last ('5 hours', '4 days': the default unit is days)") as text
 	var/duration_in_days = text2num(ckey(splittext(duration_in_x_units, " ")[1]))
 	duration_in_days = max(0,min(duration_in_days,10000))
 	if (!isnum(duration_in_days))

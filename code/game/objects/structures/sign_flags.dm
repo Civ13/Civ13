@@ -189,7 +189,6 @@
 			if (prob(33))
 				qdel(src)
 			return
-		else
 	return
 /obj/structure/sign/radiation
 	name = "radiation in the area!"

@@ -151,7 +151,7 @@
 /obj/structure/simple_door/proc/Open()
 	isSwitchingStates = TRUE
 	if(haslock)
-		//NO AUDIO, HANDLED IN ATTACKBY
+		isSwitchingStates = TRUE
 	else if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 		playsound(loc, 'sound/machines/shoji_door_open.ogg', 100, TRUE)
 	else

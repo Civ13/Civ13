@@ -100,7 +100,6 @@
 	var/suicide = FALSE // for the hari kiri action
 
 /obj/item/weapon/material/kitchen/utensil/knife/proc/handle_suicide(mob/living/user)
-	..()
 	if (!ishuman(user))
 		return
 	var/mob/living/human/M = user

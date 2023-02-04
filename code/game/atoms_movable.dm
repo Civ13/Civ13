@@ -115,6 +115,7 @@
 	return
 
 /atom/movable/proc/forceMove(atom/destination, var/special_event)
+	var/old_loc = loc
 	if (loc == destination)
 		return FALSE
 
@@ -144,6 +145,8 @@
 					AM.Crossed(src)
 			if (is_new_area && is_destination_turf)
 				destination.loc.Entered(src, origin)
+	if (. && !loc && !special_event)
+		moved_event.raise_event(src, old_loc, null)
 	return TRUE
 
 /atom/movable/proc/forceMove_nondenseturf(atom/destination, var/special_event)
