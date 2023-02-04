@@ -1601,12 +1601,23 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/ammo_magazine/gewehr98(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mg34
+	New()
+		..()
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper
 	New()
 		..()
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/ammo_magazine/gewehr98box(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mauser
 	New()
 		..()
@@ -1623,6 +1634,15 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/mp40(hold)
 		new/obj/item/ammo_magazine/mp40(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault
+	New()
+		..()
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/weapon/grenade/ww2/stg1924(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43
 	New()
 		..()
@@ -1630,6 +1650,16 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/g43(hold)
 		new/obj/item/ammo_magazine/g43(hold)
 		new/obj/item/ammo_magazine/g43(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg
+	New()
+		..()
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/weapon/grenade/modern/stg1915(hold)
+		new/obj/item/weapon/grenade/antitank/stg24_bundle(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/french
 	name = "french webbing"

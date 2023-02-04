@@ -879,7 +879,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimpw = rand(1,4)
 	switch(randimpw)
-		if (4)
+		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin(null)
 			uniform.attackby(webbing, H)
