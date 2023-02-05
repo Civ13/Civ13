@@ -584,7 +584,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randimpw = rand(1,4)
+	var/randimpw = rand(1,5)
 	switch(randimpw)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
@@ -600,6 +600,10 @@
 			uniform.attackby(webbing, H)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
+			uniform.attackby(webbing, H)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
 			uniform.attackby(webbing, H)
 
@@ -968,9 +972,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
-//back
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randimpw = rand(1,4)
+	var/randimpw = rand(1,6)
 	switch(randimpw)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g43(H), slot_shoulder)
@@ -987,6 +990,14 @@
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper(null)
+			uniform.attackby(webbing, H)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
+			uniform.attackby(webbing, H)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
 			uniform.attackby(webbing, H)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
@@ -1452,9 +1463,12 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/ss_parka(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/ss(H), slot_head)
-//back
+//hand
+	if (prob(5))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/panzerfaust(H), slot_l_hand)
+//guns
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randimpw = rand(1,3)
+	var/randimpw = rand(1,4)
 	switch(randimpw)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g43(H), slot_shoulder)
@@ -1467,6 +1481,10 @@
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/stg(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
 			uniform.attackby(webbing, H)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")

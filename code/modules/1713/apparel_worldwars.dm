@@ -1481,6 +1481,15 @@ obj/item/clothing/head/ww2/cra_cap
 		new/obj/item/ammo_magazine/mosin(hold)
 		new/obj/item/weapon/grenade/modern/f1(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin
 	New()
 		..()
@@ -1601,6 +1610,13 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/ammo_magazine/gewehr98(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault
+	New()
+		..()
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/weapon/grenade/modern/stg1915(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mg34
 	New()
 		..()
@@ -1613,8 +1629,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper
 	New()
 		..()
-		new/obj/item/ammo_magazine/gewehr98(hold)
-		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/ammo_magazine/gewehr98box(hold)
 		new/obj/item/weapon/grenade/smokebomb(hold)
 
