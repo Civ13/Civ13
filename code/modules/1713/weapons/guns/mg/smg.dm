@@ -427,7 +427,7 @@
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 0.99
+	effectiveness_mod = 0.85
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
@@ -481,7 +481,7 @@
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.7
 	equiptimer = 15
-	effectiveness_mod = 0.82
+	effectiveness_mod = 0.84
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.3, 0.4, 0.5, 0.5, 0.6)),
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.3, 1.4, 1.6)),
