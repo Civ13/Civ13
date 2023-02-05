@@ -106,6 +106,16 @@
 	desc = "A yellow armband, used to identify the Sheriff's deputies."
 	icon_state = "spanish"
 	slot = "armband"
+//catears
+/obj/item/clothing/accessory/catears
+	name = "cat tail and ears"
+	desc = "intresting"
+	icon_state = "kitty"
+	item_state = "kitty"
+	worn_state = "kitty"
+	body_parts_covered = FALSE
+	slot = "decor"
+	ripable = FALSE
 
 //customizable
 /obj/item/clothing/accessory/custom

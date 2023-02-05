@@ -128,9 +128,3 @@
 	icon_state = "orange_bandana"
 	body_parts_covered = FALSE
 
-/obj/item/clothing/head/catears
-	name  = "cat tail and ears"
-	desc = "You godless creature..."
-	icon_state = "kitty"
-	worn_state = "kitty"
-	body_parts_covered = FALSE
