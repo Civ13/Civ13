@@ -675,8 +675,42 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/attachment/bayonet = 25,
+	)
+
+	/obj/structure/vending/ss_weaponsassault
+	name = "SS Attack Weapons rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_german"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
+		/obj/item/weapon/gun/projectile/automatic/mg34 = 5,
+		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 15,
+		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
+		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 2,
+		/obj/item/weapon/gun/launcher/rocket/panzerfaust = 3,
+		/obj/item/weapon/grenade/smokebomb = 2,
+		/obj/item/weapon/grenade/ww2/stg1924 = 5,
+		/obj/item/weapon/grenade/antitank/stg24_bundle = 3,
+		/obj/item/weapon/attachment/bayonet = 25,
+	)
+
+	/obj/structure/vending/ss_weaponsassaultlatewar
+	name = "SS Attack Weapons rack"
+	desc = "A rack of Deadly war equipment."
+	icon_state = "modern_german"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
+		/obj/item/weapon/gun/projectile/automatic/mg34 = 2,
+		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 5,
+		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
+		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 5,
+		/obj/item/weapon/gun/projectile/submachinegun/stg = 5,
+		/obj/item/weapon/grenade/smokebomb = 1,
+		/obj/item/weapon/grenade/ww2/stg1924 = 3,
+		/obj/item/weapon/grenade/antitank/stg24_bundle = 2,
+		/obj/item/weapon/gun/launcher/rocket/panzerfaust = 2,
+		/obj/item/weapon/attachment/bayonet = 15,
 	)
 
 /obj/structure/vending/sovietweapons
@@ -688,6 +722,20 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/attachment/bayonet = 15,
 	)
 
+/obj/structure/vending/sovietweaponsassault
+	name = "Soviet Attack Weapons rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/ppsh = 1,
+		/obj/item/weapon/gun/projectile/submachinegun/ppd = 2,
+		/obj/item/weapon/gun/projectile/semiautomatic/svt = 10,
+		/obj/item/weapon/gun/projectile/pistol/tt30 = 15,
+		/obj/item/weapon/gun/projectile/automatic/dp28 = 2,
+		/obj/item/weapon/grenade/antitank/rpg40 = 2,
+		/obj/item/weapon/grenade/smokebomb = 2,
+		/obj/item/weapon/grenade/ww2/rgd33 = 5,
+	)
 
 /obj/structure/vending/oldrussianweapons
 	name = "Russian rifle rack"
@@ -712,7 +760,8 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/luger = 10,
 		/obj/item/ammo_magazine/walther = 10,
 		/obj/item/ammo_magazine/mauser = 10,
-		/obj/item/ammo_magazine/c9mm = 10
+		/obj/item/ammo_magazine/c9mm = 10,
+		/obj/item/weapon/storage/ammo_can = 1,
 	)
 
 /obj/structure/vending/sovietammo
@@ -728,6 +777,7 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/dp = 10,
 		/obj/item/ammo_magazine/c762x38mmR = 10,
 		/obj/item/ammo_magazine/tt30 = 10,
+		/obj/item/weapon/storage/ammo_can = 1,
 	)
 
 obj/structure/vending/idfammo
