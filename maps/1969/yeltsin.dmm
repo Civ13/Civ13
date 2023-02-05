@@ -174,7 +174,7 @@
 "dr" = (/obj/structure/closet/anchored,/obj/item/roller,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "ds" = (/obj/structure/closet/anchored,/obj/item/roller,/obj/item/roller,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "dt" = (/obj/structure/closet/anchored,/obj/item/trombone,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
-"du" = (/obj/structure/closet/anchored,/obj/item/clothing/under/civf1,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
+"du" = (/obj/structure/closet/anchored,/obj/item/clothing/under/civf1,/obj/item/clothing/accessory/catears,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "dv" = (/obj/structure/closet/anchored,/obj/item/violin,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "dw" = (/obj/structure/closet/anchored,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "dx" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/closet/crate/steel,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
