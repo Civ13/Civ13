@@ -678,7 +678,7 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/attachment/bayonet = 25,
 	)
 
-	/obj/structure/vending/ss_weaponsassault
+/obj/structure/vending/ss_weaponsassault
 	name = "SS Attack Weapons rack"
 	desc = "A rack of war equipment."
 	icon_state = "modern_german"
@@ -695,7 +695,7 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/attachment/bayonet = 25,
 	)
 
-	/obj/structure/vending/ss_weaponsassaultlatewar
+/obj/structure/vending/ss_weaponsassaultlatewar
 	name = "SS Attack Weapons rack"
 	desc = "A rack of Deadly war equipment."
 	icon_state = "modern_german"

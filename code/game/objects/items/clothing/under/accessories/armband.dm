@@ -114,6 +114,7 @@
 	item_state = "kitty"
 	worn_state = "kitty"
 	body_parts_covered = FALSE
+	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE
 	slot = "decor"
 	ripable = FALSE
 
