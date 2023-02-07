@@ -131,3 +131,39 @@
 	new /obj/item/weapon/surgery/retractor/bronze(src)
 	new /obj/item/weapon/surgery/scalpel/bronze(src)
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
+
+/obj/item/weapon/storage/firstaid/ifak
+	name = "ifak"
+	desc = "An individual first aid kit."
+	icon_state = "ifak"
+	item_state = "ifak"
+
+/obj/item/weapon/storage/firstaid/ifak/New()
+	..()
+	if (empty) return
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/clothing/gloves/sterile/nitrile(src)
+	return
+
+/obj/item/weapon/storage/firstaid/afak
+	name = "afak"
+	desc = "An advanced first aid kit."
+	icon_state = "afak"
+	item_state = "afak"
+
+/obj/item/weapon/storage/firstaid/afak/New()
+	..()
+	if (empty) return
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
+	new /obj/item/weapon/pill_pack/adrenaline(src)
+	new /obj/item/weapon/pill_pack/pervitin(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/clothing/gloves/sterile/nitrile(src)
+	new /obj/item/revival_kit(src)
+	return
