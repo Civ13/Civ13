@@ -299,6 +299,16 @@
 	maxsway = 14
 	maxrange = 33
 	caliber = 85
+	anchored = TRUE
+
+/obj/structure/cannon/modern/tank/russian85/su85
+	desc = "a 85 mm SU-85 russian tank-based cannon."
+	icon_state = "tank_cannon"
+	firedelay = 35
+	maxsway = 16
+	maxrange = 35
+	caliber = 85
+	anchored = TRUE
 
 /obj/structure/cannon/modern/tank/russian85/kv1
 
