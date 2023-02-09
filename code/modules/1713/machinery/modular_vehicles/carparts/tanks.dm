@@ -86,6 +86,31 @@
 	w_left = list("c_wall",TRUE,TRUE,40,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,50,50,FALSE,FALSE)
 
+/obj/structure/vehicleparts/frame/su85
+
+/obj/structure/vehicleparts/frame/su85/front
+	w_front = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su85/back
+	w_back = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su85/left
+	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su85/right
+	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su85/right/door
+	w_right = list("c_door",TRUE,TRUE,30,30,TRUE,TRUE)
+	doorcode = 4975
+/obj/structure/vehicleparts/frame/su85/rb
+	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su85/lb
+	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su85/rf
+	w_right = list("c_wall",TRUE,TRUE,40,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su85/lf
+	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,40,40,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/kv1
 
