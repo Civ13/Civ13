@@ -973,7 +973,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randimpw = rand(1,6)
+	var/randimpw = rand(1,7)
 	switch(randimpw)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g43(H), slot_shoulder)
@@ -998,6 +998,10 @@
 		if (6)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
+			uniform.attackby(webbing, H)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke(null)
 			uniform.attackby(webbing, H)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
@@ -1580,12 +1584,19 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/flammenwerfer(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/flammenwerfer/filled(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_belt)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(webbing, H)
+	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
+	webbing.attackby(new/obj/item/ammo_magazine/walther, H)
+	webbing.attackby(new/obj/item/ammo_magazine/walther, H)
+	webbing.attackby(new/obj/item/ammo_magazine/walther, H)
+	webbing.attackby(new/obj/item/ammo_magazine/walther, H)
+	webbing.attackby(new/obj/item/ammo_magazine/walther, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Waffen-SS tasks with spraying the flaming fires of hell upon your enemies. Follow your commander's orders!")
 	H.setStat("strength", STAT_HIGH)

@@ -878,7 +878,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 //weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randimpw = rand(1,5)
+	var/randimpw = rand(1,6)
 	switch(randimpw)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
@@ -899,6 +899,10 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke(null)
+			uniform.attackby(webbing, H)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay(null)
 			uniform.attackby(webbing, H)
 
 
@@ -1587,7 +1591,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 //weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randimpw = rand(1,5)
+	var/randimpw = rand(1,3)
 	switch(randimpw)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/pps(H), slot_shoulder)
