@@ -534,6 +534,25 @@
 	speedlist = list(1=10,2=5,3=4,4=3,5=2)
 	turntimer = 8
 
+/obj/structure/vehicleparts/axis/car/ba64
+	name = "Ba-64 armored car"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=10,2=6,3=4,4=3)
+	turntimer = 7
+	reg_number = ""
+	color = "#3d5931"
+	turret_type = "none"
+	vehicle_size = "2x3"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/car/kamaz
 	name = "KamAZ-4350 Truck"
 	desc = "A powered axis from a car."
