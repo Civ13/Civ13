@@ -553,6 +553,25 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/car/t20komsomoletstractor
+	name = "T-20 Komsomolets tractor"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=10,2=6,3=4,4=3)
+	turntimer = 6
+	reg_number = ""
+	color = "#3d5931"
+	turret_type = "none"
+	vehicle_size = "2x4"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/car/kamaz
 	name = "KamAZ-4350 Truck"
 	desc = "A powered axis from a car."

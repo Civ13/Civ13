@@ -141,6 +141,20 @@
 	base_icon = "germanpack"
 	max_storage_space = 24
 
+/obj/item/weapon/storage/backpack/ww2/german/russianat
+	name = "russian backpack"
+	desc = "It's a standard issue backpack for Soviet military personel"
+	New()
+		..()
+		new /obj/item/weapon/grenade/ww2/rgd33(src)
+		new /obj/item/weapon/grenade/ww2/rgd33(src)
+		new /obj/item/weapon/grenade/antitank(src)
+		new /obj/item/weapon/grenade/antitank(src)
+		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+		new /obj/item/weapon/plastique/russian(src)
+		new /obj/item/weapon/plastique/russian(src)
+
 /obj/item/weapon/storage/backpack/paratrooper
 	name = "Parachute"
 	desc = "A backpack with a built in parachute."

@@ -107,6 +107,8 @@
 /datum/job/var/is_gta = FALSE
 /datum/job/var/is_ccw = FALSE
 /datum/job/var/is_tadoj = FALSE
+/datum/job/var/is_bordersov = FALSE
+/datum/job/var/is_borderger = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE

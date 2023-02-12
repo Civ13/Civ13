@@ -748,6 +748,7 @@
 
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	is_borderger = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -802,6 +803,7 @@
 
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	is_borderger = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -855,6 +857,7 @@
 
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	is_borderger = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -906,6 +909,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
+	is_borderger = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -954,6 +958,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
+	is_borderger = FALSE
 
 	min_positions = 8
 	max_positions = 120
@@ -1024,6 +1029,86 @@
 
 	return TRUE
 
+/datum/job/german/borschutze_soldaten
+	title = "Schutze"
+	en_meaning = "Soldier"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+
+	is_ww2 = FALSE
+	is_reichstag = FALSE
+	uses_squads = TRUE
+	is_borderger = TRUE
+
+	min_positions = 8
+	max_positions = 100
+
+/datum/job/german/borschutze_soldaten/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
+
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
+//back
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,7)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper(null)
+			uniform.attackby(webbing, H)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
+			uniform.attackby(webbing, H)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
+			uniform.attackby(webbing, H)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke(null)
+			uniform.attackby(webbing, H)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	if (map.ID == MAP_STALINGRAD)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Wehrmacht forces. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
 
 /datum/job/german/machine_gunner
 	title = "MG-Schutze"
@@ -1035,6 +1120,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
+	is_borderger = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1091,6 +1177,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
+	is_borderger = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1201,7 +1288,7 @@
 	is_medic = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
-
+	is_borderger = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -1250,6 +1337,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
+	is_borderger = TRUE
 
 	min_positions = 2
 	max_positions = 12
