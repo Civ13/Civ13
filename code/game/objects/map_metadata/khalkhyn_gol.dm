@@ -19,6 +19,7 @@
 	faction_distribution_coeffs = list(JAPANESE = 0.6, RUSSIAN = 0.4)
 	battle_name = "battle of Khalkhyn Gol"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command</b>. The Soviets will win if they manage to capture the <b>Japanese command</b>.</font>"
+	mosinonly = TRUE
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	grace_wall_timer = 4800
@@ -32,10 +33,8 @@
 		. = TRUE
 	else if (J.is_navy == TRUE || J.is_yakuza || J.is_tanker == TRUE || J.is_prison == TRUE || J.is_ss_panzer == TRUE || J.is_pacific == TRUE)
 		. = FALSE
-	else if (J.is_ww2 == TRUE)
+	else if (J.is_ww2 == TRUE && !J.is_sovaprif == TRUE)
 		. = TRUE
-	else if (istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet))
-		. = FALSE
 	else
 		. = FALSE
 

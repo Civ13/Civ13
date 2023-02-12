@@ -470,9 +470,9 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/ppd
 	name = "PPD-40"
-	desc = "Early Soviet submachinegun typically equipped with drum magazines. Chambered in 7.62x25mm Tokarev."
+	desc = "Early Soviet submachinegun. Chambered in 7.62x25mm Tokarev."
 	icon_state = "ppd"
-	item_state = "ppsh"
+	item_state = "ppd"
 	base_icon = "ppd"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
@@ -484,25 +484,25 @@
 	effectiveness_mod = 0.84
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.3, 0.4, 0.5, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.3, 1.4, 1.6)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(0.8, 1.3, 1.4, 1.5, 1.6)),
 		)
 
 	sel_mode = 1
-/obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon()
-	if (ammo_magazine)
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
-			icon_state = "[base_icon]"
-			item_state = "ppsh"
-			return
-		else
-			icon_state = "[base_icon]_mag"
-			item_state = "ppsh"
-			return
-	else
-		icon_state = "[base_icon]_open"
-		item_state = "ppsh_open"
-	update_held_icon()
-	return
+///obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon() //doesnt work, loading in a mag/drum makes the gun inhand sprite have no mag/drum, keeping it here though.
+//	if (ammo_magazine)
+//		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
+//			icon_state = "[base_icon]"
+//			item_state = "ppd"
+//			return
+//		else
+//			icon_state = "[base_icon]_mag"
+//			item_state = "ppd"
+//			return
+//	else
+//		icon_state = "[base_icon]_open"
+//		item_state = "ppd_open"
+//	update_held_icon()
+//	return
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47
 	name = "AKM"

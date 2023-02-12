@@ -1481,6 +1481,15 @@ obj/item/clothing/head/ww2/cra_cap
 		new/obj/item/ammo_magazine/mosin(hold)
 		new/obj/item/weapon/grenade/modern/f1(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/weapon/attachment/bayonet(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke
 	New()
 		..()
@@ -1615,6 +1624,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		..()
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/weapon/grenade/modern/stg1915(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke
+	New()
+		..()
+		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/weapon/grenade/smokebomb(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mg34
@@ -2961,7 +2976,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
 
-
 /obj/item/weapon/storage/belt/gulagguard/filled/New()
 	..()
 	new /obj/item/weapon/material/classic_baton(src)
@@ -2971,8 +2985,19 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/whistle(src)
+	new /obj/item/weapon/pen/pencil(src)
 	new /obj/item/weapon/clipboard/full(src)
-	new /obj/item/weapon/pen(src)
+
+/obj/item/weapon/storage/belt/gulagguard/filledwar/New()
+	..()
+	new /obj/item/weapon/material/classic_baton(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
 
 /obj/item/weapon/storage/belt/smallpouches/gerbelt
 	icon_state = "gerbelt"
