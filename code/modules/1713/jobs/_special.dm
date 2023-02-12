@@ -88,6 +88,8 @@
 /datum/job/var/is_ukrainerussowar = FALSE
 /datum/job/var/is_russojapwar = FALSE
 /datum/job/var/is_smallsiegemoscow = FALSE
+/datum/job/var/mosinonly = FALSE
+/datum/job/var/is_sovaprif = FALSE
 /datum/job/var/is_lab = FALSE
 /datum/job/var/is_afghan = FALSE
 /datum/job/var/is_soviet = FALSE

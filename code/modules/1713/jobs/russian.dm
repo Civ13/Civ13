@@ -610,6 +610,7 @@
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	is_ww2 = TRUE
+	is_sovaprif = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
 
@@ -673,6 +674,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
+	is_sovaprif = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -695,21 +697,27 @@
 //weapons
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randimpw = rand(1,3)
-	switch(randimpw)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
-			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
-			uniform.attackby(webbing, H)
-		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
-			uniform.attackby(webbing, H)
-		if (3)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault(null)
-			uniform.attackby(webbing, H)
+	if (mosinonly == TRUE)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
+		uniform.attackby(webbing, H)
+	else
+		var/randimpw = rand(1,3)
+		switch(randimpw)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
+				uniform.attackby(webbing, H)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
+				uniform.attackby(webbing, H)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault(null)
+				uniform.attackby(webbing, H)
 
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box/ap(H), slot_r_store)
