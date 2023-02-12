@@ -932,7 +932,7 @@
 ////////////////////1941 Barbarossa/////////////////////////////
 
 /datum/job/russian/nkvdborderley
-	title = "NKVD Border Guard Leytenant"
+	title = "NKVD Pogranichnik Leytenant"
 	en_meaning = "NKVD Border Guard Lieutenant"
 	rank_abbreviation = "NKVD Leyt."
 
@@ -982,8 +982,8 @@
 	return TRUE
 
 /datum/job/russian/nkvdborderser
-	title = "NKVD Border Guard"
-	en_meaning = "NKVD pogranichnik"
+	title = "NKVD pogranichnik"
+	en_meaning = "NKVD Border guard"
 	rank_abbreviation = "NKVD Pgr."
 
 	spawn_location = "JoinLateRU"
