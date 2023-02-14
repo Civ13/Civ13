@@ -178,6 +178,76 @@
 	w_left = list("c_door",TRUE,TRUE,15,15,TRUE,TRUE)
 	doorcode = 4975
 
+/obj/structure/vehicleparts/frame/unattr
+
+/obj/structure/vehicleparts/frame/unattr/lf
+	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/unattr/rf
+	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/unattr/leftm
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
+	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/unattr/rightm
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
+	w_right = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 4975
+/obj/structure/vehicleparts/frame/unattr/frontlback
+	name = "wood frame"
+	desc = "a wood vehicle frame."
+	icon_state = "frame_wood"
+	flammable = FALSE
+	resistance = 140
+	noroof = TRUE
+	w_front = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_right = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	w_left = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 4975
+/obj/structure/vehicleparts/frame/unattr/frontrback
+	name = "wood frame"
+	desc = "a wood vehicle frame."
+	icon_state = "frame_wood"
+	flammable = FALSE
+	resistance = 140
+	noroof = TRUE
+	w_front = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_left = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	w_right = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 4975
+/obj/structure/vehicleparts/frame/unattr/backl
+	name = "wood frame"
+	desc = "a wood vehicle frame."
+	icon_state = "frame_wood"
+	flammable = TRUE
+	resistance = 140
+	noroof = TRUE
+	w_back = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_right = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	w_left = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 4975
+/obj/structure/vehicleparts/frame/unattr/backr
+	name = "wood frame"
+	desc = "a wood vehicle frame."
+	icon_state = "frame_wood"
+	flammable = TRUE
+	resistance = 140
+	noroof = TRUE
+	w_back = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_right = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	w_left = list("c_door",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 4975
+
 /obj/structure/vehicleparts/frame/kv1
 
 /obj/structure/vehicleparts/frame/kv1/front

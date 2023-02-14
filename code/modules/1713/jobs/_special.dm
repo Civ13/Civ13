@@ -113,6 +113,7 @@
 /datum/job/var/is_borderger = FALSE
 /datum/job/var/is_permfr = FALSE
 /datum/job/var/is_permfrb = FALSE
+/datum/job/var/is_detroit = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE

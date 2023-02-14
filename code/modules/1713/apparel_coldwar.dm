@@ -1288,6 +1288,27 @@
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/mk18
+/obj/item/weapon/storage/belt/smallpouches/mk18/New()
+	..()
+	new /obj/item/ammo_magazine/mk18(src)
+	new /obj/item/ammo_magazine/mk18(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/p90
+/obj/item/weapon/storage/belt/smallpouches/p90/New()
+	new /obj/item/ammo_magazine/p90(src)
+	new /obj/item/ammo_magazine/p90(src)
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/sten
+/obj/item/weapon/storage/belt/smallpouches/sten/New()
+	new /obj/item/ammo_magazine/sten2(src)
+	new /obj/item/ammo_magazine/sten2(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 /* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava
