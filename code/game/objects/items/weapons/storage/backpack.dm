@@ -394,3 +394,31 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/ammo_magazine/m1911(src)
 		new /obj/item/weapon/grenade/coldwar/m67(src)
 		new /obj/item/weapon/grenade/incendiary/anm14(src)
+
+/obj/item/weapon/storage/backpack/duffel/un
+	name = "United Nations Assault backpack"
+	desc = "A duffel bag full of basic supplies."
+
+/obj/item/weapon/storage/backpack/duffel/un/mk
+	New()
+		..()
+		new /obj/item/weapon/gun_cleaning_kit(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/ammo_magazine/m1911(src)
+		new /obj/item/weapon/grenade/coldwar/m67(src)
+
+/obj/item/weapon/storage/backpack/duffel/un/p90
+	New()
+		..()
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/weapon/grenade/coldwar/nonfrag/m26(src)
