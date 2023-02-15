@@ -379,7 +379,6 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
 //weapon
-	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimpw = rand(1,3)
 	switch(randimpw)
 		if (1)
@@ -429,7 +428,7 @@
 	min_positions = 1
 	max_positions = 200
 
-/datum/job/civilian/detroit/crackhead(var/mob/living/human/H)
+/datum/job/civilian/detroit/crackhead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -451,7 +450,6 @@
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
 //weapon
-	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimpw = rand(1,3)
 	switch(randimpw)
 		if (1)
