@@ -457,7 +457,7 @@
 	var/obj/item/clothing/accessory/armband/grey_scarf/carf = new /obj/item/clothing/accessory/armband/grey_scarf(null)
 	uniform.attackby(carf, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, you rose up with your comrades,fight to liberate warsaw follow your squad leader's orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, your family rose up so did you,fight to liberate warsaw follow your squad leader's orders!")
 	H.add_note("Age", "- due to your age you are weaker than most. use static weaponry,help with logistics, distract enemies.")
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
