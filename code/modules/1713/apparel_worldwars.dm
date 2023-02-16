@@ -1443,6 +1443,10 @@ obj/item/clothing/head/ww2/cra_cap
 	item_state = "trenchsuit"
 	worn_state = "trenchsuit"
 
+/obj/item/clothing/under/ww1/trenchsuit/poland //looks very similiar to the ww2 polish uniform so lets pretend that its the polish uniform
+	name = "polish uniform"
+	desc = "A polish uniform, used by the army."
+
 /obj/item/clothing/under/ww1/french
 	name = "french uniform"
 	desc = "A french light blue uniform, used by the French Army."

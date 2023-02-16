@@ -749,6 +749,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_borderger = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -858,6 +859,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_borderger = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -910,6 +912,7 @@
 	is_reichstag = FALSE
 	uses_squads = TRUE
 	is_borderger = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1121,6 +1124,7 @@
 	is_reichstag = FALSE
 	uses_squads = TRUE
 	is_borderger = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1179,6 +1183,7 @@
 	is_reichstag = FALSE
 	uses_squads = TRUE
 	is_borderger = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1290,6 +1295,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_borderger = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -1339,6 +1345,7 @@
 	is_reichstag = FALSE
 	uses_squads = TRUE
 	is_borderger = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1490,8 +1497,8 @@
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	uses_squads = TRUE
 	is_ss_panzer = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1540,6 +1547,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 6
 	max_positions = 30
@@ -1604,6 +1612,7 @@
 	spawn_location = "JoinLateGESap"
 	is_ss_panzer = TRUE
 	is_ww2 = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1656,6 +1665,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	is_warsawger = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -1747,5 +1757,103 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
+
+	return TRUE
+
+////////////////////////////WARSAWUPRISING/////////////////////////////////////
+/datum/job/german/warsaw_schutzpolizei
+	title = "Schutzpolizei"
+	en_meaning = "Security Police"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ss_panzer = FALSE
+	is_ww2 = FALSE
+	uses_squads = TRUE
+	is_warsawger = TRUE
+
+	min_positions = 5
+	max_positions = 90
+
+/datum/job/german/warsaw_schutzpolizei/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
+
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
+//guns
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
+	uniform.attackby(webbing, H)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a Security Unit member,guard captured positions and attack with the SS. Follow your Squad leader's orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
+
+	return TRUE
+
+/datum/job/german/ss_abbruchspezialist
+	title = "Waffen-SS Abbruchspezialist"
+	en_meaning = "Waffen SS demolition specialist"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+
+	is_ww2 = FALSE
+	uses_squads = TRUE
+	is_warsawger = TRUE
+
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/german/ss_abbruchspezialist/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/firefighter(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/ss(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/german(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/destructionpouch(H), slot_belt)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/flammenwerfer(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/flammenwerfer/filled(H), slot_back)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Waffen-SS tasked with destroying warsaw,assault enemy positions with your flamethrower or your MP40 and burn down everything. Follow your commander's orders!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 
 	return TRUE

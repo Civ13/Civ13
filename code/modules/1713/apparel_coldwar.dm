@@ -1111,6 +1111,16 @@
 	new/obj/item/ammo_magazine/pkm/c100(src)
 	new/obj/item/ammo_magazine/pkm/c100(src)
 
+/obj/item/weapon/storage/belt/destructionpouch
+/obj/item/weapon/storage/belt/destructionpouch/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/ww2/stg1924(src)
+	new /obj/item/weapon/grenade/ww2/stg1924(src)
+
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh/New()
 	..()

@@ -113,7 +113,8 @@
 /datum/job/var/is_borderger = FALSE
 /datum/job/var/is_permfr = FALSE
 /datum/job/var/is_permfrb = FALSE
-/datum/job/var/is_detroit = FALSE
+/datum/job/var/is_warsawger = FALSE
+/datum/job/var/is_warpol = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE
@@ -184,6 +185,8 @@
 		. = CHINESE
 	else if (istype(src, /datum/job/filipino))
 		. = FILIPINO
+	else if (istype(src, /datum/job/polish))
+		. = POLISH
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -261,6 +264,9 @@
 	else if (istype(src, /datum/job/filipino))
 		user.faction_text = "FILIPINO"
 		user.base_faction = new/datum/faction/filipino(user, src)
+	else if (istype(src, /datum/job/polish))
+		user.faction_text = "POLISH"
+		user.base_faction = new/datum/job/polish(user, src)
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
 		return "British Empire"

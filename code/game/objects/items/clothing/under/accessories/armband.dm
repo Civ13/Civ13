@@ -56,6 +56,11 @@
 	icon_state = "jap"
 	slot = "armband"
 
+/obj/item/clothing/accessory/armband/poland
+	name = "polish armband"
+	desc = "A polish armband!"
+	icon_state = "polisharmband"
+	slot = "armband"
 
 //jewelry
 
