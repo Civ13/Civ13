@@ -2270,7 +2270,7 @@
 	else if (randsuits == 6)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
 
-	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted or volunteered to fight for the soviet union,with minimal training you will defend fascism!")
+	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted or volunteered to fight for the soviet union,with minimal training you will defeat fascism!")
 
 	give_random_name(H)
 	H.setStat("strength", STAT_MEDIUM_HIGH)
