@@ -343,7 +343,6 @@
 	worn_state = "pauldron_dy"
 	slot = "decor"
 
-
 /obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
 	if (uncolored)
 		var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
