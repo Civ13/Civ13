@@ -9,8 +9,8 @@
 //////////////////////////////////////////WARSAWUPRISING///////////////////////////////////////////////////
 /datum/job/polish/warsaw/lead
 	title = "Dowódca Armii Krajowej"
-	en_meaning = "Polish home army commander"
-	rank_abbreviation = "mjr."
+	en_meaning = "Polish Home Army Commander"
+	rank_abbreviation = "Mjr."
 
 	can_be_female = TRUE
 	is_warpol = TRUE
@@ -57,7 +57,7 @@
 
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
 	uniform.attackby(white, H)
-	H.add_note("Role", "You are a <b>[title]</b>, You are in charge of the uprising, command your comrades and lead them to victory!")
+	H.add_note("Role", "You are a <b>[title]</b>, As a Commander You are in charge of the uprising, command your comrades and lead them to victory!")
 
 	give_random_name(H)
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -72,8 +72,8 @@
 
 /datum/job/polish/warsaw/sl
 	title = "Dowódca drużyny polskiej Armii Krajowej"
-	en_meaning = "Polish home army Squad leader"
-	rank_abbreviation = "szer."
+	en_meaning = "Polish home Army Squad Leader"
+	rank_abbreviation = "Szer."
 
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -117,7 +117,7 @@
 
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
 	uniform.attackby(white, H)
-	H.add_note("Role", "You are a <b>[title]</b>, Lead your men and Liberate warsaw!")
+	H.add_note("Role", "You are a <b>[title]</b>,a Squad Leader of the polish home army, Lead and organize your Squad according to the <b>Commander's</b> orders!!")
 
 	give_random_name(H)
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -198,7 +198,7 @@
 	var/obj/item/clothing/accessory/armband/redcross/wze = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(wze, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a well trained medic,heal your comrades and make sure everyone is in a good state, follow your squad leader's orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a well trained medic,heal your comrades and make sure everyone is in a good state, Follow your <b>Squad Leader's</b> orders!")
 
 	give_random_name(H)
 	H.setStat("strength", STAT_MEDIUM_LOW)
@@ -222,7 +222,7 @@
 	additional_languages = list("English" = 5, "German" = 25, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 10
-	max_positions = 40
+	max_positions = 45
 
 /datum/job/polish/warsaw/armedmilita/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -311,7 +311,7 @@
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
 	uniform.attackby(white, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, its your time to shine, get up and stand against fascism, follow your squad leader's orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, A simple Milita of the polish home army, Follow your <b>Squad Leader's</b> orders!!")
 
 	give_random_name(H)
 	H.setStat("strength", STAT_MEDIUM_LOW)
@@ -325,8 +325,8 @@
 	return TRUE
 
 /datum/job/polish/warsaw/unarmedmilita
-	title = "Nieuzbrojona milicja"
-	en_meaning = "Civilian unarmed milita"
+	title = "Nieuzbrojona Milicja"
+	en_meaning = "Civilian Unarmed Milita"
 	rank_abbreviation = ""
 
 	uses_squads = TRUE
@@ -403,7 +403,7 @@
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
 	uniform.attackby(white, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, you are a inexperienced pole who decided to join the uprising,use teamwork and ambushes in order to destroy these fascists! follow your squad leader's orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, you are a inexperienced pole who decided to join the uprising,use teamwork and ambushes in order to destroy these fascists! Follow your <b>Squad Leader's</b> orders!")
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -416,7 +416,7 @@
 	return TRUE
 
 /datum/job/polish/warsaw/greyrank
-	title = "szare szeregi"
+	title = "Szare Szeregi"
 	en_meaning = "Grey rank"
 	rank_abbreviation = ""
 
@@ -450,6 +450,22 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+//weapon
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/walther(H), slot_r_hand)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_hand)
+//belt
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt(H), slot_belt)
+//backpack
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel(H), slot_back)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/civbag(H), slot_back)
+	else if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_back)
 //armband
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
@@ -457,8 +473,8 @@
 	var/obj/item/clothing/accessory/armband/grey_scarf/carf = new /obj/item/clothing/accessory/armband/grey_scarf(null)
 	uniform.attackby(carf, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, your family rose up so did you,fight to liberate warsaw follow your squad leader's orders!")
-	H.add_note("Age", "- due to your age you are weaker than most. use static weaponry,help with logistics, distract enemies.")
+	H.add_note("Role", "You are a <b>[title]</b>, a polish teenager scout. you volunteered to fight for poland, Follow your <b>Squad Leader's</b> orders!")
+	H.add_note("Age", "- Due to your age you are overally less skilled, use static weaponry,help with logistics, distract enemies.")
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -474,7 +490,7 @@
 
 /datum/job/polish/warsaw/redarmypolsl
 	title = "polski sierżant Armii Czerwonej"
-	en_meaning = "polish red army sergeant"
+	en_meaning = "Polish Red Army Sergeant"
 	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLatePol"
@@ -532,7 +548,7 @@
 
 /datum/job/polish/warsaw/redarmypol
 	title = "polski żołnierz Armii Czerwonej"
-	en_meaning = "Polish Red army Solider"
+	en_meaning = "Polish Red Army Solider"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePol"
