@@ -1,4 +1,3 @@
-
 /obj/map_metadata/warsaw
 	ID = MAP_WARSAW
 	title = "Warsaw 1944"
@@ -31,7 +30,6 @@
 	var/a1_control = "none"
 	var/a2_control = "none"
 	var/a3_control = "none"
-	var/a4_control = "none"
 	grace_wall_timer = 3000
 /obj/map_metadata/warsaw/New()
 	..()
@@ -193,7 +191,7 @@
 	world << "<big><font color='[cust_color]'><b>Warsaw housing</b>: [a3_control]</font></big>"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Germans: [ger_points]</big>"
-	world << "<big>Polish: [pol_points]</big>"
+	world << "<big>Poland: [pol_points]</big>"
 	spawn(300)
 		points_check()
 
