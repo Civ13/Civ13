@@ -295,6 +295,19 @@ proc/random_filipino_name(gender, species = "Human")
 	else
 		return current_species.get_random_filipino_name(gender)
 
+proc/random_poland_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_polish)) + " " + capitalize(pick(last_names_polish))
+		else
+			return capitalize(pick(first_names_male_polish)) + " " + capitalize(pick(last_names_polish))
+	else
+		return current_species.get_random_polish_name(gender)
+
 proc/random_skin_tone()
 
 	var/skin_tone = "caucasian"
@@ -752,6 +765,13 @@ Proc for attack log creation, because really why not
 			filipino += H
 	return filipino
 
+/proc/getpolandmobs(var/alive = FALSE)
+	var/list/poland = list()
+	for (var/mob/living/human/H in mob_list)
+		if (istype(H.original_job, /datum/job/polish))
+			poland += H
+	return poland
+
 /proc/getfitmobs(var/faction)
 
 	var/list/mobs = null
@@ -794,6 +814,8 @@ Proc for attack log creation, because really why not
 			mobs = getchinesemobs(0)
 		if (FILIPINO)
 			mobs = getfilipinomobs(0)
+		if (POLISH)
+			mobs = getpolandmobs(0)
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)
 		for (var/mob/m in mobs)
