@@ -220,7 +220,7 @@
 	weight = 4.12
 	equiptimer = 10
 	firemodes = list(
-		list(name="full auto",    burst=1.2, burst_delay=1.4, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",    burst=1.2, burst_delay=1.4, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.6)),
 		)
 	sel_mode = 1
 	effectiveness_mod = 0.95

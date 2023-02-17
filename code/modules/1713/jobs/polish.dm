@@ -281,11 +281,18 @@
 //gloves
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//belt
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/antitank/stg24_bundle(H), slot_belt)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/custom(H), slot_belt)
+	else if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/ww2/stg1924(H), slot_belt)
 //weapon
 	var/randarmw = rand(1,3)
 	switch(randarmw)
 		if (1)
-			if (prob(45))
+			if (prob(55))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_r_hand)
 			else
@@ -293,7 +300,7 @@
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_r_hand)
 
 		if (2)
-			if (prob(30))
+			if (prob(40))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/gewehr98(H), slot_r_hand)
 			else
@@ -310,7 +317,9 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
 	uniform.attackby(white, H)
-
+	if (prob(55))
+		var/obj/item/clothing/accessory/storage/webbing/ww1/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1(null)
+		uniform.attackby(webbing, H)
 	H.add_note("Role", "You are a <b>[title]</b>, A simple Milita of the polish home army, Follow your <b>Squad Leader's</b> orders!!")
 
 	give_random_name(H)
@@ -403,7 +412,7 @@
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
 	uniform.attackby(white, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, you are a inexperienced pole who decided to join the uprising,use teamwork and ambushes in order to destroy these fascists! Follow your <b>Squad Leader's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, you are a inexperienced pole who decided to join the uprising,use teamwork and ambushes in order to destroy the fascists! Follow your <b>Squad Leader's</b> orders!")
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
