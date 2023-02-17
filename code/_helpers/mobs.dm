@@ -295,7 +295,7 @@ proc/random_filipino_name(gender, species = "Human")
 	else
 		return current_species.get_random_filipino_name(gender)
 
-proc/random_poland_name(gender, species = "Human")
+proc/random_polish_name(gender, species = "Human")
 	var/datum/species/current_species
 	if (species)
 		current_species = all_species[species]
