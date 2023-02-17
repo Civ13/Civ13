@@ -1790,8 +1790,8 @@
 /obj/item/weapon/gun/projectile/custom/proc/set_stock()
 	if (folded)
 		slot_flags = SLOT_SHOULDER|SLOT_BELT
-		effectiveness_mod *= 0.87
+		effectiveness_mod *= 0.92
 	else
 		slot_flags = SLOT_SHOULDER
-		effectiveness_mod /= 0.87
+		effectiveness_mod /= 0.92
 
