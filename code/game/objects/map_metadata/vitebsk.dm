@@ -31,6 +31,14 @@
 	..()
 	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
 		. = TRUE
+	else if (istype(J, /datum/job/german/schutze_soldaten) || istype(J, /datum/job/russian/soldier_soviet))
+		. = TRUE
+	else if (istype(J, /datum/job/german/machine_gunner) || istype(J, /datum/job/russian/machinegunner_soviet))
+		. = TRUE
+	else if (istype(J, /datum/job/russian/nkvd_soviet) || istype(J, /datum/job/german/oberleutnant))
+		. = TRUE
+	else if (istype(J, /datum/job/german/hauptmann) || istype(J, /datum/job/russian/captain_soviet))
+		. = TRUE
 	else if (J.is_ss_panzer == TRUE)
 		. = TRUE
 	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
