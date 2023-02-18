@@ -196,6 +196,11 @@
 	male_tts_voice = "Brian"
 	female_tts_voice = "Amy"
 
+/datum/job/polish
+	default_language = "Polish"
+	additional_languages = list("Russian" = 10)
+	male_tts_voice = "Jacek" //polish
+	female_tts_voice = "Maja" //polish
 /datum/job/update_character(var/mob/living/human/H)
 	. = ..()
 
@@ -262,6 +267,10 @@
 		if (DUTCH)
 			for (var/datum/language/dutch/D in H.languages)
 				H.default_language = D
+				break
+		if (POLISH)
+			for (var/datum/language/polish/PO in H.languages)
+				H.default_language = PO
 				break
 		if (JAPANESE)
 			for (var/datum/language/japanese/J in H.languages)

@@ -143,6 +143,12 @@
 					if (H.original_job.base_type_flag() == FILIPINO)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (POLISH)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == POLISH)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 // get every single mob of x faction: useful for counting deceased & gibbed mobs. More efficient than n_of_side()
 // currently does not support undead/pillarmen faction
 /proc/total_n_of_side(x)
@@ -194,3 +200,5 @@
 			return dead_chinese.len + heavily_injured_chinese.len + alive_chinese.len
 		if (FILIPINO)
 			return dead_filipino.len + heavily_injured_filipino.len + alive_filipino.len
+		if (POLISH)
+			return dead_polish.len + heavily_injured_polish.len + alive_polish.len

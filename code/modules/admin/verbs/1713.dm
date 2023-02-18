@@ -181,6 +181,7 @@ var/american_toggled = TRUE
 var/vietnamese_toggled = TRUE
 var/chinese_toggled = TRUE
 var/filipino_toggled = TRUE
+var/polish_toggled = TRUE
 
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
@@ -215,6 +216,7 @@ var/filipino_toggled = TRUE
 	choices += "VIETNAMESE ([vietnamese_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CHINESE ([chinese_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "FILIPINO ([filipino_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "POLISH ([polish_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -314,6 +316,10 @@ var/filipino_toggled = TRUE
 		filipino_toggled = !filipino_toggled
 		world << "<span class = 'warning'>The Filipino faction has been [filipino_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Filipino faction 'enabled' setting to [filipino_toggled].")
+	else if (findtext(choice, "POLISH"))
+		polish_toggled = !polish_toggled
+		world << "<span class = 'warning'>The Polish faction has been [polish_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Polish faction 'enabled' setting to [polish_toggled].")
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -337,6 +343,7 @@ var/american_forceEnabled = FALSE
 var/vietnamese_forceEnabled = FALSE
 var/chinese_forceEnabled = FALSE
 var/filipino_forceEnabled = FALSE
+var/polish_forceEnabled = FALSE
 
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"
@@ -371,6 +378,7 @@ var/filipino_forceEnabled = FALSE
 	choices += "VIETNAMESE ([vietnamese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CHINESE ([chinese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "FILIPINO ([filipino_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "POLISH ([polish_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -477,6 +485,10 @@ var/filipino_forceEnabled = FALSE
 		filipino_forceEnabled = !filipino_forceEnabled
 		world << "<span class = 'notice'>The Filipino faction [filipino_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Filipino faction 'forceEnabled' setting to [filipino_forceEnabled].")
+	else if (findtext(choice, "POLISH"))
+		polish_forceEnabled = !polish_forceEnabled
+		world << "<span class = 'notice'>The Polish faction [polish_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Polishfaction 'forceEnabled' setting to [polish_forceEnabled].")
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"
@@ -537,6 +549,7 @@ var/filipino_forceEnabled = FALSE
 	var/total_vietnamese = alive_vietnamese.len + dead_vietnamese.len + heavily_injured_vietnamese.len
 	var/total_chinese = alive_chinese.len + dead_chinese.len + heavily_injured_chinese.len
 	var/total_filipino = alive_filipino.len + dead_filipino.len + heavily_injured_filipino.len
+	var/total_polish = alive_polish.len + dead_polish.len + heavily_injured_polish.len
 
 	var/mortality_coefficient_pirates = 0
 	var/mortality_coefficient_british = 0
@@ -561,6 +574,7 @@ var/filipino_forceEnabled = FALSE
 	var/mortality_coefficient_vietnamese = 0
 	var/mortality_coefficient_chinese = 0
 	var/mortality_coefficient_filipino = 0
+	var/mortality_coefficient_polish = 0
 
 	if (dead_british.len > 0)
 		mortality_coefficient_british = dead_british.len/total_british
@@ -631,6 +645,9 @@ var/filipino_forceEnabled = FALSE
 	if (dead_filipino.len > 0)
 		mortality_coefficient_filipino = dead_filipino.len/total_filipino
 
+	if (dead_polish.len > 0)
+		mortality_coefficient_polish = dead_polish.len/total_polish
+
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
@@ -654,6 +671,7 @@ var/filipino_forceEnabled = FALSE
 	var/mortality_vietnamese = round(mortality_coefficient_vietnamese*100)
 	var/mortality_chinese = round(mortality_coefficient_chinese*100)
 	var/mortality_filipino = round(mortality_coefficient_filipino*100)
+	var/mortality_polish = round(mortality_coefficient_polish*100)
 
 	var/fact1 = "British"
 	var/fact2 = "Pirates"
@@ -678,6 +696,7 @@ var/filipino_forceEnabled = FALSE
 	var/fact21 = "Norwegian"
 	var/fact22 = "Swedish"
 	var/fact23 = "Danish"
+	var/fact24 = "Polish"
 
 	if (map.ID == MAP_CAMPAIGN)
 		fact2 = "Redmenia"
@@ -756,6 +775,7 @@ var/filipino_forceEnabled = FALSE
 	var/msg21 = "[fact21]: [alive_norwegian.len] alive, [heavily_injured_norwegian.len] heavily injured or unconscious, [dead_norwegian.len] deceased. Mortality rate: [mortality_norwegian]%"
 	var/msg22 = "[fact22]: [alive_swedish.len] alive, [heavily_injured_swedish.len] heavily injured or unconscious, [dead_swedish.len] deceased. Mortality rate: [mortality_swedish]%"
 	var/msg23 = "[fact23]: [alive_danish.len] alive, [heavily_injured_danish.len] heavily injured or unconscious, [dead_danish.len] deceased. Mortality rate: [mortality_danish]%"
+	var/msg24 = "[fact24]: [alive_polish.len] alive, [heavily_injured_polish.len] heavily injured or unconscious, [dead_polish.len] deceased. Mortality rate: [mortality_polish]%"
 
 	var/msg_npcs = "NPCs: [faction1_npcs] americans alive, [faction2_npcs] japanese alive."
 
@@ -851,6 +871,8 @@ var/filipino_forceEnabled = FALSE
 		msg22 = null
 	if (map && !map.faction_organization.Find(DANISH))
 		msg23 = null
+	if (map && !map.faction_organization.Find(POLISH))
+		msg24 = null
 
 	var/public = "Yes"
 
@@ -908,6 +930,8 @@ var/filipino_forceEnabled = FALSE
 			if (msg22)
 				world << "<font size=3>[msg22]</font>"
 			if (msg23)
+				world << "<font size=3>[msg23]</font>"
+			if (msg24)
 				world << "<font size=3>[msg23]</font>"
 			if (map.civilizations && msg_religions != "")
 				world << "<font size=3>[msg_religions]</font>"
@@ -968,3 +992,5 @@ var/filipino_forceEnabled = FALSE
 			shower << msg22
 		if (msg23)
 			shower << msg23
+		if (msg24)
+			shower << msg24

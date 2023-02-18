@@ -1111,6 +1111,16 @@
 	new/obj/item/ammo_magazine/pkm/c100(src)
 	new/obj/item/ammo_magazine/pkm/c100(src)
 
+/obj/item/weapon/storage/belt/destructionpouch
+/obj/item/weapon/storage/belt/destructionpouch/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/ww2/stg1924(src)
+	new /obj/item/weapon/grenade/ww2/stg1924(src)
+
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh/New()
 	..()
@@ -1597,7 +1607,7 @@
 		new /obj/item/ammo_casing/grenade_l(hold)
 
 /obj/item/clothing/accessory/storage/webbing/survival
-	name = "survival bebbing"
+	name = "survival webbing"
 	desc = "A green set of chest and knee-level pouches for storing a pistol, magazines and other gear needed to survive in the wilderness."
 	slots = 11
 	w_class = 4 // Heavier because it can hold a lot of stuff.
@@ -1695,6 +1705,24 @@
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)
 	ripable = FALSE
 
+/obj/item/clothing/suit/nbcponcho
+	name = "NBC poncho"
+	desc = "a NBC poncho,very light and easy to put on, made to protect against biological, chemical and nuclear threats."
+	icon_state = "nbcponcho"
+	item_state = "nbcponcho"
+	worn_state = "nbcponcho"
+	w_class = 1 // its light
+	item_flags = AIRTIGHT
+	flags_inv = HIDEFACE|BLOCKHAIR
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD|FEET|HANDS
+	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 75)
+	ripable = FALSE
+
+/obj/item/clothing/suit/nbcponcho/white
+	name = "White NBC poncho"
+	icon_state = "nbcponchowhite"
+	item_state = "nbcponchowhite"
+	worn_state = "nbcponchowhite"
 /* Astronaut Suit and Helmet*/
 
 /obj/item/clothing/head/astronaut
