@@ -192,3 +192,11 @@
 	icon_state = "tactical_goggles"
 	item_state = "tactical_goggles"
 	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/tactical_goggles/ballistic
+	name = "Ballistic goggles"
+	desc = "Standard ballistic combat goggles, they protect your eyes from shrapnel."
+	icon_state = "tactical_goggles"
+	item_state = "tactical_goggles"
+	body_parts_covered = EYES
+	armor = list(melee = 15, arrow = 90, gun = 25, energy = 15, bomb = 25, bio = 20, rad = 20)

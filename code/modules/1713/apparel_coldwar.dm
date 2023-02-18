@@ -1333,6 +1333,46 @@
 	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
 
+/obj/item/clothing/mask/headscarfgrey ////German Toque head scarf Issued to soldiers during WW2 to wear as a neck warmer
+	name = "grey headscarf"
+	desc = "A headscarf,it protects your face from the cold."
+	icon_state = "headscarfgrey"
+	item_state = "headscarfgrey"
+	worn_state = "headscarfgrey"
+	body_parts_covered = FACE|HEAD
+	slot_flags = SLOT_BELT|SLOT_MASK
+	flags_inv = HIDEFACE|BLOCKHAIR
+	w_class = 1
+	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE*2
+	flammable = TRUE
+	cold_protection = HEAD|FACE
+
+/obj/item/clothing/mask/headscarfgrey/asbestos
+	name = "Asbestos headscarf"
+	desc = "A Heavy Asbestos farbic headscarf, it protects your head from heat and cold."
+	icon_state = "headscarfgreyA"
+	item_state = "headscarfgreyA"
+	worn_state = "headscarfgreyA"
+	body_parts_covered = FACE|HEAD
+	w_class = 2
+	max_heat_protection_temperature = HELMET_MAX_HEAT_PROTECTION_TEMPERATURE*4
+	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = 35, bomb = 25, bio = 5, rad = 5)
+	heat_protection = HEAD|FACE
+	flammable = FALSE
+	cold_protection = HEAD|FACE
+
+/obj/item/clothing/mask/headscarfgrey/olive
+	name = "olive headscarf"
+	icon_state = "headscarfolive"
+	item_state = "headscarfolive"
+	worn_state = "headscarfolive"
+
+/obj/item/clothing/mask/headscarfgrey/white
+	name = "white headscarf"
+	icon_state = "headscarfwhite"
+	item_state = "headscarfwhite"
+	worn_state = "headscarfwhite"
+
 /obj/item/clothing/head/commando_bandana
 	name = "olive drab bandana"
 	desc = "An olive drab coloured bandana."
