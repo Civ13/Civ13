@@ -5,7 +5,7 @@
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
-	no_winner ="The HQ stays under polish control."
+	no_winner ="The HQ stays under Polish control."
 	no_hardcore = FALSE
 	faction_organization = list(
 		GERMAN,
@@ -18,7 +18,7 @@
 	age = "1944"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.5, POLISH = 0.5)
-	battle_name = "Warsaw uprising"
+	battle_name = "Warsaw Uprising"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The Polish home army will win if they hold out for <b>30 minutes</b>. The Germans will win if they manage to reach the <b>Radio Station</b> in the Polish home army HQ.</font>"
 	faction1 = GERMAN
 	faction2 = POLISH
@@ -66,7 +66,7 @@
 		if ("Germans")
 			return "German"
 		if ("Polish")
-			return "Poland"
+			return "Polish"
 
 /obj/map_metadata/warsaw/cross_message(faction)
 	if (faction == POLISH)
