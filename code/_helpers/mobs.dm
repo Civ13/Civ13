@@ -765,12 +765,12 @@ Proc for attack log creation, because really why not
 			filipino += H
 	return filipino
 
-/proc/getpolandmobs(var/alive = FALSE)
-	var/list/poland = list()
+/proc/getpolishmobs(var/alive = FALSE)
+	var/list/polish = list()
 	for (var/mob/living/human/H in mob_list)
 		if (istype(H.original_job, /datum/job/polish))
-			poland += H
-	return poland
+			polish += H
+	return polish
 
 /proc/getfitmobs(var/faction)
 
@@ -815,7 +815,7 @@ Proc for attack log creation, because really why not
 		if (FILIPINO)
 			mobs = getfilipinomobs(0)
 		if (POLISH)
-			mobs = getpolandmobs(0)
+			mobs = getpolishmobs(0)
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)
 		for (var/mob/m in mobs)
