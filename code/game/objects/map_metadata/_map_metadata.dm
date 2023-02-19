@@ -925,7 +925,7 @@ var/civmax_research = list(230,230,230)
 		if (VIETNAMESE)
 			return "Vietcong group"
 		if (CHINESE)
-			return "Poeple's Liberation Army"
+			return "People's Liberation Army"
 		if (FILIPINO)
 			return "Philippine Revolutionary Army"
 		if (POLISH)
