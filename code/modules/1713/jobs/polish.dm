@@ -48,7 +48,7 @@
 			uniform.attackby(webbing, H)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
-			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43(null)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
 			uniform.attackby(webbing, H)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/stg(H), slot_shoulder)
@@ -164,25 +164,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 
 //clothes
-	var/randjack2 = rand(1,7)
-	if (randjack2 == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
-	else if (randjack2 == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
-	else if (randjack2 == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-	else if (randjack2 == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
-	else if (randjack2 == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
-	else if (randjack2 == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
-	else if (randjack2 == 7)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-	else if (randjack2 == 8)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
-
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26medic(H), slot_head)
@@ -208,7 +190,7 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MAX)
+	H.setStat("medical", STAT_VERY_HIGH)
 	return TRUE
 
 /datum/job/polish/warsaw/armedmilita
@@ -238,8 +220,6 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	else if (randshoe2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
-
-
 //clothes
 	var/randjack2 = rand(1,7)
 	if (randjack2 == 1)
@@ -258,8 +238,6 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
 	else if (randjack2 == 8)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
-
-
 //head
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
@@ -277,7 +255,6 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads/down(H), slot_head)
-
 //gloves
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
@@ -360,8 +337,6 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	else if (randshoe2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
-
-
 //clothes
 	var/randjack2 = rand(1,7)
 	if (randjack2 == 1)
@@ -380,8 +355,6 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
 	else if (randjack2 == 8)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
-
-
 //head
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
@@ -399,7 +372,6 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads/down(H), slot_head)
-
 //gloves
 	if (prob(15))
 		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
@@ -452,8 +424,6 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	else if (randshoe2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
-
-
 //clothes
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
