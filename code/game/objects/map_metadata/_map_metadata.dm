@@ -928,6 +928,8 @@ var/civmax_research = list(230,230,230)
 			return "Poeple's Liberation Army"
 		if (FILIPINO)
 			return "Philippine Revolutionary Army"
+		if (POLISH)
+			return "Polish Home Army"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -972,6 +974,8 @@ var/civmax_research = list(230,230,230)
 			return "Chinese"
 		if ("Philippine Revolutionary Army")
 			return "Filipino"
+		if ("Polish Home Army")
+			return "Polish"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 
