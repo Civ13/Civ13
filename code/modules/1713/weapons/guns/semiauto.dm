@@ -345,6 +345,15 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	effectiveness_mod = 0.95
 
+/obj/item/weapon/gun/projectile/semiautomatic/m1garand/match //Match grade weapons are built to a higher standard than service grade weapons.
+	name = "M1 Garand Match"
+	desc = "An American semi-automatic rifle using .30-06 ammunition in a 8 round internal magazine, this one was made with better quality control."
+	w_class = 4
+	weight = 4.8
+	force = 15
+	throwforce = 25
+	effectiveness_mod = 1.05
+
 /obj/item/weapon/gun/projectile/semiautomatic/ar15
 	name = "Bushmaster XM-15"
 	desc = "A civilian semi-automatic rifle chambered in 5.56x45mm."
