@@ -273,6 +273,13 @@ obj/item/weapon/storage/backpack/ww2/american
 	max_w_class = 3
 	max_storage_space = 22
 
+/obj/item/weapon/storage/backpack/duffel/black
+	name = "black duffel bag"
+	desc = "A generic black duffel bag."
+	icon_state = "bduffel"
+	item_state = "bduffel"
+	base_icon = "bduffel"
+
 /obj/item/weapon/storage/backpack/buttpack
 	name = "US Army buttpack"
 	desc = "Standard issue buttpack for american military personel."
