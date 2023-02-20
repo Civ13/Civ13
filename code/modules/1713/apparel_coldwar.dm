@@ -1808,6 +1808,7 @@
 	item_state = "toughguy"
 	worn_state = "toughguy"
 	body_parts_covered = HANDS
+	armor = list(melee = 30, arrow = 5, gun = 5, energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	slot_flags = SLOT_GLOVES
 
 /obj/item/clothing/shoes/toughguy
