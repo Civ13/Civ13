@@ -150,6 +150,14 @@ var/global/list/vehicle_walls = list( \
 	resistance = 150
 	noroof = FALSE
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/left/metalreinforced
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
+	w_left = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/right/metal
 	name = "steel frame"
 	desc = "a steel vehicle frame."

@@ -560,7 +560,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=10,2=6,3=4,4=3,5=2)
 	turntimer = 6
 	reg_number = ""
 	color = "#3d5931"
@@ -618,6 +618,10 @@
 /obj/structure/engine/internal/gasoline/premade/v6
 	name = "V6 gasoline engine"
 	enginesize = 7000
+
+/obj/structure/engine/internal/gasoline/premade/mik
+	name = "V12 Mikulin M-17T gasoline engine"
+	enginesize = 15000
 
 /obj/structure/engine/internal/diesel/premade/erstenklasse
 	enginesize = 5500

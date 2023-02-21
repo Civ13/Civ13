@@ -292,6 +292,31 @@
 	maxrange = 27
 	caliber = 76.2
 
+/obj/structure/cannon/modern/tank/russian45 //low cal but fires fast
+	name = "45 mm M1932 20-K"
+	desc = "a 45 mm Russian tank-based fast firing cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 25
+	caliber = 45
+	anchored = TRUE
+	firedelay = 30
+
+/obj/structure/cannon/modern/tank/russian45/field
+	name = "45 mm anti-tank gun model 1932"
+	desc = "a 45 mm fast firing anti tank cannon."
+	icon_state = "feldkanone18"
+	icon = 'icons/obj/cannon.dmi'
+	maxsway = 18
+	maxrange = 31
+	firedelay = 25
+	assembled = FALSE
+	can_assemble = TRUE
+	New()
+		..()
+		loader_chair = new /obj/structure/bed/chair/loader(src)
+		gunner_chair = new /obj/structure/bed/chair/gunner(src)
+
 /obj/structure/cannon/modern/tank/russian85
 	name = "85 mm M1939 D5-T"
 	desc = "a 85 mm Russian tank-based cannon."
