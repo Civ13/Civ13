@@ -2467,6 +2467,10 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		worn_state = "sovhelm_winter"
 		item_state_slots["sovhelm_winter"] = "sovhelm_winter"
 
+/obj/item/clothing/head/helmet/ww2/soviet/winter
+	icon_state = "sovhelm_winter"
+	item_state = "sovhelm_winter"
+	worn_state = "sovhelm_winter"
 
 /obj/item/clothing/head/helmet/ww2/usm1
 	name = "M1 Helmet"
