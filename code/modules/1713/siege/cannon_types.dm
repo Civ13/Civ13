@@ -300,7 +300,7 @@
 	maxrange = 25
 	caliber = 45
 	anchored = TRUE
-	firedelay = 30
+	firedelay = 20
 
 /obj/structure/cannon/modern/tank/russian45/field
 	name = "45 mm anti-tank gun model 1932"
@@ -309,7 +309,7 @@
 	icon = 'icons/obj/cannon.dmi'
 	maxsway = 18
 	maxrange = 31
-	firedelay = 25
+	firedelay = 20
 	assembled = FALSE
 	can_assemble = TRUE
 	New()
