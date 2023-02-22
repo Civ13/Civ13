@@ -992,7 +992,7 @@
 	icon_state = "ak12"
 	item_state = "ak12"
 	base_icon = "ak12"
-	caliber = "a545x39"
+	caliber = "a762x39"
 	weight = 3.07
 	effectiveness_mod = 1.13
 	equiptimer = 12
