@@ -1341,7 +1341,7 @@
 	worn_state = "headscarfgrey"
 	body_parts_covered = FACE|HEAD
 	slot_flags = SLOT_BELT|SLOT_MASK
-	flags_inv = HIDEFACE|BLOCKHAIR
+	flags_inv = BLOCKHAIR
 	w_class = 1
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE*2
 	flammable = TRUE

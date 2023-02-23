@@ -1521,6 +1521,11 @@ obj/item/clothing/head/ww2/cra_cap
 		new/obj/item/ammo_magazine/svt(hold)
 		new/obj/item/ammo_magazine/svt(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/frag
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/rgd33(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault
 	New()
 		..()
@@ -1539,6 +1544,11 @@ obj/item/clothing/head/ww2/cra_cap
 		new/obj/item/ammo_magazine/c762x25_pps(hold)
 		new/obj/item/ammo_magazine/c762x25_pps(hold)
 		new/obj/item/ammo_magazine/c762x25_pps(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/grenade
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/rgd33(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault
 	New()
