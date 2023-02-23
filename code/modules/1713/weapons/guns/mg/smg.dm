@@ -213,7 +213,7 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica
 	name = "Blyskawica"
-	desc = "Polish Underground state Submachine gun, chambered in 9mm Luger."
+	desc = "Polish Underground State submachine gun, chambered in 9mm Luger."
 	icon_state = "blyskawica"
 	item_state = "blyskawica"
 	base_icon = "blyskawica"

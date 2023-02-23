@@ -932,7 +932,7 @@ var/polish_forceEnabled = FALSE
 			if (msg23)
 				world << "<font size=3>[msg23]</font>"
 			if (msg24)
-				world << "<font size=3>[msg23]</font>"
+				world << "<font size=3>[msg24]</font>"
 			if (map.civilizations && msg_religions != "")
 				world << "<font size=3>[msg_religions]</font>"
 			if (map.civilizations && msg_factions != "")
