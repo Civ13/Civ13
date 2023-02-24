@@ -1614,7 +1614,33 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
 
-
+/obj/item/clothing/accessory/storage/webbing/russian/guns
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+/obj/item/clothing/accessory/storage/webbing/russian/guns/pkm
+	New()
+		..()
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/weapon/grenade/coldwar/rgd5(hold)
+/obj/item/clothing/accessory/storage/webbing/russian/guns/rpk
+	New()
+		..()
+		new /obj/item/ammo_magazine/rpk74/drum(hold)
+		new /obj/item/ammo_magazine/rpk74(hold)
+		new /obj/item/ammo_magazine/rpk74(hold)
+		new /obj/item/ammo_magazine/rpk74(hold)
+		new /obj/item/weapon/grenade/coldwar/rgd5(hold)
+/obj/item/clothing/accessory/storage/webbing/russian/guns/rpd
+	New()
+		..()
+		new /obj/item/ammo_magazine/rpd(hold)
+		new /obj/item/ammo_magazine/rpd(hold)
+		new /obj/item/ammo_magazine/rpd(hold)
+		new /obj/item/weapon/grenade/coldwar/rgd5(hold)
 /obj/item/clothing/accessory/storage/webbing/ww1/german
 	name = "german webbing"
 	icon_state = "german_vest"
@@ -1934,6 +1960,35 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	new/obj/item/ammo_magazine/browning(src)
 	new/obj/item/ammo_magazine/browning(src)
 
+/obj/item/weapon/storage/ammo_can/ak74
+/obj/item/weapon/storage/ammo_can/ak74/New()
+	..()
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+
+/obj/item/weapon/storage/ammo_can/stanag
+/obj/item/weapon/storage/ammo_can/stanag/New()
+	..()
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16/box(src)
+	new/obj/item/ammo_magazine/m16/box(src)
+
+/obj/item/weapon/storage/ammo_can/dp
+/obj/item/weapon/storage/ammo_can/dp/New()
+	..()
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+
 /obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
 	desc = "A soviet uniform, used by infantry in the Red Army."
@@ -2028,6 +2083,13 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	item_state = "amoeba"
 	worn_state = "amoeba"
 
+/obj/item/clothing/under/ww2/soviet_amoeba/winter
+	name = "soviet winter amoeba outfit"
+	desc = "A soviet camouflage outfit, concieved for reconnaissance units."
+	icon_state = "amoebaw"
+	item_state = "amoebaw"
+	worn_state = "amoebaw"
+
 /obj/item/clothing/shoes/jackboots/soviet
 	name = "soviet sapogi boots"
 	desc = "Jackboots of soviet origin. Also known as 'Yuftevyje sapogi'."
@@ -2110,6 +2172,20 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		hold.storage_slots = slots
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/us_ww2/garand
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
 ////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/under/ww2/finnish
 	name = "finnish uniform"

@@ -853,6 +853,11 @@
 	item_state = "gorka"
 	worn_state = "gorka"
 
+/obj/item/clothing/under/gorka/frag //provides actual armor
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 30, arrow = 30, gun = FALSE, energy = 15, bomb = 25, bio = 30, rad = 30)
+	value = 65
+
 /obj/item/clothing/under/modern8
 	name = "modern skirt"
 	desc = "An outfit composed of a black skirt and white shirt."
@@ -1201,6 +1206,21 @@
 /obj/item/weapon/storage/belt/largepouches/white
 	icon_state = "largepouches_white"
 	item_state = "largepouches_white"
+/obj/item/weapon/storage/belt/largepouches/white/pkm
+/obj/item/weapon/storage/belt/largepouches/white/pkm/New()
+	..()
+	new/obj/item/ammo_magazine/pkm/c100(src)
+	new/obj/item/ammo_magazine/pkm/c100(src)
+/obj/item/weapon/storage/belt/largepouches/white/rpk
+/obj/item/weapon/storage/belt/largepouches/white/rpk/New()
+	..()
+	new/obj/item/ammo_magazine/rpk74(src)
+	new/obj/item/ammo_magazine/rpk74(src)
+/obj/item/weapon/storage/belt/largepouches/white/rpd
+/obj/item/weapon/storage/belt/largepouches/white/rpd/New()
+	..()
+	new/obj/item/ammo_magazine/rpd(src)
+	new/obj/item/ammo_magazine/rpd(src)
 /obj/item/weapon/storage/belt/smallpouches
 	name = "small pouches"
 	desc = "A belt with 4 small pouches, that can fit items like magazines, knives, and other small things."

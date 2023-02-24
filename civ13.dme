@@ -519,6 +519,7 @@
 #include "code\game\objects\map_metadata\santo_tomas.dm"
 #include "code\game\objects\map_metadata\save_awards.dm"
 #include "code\game\objects\map_metadata\sekigahara.dm"
+#include "code\game\objects\map_metadata\siberiad.dm"
 #include "code\game\objects\map_metadata\sibersyn.dm"
 #include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\skullisland.dm"

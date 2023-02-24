@@ -1424,6 +1424,13 @@
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak74(hold)
+		new/obj/item/ammo_magazine/ak74(hold)
+		new/obj/item/ammo_magazine/ak74(hold)
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
 	New()
 		..()
@@ -1587,6 +1594,60 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/m16
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/m60
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/m249
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/c6
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/sten
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/springfield
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_bandolier
 	name = "US Army bandolier"
