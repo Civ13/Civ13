@@ -304,7 +304,7 @@
 
 /obj/structure/cannon/modern/tank/russian45/field
 	name = "45 mm anti-tank gun model 1932"
-	desc = "a 45 mm fast firing anti tank cannon."
+	desc = "A 45mm fast firing anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxsway = 18
