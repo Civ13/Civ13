@@ -970,6 +970,39 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+/obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12
+	name = "AK-12"
+	desc = "A fifth generation Modern AK variant, chambered in 5.45x39mm."
+	icon_state = "ak12"
+	item_state = "ak12"
+	base_icon = "ak12"
+	caliber = "a545x39"
+	weight = 3.05
+	effectiveness_mod = 1.13
+	equiptimer = 12
+	magazine_type = /obj/item/ammo_magazine/ak74
+	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	equiptimer = 12
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12/ak15
+	name = "AK-15"
+	desc = "A fifth generation Modern AK variant, chambered in 7.62×39mm."
+	icon_state = "ak12"
+	item_state = "ak12"
+	base_icon = "ak12"
+	caliber = "a762x39"
+	weight = 3.07
+	effectiveness_mod = 1.13
+	equiptimer = 12
+	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak47
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	equiptimer = 12
+	sel_mode = 1
+
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16A1"
 	desc = "An American assault rifle, chambered in 5.56x45mm."

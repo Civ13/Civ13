@@ -220,6 +220,17 @@ obj/item/weapon/storage/backpack/ww2/american
 	max_w_class = 4
 	max_storage_space = 28
 
+/obj/item/weapon/storage/backpack/rucksack/small
+	name = "army rucksack"
+	desc = "A small black army rucksack, made to allow you to be mobile while carrying everything you need."
+	icon_state = "smallruck"
+	item_state = "smallruck"
+	base_icon = "smallruck"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 4
+	max_storage_space = 18
+
 /obj/item/weapon/storage/backpack/rucksack/rpg
 	New()
 		..()
