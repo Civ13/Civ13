@@ -788,7 +788,7 @@
 
 /obj/item/weapon/grenade/antitank/n73
 	name = "N73 AT grenade"
-	desc = "A British anti-tank hand percussion grenade used during WW2."
+	desc = "A British anti-tank hand percussion grenade used during WW2. Also known as \"Thermos\". "
 	icon_state = "n73"
 	heavy_armor_penetration = 20
 
